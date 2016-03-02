@@ -61,11 +61,7 @@ myApp.factory('userModel', ['$http', '$cookies', function($http, $cookies) {
      */
     userModel.doUserLogout = function() {
         $cookies.remove('auth');
-    };
-
-    userModel.getCurrentUser = function(){
-        return $http.get(baseUrl + 'user');
-    };
+    };    
 
     return userModel;
 }])

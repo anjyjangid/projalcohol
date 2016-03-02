@@ -3,8 +3,7 @@ myApp.controller('userController', ['$scope', '$location', 'userModel', function
         login: {
             username: 'abhay@cgt.co.in',
             password: '12345678'
-        },
-        currentUser:{}
+        }        
     });
 
 

@@ -3,7 +3,9 @@
 namespace AlcoholDelivery\Http\Controllers\Auth;
 
 use AlcoholDelivery\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\ResetsPasswords;
+
+//use Illuminate\Foundation\Auth\ResetsPasswords;
+use Sarav\Multiauth\Foundation\ResetsPasswords;
 
 class PasswordController extends Controller
 {
@@ -27,6 +29,7 @@ class PasswordController extends Controller
      */
     public function __construct()
     {
+        $this->user = "user";
         $this->middleware('guest');
     }
 }

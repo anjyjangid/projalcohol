@@ -11,14 +11,38 @@
 |
  */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/admin', function () {
     return view('master');
 });
 
 post('upload-image', 'GalleryController@uploadImage');
 
-Route::post('auth', 'UserController@checkAuth');
-Route::resource('user', 'UserController');
-Route::resource('gallery', 'GalleryController');
+Route::post('admin/auth', 'UserController@checkAuth');
+Route::resource('admin/user', 'UserController');
+Route::resource('admin/gallery', 'GalleryController');
 
-post('delete-single-image', 'GalleryController@deleteSingleImage');
+post('delete-single-image', 'GalleryController@deleteSingleImage');*/
+	
+// Users route
+Route::controller('/user', 'Auth\AuthController');
+Route::controller('/password', 'Auth\PasswordController');
+ 
+// Admin route
+Route::controller('/admin', 'Auth\AdminAuthController');
+Route::controller('/admin/password', 'Auth\AdminPasswordController');
+
+	
+Route::get('/', ['uses' => 'UserController@index']);
+Route::controller('/auth', 'Auth\AuthController');
+Route::controller('/password', 'Auth\PasswordController');
+ 
+ 
+Route::get('/admin', ['uses' => 'Admin\AdminController@getHome']);
+Route::controller('/admin', 'Auth\AdminAuthController');
+Route::controller('/admin/password', 'Auth\AdminPasswordController');
+
+Route::post('/auth', 'UserController@checkAuth');

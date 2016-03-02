@@ -68,27 +68,15 @@ myApp.config(['$routeProvider', '$locationProvider',
             templateUrl: 'templates/users/logout.html',
             controller: 'userController',
             authenticated: true
-        });
+        });        
 
-        $routeProvider.when('/user/profile', {
-            templateUrl: 'templates/users/profile.html',
-            controller: 'userController',
-            resolve: {
-                data: function(userModel, $route) {
-                    return {
-                        currentUser: userModel.getCurrentUser()
-                    };
-                }
-            },
-            authenticated: true
-        });
+        $routeProvider.otherwise('/');        
 
-        $routeProvider.otherwise('/');
     }
 ]);
 
 myApp.run(["$rootScope", "$location", 'userModel',
-    function($rootScope, $location, userModel) {
+    function($rootScope, $location, userModel) {        
         $rootScope.$on("$routeChangeStart",
             function(event, next, current) {
                 if (next.$$route.authenticated) {

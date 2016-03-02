@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    
+    
+
     public function checkAuth(Request $request)
     {
         // setting the credentials array
@@ -31,7 +34,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response(Auth::user(), 201);
+        return view('front');
     }
 
     /**

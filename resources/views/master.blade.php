@@ -9,15 +9,17 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
     <script>
-        var baseUrl = "{{ url('/') }}/";
+        var baseUrl = "{{ url('/admin') }}/";
         var csrfToken = "{{ csrf_token() }}";
     </script>
 </head>
 <body>
-    <div class="container" ng-controller="globalController">        
-
+    <div class="container" ng-controller="globalController">                
         <?php 
             var_dump(Session::all());
+            var_dump(Auth::guest('user'));
+
+            /*Auth::logout('user');*/
         ?>
         <br/>
         ADMIN : {{  Auth::user('admin') }}
