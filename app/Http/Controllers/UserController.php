@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    
-    
-
     public function checkAuth(Request $request)
     {
         // setting the credentials array
@@ -20,7 +17,7 @@ class UserController extends Controller
         ];
 
         // if the credentials are wrong
-        if (!Auth::attempt('admin',$credentials)) {
+        if (!Auth::attempt('user',$credentials)) {
             return response('Username password does not match', 403);
         }
         
@@ -34,7 +31,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('front');
+        return view('frontend');
     }
 
     /**
