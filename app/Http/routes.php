@@ -31,7 +31,7 @@ Route::get('/', ['uses' => 'UserController@index']);
 Route::controller('/auth', 'Auth\AuthController');
 Route::controller('/password', 'Auth\PasswordController');
  
- 
+//ADMIN ROUTES 
 Route::get('/admin', ['uses' => 'Admin\AdminController@home']);
 Route::controller('/admin', 'Auth\AdminAuthController');
 Route::controller('/admin/password', 'Auth\AdminPasswordController');
