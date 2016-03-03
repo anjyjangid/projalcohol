@@ -135,6 +135,7 @@ License: You must have a valid license purchased only from themeforest(the above
 	<!-- BEGIN CORE ANGULARJS PLUGINS -->
 	<script src="{{ asset('assets/global/plugins/angularjs/angular.min.js') }}" type="text/javascript"></script>	
 	<script src="{{ asset('assets/global/plugins/angularjs/angular-sanitize.min.js') }}" type="text/javascript"></script>
+	<script src="{{ asset('assets/global/plugins/angularjs/angular-cookies.min.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/global/plugins/angularjs/angular-touch.min.js') }}" type="text/javascript"></script>	
 	<script src="{{ asset('assets/global/plugins/angularjs/plugins/angular-ui-router.min.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/global/plugins/angularjs/plugins/ocLazyLoad.min.js') }}" type="text/javascript"></script>

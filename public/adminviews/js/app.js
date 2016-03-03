@@ -7,7 +7,8 @@ var MetronicApp = angular.module("MetronicApp", [
     "ui.router", 
     "ui.bootstrap", 
     "oc.lazyLoad",  
-    "ngSanitize"
+    "ngSanitize",
+    "ngCookies"
 ]); 
 
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
@@ -90,6 +91,7 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', function($scope
         Metronic.initComponents(); // init core components
         //Layout.init(); //  Init entire layout(header, footer, sidebar, etc) on page load if the partials included in server side instead of loading with ng-include directive 
     });
+    
 }]);
 
 /***
@@ -142,6 +144,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
     
     $stateProvider
         // Dashboard
+        
         .state('dashboard', {
             url: "/dashboard",
             templateUrl: "adminviews/views/dashboard.html",            
@@ -193,6 +196,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
 
         // UI Select
+
         .state('uiselect', {
             url: "/ui_select.html",
             templateUrl: "views/ui_select.html",
@@ -427,6 +431,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "UserProfileController",
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
+
                     return $ocLazyLoad.load({
                         name: 'MetronicApp',  
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
@@ -440,9 +445,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
 
                             'assets/admin/pages/scripts/profile.js',
 
+                            'adminviews/js/models/userModel.js',
                             'adminviews/js/controllers/UserProfileController.js'
+                            
+
                         ]                    
                     });
+
                 }]
             }
         })

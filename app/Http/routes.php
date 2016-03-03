@@ -26,7 +26,8 @@ Route::resource('admin/user', 'UserController');
 Route::resource('admin/gallery', 'GalleryController');
 
 post('delete-single-image', 'GalleryController@deleteSingleImage');*/
-	
+
+
 Route::get('/', ['uses' => 'UserController@index']);
 Route::controller('/auth', 'Auth\AuthController');
 Route::controller('/password', 'Auth\PasswordController');
@@ -36,4 +37,10 @@ Route::get('/admin', ['uses' => 'Admin\AdminController@home']);
 Route::controller('/admin', 'Auth\AdminAuthController');
 Route::controller('/admin/password', 'Auth\AdminPasswordController');
 
+Route::get('/admin/logout', 'Auth\AdminAuthController@logout');
+	
 Route::post('/auth', 'UserController@checkAuth');
+
+Route::post('/profile/account', 'ProfileController@account');
+Route::post('/profile/update', 'ProfileController@update');
+
