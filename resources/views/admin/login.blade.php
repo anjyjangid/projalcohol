@@ -110,13 +110,14 @@ License: You must have a valid license purchased only from themeforest(the above
 	</form>
 	<!-- END LOGIN FORM -->
 	<!-- BEGIN FORGOT PASSWORD FORM -->
-	<form class="forget-form" action="index.html" method="post">
+	<form class="forget-form" method="POST" action="{{ action("Auth\AdminPasswordController@getEmail") }}">
+		{!! csrf_field() !!}
 		<h3>Forget Password ?</h3>
 		<p>
 			 Enter your e-mail address below to reset your password.
 		</p>
 		<div class="form-group">
-			<input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email"/>
+			<input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email" value="{{ old('email') }}"/>
 		</div>
 		<div class="form-actions">
 			<button type="button" id="back-btn" class="btn btn-default">Back</button>

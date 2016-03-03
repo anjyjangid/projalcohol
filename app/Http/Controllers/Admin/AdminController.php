@@ -25,7 +25,7 @@ class AdminController extends Controller
      */
     public function index()
     {
-        //
+        return view('backend');
     }
 
     /**
@@ -92,5 +92,10 @@ class AdminController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function home()
+    {
+        return view('backend');
     }
 }
