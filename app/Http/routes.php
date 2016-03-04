@@ -30,12 +30,14 @@ post('delete-single-image', 'GalleryController@deleteSingleImage');*/
 
 Route::get('/', ['uses' => 'UserController@index']);
 Route::controller('/auth', 'Auth\AuthController');
+Route::post('/admin/getcustomers', ['uses' => 'Admin\AdminController@customers']);
 Route::controller('/password', 'Auth\PasswordController');
  
 //ADMIN ROUTES 
 Route::get('/admin', ['uses' => 'Admin\AdminController@home']);
 Route::controller('/admin', 'Auth\AdminAuthController');
 Route::controller('/admin/password', 'Auth\AdminPasswordController');
+
 
 Route::get('/admin/logout', 'Auth\AdminAuthController@logout');
 	

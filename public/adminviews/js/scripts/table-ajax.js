@@ -36,7 +36,12 @@ var TableAjax = function () {
                 ],
                 "pageLength": 10, // default record count per page
                 "ajax": {
-                    "url": "../demo/table_ajax.php", // ajax source
+                    "url": "../admin/getcustomers", // ajax source
+                    "data": function ( d ) {
+                        d._token = $('meta[name="_token"]').attr('content');
+                        // d.custom = $('#myInput').val();
+                        // etc
+                    }
                 },
                 "order": [
                     [1, "asc"]
