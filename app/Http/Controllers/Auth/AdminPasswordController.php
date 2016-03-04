@@ -16,7 +16,10 @@ class AdminPasswordController extends Controller
      */
     public function __construct()
     {
+        
         $this->user = "admin";
         $this->middleware('admin.guest');
     }
+
+
 }
