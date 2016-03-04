@@ -14,6 +14,8 @@ myApp.config(['$routeProvider', '$locationProvider',
             authenticated: true
         });
 
+        
+
         $routeProvider.when('/gallery/view', {
             templateUrl: 'templates/gallery/gallery-view.html',
             controller: 'galleryController',
