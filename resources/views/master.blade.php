@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="myApp">
 <head>
-    <title>Gallery application in Angular JS</title>
+    <title>Alcohol Delivery</title>
     <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap-lumen.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('bower_components/dropzone/dist/dropzone.css') }}">
     <link rel="stylesheet" href="{{ asset('bower_components/angular-bootstrap-lightbox/dist/angular-bootstrap-lightbox.css') }}">
