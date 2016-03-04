@@ -105,6 +105,12 @@ class AdminController extends Controller
             array("danger" => "On Hold"),
             array("warning" => "Fraud")
           );
+
+        $records = [
+            "iTotalRecords" => User::count(),
+            "iTotalDisplayRecords" => User::count(),
+        ];
+        
         foreach($users as $key=>$value) {
             $status = $status_list[rand(0, 2)];
             $records["data"][] = array(

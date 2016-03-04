@@ -31,6 +31,11 @@ post('delete-single-image', 'GalleryController@deleteSingleImage');*/
 Route::get('/', ['uses' => 'UserController@index']);
 Route::controller('/auth', 'Auth\AuthController');
 Route::post('/admin/getcustomers', ['uses' => 'Admin\AdminController@customers']);
+
+Route::match(['get', 'post'],'/admin/dealer/getdealers', ['uses' => 'Admin\DealerController@getdealers']);
+
+
+
 Route::controller('/password', 'Auth\PasswordController');
  
 //ADMIN ROUTES 
