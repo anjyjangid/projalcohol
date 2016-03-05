@@ -105,6 +105,7 @@ class AdminController extends Controller
             array("danger" => "On Hold"),
             array("warning" => "Fraud")
           );
+        $sEcho = intval($_REQUEST['draw']);
         foreach($users as $key=>$value) {
             $status = $status_list[rand(0, 2)];
             $records["data"][] = array(
@@ -119,6 +120,9 @@ class AdminController extends Controller
               '<a href="javascript:;" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>',
             );
         }
+        $records["draw"] = $sEcho;
+        $records["recordsTotal"] = count($users);
+        $records["recordsFiltered"] = count($users);
        return  json_encode($records);
     }
 
