@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: AlcoholDelivery
+        psr4_prefix: AlcoholDelivery
+        src_path: app
