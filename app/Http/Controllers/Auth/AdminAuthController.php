@@ -2,7 +2,7 @@
  
 namespace AlcoholDelivery\Http\Controllers\Auth;
  
-use AlcoholDelivery\User;
+use AlcoholDelivery\Admin;
 use Validator;
 use AlcoholDelivery\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;

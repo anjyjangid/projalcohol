@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
 
-class AdminController extends Controller
+class DashboardController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -25,7 +25,7 @@ class AdminController extends Controller
      */
     public function index()
     {
-        return view('backend');
+        return view('admin/dashboard');
     }
 
     /**
@@ -35,7 +35,6 @@ class AdminController extends Controller
      */
     public function create()
     {
-        return 'CREATE';
         //
     }
 
@@ -93,9 +92,5 @@ class AdminController extends Controller
     public function destroy($id)
     {
         //
-    }   
-
-    public function dashboard(){        
-        return view('admin/dashboard');
     }
 }
