@@ -451,6 +451,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 }]
             }
         })
+<<<<<<< HEAD
 
         .state('dealers', {
             url: "/dealers",
@@ -488,12 +489,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {pageTitle: 'Dealers List'}
         })
 
+    
 
-        .state('categories', {
-            url: "/categories",
-            templateUrl: "adminviews/views/categories/index.html",
-            data: {pageTitle: 'Dealers'},
-            controller: "DealersController",
+        .state('category', {
+            url: "/category",
+            templateUrl: "adminviews/views/category/list.html",
+            data: {pageTitle: 'Category list'},
+            controller: "GeneralPageController",
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
                     return $ocLazyLoad.load({
@@ -509,22 +511,22 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                             'assets/global/plugins/datatables/all.min.js',
 
                             'assets/global/scripts/datatable.js',
-                            'adminviews/js/scripts/table-ajax.js',
 
-                            'adminviews/js/controllers/DealersController.js'
+                            'adminviews/js/scripts/category-ajax.js',
+
+                            'adminviews/js/controllers/GeneralPageController.js'
+
                         ]
                     });
                 }]
             }
         })
 
-        // User Profile Dashboard
-        .state("dealers.list", {
-            url: "/list",
-            templateUrl: "adminviews/views/dealers/list.html",
-            data: {pageTitle: 'Dealers List'}
-        })
-
+        .state("categoryAdd", {
+            url: "/category/add",
+            templateUrl: "adminviews/views/category/add.html",
+            data: {pageTitle: 'Category Add'}
+        })  
 
         // User Profile
         .state("profile", {
@@ -558,7 +560,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 }]
             }
         })
-
+        
         // User Profile Dashboard
         .state("profile.dashboard", {
             url: "/dashboard",
