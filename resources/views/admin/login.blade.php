@@ -18,7 +18,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- BEGIN HEAD -->
 <head>
 <meta charset="utf-8"/>
-<title>Metronic | Login Options - Login Form 1</title>
+<title>Alcohol Delivery Login Page</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
@@ -52,7 +52,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- END SIDEBAR TOGGLER BUTTON -->
 <!-- BEGIN LOGO -->
 <div class="logo">
-	<a href="index.html">
+	<a href="#">
 	<img src="{{ asset('assets/admin/layout/img/logo-big.png') }}" alt=""/>
 	</a>
 </div>
@@ -128,9 +128,9 @@ License: You must have a valid license purchased only from themeforest(the above
 	<!-- BEGIN REGISTRATION FORM -->
 	<!-- END REGISTRATION FORM -->
 </div>
-<div class="copyright">
+<!-- <div class="copyright">
 	 2014 © Metronic. Admin Dashboard Template.
-</div>
+</div> -->
 <!-- END LOGIN -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->

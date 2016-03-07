@@ -22,4 +22,6 @@ class AdminAuthController extends Controller
         $this->user = "admin";
         $this->middleware('admin.guest', ['except' => 'getLogout']);
     }
+
+    
 }

@@ -17,7 +17,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--<![endif]-->
 <!-- BEGIN HEAD -->
 <head>
-<title data-ng-bind="'Metronic AngularJS | ' + $state.current.data.pageTitle"></title>
+<title data-ng-bind="'Admin Alcohol Delivery | ' + $state.current.data.pageTitle"></title>
 
 <meta charset="utf-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -32,6 +32,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <link href="{{ asset('assets/global/plugins/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css"/>
 <link href="{{ asset('assets/global/plugins/uniform/css/uniform.default.css') }}" rel="stylesheet" type="text/css"/>
 <link href="{{ asset('assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css') }}" rel="stylesheet" type="text/css"/>
+<meta name="_token" content="{{ csrf_token() }}">
 <!-- END GLOBAL MANDATORY STYLES -->
 
 <!-- BEGIN DYMANICLY LOADED CSS FILES(all plugin and page related styles must be loaded between GLOBAL and THEME css files ) -->
@@ -135,6 +136,7 @@ License: You must have a valid license purchased only from themeforest(the above
 	<!-- BEGIN CORE ANGULARJS PLUGINS -->
 	<script src="{{ asset('assets/global/plugins/angularjs/angular.min.js') }}" type="text/javascript"></script>	
 	<script src="{{ asset('assets/global/plugins/angularjs/angular-sanitize.min.js') }}" type="text/javascript"></script>
+	<script src="{{ asset('assets/global/plugins/angularjs/angular-cookies.min.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/global/plugins/angularjs/angular-touch.min.js') }}" type="text/javascript"></script>	
 	<script src="{{ asset('assets/global/plugins/angularjs/plugins/angular-ui-router.min.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/global/plugins/angularjs/plugins/ocLazyLoad.min.js') }}" type="text/javascript"></script>

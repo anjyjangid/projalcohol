@@ -5,3 +5,4 @@ Homestead.yaml
 storage/database.sqlite
 .idea
 public/bower_components/
+public/assets

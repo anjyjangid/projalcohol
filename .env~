@@ -2,7 +2,7 @@ APP_ENV=local
 APP_DEBUG=false
 APP_KEY=mODn3QohLQPiaCHEdtDvMKHtXsaK7wgp
 
-DB_HOST=localhost
+DB_HOST=192.168.1.174
 DB_DATABASE=alcoholdelivery
 DB_USERNAME=
 DB_PASSWORD=

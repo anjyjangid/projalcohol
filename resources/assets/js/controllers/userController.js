@@ -1,4 +1,5 @@
 myApp.controller('userController', ['$scope', '$location', 'userModel', function($scope, $location, userModel) {
+    
     angular.extend($scope, {
         login: {
             username: 'abhay@cgt.co.in',
@@ -6,9 +7,8 @@ myApp.controller('userController', ['$scope', '$location', 'userModel', function
         }        
     });
 
-
-
     angular.extend($scope, {
+
         doLogin: function(loginForm) {
             var data = {
                 email: $scope.login.username,
