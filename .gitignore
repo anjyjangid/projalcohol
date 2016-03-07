@@ -1,7 +1,7 @@
-/vendor
-/node_modules
+vendor/
+node_modules/
 Homestead.yaml
 .env
 storage/database.sqlite
 .idea
-/public/bower_components
+public/bower_components/
