@@ -478,7 +478,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 }]
             }
         })
-<<<<<<< HEAD
 
         .state('dealers', {
             url: "/dealers",
