@@ -16,9 +16,11 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
     $rootScope.settings.layout.pageSidebarClosed = false;  
 
 	/*$scope.user = {
-        email :'admin@cgt.co.in'
+        old_password :'',
+        password :'',
+        password_confirm :'',
 	};*/
-
+    
     angular.extend($scope, {
         
         submitAccount: function(accountForm) {
@@ -30,7 +32,37 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
             };
 
             userModel.submitAccount(data).then(function() {
-                alert("update successfully");
+                Metronic.alert({
+                    type: 'success',
+                    icon: 'success',
+                    message: 'Profile updated successfully',
+                    container: '#tab_1_1',
+                    place: 'prepend'
+                });
+                //alert("update successfully");
+            });
+        },
+
+        changePassword: function(accountForm) {
+                        
+            var data = {
+                old_password: $scope.user.old_password,
+                password: $scope.user.password,
+                password_confirm: $scope.user.password_confirm
+            };
+
+            userModel.changePassword(data).then(function() {
+                Metronic.alert({
+                    type: 'success',
+                    icon: 'success',
+                    message: 'Password updated successfully',
+                    container: '#tab_1_3',
+                    place: 'prepend'
+                });
+                $scope.user.old_password = '';
+                $scope.user.password = '';
+                $scope.user.password_confirm = '';
+                //alert("update successfully");
             });
         },
 

@@ -21,12 +21,16 @@ MetronicApp.factory('userModel', ['$http', '$cookies', function($http, $cookies)
                 last_name: postedData.last_name,
                 email: postedData.email,
             }
-        }).success(function(response) {
-            console.log(response);
-            $cookies.put('auth', JSON.stringify(response));
-        }).error(function(data, status, headers) {
-            console.log(data, status, headers);
-            alert(data);
+        }).success(function(response){            
+            
+        }).error(function(data, status, headers) {            
+            Metronic.alert({
+                type: 'danger',
+                icon: 'warning',
+                message: data,
+                container: '#tab_1_1',
+                place: 'prepend'
+            });            
         });
     };
     
@@ -67,6 +71,32 @@ MetronicApp.factory('userModel', ['$http', '$cookies', function($http, $cookies)
     userModel.getUserDetails = function() {
         return $http.get('admin/profile');
     };  
+
+    userModel.changePassword = function(postedData) {
+
+        return $http({
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            url: 'admin/profile/updatepassword',
+            method: "POST",
+            data: {
+                old_password: postedData.old_password,
+                password: postedData.password,
+                password_confirm: postedData.password_confirm,
+            }
+        }).success(function(response) {            
+            //$cookies.put('auth', JSON.stringify(response));
+        }).error(function(data, status, headers) {            
+            Metronic.alert({
+                type: 'danger',
+                icon: 'warning',
+                message: data,
+                container: '#tab_1_3',
+                place: 'prepend'
+            });            
+        });
+    };
 
     return userModel;
 }])

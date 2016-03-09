@@ -45,6 +45,7 @@ Route::controller('/password', 'Auth\PasswordController');
 
 Route::get('/admin/profile', ['uses' => 'Admin\AdminController@profile']);
 Route::post('/admin/profile/update', ['uses' => 'Admin\AdminController@update']);
+Route::post('/admin/profile/updatepassword', ['uses' => 'Admin\AdminController@updatepassword']);
 Route::get('/admin', ['uses' => 'Admin\AdminController@index']);
 Route::get('/admin/dashboard', ['uses' => 'Admin\AdminController@dashboard']);
 

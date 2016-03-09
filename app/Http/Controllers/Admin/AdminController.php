@@ -136,7 +136,7 @@ class AdminController extends Controller
 
     public function profile()
     {
-        return response(\Auth::user('admin'), 201);
+        return response(\Auth::user('admin'), 200);
     }
 
     /**
@@ -165,6 +165,30 @@ class AdminController extends Controller
 		$admin->last_name = $request->input('last_name');
 		$admin->email = $request->input('email');
 		$admin->save();
-        return response($admin, 201);
+        return response($admin, 200);
+    }
+
+    public function updatepassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'required|min:6|max:8',
+            'password' => 'required|min:6|max:8',
+            'password_confirm' => 'required|same:password',
+        ]);
+
+        if ($validator->fails()) {
+            return response($validator->errors()->all(), 422);
+        }
+
+        $admin = Admin::where('_id', Auth::user('admin')->id)->first();
+        
+        if (\Hash::check($request->input('old_password'), $admin->password)) {
+            $admin->password = \Hash::make($request->input('password'));
+            $admin->save();
+            return response($admin, 200);
+        }else{
+            return response(['Incorrect current password.'], 422);
+        }       
+        
     }
 }
