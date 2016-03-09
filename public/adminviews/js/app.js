@@ -449,6 +449,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 }]
             }
         })
+
         .state('customer', {
             url: "/customer",
             templateUrl: "adminviews/views/customer/list.html",
@@ -477,6 +478,46 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 }]
             }
         })
+<<<<<<< HEAD
+
+        .state('dealers', {
+            url: "/dealers",
+            templateUrl: "adminviews/views/dealers/dealers.html",
+            data: {pageTitle: 'Dealers'},
+            controller: "DealersController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'assets/global/plugins/select2/select2.css',                             
+                            'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
+                            'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
+
+                            'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+                            'assets/global/plugins/select2/select2.min.js',
+                            'assets/global/plugins/datatables/all.min.js',
+
+                            'assets/global/scripts/datatable.js',
+                            'adminviews/js/scripts/table-ajax.js',
+
+                            'adminviews/js/controllers/DealersController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        // User Profile Dashboard
+        .state("dealers.list", {
+            url: "/list",
+            templateUrl: "adminviews/views/dealers/list.html",
+            data: {pageTitle: 'Dealers List'}
+        })
+
+    
+
         .state('category', {
             url: "/category",
             templateUrl: "adminviews/views/category/list.html",
@@ -497,19 +538,23 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                             'assets/global/plugins/datatables/all.min.js',
 
                             'assets/global/scripts/datatable.js',
+
                             'adminviews/js/scripts/category-ajax.js',
 
                             'adminviews/js/controllers/GeneralPageController.js'
+
                         ]
                     });
                 }]
             }
         })
+
         .state("categoryAdd", {
             url: "/category/add",
             templateUrl: "adminviews/views/category/add.html",
             data: {pageTitle: 'Category Add'}
         })  
+
         // User Profile
         .state("profile", {
             url: "/profile",

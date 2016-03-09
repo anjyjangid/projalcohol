@@ -8,7 +8,7 @@ use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\User as User;
 
-class AdminController extends Controller
+class DealerController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -26,7 +26,7 @@ class AdminController extends Controller
      */
     public function index()
     {
-        return view('backend');
+        
     }
 
     /**
@@ -36,7 +36,6 @@ class AdminController extends Controller
      */
     public function create()
     {
-        return 'CREATE';
         //
     }
 
@@ -94,32 +93,24 @@ class AdminController extends Controller
     public function destroy($id)
     {
         //
-    }   
-
-    public function dashboard(){        
-        return view('admin/dashboard');
     }
 
-    public function customers()
+    public function getdealers()
     {
 
         $users = User::all()->toArray();
+        
+        $records = [
+            "iTotalRecords" => User::count(),
+            "iTotalDisplayRecords" => User::count(),
+        ];
+
         $status_list = array(
             array("success" => "Pending"),
             array("info" => "Closed"),
             array("danger" => "On Hold"),
             array("warning" => "Fraud")
           );
-<<<<<<< HEAD
-
-        $records = [
-            "iTotalRecords" => User::count(),
-            "iTotalDisplayRecords" => User::count(),
-        ];
-        
-=======
-        $sEcho = intval($_REQUEST['draw']);
->>>>>>> db4689c0a1a9029ffdee35d1ef6c3ba24e15be7a
         foreach($users as $key=>$value) {
             $status = $status_list[rand(0, 2)];
             $records["data"][] = array(
@@ -134,14 +125,10 @@ class AdminController extends Controller
               '<a href="javascript:;" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>',
             );
         }
-        $records["draw"] = $sEcho;
-        $records["recordsTotal"] = count($users);
-        $records["recordsFiltered"] = count($users);
+
+
+
        return  json_encode($records);
     }
-
-    public function home()
-    {
-        return view('backend');
-    }
+    
 }
