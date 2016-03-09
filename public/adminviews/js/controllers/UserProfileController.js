@@ -15,13 +15,7 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
     $rootScope.settings.layout.pageBodySolid = true;
     $rootScope.settings.layout.pageSidebarClosed = false;  
 
-	/*$scope.user = {
-        old_password :'',
-        password :'',
-        password_confirm :'',
-	};*/
-
-    angular.extend($scope, {
+	angular.extend($scope, {
         
         submitAccount: function(accountForm) {
         	        	
@@ -39,7 +33,6 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
                     container: '#tab_1_1',
                     place: 'prepend'
                 });
-                //alert("update successfully");
             });
         },
 
@@ -62,7 +55,6 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
                 $scope.user.current_password = '';
                 $scope.user.new_password = '';
                 $scope.user.retype_password = '';
-                //alert("update successfully");
             });
         },
 

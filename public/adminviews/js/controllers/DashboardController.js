@@ -5,6 +5,7 @@ MetronicApp.controller('DashboardController', function($rootScope, $scope, $http
         // initialize core components
         Metronic.initAjax();
         Layout.setSidebarMenuActiveLink('set', $('#sidebar_menu_link_dashboard'));
+		
     });
 
     // set sidebar closed and body solid layout mode
