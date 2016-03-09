@@ -171,9 +171,9 @@ class AdminController extends Controller
     public function updatepassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'old_password' => 'required|min:6|max:8',
-            'password' => 'required|min:6|max:8',
-            'password_confirm' => 'required|same:password',
+            'current_password' => 'required|min:6|max:8',
+            'new_password' => 'required|min:6|max:8|different:current_password',
+            'retype_password' => 'required|same:new_password',
         ]);
 
         if ($validator->fails()) {
@@ -182,8 +182,8 @@ class AdminController extends Controller
 
         $admin = Admin::where('_id', Auth::user('admin')->id)->first();
         
-        if (\Hash::check($request->input('old_password'), $admin->password)) {
-            $admin->password = \Hash::make($request->input('password'));
+        if (\Hash::check($request->input('current_password'), $admin->password)) {
+            $admin->password = \Hash::make($request->input('new_password'));
             $admin->save();
             return response($admin, 200);
         }else{

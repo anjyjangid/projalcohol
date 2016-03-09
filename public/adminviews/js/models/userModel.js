@@ -81,9 +81,9 @@ MetronicApp.factory('userModel', ['$http', '$cookies', function($http, $cookies)
             url: 'admin/profile/updatepassword',
             method: "POST",
             data: {
-                old_password: postedData.old_password,
-                password: postedData.password,
-                password_confirm: postedData.password_confirm,
+                current_password: postedData.current_password,
+                new_password: postedData.new_password,
+                retype_password: postedData.retype_password,
             }
         }).success(function(response) {            
             //$cookies.put('auth', JSON.stringify(response));

@@ -20,7 +20,7 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
         password :'',
         password_confirm :'',
 	};*/
-    
+
     angular.extend($scope, {
         
         submitAccount: function(accountForm) {
@@ -46,9 +46,9 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
         changePassword: function(accountForm) {
                         
             var data = {
-                old_password: $scope.user.old_password,
-                password: $scope.user.password,
-                password_confirm: $scope.user.password_confirm
+                current_password: $scope.user.current_password,
+                new_password: $scope.user.new_password,
+                retype_password: $scope.user.retype_password
             };
 
             userModel.changePassword(data).then(function() {
@@ -59,9 +59,9 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
                     container: '#tab_1_3',
                     place: 'prepend'
                 });
-                $scope.user.old_password = '';
-                $scope.user.password = '';
-                $scope.user.password_confirm = '';
+                $scope.user.current_password = '';
+                $scope.user.new_password = '';
+                $scope.user.retype_password = '';
                 //alert("update successfully");
             });
         },
