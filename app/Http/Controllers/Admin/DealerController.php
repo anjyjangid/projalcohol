@@ -3,15 +3,12 @@
 namespace AlcoholDelivery\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+
 use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\User as User;
-use Illuminate\Support\Facades\Validator;
-use AlcoholDelivery\Admin;
 
-class AdminController extends Controller
+class DealerController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -29,7 +26,7 @@ class AdminController extends Controller
      */
     public function index()
     {
-        return view('backend');
+        
     }
 
     /**
@@ -39,7 +36,6 @@ class AdminController extends Controller
      */
     public function create()
     {
-        return 'CREATE';
         //
     }
 
@@ -76,7 +72,18 @@ class AdminController extends Controller
         //
     }
 
-    
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -86,29 +93,24 @@ class AdminController extends Controller
     public function destroy($id)
     {
         //
-    }   
-
-    public function dashboard(){        
-        return view('admin/dashboard');
     }
 
-    public function customers()
+    public function getdealers()
     {
 
         $users = User::all()->toArray();
+        
+        $records = [
+            "iTotalRecords" => User::count(),
+            "iTotalDisplayRecords" => User::count(),
+        ];
+
         $status_list = array(
             array("success" => "Pending"),
             array("info" => "Closed"),
             array("danger" => "On Hold"),
             array("warning" => "Fraud")
           );
-
-        $records = [
-            "iTotalRecords" => User::count(),
-            "iTotalDisplayRecords" => User::count(),
-        ];
-        
-        $sEcho = intval($_REQUEST['draw']);
         foreach($users as $key=>$value) {
             $status = $status_list[rand(0, 2)];
             $records["data"][] = array(
@@ -123,48 +125,10 @@ class AdminController extends Controller
               '<a href="javascript:;" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>',
             );
         }
-        $records["draw"] = $sEcho;
-        $records["recordsTotal"] = count($users);
-        $records["recordsFiltered"] = count($users);
+
+
+
        return  json_encode($records);
     }
-
-    public function home()
-    {
-        return view('backend');
-    }
-
-    public function profile()
-    {
-        return response(\Auth::user('admin'), 201);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-
-    public function update(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required|min:3',
-            'last_name' => 'required|min:3',
-            'email' => 'required|email|max:255',
-        ]);
-
-        if ($validator->fails()) {
-            return response($validator->errors()->all(), 422);
-        }
-
-        $admin = Admin::where('_id', Auth::user('admin')->id)->first();
-        
-		$admin->first_name = $request->input('first_name');
-		$admin->last_name = $request->input('last_name');
-		$admin->email = $request->input('email');
-		$admin->save();
-        return response($admin, 201);
-    }
+    
 }

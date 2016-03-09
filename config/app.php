@@ -141,6 +141,9 @@ return [
         /*MONGO EXTENSION*/
         Jenssegers\Mongodb\MongodbServiceProvider::class,
 
+        /*HTML AND FORM EXTENSION*/
+        'Collective\Html\HtmlServiceProvider',
+
         /*
          * Application Service Providers...
          */
@@ -200,7 +203,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Image' => 'Intervention\Image\Facades\Image',
-        'Moloquent'       => 'Jenssegers\Mongodb\Eloquent\Model',
+        'Moloquent' => 'Jenssegers\Mongodb\Eloquent\Model',
+        'Form' => 'Collective\Html\FormFacade',
+        'Html' => 'Collective\Html\HtmlFacade',
     ],
 
 ];
