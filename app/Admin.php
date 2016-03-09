@@ -2,6 +2,9 @@
 
 namespace AlcoholDelivery;
 
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -33,7 +36,7 @@ class Admin extends Eloquent implements AuthenticatableContract,
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'password'];
 
     /**
      * The attributes excluded from the model's JSON form.

@@ -18,7 +18,7 @@ class AdminAuthController extends Controller
      * @return void
      */
 
-    public $redirectAfterLogout = "/admin/login";
+    public $redirectAfterLogout = '/admin';
 
     public function __construct()
     {
