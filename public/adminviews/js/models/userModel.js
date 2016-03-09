@@ -14,7 +14,7 @@ MetronicApp.factory('userModel', ['$http', '$cookies', function($http, $cookies)
             headers: {
                 'Content-Type': 'application/json'
             },
-            url: '/admin/profile/update',
+            url: 'admin/profile/update',
             method: "POST",
             data: {
                 first_name: postedData.first_name,
@@ -62,7 +62,11 @@ MetronicApp.factory('userModel', ['$http', '$cookies', function($http, $cookies)
      */
     userModel.doUserLogout = function() {
         $cookies.remove('auth');
-    };    
+    };  
+
+    userModel.getUserDetails = function() {
+        return $http.get('admin/profile');
+    };  
 
     return userModel;
 }])

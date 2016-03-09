@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use AlcoholDelivery\User as User;
 
 class profileController extends Controller
 {
@@ -108,5 +109,10 @@ class profileController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function index()
+    {
+        return response(\Auth::user('admin'), 201);
     }
 }

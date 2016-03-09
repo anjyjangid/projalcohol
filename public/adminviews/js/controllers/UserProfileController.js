@@ -1,19 +1,23 @@
 'use strict';
 
 MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeout','userModel', function($rootScope, $scope, $timeout,userModel) {
+    
 
-    $scope.$on('$viewContentLoaded', function() {   
+    $scope.$on('$viewContentLoaded', function() {
         Metronic.initAjax(); // initialize core components
-        Layout.setSidebarMenuActiveLink('set', $('#sidebar_menu_link_profile')); // set profile link active in sidebar menu 
+        Layout.setSidebarMenuActiveLink('set', null);  
+        userModel.getUserDetails().success(function(response) {
+            $scope.user = response;
+        });        
     });
 
     // set sidebar closed and body solid layout mode
     $rootScope.settings.layout.pageBodySolid = true;
     $rootScope.settings.layout.pageSidebarClosed = false;  
 
-	$scope.user = {
-
-	};
+	/*$scope.user = {
+        email :'admin@cgt.co.in'
+	};*/
 
     angular.extend($scope, {
         
@@ -29,9 +33,6 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
                 alert("update successfully");
             });
         },
-        
-
-        
 
     });
         

@@ -37,15 +37,17 @@ Route::controller('/password', 'Auth\PasswordController');
 //ADMIN ROUTES
 //Route::resource('admin', 'Admin\AdminController');
 
+Route::get('/admin/profile', ['uses' => 'Admin\AdminController@profile']);
+Route::post('/admin/profile/update', ['uses' => 'Admin\AdminController@update']);
 Route::get('/admin', ['uses' => 'Admin\AdminController@index']);
 Route::get('/admin/dashboard', ['uses' => 'Admin\AdminController@dashboard']);
-Route::controller('/admin', 'Auth\AdminAuthController');
 Route::controller('/admin/password', 'Auth\AdminPasswordController');
+Route::controller('/admin', 'Auth\AdminAuthController');
 
-
-Route::get('/admin/logout', 'Auth\AdminAuthController@logout');
 	
 Route::post('/auth', 'UserController@checkAuth');
 
-Route::post('/profile/account', 'ProfileController@account');
-Route::post('/profile/update', 'ProfileController@update');
+/*Route::post('/profile/account', 'ProfileController@account');
+Route::post('/profile/update', 'ProfileController@update');*/
+
+//Route::resource('admin/profile', 'Admin\profileController');

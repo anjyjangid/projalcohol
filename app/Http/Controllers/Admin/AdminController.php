@@ -3,10 +3,13 @@
 namespace AlcoholDelivery\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\User as User;
+use Illuminate\Support\Facades\Validator;
+use AlcoholDelivery\Admin;
 
 class AdminController extends Controller
 {
@@ -73,18 +76,7 @@ class AdminController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
+    
     /**
      * Remove the specified resource from storage.
      *
@@ -134,5 +126,39 @@ class AdminController extends Controller
     public function home()
     {
         return view('backend');
+    }
+
+    public function profile()
+    {
+        return response(\Auth::user('admin'), 201);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+
+    public function update(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|min:3',
+            'last_name' => 'required|min:3',
+            'email' => 'required|email|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response($validator->errors()->all(), 422);
+        }
+
+        $admin = Admin::where('_id', Auth::user('admin')->id)->first();
+        
+		$admin->first_name = $request->input('first_name');
+		$admin->last_name = $request->input('last_name');
+		$admin->email = $request->input('email');
+		$admin->save();
+        return response($admin, 201);
     }
 }

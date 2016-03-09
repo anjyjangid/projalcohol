@@ -17,6 +17,9 @@ class AdminAuthController extends Controller
      *
      * @return void
      */
+
+    public $redirectAfterLogout = '/admin';
+
     public function __construct()
     {
         $this->user = "admin";

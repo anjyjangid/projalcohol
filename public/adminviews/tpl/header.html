@@ -3,7 +3,8 @@
 	<!-- BEGIN LOGO -->
 	<div class="page-logo">
 		<a href="#/">  
-		<img src="../../../assets/admin/layout/img/logo-big.png" style="margin:0px 35px;" height="45" alt="logo" class="logo-default"/>
+
+		<img src="assets/admin/layout/img/logo-big.png" style="margin:0px 35px;" height="45" alt="logo" class="logo-default"/>
 		</a>
 		<div class="menu-toggler sidebar-toggler">
 			<!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
@@ -30,7 +31,7 @@
 		<ul class="nav navbar-nav pull-right">
 			<!-- BEGIN NOTIFICATION DROPDOWN -->
 			<!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
-			<li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+			<li class="dropdown dropdown-extended dropdown-notification hide" id="header_notification_bar">
 				<a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
 				<i class="icon-bell"></i>
 				<span class="badge badge-default">
@@ -140,7 +141,7 @@
 			<!-- END NOTIFICATION DROPDOWN -->
 			<!-- BEGIN INBOX DROPDOWN -->
 			<!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
-			<li class="dropdown dropdown-extended dropdown-inbox" id="header_inbox_bar">
+			<li class="dropdown dropdown-extended dropdown-inbox hide" id="header_inbox_bar">
 				<a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
 				<i class="icon-envelope-open"></i>
 				<span class="badge badge-default">
@@ -230,7 +231,7 @@
 			<!-- END INBOX DROPDOWN -->
 			<!-- BEGIN TODO DROPDOWN -->
 			<!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
-			<li class="dropdown dropdown-extended dropdown-tasks" id="header_task_bar">
+			<li class="dropdown dropdown-extended dropdown-tasks hide" id="header_task_bar">
 				<a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
 				<i class="icon-calendar"></i>
 				<span class="badge badge-default">
@@ -365,10 +366,10 @@
 				</a>
 				<ul class="dropdown-menu dropdown-menu-default">
 						<li>
-							<a href="#/profile/dashboard">
+							<a href="#/account">
 							<i class="icon-user"></i> My Profile </a>
 						</li>
-						<li>
+						<!-- <li>
 							<a href="#">
 							<i class="icon-calendar"></i> My Calendar </a>
 						</li>
@@ -389,7 +390,7 @@
 						<li>
 							<a href="#">
 							<i class="icon-lock"></i> Lock Screen </a>
-						</li>
+						</li> -->
 						<li>
 							<a href="admin/logout" >
 							<i class="icon-key"></i> Log Out </a>
@@ -399,7 +400,7 @@
 			<!-- END USER LOGIN DROPDOWN -->
 			<!-- BEGIN QUICK SIDEBAR TOGGLER -->
 			<!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
-			<li class="dropdown dropdown-quick-sidebar-toggler">
+			<li class="dropdown dropdown-quick-sidebar-toggler hide">
 				<a href="javascript:;" class="dropdown-toggle">
 				<i class="icon-logout"></i>
 				</a>
