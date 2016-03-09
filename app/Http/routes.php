@@ -32,6 +32,7 @@ post('delete-single-image', 'GalleryController@deleteSingleImage');*/
 Route::get('/', ['uses' => 'UserController@index']);
 Route::controller('/auth', 'Auth\AuthController');
 Route::post('/admin/getcustomers', ['uses' => 'Admin\AdminController@customers']);
+
 Route::controller('/password', 'Auth\PasswordController');
  
 //ADMIN ROUTES
@@ -39,13 +40,24 @@ Route::controller('/password', 'Auth\PasswordController');
 
 Route::get('/admin', ['uses' => 'Admin\AdminController@index']);
 Route::get('/admin/dashboard', ['uses' => 'Admin\AdminController@dashboard']);
-Route::controller('/admin', 'Auth\AdminAuthController');
+
+
 Route::controller('/admin/password', 'Auth\AdminPasswordController');
 
+Route::controller('/admin', 'Auth\AdminAuthController');
 
-Route::get('/admin/logout', 'Auth\AdminAuthController@logout');
-	
+
+
+
+
 Route::post('/auth', 'UserController@checkAuth');
 
 Route::post('/profile/account', 'ProfileController@account');
 Route::post('/profile/update', 'ProfileController@update');
+
+
+Route::group(['prefix' => 'admin'], function () {
+
+    Route::get('categories', function (){});
+
+});

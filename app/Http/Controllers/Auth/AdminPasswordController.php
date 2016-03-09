@@ -15,7 +15,7 @@ class AdminPasswordController extends Controller
      * @return void
      */
     public function __construct()
-    {
+    {        
         $this->user = "admin";
         $this->middleware('admin.guest');
     }

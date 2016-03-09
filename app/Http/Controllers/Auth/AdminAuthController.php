@@ -17,11 +17,15 @@ class AdminAuthController extends Controller
      *
      * @return void
      */
+
+    public $redirectAfterLogout = "/admin/login";
+
     public function __construct()
     {
         $this->user = "admin";
         $this->middleware('admin.guest', ['except' => 'getLogout']);
     }
 
-    
+
+
 }
