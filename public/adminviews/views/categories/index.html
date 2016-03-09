@@ -1,9 +1,31 @@
 
 <!-- BEGIN PAGE CONTENT-->
-<div class="row" ng-controller="DealersController">
+<div class="row" ng-controller="CategoryController">
 	<div class="col-md-12">		
+		<!-- BEGIN PAGE HEADER--> 
+		<h3 class="page-title">
+			Categories list <small>Categories List</small>
+		</h3>
+		<div class="page-bar">
+			<ul class="page-breadcrumb">
+				<li>
+					<i class="fa fa-home"></i>
+					<a href="#/dashboard.html">Home</a>
+					<i class="fa fa-angle-right"></i>
+				</li>
+				<li>
+					<a href="#/datatables/advanced.html">Categories</a>
+					<i class="fa fa-angle-right"></i>
+				</li>
+				<li>
+					<a href="#/datatables/advanced.html">List</a>
+				</li>
+			</ul>
+			
+		</div>
+		<!-- END PAGE HEADER-->		
 		<!-- BEGIN PROFILE CONTENT -->
-		<div ui-view class="dealers-content fade-in-up"> 
+		<div ui-view class="category-content fade-in-up"> 
 		</div>
 		<!-- END PROFILE CONTENT -->
 	</div>

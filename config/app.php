@@ -144,14 +144,15 @@ return [
         /*HTML AND FORM EXTENSION*/
         'Collective\Html\HtmlServiceProvider',
 
+
         /*
          * Application Service Providers...
          */
         AlcoholDelivery\Providers\AppServiceProvider::class,
         AlcoholDelivery\Providers\AuthServiceProvider::class,
         AlcoholDelivery\Providers\EventServiceProvider::class,
-        AlcoholDelivery\Providers\RouteServiceProvider::class,
-
+        AlcoholDelivery\Providers\RouteServiceProvider::class,        
+        
         'Intervention\Image\ImageServiceProvider',
 
     ],
