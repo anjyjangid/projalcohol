@@ -478,7 +478,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 }]
             }
         })
-        .state("categoryAdd", {
+        .state("category.add", {
             url: "/category/add",
             templateUrl: "adminviews/views/category/add.html",
             data: {pageTitle: 'Category Add'}
