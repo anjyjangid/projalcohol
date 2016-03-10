@@ -3,7 +3,7 @@
 namespace AlcoholDelivery\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-
+use File;
 use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
 
@@ -99,6 +99,13 @@ class CategoryController extends Controller
 				$path = public_path('assets/resources/category/thumb');
 				
 				Image::make($image)->save($path.'/'.$thumbNewName);
+                
+                if (!File::exists($path.'/200')){
+                    File::MakeDirectory($path.'/200',0777, true);
+                }
+                if (!File::exists($path.'/400')){
+                    File::MakeDirectory($path.'/400/',0777, true);
+                }
 
 				Image::make($image)->resize(200, null, function ($constraint) {
 		            $constraint->aspectRatio();
@@ -123,6 +130,10 @@ class CategoryController extends Controller
 				$path = public_path('assets/resources/category/lthumb');
 				
 				Image::make($image)->save($path.'/'.$lthumbNewName);
+
+                if (!File::exists($path.'/400')){
+                    File::MakeDirectory($path.'/400',0777, true);
+                }
 
 		        Image::make($image)->resize(400, null, function ($constraint) {
 		            $constraint->aspectRatio();

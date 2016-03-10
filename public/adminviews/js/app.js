@@ -112,7 +112,7 @@ MetronicApp.service('fileUpload', ['$http','$location', function ($http,$locatio
                 type: 'danger',
                 icon: 'warning',
                 message: data,
-                container: '#tab_1_3',
+                container: '.portlet-body',
                 place: 'prepend'
             });
         });
