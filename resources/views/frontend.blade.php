@@ -16,6 +16,7 @@
 <body>
     <div class="container" ng-controller="globalController">                
         <?php 
+        
         /*    var_dump(Session::all());
             var_dump(Auth::guest('user'));
 */

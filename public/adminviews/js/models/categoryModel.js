@@ -1,5 +1,6 @@
-MetronicApp.factory('userModel', ['$http', '$cookies', function($http, $cookies) {
-    var userModel = {};
+MetronicApp.factory('categoryModel', ['$http', '$cookies', function($http, $cookies) {
+
+    var categoryModel = {};
 
     /**
      * Check if the credentials are correct from server
@@ -8,7 +9,7 @@ MetronicApp.factory('userModel', ['$http', '$cookies', function($http, $cookies)
      * @param  {array} loginData
      * @return {promise}
      */
-    userModel.submitAccount = function(postedData) {
+    categoryModel.submitAccount = function(postedData) {
 
         return $http({
             headers: {
@@ -34,45 +35,33 @@ MetronicApp.factory('userModel', ['$http', '$cookies', function($http, $cookies)
         });
     };
     
-    /**
-     * Return whether the user is logged in or not
-     * based on the cookie set during the login
-     * 
-     * @return {boolean}
-     */
-    userModel.getAuthStatus = function() {
-        var status = $cookies.get('auth');
-        if (status) {
-            return true;
-        } else {
-            return false;
-        }
+    categoryModel.getParentCategories = function($level){
+
+        return $http({
+
+            headers: {
+                'Content-Type': 'application/json'
+            },            
+            url: 'admin/category/getparentcategories',
+            method: "GET",
+            data: {
+                level: $level,                
+            }
+        }).success(function(response){            
+            
+        }).error(function(data, status, headers) {            
+            Metronic.alert({
+                type: 'danger',
+                icon: 'warning',
+                message: data,
+                container: '#tab_1_1',
+                place: 'prepend'
+            });            
+        });
+
     };
-
-    /**
-     * Get the user object converted from string to JSON
-     * @return {user object}
-     */
-    userModel.getUserObject = function() {
-        var userObj = angular.fromJson($cookies.get('auth'));
-        return userObj;
-    }
-
-    /**
-     * Close the session of the current user
-     * and delete the cookie set for him
-     *
-     * @return boolean
-     */
-    userModel.doUserLogout = function() {
-        $cookies.remove('auth');
-    };  
-
-    userModel.getUserDetails = function() {
-        return $http.get('admin/profile');
-    };  
-
-    userModel.changePassword = function(postedData) {
+    
+    categoryModel.update = function(postedData) {
 
         return $http({
             headers: {
@@ -87,7 +76,7 @@ MetronicApp.factory('userModel', ['$http', '$cookies', function($http, $cookies)
             }
         }).success(function(response) {            
             //$cookies.put('auth', JSON.stringify(response));
-        }).error(function(data, status, headers) {
+        }).error(function(data, status, headers) {            
             Metronic.alert({
                 type: 'danger',
                 icon: 'warning',
@@ -98,5 +87,5 @@ MetronicApp.factory('userModel', ['$http', '$cookies', function($http, $cookies)
         });
     };
 
-    return userModel;
+    return categoryModel;
 }])

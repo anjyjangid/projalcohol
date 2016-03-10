@@ -86,7 +86,7 @@ MetronicApp.factory('settings', ['$rootScope', function($rootScope) {
 }]);
 
 
-MetronicApp.service('fileUpload', ['$http', function ($http) {
+MetronicApp.service('fileUpload', ['$http','$location', function ($http,$location) {
 
     this.uploadFileToUrl = function(files,fields,uploadUrl){
         var fd = new FormData();
@@ -98,18 +98,23 @@ MetronicApp.service('fileUpload', ['$http', function ($http) {
         for (var field in fields) {
             fd.append(field, fields[field]);
         }
-    
-        
+            
         $http.post(uploadUrl, fd, {
             transformRequest: angular.identity,
             headers: {'Content-Type': undefined}
         })
         .success(function(response) {
             console.log(response);
-            alert("Inserted Successfully Redirection due.");
-        }).error(function(data, status, headers) {
-            console.log(data, status, headers);
-            alert(data);
+            $location.path("categories/list");
+
+        }).error(function(data, status, headers) {            
+            Metronic.alert({
+                type: 'danger',
+                icon: 'warning',
+                message: data,
+                container: '.portlet-body',
+                place: 'prepend'
+            });
         });
 
     }
@@ -609,6 +614,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                                 'assets/global/scripts/datatable.js',
                                 'adminviews/js/scripts/table-ajax.js',
 
+                                'adminviews/js/models/categoryModel.js',                                
                                 'adminviews/js/controllers/CategoryController.js'
                             ]
                         });
