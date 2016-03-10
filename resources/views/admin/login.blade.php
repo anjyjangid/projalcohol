@@ -117,7 +117,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			 Enter your e-mail address below to reset your password.
 		</p>
 		<div class="form-group">
-			<input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email" value="{{ old('email') }}"/>
+			<input class="form-control placeholder-no-fix" type="text" autocomplete="off" required placeholder="Email" name="email" value="{{ old('email') }}"/>
 		</div>
 		<div class="form-actions">
 			<button type="button" id="back-btn" class="btn btn-default">Back</button>

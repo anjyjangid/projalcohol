@@ -2,7 +2,7 @@
  
 namespace AlcoholDelivery\Http\Controllers\Auth;
  
-use AlcoholDelivery\User;
+use AlcoholDelivery\Admin;
 use Validator;
 use AlcoholDelivery\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -17,11 +17,15 @@ class AdminAuthController extends Controller
      *
      * @return void
      */
+
+    public $redirectAfterLogout = '/admin';
+
     public function __construct()
     {
         $this->user = "admin";
         $this->middleware('admin.guest', ['except' => 'getLogout']);
     }
 
-    
+
+
 }

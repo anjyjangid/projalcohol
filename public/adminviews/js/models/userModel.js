@@ -14,19 +14,23 @@ MetronicApp.factory('userModel', ['$http', '$cookies', function($http, $cookies)
             headers: {
                 'Content-Type': 'application/json'
             },
-            url: '/admin/profile/update',
+            url: 'admin/profile/update',
             method: "POST",
             data: {
                 first_name: postedData.first_name,
                 last_name: postedData.last_name,
                 email: postedData.email,
             }
-        }).success(function(response) {
-            console.log(response);
-            $cookies.put('auth', JSON.stringify(response));
-        }).error(function(data, status, headers) {
-            console.log(data, status, headers);
-            alert(data);
+        }).success(function(response){            
+            
+        }).error(function(data, status, headers) {            
+            Metronic.alert({
+                type: 'danger',
+                icon: 'warning',
+                message: data,
+                container: '#tab_1_1',
+                place: 'prepend'
+            });            
         });
     };
     
@@ -62,7 +66,37 @@ MetronicApp.factory('userModel', ['$http', '$cookies', function($http, $cookies)
      */
     userModel.doUserLogout = function() {
         $cookies.remove('auth');
-    };    
+    };  
+
+    userModel.getUserDetails = function() {
+        return $http.get('admin/profile');
+    };  
+
+    userModel.changePassword = function(postedData) {
+
+        return $http({
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            url: 'admin/profile/updatepassword',
+            method: "POST",
+            data: {
+                current_password: postedData.current_password,
+                new_password: postedData.new_password,
+                retype_password: postedData.retype_password,
+            }
+        }).success(function(response) {            
+            //$cookies.put('auth', JSON.stringify(response));
+        }).error(function(data, status, headers) {            
+            Metronic.alert({
+                type: 'danger',
+                icon: 'warning',
+                message: data,
+                container: '#tab_1_3',
+                place: 'prepend'
+            });            
+        });
+    };
 
     return userModel;
 }])

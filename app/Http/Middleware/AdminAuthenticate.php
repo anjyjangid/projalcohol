@@ -24,7 +24,7 @@ class AdminAuthenticate
                 return redirect()->guest('admin/login');
             }
         }
-
+        
         return $next($request);
     }
 }

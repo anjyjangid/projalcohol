@@ -1,28 +1,31 @@
 <?php
 
-namespace AlcoholDelivery\Http\Controllers;
+namespace AlcoholDelivery\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 
 use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-use AlcoholDelivery\User as User;
-
-class profileController extends Controller
+class DashboardController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('admin');        
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function account()
+    public function index()
     {
-        
+        return view('admin/dashboard');
     }
 
     /**
@@ -77,28 +80,8 @@ class profileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //Auth::user()->id
-        return Validator::make($data, [
-            'first_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',            
-        ]);
-
-        if ($validator->fails()) {
-            return response($validator->errors()->all(), 422);
-        }
-
-        $user = Users::create([
-            'first_name' => $request->input('first_name'),
-            'last_name' => $request->input('last_name'),
-            'email' => $request->input('email'),            
-            'user_id' => Auth::user()->id,
-        ]);
-
-        return response($user, 201);
+        //
     }
-
-
 
     /**
      * Remove the specified resource from storage.
@@ -109,10 +92,5 @@ class profileController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function index()
-    {
-        return response(\Auth::user('admin'), 201);
     }
 }

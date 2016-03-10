@@ -85,6 +85,37 @@ MetronicApp.factory('settings', ['$rootScope', function($rootScope) {
     return settings;
 }]);
 
+
+MetronicApp.service('fileUpload', ['$http', function ($http) {
+
+    this.uploadFileToUrl = function(files,fields,uploadUrl){
+        var fd = new FormData();
+                
+        for (var file in files) {
+            fd.append(file, files[file]);
+        }
+
+        for (var field in fields) {
+            fd.append(field, fields[field]);
+        }
+    
+        
+        $http.post(uploadUrl, fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        })
+        .success(function(response) {
+            console.log(response);
+            alert("Inserted Successfully Redirection due.");
+        }).error(function(data, status, headers) {
+            console.log(data, status, headers);
+            alert(data);
+        });
+
+    }
+}]);
+
+
 /* Setup App Main Controller */
 MetronicApp.controller('AppController', ['$scope', '$rootScope', function($scope, $rootScope) {
     $scope.$on('$viewContentLoaded', function() {
@@ -169,6 +200,29 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                         ] 
                     });
                 }]
+            }
+        })
+        
+        // User Account 
+
+        .state("account", {
+            url: "/account",
+            templateUrl: "adminviews/views/profile/account.html",
+            data: {pageTitle: 'User Account'},            
+            controller: "UserProfileController",
+            resolve: {                
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',  
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [                            
+                            'adminviews/js/models/userModel.js',
+                            'adminviews/js/controllers/UserProfileController.js'
+                        ]                    
+                    });
+
+                }]                
             }
         })
 
@@ -368,7 +422,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // Advanced Datatables
         .state('datatablesAdvanced', {
             url: "/datatables/advanced.html",
-            templateUrl: "views/datatables/advanced.html",
+            templateUrl: "adminviews/views/datatables/advanced.html",
             data: {pageTitle: 'Advanced Datatables'},
             controller: "GeneralPageController",
             resolve: {
@@ -396,7 +450,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // Ajax Datetables
         .state('datatablesAjax', {
             url: "/datatables/ajax.html",
-            templateUrl: "views/datatables/ajax.html",
+            templateUrl: "adminviews/views/datatables/ajax.html",
             data: {pageTitle: 'Ajax Datatables'},
             controller: "GeneralPageController",
             resolve: {
@@ -422,6 +476,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 }]
             }
         })
+
         .state('customer', {
             url: "/customer",
             templateUrl: "adminviews/views/customer/list.html",
@@ -450,11 +505,12 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 }]
             }
         })
-        .state('category', {
-            url: "/category",
-            templateUrl: "adminviews/views/category/list.html",
-            data: {pageTitle: 'Category list'},
-            controller: "GeneralPageController",
+
+        .state('dealers', {
+            url: "/dealers",
+            templateUrl: "adminviews/views/dealers/dealers.html",
+            data: {pageTitle: 'Dealers'},
+            controller: "DealersController",
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
                     return $ocLazyLoad.load({
@@ -470,19 +526,113 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                             'assets/global/plugins/datatables/all.min.js',
 
                             'assets/global/scripts/datatable.js',
-                            'adminviews/js/scripts/category-ajax.js',
+                            'adminviews/js/scripts/table-ajax.js',
 
-                            'adminviews/js/controllers/GeneralPageController.js'
+                            'adminviews/js/controllers/DealersController.js'
                         ]
                     });
                 }]
             }
         })
-        .state("category.add", {
-            url: "/category/add",
-            templateUrl: "adminviews/views/category/add.html",
-            data: {pageTitle: 'Category Add'}
-        })  
+
+
+        // User Profile Dashboard
+        .state("dealers.list", {
+            url: "/list",
+            templateUrl: "adminviews/views/dealers/list.html",
+            data: {pageTitle: 'Dealers List'}
+        })
+
+
+    
+
+        // .state('category', {
+        //     url: "/category",
+        //     templateUrl: "adminviews/views/category/list.html",
+        //     data: {pageTitle: 'Category list'},
+        //     controller: "GeneralPageController",
+        //     resolve: {
+        //         deps: ['$ocLazyLoad', function($ocLazyLoad) {
+        //             return $ocLazyLoad.load({
+        //                 name: 'MetronicApp',
+        //                 insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+        //                 files: [
+        //                     'assets/global/plugins/select2/select2.css',                             
+        //                     'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
+        //                     'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
+
+        //                     'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+        //                     'assets/global/plugins/select2/select2.min.js',
+        //                     'assets/global/plugins/datatables/all.min.js',
+
+        //                     'assets/global/scripts/datatable.js',
+
+        //                     'adminviews/js/scripts/category-ajax.js',
+
+        //                     'adminviews/js/controllers/GeneralPageController.js'
+
+        //                 ]
+        //             });
+        //         }]
+        //     }
+        // })
+
+        // .state("categoryAdd", {
+        //     url: "/category/add",
+        //     templateUrl: "adminviews/views/category/add.html",
+        //     data: {pageTitle: 'Category Add'}
+        // })
+
+        // category complete route start{
+
+            .state('categories', {
+                url: "/categories",
+                templateUrl: "adminviews/views/categories/index.html",
+                data: {pageTitle: 'categories'},
+                controller: "CategoryController",
+                resolve: {
+                    deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                        return $ocLazyLoad.load({
+                            name: 'MetronicApp',
+                            insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                            files: [
+                                'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                                'assets/global/plugins/select2/select2.css',                             
+                                'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
+                                'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
+
+                                'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+                                'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+                                'assets/global/plugins/select2/select2.min.js',
+                                'assets/global/plugins/datatables/all.min.js',
+
+                                'assets/global/scripts/datatable.js',
+                                'adminviews/js/scripts/table-ajax.js',
+
+                                'adminviews/js/controllers/CategoryController.js'
+                            ]
+                        });
+                    }]
+                }
+            })
+
+            .state("categories.list", {
+                url: "/list",
+                templateUrl: "adminviews/views/categories/list.html",
+                data: {pageTitle: 'Category List'}
+            })
+
+            .state("categories.add", {
+                url: "/add",
+                templateUrl: "adminviews/views/categories/add.html",
+                data: {pageTitle: 'Add New Category'}
+            })
+
+
+
+        // }category complete route end
+
+
         // User Profile
         .state("profile", {
             url: "/profile",
@@ -529,6 +679,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "adminviews/views/profile/account.html",
             data: {pageTitle: 'User Account'}
         })
+
+        
 
         // User Profile Help
         .state("profile.help", {

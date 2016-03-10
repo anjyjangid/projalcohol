@@ -7,9 +7,10 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
+        "laravelcollective/html": "~5.0",
         "intervention/image": "^2.3",
         "league/flysystem-aws-s3-v3": "^1.0",
-	"jenssegers/mongodb": "~2.3.1",
+        "jenssegers/mongodb": "~2.3.1",
         "sarav/laravel-multiauth": "^0.0.7"
     },
     "require-dev": {
@@ -53,3 +54,4 @@
         "preferred-install": "dist"
     }
 }
+

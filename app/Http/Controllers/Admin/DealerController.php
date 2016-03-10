@@ -1,26 +1,30 @@
 <?php
 
-namespace AlcoholDelivery\Http\Controllers;
+namespace AlcoholDelivery\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 
 use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
-
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use AlcoholDelivery\User as User;
 
-class profileController extends Controller
+class DealerController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('admin');        
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function account()
+    public function index()
     {
         
     }
@@ -77,28 +81,8 @@ class profileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //Auth::user()->id
-        return Validator::make($data, [
-            'first_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',            
-        ]);
-
-        if ($validator->fails()) {
-            return response($validator->errors()->all(), 422);
-        }
-
-        $user = Users::create([
-            'first_name' => $request->input('first_name'),
-            'last_name' => $request->input('last_name'),
-            'email' => $request->input('email'),            
-            'user_id' => Auth::user()->id,
-        ]);
-
-        return response($user, 201);
+        //
     }
-
-
 
     /**
      * Remove the specified resource from storage.
@@ -111,8 +95,40 @@ class profileController extends Controller
         //
     }
 
-    public function index()
+    public function getdealers()
     {
-        return response(\Auth::user('admin'), 201);
+
+        $users = User::all()->toArray();
+        
+        $records = [
+            "iTotalRecords" => User::count(),
+            "iTotalDisplayRecords" => User::count(),
+        ];
+
+        $status_list = array(
+            array("success" => "Pending"),
+            array("info" => "Closed"),
+            array("danger" => "On Hold"),
+            array("warning" => "Fraud")
+          );
+        foreach($users as $key=>$value) {
+            $status = $status_list[rand(0, 2)];
+            $records["data"][] = array(
+              '<input type="checkbox" name="id[]" value="'.$value['_id'].'">',
+              $value['_id'],
+              '12/09/2013',
+              'Jhon Doe',
+              'Jhon Doe',
+              '450.60$',
+              rand(1, 10),
+              '<span class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span>',
+              '<a href="javascript:;" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>',
+            );
+        }
+
+
+
+       return  json_encode($records);
     }
+    
 }

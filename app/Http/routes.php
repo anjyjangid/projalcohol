@@ -28,21 +28,59 @@ Route::resource('admin/gallery', 'GalleryController');
 post('delete-single-image', 'GalleryController@deleteSingleImage');*/
 
 
+
 Route::get('/', ['uses' => 'UserController@index']);
 Route::controller('/auth', 'Auth\AuthController');
 Route::post('/admin/getcustomers', ['uses' => 'Admin\AdminController@customers']);
+
+
+Route::match(['get', 'post'],'/admin/dealer/getdealers', ['uses' => 'Admin\DealerController@getdealers']);
+
+
+
 Route::controller('/password', 'Auth\PasswordController');
  
-//ADMIN ROUTES 
-Route::get('/admin', ['uses' => 'Admin\AdminController@home']);
-Route::controller('/admin', 'Auth\AdminAuthController');
+//ADMIN ROUTES
+//Route::resource('admin', 'Admin\AdminController');
+
+Route::get('/admin/profile', ['uses' => 'Admin\AdminController@profile']);
+Route::post('/admin/profile/update', ['uses' => 'Admin\AdminController@update']);
+Route::post('/admin/profile/updatepassword', ['uses' => 'Admin\AdminController@updatepassword']);
+Route::get('/admin', ['uses' => 'Admin\AdminController@index']);
+Route::get('/admin/dashboard', ['uses' => 'Admin\AdminController@dashboard']);
+
+
+Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
+
+    Route::get('categories', function (){
+    	echo "i am in categories";die;
+    });
+
+    Route::match(['get', 'post'],'category/getcategories', ['uses' => 'Admin\CategoryController@getcategories']);
+
+    Route::post('category/store','Admin\CategoryController@store');
+    
+});
+
+
+
 Route::controller('/admin/password', 'Auth\AdminPasswordController');
+Route::controller('/admin', 'Auth\AdminAuthController');
 
-
-Route::get('/admin/logout', 'Auth\AdminAuthController@logout');
 	
+Route::post('/auth', 'UserController@checkAuth');
+
+/*Route::post('/profile/account', 'ProfileController@account');
+Route::post('/profile/update', 'ProfileController@update');*/
+
+//Route::resource('admin/profile', 'Admin\profileController');
+Route::controller('/admin', 'Auth\AdminAuthController');
+
+
+
+
+
 Route::post('/auth', 'UserController@checkAuth');
 
 Route::post('/profile/account', 'ProfileController@account');
 Route::post('/profile/update', 'ProfileController@update');
-

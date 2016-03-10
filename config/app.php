@@ -141,14 +141,18 @@ return [
         /*MONGO EXTENSION*/
         Jenssegers\Mongodb\MongodbServiceProvider::class,
 
+        /*HTML AND FORM EXTENSION*/
+       // 'Collective\Html\HtmlServiceProvider',
+
+
         /*
          * Application Service Providers...
          */
         AlcoholDelivery\Providers\AppServiceProvider::class,
         AlcoholDelivery\Providers\AuthServiceProvider::class,
         AlcoholDelivery\Providers\EventServiceProvider::class,
-        AlcoholDelivery\Providers\RouteServiceProvider::class,
-
+        AlcoholDelivery\Providers\RouteServiceProvider::class,        
+        
         'Intervention\Image\ImageServiceProvider',
 
     ],
@@ -200,7 +204,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Image' => 'Intervention\Image\Facades\Image',
-        'Moloquent'       => 'Jenssegers\Mongodb\Eloquent\Model',
+        'Moloquent' => 'Jenssegers\Mongodb\Eloquent\Model',
+        'Form' => 'Collective\Html\FormFacade',
+        'Html' => 'Collective\Html\HtmlFacade',
     ],
 
 ];
