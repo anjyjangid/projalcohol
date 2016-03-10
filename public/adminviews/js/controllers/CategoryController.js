@@ -1,10 +1,10 @@
 'use strict';
 
-MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout','$http','fileUpload', function($rootScope, $scope, $timeout,$http,fileUpload) {
+MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout','$http','fileUpload','categoryModel', function($rootScope, $scope, $timeout,$http,fileUpload,categoryModel) {
 
     $scope.$on('$viewContentLoaded', function() {   
         Metronic.initAjax(); // initialize core components
-        Layout.setSidebarMenuActiveLink('set', $('#sidebar_menu_link_categories')); // set profile link active in sidebar menu 
+        Layout.setSidebarMenuActiveLink('set', $('#sidebar_menu_link_categories')); // set profile link active in sidebar menu         
     });
 
     // set sidebar closed and body solid layout mode
@@ -16,6 +16,15 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 	};
 
 	angular.extend($scope, {
+
+		categoryFormInit : function(){
+
+			categoryModel.getParentCategories().success(function(response) {
+				console.log(response);
+				$scope.category.ptitle = response;
+			});
+			
+		},
 
 		submitCategory : function() {
 			
@@ -32,7 +41,8 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 			var uploadUrl = "admin/category/store";
 			fileUpload.uploadFileToUrl(files, data, uploadUrl);
 
-		}
+		},
+
 	})
 
    

@@ -58,6 +58,8 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 
     Route::match(['get', 'post'],'category/getcategories', ['uses' => 'Admin\CategoryController@getcategories']);
 
+    Route::get('category/getparentcategories', ['uses' => 'Admin\CategoryController@getparentcategories']);    
+
     Route::post('category/store','Admin\CategoryController@store');
     
 });
