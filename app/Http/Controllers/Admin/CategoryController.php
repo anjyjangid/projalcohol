@@ -225,9 +225,10 @@ class CategoryController extends Controller
 
     		$categories = Categories::whereNull('ancestors')->get();
 
-    	}else{
+    	}        
+        else{
 
-    		$categories = Categories::where('ancestors.0._id','=',$id)->get();
+    		$categories = Categories::where('ancestors.0._id','regexp',"/".$id."/")->get();
 
     	}
 
