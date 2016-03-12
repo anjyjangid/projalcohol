@@ -1,10 +1,10 @@
 
 <!-- BEGIN PAGE CONTENT-->
-<div class="row" ng-controller="CategoryController">
+<div class="row">
 	<div class="col-md-12">		
 		<!-- BEGIN PAGE HEADER--> 
 		<h3 class="page-title">
-			Categories list <small>Categories List</small>
+			{{$state.$current.data.pageTitle}}
 		</h3>
 		<div class="page-bar">
 			<ul class="page-breadcrumb">
@@ -14,18 +14,18 @@
 					<i class="fa fa-angle-right"></i>
 				</li>
 				<li>
-					<a href="#/datatables/advanced.html">Categories</a>
+					<a href="#/datatables/advanced.html">{{$state.$current.data.pageTitle}}</a>
 					<i class="fa fa-angle-right"></i>
 				</li>
 				<li>
-					<a href="#/datatables/advanced.html">List</a>
+					<a href="#/datatables/advanced.html">{{$state.$current.data.pageSubTitle}}</a>
 				</li>
 			</ul>
 			
 		</div>
 		<!-- END PAGE HEADER-->		
 		<!-- BEGIN PROFILE CONTENT -->
-		<div ui-view class="category-content fade-in-up"> 
+		<div ui-view class="product-content fade-in-up"> 
 		</div>
 		<!-- END PROFILE CONTENT -->
 	</div>

@@ -39,7 +39,20 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 			};
 
 			var uploadUrl = "admin/category/store";
-			fileUpload.uploadFileToUrl(files, data, uploadUrl);
+			fileUpload.uploadFileToUrl(files, data, uploadUrl)
+		        .success(function(response) {
+		            console.log(response);
+		            $location.path("categories/list");
+
+		        }).error(function(data, status, headers) {            
+		            Metronic.alert({
+		                type: 'danger',
+		                icon: 'warning',
+		                message: data,
+		                container: '.portlet-body',
+		                place: 'prepend'
+		            });
+		        });
 
 		},
 

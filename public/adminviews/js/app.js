@@ -99,22 +99,9 @@ MetronicApp.service('fileUpload', ['$http','$location', function ($http,$locatio
             fd.append(field, fields[field]);
         }
             
-        $http.post(uploadUrl, fd, {
+        return $http.post(uploadUrl, fd, {
             transformRequest: angular.identity,
             headers: {'Content-Type': undefined}
-        })
-        .success(function(response) {
-            console.log(response);
-            $location.path("categories/list");
-
-        }).error(function(data, status, headers) {            
-            Metronic.alert({
-                type: 'danger',
-                icon: 'warning',
-                message: data,
-                container: '.portlet-body',
-                place: 'prepend'
-            });
         });
 
     }
@@ -633,6 +620,51 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 templateUrl: "adminviews/views/categories/add.html",
                 data: {pageTitle: 'Add New Category'}
             })
+
+            .state('products', {
+                url: "/product",
+                templateUrl: "adminviews/views/products/index.html",
+                data: {pageTitle: 'Products'},
+                controller: "ProductsController",
+                resolve: {
+                    deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                        return $ocLazyLoad.load({
+                            name: 'MetronicApp',
+                            insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                            files: [
+                                'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                                'assets/global/plugins/select2/select2.css',
+                                'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
+                                'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
+
+                                'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+                                'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+                                'assets/global/plugins/select2/select2.min.js',
+                                'assets/global/plugins/datatables/all.min.js',
+
+                                'assets/global/scripts/datatable.js',
+                                'adminviews/js/scripts/table-ajax.js',
+
+                                'adminviews/js/models/productModel.js',
+                                'adminviews/js/controllers/ProductController.js'
+                            ]
+                        });
+                    }]
+                }
+            })
+
+            .state("products.list", {
+                url: "/list",
+                templateUrl: "adminviews/views/products/list.html",
+                data: {pageSubTitle: 'List'}
+            })
+
+            .state("products.add", {
+                url: "/add",
+                templateUrl: "adminviews/views/products/edit.html",
+                data: {pageSubTitle: 'Add'}
+            })
+
 
 
 
