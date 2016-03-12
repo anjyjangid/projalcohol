@@ -104,8 +104,17 @@ MetronicApp.service('fileUpload', ['$http','$location', function ($http,$locatio
             headers: {'Content-Type': undefined}
         })
         .success(function(response) {
-            console.log(response);
+            
             $location.path("categories/list");
+            Metronic.alert({
+                type: 'success',
+                icon: 'check',
+                message: response.message,
+                container: '#info-message',
+                place: 'prepend',
+                closeInSeconds: 10000
+            });
+
 
         }).error(function(data, status, headers) {            
             Metronic.alert({

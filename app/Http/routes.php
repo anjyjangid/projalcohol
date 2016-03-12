@@ -51,19 +51,18 @@ Route::get('/admin/dashboard', ['uses' => 'Admin\AdminController@dashboard']);
 
 
 Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
+	
+	Route::group(['prefix' => 'category'], function () {
 
-    Route::get('categories', function (){
-    	echo "i am in categories";die;
+	    Route::match(['get', 'post'],'getcategories', ['uses' => 'Admin\CategoryController@getcategories']);
+
+	    Route::get('getparentcategories/{id?}', ['uses' => 'Admin\CategoryController@getparentcategories']);
+
+	    Route::post('store','Admin\CategoryController@store');
+
     });
-
-    Route::match(['get', 'post'],'category/getcategories', ['uses' => 'Admin\CategoryController@getcategories']);
-
-    Route::get('category/getparentcategories', ['uses' => 'Admin\CategoryController@getparentcategories']);    
-
-    Route::post('category/store','Admin\CategoryController@store');
     
 });
-
 
 
 Route::controller('/admin/password', 'Auth\AdminPasswordController');

@@ -34,29 +34,32 @@ MetronicApp.factory('categoryModel', ['$http', '$cookies', function($http, $cook
             });            
         });
     };
-    
+
+        
     categoryModel.getParentCategories = function($level){
+
+        if(typeof $level === 'undefined'){
+            $level = '';
+        }
 
         return $http({
 
             headers: {
                 'Content-Type': 'application/json'
-            },            
-            url: 'admin/category/getparentcategories',
+            },
+            url: 'admin/category/getparentcategories/'+$level,
             method: "GET",
             data: {
                 level: $level,                
             }
-        }).success(function(response){            
+
+        }).success(function(response){
+
             
+
+
         }).error(function(data, status, headers) {            
-            Metronic.alert({
-                type: 'danger',
-                icon: 'warning',
-                message: data,
-                container: '#tab_1_1',
-                place: 'prepend'
-            });            
+                      
         });
 
     };
