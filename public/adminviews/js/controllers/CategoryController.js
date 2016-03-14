@@ -11,12 +11,13 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
     $rootScope.settings.layout.pageBodySolid = false;
     $rootScope.settings.layout.pageSidebarClosed = false;  
 
-    $scope.category = {};
+    
     
 	angular.extend($scope, {
 
 		categoryFormInit : function(){
 
+			$scope.category = {};
 			$scope.categories = [];
 			$scope.lthumb = true;
 			categoryModel.getParentCategories().success(function(response) {				
@@ -27,19 +28,21 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 		},
 
 		
-		setParentSubCategory : function(i){
-
-			if(!$scope.categories[i].selectedPtitle){
-				return false;
-			}
+		setParentSubCategory : function(i){	
 
 			$scope.loading = true;
 			while($scope.categories.length-1>i){
 				$scope.categories.pop();
 			}
 
+			if(!$scope.categories[i].selectedPtitle){
+				$scope.loading = false;
+				return false;
+			}
+
 			categoryModel.getParentCategories($scope.categories[i].selectedPtitle._id).success(function(response) {
 				$scope.loading = false;
+
 				if(response.length){
 			
 					$scope.categories.push({categoryList: response});
@@ -51,17 +54,34 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 		
 
 		submitCategory : function() {
-						
-			var lastParentSelected = $scope.categories[$scope.categories.length - 1];
-						
+			
+
 			var data = {
 				title: $scope.category.title,
 				ptitle:''
 			};
 
-			if(lastParentSelected.categoryList.length && typeof(lastParentSelected.selectedPtitle)!="undefined"){
+			if($scope.categories[0].categoryList.length>0){
+				
+				var catLength = $scope.categories.length;
 
-				data.ptitle = lastParentSelected.selectedPtitle._id
+				var lastParentSelected = $scope.categories[catLength - 1];
+								
+				if(typeof(lastParentSelected.selectedPtitle)=="undefined" || lastParentSelected.selectedPtitle=="null"){
+
+					if(catLength>1){
+
+						var lastParentSelected = $scope.categories[$scope.categories.length - 2];
+
+					}
+
+				}
+				
+				if(typeof(lastParentSelected.selectedPtitle)!=="undefined" && lastParentSelected.selectedPtitle){
+
+					data.ptitle = lastParentSelected.selectedPtitle._id;
+
+				}
 
 			}
 
@@ -69,6 +89,7 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 				"thumb":$scope.category.thumb,
 				"lthumb":$scope.category.lthumb
 			};
+
 
 			var uploadUrl = "admin/category/store";
 			fileUpload.uploadFileToUrl(files, data, uploadUrl);
