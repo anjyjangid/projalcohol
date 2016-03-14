@@ -27,6 +27,8 @@ Route::resource('admin/gallery', 'GalleryController');
 
 post('delete-single-image', 'GalleryController@deleteSingleImage');*/
 
+post('upload-image', 'GalleryController@uploadImage');
+Route::resource('gallery', 'GalleryController');
 
 
 Route::get('/', ['uses' => 'UserController@index']);
