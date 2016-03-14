@@ -40,16 +40,22 @@ class Gallery extends Eloquent
     {
         $files = DB::table('gallery_images')
             ->where('gallery_id', $id)
-            ->join('files', 'files.id', '=', 'gallery_images.file_id')
+            ->join('files', 'files._id', '=', 'gallery_images.file_id')
             ->get();
+            //var_dump($files);
 
         $finalData = [];
         foreach ($files as $key => $file) {
+            $file = json_decode (json_encode ($file), FALSE);
+
             $finalData[$key] = [
-                'file_id' => $file->id,
-                'thumbUrl' => env('S3_URL') . "gallery_{$galleryId}/thumb/" . $file->file_name,
+                'file_id' => $file->_id,
+                /*'thumbUrl' => env('S3_URL') . "gallery_{$galleryId}/thumb/" . $file->file_name,
                 'url' => env('S3_URL') . "gallery_{$galleryId}/medium/" . $file->file_name,
-                'main' => env('S3_URL') . "gallery_{$galleryId}/main/" . $file->file_name,
+                'main' => env('S3_URL') . "gallery_{$galleryId}/main/" . $file->file_name,*/
+                'thumbUrl' => "gallery_{$galleryId}/thumb/" . $file->file_name,
+                'url' => "gallery_{$galleryId}/medium/" . $file->file_name,
+                'main' => "gallery_{$galleryId}/main/" . $file->file_name,
             ];
         }
 

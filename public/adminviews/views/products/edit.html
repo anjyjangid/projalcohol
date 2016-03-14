@@ -1,0 +1,276 @@
+<div class="row" ng-controller="ProductAddController">
+	<div class="col-md-12">
+		<div class="portlet light">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-shopping-cart"></i>Add New Product
+				</div>
+				<div class="actions btn-set">
+					<button type="button" class="btn default"><i class="fa fa-angle-left"></i> Back</button>
+					<button class="btn green" ng-click="save()"><i class="fa fa-check"></i> Save</button>
+					<button class="btn green"><i class="fa fa-check-circle"></i> Save & Continue Edit</button>
+					<div class="btn-group">
+						<a class="btn yellow dropdown-toggle" href="javascript:;" data-toggle="dropdown">
+						<i class="fa fa-share"></i> More <i class="fa fa-angle-down"></i>
+						</a>
+						<ul class="dropdown-menu pull-right">
+							<li>
+								<a href="javascript:;">
+								Duplicate </a>
+							</li>
+							<li>
+								<a href="javascript:;">
+								Delete </a>
+							</li>
+							<li class="divider">
+							</li>
+							<li>
+								<a href="javascript:;">
+								Print </a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="portlet-body">
+
+				<tabset active="active">
+					<tab>
+						<tab-heading>General</tab-heading>
+
+						<div class="form-horizontal">
+							<div class="form-group">
+								<label class="col-md-2 control-label">Name: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="general.name" placeholder="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">Description: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<textarea class="form-control" ng-model="general.description"></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">Short Description: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<textarea class="form-control" ng-model="general.shortDescription" style="margin-top: 0px; margin-bottom: 0px; height: 54px;"></textarea>
+									<span class="help-block">
+									shown in product listing </span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">Categories: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<div class="form-control height-auto">
+										<div class="slimScrollDiv" style="overflow: auto; width: auto; height: 275px;">
+											<ul class="list-unstyled" ng-include="'categoryLiTree'"></ul>
+										</div>
+									</div>
+									<span class="help-block">
+									select one or more categories </span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">Available Date: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<div class="input-group">
+										<input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="general.fromAvailable" max-date="general.uptoAvailable" is-open="datePopup[0]" ng-required="true" close-text="Close" />
+										<span class="input-group-btn">
+											<button type="button" class="btn btn-default" ng-click="datePopupOpen($event,0)"><i class="glyphicon glyphicon-calendar"></i></button>
+										</span>
+										<span class="input-group-addon"> to </span>
+										<input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="general.uptoAvailable" min-date="general.fromAvailable" is-open="datePopup[1]" ng-required="true" close-text="Close" />
+										<span class="input-group-btn">
+											<button type="button" class="btn btn-default" ng-click="datePopupOpen($event,1)"><i class="glyphicon glyphicon-calendar"></i></button>
+										</span>
+									</div>
+									<span class="help-block">
+									availability daterange. </span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">SKU: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="general.sku" placeholder="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">Price: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="general.price" placeholder="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">Tax Class: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<select class="table-group-action-input form-control input-medium" ng-model="general.tax_class">
+										<option value="">Select...</option>
+										<option value="1">None</option>
+										<option value="0">Taxable Goods</option>
+										<option value="0">Shipping</option>
+										<option value="0">USA</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">Status: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<select class="table-group-action-input form-control input-medium" ng-model="general.status">
+										<option value="">Select...</option>
+										<option value="1">Published</option>
+										<option value="0">Not Published</option>
+									</select>
+								</div>
+							</div>
+						</div>
+
+					</tab>
+					<tab>
+						<tab-heading>Meta</tab-heading>
+						
+						<div class="form-horizontal">
+							<div class="form-group">
+								<label class="col-md-2 control-label">Meta Title:</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control maxlength-handler" ng-model="meta.title" maxlength="100" placeholder="">
+									<span class="help-block">
+									max 100 chars </span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">Meta Keywords:</label>
+								<div class="col-md-10">
+									<textarea class="form-control maxlength-handler" rows="8" ng-model="meta.keywords" maxlength="1000"></textarea>
+									<span class="help-block">
+									max 1000 chars </span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">Meta Description:</label>
+								<div class="col-md-10">
+									<textarea class="form-control maxlength-handler" rows="8" ng-model="meta.description" maxlength="255"></textarea>
+									<span class="help-block">
+									max 255 chars </span>
+								</div>
+							</div>
+						</div>
+
+					</tab>
+					<tab>
+						<tab-heading>Images</tab-heading>
+
+						<div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10">
+							<a id="tab_images_uploader_pickfiles" href="#" ng-click="imageFiles.push({})" class="btn yellow">
+							<i class="fa fa-plus"></i> Add Files </a>
+							<a id="tab_images_uploader_uploadfiles" href="#" class="btn green">
+							<i class="fa fa-share"></i> Upload Files </a>
+						</div>
+						<div class="row">
+							<div id="tab_images_uploader_filelist" class="col-md-6 col-sm-12">
+							</div>
+						</div>
+						<table class="table table-bordered table-hover">
+							<thead>
+								<tr role="row" class="heading">
+									<th width="8%">
+										 Image
+									</th>
+									<th width="25%">
+										 Label
+									</th>
+									<th width="8%">
+										 Sort Order
+									</th>
+									<th width="10%">
+										 Base Image
+									</th>
+									<th width="10%">
+										 Small Image
+									</th>
+									<th width="10%">
+										 Thumbnail
+									</th>
+									<th width="10%">
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="f in imageFiles">
+									<td>
+										<div class="fileinput fileinput-new" data-provides="fileinput">
+											<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
+												<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA" alt=""/>
+											</div>
+											<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
+											</div>
+											<div>
+												<span class="btn default btn-file">
+													<span class="fileinput-new">Select thumb</span>
+													<span class="fileinput-exists">Change</span>
+													<input type="file" placeholder="thumbnail" class="form-control" required file-model="f.thumb"/>
+												</span>
+											</div>
+										</div>
+									</td>
+									<td>
+										<input type="text" class="form-control" ng-model="f.label">
+									</td>
+									<td>
+										<input type="text" class="form-control" ng-model="f.order">
+									</td>
+									<td>
+										<label>
+											<input type="radio" ng-model="f.size" value="1">
+										</label>
+									</td>
+									<td>
+										<label>
+											<input type="radio" ng-model="f.size" value="2">
+										</label>
+									</td>
+									<td>
+										<label>
+											<input type="radio" ng-model="f.size" value="3">
+										</label>
+									</td>
+									<td>
+										<a href="#" class="btn default btn-sm" ng-click="imageRemove($index)">
+										<i class="fa fa-times"></i> Remove </a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</tab>
+				</tabset>
+				{{{general:general, meta:meta}|json}}
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+<script type="text/ng-template" id="categoryLiTree">
+	<li ng-repeat="c in childOf(categories, parent)">
+		<label><input type="checkbox" ng-model="c.selected" ng-change="selectCategory(c._id)" class="group-checkable"></span></div>{{c.cat_title}}</label>
+		<ul class="list-unstyled" ng-init="parent=c._id" ng-include="'categoryLiTree'"></ul>
+	</li>
+</script>

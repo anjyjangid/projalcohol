@@ -27,6 +27,8 @@ Route::resource('admin/gallery', 'GalleryController');
 
 post('delete-single-image', 'GalleryController@deleteSingleImage');*/
 
+post('upload-image', 'GalleryController@uploadImage');
+Route::resource('gallery', 'GalleryController');
 
 
 Route::get('/', ['uses' => 'UserController@index']);
@@ -60,8 +62,14 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 
 	    Route::post('store','Admin\CategoryController@store');
 
+    Route::post('category/store','Admin\CategoryController@store');
+    Route::post('product/store','Admin\ProductController@store');
     });
     
+	
+	Route::group(['prefix' => 'product'], function () {
+		Route::post('store','Admin\ProductController@store');
+	});
 });
 
 

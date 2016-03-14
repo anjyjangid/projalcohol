@@ -222,14 +222,13 @@ class CategoryController extends Controller
     public function getparentcategories($id = false){
     	
     	if($id==""){
-
     		$categories = Categories::whereNull('ancestors')->get();
-
-    	}        
-        else{
-
+    	       
+        
+        }elseif($id == 'all'){
+            $categories = Categories::all()->toArray();
+        }else{
     		$categories = Categories::where('ancestors.0._id','=',$id)->get();
-
     	}
 
     	return response($categories);

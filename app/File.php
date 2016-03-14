@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
-class File extends Model
+use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
+
+class File extends Eloquent
 {
     /**
      * Define the columns which can be mass assigned
@@ -21,7 +23,7 @@ class File extends Model
     public function uploadThumbAndMainImage(Request $request)
     {
         // get basic info
-        $s3 = Storage::disk('s3');
+        //$s3 = Storage::disk('s3');
         $file = $request->file('file');
         $extension = $request->file('file')->guessExtension();
         $filename = uniqid() . '.' . $extension;
@@ -42,16 +44,17 @@ class File extends Model
         $image->encode($extension);
 
         // upload image to S3
-        $s3->put("gallery_{$galleryId}/main/" . $filename, (string) $image, 'public');
+        /*$s3->put("gallery_{$galleryId}/main/" . $filename, (string) $image, 'public');
         $s3->put("gallery_{$galleryId}/medium/" . $filename, (string) $imageMedium, 'public');
-        $s3->put("gallery_{$galleryId}/thumb/" . $filename, (string) $imageThumb, 'public');
+        $s3->put("gallery_{$galleryId}/thumb/" . $filename, (string) $imageThumb, 'public');*/
 
         // make image entry to DB
         $file = File::create([
             'file_name' => $filename,
             'mime_type' => $mimeType,
             'file_size' => $fileSize,
-            'file_path' => env('S3_URL') . "gallery_{$galleryId}/main/" . $filename,
+            //'file_path' => env('S3_URL') . "gallery_{$galleryId}/main/" . $filename,
+            'file_path' => "gallery_{$galleryId}/main/" . $filename,
             'type' => 's3',
         ]);
 
@@ -68,8 +71,10 @@ class File extends Model
             'file' => $fileImg,
             'file_id' => $file->id,
             'thumbUrl' => env('S3_URL') . "gallery_{$galleryId}/thumb/" . $filename,
-            'url' => env('S3_URL') . "gallery_{$galleryId}/medium/" . $filename,
-            'main' => env('S3_URL') . "gallery_{$galleryId}/main/" . $filename,
+            /*'url' => env('S3_URL') . "gallery_{$galleryId}/medium/" . $filename,
+            'main' => env('S3_URL') . "gallery_{$galleryId}/main/" . $filename,*/
+            'url' => "gallery_{$galleryId}/medium/" . $filename,
+            'main' => "gallery_{$galleryId}/main/" . $filename,
         ];
     }
 }
