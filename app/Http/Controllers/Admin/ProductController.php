@@ -7,13 +7,13 @@ use File;
 use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
 
-use Storage;
-use Validator;
-use Image;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Facades\Image;
 
 use AlcoholDelivery\Categories as Categories;
 
-class CategoryController extends Controller
+class ProductController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -53,7 +53,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {    
         $inputs = $request->all();
-               
+        prd($inputs);      
         // validation rules
         $validator = Validator::make($request->all(), [
             'title' => 'required',            
@@ -64,43 +64,18 @@ class CategoryController extends Controller
         if ($validator->fails()) {
             return response('There are errors in the form data', 400);
         }
-        
-        
+                
        	$fileUpload = $this->uploadThumb($request);
-
-
-       	
-       	$category = new Categories;
-
-       	if($inputs['ptitle']){
-
-	       	$parentCategories = Categories::find($inputs['ptitle']);
-
-	       	$ancestors = $parentCategories->ancestors;
-
-	       	if(empty($ancestors)){
-	       		$ancestors = [];
-	       	}
-	       	
-	       	array_unshift($ancestors, ["_id" => $parentCategories->_id,'title' =>$parentCategories->cat_title] );
-
-	       	$category->ancestors = $ancestors;
-
-        }
-
-       	$category->cat_title = $inputs['title'];
-       	$category->cat_status = '0';
-       	$category->cat_thumb = $fileUpload->original['thumb'];
-       	$category->cat_lthumb = isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:'';
-       	
-       	if($category->save()){
-       		return response(array("success"=>true,"message"=>"Category created successfully"));
-       	}
-       	
-       	return response(array("success"=>false,"message"=>"Something went worng"));
+        
+        return Categories::create([
+            'cat_title' => $inputs['title'],
+            'cat_thumb' => $fileUpload->original['thumb'],
+            'cat_lthumb' => isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:''
+        ]);
     }
 
-    public function uploadThumb(Request $request){
+    public function uploadThumb(Request $request)
+    {
     	
     	$files = array();
     	// check if the file exist
@@ -145,7 +120,6 @@ class CategoryController extends Controller
             }
             
         }
-
         if ($request->hasFile('lthumb'))
         {
             if ($request->file('lthumb')->isValid()){
@@ -218,53 +192,5 @@ class CategoryController extends Controller
     {
         //
     }
-
-    public function getparentcategories($id = false){
-    	
-    	if($id==""){
-    		$categories = Categories::whereNull('ancestors')->get();
-    	}elseif($id == 'all'){
-            $categories = Categories::all()->toArray();
-        }else{
-    		$categories = Categories::where('ancestors.0._id','regexp',"/".$id."/")->get();
-    	}
-
-    	return response($categories);
-    }
-
-    public function getcategories()
-    {
-
-        $categories = Categories::all()->toArray();
-        
-        $records = [
-            "iTotalRecords" => Categories::count(),
-            "iTotalDisplayRecords" => Categories::count(),
-        ];
-
-        $status_list = array(
-            array("warning" => "in-Active"),
-            array("success" => "Active")
-          );
-        $i = 1;
-        foreach($categories as $key=>$value) {
-
-            $status = $status_list[$value['cat_status']];
-            $records["data"][] = array(
-              '<input type="checkbox" name="id[]" value="'.$value['_id'].'">',
-              $i++,
-              
-              // '<img src="'.asset('assets/resources/category/thumb/200/'.$value['cat_thumb']).'" alt="'.$value['cat_title'].'" width="100" height="100">',
-              ucfirst($value['cat_title']),
-              isset($value['ancestors'][0]['title'])?ucfirst($value['ancestors'][0]['title']):'',
-              '<span class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span>',
-              '<a href="javascript:;" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>',
-            );
-        }
-        
-        return response($records, 201);
-
-        
-    }
-    
+     
 }

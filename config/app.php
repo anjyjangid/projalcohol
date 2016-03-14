@@ -26,7 +26,7 @@ return [
     |
      */
 
-    'url' => 'http://localhost',
+    'url' => 'http://192.168.1.35',
 
     /*
     |--------------------------------------------------------------------------
@@ -142,7 +142,7 @@ return [
         Jenssegers\Mongodb\MongodbServiceProvider::class,
 
         /*HTML AND FORM EXTENSION*/
-        'Collective\Html\HtmlServiceProvider',
+       // 'Collective\Html\HtmlServiceProvider',
 
 
         /*

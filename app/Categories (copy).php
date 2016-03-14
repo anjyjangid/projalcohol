@@ -22,7 +22,7 @@ class Categories extends Eloquent
      *
      * @var array
      */
-    protected $fillable = ['cat_title', 'cat_thumb', 'cat_lthumb','ancestors','cat_status'];
+    protected $fillable = ['cat_title', 'cat_thumb', 'cat_lthumb'];
 
 
 }
