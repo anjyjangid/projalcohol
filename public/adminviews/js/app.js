@@ -102,6 +102,29 @@ MetronicApp.service('fileUpload', ['$http','$location', function ($http,$locatio
         return $http.post(uploadUrl, fd, {
             transformRequest: angular.identity,
             headers: {'Content-Type': undefined}
+
+        })
+        .success(function(response) {
+            
+            $location.path("categories/list");
+            Metronic.alert({
+                type: 'success',
+                icon: 'check',
+                message: response.message,
+                container: '#info-message',
+                place: 'prepend',
+                closeInSeconds: 10000
+            });
+
+
+        }).error(function(data, status, headers) {            
+            Metronic.alert({
+                type: 'danger',
+                icon: 'warning',
+                message: data,
+                container: '.portlet-body',
+                place: 'prepend'
+            });
         });
 
     }

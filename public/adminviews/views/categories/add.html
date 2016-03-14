@@ -11,18 +11,31 @@
 				<form role="form" name='categoryForm' ng-submit="submitCategory()" data-ng-init="categoryFormInit()">
 
 					<div class="form-group">
+						<label class="control-label">Parent Category</label>
+
+						<div class="margin-top-10" ng-repeat="subcategory in categories">
+							<select
+								name="ptitle"
+								class="form-control" 
+								ng-model="subcategory.selectedPtitle"
+								ng-options="option.cat_title for option in subcategory.categoryList"
+								ng-change="setParentSubCategory($index)">
+
+								<option value="">---- Select Category ----</option>
+							</select>
+						</div>
+
+
+					</div>
+					<p ng-show="loading">Please Wait...</p>								
+
+					<div class="form-group">
 						<label class="control-label">Title</label>
 						<input type="text" name="title" placeholder="Title" class="form-control" required ng-model="category.title"/>
 						<span ng-show="categoryForm.category.title.$touched && categoryForm.category.title.$invalid">Title is required.</span>
 					</div>
 					
-					<div class="form-group">
-						<label class="control-label">Parent Title</label>
-						
-						<select ng-options="option._id as option.cat_title for option in category.ptitle" name="ptitle" class="form-control" ng-model="selectedPtitle">
-							<option value="">---- Select Parent Category ----</option>
-						</select>
-					</div>
+					
 
 					<div class="clearfix margin-top-10">
 						<span class="label label-danger">NOTE!</span> <span> Attached image thumbnail is supported in Latest Firefox, Chrome, Opera, Safari and Internet Explorer 10 only </span>
@@ -55,7 +68,7 @@
 
 							</div>						
 						</div>
-						<div class="col-sm-6">
+						<div class="col-sm-6" ng-show="categories.length == 1 && !categories[0].selectedPtitle">
 							<label class="control-label">listing Thumbnail</label>
 							<div class="form-group">
 								
@@ -69,7 +82,7 @@
 										<span class="btn default btn-file">
 										<span class="fileinput-new">Select thumb</span>
 										<span class="fileinput-exists">Change</span>
-										<input type="file" name="lthumb" placeholder="thumbnail" class="form-control" required file-model="category.lthumb"/>
+										<input type="file" name="lthumb" placeholder="thumbnail" class="form-control" file-model="category.lthumb"/>
 										</span>
 										<a href="#" class="btn default fileinput-exists" data-dismiss="fileinput">
 										Remove </a>
@@ -86,7 +99,7 @@
 
 					
 
-					<div class="margiv-top-10">
+					<div class="margin-top-10">
 						<input type="submit" name="save" value="Save" class="btn green-haze">
 						
 						<a href="#" class="btn default">Cancel </a>

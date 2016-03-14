@@ -53,7 +53,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {    
         $inputs = $request->all();
-               
+        prd($inputs);      
         // validation rules
         $validator = Validator::make($request->all(), [
             'title' => 'required',            
@@ -72,10 +72,10 @@ class ProductController extends Controller
             'cat_thumb' => $fileUpload->original['thumb'],
             'cat_lthumb' => isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:''
         ]);
-        
     }
 
-    public function uploadThumb(Request $request){
+    public function uploadThumb(Request $request)
+    {
     	
     	$files = array();
     	// check if the file exist
@@ -192,44 +192,5 @@ class ProductController extends Controller
     {
         //
     }
-
-    public function getparentcategories(){
-    	
-    	$categories = Categories::whereNull('ancestors')->get();
-    	return response($categories);
-    }
-
-    public function getcategories()
-    {
-
-        $categories = Categories::all()->toArray();
-        
-        $records = [
-            "iTotalRecords" => Categories::count(),
-            "iTotalDisplayRecords" => Categories::count(),
-        ];
-
-        $status_list = array(
-            array("success" => "Active"),                    
-            array("warning" => "in-Active")
-          );
-        $i = 1;
-        foreach($categories as $key=>$value) {
-            $status = $status_list[rand(0, 1)];
-            $records["data"][] = array(
-              '<input type="checkbox" name="id[]" value="'.$value['_id'].'">',
-              $i++,
-              
-              '<img src="'.asset('assets/resources/category/thumb/200/'.$value['cat_thumb']).'" alt="'.$value['cat_title'].'" width="100" height="100">',
-              $value['cat_title'],
-              '<span class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span>',
-              '<a href="javascript:;" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>',
-            );
-        }
-        
-        return response($records, 201);
-
-        
-    }
-    
+     
 }
