@@ -134,7 +134,7 @@ MetronicApp.service('fileUpload', ['$http','$location', function ($http,$locatio
 /* Setup App Main Controller */
 MetronicApp.controller('AppController', ['$scope', '$rootScope', function($scope, $rootScope) {
     $scope.$on('$viewContentLoaded', function() {
-        Metronic.initComponents(); // init core components
+        Metronic.initComponents(); // init core components        
         //Layout.init(); //  Init entire layout(header, footer, sidebar, etc) on page load if the partials included in server side instead of loading with ng-include directive 
     });
     
@@ -147,9 +147,13 @@ initialization can be disabled and Layout.init() should be called on page load c
 ***/
 
 /* Setup Layout Part - Header */
-MetronicApp.controller('HeaderController', ['$scope', function($scope) {
+MetronicApp.controller('HeaderController', ['$scope','$http', '$rootScope', function($scope,$http,$rootScope) {
     $scope.$on('$includeContentLoaded', function() {
         Layout.initHeader(); // init header
+    });
+    $http.get('admin/profile').success(function(response) {
+        $rootScope.user = response;
+        $rootScope.user.name = response.first_name+' '+response.last_name;
     });
 }]);
 

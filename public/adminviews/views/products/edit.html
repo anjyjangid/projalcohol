@@ -176,12 +176,12 @@
 
 					</tab>
 					<tab>
-						<tab-heading>Images</tab-heading>
+						<tab-heading ng-hide="$scope.notuploaded">Images</tab-heading>
 
 						<div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10">
 							<a id="tab_images_uploader_pickfiles" href="#" ng-click="imageFiles.push({})" class="btn yellow">
 							<i class="fa fa-plus"></i> Add Files </a>
-							<a id="tab_images_uploader_uploadfiles" href="#" class="btn green">
+							<a id="tab_images_uploader_uploadfiles" href="#" ng-click="uploadFiles()" class="btn green">
 							<i class="fa fa-share"></i> Upload Files </a>
 						</div>
 						<div class="row">
@@ -261,7 +261,7 @@
 						</table>
 					</tab>
 				</tabset>
-				{{{general:general, meta:meta}|json}}
+				{{{general:general, meta:meta, image:imageFiles}|json}}
 			</div>
 		</div>
 	</div>
@@ -269,8 +269,8 @@
 	
 
 <script type="text/ng-template" id="categoryLiTree">
-	<li ng-repeat="c in childOf(categories, parent)">
-		<label><input type="checkbox" ng-model="c.selected" ng-change="selectCategory(c._id)" class="group-checkable"></span></div>{{c.cat_title}}</label>
+	<li ng-repeat="c in childOf	(categories, parent)">
+		<label><input type="checkbox" ng-model="c.selected" ng-change="selectCategory(c._id)" class="group-checkable">{{c.cat_title}}</label>
 		<ul class="list-unstyled" ng-init="parent=c._id" ng-include="'categoryLiTree'"></ul>
 	</li>
 </script>

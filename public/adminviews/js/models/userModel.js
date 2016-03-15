@@ -1,4 +1,4 @@
-MetronicApp.factory('userModel', ['$http', '$cookies', function($http, $cookies) {
+MetronicApp.factory('userModel', ['$http', '$cookies', '$rootScope', function($http, $cookies, $rootScope) {
     var userModel = {};
 
     /**
@@ -23,6 +23,9 @@ MetronicApp.factory('userModel', ['$http', '$cookies', function($http, $cookies)
             }
         }).success(function(response){            
             
+            $rootScope.user = response;
+            $rootScope.user.name = response.first_name+' '+response.last_name;
+
         }).error(function(data, status, headers) {            
             Metronic.alert({
                 type: 'danger',

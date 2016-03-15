@@ -56,7 +56,15 @@ class ProductController extends Controller
         prd($inputs);      
         // validation rules
         $validator = Validator::make($request->all(), [
-            'title' => 'required',            
+            'name' => 'required',
+            'description' => 'required',
+            'shortDescription' => 'required',
+            'price' => 'required|numeric',
+            'discountPrice' => 'required|numeric',
+            'fromAvailable'  => 'required|date',
+            'uptoAvailable'  => 'required|date',
+            'sku' => 'required',            
+            'status' => 'required|integer',
             'thumb' => 'required|mimes:jpeg,jpg,png|max:8000',
         ]);
 
