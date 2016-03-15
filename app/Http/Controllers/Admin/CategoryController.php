@@ -294,14 +294,17 @@ class CategoryController extends Controller
             $categories = $categories->skip(intval( $params['start'] ))->take($params['length']);
         }
 
-        $categories = $categories->get($columns)->toArray();
+        $categories = $categories->get($columns);
+
+        
  
         /* Data set length after filtering */        
         $iFilteredTotal = Categories::count();
         
-        /* Total data set length */                 
+        $categories = $categories->toArray();
+
         $iTotal = Categories::count();
-        
+                
         /*
          * Output
          */
@@ -339,20 +342,28 @@ class CategoryController extends Controller
             }
 
             $status = $status_list[$value['cat_status']];
-            $row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';        
+            $row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';
                     
             $row[] = ucfirst($value['cat_title']);
             $row[] = isset($value['ancestors'][0]['title'])?ucfirst($value['ancestors'][0]['title']):'';
             $row[] = '<span class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span>';
-            $row[] = '<a href="javascript:;" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+            $row[] = '<a title="View : '.$value['cat_title'].'" href="#/categories/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
+                     '<a title="Edit : '.$value['cat_title'].'" href="#/categories/edit/'.$value['_id'].'" href="#/categories/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
             
             $records['data'][] = $row;
         }
         
         return response($records, 201);
-
         
-    
+    }
+
+
+    public function getcategorydetail($categoryId){
+
+        $category = Categories::with('categories')->where('cat_id',"=",$categoryId)->get();
+
+        return response($category, 201);
+
     }
     
 }

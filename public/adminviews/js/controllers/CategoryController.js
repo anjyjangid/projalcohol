@@ -1,6 +1,6 @@
 'use strict';
 
-MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout','$http','fileUpload','categoryModel', function($rootScope, $scope, $timeout,$http,fileUpload,categoryModel) {
+MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout','$http','$stateParams','fileUpload','categoryModel', function($rootScope, $scope, $timeout,$http,$stateParams,fileUpload,categoryModel) {
 
     $scope.$on('$viewContentLoaded', function() {   
         Metronic.initAjax(); // initialize core components
@@ -11,6 +11,7 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
     $rootScope.settings.layout.pageBodySolid = false;
     $rootScope.settings.layout.pageSidebarClosed = false;  
 
+    console.log($stateParams.categoryid);
     
     
 	angular.extend($scope, {
@@ -26,6 +27,8 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 			});
 			
 		},
+
+
 
 		
 		setParentSubCategory : function(i){	
@@ -112,4 +115,21 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 	})
 
    
-}]); 
+}]);
+
+
+
+MetronicApp.controller('CategoryShowController',['$rootScope', '$scope', '$timeout','$http','$stateParams','categoryModel', function($rootScope, $scope, $timeout,$http,$stateParams,categoryModel) {
+   
+    $scope.categoryData = [];
+
+    categoryModel.getCategoryDetail($stateParams.categoryid).success(function(data){
+		$scope.categoryData = data;
+	});
+        
+	angular.extend($scope, {})
+
+   
+}]);
+
+

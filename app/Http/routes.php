@@ -62,8 +62,12 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 
 	    Route::post('store','Admin\CategoryController@store');
 
-    Route::post('category/store','Admin\CategoryController@store');
-    Route::post('product/store','Admin\ProductController@store');
+	    Route::get('show','Admin\CategoryController@show');
+
+	    Route::get('getcategorydetail/{id}','Admin\CategoryController@getcategorydetail');
+
+
+
     });
     
 	

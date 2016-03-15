@@ -24,10 +24,5 @@ class Categories extends Eloquent
      */
     protected $fillable = ['cat_title', 'cat_thumb', 'cat_lthumb','ancestors','cat_status'];
 
-
-    public function categories()
-    {
-        return $this->belongsTo('Categories');
-    }
-
+    
 }
