@@ -15,11 +15,12 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 
 MetronicApp.controller('ProductAddController',['$scope','fileUpload','productModel', function($scope,fileUpload,productModel) {
 
-	$scope.general = {category:[]};
+	$scope.general = {categories:[],images:[]};
 	$scope.meta = {};
 	$scope.datePopup = [false, false];
 	$scope.categories = [];
 	$scope.imageFiles = [{}];
+	$scope.notuploaded = true;																																																							
 
 	productModel.getCategories().success(function(data){
 		$scope.categories = data;
@@ -47,11 +48,11 @@ MetronicApp.controller('ProductAddController',['$scope','fileUpload','productMod
 	}
 
 	$scope.selectCategory = function(id){
-		var i = $scope.general.category.indexOf(id);
+		var i = $scope.general.categories.indexOf(id);
 		if(i>-1)
-			$scope.general.category.splice(i, 1);
+			$scope.general.categories.splice(i, 1);
 		else
-			$scope.general.category.push(id);
+			$scope.general.categories.push(id);
 	}
 
 	$scope.imageRemove = function(i){
@@ -65,7 +66,7 @@ MetronicApp.controller('ProductAddController',['$scope','fileUpload','productMod
 			fileObj["file_"+i] = $scope.imageFiles[i].thumb;
 
 		}
-
+		console.log(fileObj); 
 		fileUpload.uploadFileToUrl(fileObj, data, uploadUrl)
 			.success(function(response) {
 				console.log(response);

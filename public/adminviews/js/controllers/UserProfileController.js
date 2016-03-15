@@ -5,10 +5,10 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
 
     $scope.$on('$viewContentLoaded', function() {
         Metronic.initAjax(); // initialize core components
-        Layout.setSidebarMenuActiveLink('set', null);  
-        userModel.getUserDetails().success(function(response) {
+                                                                        
+        /*userModel.getUserDetails().success(function(response) {
             $scope.user = response;
-        });        
+        });*/        
     });
 
     // set sidebar closed and body solid layout mode
