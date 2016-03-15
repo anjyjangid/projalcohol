@@ -162,7 +162,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		/* Init Metronic's core jquery plugins and layout scripts */
 		$(document).ready(function() {   
 			Metronic.init(); // Run metronic theme
-			Metronic.setAssetsPath('{{ asset("assets") }}'); // Set the assets folder path			
+			Metronic.setAssetsPath('{{ asset("assets") }}/'); // Set the assets folder path			
 		});
 	</script>
 	<!-- END JAVASCRIPTS -->

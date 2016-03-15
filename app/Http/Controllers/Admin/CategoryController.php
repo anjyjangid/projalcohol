@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use File;
 use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
-
+use MongoId;
 use Storage;
 use Validator;
 use Image;
@@ -82,7 +82,7 @@ class CategoryController extends Controller
 	       		$ancestors = [];
 	       	}
 	       	
-	       	array_unshift($ancestors, ["_id" => $parentCategories->_id,'title' =>$parentCategories->cat_title] );
+	       	array_unshift($ancestors, ["_id" => new MongoId($parentCategories->_id),'title' =>$parentCategories->cat_title] );
 
 	       	$category->ancestors = $ancestors;
 
@@ -223,48 +223,136 @@ class CategoryController extends Controller
     	
     	if($id==""){
     		$categories = Categories::whereNull('ancestors')->get();
-    	}elseif($id == 'all'){
+    	       
+        
+        }elseif($id == 'all'){
             $categories = Categories::all()->toArray();
         }else{
-    		$categories = Categories::where('ancestors.0._id','regexp',"/".$id."/")->get();
+    		$categories = Categories::where('ancestors.0._id','=',$id)->get();
     	}
 
     	return response($categories);
     }
 
-    public function getcategories()
+    public function getcategories(Request $request)
     {
 
-        $categories = Categories::all()->toArray();
-        
-        $records = [
-            "iTotalRecords" => Categories::count(),
-            "iTotalDisplayRecords" => Categories::count(),
-        ];
+        $params = $request->all();
 
+        $categories = new Categories;        
+
+        $columns = array('_id',"cat_title",'cat_title','ancestors','updated_at','cat_status');
+        $indexColumn = '_id';      
+        $table = 'categoies';
+               
+
+            
+        /* Individual column filtering */
+
+        foreach($columns as $fieldKey=>$fieldTitle)
+        {              
+
+            if ( isset($params[$fieldTitle]) && $params[$fieldTitle]!="" )
+            {
+                   
+                if($fieldTitle=='ancestors'){
+                    $categories = $categories->where($fieldTitle.".0.title", 'regex', "/.*$params[$fieldTitle]/i");
+                }else{
+                    $categories = $categories->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
+                }
+                            
+            }
+        }
+        //prd($categories->toSql());
+
+            
+        /*
+         * Ordering
+         */
+        //$sOrder = "Order by category_title";
+
+        if ( isset( $params['order'] ) )
+        {
+
+            foreach($params['order'] as $orderKey=>$orderField){
+
+                if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
+                    
+                    $categories = $categories->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
+                    
+                }
+            }
+
+        }
+        
+
+        /* 
+         * Paging
+         */        
+        if ( isset( $params['start'] ) && $params['length'] != '-1' )
+        {
+            $categories = $categories->skip(intval( $params['start'] ))->take($params['length']);
+        }
+
+        $categories = $categories->get($columns)->toArray();
+ 
+        /* Data set length after filtering */        
+        $iFilteredTotal = Categories::count();
+        
+        /* Total data set length */                 
+        $iTotal = Categories::count();
+        
+        /*
+         * Output
+         */
+         
+        
+        $records = array(
+            "iTotalRecords" => $iTotal,
+            "iTotalDisplayRecords" => $iFilteredTotal,
+            "data" => array()
+        );
+
+             
+        
         $status_list = array(
             array("warning" => "in-Active"),
             array("success" => "Active")
           );
+
+
+
+        $srStart = intval( $params['start'] );
+        if($params['order'][0]['column']==0 && $params['order'][0]['dir']=='asc'){
+            $srStart = intval($iTotal);
+        }
+
         $i = 1;
         foreach($categories as $key=>$value) {
 
+            $row=array();
+
+            if($params['order'][0]['column']==0 && $params['order'][0]['dir']=='asc'){
+                $row[] = $srStart--;//$row1[$aColumns[0]];
+            }else{
+                $row[] = ++$srStart;//$row1[$aColumns[0]];
+            }
+
             $status = $status_list[$value['cat_status']];
-            $records["data"][] = array(
-              '<input type="checkbox" name="id[]" value="'.$value['_id'].'">',
-              $i++,
-              
-              // '<img src="'.asset('assets/resources/category/thumb/200/'.$value['cat_thumb']).'" alt="'.$value['cat_title'].'" width="100" height="100">',
-              ucfirst($value['cat_title']),
-              isset($value['ancestors'][0]['title'])?ucfirst($value['ancestors'][0]['title']):'',
-              '<span class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span>',
-              '<a href="javascript:;" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>',
-            );
+            $row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';        
+                    
+            $row[] = ucfirst($value['cat_title']);
+            $row[] = isset($value['ancestors'][0]['title'])?ucfirst($value['ancestors'][0]['title']):'';
+            $row[] = '<span class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span>';
+            $row[] = '<a href="javascript:;" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+            
+            $records['data'][] = $row;
         }
         
         return response($records, 201);
 
         
+    
     }
     
 }

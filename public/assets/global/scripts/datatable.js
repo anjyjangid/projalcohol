@@ -185,7 +185,9 @@ var Datatable = function() {
             }
             // handle group checkboxes check/uncheck
             $('.group-checkable', table).change(function() {
-                var set = $('tbody > tr > td:nth-child(1) input[type="checkbox"]', table);
+
+                var indexKey = $(".group-checkable").parents("th").index()+1;
+                var set = $('tbody > tr > td:nth-child('+indexKey+') input[type="checkbox"]', table);
                 var checked = $(this).is(":checked");
                 $(set).each(function() {
                     $(this).attr("checked", checked);
@@ -216,8 +218,8 @@ var Datatable = function() {
             the.setAjaxParam("action", tableOptions.filterApplyAction);
 
             // get all typeable inputs
-            $('textarea.form-filter, select.form-filter, input.form-filter:not([type="radio"],[type="checkbox"])', table).each(function() {
-                the.setAjaxParam($(this).attr("name"), $(this).val());
+            $('textarea.form-filter, select.form-filter, input.form-filter:not([type="radio"],[type="checkbox"])', table).each(function() {                
+                the.setAjaxParam($(this).attr("name"), $(this).val());                
             });
 
             // get all checkboxes
@@ -229,6 +231,7 @@ var Datatable = function() {
             $('input.form-filter[type="radio"]:checked', table).each(function() {
                 the.setAjaxParam($(this).attr("name"), $(this).val());
             });
+            
 
             dataTable.ajax.reload();
         },
