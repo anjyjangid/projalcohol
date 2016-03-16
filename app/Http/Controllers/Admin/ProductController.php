@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
 
 use AlcoholDelivery\Categories as Categories;
+use AlcoholDelivery\Products;
+use MongoId;
 
 class ProductController extends Controller
 {
@@ -52,33 +54,57 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {    
-        $inputs = $request->all();
-        prd($inputs);      
-        // validation rules
+        $inputs = $request->all();        
+        
+        //pr($inputs);
+        
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required',
             'shortDescription' => 'required',
+            'categories' => 'required',
+            'sku' => 'required',
             'price' => 'required|numeric',
             'discountPrice' => 'required|numeric',
-            'fromAvailable'  => 'required|date',
-            'uptoAvailable'  => 'required|date',
-            'sku' => 'required',            
+            'chilled' => 'required|integer',
             'status' => 'required|integer',
-            'thumb' => 'required|mimes:jpeg,jpg,png|max:8000',
+            'metaTitle' => 'max:100',
+            'metaKeywords' => 'max:1000',
+            'metaDescription' => 'max:255',
+            'images.*.label' => 'required',
+            'images.*.order' => 'required|integer',
+            'images.*.size' => 'required|integer',
         ]);
 
         // if validation fails
         if ($validator->fails()) {
-            return response('There are errors in the form data', 400);
+            $validator->errors()->add('message','Please verify all fields');
+            return response($validator->errors(), 422);
         }
-                
-       	$fileUpload = $this->uploadThumb($request);
         
-        return Categories::create([
-            'cat_title' => $inputs['title'],
-            'cat_thumb' => $fileUpload->original['thumb'],
-            'cat_lthumb' => isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:''
+        $cat = [];
+
+        foreach ($inputs['categories'] as $key => $value) {
+            $cat [] = ["_id" => new MongoId($value)];
+        }       
+
+       	//$fileUpload = $this->uploadThumb($request);
+
+
+        return Products::create([
+            'p_name' => $inputs['name'],
+            'p_description' => $inputs['description'],
+            'p_shortDescription' => $inputs['shortDescription'],
+            'p_categories' => $cat,
+            'p_sku' => $inputs['sku'],
+            'p_price' => $inputs['price'],
+            'p_discountPrice' => $inputs['discountPrice'],
+            'p_chilled' => $inputs['chilled'],
+            'p_status' => $inputs['status'],
+            'p_metaTitle' => @$inputs['metaTitle'],
+            'p_metaKeywords' => @$inputs['metaKeywords'],
+            'p_metaDescription' => @$inputs['metaDescription'],
+            'p_slug' => $inputs['name']
         ]);
     }
 
@@ -94,8 +120,7 @@ class ProductController extends Controller
         // check if the file is valid file
         if (!$request->file('thumb')->isValid()) {
             return response('File is not valid.', 400);
-        }	
-                                          
+        }	                                          
 
         if ($request->hasFile('thumb'))
         {
