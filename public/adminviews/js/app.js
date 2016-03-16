@@ -671,6 +671,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
 
                                 'assets/global/scripts/datatable.js',
                                 'adminviews/js/scripts/table-ajax.js',
+                                'assets/global/plugins/uniform/jquery.uniform.min.js',
 
                                 'adminviews/js/models/productModel.js',
                                 'adminviews/js/controllers/ProductController.js'

@@ -6,10 +6,10 @@
 					<i class="fa fa-shopping-cart"></i>Add New Product
 				</div>
 				<div class="actions btn-set">
-					<button type="button" class="btn default"><i class="fa fa-angle-left"></i> Back</button>
-					<button class="btn green" ng-click="save()"><i class="fa fa-check"></i> Save</button>
-					<button class="btn green"><i class="fa fa-check-circle"></i> Save & Continue Edit</button>
-					<div class="btn-group">
+					<a class="btn default" href="#/product/list"><i class="fa fa-angle-left"></i> Back</a>
+					<button class="btn green" ng-click="store()"><i class="fa fa-check"></i> Save</button>
+					<!-- <button class="btn green"><i class="fa fa-check-circle"></i> Save & Continue Edit</button> -->
+					<!-- <div class="btn-group">
 						<a class="btn yellow dropdown-toggle" href="javascript:;" data-toggle="dropdown">
 						<i class="fa fa-share"></i> More <i class="fa fa-angle-down"></i>
 						</a>
@@ -29,7 +29,7 @@
 								Print </a>
 							</li>
 						</ul>
-					</div>
+					</div> -->
 				</div>
 			</div>
 			<div class="portlet-body">
@@ -44,7 +44,7 @@
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<input type="text" class="form-control" ng-model="general.name" placeholder="">
+									<input type="text" class="form-control" ng-model="product.name" placeholder="">
 								</div>
 							</div>
 							<div class="form-group">
@@ -52,7 +52,7 @@
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<textarea class="form-control" ng-model="general.description"></textarea>
+									<textarea class="form-control" ng-model="product.description"></textarea>
 								</div>
 							</div>
 							<div class="form-group">
@@ -60,9 +60,8 @@
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<textarea class="form-control" ng-model="general.shortDescription" style="margin-top: 0px; margin-bottom: 0px; height: 54px;"></textarea>
-									<span class="help-block">
-									shown in product listing </span>
+									<textarea class="form-control" ng-model="product.shortDescription" style="margin-top: 0px; margin-bottom: 0px; height: 54px;"></textarea>
+									<span class="help-block">shown in product listing </span>
 								</div>
 							</div>
 							<div class="form-group">
@@ -78,33 +77,13 @@
 									<span class="help-block">
 									select one or more categories </span>
 								</div>
-							</div>
-							<div class="form-group">
-								<label class="col-md-2 control-label">Available Date: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<div class="input-group">
-										<input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="general.fromAvailable" max-date="general.uptoAvailable" is-open="datePopup[0]" ng-required="true" close-text="Close" />
-										<span class="input-group-btn">
-											<button type="button" class="btn btn-default" ng-click="datePopupOpen($event,0)"><i class="glyphicon glyphicon-calendar"></i></button>
-										</span>
-										<span class="input-group-addon"> to </span>
-										<input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="general.uptoAvailable" min-date="general.fromAvailable" is-open="datePopup[1]" ng-required="true" close-text="Close" />
-										<span class="input-group-btn">
-											<button type="button" class="btn btn-default" ng-click="datePopupOpen($event,1)"><i class="glyphicon glyphicon-calendar"></i></button>
-										</span>
-									</div>
-									<span class="help-block">
-									availability daterange. </span>
-								</div>
-							</div>
+							</div>							
 							<div class="form-group">
 								<label class="col-md-2 control-label">SKU: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<input type="text" class="form-control" ng-model="general.sku" placeholder="">
+									<input type="text" class="form-control" ng-model="product.sku" placeholder="">
 								</div>
 							</div>
 							<div class="form-group">
@@ -112,29 +91,40 @@
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<input type="text" class="form-control" ng-model="general.price" placeholder="">
+									<input type="text" class="form-control" ng-model="product.price" placeholder="">
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-md-2 control-label">Tax Class: <span class="required">
+								<label class="col-md-2 control-label">Discount Price: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<select class="table-group-action-input form-control input-medium" ng-model="general.tax_class">
-										<option value="">Select...</option>
-										<option value="1">None</option>
-										<option value="0">Taxable Goods</option>
-										<option value="0">Shipping</option>
-										<option value="0">USA</option>
-									</select>
+									<input type="text" class="form-control" ng-model="product.discountPrice" placeholder="">
 								</div>
 							</div>
+							<div class="form-group">
+								<label class="control-label col-md-2">Chilled/Non-chilled <span class="required" aria-required="true">
+								* </span>
+								</label>
+								<div class="col-md-4">
+									<div class="radio-list">
+										<label>
+										<div class="radio"><span>
+										<input ng-model="product.chilled" type="radio" value="1" ></span></div>
+										Yes </label>
+										<label>
+										<div class="radio"><span><input ng-model="product.chilled" type="radio" value="2"></span></div>
+										No </label>
+									</div>
+									
+								</div>
+							</div>							
 							<div class="form-group">
 								<label class="col-md-2 control-label">Status: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<select class="table-group-action-input form-control input-medium" ng-model="general.status">
+									<select class="table-group-action-input form-control input-medium" ng-model="product.status">
 										<option value="">Select...</option>
 										<option value="1">Published</option>
 										<option value="0">Not Published</option>
@@ -151,7 +141,7 @@
 							<div class="form-group">
 								<label class="col-md-2 control-label">Meta Title:</label>
 								<div class="col-md-10">
-									<input type="text" class="form-control maxlength-handler" ng-model="meta.title" maxlength="100" placeholder="">
+									<input type="text" class="form-control maxlength-handler" ng-model="product.metaTitle" maxlength="100" placeholder="">
 									<span class="help-block">
 									max 100 chars </span>
 								</div>
@@ -159,7 +149,7 @@
 							<div class="form-group">
 								<label class="col-md-2 control-label">Meta Keywords:</label>
 								<div class="col-md-10">
-									<textarea class="form-control maxlength-handler" rows="8" ng-model="meta.keywords" maxlength="1000"></textarea>
+									<textarea class="form-control maxlength-handler" rows="8" ng-model="product.metaKeywords" maxlength="1000"></textarea>
 									<span class="help-block">
 									max 1000 chars </span>
 								</div>
@@ -167,7 +157,7 @@
 							<div class="form-group">
 								<label class="col-md-2 control-label">Meta Description:</label>
 								<div class="col-md-10">
-									<textarea class="form-control maxlength-handler" rows="8" ng-model="meta.description" maxlength="255"></textarea>
+									<textarea class="form-control maxlength-handler" rows="8" ng-model="product.metaDescription" maxlength="255"></textarea>
 									<span class="help-block">
 									max 255 chars </span>
 								</div>
@@ -176,13 +166,13 @@
 
 					</tab>
 					<tab>
-						<tab-heading ng-hide="$scope.notuploaded">Images</tab-heading>
+						<tab-heading>Images</tab-heading>
 
 						<div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10">
 							<a id="tab_images_uploader_pickfiles" href="#" ng-click="imageFiles.push({})" class="btn yellow">
 							<i class="fa fa-plus"></i> Add Files </a>
-							<a id="tab_images_uploader_uploadfiles" href="#" ng-click="uploadFiles()" class="btn green">
-							<i class="fa fa-share"></i> Upload Files </a>
+							<!-- <a id="tab_images_uploader_uploadfiles" href="#" ng-click="uploadFiles()" class="btn green">
+							<i class="fa fa-share"></i> Upload Files </a> -->
 						</div>
 						<div class="row">
 							<div id="tab_images_uploader_filelist" class="col-md-6 col-sm-12">
@@ -261,7 +251,7 @@
 						</table>
 					</tab>
 				</tabset>
-				{{{general:general, meta:meta, image:imageFiles}|json}}
+				{{{product:product}|json}}
 			</div>
 		</div>
 	</div>

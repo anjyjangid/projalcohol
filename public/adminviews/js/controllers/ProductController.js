@@ -15,23 +15,18 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 
 MetronicApp.controller('ProductAddController',['$scope','fileUpload','productModel', function($scope,fileUpload,productModel) {
 
-	$scope.general = {categories:[],images:[]};
-	$scope.meta = {};
-	$scope.datePopup = [false, false];
 	$scope.categories = [];
+	
 	$scope.imageFiles = [{}];
-	$scope.notuploaded = true;																																																							
+
+	$scope.product = {		
+		chilled:'1',
+		categories:[]		
+	};	
 
 	productModel.getCategories().success(function(data){
 		$scope.categories = data;
 	});
-
-	$scope.datePopupOpen = function($event, i){
-		$event.preventDefault();
-		$event.stopPropagation();
-
-		$scope.datePopup[i] = true;
-	}
 
 	$scope.childOf = function(categories, parent){
 		if(!categories) return [];
@@ -43,16 +38,16 @@ MetronicApp.controller('ProductAddController',['$scope','fileUpload','productMod
 		}
 
 		return categories.filter(function(category){
-			return (category.ancestors && category.ancestors.length > 0 && category.ancestors[0]._id == parent);
+			return (category.ancestors && category.ancestors.length > 0 && category.ancestors[0]._id["$id"] == parent);
 		});
 	}
 
 	$scope.selectCategory = function(id){
-		var i = $scope.general.categories.indexOf(id);
+		var i = $scope.product.categories.indexOf(id);
 		if(i>-1)
-			$scope.general.categories.splice(i, 1);
+			$scope.product.categories.splice(i, 1);
 		else
-			$scope.general.categories.push(id);
+			$scope.product.categories.push(id);
 	}
 
 	$scope.imageRemove = function(i){
@@ -64,27 +59,40 @@ MetronicApp.controller('ProductAddController',['$scope','fileUpload','productMod
 
 		for(var i in $scope.imageFiles){
 			fileObj["file_"+i] = $scope.imageFiles[i].thumb;
-
 		}
-		console.log(fileObj); 
-		fileUpload.uploadFileToUrl(fileObj, data, uploadUrl)
-			.success(function(response) {
-				console.log(response);
-				$location.path("categories/list");
 
-			}).error(function(data, status, headers) {            
-				Metronic.alert({
-					type: 'danger',
-					icon: 'warning',
-					message: data,
-					container: '.portlet-body',
-					place: 'prepend'
-				});
+		fileUpload.uploadFileToUrl(fileObj, data, uploadUrl)
+		.success(function(response) {
+			console.log(response);
+			$location.path("categories/list");
+
+		}).error(function(data, status, headers) {            
+			Metronic.alert({
+				type: 'danger',
+				icon: 'warning',
+				message: data,
+				container: '.portlet-body',
+				place: 'prepend'
 			});
+		});
 	}
 
 	$scope.save = function(){
 		productModel.saveProduct({general:$scope.general, meta:$scope.meta}).success(function(response){
+			console.log(response);
+		}).error(function(response){
+			console.log(response);
+		});
+	}
+
+	$scope.store = function(){
+
+		var data = $scope.product;
+
+		data.images = $scope.imageFiles;
+		
+		//POST DATA WITH FILES
+		productModel.storeProduct(data).success(function(response){
 			console.log(response);
 		}).error(function(response){
 			console.log(response);
