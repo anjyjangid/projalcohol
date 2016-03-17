@@ -1,18 +1,15 @@
 'use strict';
 
-MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout','$http','$stateParams','fileUpload','categoryModel', function($rootScope, $scope, $timeout,$http,$stateParams,fileUpload,categoryModel) {
+MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout','$http','fileUpload','categoryModel', function($rootScope, $scope, $timeout,$http,fileUpload,categoryModel) {
 
     $scope.$on('$viewContentLoaded', function() {   
         Metronic.initAjax(); // initialize core components
         Layout.setSidebarMenuActiveLink('set', $('#sidebar_menu_link_categories')); // set profile link active in sidebar menu         
-    });
-    
+    });       
+
     // set sidebar closed and body solid layout mode
     $rootScope.settings.layout.pageBodySolid = false;
-    $rootScope.settings.layout.pageSidebarClosed = false;  
-
-    console.log($stateParams.categoryid);
-    
+    $rootScope.settings.layout.pageSidebarClosed = false;      
     
 	angular.extend($scope, {
 
@@ -21,16 +18,15 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 			$scope.category = {};
 			$scope.categories = [];
 			$scope.lthumb = true;
-			categoryModel.getParentCategories().success(function(response) {				
-				//$scope.category.ptitle = response;
+			
+			categoryModel.getParentCategories().success(function(response) {
+
 				$scope.categories.push({categoryList: response});
+
 			});
 			
 		},
 
-
-
-		
 		setParentSubCategory : function(i){	
 
 			$scope.loading = true;
@@ -121,12 +117,18 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 
 MetronicApp.controller('CategoryShowController',['$rootScope', '$scope', '$timeout','$http','$stateParams','categoryModel', function($rootScope, $scope, $timeout,$http,$stateParams,categoryModel) {
    
+
     $scope.categoryData = [];
+    
 
     categoryModel.getCategoryDetail($stateParams.categoryid).success(function(data){
+
 		$scope.categoryData = data;
+
 	});
-        
+
+    handleChildCatRecords($stateParams.categoryid);
+
 	angular.extend($scope, {})
 
    

@@ -659,6 +659,9 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 url: "/edit/{categoryid}",
                 templateUrl: "adminviews/views/categories/add.html",
                 data: {pageTitle: 'Category Detail'},
+                controller:function($stateParams,$rootScope){
+                    $rootScope.categoryid = $stateParams.categoryid;
+                }
             })
             
 

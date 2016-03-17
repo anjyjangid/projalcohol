@@ -25,4 +25,20 @@ class Categories extends Eloquent
     protected $fillable = ['cat_title', 'cat_thumb', 'cat_lthumb','ancestors','cat_status'];
 
     
+    public function getCategory($params = array()){
+
+
+        $category = $this->where('_id','=', $params['key']);
+
+        if(isset($params['multiple']) && $params['multiple']){
+            $category = $category->get();
+        }else{
+            $category = $category->first();
+        }
+        
+        
+        return $category;
+
+    }
+
 }

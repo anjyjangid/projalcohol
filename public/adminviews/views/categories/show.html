@@ -9,17 +9,13 @@
 			<div class="portlet light profile-sidebar-portlet">
 				<!-- SIDEBAR USERPIC -->
 				<div class="profile-userpic">
-					<img src="../../../assets/admin/pages/media/profile/profile_user.jpg" class="img-responsive" alt="">
+					<img src="/assets/resources/category/thumb/200/{{categoryData.cat_thumb}}" class="img-responsive" alt="">
 				</div>
 				<!-- END SIDEBAR USERPIC -->
 				<!-- SIDEBAR USER TITLE -->
 				
 				<!-- END SIDEBAR USER TITLE -->
-				<!-- SIDEBAR BUTTONS -->
-				<div class="profile-userbuttons">
-					<button type="button" class="btn btn-circle green-haze btn-sm">Active</button>					
-				</div>
-				<!-- END SIDEBAR BUTTONS -->
+				
 				<!-- SIDEBAR MENU -->
 				<div class="profile-usermenu">
 					<ul class="nav">
@@ -34,20 +30,7 @@
 				<!-- END MENU -->
 							
 				<div>
-					<h4 class="profile-desc-title">About Marcus Doe</h4>
-					<span class="profile-desc-text"> Lorem ipsum dolor sit amet diam nonummy nibh dolore. </span>
-					<div class="margin-top-20 profile-desc-link">
-						<i class="fa fa-globe"></i>
-						<a href="http://www.alcoholdelivery.com">www.keenthemes.com</a>
-					</div>
-					<div class="margin-top-20 profile-desc-link">
-						<i class="fa fa-twitter"></i>
-						<a href="http://www.twitter.com">@keenthemes</a>
-					</div>
-					<div class="margin-top-20 profile-desc-link">
-						<i class="fa fa-facebook"></i>
-						<a href="http://www.facebook.com">keenthemes</a>
-					</div>
+					<h4 class="profile-desc-title">{{categoryData.cat_title}}</h4>					
 				</div>
 			</div>
 			<!-- END PORTLET MAIN -->
@@ -84,6 +67,52 @@
 				<div class="tab-content">
 					<!-- Child Category TAB -->
 					<div class="tab-pane active" id="tab_1_1">
+												
+						<div class="row static-info">
+							<div class="col-md-4 name">
+								 Title:
+							</div>
+							<div class="col-md-8 value">
+								<span class="label label-success">
+								{{categoryData.cat_title}} </span>
+							</div>
+						</div>
+						<div class="row static-info" ng-if="categoryData.ancestors">
+							<div class="col-md-4 name">
+								 Parents:
+							</div>
+							<div class="col-md-8 value">
+								<ul class="list-inline">
+								<li ng-repeat="parent in categoryData.ancestors">
+								<a title="view : {{parent.title}}" ui-sref="categories.show({categoryid:parent._id['$id']})"><span class="label label-success">{{parent.title}}</span></a>&nbsp&nbsp<span ng-if="!$last" class="fa fa-long-arrow-right"></span>
+								</li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="row static-info">
+							<div class="col-md-4 name">
+								 Status :
+							</div>
+							<div class="col-md-8 value">
+								<div class="profile-userbuttons">
+									<button ng-if="categoryData.cat_status == 1" type="button" class="btn green-haze btn-sm">Active</button>
+									<button ng-if="categoryData.cat_status == 0" type="button" class="btn green-haze btn-sm">In-Active</button>
+								</div>
+								
+							</div>
+						</div>
+
+						<div class="row static-info" ng-if="categoryData.cat_lthumb">
+							<div class="col-md-4 name">
+								 Listing Thumb :
+							</div>
+							<div class="col-md-8 value">
+								<img src="/assets/resources/category/lthumb/400/{{categoryData.cat_lthumb}}" class="img-responsive" alt="">
+							</div>
+						</div>
+
+						
 					</div>
 					<div class="tab-pane" id="tab_1_2">
 						
@@ -195,22 +224,12 @@
 <!-- BEGIN MAIN JS -->
 <script>
 	
-	var ChildCategoriesTableAjax = function () {
-
-    var initPickers = function () {
-        //init date pickers
-        $('.date-picker').datepicker({
-            rtl: Metronic.isRTL(),
-            autoclose: true
-        });
-    }
-
-    
-    var handleRecords = function () {
+	var handleChildCatRecords = function (categoryId) {
 
         var grid = new Datatable();
 
         grid.init({
+        	
             src: $("#categorieslisttab"),
             onSuccess: function (grid) {
                 // execute some code after table records loaded
@@ -239,7 +258,7 @@
                         'targets': [1,5]
                     }],
                 "ajax": {
-                    "url": "../admin/category/getcategories", // ajax source
+                    "url": "admin/category/getcategories/"+categoryId,// ajax source
                     // "data": function ( d ) {
                     //     d._token = $('meta[name="_token"]').attr('content');
 
@@ -291,19 +310,8 @@
         });
     }
 
-    return {
+	
 
-        //main function to initiate the module
-        init: function () {
-
-            initPickers();
-            handleRecords();
-        }
-
-    };
-
-}();
-
-	ChildCategoriesTableAjax.init();
+	
 </script>
 <!-- END MAIN JS

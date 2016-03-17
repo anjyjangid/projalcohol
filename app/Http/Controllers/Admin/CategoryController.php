@@ -82,7 +82,7 @@ class CategoryController extends Controller
 	       		$ancestors = [];
 	       	}
 	       	
-	       	array_unshift($ancestors, ["_id" => new MongoId($parentCategories->_id),'title' =>$parentCategories->cat_title] );
+	       	array_unshift($ancestors, ["_id" => new MongoId($parentCategories->_id),'title' =>$parentCategories->cat_title]);
 
 	       	$category->ancestors = $ancestors;
 
@@ -234,9 +234,8 @@ class CategoryController extends Controller
     	return response($categories);
     }
 
-    public function getcategories(Request $request)
-    {
-
+    public function getcategories(Request $request,$id = false)
+    {        
         $params = $request->all();
 
         $categories = new Categories;        
@@ -248,6 +247,10 @@ class CategoryController extends Controller
 
             
         /* Individual column filtering */
+
+        if($id){
+            $categories = $categories->where('ancestors._id', '=', $id);
+        }
 
         foreach($columns as $fieldKey=>$fieldTitle)
         {              
@@ -263,6 +266,8 @@ class CategoryController extends Controller
                             
             }
         }
+
+
         //prd($categories->toSql());
 
             
@@ -285,25 +290,23 @@ class CategoryController extends Controller
 
         }
         
+        /* Data set length after filtering */        
 
-        /* 
+        $iFilteredTotal = $categories->count();
+
+        /*
          * Paging
-         */        
+         */
         if ( isset( $params['start'] ) && $params['length'] != '-1' )
         {
-            $categories = $categories->skip(intval( $params['start'] ))->take($params['length']);
+            $categories = $categories->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
         }
+
+        $iTotal = $categories->count();
 
         $categories = $categories->get($columns);
 
-        
- 
-        /* Data set length after filtering */        
-        $iFilteredTotal = Categories::count();
-        
         $categories = $categories->toArray();
-
-        $iTotal = Categories::count();
                 
         /*
          * Output
@@ -359,11 +362,16 @@ class CategoryController extends Controller
 
 
     public function getcategorydetail($categoryId){
+        
+        $categoryObj = new Categories;
 
-        $category = Categories::with('categories')->where('cat_id',"=",$categoryId)->get();
-
-        return response($category, 201);
+        $result = $categoryObj->getCategory(array(
+                        "key"=>$categoryId,
+                        "multiple"=>false
+                    ));
+        
+        return response($result, 201);
 
     }
-    
+
 }
