@@ -89,6 +89,7 @@ MetronicApp.factory('settings', ['$rootScope', function($rootScope) {
 MetronicApp.service('fileUpload', ['$http','$location', function ($http,$location) {
 
     this.uploadFileToUrl = function(files,fields,uploadUrl){
+
         var fd = new FormData();
                 
         for (var file in files) {
@@ -132,11 +133,47 @@ MetronicApp.service('fileUpload', ['$http','$location', function ($http,$locatio
 
 
 /* Setup App Main Controller */
-MetronicApp.controller('AppController', ['$scope', '$rootScope', function($scope, $rootScope) {
+MetronicApp.controller('AppController', ['$scope', '$rootScope','$http', function($scope, $rootScope,$http) {
+
     $scope.$on('$viewContentLoaded', function() {
         Metronic.initComponents(); // init core components        
         //Layout.init(); //  Init entire layout(header, footer, sidebar, etc) on page load if the partials included in server side instead of loading with ng-include directive 
     });
+
+    $scope.changeStatus = function(id){
+
+        var currObj = $("#"+id);
+        var table = $(currObj).data("table");
+        var status = parseInt($(currObj).data("status"));
+
+        $http.get("/admin/global/status/"+id+'/'+table+'/'+status).success(function(response) {
+
+            Metronic.alert({
+                        type: 'success',
+                        icon: 'check',
+                        message: response.message,
+                        container: '#info-message',
+                        place: 'prepend'
+                    });
+
+            var currObj = $("#"+id);
+
+            if(response.status){
+
+                $(currObj).removeClass("label-success").addClass("label-warning").text("In-Active");
+
+            }else{
+                
+                $(currObj).removeClass("label-warning").addClass("label-success").text("Active");
+                
+            }
+    
+            $(currObj).data("status",response.status);
+            
+
+        });
+
+    }
     
 }]);
 
@@ -657,11 +694,9 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             })
             .state("categories.edit",{
                 url: "/edit/{categoryid}",
-                templateUrl: "adminviews/views/categories/add.html",
+                templateUrl: "adminviews/views/categories/edit.html",
                 data: {pageTitle: 'Category Detail'},
-                controller:function($stateParams,$rootScope){
-                    $rootScope.categoryid = $stateParams.categoryid;
-                }
+                controller:"CategoryUpdateController"                
             })
             
 

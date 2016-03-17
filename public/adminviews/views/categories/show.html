@@ -9,7 +9,7 @@
 			<div class="portlet light profile-sidebar-portlet">
 				<!-- SIDEBAR USERPIC -->
 				<div class="profile-userpic">
-					<img src="/assets/resources/category/thumb/200/{{categoryData.cat_thumb}}" class="img-responsive" alt="">
+					<img ng-src="/assets/resources/category/thumb/200/{{categoryData.cat_thumb}}" class="img-responsive" alt="">
 				</div>
 				<!-- END SIDEBAR USERPIC -->
 				<!-- SIDEBAR USER TITLE -->
@@ -37,8 +37,7 @@
 		</div>
 		<!-- END BEGIN PROFILE SIDEBAR -->
 		<!-- BEGIN PROFILE CONTENT -->
-		<div ui-view class="profile-content fade-in-up"> 
-		</div>
+		<!-- <div ui-view class="profile-content fade-in-up"></div> -->
 		<!-- END PROFILE CONTENT -->
 	 
 	</div>
@@ -108,7 +107,7 @@
 								 Listing Thumb :
 							</div>
 							<div class="col-md-8 value">
-								<img src="/assets/resources/category/lthumb/400/{{categoryData.cat_lthumb}}" class="img-responsive" alt="">
+								<img ng-if="categoryData.cat_lthumb" ng-src="/assets/resources/category/lthumb/400/{{categoryData.cat_lthumb}}" class="img-responsive" alt="">
 							</div>
 						</div>
 
@@ -125,34 +124,7 @@
 					<span class="hidden-480">
 					New Category </span>
 					</a>
-					<div class="btn-group">
-						<a class="btn default yellow-stripe" href="#" data-toggle="dropdown">
-						<i class="fa fa-share"></i>
-						<span class="hidden-480">
-						Tools </span>
-						<i class="fa fa-angle-down"></i>
-						</a>
-						<ul class="dropdown-menu pull-right">
-							<li>
-								<a href="#">
-								Export to Excel </a>
-							</li>
-							<li>
-								<a href="#">
-								Export to CSV </a>
-							</li>
-							<li>
-								<a href="#">
-								Export to XML </a>
-							</li>
-							<li class="divider">
-							</li>
-							<!-- <li>
-								<a href="#">
-								Print Invoices </a>
-							</li> -->
-						</ul>
-					</div>
+					
 				</div>
 					<table class="table table-striped table-bordered table-hover" id="categorieslisttab">
 						<thead>
@@ -253,6 +225,9 @@
                     [10, 20, 50, 100, 150, "All"] // change per page values here
                 ],
                 "pageLength": 10, // default record count per page
+                "language": {
+			      "emptyTable": "No child category available"
+			    },
                 "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
                         'orderable': false,
                         'targets': [1,5]
@@ -276,7 +251,24 @@
                 },
                 "order": [
                     [1, "asc"],
-                ] // set first column as a default sort by asc
+                ], // set first column as a default sort by asc
+                "fnDrawCallback": function (oSettings) {
+                	
+					$("tr td span").each(function () {
+					    var content = $(this);
+					    angular.element(document).injector().invoke(function($compile) {
+					        var scope = angular.element(content).scope();
+					        $compile(content)(scope);
+					    });
+					});
+					
+					Metronic.initAjax()
+
+				},
+				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+										
+			    }
+                
             }
         });
 

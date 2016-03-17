@@ -9,8 +9,8 @@ MetronicApp.factory('categoryModel', ['$http', '$cookies', function($http, $cook
      * @param  {array} loginData
      * @return {promise}
      */
-    categoryModel.getCategoryDetail = function(categoryId){
-            return $http.get("/admin/category/getcategorydetail/"+categoryId);
+    categoryModel.getCategory = function(categoryId){
+            return $http.get("/admin/category/getcategory/"+categoryId);
         },
 
     categoryModel.submitAccount = function(postedData) {

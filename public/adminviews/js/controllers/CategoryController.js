@@ -121,7 +121,7 @@ MetronicApp.controller('CategoryShowController',['$rootScope', '$scope', '$timeo
     $scope.categoryData = [];
     
 
-    categoryModel.getCategoryDetail($stateParams.categoryid).success(function(data){
+    categoryModel.getCategory($stateParams.categoryid).success(function(data){
 
 		$scope.categoryData = data;
 
@@ -130,6 +130,65 @@ MetronicApp.controller('CategoryShowController',['$rootScope', '$scope', '$timeo
     handleChildCatRecords($stateParams.categoryid);
 
 	angular.extend($scope, {})
+
+   
+}]);
+
+
+MetronicApp.controller('CategoryUpdateController',['$rootScope', '$scope', '$timeout','$http','$stateParams','fileUpload','categoryModel', function($rootScope, $scope, $timeout,$http,$stateParams,fileUpload,categoryModel) {
+    
+    angular.extend($scope, {
+
+    	categoryFormInit: function(){
+
+			$scope.category = {};
+			$scope.categories = [];
+			$scope.lthumb = true;
+			
+			
+			categoryModel.getCategory($stateParams.categoryid).success(function(response) {
+
+				$scope.category.title = response.cat_title;
+				$scope.category.thumb = response.cat_thumb;
+				$scope.category.lthumb = response.cat_lthumb;
+
+			});
+			
+		},
+
+		submitCategory : function() {
+			
+
+			var data = {
+				title: $scope.category.title,
+				ptitle:''
+			};
+			
+			var files = {
+				"thumb":$scope.category.thumb,
+				"lthumb":$scope.category.lthumb
+			};
+
+			var uploadUrl = "admin/category/update/"+$stateParams.categoryid;
+
+			fileUpload.uploadFileToUrl(files, data, uploadUrl)
+		        .success(function(response) {
+		            
+		            $location.path("categories/list");
+
+		        }).error(function(data, status, headers) {            
+		            Metronic.alert({
+		                type: 'danger',
+		                icon: 'warning',
+		                message: data,
+		                container: '.portlet-body',
+		                place: 'prepend'
+		            });
+		        });
+
+		},
+    	
+    })
 
    
 }]);

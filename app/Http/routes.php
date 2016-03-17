@@ -62,13 +62,21 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 
 	    Route::post('store','Admin\CategoryController@store');
 
+	    Route::post('update/{id}','Admin\CategoryController@update');
+
 	    Route::get('show','Admin\CategoryController@show');
 
-	    Route::get('getcategorydetail/{id}','Admin\CategoryController@getcategorydetail');
-
-
+	    Route::get('getcategory/{id}','Admin\CategoryController@getcategory');
+	  
 
     });
+
+	Route::group(['prefix' => 'global'], function () {
+		
+		Route::get('status/{id}/{table}/{status}','Admin\GlobalController@setstatus');
+			
+	});
+    
     
 	
 	Route::group(['prefix' => 'product'], function () {
