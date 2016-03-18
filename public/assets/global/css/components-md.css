@@ -5150,7 +5150,7 @@ Portlets
   padding: 10px;
 }
 .portlet > .portlet-title {
-  border: 0 !important;
+  /*border: 0 !important;*/
   margin-bottom: 0;
 }
 .portlet.light.bordered.form-fit > .portlet-title {

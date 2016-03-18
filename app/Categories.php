@@ -2,11 +2,11 @@
 
 namespace AlcoholDelivery;
 
-// use Illuminate\Database\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
+use Moloquent;
 
-class Categories extends Eloquent
+class Categories extends Moloquent
 {
+    
     protected $primaryKey = "_id";
     protected $collection = 'categories';
 
@@ -24,10 +24,20 @@ class Categories extends Eloquent
      */
     protected $fillable = ['cat_title', 'cat_thumb', 'cat_lthumb','ancestors','cat_status'];
 
+    
+    public function getCategory($params = array()){
 
-    public function categories()
-    {
-        return $this->belongsTo('Categories');
+        $category = $this->where('_id','=', $params['key']);
+
+        if(isset($params['multiple']) && $params['multiple']){
+            $category = $category->get();
+        }else{
+            $category = $category->first();
+        }
+        
+        
+        return $category;
+
     }
 
 }

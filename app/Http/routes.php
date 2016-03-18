@@ -56,15 +56,27 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 	
 	Route::group(['prefix' => 'category'], function () {
 
-	    Route::match(['get', 'post'],'getcategories', ['uses' => 'Admin\CategoryController@getcategories']);
+	    Route::match(['get', 'post'],'getcategories/{categoryId?}', ['uses' => 'Admin\CategoryController@getcategories']);
 
 	    Route::get('getparentcategories/{id?}', ['uses' => 'Admin\CategoryController@getparentcategories']);
 
 	    Route::post('store','Admin\CategoryController@store');
 
-    Route::post('category/store','Admin\CategoryController@store');
-    Route::post('product/store','Admin\ProductController@store');
+	    Route::post('update/{id}','Admin\CategoryController@update');
+
+	    Route::get('show','Admin\CategoryController@show');
+
+	    Route::get('getcategory/{id}','Admin\CategoryController@getcategory');
+	  
+
     });
+
+	Route::group(['prefix' => 'global'], function () {
+		
+		Route::get('status/{id}/{table}/{status}','Admin\GlobalController@setstatus');
+			
+	});
+    
     
 	
 	Route::group(['prefix' => 'product'], function () {
