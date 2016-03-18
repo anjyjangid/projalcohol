@@ -291,8 +291,7 @@ class CategoryController extends Controller
             
         /*
          * Ordering
-         */
-        //$sOrder = "Order by category_title";
+         */        
 
         if ( isset( $params['order'] ) )
         {

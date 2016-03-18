@@ -6,7 +6,11 @@ use Illuminate\Http\Request;
 
 use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
-use AlcoholDelivery\User as User;
+
+use Storage;
+use Validator;
+
+use AlcoholDelivery\Dealer as Dealer;
 
 class DealerController extends Controller
 {
@@ -46,8 +50,99 @@ class DealerController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
+    {    
+        $inputs = $request->all();
+
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'description' => 'required',            
+            'street' => 'required',
+            // 'sku' => 'required',
+            // 'price' => 'required|numeric',
+            // 'discountPrice' => 'required|numeric',
+            // 'chilled' => 'required|integer',
+            // 'status' => 'required|integer',
+            // 'metaTitle' => 'max:100',
+            // 'metaKeywords' => 'max:1000',
+            // 'metaDescription' => 'max:255',            
+        ],[
+            'required' => 'Please enter :attribute.',
+            // 'categories.required' => 'Please select atleast one category.',
+            // 'status.required' => 'Please select :attribute.',
+        ]);
+
+        return response($validator->errors(), 422);
+
+        prd($request->all());
+
+        //VALIDATE ALL UPLOADED FILES
+        $contacts = $inputs['contacts'];
+
+        $ferror = false;                
+        
+        foreach ($contacts as $key => $contact) {
+            $rules = ['contact' => 'required'];
+            $validfile = Validator::make(['contact'=> $contact['name']], $rules, ['contact.required'=>'Please select atleast one']);
+            if($validfile->passes()){
+
+            }else{
+                $ferror = $validfile->errors()->first('contact');
+                break;
+            }
+        }        
+
+        // if validation fails
+        if ($validator->fails() || $ferror){
+            
+            if($ferror)
+                $validator->errors()->add('contact',$ferror);
+
+            return response($validator->errors(), 422);
+        }
+        
+        prd("asdasd");
+        /*$cat = [];
+        //SET CATEGORIES FOR PRODUCT
+        foreach ($inputs['categories'] as $key => $value) {
+            $cat [] = ["_id" => new MongoId($value)];
+        }*/      
+
+        $product = Products::create([
+            'title' => $inputs['title'],
+            'p_description' => $inputs['description'],
+            'p_shortDescription' => $inputs['shortDescription'],
+            'p_categories' => $inputs['categories'],
+            'p_sku' => $inputs['sku'],
+            'p_price' => (float)$inputs['price'],
+            'p_discountPrice' => (float)$inputs['discountPrice'],
+            'p_chilled' => (int)$inputs['chilled'],
+            'p_status' => (int)$inputs['status'],
+            'p_metaTitle' => @$inputs['metaTitle'],
+            'p_metaKeywords' => @$inputs['metaKeywords'],
+            'p_metaDescription' => @$inputs['metaDescription']            
+        ]);    
+
+        if($product){
+            $filearr = [];
+            foreach ($files as $key => $file) {
+
+                $filearr[] = [
+                    'source' => $filename,
+                    'label' => @$file['label'],
+                    'order' => @$file['order'],
+                    'is_cover' => @$file['cover'],
+                ];
+            }
+
+            if($filearr){
+                $product->p_images = $filearr;
+                $product->save();
+            }
+        }
+
+        //$product->p_price = 25;
+        //$product->save();
+        return $product;
     }
 
     /**
@@ -95,40 +190,123 @@ class DealerController extends Controller
         //
     }
 
-    public function getdealers()
-    {
+    public function getdealers(Request $request,$id = false)
+    {        
+        $params = $request->all();
 
-        $users = User::all()->toArray();
+        $dealers = new Dealer;
+
+        $columns = array('_id',"title",'contacts','address','updated_at','status');
         
-        $records = [
-            "iTotalRecords" => User::count(),
-            "iTotalDisplayRecords" => User::count(),
-        ];
+        /* Individual column filtering */
 
-        $status_list = array(
-            array("success" => "Pending"),
-            array("info" => "Closed"),
-            array("danger" => "On Hold"),
-            array("warning" => "Fraud")
-          );
-        foreach($users as $key=>$value) {
-            $status = $status_list[rand(0, 2)];
-            $records["data"][] = array(
-              '<input type="checkbox" name="id[]" value="'.$value['_id'].'">',
-              $value['_id'],
-              '12/09/2013',
-              'Jhon Doe',
-              'Jhon Doe',
-              '450.60$',
-              rand(1, 10),
-              '<span class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span>',
-              '<a href="javascript:;" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>',
-            );
+        if($id){
+            $dealers = $dealers->where('ancestors._id', '=', $id);
+        }
+
+        foreach($columns as $fieldKey=>$fieldTitle)
+        {
+
+            if ( isset($params[$fieldTitle]) && $params[$fieldTitle]!="" )
+            {
+
+                $dealers = $dealers->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
+
+            }
         }
 
 
+        //prd($dealers->toSql());
 
-       return  json_encode($records);
+            
+        /*
+         * Ordering
+         */
+        
+        if ( isset( $params['order'] ) )
+        {
+
+            foreach($params['order'] as $orderKey=>$orderField){
+
+                if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
+                    
+                    $dealers = $dealers->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
+                    
+                }
+            }
+
+        }
+        
+        /* Data set length after filtering */        
+
+        $iFilteredTotal = $dealers->count();
+
+        /*
+         * Paging
+         */
+        if ( isset( $params['start'] ) && $params['length'] != '-1' )
+        {
+            $dealers = $dealers->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
+        }
+
+        $iTotal = $dealers->count();
+
+        $dealers = $dealers->get($columns);
+
+        $dealers = $dealers->toArray();
+                
+        /*
+         * Output
+         */
+         
+        
+        $records = array(
+            "iTotalRecords" => $iTotal,
+            "iTotalDisplayRecords" => $iFilteredTotal,
+            "data" => array()
+        );
+
+             
+        
+        $status_list = array(            
+            array("warning" => "in-Active"),
+            array("success" => "Active")
+          );
+
+
+
+        $srStart = intval( $params['start'] );
+        if($params['order'][0]['column']==0 && $params['order'][0]['dir']=='asc'){
+            $srStart = intval($iTotal);
+        }
+
+        $i = 1;
+        foreach($dealers as $key=>$value) {
+
+            $row=array();
+
+            if($params['order'][0]['column']==0 && $params['order'][0]['dir']=='asc'){
+                $row[] = $srStart--;//$row1[$aColumns[0]];
+            }else{
+                $row[] = ++$srStart;//$row1[$aColumns[0]];
+            }
+
+            $status = $status_list[(int)$value['status']];
+            $row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';
+                    
+            $row[] = ucfirst($value['title']);
+            $row[] = count($value['contacts']);
+
+            $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="category" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
+            $row[] = '<a title="View : '.$value['title'].'" href="#/dealers/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
+                     '<a title="Edit : '.$value['title'].'" href="#/dealers/edit/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
+            
+            $records['data'][] = $row;
+        }
+        
+        return response($records, 201);
+        
     }
+    
     
 }

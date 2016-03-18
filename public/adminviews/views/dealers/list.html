@@ -10,11 +10,11 @@
 			<i class="fa fa-angle-right"></i>
 		</li>
 		<li>
-			<a href="#/datatables/advanced.html">Dealers</a>
+			<a href="#/dealers/list.html">Dealers</a>
 			<i class="fa fa-angle-right"></i>
 		</li>
 		<li>
-			<a href="#/datatables/advanced.html">List</a>
+			<a href="#">List</a>
 		</li>
 	</ul>
 	
@@ -35,7 +35,7 @@
 					<i class="fa fa-users"></i>Dealers Listing
 				</div>
 				<div class="actions">
-					<a href="#" class="btn default yellow-stripe">
+					<a ui-sref="dealers.add" class="btn default yellow-stripe">
 					<i class="fa fa-plus"></i>
 					<span class="hidden-480">
 					New Dealer </span>
@@ -87,27 +87,20 @@
 					<table class="table table-striped table-bordered table-hover" id="dealerslisttab">
 						<thead>
 							<tr role="row" class="heading">
+								<th width="5%">
+									Sr.
+								</th>								
 								<th width="2%">
 									<input type="checkbox" class="group-checkable">
 								</th>
-								<th width="5%">
-									Record&nbsp;#
-								</th>
+								
 								<th width="15%">
-									Date
-								</th>
-								<th width="15%">
-									Customer
+									Dealer
 								</th>
 								<th width="10%">
-									Ship&nbsp;To
+									Contacts
 								</th>
-								<th width="10%">
-									Price
-								</th>
-								<th width="10%">
-									Amount
-								</th>
+																
 								<th width="10%">
 									Status
 								</th>
@@ -116,50 +109,19 @@
 								</th>
 							</tr>
 							<tr role="row" class="filter">
-								<td>
-								</td>
-								<td>
-									<input type="text" class="form-control form-filter input-sm" name="order_id">
-								</td>
-								<td>
-									<div class="input-group date date-picker margin-bottom-5" data-date-format="dd/mm/yyyy">
-										<input type="text" class="form-control form-filter input-sm" readonly name="order_date_from" placeholder="From">
-										<span class="input-group-btn">
-										<button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
-										</span>
-									</div>
-									<div class="input-group date date-picker" data-date-format="dd/mm/yyyy">
-										<input type="text" class="form-control form-filter input-sm" readonly name="order_date_to" placeholder="To">
-										<span class="input-group-btn">
-										<button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
-										</span>
-									</div>
-								</td>
+								<td></td>
+								<td></td>
+
 								<td>
 									<input type="text" class="form-control form-filter input-sm" name="order_customer_name">
 								</td>
+								<td></td>
+								
 								<td>
-									<input type="text" class="form-control form-filter input-sm" name="order_ship_to">
-								</td>
-								<td>
-									<div class="margin-bottom-5">
-										<input type="text" class="form-control form-filter input-sm" name="order_price_from" placeholder="From"/>
-									</div>
-									<input type="text" class="form-control form-filter input-sm" name="order_price_to" placeholder="To"/>
-								</td>
-								<td>
-									<div class="margin-bottom-5">
-										<input type="text" class="form-control form-filter input-sm margin-bottom-5 clearfix" name="order_quantity_from" placeholder="From"/>
-									</div>
-									<input type="text" class="form-control form-filter input-sm" name="order_quantity_to" placeholder="To"/>
-								</td>
-								<td>
-									<select name="order_status" class="form-control form-filter input-sm">
+									<select name="status" class="form-control form-filter input-sm">
 										<option value="">Select...</option>
-										<option value="pending">Pending</option>
-										<option value="closed">Closed</option>
-										<option value="hold">On Hold</option>
-										<option value="fraud">Fraud</option>
+										<option value="1">Active</option>										
+										<option value="0">In-Active</option>
 									</select>
 								</td>
 								<td>
@@ -216,21 +178,51 @@
                 "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
                 "lengthMenu": [
+
                     [10, 20, 50, 100, 150, -1],
                     [10, 20, 50, 100, 150, "All"] // change per page values here
                 ],
                 "pageLength": 10, // default record count per page
+                "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
+                        'orderable': false,
+                        'targets': [1,5]
+                    }],
                 "ajax": {
                     "url": "../admin/dealer/getdealers", // ajax source
-                    "data": function ( d ) {
-                        d._token = $('meta[name="_token"]').attr('content');
-                        // d.custom = $('#myInput').val();
-                        // etc
-                    }
+                    // "data": function ( d ) {
+                    //     d._token = $('meta[name="_token"]').attr('content');
+
+                    //     Metronic.blockUI({
+                    //             message: "Loading.....",
+                    //             target: $("#categorieslisttab").parents(".table-container"),
+                    //             overlayColor: 'none',
+                    //             cenrerY: true,
+                    //             boxed: true
+                    //         });
+                    //     // d.custom = $('#myInput').val();
+                    //     // etc
+                    // },
+                    "type": "GET"
                 },
                 "order": [
-                    [1, "asc"]
-                ] // set first column as a default sort by asc
+                    [1, "asc"],
+                ], // set first column as a default sort by asc
+                "fnDrawCallback": function (oSettings) {
+                	
+					$("tr td span").each(function () {
+					    var content = $(this);
+					    angular.element(document).injector().invoke(function($compile) {
+					        var scope = angular.element(content).scope();
+					        $compile(content)(scope);
+					    });
+					});
+					
+					Metronic.initAjax()
+
+				},
+				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+										
+			    }
             }
         });
 

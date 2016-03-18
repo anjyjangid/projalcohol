@@ -36,7 +36,7 @@ Route::controller('/auth', 'Auth\AuthController');
 Route::post('/admin/getcustomers', ['uses' => 'Admin\AdminController@customers']);
 
 
-Route::match(['get', 'post'],'/admin/dealer/getdealers', ['uses' => 'Admin\DealerController@getdealers']);
+
 
 
 
@@ -70,18 +70,28 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 	  
 
     });
+	
+	Route::resource('dealer', 'Admin\DealerController');
+
+	Route::group(['prefix' => 'dealer'], function () {
+
+		Route::match(['get', 'post'],'getdealers', 'Admin\DealerController@getdealers');
+
+	});
 
 	Route::group(['prefix' => 'global'], function () {
 		
 		Route::get('status/{id}/{table}/{status}','Admin\GlobalController@setstatus');
+
+		Route::get('getcountries','Admin\GlobalController@getcountries');
 			
 	});
     
     
-	
 	Route::group(['prefix' => 'product'], function () {
 		Route::post('store','Admin\ProductController@store');
 	});
+
 });
 
 
@@ -97,11 +107,7 @@ Route::post('/profile/update', 'ProfileController@update');*/
 //Route::resource('admin/profile', 'Admin\profileController');
 Route::controller('/admin', 'Auth\AdminAuthController');
 
-
-
-
-
 Route::post('/auth', 'UserController@checkAuth');
 
-Route::post('/profile/account', 'ProfileController@account');
-Route::post('/profile/update', 'ProfileController@update');
+// Route::post('/profile/account', 'ProfileController@account');
+// Route::post('/profile/update', 'ProfileController@update');

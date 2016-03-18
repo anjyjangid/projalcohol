@@ -562,6 +562,9 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             }
         })
 
+        // dealers complete route start{
+
+
         .state('dealers', {
             url: "/dealers",
             templateUrl: "adminviews/views/dealers/dealers.html",
@@ -584,6 +587,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                             'assets/global/scripts/datatable.js',
                             'adminviews/js/scripts/table-ajax.js',
 
+                            'adminviews/js/models/dealerModel.js',
                             'adminviews/js/controllers/DealersController.js'
                         ]
                     });
@@ -599,45 +603,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {pageTitle: 'Dealers List'}
         })
 
+        .state("dealers.add", {
+                url: "/add",
+                templateUrl: "adminviews/views/dealers/add.html",
+                data: {pageTitle: 'Add New Dealer'},
+                controller:"DealerAddController"
+            })
 
-    
-
-        // .state('category', {
-        //     url: "/category",
-        //     templateUrl: "adminviews/views/category/list.html",
-        //     data: {pageTitle: 'Category list'},
-        //     controller: "GeneralPageController",
-        //     resolve: {
-        //         deps: ['$ocLazyLoad', function($ocLazyLoad) {
-        //             return $ocLazyLoad.load({
-        //                 name: 'MetronicApp',
-        //                 insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-        //                 files: [
-        //                     'assets/global/plugins/select2/select2.css',                             
-        //                     'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
-        //                     'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
-
-        //                     'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
-        //                     'assets/global/plugins/select2/select2.min.js',
-        //                     'assets/global/plugins/datatables/all.min.js',
-
-        //                     'assets/global/scripts/datatable.js',
-
-        //                     'adminviews/js/scripts/category-ajax.js',
-
-        //                     'adminviews/js/controllers/GeneralPageController.js'
-
-        //                 ]
-        //             });
-        //         }]
-        //     }
-        // })
-
-        // .state("categoryAdd", {
-        //     url: "/category/add",
-        //     templateUrl: "adminviews/views/category/add.html",
-        //     data: {pageTitle: 'Category Add'}
-        // })
+        //  Dealers route end //
 
         // category complete route start{
 

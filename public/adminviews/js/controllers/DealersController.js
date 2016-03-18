@@ -13,3 +13,43 @@ MetronicApp.controller('DealersController',['$rootScope', '$scope', '$timeout','
 
 
 }]); 
+
+
+MetronicApp.controller('DealerAddController',['$scope','$http','dealerModel', function($scope,$http,dealerModel) {
+	
+	$scope.errors = {};
+
+	$scope.dealer = {		
+		status:"1",
+		contacts : [{}]
+	};	
+		
+	$http.get("/admin/global/getcountries").success(function(response){
+		$scope.countries = response;
+	});
+	
+	$scope.contactRemove = function(i){
+		$scope.contacts.splice(i, 1);
+	}
+
+	$scope.save = function(){
+		dealerModel.saveProduct({general:$scope.general, meta:$scope.meta}).success(function(response){
+			console.log(response);
+		}).error(function(response){
+			console.log(response);
+		});
+	}
+
+	$scope.store = function(){
+
+		var data = $scope.dealer;	
+		
+		//POST DATA WITH FILES
+		dealerModel.storeDealer(data).success(function(response){
+			//console.log(response);
+		}).error(function(data, status, headers){			
+			$scope.errors = data;			
+		});
+	}
+
+}]);
