@@ -24,5 +24,7 @@ class Products extends Eloquent
             'p_metaTitle',
             'p_metaKeywords',
             'p_metaDescription',
+            'p_images'
+            
     ];
 }

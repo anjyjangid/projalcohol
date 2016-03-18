@@ -20,10 +20,10 @@ MetronicApp.factory('productModel', ['$http', '$cookies','$location', function($
 	            Metronic.alert({
 	                type: 'danger',
 	                icon: 'warning',
-	                message: 'Please validate all required fields.',
+	                message: 'Please enter all required fields.',
 	                container: '.portlet-body',
 	                place: 'prepend',
-	                closeInSeconds: 5
+	                //closeInSeconds: 5
 	            });
 	        });
 	        /*.success(function(response) {	            

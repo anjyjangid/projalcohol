@@ -53,9 +53,9 @@ class Gallery extends Eloquent
                 /*'thumbUrl' => env('S3_URL') . "gallery_{$galleryId}/thumb/" . $file->file_name,
                 'url' => env('S3_URL') . "gallery_{$galleryId}/medium/" . $file->file_name,
                 'main' => env('S3_URL') . "gallery_{$galleryId}/main/" . $file->file_name,*/
-                'thumbUrl' => "gallery_{$galleryId}/thumb/" . $file->file_name,
+                /*'thumbUrl' => "gallery_{$galleryId}/thumb/" . $file->file_name,
                 'url' => "gallery_{$galleryId}/medium/" . $file->file_name,
-                'main' => "gallery_{$galleryId}/main/" . $file->file_name,
+                'main' => "gallery_{$galleryId}/main/" . $file->file_name,*/
             ];
         }
 
