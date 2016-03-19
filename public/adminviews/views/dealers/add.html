@@ -1,0 +1,169 @@
+<div class="row">
+	<div class="col-md-12">
+		<div class="portlet light">
+			<div class="portlet-title tabbable-line">
+				<div class="caption caption-md">
+					<i class="icon-globe theme-font hide"></i>
+					<span class="caption-subject font-blue-madison bold uppercase">Add Dealer</span>
+				</div>
+				<div class="actions btn-set">
+					<a class="btn default" href="#/dealers/list"><i class="fa fa-angle-left"></i> Back</a>
+					<button class="btn green" ng-click="store()"><i class="fa fa-check"></i> Save</button>
+				</div>
+			</div>
+			<div class="portlet-body">
+				
+				<tabset active="active">
+				<tab>
+						<tab-heading>General</tab-heading>
+
+						<div class="form-horizontal">
+							<div class="form-group" ng:class="{'has-error':errors.title[0]}">
+								<label class="col-md-2 control-label">Name: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="dealer.title" placeholder="">
+									<span class="help-block" ng-bind="errors.title[0]"></span>
+								</div>
+
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.description[0]}">
+								<label class="col-md-2 control-label">Description: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<textarea class="form-control" ng-model="dealer.description"></textarea>
+									<span class="help-block" ng-bind="errors.description[0]"></span>
+								</div>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.name[0]}">
+								<label class="col-md-2 control-label">Street: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="dealer.address.street" placeholder="">
+									<span class="help-block" ng-bind="errors.name[0]"></span>
+								</div>
+
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.name[0]}">
+								<label class="col-md-2 control-label">City: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="dealer.address.city" placeholder="">
+									<span class="help-block" ng-bind="errors.name[0]"></span>
+								</div>
+
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.name[0]}">
+								<label class="col-md-2 control-label">State: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="dealer.address.state" placeholder="">
+									<span class="help-block" ng-bind="errors.name[0]"></span>
+								</div>
+
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.name[0]}">
+								<label class="col-md-2 control-label">Country: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+
+									<select class="form-control" 
+										ng-model="dealer.address.country" 
+										ng-options="option.name for option in countries"
+										>
+										<option value="">---- Select Country ----</option>
+									</select>
+									
+									<span class="help-block" ng-bind="errors.name[0]"></span>
+								</div>
+
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
+								<label class="col-md-2 control-label">Status: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<select class="form-control" ng-model="dealer.status">
+										<option value="1">Active</option>
+										<option value="0">In-Active</option>
+									</select>
+									<span class="help-block" ng-bind="errors.status[0]"></span>
+								</div>
+							</div>
+						</div>
+					</tab>
+
+					<tab>
+
+						<tab-heading>Contacts</tab-heading>
+
+							<div class="text-align-reverse margin-bottom-10">
+								<a href="javascript:void(0)" ng-click="dealer.contacts.push({})" class="btn yellow">
+									<i class="fa fa-plus"></i> Add Contact 
+								</a>								
+							</div>
+
+							<table class="table table-bordered table-hover">
+							<thead>
+								<tr role="row" class="heading">
+									
+									<th width="40%">
+										 Name
+									</th>
+									<th width="25%">
+										 Designation
+									</th>
+									<th width="25%">
+										 Number
+									</th>									
+									<th width="5%">
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="curContact in dealer.contacts">
+									
+									<td>
+										<input type="text" class="form-control" placeholder="Name" name="name" ng-model="curContact.name">
+									</td>
+									<td>
+										<input type="text" class="form-control" placeholder="Designation" name="des" ng-model="curContact.des">
+									</td>
+									<td>
+										
+										<div class="form-group" ng-class="{'has-error': curContact.number.$error.number}">        
+							        	<div class="col-sm-9">
+							            	
+							            	<input type="text" class="form-control" ng-minlength="10" ng-maxlength="10" name="number" placeholder="Phone" ng-model="curContact.number" ng-required="true">
+							            	
+							            	<span class="help-block" ng-show="curContact.number.$error.required || curContact.number.$error.number">Valid phone number is required</span>
+							            	<span class="help-block" ng-show="((curContact.number.$error.minlength || curContact.number.$error.maxlength) && curContact.number.$dirty) ">phone number should be 10 digits</span>
+
+							            </div>
+							            </div>
+
+									</td>
+									<td>
+										<a href="#" class="btn default btn-sm" ng-click="contactRemove($index)">
+										<i class="fa fa-times"></i> Remove </a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</tab>
+				</tabset>
+
+			</div>
+		</div>
+	</div>
+</div>

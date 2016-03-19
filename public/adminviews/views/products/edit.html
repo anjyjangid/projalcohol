@@ -34,92 +34,101 @@
 			</div>
 			<div class="portlet-body">
 
+
+
 				<tabset active="active">
+
 					<tab>
 						<tab-heading>General</tab-heading>
 
+
+
 						<div class="form-horizontal">
-							<div class="form-group">
+							<div class="form-group" ng:class="{'has-error':errors.name[0]}">
 								<label class="col-md-2 control-label">Name: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
 									<input type="text" class="form-control" ng-model="product.name" placeholder="">
+									<span class="help-block" ng-bind="errors.name[0]"></span>
 								</div>
+
 							</div>
-							<div class="form-group">
+							<div class="form-group" ng:class="{'has-error':errors.description[0]}">
 								<label class="col-md-2 control-label">Description: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
 									<textarea class="form-control" ng-model="product.description"></textarea>
+									<span class="help-block" ng-bind="errors.description[0]"></span>
 								</div>
 							</div>
-							<div class="form-group">
+							<div class="form-group" ng:class="{'has-error':errors.shortDescription[0]}">
 								<label class="col-md-2 control-label">Short Description: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
 									<textarea class="form-control" ng-model="product.shortDescription" style="margin-top: 0px; margin-bottom: 0px; height: 54px;"></textarea>
-									<span class="help-block">shown in product listing </span>
+									<span class="help-block" ng-bind="errors.shortDescription[0]"></span>
 								</div>
 							</div>
-							<div class="form-group">
+							<div class="form-group" ng:class="{'has-error':errors.categories[0]}">
 								<label class="col-md-2 control-label">Categories: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<div class="form-control height-auto">
+									<div class="form-control height-auto" id="checkable">
 										<div class="slimScrollDiv" style="overflow: auto; width: auto; height: 275px;">
 											<ul class="list-unstyled" ng-include="'categoryLiTree'"></ul>
 										</div>
 									</div>
 									<span class="help-block">
 									select one or more categories </span>
+									<span class="help-block" ng-bind="errors.categories[0]"></span>
 								</div>
 							</div>							
-							<div class="form-group">
+							<div class="form-group" ng:class="{'has-error':errors.sku[0]}">
 								<label class="col-md-2 control-label">SKU: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
 									<input type="text" class="form-control" ng-model="product.sku" placeholder="">
+									<span class="help-block" ng-bind="errors.sku[0]"></span>
 								</div>
 							</div>
-							<div class="form-group">
+							<div class="form-group" ng:class="{'has-error':errors.price[0]}">
 								<label class="col-md-2 control-label">Price: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
 									<input type="text" class="form-control" ng-model="product.price" placeholder="">
+									<span class="help-block" ng-bind="errors.price[0]"></span>
 								</div>
 							</div>
-							<div class="form-group">
+							<div class="form-group" ng:class="{'has-error':errors.discountPrice[0]}">
 								<label class="col-md-2 control-label">Discount Price: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
 									<input type="text" class="form-control" ng-model="product.discountPrice" placeholder="">
+									<span class="help-block" ng-bind="errors.discountPrice[0]"></span>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="control-label col-md-2">Chilled/Non-chilled <span class="required" aria-required="true">
-								* </span>
-								</label>
+								* </span></label>
 								<div class="col-md-4">
-									<div class="radio-list">
-										<label>
-										<div class="radio"><span>
-										<input ng-model="product.chilled" type="radio" value="1" ></span></div>
-										Yes </label>
-										<label>
-										<div class="radio"><span><input ng-model="product.chilled" type="radio" value="2"></span></div>
-										No </label>
-									</div>
-									
+								
+								<div class="radio-list">
+									<label class="radio-inline">
+									<input ng-model="product.chilled" type="radio" value="1" name="chilled"> Yes </label>
+									<label class="radio-inline">
+									<input ng-model="product.chilled" type="radio" value="2" name="chilled"> No </label>
 								</div>
-							</div>							
-							<div class="form-group">
+
+								</div>
+							</div>														
+							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
 								<label class="col-md-2 control-label">Status: <span class="required">
 								* </span>
 								</label>
@@ -129,6 +138,7 @@
 										<option value="1">Published</option>
 										<option value="0">Not Published</option>
 									</select>
+									<span class="help-block" ng-bind="errors.status[0]"></span>
 								</div>
 							</div>
 						</div>
@@ -168,6 +178,11 @@
 					<tab>
 						<tab-heading>Images</tab-heading>
 
+						<div ng-show="errors.image[0]" class="alert alert-danger fade in">
+							<i class="fa-lg fa fa-warning"></i>
+							{{ errors.image[0] }}
+						</div>
+
 						<div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10">
 							<a id="tab_images_uploader_pickfiles" href="#" ng-click="imageFiles.push({})" class="btn yellow">
 							<i class="fa fa-plus"></i> Add Files </a>
@@ -191,14 +206,8 @@
 										 Sort Order
 									</th>
 									<th width="10%">
-										 Base Image
-									</th>
-									<th width="10%">
-										 Small Image
-									</th>
-									<th width="10%">
-										 Thumbnail
-									</th>
+										 Cover Image
+									</th>									
 									<th width="10%">
 									</th>
 								</tr>
@@ -229,19 +238,9 @@
 									</td>
 									<td>
 										<label>
-											<input type="radio" ng-model="f.size" value="1">
+											<input type="radio" ng-model="f.coverimage" value="1" name="coverimage">
 										</label>
-									</td>
-									<td>
-										<label>
-											<input type="radio" ng-model="f.size" value="2">
-										</label>
-									</td>
-									<td>
-										<label>
-											<input type="radio" ng-model="f.size" value="3">
-										</label>
-									</td>
+									</td>									
 									<td>
 										<a href="#" class="btn default btn-sm" ng-click="imageRemove($index)">
 										<i class="fa fa-times"></i> Remove </a>
@@ -251,16 +250,14 @@
 						</table>
 					</tab>
 				</tabset>
-				{{{product:product}|json}}
+				<!-- {{{product:product}|json}} -->
 			</div>
 		</div>
 	</div>
 </div>
-	
-
 <script type="text/ng-template" id="categoryLiTree">
 	<li ng-repeat="c in childOf	(categories, parent)">
-		<label><input type="checkbox" ng-model="c.selected" ng-change="selectCategory(c._id)" class="group-checkable">{{c.cat_title}}</label>
+		<label><input type="checkbox" ng-model="c.selected" my-change="{{c._id}}">{{c.cat_title}}</label>
 		<ul class="list-unstyled" ng-init="parent=c._id" ng-include="'categoryLiTree'"></ul>
-	</li>
+	</li>	
 </script>

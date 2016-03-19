@@ -1,4 +1,4 @@
-MetronicApp.factory('productModel', ['$http', '$cookies','$location', function($http, $cookies, $location) {
+MetronicApp.factory('dealerModel', ['$http', '$cookies','$location', function($http, $cookies, $location) {
 
     return {
         getCategories: function(){
@@ -9,11 +9,11 @@ MetronicApp.factory('productModel', ['$http', '$cookies','$location', function($
             return $http.post("/admin/product/store", {data:data});
         },
 
-        storeProduct: function(fields){
+        storeDealer: function(fields){
 
 	       	var fd = objectToFormData(fields);	       	  
 
-	        return $http.post("/admin/product/store", fd, {
+	        return $http.post("/admin/dealer", fd, {
 	            transformRequest: angular.identity,	            	            
 	            headers: {'Content-Type': undefined}
 	        }).error(function(data, status, headers) {            

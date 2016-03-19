@@ -68,8 +68,6 @@ class CategoryController extends Controller
         
        	$fileUpload = $this->uploadThumb($request);
 
-
-       	
        	$category = new Categories;
 
        	if($inputs['ptitle']){
@@ -82,7 +80,7 @@ class CategoryController extends Controller
 	       		$ancestors = [];
 	       	}
 	       	
-	       	array_unshift($ancestors, ["_id" => new MongoId($parentCategories->_id),'title' =>$parentCategories->cat_title] );
+	       	array_unshift($ancestors, ["_id" => new MongoId($parentCategories->_id),'title' =>$parentCategories->cat_title]);
 
 	       	$category->ancestors = $ancestors;
 
@@ -103,16 +101,7 @@ class CategoryController extends Controller
     public function uploadThumb(Request $request){
     	
     	$files = array();
-    	// check if the file exist
-        if (!$request->hasFile('thumb')) {
-            return response('No file sent.', 400);
-        }
-
-        // check if the file is valid file
-        if (!$request->file('thumb')->isValid()) {
-            return response('File is not valid.', 400);
-        }	
-                                          
+    	                                  
 
         if ($request->hasFile('thumb'))
         {
@@ -205,7 +194,36 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $inputs = $request->all();
+        
+        // validation rules
+        $validator = Validator::make($inputs, [
+            'title' => 'required',            
+            //'thumb' => 'mimes:jpeg,jpg,png|max:8000',
+        ]);
+
+
+        // if validation fails
+        if ($validator->fails()) {
+            return response('There are errors in the form data', 400);
+        }
+        
+        
+        $fileUpload = $this->uploadThumb($request);
+        
+        $category = Categories::find($id);
+        
+        $category->cat_title = $inputs['title'];
+        
+        $category->cat_thumb = isset($fileUpload->original['thumb'])?$fileUpload->original['thumb']:$inputs['thumb'];
+        $category->cat_lthumb = isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:$inputs['lthumb'];
+        
+        
+        if($category->save()){
+            return response(array("success"=>true,"message"=>"Category updated successfully"));
+        }
+        
+        return response(array("success"=>false,"message"=>"Something went worng"));
     }
 
     /**
@@ -234,9 +252,8 @@ class CategoryController extends Controller
     	return response($categories);
     }
 
-    public function getcategories(Request $request)
-    {
-
+    public function getcategories(Request $request,$id = false)
+    {        
         $params = $request->all();
 
         //$categories = new Categories;        
@@ -252,6 +269,10 @@ class CategoryController extends Controller
             
         /* Individual column filtering */
 
+        if($id){
+            $categories = $categories->where('ancestors._id', '=', $id);
+        }
+
         foreach($columns as $fieldKey=>$fieldTitle)
         {              
 
@@ -266,13 +287,14 @@ class CategoryController extends Controller
                             
             }
         }
+
+
         //prd($categories->toSql());
 
             
         /*
          * Ordering
-         */
-        //$sOrder = "Order by category_title";
+         */        
 
         if ( isset( $params['order'] ) )
         {
@@ -288,25 +310,23 @@ class CategoryController extends Controller
 
         }
         
+        /* Data set length after filtering */        
 
-        /* 
+        $iFilteredTotal = $categories->count();
+
+        /*
          * Paging
-         */        
+         */
         if ( isset( $params['start'] ) && $params['length'] != '-1' )
         {
-            $categories = $categories->skip(intval( $params['start'] ))->take($params['length']);
+            $categories = $categories->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
         }
+
+        $iTotal = $categories->count();
 
         $categories = $categories->get($columns);
 
-        
- 
-        /* Data set length after filtering */        
-        $iFilteredTotal = Categories::count();
-        
         $categories = $categories->toArray();
-
-        $iTotal = Categories::count();
                 
         /*
          * Output
@@ -321,7 +341,7 @@ class CategoryController extends Controller
 
              
         
-        $status_list = array(
+        $status_list = array(            
             array("warning" => "in-Active"),
             array("success" => "Active")
           );
@@ -344,12 +364,12 @@ class CategoryController extends Controller
                 $row[] = ++$srStart;//$row1[$aColumns[0]];
             }
 
-            $status = $status_list[$value['cat_status']];
+            $status = $status_list[(int)$value['cat_status']];
             $row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';
                     
             $row[] = ucfirst($value['cat_title']);
             $row[] = isset($value['ancestors'][0]['title'])?ucfirst($value['ancestors'][0]['title']):'';
-            $row[] = '<span class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span>';
+            $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="category" data-status="'.((int)$value['cat_status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
             $row[] = '<a title="View : '.$value['cat_title'].'" href="#/categories/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
                      '<a title="Edit : '.$value['cat_title'].'" href="#/categories/edit/'.$value['_id'].'" href="#/categories/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
             
@@ -361,12 +381,17 @@ class CategoryController extends Controller
     }
 
 
-    public function getcategorydetail($categoryId){
+    public function getcategory($categoryId){
+        
+        $categoryObj = new Categories;
 
-        $category = Categories::with('categories')->where('cat_id',"=",$categoryId)->get();
-
-        return response($category, 201);
+        $result = $categoryObj->getCategory(array(
+                        "key"=>$categoryId,
+                        "multiple"=>false
+                    ));
+        
+        return response($result, 201);
 
     }
-    
+
 }

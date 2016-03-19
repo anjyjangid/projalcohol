@@ -89,6 +89,7 @@ MetronicApp.factory('settings', ['$rootScope', function($rootScope) {
 MetronicApp.service('fileUpload', ['$http','$location', function ($http,$location) {
 
     this.uploadFileToUrl = function(files,fields,uploadUrl){
+
         var fd = new FormData();
                 
         for (var file in files) {
@@ -132,11 +133,47 @@ MetronicApp.service('fileUpload', ['$http','$location', function ($http,$locatio
 
 
 /* Setup App Main Controller */
-MetronicApp.controller('AppController', ['$scope', '$rootScope', function($scope, $rootScope) {
+MetronicApp.controller('AppController', ['$scope', '$rootScope','$http', function($scope, $rootScope,$http) {
+
     $scope.$on('$viewContentLoaded', function() {
         Metronic.initComponents(); // init core components        
         //Layout.init(); //  Init entire layout(header, footer, sidebar, etc) on page load if the partials included in server side instead of loading with ng-include directive 
     });
+
+    $scope.changeStatus = function(id){
+
+        var currObj = $("#"+id);
+        var table = $(currObj).data("table");
+        var status = parseInt($(currObj).data("status"));
+
+        $http.get("/admin/global/status/"+id+'/'+table+'/'+status).success(function(response) {
+
+            Metronic.alert({
+                        type: 'success',
+                        icon: 'check',
+                        message: response.message,
+                        container: '#info-message',
+                        place: 'prepend'
+                    });
+
+            var currObj = $("#"+id);
+
+            if(response.status){
+
+                $(currObj).removeClass("label-success").addClass("label-warning").text("In-Active");
+
+            }else{
+                
+                $(currObj).removeClass("label-warning").addClass("label-success").text("Active");
+                
+            }
+    
+            $(currObj).data("status",response.status);
+            
+
+        });
+
+    }
     
 }]);
 
@@ -525,6 +562,9 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             }
         })
 
+        // dealers complete route start{
+
+
         .state('dealers', {
             url: "/dealers",
             templateUrl: "adminviews/views/dealers/dealers.html",
@@ -547,6 +587,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                             'assets/global/scripts/datatable.js',
                             'adminviews/js/scripts/table-ajax.js',
 
+                            'adminviews/js/models/dealerModel.js',
                             'adminviews/js/controllers/DealersController.js'
                         ]
                     });
@@ -562,45 +603,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {pageTitle: 'Dealers List'}
         })
 
+        .state("dealers.add", {
+                url: "/add",
+                templateUrl: "adminviews/views/dealers/add.html",
+                data: {pageTitle: 'Add New Dealer'},
+                controller:"DealerAddController"
+            })
 
-    
-
-        // .state('category', {
-        //     url: "/category",
-        //     templateUrl: "adminviews/views/category/list.html",
-        //     data: {pageTitle: 'Category list'},
-        //     controller: "GeneralPageController",
-        //     resolve: {
-        //         deps: ['$ocLazyLoad', function($ocLazyLoad) {
-        //             return $ocLazyLoad.load({
-        //                 name: 'MetronicApp',
-        //                 insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-        //                 files: [
-        //                     'assets/global/plugins/select2/select2.css',                             
-        //                     'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
-        //                     'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
-
-        //                     'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
-        //                     'assets/global/plugins/select2/select2.min.js',
-        //                     'assets/global/plugins/datatables/all.min.js',
-
-        //                     'assets/global/scripts/datatable.js',
-
-        //                     'adminviews/js/scripts/category-ajax.js',
-
-        //                     'adminviews/js/controllers/GeneralPageController.js'
-
-        //                 ]
-        //             });
-        //         }]
-        //     }
-        // })
-
-        // .state("categoryAdd", {
-        //     url: "/category/add",
-        //     templateUrl: "adminviews/views/category/add.html",
-        //     data: {pageTitle: 'Category Add'}
-        // })
+        //  Dealers route end //
 
         // category complete route start{
 
@@ -657,8 +667,9 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             })
             .state("categories.edit",{
                 url: "/edit/{categoryid}",
-                templateUrl: "adminviews/views/categories/add.html",
+                templateUrl: "adminviews/views/categories/edit.html",
                 data: {pageTitle: 'Category Detail'},
+                controller:"CategoryUpdateController"                
             })
             
 
@@ -687,8 +698,11 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
 
                                 'assets/global/scripts/datatable.js',
                                 'adminviews/js/scripts/table-ajax.js',
-                                'assets/global/plugins/uniform/jquery.uniform.min.js',
-
+                                
+                                /*'assets/global/plugins/jquery-tree-master/js/jquery-ui.js',
+                                'assets/global/plugins/jquery-tree-master/css/jquery.tree.css',
+                                'assets/global/plugins/jquery-tree-master/js/jquery.tree.js',*/
+                                
                                 'adminviews/js/models/productModel.js',
                                 'adminviews/js/controllers/ProductController.js'
                             ]

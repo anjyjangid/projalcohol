@@ -36,7 +36,7 @@ Route::controller('/auth', 'Auth\AuthController');
 Route::post('/admin/getcustomers', ['uses' => 'Admin\AdminController@customers']);
 
 
-Route::match(['get', 'post'],'/admin/dealer/getdealers', ['uses' => 'Admin\DealerController@getdealers']);
+
 
 
 
@@ -56,24 +56,42 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 	
 	Route::group(['prefix' => 'category'], function () {
 
-	    Route::match(['get', 'post'],'getcategories', ['uses' => 'Admin\CategoryController@getcategories']);
+	    Route::match(['get', 'post'],'getcategories/{categoryId?}', ['uses' => 'Admin\CategoryController@getcategories']);
 
 	    Route::get('getparentcategories/{id?}', ['uses' => 'Admin\CategoryController@getparentcategories']);
 
 	    Route::post('store','Admin\CategoryController@store');
 
+	    Route::post('update/{id}','Admin\CategoryController@update');
+
 	    Route::get('show','Admin\CategoryController@show');
 
-	    Route::get('getcategorydetail/{id}','Admin\CategoryController@getcategorydetail');
-
-
+	    Route::get('getcategory/{id}','Admin\CategoryController@getcategory');
+	  
 
     });
-    
 	
+	Route::resource('dealer', 'Admin\DealerController');
+
+	Route::group(['prefix' => 'dealer'], function () {
+
+		Route::match(['get', 'post'],'getdealers', 'Admin\DealerController@getdealers');
+
+	});
+
+	Route::group(['prefix' => 'global'], function () {
+		
+		Route::get('status/{id}/{table}/{status}','Admin\GlobalController@setstatus');
+
+		Route::get('getcountries','Admin\GlobalController@getcountries');
+			
+	});
+    
+    
 	Route::group(['prefix' => 'product'], function () {
 		Route::post('store','Admin\ProductController@store');
 	});
+
 });
 
 
@@ -89,11 +107,7 @@ Route::post('/profile/update', 'ProfileController@update');*/
 //Route::resource('admin/profile', 'Admin\profileController');
 Route::controller('/admin', 'Auth\AdminAuthController');
 
-
-
-
-
 Route::post('/auth', 'UserController@checkAuth');
 
-Route::post('/profile/account', 'ProfileController@account');
-Route::post('/profile/update', 'ProfileController@update');
+// Route::post('/profile/account', 'ProfileController@account');
+// Route::post('/profile/update', 'ProfileController@update');
