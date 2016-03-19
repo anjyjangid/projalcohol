@@ -68,7 +68,7 @@ MetronicApp.factory('categoryModel', ['$http', '$cookies', function($http, $cook
 
     };
     
-    categoryModel.update = function(postedData) {
+    categoryModel.updatepassword = function(postedData) {
 
         return $http({
             headers: {
