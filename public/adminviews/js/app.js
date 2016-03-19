@@ -597,17 +597,30 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
 
 
         // User Profile Dashboard
-        .state("dealers.list", {
-            url: "/list",
-            templateUrl: "adminviews/views/dealers/list.html",
-            data: {pageTitle: 'Dealers List'}
-        })
+            .state("dealers.list", {
+                url: "/list",
+                templateUrl: "adminviews/views/dealers/list.html",
+                data: {pageTitle: 'Dealers List'}
+            })
 
-        .state("dealers.add", {
-                url: "/add",
-                templateUrl: "adminviews/views/dealers/add.html",
-                data: {pageTitle: 'Add New Dealer'},
-                controller:"DealerAddController"
+            .state("dealers.add", {
+                    url: "/add",
+                    templateUrl: "adminviews/views/dealers/add.html",
+                    data: {pageTitle: 'Add New Dealer'},
+                    controller:"DealerAddController"
+            })
+            .state("dealers.show", {
+                    url: "/show/{dealerid}",
+                    templateUrl: "adminviews/views/dealers/show.html",
+                    data: {pageTitle: 'Dealer Detail'},
+                    controller: "DealerShowController",
+                    
+            })
+            .state("dealers.edit",{
+                url: "/edit/{dealerid}",
+                templateUrl: "adminviews/views/dealers/edit.html",
+                data: {pageTitle: 'Dealer update'},
+                controller:"DealerUpdateController"                
             })
 
         //  Dealers route end //
@@ -696,12 +709,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                                 'assets/global/plugins/select2/select2.min.js',
                                 'assets/global/plugins/datatables/all.min.js',
 
-                                'assets/global/scripts/datatable.js',
-                                'adminviews/js/scripts/table-ajax.js',
-                                
-                                /*'assets/global/plugins/jquery-tree-master/js/jquery-ui.js',
-                                'assets/global/plugins/jquery-tree-master/css/jquery.tree.css',
-                                'assets/global/plugins/jquery-tree-master/js/jquery.tree.js',*/
+                                'assets/global/scripts/datatable.js',                               
                                 
                                 'adminviews/js/models/productModel.js',
                                 'adminviews/js/controllers/ProductController.js'
@@ -719,9 +727,16 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
 
             .state("products.add", {
                 url: "/add",
-                templateUrl: "adminviews/views/products/edit.html",
+                templateUrl: "adminviews/views/products/add.html",
                 data: {pageSubTitle: 'Add'}
             })
+
+            .state("products.edit", {
+                url: "/edit/{productid}",
+                templateUrl: "adminviews/views/products/edit.html",
+                data: {pageSubTitle: 'Edit'}
+            })
+
 
 
 

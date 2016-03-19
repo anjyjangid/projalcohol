@@ -1,15 +1,15 @@
-<div class="row" ng-controller="ProductEditController">
+<div class="row" ng-controller="ProductAddController">
 	<div class="col-md-12">
 		<form role="form" name='productForm' ng-submit="store()" required="false">
 		<div class="portlet light">
 			
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="fa fa-shopping-cart"></i>Edit Product
+					<i class="fa fa-shopping-cart"></i>Add New Product
 				</div>
 				<div class="actions btn-set">
-					<a class="btn default" href="#/product/list"><i class="fa fa-angle-left"></i> Cancel</a>
-					<button class="btn green" type="submit"><i class="fa fa-check"></i> Update</button>
+					<a class="btn default" href="#/product/list"><i class="fa fa-angle-left"></i> Back</a>
+					<button class="btn green" type="submit"><i class="fa fa-check"></i> Save</button>
 					<!-- <button class="btn green"><i class="fa fa-check-circle"></i> Save & Continue Edit</button> -->
 					<!-- <div class="btn-group">
 						<a class="btn yellow dropdown-toggle" href="javascript:;" data-toggle="dropdown">
@@ -36,7 +36,10 @@
 			</div>
 			<div class="portlet-body">
 
+
+
 				<tabset active="active">
+
 					<tab>
 						<tab-heading>General</tab-heading>
 
@@ -182,6 +185,7 @@
 							<i class="fa-lg fa fa-warning"></i>
 							{{ errors.image[0] }}
 						</div>
+
 						<div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10">
 							<a id="tab_images_uploader_pickfiles" href="#" ng-click="imageFiles.push({})" class="btn yellow">
 							<i class="fa fa-plus"></i> Add Files </a>
@@ -216,17 +220,16 @@
 									<td>
 										<div class="fileinput fileinput-new" data-provides="fileinput">
 											<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
-												<img err-src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" 
-												ng-src="products/i/200/{{f.source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt=""/>
+												<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt=""/>
 											</div>
 											<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
 											</div>
 											<div>
 												<span class="btn default btn-file">
-													<span class="fileinput-new">{{ f.source ? 'Change':'Select' }}</span>
+													<span class="fileinput-new">Select</span>
 													<span class="fileinput-exists">Change</span>
 													<input type="file" placeholder="thumbnail" class="form-control" file-model="f.thumb"/>
-												</span>												
+												</span>	
 											</div>
 										</div>
 									</td>
@@ -238,7 +241,7 @@
 									</td>
 									<td>
 										<label>
-											<input type="radio" ng-model="f.coverimage" value="1" name="coverimage" ng-change="coverUpdate($index)">
+											<input type="radio" ng-model="f.coverimage" value="1" name="coverimage">
 										</label>
 									</td>									
 									<td>
@@ -250,7 +253,9 @@
 						</table>
 					</tab>
 				</tabset>
+				<!-- {{{error:errors} | json}} -->
 
+				
 				<!-- {{{product:product}|json}} -->
 			</div>			
 		</div>
@@ -259,12 +264,7 @@
 </div>
 <script type="text/ng-template" id="categoryLiTree">
 	<li ng-repeat="c in childOf	(categories, parent)">
-		<label>
-			<input type="checkbox" 
-			ng-model="c.selected" 
-			ng-checked="isChecked(c._id)" 
-			my-change="{{c._id}}">{{c.cat_title}}
-			</label>
+		<label><input type="checkbox" ng-model="c.selected" my-change="{{c._id}}">{{c.cat_title}}</label>
 		<ul class="list-unstyled" ng-init="parent=c._id" ng-include="'categoryLiTree'"></ul>
 	</li>	
 </script>

@@ -11,25 +11,9 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 		$rootScope.settings.layout.pageSidebarClosed = false;  
 	});
 
-}]);
-
-MetronicApp.controller('ProductAddController',['$scope','fileUpload','productModel', function($scope,fileUpload,productModel) {
-
 	$scope.categories = [];
-
 	$scope.errors = {};
-
-	$scope.imageFiles = [{coverimage:true}];
-
-	$scope.product = {		
-		chilled:'1',
-		categories:[]		
-	};	
-
-	productModel.getCategories().success(function(data){
-		$scope.categories = data;
-	});
-
+	
 	$scope.childOf = function(categories, parent){
 		if(!categories) return [];
 
@@ -53,9 +37,7 @@ MetronicApp.controller('ProductAddController',['$scope','fileUpload','productMod
 			$scope.product.categories.push(id);		
 	}
 
-	$scope.imageRemove = function(i){
-		$scope.imageFiles.splice(i, 1);
-	}
+	
 
 	$scope.uploadFiles = function(){
 		var fileObj = {};
@@ -80,26 +62,96 @@ MetronicApp.controller('ProductAddController',['$scope','fileUpload','productMod
 		});
 	}
 
-	$scope.save = function(){
-		productModel.saveProduct({general:$scope.general, meta:$scope.meta}).success(function(response){
-			console.log(response);
-		}).error(function(response){
-			console.log(response);
+
+
+}]);
+
+MetronicApp.controller('ProductAddController',['$scope', '$location','fileUpload','productModel', function($scope,$location,fileUpload,productModel) {
+
+	$scope.imageFiles = [{coverimage:true}];
+
+	$scope.product = {		
+		chilled:'1',
+		categories:[]		
+	};	
+
+	productModel.getCategories().success(function(data){
+		$scope.categories = data;
+	});	
+
+	$scope.store = function(){
+
+		var data = $scope.product;
+		var url = 'product/store';
+		data.images = $scope.imageFiles;		
+		//POST DATA WITH FILES
+		productModel.storeProduct(data,url).success(function(response){
+			$location.path("product/list");
+		}).error(function(data, status, headers){			
+			$scope.errors = data;			
 		});
+	}
+
+	$scope.imageRemove = function(i){		
+		$scope.imageFiles.splice(i, 1);
+	}
+
+}]);
+
+
+MetronicApp.controller('ProductEditController',['$scope', '$location','$stateParams','fileUpload','productModel', function($scope,$location,$stateParams,fileUpload,productModel) {
+
+	$scope.imageFiles = [{}];
+
+	$scope.categories = [];
+
+	productModel.getProduct($stateParams.productid).success(function(data){
+		$scope.product = data;	
+		$scope.imageFiles = data.imageFiles;
+	});
+
+	productModel.getCategories().success(function(data){
+		$scope.categories = data;		
+	});	
+
+	$scope.isChecked = function(id){
+
+		var r = false;
+
+		for(var c in $scope.product.categories){
+			if($scope.product.categories[c] == id){
+				r = true;
+			}
+		}
+
+		return r;
 	}
 
 	$scope.store = function(){
 
 		var data = $scope.product;
-
-		data.images = $scope.imageFiles;
-		
+		var url = 'product/update/'+$stateParams.productid;
+		data.images = $scope.imageFiles;		
 		//POST DATA WITH FILES
-		productModel.storeProduct(data).success(function(response){
-			//console.log(response);
-		}).error(function(data, status, headers){			
+		productModel.storeProduct(data,url).success(function(response){
+			$location.path("product/list");
+		}).error(function(data, status, headers){						
 			$scope.errors = data;			
 		});
+	}
+
+	$scope.imageRemove = function(i){		
+		$scope.imageFiles.splice(i, 1);
+	}
+
+	$scope.coverUpdate = function(s){
+		console.log(s);
+		for(var ci in $scope.imageFiles){
+			$scope.imageFiles[ci].coverimage = 0;
+		}
+
+		$scope.imageFiles[s].coverimage = 1;
+
 	}
 
 }]);

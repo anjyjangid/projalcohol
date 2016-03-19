@@ -4,11 +4,11 @@
 			<div class="portlet-title tabbable-line">
 				<div class="caption caption-md">
 					<i class="icon-globe theme-font hide"></i>
-					<span class="caption-subject font-blue-madison bold uppercase">Add Dealer</span>
+					<span class="caption-subject font-blue-madison bold uppercase">Edit Dealer</span>
 				</div>
 				<div class="actions btn-set">
 					<a class="btn default" href="#/dealers/list"><i class="fa fa-angle-left"></i> Back</a>
-					<button class="btn green" ng-click="store()"><i class="fa fa-check"></i> Save</button>
+					<button class="btn green" ng-click="update()"><i class="fa fa-check"></i> Update</button>
 				</div>
 			</div>
 			<div class="portlet-body">
@@ -76,10 +76,10 @@
 								* </span>
 								</label>
 								<div class="col-md-10">
-
+								<!-- {{dealer.address.country}} -->
 									<select class="form-control" 
 										ng-model="dealer.address.country" 
-										ng-options="option.name for option in countries"
+										ng-options="option._id.$id as option.name for option in countries"
 										>
 										<option value="">---- Select Country ----</option>
 									</select>
