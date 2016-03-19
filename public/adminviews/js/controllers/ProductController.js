@@ -145,9 +145,9 @@ MetronicApp.controller('ProductEditController',['$scope', '$location','$statePar
 	}
 
 	$scope.coverUpdate = function(s){
-
+		console.log(s);
 		for(var ci in $scope.imageFiles){
-			$scope.imageFiles[i].coverimage = 0;
+			$scope.imageFiles[ci].coverimage = 0;
 		}
 
 		$scope.imageFiles[s].coverimage = 1;
