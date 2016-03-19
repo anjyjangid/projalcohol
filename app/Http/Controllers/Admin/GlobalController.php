@@ -20,6 +20,12 @@ class GlobalController extends Controller
                 'field_status'  => 'cat_status',
                 'alias'         => 'Category'
             ),
+            "dealer" =>array(
+                'table'         => "dealers",
+                'field_id'      => "_id",
+                'field_status'  => 'status',
+                'alias'         => 'Dealer'
+            ),
                                     
         );
 

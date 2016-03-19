@@ -93,7 +93,7 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 			var uploadUrl = "admin/category/store";
 			fileUpload.uploadFileToUrl(files, data, uploadUrl)
 		        .success(function(response) {
-		            console.log(response);
+		             
 		            $location.path("categories/list");
 
 		        }).error(function(data, status, headers) {            

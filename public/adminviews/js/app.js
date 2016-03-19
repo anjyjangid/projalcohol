@@ -597,17 +597,30 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
 
 
         // User Profile Dashboard
-        .state("dealers.list", {
-            url: "/list",
-            templateUrl: "adminviews/views/dealers/list.html",
-            data: {pageTitle: 'Dealers List'}
-        })
+            .state("dealers.list", {
+                url: "/list",
+                templateUrl: "adminviews/views/dealers/list.html",
+                data: {pageTitle: 'Dealers List'}
+            })
 
-        .state("dealers.add", {
-                url: "/add",
-                templateUrl: "adminviews/views/dealers/add.html",
-                data: {pageTitle: 'Add New Dealer'},
-                controller:"DealerAddController"
+            .state("dealers.add", {
+                    url: "/add",
+                    templateUrl: "adminviews/views/dealers/add.html",
+                    data: {pageTitle: 'Add New Dealer'},
+                    controller:"DealerAddController"
+            })
+            .state("dealers.show", {
+                    url: "/show/{dealerid}",
+                    templateUrl: "adminviews/views/dealers/show.html",
+                    data: {pageTitle: 'Dealer Detail'},
+                    controller: "DealerShowController",
+                    
+            })
+            .state("dealers.edit",{
+                url: "/edit/{dealerid}",
+                templateUrl: "adminviews/views/dealers/edit.html",
+                data: {pageTitle: 'Dealer update'},
+                controller:"DealerUpdateController"                
             })
 
         //  Dealers route end //
@@ -723,6 +736,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 templateUrl: "adminviews/views/products/edit.html",
                 data: {pageSubTitle: 'Edit'}
             })
+
 
 
 

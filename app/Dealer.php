@@ -21,9 +21,23 @@ class Dealer extends Moloquent
      *
      * @var array
      */
-    protected $fillable = ['title', 'contacts', 'address','status'];
+    protected $fillable = ['title', 'description', 'contacts', 'address','status'];
 
     
+    public function getDealers($params = array()){
+
+        $dealer = $this->where('_id','=', $params['key']);
+
+        if(isset($params['multiple']) && $params['multiple']){
+            $dealer = $dealer->get();
+        }else{
+            $dealer = $dealer->first();
+        }
+        
+        
+        return $dealer;
+
+    }
 
 
 }
