@@ -88,13 +88,27 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 		Route::get('getcountries','Admin\GlobalController@getcountries');
 			
 	});
-    
-    
+
 	Route::group(['prefix' => 'product'], function () {
 		Route::post('store','Admin\ProductController@store');
+		Route::post('productlist','Admin\ProductController@productlist');
+		Route::get('edit/{id}','Admin\ProductController@edit');
+		Route::post('update/{id}','Admin\ProductController@update');
 	});
 
 });
+
+
+/*PRODUCT IMAGE ROUTUING*/
+Route::get('products/i/{folder}/{filename}', function ($folder,$filename)
+{
+    return Image::make(storage_path('products/') .$folder. '/' . $filename)->response();
+});
+Route::get('products/i/{filename}', function ($filename)
+{
+    return Image::make(storage_path('products') . '/' . $filename)->response();
+});
+/*PRODUCT IMAGE ROUTUING*/
 
 
 Route::controller('/admin/password', 'Auth\AdminPasswordController');

@@ -12,19 +12,29 @@ class Products extends Eloquent
     protected $collection = 'products';
 
     protected $fillable = [
-    		'p_name',
-            'p_description',
-            'p_shortDescription',
-            'p_categories',
-            'p_sku',
-            'p_price',
-            'p_discountPrice',
-            'p_chilled',
-            'p_status',
-            'p_metaTitle',
-            'p_metaKeywords',
-            'p_metaDescription',
-            'p_images'
+    		'name',
+            'description',
+            'shortDescription',
+            'categories',
+            'sku',
+            'price',
+            'discountPrice',
+            'chilled',
+            'status',
+            'metaTitle',
+            'metaKeywords',
+            'metaDescription',
+            'images'
             
     ];
+
+    public function pcategories()
+    {
+        return $this->belongsToMany('AlcoholDelivery\Categories', null, 'products', 'categories');
+    }
+
+    public function getSingleProduct($id)
+    {
+        return Products::where('_id', $id)->first();       
+    }
 }
