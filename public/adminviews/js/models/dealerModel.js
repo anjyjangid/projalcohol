@@ -1,8 +1,9 @@
 MetronicApp.factory('dealerModel', ['$http', '$cookies','$location', function($http, $cookies, $location) {
 
     return {
-        getCategories: function(){
-            return $http.get("/admin/category/getparentcategories/all");
+        
+        getDealer: function(dealerId){
+            return $http.get("/admin/dealer/getdealer/"+dealerId);
         },
 
         saveProduct: function(data){
@@ -10,12 +11,9 @@ MetronicApp.factory('dealerModel', ['$http', '$cookies','$location', function($h
         },
 
         storeDealer: function(fields){
-
-	       	var fd = objectToFormData(fields);	       	  
-
-	        return $http.post("/admin/dealer", fd, {
-	            transformRequest: angular.identity,	            	            
-	            headers: {'Content-Type': undefined}
+	       	
+	        return $http.post("/admin/dealer", fields, {
+	            
 	        }).error(function(data, status, headers) {            
 	            Metronic.alert({
 	                type: 'danger',
@@ -25,9 +23,50 @@ MetronicApp.factory('dealerModel', ['$http', '$cookies','$location', function($h
 	                place: 'prepend',
 	                //closeInSeconds: 5
 	            });
-	        });
-	        /*.success(function(response) {	            
-	            $location.path("product/list");
+	        })
+	        .success(function(response) {	            
+	            
+	            Metronic.alert({
+	                type: 'success',
+	                icon: 'check',
+	                message: "Dealer successfully added",//response.message,
+	                container: '#info-message',
+	                place: 'prepend',
+	                closeInSeconds: 10000
+	            });
+	            $location.path("dealers/list");
+
+	        })
+	        /*.error(function(data, status, headers) {            
+	            Metronic.alert({
+	                type: 'danger',
+	                icon: 'warning',
+	                message: data,
+	                container: '.portlet-body',
+	                place: 'prepend'
+	            });
+	        });*/
+
+        },     
+
+        updateDealer: function(fields,dealerId){
+	       	
+	       	//put is used to updated data, Laravel router automatically redirect to update function 
+
+	        return $http.put("/admin/dealer/"+dealerId, fields, {
+	            
+	        }).error(function(data, status, headers) {            
+	            Metronic.alert({
+	                type: 'danger',
+	                icon: 'warning',
+	                message: 'Please enter all required fields.',
+	                container: '.portlet-body',
+	                place: 'prepend',
+	                //closeInSeconds: 5
+	            });
+	        })
+	        .success(function(response) {	            
+	            
 	            Metronic.alert({
 	                type: 'success',
 	                icon: 'check',
@@ -36,8 +75,10 @@ MetronicApp.factory('dealerModel', ['$http', '$cookies','$location', function($h
 	                place: 'prepend',
 	                closeInSeconds: 10000
 	            });
+	            $location.path("dealers/list");
 
-	        }).error(function(data, status, headers) {            
+	        })
+	        /*.error(function(data, status, headers) {            
 	            Metronic.alert({
 	                type: 'danger',
 	                icon: 'warning',
@@ -48,38 +89,6 @@ MetronicApp.factory('dealerModel', ['$http', '$cookies','$location', function($h
 	        });*/
 
         }       
+
     };
 }])
-
-var objectToFormData = function(obj, form, namespace) {
-    
-  var fd = form || new FormData();
-  var formKey;
-  
-  for(var property in obj) {
-    if(obj.hasOwnProperty(property)) {
-      
-      if(namespace) {
-        formKey = namespace + '[' + property + ']';
-      } else {
-        formKey = property;
-      }
-     
-      // if the property is an object, but not a File,
-      // use recursivity.
-      if(typeof obj[property] === 'object' && !(obj[property] instanceof File)) {
-        
-        objectToFormData(obj[property], fd, formKey);
-        
-      } else {
-        
-        // if it's a string or a File object
-        fd.append(formKey, obj[property]);
-      }
-      
-    }
-  }
-  
-  return fd;
-    
-};

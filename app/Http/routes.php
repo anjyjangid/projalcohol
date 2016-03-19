@@ -70,14 +70,16 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 	  
 
     });
-	
-	Route::resource('dealer', 'Admin\DealerController');
-
+		
 	Route::group(['prefix' => 'dealer'], function () {
 
+		Route::get('getdealer/{id}','Admin\DealerController@getdealer');
+			
 		Route::match(['get', 'post'],'getdealers', 'Admin\DealerController@getdealers');
 
 	});
+
+	Route::resource('dealer', 'Admin\DealerController');
 
 	Route::group(['prefix' => 'global'], function () {
 		

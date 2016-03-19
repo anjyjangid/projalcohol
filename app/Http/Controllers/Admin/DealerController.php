@@ -5,6 +5,8 @@ namespace AlcoholDelivery\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 
 use AlcoholDelivery\Http\Requests;
+use AlcoholDelivery\Http\Requests\DealerRequest;
+
 use AlcoholDelivery\Http\Controllers\Controller;
 
 use Storage;
@@ -49,100 +51,13 @@ class DealerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {    
+    public function store(DealerRequest $request)
+    {        
         $inputs = $request->all();
-
-        $validator = Validator::make($request->all(), [
-            'title' => 'required',
-            'description' => 'required',            
-            'street' => 'required',
-            // 'sku' => 'required',
-            // 'price' => 'required|numeric',
-            // 'discountPrice' => 'required|numeric',
-            // 'chilled' => 'required|integer',
-            // 'status' => 'required|integer',
-            // 'metaTitle' => 'max:100',
-            // 'metaKeywords' => 'max:1000',
-            // 'metaDescription' => 'max:255',            
-        ],[
-            'required' => 'Please enter :attribute.',
-            // 'categories.required' => 'Please select atleast one category.',
-            // 'status.required' => 'Please select :attribute.',
-        ]);
-
-        return response($validator->errors(), 422);
-
-        prd($request->all());
-
-        //VALIDATE ALL UPLOADED FILES
-        $contacts = $inputs['contacts'];
-
-        $ferror = false;                
         
-        foreach ($contacts as $key => $contact) {
-            $rules = ['contact' => 'required'];
-            $validfile = Validator::make(['contact'=> $contact['name']], $rules, ['contact.required'=>'Please select atleast one']);
-            if($validfile->passes()){
+        $dealer = Dealer::create($inputs);    
 
-            }else{
-                $ferror = $validfile->errors()->first('contact');
-                break;
-            }
-        }        
-
-        // if validation fails
-        if ($validator->fails() || $ferror){
-            
-            if($ferror)
-                $validator->errors()->add('contact',$ferror);
-
-            return response($validator->errors(), 422);
-        }
-        
-        prd("asdasd");
-        /*$cat = [];
-        //SET CATEGORIES FOR PRODUCT
-        foreach ($inputs['categories'] as $key => $value) {
-            $cat [] = ["_id" => new MongoId($value)];
-        }*/      
-
-        $product = Products::create([
-            'title' => $inputs['title'],
-            'p_description' => $inputs['description'],
-            'p_shortDescription' => $inputs['shortDescription'],
-            'p_categories' => $inputs['categories'],
-            'p_sku' => $inputs['sku'],
-            'p_price' => (float)$inputs['price'],
-            'p_discountPrice' => (float)$inputs['discountPrice'],
-            'p_chilled' => (int)$inputs['chilled'],
-            'p_status' => (int)$inputs['status'],
-            'p_metaTitle' => @$inputs['metaTitle'],
-            'p_metaKeywords' => @$inputs['metaKeywords'],
-            'p_metaDescription' => @$inputs['metaDescription']            
-        ]);    
-
-        if($product){
-            $filearr = [];
-            foreach ($files as $key => $file) {
-
-                $filearr[] = [
-                    'source' => $filename,
-                    'label' => @$file['label'],
-                    'order' => @$file['order'],
-                    'is_cover' => @$file['cover'],
-                ];
-            }
-
-            if($filearr){
-                $product->p_images = $filearr;
-                $product->save();
-            }
-        }
-
-        //$product->p_price = 25;
-        //$product->save();
-        return $product;
+        return $dealer;
     }
 
     /**
@@ -174,9 +89,24 @@ class DealerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(DealerRequest $request, $id)
     {
-        //
+        $inputs = $request->all();
+
+        $dealer = dealer::find($id);
+        
+        $dealer->title = $inputs['title'];
+        $dealer->address = $inputs['address'];
+        $dealer->contacts = $inputs['contacts'];
+        $dealer->status = $inputs['status'];    
+        $dealer->description = $inputs['description'];
+        
+        if($dealer->save()){
+            return response(array("success"=>true,"message"=>"Dealer updated successfully"));
+        }
+        
+        return response(array("success"=>false,"message"=>"Something went worng"));
+        
     }
 
     /**
@@ -190,7 +120,20 @@ class DealerController extends Controller
         //
     }
 
-    public function getdealers(Request $request,$id = false)
+    public function getdealer($dealerId){
+
+        $dealerObj = new dealer;
+
+        $result = $dealerObj->getDealers(array(
+                        "key"=>$dealerId,
+                        "multiple"=>false
+                    ));
+        
+        return response($result, 201);
+
+    }
+
+    public function getdealers(Request $request)
     {        
         $params = $request->all();
 
@@ -199,10 +142,7 @@ class DealerController extends Controller
         $columns = array('_id',"title",'contacts','address','updated_at','status');
         
         /* Individual column filtering */
-
-        if($id){
-            $dealers = $dealers->where('ancestors._id', '=', $id);
-        }
+    
 
         foreach($columns as $fieldKey=>$fieldTitle)
         {
@@ -297,7 +237,7 @@ class DealerController extends Controller
             $row[] = ucfirst($value['title']);
             $row[] = count($value['contacts']);
 
-            $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="category" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
+            $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="dealer" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
             $row[] = '<a title="View : '.$value['title'].'" href="#/dealers/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
                      '<a title="Edit : '.$value['title'].'" href="#/dealers/edit/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
             
