@@ -1,146 +1,144 @@
 /*This is the main file where angular is defined*/
-var myApp = angular.module('myApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'bootstrapLightbox', 'angular-loading-bar']);
+var AlcoholDelivery = angular.module('AlcoholDelivery', ["ui.router", 'ngCookies','oc.lazyLoad', 'ui.bootstrap', 'bootstrapLightbox', 'angular-loading-bar']);
 
-myApp.config(['$routeProvider', '$locationProvider',
-    function($routeProvider, $locationProvider) {
-        $routeProvider.when('/', {
-            templateUrl: 'templates/users/login.html',
-            controller: 'userController'
-        });
+/* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
+AlcoholDelivery.config(['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
+    $ocLazyLoadProvider.config({
+        // global configs go here
+    });
+}]);
 
-        $routeProvider.when('/dashboard', {
-            templateUrl: 'templates/users/dashboard.html',
-            controller: 'userController',
-            authenticated: true
-        });
 
+
+/* Setup Rounting For All Pages */
+AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+    // Redirect any unmatched url
+    $urlRouterProvider.otherwise("/");  
+    
+    $stateProvider
+        // Dashboard
         
-
-        $routeProvider.when('/gallery/view', {
-            templateUrl: 'templates/gallery/gallery-view.html',
-            controller: 'galleryController',
-            resolve: {
-                data: function(galleryModel) {
-                    return {
-                        galleries: galleryModel.getAllGalleries()
-                    };
-                }
+        .state('index', {
+            url: "/",
+            templateUrl: "/templates/index.html",
+            controller:function(){
+                setTimeout(initScripts,100)
             },
-            authenticated: true
-        });
-
-        $routeProvider.when('/gallery/add', {
-            templateUrl: 'templates/gallery/gallery-add.html',
-            controller: 'galleryController',
             resolve: {
-                data: function() {
-                    return 'single';
-                }
-            },
-            authenticated: true
-        });
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'AlcoholDelivery',
+                        insertBefore: '#ng_load_plugins_before',
+                        // debug: true,
+                        serie: true,
+                        files: [
+                            'js/owl.carousel.min.js',
+                            'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
+                            'js/jquery.switchButton.js',
+                            'js/jquery.mCustomScrollbar.concat.min.js',
+                            'js/jquery.bootstrap-touchspin.min.js',
+                            'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js',
+                            'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js',
+                            'js/all_animations.js',
+                            'js/js_init_scripts.js'
+                        ] 
+                    });
+                }]
+            }
+        })
 
-        $routeProvider.when('/gallery/:id', {
-            templateUrl: 'templates/gallery/gallery-single.html',
-            controller: 'galleryController',
+
+        .state('mainLayout', {
+            templateUrl: "/templates/mainLayout.html",
+            controller:function(){
+                setTimeout(function(){
+                    initScripts({
+                        disableScrollHeader:true
+                    });
+                },100)
+            },
             resolve: {
-                data: function(galleryModel, $route) {
-                    return {
-                        singleGallery: galleryModel.getGalleryById($route.current.params.id)
-                    };
-                }
-            },
-            authenticated: true
-        });
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'AlcoholDelivery',
+                        insertBefore: '#ng_load_plugins_before',
+                        // debug: true,
+                        serie: true,
+                        files: [
+                            'js/owl.carousel.min.js',
+                            'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
+                            'js/jquery.switchButton.js',
+                            'js/jquery.mCustomScrollbar.concat.min.js',
+                            'js/jquery.bootstrap-touchspin.min.js',
+                            'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js',
+                            'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js',
+                            'js/all_animations.js',
+                            'js/js_init_scripts.js'
+                        ] 
+                    });
+                }]
+            }
+        })
 
-        
 
-        $routeProvider.when('/invitation/list', {
-            templateUrl: 'templates/invitation/invitation-list.html',
-            controller: 'invitationController',
-            resolve: {
-                data: function() {
-                    return 'blank';
-                }
-            },
-            authenticated: true
-        });
+        .state('mainLayout.product', {
+            url: "/product",
+            templateUrl: "/templates/product/index.html"
+        })
 
-        $routeProvider.when('/logout', {
-            templateUrl: 'templates/users/logout.html',
-            controller: 'userController',
-            authenticated: true
-        });        
-
-        $routeProvider.otherwise('/');        
-
+        .state('mainLayout.cart', {
+            url: "/cart",
+            templateUrl: "/templates/cart.html",
+            controller:function(){
+                setTimeout(function(){
+                    initScripts({
+                        disableScrollHeader:true
+                    });
+                },100)
+            }
+        })
     }
+    
 ]);
 
-myApp.run(["$rootScope", "$location", 'userModel',
-    function($rootScope, $location, userModel) {        
-        $rootScope.$on("$routeChangeStart",
-            function(event, next, current) {
-                if (next.$$route.authenticated) {
-                    if (!userModel.getAuthStatus()) {
-                        $location.path('/');
-                    }
-                }
-
-                if (next.$$route.originalPath == '/') {
-                    if (userModel.getAuthStatus()) {
-                        $location.path(current.$$route.originalPath);
-                    }
-                }
-            });
+AlcoholDelivery.directive('sideBar', function() {
+  return {
+    restrict: 'E',
+    templateUrl: '/templates/partials/sidebar.html',
+    controller: function(){
+        function bindNavbar() {
+          if ($(window).width() > 767) {
+                
+                $('ul.nav li.dropdown').hover(function() {
+                  $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeIn(500);
+                }, function() {
+                  $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut(500);
+                });  
+              
+            }
+          else {
+           $('.navbar-default .dropdown').off('mouseover').off('mouseout');
+          }
+         }
+         
+         $(window).resize(function() {
+          bindNavbar();
+         });
+         
+         bindNavbar();
     }
-]);
-
-myApp.directive('dropzone', function() {
-    return function(scope, element, attrs) {
-        var config, dropzone;
-
-        config = scope[attrs.dropzone];
-
-        // create a Dropzone for the element with the given options
-        dropzone = new Dropzone(element[0], config.options);
-
-        // bind the given event handlers
-        angular.forEach(config.eventHandlers, function(handler, event) {
-            dropzone.on(event, handler);
-        });
-    };
+  };
 });
 
-myApp.directive('imageonload', function() {
-    return {
-        restrict: 'A',
-        scope: {
-            class: '@'
-        },
-        link: function($scope, element, attrs) {
-            element.bind('load', function() {
-                $scope.imageLoaded = 'check';
-                console.log('image is loaded outer');
-                $scope.$apply();
-            });
-        }
-    };
+AlcoholDelivery.directive('topMenu', function() {
+  return {
+    restrict: 'E',
+    templateUrl: '/templates/partials/topmenu.html',
+    controller: function(){}
+  };
 });
 
-myApp.directive('imgLoad', function() {
-    return {
-        restrict: 'E',
-        template: '<img ng-src="{{ actualLink }}" class="directive-image" />',
-        scope: {
-            actualLink: '@'
-        },
-        link: function($scope, element, attrs) {
-            element.bind('load', function() {
-                console.log('image is loaded inner');
-            });
-        }
-    };
-});
-
-//# sourceMappingURL=app.js.map
+/* Init global settings and run the app */
+AlcoholDelivery.run(["$rootScope", "$state", function($rootScope, $state) {
+    $rootScope.$state = $state; // state to be accessed from view
+}]);

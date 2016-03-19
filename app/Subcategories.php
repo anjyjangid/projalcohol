@@ -5,10 +5,10 @@ namespace AlcoholDelivery;
 // use Illuminate\Database\Eloquent\Model;
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 
-class Categories extends Eloquent
+class Subcategories extends Eloquent
 {
     protected $primaryKey = "_id";
-    protected $collection = 'categories';
+    protected $collection = 'test';
 
     /**
      * Indicates if the model should be timestamped.
@@ -22,13 +22,6 @@ class Categories extends Eloquent
      *
      * @var array
      */
-    protected $fillable = ['cat_title', 'cat_thumb', 'cat_lthumb','ancestors','cat_status'];
-
-    public function Subcategories()
-    {
-        return $this->hasMany('Subcategories');
-    }
-
-
     
+
 }
