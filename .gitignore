@@ -3,6 +3,7 @@ node_modules/
 Homestead.yaml
 .env
 storage/database.sqlite
+storage/products
 .idea
 public/bower_components/
 public/assets
