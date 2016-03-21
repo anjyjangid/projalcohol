@@ -65,41 +65,63 @@
 								{{dealer.description}} </span>
 							</div>
 						</div>
-												
-						<div class="row static-info" ng-if="categoryData.ancestors">
-							<div class="col-md-4 name">
-								 Parents:
-							</div>
-							<div class="col-md-8 value">
-								<ul class="list-inline">
-								<li ng-repeat="parent in categoryData.ancestors">
-								<a title="view : {{parent.title}}" ui-sref="categories.show({categoryid:parent._id['$id']})"><span class="label label-success">{{parent.title}}</span></a>&nbsp&nbsp<span ng-if="!$last" class="fa fa-long-arrow-right"></span>
-								</li>
-								</ul>
-							</div>
-						</div>
-
+																		
 						<div class="row static-info">
 							<div class="col-md-4 name">
 								 Status :
 							</div>
 							<div class="col-md-8 value">
 								<div class="profile-userbuttons">
-									<button ng-if="dealer.status == 1" type="button" class="btn green-haze btn-sm">Active</button>
-									<button ng-if="dealer.status == 0" type="button" class="btn green-haze btn-sm">In-Active</button>
+									<span ng-if="dealer.status == 1" type="button" class="label label-success">Active</span>
+									<span ng-if="dealer.status == 0" type="button" class="label label-warning">In-Active</span>
 								</div>
 								
 							</div>
 						</div>
 
-						<div class="row static-info" ng-if="categoryData.cat_lthumb">
-							<div class="col-md-4 name">
-								 Listing Thumb :
-							</div>
-							<div class="col-md-8 value">
-								<img ng-if="categoryData.cat_lthumb" ng-src="/assets/resources/category/lthumb/400/{{categoryData.cat_lthumb}}" class="img-responsive" alt="">
-							</div>
+
+						<div class="row static-info" ng-if="dealer.contacts">
+
+							<div class="col-md-6 margin-top-20" ng-repeat="contact in dealer.contacts">
+								<div class="portlet box green">
+									<div class="portlet-title tabbable-line">
+										<div class="caption caption-md">
+											<i class="icon-user"></i>
+											<span class="caption-subject bold uppercase">
+												Contact {{$index+1}} : 
+											</span>
+										</div>
+									</div>
+									<div class="portlet-body">
+										<div class="row static-info">
+											<div class="col-md-4 name">
+												 Name :
+											</div>
+											<div class="col-md-8 value">
+												{{contact.name}}												
+											</div>
+										</div>
+										<div class="row static-info">
+											<div class="col-md-4 name">
+												 Designation :
+											</div>
+											<div class="col-md-8 value">
+												{{contact.des}}												
+											</div>
+										</div>
+										<div class="row static-info">
+											<div class="col-md-4 name">
+												 Number :
+											</div>
+											<div class="col-md-8 value">
+												{{contact.number}}												
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>							
 						</div>
+
 			</div>
 		</div>
 </div>
