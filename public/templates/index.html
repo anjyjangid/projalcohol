@@ -1,5 +1,5 @@
 <section class="fullwidth header">
-	<top-menu></top-menu>						
+	<top-menu user="user"></top-menu>						
 	<div class="fullwidth settop">
 		<div class="container">
 			<div class="row">
@@ -1159,31 +1159,37 @@
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				<!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>-->
 			</div>
+			<form ng-submit="submit()" name="myForm">
 			<div class="modal-body alcohabody">
 				<div class="alcohal_regisemailcvr">
+					
 					<div class="alcohal_regissigntxt">Sign Up for Free</div>
 					<div class="registeremailcvr">
-						<label>Email Address</label>
-						<input type="text" class="alcohalrestertextbox" placeholder="Email Address" />
+						<input type="email" name="email" ng-model="signup.email" class="alcohalrestertextbox" placeholder="Email Address"  ng-model="formData.email" required>
+						<span style="color:red; clear:both" ng-show="myForm.email.$dirty && myForm.email.$invalid">
+  					  <span ng-show="!myForm.email.$error.required && myForm.email.$error.email && myForm.email.$dirty">invalid email</span>
+					  </span>
 					</div>
 					<div class="registeremailcvr">
-						<input type="text" class="alcohalrestertextbox" placeholder="Password" />
+						<input type="password" ng-model="signup.password" class="alcohalrestertextbox" placeholder="Password" required>
 					</div>
 					<div class="registeremailcvr">
-						<input type="text" class="alcohalrestertextbox" placeholder="Confirm Password" />
+						<input type="password" ng-model="signup.confirm_password" class="alcohalrestertextbox" placeholder="Confirm Password" required>
 					</div>
 					<div class="registeremailcvr">
-						<input type="checkbox" class="modcheck" name="regis" id="regis">
+						<input type="checkbox" class="" name="regis" id="regis" required="">
 						<label for="regis"><span></span></label> 
 						<div class="register_checktext"> By submitting this form, I confirm that I have read and agree to Alcohol Delivery’s <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a></div>
 					</div>
+					
 				</div>
 			</div>
 			<div class="modal-footer alcohalfotter">
 				<div class="alcohal_regisemailcvr">
-					<button type="button" class="alcohalfootersign">Sign Up</button>
+					<button type="submit"  ng-disabled="myForm.user.$dirty && myForm.user.$invalid ||  myForm.email.$dirty && myForm.email.$invalid" class="alcohalfootersign">Sign Up</button>
 				</div>
 			</div>
+			</form>
 		</div>
 	</div>
 </div>

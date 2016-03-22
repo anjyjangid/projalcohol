@@ -36,7 +36,7 @@
 			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
 	</head>
-	<body>
+	<body ng-init='categories=<?php echo json_encode($categories) ?>'>
 		<div ui-view></div>
 		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
 

@@ -5,7 +5,7 @@ namespace AlcoholDelivery\Http\Controllers;
 use AlcoholDelivery\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use AlcoholDelivery\Categories as Categories;
 class UserController extends Controller
 {
     public function checkAuth(Request $request)
@@ -18,10 +18,10 @@ class UserController extends Controller
 
         // if the credentials are wrong
         if (!Auth::attempt('user',$credentials)) {
-            return response('Username password does not match', 403);
+            return response('Username password does not match', 200);
         }
         
-        return response(Auth::user(), 201);
+        return response(Auth::user(), 200);
     }
 
     /**
@@ -31,7 +31,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('frontend');
+        $categories = Categories::all()->toArray();
+        return view('frontend',array('categories'=>$categories));
+
     }
 
     /**

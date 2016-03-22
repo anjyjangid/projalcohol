@@ -24,11 +24,7 @@ class Categories extends Moloquent
      */
     protected $fillable = ['cat_title', 'cat_thumb', 'cat_lthumb','ancestors','cat_status'];
 
-    public function Subcategories()
-    {
-        return $this->hasMany('Subcategories');
-    }
-
+   
 
     
     public function getCategory($params = array()){

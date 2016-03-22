@@ -11,7 +11,7 @@ use Storage;
 use Validator;
 use Image;
 
-use AlcoholDelivery\SubCategories as SubCategories;
+use AlcoholDelivery\Categories as Categories;
 
 class CategoryController extends Controller
 {
@@ -256,10 +256,8 @@ class CategoryController extends Controller
     {        
         $params = $request->all();
 
-        //$categories = new Categories;        
-        $categories = Categories::with('Subcategories')->get();
-        prd($categories);
-        exit;
+        $categories = new Categories;        
+        
 
         $columns = array('_id',"cat_title",'cat_title','ancestors','updated_at','cat_status');
         $indexColumn = '_id';      
