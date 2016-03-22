@@ -17,18 +17,13 @@
 							<tr role="row" class="heading">
 								<th width="5%">
 									Sr.
-								</th>								
-																
+								</th>
 								<th width="15%">
-									Page
+									Title
 								</th>
 								<th width="">
-									Description
-								</th>
-																
-								<th width="10%">
-									Status
-								</th>
+									Subject
+								</th>								
 								<th width="10%">
 									Actions
 								</th>
@@ -91,7 +86,7 @@
                         'targets': [1]
                     }],
                 "ajax": {
-                    "url": "../admin/cms/getpages", // ajax source                    
+                    "url": "../admin/emailtemplate/gettemplates", // ajax source                    
                     "type": "GET"
                 },
                 "order": [
@@ -99,14 +94,6 @@
                 ], // set first column as a default sort by asc
                 "fnDrawCallback": function (oSettings) {
                 	
-					$("tr td span").each(function () {
-					    var content = $(this);
-					    angular.element(document).injector().invoke(function($compile) {
-					        var scope = angular.element(content).scope();
-					        $compile(content)(scope);
-					    });
-					});
-					
 					Metronic.initAjax()
 
 				},

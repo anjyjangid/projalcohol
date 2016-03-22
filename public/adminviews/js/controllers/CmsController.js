@@ -54,7 +54,9 @@ MetronicApp.controller('CmsUpdateController',['$rootScope', '$scope', '$timeout'
     $scope.errors = {};
 	
 	cmsModel.getPage($stateParams.pageid).success(function(response){
-		$scope.page = response;		
+
+		$scope.page = response;
+
 	});
 
 	$scope.editorOptions = {
@@ -76,35 +78,22 @@ MetronicApp.controller('CmsUpdateController',['$rootScope', '$scope', '$timeout'
 
 		});
 	}
-
    
 }]);
 
 
-MetronicApp.controller('CmsShowController',['$rootScope', '$scope', '$timeout','$http','$stateParams','cmsModel', function($rootScope, $scope, $timeout,$http,$stateParams,cmsModel) {
+MetronicApp.controller('CmsPageShowController',['$rootScope', '$scope', '$timeout','$http','$stateParams','$sce','cmsModel', function($rootScope, $scope, $timeout,$http,$stateParams,$sce,cmsModel) {
    
-    $scope.dealer = [];
+    $scope.page = [];
     
-    cmsModel.getDealer($stateParams.dealerid).success(function(response){
-		$scope.dealer = response;
+    cmsModel.getPage($stateParams.pageid).success(function(response){
+
+		$scope.page = response;		
+		$scope.page.content = $sce.trustAsHtml($scope.page.content);
+
 	});
     
 	  
 }]);
 
 
-var app = angular.module('main', ['ngCkeditor']).
-        controller('DemoCtrl', function($scope, $http) {
-
-            $scope.editorOptions = {
-                language: 'en',
-                uiColor: '#cfcfcf'
-            };
-            $scope.save = function() {
-                $http.post('/examples/test.php', {
-                    content: $scope.test
-                }).success(function() {
-                    alert('Saved');
-                });
-            }
-        })

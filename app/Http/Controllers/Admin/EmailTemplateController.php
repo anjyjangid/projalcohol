@@ -5,16 +5,16 @@ namespace AlcoholDelivery\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 
 use AlcoholDelivery\Http\Requests;
-use AlcoholDelivery\Http\Requests\CmsRequest;
+use AlcoholDelivery\Http\Requests\EmailTemplateRequest;
 
 use AlcoholDelivery\Http\Controllers\Controller;
 
 use Storage;
 use Validator;
 
-use AlcoholDelivery\Cms as Cms;
+use AlcoholDelivery\EmailTemplate as EmailTemplate;
 
-class CmsController extends Controller
+class EmailTemplateController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -51,11 +51,11 @@ class CmsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CmsRequest $request)
+    public function store(EmailTemplateRequest $request)
     {        
         $inputs = $request->all();
         
-        $dealer = Dealer::create($inputs);    
+        $template = EmailTemplate::create($inputs);    
 
         return $dealer;
     }
@@ -89,20 +89,19 @@ class CmsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(CmsRequest $request, $id)
+    public function update(EmailTemplateRequest $request, $id)
     {
         $inputs = $request->all();
         
-        $page = Cms::find($id);
+        $page = EmailTemplate::find($id);
         
         $page->title = $inputs['title'];
         $page->description = $inputs['description'];
         $page->content = $inputs['content'];
-        $page->status = $inputs['status'];    
-        
-        
+        $page->status = $inputs['status'];
+
         if($page->save()){
-            return response(array("success"=>true,"message"=>"Cms ".ucfirst($page->title)." page updated successfully"));
+            return response(array("success"=>true,"message"=>"Email Template ".ucfirst($page->title)." updated successfully"));
         }
         
         return response(array("success"=>false,"message"=>"Something went worng"));
@@ -120,12 +119,12 @@ class CmsController extends Controller
         //
     }
 
-    public function getpage($pageId){
+    public function gettemplate($templateId){
 
-        $cmsObj = new Cms;
+        $templateObj = new EmailTemplate;
 
-        $result = $cmsObj->getPages(array(
-                        "key"=>$pageId,
+        $result = $templateObj->getTemplates(array(
+                        "key"=>$templateId,
                         "multiple"=>false
                     ));
         
@@ -133,13 +132,13 @@ class CmsController extends Controller
 
     }
 
-    public function getpages(Request $request)
+    public function gettemplates(Request $request)
     {        
         $params = $request->all();
 
-        $cms = new Cms;
+        $template = new EmailTemplate;
 
-        $columns = array('_id',"title",'description','content','updated_at','status');
+        $columns = array('_id',"title",'subject','content','updated_at');
         
         /* Individual column filtering */
     
@@ -149,13 +148,13 @@ class CmsController extends Controller
             if ( isset($params[$fieldTitle]) && $params[$fieldTitle]!="" )
             {
 
-                $cms = $cms->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
+                $template = $template->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
 
             }
         }
 
 
-        //prd($cms->toSql());
+        //prd($template->toSql());
 
             
         /*
@@ -169,7 +168,7 @@ class CmsController extends Controller
 
                 if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
                     
-                    $cms = $cms->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
+                    $template = $template->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
                     
                 }
             }
@@ -178,21 +177,21 @@ class CmsController extends Controller
         
         /* Data set length after filtering */        
 
-        $iFilteredTotal = $cms->count();
+        $iFilteredTotal = $template->count();
 
         /*
          * Paging
          */
         if ( isset( $params['start'] ) && $params['length'] != '-1' )
         {
-            $cms = $cms->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
+            $template = $template->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
         }
 
-        $iTotal = $cms->count();
+        $iTotal = $template->count();
 
-        $cms = $cms->get($columns);
+        $template = $template->get($columns);
 
-        $cms = $cms->toArray();
+        $template = $template->toArray();
                 
         /*
          * Output
@@ -220,7 +219,7 @@ class CmsController extends Controller
         }
 
         $i = 1;
-        foreach($cms as $key=>$value) {
+        foreach($template as $key=>$value) {
 
             $row=array();
 
@@ -230,15 +229,12 @@ class CmsController extends Controller
                 $row[] = ++$srStart;//$row1[$aColumns[0]];
             }
 
-            $status = $status_list[(int)$value['status']];
-            
-                    
             $row[] = ucfirst($value['title']);
-            $row[] = $value['description'];
 
-            $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="pages" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
-            $row[] = '<a title="View : '.$value['title'].'" href="#/cms/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
-                     '<a title="Edit : '.$value['title'].'" href="#/cms/edit/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
+            $row[] = $value['subject'];
+
+            $row[] = '<a title="View : '.$value['title'].'" href="#/emailtemplates/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
+                     '<a title="Edit : '.$value['title'].'" href="#/emailtemplates/edit/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
             
             $records['data'][] = $row;
         }

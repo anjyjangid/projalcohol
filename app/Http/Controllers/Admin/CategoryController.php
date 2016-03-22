@@ -101,7 +101,6 @@ class CategoryController extends Controller
     public function uploadThumb(Request $request){
     	
     	$files = array();
-    	                                  
 
         if ($request->hasFile('thumb'))
         {

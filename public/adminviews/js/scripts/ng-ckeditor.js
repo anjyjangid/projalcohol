@@ -7,6 +7,7 @@
             return factory(angular);
         });
     } else {
+
         return factory(angular);
     }
 
@@ -16,7 +17,7 @@
     var $defer, loaded = false;
     
     app.run(['$q', '$timeout', function ($q, $timeout) {
-
+         
         $defer = $q.defer();
 
         if (angular.isUndefined(CKEDITOR)) {
@@ -37,12 +38,13 @@
     }]);
 
     app.directive('ckeditor', ['$timeout', '$q', function ($timeout, $q) {
-
+        
         return {
             restrict: 'AC',
             require: ['ngModel', '^?form'],
             scope: false,
             link: function (scope, element, attrs, ctrls) {
+
                 var ngModel = ctrls[0];
                 var form = ctrls[1] || null;
                 var EMPTY_HTML = '<p></p>',
@@ -55,6 +57,7 @@
                 }
 
                 var onLoad = function () {
+                    
                     var options = {
                         toolbar: 'full',
                         toolbar_full: [ //jshint ignore:line
@@ -146,9 +149,10 @@
                 if (CKEDITOR.status === 'loaded') {
                     loaded = true;
                 }
-                if (loaded) {
+                if (loaded) {                    
                     onLoad();
                 } else {
+
                     $defer.promise.then(onLoad);
                 }
             }

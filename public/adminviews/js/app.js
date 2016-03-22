@@ -9,7 +9,6 @@ var MetronicApp = angular.module("MetronicApp", [
     "oc.lazyLoad",  
     "ngSanitize",
     "ngCookies",
-    
 ]); 
 
 
@@ -817,8 +816,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
                         files: [
 
-                            'assets/global/plugins/ckeditor/ckeditor.js',
-                            'adminviews/js/scripts/ng-ckeditor.js',
+                            'assets/global/plugins/ckeditor/ckeditor.js',                            
 
                             'adminviews/js/models/cmsModel.js',
                             'adminviews/js/controllers/CmsController.js'
@@ -853,13 +851,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             }
         })
     
-            // .state("dealers.show", {
-            //         url: "/show/{dealerid}",
-            //         templateUrl: "adminviews/views/dealers/show.html",
-            //         data: {pageTitle: 'Dealer Detail'},
-            //         controller: "DealerShowController",
-                    
-            // })
+        .state("cms.show", {
+                url: "/show/{pageid}",
+                templateUrl: "adminviews/views/cms/show.html",
+                data: {pageTitle: 'Page Preview'},
+                controller: "CmsPageShowController",
+                
+        })
             
 
         //  } CMS route end //
@@ -871,17 +869,17 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
 
         .state('emailtemplates', {
             url: "/emailtemplates",
-            templateUrl: "adminviews/views/cms/index.html",
+            templateUrl: "adminviews/views/emailtemplates/index.html",
             data: {pageTitle: 'CMS Pages'},
-            controller: "CmsController",
+            controller: "EmailTemplateController",
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         name: 'MetronicApp',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
                         files: [
-                            'adminviews/js/models/cmsModel.js',
-                            'adminviews/js/controllers/CmsController.js'
+                            'adminviews/js/models/emailTemplateModel.js',
+                            'adminviews/js/controllers/EmailTemplateController.js'
                         ]
                     });
                 }]
@@ -891,15 +889,15 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         
         .state("emailtemplates.list", {
             url: "/list",
-            templateUrl: "adminviews/views/cms/list.html",
-            data: {pageTitle: 'CMS List'}
+            templateUrl: "adminviews/views/emailtemplates/list.html",
+            data: {pageTitle: 'Email Template List'}
         })
 
         .state("emailtemplates.edit",{
-            url: "/edit/{pageid}",
-            templateUrl: "adminviews/views/cms/edit.html",
+            url: "/edit/{templateid}",
+            templateUrl: "adminviews/views/emailtemplates/edit.html",
             data: {pageTitle: 'Update Cms Page'},
-            controller:"CmsUpdateController",
+            controller:"EmailTemplateUpdateController",
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
                     return $ocLazyLoad.load({
@@ -913,13 +911,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             }
         })
     
-            // .state("dealers.show", {
-            //         url: "/show/{dealerid}",
-            //         templateUrl: "adminviews/views/dealers/show.html",
-            //         data: {pageTitle: 'Dealer Detail'},
-            //         controller: "DealerShowController",
-                    
-            // })
             
 
         //  } Email Template route end //

@@ -158,6 +158,8 @@ License: You must have a valid license purchased only from themeforest(the above
 	<script src="{{ asset('assets/global/plugins/angularjs/plugins/angular-ui-router.min.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/global/plugins/angularjs/plugins/ocLazyLoad.min.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/global/plugins/angularjs/plugins/ui-bootstrap-tpls.min.js') }}" type="text/javascript"></script>
+	
+	
 	<!-- END CORE ANGULARJS PLUGINS -->
 	
 	<!-- BEGIN APP LEVEL ANGULARJS SCRIPTS -->

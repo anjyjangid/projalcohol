@@ -25,7 +25,7 @@
 
 					<div class="form-group" ng:class="{'has-error':errors.content[0]}">
 						<label class="control-label">Content</label>
-						<textarea name="page_content" ckeditor="editorOptions" class="form-control ckeditor" required ng-model="page.content" rows="6"  cols="80"></textarea>
+						<textarea name="page_content" ckeditor="editorOptions" class="form-control" required ng-model="page.content" rows="6"  cols="80"></textarea>
 						
 						<span class="help-block" ng-bind="errors.content[0]"></span>
 						<span ng-show="page.content.$touched && page.content.$invalid">Content is required.</span>
@@ -44,7 +44,7 @@
 					<div class="row">
 						<div class="col-sm-12">
 							<div class="margin-top-10 pull-right">
-								<input type="submit" name="update" value="Update" class="btn green-haze">
+								<input type="submit" name="update" value="Update" ng-click="update()" class="btn green-haze">
 								
 								<a href="#" class="btn default">Cancel </a>
 							</div>
