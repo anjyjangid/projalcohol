@@ -35,6 +35,11 @@ License: You must have a valid license purchased only from themeforest(the above
 <meta name="_token" content="{{ csrf_token() }}">
 <!-- END GLOBAL MANDATORY STYLES -->
 
+
+<link href="{{ asset('assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css"/>  
+
 <!-- BEGIN DYMANICLY LOADED CSS FILES(all plugin and page related styles must be loaded between GLOBAL and THEME css files ) -->
 <link id="ng_load_plugins_before"/>
 <!-- END DYMANICLY LOADED CSS FILES -->
@@ -43,6 +48,8 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- DOC: To use 'rounded corners' style just load 'components-rounded.css' stylesheet instead of 'components.css' in the below style tag -->
 <link href="{{ asset('assets/global/css/components-md.css') }}" id="style_components" rel="stylesheet" type="text/css"/>
 <link href="{{ asset('assets/global/css/plugins-md.css') }}" rel="stylesheet" type="text/css"/>
+                        
+
 <link href="{{ asset('assets/admin/layout/css/layout.css') }}" rel="stylesheet" type="text/css"/>
 <link href="{{ asset('assets/admin/layout/css/themes/darkblue.css') }}" rel="stylesheet" type="text/css" id="style_color"/>
 <link href="{{ asset('assets/admin/layout/css/custom.css') }}" rel="stylesheet" type="text/css"/>
@@ -136,6 +143,12 @@ License: You must have a valid license purchased only from themeforest(the above
 	<script src="{{ asset('assets/global/plugins/uniform/jquery.uniform.min.js') }}" type="text/javascript"></script>	
 	<script src="{{ asset('assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}" type="text/javascript"></script>
 	<!-- END CORE JQUERY PLUGINS -->
+
+	<script src="{{ asset('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}" type="text/javascript"></script>
+	<script src="{{ asset('assets/global/plugins/select2/select2.min.js') }}" type="text/javascript"></script>
+	<script src="{{ asset('assets/global/plugins/datatables/all.min.js') }}" type="text/javascript"></script>
+	<script src="{{ asset('assets/global/scripts/datatable.js') }}" type="text/javascript"></script>
+	
 
 	<!-- BEGIN CORE ANGULARJS PLUGINS -->
 	<script src="{{ asset('assets/global/plugins/angularjs/angular.min.js') }}" type="text/javascript"></script>	

@@ -71,6 +71,8 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 
     });
 		
+	
+
 	Route::group(['prefix' => 'dealer'], function () {
 
 		Route::get('getdealer/{id}','Admin\DealerController@getdealer');
@@ -80,6 +82,22 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 	});
 
 	Route::resource('dealer', 'Admin\DealerController');
+
+
+	// CMS PAGES ROUTING STARTS
+
+	Route::group(['prefix' => 'cms'], function () {
+
+		Route::get('getpage/{id}','Admin\CmsController@getpage');
+			
+		Route::get('getpages', 'Admin\CmsController@getpages');
+
+	});
+
+	Route::resource('cms', 'Admin\CmsController');
+
+	// CMS PAGES ROUTING STARTS
+	
 
 	Route::group(['prefix' => 'global'], function () {
 		
