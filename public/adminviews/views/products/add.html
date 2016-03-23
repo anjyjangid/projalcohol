@@ -34,12 +34,8 @@
 					</div> -->
 				</div>
 			</div>
-			<div class="portlet-body">
-
-
-
+			<div class="portlet-body">				
 				<tabset active="active">
-
 					<tab>
 						<tab-heading>General</tab-heading>
 
@@ -124,6 +120,20 @@
 									<input ng-model="product.chilled" type="radio" value="1" name="chilled"> Yes </label>
 									<label class="radio-inline">
 									<input ng-model="product.chilled" type="radio" value="2" name="chilled"> No </label>
+								</div>
+
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-md-2">Is Featured<span class="required" aria-required="true">
+								* </span></label>
+								<div class="col-md-4">
+								
+								<div class="radio-list">
+									<label class="radio-inline">
+									<input ng-model="product.isFeatured" type="radio" value="1" name="isFeatured"> Yes </label>
+									<label class="radio-inline">
+									<input ng-model="product.isFeatured" type="radio" value="0" name="isFeatured"> No </label>
 								</div>
 
 								</div>

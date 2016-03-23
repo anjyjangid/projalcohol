@@ -124,6 +124,20 @@
 								</div>
 
 								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-md-2">Is Featured<span class="required" aria-required="true">
+								* </span></label>
+								<div class="col-md-4">
+								
+								<div class="radio-list">
+									<label class="radio-inline">
+									<input ng-model="product.isFeatured" type="radio" value="1" name="isFeatured"> Yes </label>
+									<label class="radio-inline">
+									<input ng-model="product.isFeatured" type="radio" value="0" name="isFeatured"> No </label>
+								</div>
+
+								</div>
 							</div>														
 							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
 								<label class="col-md-2 control-label">Status: <span class="required">
@@ -183,7 +197,7 @@
 							{{ errors.image[0] }}
 						</div>
 						<div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10">
-							<a id="tab_images_uploader_pickfiles" href="#" ng-click="imageFiles.push({})" class="btn yellow">
+							<a id="tab_images_uploader_pickfiles" href="#" ng-click="imageFiles.push({label:'',order:'',coverimage:''})" class="btn yellow">
 							<i class="fa fa-plus"></i> Add Files </a>
 							<!-- <a id="tab_images_uploader_uploadfiles" href="#" ng-click="uploadFiles()" class="btn green">
 							<i class="fa fa-share"></i> Upload Files </a> -->
@@ -238,7 +252,7 @@
 									</td>
 									<td>
 										<label>
-											<input type="radio" ng-model="f.coverimage" value="1" name="coverimage" ng-change="coverUpdate($index)">
+											<input plugin-uniform type="radio" ng-model="f.coverimage" value="1" name="coverimage" ng-change="coverUpdate($index)">
 										</label>
 									</td>									
 									<td>
@@ -249,8 +263,7 @@
 							</tbody>
 						</table>
 					</tab>
-				</tabset>
-
+				</tabset>				
 				<!-- {{{product:product}|json}} -->
 			</div>			
 		</div>

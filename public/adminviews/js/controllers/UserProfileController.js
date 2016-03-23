@@ -15,6 +15,8 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
     $rootScope.settings.layout.pageBodySolid = true;
     $rootScope.settings.layout.pageSidebarClosed = false;  
 
+    $scope.errors = {};
+
 	angular.extend($scope, {
         
         submitAccount: function(accountForm) {
@@ -25,7 +27,9 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
                 email: $scope.user.email
             };
 
-            userModel.submitAccount(data).then(function() {
+            userModel.submitAccount(data).success(function(response){
+                $rootScope.user = response;
+                $rootScope.user.name = response.first_name+' '+response.last_name;
                 Metronic.alert({
                     type: 'success',
                     icon: 'success',
@@ -33,6 +37,8 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
                     container: '#tab_1_1',
                     place: 'prepend'
                 });
+            }).error(function(data, status, headers) {                            
+                $scope.errors = data;                
             });
         },
 
@@ -44,7 +50,7 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
                 retype_password: $scope.user.retype_password
             };
 
-            userModel.changePassword(data).then(function() {
+            userModel.changePassword(data).success(function(response){                
                 Metronic.alert({
                     type: 'success',
                     icon: 'success',
@@ -55,6 +61,8 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
                 $scope.user.current_password = '';
                 $scope.user.new_password = '';
                 $scope.user.retype_password = '';
+            }).error(function(data, status, headers) {                            
+                $scope.errors = data;                
             });
         },
 

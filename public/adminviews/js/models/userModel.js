@@ -21,19 +21,6 @@ MetronicApp.factory('userModel', ['$http', '$cookies', '$rootScope', function($h
                 last_name: postedData.last_name,
                 email: postedData.email,
             }
-        }).success(function(response){            
-            
-            $rootScope.user = response;
-            $rootScope.user.name = response.first_name+' '+response.last_name;
-
-        }).error(function(data, status, headers) {            
-            Metronic.alert({
-                type: 'danger',
-                icon: 'warning',
-                message: data,
-                container: '#tab_1_1',
-                place: 'prepend'
-            });            
         });
     };
     
@@ -88,16 +75,6 @@ MetronicApp.factory('userModel', ['$http', '$cookies', '$rootScope', function($h
                 new_password: postedData.new_password,
                 retype_password: postedData.retype_password,
             }
-        }).success(function(response) {            
-            //$cookies.put('auth', JSON.stringify(response));
-        }).error(function(data, status, headers) {
-            Metronic.alert({
-                type: 'danger',
-                icon: 'warning',
-                message: data,
-                container: '#tab_1_3',
-                place: 'prepend'
-            });            
         });
     };
 
