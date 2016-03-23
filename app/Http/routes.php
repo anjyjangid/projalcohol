@@ -71,6 +71,8 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 
     });
 		
+	
+
 	Route::group(['prefix' => 'dealer'], function () {
 
 		Route::get('getdealer/{id}','Admin\DealerController@getdealer');
@@ -81,11 +83,44 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 
 	Route::resource('dealer', 'Admin\DealerController');
 
+
+	// CMS PAGES ROUTING STARTS
+
+	Route::group(['prefix' => 'cms'], function () {
+
+		Route::get('getpage/{id}','Admin\CmsController@getpage');
+			
+		Route::get('getpages', 'Admin\CmsController@getpages');
+
+	});
+
+	Route::resource('cms', 'Admin\CmsController');
+
+	// CMS PAGES ROUTING STARTS
+
+
+	// EMAIL TEMPLATES PAGES ROUTING STARTS
+
+	Route::group(['prefix' => 'emailtemplate'], function () {
+
+		Route::get('gettemplate/{id}','Admin\EmailTemplateController@gettemplate');
+			
+		Route::get('gettemplates', 'Admin\EmailTemplateController@gettemplates');
+
+	});
+
+	Route::resource('cms', 'Admin\CmsController');
+
+	// EMAIL TEMPLATES PAGES ROUTING STARTS
+	
+
 	Route::group(['prefix' => 'global'], function () {
 		
 		Route::get('status/{id}/{table}/{status}','Admin\GlobalController@setstatus');
 
 		Route::get('getcountries','Admin\GlobalController@getcountries');
+
+		Route::post('uploadgraphics','Admin\GlobalController@uploadgraphics');
 			
 	});
 

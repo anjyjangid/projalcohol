@@ -8,8 +8,9 @@ var MetronicApp = angular.module("MetronicApp", [
     "ui.bootstrap", 
     "oc.lazyLoad",  
     "ngSanitize",
-    "ngCookies"
+    "ngCookies",
 ]); 
+
 
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
 MetronicApp.config(['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
@@ -595,8 +596,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             }
         })
 
-
-        // User Profile Dashboard
+        
             .state("dealers.list", {
                 url: "/list",
                 templateUrl: "adminviews/views/dealers/list.html",
@@ -799,6 +799,121 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "adminviews/views/profile/help.html",
             data: {pageTitle: 'User Help'}      
         })
+
+
+        // CMS complete route start{
+
+
+        .state('cms', {
+            url: "/cms",
+            templateUrl: "adminviews/views/cms/index.html",
+            data: {pageTitle: 'CMS Pages'},
+            controller: "CmsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+
+                            'assets/global/plugins/ckeditor/ckeditor.js',                            
+
+                            'adminviews/js/models/cmsModel.js',
+                            'adminviews/js/controllers/CmsController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        
+        .state("cms.list", {
+            url: "/list",
+            templateUrl: "adminviews/views/cms/list.html",
+            data: {pageTitle: 'CMS List'}
+        })
+
+        .state("cms.edit",{
+            url: "/edit/{pageid}",
+            templateUrl: "adminviews/views/cms/edit.html",
+            data: {pageTitle: 'Update Cms Page'},
+            controller:"CmsUpdateController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                                                  
+                        ]
+                    });
+                }]
+            }
+        })
+    
+        .state("cms.show", {
+                url: "/show/{pageid}",
+                templateUrl: "adminviews/views/cms/show.html",
+                data: {pageTitle: 'Page Preview'},
+                controller: "CmsPageShowController",
+                
+        })
+            
+
+        //  } CMS route end //
+
+
+
+        // Email Templates complete route start{
+
+
+        .state('emailtemplates', {
+            url: "/emailtemplates",
+            templateUrl: "adminviews/views/emailtemplates/index.html",
+            data: {pageTitle: 'CMS Pages'},
+            controller: "EmailTemplateController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'adminviews/js/models/emailTemplateModel.js',
+                            'adminviews/js/controllers/EmailTemplateController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        
+        .state("emailtemplates.list", {
+            url: "/list",
+            templateUrl: "adminviews/views/emailtemplates/list.html",
+            data: {pageTitle: 'Email Template List'}
+        })
+
+        .state("emailtemplates.edit",{
+            url: "/edit/{templateid}",
+            templateUrl: "adminviews/views/emailtemplates/edit.html",
+            data: {pageTitle: 'Update Cms Page'},
+            controller:"EmailTemplateUpdateController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'assets/global/plugins/ckeditor/ckeditor.js'
+                        ]
+                    });
+                }]
+            }
+        })
+    
+            
+
+        //  } Email Template route end //
 
         // Todo
         .state('todo', {

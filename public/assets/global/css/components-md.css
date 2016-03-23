@@ -5151,7 +5151,7 @@ Portlets
 }
 .portlet > .portlet-title {
   /*border: 0 !important;*/
-  margin-bottom: 0;
+  margin-bottom: 10px;
 }
 .portlet.light.bordered.form-fit > .portlet-title {
   border-bottom: 1px solid #eee !important;

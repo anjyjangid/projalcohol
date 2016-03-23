@@ -1,99 +1,43 @@
-/***
-GLobal Directives
-***/
+'use strict';
 
-// Route State Load Spinner(used on page or content load)
-MetronicApp.directive('ngSpinnerBar', ['$rootScope',
-    function($rootScope) {
-        return {
-            link: function(scope, element, attrs) {
-                // by defult hide the spinner bar
-                element.addClass('hide'); // hide spinner bar by default
+(function (angular, factory) {
 
-                // display the spinner bar whenever the route changes(the content part started loading)
-                $rootScope.$on('$stateChangeStart', function() {
-                    element.removeClass('hide'); // show spinner bar
-                });
+    if (typeof define === 'function' && define.amd) {
+        define(['angular', 'ckeditor'], function (angular) {
+            return factory(angular);
+        });
+    } else {
 
-                // hide the spinner bar on rounte change success(after the content loaded)
-                $rootScope.$on('$stateChangeSuccess', function() {
-                    element.addClass('hide'); // hide spinner bar
-                    $('body').removeClass('page-on-load'); // remove page loading indicator
-                    Layout.setSidebarMenuActiveLink('match'); // activate selected link in the sidebar menu
-                   
-                    // auto scorll to page top
-                    setTimeout(function () {
-                        Metronic.scrollTop(); // scroll to the top on content load
-                    }, $rootScope.settings.layout.pageAutoScrollOnLoad);     
-                });
-
-                // handle errors
-                $rootScope.$on('$stateNotFound', function() {
-                    element.addClass('hide'); // hide spinner bar
-                });
-
-                // handle errors
-                $rootScope.$on('$stateChangeError', function() {
-                    element.addClass('hide'); // hide spinner bar
-                });
-            }
-        };
+        return factory(angular);
     }
-])
 
-// Handle global LINK click
-MetronicApp.directive('a', function() {
+}(angular || null, function (angular) {
 
-    return {
-        restrict: 'E',
-        link: function(scope, elem, attrs) {
-            if (attrs.ngClick || attrs.href === '' || attrs.href === '#') {
-                elem.on('click', function(e) {
-                    e.preventDefault(); // prevent link click for above criteria
-                });
+    var app = angular.module('ngCkeditor', []);
+    var $defer, loaded = false;
+    
+    app.run(['$q', '$timeout', function ($q, $timeout) {
+         
+        $defer = $q.defer();
+
+        if (angular.isUndefined(CKEDITOR)) {
+            throw new Error('CKEDITOR not found');
+        }
+        CKEDITOR.disableAutoInline = true;
+        function checkLoaded() {
+            if (CKEDITOR.status === 'loaded') {
+                loaded = true;
+                $defer.resolve();
+            } else {
+                checkLoaded();
             }
         }
-    };
-});
 
-// Handle Dropdown Hover Plugin Integration
-MetronicApp.directive('dropdownMenuHover', function () {
-  return {
-    link: function (scope, elem) {
-      elem.dropdownHover();
-    }
-  };  
-});
+        CKEDITOR.on('loaded', checkLoaded);
+        $timeout(checkLoaded, 100);
+    }]);
 
-MetronicApp.directive('fileModel', ['$parse', function ($parse) {
-    return {
-        restrict: 'A',
-        link: function(scope, element, attrs) {
-            var model = $parse(attrs.fileModel);
-            var modelSetter = model.assign;
-            
-            element.bind('change', function(){
-                scope.$apply(function(){
-                    modelSetter(scope, element[0].files[0]);
-                });
-            });
-        }
-    };
-}]);
-
-MetronicApp.directive('errSrc', function() {
-  return {
-    link: function(scope, element, attrs) {
-      element.bind('error', function() {
-        if (attrs.src != attrs.errSrc) {
-          attrs.$set('src', attrs.errSrc);
-        }
-      });
-    }
-  }
-});
-
-MetronicApp.directive('ckeditor', ['$timeout', '$q', function ($timeout, $q) {
+    app.directive('ckeditor', ['$timeout', '$q', function ($timeout, $q) {
         
         return {
             restrict: 'AC',
@@ -138,16 +82,7 @@ MetronicApp.directive('ckeditor', ['$timeout', '$q', function ($timeout, $q) {
                         disableNativeSpellChecker: false,
                         uiColor: '#FAFAFA',
                         height: '400px',
-                        width: '100%',
-
-                        allowedContent:true,
-                        language: 'en',
-                        uiColor: '#cfcfcf',
-                        strinsert_button_label:'Content Block',
-                        strinsert_button_title:'Insert Content Block',
-                        strinsert_button_voice:'Insert Content Block',                        
-                        filebrowserImageBrowseUrl:'/admin/global/browsegraphics',
-                        filebrowserUploadUrl:'/admin/global/uploadgraphics'
+                        width: '100%'
                     };
                     options = angular.extend(options, scope[attrs.ckeditor]);
 
@@ -223,4 +158,8 @@ MetronicApp.directive('ckeditor', ['$timeout', '$q', function ($timeout, $q) {
             }
         };
     }]);
+
+    return app;
+}));
+
 
