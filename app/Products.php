@@ -24,13 +24,14 @@ class Products extends Eloquent
             'metaTitle',
             'metaKeywords',
             'metaDescription',
-            'images'
+            'images',
+            'isFeatured'
             
     ];
 
     public function pcategories()
-    {
-        return $this->belongsToMany('AlcoholDelivery\Categories', null, 'products', 'categories');
+    {        
+        //return $this->belongsToMany('AlcoholDelivery\Categories', null, 'products', 'categories');
     }
 
     public function getSingleProduct($id)

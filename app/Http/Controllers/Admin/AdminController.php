@@ -156,7 +156,7 @@ class AdminController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response($validator->errors()->all(), 422);
+            return response($validator->errors(), 422);
         }
 
         $admin = Admin::where('_id', Auth::user('admin')->id)->first();
@@ -170,25 +170,29 @@ class AdminController extends Controller
 
     public function updatepassword(Request $request)
     {
+        
+        $admin = Admin::where('_id', Auth::user('admin')->id)->first();
+        $mismatchpass = false;    
+        if (\Hash::check($request->input('current_password'), $admin->password) === false) {
+            $mismatchpass = 'Incorrect current password.';            
+        }
+
         $validator = Validator::make($request->all(), [
-            'current_password' => 'required|min:6|max:8',
+            'current_password' => 'required',
             'new_password' => 'required|min:6|max:8|different:current_password',
             'retype_password' => 'required|same:new_password',
         ]);
 
-        if ($validator->fails()) {
-            return response($validator->errors()->all(), 422);
+        if ($validator->fails() || $mismatchpass) {
+            
+            if($mismatchpass)
+                $validator->errors()->add('current_password',$mismatchpass);
+            
+            return response($validator->errors(), 422);
         }
 
-        $admin = Admin::where('_id', Auth::user('admin')->id)->first();
-        
-        if (\Hash::check($request->input('current_password'), $admin->password)) {
-            $admin->password = \Hash::make($request->input('new_password'));
-            $admin->save();
-            return response($admin, 200);
-        }else{
-            return response(['Incorrect current password.'], 422);
-        }       
-        
+        $admin->password = \Hash::make($request->input('new_password'));
+        $admin->save();
+        return response($admin, 200);
     }
 }
