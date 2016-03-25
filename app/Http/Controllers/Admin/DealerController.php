@@ -221,6 +221,7 @@ class DealerController extends Controller
         }
 
         $i = 1;
+        
         foreach($dealers as $key=>$value) {
 
             $row=array();
