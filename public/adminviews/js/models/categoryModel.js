@@ -58,10 +58,7 @@ MetronicApp.factory('categoryModel', ['$http', '$cookies', function($http, $cook
             }
 
         }).success(function(response){
-
             
-
-
         }).error(function(data, status, headers) {            
                       
         });

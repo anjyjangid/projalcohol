@@ -910,7 +910,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 }]
             }
         })
-    
+        
+        .state("emailtemplates.show", {
+                url: "/show/{templateid}",
+                templateUrl: "adminviews/views/emailtemplates/show.html",
+                data: {pageTitle: 'Template Preview'},
+                controller: "EmailTemplateShowController",
+                
+        })
             
 
         //  } Email Template route end //

@@ -146,7 +146,7 @@ MetronicApp.directive('ckeditor', ['$timeout', '$q', function ($timeout, $q) {
                         strinsert_button_label:'Content Block',
                         strinsert_button_title:'Insert Content Block',
                         strinsert_button_voice:'Insert Content Block',                        
-                        filebrowserImageBrowseUrl:'/admin/global/browsegraphics',
+                        //filebrowserImageBrowseUrl:'/admin/global/browsegraphics',
                         filebrowserUploadUrl:'/admin/global/uploadgraphics'
                     };
                     options = angular.extend(options, scope[attrs.ckeditor]);
