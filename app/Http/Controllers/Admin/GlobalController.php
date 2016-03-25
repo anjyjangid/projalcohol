@@ -76,6 +76,15 @@ class GlobalController extends Controller
 
     }
 
+    /* Editor Browse Images */
+    public function browsegraphics(){
+        
+        $images = DB::collection("sitegraphics")->get();
+                    
+        return view('admin.graphicmedia')->with("images",$images);
+        
+    }
+
     /* Editor Upload Image */
     public function uploadgraphics(Request $request){
 
@@ -87,7 +96,7 @@ class GlobalController extends Controller
         // Optional: might be used to provide localized messages.
         $langCode = $inputs['langCode'] ;
 
-
+            
         if(isset($inputs['upload']) && !empty($inputs['upload'])){
             
             $validator = Validator::make($inputs, [
@@ -100,7 +109,7 @@ class GlobalController extends Controller
 
             $image = $request->file('upload');
 
-            $destinationPath = storage_path('graphics');
+            $destinationPath = public_path('assets/resources/graphics');
 
             if (!File::exists($destinationPath)){
                 File::MakeDirectory($destinationPath,0777, true);
@@ -109,7 +118,7 @@ class GlobalController extends Controller
             $detail = pathinfo($image->getClientOriginalName());
             $newName = $detail['filename']."-".time().".".$image->getClientOriginalExtension();    
 
-            $url = "http://localhost:8000/admin/storage/graphics/".$newName;
+            $url = url('assets/resources/graphics/'.$newName);
 
             $upload_success = $image->move($destinationPath, $newName);
     

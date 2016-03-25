@@ -28,7 +28,7 @@ MetronicApp.factory('emailTemplateModel', ['$http', '$cookies','$location', func
 	                message: "Dealer successfully added",//response.message,
 	                container: '#info-message',
 	                place: 'prepend',
-	                closeInSeconds: 10000
+	                closeInSeconds: 5
 	            });
 	            $location.path("cms/list");
 
@@ -45,11 +45,11 @@ MetronicApp.factory('emailTemplateModel', ['$http', '$cookies','$location', func
 
         },     
 
-        updatePage: function(fields,pageId){
+        updateTemplate: function(fields,templateId){
 	       	
 	       	//put is used to updated data, Laravel router automatically redirect to update function 
 
-	        return $http.put("/admin/emailtemplate/"+pageId, fields, {
+	        return $http.put("/admin/emailtemplate/"+templateId, fields, {
 	            
 	        }).error(function(data, status, headers) {            
 	            Metronic.alert({
@@ -68,10 +68,11 @@ MetronicApp.factory('emailTemplateModel', ['$http', '$cookies','$location', func
 	                icon: 'check',
 	                message: response.message,
 	                container: '#info-message',
-	                place: 'prepend',
-	                closeInSeconds: 10000
+	                reset: false,
+	                place: 'prepend',	                
+	                closeInSeconds: 5
 	            });
-	            $location.path("emailtemplate/list");
+	            $location.path("emailtemplates/list");
 
 	        })
 	        /*.error(function(data, status, headers) {            

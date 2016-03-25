@@ -28,7 +28,7 @@ class CmsRequest extends Request
             
             'title' => 'required|string|max:255',            
             'description' => 'required|max:500',
-            'content' => 'required|max:500',
+            'content' => 'required',
             'status'=> 'integer|in:0,1',
             
 

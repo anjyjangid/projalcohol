@@ -109,7 +109,7 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 
 	});
 
-	Route::resource('cms', 'Admin\CmsController');
+	Route::resource('emailtemplate', 'Admin\EmailTemplateController');
 
 	// EMAIL TEMPLATES PAGES ROUTING STARTS
 	
@@ -119,6 +119,8 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 		Route::get('status/{id}/{table}/{status}','Admin\GlobalController@setstatus');
 
 		Route::get('getcountries','Admin\GlobalController@getcountries');
+		
+		Route::get('browsegraphics','Admin\GlobalController@browsegraphics');
 
 		Route::post('uploadgraphics','Admin\GlobalController@uploadgraphics');
 			

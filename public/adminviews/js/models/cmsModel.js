@@ -28,7 +28,7 @@ MetronicApp.factory('cmsModel', ['$http', '$cookies','$location', function($http
 	                message: "Dealer successfully added",//response.message,
 	                container: '#info-message',
 	                place: 'prepend',
-	                closeInSeconds: 10000
+	                closeInSeconds: 5
 	            });
 	            $location.path("cms/list");
 
@@ -69,7 +69,7 @@ MetronicApp.factory('cmsModel', ['$http', '$cookies','$location', function($http
 	                message: response.message,
 	                container: '#info-message',
 	                place: 'prepend',
-	                closeInSeconds: 10000
+	                closeInSeconds: 5
 	            });
 	            $location.path("cms/list");
 

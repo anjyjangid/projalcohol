@@ -66,7 +66,7 @@ MetronicApp.controller('EmailTemplateUpdateController',['$rootScope', '$scope', 
 		var data = $scope.template;	
 		
 		//POST DATA WITH FILES
-		emailTemplateModel.updatePage(data,$stateParams.templateid).success(function(response){
+		emailTemplateModel.updateTemplate(data,$stateParams.templateid).success(function(response){
 			
 
 		}).error(function(data, status, headers){						
@@ -80,12 +80,15 @@ MetronicApp.controller('EmailTemplateUpdateController',['$rootScope', '$scope', 
 }]);
 
 
-MetronicApp.controller('CmsShowController',['$rootScope', '$scope', '$timeout','$http','$stateParams','emailTemplateModel', function($rootScope, $scope, $timeout,$http,$stateParams,emailTemplateModel) {
+MetronicApp.controller('EmailTemplateShowController',['$rootScope', '$scope', '$timeout','$http','$stateParams','$sce','emailTemplateModel', function($rootScope, $scope, $timeout,$http,$stateParams,$sce,emailTemplateModel) {
    
-    $scope.dealer = [];
+    $scope.template = [];
     
-    emailTemplateModel.getDealer($stateParams.dealerid).success(function(response){
-		$scope.dealer = response;
+    emailTemplateModel.getTemplate($stateParams.templateid).success(function(response){
+
+		$scope.template = response;		
+		$scope.template.content = $sce.trustAsHtml($scope.template.content);
+
 	});
     
 	  

@@ -93,19 +93,18 @@ class EmailTemplateController extends Controller
     {
         $inputs = $request->all();
         
-        $page = EmailTemplate::find($id);
+        $template = EmailTemplate::find($id);
         
-        $page->title = $inputs['title'];
-        $page->description = $inputs['description'];
-        $page->content = $inputs['content'];
-        $page->status = $inputs['status'];
-
-        if($page->save()){
-            return response(array("success"=>true,"message"=>"Email Template ".ucfirst($page->title)." updated successfully"));
+        $template->title = $inputs['title'];
+        $template->subject = $inputs['subject'];
+        $template->content = $inputs['content'];
+        
+        if($template->save()){
+            return response(array("success"=>true,"message"=>"Email Template ".ucfirst($template->title)." updated successfully"));
         }
-        
+
         return response(array("success"=>false,"message"=>"Something went worng"));
-        
+
     }
 
     /**
