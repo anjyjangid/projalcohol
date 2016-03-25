@@ -41,4 +41,9 @@ class User extends Eloquent implements AuthenticatableContract,
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
+
+    public function galleries()
+    {
+        return $this->hasMany('AlcoholDelivery\Gallery');
+    }
 }

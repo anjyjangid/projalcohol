@@ -3,9 +3,18 @@
 namespace AlcoholDelivery\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use DB;
+
 use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
+
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Facades\Image;
+
+use MongoId;
+use File;
+use DB;
+
 
 class GlobalController extends Controller
 {
@@ -26,13 +35,18 @@ class GlobalController extends Controller
                 'field_status'  => 'status',
                 'alias'         => 'Dealer'
             ),
-                                    
+            "pages" =>array(
+                'table'         => "pages",
+                'field_id'      => "_id",
+                'field_status'  => 'status',
+                'alias'         => 'Cms Page'
+            ),
+            
         );
 
 
         if(isset($data[$table])){
-        
-             
+                     
             try{
 
                 $fetchRow = DB::collection($data[$table]['table'])->where("_id","=", $id)
@@ -60,6 +74,55 @@ class GlobalController extends Controller
 
         return response($countries);
 
+    }
+
+    /* Editor Upload Image */
+    public function uploadgraphics(Request $request){
+
+        $inputs = $request->all(); 
+
+        $funcNum = $inputs['CKEditorFuncNum'] ;
+        // Optional: instance name (might be used to load a specific configuration file or anything else).
+        $CKEditor = $inputs['CKEditor'] ;
+        // Optional: might be used to provide localized messages.
+        $langCode = $inputs['langCode'] ;
+
+
+        if(isset($inputs['upload']) && !empty($inputs['upload'])){
+            
+            $validator = Validator::make($inputs, [
+                'upload' => 'mimes:jpeg,jpg,png|max:8000',
+            ]);
+
+            if ($validator->fails()) {
+                return response("<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction($funcNum, '$url', 'There are errors in the form data');</script>", 400);
+            }
+
+            $image = $request->file('upload');
+
+            $destinationPath = storage_path('graphics');
+
+            if (!File::exists($destinationPath)){
+                File::MakeDirectory($destinationPath,0777, true);
+            }
+            
+            $detail = pathinfo($image->getClientOriginalName());
+            $newName = $detail['filename']."-".time().".".$image->getClientOriginalExtension();    
+
+            $url = "http://localhost:8000/admin/storage/graphics/".$newName;
+
+            $upload_success = $image->move($destinationPath, $newName);
+    
+            
+            return response("<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction($funcNum, '$url', 'Image uploaded successfully');</script>", 400);
+
+        }else{
+            return response("<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction($funcNum, '', 'Please select atleast one image for the product.');</script>", 400);
+
+        }
+        
+        
+         
     }
 
     

@@ -28,17 +28,20 @@
 
 						<form role="form" name='accountForm' ng-submit="submitAccount(accountForm)">
 
-							<div class="form-group">
+							<div class="form-group" ng:class="{'has-error':errors.first_name[0]}">
 								<label class="control-label">First Name</label>
 								<input type="text" name="first_name" placeholder="First name" class="form-control" required ng-model="user.first_name"/>
+								<span class="help-block" ng-bind="errors.first_name[0]"></span>
 							</div>
-							<div class="form-group">
+							<div class="form-group" ng:class="{'has-error':errors.last_name[0]}">
 								<label class="control-label">Last Name</label>
 								<input type="text" name="last_name" placeholder="Last name" class="form-control" required ng-model="user.last_name"/>
+								<span class="help-block" ng-bind="errors.last_name[0]"></span>
 							</div>
-							<div class="form-group">
+							<div class="form-group" ng:class="{'has-error':errors.email[0]}">
 								<label class="control-label">Email</label>								
 								<input type="text" name="email" placeholder="Email Address" class="form-control" required ng-model="user.email"/>
+								<span class="help-block" ng-bind="errors.email[0]"></span>
 							</div>
 							
 							<div class="margiv-top-10">
@@ -92,17 +95,20 @@
 					<!-- CHANGE PASSWORD TAB -->
 					<div class="tab-pane" id="tab_1_3">
 						<form role="form" name='passwordForm' ng-submit="changePassword(passwordForm)" autocomplete="off">
-							<div class="form-group">
+							<div class="form-group" ng:class="{'has-error':errors.current_password[0]}">
 								<label class="control-label">Current Password</label>
 								<input type="password" name="current_password" class="form-control" required ng-model="user.current_password"/>
+								<span class="help-block" ng-bind="errors.current_password[0]"></span>
 							</div>
-							<div class="form-group">
+							<div class="form-group" ng:class="{'has-error':errors.new_password[0]}">
 								<label class="control-label">New Password</label>
 								<input type="password" name="new_password" class="form-control" required ng-model="user.new_password"/>
+								<span class="help-block" ng-bind="errors.new_password[0]"></span>
 							</div>
-							<div class="form-group">
+							<div class="form-group" ng:class="{'has-error':errors.retype_password[0]}">
 								<label class="control-label">Re-type New Password</label>
 								<input type="password" name="retype_password" class="form-control" required ng-model="user.retype_password"/>
+								<span class="help-block" ng-bind="errors.retype_password[0]"></span>
 							</div>
 							<div class="margin-top-10">
 								<input type="submit" name="changepassword" value="Change Password" class="btn green-haze">

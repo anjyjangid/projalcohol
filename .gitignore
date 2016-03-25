@@ -4,6 +4,7 @@ Homestead.yaml
 .env
 storage/database.sqlite
 storage/products
+storage/graphics
 .idea
 public/bower_components/
 public/assets

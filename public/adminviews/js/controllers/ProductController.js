@@ -12,6 +12,11 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 	});
 
 	$scope.categories = [];
+
+	productModel.getCategories().success(function(data){
+		$scope.categories = data;		
+	});
+
 	$scope.errors = {};
 	
 	$scope.childOf = function(categories, parent){
@@ -72,12 +77,13 @@ MetronicApp.controller('ProductAddController',['$scope', '$location','fileUpload
 
 	$scope.product = {		
 		chilled:'1',
-		categories:[]		
+		categories:[],
+		isFeatured:'0'
 	};	
 
-	productModel.getCategories().success(function(data){
+	/*productModel.getCategories().success(function(data){
 		$scope.categories = data;
-	});	
+	});*/	
 
 	$scope.store = function(){
 
@@ -103,22 +109,24 @@ MetronicApp.controller('ProductEditController',['$scope', '$location','$statePar
 
 	$scope.imageFiles = [{}];
 
-	$scope.categories = [];
+	$scope.product = [{}];
 
 	productModel.getProduct($stateParams.productid).success(function(data){
-		$scope.product = data;	
+		$scope.product = data;
 		$scope.imageFiles = data.imageFiles;
 	});
 
-	productModel.getCategories().success(function(data){
+	/*productModel.getCategories().success(function(data){
 		$scope.categories = data;		
-	});	
+	});*/	
 
-	$scope.isChecked = function(id){
+	$scope.isChecked = function(id){		
 
 		var r = false;
 
-		for(var c in $scope.product.categories){
+		if(!$scope.product.categories) return false;
+
+		for(var c in $scope.categories){
 			if($scope.product.categories[c] == id){
 				r = true;
 			}
@@ -170,14 +178,15 @@ MetronicApp.directive('myChange', function() {
 
 	  function checkSiblings(el) {
 	      var parent = el.parent().parent(),
-	          all = true,
-	          parentcheck=parent.children("label");
+          all = true,
+          parentcheck=parent.children("label");
+
 	      el.siblings().each(function () {
-	          return all = ($(this).find('input[type="checkbox"]').prop("checked") === checked);
+	          return all = ($(this).find('input[type="checkbox"]').is(":checked") === checked);
 	      });
+
 	      if (all && checked) {
-	          parentcheck.children('input[type="checkbox"]').prop({
-	              
+	          parentcheck.children('input[type="checkbox"]').prop({	              
 	              checked: checked
 	          });
 	          checkSiblings(parent);
@@ -190,6 +199,7 @@ MetronicApp.directive('myChange', function() {
 	              checked: true
 	         });
 	      }
+	      $.uniform.update();
 	  }
 
 	  checkSiblings(container);
@@ -206,4 +216,17 @@ MetronicApp.directive('myChange', function() {
 
     });
   };
+});
+
+MetronicApp.directive('pluginUniform', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            element.uniform();
+            /*if (!element.parents(".checker").length) {
+                element.uniform();
+            }*/
+
+        }
+    };
 });

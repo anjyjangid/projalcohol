@@ -13,6 +13,7 @@ use Intervention\Image\Facades\Image;
 
 use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Products;
+use AlcoholDelivery\User;
 use MongoId;
 use Input;
 use DB;
@@ -72,7 +73,8 @@ class ProductController extends Controller
             'status' => 'required|integer',
             'metaTitle' => 'max:100',
             'metaKeywords' => 'max:1000',
-            'metaDescription' => 'max:255',            
+            'metaDescription' => 'max:255',
+            'isFeatured' => 'required|integer',
         ],[
             'required' => 'Please enter :attribute.',
             'categories.required' => 'Please select atleast one category.',
@@ -125,7 +127,8 @@ class ProductController extends Controller
             'status' => (int)$inputs['status'],
             'metaTitle' => @$inputs['metaTitle'],
             'metaKeywords' => @$inputs['metaKeywords'],
-            'metaDescription' => @$inputs['metaDescription']            
+            'metaDescription' => @$inputs['metaDescription'],
+            'isFeatured' => (int)$inputs['isFeatured'],
         ]);    
 
         $this->saveImages($product,$files);
@@ -180,6 +183,7 @@ class ProductController extends Controller
             'metaTitle' => 'max:100',
             'metaKeywords' => 'max:1000',
             'metaDescription' => 'max:255',            
+            'isFeatured' => 'required|integer',
         ],[
             'required' => 'Please enter :attribute.',
             'categories.required' => 'Please select atleast one category.',
@@ -232,7 +236,8 @@ class ProductController extends Controller
             'status' => (int)$inputs['status'],
             'metaTitle' => @$inputs['metaTitle'],
             'metaKeywords' => @$inputs['metaKeywords'],
-            'metaDescription' => @$inputs['metaDescription']            
+            'metaDescription' => @$inputs['metaDescription'],
+            'isFeatured' => (int)$inputs['isFeatured'],            
         ]);
 
         $this->saveImages($product,$files);
@@ -258,7 +263,7 @@ class ProductController extends Controller
 
         $params = $request->all();
 
-        $columns = array('_id','','name','categories','price','status');
+        $columns = array('_id','','name','categories','price','status','isFeatured');
 
         $products = new Products;
 
@@ -267,8 +272,16 @@ class ProductController extends Controller
           $products = $products->where('name','regexp', "/.*$pname/i");
         }
 
+        if(isset($params['categories']) && trim($params['categories'])!=''){          
+          $products = $products->where('categories',$params['categories']);
+        }
+
         if(isset($params['status']) && trim($params['status'])!=''){
           $products = $products->where('status',(int)$params['status']);
+        }
+
+        if(isset($params['isFeatured']) && trim($params['isFeatured'])!=''){
+          $products = $products->where('isFeatured',(int)$params['isFeatured']);
         }
 
         $iTotalRecords = $products->count();
@@ -287,6 +300,8 @@ class ProductController extends Controller
             array("info" => "Not Published"),            
             array("success" => "Published"),
         );
+
+        $fstatus = [['success'=>'No'],['info'=>'Yes']];
 
         $notordered = true;
 
@@ -312,13 +327,14 @@ class ProductController extends Controller
 
         foreach($products as $i => $product) {
             $status = $status_list[$product->status];
+            $isFeatured  = $fstatus[$product->isFeatured];            
             $id = ($i + 1);
             
             $categories = Categories::whereIn('_id', $product->categories)->get();
 
             $cname = [];
             foreach ($categories as $key => $value) {                
-                  $cname[] = $value->cat_title;                
+              $cname[] = $value->cat_title;                
             }
 
             $records["data"][] = array(
@@ -328,7 +344,10 @@ class ProductController extends Controller
               implode(', ', $cname),
               $product->price,      
               '<span class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span>',
-              '<a href="#/product/edit/'.$product->_id.'" class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>',              
+              '<span class="label label-sm label-'.(key($isFeatured)).'">'.(current($isFeatured)).'</span>',
+              
+              '<a href="#/product/edit/'.$product->_id.'" class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>'
+              
             );
         }
 

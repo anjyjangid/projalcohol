@@ -5,16 +5,16 @@ namespace AlcoholDelivery\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 
 use AlcoholDelivery\Http\Requests;
-use AlcoholDelivery\Http\Requests\DealerRequest;
+use AlcoholDelivery\Http\Requests\CmsRequest;
 
 use AlcoholDelivery\Http\Controllers\Controller;
 
 use Storage;
 use Validator;
 
-use AlcoholDelivery\Dealer as Dealer;
+use AlcoholDelivery\Cms as Cms;
 
-class DealerController extends Controller
+class CmsController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -23,7 +23,7 @@ class DealerController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('admin');        
+
     }
     /**
      * Display a listing of the resource.
@@ -51,7 +51,7 @@ class DealerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(DealerRequest $request)
+    public function store(CmsRequest $request)
     {        
         $inputs = $request->all();
         
@@ -89,20 +89,20 @@ class DealerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(DealerRequest $request, $id)
+    public function update(CmsRequest $request, $id)
     {
         $inputs = $request->all();
-
-        $dealer = dealer::find($id);
         
-        $dealer->title = $inputs['title'];
-        $dealer->address = $inputs['address'];
-        $dealer->contacts = $inputs['contacts'];
-        $dealer->status = $inputs['status'];    
-        $dealer->description = $inputs['description'];
+        $page = Cms::find($id);
         
-        if($dealer->save()){
-            return response(array("success"=>true,"message"=>"Dealer updated successfully"));
+        $page->title = $inputs['title'];
+        $page->description = $inputs['description'];
+        $page->content = $inputs['content'];
+        $page->status = $inputs['status'];    
+        
+        
+        if($page->save()){
+            return response(array("success"=>true,"message"=>"Cms ".ucfirst($page->title)." page updated successfully"));
         }
         
         return response(array("success"=>false,"message"=>"Something went worng"));
@@ -120,12 +120,12 @@ class DealerController extends Controller
         //
     }
 
-    public function getdealer($dealerId){
+    public function getpage($pageId){
 
-        $dealerObj = new dealer;
+        $cmsObj = new Cms;
 
-        $result = $dealerObj->getDealers(array(
-                        "key"=>$dealerId,
+        $result = $cmsObj->getPages(array(
+                        "key"=>$pageId,
                         "multiple"=>false
                     ));
         
@@ -133,30 +133,29 @@ class DealerController extends Controller
 
     }
 
-    public function getdealers(Request $request)
+    public function getpages(Request $request)
     {        
         $params = $request->all();
 
-        $dealers = new Dealer;
+        $cms = new Cms;
 
-        $columns = array('_id',"title",'contacts','address','updated_at','status');
+        $columns = array('_id',"title",'description','content','updated_at','status');
         
         /* Individual column filtering */
     
-
         foreach($columns as $fieldKey=>$fieldTitle)
         {
 
             if ( isset($params[$fieldTitle]) && $params[$fieldTitle]!="" )
             {
 
-                $dealers = $dealers->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
+                $cms = $cms->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
 
             }
         }
 
 
-        //prd($dealers->toSql());
+        //prd($cms->toSql());
 
             
         /*
@@ -170,7 +169,7 @@ class DealerController extends Controller
 
                 if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
                     
-                    $dealers = $dealers->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
+                    $cms = $cms->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
                     
                 }
             }
@@ -179,21 +178,21 @@ class DealerController extends Controller
         
         /* Data set length after filtering */        
 
-        $iFilteredTotal = $dealers->count();
+        $iFilteredTotal = $cms->count();
 
         /*
          * Paging
          */
         if ( isset( $params['start'] ) && $params['length'] != '-1' )
         {
-            $dealers = $dealers->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
+            $cms = $cms->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
         }
 
-        $iTotal = $dealers->count();
+        $iTotal = $cms->count();
 
-        $dealers = $dealers->get($columns);
+        $cms = $cms->get($columns);
 
-        $dealers = $dealers->toArray();
+        $cms = $cms->toArray();
                 
         /*
          * Output
@@ -221,8 +220,7 @@ class DealerController extends Controller
         }
 
         $i = 1;
-        
-        foreach($dealers as $key=>$value) {
+        foreach($cms as $key=>$value) {
 
             $row=array();
 
@@ -233,14 +231,14 @@ class DealerController extends Controller
             }
 
             $status = $status_list[(int)$value['status']];
-            $row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';
+            
                     
             $row[] = ucfirst($value['title']);
-            $row[] = count($value['contacts']);
+            $row[] = $value['description'];
 
-            $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="dealer" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
-            $row[] = '<a title="View : '.$value['title'].'" href="#/dealers/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
-                     '<a title="Edit : '.$value['title'].'" href="#/dealers/edit/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
+            $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="pages" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
+            $row[] = '<a title="View : '.$value['title'].'" href="#/cms/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
+                     '<a title="Edit : '.$value['title'].'" href="#/cms/edit/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
             
             $records['data'][] = $row;
         }

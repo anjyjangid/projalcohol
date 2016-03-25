@@ -5,16 +5,16 @@ namespace AlcoholDelivery\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 
 use AlcoholDelivery\Http\Requests;
-use AlcoholDelivery\Http\Requests\DealerRequest;
+use AlcoholDelivery\Http\Requests\EmailTemplateRequest;
 
 use AlcoholDelivery\Http\Controllers\Controller;
 
 use Storage;
 use Validator;
 
-use AlcoholDelivery\Dealer as Dealer;
+use AlcoholDelivery\EmailTemplate as EmailTemplate;
 
-class DealerController extends Controller
+class EmailTemplateController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -23,7 +23,7 @@ class DealerController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('admin');        
+
     }
     /**
      * Display a listing of the resource.
@@ -51,11 +51,11 @@ class DealerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(DealerRequest $request)
+    public function store(EmailTemplateRequest $request)
     {        
         $inputs = $request->all();
         
-        $dealer = Dealer::create($inputs);    
+        $template = EmailTemplate::create($inputs);    
 
         return $dealer;
     }
@@ -89,20 +89,19 @@ class DealerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(DealerRequest $request, $id)
+    public function update(EmailTemplateRequest $request, $id)
     {
         $inputs = $request->all();
+        
+        $page = EmailTemplate::find($id);
+        
+        $page->title = $inputs['title'];
+        $page->description = $inputs['description'];
+        $page->content = $inputs['content'];
+        $page->status = $inputs['status'];
 
-        $dealer = dealer::find($id);
-        
-        $dealer->title = $inputs['title'];
-        $dealer->address = $inputs['address'];
-        $dealer->contacts = $inputs['contacts'];
-        $dealer->status = $inputs['status'];    
-        $dealer->description = $inputs['description'];
-        
-        if($dealer->save()){
-            return response(array("success"=>true,"message"=>"Dealer updated successfully"));
+        if($page->save()){
+            return response(array("success"=>true,"message"=>"Email Template ".ucfirst($page->title)." updated successfully"));
         }
         
         return response(array("success"=>false,"message"=>"Something went worng"));
@@ -120,12 +119,12 @@ class DealerController extends Controller
         //
     }
 
-    public function getdealer($dealerId){
+    public function gettemplate($templateId){
 
-        $dealerObj = new dealer;
+        $templateObj = new EmailTemplate;
 
-        $result = $dealerObj->getDealers(array(
-                        "key"=>$dealerId,
+        $result = $templateObj->getTemplates(array(
+                        "key"=>$templateId,
                         "multiple"=>false
                     ));
         
@@ -133,30 +132,29 @@ class DealerController extends Controller
 
     }
 
-    public function getdealers(Request $request)
+    public function gettemplates(Request $request)
     {        
         $params = $request->all();
 
-        $dealers = new Dealer;
+        $template = new EmailTemplate;
 
-        $columns = array('_id',"title",'contacts','address','updated_at','status');
+        $columns = array('_id',"title",'subject','content','updated_at');
         
         /* Individual column filtering */
     
-
         foreach($columns as $fieldKey=>$fieldTitle)
         {
 
             if ( isset($params[$fieldTitle]) && $params[$fieldTitle]!="" )
             {
 
-                $dealers = $dealers->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
+                $template = $template->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
 
             }
         }
 
 
-        //prd($dealers->toSql());
+        //prd($template->toSql());
 
             
         /*
@@ -170,7 +168,7 @@ class DealerController extends Controller
 
                 if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
                     
-                    $dealers = $dealers->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
+                    $template = $template->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
                     
                 }
             }
@@ -179,21 +177,21 @@ class DealerController extends Controller
         
         /* Data set length after filtering */        
 
-        $iFilteredTotal = $dealers->count();
+        $iFilteredTotal = $template->count();
 
         /*
          * Paging
          */
         if ( isset( $params['start'] ) && $params['length'] != '-1' )
         {
-            $dealers = $dealers->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
+            $template = $template->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
         }
 
-        $iTotal = $dealers->count();
+        $iTotal = $template->count();
 
-        $dealers = $dealers->get($columns);
+        $template = $template->get($columns);
 
-        $dealers = $dealers->toArray();
+        $template = $template->toArray();
                 
         /*
          * Output
@@ -221,8 +219,7 @@ class DealerController extends Controller
         }
 
         $i = 1;
-        
-        foreach($dealers as $key=>$value) {
+        foreach($template as $key=>$value) {
 
             $row=array();
 
@@ -232,15 +229,12 @@ class DealerController extends Controller
                 $row[] = ++$srStart;//$row1[$aColumns[0]];
             }
 
-            $status = $status_list[(int)$value['status']];
-            $row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';
-                    
             $row[] = ucfirst($value['title']);
-            $row[] = count($value['contacts']);
 
-            $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="dealer" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
-            $row[] = '<a title="View : '.$value['title'].'" href="#/dealers/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
-                     '<a title="Edit : '.$value['title'].'" href="#/dealers/edit/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
+            $row[] = $value['subject'];
+
+            $row[] = '<a title="View : '.$value['title'].'" href="#/emailtemplates/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
+                     '<a title="Edit : '.$value['title'].'" href="#/emailtemplates/edit/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
             
             $records['data'][] = $row;
         }

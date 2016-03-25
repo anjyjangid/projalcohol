@@ -8,7 +8,7 @@
 			<div class="portlet-title tabbable-line">
 				<div class="caption caption-md">
 					<i class="icon-globe theme-font hide"></i>
-					<span class="caption-subject font-blue-madison bold uppercase">Dealer : </span>
+					<span class="caption-subject font-blue-madison bold uppercase">{{page.title}} Page Preview : </span>
 				</div>				
 			</div>
 			<div class="portlet-body">
@@ -19,50 +19,17 @@
 							</div>
 							<div class="col-md-8 value">
 								<span class="label label-success">
-								{{dealer.title}} </span>
+								{{page.title}} </span>
 							</div>
 						</div>
 
-
-						<div class="row static-info" ng-if="dealer.address.country.city">
-						<div class="col-md-4 name">
-								 City:
-							</div>
-							<div class="col-md-8 value">
-								<span class="label label-success">
-								{{dealer.address.city}} </span>
-							</div>
-						</div>
-
-						<div class="row static-info" ng-if="dealer.address.country.state">
-						<div class="col-md-4 name">
-								 State:
-							</div>
-							<div class="col-md-8 value">
-								<span class="label label-success">
-								{{dealer.address.state}} </span>
-							</div>
-						</div>
-
-
-						<div class="row static-info" ng-if="dealer.address.country.name">
-						<div class="col-md-4 name">
-								 Country:
-							</div>
-							<div class="col-md-8 value">
-								<span class="label label-success">
-								{{dealer.address.country.name}} </span>
-							</div>
-						</div>
-						</div>
-
-						<div class="row static-info" ng-if="dealer.description">
+						<div class="row static-info" ng-if="page.description">
 						<div class="col-md-4 name">
 								 description:
 							</div>
 							<div class="col-md-8 value">
 								<span class="label label-success">
-								{{dealer.description}} </span>
+								{{page.description}} </span>
 							</div>
 						</div>
 																		
@@ -72,56 +39,18 @@
 							</div>
 							<div class="col-md-8 value">
 								<div class="profile-userbuttons">
-									<span ng-if="dealer.status == 1" type="button" class="label label-success">Active</span>
-									<span ng-if="dealer.status == 0" type="button" class="label label-warning">In-Active</span>
+									<span ng-if="page.status == 1" type="button" class="label label-success">Active</span>
+									<span ng-if="page.status == 0" type="button" class="label label-warning">In-Active</span>
 								</div>
 								
 							</div>
 						</div>
-
-
-						<div class="row static-info" ng-if="dealer.contacts">
-
-							<div class="col-md-6 margin-top-20" ng-repeat="contact in dealer.contacts">
-								<div class="portlet box green">
-									<div class="portlet-title tabbable-line">
-										<div class="caption caption-md">
-											<i class="icon-user"></i>
-											<span class="caption-subject bold uppercase">
-												Contact {{$index+1}} : 
-											</span>
-										</div>
-									</div>
-									<div class="portlet-body">
-										<div class="row static-info">
-											<div class="col-md-4 name">
-												 Name :
-											</div>
-											<div class="col-md-8 value">
-												{{contact.name}}												
-											</div>
-										</div>
-										<div class="row static-info">
-											<div class="col-md-4 name">
-												 Designation :
-											</div>
-											<div class="col-md-8 value">
-												{{contact.des}}												
-											</div>
-										</div>
-										<div class="row static-info">
-											<div class="col-md-4 name">
-												 Number :
-											</div>
-											<div class="col-md-8 value">
-												{{contact.number}}												
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>							
+						<div class="row static-info">
+						<div class="col-md-12 name">
+								 Preview:
+							</div>
+							<div class="col-md-12 value html-preview" ng-bind-html="page.content"></div>
 						</div>
-
 			</div>
 		</div>
 </div>
