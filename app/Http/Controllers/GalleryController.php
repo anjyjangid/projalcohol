@@ -4,6 +4,7 @@ namespace AlcoholDelivery\Http\Controllers;
 
 use AlcoholDelivery\File;
 use AlcoholDelivery\Gallery;
+use AlcoholDelivery\User;
 use AlcoholDelivery\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +21,7 @@ class GalleryController extends Controller
      */
     public function index()
     {
+        //return User::with('galleries')->first();
         return Gallery::where('user_id', Auth::user()->id)->with('user')->get();
     }
 
