@@ -13,6 +13,7 @@ use Intervention\Image\Facades\Image;
 
 use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Products;
+use AlcoholDelivery\User;
 use MongoId;
 use Input;
 use DB;
