@@ -33,12 +33,16 @@ Route::resource('gallery', 'GalleryController');
 
 Route::get('/', ['uses' => 'UserController@index']);
 Route::controller('/auth', 'Auth\AuthController');
+
+
+//Route::resource('dealer', 'DealerController');
+
+Route::controller('/super', 'SuperController');
+
+Route::get('/getproduct', 'ProductController@getproduct');
+
+
 Route::post('/admin/getcustomers', ['uses' => 'Admin\AdminController@customers']);
-
-
-
-
-
 
 Route::controller('/password', 'Auth\PasswordController');
  
@@ -78,6 +82,8 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 		Route::get('getdealer/{id}','Admin\DealerController@getdealer');
 			
 		Route::match(['get', 'post'],'getdealers', 'Admin\DealerController@getdealers');
+
+		//Route::post('remove', 'Admin\DealerController@remove');
 
 	});
 

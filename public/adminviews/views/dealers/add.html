@@ -143,7 +143,7 @@
 									</td>
 									<td ng-class="{'has-error':errors['contacts.'+$index+'.number'][0]}">
 										
-										<input type="text" class="form-control" ng-minlength="10" ng-maxlength="10" name="number" placeholder="Phone" ng-model="curContact.number" ng-required="true">
+										<input type="text" class="form-control" name="number" placeholder="Phone" ng-model="curContact.number" ng-required="true">
 						            	<span class="help-block" ng-bind="errors['contacts.'+$index+'.number'][0]"></span>
 
 						            	<span class="help-block" ng-show="curContact.number.$error.required || curContact.number.$error.number">Valid phone number is required</span>

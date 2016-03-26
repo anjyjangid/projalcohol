@@ -38,11 +38,11 @@ class DealerRequest extends Request
         
         $contacts = Request::input('contacts');
         
-        foreach ($contacts as $key => $contact) {
+        foreach ($this->request->get('contacts') as $key => $contact) {
 
             $rules['contacts.'.$key.'.name'] = 'required';
             $rules['contacts.'.$key.'.des'] = 'required';
-            $rules['contacts.'.$key.'.number'] = 'digits_between:10,10|required';
+            $rules['contacts.'.$key.'.number'] = 'required|digits_between:10,12';
 
         }
 
@@ -54,17 +54,15 @@ class DealerRequest extends Request
 
         $messages = [
 
-                'required' => 'This field is required',
-
+                'required' => 'This field is required'
         ];
 
-        $contacts = Request::input('contacts');
-        foreach ($contacts as $key => $contact) {
+        foreach ($this->request->get('contacts') as $key => $contact) {
                 
-                $messages['contacts.'.$key.'.number.digits_between'] = 'Enter valid number';
+            $messages['contacts.'.$key.'.number.digits_between'] = 'Enter valid number';
 
-            }
-        
+        }
+
         return $messages;
 
     }

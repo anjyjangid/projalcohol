@@ -36,24 +36,22 @@
 			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
 	</head>
-	<body ng-init='categories=<?php echo json_encode($categories) ?>'>
+	<body ng-controller="AppController">
 		<div ui-view></div>
 		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
 
-    <script type="text/javascript" src="{{asset('bower_components/dropzone/dist/dropzone.js')}}"></script>
-    <script type="text/javascript" src="{{asset('bower_components/bootstrap/dist/js/bootstrap.min.js')}}"></script>
-    <script type="text/javascript" src="{{asset('bower_components/angular/angular.min.js')}}"></script>
-    <script type="text/javascript" src="{{asset('bower_components/angular-route/angular-route.min.js')}}"></script>
-    <script type="text/javascript" src="{{asset('bower_components/angular-cookies/angular-cookies.min.js')}}"></script>
-    <script type="text/javascript" src="{{asset('bower_components/angular-loading-bar/build/loading-bar.min.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('bower_components/dropzone/dist/dropzone.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bower_components/angular/angular.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bower_components/angular-route/angular-route.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bower_components/angular-cookies/angular-cookies.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bower_components/angular-loading-bar/build/loading-bar.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/angular-ui-router/release/angular-ui-router.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/oclazyload/dist/ocLazyLoad.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap-lightbox/dist/angular-bootstrap-lightbox.js') }}"></script>
     <!-- <script type="text/javascript" src="{{asset('bower_components/angular-owl-carousel/src/angular-owl-carousel.js')}}"></script> -->
-
-		
 
     <script type="text/javascript" src="js/app.js"></script>
 	</body>

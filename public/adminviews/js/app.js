@@ -9,6 +9,7 @@ var MetronicApp = angular.module("MetronicApp", [
     "oc.lazyLoad",  
     "ngSanitize",
     "ngCookies",
+    "19degrees.ngSweetAlert2",
 ]); 
 
 
@@ -134,7 +135,7 @@ MetronicApp.service('fileUpload', ['$http','$location', function ($http,$locatio
 
 
 /* Setup App Main Controller */
-MetronicApp.controller('AppController', ['$scope', '$rootScope','$http', function($scope, $rootScope,$http) {
+MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAlert', function($scope, $rootScope,$http,sweetAlert) {
 
     $scope.$on('$viewContentLoaded', function() {
         Metronic.initComponents(); // init core components        
@@ -173,6 +174,62 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http', functio
             
 
         });
+
+    }
+
+    $scope.globalRemove = function(tab,tabForIds){
+
+        var checkedKeys = $(tabForIds).find("tbody").find("input:checkbox:checked").map(function () {
+                          return this.value;
+                        }).get();
+        
+
+        if(!checkedKeys.length){
+        
+            Metronic.alert({
+                type: 'info',
+                icon: 'warning',
+                message: "Please select records you want to remove",
+                container: '#info-message',
+                place: 'prepend'
+            });
+
+        }else{
+            sweetAlert.swal({   
+                title: "Are you sure?",   
+                text: "Your will not be able to recover them!",   
+                type: "warning",   
+                showCancelButton: true,   
+                confirmButtonColor: "#DD6B55",   
+                confirmButtonText: "Yes, remove !",
+                closeOnConfirm: false,
+                closeOnCancel: false
+
+            },  function(isConfirm) {
+                    if (isConfirm) {
+                        
+                        $http.delete("/admin/"+tab+"/"+checkedKeys)
+                            .success(function(response) {
+
+                                if(response.success){
+                                    sweetAlert.swal("Deleted!", response.message, "success");
+                                }else{
+                                    sweetAlert.swal("Cancelled!", response.message, "error");
+                                }
+
+
+                            })
+                            .error(function(data, status, headers) {
+                                sweetAlert.swal("Cancelled", data.message, "error");
+                            })
+                        
+                    } else {
+                        sweetAlert.swal("Cancelled", "Record(s) safe :)", "error");
+                    }
+                });
+        }
+
+        
 
     }
     
