@@ -29,7 +29,7 @@ class Admin extends Eloquent implements AuthenticatableContract,
      *
      * @var string
      */
-    //protected $table = 'users';
+    //protected $table = 'admin';
 
     /**
      * The attributes that are mass assignable.

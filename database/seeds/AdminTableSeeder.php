@@ -13,7 +13,7 @@ class AdminTableSeeder extends Seeder
     {
         AlcoholDelivery\Admin::create([
             'name' => 'AlcoholDelivery Admin',
-            'email' => 'admin@cgt.co.in',
+            'email' => 'subadmin@cgt.co.in',
             'password' => \Hash::make('12345678'),
         ]);
     }

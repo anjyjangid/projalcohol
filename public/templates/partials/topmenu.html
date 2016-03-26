@@ -18,10 +18,9 @@
       <div class="col-md-2 signuplogin_cover">
         <div class="signuplogin">
           <a href="" class="cart_icon"></a>
-          <a ng-hide="user.name" data-target="#register" data-toggle="modal" href="#">Signup</a>
-          <a ng-hide="user.name" data-target="#login" data-toggle="modal" href="#">login</a>
-          
-          <a ng-show="user.name" data-target="#" data-toggle="modal" href="#">Hola, {{user.name}}</a>
+          <a ng-hide="user.email" data-target="#register" data-toggle="modal" href="#">Signup</a>
+          <a ng-hide="user.email" data-target="#login" data-toggle="modal" href="#">login</a>          
+          <a ng-show="user.email" data-target="#" ng-click="logout()" data-toggle="modal" href="#" class="username">Hola, {{user.email}}</a>
         </div>
       </div>
     </div>

@@ -154,6 +154,8 @@ Route::controller('/admin', 'Auth\AdminAuthController');
 	
 Route::post('/auth', 'UserController@checkAuth');
 
+Route::get('/check', 'UserController@check');
+
 /*Route::post('/profile/account', 'ProfileController@account');
 Route::post('/profile/update', 'ProfileController@update');*/
 

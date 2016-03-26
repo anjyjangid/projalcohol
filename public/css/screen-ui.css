@@ -3999,3 +3999,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', end
 .capitalize{
   text-transform: capitalize;
 }
+
+.username {
+  max-width: 150px;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-transform: none;
+}

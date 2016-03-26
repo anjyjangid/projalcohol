@@ -5,14 +5,20 @@ return [
         'user' => [
             'driver' => 'eloquent',
             'model'  => AlcoholDelivery\User::class,
-            'table'  => 'user'
+            'table'  => 'user',
+
         ],
         'admin' => [
             'driver' => 'eloquent',
             'model'  => AlcoholDelivery\Admin::class,
-            'table'  => 'admin'
+            'table'  => 'admin',            
         ]
      ],
+     'password' => [
+        'email' => 'emails.password',
+        'table' => 'password_resets',
+        'expire' => 60,
+    ],
 ];
 
 return [
