@@ -6,22 +6,44 @@ use AlcoholDelivery\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Categories as Categories;
+
+use Illuminate\Support\Facades\Validator;
+
 class UserController extends Controller
 {
     public function checkAuth(Request $request)
     {
+        
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required',            
+        ]);
+
+        
         // setting the credentials array
         $credentials = [
             'email' => $request->input('email'),
             'password' => $request->input('password'),
         ];
 
+        $invalidcredentials = false;
+
         // if the credentials are wrong
         if (!Auth::attempt('user',$credentials)) {
-            return response('Username password does not match', 200);
+            $invalidcredentials = 'Username password does not match';            
         }
         
-        return response(Auth::user(), 200);
+        if ($validator->fails() || $invalidcredentials){
+            
+            if($invalidcredentials){
+                $validator->errors()->add('email',$invalidcredentials);
+                $validator->errors()->add('password',' ');
+            }
+
+            return response($validator->errors(), 422);
+        }
+
+        return response(Auth::user('user'), 200);
     }
 
     /**
@@ -99,5 +121,9 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function check(){
+        return response(Auth::user('user'), 200);        
     }
 }

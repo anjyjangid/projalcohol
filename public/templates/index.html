@@ -357,27 +357,29 @@
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				<!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>-->
 			</div>
-			<form ng-submit="submit()" name="myForm">
+			<form ng-submit="signupSubmit()" name="myForm">
 			<div class="modal-body alcohabody">
-				<div class="alcohal_regisemailcvr">
-					
+				<div class="alcohal_regisemailcvr">					
 					<div class="alcohal_regissigntxt">Sign Up for Free</div>
-					<div class="registeremailcvr">
-						<input type="email" name="email" ng-model="signup.email" class="alcohalrestertextbox" placeholder="Email Address"  ng-model="formData.email" required>
-						<span style="color:red; clear:both" ng-show="myForm.email.$dirty && myForm.email.$invalid">
-  					  <span ng-show="!myForm.email.$error.required && myForm.email.$error.email && myForm.email.$dirty">invalid email</span>
-					  </span>
+					<div class="registeremailcvr" ng-class="{'has-error':signup.errors.email[0]}">
+						<input type="email" name="email" ng-model="signup.email" class="alcohalrestertextbox form-control" placeholder="Email Address" ng-model="formData.email">
+						<!-- <span style="color:red; clear:both" ng-show="myForm.email.$dirty && myForm.email.$invalid">
+  					  	<span ng-show="!myForm.email.$error.required && myForm.email.$error.email && myForm.email.$dirty">invalid email</span>
+					  	</span> -->
+					  	<span class="help-block" ng-bind="signup.errors.email[0]"></span>
+					</div>
+					<div class="registeremailcvr" ng-class="{'has-error':signup.errors.password[0]}">
+						<input type="password" ng-model="signup.password" class="alcohalrestertextbox form-control" placeholder="Password">
+						<span class="help-block" ng-bind="signup.errors.password[0]"></span>
 					</div>
 					<div class="registeremailcvr">
-						<input type="password" ng-model="signup.password" class="alcohalrestertextbox" placeholder="Password" required>
+						<input type="password" ng-model="signup.password_confirmation" class="alcohalrestertextbox form-control" placeholder="Confirm Password">						
 					</div>
-					<div class="registeremailcvr">
-						<input type="password" ng-model="signup.confirm_password" class="alcohalrestertextbox" placeholder="Confirm Password" required>
-					</div>
-					<div class="registeremailcvr">
-						<input type="checkbox" class="" name="regis" id="regis" required="">
+					<div class="registeremailcvr" ng-class="{'has-error':signup.errors.terms[0]}">
+						<input type="checkbox" class="" ng-model="signup.terms" name="regis" id="regis">
 						<label for="regis"><span></span></label> 
-						<div class="register_checktext"> By submitting this form, I confirm that I have read and agree to Alcohol Delivery’s <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a></div>
+						<div class="register_checktext"> By submitting this form, I confirm that I have read and agree to Alcohol Delivery’s <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a> <span class="help-block" ng-bind="signup.errors.terms[0]"></span></div>
+						
 					</div>
 					
 				</div>
@@ -398,24 +400,28 @@
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				<!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>-->
 			</div>
-			<div class="modal-body alcohabody">
-				<div class="alcohal_regisemailcvr">
-					<div class="alcohal_regissigntxt">Login to Your Account</div>
-					<div class="registeremailcvr">
-						<label>Email Address</label>
-						<input type="text" class="alcohalrestertextbox" placeholder="Email Address" />
-					</div>
-					<div class="registeremailcvr">
-						<input type="text" class="alcohalrestertextbox" placeholder="Password" />
+			<form ng-submit="loginSubmit()" name="loginForm">
+				<div class="modal-body alcohabody">
+					<div class="alcohal_regisemailcvr">
+						<div class="alcohal_regissigntxt">Login to Your Account</div>
+						<div class="registeremailcvr" ng-class="{'has-error':errors.email[0]}">
+							<label>Email Address</label>
+							<input type="text" ng-model="login.email" class="alcohalrestertextbox form-control" placeholder="Email Address" />
+							<span class="help-block" ng-bind="errors.email[0]"></span>
+						</div>
+						<div class="registeremailcvr" ng-class="{'has-error':errors.password[0]}">
+							<input autocomplete="off" type="password" ng-model="login.password" class="alcohalrestertextbox form-control" placeholder="Password" />
+							<span class="help-block" ng-bind="errors.password[0]"></span>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="modal-footer alcohalfotter">
-				<div class="alcohal_regisemailcvr">
-					<div class="alcohallogin_forgettxt"><a href="#">Forgot Password?</a></div>
-					<button type="button" class="alcohalfootersign alcohal_fotrloginbox">Log in</button>
+				<div class="modal-footer alcohalfotter">
+					<div class="alcohal_regisemailcvr">
+						<div class="alcohallogin_forgettxt"><a href="#">Forgot Password?</a></div>
+						<button type="submit" class="alcohalfootersign alcohal_fotrloginbox">Log in</button>
+					</div>
 				</div>
-			</div>
+			</form>
 		</div>
 	</div>
 </div>

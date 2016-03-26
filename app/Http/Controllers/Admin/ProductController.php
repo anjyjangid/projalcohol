@@ -259,8 +259,6 @@ class ProductController extends Controller
 
     public function productlist(Request $request){   
 
-        //$pro = new Products;
-
         $params = $request->all();
 
         $columns = array('_id','','name','categories','price','status','isFeatured');

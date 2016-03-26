@@ -29,6 +29,7 @@ class AdminController extends Controller
      */
     public function index()
     {
+        
         return view('backend');
     }
 
@@ -87,10 +88,6 @@ class AdminController extends Controller
     {
         //
     }   
-
-    public function dashboard(){        
-        return view('admin/dashboard');
-    }
 
     public function customers()
     {
