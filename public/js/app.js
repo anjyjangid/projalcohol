@@ -14,6 +14,93 @@ AlcoholDelivery.filter('capitalize', function() {
 		}
 });
 
+AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', function($scope, $rootScope,$http) {
+    
+    $scope.parentCategories = [];
+    $scope.featuredProduct = [];
+
+    $http.get("/super/category/").success(function(response){
+		$scope.categories = response;		
+
+		for(key in $scope.categories){
+			if(!$scope.categories[key].ancestors)
+			$scope.parentCategories.push($scope.categories[key])
+		}
+
+	});
+
+
+
+    $scope.featuredProducts = function(){
+    	
+		$http({
+
+			url: "/getproduct/",
+			method: "GET",
+			params: {
+				type:"featured",
+			}
+
+		}).success(function(response){
+			
+			for(key in $scope.parentCategories){
+
+				for(proKey in response){
+					
+					if(!$.inArray( $scope.parentCategories[key]._id, response[proKey].categories )){
+
+						if(!$scope.parentCategories[key]['featured']){$scope.parentCategories[key]['featured']=[]}
+						$scope.parentCategories[key]['featured'].push(response[proKey]);
+
+					}
+				}
+				
+				if($scope.parentCategories[key]['featured']!=="undefined" && $scope.featuredProduct.length==0){
+					$scope.featuredProduct = $scope.parentCategories[key]['featured'];					
+				}
+
+			}
+
+			
+			var timeoutID = window.setTimeout(function(){
+
+
+$('#owl-demo').trigger('destroy.owl.carousel').removeClass('owl-carousel owl-loaded');
+$('#owl-demo').find('.owl-stage-outer').children().unwrap();
+$('#owl-demo').css("opacity","1");
+				$("#owl-demo").owlCarousel({
+		navigation : true,
+		navigationText :	["<",">"],
+		pagination : false,
+		items : 4,
+		itemsDesktop : [1199,4],
+		itemsDesktopSmall : [979,4],
+		itemsTablet : [768,3],
+		itemsTabletSmall : [767,2],
+		itemsMobile : [479,1]
+	});
+
+			}, 1000);
+
+
+		});
+		
+
+	}
+
+}]);
+
+
+/* Setup global settings */
+AlcoholDelivery.factory('UserService', [function() {
+    // supported languages
+    var user = {
+        isLogged: false,
+    	username: ''        
+    };   
+
+    return user;
+}]);
 
 /* Setup Rounting For All Pages */
 AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
@@ -21,8 +108,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', function($stateP
 		$urlRouterProvider.otherwise("/");  
 		
 		$stateProvider
-				// Dashboard
-				
+				// Dashboard				
 				.state('index', {
 						url: "/",
 						templateUrl: "/templates/index.html",
@@ -86,9 +172,8 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', function($stateP
 						}
 				})
 
-
 				.state('mainLayout.product', {
-						url: "/product",
+						url: "/{categorySlug}",
 						templateUrl: "/templates/product/index.html"
 				})
 
@@ -112,9 +197,9 @@ AlcoholDelivery.directive('sideBar', function() {
 		restrict: 'E',
 		templateUrl: '/templates/partials/sidebar.html',
 		controller: function($scope){
-				//console.log($scope.categories);
-
+								
 				$scope.childOf = function(categories, parent){
+					
 						if(!categories) return [];
 
 						if(!parent || parent==0){

@@ -40,6 +40,10 @@ License: You must have a valid license purchased only from themeforest(the above
 <link href="{{ asset('assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet" type="text/css"/>
 <link href="{{ asset('assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css"/>  
 
+<!-- SWEET ALERT STYLE -->
+<link href="{{ asset('bower_components/sweetalert2/dist/sweetalert2.css') }}" rel="stylesheet" type="text/css"/>
+
+
 <!-- BEGIN DYMANICLY LOADED CSS FILES(all plugin and page related styles must be loaded between GLOBAL and THEME css files ) -->
 <link id="ng_load_plugins_before"/>
 <!-- END DYMANICLY LOADED CSS FILES -->
@@ -158,8 +162,12 @@ License: You must have a valid license purchased only from themeforest(the above
 	<script src="{{ asset('assets/global/plugins/angularjs/plugins/angular-ui-router.min.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/global/plugins/angularjs/plugins/ocLazyLoad.min.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/global/plugins/angularjs/plugins/ui-bootstrap-tpls.min.js') }}" type="text/javascript"></script>
+		
+	<!-- SWEET ALERT STYLE -->
+	<script src="{{ asset('bower_components/sweetalert2/src/sweetalert2.js') }}" type="text/javascript"></script>
+	<script src="{{ asset('bower_components/angular-sweetalert-2/SweetAlert.js') }}" type="text/javascript"></script>
 	
-	
+
 	<!-- END CORE ANGULARJS PLUGINS -->
 	
 	<!-- BEGIN APP LEVEL ANGULARJS SCRIPTS -->

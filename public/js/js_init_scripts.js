@@ -1,9 +1,11 @@
+var fproCarausel = "";
+
 function initScripts(options){
 	if(typeof options == "undefined")
 		options = {};
  
  
- 	$("#owl-demo").owlCarousel({
+ 	fproCarausel = $("#owl-demo").owlCarousel({
 		navigation : true,
 		navigationText :	["<",">"],
 		pagination : false,

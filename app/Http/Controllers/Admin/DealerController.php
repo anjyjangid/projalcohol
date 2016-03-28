@@ -88,7 +88,7 @@ class DealerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     */
+    **/
     public function update(DealerRequest $request, $id)
     {
         $inputs = $request->all();
@@ -115,9 +115,11 @@ class DealerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
+    public function destroy($ids)
+    {        
+        $keys = explode(",", $ids);
+    
+        return response(array($ids,"success"=>false,"message"=>"Deletion Under Process"));
     }
 
     public function getdealer($dealerId){

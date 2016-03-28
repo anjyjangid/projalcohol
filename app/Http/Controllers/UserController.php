@@ -55,7 +55,6 @@ class UserController extends Controller
     {
         $categories = Categories::all()->toArray();
         return view('frontend',array('categories'=>$categories));
-
     }
 
     /**
