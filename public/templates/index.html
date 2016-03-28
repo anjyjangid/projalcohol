@@ -31,19 +31,35 @@
 							<!-- Only required for left/right tabs -->
 							<div class="fullwidth">
 								<div class="tabtitle">Featured Items</div>								
-								<ul class="nav nav-tabs tabsright">	
+								<ul class="nav nav-tabs tabsright" ng-init="AppController.feTabActive=0">	
 
-									<li ng-repeat="cat in parentCategories" ng-if="cat.featured!='undefined' && cat.featured.length>0" ng-class="$first ? 'active' : ''">									
-										<a href="" data-toggle="tab">{{cat.cat_title}}</a>
+									<li ng-repeat="cat in parentCategories" ng-if="cat.featured!='undefined' && cat.featured.length>0" ng-class="{'active':AppController.feTabActive==$index}">									
+										<a href="javascript:void(0)" ng-click="setFeatured($index);AppController.feTabActive=$index">{{cat.cat_title}}</a>
 									</li>
 
 								</ul>
 							</div>
 							<div class="tab-content fullwidth">
-								<div class="tab-pane active" id="tab1">
-									<div id="owl-demo" class="owl-carousel owl-theme">
-										<div ng-repeat="fproduct in featuredProduct" class="item" ng-class="fproduct.chilled ? '' : 'notchilled'">
-											<div class="prod_chilled">
+								<div class="tab-pane" id="tab$index" 
+										ng-repeat="pCat in parentCategories"
+										ng-class="{'active':AppController.feTabActive==$index}"
+
+										>
+								    <data-owl-carousel class="owl-carousel owl-theme" data-options="{
+								    		
+								    		navigation : true,
+											navigationText :	['<','>'],
+											pagination : false,
+											items : 4,
+											itemsDesktop : [1199,4],
+											itemsDesktopSmall : [979,4],
+											itemsTablet : [768,3],
+											itemsTabletSmall : [767,2],
+											itemsMobile : [479,1]
+
+								    		}">
+								      <div owl-carousel-item="" ng-repeat="fproduct in pCat['featured']" class="item">
+								        <div class="prod_chilled" ng-class="{notchilled:{{fproduct.chilled}}}">
 												<span>Chilled</span>
 												<div class="prod_chilled_icon"></div>
 											</div>
@@ -52,11 +68,14 @@
 													<div class="wishlist">Add to Wishlist</div>
 													<div class="discount">Click here to view Bulk Discounts</div>
 												</div>
-												<img src="images/product.png" class="img-responsive" />
+
+												<img err-src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" 
+												ng-src="products/i/200/{{fproduct.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive"/>
+												
 											</div>
-											<div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-											<div class="prod_price">28.00 SGD</div>
-											<div class="prod_discout_price">24.00 SGD</div>
+											<div class="prod_desc">{{fproduct.name}}</div>
+											<div class="prod_price">{{fproduct.price}} SGD</div>
+											<div class="prod_discout_price">{{fproduct.discountPrice}} SGD</div>
 											<div class="prod_addtocart">
 												<!--<img src="images/addtocart.png" class="img-responsive" />-->
 												<div class="cartbtn">
@@ -70,9 +89,10 @@
 													</div>
 												</div>
 											</div>
-										</div>																	
-									</div>
-								</div>								
+								      </div>
+								    </data-owl-carousel>							
+								</div>
+								<div class="tab-pane" id="tab2"></div>								
 							</div>
 						</div>
 					</div>

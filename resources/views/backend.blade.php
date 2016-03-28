@@ -164,8 +164,8 @@ License: You must have a valid license purchased only from themeforest(the above
 	<script src="{{ asset('assets/global/plugins/angularjs/plugins/ui-bootstrap-tpls.min.js') }}" type="text/javascript"></script>
 		
 	<!-- SWEET ALERT STYLE -->
-	<script src="{{ asset('bower_components/sweetalert2/src/sweetalert2.js') }}" type="text/javascript"></script>
-	<script src="{{ asset('bower_components/angular-sweetalert-2/SweetAlert.js') }}" type="text/javascript"></script>
+	<script src="{{ asset('bower_components/sweetalert2/dist/sweetalert2.min.js') }}" type="text/javascript"></script>
+	<script src="{{ asset('bower_components/ngSweetAlert2/SweetAlert.js') }}" type="text/javascript"></script>
 	
 
 	<!-- END CORE ANGULARJS PLUGINS -->

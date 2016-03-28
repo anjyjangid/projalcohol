@@ -15,24 +15,26 @@ AlcoholDelivery.filter('capitalize', function() {
 });
 
 AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', function($scope, $rootScope,$http) {
-    
-    $scope.parentCategories = [];
-    $scope.featuredProduct = [];
+	$scope.AppController = {};
 
     $http.get("/super/category/").success(function(response){
+		
 		$scope.categories = response;		
+		$scope.parentCategories = [];
 
 		for(key in $scope.categories){
 			if(!$scope.categories[key].ancestors)
 			$scope.parentCategories.push($scope.categories[key])
 		}
-
+		
 	});
 
 
 
     $scope.featuredProducts = function(){
     	
+    	$scope.featuredProduct = [];
+
 		$http({
 
 			url: "/getproduct/",
@@ -44,6 +46,8 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 		}).success(function(response){
 			
 			for(key in $scope.parentCategories){
+
+				$scope.parentCategories[key]['featured'] = [];
 
 				for(proKey in response){
 					
@@ -61,30 +65,15 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 
 			}
 
-			
-			var timeoutID = window.setTimeout(function(){
-
-
-$('#owl-demo').trigger('destroy.owl.carousel').removeClass('owl-carousel owl-loaded');
-$('#owl-demo').find('.owl-stage-outer').children().unwrap();
-$('#owl-demo').css("opacity","1");
-				$("#owl-demo").owlCarousel({
-		navigation : true,
-		navigationText :	["<",">"],
-		pagination : false,
-		items : 4,
-		itemsDesktop : [1199,4],
-		itemsDesktopSmall : [979,4],
-		itemsTablet : [768,3],
-		itemsTabletSmall : [767,2],
-		itemsMobile : [479,1]
-	});
-
-			}, 1000);
-
-
 		});
 		
+
+	}
+
+
+	$scope.setFeatured = function(keyPassed){
+		
+		$scope.featuredProduct = $scope.parentCategories[keyPassed]['featured'];
 
 	}
 
@@ -221,6 +210,42 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', function($stateP
 								},100)
 						}
 				})
+
+
+				.state('accountLayout', {
+						templateUrl: "/templates/accountLayout.html",
+						controller:function(){
+								 
+						},
+						resolve: {
+								deps: ['$ocLazyLoad', function($ocLazyLoad) {
+										return $ocLazyLoad.load({
+												name: 'AlcoholDelivery',
+												insertBefore: '#ng_load_plugins_before',
+												// debug: true,
+												serie: true,
+												files: [
+														'js/owl.carousel.min.js',
+														'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
+														'js/jquery.switchButton.js',
+														'js/jquery.mCustomScrollbar.concat.min.js',
+														'js/jquery.bootstrap-touchspin.min.js',
+														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js',
+														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js',
+														'js/all_animations.js',
+														'js/js_init_scripts.js'
+												] 
+										});
+								}]
+						}
+				})
+				.state('accountLayout.account', {
+						url: "/myacount",
+						templateUrl: "/templates/account/index.html",
+						controller:function(){
+								alert("asd");
+						}
+				})
 		}
 		
 ]);
@@ -273,7 +298,44 @@ AlcoholDelivery.directive('topMenu', function(UserService) {
 			};
 		}
 	};
-});
+})
+.directive("owlCarousel", function() {
+    return {
+        restrict: 'E',
+        transclude: false,
+        
+        link: function (scope) {
+
+            scope.initCarousel = function(element) {
+              // provide any default options you want
+                var defaultOptions = {
+                };
+                var customOptions = scope.$eval($(element).attr('data-options'));
+                // combine the two options objects
+                for(var key in customOptions) {
+                    defaultOptions[key] = customOptions[key];
+                }
+                                
+            	// init carousel
+                $(element).owlCarousel(defaultOptions);
+            };
+        }
+    };
+})
+
+.directive('owlCarouselItem', [function() {
+    return {
+        restrict: 'A',
+        transclude: false,
+        link: function(scope, element) {
+        	
+          // wait for the last item in the ng-repeat then call init          	
+            if(scope.$last) {
+                scope.initCarousel(element.parent());
+            }
+        }
+    };
+}]);
 
 /* Init global settings and run the app */
 AlcoholDelivery.run(["$rootScope", "$state" , function($rootScope, $state, $scope) {		

@@ -1,11 +1,11 @@
 {
-  "name": "LearningL5",
+  "name": "Alcoholdelivery",
   "version": "0.0.0",
   "homepage": "https://github.com/amitavroy/learningl5",
   "authors": [
-    "Amitav Roy <reachme@amitavroy.com>"
+    "CGT <cgt.co.in>"
   ],
-  "description": "Learning Laravel 5 series with Angular JS",
+  "description": "Alcoholdelivery(Laravel + Angular + Mongodb)",
   "license": "MIT",
   "ignore": [
     "**/.*",
@@ -23,9 +23,9 @@
     "angular-bootstrap-lightbox": "~0.10.0",
     "angular-loading-bar": "~0.8.0",
     "angular-ui-router": "^0.2.18",
-    "oclazyload": "^1.0.9",
-    "angular-owl-carousel": "^0.2.3",
+    "oclazyload": "^1.0.9",    
     "angular-validation-match": "^1.7.1",
-    "angular-sweetalert-2": "latest"
+    "ngSweetAlert2": "angular-sweetalert-2#^2.1.1",
+    "owl.carousel": "^2.0.0-beta.3"
   }
 }
