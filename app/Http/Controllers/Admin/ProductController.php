@@ -91,9 +91,12 @@ class ProductController extends Controller
 
           foreach ($files as $key => $file) {
               $rules = [
-                'image' => 'required|mimes:png,jpeg,jpg'
+                //'image' => 'required|mimes:png,jpeg,jpg'
+                'image' => 'required|image'
               ];
-              $validfile = Validator::make(['image'=> @$file['thumb']], $rules, ['image.required'=>'Please select :attribute for the product']);
+              $validfile = Validator::make(['image'=> @$file['thumb']], $rules, [
+                'image.required'=>'Please select :attribute for the product'
+              ]);
               if($validfile->passes()){
 
               }else{
@@ -323,10 +326,12 @@ class ProductController extends Controller
         $products = $products->skip($iDisplayStart)        
         ->take($iDisplayLength)->get();
 
+        $ids = $iDisplayStart;
+
         foreach($products as $i => $product) {
             $status = $status_list[$product->status];
             $isFeatured  = $fstatus[$product->isFeatured];            
-            $id = ($i + 1);
+            $ids += 1;
             
             $categories = Categories::whereIn('_id', $product->categories)->get();
 
@@ -337,7 +342,7 @@ class ProductController extends Controller
 
             $records["data"][] = array(
               '<input type="checkbox" name="id[]" value="'.$product->_id.'">',
-              $id,
+              $ids,
               $product->name,
               implode(', ', $cname),
               $product->price,      

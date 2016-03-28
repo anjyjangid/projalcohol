@@ -14,16 +14,6 @@ AlcoholDelivery.filter('capitalize', function() {
 		}
 });
 
-/* Setup global settings */
-AlcoholDelivery.factory('UserService', [function() {
-    // supported languages
-    var user = {
-        isLogged: false,
-    	username: ''        
-    };   
-
-    return user;
-}]);
 
 /* Setup Rounting For All Pages */
 AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
@@ -36,40 +26,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', function($stateP
 				.state('index', {
 						url: "/",
 						templateUrl: "/templates/index.html",
-						controller:function($scope,$http,UserService){
-								$scope.list = [];
-								$scope.signup = {terms:null};
-								$scope.login = {};
-								$scope.errors = {};
-								$scope.signup.errors = {};
-
-
-								$scope.signupSubmit = function() {
-									$http.post('/auth/register',$scope.signup).success(function(response){
-						                $scope.user = response;
-      									$scope.user.name = response.email;
-						                $('#register').modal('hide');
-						            }).error(function(data, status, headers) {                            
-						                $scope.signup.errors = data;                
-						            });
-								};
-
-								$scope.loginSubmit = function() {
-									$http.post('/auth',$scope.login).success(function(response){
-						                $scope.user = response;
-      									$scope.user.name = response.email;
-						                $('#login').modal('hide');
-						            }).error(function(data, status, headers) {                            
-						                $scope.errors = data;                
-						            });
-								};
-
-								/*$scope.logout = function() {
-									$http.get('/auth/logout').success(function(response){
-						                $scope.user = {};      									
-						            }).error(function(data, status, headers) {                            						                
-						            });
-								};*/
+						controller:function($scope,$http){																
 
 								setTimeout(initScripts,100)
 						},
@@ -175,7 +132,7 @@ AlcoholDelivery.directive('sideBar', function() {
 	};
 });
 
-AlcoholDelivery.directive('topMenu', function(UserService) {
+AlcoholDelivery.directive('topMenu', function() {
 	return {
 		restrict: 'E',
 		/*scope:{
@@ -183,7 +140,33 @@ AlcoholDelivery.directive('topMenu', function(UserService) {
 		},*/
 		templateUrl: '/templates/partials/topmenu.html',
 		controller: function($scope,$http){			
-			//console.log(UserService);
+			
+			$scope.list = [];
+			$scope.signup = {terms:null};
+			$scope.login = {};
+			$scope.errors = {};
+			$scope.signup.errors = {};
+
+			$scope.signupSubmit = function() {
+				$http.post('/auth/register',$scope.signup).success(function(response){
+	                $scope.user = response;
+						$scope.user.name = response.email;
+	                $('#register').modal('hide');
+	            }).error(function(data, status, headers) {                            
+	                $scope.signup.errors = data;                
+	            });
+			};
+
+			$scope.loginSubmit = function() {
+				$http.post('/auth',$scope.login).success(function(response){
+	                $scope.user = response;
+						$scope.user.name = response.email;
+	                $('#login').modal('hide');
+	            }).error(function(data, status, headers) {                            
+	                $scope.errors = data;                
+	            });
+			};
+
 			$http.get('/check').success(function(response){
 	            $scope.user = response;            
 	        }).error(function(data, status, headers) {                            
@@ -201,6 +184,6 @@ AlcoholDelivery.directive('topMenu', function(UserService) {
 });
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "$state" , function($rootScope, $state, $scope) {		
-		$rootScope.$state = $state; // state to be accessed from view		
+AlcoholDelivery.run(["$rootScope", "$state" , function($rootScope, $state) {		
+		$rootScope.$state = $state; // state to be accessed from view				
 }]);

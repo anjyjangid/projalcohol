@@ -37,6 +37,7 @@
 		<![endif]-->
 	</head>
 	<body ng-init='categories=<?php echo json_encode($categories) ?>'>
+		<top-menu></top-menu>
 		<div ui-view></div>
 		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
 
