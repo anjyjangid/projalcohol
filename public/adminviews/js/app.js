@@ -10,6 +10,8 @@ var MetronicApp = angular.module("MetronicApp", [
     "ngSanitize",
     "ngCookies",
     "19degrees.ngSweetAlert2",
+    "slugifier",
+
 ]); 
 
 
@@ -109,15 +111,28 @@ MetronicApp.service('fileUpload', ['$http','$location', function ($http,$locatio
         })
         .success(function(response) {
             
-            $location.path("categories/list");
-            Metronic.alert({
-                type: 'success',
-                icon: 'check',
-                message: response.message,
-                container: '#info-message',
-                place: 'prepend',
-                closeInSeconds: 10000
-            });
+            if(response.success){
+                $location.path("categories/list");
+                Metronic.alert({
+                    type: 'success',
+                    icon: 'check',
+                    message: response.message,
+                    container: '#info-message',
+                    place: 'prepend',
+                    closeInSeconds: 10000
+                });
+                
+            }else{
+
+                Metronic.alert({
+                    type: 'danger',
+                    icon: 'warning',
+                    message: response.message,
+                    container: '#info-message',
+                    place: 'prepend',
+                    closeInSeconds: 10000
+                });
+            }
 
 
         }).error(function(data, status, headers) {            
@@ -212,11 +227,16 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
                             .success(function(response) {
 
                                 if(response.success){
-                                    sweetAlert.swal("Deleted!", response.message, "success");
-                                }else{
-                                    sweetAlert.swal("Cancelled!", response.message, "error");
-                                }
 
+                                    sweetAlert.swal("Deleted!", response.message, "success");
+
+                                    grid.getDataTable().ajax.reload();//var grid = new Datatable(); Datatable should be init like this with global scope
+
+                                }else{
+
+                                    sweetAlert.swal("Cancelled!", response.message, "error");
+
+                                }
 
                             })
                             .error(function(data, status, headers) {
@@ -285,7 +305,7 @@ MetronicApp.controller('FooterController', ['$scope', function($scope) {
 /* Setup Rounting For All Pages */
 MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
     // Redirect any unmatched url
-    $urlRouterProvider.otherwise("/dashboard");  
+    $urlRouterProvider.otherwise("/dashboard");     
     
     $stateProvider
         // Dashboard
@@ -626,6 +646,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         .state('dealers', {
             url: "/dealers",
             templateUrl: "adminviews/views/dealers/dealers.html",
+            redirectTo: 'dealers.list',
             data: {pageTitle: 'Dealers'},
             controller: "DealersController",
             resolve: {
@@ -657,26 +678,26 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             .state("dealers.list", {
                 url: "/list",
                 templateUrl: "adminviews/views/dealers/list.html",
-                data: {pageTitle: 'Dealers List'}
+                data: {pageSubTitle: 'Dealers List'}
             })
 
             .state("dealers.add", {
                     url: "/add",
                     templateUrl: "adminviews/views/dealers/add.html",
-                    data: {pageTitle: 'Add New Dealer'},
+                    data: {pageSubTitle: 'Add New Dealer'},
                     controller:"DealerAddController"
             })
             .state("dealers.show", {
                     url: "/show/{dealerid}",
                     templateUrl: "adminviews/views/dealers/show.html",
-                    data: {pageTitle: 'Dealer Detail'},
+                    data: {pageSubTitle: 'Dealer Detail'},
                     controller: "DealerShowController",
                     
             })
             .state("dealers.edit",{
                 url: "/edit/{dealerid}",
                 templateUrl: "adminviews/views/dealers/edit.html",
-                data: {pageTitle: 'Dealer update'},
+                data: {pageSubTitle: 'Dealer update'},
                 controller:"DealerUpdateController"                
             })
 
@@ -707,12 +728,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
                                 'assets/global/scripts/datatable.js',
                                 'adminviews/js/scripts/table-ajax.js',
+                                'js/angular-slugify.js',
 
-                                'adminviews/js/models/categoryModel.js',                                
+                                'adminviews/js/models/categoryModel.js',
                                 'adminviews/js/controllers/CategoryController.js'
                             ]
                         });
-                    }]
+                    }],                    
                 }
             })
 
@@ -725,7 +747,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             .state("categories.add", {
                 url: "/add",
                 templateUrl: "adminviews/views/categories/add.html",
-                data: {pageTitle: 'Add New Category'}
+                data: {pageTitle: 'Add New Category'},
+                
             })
 
             .state("categories.show", {
@@ -979,6 +1002,50 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
         //  } Email Template route end //
 
+
+        // Settings complete route start{
+
+            .state('settings', {
+                url: "/settings",
+                templateUrl: "adminviews/views/settings/index.html",
+                redirectTo: 'settings.general',
+                data: {pageTitle: 'Settings'},
+                controller: "SettingsController",
+                resolve: {
+                    deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                        return $ocLazyLoad.load({
+                            name: 'MetronicApp',
+                            insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                            files: [
+                                                            
+                                'adminviews/js/models/settingsModel.js',
+                                'adminviews/js/controllers/SettingsController.js'
+                            ]
+                        });
+                    }]
+                }
+            })
+
+            .state("settings.general", {
+                url: "/general",
+                templateUrl: "adminviews/views/settings/general.html",
+                data: {
+                    pageSubTitle: 'General Settings',
+                    "key":"general"
+                }
+            })
+
+            .state("settings.social", {
+                url: "/social",
+                templateUrl: "adminviews/views/settings/social.html",
+                data: {
+                    pageSubTitle: 'Social Settings',
+                    "key":"social"
+                }
+            })
+
+        //  Settings route end //
+
         // Todo
         .state('todo', {
             url: "/todo",
@@ -1010,5 +1077,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
 /* Init global settings and run the app */
 MetronicApp.run(["$rootScope", "settings", "$state", function($rootScope, settings, $state) {
+
+    $rootScope.$on('$stateChangeStart', function(evt, to, params) {
+      if (to.redirectTo) {
+        evt.preventDefault();
+        $state.go(to.redirectTo, params)
+      }
+    });
+
     $rootScope.$state = $state; // state to be accessed from view
 }]);

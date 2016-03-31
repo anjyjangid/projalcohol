@@ -1,25 +1,4 @@
-<!-- BEGIN PAGE HEADER--> 
-<h3 class="page-title">
-	Dealers list <small>Dealers List</small>
-</h3>
-<div class="page-bar">
-	<ul class="page-breadcrumb">
-		<li>
-			<i class="fa fa-home"></i>
-			<a href="#/dashboard.html">Home</a>
-			<i class="fa fa-angle-right"></i>
-		</li>
-		<li>
-			<a href="#/dealers/list.html">Dealers</a>
-			<i class="fa fa-angle-right"></i>
-		</li>
-		<li>
-			<a href="#">List</a>
-		</li>
-	</ul>
-	
-</div>
-<!-- END PAGE HEADER-->
+
 <!-- BEGIN MAIN CONTENT -->
 <div class="row">
 	<div class="col-md-12">
@@ -115,6 +94,8 @@
 <!-- BEGIN MAIN JS -->
 <script>
 	
+	var grid = new Datatable();
+
 	var DealersTableAjax = function () {
 
     var initPickers = function () {
@@ -126,8 +107,6 @@
     }
 
     var handleRecords = function () {
-
-        var grid = new Datatable();
 
         grid.init({
             src: $("#dealerslisttab"),

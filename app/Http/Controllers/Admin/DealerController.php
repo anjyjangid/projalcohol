@@ -118,13 +118,23 @@ class DealerController extends Controller
     public function destroy($ids)
     {        
         $keys = explode(",", $ids);
-    
-        return response(array($ids,"success"=>false,"message"=>"Deletion Under Process"));
+    	
+    	try {
+
+    		$dealers = Dealer::whereIn('_id', $keys)->delete();
+
+    	} catch(\Illuminate\Database\QueryException $e){
+
+    		return response(array($e,"success"=>false,"message"=>"There is some issue with deletion process"));
+
+    	}
+
+        return response(array("success"=>true,"message"=>"Record(s) Removed Successfully"));
     }
 
     public function getdealer($dealerId){
 
-        $dealerObj = new dealer;
+        $dealerObj = new Dealer;
 
         $result = $dealerObj->getDealers(array(
                         "key"=>$dealerId,
