@@ -17,6 +17,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--<![endif]-->
 <!-- BEGIN HEAD -->
 <head>
+
 <title data-ng-bind="'Admin Alcohol Delivery | ' + $state.current.data.pageTitle"></title>
 
 <meta charset="utf-8"/>

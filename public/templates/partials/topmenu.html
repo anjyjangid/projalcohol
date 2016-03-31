@@ -5,7 +5,7 @@
         <input type="text" class="" placeholder="Search for items" value="" name="search">
         <a href="#" onclick="searchbar_close()" class="search_close">X</a> </div>
       <div class="col-md-2 homecallus_cover">
-      	<a href="/#/">
+      	<a href="/">
         <div class="callshape"><img class="" src="images/Shapecall2.png"></div>
         <div class="homecallus">Call us now</div>
         <div class="homechilled">9-chilled</div>
@@ -96,11 +96,62 @@
         </div>
         <div class="modal-footer alcohalfotter">
           <div class="alcohal_regisemailcvr">
-            <div class="alcohallogin_forgettxt"><a href="#">Forgot Password?</a></div>
+            <div class="alcohallogin_forgettxt">
+              <a data-dismiss="modal" data-target="#forgot_password" data-toggle="modal" href="javascript:;">Forgot Password?</a>
+            </div>
             <button type="submit" class="alcohalfootersign alcohal_fotrloginbox">Log in</button>
           </div>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+<div class="modal" id="forgot_password" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
+  <div class="modal-dialog alcohal_registermain" role="document">
+    <div class="modal-content alcohalregiterconntcvr">
+      <div class="modal-header alcohalhdr">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>-->
+      </div>
+      <form ng-submit="forgotSubmit()" name="loginForm">
+        <div class="modal-body alcohabody">
+          <div class="alcohal_regisemailcvr">
+            <div class="alcohal_regissigntxt">Forget Password ?</div>            
+            <div class="registeremailcvr" ng-class="{'has-error':forgot.errors.email[0]}">
+              <label>Enter your e-mail address below to reset your password. </label>
+              <input type="text" ng-model="forgot.email" class="alcohalrestertextbox form-control" placeholder="Email Address" />
+              <span class="help-block" ng-bind="forgot.errors.email[0]"></span>
+            </div>            
+          </div>
+        </div>
+        <div class="modal-footer alcohalfotter">
+          <div class="alcohal_regisemailcvr">            
+            <button type="submit" class="alcohalfootersign alcohal_fotrloginbox">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal" id="forgot_password_sent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
+  <div class="modal-dialog alcohal_registermain" role="document">
+    <div class="modal-content alcohalregiterconntcvr">
+      <div class="modal-header alcohalhdr">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>-->
+      </div>
+      
+        <div class="modal-body alcohabody">
+          <div class="alcohal_regisemailcvr">
+            <div class="alcohal_regissigntxt">{{forgot.message}}</div>                        
+          </div>
+        </div>
+        <div class="modal-footer alcohalfotter">
+          <div class="alcohal_regisemailcvr">            
+            <button type="button" data-dismiss="modal" class="alcohalfootersign alcohal_fotrloginbox">OK</button>
+          </div>
+        </div>
+      
     </div>
   </div>
 </div>

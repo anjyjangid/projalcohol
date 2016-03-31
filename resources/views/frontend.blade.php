@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="AlcoholDelivery">
 
-	<head>
+	<head>		
 		<style>
 		.modal-open .navbar-fixed-top{
 			width:calc(100% - 17px);

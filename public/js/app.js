@@ -92,7 +92,7 @@ AlcoholDelivery.factory('UserService', [function() {
 }]);
 
 /* Setup Rounting For All Pages */
-AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
 		// Redirect any unmatched url
 		$urlRouterProvider.otherwise("/");  
 		
@@ -161,13 +161,22 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', function($stateP
 						}
 				})
 
-				.state('mainLayout.product', {
-						url: "/{categorySlug}",
-						templateUrl: "/templates/product/index.html"
-				})
+				
 
 				.state('mainLayout.cart', {
 						url: "/cart",
+						templateUrl: "/templates/cart.html",
+						controller:function(){
+								setTimeout(function(){
+										initScripts({
+												disableScrollHeader:true
+										});
+								},100)
+						}
+				})
+
+				.state('mainLayout.resetpassword', {
+						url: "/resetpassword?resetkey={key}",
 						templateUrl: "/templates/cart.html",
 						controller:function(){
 								setTimeout(function(){
@@ -213,6 +222,13 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', function($stateP
 								alert("asd");
 						}
 				})
+
+				.state('mainLayout.product', {
+						url: "/{categorySlug}",
+						templateUrl: "/templates/product/index.html"
+				});
+
+				//$locationProvider.html5Mode(true);
 		}
 		
 ]);
@@ -254,8 +270,10 @@ AlcoholDelivery.directive('topMenu', function() {
 			$scope.list = [];
 			$scope.signup = {terms:null};
 			$scope.login = {};
+			$scope.forgot = {};
 			$scope.errors = {};
 			$scope.signup.errors = {};
+			$scope.forgot.errors = {};
 
 			$scope.signupSubmit = function() {
 				$http.post('/auth/register',$scope.signup).success(function(response){
@@ -269,8 +287,9 @@ AlcoholDelivery.directive('topMenu', function() {
 
 			$scope.loginSubmit = function() {
 				$http.post('/auth',$scope.login).success(function(response){
+	                $scope.login = {};
 	                $scope.user = response;
-						$scope.user.name = response.email;
+					$scope.user.name = response.email;
 	                $('#login').modal('hide');
 	            }).error(function(data, status, headers) {                            
 	                $scope.errors = data;                
@@ -282,6 +301,18 @@ AlcoholDelivery.directive('topMenu', function() {
 	        }).error(function(data, status, headers) {                            
 	          	
 	        });
+
+	        $scope.forgotSubmit = function() {
+				$http.post('/password/email',$scope.forgot).success(function(response){					
+	                $scope.forgot = {};
+	                $scope.forgot.message = response;
+	                $('#forgot_password').modal('hide');
+	                $('#forgot_password_sent').modal('show');
+	                $scope.forgot.errors = {};
+	            }).error(function(data, status, headers) {                            
+	                $scope.forgot.errors = data;                
+	            });
+			};
 
 	        $scope.logout = function() {
 				$http.get('/auth/logout').success(function(response){

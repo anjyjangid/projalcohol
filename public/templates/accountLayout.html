@@ -1,4 +1,4 @@
-<section class="fullwidth header">	
+<section class="fullwidth">		
 	<div class="fullwidth settop">
 		<div class="container">
 			<div class="row">
@@ -15,91 +15,12 @@
 						</div>
 						<!-- Collect the nav links, forms, and other content for toggling -->
 						<div class="collapse navbar-collapse nopadd" id="bs-example-navbar-collapse-1">
-							<side-bar noInit="true"></side-bar>
+							<side-bar></side-bar>
 						</div>
 						<!-- /.navbar-collapse -->
 					</nav>
 				</div>
-				<div class="col-md-8">
-					<div class="occassion_sale">Christmas Sale</div>
-					<div class="occassion_date">22-25th December</div>
-					<div class="occassion_descrip">Lorem ipsum dolor sit amet, consectetur adipisicing elit,<br />sed do eiusmod tempor incididunt ut labore.</div>
-					<div class="registernowbtn">
-						<a href="javascript:void(0);" ng-hide="user.email" data-toggle="modal" data-target="#register">
-							register now
-						</a>
-					</div>
-					<div class="combo_slider" data-ng-init="featuredProducts()">
-						<div class="tabbable">
-							<!-- Only required for left/right tabs -->
-							<div class="fullwidth">
-								<div class="tabtitle">Featured Items</div>								
-								<ul class="nav nav-tabs tabsright" ng-init="AppController.feTabActive=0">	
-
-									<li ng-repeat="cat in parentCategories" ng-if="cat.featured!='undefined' && cat.featured.length>0" ng-class="{'active':AppController.feTabActive==$index}">									
-										<a href="javascript:void(0)" ng-click="setFeatured($index);AppController.feTabActive=$index">{{cat.cat_title}}</a>
-									</li>
-
-								</ul>
-							</div>
-							<div class="tab-content fullwidth">
-								<div class="tab-pane" id="tab$index" 
-										ng-repeat="pCat in parentCategories"
-										ng-class="{'active':AppController.feTabActive==$index}"
-
-										>
-								    <data-owl-carousel class="owl-carousel owl-theme" data-options="{
-								    		
-								    		navigation : true,
-											navigationText :	['<','>'],
-											pagination : false,
-											items : 4,
-											itemsDesktop : [1199,4],
-											itemsDesktopSmall : [979,4],
-											itemsTablet : [768,3],
-											itemsTabletSmall : [767,2],
-											itemsMobile : [479,1]
-
-								    		}">
-								      <div owl-carousel-item="" ng-repeat="fproduct in pCat['featured']" class="item">
-								        <div class="prod_chilled" ng-class="{notchilled:{{fproduct.chilled}}}">
-												<span>Chilled</span>
-												<div class="prod_chilled_icon"></div>
-											</div>
-											<div class="prod_pic">
-												<div class="wishlist_discount">
-													<div class="wishlist">Add to Wishlist</div>
-													<div class="discount">Click here to view Bulk Discounts</div>
-												</div>
-
-												<img err-src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" 
-												ng-src="products/i/200/{{fproduct.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive"/>
-												
-											</div>
-											<div class="prod_desc">{{fproduct.name}}</div>
-											<div class="prod_price">{{fproduct.price}} SGD</div>
-											<div class="prod_discout_price">{{fproduct.discountPrice}} SGD</div>
-											<div class="prod_addtocart">
-												<!--<img src="images/addtocart.png" class="img-responsive" />-->
-												<div class="cartbtn">
-													<div class="addcart"><span></span>add to cart</div>
-													<div class="addmore"><input id="addmore_count" type="text" value="" name="addmore_count"><span class="addmorehere">add more</span></div>
-													<div class="addmanual">
-														<div class="relat">
-															<input id="addmore_val" name="" value="" type="text" />
-															<div class="addbuttton">add</div>
-														</div>
-													</div>
-												</div>
-											</div>
-								      </div>
-								    </data-owl-carousel>							
-								</div>
-								<div class="tab-pane" id="tab2"></div>								
-							</div>
-						</div>
-					</div>
-				</div>
+				<div class="col-md-8" ui-view></div>
 				<div class="col-md-2">
 					<div class="right_discount">
 						<div class="huge">Huge</div>
@@ -205,79 +126,6 @@
 							<div class="viewbtns" data-toggle="modal" data-target="#previous_orderhistory"><img src="images/view.jpg" class="img-responsive" /></div>
 						</div>
 					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
-<section class="fullwidth">
-	<div class="container">
-		<div class="offers">
-			<div class="offrates">
-				<div class="offrates_txt">10% OFF</div>
-				<div class="firstorder">your first order</div>
-			</div>
-			<div class="happy_hours">
-				<div class="happy_hours_txt">1Hour</div>
-				<div class="yourdoor">at your door</div>
-			</div>
-		</div>
-	</div>
-</section>
-<section class="fullwidth">
-	<div class="container">
-		<div class="single_slider">
-			<div id="owl-demo7" class="owl-carousel owl-theme">
-				<div class="item">
-					<div class="slido_left">
-						<div class="slido_pic"><img src="images/userpic.png" class="img-responsive" /></div>
-						<div class="slido_txt">Natalie Taylor</div>
-					</div>
-					<div class="slido_right">"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex."</div>
-				</div>
-				<div class="item">
-					<div class="slido_left">
-						<div class="slido_pic"><img src="images/userpic.png" class="img-responsive" /></div>
-						<div class="slido_txt">Natalie Taylor</div>
-					</div>
-					<div class="slido_right">"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex."</div>
-				</div>
-				<div class="item">
-					<div class="slido_left">
-						<div class="slido_pic"><img src="images/userpic.png" class="img-responsive" /></div>
-						<div class="slido_txt">Natalie Taylor</div>
-					</div>
-					<div class="slido_right">"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex."</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
-<section class="fullwidth">
-	<div class="container">
-		<div class="row brands">
-			<div class="col-md-2 text-center"><img src="images/brand1.png" class="img-responsive" /></div>
-			<div class="col-md-2 text-center"><img src="images/brand2.png" class="img-responsive" /></div>
-			<div class="col-md-2 text-center"><img src="images/brand3.png" class="img-responsive" /></div>
-			<div class="col-md-2 text-center"><img src="images/brand4.png" class="img-responsive" /></div>
-			<div class="col-md-2 text-center"><img src="images/brand5.png" class="img-responsive" /></div>
-			<div class="col-md-2 text-center"><img src="images/brand6.png" class="img-responsive" /></div>
-		</div>
-	</div>
-</section>
-<section class="fullwidth onthego_block">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-4"><img src="images/iphone-left-side2.png" class="img-responsive leftphone" /></div>
-			<div class="col-md-5">
-				<div class="orderbooz">order booz</div>
-				<div class="onthego">On the go!</div>
-				<div class="booz_desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
-			</div>
-			<div class="col-md-3">
-				<div class="socio_btns">
-					<div class="fullwidth text-center"><a href="#"><img src="images/apple.png" class="img-responsive" /></a></div>
-					<div class="fullwidth text-center"><a href="#"><img src="images/google.png" class="img-responsive" /></a></div>
 				</div>
 			</div>
 		</div>

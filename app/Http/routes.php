@@ -31,7 +31,11 @@ post('upload-image', 'GalleryController@uploadImage');
 Route::resource('gallery', 'GalleryController');
 
 
-Route::get('/', ['uses' => 'UserController@index']);
+//Route::get('/', ['uses' => 'UserController@index']);
+Route::get('/', function () {
+    return view('frontend');
+});
+
 Route::controller('/auth', 'Auth\AuthController');
 
 
@@ -166,9 +170,18 @@ Route::get('/check', 'UserController@check');
 Route::post('/profile/update', 'ProfileController@update');*/
 
 //Route::resource('admin/profile', 'Admin\profileController');
+
 Route::controller('/admin', 'Auth\AdminAuthController');
 
 Route::post('/auth', 'UserController@checkAuth');
 
 // Route::post('/profile/account', 'ProfileController@account');
 // Route::post('/profile/update', 'ProfileController@update');
+
+//TO WORK FOR ANGULAR DIRECT URL
+
+
+/*Route::any('{path?}', function()
+{
+    return view('frontend');
+});*/
