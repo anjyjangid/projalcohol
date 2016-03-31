@@ -56,12 +56,14 @@ class CategoryController extends Controller
                
         // validation rules
         $validator = Validator::make($request->all(), [
-            'title' => 'required',            
+            'title' => 'required',
+            'slug'  => 'required',
             'thumb' => 'required|mimes:jpeg,jpg,png|max:8000',
         ]);
 
         // if validation fails
         if ($validator->fails()) {
+            return response($request->all());
             return response('There are errors in the form data', 400);
         }
         
@@ -87,15 +89,25 @@ class CategoryController extends Controller
         }
 
        	$category->cat_title = $inputs['title'];
+        $category->slug = $inputs['slug'];
        	$category->cat_status = '0';
        	$category->cat_thumb = $fileUpload->original['thumb'];
        	$category->cat_lthumb = isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:'';
+        
        	
-       	if($category->save()){
-       		return response(array("success"=>true,"message"=>"Category created successfully"));
-       	}
+        try {
+
+            $category->save();
+
+        } catch(\Exception $e){
+
+            return response(array("success"=>false,"message"=>$e->getMessage()));
+
+        }
        	
-       	return response(array("success"=>false,"message"=>"Something went worng"));
+        return response(array("success"=>true,"message"=>"Category created successfully"));
+       	
+       	
     }
 
     public function uploadThumb(Request $request){
@@ -198,6 +210,7 @@ class CategoryController extends Controller
         // validation rules
         $validator = Validator::make($inputs, [
             'title' => 'required',            
+            'slug'=> 'required',
             //'thumb' => 'mimes:jpeg,jpg,png|max:8000',
         ]);
 
@@ -213,6 +226,7 @@ class CategoryController extends Controller
         $category = Categories::find($id);
         
         $category->cat_title = $inputs['title'];
+        $category->slug = $inputs['slug'];
         
         $category->cat_thumb = isset($fileUpload->original['thumb'])?$fileUpload->original['thumb']:$inputs['thumb'];
         $category->cat_lthumb = isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:$inputs['lthumb'];

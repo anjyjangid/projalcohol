@@ -139,6 +139,18 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 		Route::post('update/{id}','Admin\ProductController@update');
 	});
 
+
+	// Route::group(['prefix' => 'setting'], function () {
+
+	// 	Route::get('getsetting', 'Admin\SettingController@getsettings');	
+
+	// });
+
+	Route::resource('setting', 'Admin\SettingController',
+                ['except' => ['create', 'store', 'destroy']]);
+	Route::controller('setting', 'Admin\SettingController');
+
+
 });
 
 

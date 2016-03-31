@@ -1,6 +1,6 @@
 'use strict';
 
-MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout','$http','fileUpload','categoryModel', function($rootScope, $scope, $timeout,$http,fileUpload,categoryModel) {
+MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout','$http','fileUpload','categoryModel','Slug', function($rootScope, $scope, $timeout,$http,fileUpload,categoryModel,Slug) {
 
     $scope.$on('$viewContentLoaded', function() {   
         Metronic.initAjax(); // initialize core components
@@ -24,7 +24,6 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 				$scope.categories.push({categoryList: response});
 
 			});
-			
 		},
 
 		setParentSubCategory : function(i){	
@@ -57,8 +56,12 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 
 			var data = {
 				title: $scope.category.title,
+				slug: $scope.category.slug,
 				ptitle:''
 			};
+
+
+			
 
 			if($scope.categories[0].categoryList.length>0){
 				
@@ -93,8 +96,8 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 			var uploadUrl = "admin/category/store";
 			fileUpload.uploadFileToUrl(files, data, uploadUrl)
 		        .success(function(response) {
-		             
-		            $location.path("categories/list");
+
+
 
 		        }).error(function(data, status, headers) {            
 		            Metronic.alert({
@@ -161,6 +164,7 @@ MetronicApp.controller('CategoryUpdateController',['$rootScope', '$scope', '$tim
 
 			var data = {
 				title: $scope.category.title,
+				slug: $scope.category.slug,
 				ptitle:''
 			};
 			

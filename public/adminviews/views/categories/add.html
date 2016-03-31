@@ -8,7 +8,8 @@
 				</div>				
 			</div>
 			<div class="portlet-body">
-				<form role="form" name='categoryForm' ng-submit="submitCategory()" data-ng-init="categoryFormInit()">
+
+				<form name='categoryForm' ng-submit="submitCategory()" data-ng-init="categoryFormInit()">
 
 					<div class="form-group">
 						<label class="control-label">Parent Category</label>
@@ -29,13 +30,19 @@
 					</div>
 					<p ng-show="loading">Please Wait...</p>								
 
-					<div class="form-group">
+					<div class="form-group" ng-class="{'has-error':categoryForm.title.$touched && categoryForm.title.$invalid}">
+						
 						<label class="control-label">Title</label>
 						<input type="text" name="title" placeholder="Title" class="form-control" required ng-model="category.title"/>
-						<span ng-show="categoryForm.category.title.$touched && categoryForm.category.title.$invalid">Title is required.</span>
+						<span class="help-block" ng-show="categoryForm.title.$touched && categoryForm.title.$invalid">Title is required.</span>
 					</div>
-					
-					
+
+					<div class="form-group">
+						<slug from="category.title" to="category.slug"></slug>
+						<label class="control-label">Slug</label>
+						<input type="text" name="slug" placeholder="Slug" class="form-control" required ng-model="category.slug" />
+						<span ng-show="categoryForm.slug.$touched && categoryForm.slug.$invalid">Slug is required.</span>						
+					</div>					
 
 					<div class="clearfix margin-top-10">
 						<span class="label label-danger">NOTE!</span> <span> Attached image thumbnail is supported in Latest Firefox, Chrome, Opera, Safari and Internet Explorer 10 only </span>

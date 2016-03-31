@@ -1,0 +1,64 @@
+
+<!-- BEGIN PAGE CONTENT-->
+<div class="row">
+	<div class="col-md-12">		
+
+		<!-- BEGIN PAGE HEADER--> 
+		<h3 class="page-title">
+			{{$state.$current.data.pageTitle}}
+		</h3>
+		<div class="page-bar">
+			<ul class="page-breadcrumb">
+				<li>
+					<i class="fa fa-home"></i>
+					<a href="#/dashboard.html">Home</a>
+					<i class="fa fa-angle-right"></i>
+				</li>
+				<li>
+					<a href="#/settings/general">{{$state.$current.data.pageTitle}}</a>
+					<i class="fa fa-angle-right"></i>
+				</li>
+				<li>
+					<a href="javascript:void(0)">{{$state.$current.data.pageSubTitle}}</a>
+				</li>
+			</ul>
+			
+		</div>
+		<!-- END PAGE HEADER-->
+
+		<div id="info-message"></div>
+		
+		<!-- BEGIN PROFILE CONTENT -->
+		<div class="row">
+		<div class="col-md-12">
+		    <div class="portlet light">
+		        <div class="portlet-title tabbable-line">
+		            <div class="caption caption-md">
+		                <i class="icon-globe theme-font hide"></i>
+		                <span class="caption-subject font-blue-madison bold uppercase">{{$state.$current.data.pageSubTitle}}</span>
+		            </div>
+		            <ul class="nav nav-tabs">
+		                <li ng-class="{active: $state.$current.data.key=='general'}">
+		                    <a href="#/settings/general" data-target="#tab_1_1" data-toggle="tab">General</a>
+		                </li>		                
+		                <li ng-class="{active: $state.$current.data.key=='social'}">
+		                    <a href="#/settings/social" data-target="#tab_1_3" data-toggle="tab">Social</a>
+		                </li>
+		                <!-- <li>
+		                    <a href="#" data-target="#tab_1_2" data-toggle="tab">API's</a>
+		                </li>
+		                <li>
+		                    <a href="#" data-target="#tab_1_4" data-toggle="tab">Email</a>
+		                </li> -->
+		            </ul>
+		        </div>
+		        <div class="portlet-body">
+		        	<div ui-view class="settings-content fade-in-up"></div>
+		        </div>
+		    </div>
+		</div>
+		</div>		
+		<!-- END PROFILE CONTENT -->
+	</div>
+</div>
+<!-- END PAGE CONTENT

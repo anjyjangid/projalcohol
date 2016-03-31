@@ -1,0 +1,95 @@
+
+<div class="form-horizontal">
+    <div class="form-group" ng:class="{'has-error':errors.title[0]}">
+        <label class="col-md-2 control-label">{{settings.site_title.title}}: <span class="required">
+        * </span>
+        </label>
+        <div class="col-md-10">
+            <input type="text" class="form-control" ng-model="settings.site_title.value" placeholder="">
+            <span class="help-block" ng-bind="errors.title[0]"></span>
+        </div>
+
+    </div>
+
+    <div class="form-group" ng:class="{'has-error':errors.meta_keyword[0]}">
+        <label class="col-md-2 control-label">{{settings.meta_keyword.title}}: <span class="required">
+        * </span>
+        </label>
+        <div class="col-md-10">
+            <input type="text" class="form-control" ng-model="settings.meta_keyword.value" placeholder="">
+            <span class="help-block" ng-bind="errors.meta_keyword[0]"></span>
+        </div>
+
+    </div>
+
+    <div class="form-group" ng:class="{'has-error':errors.meta_desc[0]}">
+        <label class="col-md-2 control-label">{{settings.meta_desc.title}}: <span class="required">
+        * </span>
+        </label>
+        <div class="col-md-10">
+            <textarea class="form-control" ng-model="settings.meta_desc.value" placeholder="" rows="5"></textarea>
+            <span class="help-block" ng-bind="errors.meta_desc[0]"></span>
+        </div>
+
+    </div>
+
+
+    <div class="form-group" ng:class="{'has-error':errors.language[0]}">
+        <label class="col-md-2 control-label">{{settings.language.title}}: <span class="required">
+        * </span>
+        </label>
+        <div class="col-md-10">
+
+            <select class="form-control" 
+                ng-model="settings.language.value" 
+                ng-options="option.key as option.title for option in language"
+                >                
+            </select>
+            
+            <span class="help-block" ng-bind="errors['address.country'][0]"></span>
+        </div>
+    </div>
+
+    <div class="form-group" ng:class="{'has-error':errors.mode[0]}">
+        <label class="col-md-2 control-label">{{settings.mode.title}}: <span class="required">
+        * </span>
+        </label>
+        <div class="col-md-10">
+
+            <select class="form-control" 
+                ng-model="settings.mode.value" 
+                ng-options="option.key as option.title for option in mode"
+                >                
+            </select>
+            
+            <span class="help-block" ng-bind="errors['address.country'][0]"></span>
+        </div>
+    </div>
+    
+    <div class="form-group" ng:class="{'has-error':errors['address.country'][0]}">
+        <label class="col-md-2 control-label">{{settings.currency.title}}: <span class="required">
+        * </span>
+        </label>
+        <div class="col-md-10">
+
+            <select class="form-control"
+                ng-model="settings.currency.value" 
+                ng-options="option.sign as option.name for option in currency"
+                >
+            </select>
+            
+            <span class="help-block" ng-bind="errors['address.country'][0]"></span>
+        </div>
+    </div>
+
+    <hr>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="margiv-top-10 pull-right">                
+                <button class="btn green-haze" ng-click="update()"><i class="fa fa-check"></i> Update</button>
+                <input type="reset" name="reset" value="Reset" class="btn default">
+            </div>
+        </div>
+    </div>
+
+</div>

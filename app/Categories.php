@@ -22,11 +22,8 @@ class Categories extends Moloquent
      *
      * @var array
      */
-    protected $fillable = ['cat_title', 'cat_thumb', 'cat_lthumb','ancestors','cat_status'];
+    protected $fillable = ['cat_title', 'cat_thumb', 'cat_lthumb','ancestors','cat_status','slug'];
 
-   
-
-    
     public function getCategory($params = array()){
 
         $category = $this->where('_id','=', $params['key']);
@@ -36,8 +33,7 @@ class Categories extends Moloquent
         }else{
             $category = $category->first();
         }
-        
-        
+                
         return $category;
 
     }
