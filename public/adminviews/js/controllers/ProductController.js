@@ -13,6 +13,14 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 
 	$scope.categories = [];
 
+	$scope.product = {		
+		chilled:'1',
+		categories:[],
+		isFeatured:'0',
+		bulkDiscount:[],
+		imageFiles:[{coverimage:1}]
+	};
+
 	productModel.getCategories().success(function(data){
 		$scope.categories = data;		
 	});
@@ -40,85 +48,53 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 			$scope.product.categories.splice(i, 1);
 		else
 			$scope.product.categories.push(id);		
-	}
+	}	
 
+	$scope.imageRemove = function(i){				
+		$scope.product.imageFiles.splice(i, 1);
+	}
 	
-
-	$scope.uploadFiles = function(){
-		var fileObj = {};
-
-		for(var i in $scope.imageFiles){
-			fileObj["file_"+i] = $scope.imageFiles[i].thumb;
-		}
-
-		fileUpload.uploadFileToUrl(fileObj, data, uploadUrl)
-		.success(function(response) {
-			console.log(response);
-			$location.path("categories/list");
-
-		}).error(function(data, status, headers) {            
-			Metronic.alert({
-				type: 'danger',
-				icon: 'warning',
-				message: data,
-				container: '.portlet-body',
-				place: 'prepend'
-			});
-		});
-	}
-
-
-
 }]);
 
 MetronicApp.controller('ProductAddController',['$scope', '$location','fileUpload','productModel', function($scope,$location,fileUpload,productModel) {
 
-	$scope.imageFiles = [{coverimage:true}];
-
-	$scope.product = {		
-		chilled:'1',
-		categories:[],
-		isFeatured:'0'
-	};	
-
-	/*productModel.getCategories().success(function(data){
-		$scope.categories = data;
-	});*/	
+	//$scope.imageFiles = [{coverimage:true}];
 
 	$scope.store = function(){
 
 		var data = $scope.product;
-		var url = 'product/store';
-		data.images = $scope.imageFiles;		
+		var url = 'product/store';		
 		//POST DATA WITH FILES
 		productModel.storeProduct(data,url).success(function(response){
 			$location.path("product/list");
 		}).error(function(data, status, headers){			
 			$scope.errors = data;			
 		});
-	}
+	}	
 
-	$scope.imageRemove = function(i){		
-		$scope.imageFiles.splice(i, 1);
-	}
+	$scope.discountRemove = function(i){				
+		$scope.product.bulkDiscount.splice(i, 1);
+	};
 
 }]);
 
 
 MetronicApp.controller('ProductEditController',['$scope', '$location','$stateParams','fileUpload','productModel', function($scope,$location,$stateParams,fileUpload,productModel) {
 
-	$scope.imageFiles = [{}];
-
-	$scope.product = [{}];
-
 	productModel.getProduct($stateParams.productid).success(function(data){
-		$scope.product = data;
-		$scope.imageFiles = data.imageFiles;
+		$scope.product = data;	
+		if(!$scope.product.bulkDiscount){
+			$scope.product.bulkDiscount = [];
+		}	
 	});
 
-	/*productModel.getCategories().success(function(data){
-		$scope.categories = data;		
-	});*/	
+	$scope.discountRemove = function(i){				
+		$scope.product.bulkDiscount.splice(i, 1);
+	};
+
+	$scope.imageRemove = function(i){		
+		$scope.product.imageFiles.splice(i, 1);
+	};
 
 	$scope.isChecked = function(id){		
 
@@ -139,7 +115,6 @@ MetronicApp.controller('ProductEditController',['$scope', '$location','$statePar
 
 		var data = $scope.product;
 		var url = 'product/update/'+$stateParams.productid;
-		data.images = $scope.imageFiles;		
 		//POST DATA WITH FILES
 		productModel.storeProduct(data,url).success(function(response){
 			$location.path("product/list");
@@ -148,18 +123,11 @@ MetronicApp.controller('ProductEditController',['$scope', '$location','$statePar
 		});
 	}
 
-	$scope.imageRemove = function(i){		
-		$scope.imageFiles.splice(i, 1);
-	}
-
-	$scope.coverUpdate = function(s){
-		console.log(s);
-		for(var ci in $scope.imageFiles){
-			$scope.imageFiles[ci].coverimage = 0;
+	$scope.coverUpdate = function(s){		
+		for(var ci in $scope.product.imageFiles){
+			$scope.product.imageFiles[ci].coverimage = 0;
 		}
-
-		$scope.imageFiles[s].coverimage = 1;
-
+		$scope.product.imageFiles[s].coverimage = 1;
 	}
 
 }]);
@@ -198,8 +166,7 @@ MetronicApp.directive('myChange', function() {
 	         parentcheck.children('input[type="checkbox"]').prop({	              
 	              checked: true
 	         });
-	      }
-	      $.uniform.update();
+	      }	      
 	  }
 
 	  checkSiblings(container);

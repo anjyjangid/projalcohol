@@ -50,7 +50,7 @@ class AuthController extends Controller
             'password' => 'required|confirmed|min:6',
             'password_confirmation' => 'required',
             'terms' => 'required'
-        ],[
+        ],[           
            'terms.required' => 'Please agree terms.'
         ]);
     }

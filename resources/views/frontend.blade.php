@@ -37,8 +37,12 @@
 		<![endif]-->
 	</head>
 	<body ng-controller="AppController">
+		
 		<top-menu></top-menu>
 		<div ui-view></div>
+
+		
+
 		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
 
     <script type="text/javascript" src="{{ asset('bower_components/dropzone/dist/dropzone.js') }}"></script>

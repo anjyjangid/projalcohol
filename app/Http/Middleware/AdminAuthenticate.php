@@ -16,8 +16,7 @@ class AdminAuthenticate
      */
     public function handle($request, Closure $next)
     {
-        
-        if (\Auth::guest("admin")) {
+        if (\Auth::guest('admin')) {
             if ($request->ajax()) {
                 return response('Unauthorized.', 401);
             } else {

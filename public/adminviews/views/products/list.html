@@ -74,6 +74,9 @@
 									Featured
 								</th>
 								<th width="10%">
+									Quantity
+								</th>
+								<th width="10%">
 									Action
 								</th>
 							</tr>
@@ -88,8 +91,7 @@
 									<option value="">Select..</option>
 									<option ng-repeat="option in categories" value="{{option._id}}">{{option.cat_title}}</option>
 									</select>
-								</td>
-																								
+								</td>					
 								<td>
 									
 								</td>
@@ -106,6 +108,9 @@
 										<option value="1">Featured</option>
 										<option value="0">Not Featured</option>
 									</select>
+								</td>
+								<td>
+									
 								</td>
 								<td>
 									<div class="margin-bottom-5">
@@ -174,6 +179,9 @@
 	                "orderable": false
 	            }, {
 	                "orderable": false
+	            }, {
+	                "orderable": false,
+	                "sClass": "right"
 	            }, {
 	                "orderable": false
 	            }],
