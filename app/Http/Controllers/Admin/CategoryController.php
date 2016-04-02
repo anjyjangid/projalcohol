@@ -90,7 +90,7 @@ class CategoryController extends Controller
 
        	$category->cat_title = $inputs['title'];
         $category->slug = $inputs['slug'];
-       	$category->cat_status = '0';
+       	$category->cat_status = 0;
        	$category->cat_thumb = $fileUpload->original['thumb'];
        	$category->cat_lthumb = isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:'';
         
@@ -289,19 +289,21 @@ class CategoryController extends Controller
 
             if ( isset($params[$fieldTitle]) && $params[$fieldTitle]!="" )
             {
-                   
+                            
                 if($fieldTitle=='ancestors'){
                     $categories = $categories->where($fieldTitle.".0.title", 'regex', "/.*$params[$fieldTitle]/i");
-                }else{
+
+                }elseif($fieldTitle=="cat_status"){
+
+                    $categories = $categories->where($fieldTitle, '=', (int)$params[$fieldTitle]);
+                }
+                else{
                     $categories = $categories->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
                 }
                             
             }
         }
-
-
-        //prd($categories->toSql());
-
+    
             
         /*
          * Ordering

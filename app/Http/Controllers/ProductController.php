@@ -18,7 +18,7 @@ class ProductController extends Controller
     public function getproduct(Request $request){
 
         $params = $request->all();
-
+    
         $products = new Products;
 
         $columns = array('_id',"categories","chilled","description","discountPrice","imageFiles","name","price","shortDescription","sku");

@@ -36,13 +36,14 @@
 					<table class="table table-striped table-bordered table-hover" id="dealerslisttab">
 						<thead>
 							<tr role="row" class="heading">
-								<th width="5%">
-									Sr.
-								</th>								
 								<th width="2%">
 									<input type="checkbox" class="group-checkable">
 								</th>
-								
+
+								<th width="5%">
+									Sr.
+								</th>								
+
 								<th width="15%">
 									Dealer
 								</th>
@@ -134,7 +135,7 @@
                 "pageLength": 10, // default record count per page
                 "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
                         'orderable': false,
-                        'targets': [1,5]
+                        'targets': [0,5]
                     }],
                 "ajax": {
                     "url": "../admin/dealer/getdealers", // ajax source
@@ -151,7 +152,7 @@
                     //     // d.custom = $('#myInput').val();
                     //     // etc
                     // },
-                    "type": "GET"
+                    "type": "POST"
                 },
                 "order": [
                     [1, "asc"],
