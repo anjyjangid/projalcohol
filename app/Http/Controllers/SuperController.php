@@ -13,9 +13,28 @@ class SuperController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getCategory()
+    public function getCategory(Request $request)
     {
-        $categories = Categories::all()->toArray();        
+        $params = $request->all();
+
+        $categories = new Categories;
+
+        if(isset($params['category']) && $params['category']!=""){
+            $categories = $categories->where('slug', "=", $params['category']);
+        }
+
+        $categories = $categories->get();
+
+
+        if(isset($params['withChild']) && $params['withChild']){
+
+            foreach($categories as &$category){
+                $category['children'] = array(); 
+                $category['children'] = Categories::where('cat_status',1)->where('ancestors.0._id','=',$category['_id'])->get(array('_id','slug','cat_title'));
+            }
+
+        }
+
         return response($categories);
     }
 

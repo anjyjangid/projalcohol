@@ -32,7 +32,7 @@ class EmailTemplateController extends Controller
      */
     public function index()
     {
-        
+        //
     }
 
     /**
@@ -131,13 +131,16 @@ class EmailTemplateController extends Controller
 
     }
 
+    
+
     public function gettemplates(Request $request)
-    {        
+    {
+    
         $params = $request->all();
 
         $template = new EmailTemplate;
 
-        $columns = array('_id',"title",'subject','content','updated_at');
+        $columns = array('_id','title','subject','content','updated_at');
         
         /* Individual column filtering */
     
@@ -151,10 +154,6 @@ class EmailTemplateController extends Controller
 
             }
         }
-
-
-        //prd($template->toSql());
-
             
         /*
          * Ordering
@@ -185,6 +184,8 @@ class EmailTemplateController extends Controller
         {
             $template = $template->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
         }
+
+        
 
         $iTotal = $template->count();
 
@@ -217,6 +218,8 @@ class EmailTemplateController extends Controller
             $srStart = intval($iTotal);
         }
 
+        
+
         $i = 1;
         foreach($template as $key=>$value) {
 
@@ -241,6 +244,8 @@ class EmailTemplateController extends Controller
         return response($records, 201);
         
     }
+
+
     
     
 }

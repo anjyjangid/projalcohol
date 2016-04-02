@@ -45,6 +45,8 @@ Route::controller('/super', 'SuperController');
 
 Route::get('/getproduct', 'ProductController@getproduct');
 
+Route::get('/search', 'ProductController@getproduct');
+
 
 Route::post('/admin/getcustomers', ['uses' => 'Admin\AdminController@customers']);
 
@@ -85,7 +87,7 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 
 		Route::get('getdealer/{id}','Admin\DealerController@getdealer');
 			
-		Route::match(['get', 'post'],'getdealers', 'Admin\DealerController@getdealers');
+		Route::post('getdealers', 'Admin\DealerController@getdealers');
 
 		//Route::post('remove', 'Admin\DealerController@remove');
 
@@ -100,7 +102,7 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 
 		Route::get('getpage/{id}','Admin\CmsController@getpage');
 			
-		Route::get('getpages', 'Admin\CmsController@getpages');
+		Route::post('getpages', 'Admin\CmsController@getpages');
 
 	});
 
@@ -115,7 +117,7 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 
 		Route::get('gettemplate/{id}','Admin\EmailTemplateController@gettemplate');
 			
-		Route::get('gettemplates', 'Admin\EmailTemplateController@gettemplates');
+		Route::post('gettemplates', 'Admin\EmailTemplateController@gettemplates');
 
 	});
 
@@ -133,7 +135,7 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 		Route::get('browsegraphics','Admin\GlobalController@browsegraphics');
 
 		Route::post('uploadgraphics','Admin\GlobalController@uploadgraphics');
-			
+
 	});
 
 	Route::group(['prefix' => 'product'], function () {

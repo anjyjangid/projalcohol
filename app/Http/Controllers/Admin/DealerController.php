@@ -55,6 +55,8 @@ class DealerController extends Controller
     {        
         $inputs = $request->all();
         
+        $inputs['status'] = (int)$inputs['status'];
+
         $dealer = Dealer::create($inputs);    
 
         return $dealer;
@@ -98,7 +100,7 @@ class DealerController extends Controller
         $dealer->title = $inputs['title'];
         $dealer->address = $inputs['address'];
         $dealer->contacts = $inputs['contacts'];
-        $dealer->status = $inputs['status'];    
+        $dealer->status = (int)$inputs['status'];    
         $dealer->description = $inputs['description'];
         
         if($dealer->save()){
@@ -151,7 +153,7 @@ class DealerController extends Controller
 
         $dealers = new Dealer;
 
-        $columns = array('_id',"title",'contacts','address','updated_at','status');
+        $columns = array('_id',"updated_at",'contacts','address','title','status');
         
         /* Individual column filtering */
     
@@ -160,17 +162,22 @@ class DealerController extends Controller
         {
 
             if ( isset($params[$fieldTitle]) && $params[$fieldTitle]!="" )
-            {
+            {   
+                if($fieldTitle=="status"){
+                    
+                    $dealers = $dealers->where($fieldTitle, "=",(int)$params[$fieldTitle]);
 
-                $dealers = $dealers->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
+                }else{
+
+                    $dealers = $dealers->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
+
+                }
 
             }
         }
+                      
 
-
-        //prd($dealers->toSql());
-
-            
+                      
         /*
          * Ordering
          */
@@ -228,7 +235,7 @@ class DealerController extends Controller
 
 
         $srStart = intval( $params['start'] );
-        if($params['order'][0]['column']==0 && $params['order'][0]['dir']=='asc'){
+        if($params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
             $srStart = intval($iTotal);
         }
 
@@ -238,14 +245,16 @@ class DealerController extends Controller
 
             $row=array();
 
-            if($params['order'][0]['column']==0 && $params['order'][0]['dir']=='asc'){
+            $row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';
+
+            if($params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
                 $row[] = $srStart--;//$row1[$aColumns[0]];
             }else{
                 $row[] = ++$srStart;//$row1[$aColumns[0]];
             }
 
             $status = $status_list[(int)$value['status']];
-            $row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';
+            
                     
             $row[] = ucfirst($value['title']);
             $row[] = count($value['contacts']);
