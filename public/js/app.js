@@ -35,14 +35,18 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 
     $http.get("/super/category/").success(function(response){
 		
-		$scope.categories = response;		
+		$scope.categories = response;
+		$scope.AppController.categories = response;
 		$scope.parentCategories = [];
 
+		$scope.parentChildcategory = {}
+
 		for(key in $scope.categories){
-			if(!$scope.categories[key].ancestors)
-			$scope.parentCategories.push($scope.categories[key])
+			if(!$scope.categories[key].ancestors){
+				$scope.parentCategories.push($scope.categories[key])
+			}
 		}
-		
+
 	});
 
     $scope.featuredProducts = function(){
@@ -90,21 +94,83 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 
 }]);
 
-AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$http','$stateParams', function($scope, $rootScope,$http,$stateParams){
+AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
 
 	$scope.ProductsController = {};
-	
+
+	$scope.category = $stateParams.categorySlug;
+	$scope.subCategory = "";
+
 	$category = $stateParams.categorySlug;
 
-	if($stateParams.subcategorySlug!=='undefined'){
+	if(typeof $stateParams.subcategorySlug!=='undefined'){
 		$category = $stateParams.subcategorySlug;
+		$scope.subCategory = $stateParams.subcategorySlug;
 	}
 
-    $http.get("/search",{category: "asdas"})
-    		.success(function(response){
-			});
+	var data = {
+		category:$category
+	}
 
+	var config = {
+		params: data,
+		headers : {'Accept' : 'application/json'}
+	};
+
+	
+	if($state.previous.param.categorySlug!==$stateParams.categorySlug){
+		
+		$http.get("/super/category",{params: {category:$stateParams.categorySlug,withChild:true}}).success(function(response){
+			
+			$scope.categoriesList = response;
+			$rootScope.categoriesList = response;
+
+		})
+
+	}else{		
+
+		$scope.categoriesList = $rootScope.categoriesList;
+	}
+
+
+	$http.get("/search", config).then(function(response) {
+
+	   $scope.products = response.data;
+
+	 }, function(response) {
+
+	});
+	
 }]);
+
+
+AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
+
+	$scope.ProductDetailController = {};
+
+	var data = {
+		product:$stateParams.product
+	}
+
+	var config = {
+		params: data,
+		headers : {'Accept' : 'application/json'}
+	};
+	
+
+	// $http.get("/product", config).then(function(response) {
+
+	//    $scope.products = response.data;
+
+	//  }, function(response) {
+
+	// });
+
+	
+
+	
+}]);
+
 
 
 
@@ -249,11 +315,17 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						}
 				})
 
-				// .state('mainLayout.category', {
-				// 		url: "/{categorySlug}",
-				// 		templateUrl: "/templates/product/index.html",
-				// 		controller: "ProductsController",
-				// })
+				.state('mainLayout.product', {
+						url: "/product/{product}",
+						templateUrl: "/templates/product/detail.html",
+						controller: "ProductDetailController"
+				})
+
+				.state('mainLayout.category', {
+						url: "/{categorySlug}",
+						templateUrl: "/templates/product/index.html",
+						controller: "ProductsController",
+				})
 
 				.state('mainLayout.products', {
 						url: "/{categorySlug}/{subcategorySlug}",
@@ -408,5 +480,11 @@ AlcoholDelivery.directive('sideBar', function() {
 
 /* Init global settings and run the app */
 AlcoholDelivery.run(["$rootScope", "$state" , function($rootScope, $state) {		
+		
 		$rootScope.$state = $state; // state to be accessed from view				
+
+		$rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
+		   $state.previous = {state:from, param:fromParams}
+		});
+
 }]);

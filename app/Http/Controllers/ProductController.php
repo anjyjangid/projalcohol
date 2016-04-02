@@ -5,7 +5,9 @@ namespace AlcoholDelivery\Http\Controllers;
 use AlcoholDelivery\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Products as Products;
+
 
 class ProductController extends Controller
 {    
@@ -18,7 +20,7 @@ class ProductController extends Controller
     public function getproduct(Request $request){
 
         $params = $request->all();
-    
+        
         $products = new Products;
 
         $columns = array('_id',"categories","chilled","description","discountPrice","imageFiles","name","price","shortDescription","sku");
@@ -30,10 +32,13 @@ class ProductController extends Controller
         }
 
         if(isset($params['category']) && !empty($params['category'])){
-            $products = $products->where('categories', $params['category']);
-        }
 
-        
+            $category = Categories::raw()->findOne(['slug' => $params['category']]);
+            $catKey = (string)$category['_id'];
+
+            $products = $products->where('categories', 'all', [$catKey]);
+            
+        }
 
         $products = $products->get($columns);
 
