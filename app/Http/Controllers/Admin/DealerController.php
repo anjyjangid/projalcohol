@@ -148,7 +148,7 @@ class DealerController extends Controller
     }
 
     public function getdealers(Request $request)
-    {        
+    {
         $params = $request->all();
 
         $dealers = new Dealer;

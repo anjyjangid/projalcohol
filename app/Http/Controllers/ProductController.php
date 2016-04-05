@@ -31,6 +31,8 @@ class ProductController extends Controller
             $products = $products->where('isFeatured', 1);
         }
 
+        $products = $products->where('status', 1);
+
         if(isset($params['category']) && !empty($params['category'])){
 
             $category = Categories::raw()->findOne(['slug' => $params['category']]);
@@ -43,6 +45,16 @@ class ProductController extends Controller
         $products = $products->get($columns);
 
         return response($products,200);
+
+    }
+
+    public function getproductdetail(Request $request){
+
+        $params = $request->all();
+        
+        $product = Products::find($params['product']);
+
+        return response($product,200);
 
     }
 

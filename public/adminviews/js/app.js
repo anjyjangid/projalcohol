@@ -74,6 +74,7 @@ MetronicApp.config(['$controllerProvider', function($controllerProvider) {
 /* Setup global settings */
 MetronicApp.factory('settings', ['$rootScope', function($rootScope) {
     // supported languages
+    
     var settings = {
         layout: {
             pageSidebarClosed: false, // sidebar menu state
@@ -942,6 +943,56 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
         //  } CMS route end //
 
+        // Testimonial complete route start{
+
+
+        .state('testimonial', {
+            url: "/testimonial",
+            templateUrl: "adminviews/views/testimonial/index.html",
+            data: {pageTitle: 'Testimonials'},
+            controller: "TestimonialController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+                            'assets/global/plugins/ckeditor/ckeditor.js',                            
+
+                            'adminviews/js/models/testimonialModel.js',
+                            'adminviews/js/controllers/TestimonialController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        
+        .state("testimonial.list", {
+            url: "/list",
+            templateUrl: "adminviews/views/testimonial/list.html",
+            data: {pageSubTitle: 'Testimonials Listing'}
+        })
+
+        .state("testimonial.add", {
+            url: "/add",
+            templateUrl: "adminviews/views/testimonial/add.html",
+            data: {pageSubTitle: 'Add Testimonial'},
+            controller: "TestimonialAddController"
+        })
+
+        .state("testimonial.edit",{
+            url: "/edit/{testimonialid}",
+            templateUrl: "adminviews/views/testimonial/add.html",
+            data: {pageSubTitle: 'Update Testimonial'},
+            controller:"TestimonialUpdateController",            
+        })
+
+        //  } Testimonials route end //
+
 
 
         // Email Templates complete route start{
@@ -1085,5 +1136,39 @@ MetronicApp.run(["$rootScope", "settings", "$state", function($rootScope, settin
       }
     });
 
-    $rootScope.$state = $state; // state to be accessed from view
+    $rootScope.$state = $state; // state to be accessed from view    
+
 }]);
+
+var objectToFormData = function(obj, form, namespace) {
+    
+  var fd = form || new FormData();
+  var formKey;
+  
+  for(var property in obj) {
+    if(obj.hasOwnProperty(property)) {
+      
+      if(namespace) {
+        formKey = namespace + '[' + property + ']';
+      } else {
+        formKey = property;
+      }
+     
+      // if the property is an object, but not a File,
+      // use recursivity.
+      if(typeof obj[property] === 'object' && !(obj[property] instanceof File)) {
+        
+        objectToFormData(obj[property], fd, formKey);
+        
+      } else {
+        
+        // if it's a string or a File object
+        fd.append(formKey, obj[property]);
+      }
+      
+    }
+  }
+  
+  return fd;
+    
+};

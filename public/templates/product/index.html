@@ -73,7 +73,7 @@
       <div class="tab-pane active" id="taball">            
       
           <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems" ng-repeat="product in products">
-            <div class="prod_chilled" ng-class="{notchilled:{{product.chilled}}}"> 
+            <div class="prod_chilled" ng-class="{notchilled:{{!product.chilled}}}"> 
               <span>Chilled</span>
               <div class="prod_chilled_icon"></div>
             </div>
@@ -86,8 +86,8 @@
                         ng-src="products/i/200/{{product.imageFiles[0].source}}" src="products/i/200/default.png" alt="" class="img-responsive"/>
             </div>
 
-            <div class="prod_desc">{{product.name}}</div>
-            <div class="prod_price">{{product.price}} SGD</div>
+            <div class="prod_desc"><a href="#/product/{{product._id}}">{{product.name}}</a></div>
+            <div class="prod_price">{{product.price}} {{$rootScope.settings.general.currency.value}}</div>
             <div class="prod_discout_price">{{product.discountPrice}} SGD</div>
             <a href="#/cart"><div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div></a>
           

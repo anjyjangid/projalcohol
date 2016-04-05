@@ -34,7 +34,7 @@
 							<!-- Only required for left/right tabs -->
 							<div class="fullwidth">
 								<div class="tabtitle">Featured Items</div>								
-								<ul class="nav nav-tabs tabsright" ng-init="AppController.feTabActive=0">	
+								<ul class="nav nav-tabs tabsright" ng-init="AppController.feTabActive=1">	
 
 									<li ng-repeat="cat in parentCategories" ng-if="cat.featured!='undefined' && cat.featured.length>0" ng-class="{'active':AppController.feTabActive==$index}">									
 										<a href="javascript:void(0)" ng-click="setFeatured($index);AppController.feTabActive=$index">{{cat.cat_title}}</a>
@@ -62,7 +62,7 @@
 
 								    		}">
 								      <div owl-carousel-item="" ng-repeat="fproduct in pCat['featured']" class="item">
-								        <div class="prod_chilled" ng-class="{notchilled:{{fproduct.chilled}}}">
+								        <div class="prod_chilled" ng-class="{notchilled:{{!fproduct.chilled}}}">
 												<span>Chilled</span>
 												<div class="prod_chilled_icon"></div>
 											</div>
@@ -228,27 +228,21 @@
 	<div class="container">
 		<div class="single_slider">
 			<div id="owl-demo7" class="owl-carousel owl-theme">
-				<div class="item">
+			<data-owl-carousel class="owl-carousel owl-theme" data-options="{					
+						navigation : false,
+						pagination : true,
+						items : 1					
+					}">
+				<div owl-carousel-item="" ng-repeat="testimonial in testimonials" class="item">
 					<div class="slido_left">
-						<div class="slido_pic"><img src="images/userpic.png" class="img-responsive" /></div>
-						<div class="slido_txt">Natalie Taylor</div>
+						<div class="slido_pic"><img ng-src="assets/resources/testimonial/200/{{testimonial.image}}" class="img-circle" height="113px" width="113px" /></div>
+						<div class="slido_txt">{{testimonial.name}}</div>
 					</div>
-					<div class="slido_right">"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex."</div>
+					<div class="slido_right" ng-bind-html="testimonial.content"></div>
 				</div>
-				<div class="item">
-					<div class="slido_left">
-						<div class="slido_pic"><img src="images/userpic.png" class="img-responsive" /></div>
-						<div class="slido_txt">Natalie Taylor</div>
-					</div>
-					<div class="slido_right">"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex."</div>
-				</div>
-				<div class="item">
-					<div class="slido_left">
-						<div class="slido_pic"><img src="images/userpic.png" class="img-responsive" /></div>
-						<div class="slido_txt">Natalie Taylor</div>
-					</div>
-					<div class="slido_right">"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex."</div>
-				</div>
+
+			</data-owl-carousel>	
+				
 			</div>
 		</div>
 	</div>
