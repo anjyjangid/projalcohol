@@ -433,11 +433,10 @@ AlcoholDelivery.directive('sideBar', function() {
 
 	        $scope.forgotSubmit = function() {
 				$http.post('/password/email',$scope.forgot).success(function(response){					
-	                $scope.forgot = {};
+	                $scope.forgot = {};	                
 	                $scope.forgot.message = response;
 	                $('#forgot_password').modal('hide');
-	                $('#forgot_password_sent').modal('show');
-	                $scope.forgot.errors = {};
+	                $('#forgot_password_sent').modal('show');	                
 	            }).error(function(data, status, headers) {                            
 	                $scope.forgot.errors = data;                
 	            });

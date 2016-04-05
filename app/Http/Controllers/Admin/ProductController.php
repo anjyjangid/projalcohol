@@ -5,6 +5,7 @@ namespace AlcoholDelivery\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use File;
 use AlcoholDelivery\Http\Requests;
+use AlcoholDelivery\Http\Requests\ProductRequest;
 use AlcoholDelivery\Http\Controllers\Controller;
 
 use Illuminate\Support\Facades\Storage;
@@ -56,10 +57,44 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {    
-        $inputs = $request->all();        
-        //prd($inputs);
+        
+        $inputs = $request->all();
+
+        $inputs['quantity'] = (int)$inputs['quantity'];
+        $inputs['price'] = (float)$inputs['price'];
+        $inputs['discountPrice'] = (float)$inputs['discountPrice'];
+        $inputs['chilled'] = (int)$inputs['chilled'];
+        $inputs['status'] = (int)$inputs['status'];
+        $inputs['isFeatured'] = (int)$inputs['isFeatured'];
+
+        if (isset($inputs['bulkDiscount']) && is_array($inputs['bulkDiscount']))
+        {
+            foreach ($inputs['bulkDiscount'] as $dKey => $discount)
+            {
+                unset($inputs['bulkDiscount'][$dKey]['$$hashKey']);
+                $inputs['bulkDiscount'][$dKey]['quantity'] = (int)$inputs['bulkDiscount'][$dKey]['quantity'];
+                $inputs['bulkDiscount'][$dKey]['type'] = (int)$inputs['bulkDiscount'][$dKey]['type'];
+                $inputs['bulkDiscount'][$dKey]['value'] = (float)$inputs['bulkDiscount'][$dKey]['value'];                
+            }
+        }
+
+        $product = Products::create($inputs);    
+
+        if($product){
+          
+          $files = $inputs['imageFiles'];
+          
+          $this->saveImages($product,$files);
+          
+          return $product;
+
+        }else{          
+          return response('Unable to add product',422);
+        }       
+
+        /*$inputs = $request->all();                
                
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -67,6 +102,7 @@ class ProductController extends Controller
             'shortDescription' => 'required',
             'categories' => 'required',
             'sku' => 'required',
+            'quantity' => 'required|numeric',
             'price' => 'required|numeric',
             'discountPrice' => 'required|numeric',
             'chilled' => 'required|integer',
@@ -109,6 +145,10 @@ class ProductController extends Controller
             $ferror = 'Please select atleast one image for the product.';          
         }
 
+        if(isset($inputs['discounts']) && !empty($inputs['discounts'])){
+
+        }
+
         // if validation fails
         if ($validator->fails() || $ferror){
             
@@ -124,6 +164,7 @@ class ProductController extends Controller
             'shortDescription' => $inputs['shortDescription'],
             'categories' => $inputs['categories'],
             'sku' => $inputs['sku'],
+            'quantity' => (int)$inputs['quantity'],
             'price' => (float)$inputs['price'],
             'discountPrice' => (float)$inputs['discountPrice'],
             'chilled' => (int)$inputs['chilled'],
@@ -136,7 +177,7 @@ class ProductController extends Controller
 
         $this->saveImages($product,$files);
 
-        return $product;
+        return $product;*/
     }
 
     /**
@@ -169,16 +210,44 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProductRequest $request, $id)
     {
         $inputs = $request->all();
+        $files = $inputs['imageFiles'];
+        $inputs['quantity'] = (int)$inputs['quantity'];
+        $inputs['price'] = (float)$inputs['price'];
+        $inputs['discountPrice'] = (float)$inputs['discountPrice'];
+        $inputs['chilled'] = (int)$inputs['chilled'];
+        $inputs['status'] = (int)$inputs['status'];
+        $inputs['isFeatured'] = (int)$inputs['isFeatured'];
+
+        if (isset($inputs['bulkDiscount']) && is_array($inputs['bulkDiscount']))
+        {
+            foreach ($inputs['bulkDiscount'] as $dKey => $discount)
+            {
+                unset($inputs['bulkDiscount'][$dKey]['$$hashKey']);
+                $inputs['bulkDiscount'][$dKey]['quantity'] = (int)$inputs['bulkDiscount'][$dKey]['quantity'];
+                $inputs['bulkDiscount'][$dKey]['type'] = (int)$inputs['bulkDiscount'][$dKey]['type'];
+                $inputs['bulkDiscount'][$dKey]['value'] = (float)$inputs['bulkDiscount'][$dKey]['value'];                
+            }
+        }
+
+        $product = Products::find($id);
+
+        if($product){          
+          $update = $product->update($inputs);
+          $this->saveImages($product,$files);
+        }
+
+        return response($product);
         
-        $validator = Validator::make($request->all(), [
+        /*$validator = Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required',
             'shortDescription' => 'required',
             'categories' => 'required',
             'sku' => 'required',
+            'quantity' => 'required|numeric',
             'price' => 'required|numeric',
             'discountPrice' => 'required|numeric',
             'chilled' => 'required|integer',
@@ -233,6 +302,7 @@ class ProductController extends Controller
             'shortDescription' => $inputs['shortDescription'],
             'categories' => $inputs['categories'],
             'sku' => $inputs['sku'],
+            'quantity' => (int)$inputs['quantity'],
             'price' => (float)$inputs['price'],
             'discountPrice' => (float)$inputs['discountPrice'],
             'chilled' => (int)$inputs['chilled'],
@@ -243,7 +313,7 @@ class ProductController extends Controller
             'isFeatured' => (int)$inputs['isFeatured'],            
         ]);
 
-        $this->saveImages($product,$files);
+        $this->saveImages($product,$files);*/
 
         return response($product);
     }
@@ -348,7 +418,7 @@ class ProductController extends Controller
               $product->price,      
               '<span class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span>',
               '<span class="label label-sm label-'.(key($isFeatured)).'">'.(current($isFeatured)).'</span>',
-              
+              $product->quantity,
               '<a href="#/product/edit/'.$product->_id.'" class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>'
               
             );

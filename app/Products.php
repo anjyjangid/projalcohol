@@ -17,6 +17,7 @@ class Products extends Eloquent
             'shortDescription',
             'categories',
             'sku',
+            'quantity',
             'price',
             'discountPrice',
             'chilled',
@@ -25,7 +26,8 @@ class Products extends Eloquent
             'metaKeywords',
             'metaDescription',
             'images',
-            'isFeatured'
+            'isFeatured',
+            'bulkDiscount'
             
     ];
 

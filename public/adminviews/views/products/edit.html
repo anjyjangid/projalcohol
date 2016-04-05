@@ -93,12 +93,14 @@
 									<span class="help-block" ng-bind="errors.sku[0]"></span>
 								</div>
 							</div>
+
 							<div class="form-group" ng:class="{'has-error':errors.price[0]}">
 								<label class="col-md-2 control-label">Price: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
 									<input type="text" class="form-control" ng-model="product.price" placeholder="">
+									<span class="help-block">For advance delivery</span>
 									<span class="help-block" ng-bind="errors.price[0]"></span>
 								</div>
 							</div>
@@ -108,7 +110,17 @@
 								</label>
 								<div class="col-md-10">
 									<input type="text" class="form-control" ng-model="product.discountPrice" placeholder="">
+									<span class="help-block">For 1hr delivery</span>
 									<span class="help-block" ng-bind="errors.discountPrice[0]"></span>
+								</div>
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.quantity[0]}">
+								<label class="col-md-2 control-label">Quantity: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="number" class="form-control" ng-model="product.quantity" placeholder="">									
+									<span class="help-block" ng-bind="errors.quantity[0]"></span>
 								</div>
 							</div>
 							<div class="form-group">
@@ -190,14 +202,65 @@
 
 					</tab>
 					<tab>
+						<tab-heading>Bulk Discounts</tab-heading>
+						
+						<div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10">
+							<a id="tab_images_uploader_pickfiles" href="#" ng-click="product.bulkDiscount.push({})" class="btn yellow">
+							<i class="fa fa-plus"></i> Add</a>							
+						</div>
+
+						<table class="table table-bordered table-hover">
+							<thead>
+								<tr role="row" class="heading">
+									<th width="30%">
+										 Quantity
+									</th>
+									<th width="30%">
+										 Discount type
+									</th>
+									<th width="30%">
+										 Value
+									</th>									
+									<th width="10%">
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="d in product.bulkDiscount">
+									<td ng:class="{'has-error':errors['bulkDiscount.'+$index+'.quantity'][0]}">
+										<input type="number" class="form-control" ng-model="d.quantity">
+										<span class="help-block" ng-bind="errors['bulkDiscount.'+$index+'.quantity'][0]"></span>
+									</td>
+									<td ng:class="{'has-error':errors['bulkDiscount.'+$index+'.type'][0]}">
+										<select class="form-control" ng-model="d.type">
+											<option value="">Select type</option>
+											<option value="1">Fix amount</option>
+											<option value="2">% of amount</option>
+										</select>										
+										<span class="help-block" ng-bind="errors['bulkDiscount.'+$index+'.type'][0]"></span>
+									</td>
+									<td ng:class="{'has-error':errors['bulkDiscount.'+$index+'.value'][0]}">
+										<input type="text" class="form-control" ng-model="d.value">
+										<span class="help-block" ng-bind="errors['bulkDiscount.'+$index+'.value'][0]"></span>
+									</td>
+									<td>
+										<a href="#" class="btn default btn-sm" ng-click="discountRemove($index)">
+										<i class="fa fa-times"></i> Remove </a>
+									</td>
+								</tr>
+							</tbody>
+						</table>	
+
+					</tab>
+					<tab>
 						<tab-heading>Images</tab-heading>
 
-						<div ng-show="errors.image[0]" class="alert alert-danger fade in">
+						<div ng-show="errors.imageFiles[0]" class="alert alert-danger fade in">
 							<i class="fa-lg fa fa-warning"></i>
-							{{ errors.image[0] }}
+							{{ errors.imageFiles[0] }}
 						</div>
 						<div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10">
-							<a id="tab_images_uploader_pickfiles" href="#" ng-click="imageFiles.push({label:'',order:'',coverimage:''})" class="btn yellow">
+							<a id="tab_images_uploader_pickfiles" href="#" ng-click="product.imageFiles.push({label:'',order:'',coverimage:''})" class="btn yellow">
 							<i class="fa fa-plus"></i> Add Files </a>
 							<!-- <a id="tab_images_uploader_uploadfiles" href="#" ng-click="uploadFiles()" class="btn green">
 							<i class="fa fa-share"></i> Upload Files </a> -->
@@ -226,8 +289,8 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="f in imageFiles">
-									<td>
+								<tr ng-repeat="f in product.imageFiles">
+									<td ng:class="{'has-error':errors['imageFiles.'+$index+'.thumb'][0]}">
 										<div class="fileinput fileinput-new" data-provides="fileinput">
 											<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
 												<img err-src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" 
@@ -243,16 +306,19 @@
 												</span>												
 											</div>
 										</div>
+										<span class="help-block" ng-bind="errors['imageFiles.'+$index+'.thumb'][0]"></span>
 									</td>
-									<td>
+									<td ng:class="{'has-error':errors['imageFiles.'+$index+'.label'][0]}">
 										<input type="text" class="form-control" ng-model="f.label">
+										<span class="help-block" ng-bind="errors['imageFiles.'+$index+'.label'][0]"></span>
 									</td>
-									<td>
+									<td ng:class="{'has-error':errors['imageFiles.'+$index+'.order'][0]}">
 										<input type="text" class="form-control" ng-model="f.order">
+										<span class="help-block" ng-bind="errors['imageFiles.'+$index+'.order'][0]"></span>
 									</td>
 									<td>
 										<label>
-											<input plugin-uniform type="radio" ng-model="f.coverimage" value="1" name="coverimage" ng-change="coverUpdate($index)">
+											<input type="radio" ng-model="f.coverimage" value="1" name="coverimage">
 										</label>
 									</td>									
 									<td>
