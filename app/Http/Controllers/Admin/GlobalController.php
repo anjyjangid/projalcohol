@@ -47,6 +47,14 @@ class GlobalController extends Controller
                 'field_status'  => 'status',
                 'alias'         => 'Testimonial'
             ),
+            "brands" =>array(
+                'table'         => "brands",
+                'field_id'      => "_id",
+                'field_status'  => 'status',
+                'alias'         => 'Brand'
+            ),
+
+            
             
         );
 

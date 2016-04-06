@@ -11,10 +11,10 @@
 		<!-- Only required for left/right tabs -->
 		<div class="fullwidth">
 			<div class="tabtitle">Featured Items</div>								
-			<ul class="nav nav-tabs tabsright" ng-init="AppController.feTabActive=1">	
+			<ul class="nav nav-tabs tabsright">	
 
 				<li ng-repeat="cat in parentCategories" ng-if="cat.featured!='undefined' && cat.featured.length>0" ng-class="{'active':AppController.feTabActive==$index}">									
-					<a href="javascript:void(0)" ng-click="setFeatured($index);AppController.feTabActive=$index">{{cat.cat_title}}</a>
+					<a href="javascript:void(0)" ng-click="setFeatured($index);AppController.feTabActive=$index">{{cat.cat_title | capitalize}}</a>
 				</li>
 
 			</ul>
@@ -49,8 +49,7 @@
 								<div class="discount">Click here to view Bulk Discounts</div>
 							</div>
 
-							<img err-src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" 
-							ng-src="products/i/200/{{fproduct.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive"/>
+							<img err-pro-src="" ng-src="products/i/200/{{fproduct.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive"/>
 							
 						</div>
 						<div class="prod_desc">{{fproduct.name}}</div>

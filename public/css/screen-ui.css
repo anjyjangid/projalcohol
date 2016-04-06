@@ -497,6 +497,7 @@ a, a:hover, a:focus{
   padding:8px 0;
   margin:0 14px;
   text-transform: capitalize;
+  font-size: 0.9em;
 }
 
 .prod_chilled{
@@ -547,6 +548,12 @@ a, a:hover, a:focus{
   transition: all ease 0.5s;
   overflow:hidden;
   height: 153px;
+  
+}
+
+.no-image.prod_pic{
+  background: url(../images/product-default.jpg) center center no-repeat;
+  background-size: 100%;
 }
 
 

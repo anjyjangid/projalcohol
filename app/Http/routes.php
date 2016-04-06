@@ -163,8 +163,9 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 
 	Route::resource('testimonial', 'Admin\TestimonialController');
 	Route::controller('testimonial', 'Admin\TestimonialController');
-	
 
+	Route::resource('brand', 'Admin\BrandController');
+	Route::controller('brand', 'Admin\BrandController');
 
 });
 

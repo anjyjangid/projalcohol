@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use DB;
 use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Testimonial as Testimonial;
+use AlcoholDelivery\Brand as Brand;
 
 class SuperController extends Controller
 {    
@@ -58,6 +59,22 @@ class SuperController extends Controller
         return response($testimonials);
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getBrand(Request $request)
+    {
+        $params = $request->all();
+
+        $brands = Brand::where('status', '=', 1)->take(10)->get();
+        
+        return response($brands);
+    }
+
+
+    
     /**
      * Display a listing of the resource.
      *
