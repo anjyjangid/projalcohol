@@ -173,12 +173,16 @@
 <section class="fullwidth" ng-show="$state.current.name=='mainLayout.index'">
 	<div class="container">
 		<div class="row brands">
-			<div class="col-md-2 text-center"><img src="images/brand1.png" class="img-responsive" /></div>
-			<div class="col-md-2 text-center"><img src="images/brand2.png" class="img-responsive" /></div>
-			<div class="col-md-2 text-center"><img src="images/brand3.png" class="img-responsive" /></div>
-			<div class="col-md-2 text-center"><img src="images/brand4.png" class="img-responsive" /></div>
-			<div class="col-md-2 text-center"><img src="images/brand5.png" class="img-responsive" /></div>
-			<div class="col-md-2 text-center"><img src="images/brand6.png" class="img-responsive" /></div>
+			<data-owl-carousel class="owl-carousel owl-theme" data-options="{					
+						navigation : false,
+						pagination : true,
+						items : 6					
+					}">
+				<div owl-carousel-item="" ng-repeat="brand in brands" class="item col-md-2 text-center">
+					<a href="{{brand.link}}" title="{{brand.title}}"><img ng-src="assets/resources/brand/{{brand.image}}" class="img-responsive" /></a>
+				</div>
+
+			</data-owl-carousel>
 		</div>
 	</div>
 </section>

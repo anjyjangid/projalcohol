@@ -74,6 +74,10 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
     	$scope.testimonials = response;
     });
 
+    $http.get("/super/brand/").success(function(response){
+    	$scope.brands = response;
+    });
+
 
 
     $scope.featuredProducts = function(){
@@ -103,8 +107,8 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 					}
 				}
 
-				if($scope.parentCategories[key]['featured']!=="undefined" && $scope.parentCategories[key]['featured'].length>0 && $scope.featuredProduct.length==0){					
-
+				if($scope.parentCategories[key]['featured']!=="undefined" && $scope.parentCategories[key]['featured'].length>0 && typeof $scope.AppController.feTabActive=="undefined"){					
+					$scope.AppController.feTabActive = key;
 				}
 
 			}
@@ -529,6 +533,21 @@ AlcoholDelivery.directive('sideBar', function() {
         });
     };
 });
+
+AlcoholDelivery.directive('errProSrc', function() {
+  return {
+    link: function(scope, element, attrs) {
+      element.bind('error', function() {
+
+        element.parent(".prod_pic").addClass("no-image");
+
+          attrs.$set('src', attrs.errSrc);
+        
+      });
+    }
+  }
+});
+
 
 AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', 
 function ($q, $rootScope, $log) {

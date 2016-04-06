@@ -994,6 +994,56 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         //  } Testimonials route end //
 
 
+        // Brand complete route start{
+
+
+        .state('brand', {
+            url: "/brand",
+            templateUrl: "adminviews/views/brand/index.html",
+            data: {pageTitle: 'Brands'},
+            controller: "BrandController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',                            
+
+                            'adminviews/js/models/brandModel.js',
+                            'adminviews/js/controllers/BrandController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        
+        .state("brand.list", {
+            url: "/list",
+            templateUrl: "adminviews/views/brand/list.html",
+            data: {pageSubTitle: 'Brands Listing'}
+        })
+
+        .state("brand.add", {
+            url: "/add",
+            templateUrl: "adminviews/views/brand/add.html",
+            data: {pageSubTitle: 'Add Brand'},
+            controller: "BrandAddController"
+        })
+
+        .state("brand.edit",{
+            url: "/edit/{brandid}",
+            templateUrl: "adminviews/views/brand/add.html",
+            data: {pageSubTitle: 'Update Brand'},
+            controller:"BrandUpdateController",            
+        })
+
+        //  } Brands route end //
+
+
 
         // Email Templates complete route start{
 
