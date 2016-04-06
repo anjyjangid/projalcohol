@@ -251,7 +251,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						data: {pageTitle: 'User Account'},
 						controller:function($scope,$http){																
 
-								setTimeout(initScripts,100)
+								setTimeout(function(){
+										initScripts({
+												disableScrollHeader:true
+										});
+								},100)
 						},
 						resolve: {
 								deps: ['$ocLazyLoad', function($ocLazyLoad) {
@@ -548,7 +552,7 @@ function ($q, $rootScope, $log) {
     return {
         request: function (config) {            
             xhrCreations++;
-            updateStatus();
+            updateStatus();            
             return config;
         },
         requestError: function (rejection) {
@@ -557,7 +561,7 @@ function ($q, $rootScope, $log) {
             //$log.error('Request error:', rejection);
             return $q.reject(rejection);
         },
-        response: function (response) {
+        response: function (response) {            
             xhrResolutions++;
             updateStatus();
             return response;

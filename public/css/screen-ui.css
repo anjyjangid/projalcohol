@@ -41,7 +41,7 @@ a, a:hover, a:focus{
   background:url(../images/bg.jpg) no-repeat center top;
   min-height:690px;
   background-size:100% 690px;
-  padding-top:15px;
+  /*padding-top:15px;*/
   margin-bottom:20px;
 }
 
@@ -496,6 +496,7 @@ a, a:hover, a:focus{
 .combo_slider .nav > li > a{
   padding:8px 0;
   margin:0 14px;
+  text-transform: capitalize;
 }
 
 .prod_chilled{
@@ -602,6 +603,7 @@ a, a:hover, a:focus{
 
 .prod_pic img{
   display:inline-block;
+  max-height: 100%;
 }
 
 .prod_desc{

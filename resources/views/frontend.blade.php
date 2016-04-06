@@ -39,30 +39,123 @@
 		<![endif]-->
 	</head>
 	<body ng-controller="AppController">		
-		<top-menu></top-menu>	
 		
-		<div ui-view class="fade"></div>		
+		<top-menu></top-menu>
+		
+		<div ui-view class="fade ancontainer"></div>		
+		
+		<section class="fullwidth social_block">
+			<div class="container">
+				<div class="socilblok_folowtxt">
+					<div class="socilblok_folowtxt1">Follow and like us for latest deals and updates:
+					</div>
+				</div>
+				<div class="socilblok_twtr">
+					<img class="img-responsive" src="images/socl_itwtr.png" />
+					<span>Twitter</span>
+				</div>
+				<div class="socilblok_fb">
+					<img class="img-responsive" src="images/social_fbicon.png" /> 
+					<span>Facebook</span>
+				</div>
+			</div>
+		</section>
+		
+		<section class="fullwidth footer1">
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12 col-md-4 footer1_pannel1cvr">
+						<div class="footer_logo">
+							<img class="img-responsive" src="images/footerlogo.png" />
+						</div>
+						<div class="footer1_custmertext">10,000 Customers <br /> Already Connected</div>
+						<div class="footer1_custmerbtmtxt">She was bouncing away, when a cry from the two women, who had turned towards the bed, caused her to look round.</div>
+						<div class="footer1_sociallink">
+							<img class="img-responsive" src="images/footer1_twitter.png" />
+							<img class="img-responsive" src="images/footer1_fb.png" />
+							<img class="img-responsive" src="images/footergoogle.png" />
+						</div>
+						<div class="footer1_privcvr">
+							<div class="footer1_privcytext">Privacy Policy</div>
+							<div class="footer1_termstxt">Terms and Conditions</div>
+						</div>
+					</div>
+					<div class="col-xs-12 col-md-3 footer1_pannel2cvr">
+						<div class="footer1_title">About</div>
+						<div class="footer1_subtitle">
+							<ul>
+								<li><a href="#">About us</a></li>
+								<li><a href="#">How it Works</a></li>
+								<li><a href="#">Team us</a></li>
+								<li><a href="#">Mobile App</a></li>
+								<li><a href="#">Desktop App</a></li>
+								<li><a href="#">Security</a></li>
+								<li><a href="#">Report Bug</a></li>
+								<li><a href="#">Fees & Charges</a></li>
+								<li><a href="#">Investor</a></li>
+								<li><a href="#">Quotes</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-xs-12 col-md-3 footer1_pannel3cvr">
+						<div class="footer1_title">Press</div>
+						<div class="footer1_subtitle">
+							<ul>
+								<li><a href="#">In the News</a></li>
+								<li><a href="#">Press Releases</a></li>
+								<li><a href="#">Awards</a></li>
+								<li><a href="#">Testimonials</a></li>
+								<li><a href="#">Timeline</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-xs-12 col-md-2 footer1_pannel4cvr">
+						<div class="footer1_title">Get in Touch</div>
+						<div class="footer1_subtitle">
+							<ul>
+								<li><a href="#">Get Support</a></li>
+								<li><a href="#">Advertise with Us</a></li>
+								<li><a href="#">Careers</a></li>
+								<li><a href="#">Community</a></li>
+								<li><a href="#">Affiliate Program</a></li>
+								<li><a href="#">Merchandise</a></li>
+								<li><a href="#">Contact Us</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<section class="fullwidth footer2">
+			<div class="container">
+				<div class="footer2_btmcvr">
+					<div class="footer2_madetxt">Made with <img class="img-responsive" src="images/footerhearicon.png" /> in SG</div>
+					<div class="footer2_copytxt">Copyright © 2015 AlcoholDelivery.com</div>
+				</div>
+			</div>
+		</section>
 
 		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
 
-    <script type="text/javascript" src="{{ asset('bower_components/dropzone/dist/dropzone.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('bower_components/angular/angular.min.js') }}"></script>
+	    <script type="text/javascript" src="{{ asset('bower_components/dropzone/dist/dropzone.js') }}"></script>
+	    <script type="text/javascript" src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+	    <script type="text/javascript" src="{{ asset('bower_components/angular/angular.min.js') }}"></script>
 
-    <script src="{{ asset('assets/global/plugins/angularjs/angular-sanitize.min.js') }}" type="text/javascript"></script>
-	
-	<script src="{{ asset('assets/global/plugins/angularjs/angular-touch.min.js') }}" type="text/javascript"></script>	
+	    <script src="{{ asset('assets/global/plugins/angularjs/angular-sanitize.min.js') }}" type="text/javascript"></script>
+		
+		<script src="{{ asset('assets/global/plugins/angularjs/angular-touch.min.js') }}" type="text/javascript"></script>	
 
-    <script type="text/javascript" src="{{ asset('bower_components/angular-route/angular-route.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('bower_components/angular-cookies/angular-cookies.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('bower_components/angular-loading-bar/build/loading-bar.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('bower_components/angular-ui-router/release/angular-ui-router.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('bower_components/oclazyload/dist/ocLazyLoad.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap-lightbox/dist/angular-bootstrap-lightbox.js') }}"></script>
-    <!-- <script type="text/javascript" src="{{asset('bower_components/angular-owl-carousel/src/angular-owl-carousel.js')}}"></script> -->
-    <script src="{{ asset('bower_components/angular-animate/angular-animate.js') }}"></script>    
-    <script type="text/javascript" src="js/app.js"></script>
+	    <script type="text/javascript" src="{{ asset('bower_components/angular-route/angular-route.min.js') }}"></script>
+	    <script type="text/javascript" src="{{ asset('bower_components/angular-cookies/angular-cookies.min.js') }}"></script>
+	    <script type="text/javascript" src="{{ asset('bower_components/angular-loading-bar/build/loading-bar.min.js') }}"></script>
+	    <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap.min.js') }}"></script>
+	    <script type="text/javascript" src="{{ asset('bower_components/angular-ui-router/release/angular-ui-router.min.js') }}"></script>
+	    <script type="text/javascript" src="{{ asset('bower_components/oclazyload/dist/ocLazyLoad.min.js') }}"></script>
+	    <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') }}"></script>
+	    <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap-lightbox/dist/angular-bootstrap-lightbox.js') }}"></script>
+	    <!-- <script type="text/javascript" src="{{asset('bower_components/angular-owl-carousel/src/angular-owl-carousel.js')}}"></script> -->
+	    <script src="{{ asset('bower_components/angular-animate/angular-animate.js') }}"></script>    
+	    <script type="text/javascript" src="js/app.js"></script>
 	</body>
 </html>
