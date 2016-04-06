@@ -39,13 +39,16 @@ Route::get('/', function () {
 Route::controller('/auth', 'Auth\AuthController');
 
 
-//Route::resource('dealer', 'DealerController');
-
 Route::controller('/super', 'SuperController');
+
 
 Route::get('/getproduct', 'ProductController@getproduct');
 
 Route::get('/search', 'ProductController@getproduct');
+
+Route::get('/getproductdetail', 'ProductController@getproductdetail');
+
+
 
 
 Route::post('/admin/getcustomers', ['uses' => 'Admin\AdminController@customers']);
@@ -78,8 +81,9 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 
 	    Route::get('getcategory/{id}','Admin\CategoryController@getcategory');
 	  
-
     });
+
+    Route::resource('category', 'Admin\CategoryController');
 		
 	
 
@@ -148,13 +152,18 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 
 	// Route::group(['prefix' => 'setting'], function () {
 
-	// 	Route::get('getsetting', 'Admin\SettingController@getsettings');	
+	// 	Route::get('getsetting', 'Admin\SettingController@getsettings');
 
 	// });
 
 	Route::resource('setting', 'Admin\SettingController',
                 ['except' => ['create', 'store', 'destroy']]);
 	Route::controller('setting', 'Admin\SettingController');
+
+
+	Route::resource('testimonial', 'Admin\TestimonialController');
+	Route::controller('testimonial', 'Admin\TestimonialController');
+	
 
 
 });

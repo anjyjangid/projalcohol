@@ -63,7 +63,10 @@ MetronicApp.controller('ProductAddController',['$scope', '$location','fileUpload
 	$scope.store = function(){
 
 		var data = $scope.product;
-		var url = 'product/store';		
+
+		var url = 'product/store';
+		data.images = $scope.imageFiles;
+
 		//POST DATA WITH FILES
 		productModel.storeProduct(data,url).success(function(response){
 			$location.path("product/list");

@@ -3,6 +3,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	"ui.router", 
 	'ngCookies',
 	'oc.lazyLoad', 
+	'ngSanitize',
 	'ui.bootstrap', 
 	'bootstrapLightbox', 
 	'angular-loading-bar',
@@ -21,6 +22,24 @@ AlcoholDelivery.config(['$controllerProvider', function($controllerProvider) {
   // this option might be handy for migrating old apps, but please don't use it
   // in new ones!
   $controllerProvider.allowGlobals();
+
+}]);
+
+/* Setup global settings */
+AlcoholDelivery.factory('settings', ['$rootScope', function($rootScope) {
+    // supported languages
+
+    var settings = {};
+
+    $http.get("/super/settings/").success(function(response){
+    	settings = response;
+    	console.log("settings");
+    console.log(settings);
+    });
+	
+    $rootScope.settings = settings;
+
+	return settings;
 
 }]);
 
@@ -51,6 +70,12 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 
 	});
 
+    $http.get("/super/testimonial/").success(function(response){
+    	$scope.testimonials = response;
+    });
+
+
+
     $scope.featuredProducts = function(){
 
 		$http({
@@ -78,8 +103,8 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 					}
 				}
 
-				if($scope.parentCategories[key]['featured']!=="undefined" && $scope.featuredProduct.length==0){
-					$scope.featuredProduct = $scope.parentCategories[key]['featured'];					
+				if($scope.parentCategories[key]['featured']!=="undefined" && $scope.parentCategories[key]['featured'].length>0 && $scope.featuredProduct.length==0){					
+
 				}
 
 			}
@@ -88,11 +113,6 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 		
 	}
 
-	$scope.setFeatured = function(keyPassed){
-		
-		$scope.featuredProduct = $scope.parentCategories[keyPassed]['featured'];
-		
-	}
 }]);
 
 AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
@@ -159,13 +179,13 @@ AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$
 	};
 	
 
-	// $http.get("/product", config).then(function(response) {
+	$http.get("/getproductdetail", config).then(function(response) {
 
-	//    $scope.products = response.data;
+	   $scope.products = response.data;
 
-	//  }, function(response) {
+	 }, function(response) {
 
-	// });
+	});
 
 	
 

@@ -5,7 +5,10 @@ namespace AlcoholDelivery\Http\Controllers;
 use AlcoholDelivery\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use DB;
 use AlcoholDelivery\Categories as Categories;
+use AlcoholDelivery\Testimonial as Testimonial;
+
 class SuperController extends Controller
 {    
     /**
@@ -23,6 +26,8 @@ class SuperController extends Controller
             $categories = $categories->where('slug', "=", $params['category']);
         }
 
+        $categories = $categories->where('cat_status',1);
+
         $categories = $categories->get();
 
 
@@ -36,6 +41,37 @@ class SuperController extends Controller
         }
 
         return response($categories);
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getTestimonial(Request $request)
+    {
+        $params = $request->all();
+
+        $testimonials = Testimonial::where('status', '=', 1)->take(10)->get();
+        
+        return response($testimonials);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getSettings(Request $request)
+    {        
+        $settings = DB::collection('settings')->get();
+        
+        $settingsData = array();
+        foreach($setting as $settings){
+            $settingsData[$setting['_id']] = $setting['settings'];
+        }
+        return response($settingsData);
     }
 
 }

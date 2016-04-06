@@ -1,20 +1,20 @@
-MetronicApp.factory('dealerModel', ['$http', '$cookies','$location', function($http, $cookies, $location) {
+MetronicApp.factory('testimonialModel', ['$http', '$cookies','$location', function($http, $cookies, $location) {
 
     return {
         
-        getDealer: function(dealerId){
-            return $http.get("/admin/dealer/getdealer/"+dealerId);
-        },
+        getTestimonial: function(id){
+            return $http.get("/admin/testimonial/"+id);
+        },       
 
-        saveProduct: function(data){
-            return $http.post("/admin/product/store", {data:data});
-        },
+        storeTestimonial: function(fields){
+        	   	      
+	        return $http.post("/admin/testimonial", fields, {
 
-        storeDealer: function(fields){
-	       	
-	        return $http.post("/admin/dealer", fields, {
+	        	transformRequest: angular.identity,
+	            headers: {'Content-Type': undefined}
 	            
 	        }).error(function(data, status, headers) {            
+
 	            Metronic.alert({
 	                type: 'danger',
 	                icon: 'warning',
@@ -23,18 +23,19 @@ MetronicApp.factory('dealerModel', ['$http', '$cookies','$location', function($h
 	                place: 'prepend',
 	                //closeInSeconds: 5
 	            });
+
 	        })
-	        .success(function(response) {	            
+	        .success(function(response){	            
 	            
 	            Metronic.alert({
 	                type: 'success',
 	                icon: 'check',
-	                message: "Dealer successfully added",//response.message,
+	                message: response.message,
 	                container: '#info-message',
 	                place: 'prepend',
 	                closeInSeconds: 5
 	            });
-	            $location.path("dealers/list");
+	            $location.path("testimonial/list");
 
 	        })
 	        /*.error(function(data, status, headers) {            
@@ -49,21 +50,29 @@ MetronicApp.factory('dealerModel', ['$http', '$cookies','$location', function($h
 
         },     
 
-        updateDealer: function(fields,dealerId){
+        update: function(fields,id){
 	       	
-	       	//put is used to updated data, Laravel router automatically redirect to update function 
+	       	console.log(fields);
+	       	fields = objectToFormData(fields);
+	       	console.log(fields);
 
-	        return $http.put("/admin/dealer/"+dealerId, fields, {
-	            
-	        }).error(function(data, status, headers) {            
+	       	//put is used to updated data, Laravel router automatically redirect to update function 
+	        return $http.put("/admin/testimonial/"+id, fields, {
+
+	            transformRequest: angular.identity,	            	            
+	            headers: {'Content-Type': undefined}
+
+	        }).error(function(data, status, headers) {
+
 	            Metronic.alert({
 	                type: 'danger',
 	                icon: 'warning',
 	                message: 'Please enter all required fields.',
 	                container: '.portlet-body',
 	                place: 'prepend',
-	                closeInSeconds: 5
+	                closeInSeconds: 3
 	            });
+
 	        })
 	        .success(function(response) {	            
 	            
@@ -73,9 +82,9 @@ MetronicApp.factory('dealerModel', ['$http', '$cookies','$location', function($h
 	                message: response.message,
 	                container: '#info-message',
 	                place: 'prepend',
-	                closeInSeconds: 5
+	                closeInSeconds: 3
 	            });
-	            $location.path("dealers/list");
+	            $location.path("testimonial/list");
 
 	        })
 	        /*.error(function(data, status, headers) {            

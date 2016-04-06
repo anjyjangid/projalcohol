@@ -63,7 +63,7 @@ class CategoryController extends Controller
 
         // if validation fails
         if ($validator->fails()) {
-            return response($request->all());
+            
             return response('There are errors in the form data', 400);
         }
         
@@ -245,9 +245,21 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
+    public function destroy($ids)
+    {        
+        $keys = explode(",", $ids);
+        
+        try {
+
+            $dealers = Categories::whereIn('_id', $keys)->delete();
+
+        } catch(\Illuminate\Database\QueryException $e){
+
+            return response(array($e,"success"=>false,"message"=>"There is some issue with deletion process"));
+
+        }
+
+        return response(array("success"=>true,"message"=>"Record(s) Removed Successfully"));
     }
 
     public function getparentcategories($id = false){

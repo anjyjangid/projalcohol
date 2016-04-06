@@ -1,4 +1,3 @@
-
 <div class="occassion_sale">Christmas Sale</div>
 <div class="occassion_date">22-25th December</div>
 <div class="occassion_descrip">Lorem ipsum dolor sit amet, consectetur adipisicing elit,<br />sed do eiusmod tempor incididunt ut labore.</div>
@@ -12,7 +11,7 @@
 		<!-- Only required for left/right tabs -->
 		<div class="fullwidth">
 			<div class="tabtitle">Featured Items</div>								
-			<ul class="nav nav-tabs tabsright" ng-init="AppController.feTabActive=0">	
+			<ul class="nav nav-tabs tabsright" ng-init="AppController.feTabActive=1">	
 
 				<li ng-repeat="cat in parentCategories" ng-if="cat.featured!='undefined' && cat.featured.length>0" ng-class="{'active':AppController.feTabActive==$index}">									
 					<a href="javascript:void(0)" ng-click="setFeatured($index);AppController.feTabActive=$index">{{cat.cat_title}}</a>
@@ -40,7 +39,7 @@
 
 			    		}">
 			      <div owl-carousel-item="" ng-repeat="fproduct in pCat['featured']" class="item">
-			        <div class="prod_chilled" ng-class="{notchilled:{{fproduct.chilled}}}">
+			        <div class="prod_chilled" ng-class="{notchilled:{{!fproduct.chilled}}}">
 							<span>Chilled</span>
 							<div class="prod_chilled_icon"></div>
 						</div>
