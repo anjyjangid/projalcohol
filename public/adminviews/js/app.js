@@ -10,7 +10,7 @@ var MetronicApp = angular.module("MetronicApp", [
     "ngSanitize",
     "ngCookies",
     "19degrees.ngSweetAlert2",
-    "slugifier",
+    "slugifier"
 
 ]); 
 

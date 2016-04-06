@@ -5,15 +5,17 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'oc.lazyLoad', 
 	'ui.bootstrap', 
 	'bootstrapLightbox', 
-	'angular-loading-bar'
+	'angular-loading-bar',
+	'ngAnimate'	
 ]);
 
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
-AlcoholDelivery.config(['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
+AlcoholDelivery.config(
+	['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
 		$ocLazyLoadProvider.config({
 				// global configs go here
 		});
-}]);
+}]);	
 
 AlcoholDelivery.config(['$controllerProvider', function($controllerProvider) {
   // this option might be handy for migrating old apps, but please don't use it
@@ -91,7 +93,6 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 		$scope.featuredProduct = $scope.parentCategories[keyPassed]['featured'];
 		
 	}
-
 }]);
 
 AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
@@ -191,39 +192,8 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 		$urlRouterProvider.otherwise("/");  
 		
 		$stateProvider
-				// Dashboard				
-				.state('index', {
-						url: "/",
-						templateUrl: "/templates/index.html",
-						controller:function($scope,$http){																
-
-								setTimeout(initScripts,100)
-						},
-						resolve: {
-								deps: ['$ocLazyLoad', function($ocLazyLoad) {
-										return $ocLazyLoad.load({
-												name: 'AlcoholDelivery',
-												insertBefore: '#ng_load_plugins_before',
-												// debug: true,
-												serie: true,
-												files: [														
-														'js/owl.carousel.min.js',
-														'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
-														'js/jquery.switchButton.js',
-														'js/jquery.mCustomScrollbar.concat.min.js',
-														'js/jquery.bootstrap-touchspin.min.js',
-														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js',
-														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js',
-														'js/all_animations.js',
-														'js/js_init_scripts.js'
-												] 
-										});
-								}]
-						}
-				})
-
 				.state('mainLayout', {
-						templateUrl: "/templates/mainLayout.html",
+						templateUrl: "/templates/index.html",
 						controller:function(){
 								setTimeout(function(){
 										initScripts({
@@ -254,6 +224,37 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								}]
 						}
 				})			
+
+				.state('mainLayout.index', {
+						url: "/",
+						templateUrl: "/templates/index/home.html",
+						data: {pageTitle: 'User Account'},
+						controller:function($scope,$http){																
+
+								setTimeout(initScripts,100)
+						},
+						resolve: {
+								deps: ['$ocLazyLoad', function($ocLazyLoad) {
+										return $ocLazyLoad.load({
+												name: 'AlcoholDelivery',
+												insertBefore: '#ng_load_plugins_before',
+												// debug: true,
+												serie: true,
+												files: [														
+														'js/owl.carousel.min.js',
+														'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
+														'js/jquery.switchButton.js',
+														'js/jquery.mCustomScrollbar.concat.min.js',
+														'js/jquery.bootstrap-touchspin.min.js',
+														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js',
+														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js',
+														'js/all_animations.js',
+														'js/js_init_scripts.js'
+												] 
+										});
+								}]
+						}
+				})
 
 				.state('mainLayout.cart', {
 						url: "/cart",
@@ -425,57 +426,132 @@ AlcoholDelivery.directive('sideBar', function() {
 	            }).error(function(data, status, headers) {                            						                
 	            });
 			};
+
+			$scope.searchbar = function(toggle){
+				if(toggle){
+					$(".searchtop").addClass("searchtop100").removeClass("again21");			
+					$(".search_close").addClass("search_close_opaque");		
+					$(".logoss").addClass("leftminusopacity leftminus100").removeClass("again0left againopacity");
+					$(".homecallus_cover").addClass("leftminus2100").removeClass("again0left");
+					$(".signuplogin_cover").addClass("rightminus100").removeClass("again0right");	
+					$("input[name='search']").focus();
+				}else{
+					$(".searchtop").removeClass("searchtop100").addClass("again21");			
+					$(".search_close").removeClass("search_close_opaque");		
+					$(".logoss").removeClass("leftminusopacity leftminus100").addClass("again0left againopacity");
+					$(".homecallus_cover").removeClass("leftminus2100").addClass("again0left");
+					$(".signuplogin_cover").removeClass("rightminus100").addClass("again0right");
+				}
+			}
 		}
 	};
 })
-				.directive("owlCarousel", function(){
-				    return {
-				        restrict: 'E',
-				        transclude: false,
-				        
-				        link: function (scope) {
+.directive("owlCarousel", function(){
+    return {
+        restrict: 'E',
+        transclude: false,
+        
+        link: function (scope) {
 
-				            scope.initCarousel = function(element) {
-				              // provide any default options you want
+            scope.initCarousel = function(element) {
+              // provide any default options you want
 
-				                var defaultOptions = {
-				                };
-				                var customOptions = scope.$eval($(element).attr('data-options'));
-				                // combine the two options objects
-				                for(var key in customOptions) {
-				                    defaultOptions[key] = customOptions[key];
-				                }
+                var defaultOptions = {
+                };
+                var customOptions = scope.$eval($(element).attr('data-options'));
+                // combine the two options objects
+                for(var key in customOptions) {
+                    defaultOptions[key] = customOptions[key];
+                }
 
-				            	// init carousel
-				            	if(typeof $(element).data('owlCarousel') === "undefined"){
+            	// init carousel
+            	if(typeof $(element).data('owlCarousel') === "undefined"){
 
-				                	$(element).owlCarousel(defaultOptions);
-				            	}
-				            };
-				        }
-				    };
-				})
+                	$(element).owlCarousel(defaultOptions);
+            	}
+            };
+        }
+    };
+})
 
-				.directive('owlCarouselItem', [function() {
-				    return {
-				        restrict: 'A',
-				        transclude: false,
-				        link: function(scope, element) {
-				        					          
-				          	if(scope.$first && typeof $(element.parent()).data('owlCarousel') !== "undefined"){
+.directive('owlCarouselItem', [function() {
+    return {
+        restrict: 'A',
+        transclude: false,
+        link: function(scope, element) {
+        					          
+          	if(scope.$first && typeof $(element.parent()).data('owlCarousel') !== "undefined"){
 
-				          		$(element.parent()).data('owlCarousel').destroy();
-				          		$(element.parent()).find(".owl-wrapper").remove();
-				          	}
+          		$(element.parent()).data('owlCarousel').destroy();
+          		$(element.parent()).find(".owl-wrapper").remove();
+          	}
 
-				            if(scope.$last) {
+            if(scope.$last) {
 
-				                scope.initCarousel(element.parent());
+                scope.initCarousel(element.parent());
 
-				            }
-				        }
-				    };
-				}]);
+            }
+        }
+    };
+}])
+
+.directive("tscroll", function ($window) {
+    return function(scope, element, attrs) {
+        angular.element($window).bind("scroll", function() {
+             
+             if(element.hasClass('fixh')) return;
+
+             if (this.pageYOffset >= 1) {
+                 element.addClass('navbar-shrink');                 
+             } else {
+                 element.removeClass('navbar-shrink');                 
+             }
+        });
+    };
+});
+
+AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', 
+function ($q, $rootScope, $log) {
+    'use strict';
+ 
+    var xhrCreations = 0;
+    var xhrResolutions = 0;
+ 
+    function isLoading() {
+        return xhrResolutions < xhrCreations;
+    }
+ 
+    function updateStatus() {
+        $rootScope.loading = isLoading();
+    }
+ 
+    return {
+        request: function (config) {            
+            xhrCreations++;
+            updateStatus();
+            return config;
+        },
+        requestError: function (rejection) {
+            xhrResolutions++;
+            updateStatus();
+            //$log.error('Request error:', rejection);
+            return $q.reject(rejection);
+        },
+        response: function (response) {
+            xhrResolutions++;
+            updateStatus();
+            return response;
+        },
+        responseError: function (rejection) {
+            xhrResolutions++;
+            updateStatus();
+            //$log.error('Response error:', rejection);
+            return $q.reject(rejection);
+        }
+    };
+}]).config(['$httpProvider', function($httpProvider) {
+    $httpProvider.interceptors.push('LoadingInterceptor');
+}]);
 
 /* Init global settings and run the app */
 AlcoholDelivery.run(["$rootScope", "$state" , function($rootScope, $state) {		
@@ -487,3 +563,4 @@ AlcoholDelivery.run(["$rootScope", "$state" , function($rootScope, $state) {
 		});
 
 }]);
+

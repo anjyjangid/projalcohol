@@ -1,9 +1,10 @@
-<nav class="navbar navbar-default navbar-fixed-top ">
-		<div class="container">
+<nav tscroll class="navbar navbar-default navbar-fixed-top">
+		
+    <div class="container">
     <div class="row btm10">
-      <div class="searchtop"> <div class="search_icon"></div>
+      <div class="searchtop"> <a class="search_icon" ng-click="searchbar(1)" href="javascript:void(0);"></a>
         <input type="text" class="" placeholder="Search for items" value="" name="search">
-        <a href="#" onclick="searchbar_close()" class="search_close">X</a> </div>
+        <a ng-click="searchbar(0)" class="search_close" href="javascript:void(0);">&times;</a> </div>
       <div class="col-md-2 homecallus_cover">
       	<a href="/">
         <div class="callshape"><img class="" src="images/Shapecall2.png"></div>

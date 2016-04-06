@@ -29,6 +29,8 @@
 		<link rel="stylesheet" type="text/css" href="css/jquery.bootstrap-touchspin.css">
 		<link rel="stylesheet" type="text/css" href="css/screen-ui.css">
 		<link rel="stylesheet" type="text/css" href="css/ui_responsive.css">
+		<link rel="stylesheet" type="text/css" href="css/app.css">
+		
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 		<!--[if lt IE 9]>
@@ -36,12 +38,10 @@
 			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
 	</head>
-	<body ng-controller="AppController">
+	<body ng-controller="AppController">		
+		<top-menu></top-menu>	
 		
-		<top-menu></top-menu>
-		<div ui-view></div>
-
-		
+		<div ui-view class="fade"></div>		
 
 		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
 
@@ -57,7 +57,7 @@
     <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap-lightbox/dist/angular-bootstrap-lightbox.js') }}"></script>
     <!-- <script type="text/javascript" src="{{asset('bower_components/angular-owl-carousel/src/angular-owl-carousel.js')}}"></script> -->
-
+    <script src="{{ asset('bower_components/angular-animate/angular-animate.js') }}"></script>    
     <script type="text/javascript" src="js/app.js"></script>
 	</body>
 </html>
