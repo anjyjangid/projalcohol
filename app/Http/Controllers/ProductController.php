@@ -34,7 +34,7 @@ class ProductController extends Controller
         $products = $products->where('status', 1);
 
         if(isset($params['category']) && !empty($params['category'])){
-
+            // sleep(10);
             $category = Categories::raw()->findOne(['slug' => $params['category']]);
             $catKey = (string)$category['_id'];
 
