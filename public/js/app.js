@@ -32,12 +32,11 @@ AlcoholDelivery.factory('settings', ['$rootScope', function($rootScope) {
     var settings = {};
 
     $http.get("/super/settings/").success(function(response){
-    	settings = response;
-    	console.log("settings");
-    console.log(settings);
+    	settings = response;    	
     });
 	
     $rootScope.settings = settings;
+   
 
 	return settings;
 
