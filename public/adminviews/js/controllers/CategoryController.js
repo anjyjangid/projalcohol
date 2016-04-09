@@ -98,14 +98,14 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 		        .success(function(response) {
 
 
-
 		        }).error(function(data, status, headers) {            
 		            Metronic.alert({
 		                type: 'danger',
 		                icon: 'warning',
 		                message: data,
 		                container: '.portlet-body',
-		                place: 'prepend'
+		                place: 'prepend',
+		                closeInSeconds:3
 		            });
 		        });
 
@@ -178,7 +178,7 @@ MetronicApp.controller('CategoryUpdateController',['$rootScope', '$scope', '$tim
 			fileUpload.uploadFileToUrl(files, data, uploadUrl)
 		        .success(function(response) {
 		            
-		            $location.path("categories/list");
+		            //$location.path("categories/list");
 
 		        }).error(function(data, status, headers) {            
 		            Metronic.alert({
@@ -186,7 +186,8 @@ MetronicApp.controller('CategoryUpdateController',['$rootScope', '$scope', '$tim
 		                icon: 'warning',
 		                message: data,
 		                container: '.portlet-body',
-		                place: 'prepend'
+		                place: 'prepend',
+		                closeInSeconds: 3
 		            });
 		        });
 

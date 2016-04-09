@@ -23,7 +23,7 @@ class ProductController extends Controller
         
         $products = new Products;
 
-        $columns = array('_id',"categories","chilled","description","discountPrice","imageFiles","name","price","shortDescription","sku");
+        $columns = array('_id',"categories","chilled","description","discountPrice","imageFiles","name","price","shortDescription","sku","quantity");
 
         $products = $products->where('status', 1);
 

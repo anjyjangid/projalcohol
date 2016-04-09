@@ -35,7 +35,7 @@ class SettingRequest extends Request
 
                     'meta_desc.value' => 'required|max:1000',
                     
-                    'currency.value'=> 'required|in:"$","£"',
+                    'currency.value'=> 'required|in:"$","£","SGD"',
 
                     'language.value'=> 'required|in:"eng","french"',
 
@@ -71,7 +71,9 @@ class SettingRequest extends Request
 
         $messages = [
 
-                'required' => 'This field is required'
+                'required' => 'This field is required',
+                'in' => "Please select from given values"
+
         ];
         
         return $messages;

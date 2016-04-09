@@ -82,12 +82,19 @@ class SuperController extends Controller
      */
     public function getSettings(Request $request)
     {        
-        $settings = DB::collection('settings')->get();
+        $settings = DB::collection('settings')->whereIn("_id",['general','social'])->get();
         
         $settingsData = array();
-        foreach($setting as $settings){
-            $settingsData[$setting['_id']] = $setting['settings'];
+
+        foreach($settings as $setting){        
+
+            foreach($setting['settings'] as $subKey=>$subSetting){
+
+                $settingsData[$setting['_id']][$subKey] = $subSetting['value'];
+                
+            }
         }
+        
         return response($settingsData);
     }
 

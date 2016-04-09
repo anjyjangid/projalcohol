@@ -27,6 +27,7 @@
 		<link rel="stylesheet" type="text/css" href="css/jquery.switchButton.css">
 		<link rel="stylesheet" type="text/css" href="css/jquery.mCustomScrollbar.css">
 		<link rel="stylesheet" type="text/css" href="css/jquery.bootstrap-touchspin.css">
+		<link rel="stylesheet" type="text/css" href="css/common.css">
 		<link rel="stylesheet" type="text/css" href="css/screen-ui.css">
 		<link rel="stylesheet" type="text/css" href="css/ui_responsive.css">
 		<link rel="stylesheet" type="text/css" href="css/app.css">
@@ -51,12 +52,14 @@
 					</div>
 				</div>
 				<div class="socilblok_twtr">
-					<img class="img-responsive" src="images/socl_itwtr.png" />
+					<a href="@{{settings.social.twitter}}"><img class="img-responsive" src="images/socl_itwtr.png" />
 					<span>Twitter</span>
+					</a>
 				</div>
 				<div class="socilblok_fb">
-					<img class="img-responsive" src="images/social_fbicon.png" /> 
+					<a href="@{{settings.social.facebook}}"><img class="img-responsive" src="images/social_fbicon.png" />
 					<span>Facebook</span>
+					</a>
 				</div>
 			</div>
 		</section>
@@ -71,9 +74,9 @@
 						<div class="footer1_custmertext">10,000 Customers <br /> Already Connected</div>
 						<div class="footer1_custmerbtmtxt">She was bouncing away, when a cry from the two women, who had turned towards the bed, caused her to look round.</div>
 						<div class="footer1_sociallink">
-							<img class="img-responsive" src="images/footer1_twitter.png" />
-							<img class="img-responsive" src="images/footer1_fb.png" />
-							<img class="img-responsive" src="images/footergoogle.png" />
+							<a href="@{{settings.social.twitter}}"><img class="img-responsive" src="images/footer1_twitter.png" /></a>
+							<a href="@{{settings.social.facebook}}"><img class="img-responsive" src="images/footer1_fb.png" /></a>
+							<a href="@{{settings.social.googleplus}}"><img class="img-responsive" src="images/footergoogle.png" /></a>
 						</div>
 						<div class="footer1_privcvr">
 							<div class="footer1_privcytext">Privacy Policy</div>
@@ -155,7 +158,8 @@
 	    <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') }}"></script>
 	    <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap-lightbox/dist/angular-bootstrap-lightbox.js') }}"></script>
 	    <!-- <script type="text/javascript" src="{{asset('bower_components/angular-owl-carousel/src/angular-owl-carousel.js')}}"></script> -->
-	    <script src="{{ asset('bower_components/angular-animate/angular-animate.js') }}"></script>    
+	    <script src="{{ asset('bower_components/angular-animate/angular-animate.js') }}"></script>	    
 	    <script type="text/javascript" src="js/app.js"></script>
+	    <script type="text/javascript" src="js/directive.js"></script>
 	</body>
 </html>

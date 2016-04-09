@@ -17,7 +17,7 @@ MetronicApp.factory('emailTemplateModel', ['$http', '$cookies','$location', func
 	                message: 'Please enter all required fields.',
 	                container: '.portlet-body',
 	                place: 'prepend',
-	                //closeInSeconds: 5
+	                closeInSeconds: 3
 	            });
 	        })
 	        .success(function(response) {	            
@@ -28,7 +28,7 @@ MetronicApp.factory('emailTemplateModel', ['$http', '$cookies','$location', func
 	                message: "Dealer successfully added",//response.message,
 	                container: '#info-message',
 	                place: 'prepend',
-	                closeInSeconds: 5
+	                closeInSeconds: 3
 	            });
 	            $location.path("cms/list");
 
@@ -58,7 +58,7 @@ MetronicApp.factory('emailTemplateModel', ['$http', '$cookies','$location', func
 	                message: 'Please enter all required fields.',
 	                container: '.portlet-body',
 	                place: 'prepend',
-	                //closeInSeconds: 5
+	                closeInSeconds: 3
 	            });
 	        })
 	        .success(function(response) {	            
@@ -70,7 +70,7 @@ MetronicApp.factory('emailTemplateModel', ['$http', '$cookies','$location', func
 	                container: '#info-message',
 	                reset: false,
 	                place: 'prepend',	                
-	                closeInSeconds: 5
+	                closeInSeconds: 3
 	            });
 	            $location.path("emailtemplates/list");
 

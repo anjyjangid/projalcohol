@@ -48,9 +48,6 @@ Route::get('/search', 'ProductController@getproduct');
 
 Route::get('/getproductdetail', 'ProductController@getproductdetail');
 
-
-
-
 Route::post('/admin/getcustomers', ['uses' => 'Admin\AdminController@customers']);
 
 Route::controller('/password', 'Auth\PasswordController');

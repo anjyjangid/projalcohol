@@ -23,7 +23,7 @@ MetronicApp.factory('productModel', ['$http', '$cookies','$location', function($
 	                message: 'Please validate all fields.',
 	                container: '.portlet-body',
 	                place: 'prepend',
-	                //closeInSeconds: 5
+	                closeInSeconds: 3
 	            });
 	        });
         },

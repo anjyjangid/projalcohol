@@ -21,7 +21,7 @@ MetronicApp.factory('testimonialModel', ['$http', '$cookies','$location', functi
 	                message: 'Please enter all required fields.',
 	                container: '.portlet-body',
 	                place: 'prepend',
-	                //closeInSeconds: 5
+	                closeInSeconds: 3
 	            });
 
 	        })
@@ -33,7 +33,7 @@ MetronicApp.factory('testimonialModel', ['$http', '$cookies','$location', functi
 	                message: response.message,
 	                container: '#info-message',
 	                place: 'prepend',
-	                closeInSeconds: 5
+	                closeInSeconds: 3
 	            });
 	            $location.path("testimonial/list");
 
@@ -51,13 +51,11 @@ MetronicApp.factory('testimonialModel', ['$http', '$cookies','$location', functi
         },     
 
         update: function(fields,id){
-	       	
-	       	console.log(fields);
+	       		       	
 	       	fields = objectToFormData(fields);
-	       	console.log(fields);
-
+	       	
 	       	//put is used to updated data, Laravel router automatically redirect to update function 
-	        return $http.put("/admin/testimonial/"+id, fields, {
+	        return $http.post("/admin/testimonial/update/"+id, fields, {
 
 	            transformRequest: angular.identity,	            	            
 	            headers: {'Content-Type': undefined}
@@ -75,28 +73,33 @@ MetronicApp.factory('testimonialModel', ['$http', '$cookies','$location', functi
 
 	        })
 	        .success(function(response) {	            
-	            
-	            Metronic.alert({
-	                type: 'success',
-	                icon: 'check',
-	                message: response.message,
-	                container: '#info-message',
-	                place: 'prepend',
-	                closeInSeconds: 3
-	            });
-	            $location.path("testimonial/list");
+	        	if(response.success){
+
+		            Metronic.alert({
+		                type: 'success',
+		                icon: 'check',
+		                message: response.message,
+		                container: '#info-message',
+		                place: 'prepend',
+		                closeInSeconds: 5
+		            });
+		            $location.path("testimonial/list");
+
+	        	}else{
+
+	        		Metronic.alert({
+		                type: 'danger',
+		                icon: 'warning',
+		                message: response.message,
+		                container: '.portlet-body',
+		                place: 'prepend',
+		                closeInSeconds: 5
+		            });
+
+	        	}
 
 	        })
-	        /*.error(function(data, status, headers) {            
-	            Metronic.alert({
-	                type: 'danger',
-	                icon: 'warning',
-	                message: data,
-	                container: '.portlet-body',
-	                place: 'prepend'
-	            });
-	        });*/
-
+	        
         }       
 
     };
