@@ -22,8 +22,8 @@
 				</div>
 				
 				<div ng-class="appSettings.layout.pageRightbarExist?'col-md-8':'col-md-10'">
-					<div ng:class="{'isloading':loading}"></div>
-					<div ui-view class="fade" ng:class="{'hide':loading}"></div>				
+					<!-- <div ng:class="{'isloading':loading}"></div> -->
+					<div ui-view></div>				
 				</div>
 				<div class="col-md-2" ng-if="appSettings.layout.pageRightbarExist">
 					<div class="right_discount">

@@ -1,30 +1,6 @@
-<div class="single_slider single_slider_product" ng-if="featured.length">
+<div ng:class="{'isloading':loading}"></div>
+<div ui-view="featured" ng-cloak ng:class="{'hide':loading}"></div>
 
-  <data-owl-carousel class="owl-carousel owl-theme" data-options="{
-              
-            navigation : false,
-            pagination : true,
-            items : 1
-
-        }">
-
-  <div owl-carousel-item="" ng-repeat="product in featured" class="item">
-    <div class="productinner_leftslide">
-        <div class="featured_product">Featured Product</div>
-        <div class="productslide_heading">{{product.name}}</div>
-        <div class="productslide_normaltext">{{product.description}}</div>
-        <div class="productslide_actualprice">{{settings.general.currency}}{{product.price}}</div>
-        <div class="productslide_discountprice">{{settings.general.currency}}{{product.discountPrice}}</div>
-        <div class="productslide_addbutton" ui-sref="mainLayout.product({product:product._id})"><button class="btn product_addcart">Add to Cart</button></div>
-    </div>
-    <div class="productinner_rightslide">
-      <img err-pro-src="" ng-src="products/i/400/{{product.imageFiles[0].source}}" alt="" class="img-responsive"/>      
-    </div>
-  </div>
-  </data-owl-carousel>
-
-</div> 
-                            
 
 <div class="combo_slider combo_sliderProduct">
   <div class="productbeerfiltertopcover">
@@ -59,10 +35,12 @@
       </ul>
     </div>
     
-    <!-- <div ui-view class="products-content fade-in-up"> 
-    </div> -->
 
-    <div class="tab-content fullwidth">
+    <div ng:class="{'isloading':loading}"></div>
+    <div ui-view="content" ng:class="{'hide':loading}"></div>
+    
+
+    <div class="tab-content fullwidth hide">
       <div class="tab-pane active">            
       
           <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems" ng-class="{comboproductitems_outofstock:{{!product.quantity}}}" ng-repeat="product in products">

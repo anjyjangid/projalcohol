@@ -111,9 +111,9 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
 
 	$scope.ProductsController = {};
-
+	
 	$scope.products = {};
-	$scope.featured = {};
+	
 
 	$scope.category = $stateParams.categorySlug;
 	$scope.subCategory = "";
@@ -158,12 +158,36 @@ AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state
 
 	});
 
+	
+	
+	
+}]);
+
+
+AlcoholDelivery.controller('ProductsFeaturedController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
+
+	$scope.ProductsFeaturedController = {};
+	
+
+	$scope.featured = {};
+
+	$scope.category = $stateParams.categorySlug;	
+
+	$category = $stateParams.categorySlug;
+
+	if(typeof $stateParams.subcategorySlug!=='undefined'){
+		$category = $stateParams.subcategorySlug;	
+	}
+
+	
 	$http.get("/search",{
 				
 				params:{
 					
 					category:$category,
 					type:'featured',
+					limit:10,
+					offset:0
 
 				}
 
@@ -174,6 +198,8 @@ AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state
 	
 	
 }]);
+
+
 
 AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
 
@@ -442,15 +468,52 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('mainLayout.category', {
-						url: "/{categorySlug}",
-						templateUrl: "/templates/product/index.html",
-						controller: "ProductsController",
+						abstract : true,
+						
+						views : {
+
+							'' : {
+								templateUrl : '/templates/product/index.html',								
+							},
+							// 'left' : {
+							// 	templateUrl : 'app/public/left.html',
+							// 	controller : 'DashboardController'
+							// },	
+						},
+						
 				})
 
-				.state('mainLayout.products', {
+				.state('mainLayout.category.products', {
+						url: "/{categorySlug}",
+						views : {
+
+							'content' : {
+								templateUrl : '/templates/product/products.html',
+								controller: "ProductsController",
+							},
+							'featured' : {
+								templateUrl : '/templates/product/featured.html',
+								controller: "ProductsFeaturedController",
+							},
+
+						},
+						
+				})
+
+				.state('mainLayout.category.subCatProducts', {
 						url: "/{categorySlug}/{subcategorySlug}",
-						templateUrl: "/templates/product/index.html",
-						controller: "ProductsController"
+						views : {
+
+							'content' : {
+								templateUrl : '/templates/product/products.html',
+								controller: "ProductsController",
+							},
+							'featured' : {
+								templateUrl : '/templates/product/featured.html',
+								controller: "ProductsFeaturedController",
+							},
+
+						},
 				});
 
 

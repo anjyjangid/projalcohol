@@ -1,0 +1,26 @@
+<div class="single_slider single_slider_product" ng-if="featured.length">
+
+  <data-owl-carousel class="owl-carousel owl-theme" data-options="{
+              
+            navigation : false,
+            pagination : true,
+            items : 1
+
+        }">
+
+  <div owl-carousel-item="" ng-repeat="product in featured" class="item">
+    <div class="productinner_leftslide">
+        <div class="featured_product">Featured Product</div>
+        <div class="productslide_heading">{{product.name}}</div>
+        <div class="productslide_normaltext">{{product.description}}</div>
+        <div class="productslide_actualprice">{{settings.general.currency}}{{product.price}}</div>
+        <div class="productslide_discountprice">{{settings.general.currency}}{{product.discountPrice}}</div>
+        <div class="productslide_addbutton"><button class="btn product_addcart" ui-sref="mainLayout.product({product:product._id})">Add to Cart</button></div>
+    </div>
+    <div class="productinner_rightslide">
+      <img err-pro-src="" ng-src="products/i/400/{{product.imageFiles[0].source}}" alt="" class="img-responsive"/>      
+    </div>
+  </div>
+  </data-owl-carousel>
+
+</div>

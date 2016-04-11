@@ -31,6 +31,8 @@ class ProductController extends Controller
             $products = $products->where('isFeatured', 1);
         }
 
+
+
         $products = $products->where('status', 1);
 
         if(isset($params['category']) && !empty($params['category'])){
@@ -39,6 +41,16 @@ class ProductController extends Controller
             $catKey = (string)$category['_id'];
 
             $products = $products->where('categories', 'all', [$catKey]);
+            
+        }
+
+        if(isset($params['limit']) && !empty($params['limit'])){
+
+            if(isset($params['offset']) && !empty($params['offset'])){
+                $products = $products->skip($params['offset']);
+            }
+
+            $products = $products->take($params['limit']);
             
         }
 

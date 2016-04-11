@@ -43,7 +43,7 @@
 		
 		<top-menu></top-menu>
 		
-		<div ui-view class="fade ancontainer"></div>		
+		<div ui-view class="ancontainer"></div>		
 		
 		<section class="fullwidth social_block">
 			<div class="container">
