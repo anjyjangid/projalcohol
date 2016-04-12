@@ -14,7 +14,7 @@
 			<ul class="nav nav-tabs tabsright">	
 
 				<li ng-repeat="cat in parentCategories" ng-if="cat.featured!='undefined' && cat.featured.length>0" ng-class="{'active':AppController.feTabActive==$index}">									
-					<a href="javascript:void(0)" ng-click="setFeatured($index);AppController.feTabActive=$index">{{cat.cat_title | capitalize}}</a>
+					<a href="javascript:void(0)" class="text-capitalize" ng-click="setFeatured($index);AppController.feTabActive=$index">{{cat.cat_title}}</a>
 				</li>
 
 			</ul>
@@ -52,9 +52,10 @@
 							<img err-pro-src="" ng-src="products/i/200/{{fproduct.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive"/>
 							
 						</div>
+
 						<div class="prod_desc">{{fproduct.name}}</div>
-						<div class="prod_price">{{fproduct.price}} SGD</div>
-						<div class="prod_discout_price">{{fproduct.discountPrice}} SGD</div>
+						<div class="prod_price">{{fproduct.price}} {{settings.general.currency}}</div>
+						<div class="prod_discout_price">{{fproduct.discountPrice}} {{settings.general.currency}}</div>
 						<div class="prod_addtocart">
 							<!--<img src="images/addtocart.png" class="img-responsive" />-->
 							<div class="cartbtn">

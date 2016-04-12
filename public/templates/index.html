@@ -20,11 +20,12 @@
 						<!-- /.navbar-collapse -->
 					</nav>
 				</div>
-				<div class="col-md-8">					
-					<div ng:class="{'isloading':loading}"></div>
-					<div ui-view class="fade" ng:class="{'hide':loading}"></div>				
+				
+				<div ng-class="appSettings.layout.pageRightbarExist?'col-md-8':'col-md-10'">
+					<!-- <div ng:class="{'isloading':loading}"></div> -->
+					<div ui-view></div>				
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-2" ng-if="appSettings.layout.pageRightbarExist">
 					<div class="right_discount">
 						<div class="huge">Huge</div>
 						<div class="hugediscou">Discounts</div>
@@ -155,7 +156,11 @@
 			<data-owl-carousel class="owl-carousel owl-theme" data-options="{					
 						navigation : false,
 						pagination : true,
-						items : 1					
+						items : 1,
+						loop : true,
+						autoPlay : true,
+					    autoPlayTimeout : 500,
+					    autoPlayHoverPause : true	
 					}">
 				<div owl-carousel-item="" ng-repeat="testimonial in testimonials" class="item">
 					<div class="slido_left">

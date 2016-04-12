@@ -1,49 +1,15 @@
+<div ng:class="{'isloading':loading}"></div>
+<div ui-view="featured" ng-cloak ng:class="{'hide':loading}"></div>
 
-<div class="single_slider single_slider_product">
-  <div id="owl-demo7" class="owl-carousel owl-theme" style="opacity: 1; display: block;">
-        <div class="owl-wrapper-outer"><div class="owl-wrapper" style="width: 4110px; left: 0px; display: block;"><div class="owl-item" style="width: 685px;"><div class="item">
-            <div class="productinner_leftslide">
-                <div class="featured_product">Featured Product</div>
-                <div class="productslide_heading">Carlsberg Lager Can - Case 24 x 323 ml</div>
-                <div class="productslide_normaltext">The most loved No.1 International lager beer in Singapore. Brewed with pure malt and boasting a smooth richness, this flagship lager is quintessential easy-drinking beer for all occasions...</div>
-                <div class="productslide_actualprice">$64.00</div>
-                <div class="productslide_discountprice">$56.50</div>
-                <div class="productslide_addbutton"><button class="btn product_addcart">Add to Cart</button></div>
-            </div>
-            <div class="productinner_rightslide"><img src="images/productslide01.png" class="img-responsive"></div>
-        </div></div><div class="owl-item" style="width: 685px;"><div class="item">
-            <div class="productinner_leftslide">
-                <div class="featured_product">Featured Product</div>
-                <div class="productslide_heading">Carlsberg Lager Can - Case 24 x 323 ml</div>
-                <div class="productslide_normaltext">The most loved No.1 International lager beer in Singapore. Brewed with pure malt and boasting a smooth richness, this flagship lager is quintessential easy-drinking beer for all occasions...</div>
-                <div class="productslide_actualprice">$64.00</div>
-                <div class="productslide_discountprice">$56.50</div>
-                <div class="productslide_addbutton"><button class="btn product_addcart">Add to Cart</button></div>
-            </div>
-            <div class="productinner_rightslide"><img src="images/productslide01.png" class="img-responsive"></div>
-        </div></div><div class="owl-item" style="width: 685px;"><div class="item">
-            <div class="productinner_leftslide">
-                <div class="featured_product">Featured Product</div>
-                <div class="productslide_heading">Carlsberg Lager Can - Case 24 x 323 ml</div>
-                <div class="productslide_normaltext">The most loved No.1 International lager beer in Singapore. Brewed with pure malt and boasting a smooth richness, this flagship lager is quintessential easy-drinking beer for all occasions...</div>
-                <div class="productslide_actualprice">$64.00</div>
-                <div class="productslide_discountprice">$56.50</div>
-                <div class="productslide_addbutton"><button class="btn product_addcart">Add to Cart</button></div>
-            </div>
-            <div class="productinner_rightslide"><img src="images/productslide01.png" class="img-responsive"></div>
-        </div></div></div></div>
-        
-        
-  <div class="owl-controls clickable"><div class="owl-pagination"><div class="owl-page active"><span class=""></span></div><div class="owl-page"><span class=""></span></div><div class="owl-page"><span class=""></span></div></div></div></div>
-</div> 
-                            <div class="combo_slider combo_sliderProduct">
+
+<div class="combo_slider combo_sliderProduct">
   <div class="productbeerfiltertopcover">
       <div class="productbeerfiltertoptitle">{{categoriesList[0].cat_title}}</div>
         <div class="row">
             <div class="col-xs-12 col-sm-3 col-md-3">              
               <a href="#/{{categoriesList[0].slug}}" ng-class="{'active':subCategory==''}">All Types</a>
             </div>
-            <div class="col-xs-12 col-sm-3 col-md-3" ng-repeat="childCat in categoriesList[0].children">
+            <div class="col-xs-12 col-sm-3 col-md-3 text-capitalize" ng-repeat="childCat in categoriesList[0].children">
               <a href="#/{{categoriesList[0].slug}}/{{childCat.slug}}" ng-class="{'active':subCategory==childCat.slug}">{{childCat.cat_title}}</a>
             </div>
         </div>
@@ -69,27 +35,39 @@
       </ul>
     </div>
     
-    <div class="tab-content fullwidth">
-      <div class="tab-pane active" id="taball">            
+
+    <div ng:class="{'isloading':loading}"></div>
+    <div ui-view="content" ng:class="{'hide':loading}"></div>
+    
+
+    <div class="tab-content fullwidth hide">
+      <div class="tab-pane active">            
       
-          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems" ng-repeat="product in products">
-            <div class="prod_chilled" ng-class="{notchilled:{{!product.chilled}}}"> 
-              <span>Chilled</span>
-              <div class="prod_chilled_icon"></div>
+          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems" ng-class="{comboproductitems_outofstock:{{!product.quantity}}}" ng-repeat="product in products">
+
+            <div ng-if="product.quantity<1" class="productsoldoutbkbtn">Sold Out</div>
+
+            <div class="prod_chilled" ng-class="{notchilled:product.servechilled,invisible:{{!product.chilled}}}" ng-init="product.servechilled=false" ng-click="product.servechilled=!product.servechilled" > 
+              
+                <span>Chilled</span>
+                <div class="prod_chilled_icon"></div>              
+
             </div>
             <div class="prod_pic">
-              <div class="wishlist_discount">
+              <div class="wishlist_discount" ng-if="product.quantity>0">
                 <div class="wishlist">Add to Wishlist</div>
-                <div class="discount">Click here to view Bulk Discounts</div>
+                <div class="discount" ui-sref="mainLayout.product({product:product._id})">Click here to view Bulk Discounts</div>
               </div>
-              <img err-src="products/i/200/default.png" 
-                        ng-src="products/i/200/{{product.imageFiles[0].source}}" src="products/i/200/default.png" alt="" class="img-responsive"/>
+              <img err-pro-src=""
+                        ng-src="products/i/200/{{product.imageFiles[0].source}}" alt="" class="img-responsive"/>
             </div>
 
-            <div class="prod_desc"><a href="#/product/{{product._id}}">{{product.name}}</a></div>
-            <div class="prod_price">{{product.price}} {{$rootScope.settings.general.currency.value}}</div>
-            <div class="prod_discout_price">{{product.discountPrice}} SGD</div>
-            <a href="#/cart"><div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div></a>
+            <div class="prod_desc"><a ui-sref="mainLayout.product({product:product._id})">{{product.name}}</a></div>
+            <div class="prod_price">{{product.price}} {{settings.general.currency}}</div>
+            <div class="prod_discout_price">{{product.discountPrice}} {{settings.general.currency}}</div>
+
+            <a ng-if="product.quantity>0" ui-sref="mainLayout.cart"><div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div></a>
+            <button ng-if="product.quantity<1" type="button" class="btn productsoldbt" disabled="disabled"><img src="images/outofstocbticon.png" class="img-responsive">Notify Me</button>
           
           </div>
 
@@ -106,8 +84,8 @@
             <img src="images/product.png" class="img-responsive">
             </div>
             <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
+            <div class="prod_price">28.00 {{settings.general.currency}}</div>
+            <div class="prod_discout_price">24.00 {{settings.general.currency}}</div>
             <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div>
           </div>
 
@@ -118,8 +96,8 @@
             </div>
             <div class="prod_pic"><img src="images/product.png" class="img-responsive"></div>
             <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
+            <div class="prod_price">28.00 {{settings.general.currency}}</div>
+            <div class="prod_discout_price">24.00 {{settings.general.currency}}</div>
             <div class="prodcombo_addtocartbutton">
               <button type="button" class="btn productsoldbt" disabled="disabled">
                   <img src="images/outofstocbticon.png" class="img-responsive">
@@ -127,184 +105,8 @@
                 </button>
             </div>
           </div> -->
-      </div>
-      
-      <div class="tab-pane" id="tabnew">
-          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems">
-            <div class="prod_chilled notchilled"> <span>Chilled</span>
-              <div class="prod_chilled_icon"></div>
-            </div>
-            <div class="prod_pic"><img src="images/product.png" class="img-responsive"></div>
-            <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
-            <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div>
-          </div>
-          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems">
-            <div class="prod_chilled"> <span>Chilled</span>
-              <div class="prod_chilled_icon"></div>
-            </div>
-            <div class="prod_pic">
-              <div class="wishlist_discount">
-                <div class="wishlist">Add to Wishlist</div>
-                <div class="discount">Click here to view Bulk Discounts</div>
-              </div>
-              <img src="images/product.png" class="img-responsive"> </div>
-            <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
-            <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div>
-          </div>
-          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems">
-            <div class="prod_chilled notchilled"> <span>Chilled</span>
-              <div class="prod_chilled_icon"></div>
-            </div>
-            <div class="prod_pic"><img src="images/product.png" class="img-responsive"></div>
-            <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
-            <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div>
-          </div>
-          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems">
-            <div class="prod_chilled notchilled"> <span>Chilled</span>
-              <div class="prod_chilled_icon"></div>
-            </div>
-            <div class="prod_pic"><img src="images/product.png" class="img-responsive"></div>
-            <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
-            <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div>
-          </div>          
-          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems">
-            <div class="prod_chilled notchilled"> <span>Chilled</span>
-              <div class="prod_chilled_icon"></div>
-            </div>
-            <div class="prod_pic"><img src="images/product.png" class="img-responsive"></div>
-            <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
-            <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div>
-          </div>
-          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems">
-            <div class="prod_chilled notchilled"> <span>Chilled</span>
-              <div class="prod_chilled_icon"></div>
-            </div>
-            <div class="prod_pic"><img src="images/product.png" class="img-responsive"></div>
-            <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
-            <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div>
-          </div>
-          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems">
-            <div class="prod_chilled notchilled"> <span>Chilled</span>
-              <div class="prod_chilled_icon"></div>
-            </div>
-            <div class="prod_pic"><img src="images/product.png" class="img-responsive"></div>
-            <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
-            <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div>
-          </div>
-          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems">
-            <div class="prod_chilled notchilled"> <span>Chilled</span>
-              <div class="prod_chilled_icon"></div>
-            </div>
-            <div class="prod_pic"><img src="images/product.png" class="img-responsive"></div>
-            <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
-            <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div>
-          </div>
-      </div>
-      
-      <div class="tab-pane" id="tabinstock">          
-          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems">
-            <div class="prod_chilled notchilled"> <span>Chilled</span>
-              <div class="prod_chilled_icon"></div>
-            </div>
-            <div class="prod_pic"><img src="images/product.png" class="img-responsive"></div>
-            <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
-            <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div>
-          </div>
-          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems">
-            <div class="prod_chilled notchilled"> <span>Chilled</span>
-              <div class="prod_chilled_icon"></div>
-            </div>
-            <div class="prod_pic"><img src="images/product.png" class="img-responsive"></div>
-            <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
-            <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div>
-          </div>
-          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems">
-            <div class="prod_chilled notchilled"> <span>Chilled</span>
-              <div class="prod_chilled_icon"></div>
-            </div>
-            <div class="prod_pic"><img src="images/product.png" class="img-responsive"></div>
-            <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
-            <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div>
-          </div>
-          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems">
-            <div class="prod_chilled"> <span>Chilled</span>
-              <div class="prod_chilled_icon"></div>
-            </div>
-            <div class="prod_pic">
-              <div class="wishlist_discount">
-                <div class="wishlist">Add to Wishlist</div>
-                <div class="discount">Click here to view Bulk Discounts</div>
-              </div>
-              <img src="images/product.png" class="img-responsive"> </div>
-            <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
-            <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div>
-          </div>
-          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems">
-            <div class="prod_chilled notchilled"> <span>Chilled</span>
-              <div class="prod_chilled_icon"></div>
-            </div>
-            <div class="prod_pic"><img src="images/product.png" class="img-responsive"></div>
-            <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
-            <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div>
-          </div>
-          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems">
-            <div class="prod_chilled notchilled"> <span>Chilled</span>
-              <div class="prod_chilled_icon"></div>
-            </div>
-            <div class="prod_pic"><img src="images/product.png" class="img-responsive"></div>
-            <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
-            <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div>
-          </div>
-          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems">
-            <div class="prod_chilled notchilled"> <span>Chilled</span>
-              <div class="prod_chilled_icon"></div>
-            </div>
-            <div class="prod_pic"><img src="images/product.png" class="img-responsive"></div>
-            <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
-            <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div>
-          </div>
-          <div class="col-xs-12 col-sm-3 col-md-3 comboproductitems">
-            <div class="prod_chilled notchilled"> <span>Chilled</span>
-              <div class="prod_chilled_icon"></div>
-            </div>
-            <div class="prod_pic"><img src="images/product.png" class="img-responsive"></div>
-            <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-            <div class="prod_price">28.00 SGD</div>
-            <div class="prod_discout_price">24.00 SGD</div>
-            <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div>
-          </div>
-      </div>
-            
+      </div>                          
     </div>
+
   </div>
 </div>

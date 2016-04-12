@@ -20,7 +20,8 @@ MetronicApp.controller('SettingsController',['$rootScope', '$scope', '$timeout',
     $scope.errors = {};
     $scope.currency = [
     	{name:"$",sign:"$"},
-    	{name:"£",sign:"£"}
+    	{name:"£",sign:"£"},
+    	{name:"SGD",sign:"SGD"}
     ];
     $scope.language = [
     	{key:"eng",title:"English"}
@@ -43,6 +44,8 @@ MetronicApp.controller('SettingsController',['$rootScope', '$scope', '$timeout',
 	$scope.update = function(){
 		
 		var data = $scope.settings;
+		
+		$scope.errors = {};
 		
 		//POST DATA WITH FILES
 		settingsModel.updateSetting($state.$current.data.key,data).success(function(response){

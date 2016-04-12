@@ -44,9 +44,12 @@ class AuthController extends Controller
      */
     protected function validator(array $data)
     {
+        $data['u_email'] = $data['email'];
+        unset($data['email']);
+        
         return Validator::make($data, [
             //'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:user',
+            'u_email' => 'required|email|max:255|unique:user',
             'password' => 'required|confirmed|min:6',
             'password_confirmation' => 'required',
             'terms' => 'required'

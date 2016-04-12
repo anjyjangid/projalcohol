@@ -150,13 +150,19 @@ class TestimonialController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(TestimonialRequest $request, $id)
+    public function postUpdate(TestimonialRequest $request, $id)
     {   
 
+        $testimonial = Testimonial::find($id);
+
+        if(is_null($testimonial)){
+
+            return response(array("success"=>false,"message"=>"Invalid Request :: Record you want to update is not exist"));
+
+        }
+
         $inputs = $request->all();
-
-        return response($inputs,400);
-
+        
         if ($request->hasFile('image'))
         {
             if ($request->file('image')->isValid()){
@@ -188,6 +194,8 @@ class TestimonialController extends Controller
                     $constraint->aspectRatio();
                 })->save($path.'/400/'.$thumbNewName);            
 
+                $brand->image = $thumbNewName;
+
             }else{
 
                 return response('There is some issue with image file', 400);
@@ -195,21 +203,14 @@ class TestimonialController extends Controller
             }
             
         }
-       
-        $testimonial = Testimonial::find($id);
 
-        return response($testimonial,400);
+        $testimonial->name = $inputs['name'];
+        $testimonial->content = $inputs['content'];
+        $testimonial->status = (int)$inputs['status'];
 
-        $inputs = $request->all();
-        
-        $inputs['status'] = (int)$inputs['status'];
-
-        $inputs['image'] = $thumbNewName;
-
-        
         try {
 
-            Testimonial::save($inputs);
+            $testimonial->save();
 
         } catch(\Exception $e){
 
@@ -217,7 +218,7 @@ class TestimonialController extends Controller
 
         }
         
-        return response(array("success"=>true,"message"=>"Testimonial created successfully"));
+        return response(array("success"=>true,"message"=>"Testimonial updated successfully"));
                     
     }
 

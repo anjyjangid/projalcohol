@@ -119,7 +119,7 @@ MetronicApp.service('fileUpload', ['$http','$location', function ($http,$locatio
                     message: response.message,
                     container: '#info-message',
                     place: 'prepend',
-                    closeInSeconds: 10000
+                    closeInSeconds: 3
                 });
                 
             }else{
@@ -130,7 +130,7 @@ MetronicApp.service('fileUpload', ['$http','$location', function ($http,$locatio
                     message: response.message,
                     container: '#info-message',
                     place: 'prepend',
-                    closeInSeconds: 10000
+                    closeInSeconds: 3
                 });
             }
 
@@ -141,7 +141,8 @@ MetronicApp.service('fileUpload', ['$http','$location', function ($http,$locatio
                 icon: 'warning',
                 message: data,
                 container: '.portlet-body',
-                place: 'prepend'
+                place: 'prepend',
+                closeInSeconds: 3
             });
         });
 
@@ -170,7 +171,8 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
                         icon: 'check',
                         message: response.message,
                         container: '#info-message',
-                        place: 'prepend'
+                        place: 'prepend',
+                        closeInSeconds: 3
                     });
 
             var currObj = $("#"+id);
@@ -206,7 +208,8 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
                 icon: 'warning',
                 message: "Please select records you want to remove",
                 container: '#info-message',
-                place: 'prepend'
+                place: 'prepend',
+                closeInSeconds: 3
             });
 
         }else{

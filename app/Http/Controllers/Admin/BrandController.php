@@ -150,12 +150,18 @@ class BrandController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(BrandRequest $request, $id)
+    public function postUpdate(BrandRequest $request, $id)
     {   
 
-        $inputs = $request->all();
+        $brand = Brand::find($id);
 
-        return response($inputs,400);
+        if(is_null($brand)){
+
+            return response(array("success"=>false,"message"=>"Invalid Request :: Record you want to update is not exist"));
+
+        }
+
+        $inputs = $request->all();
 
         if ($request->hasFile('image'))
         {
@@ -188,6 +194,8 @@ class BrandController extends Controller
                     $constraint->aspectRatio();
                 })->save($path.'/400/'.$thumbNewName);            
 
+                $brand->image = $thumbNewName;
+
             }else{
 
                 return response('There is some issue with image file', 400);
@@ -195,19 +203,16 @@ class BrandController extends Controller
             }
             
         }
-       
-        $brand = Brand::find($id);    
-
-        $inputs = $request->all();
         
-        $inputs['status'] = (int)$inputs['status'];
 
-        $inputs['image'] = $thumbNewName;
 
-        
+        $brand->title = $inputs['title'];
+        $brand->link = $inputs['link'];        
+        $brand->status = (int)$inputs['status'];        
+                
         try {
 
-            Brand::save($inputs);
+            $brand->save();
 
         } catch(\Exception $e){
 
@@ -215,7 +220,7 @@ class BrandController extends Controller
 
         }
         
-        return response(array("success"=>true,"message"=>"Brand created successfully"));
+        return response(array("success"=>true,"message"=>"Brand $brand->title Updated successfully"));
                     
     }
 

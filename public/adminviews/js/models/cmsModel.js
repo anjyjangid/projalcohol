@@ -17,7 +17,7 @@ MetronicApp.factory('cmsModel', ['$http', '$cookies','$location', function($http
 	                message: 'Please enter all required fields.',
 	                container: '.portlet-body',
 	                place: 'prepend',
-	                //closeInSeconds: 5
+	                closeInSeconds: 3
 	            });
 	        })
 	        .success(function(response) {	            
@@ -28,7 +28,7 @@ MetronicApp.factory('cmsModel', ['$http', '$cookies','$location', function($http
 	                message: "Dealer successfully added",//response.message,
 	                container: '#info-message',
 	                place: 'prepend',
-	                closeInSeconds: 5
+	                closeInSeconds: 3
 	            });
 	            $location.path("cms/list");
 
@@ -39,7 +39,8 @@ MetronicApp.factory('cmsModel', ['$http', '$cookies','$location', function($http
 	                icon: 'warning',
 	                message: data,
 	                container: '.portlet-body',
-	                place: 'prepend'
+	                place: 'prepend',
+	                closeInSeconds: 3
 	            });
 	        });*/
 
@@ -58,7 +59,7 @@ MetronicApp.factory('cmsModel', ['$http', '$cookies','$location', function($http
 	                message: 'Please enter all required fields.',
 	                container: '.portlet-body',
 	                place: 'prepend',
-	                //closeInSeconds: 5
+	                closeInSeconds: 3
 	            });
 	        })
 	        .success(function(response) {	            
@@ -69,7 +70,7 @@ MetronicApp.factory('cmsModel', ['$http', '$cookies','$location', function($http
 	                message: response.message,
 	                container: '#info-message',
 	                place: 'prepend',
-	                closeInSeconds: 5
+	                closeInSeconds: 3
 	            });
 	            $location.path("cms/list");
 
@@ -80,7 +81,8 @@ MetronicApp.factory('cmsModel', ['$http', '$cookies','$location', function($http
 	                icon: 'warning',
 	                message: data,
 	                container: '.portlet-body',
-	                place: 'prepend'
+	                place: 'prepend',
+	                closeInSeconds: 3
 	            });
 	        });*/
 

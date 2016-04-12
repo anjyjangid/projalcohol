@@ -32,7 +32,7 @@ class TestimonialRequest extends Request
             
         ];
 
-        if($this->method()=="PUT"){
+        if(isset($this->one)){
 
             if($this->hasFile('image')){
 
@@ -44,8 +44,7 @@ class TestimonialRequest extends Request
 
             $rules['image'] = 'required|mimes:jpeg,bmp,png|max:5000';
 
-        }
-        
+        } 
 
         return $rules;
     }

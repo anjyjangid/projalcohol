@@ -24,7 +24,7 @@ MetronicApp.factory('settingsModel', ['$http', '$cookies','$location', function(
                     message: 'Please enter all required fields.',
                     container: '.portlet-body',
                     place: 'prepend',
-                    closeInSeconds: 5
+                    closeInSeconds: 3
                 });
             })
             .success(function(response) {               
@@ -35,7 +35,7 @@ MetronicApp.factory('settingsModel', ['$http', '$cookies','$location', function(
                     message: response.message,
                     container: '#info-message',
                     place: 'prepend',
-                    closeInSeconds: 5
+                    closeInSeconds: 3
                 });
             })
 

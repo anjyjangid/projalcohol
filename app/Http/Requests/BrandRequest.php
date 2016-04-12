@@ -23,7 +23,7 @@ class BrandRequest extends Request
      */
     public function rules()
     {                
-        
+            
         $rules = [
             
             'title' => 'required|string|max:255',            
@@ -32,7 +32,7 @@ class BrandRequest extends Request
             
         ];
 
-        if($this->method()=="PUT"){
+        if(isset($this->one)){
 
             if($this->hasFile('image')){
 
@@ -46,7 +46,6 @@ class BrandRequest extends Request
 
         }
         
-
         return $rules;
     }
 

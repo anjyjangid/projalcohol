@@ -34,7 +34,8 @@ MetronicApp.factory('categoryModel', ['$http', '$cookies', function($http, $cook
                 icon: 'warning',
                 message: data,
                 container: '#tab_1_1',
-                place: 'prepend'
+                place: 'prepend',
+                closeInSeconds: 3
             });            
         });
     };
@@ -86,7 +87,8 @@ MetronicApp.factory('categoryModel', ['$http', '$cookies', function($http, $cook
                 icon: 'warning',
                 message: data,
                 container: '#tab_1_3',
-                place: 'prepend'
+                place: 'prepend',
+                closeInSeconds: 3
             });            
         });
     };

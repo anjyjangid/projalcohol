@@ -7,7 +7,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ui.bootstrap', 
 	'bootstrapLightbox', 
 	'angular-loading-bar',
-	'ngAnimate'	
+	'ngAnimate'
 ]);
 
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
@@ -25,23 +25,6 @@ AlcoholDelivery.config(['$controllerProvider', function($controllerProvider) {
 
 }]);
 
-/* Setup global settings */
-AlcoholDelivery.factory('settings', ['$rootScope', function($rootScope) {
-    // supported languages
-
-    var settings = {};
-
-    $http.get("/super/settings/").success(function(response){
-    	settings = response;
-    	console.log("settings");
-    console.log(settings);
-    });
-	
-    $rootScope.settings = settings;
-
-	return settings;
-
-}]);
 
 AlcoholDelivery.filter('capitalize', function() {
 		return function(input, all) {
@@ -51,8 +34,14 @@ AlcoholDelivery.filter('capitalize', function() {
 });
 
 AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', function($scope, $rootScope,$http) {
+
 	$scope.AppController = {};
 	$scope.featuredProduct = [];
+
+	$http.get("/super/settings/").success(function(response){
+    	$rootScope.settings = response;    	
+    });
+	   
 
     $http.get("/super/category/").success(function(response){
 		
@@ -122,6 +111,9 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
 
 	$scope.ProductsController = {};
+	
+	$scope.products = {};
+	
 
 	$scope.category = $stateParams.categorySlug;
 	$scope.subCategory = "";
@@ -150,7 +142,7 @@ AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state
 			$scope.categoriesList = response;
 			$rootScope.categoriesList = response;
 
-		})
+		})	
 
 	}else{		
 
@@ -165,14 +157,132 @@ AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state
 	 }, function(response) {
 
 	});
+
+	
+	
 	
 }]);
 
 
+AlcoholDelivery.controller('ProductsFeaturedController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
+
+	$scope.ProductsFeaturedController = {};
+	
+
+	$scope.featured = {};
+
+	$scope.category = $stateParams.categorySlug;	
+
+	$category = $stateParams.categorySlug;
+
+	if(typeof $stateParams.subcategorySlug!=='undefined'){
+		$category = $stateParams.subcategorySlug;	
+	}
+
+	
+	$http.get("/search",{
+				
+				params:{
+					
+					category:$category,
+					type:'featured',
+					limit:10,
+					offset:0
+
+				}
+
+		}).success(function(response){
+		$scope.featured = response;
+	});
+
+	
+	
+}]);
+
+
+
 AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
+
+	$rootScope.appSettings.layout.pageRightbarExist = false;
 
 	$scope.ProductDetailController = {};
 
+	$scope.product = {};
+	
+  $scope.syncPosition = function(el){
+
+		var current = this.currentItem;
+		
+		$($scope.sync2)
+		  .find(".owl-item")
+		  .removeClass("synced")
+		  .eq(current)
+		  .addClass("synced")
+
+		if($($scope.sync2).data("owlCarousel") !== undefined){
+		  $scope.center(current);
+		}
+  }
+
+  $scope.syncClick = function(number){
+		
+		$scope.sync1.trigger("owl.goTo",number);
+
+  }
+
+  $scope.center = function(number){
+		
+		var sync2visible = $scope.sync2.data("owlCarousel").owl.visibleItems;
+		var num = number;
+		var found = false;
+		for(var i in sync2visible){
+		  if(num === sync2visible[i]){
+			var found = true;
+		  }
+		}
+	 
+		if(found===false){
+		  if(num>sync2visible[sync2visible.length-1]){
+			$scope.sync2.trigger("owl.goTo", num - sync2visible.length+2)
+		  }else{
+			if(num - 1 === -1){
+			  num = 0;
+			}
+			$scope.sync2.trigger("owl.goTo", num);
+		  }
+		} else if(num === sync2visible[sync2visible.length-1]){
+		  $scope.sync2.trigger("owl.goTo", sync2visible[1])
+		} else if(num === sync2visible[0]){
+		  $scope.sync2.trigger("owl.goTo", num-1)
+		}
+	
+  }
+
+	$scope.parentOwlOptions = {
+
+    singleItem 						: true,
+    slideSpeed 						: 1000,
+    navigation 						: false,
+    pagination 						: false,
+    afterAction 					: $scope.syncPosition,
+  	responsiveRefreshRate : 200,
+    
+  }
+
+  $scope.childOwlOptions = {
+
+    items 						: 6,
+    itemsDesktop      : [1199,4],
+    itemsDesktopSmall : [979,4],
+    itemsTablet       : [768,4],
+    itemsMobile       : [479,4],
+    pagination 				: false,
+    responsiveRefreshRate : 100,    
+		afterInit : function(el){
+		  el.find(".owl-item").eq(0).addClass("synced");
+		}
+
+  }
 	var data = {
 		product:$stateParams.product
 	}
@@ -182,29 +292,36 @@ AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$
 		headers : {'Accept' : 'application/json'}
 	};
 	
-
 	$http.get("/getproductdetail", config).then(function(response) {
 
-	   $scope.products = response.data;
+	   $scope.product = response.data;
 
 	 }, function(response) {
 
 	});
-
-	
-
 	
 }]);
 
+/* Setup global settings */
+AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
+        
+    var appSettings = {
+        layout: {
+            pageRightbarExist: true, // sidebar menu state            
+        }        
+    };
 
+    $rootScope.appSettings = appSettings;
 
+    return appSettings;
+}]);
 
 /* Setup global settings */
 AlcoholDelivery.factory('UserService', [function() {
     // supported languages
     var user = {
         isLogged: false,
-    	username: ''        
+    	  username: ''        
     };   
 
     return user;
@@ -273,7 +390,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 														'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
 														'js/jquery.switchButton.js',
 														'js/jquery.mCustomScrollbar.concat.min.js',
-														'js/jquery.bootstrap-touchspin.min.js',
+														'assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js',
 														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js',
 														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js',
 														'js/all_animations.js',
@@ -326,7 +443,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 														'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
 														'js/jquery.switchButton.js',
 														'js/jquery.mCustomScrollbar.concat.min.js',
-														'js/jquery.bootstrap-touchspin.min.js',
+														'assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js',
 														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js',
 														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js',
 														'js/all_animations.js',
@@ -351,15 +468,52 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('mainLayout.category', {
-						url: "/{categorySlug}",
-						templateUrl: "/templates/product/index.html",
-						controller: "ProductsController",
+						abstract : true,
+						
+						views : {
+
+							'' : {
+								templateUrl : '/templates/product/index.html',								
+							},
+							// 'left' : {
+							// 	templateUrl : 'app/public/left.html',
+							// 	controller : 'DashboardController'
+							// },	
+						},
+						
 				})
 
-				.state('mainLayout.products', {
+				.state('mainLayout.category.products', {
+						url: "/{categorySlug}",
+						views : {
+
+							'content' : {
+								templateUrl : '/templates/product/products.html',
+								controller: "ProductsController",
+							},
+							'featured' : {
+								templateUrl : '/templates/product/featured.html',
+								controller: "ProductsFeaturedController",
+							},
+
+						},
+						
+				})
+
+				.state('mainLayout.category.subCatProducts', {
 						url: "/{categorySlug}/{subcategorySlug}",
-						templateUrl: "/templates/product/index.html",
-						controller: "ProductsController"
+						views : {
+
+							'content' : {
+								templateUrl : '/templates/product/products.html',
+								controller: "ProductsController",
+							},
+							'featured' : {
+								templateUrl : '/templates/product/featured.html',
+								controller: "ProductsFeaturedController",
+							},
+
+						},
 				});
 
 				/*$locationProvider.html5Mode(true);
@@ -368,191 +522,6 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 		}
 		
 ]);
-
-AlcoholDelivery.directive('sideBar', function() {
-	return {
-		restrict: 'E',
-		templateUrl: '/templates/partials/sidebar.html',
-		controller: function($scope){
-								
-				$scope.childOf = function(categories, parent){
-					
-						if(!categories) return [];
-
-						if(!parent || parent==0){
-								return categories.filter(function(category){
-										return (!category.ancestors || category.ancestors.length==0);
-								});
-						}
-
-						return categories.filter(function(category){
-								return (category.ancestors && category.ancestors.length > 0 && category.ancestors[0]._id["$id"] == parent);
-						});
-				}
-				
-		}
-	};
-});
-
- AlcoholDelivery.directive('topMenu', function(){
-	return {
-		restrict: 'E',
-		/*scope:{
-			user:'='
-		},*/
-		templateUrl: '/templates/partials/topmenu.html',
-		controller: function($scope,$http){			
-			
-			$scope.list = [];
-			$scope.signup = {terms:null};
-			$scope.login = {};
-			$scope.forgot = {};
-			$scope.errors = {};
-			$scope.signup.errors = {};
-			$scope.forgot.errors = {};
-
-			$scope.signupSubmit = function() {
-				$http.post('/auth/register',$scope.signup).success(function(response){
-	                $scope.user = response;
-						$scope.user.name = response.email;
-	                $('#register').modal('hide');
-	            }).error(function(data, status, headers) {                            
-	                $scope.signup.errors = data;                
-	            });
-			};
-
-			$scope.loginSubmit = function() {
-				$http.post('/auth',$scope.login).success(function(response){
-	                $scope.login = {};
-	                $scope.user = response;
-					$scope.user.name = response.email;
-	                $('#login').modal('hide');
-	            }).error(function(data, status, headers) {                            
-	                $scope.errors = data;                
-	            });
-			};
-
-			$http.get('/check').success(function(response){
-	            $scope.user = response;            
-	        }).error(function(data, status, headers) {                            
-	          	
-	        });
-
-	        $scope.forgotSubmit = function() {
-				$http.post('/password/email',$scope.forgot).success(function(response){					
-	                $scope.forgot = {};	                
-	                $scope.forgot.message = response;
-	                $('#forgot_password').modal('hide');
-	                $('#forgot_password_sent').modal('show');	                
-	            }).error(function(data, status, headers) {                            
-	                $scope.forgot.errors = data;                
-	            });
-			};
-
-	        $scope.logout = function() {
-				$http.get('/auth/logout').success(function(response){
-	                $scope.user = {};      									
-	            }).error(function(data, status, headers) {                            						                
-	            });
-			};
-
-			$scope.searchbar = function(toggle){
-				if(toggle){
-					$(".searchtop").addClass("searchtop100").removeClass("again21");			
-					$(".search_close").addClass("search_close_opaque");		
-					$(".logoss").addClass("leftminusopacity leftminus100").removeClass("again0left againopacity");
-					$(".homecallus_cover").addClass("leftminus2100").removeClass("again0left");
-					$(".signuplogin_cover").addClass("rightminus100").removeClass("again0right");	
-					$("input[name='search']").focus();
-				}else{
-					$(".searchtop").removeClass("searchtop100").addClass("again21");			
-					$(".search_close").removeClass("search_close_opaque");		
-					$(".logoss").removeClass("leftminusopacity leftminus100").addClass("again0left againopacity");
-					$(".homecallus_cover").removeClass("leftminus2100").addClass("again0left");
-					$(".signuplogin_cover").removeClass("rightminus100").addClass("again0right");
-				}
-			}
-		}
-	};
-})
-.directive("owlCarousel", function(){
-    return {
-        restrict: 'E',
-        transclude: false,
-        
-        link: function (scope) {
-
-            scope.initCarousel = function(element) {
-              // provide any default options you want
-
-                var defaultOptions = {
-                };
-                var customOptions = scope.$eval($(element).attr('data-options'));
-                // combine the two options objects
-                for(var key in customOptions) {
-                    defaultOptions[key] = customOptions[key];
-                }
-
-            	// init carousel
-            	if(typeof $(element).data('owlCarousel') === "undefined"){
-
-                	$(element).owlCarousel(defaultOptions);
-            	}
-            };
-        }
-    };
-})
-
-.directive('owlCarouselItem', [function() {
-    return {
-        restrict: 'A',
-        transclude: false,
-        link: function(scope, element) {
-        					          
-          	if(scope.$first && typeof $(element.parent()).data('owlCarousel') !== "undefined"){
-
-          		$(element.parent()).data('owlCarousel').destroy();
-          		$(element.parent()).find(".owl-wrapper").remove();
-          	}
-
-            if(scope.$last) {
-
-                scope.initCarousel(element.parent());
-
-            }
-        }
-    };
-}])
-
-.directive("tscroll", function ($window) {
-    return function(scope, element, attrs) {
-        angular.element($window).bind("scroll", function() {
-             
-             if(element.hasClass('fixh')) return;
-
-             if (this.pageYOffset >= 1) {
-                 element.addClass('navbar-shrink');                 
-             } else {
-                 element.removeClass('navbar-shrink');                 
-             }
-        });
-    };
-});
-
-AlcoholDelivery.directive('errProSrc', function() {
-  return {
-    link: function(scope, element, attrs) {
-      element.bind('error', function() {
-
-        element.parent(".prod_pic").addClass("no-image");
-
-          attrs.$set('src', attrs.errSrc);
-        
-      });
-    }
-  }
-});
-
 
 AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', 
 function ($q, $rootScope, $log) {
@@ -598,12 +567,15 @@ function ($q, $rootScope, $log) {
 }]);
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "$state" , function($rootScope, $state) {		
+AlcoholDelivery.run(["$rootScope", "appSettings", "$state" , function($rootScope, settings, $state) {		
 		
 		$rootScope.$state = $state; // state to be accessed from view				
-
+		
 		$rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
+
 		   $state.previous = {state:from, param:fromParams}
+		   $rootScope.appSettings.layout.pageRightbarExist = true;
+
 		});
 
 }]);

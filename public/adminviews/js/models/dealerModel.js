@@ -21,7 +21,7 @@ MetronicApp.factory('dealerModel', ['$http', '$cookies','$location', function($h
 	                message: 'Please enter all required fields.',
 	                container: '.portlet-body',
 	                place: 'prepend',
-	                //closeInSeconds: 5
+	                closeInSeconds: 3
 	            });
 	        })
 	        .success(function(response) {	            
@@ -32,7 +32,7 @@ MetronicApp.factory('dealerModel', ['$http', '$cookies','$location', function($h
 	                message: "Dealer successfully added",//response.message,
 	                container: '#info-message',
 	                place: 'prepend',
-	                closeInSeconds: 5
+	                closeInSeconds: 3
 	            });
 	            $location.path("dealers/list");
 
@@ -62,7 +62,7 @@ MetronicApp.factory('dealerModel', ['$http', '$cookies','$location', function($h
 	                message: 'Please enter all required fields.',
 	                container: '.portlet-body',
 	                place: 'prepend',
-	                closeInSeconds: 5
+	                closeInSeconds: 3
 	            });
 	        })
 	        .success(function(response) {	            
@@ -73,7 +73,7 @@ MetronicApp.factory('dealerModel', ['$http', '$cookies','$location', function($h
 	                message: response.message,
 	                container: '#info-message',
 	                place: 'prepend',
-	                closeInSeconds: 5
+	                closeInSeconds: 3
 	            });
 	            $location.path("dealers/list");
 

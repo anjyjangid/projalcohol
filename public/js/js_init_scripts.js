@@ -72,11 +72,7 @@ function initScripts(options){
 		itemsTabletSmall : [767,2],
 		itemsMobile : [479,1]
 	});
-	$("#owl-demo7").owlCarousel({
-		navigation : false,
-		pagination : true,
-		items : 1
-	});
+	
 	$("#slider-1.demo input").switchButton({
 	  width: 62,
 	  height: 30,
@@ -179,7 +175,7 @@ function initScripts(options){
 	  sync2.trigger("owl.goTo", num-1)
 	}
 	
-  }    
+  }
 
 
 
@@ -239,6 +235,9 @@ function initScripts(options){
 
 	$(".addcart").click(function () {
 	      //$(".addmore").show("slide", { direction: "down" }, 1000);
+
+		  if($(this).hasClass("only-button")){return true;}
+
 		  $(".addcart").hide();
 		  $(".addmore").show();
 		  //$(".addmore .bootstrap-touchspin").show('slide', { direction: 'down' }, 250);

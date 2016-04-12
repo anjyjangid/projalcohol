@@ -15,5 +15,12 @@
 
 	}
 
+	function aprd($arr){
+
+		echo json_encode($arr);
+		exit;
+
+	}
+
 
 ?>
