@@ -67,7 +67,7 @@ class ProductController extends Controller
         $inputs['discountPrice'] = (float)$inputs['discountPrice'];
         $inputs['chilled'] = (int)$inputs['chilled'];
         $inputs['status'] = (int)$inputs['status'];
-        $inputs['isFeatured'] = (int)$inputs['isFeatured'];
+        $inputs['isFeatured'] = (int)$inputs['isFeatured'];       
 
         if (isset($inputs['bulkDiscount']) && is_array($inputs['bulkDiscount']))
         {
@@ -92,92 +92,7 @@ class ProductController extends Controller
 
         }else{          
           return response('Unable to add product',422);
-        }       
-
-        /*$inputs = $request->all();                
-               
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required',
-            'shortDescription' => 'required',
-            'categories' => 'required',
-            'sku' => 'required',
-            'quantity' => 'required|numeric',
-            'price' => 'required|numeric',
-            'discountPrice' => 'required|numeric',
-            'chilled' => 'required|integer',
-            'status' => 'required|integer',
-            'metaTitle' => 'max:100',
-            'metaKeywords' => 'max:1000',
-            'metaDescription' => 'max:255',
-            'isFeatured' => 'required|integer',
-        ],[
-            'required' => 'Please enter :attribute.',
-            'categories.required' => 'Please select atleast one category.',
-            'status.required' => 'Please select :attribute.',
-        ]);
-
-        //VALIDATE ALL UPLOADED FILES       
-
-        $ferror = false;                        
-
-        if(isset($inputs['images']) && !empty($inputs['images'])){
-
-          $files = $inputs['images'];
-
-          foreach ($files as $key => $file) {
-              $rules = [
-                //'image' => 'required|mimes:png,jpeg,jpg'
-                'image' => 'required|image'
-              ];
-              $validfile = Validator::make(['image'=> @$file['thumb']], $rules, [
-                'image.required'=>'Please select :attribute for the product'
-              ]);
-              if($validfile->passes()){
-
-              }else{
-                  $ferror = $validfile->errors()->first('image');
-                  break;
-              }
-          }        
-
-        }else{
-            $ferror = 'Please select atleast one image for the product.';          
-        }
-
-        if(isset($inputs['discounts']) && !empty($inputs['discounts'])){
-
-        }
-
-        // if validation fails
-        if ($validator->fails() || $ferror){
-            
-            if($ferror)
-                $validator->errors()->add('image',$ferror);
-
-            return response($validator->errors(), 422);
-        }     
-
-       	$product = Products::create([
-            'name' => $inputs['name'],
-            'description' => $inputs['description'],
-            'shortDescription' => $inputs['shortDescription'],
-            'categories' => $inputs['categories'],
-            'sku' => $inputs['sku'],
-            'quantity' => (int)$inputs['quantity'],
-            'price' => (float)$inputs['price'],
-            'discountPrice' => (float)$inputs['discountPrice'],
-            'chilled' => (int)$inputs['chilled'],
-            'status' => (int)$inputs['status'],
-            'metaTitle' => @$inputs['metaTitle'],
-            'metaKeywords' => @$inputs['metaKeywords'],
-            'metaDescription' => @$inputs['metaDescription'],
-            'isFeatured' => (int)$inputs['isFeatured'],
-        ]);    
-
-        $this->saveImages($product,$files);
-
-        return $product;*/
+        }               
     }
 
     /**
@@ -238,82 +153,6 @@ class ProductController extends Controller
           $update = $product->update($inputs);
           $this->saveImages($product,$files);
         }
-
-        return response($product);
-        
-        /*$validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required',
-            'shortDescription' => 'required',
-            'categories' => 'required',
-            'sku' => 'required',
-            'quantity' => 'required|numeric',
-            'price' => 'required|numeric',
-            'discountPrice' => 'required|numeric',
-            'chilled' => 'required|integer',
-            'status' => 'required|integer',
-            'metaTitle' => 'max:100',
-            'metaKeywords' => 'max:1000',
-            'metaDescription' => 'max:255',            
-            'isFeatured' => 'required|integer',
-        ],[
-            'required' => 'Please enter :attribute.',
-            'categories.required' => 'Please select atleast one category.',
-            'status.required' => 'Please select :attribute.',
-        ]);              
-
-        //VALIDATE ALL UPLOADED FILES       
-
-        $ferror = false;                        
-
-        if(isset($inputs['images']) && !empty($inputs['images'])){
-
-          $files = $inputs['images'];
-
-          foreach ($files as $key => $file) {              
-              if(isset($file['source']) && empty($file['thumb'])){continue;}              
-              $in = $key+1;
-              $rules = [
-                'image' => 'required|mimes:png,jpeg,jpg'
-              ];
-              $validfile = Validator::make(['image'=> @$file['thumb']], $rules, ['image.required'=>'One of the image file is missing.']);
-              if(!$validfile->passes()){              
-                  $ferror = $validfile->errors()->first('image');
-                  break;
-              }
-          }
-        }else{
-            $ferror = 'Please select atleast one image for the product.';          
-        }
-        
-        // if validation fails
-        if ($validator->fails() || $ferror){            
-            if($ferror)
-                $validator->errors()->add('image',$ferror);
-
-            return response($validator->errors(), 422);
-        }
-
-        $product = Products::find($id);
-
-        $update = $product->update([
-            'name' => $inputs['name'],
-            'description' => $inputs['description'],
-            'shortDescription' => $inputs['shortDescription'],
-            'categories' => $inputs['categories'],
-            'sku' => $inputs['sku'],
-            'quantity' => (int)$inputs['quantity'],
-            'price' => (float)$inputs['price'],
-            'discountPrice' => (float)$inputs['discountPrice'],
-            'chilled' => (int)$inputs['chilled'],
-            'status' => (int)$inputs['status'],
-            'metaTitle' => @$inputs['metaTitle'],
-            'metaKeywords' => @$inputs['metaKeywords'],
-            'metaDescription' => @$inputs['metaDescription'],
-            'isFeatured' => (int)$inputs['isFeatured'],            
-        ]);
-
-        $this->saveImages($product,$files);*/
 
         return response($product);
     }

@@ -2,6 +2,7 @@
 <html ng-app="AlcoholDelivery">
 
 	<head>		
+		<!-- <base href="/"> -->
 		<style>
 		.modal-open .navbar-fixed-top{
 			width:calc(100% - 17px);

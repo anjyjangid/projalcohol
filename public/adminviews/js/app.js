@@ -11,7 +11,6 @@ var MetronicApp = angular.module("MetronicApp", [
     "ngCookies",
     "19degrees.ngSweetAlert2",
     "slugifier"
-
 ]); 
 
 
@@ -1142,6 +1141,15 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                 data: {
                     pageSubTitle: 'Social Settings',
                     "key":"social"
+                }
+            })
+
+            .state("settings.pricing", {
+                url: "/pricing",
+                templateUrl: "adminviews/views/settings/pricing.html",
+                data: {
+                    pageSubTitle: 'Pricing Settings',
+                    "key":"pricing"
                 }
             })
 

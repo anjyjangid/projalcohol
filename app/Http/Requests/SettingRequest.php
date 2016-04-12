@@ -55,7 +55,22 @@ class SettingRequest extends Request
 
                 ];
                 break;
-            
+            case 'pricing':
+                $rules = [
+                    'advance_order.value' => 'required|numeric',
+                    'advance_order_bulk.value' => 'required|numeric',
+                    'cigratte_services.value' => 'required|numeric',
+                    'express_delivery.value' => 'required|numeric',
+                    'express_delivery_bulk.value' => 'required|numeric',
+                    'regular_express_delivery.value' => 'required|numeric',
+                    'advance_order.type' => 'required|numeric',
+                    'advance_order_bulk.type' => 'required|numeric',
+                    'cigratte_services.type' => 'required|numeric',
+                    'express_delivery.type' => 'required|numeric',
+                    'express_delivery_bulk.type' => 'required|numeric',
+                    'regular_express_delivery.type' => 'required|numeric',
+                ];
+                break;
             default:
                 # code...
                 break;

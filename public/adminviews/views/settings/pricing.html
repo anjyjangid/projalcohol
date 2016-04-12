@@ -1,0 +1,65 @@
+<div class="form-horizontal">   
+<form ng-submit="update()">    
+    <h4>Pricing Tiers</h4>
+    <div class="form-group" ng-if="setting.category == 'pricing'" ng-repeat="(kv, setting) in settings" >                
+        <label class="col-md-4 control-label">{{setting.label}}: <span class="required">
+        * </span>
+        </label>
+        <div class="col-md-2" ng:class="{'has-error':errors[kv+'.type'][0]}">
+            <select empty="false" class="form-control" ng-model="setting.type">            
+                <option value="0">Fix Amount</option>
+                <option value="1">% of Amount</option>
+            </select>
+            <span class="help-block" ng-bind="errors[kv+'.type'][0]"></span>    
+        </div>
+        <div class="col-md-2" ng:class="{'has-error':errors[kv+'.value'][0]}">
+            <input type="number" step="any" class="form-control" ng-model="setting.value" placeholder="">
+            <span class="help-block" ng-bind="errors[kv+'.value'][0]"></span>                    
+        </div>
+    </div>       
+    <hr>
+    <h4>Services</h4>
+    <div class="form-group" ng-if="setting.category == 'service'" ng-repeat="(kv, setting) in settings" >                
+        <label class="col-md-4 control-label">{{setting.label}}: <span class="required">
+        * </span>
+        </label>
+        <div class="col-md-2" ng:class="{'has-error':errors[kv+'.type'][0]}">
+            <select empty="false" class="form-control" ng-model="setting.type">            
+                <option value="0">Fix Amount</option>
+                <option value="1">% of Amount</option>
+            </select>
+            <span class="help-block" ng-bind="errors[kv+'.type'][0]"></span>    
+        </div>
+        <div class="col-md-2" ng:class="{'has-error':errors[kv+'.value'][0]}">
+            <input type="number" step="any" class="form-control" ng-model="setting.value" placeholder="">
+            <span class="help-block" ng-bind="errors[kv+'.value'][0]"></span>                    
+        </div>
+    </div>
+    <hr>
+    <h4>Discounts</h4>
+    <div class="form-group" ng-if="setting.category == 'discount'" ng-repeat="(kv, setting) in settings" >                
+        <label class="col-md-4 control-label">{{setting.label}}: <span class="required">
+        * </span>
+        </label>
+        <div class="col-md-2" ng:class="{'has-error':errors[kv+'.type'][0]}">
+            <select empty="false" class="form-control" ng-model="setting.type">            
+                <option value="0">Fix Amount</option>
+                <option value="1">% of Amount</option>
+            </select>
+            <span class="help-block" ng-bind="errors[kv+'.type'][0]"></span>    
+        </div>
+        <div class="col-md-2" ng:class="{'has-error':errors[kv+'.value'][0]}">
+            <input type="number" step="any" class="form-control" ng-model="setting.value" placeholder="">
+            <span class="help-block" ng-bind="errors[kv+'.value'][0]"></span>                    
+        </div>
+    </div>    
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="margiv-top-10 pull-right">
+                <button class="btn green-haze" type="submit"><i class="fa fa-check"></i> Update</button>
+                <input type="reset" name="reset" value="Reset" class="btn default">
+            </div>
+        </div>
+    </div>
+</div>
+</form>
