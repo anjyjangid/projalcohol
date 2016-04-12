@@ -3,6 +3,8 @@
 namespace AlcoholDelivery\Http\Requests;
 
 use AlcoholDelivery\Http\Requests\Request;
+use Input;
+
 
 class SettingRequest extends Request
 {    
@@ -57,17 +59,13 @@ class SettingRequest extends Request
                 break;
             case 'pricing':
                 $rules = [
-                    'advance_order.value' => 'required|numeric',
-                    'advance_order_bulk.value' => 'required|numeric',
+                    'advance_order.value' => 'required|numeric',                    
                     'cigratte_services.value' => 'required|numeric',
-                    'express_delivery.value' => 'required|numeric',
-                    'express_delivery_bulk.value' => 'required|numeric',
+                    'express_delivery.value' => 'required|numeric',                    
                     'regular_express_delivery.value' => 'required|numeric',
-                    'advance_order.type' => 'required|numeric',
-                    'advance_order_bulk.type' => 'required|numeric',
+                    'advance_order.type' => 'required|numeric',                    
                     'cigratte_services.type' => 'required|numeric',
-                    'express_delivery.type' => 'required|numeric',
-                    'express_delivery_bulk.type' => 'required|numeric',
+                    'express_delivery.type' => 'required|numeric',                    
                     'regular_express_delivery.type' => 'required|numeric',
                 ];
                 break;
@@ -76,7 +74,26 @@ class SettingRequest extends Request
                 break;
         }
 
-        
+        if($this->setting == 'pricing'){            
+            $input = Input::all();
+            foreach ($input['advance_order_bulk']['bulk'] as $bk => $bval)
+            {
+                $ruleKey = 'advance_order_bulk.bulk.' . $bk;
+                $rules[$ruleKey . '.from_qty'] = 'required|numeric|min:1';
+                $rules[$ruleKey . '.to_qty'] = 'required|numeric|min:1|max:99999';
+                $rules[$ruleKey . '.type'] = 'required|numeric';
+                $rules[$ruleKey . '.value'] = 'required|numeric';
+            }
+
+            foreach ($input['express_delivery_bulk']['bulk'] as $bk => $bval)
+            {
+                $ruleKey = 'express_delivery_bulk.bulk.' . $bk;
+                $rules[$ruleKey . '.from_qty'] = 'required|numeric|min:1';
+                $rules[$ruleKey . '.to_qty'] = 'required|numeric|min:1|max:99999';
+                $rules[$ruleKey . '.type'] = 'required|numeric';
+                $rules[$ruleKey . '.value'] = 'required|numeric';
+            }   
+        }
                 
         return $rules;
     }
@@ -87,9 +104,12 @@ class SettingRequest extends Request
         $messages = [
 
                 'required' => 'This field is required',
-                'in' => "Please select from given values"
+                'in' => 'Please select from given values',
+                'numeric' => 'Field must be numeric',
+                'min' => 'Minimum :min is allowed',
+                'max' => 'Maximum :max is allowed',
 
-        ];
+        ];       
         
         return $messages;
 

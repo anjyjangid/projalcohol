@@ -16,44 +16,80 @@ class Setting extends Seeder
             'settings' => [
                 'regular_express_delivery' => [
                 	'label' => 'Regular express delivery',
-                    'value' => 1,
+                    'value' => 0.5,
                 	'type' => 1,
                     'category' => 'pricing'
                 ],
                 'advance_order' => [
                 	'label' => 'Advance order',
-                    'value' => 1,
+                    'value' => 0.25,
                 	'type' => 1,
                     'category' => 'pricing'
                 ],
                 'express_delivery_bulk' => [
-                    'label' => 'Bulk purchase (Advance order)',
-                	'value' => 1,
-                	'type' => 1,
-                    'category' => 'pricing'
+                    'label' => 'Bulk purchase (Advance order)',                	
+                    'bulk' => [
+                        [
+                            'from_qty' => 2,
+                            'to_qty' => 5,    
+                            'value' => 0.15,
+                            'type' => 1
+                        ],                    
+                        [
+                            'from_qty' => 6,
+                            'to_qty' => 10,    
+                            'value' => 0.12,
+                            'type' => 1
+                        ],
+                        [
+                            'from_qty' => 11,
+                            'to_qty' => 99999,    
+                            'value' => 0.10,
+                            'type' => 1
+                        ]
+                    ],                    
+                    'category' => 'bulk_pricing',                    
                 ],
                 'advance_order_bulk' => [
                 	'label' => 'Bulk purchase (Regular express delivery)',
-                    'value' => 1,
-                	'type' => 1,
-                    'category' => 'pricing'
+                    'bulk' => [
+                        [
+                            'from_qty' => 2,
+                            'to_qty' => 5,    
+                            'value' => 0.15,
+                            'type' => 1
+                        ],                    
+                        [
+                            'from_qty' => 6,
+                            'to_qty' => 10,    
+                            'value' => 0.12,
+                            'type' => 1
+                        ],
+                        [
+                            'from_qty' => 11,
+                            'to_qty' => 99999,    
+                            'value' => 0.10,
+                            'type' => 1
+                        ]
+                    ],
+                    'category' => 'bulk_pricing'
                 ],
                 'express_delivery' => [
                     'label' => 'Express delivery (Order within 30mins)',
-                	'value' => 1,
-                	'type' => 1,
+                	'value' => 50,
+                	'type' => 0,
                     'category' => 'service'
                 ],
                 'cigratte_services' => [
                     'label' => 'Cigratte service',
-                	'value' => 1,
+                	'value' => 5,
                 	'type' => 1,
                     'category' => 'service'
                 ],
                 'non_chilled_delivery' => [
                     'label' => 'Non-chilled delivery',
                     'value' => 1,
-                    'type' => 1,
+                    'type' => 0,
                     'category' => 'discount'
                 ]                
             ]
