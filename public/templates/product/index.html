@@ -1,16 +1,15 @@
 <div ng:class="{'isloading':loading}"></div>
 <div ui-view="featured" ng-cloak ng:class="{'hide':loading}"></div>
 
-
 <div class="combo_slider combo_sliderProduct">
   <div class="productbeerfiltertopcover">
-      <div class="productbeerfiltertoptitle">{{categoriesList[0].cat_title}}</div>
+      <div class="productbeerfiltertoptitle text-capitalize">{{categoriesList[0].cat_title}}</div>
         <div class="row">
-            <div class="col-xs-12 col-sm-3 col-md-3">              
-              <a href="#/{{categoriesList[0].slug}}" ng-class="{'active':subCategory==''}">All Types</a>
+            <div class="col-xs-12 col-sm-3 col-md-3" ng-if="categoriesList[0].children.length>0">
+              <a ui-sref="mainLayout.category.products({categorySlug:categoriesList[0].slug})" ng-class="{'active':AppController.subCategory==''}">All Types</a>
             </div>
             <div class="col-xs-12 col-sm-3 col-md-3 text-capitalize" ng-repeat="childCat in categoriesList[0].children">
-              <a href="#/{{categoriesList[0].slug}}/{{childCat.slug}}" ng-class="{'active':subCategory==childCat.slug}">{{childCat.cat_title}}</a>
+              <a ui-sref="mainLayout.category.subCatProducts({categorySlug:categoriesList[0].slug,subcategorySlug:childCat.slug})" ng-class="{'active':AppController.subCategory==childCat.slug}">{{childCat.cat_title}}</a>
             </div>
         </div>
     </div>
@@ -18,20 +17,19 @@
     <div class="tabbable"> <!-- Only required for left/right tabs -->
     <div class="fullwidth">
       <ul class="nav nav-tabs productcomboul">
-        <!-- <li class="active"><a href="#taball" data-toggle="tab">All</a></li>
-        <li><a href="#tabnew" data-toggle="tab">New</a></li>
-        <li><a href="#tabinstock" data-toggle="tab">In Stock</a></li> -->
-        <!-- <div class="dropdown productdropdownbtn">
+        <li class="active"><a ui-sref="{toggle: ''}" data-toggle="tab">All</a></li>
+        <li><a ng-click="$broadcast('filterproduct', {toggle: 'new'})" data-toggle="tab">New</a></li>
+        <li><a ui-sref="{toggle: 'in-stock'}" data-toggle="tab">In Stock</a></li>
+        <div class="dropdown productdropdownbtn">
           <button class="btn dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            Dropdown
+            Short by
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
+            <li><a ui-sref="{short: 'asc'}">Price Ascending</a></li>
+            <li><a ui-sref="{short: 'desc'}">Price Descending</a></li>            
           </ul>
-        </div> -->
+        </div>
       </ul>
     </div>
     
