@@ -9,7 +9,7 @@ MetronicApp.factory('settingsModel', ['$http', '$cookies','$location', function(
      * @param  {array} loginData
      * @return {promise}
      */
-    settingsModel.getSettings = function(settingKey){
+    settingsModel.getSettings = function(settingKey){            
             return $http.get("/admin/setting/settings/"+settingKey);
         },
 

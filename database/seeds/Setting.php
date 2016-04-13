@@ -40,6 +40,12 @@ class Setting extends Seeder
                             'to_qty' => 10,    
                             'value' => 0.12,
                             'type' => 1
+                        ],                    
+                        [
+                            'from_qty' => 11,
+                            'to_qty' => 20,    
+                            'value' => 0.12,
+                            'type' => 1
                         ],
                         [
                             'from_qty' => 11,
@@ -62,6 +68,12 @@ class Setting extends Seeder
                         [
                             'from_qty' => 6,
                             'to_qty' => 10,    
+                            'value' => 0.12,
+                            'type' => 1
+                        ],                    
+                        [
+                            'from_qty' => 11,
+                            'to_qty' => 20,    
                             'value' => 0.12,
                             'type' => 1
                         ],
