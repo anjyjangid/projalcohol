@@ -38,6 +38,9 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 	$scope.AppController = {};
 	$scope.featuredProduct = [];
 
+	$scope.AppController.category = "";
+	$scope.AppController.subCategory = "";
+
 	$http.get("/super/settings/").success(function(response){
     	$rootScope.settings = response;    	
     });
@@ -108,25 +111,28 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 
 }]);
 
+
 AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
 
 	$scope.ProductsController = {};
 	
 	$scope.products = {};
-	
 
-	$scope.category = $stateParams.categorySlug;
-	$scope.subCategory = "";
+	
+	$scope.AppController.category = $stateParams.categorySlug;
+	$scope.AppController.subCategory = "";
 
 	$category = $stateParams.categorySlug;
 
 	if(typeof $stateParams.subcategorySlug!=='undefined'){
 		$category = $stateParams.subcategorySlug;
-		$scope.subCategory = $stateParams.subcategorySlug;
+		$scope.AppController.subCategory = $stateParams.subcategorySlug;
 	}
 
 	var data = {
-		category:$category
+		category:$category,
+		type : 'all',
+		short: "new"
 	}
 
 	var config = {
@@ -149,16 +155,38 @@ AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state
 		$scope.categoriesList = $rootScope.categoriesList;
 	}
 
+	$scope.fetchproducts = function(){
+		$http.get("/search", config).then(function(response) {
 
-	$http.get("/search", config).then(function(response) {
+		   $scope.products = response.data;
 
-	   $scope.products = response.data;
+		 }, function(response) {
 
-	 }, function(response) {
+		});
+	}
 
-	});
+	$scope.$on('filterproduct', function(event, obj) {
+
+		$state.$current.self.reloadOnSearch = false;
+		$state.go('mainLayout.category.subCatProducts',
+            {
+            	categorySlug:$scope.AppController.category, 
+            	subcategorySlug:$scope.AppController.subCategory,
+            	toggle:'new'
+            },
+            {reload: false, location: 'replace'});
+        $state.$current.self.reloadOnSearch = true;
+
+    })
 
 	
+
+	$scope.fetchproducts();
+	
+
+	
+
+
 	
 	
 }]);
@@ -473,18 +501,20 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						views : {
 
 							'' : {
-								templateUrl : '/templates/product/index.html',								
+								templateUrl : '/templates/product/index.html',
+								
 							},
 							// 'left' : {
 							// 	templateUrl : 'app/public/left.html',
 							// 	controller : 'DashboardController'
-							// },	
+							// },
 						},
+
 						
 				})
 
 				.state('mainLayout.category.products', {
-						url: "/{categorySlug}",
+						url: "/{categorySlug}?toggle&short",
 						views : {
 
 							'content' : {
@@ -497,11 +527,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							},
 
 						},
-						
+
 				})
 
 				.state('mainLayout.category.subCatProducts', {
-						url: "/{categorySlug}/{subcategorySlug}",
+						url: "/{categorySlug}/{subcategorySlug}?toggle&short",
 						views : {
 
 							'content' : {

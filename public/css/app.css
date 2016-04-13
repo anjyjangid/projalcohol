@@ -202,3 +202,8 @@
   min-height: -moz-calc(100vh - 85px);
   min-height: -webkit-calc(100vh - 85px);
 }
+
+li.subactive a, li.subactive a span {
+    color: #8D00D4;
+    border-color: #8D00D4;
+}
