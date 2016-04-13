@@ -35,7 +35,6 @@ class ProductRequest extends Request
             'sku' => 'required',
             'quantity' => 'required|numeric',
             'price' => 'required|numeric',
-            'discountPrice' => 'required|numeric',
             'chilled' => 'required|integer',
             'status' => 'required|integer',
             'metaTitle' => 'max:100',
@@ -43,6 +42,10 @@ class ProductRequest extends Request
             'metaDescription' => 'max:255',            
             'isFeatured' => 'required|integer',
             'imageFiles' => 'required|array|min:1',
+            'advance_order' => 'sometimes|numeric',
+            'advance_order_bulk' => 'sometimes|numeric',
+            'express_delivery_bulk' => 'sometimes|numeric',
+            'regular_express_delivery' => 'sometimes|numeric',
         ];
         
         if (isset($input['imageFiles']) && is_array($input['imageFiles']))

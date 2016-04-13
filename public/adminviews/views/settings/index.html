@@ -39,10 +39,13 @@
 		            </div>
 		            <ul class="nav nav-tabs">
 		                <li ng-class="{active: $state.$current.data.key=='general'}">
-		                    <a href="#/settings/general" data-target="#tab_1_1" data-toggle="tab">General</a>
+		                    <a ui-sref="settings.general" data-target="#tab_1_1" data-toggle="tab">General</a>
 		                </li>		                
 		                <li ng-class="{active: $state.$current.data.key=='social'}">
-		                    <a href="#/settings/social" data-target="#tab_1_3" data-toggle="tab">Social</a>
+		                    <a ui-sref="settings.social" data-target="#tab_1_3" data-toggle="tab">Social</a>
+		                </li>
+		                <li ng-class="{active: $state.$current.data.key=='pricing'}">
+		                    <a ui-sref="settings.pricing" data-target="#tab_1_3" data-toggle="tab">Pricing</a>
 		                </li>
 		                <!-- <li>
 		                    <a href="#" data-target="#tab_1_2" data-toggle="tab">API's</a>

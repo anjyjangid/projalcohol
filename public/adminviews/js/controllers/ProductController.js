@@ -25,6 +25,10 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 		$scope.categories = data;		
 	});
 
+	productModel.getSettings().success(function(data){
+		$scope.pricing = data;		
+	});
+
 	$scope.errors = {};
 	
 	$scope.childOf = function(categories, parent){
@@ -52,6 +56,10 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 
 	$scope.imageRemove = function(i){				
 		$scope.product.imageFiles.splice(i, 1);
+	}
+
+	$scope.formatNumber = function(i) {
+	    return i.toFixed(2);	    
 	}
 	
 }]);

@@ -11,8 +11,8 @@ MetronicApp.controller('SettingsController',['$rootScope', '$scope', '$timeout',
 		$rootScope.settings.layout.pageBodySolid = false;
 		$rootScope.settings.layout.pageSidebarClosed = false;  
        
-		settingsModel.getSettings($state.$current.data.key).success(function(response){
-			$scope.settings = response.settings;
+		settingsModel.getSettings($state.$current.data.key).success(function(response){			
+				$scope.settings = response.settings;			
 		});
 
     });   
@@ -32,6 +32,13 @@ MetronicApp.controller('SettingsController',['$rootScope', '$scope', '$timeout',
 		{key:"live",title:"Live"},
 		{key:"maintenance",title:"Maintenance"},
 	];
+
+	/*$scope.popt = [
+      {name:'Fixed Amount'},
+      {name:'% Amount'}      
+    ];*/
+
+	$scope.popt = ['Fixed Amount','% Amount'];
 		
 
 	$scope.update = function(){
@@ -43,6 +50,8 @@ MetronicApp.controller('SettingsController',['$rootScope', '$scope', '$timeout',
 		//POST DATA WITH FILES
 		settingsModel.updateSetting($state.$current.data.key,data).success(function(response){
 
+			$scope.errors = {};
+
 		}).error(function(data, status, headers){
 
 			$scope.errors = data;
@@ -52,4 +61,4 @@ MetronicApp.controller('SettingsController',['$rootScope', '$scope', '$timeout',
 
 
 
-}]); 
+}]);

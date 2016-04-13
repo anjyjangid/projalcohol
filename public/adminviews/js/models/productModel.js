@@ -9,6 +9,10 @@ MetronicApp.factory('productModel', ['$http', '$cookies','$location', function($
             return $http.post("/admin/product/store", {data:data});
         },
 
+        getSettings: function(data){
+            return $http.get("/admin/setting/settings/pricing");
+        },
+
         storeProduct: function(fields,url){
 
 	       	var fd = objectToFormData(fields);	       	  

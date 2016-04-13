@@ -1,8 +1,7 @@
 <div class="row" ng-controller="ProductAddController">
 	<div class="col-md-12">
 		<form role="form" name='productForm' ng-submit="store()" required="false">
-		<div class="portlet light">
-			
+		<div class="portlet light">			
 			<div class="portlet-title">
 				<div class="caption">
 					<i class="fa fa-shopping-cart"></i>Add New Product
@@ -93,26 +92,7 @@
 								</div>
 							</div>
 							
-							<div class="form-group" ng:class="{'has-error':errors.price[0]}">
-								<label class="col-md-2 control-label">Price: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<input type="text" class="form-control" ng-model="product.price" placeholder="">
-									<span class="help-block">For advance delivery</span>
-									<span class="help-block" ng-bind="errors.price[0]"></span>
-								</div>
-							</div>
-							<div class="form-group" ng:class="{'has-error':errors.discountPrice[0]}">
-								<label class="col-md-2 control-label">Discount Price: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<input type="text" class="form-control" ng-model="product.discountPrice" placeholder="">
-									<span class="help-block">For 1hr delivery</span>
-									<span class="help-block" ng-bind="errors.discountPrice[0]"></span>
-								</div>
-							</div>
+							
 							<div class="form-group" ng:class="{'has-error':errors.quantity[0]}">
 								<label class="col-md-2 control-label">Quantity: <span class="required">
 								* </span>
@@ -167,39 +147,45 @@
 
 					</tab>
 					<tab>
-						<tab-heading>Meta</tab-heading>
-						
+						<tab-heading>Pricing</tab-heading>
 						<div class="form-horizontal">
-							<div class="form-group" ng:class="{'has-error':errors.metaTitle[0]}">
-								<label class="col-md-2 control-label">Meta Title:</label>
-								<div class="col-md-10">
-									<input type="text" class="form-control maxlength-handler" ng-model="product.metaTitle" maxlength="100" placeholder="">
-									<span class="help-block">
-									max 100 chars </span>
-									<span class="help-block" ng-bind="errors.metaTitle[0]"></span>
-								</div>
+							<div class="form-group" ng:class="{'has-error':errors.price[0]}">
+								<label class="col-md-4 control-label">Cost Price: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-3">
+									<div class="input-group">
+										<input type="number" step="any" class="form-control" ng-model="product.price" placeholder="">									
+										<span class="input-group-addon">
+											Per Unit
+										</span>
+									</div>
+									<span class="help-block" ng-bind="errors.price[0]"></span>
+								</div>								
 							</div>
-							<div class="form-group" ng:class="{'has-error':errors.metaKeywords[0]}">
-								<label class="col-md-2 control-label">Meta Keywords:</label>
-								<div class="col-md-10">
-									<textarea class="form-control maxlength-handler" rows="8" ng-model="product.metaKeywords" maxlength="1000"></textarea>
-									<span class="help-block">
-									max 1000 chars </span>
-									<span class="help-block" ng-bind="errors.metaKeywords[0]"></span>
+							<div ng-if="product.price">
+								
+								<h4>Pricing for different tiers</h4>									
+								<div class="form-group">
+									<div class="col-md-2 col-md-offset-4">Calculated</div>
+									<div class="col-md-2">Custom</div>
 								</div>
-							</div>
-							<div class="form-group" ng:class="{'has-error':errors.metaDescription[0]}">
-								<label class="col-md-2 control-label">Meta Description:</label>
-								<div class="col-md-10">
-									<textarea class="form-control maxlength-handler" rows="8" ng-model="product.metaDescription" maxlength="255"></textarea>
-									<span class="help-block">
-									max 255 chars </span>
-									<span class="help-block" ng-bind="errors.metaDescription[0]"></span>
+								<div class="form-group" ng-if="price.category == 'pricing'" ng-repeat="(kp, price) in pricing.settings">
+									<label class="col-md-4 control-label">{{price.label}}: </label>
+									<div class="col-md-2">
+										<div class="form-control">
+											{{ price.type==0 ? formatNumber(product.price+price.value) : formatNumber(product.price+(product.price/100*price.value)) }}
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="input-group" >
+											<input type="number" step="any" class="form-control" ng-model="product[kp]" placeholder="">
+										</div>
+									</div>
 								</div>
-							</div>
+							</div>							
 						</div>
-
-					</tab>
+					</tab>	
 					<tab>
 						<tab-heading>Bulk Discounts</tab-heading>
 						
@@ -250,7 +236,42 @@
 							</tbody>
 						</table>	
 
-					</tab>	
+					</tab>
+					<tab>
+						<tab-heading>Meta</tab-heading>
+						
+						<div class="form-horizontal">
+							<div class="form-group" ng:class="{'has-error':errors.metaTitle[0]}">
+								<label class="col-md-2 control-label">Meta Title:</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control maxlength-handler" ng-model="product.metaTitle" maxlength="100" placeholder="">
+									<span class="help-block">
+									max 100 chars </span>
+									<span class="help-block" ng-bind="errors.metaTitle[0]"></span>
+								</div>
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.metaKeywords[0]}">
+								<label class="col-md-2 control-label">Meta Keywords:</label>
+								<div class="col-md-10">
+									<textarea class="form-control maxlength-handler" rows="8" ng-model="product.metaKeywords" maxlength="1000"></textarea>
+									<span class="help-block">
+									max 1000 chars </span>
+									<span class="help-block" ng-bind="errors.metaKeywords[0]"></span>
+								</div>
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.metaDescription[0]}">
+								<label class="col-md-2 control-label">Meta Description:</label>
+								<div class="col-md-10">
+									<textarea class="form-control maxlength-handler" rows="8" ng-model="product.metaDescription" maxlength="255"></textarea>
+									<span class="help-block">
+									max 255 chars </span>
+									<span class="help-block" ng-bind="errors.metaDescription[0]"></span>
+								</div>
+							</div>
+						</div>
+
+					</tab>
+						
 					<tab>
 						<tab-heading>Images</tab-heading>
 

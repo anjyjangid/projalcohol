@@ -546,8 +546,9 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						},
 				});
 
-
-				//$locationProvider.html5Mode(true);
+				/*$locationProvider.html5Mode(true);
+				$locationProvider.hashPrefix = '!';*/
+				
 		}
 		
 ]);
@@ -568,7 +569,7 @@ function ($q, $rootScope, $log) {
     }
  
     return {
-        request: function (config) {            
+        request: function (config) {
             xhrCreations++;
             updateStatus();            
             return config;

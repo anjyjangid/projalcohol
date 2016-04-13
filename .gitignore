@@ -8,3 +8,4 @@ storage/graphics
 .idea
 public/bower_components/
 public/assets
+db
