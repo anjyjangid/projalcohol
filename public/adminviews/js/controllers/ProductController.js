@@ -19,15 +19,20 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 		categories:[],
 		isFeatured:'0',
 		bulkDiscount:[],
-		imageFiles:[{coverimage:1}]
+		imageFiles:[{coverimage:1}],
+		advance_order_bulk:[],
+		express_delivery_bulk:[],
+		price:null
 	};
 
+	$scope.bulktiers = [];
+
 	productModel.getCategories().success(function(data){
-		$scope.categories = data;		
+		$scope.categories = data;
 	});
 
 	productModel.getSettings().success(function(data){
-		$scope.pricing = data;		
+		$scope.pricing = data;	
 	});
 
 	$scope.errors = {};

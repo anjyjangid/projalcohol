@@ -149,112 +149,97 @@
 					<tab>
 						<tab-heading>Pricing</tab-heading>
 						<div class="form-horizontal">
-							<div class="form-group" ng:class="{'has-error':errors.price[0]}">
-								<label class="col-md-4 control-label">Cost Price: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-3">
-									<div class="input-group">
-										<input type="number" step="any" class="form-control" ng-model="product.price" placeholder="">									
-										<span class="input-group-addon">
-											Per Unit
-										</span>
-									</div>
-									<span class="help-block" ng-bind="errors.price[0]"></span>
-								</div>								
-							</div>
-
-							<table class="table table-bordered table-hover">
+							<table class="table table-bordered">
 						        <thead>
+						            <tr>	
+						            	<td class="control-label">
+						            		<label class="control-label">Cost Price: <span class="required"> * </span></label>
+						            	</td>					            	
+						            	<td ng:class="{'has-error':errors.price[0]}" colspan="5">
+						            		<div class="col-md-5">
+							            		<div class="input-group">
+													<input type="number" step="any" class="form-control" ng-model="product.price" placeholder="">									
+													<span class="input-group-addon">
+														Per Unit
+													</span>
+												</div>												
+												<span class="help-block" ng-bind="errors.price[0]"></span>
+											</div>
+						            	</td>
+						            </tr>
 						            <tr role="row" class="heading">                        
 						                <th width="28%">
 						                     Name
 						                </th>
 						                <th width="18%">
-						                     Markup Type
+						                     Calculated
 						                </th>                                   
 						                <th width="18%">
-						                     Value
+						                     Custom
 						                </th>
 						                <th width="18%">
-						                     From Qty
+						                     Custom From Qty
 						                </th>
 						                <th width="18%">
-						                     To Qty
+						                     Custom To Qty
 						                     <br><small>Use 99999 for last range</small>
 						                </th>
 						            </tr>
 						        </thead>
-						        <tbody>            
-						            <tr>
-						            	
-						            </tr>
-						            <tr>
-						                <td colspan="5"><h4>Pricing Tiers</h4></td>
-						            </tr>            
+						        <tbody>					            
 						            <tr ng-if="price.category == 'pricing'" ng-repeat="(kp, price) in pricing.settings">
-						                <td class="control-label"> {{price.label}}: <span class="required"> * </span> </td>
+						                <td class="control-label"> <label class="control-label">{{price.label}}: <span class="required"> * </span></label> </td>
 						                <td>
-						                    <select empty="false" class="form-control" ng-model="price.type">            
-						                        <option value="0">Fix Amount</option>
-						                        <option value="1">% of Amount</option>
-						                    </select>
-						                    <span class="help-block" ng-bind="errors[kv+'.type'][0]"></span>
+						                   	<div>
+							                    <div class="form-control">
+													{{ price.type==0 ? formatNumber(product.price+price.value) : formatNumber(product.price+(product.price/100*price.value)) }}
+												</div>
+												<span class="help-block">
+													{{ price.type==0 ? 'Cost price + '+price.value : 'Cost price + '+price.value+'%' }}
+												</span>
+											</div>	
 						                </td>
 						                <td>
-						                    <input type="number" step="any" class="form-control" ng-model="setting.value" placeholder="">
-						                    <span class="help-block" ng-bind="errors[kv+'.value'][0]"></span>                     
+						                    <input type="number" step="any" class="form-control" ng-model="product[kp]" placeholder="">						                    
 						                </td>
 						                <td align="center">N/A</td>
 						                <td align="center">N/A</td>
 						            </tr>
-						            <tr ng-repeat-start="(kv, setting) in settings" ng-if="setting.category == 'bulk_pricing'"></tr>
-						            <tr ng-repeat="(bk, slots) in setting.bulk">                            
-						                <td class="control-label" rowspan="{{setting.bulk.length}}" ng-if="$index == 0">{{setting.label}}: <span class="required"> * </span></td>
-						                <td ng:class="{'has-error':errors[kv+'.bulk.'+$index+'.type'][0]}">
-						                    <select empty="false" class="form-control" ng-model="slots.type">            
-						                        <option value="0">Fix Amount</option>
-						                        <option value="1">% of Amount</option>
-						                    </select>
-						                    <span class="help-block" ng-bind="errors[kv+'.bulk.'+$index+'.type'][0]"></span>    
+						            <tr ng-if="price.category == 'bulk_pricing'" ng-repeat-start="(kp, price) in pricing.settings"></tr>
+						            <tr ng-repeat="(bk, slots) in price.bulk">                            
+						                <td class="control-label" rowspan="{{price.bulk.length}}" ng-if="$index == 0">
+						                	<label class="control-label">{{price.label}}: <span class="required"> * </span></label>
 						                </td>
-						                <td ng:class="{'has-error':errors[kv+'.bulk.'+$index+'.value'][0]}">
-						                    <input type="number" step="any" class="form-control" ng-model="slots.value" placeholder="">
-						                    <span class="help-block" ng-bind="errors[kv+'.bulk.'+$index+'.value'][0]"></span>
+						                <td>
+						                    <div ng-if="slots.type">
+							                    <div class="form-control">
+													{{ slots.type==0 ? formatNumber(product.price+slots.value) : formatNumber(product.price+(product.price/100*slots.value)) }}
+												</div>
+												<span class="help-block">
+													{{ slots.type==0 ? 'Cost price + '+slots.value : 'Cost price + '+slots.value+'%' }}
+												</span>    
+											</div>
 						                </td>
-						                <td ng:class="{'has-error':errors[kv+'.bulk.'+$index+'.from_qty'][0]}">
-						                    <input type="number" class="form-control" ng-model="slots.from_qty" placeholder="From Qty">
-						                    <span class="help-block" ng-bind="errors[kv+'.bulk.'+$index+'.from_qty'][0]"></span>
+						                <td>
+						                    <input type="number" step="any" class="form-control" ng-model="product[kp][bk].value" placeholder="">
 						                </td>
-						                <td ng:class="{'has-error':errors[kv+'.bulk.'+$index+'.to_qty'][0]}">
-						                    <input type="number" class="form-control" ng-model="slots.to_qty" placeholder="To Qty" max="99999">
-						                    <span class="help-block" ng-bind="errors[kv+'.bulk.'+$index+'.to_qty'][0]"></span>
+						                <td>
+						                    <input type="number" class="form-control" ng-model="product[kp][bk].from_qty" placeholder="From Qty">						                    
+						                </td>
+						                <td>
+						                    <input type="number" class="form-control" ng-model="product[kp][bk].to_qty" placeholder="To Qty" max="99999">						                    
 						                </td>
 						            </tr>
-						            <tr ng-repeat-end ng-if="setting.category == 'bulk_pricing'"></tr>
+						            <tr ng-if="price.category == 'bulk_pricing'">
+						            	<td colspan="5" class="control-label">
+						            		<a id="addbulk" href="#" ng-click="price.bulk.push({})" class="btn yellow">
+												<i class="fa fa-plus"></i> Add
+											</a>
+						            	</td>
+						            </tr>
+						            <tr ng-repeat-end ng-if="price.category == 'bulk_pricing'"></tr>
 						        </tbody>
-						    </table>
-
-							<!-- <div ng-if="product.price">								
-								<h4>Pricing for different tiers</h4>									
-								<div class="form-group">
-									<div class="col-md-2 col-md-offset-4">Calculated</div>
-									<div class="col-md-2">Custom</div>
-								</div>
-								<div class="form-group" ng-if="price.category == 'pricing'" ng-repeat="(kp, price) in pricing.settings">
-									<label class="col-md-4 control-label">{{price.label}}: </label>
-									<div class="col-md-2">
-										<div class="form-control">
-											{{ price.type==0 ? formatNumber(product.price+price.value) : formatNumber(product.price+(product.price/100*price.value)) }}
-										</div>
-									</div>
-									<div class="col-md-2">
-										<div class="input-group" >
-											<input type="number" step="any" class="form-control" ng-model="product[kp]" placeholder="">
-										</div>
-									</div>
-								</div>
-							</div> -->							
+						    </table>												
 						</div>
 					</tab>	
 					<tab>
