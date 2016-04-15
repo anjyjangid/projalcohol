@@ -16,19 +16,31 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 
 	$scope.product = {		
 		chilled:'1',
-		categories:[],
+		categories:['56ffcdffc31d53b2218b4594'],
 		isFeatured:'0',
-		bulkDiscount:[],
+		bulkDisable:false,
 		imageFiles:[{coverimage:1}],
+		advance_order:[],
+		regular_express_delivery:[],
 		advance_order_bulk:[],
-		express_delivery_bulk:[],
+		express_delivery_bulk:[],	
 		price:null
-	};
-
-	$scope.bulktiers = [];
+	};	
 
 	productModel.getCategories().success(function(data){
 		$scope.categories = data;
+		$scope.cd = [];
+		var allparent = $scope.childOf(data,0);
+
+		for(var c in allparent){			
+			$scope.cd.push({id:[data[c]._id],name:data[c].cat_title});
+			var child = $scope.childOf(data,allparent[c]._id);
+			for(var cc in child){
+				$scope.cd.push({id:[allparent[c]._id,child[cc]._id],name:allparent[c].cat_title+' > '+child[cc].cat_title});
+			}
+		}
+
+		//$scope.product.categories = $scope.cd[6].id;
 	});
 
 	productModel.getSettings().success(function(data){
@@ -52,7 +64,6 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 	}
 
 	$scope.selectCategory = function(id,eve){
-
 		var i = $scope.product.categories.indexOf(id);
 		if(i>-1)
 			$scope.product.categories.splice(i, 1);
@@ -67,7 +78,14 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 	$scope.formatNumber = function(i) {
 	    return i.toFixed(2);	    
 	}
-	
+
+	$scope.edittier = function(val,price,t){		
+		if(t == 1){
+			$scope.product[val].push(angular.copy(price));
+		}else{
+			$scope.product[val] = [];
+		}
+	}
 }]);
 
 MetronicApp.controller('ProductAddController',['$scope', '$location','fileUpload','productModel', function($scope,$location,fileUpload,productModel) {
@@ -157,9 +175,9 @@ MetronicApp.directive('myChange', function() {
       var checked = $(element).prop("checked"),
       container = $(element).closest("li"),
       siblings = container.siblings();
-      container.find('input[type="checkbox"]').prop({         
+      /*container.find('input[type="checkbox"]').prop({         
           checked: checked
-      });
+      });*/
 
 	  function checkSiblings(el) {
 	      var parent = el.parent().parent(),
