@@ -50,7 +50,7 @@
 								* </span>
 								</label>
 								<div class="col-md-10" >
-									{{product.categories}}
+									<!-- {{product.categories}} -->
 									<select class="form-control" ng-model="product.categories" ng-options="obj.id as obj.name | ucwords for obj in cd">
 										<option value="">Select..</option>
 									</select>
@@ -439,5 +439,5 @@
 </script>
 
 
-<pre>{{ product|json }}</pre>
-<pre>{{ cd|json }}</pre>
+<!-- <pre>{{ product|json }}</pre>
+<pre>{{ cd|json }}</pre> -->

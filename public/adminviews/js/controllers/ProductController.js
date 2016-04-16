@@ -33,14 +33,14 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 		var allparent = $scope.childOf(data,0);
 
 		for(var c in allparent){			
-			$scope.cd.push({id:[data[c]._id],name:data[c].cat_title});
+			$scope.cd.push({id:[data[c]._id],name:data[c].cat_title,unique:data[c]._id});
 			var child = $scope.childOf(data,allparent[c]._id);
 			for(var cc in child){
-				$scope.cd.push({id:[allparent[c]._id,child[cc]._id],name:allparent[c].cat_title+' > '+child[cc].cat_title});
+				$scope.cd.push({id:[allparent[c]._id,child[cc]._id],name:allparent[c].cat_title+' > '+child[cc].cat_title,unique:data[c]._id+'|'+child[cc]._id});
 			}
 		}
 
-		//$scope.product.categories = $scope.cd[6].id;
+		$scope.product.categories = $scope.cd[6].id;
 	});
 
 	productModel.getSettings().success(function(data){
@@ -85,6 +85,10 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 		}else{
 			$scope.product[val] = [];
 		}
+	}
+
+	$scope.getKey = function(cat,val){
+		
 	}
 }]);
 
