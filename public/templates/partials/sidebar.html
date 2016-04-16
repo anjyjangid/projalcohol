@@ -28,7 +28,7 @@
 		{{childCategories = childOf(categories,c._id)}}
 		{{isChildExist = childCategories.length > 0}}		
 	</div>
-		<a href="#/{{c.slug}}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{c.cat_title}} <span class="caret" ng-show='isChildExist'></span></a>
+		<a ui-sref="mainLayout.category.products({categorySlug:c.slug})" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{c.cat_title}} <span class="caret" ng-show='isChildExist'></span></a>
 
 		<ul class="dropdown-menu" ng-class="{'animate':showPersonSubMenu}" ng-style="{'background-image':'url(/assets/resources/category/lthumb/400/{{c.cat_lthumb}})'}" ng-show='isChildExist'>
 			<li class="dm_title">{{c.cat_title}}</li>

@@ -24,6 +24,7 @@ AlcoholDelivery.directive('sideBar', function() {
 });
 
  AlcoholDelivery.directive('topMenu', function(){
+
 	return {
 		restrict: 'E',
 		/*scope:{
@@ -33,7 +34,12 @@ AlcoholDelivery.directive('sideBar', function() {
 		controller: function($scope,$http){			
 			
 			$scope.list = [];
-			$scope.signup = {terms:null};
+
+			$scope.signup = {
+
+				terms:null
+			};
+
 			$scope.login = {};
 			$scope.forgot = {};
 			$scope.errors = {};
