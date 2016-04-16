@@ -143,6 +143,9 @@
 					<tab>
 						<tab-heading>Pricing</tab-heading>
 						<div class="form-horizontal">							
+							
+
+
 							<table class="table table-bordered">
 						        <thead>
 						            <tr>	
@@ -196,35 +199,39 @@
 						                	</label>
 						                </td>
 						                <td>
-						                
-						                	<label ng-if="product[kp].length == 0" class="control-label">
+
+						                	<label ng-if="product[kp] | isEmpty" class="control-label">
+
 						                		{{ price.type==0 ? 'Fix Amount':'% of Amount' }}
-						                	</label>
-						                	<select ng-if="product[kp].length" class="form-control" ng-model="product[kp][0].type">            
+						                	</label>						                	
+						                	<select ng-if="!(product[kp] | isEmpty)" class="form-control" ng-model="product[kp].type">            
 						                        <option value="0">Fix Amount</option>
 						                        <option value="1">% of Amount</option>
-						                    </select>
+						                    </select>							                
 						                </td>
 						                <td>
-						                	<label ng-if="product[kp].length == 0" class="control-label">
+						                	<label ng-if="product[kp] | isEmpty" class="control-label">
 						                		{{ price.value }}
 						                	</label>
-						                    <input ng-if="product[kp].length" type="number" step="any" class="form-control" ng-model="product[kp][0].value" placeholder="">						                    
+						                    <div ng-if="!(product[kp] | isEmpty)" ng:class="{'has-error':errors[kp+'.value'][0]}">
+						                    	<input  type="number" step="any" class="form-control" ng-model="product[kp].value" placeholder="">						                    
+						                    	<span class="help-block" ng-bind="errors[kp+'.value'][0]"></span>
+						                    </div>
 						                </td>						                
 						                <td colspan="2" align="center">
 						                	<label class="control-label">N/A</label>
 						                </td>
 						                <td>
-						                	<label ng-if="product[kp].length" class="control-label">
-						                		{{ product[kp][0].type == 0 ? formatNumber(product.price+product[kp][0].value) : formatNumber(product.price+(product.price/100*product[kp][0].value)) }}
+						                	<label ng-if="!(product[kp] | isEmpty)" class="control-label">
+						                		{{ product[kp].type == 0 ? formatNumber(product.price+product[kp].value) : formatNumber(product.price+(product.price/100*product[kp].value)) }}
 						                	</label>
-						                    <label ng-if="product[kp].length == 0" class="control-label">
+						                    <label ng-if="product[kp] | isEmpty" class="control-label">
 												{{ price.type==0 ? formatNumber(product.price+price.value) : formatNumber(product.price+(product.price/100*price.value)) }}
 											</label>																							
 						                </td>
 						                <td> 
-						                	<a class="btn btn-xs default" ng-if="product[kp].length == 0" href="javascript:void();" ng-click="edittier(kp,price,1)">Edit</a>
-						                	<a class="btn btn-xs default" ng-if="product[kp].length" href="javascript:void();" ng-click="edittier(kp,price,0)">Default</a>
+						                	<a class="btn btn-xs default" ng-if="product[kp] | isEmpty" href="javascript:void();" ng-click="edittier(kp,price,1)">Custom</a>
+						                	<a class="btn btn-xs default" ng-if="!(product[kp] | isEmpty)" href="javascript:void();" ng-click="edittier(kp,price,0)">Default</a>
 						                </td>
 						            </tr>
 						            <tr>
@@ -239,7 +246,7 @@
 							        </tr>
 						            <tr ng-if="price.category == 'bulk_pricing'" ng-repeat-start="(kp, price) in pricing.settings"></tr>
 						            
-						            <tr ng-if="product[kp].length == 0" ng-hide="product.bulkDisable" ng-repeat="(bk, slots) in price.bulk">                            
+						            <tr ng-if="product[kp] | isEmpty" ng-hide="product.bulkDisable" ng-repeat="(bk, slots) in price.bulk">                            
 						                <td class="control-label" rowspan="{{price.bulk.length}}" ng-if="$index == 0">
 						                	<label class="control-label">{{price.label}}: <span class="required"> * </span></label>
 						                </td>
@@ -269,28 +276,32 @@
 						                	</label>					                    						                    
 						                </td>
 						                <td>
-						                	<a class="btn btn-xs default" ng-if="$index == 0" href="javascript:void();" ng-click="edittier(kp,price,1)">Edit</a>						                	
+						                	<a class="btn btn-xs default" ng-if="$index == 0" href="javascript:void();" ng-click="edittier(kp,price,1)">Custom</a>						                	
 						                </td>
 						            </tr>						            						            
 						            
-						            <tr ng-if="product[kp].length" ng-hide="product.bulkDisable" ng-repeat="(bk, slots) in product[kp][0].bulk">                            
-						                <td class="control-label" rowspan="{{product[kp][0].bulk.length}}" ng-if="$index == 0">
-						                	<label class="control-label">{{product[kp][0].label}}: <span class="required"> * </span></label>
+						            <tr ng-if="!(product[kp] | isEmpty)" ng-hide="product.bulkDisable" ng-repeat="(bk, slots) in product[kp].bulk">                            
+						                <td class="control-label" rowspan="{{product[kp].bulk.length}}" ng-if="$index == 0">
+						                	<label class="control-label">{{product[kp].label}}: <span class="required"> * </span></label>
 						                </td>
-						                <td>						                	
+						                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.type'][0]}">						                							                	
 						                	<select empty="false" class="form-control" ng-model="slots.type">            
 						                        <option value="0">Fix Amount</option>
 						                        <option value="1">% of Amount</option>
 						                    </select>
+						                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.type'][0]"></span>
 						                </td>
-						                <td>						                    
+						                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.value'][0]}">						                    
 						                    <input type="number" step="any" class="form-control" ng-model="slots.value" placeholder="">
+						                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.value'][0]"></span>
 						                </td>
-						                <td>						                    
+						                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.from_qty'][0]}">						                    
 						                    <input type="number" class="form-control" ng-model="slots.from_qty" placeholder="From Qty">						                    
+						                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.from_qty'][0]"></span>
 						                </td>
-						                <td>						                   
+						                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.to_qty'][0]}">						                   
 						                    <input type="number" class="form-control" ng-model="slots.to_qty" placeholder="To Qty" max="99999">						                    
+						                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.to_qty'][0]"></span>
 						                </td>
 						                <td>
 						                    <label ng-if="product[kp].length" class="control-label">
@@ -298,9 +309,9 @@
 											</label>																							
 						                </td>
 						                <td>						                	
-						                	<a class="btn btn-xs default" ng-if="$index == 0" href="javascript:void();" ng-click="edittier(kp,price,0)">Set Default</a>
-						                	<a class="btn btn-xs default" ng-if="product[kp][0].bulk.length < 4 && $index == 0" href="javascript:void();" ng-click="product[kp][0].bulk.push({type:0,value:null,from_qty:null,to_qty:null})">+</a>
-						                	<a class="btn btn-xs default" ng-if="$index > 0" href="javascript:void();" ng-click="product[kp][0].bulk.splice($index,1)">Remove</a>
+						                	<a class="btn btn-xs default" ng-if="$index == 0" href="javascript:void();" ng-click="edittier(kp,price,0)">Default</a>
+						                	<a class="btn btn-xs default" ng-if="product[kp].bulk.length < 4 && $index == 0" href="javascript:void();" ng-click="product[kp].bulk.push({type:0,value:null,from_qty:null,to_qty:null})">+</a>
+						                	<a class="btn btn-xs default" ng-if="$index > 0" href="javascript:void();" ng-click="product[kp].bulk.splice($index,1)">Remove</a>
 						                </td>
 						            </tr>
 
@@ -440,5 +451,7 @@
 </script>
 
 
-<pre>{{ product|json }}</pre>
-<pre>{{ cd|json }}</pre>
+
+<!-- <pre>{{ product|json }}</pre> -->
+
+

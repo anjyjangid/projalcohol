@@ -42,6 +42,7 @@ class ProductRequest extends Request
             'metaDescription' => 'max:255',            
             'isFeatured' => 'required|integer',
             'imageFiles' => 'required|array|min:1',            
+            'loyalty' => 'required|numeric',
         ];
         
         if (isset($input['imageFiles']) && is_array($input['imageFiles']))
@@ -54,15 +55,38 @@ class ProductRequest extends Request
                 $rules[$ruleKey . '.label'] = 'required|max:100';
                 $rules[$ruleKey . '.order'] = 'required|integer';
             }
+        }        
+
+        if (isset($input['advance_order']) && is_array($input['advance_order'])){
+            $rules['advance_order.value'] = 'required|numeric';
+            $rules['advance_order.type'] = 'required|numeric';                
         }
 
-        if (isset($input['bulkDiscount']) && is_array($input['bulkDiscount']))
+        if (isset($input['regular_express_delivery']) && is_array($input['regular_express_delivery'])){
+            $rules['regular_express_delivery.value'] = 'required|numeric';
+            $rules['regular_express_delivery.type'] = 'required|numeric';                            
+        }
+
+        if (isset($input['advance_order_bulk']['bulk']) && is_array($input['advance_order_bulk']['bulk']))
         {
-            foreach ($input['bulkDiscount'] as $dKey => $discount)
+            foreach ($input['advance_order_bulk']['bulk'] as $bk => $bval)
             {
-                $ruleKey = 'bulkDiscount.' . $dKey;
-                $rules[$ruleKey . '.quantity'] = 'required|integer';
-                $rules[$ruleKey . '.type'] = 'required|digits_between:1,2';
+                $ruleKey = 'advance_order_bulk.bulk.' . $bk;
+                $rules[$ruleKey . '.from_qty'] = 'required|numeric|min:1';
+                $rules[$ruleKey . '.to_qty'] = 'required|numeric|min:1|max:99999';
+                $rules[$ruleKey . '.type'] = 'required|numeric';
+                $rules[$ruleKey . '.value'] = 'required|numeric';
+            }
+        }
+
+        if (isset($input['express_delivery_bulk']['bulk']) && is_array($input['express_delivery_bulk']['bulk']))
+        {
+            foreach ($input['express_delivery_bulk']['bulk'] as $bk => $bval)
+            {
+                $ruleKey = 'express_delivery_bulk.bulk.' . $bk;
+                $rules[$ruleKey . '.from_qty'] = 'required|numeric|min:1';
+                $rules[$ruleKey . '.to_qty'] = 'required|numeric|min:1|max:99999';
+                $rules[$ruleKey . '.type'] = 'required|numeric';
                 $rules[$ruleKey . '.value'] = 'required|numeric';
             }
         }   
@@ -74,9 +98,9 @@ class ProductRequest extends Request
     {
 
         $messages = [
-            'required' => ':attribute is required',
-            'categories.required' => 'Please select atleast one category.',
-            'status.required' => 'Please select :attribute.',
+            'required' => 'This field is required',
+            //'categories.required' => 'Please select a category.',
+            //'status.required' => 'Please select :attribute.',
             'imageFiles.required' => 'Please add atleast one image.'            
         ]; 
 
@@ -94,21 +118,7 @@ class ProductRequest extends Request
                 $messages['imageFiles.'.$key.'.order.integer'] = 'Order for the image must be numeric.';
             }    
         
-        }
-
-        $discounts = Request::input('bulkDiscount');
-
-        if(isset($discounts) && is_array($discounts)){
-
-            foreach ($this->request->get('bulkDiscount') as $key => $contact) {                
-                $messages['bulkDiscount.'.$key.'.quantity.required'] = 'Please enter quantity.';
-                $messages['bulkDiscount.'.$key.'.quantity.integer'] = 'Quantity must be numeric.';            
-                $messages['bulkDiscount.'.$key.'.type.required'] = 'Please select type of discount.';
-                $messages['bulkDiscount.'.$key.'.value.required'] = 'Please enter value for the discount type choosen.';
-                $messages['bulkDiscount.'.$key.'.value.numeric'] = 'Value must be numeric only.';                
-            }    
-        
-        }
+        }       
 
         return $messages;
 

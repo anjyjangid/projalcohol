@@ -16,14 +16,14 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 
 	$scope.product = {		
 		chilled:'1',
-		categories:['56ffcdffc31d53b2218b4594'],
+		categories:[],
 		isFeatured:'0',
 		bulkDisable:false,
 		imageFiles:[{coverimage:1}],
-		advance_order:[],
-		regular_express_delivery:[],
-		advance_order_bulk:[],
-		express_delivery_bulk:[],	
+		advance_order:{},
+		regular_express_delivery:{},
+		advance_order_bulk:{},
+		express_delivery_bulk:{},	
 		price:null
 	};	
 
@@ -40,7 +40,11 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 			}
 		}
 
-		$scope.product.categories = $scope.cd[6].id;
+		var unique = $scope.product.categories.join('|');
+
+		var k = $scope.getKey($scope.cd,unique);
+		
+		//$scope.product.categories = $scope.cd[k].id;
 	});
 
 	productModel.getSettings().success(function(data){
@@ -81,15 +85,22 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 
 	$scope.edittier = function(val,price,t){		
 		if(t == 1){
-			$scope.product[val].push(angular.copy(price));
+			$scope.product[val] = angular.copy(price);
 		}else{
-			$scope.product[val] = [];
+			$scope.product[val] = {};
 		}
 	}
 
-	$scope.getKey = function(cat,val){
-		
+	$scope.getKey = function(categories,val){		
+		var r = null;
+		angular.forEach(categories, function(value, key) {
+			if(val == value.unique){
+				r = key;
+			}
+		});
+		return r;
 	}
+
 }]);
 
 MetronicApp.controller('ProductAddController',['$scope', '$location','fileUpload','productModel', function($scope,$location,fileUpload,productModel) {
