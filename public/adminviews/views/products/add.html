@@ -8,29 +8,7 @@
 				</div>
 				<div class="actions btn-set">
 					<a class="btn default" href="#/product/list"><i class="fa fa-angle-left"></i> Back</a>
-					<button class="btn green" type="submit"><i class="fa fa-check"></i> Save</button>
-					<!-- <button class="btn green"><i class="fa fa-check-circle"></i> Save & Continue Edit</button> -->
-					<!-- <div class="btn-group">
-						<a class="btn yellow dropdown-toggle" href="javascript:;" data-toggle="dropdown">
-						<i class="fa fa-share"></i> More <i class="fa fa-angle-down"></i>
-						</a>
-						<ul class="dropdown-menu pull-right">
-							<li>
-								<a href="javascript:;">
-								Duplicate </a>
-							</li>
-							<li>
-								<a href="javascript:;">
-								Delete </a>
-							</li>
-							<li class="divider">
-							</li>
-							<li>
-								<a href="javascript:;">
-								Print </a>
-							</li>
-						</ul>
-					</div> -->
+					<button class="btn green" type="submit"><i class="fa fa-check"></i> Save</button>					
 				</div>
 			</div>
 			<div class="portlet-body">				
@@ -71,14 +49,19 @@
 								<label class="col-md-2 control-label">Categories: <span class="required">
 								* </span>
 								</label>
-								<div class="col-md-10">
-									<div class="form-control height-auto" id="checkable">
+								<div class="col-md-10" >
+									<!-- {{product.categories}} -->
+									<select class="form-control" ng-model="product.categories" ng-options="obj.id as obj.name | ucwords for obj in cd">
+										<option value="">Select..</option>
+									</select>
+									<!-- <div class="form-control height-auto" id="checkable">
 										<div class="slimScrollDiv" style="overflow: auto; width: auto; height: 275px;">
 											<ul class="list-unstyled" ng-include="'categoryLiTree'"></ul>
+
 										</div>
-									</div>
+									</div> 
 									<span class="help-block">
-									select one or more categories </span>
+									select one or more categories </span>-->
 									<span class="help-block" ng-bind="errors.categories[0]"></span>
 								</div>
 							</div>							
@@ -102,6 +85,17 @@
 									<span class="help-block" ng-bind="errors.quantity[0]"></span>
 								</div>
 							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.loyalty[0]}">
+								<label class="col-md-2 control-label">Loyalty Value: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="number" class="form-control" ng-model="product.loyalty" placeholder="">																		
+									<span class="help-block">Loyalty points to be given on product purhcase</span>
+									<span class="help-block" ng-bind="errors.loyalty[0]"></span>
+								</div>
+							</div>
 							<div class="form-group">
 								<label class="control-label col-md-2">Chilled/Non-chilled <span class="required" aria-required="true">
 								* </span></label>
@@ -121,12 +115,12 @@
 								* </span></label>
 								<div class="col-md-4">
 								
-								<div class="radio-list">
-									<label class="radio-inline">
-									<input ng-model="product.isFeatured" type="radio" value="1" name="isFeatured"> Yes </label>
-									<label class="radio-inline">
-									<input ng-model="product.isFeatured" type="radio" value="0" name="isFeatured"> No </label>
-								</div>
+									<div class="radio-list">
+										<label class="radio-inline">
+										<input ng-model="product.isFeatured" type="radio" value="1" name="isFeatured"> Yes </label>
+										<label class="radio-inline">
+										<input ng-model="product.isFeatured" type="radio" value="0" name="isFeatured"> No </label>
+									</div>
 
 								</div>
 							</div>														
@@ -148,95 +142,179 @@
 					</tab>
 					<tab>
 						<tab-heading>Pricing</tab-heading>
-						<div class="form-horizontal">
-							<div class="form-group" ng:class="{'has-error':errors.price[0]}">
-								<label class="col-md-4 control-label">Cost Price: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-3">
-									<div class="input-group">
-										<input type="number" step="any" class="form-control" ng-model="product.price" placeholder="">									
-										<span class="input-group-addon">
-											Per Unit
-										</span>
-									</div>
-									<span class="help-block" ng-bind="errors.price[0]"></span>
-								</div>								
-							</div>
-							<div ng-if="product.price">
-								
-								<h4>Pricing for different tiers</h4>									
-								<div class="form-group">
-									<div class="col-md-2 col-md-offset-4">Calculated</div>
-									<div class="col-md-2">Custom</div>
-								</div>
-								<div class="form-group" ng-if="price.category == 'pricing'" ng-repeat="(kp, price) in pricing.settings">
-									<label class="col-md-4 control-label">{{price.label}}: </label>
-									<div class="col-md-2">
-										<div class="form-control">
-											{{ price.type==0 ? formatNumber(product.price+price.value) : formatNumber(product.price+(product.price/100*price.value)) }}
-										</div>
-									</div>
-									<div class="col-md-2">
-										<div class="input-group" >
-											<input type="number" step="any" class="form-control" ng-model="product[kp]" placeholder="">
-										</div>
-									</div>
-								</div>
-							</div>							
-						</div>
-					</tab>	
-					<tab>
-						<tab-heading>Bulk Discounts</tab-heading>
-						
-						<div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10">
-							<a id="tab_images_uploader_pickfiles" href="#" ng-click="product.bulkDiscount.push({})" class="btn yellow">
-							<i class="fa fa-plus"></i> Add</a>							
-						</div>
+						<div class="form-horizontal">							
+							<table class="table table-bordered">
+						        <thead>
+						            <tr>	
+						            	<td class="control-label">
+						            		<label class="control-label">Cost Price: <span class="required"> * </span></label>
+						            	</td>					            	
+						            	<td ng:class="{'has-error':errors.price[0]}" colspan="6">
+						            		<div class="col-md-5">
+							            		<div class="input-group">
+													<input type="number" step="any" class="form-control" ng-model="product.price" placeholder="">									
+													<span class="input-group-addon">
+														Per Unit
+													</span>
+												</div>												
+												<span class="help-block" ng-bind="errors.price[0]"></span>
+											</div>
+						            	</td>
+						            </tr>
+						            <tr role="row" class="heading">                        						                
+						                <th width="14%">
+						                     Name
+						                </th>
+						                <th width="14%">
+						                     Markup Type
+						                </th>                                   
+						                <th width="14%">
+						                     Value
+						                </th>
+						                <th width="14%">
+						                     From Qty
+						                </th>
+						                <th width="14%">
+						                     To Qty
+						                     <br><small>Use 99999 for last range</small>
+						                </th>
+						                <th width="14%">
+						                     Calculated	
+						                     <br><small>(Per Unit)</small>
+						                </th>
+						                <th width="14%">
+						                	Action
+						                </th>
+						            </tr>
+						        </thead>
+						        <tbody>					            
+						            <tr><td colspan="7"><h4>Single Purchase</h4></td></tr>
+						            <tr ng-if="price.category == 'pricing'" ng-repeat="(kp, price) in pricing.settings">						                
+						                <td class="control-label"> 
+						                	<label class="control-label">
+						                		{{price.label}}: <span class="required"> * </span>
+						                	</label>
+						                </td>
+						                <td>
+						                	<label ng-if="product[kp].length == 0" class="control-label">
+						                		{{ price.type==0 ? 'Fix Amount':'% of Amount' }}
+						                	</label>
+						                	<select ng-if="product[kp].length" class="form-control" ng-model="product[kp][0].type">            
+						                        <option value="0">Fix Amount</option>
+						                        <option value="1">% of Amount</option>
+						                    </select>
+						                </td>
+						                <td>
+						                	<label ng-if="product[kp].length == 0" class="control-label">
+						                		{{ price.value }}
+						                	</label>
+						                    <input ng-if="product[kp].length" type="number" step="any" class="form-control" ng-model="product[kp][0].value" placeholder="">						                    
+						                </td>						                
+						                <td colspan="2" align="center">
+						                	<label class="control-label">N/A</label>
+						                </td>
+						                <td>
+						                	<label ng-if="product[kp].length" class="control-label">
+						                		{{ product[kp][0].type == 0 ? formatNumber(product.price+product[kp][0].value) : formatNumber(product.price+(product.price/100*product[kp][0].value)) }}
+						                	</label>
+						                    <label ng-if="product[kp].length == 0" class="control-label">
+												{{ price.type==0 ? formatNumber(product.price+price.value) : formatNumber(product.price+(product.price/100*price.value)) }}
+											</label>																							
+						                </td>
+						                <td> 
+						                	<a class="btn btn-xs default" ng-if="product[kp].length == 0" href="javascript:void();" ng-click="edittier(kp,price,1)">Edit</a>
+						                	<a class="btn btn-xs default" ng-if="product[kp].length" href="javascript:void();" ng-click="edittier(kp,price,0)">Default</a>
+						                </td>
+						            </tr>
+						            <tr>
+						            	<td colspan="7">
+						            		<h4>Bulk Purchase
+						            			<label class="pull-right control-label">
+								            		 Disable bulk : <input type="checkbox" class="make-switch" data-on="success" data-off="warning" ng-model="product.bulkDisable" checked="product.bulkDisable"> 
+								            	</label>
+						            		</h4>
+							            	
+							            </td>
+							        </tr>
+						            <tr ng-if="price.category == 'bulk_pricing'" ng-repeat-start="(kp, price) in pricing.settings"></tr>
+						            
+						            <tr ng-if="product[kp].length == 0" ng-hide="product.bulkDisable" ng-repeat="(bk, slots) in price.bulk">                            
+						                <td class="control-label" rowspan="{{price.bulk.length}}" ng-if="$index == 0">
+						                	<label class="control-label">{{price.label}}: <span class="required"> * </span></label>
+						                </td>
+						                <td>
+						                	<label class="control-label">
+						                		{{ slots.type == 0 ? 'Fix Amount':'% of Amount' }}
+						                	</label>						                	
+						                </td>
+						                <td>
+						                    <label class="control-label">
+						                		{{ slots.value }}
+						                	</label>						                    
+						                </td>
+						                <td>
+						                    <label class="control-label">
+						                		{{ slots.from_qty }}
+						                	</label>						                    
+						                </td>
+						                <td>
+						                    <label class="control-label">
+						                		{{ slots.to_qty }}
+						                	</label>						                    
+						                </td>
+						                <td>	
+						                	<label class="control-label">
+						                		{{ slots.type==0 ? formatNumber(product.price+slots.value) : formatNumber(product.price+(product.price/100*slots.value)) }}
+						                	</label>					                    						                    
+						                </td>
+						                <td>
+						                	<a class="btn btn-xs default" ng-if="$index == 0" href="javascript:void();" ng-click="edittier(kp,price,1)">Edit</a>						                	
+						                </td>
+						            </tr>						            						            
+						            
+						            <tr ng-if="product[kp].length" ng-hide="product.bulkDisable" ng-repeat="(bk, slots) in product[kp][0].bulk">                            
+						                <td class="control-label" rowspan="{{product[kp][0].bulk.length}}" ng-if="$index == 0">
+						                	<label class="control-label">{{product[kp][0].label}}: <span class="required"> * </span></label>
+						                </td>
+						                <td>						                	
+						                	<select empty="false" class="form-control" ng-model="slots.type">            
+						                        <option value="0">Fix Amount</option>
+						                        <option value="1">% of Amount</option>
+						                    </select>
+						                </td>
+						                <td>						                    
+						                    <input type="number" step="any" class="form-control" ng-model="slots.value" placeholder="">
+						                </td>
+						                <td>						                    
+						                    <input type="number" class="form-control" ng-model="slots.from_qty" placeholder="From Qty">						                    
+						                </td>
+						                <td>						                   
+						                    <input type="number" class="form-control" ng-model="slots.to_qty" placeholder="To Qty" max="99999">						                    
+						                </td>
+						                <td>
+						                    <label ng-if="product[kp].length" class="control-label">
+												{{ slots.type == 0 ? formatNumber(product.price+slots.value) : formatNumber(product.price+(product.price/100*slots.value)) }}
+											</label>																							
+						                </td>
+						                <td>						                	
+						                	<a class="btn btn-xs default" ng-if="$index == 0" href="javascript:void();" ng-click="edittier(kp,price,0)">Set Default</a>
+						                	<a class="btn btn-xs default" ng-if="product[kp][0].bulk.length < 4 && $index == 0" href="javascript:void();" ng-click="product[kp][0].bulk.push({type:0,value:null,from_qty:null,to_qty:null})">+</a>
+						                	<a class="btn btn-xs default" ng-if="$index > 0" href="javascript:void();" ng-click="product[kp][0].bulk.splice($index,1)">Remove</a>
+						                </td>
+						            </tr>
 
-						<table class="table table-bordered table-hover">
-							<thead>
-								<tr role="row" class="heading">
-									<th width="30%">
-										 Quantity
-									</th>
-									<th width="30%">
-										 Discount type
-									</th>
-									<th width="30%">
-										 Value
-									</th>									
-									<th width="10%">
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr ng-repeat="d in product.bulkDiscount">
-									<td ng:class="{'has-error':errors['bulkDiscount.'+$index+'.quantity'][0]}">
-										<input type="number" class="form-control" ng-model="d.quantity">
-										<span class="help-block" ng-bind="errors['bulkDiscount.'+$index+'.quantity'][0]"></span>
-									</td>
-									<td ng:class="{'has-error':errors['bulkDiscount.'+$index+'.type'][0]}">
-										<select class="form-control" ng-model="d.type">
-											<option value="">Select type</option>
-											<option value="1">Fix amount</option>
-											<option value="2">% of amount</option>
-										</select>										
-										<span class="help-block" ng-bind="errors['bulkDiscount.'+$index+'.type'][0]"></span>
-									</td>
-									<td ng:class="{'has-error':errors['bulkDiscount.'+$index+'.value'][0]}">
-										<input type="text" class="form-control" ng-model="d.value">
-										<span class="help-block" ng-bind="errors['bulkDiscount.'+$index+'.value'][0]"></span>
-									</td>
-									<td>
-										<a href="#" class="btn default btn-sm" ng-click="discountRemove($index)">
-										<i class="fa fa-times"></i> Remove </a>
-									</td>
-								</tr>
-							</tbody>
-						</table>	
+						            <tr ng-repeat-end ng-if="price.category == 'bulk_pricing'"></tr>
 
-					</tab>
+						            <!-- Edit mode of advance order bulk -->
+
+						            
+
+						            <!-- Edit mode of advance order bulk -->
+
+						        </tbody>
+						    </table>						    
+						</div>
+					</tab>						
 					<tab>
 						<tab-heading>Meta</tab-heading>
 						
@@ -269,7 +347,6 @@
 								</div>
 							</div>
 						</div>
-
 					</tab>
 						
 					<tab>
@@ -279,12 +356,10 @@
 							<i class="fa-lg fa fa-warning"></i>
 							{{ errors.imageFiles[0] }}
 						</div>
-
 						<div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10">
 							<a id="tab_images_uploader_pickfiles" href="#" ng-click="product.imageFiles.push({})" class="btn yellow">
-							<i class="fa fa-plus"></i> Add Files </a>
-							<!-- <a id="tab_images_uploader_uploadfiles" href="#" ng-click="uploadFiles()" class="btn green">
-							<i class="fa fa-share"></i> Upload Files </a> -->
+								<i class="fa fa-plus"></i> Add Files 
+							</a>							
 						</div>
 						<div class="row">
 							<div id="tab_images_uploader_filelist" class="col-md-6 col-sm-12">
@@ -349,19 +424,20 @@
 							</tbody>
 						</table>
 					</tab>
-				</tabset>
-				<!-- {{{error:errors} | json}} -->
-
-				
-				<!-- {{{product:product}|json}} -->
+				</tabset>				
 			</div>			
 		</div>
 		</form>
 	</div>
 </div>
+
 <script type="text/ng-template" id="categoryLiTree">
 	<li ng-repeat="c in childOf	(categories, parent)">
 		<label><input type="checkbox" ng-model="c.selected" my-change="{{c._id}}">{{c.cat_title}}</label>
 		<ul class="list-unstyled" ng-init="parent=c._id" ng-include="'categoryLiTree'"></ul>
 	</li>	
 </script>
+
+
+<!-- <pre>{{ product|json }}</pre>
+<pre>{{ cd|json }}</pre> -->

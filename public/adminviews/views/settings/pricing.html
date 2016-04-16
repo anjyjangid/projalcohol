@@ -1,110 +1,110 @@
 <div class="portlet-body form">   
 <form ng-submit="update()" class="form-horizontal form-bordered form-row-stripped">    
-    <h4>Pricing Tiers</h4>
-    <!-- {{ settings | json }} -->
-    <div class="form-group" ng-if="setting.category == 'pricing'" ng-repeat="(kv, setting) in settings" >
-        <label class="col-md-4 control-label">{{setting.label}}: <span class="required">
-        * </span>
-        </label>
-        <div class="col-md-2" ng:class="{'has-error':errors[kv+'.type'][0]}">
-            <select empty="false" class="form-control" ng-model="setting.type">            
-                <option value="0">Fix Amount</option>
-                <option value="1">% of Amount</option>
-            </select>
-            <span class="help-block" ng-bind="errors[kv+'.type'][0]"></span>    
-        </div>
-        <div class="col-md-2" ng:class="{'has-error':errors[kv+'.value'][0]}">
-            <input type="number" step="any" class="form-control" ng-model="setting.value" placeholder="">
-            <span class="help-block" ng-bind="errors[kv+'.value'][0]"></span>                    
-        </div>
-    </div>
-    <div class="form-group" ng-if="setting.category == 'bulk_pricing'" ng-repeat="(kv, setting) in settings">
-        
-            <label class="col-md-4 control-label">{{setting.label}}: <span class="required">
-            * </span>
-            </label>       
-            <div class="col-md-8">
-                <table class="table table-bordered table-hover">
-                    <thead>
-                        <tr role="row" class="heading">                        
-                            <th width="25%">
-                                 Markup Type
-                            </th>                                   
-                            <th width="25%">
-                                 Value
-                            </th>
-                            <th width="25%">
-                                 From Qty
-                            </th>
-                            <th width="25%">
-                                 To Qty
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="(bk, slots) in setting.bulk">
-                            
-                            <td ng:class="{'has-error':errors[kv+'.bulk.'+$index+'.type'][0]}">
-                                <select empty="false" class="form-control" ng-model="slots.type">            
-                                    <option value="0">Fix Amount</option>
-                                    <option value="1">% of Amount</option>
-                                </select>
-                                <span class="help-block" ng-bind="errors[kv+'.bulk.'+$index+'.type'][0]"></span>    
-                            </td>
-                            <td ng:class="{'has-error':errors[kv+'.bulk.'+$index+'.value'][0]}">
-                                <input type="number" step="any" class="form-control" ng-model="slots.value" placeholder="">
-                                <span class="help-block" ng-bind="errors[kv+'.bulk.'+$index+'.value'][0]"></span>
-                            </td>
-                            <td ng:class="{'has-error':errors[kv+'.bulk.'+$index+'.from_qty'][0]}">
-                                <input type="number" class="form-control" ng-model="slots.from_qty" placeholder="From Qty">
-                                <span class="help-block" ng-bind="errors[kv+'.bulk.'+$index+'.from_qty'][0]"></span>
-                            </td>
-                            <td ng:class="{'has-error':errors[kv+'.bulk.'+$index+'.to_qty'][0]}">
-                                <input type="number" class="form-control" ng-model="slots.to_qty" placeholder="To Qty" max="99999">
-                                <span class="help-block" ng-bind="errors[kv+'.bulk.'+$index+'.to_qty'][0]"></span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>  
-                <span> Note : Enter 99999 for last range of product in "To Qty" of bulk pricing. </span>
-            </div>        
-    </div>       
-    <hr>
-    <h4>Services</h4>
-    <div class="form-group" ng-if="setting.category == 'service'" ng-repeat="(kv, setting) in settings" >                
-        <label class="col-md-4 control-label">{{setting.label}}: <span class="required">
-        * </span>
-        </label>
-        <div class="col-md-2" ng:class="{'has-error':errors[kv+'.type'][0]}">
-            <select empty="false" class="form-control" ng-model="setting.type">            
-                <option value="0">Fix Amount</option>
-                <option value="1">% of Amount</option>
-            </select>
-            <span class="help-block" ng-bind="errors[kv+'.type'][0]"></span>    
-        </div>
-        <div class="col-md-2" ng:class="{'has-error':errors[kv+'.value'][0]}">
-            <input type="number" step="any" class="form-control" ng-model="setting.value" placeholder="">
-            <span class="help-block" ng-bind="errors[kv+'.value'][0]"></span>                    
-        </div>
-    </div>
-    <hr>
-    <h4>Discounts</h4>
-    <div class="form-group" ng-if="setting.category == 'discount'" ng-repeat="(kv, setting) in settings" >                
-        <label class="col-md-4 control-label">{{setting.label}}: <span class="required">
-        * </span>
-        </label>
-        <div class="col-md-2" ng:class="{'has-error':errors[kv+'.type'][0]}">
-            <select empty="false" class="form-control" ng-model="setting.type">            
-                <option value="0">Fix Amount</option>
-                <option value="1">% of Amount</option>
-            </select>
-            <span class="help-block" ng-bind="errors[kv+'.type'][0]"></span>    
-        </div>
-        <div class="col-md-2" ng:class="{'has-error':errors[kv+'.value'][0]}">
-            <input type="number" step="any" class="form-control" ng-model="setting.value" placeholder="">
-            <span class="help-block" ng-bind="errors[kv+'.value'][0]"></span>                    
-        </div>
-    </div>    
+    <table class="table table-bordered">
+        <thead>
+            <tr role="row" class="heading">                        
+                <th width="28%">
+                     Name
+                </th>
+                <th width="18%">
+                     Markup Type
+                </th>                                   
+                <th width="18%">
+                     Value
+                </th>
+                <th width="18%">
+                     From Qty
+                </th>
+                <th width="18%">
+                     To Qty
+                     <br><small>Use 99999 for last range</small>
+                </th>
+            </tr>
+        </thead>
+        <tbody>            
+            <tr>
+                <td colspan="5"><h4>Pricing Tiers</h4></td>
+            </tr>            
+            <tr ng-if="setting.category == 'pricing'" ng-repeat="(kv, setting) in settings">
+                <td class="control-label"> {{setting.label}}: <span class="required"> * </span> </td>
+                <td ng:class="{'has-error':errors[kv+'.type'][0]}">
+                    <select empty="false" class="form-control" ng-model="setting.type">            
+                        <option value="0">Fix Amount</option>
+                        <option value="1">% of Amount</option>
+                    </select>
+                    <span class="help-block" ng-bind="errors[kv+'.type'][0]"></span>
+                </td>
+                <td ng:class="{'has-error':errors[kv+'.value'][0]}">
+                    <input type="number" step="any" class="form-control" ng-model="setting.value" placeholder="">
+                    <span class="help-block" ng-bind="errors[kv+'.value'][0]"></span>                     
+                </td>
+                <td align="center">N/A</td>
+                <td align="center">N/A</td>
+            </tr>
+            <tr ng-repeat-start="(kv, setting) in settings" ng-if="setting.category == 'bulk_pricing'"></tr>
+            <tr ng-repeat="(bk, slots) in setting.bulk">                            
+                <td class="control-label" rowspan="{{setting.bulk.length}}" ng-if="$index == 0">{{setting.label}}: <span class="required"> * </span></td>
+                <td ng:class="{'has-error':errors[kv+'.bulk.'+$index+'.type'][0]}">
+                    <select empty="false" class="form-control" ng-model="slots.type">            
+                        <option value="0">Fix Amount</option>
+                        <option value="1">% of Amount</option>
+                    </select>
+                    <span class="help-block" ng-bind="errors[kv+'.bulk.'+$index+'.type'][0]"></span>    
+                </td>
+                <td ng:class="{'has-error':errors[kv+'.bulk.'+$index+'.value'][0]}">
+                    <input type="number" step="any" class="form-control" ng-model="slots.value" placeholder="">
+                    <span class="help-block" ng-bind="errors[kv+'.bulk.'+$index+'.value'][0]"></span>
+                </td>
+                <td ng:class="{'has-error':errors[kv+'.bulk.'+$index+'.from_qty'][0]}">
+                    <input type="number" class="form-control" ng-model="slots.from_qty" placeholder="From Qty">
+                    <span class="help-block" ng-bind="errors[kv+'.bulk.'+$index+'.from_qty'][0]"></span>
+                </td>
+                <td ng:class="{'has-error':errors[kv+'.bulk.'+$index+'.to_qty'][0]}">
+                    <input type="number" class="form-control" ng-model="slots.to_qty" placeholder="To Qty" max="99999">
+                    <span class="help-block" ng-bind="errors[kv+'.bulk.'+$index+'.to_qty'][0]"></span>
+                </td>
+            </tr>
+            <tr ng-repeat-end ng-if="setting.category == 'bulk_pricing'"></tr>
+            <tr>
+                <td colspan="5"><h4>Services</h4></td>
+            </tr>
+            <tr ng-if="setting.category == 'service'" ng-repeat="(kv, setting) in settings">
+                <td class="control-label"> {{setting.label}}: <span class="required"> * </span> </td>
+                <td ng:class="{'has-error':errors[kv+'.type'][0]}">
+                    <select empty="false" class="form-control" ng-model="setting.type">            
+                        <option value="0">Fix Amount</option>
+                        <option value="1">% of Amount</option>
+                    </select>
+                    <span class="help-block" ng-bind="errors[kv+'.type'][0]"></span>
+                </td>
+                <td ng:class="{'has-error':errors[kv+'.value'][0]}">
+                    <input type="number" step="any" class="form-control" ng-model="setting.value" placeholder="">
+                    <span class="help-block" ng-bind="errors[kv+'.value'][0]"></span>                     
+                </td>
+                <td align="center">N/A</td>
+                <td align="center">N/A</td>
+            </tr>
+            <tr>
+                <td colspan="5"><h4>Discounts</h4></td>
+            </tr>
+            <tr ng-if="setting.category == 'discount'" ng-repeat="(kv, setting) in settings">
+                <td class="control-label"> {{setting.label}}: <span class="required"> * </span> </td>
+                <td ng:class="{'has-error':errors[kv+'.type'][0]}">
+                    <select empty="false" class="form-control" ng-model="setting.type">            
+                        <option value="0">Fix Amount</option>
+                        <option value="1">% of Amount</option>
+                    </select>
+                    <span class="help-block" ng-bind="errors[kv+'.type'][0]"></span>
+                </td>
+                <td ng:class="{'has-error':errors[kv+'.value'][0]}">
+                    <input type="number" step="any" class="form-control" ng-model="setting.value" placeholder="">
+                    <span class="help-block" ng-bind="errors[kv+'.value'][0]"></span>                     
+                </td>
+                <td align="center">N/A</td>
+                <td align="center">N/A</td>
+            </tr>
+        </tbody>
+    </table>    
     <div class="row">
         <div class="col-sm-12">
             <div class="margiv-top-10 pull-right">

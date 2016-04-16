@@ -26,7 +26,7 @@ class Setting extends Seeder
                 	'type' => 1,
                     'category' => 'pricing'
                 ],
-                'express_delivery_bulk' => [
+                'advance_order_bulk' => [
                     'label' => 'Bulk purchase (Advance order)',                	
                     'bulk' => [
                         [
@@ -50,7 +50,7 @@ class Setting extends Seeder
                     ],                    
                     'category' => 'bulk_pricing',                    
                 ],
-                'advance_order_bulk' => [
+                'express_delivery_bulk' => [
                 	'label' => 'Bulk purchase (Regular express delivery)',
                     'bulk' => [
                         [
