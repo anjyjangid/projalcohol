@@ -53,7 +53,8 @@ class CategoryController extends Controller
     public function store(Request $request)
     {    
         $inputs = $request->all();
-               
+        
+
         // validation rules
         $validator = Validator::make($request->all(), [
             'title' => 'required',
@@ -93,7 +94,19 @@ class CategoryController extends Controller
        	$category->cat_status = 0;
        	$category->cat_thumb = $fileUpload->original['thumb'];
        	$category->cat_lthumb = isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:'';
-        
+
+        if (isset($inputs['bulkDiscount']) && is_array($inputs['bulkDiscount']))
+        {
+            foreach ($inputs['bulkDiscount'] as $dKey => $discount)
+            {
+                unset($inputs['bulkDiscount'][$dKey]['$$hashKey']);
+                $category->bulkDiscount[$dKey]['quantity'] = (int)$inputs['bulkDiscount'][$dKey]['quantity'];
+                $category->bulkDiscount[$dKey]['type'] = (int)$inputs['bulkDiscount'][$dKey]['type'];
+                $category->bulkDiscount[$dKey]['value'] = (float)$inputs['bulkDiscount'][$dKey]['value'];                
+            }
+        }
+return response($inputs,400);
+return response($category,400);
        	
         try {
 

@@ -15,7 +15,14 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 
 		categoryFormInit : function(){
 
-			$scope.category = {};
+			$scope.category = {
+				
+				bulkDisable:false,
+				advance_order:[],
+				regular_express_delivery:[],
+				advance_order_bulk:[],
+				express_delivery_bulk:[],
+			};
 			$scope.categories = [];
 			$scope.lthumb = true;
 			
@@ -54,15 +61,14 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 		submitCategory : function() {
 			
 
-			var data = {
-				title: $scope.category.title,
-				slug: $scope.category.slug,
-				ptitle:''
-			};
+			// var data = {
+			// 	title: $scope.category.title,
+			// 	slug: $scope.category.slug,
+			// 	ptitle:''
+			// };
 
-
-			
-
+			var data = $scope.category;
+		
 			if($scope.categories[0].categoryList.length>0){
 				
 				var catLength = $scope.categories.length;
@@ -112,6 +118,18 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 		},
 
 	})
+
+	categoryModel.getPricingSettings().success(function(data){
+		$scope.pricing = data;	
+	});
+
+	$scope.edittier = function(val,price,t){		
+		if(t == 1){
+			$scope.category[val].push(angular.copy(price));
+		}else{
+			$scope.category[val] = [];
+		}
+	}
 
    
 }]);
