@@ -18,8 +18,7 @@ class Products extends Eloquent
             'categories',
             'sku',
             'quantity',
-            'price',
-            'discountPrice',
+            'price',            
             'chilled',
             'status',
             'metaTitle',
@@ -27,7 +26,11 @@ class Products extends Eloquent
             'metaDescription',
             'images',
             'isFeatured',
-            'bulkDiscount'
+            'bulkDisable',
+            'advance_order',
+            'regular_express_delivery',
+            'advance_order_bulk',
+            'express_delivery_bulk'
             
     ];
 

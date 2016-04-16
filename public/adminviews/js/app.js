@@ -1196,7 +1196,13 @@ MetronicApp.filter("ucwords", function () {
         }
         return input; 
     }    
-})
+});
+
+MetronicApp.filter('isEmpty', [function() {
+  return function(object) {
+    return angular.equals({}, object);
+  }
+}]);
 
 /* Init global settings and run the app */
 MetronicApp.run(["$rootScope", "settings", "$state", function($rootScope, settings, $state) {

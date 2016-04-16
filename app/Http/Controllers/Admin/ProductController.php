@@ -62,21 +62,39 @@ class ProductController extends Controller
         
         $inputs = $request->all();
 
+        //prd($inputs);
+
         $inputs['quantity'] = (int)$inputs['quantity'];
-        $inputs['price'] = (float)$inputs['price'];
-        $inputs['discountPrice'] = (float)$inputs['discountPrice'];
+        $inputs['price'] = (float)$inputs['price'];        
         $inputs['chilled'] = (int)$inputs['chilled'];
         $inputs['status'] = (int)$inputs['status'];
         $inputs['isFeatured'] = (int)$inputs['isFeatured'];       
 
-        if (isset($inputs['bulkDiscount']) && is_array($inputs['bulkDiscount']))
+        if (isset($inputs['advance_order_bulk']['bulk']) && is_array($inputs['advance_order_bulk']['bulk']))
         {
-            foreach ($inputs['bulkDiscount'] as $dKey => $discount)
+            foreach ($inputs['advance_order_bulk']['bulk'] as $dKey => $discount)
             {
-                unset($inputs['bulkDiscount'][$dKey]['$$hashKey']);
-                $inputs['bulkDiscount'][$dKey]['quantity'] = (int)$inputs['bulkDiscount'][$dKey]['quantity'];
-                $inputs['bulkDiscount'][$dKey]['type'] = (int)$inputs['bulkDiscount'][$dKey]['type'];
-                $inputs['bulkDiscount'][$dKey]['value'] = (float)$inputs['bulkDiscount'][$dKey]['value'];                
+                unset($inputs['advance_order_bulk']['bulk'][$dKey]['$$hashKey']);
+                $inputs['advance_order_bulk']['bulk'][$dKey] = [
+                  'from_qty' => (int)$discount['from_qty'],
+                  'to_qty' => (int)$discount['to_qty'],
+                  'type' => (int)$discount['type'],
+                  'value' => (float)$discount['value'],
+                ];                                
+            }
+        }
+
+        if (isset($inputs['express_delivery_bulk']['bulk']) && is_array($inputs['express_delivery_bulk']['bulk']))
+        {
+            foreach ($inputs['express_delivery_bulk']['bulk'] as $dKey => $discount)
+            {
+                unset($inputs['express_delivery_bulk']['bulk'][$dKey]['$$hashKey']);
+                $inputs['express_delivery_bulk']['bulk'][$dKey] = [
+                  'from_qty' => (int)$discount['from_qty'],
+                  'to_qty' => (int)$discount['to_qty'],
+                  'type' => (int)$discount['type'],
+                  'value' => (float)$discount['value'],
+                ];                                
             }
         }
 
@@ -307,7 +325,7 @@ class ProductController extends Controller
                   $filename = @$file['source'];
                 }
 
-                $cover = (int)$file['coverimage'];
+                $cover = (int)@$file['coverimage'];
 
                 $filearr[] = [
                     'source' => $filename,
