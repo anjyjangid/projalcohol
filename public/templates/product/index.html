@@ -1,5 +1,5 @@
-<div ng:class="{'isloading':loading}"></div>
-<div ui-view="featured" ng-cloak ng:class="{'hide':loading}"></div>
+
+<div ui-view="featured"></div>
 
 <div class="combo_slider combo_sliderProduct">
   <div class="productbeerfiltertopcover">
@@ -17,17 +17,19 @@
     <div class="tabbable"> <!-- Only required for left/right tabs -->
     <div class="fullwidth">
       <ul class="nav nav-tabs productcomboul">
-        <li class="active"><a ui-sref="{toggle: ''}" data-toggle="tab">All</a></li>
+        <li class="active"><a ng-click="$broadcast('filterproduct', {})" data-toggle="tab">All</a></li>
         <li><a ng-click="$broadcast('filterproduct', {toggle: 'new'})" data-toggle="tab">New</a></li>
-        <li><a ui-sref="{toggle: 'in-stock'}" data-toggle="tab">In Stock</a></li>
-        <div class="dropdown productdropdownbtn">
-          <button class="btn dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <li><a ng-click="$broadcast('filterproduct', {toggle: 'in-stock'})" data-toggle="tab">In Stock</a></li>      
+
+        <div class="dropdown productdropdownbtn" uib-dropdown>
+          <button class="btn dropdown-toggle" type="button" id="dropdownMenu1" uib-dropdown-toggle aria-haspopup="true" aria-expanded="true">
             Short by
             <span class="caret"></span>
           </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            <li><a ui-sref="{short: 'asc'}">Price Ascending</a></li>
-            <li><a ui-sref="{short: 'desc'}">Price Descending</a></li>            
+
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" uib-dropdown-menu>
+            <li><a ng-click="$broadcast('filterproduct', {sort: 'price_asc'})">Price Ascending</a></li>
+            <li><a ng-click="$broadcast('filterproduct', {sort: 'price_desc'})">Price Descending</a></li>            
           </ul>
         </div>
       </ul>
@@ -66,7 +68,7 @@
 
             <a ng-if="product.quantity>0" ui-sref="mainLayout.cart"><div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive"></div></a>
             <button ng-if="product.quantity<1" type="button" class="btn productsoldbt" disabled="disabled"><img src="images/outofstocbticon.png" class="img-responsive">Notify Me</button>
-          
+
           </div>
 
           

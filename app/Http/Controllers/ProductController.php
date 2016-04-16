@@ -4,7 +4,7 @@ namespace AlcoholDelivery\Http\Controllers;
 
 use AlcoholDelivery\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use DateTime;
 use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Products as Products;
 
@@ -27,8 +27,20 @@ class ProductController extends Controller
 
         $products = $products->where('status', 1);
 
-        if(isset($params['type']) && $params['type']=="featured"){
-            $products = $products->where('isFeatured', 1);
+        if(isset($params['type'])){
+
+            if($params['type']=="featured"){
+                $products = $products->where('isFeatured', 1);
+            }
+
+            if($params['type']=="new"){
+                $products = $products->where('created_at', '>', new DateTime('-1 months'));
+            }
+
+            if($params['type']=="in-stock"){
+                $products = $products->where('quantity', '>', 0);
+            }
+
         }
 
 
@@ -43,6 +55,21 @@ class ProductController extends Controller
             $products = $products->where('categories', 'all', [$catKey]);
             
         }
+
+
+        if(isset($params['sort']) && !empty($params['sort'])){
+
+
+            $sortArr = explode("_", $params['sort']);                    
+            $sort = array_pop($sortArr);
+            $sortDir = $sort=='asc'?$sort:'desc';
+            $sort = array_pop($sortArr);
+            
+            if($sort=='price'){
+                $products = $products->orderBy($sort, $sortDir);
+            }
+        }
+
 
         if(isset($params['limit']) && !empty($params['limit'])){
 
@@ -59,6 +86,9 @@ class ProductController extends Controller
         return response($products,200);
 
     }
+
+
+
 
     public function getproductdetail(Request $request){
 

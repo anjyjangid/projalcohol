@@ -117,7 +117,6 @@ AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state
 	$scope.ProductsController = {};
 	
 	$scope.products = {};
-
 	
 	$scope.AppController.category = $stateParams.categorySlug;
 	$scope.AppController.subCategory = "";
@@ -131,9 +130,11 @@ AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state
 
 	var data = {
 		category:$category,
-		type : 'all',
-		short: "new"
+		type : $stateParams.toggle,
+		sort: $stateParams.sort,		
 	}
+
+
 
 	var config = {
 		params: data,
@@ -166,28 +167,44 @@ AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state
 	}
 
 	$scope.$on('filterproduct', function(event, obj) {
-
+		
 		$state.$current.self.reloadOnSearch = false;
-		$state.go('mainLayout.category.subCatProducts',
+
+		if($scope.AppController.subCategory==''){
+		
+			$state.go('mainLayout.category.products',
+            {
+				categorySlug:$scope.AppController.category,             					
+				toggle:typeof(obj.toggle)=='undefined'?data.type:obj.toggle,
+				sort:typeof(obj.sort)=='undefined'?data.sort:obj.sort,
+				
+            },
+            {reload: false, location: 'replace'});			
+
+		}else{
+
+			$state.go('mainLayout.category.subCatProducts',
             {
             	categorySlug:$scope.AppController.category, 
             	subcategorySlug:$scope.AppController.subCategory,
-            	toggle:'new'
+            	toggle:typeof(obj.toggle)=='undefined'?data.type:obj.toggle,
+				sort:typeof(obj.sort)=='undefined'?data.sort:obj.sort,
             },
             {reload: false, location: 'replace'});
-        $state.$current.self.reloadOnSearch = true;
+
+		}	
+
+        	$state.$current.self.reloadOnSearch = true;
+
+        	data.category = $category;
+			data.type = $stateParams.toggle;
+			data.sort = $stateParams.sort;
+
+        	$scope.fetchproducts();
 
     })
 
-	
-
-	$scope.fetchproducts();
-	
-
-	
-
-
-	
+	$scope.fetchproducts();	
 	
 }]);
 
@@ -196,7 +213,6 @@ AlcoholDelivery.controller('ProductsFeaturedController', ['$scope', '$rootScope'
 
 	$scope.ProductsFeaturedController = {};
 	
-
 	$scope.featured = {};
 
 	$scope.category = $stateParams.categorySlug;	
@@ -207,6 +223,7 @@ AlcoholDelivery.controller('ProductsFeaturedController', ['$scope', '$rootScope'
 		$category = $stateParams.subcategorySlug;	
 	}
 
+	$scope.loadingfeatured = true;
 	
 	$http.get("/search",{
 				
@@ -221,6 +238,7 @@ AlcoholDelivery.controller('ProductsFeaturedController', ['$scope', '$rootScope'
 
 		}).success(function(response){
 		$scope.featured = response;
+		$scope.loadingfeatured = false;
 	});
 
 	
@@ -392,7 +410,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 										});
 								}]
 						}
-				})			
+				})
 
 				.state('mainLayout.index', {
 						url: "/",
@@ -497,12 +515,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 				.state('mainLayout.category', {
 						abstract : true,
-						
+
 						views : {
 
 							'' : {
 								templateUrl : '/templates/product/index.html',
-								
 							},
 							// 'left' : {
 							// 	templateUrl : 'app/public/left.html',
@@ -514,7 +531,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('mainLayout.category.products', {
-						url: "/{categorySlug}?toggle&short",
+						url: "/{categorySlug:string}?{toggle:string}&{sort:string}",						
 						views : {
 
 							'content' : {
@@ -531,7 +548,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('mainLayout.category.subCatProducts', {
-						url: "/{categorySlug}/{subcategorySlug}?toggle&short",
+						url: "/{categorySlug}/{subcategorySlug}?{toggle:string}&{sort:string}",
+						// params: {
+					 //    	toggle: 'all',
+					 //    	sort: 'latest'
+					 //  	},
 						views : {
 
 							'content' : {
