@@ -19,6 +19,7 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 		categoryFormInit : function(){
 
 			$scope.category = {
+				ptitle:'',
 				advance_order:{},
 				regular_express_delivery:{},
 				advance_order_bulk:{},
@@ -74,15 +75,13 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 		
 		submitCategory : function() {
 			
-			var data = {
-				title: $scope.category.title,
-				slug: $scope.category.slug,
-				ptitle:'',
-				
-			};
+			// var data = {
+			// 	title: $scope.category.title,
+			// 	slug: $scope.category.slug,
+			// 	ptitle:'',				
+			// };
 
-
-			
+			var data = $scope.category;			
 
 			if($scope.categories[0].categoryList.length>0){
 				
@@ -113,6 +112,7 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 				"lthumb":$scope.category.lthumb
 			};
 
+			
 
 			var uploadUrl = "admin/category/store";
 			fileUpload.uploadFileToUrl(files, data, uploadUrl)
@@ -165,29 +165,54 @@ MetronicApp.controller('CategoryUpdateController',['$rootScope', '$scope', '$tim
 
     	categoryFormInit: function(){
 
-			$scope.category = {};
+			$scope.category = {
+				ptitle:'',				
+			};
 			$scope.categories = [];
 			$scope.lthumb = true;
 			
-			
+			categoryModel.getPricingSettings().success(function(data){
+				$scope.pricing = data;
+			});
+
 			categoryModel.getCategory($stateParams.categoryid).success(function(response) {
 
-				$scope.category.title = response.cat_title;
-				$scope.category.thumb = response.cat_thumb;
-				$scope.category.lthumb = response.cat_lthumb;
+				response.renameProperty('cat_title','title');
+				response.renameProperty('cat_thumb','thumb');
+				response.renameProperty('cat_lthumb','lthumb');
 
+				//$scope.category.title = response.cat_title;
+				//$scope.category.thumb = response.cat_thumb;
+				//$scope.category.lthumb = response.cat_lthumb;
+				$scope.category = response;
+
+				if(!$scope.category.advance_order)
+					$scope.category.advance_order = {};
+
+				if(!$scope.category.regular_express_delivery)
+					$scope.category.regular_express_delivery = {};
+
+				if(!$scope.category.advance_order_bulk)
+					$scope.category.advance_order_bulk = {};
+
+				if(!$scope.category.express_delivery_bulk)
+					$scope.category.express_delivery_bulk = {};
+				
 			});
-			
+
+		},
+
+		edittier : function(val,price,t){		
+			if(t == 1){
+				$scope.category[val] = angular.copy(price);
+			}else{
+				$scope.category[val] = {};
+			}
 		},
 
 		submitCategory : function() {
 			
-
-			var data = {
-				title: $scope.category.title,
-				slug: $scope.category.slug,
-				ptitle:''
-			};
+			var data = $scope.category;
 			
 			var files = {
 				"thumb":$scope.category.thumb,

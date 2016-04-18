@@ -94,15 +94,16 @@ MetronicApp.service('fileUpload', ['$http','$location', function ($http,$locatio
 
     this.uploadFileToUrl = function(files,fields,uploadUrl){
 
-        var fd = new FormData();
+        //var fd = new FormData();
+        var fd = objectToFormData(fields);            
                 
         for (var file in files) {
             fd.append(file, files[file]);
         }
-
-        for (var field in fields) {
-            fd.append(field, fields[field]);
-        }
+        
+        // for (var field in fields) {
+        //     fd.append(field, fields[field]);
+        // }
             
         return $http.post(uploadUrl, fd, {
             transformRequest: angular.identity,
@@ -764,7 +765,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             })
             .state("categories.edit",{
                 url: "/edit/{categoryid}",
-                templateUrl: "adminviews/views/categories/edit.html",
+                templateUrl: "adminviews/views/categories/add.html",
                 data: {pageTitle: 'Category Detail'},
                 controller:"CategoryUpdateController"                
             })
@@ -1251,3 +1252,4 @@ var objectToFormData = function(obj, form, namespace) {
   return fd;
     
 };
+

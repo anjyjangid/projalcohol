@@ -22,7 +22,18 @@ class Categories extends Moloquent
      *
      * @var array
      */
-    protected $fillable = ['cat_title', 'cat_thumb', 'cat_lthumb','ancestors','cat_status','slug'];
+    protected $fillable = [
+                        'cat_title', 
+                        'cat_thumb', 
+                        'cat_lthumb',
+                        'ancestors',
+                        'cat_status',
+                        'slug',
+                        'advance_order',
+                        'regular_express_delivery',
+                        'advance_order_bulk',
+                        'express_delivery_bulk',
+                    ];
 
     public function getCategory($params = array()){
 

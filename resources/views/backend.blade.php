@@ -170,6 +170,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
 	<script src="{{ asset('js/angular-slugify.js') }}" type="text/javascript"></script>
 
+
 	<!-- END CORE ANGULARJS PLUGINS -->
 	
 	<!-- BEGIN APP LEVEL ANGULARJS SCRIPTS -->
@@ -178,6 +179,7 @@ License: You must have a valid license purchased only from themeforest(the above
 	<!-- END APP LEVEL ANGULARJS SCRIPTS -->
 
 	<!-- BEGIN APP LEVEL JQUERY SCRIPTS -->
+	<script src="{{ asset('js/general.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/global/scripts/metronic.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/admin/layout/scripts/layout.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/admin/layout/scripts/quick-sidebar.js') }}" type="text/javascript"></script>

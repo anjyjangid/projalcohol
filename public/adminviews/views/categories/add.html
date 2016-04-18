@@ -55,7 +55,8 @@
 							<div class="form-group">								
 								<div class="fileinput fileinput-new" data-provides="fileinput">
 									<div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-										<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Thumbnail" alt=""/>
+										<img ng-if="!category.thumb" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Thumbnail" alt=""/>
+										<img ng-if="category.thumb" ng-src="/assets/resources/category/thumb/200/{{category.thumb}}" err-src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Thumbnail" class="img-responsive" alt="">
 									</div>
 									<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
 									</div>
@@ -65,7 +66,7 @@
 										Select thumb </span>
 										<span class="fileinput-exists">
 										Change </span>
-										<input type="file" name="thumb" placeholder="thumbnail" class="form-control" required file-model="category.thumb"/>
+										<input type="file" name="thumb" placeholder="thumbnail" class="form-control" ng-required="!category.thumb" file-model="category.thumb"/>
 										</span>
 										<a href="#" class="btn default fileinput-exists" data-dismiss="fileinput">
 										Remove </a>
@@ -81,7 +82,8 @@
 								
 								<div class="fileinput fileinput-new" data-provides="fileinput">
 									<div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-										<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=listing+thumb" alt=""/>
+										<img ng-if="!category.lthumb" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=listing+thumb" alt=""/>
+										<img ng-if="category.lthumb" ng-src="/assets/resources/category/lthumb/400/{{category.lthumb}}" err-src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=listing+thumb" class="img-responsive" alt="">
 									</div>
 									<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
 									</div>
@@ -103,8 +105,7 @@
 					
 					<!-- Pricing Block -->
 					<table class="table table-bordered">
-				        <thead>
-							
+				        <thead>				            
 				            <tr role="row" class="heading">                        						                
 				                <th width="14%">
 				                     Name
@@ -166,13 +167,11 @@
 				                </td>
 				            </tr>
 				            <tr>
-				            	<td colspan="7">
-				            		<h4>Bulk Purchase</h4>
-					            </td>
-					        </tr>
+				            	<td colspan="7"><h4>Bulk Purchase</h4>	</td>
+					        </tr>							        
 				            <tr ng-if="price.category == 'bulk_pricing'" ng-repeat-start="(kp, price) in pricing.settings"></tr>
-				            
-				            <tr ng-if="category[kp] | isEmpty" ng-hide="category.bulkDisable" ng-repeat="(bk, slots) in price.bulk">                            
+				           	
+				            <tr ng-if="(category[kp] | isEmpty)" ng-hide="category.bulkDisable == 1" ng-repeat="(bk, slots) in price.bulk">                            
 				                <td class="control-label" rowspan="{{price.bulk.length}}" ng-if="$index == 0">
 				                	<label class="control-label">{{price.label}}: <span class="required"> * </span></label>
 				                </td>
@@ -196,12 +195,13 @@
 				                		{{ slots.to_qty }}
 				                	</label>						                    
 				                </td>
+				                
 				                <td>
 				                	<a class="btn btn-xs default" ng-if="$index == 0" href="javascript:void();" ng-click="edittier(kp,price,1)">Custom</a>						                	
 				                </td>
 				            </tr>						            						            
 				            
-				            <tr ng-if="!(category[kp] | isEmpty)" ng-repeat="(bk, slots) in category[kp].bulk">                            
+				            <tr ng-if="!(category[kp] | isEmpty)" ng-hide="category.bulkDisable == 1" ng-repeat="(bk, slots) in category[kp].bulk">                            
 				                <td class="control-label" rowspan="{{category[kp].bulk.length}}" ng-if="$index == 0">
 				                	<label class="control-label">{{category[kp].label}}: <span class="required"> * </span></label>
 				                </td>
@@ -231,10 +231,8 @@
 				                	<a class="btn btn-xs default" ng-if="$index > 0" href="javascript:void();" ng-click="category[kp].bulk.splice($index,1)">Remove</a>
 				                </td>
 				            </tr>
-
+				            
 				            <tr ng-repeat-end ng-if="price.category == 'bulk_pricing'"></tr>
-
-				            <!-- Edit mode of advance order bulk -->
 
 				        </tbody>
 				    </table>
