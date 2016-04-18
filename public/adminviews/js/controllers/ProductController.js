@@ -35,22 +35,37 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 		var allparent = $scope.childOf(data,0);
 
 		for(var c in allparent){			
-			$scope.cd.push({id:[data[c]._id],name:data[c].cat_title,unique:data[c]._id});
+			$scope.cd.push({
+				id:[data[c]._id],
+				name:data[c].cat_title,
+				unique:data[c]._id,
+				advance_order:data[c].advance_order,
+				regular_express_delivery:data[c].regular_express_delivery,
+				advance_order_bulk:data[c].advance_order_bulk,
+				express_delivery_bulk:data[c].express_delivery_bulk,
+			});
 			var child = $scope.childOf(data,allparent[c]._id);
 			for(var cc in child){
-				$scope.cd.push({id:[allparent[c]._id,child[cc]._id],name:allparent[c].cat_title+' > '+child[cc].cat_title,unique:data[c]._id+'|'+child[cc]._id});
+				$scope.cd.push({
+					id:[allparent[c]._id,child[cc]._id],
+					name:allparent[c].cat_title+' > '+child[cc].cat_title,
+					unique:data[c]._id+'|'+child[cc]._id,
+					advance_order:child[cc].advance_order,
+					regular_express_delivery:child[cc].regular_express_delivery,
+					advance_order_bulk:child[cc].advance_order_bulk,
+					express_delivery_bulk:child[cc].express_delivery_bulk,	
+				});
 			}
 		}
 
 		//var unique = $scope.product.categories.join('|');
-
-		//var k = $scope.getKey($scope.cd,unique);
-		
+		//var k = $scope.getKey($scope.cd,unique);		
 		//$scope.product.categories = $scope.cd[k].id;
 	});
 
-	productModel.getSettings().success(function(data){
-		$scope.pricing = data;	
+	productModel.getSettings().success(function(data){		
+		$scope.globalPricing = angular.copy(data);
+		$scope.pricing = angular.copy(data);	
 	});
 
 	$scope.errors = {};
@@ -69,13 +84,13 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 		});
 	}
 
-	$scope.selectCategory = function(id,eve){
+	/*$scope.selectCategory = function(id,eve){
 		var i = $scope.product.categories.indexOf(id);
 		if(i>-1)
 			$scope.product.categories.splice(i, 1);
 		else
 			$scope.product.categories.push(id);		
-	}	
+	}*/	
 
 	$scope.imageRemove = function(i){				
 		$scope.product.imageFiles.splice(i, 1);
@@ -94,6 +109,8 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 		});
 		return r;
 	}
+
+
 
 }]);
 
@@ -159,6 +176,27 @@ MetronicApp.controller('ProductAddController',['$scope', '$location','$statePara
 			$scope.product[val] = angular.copy(price);
 		}else{
 			$scope.product[val] = {};
+		}
+	}
+
+	$scope.selectCategory = function(){
+		
+		var tiers = ['advance_order','regular_express_delivery','advance_order_bulk','express_delivery_bulk'];
+
+		var unique = $scope.product.categories.join('|');
+		
+		var k = $scope.getKey($scope.cd,unique);		
+
+		var selected = angular.copy($scope.cd[k]);
+		
+		for(var o in tiers){
+			var kname = tiers[o];
+			var exist = angular.copy(selected[kname]);
+			if(exist){								
+				$scope.pricing.settings[kname] = exist;
+			}else{				
+				$scope.pricing.settings[kname] = angular.copy($scope.globalPricing.settings[kname]);
+			}
 		}
 	}
 
