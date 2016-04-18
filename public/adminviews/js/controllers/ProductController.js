@@ -14,7 +14,7 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 
 	$scope.categories = [];
 
-	$scope.product = {		
+	$scope.product = {
 		chilled:'1',
 		categories:[],
 		isFeatured:'0',
@@ -23,9 +23,9 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 		advance_order:{},
 		regular_express_delivery:{},
 		advance_order_bulk:{},
-		express_delivery_bulk:{},	
+		express_delivery_bulk:{},
 		price:null
-	};	
+	};
 
 	productModel.getCategories().success(function(data){
 		$scope.categories = data;

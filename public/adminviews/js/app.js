@@ -734,6 +734,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                                 'js/angular-slugify.js',
 
                                 'adminviews/js/models/categoryModel.js',
+                                'adminviews/js/models/settingsModel.js',
                                 'adminviews/js/controllers/CategoryController.js'
                             ]
                         });

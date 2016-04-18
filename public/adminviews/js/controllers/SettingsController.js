@@ -9,11 +9,9 @@ MetronicApp.controller('SettingsController',['$rootScope', '$scope', '$timeout',
 		$rootScope.settings.layout.pageBodySolid = false;
 		$rootScope.settings.layout.pageSidebarClosed = false;  
 
-		
 		settingsModel.getSettings($state.$current.data.key).success(function(response){			
 			$scope.settings = response.settings;
-		});  
-		
+		});
 
     });    
 
