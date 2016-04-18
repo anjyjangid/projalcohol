@@ -4,11 +4,11 @@
 		<div class="portlet light">			
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="fa fa-shopping-cart"></i>Add New Product
+					<i class="fa fa-shopping-cart"></i>{{product._id?'Edit ':'Add New '}}Product
 				</div>
 				<div class="actions btn-set">
 					<a class="btn default" href="#/product/list"><i class="fa fa-angle-left"></i> Back</a>
-					<button class="btn green" type="submit"><i class="fa fa-check"></i> Save</button>					
+					<button class="btn green" type="submit"><i class="fa fa-check"></i> {{product._id?'Update':'Save'}}</button>					
 				</div>
 			</div>
 			<div class="portlet-body">				
@@ -103,9 +103,9 @@
 								
 								<div class="radio-list">
 									<label class="radio-inline">
-									<input ng-model="product.chilled" type="radio" value="1" name="chilled"> Yes </label>
+									<input plugin-uniform ng-model="product.chilled" type="radio" value="1" name="chilled"> Yes </label>
 									<label class="radio-inline">
-									<input ng-model="product.chilled" type="radio" value="0" name="chilled"> No </label>
+									<input plugin-uniform ng-model="product.chilled" type="radio" value="0" name="chilled"> No </label>
 								</div>
 
 								</div>
@@ -117,9 +117,9 @@
 								
 									<div class="radio-list">
 										<label class="radio-inline">
-										<input ng-model="product.isFeatured" type="radio" value="1" name="isFeatured"> Yes </label>
+										<input plugin-uniform ng-model="product.isFeatured" type="radio" value="1" name="isFeatured"> Yes </label>
 										<label class="radio-inline">
-										<input ng-model="product.isFeatured" type="radio" value="0" name="isFeatured"> No </label>
+										<input plugin-uniform ng-model="product.isFeatured" type="radio" value="0" name="isFeatured"> No </label>
 									</div>
 
 								</div>
@@ -142,10 +142,7 @@
 					</tab>
 					<tab>
 						<tab-heading>Pricing</tab-heading>
-						<div class="form-horizontal">							
-							
-
-
+						<div class="form-horizontal">
 							<table class="table table-bordered">
 						        <thead>
 						            <tr>	
@@ -236,15 +233,15 @@
 						            	<td colspan="7">
 						            		<h4>Bulk Purchase
 						            			<label class="pull-right control-label">
-								            		 Disable bulk : <input type="checkbox" class="make-switch" data-on="success" data-off="warning" ng-model="product.bulkDisable" checked="product.bulkDisable"> 
+								            		 Disable bulk : <input plugin-uniform type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="product.bulkDisable"> 
 								            	</label>
 						            		</h4>
 							            	
 							            </td>
-							        </tr>
+							        </tr>							        
 						            <tr ng-if="price.category == 'bulk_pricing'" ng-repeat-start="(kp, price) in pricing.settings"></tr>
-						            
-						            <tr ng-if="product[kp] | isEmpty" ng-hide="product.bulkDisable" ng-repeat="(bk, slots) in price.bulk">                            
+						           	
+						            <tr ng-if="(product[kp] | isEmpty)" ng-hide="product.bulkDisable == 1" ng-repeat="(bk, slots) in price.bulk">                            
 						                <td class="control-label" rowspan="{{price.bulk.length}}" ng-if="$index == 0">
 						                	<label class="control-label">{{price.label}}: <span class="required"> * </span></label>
 						                </td>
@@ -278,7 +275,7 @@
 						                </td>
 						            </tr>						            						            
 						            
-						            <tr ng-if="!(product[kp] | isEmpty)" ng-hide="product.bulkDisable" ng-repeat="(bk, slots) in product[kp].bulk">                            
+						            <tr ng-if="!(product[kp] | isEmpty)" ng-hide="product.bulkDisable == 1" ng-repeat="(bk, slots) in product[kp].bulk">                            
 						                <td class="control-label" rowspan="{{product[kp].bulk.length}}" ng-if="$index == 0">
 						                	<label class="control-label">{{product[kp].label}}: <span class="required"> * </span></label>
 						                </td>
@@ -302,7 +299,7 @@
 						                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.to_qty'][0]"></span>
 						                </td>
 						                <td>
-						                    <label ng-if="product[kp].length" class="control-label">
+						                    <label ng-if="!(product[kp] | isEmpty)" class="control-label">
 												{{ slots.type == 0 ? formatNumber(product.price+slots.value) : formatNumber(product.price+(product.price/100*slots.value)) }}
 											</label>																							
 						                </td>
@@ -312,14 +309,8 @@
 						                	<a class="btn btn-xs default" ng-if="$index > 0" href="javascript:void();" ng-click="product[kp].bulk.splice($index,1)">Remove</a>
 						                </td>
 						            </tr>
-
-						            <tr ng-repeat-end ng-if="price.category == 'bulk_pricing'"></tr>
-
-						            <!-- Edit mode of advance order bulk -->
-
 						            
-
-						            <!-- Edit mode of advance order bulk -->
+						            <tr ng-repeat-end ng-if="price.category == 'bulk_pricing'"></tr>
 
 						        </tbody>
 						    </table>						    
@@ -399,13 +390,15 @@
 									<td ng:class="{'has-error':errors['imageFiles.'+$index+'.thumb'][0]}">
 										<div class="fileinput fileinput-new" data-provides="fileinput">
 											<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
-												<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt=""/>
+												<img err-src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" 
+												ng-src="products/i/200/{{f.source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt=""/>
+
 											</div>
 											<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
 											</div>
 											<div>
 												<span class="btn default btn-file">
-													<span class="fileinput-new">Select</span>
+													<span class="fileinput-new">{{ f.source ? 'Change':'Select' }}</span>
 													<span class="fileinput-exists">Change</span>
 													<input type="file" placeholder="thumbnail" class="form-control" file-model="f.thumb"/>
 												</span>	
@@ -423,7 +416,7 @@
 									</td>
 									<td>
 										<label>
-											<input type="radio" ng-model="f.coverimage" value="1" name="coverimage">
+											<input plugin-uniform type="radio" ng-model="f.coverimage" value="1" name="coverimage">
 										</label>
 									</td>									
 									<td>
@@ -441,12 +434,12 @@
 	</div>
 </div>
 
-<script type="text/ng-template" id="categoryLiTree">
+<!-- <script type="text/ng-template" id="categoryLiTree">
 	<li ng-repeat="c in childOf	(categories, parent)">
 		<label><input type="checkbox" ng-model="c.selected" my-change="{{c._id}}">{{c.cat_title}}</label>
 		<ul class="list-unstyled" ng-init="parent=c._id" ng-include="'categoryLiTree'"></ul>
 	</li>	
-</script>
+</script> -->
 
 
 <!-- <pre>{{ product|json }}</pre> -->

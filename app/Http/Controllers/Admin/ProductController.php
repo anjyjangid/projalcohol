@@ -70,7 +70,7 @@ class ProductController extends Controller
         $inputs['status'] = (int)$inputs['status'];
         $inputs['isFeatured'] = (int)$inputs['isFeatured'];       
 
-        if (isset($inputs['advance_order_bulk']['bulk']) && is_array($inputs['advance_order_bulk']['bulk']))
+        if (isset($inputs['advance_order_bulk']['bulk']) && !empty($inputs['advance_order_bulk']['bulk']))
         {
             foreach ($inputs['advance_order_bulk']['bulk'] as $dKey => $discount)
             {
@@ -84,7 +84,7 @@ class ProductController extends Controller
             }
         }
 
-        if (isset($inputs['express_delivery_bulk']['bulk']) && is_array($inputs['express_delivery_bulk']['bulk']))
+        if (isset($inputs['express_delivery_bulk']['bulk']) && !empty($inputs['express_delivery_bulk']['bulk']))
         {
             foreach ($inputs['express_delivery_bulk']['bulk'] as $dKey => $discount)
             {
@@ -96,6 +96,18 @@ class ProductController extends Controller
                   'value' => (float)$discount['value'],
                 ];                                
             }
+        }
+
+        $inputs['bulkDisable'] = (int)($inputs['bulkDisable']);
+
+        $inputs['loyalty'] = (int)($inputs['loyalty']);
+
+        if (isset($inputs['advance_order']['value']) && !empty($inputs['advance_order']['value'])){
+              $inputs['advance_order']['value'] = (float)$inputs['advance_order']['value'];
+        }
+
+        if (isset($inputs['regular_express_delivery']['value']) && !empty($inputs['regular_express_delivery']['value'])){
+              $inputs['regular_express_delivery']['value'] = (float)$inputs['regular_express_delivery']['value'];
         }
 
         $product = Products::create($inputs);    
@@ -146,29 +158,71 @@ class ProductController extends Controller
     public function update(ProductRequest $request, $id)
     {
         $inputs = $request->all();
-        $files = $inputs['imageFiles'];
+        
         $inputs['quantity'] = (int)$inputs['quantity'];
-        $inputs['price'] = (float)$inputs['price'];
-        $inputs['discountPrice'] = (float)$inputs['discountPrice'];
+        $inputs['price'] = (float)$inputs['price'];        
         $inputs['chilled'] = (int)$inputs['chilled'];
         $inputs['status'] = (int)$inputs['status'];
-        $inputs['isFeatured'] = (int)$inputs['isFeatured'];
+        $inputs['isFeatured'] = (int)$inputs['isFeatured'];       
 
-        if (isset($inputs['bulkDiscount']) && is_array($inputs['bulkDiscount']))
+        $unset = [];
+
+        if (isset($inputs['advance_order_bulk']['bulk']) && !empty($inputs['advance_order_bulk']['bulk']))
         {
-            foreach ($inputs['bulkDiscount'] as $dKey => $discount)
+            foreach ($inputs['advance_order_bulk']['bulk'] as $dKey => $discount)
             {
-                unset($inputs['bulkDiscount'][$dKey]['$$hashKey']);
-                $inputs['bulkDiscount'][$dKey]['quantity'] = (int)$inputs['bulkDiscount'][$dKey]['quantity'];
-                $inputs['bulkDiscount'][$dKey]['type'] = (int)$inputs['bulkDiscount'][$dKey]['type'];
-                $inputs['bulkDiscount'][$dKey]['value'] = (float)$inputs['bulkDiscount'][$dKey]['value'];                
+                unset($inputs['advance_order_bulk']['bulk'][$dKey]['$$hashKey']);
+                $inputs['advance_order_bulk']['bulk'][$dKey] = [
+                  'from_qty' => (int)$discount['from_qty'],
+                  'to_qty' => (int)$discount['to_qty'],
+                  'type' => (int)$discount['type'],
+                  'value' => (float)$discount['value'],
+                ];                                
             }
+        }else{
+            $unset[] = 'advance_order_bulk';
+        }
+
+        if (isset($inputs['express_delivery_bulk']['bulk']) && !empty($inputs['express_delivery_bulk']['bulk']))
+        {
+            foreach ($inputs['express_delivery_bulk']['bulk'] as $dKey => $discount)
+            {
+                unset($inputs['express_delivery_bulk']['bulk'][$dKey]['$$hashKey']);
+                $inputs['express_delivery_bulk']['bulk'][$dKey] = [
+                  'from_qty' => (int)$discount['from_qty'],
+                  'to_qty' => (int)$discount['to_qty'],
+                  'type' => (int)$discount['type'],
+                  'value' => (float)$discount['value'],
+                ];                                
+            }
+        }else{
+            $unset[] = 'express_delivery_bulk';
+        }
+
+        $inputs['bulkDisable'] = (int)($inputs['bulkDisable']);
+
+        $inputs['loyalty'] = (int)($inputs['loyalty']);
+
+        if (isset($inputs['advance_order']['value']) && !empty($inputs['advance_order']['value'])){
+              $inputs['advance_order']['value'] = (float)$inputs['advance_order']['value'];
+        }else{
+            $unset[] = 'advance_order';
+        }
+
+        if (isset($inputs['regular_express_delivery']['value']) && !empty($inputs['regular_express_delivery']['value'])){
+              $inputs['regular_express_delivery']['value'] = (float)$inputs['regular_express_delivery']['value'];
+        }else{
+            $unset[] = 'regular_express_delivery';
         }
 
         $product = Products::find($id);
 
         if($product){          
+          $files = $inputs['imageFiles'];
           $update = $product->update($inputs);
+          foreach ($unset as $key => $value) {
+            $product->unset($value);
+          }          
           $this->saveImages($product,$files);
         }
 

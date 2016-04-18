@@ -37,4 +37,4 @@ MetronicApp.factory('productModel', ['$http', '$cookies','$location', function($
         },
 
     };
-}])
+}]);

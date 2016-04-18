@@ -30,8 +30,8 @@ class Products extends Eloquent
             'advance_order',
             'regular_express_delivery',
             'advance_order_bulk',
-            'express_delivery_bulk'
-            
+            'express_delivery_bulk',
+            'loyalty'            
     ];
 
     public function pcategories()
