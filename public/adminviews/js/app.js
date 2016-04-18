@@ -817,7 +817,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
             .state("products.edit", {
                 url: "/edit/{productid}",
-                templateUrl: "adminviews/views/products/edit.html",
+                templateUrl: "adminviews/views/products/add.html",
                 data: {pageSubTitle: 'Edit'}
             })
 
@@ -1232,11 +1232,11 @@ var objectToFormData = function(obj, form, namespace) {
       } else {
         formKey = property;
       }
-     
+        
       // if the property is an object, but not a File,
       // use recursivity.
       if(typeof obj[property] === 'object' && !(obj[property] instanceof File)) {
-        
+
         objectToFormData(obj[property], fd, formKey);
         
       } else {
