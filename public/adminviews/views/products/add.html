@@ -196,7 +196,9 @@
 						                	</label>
 						                </td>
 						                <td>
+
 						                	<label ng-if="product[kp] | isEmpty" class="control-label">
+
 						                		{{ price.type==0 ? 'Fix Amount':'% of Amount' }}
 						                	</label>						                	
 						                	<select ng-if="!(product[kp] | isEmpty)" class="form-control" ng-model="product[kp].type">            
@@ -442,5 +444,7 @@
 </script> -->
 
 
+
 <!-- <pre>{{ product|json }}</pre> -->
+
 

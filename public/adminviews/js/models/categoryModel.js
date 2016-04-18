@@ -40,6 +40,10 @@ MetronicApp.factory('categoryModel', ['$http', '$cookies', function($http, $cook
         });
     };
 
+    categoryModel.getPricingSettings = function(data){
+            return $http.get("/admin/setting/settings/pricing");
+        },
+
         
     categoryModel.getParentCategories = function($level){
 
