@@ -134,7 +134,8 @@ AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state
 		sort: $stateParams.sort,		
 	}
 
-
+	$scope.toggle = data.type;
+	
 
 	var config = {
 		params: data,

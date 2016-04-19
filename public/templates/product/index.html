@@ -16,10 +16,11 @@
     
     <div class="tabbable"> <!-- Only required for left/right tabs -->
     <div class="fullwidth">
+    {{toggle}}
       <ul class="nav nav-tabs productcomboul">
-        <li class="active"><a ng-click="$broadcast('filterproduct', {})" data-toggle="tab">All</a></li>
-        <li><a ng-click="$broadcast('filterproduct', {toggle: 'new'})" data-toggle="tab">New</a></li>
-        <li><a ng-click="$broadcast('filterproduct', {toggle: 'in-stock'})" data-toggle="tab">In Stock</a></li>      
+        <li ng-class="{active:toggle=='all'}"><a ng-click="$broadcast('filterproduct', {})" data-toggle="tab">All</a></li>
+        <li ng-class="{active:toggle=='new'}"><a ng-click="$broadcast('filterproduct', {toggle: 'new'})" data-toggle="tab">New</a></li>
+        <li ng-class="{active:toggle=='in-stock'}"><a ng-click="$broadcast('filterproduct', {toggle: 'in-stock'})" data-toggle="tab">In Stock</a></li>      
 
         <div class="dropdown productdropdownbtn" uib-dropdown>
           <button class="btn dropdown-toggle" type="button" id="dropdownMenu1" uib-dropdown-toggle aria-haspopup="true" aria-expanded="true">

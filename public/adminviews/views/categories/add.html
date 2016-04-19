@@ -26,7 +26,6 @@
 							</select>
 						</div>
 
-
 					</div>
 					<p ng-show="loading">Please Wait...</p>								
 
@@ -140,8 +139,7 @@
 				                <td>
 
 				                	<label ng-if="category[kp] | isEmpty" class="control-label">
-
-				                		{{ price.type==0 ? 'Fix Amount':'% of Amount' }}
+				                		Default
 				                	</label>						                	
 				                	<select ng-if="!(category[kp] | isEmpty)" class="form-control" ng-model="category[kp].type">            
 				                        <option value="0">Fix Amount</option>
@@ -150,7 +148,7 @@
 				                </td>
 				                <td>
 				                	<label ng-if="category[kp] | isEmpty" class="control-label">
-				                		{{ price.value }}
+				                		Default
 				                	</label>
 				                    <div ng-if="!(category[kp] | isEmpty)" ng:class="{'has-error':errors[kp+'.value'][0]}">
 				                    	<input  type="number" step="any" class="form-control" ng-model="category[kp].value" placeholder="">						                    
@@ -177,22 +175,22 @@
 				                </td>
 				                <td>
 				                	<label class="control-label">
-				                		{{ slots.type == 0 ? 'Fix Amount':'% of Amount' }}
+				                		Default
 				                	</label>						                	
 				                </td>
 				                <td>
 				                    <label class="control-label">
-				                		{{ slots.value }}
+				                		Default
 				                	</label>						                    
 				                </td>
 				                <td>
 				                    <label class="control-label">
-				                		{{ slots.from_qty }}
+				                		Default
 				                	</label>						                    
 				                </td>
 				                <td>
 				                    <label class="control-label">
-				                		{{ slots.to_qty }}
+				                		Default
 				                	</label>						                    
 				                </td>
 				                
@@ -250,4 +248,4 @@
 		</div>
 	</div>
 </div>
-<pre>{{category | json}}
+<!-- <pre>{{category | json}} -->
