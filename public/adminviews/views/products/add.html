@@ -51,7 +51,7 @@
 								</label>
 								<div class="col-md-10" >
 									<!-- {{product.categories}} -->
-									<select class="form-control" ng-model="product.categories" ng-options="obj.id as obj.name | ucwords for obj in cd">
+									<select class="form-control" ng-model="product.categories" ng-options="obj.id as obj.name | ucwords for obj in cd" ng-change="selectCategory()">
 										<option value="">Select..</option>
 									</select>
 									<!-- <div class="form-control height-auto" id="checkable">
@@ -446,5 +446,10 @@
 
 
 <!-- <pre>{{ product|json }}</pre> -->
+<!-- <pre>{{ cd|json }}</pre> -->
 
+<!-- <pre>{{ pricing|json }}</pre>
+
+<pre>{{ globalPricing|json }}</pre>
+ -->
 
