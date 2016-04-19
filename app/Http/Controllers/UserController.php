@@ -6,6 +6,7 @@ use AlcoholDelivery\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Categories as Categories;
+use AlcoholDelivery\User as User;
 
 use Illuminate\Support\Facades\Validator;
 
@@ -57,27 +58,7 @@ class UserController extends Controller
         return view('frontend',array('categories'=>$categories));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
+    
     /**
      * Display the specified resource.
      *
@@ -107,11 +88,110 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $inputs = $request->all();
+        $user = Auth::user('user');
+        // validation rules
+        $validator = Validator::make($inputs, [
+            'name' => 'required',
+            'email' => 'required|email|max:255|unique:user,email,'.$user->_id.",_id",
+            'mobile_number'=> 'required|numeric|digits_between:10,12',
+        ],[
+           'mobile_number.required' => 'Mobile number is required',
+           'mobile_number.numeric' => 'please enter valid mobile number',
+           'mobile_number.digits_between' => 'please enter valid mobile number'
+        ]);
+        
+        $return = array("success"=>false,"message"=>"","data"=>"");
+
+        if ($validator->fails()) {
+            
+            $return['message'] = "Please check form again";
+            $return['data'] = $validator->errors();
+
+            return response($return, 400);
+        }
+                
+        $curruser = User::find($user->_id);
+
+        $curruser->name = $inputs['name'];
+        $curruser->email = $inputs['email'];
+        $curruser->mobile_number = $inputs['mobile_number'];
+
+        try {
+
+            $curruser->save();
+
+            $return['success'] = true;
+            $return['message'] = "profile updated successfully";
+                        
+        } catch(\Exception $e){
+            $return['message'] = "Something wrong";//$e->getMessage();            
+        }
+
+        return response($return);
+        
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updatepassword(Request $request)
+    {
+        $inputs = $request->all();
+        $user = Auth::user('user');
+        // validation rules
+        $curruser = User::find($user->_id);
+
+        $inputs['old'] = '';
+
+        if (\Hash::check($inputs['current'], $curruser->password) === true) {
+            $inputs['old'] = $inputs['current'];
+        }
+
+        $validator = Validator::make($inputs, [
+            'current' => 'required|same:old',
+            'new' => 'required|digits_between:6,12|different:current',
+            'confirm' => 'required|same:new',            
+        ],[                      
+           'current.same' => 'Incorrect current password.',
+           'new.digits_between' => 'password must be between 6 to 12 digits'
+        ]);
+
+
+
+        $return = array("success"=>false,"message"=>"","data"=>"");
+
+        if ($validator->fails()) {
+
+            $return['message'] = "Please check form again";
+            $return['data'] = $validator->errors();
+
+            return response($return, 400);
+        }
+
+        $curruser->password = \Hash::make($request->input('new'));
+                
+        try {
+
+            $curruser->save();
+
+            $return['success'] = true;
+            $return['message'] = "password updated successfully";
+                        
+        } catch(\Exception $e){
+            $return['message'] = "Something wrong";//$e->getMessage();            
+        }
+
+        return response($return);
+        
+    }
+    
     /**
      * Remove the specified resource from storage.
      *
@@ -124,6 +204,23 @@ class UserController extends Controller
     }
 
     public function check(){
-        return response(Auth::user('user'), 200);        
+        return response(Auth::user('user'), 200);
     }
+
+    public function loggeduser(){
+
+        $userLogged = Auth::user('user');
+
+        if(!empty($userLogged)){
+            $userLogged = User::find($userLogged->_id);
+        }
+        else{
+            $userLogged = array("auth"=>false);
+        }
+
+        return response($userLogged, 200);
+    }
+
+
+
 }

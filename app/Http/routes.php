@@ -10,27 +10,10 @@
 |
  */
 
-/*Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/admin', function () {
-    return view('master');
-});
-
-post('upload-image', 'GalleryController@uploadImage');
-
-Route::post('admin/auth', 'UserController@checkAuth');
-Route::resource('admin/user', 'UserController');
-Route::resource('admin/gallery', 'GalleryController');
-
-post('delete-single-image', 'GalleryController@deleteSingleImage');*/
-
 post('upload-image', 'GalleryController@uploadImage');
 Route::resource('gallery', 'GalleryController');
 
 
-//Route::get('/', ['uses' => 'UserController@index']);
 Route::get('/', function () {
     return view('frontend');
 });
@@ -52,7 +35,6 @@ Route::post('/admin/getcustomers', ['uses' => 'Admin\AdminController@customers']
 Route::controller('/password', 'Auth\PasswordController');
  
 //ADMIN ROUTES
-//Route::resource('admin', 'Admin\AdminController');
 
 Route::get('/admin/profile', ['uses' => 'Admin\AdminController@profile']);
 Route::post('/admin/profile/update', ['uses' => 'Admin\AdminController@update']);
@@ -181,22 +163,19 @@ Route::get('products/i/{filename}', function ($filename)
 Route::controller('/admin/password', 'Auth\AdminPasswordController');
 Route::controller('/admin', 'Auth\AdminAuthController');
 
-	
-Route::post('/auth', 'UserController@checkAuth');
+Route::controller('/admin', 'Auth\AdminAuthController');
 
 Route::get('/check', 'UserController@check');
 
-/*Route::post('/profile/account', 'ProfileController@account');
-Route::post('/profile/update', 'ProfileController@update');*/
-
-//Route::resource('admin/profile', 'Admin\profileController');
-
-Route::controller('/admin', 'Auth\AdminAuthController');
-
 Route::post('/auth', 'UserController@checkAuth');
 
-// Route::post('/profile/account', 'ProfileController@account');
-// Route::post('/profile/update', 'ProfileController@update');
+Route::get('/loggedUser', 'UserController@loggedUser');
+
+Route::put('/profile', 'UserController@update');
+Route::put('/password', 'UserController@updatepassword');
+
+
+
 
 //TO WORK FOR ANGULAR DIRECT URL
 

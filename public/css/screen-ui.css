@@ -4087,3 +4087,303 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', end
   overflow: hidden;
   text-transform: none;
 }
+
+
+
+/*My account page css*/
+.creditable {
+  border-bottom: 1px solid #e2e2e2;
+  border-collapse: collapse;
+  padding: 20px;
+  width: 100%;
+  margin-bottom: 57px;
+}
+.creditable caption {
+  text-align: left;
+}
+.creditable th {
+  border: none;
+  padding: 0px 10px 10px;
+  background: #ffffff;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-family: 'Work Sans';
+  color: #434242;
+  font-weight:normal;
+}
+.creditable td {
+  border-top: 1px solid #e2e2e2;
+  padding:10px 11px 10px;
+  color: #222222;
+  font-family: 'Work Sans';
+}
+.creditable tr th:first-child {
+  width: 319px;
+  padding: 0 0 10px 47px;
+}
+.creditable tr th:nth-child(4) {
+  width: 268px;
+}
+.mainfirsttddiv {
+  width: 319px;
+  float: left;
+}
+.arowpicdiv {
+  width: 33px;
+  float: left;
+  margin-left: 10px;
+  padding-top: 3px;
+}
+.textfistrdivmain {
+  float: right;
+  text-align: left;
+  width:85%;
+  line-height: 22px;
+}
+.textboldtit {
+  width: 100%;
+  float: left;
+  color: #222222;
+  font-size: 16px;
+  font-family: 'Work Sans';
+}
+.textnormalit {
+  width: 100%;
+  float: left;
+  color: #222222;
+  font-size: 20px;
+  font-family: 'Work Sans';
+}
+.text_time_no {
+  width: 100%;
+  float: left;
+  font-size: 11px;
+  color: #666666;
+  font-family: 'Work Sans';
+}
+.cometdivtextpar {
+  width: 268px;
+  font-size: 11px;
+  color: #666;
+  font-family: 'Work Sans';
+  line-height:19px;
+}
+.creditable tr td:first-child {
+  width: 319px;
+  padding:0 0 0px;
+}
+.creditable tr td:nth-child(2) {
+  width: 124px;
+   vertical-align: text-top;
+}
+.creditable tr td:nth-child(3) {
+  width: 124px;
+  vertical-align: text-top;
+}
+.creditable tr td:nth-child(4) {
+  width: 218px;
+}
+.titlecreidt {
+  width: 100%;
+  float: left;
+  color: #666666;
+  font-size: 28px;
+  margin-bottom: 32px;
+  font-family: 'Work Sans';
+  font-weight: 600;
+}
+.balancedetailsdiv {
+  width: 100%;
+  float: left;
+  margin-bottom:58px;
+}
+.balancedetailsdivinner {
+  float: left;
+  text-align: center;
+  width: 53px;
+  margin-right: 50px;
+}
+.amountdiv {
+  width: 100%;
+  float: left;
+  text-align: left;
+  font-size: 18px;
+  color: #434242;
+  font-family: 'Work Sans';
+  font-weight: 500;
+}
+.elventestgry {
+  text-align: left;
+  font-size: 11px;
+  color: #434242;
+  width: 100%;
+  float: left;
+  font-family: 'Work Sans';
+  font-weight: 500;
+  line-height: 12px;
+ margin-top:1px;
+}
+.mainalcohdiv {
+  width: 100%;
+  float: left;
+  background-color: #ebeef0;
+}
+.laeftdiv {
+  width:100%;
+  float: left;
+  padding-right: 13px;
+}
+.laeftdivmain{
+  width:20%;
+  float:left;
+}
+.rgrhtdiv {
+  width:80%;
+  float:right;
+  background-color: #fff;
+  border-radius: 5px;
+  padding:21px 31px 33px 26px;
+  border: 1px solid #dfe2e4;
+  margin-bottom: 16px;
+}
+.pic_divinnertitle {
+  width: 100%;
+  float: left;
+  border-bottom: 1px solid #cccccc;
+  margin-bottom: 16px;
+  padding-bottom:15px;
+}
+.pic_divinnertag {
+  width: 14px;
+  height: 13px;
+  float: left;
+}
+.pic_divinnertext {
+  width: 83%;
+  float: right;
+  text-align: left;
+}
+.pic_divinnertextbold {
+  width: 100%;
+  float: left;
+  font-size: 14px;
+  color: #363535;
+  font-family: 'Work Sans';
+  font-weight: 600;
+  text-transform:uppercase;
+}
+.pic_divinnertextnormal {
+  width: 100%;
+  float: left;
+  font-size: 14px;
+  color: #363535;
+  font-family: 'Work Sans';
+  font-weight: 500;
+  margin: 8px 0 0;
+}
+.pic_divinnertextnormal a{
+  width: 100%;
+  float: left;
+  font-size: 14px;
+  color: #363535;
+  font-family: 'Work Sans';
+  font-weight: 500;
+  margin:0px 0 0;
+}
+.pic_divinnertextnormal a:focus,
+.pic_divinnertextnormal a:hover{
+  color:#aa00ff;
+  cursor:pointer;
+  text-decoration:none;
+}
+.pic_divinnertextnormal span{
+  margin-left:5px;
+  border:1px solid #ccc;
+  text-align:center;
+  padding:2px;
+  border-radius:3px;
+  color:#a5a5a5;
+  font-size:10px;
+  font-family: 'Work Sans';
+}
+.laeftdivmain_title {
+  width: 100%;
+  float: left;
+  font-size: 18px;
+  color: #69696a;
+  font-family: 'Work Sans';
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  margin-top: 15px;
+}
+.bordernoebtm{
+  border-bottom:none;
+}
+.breadcrumdiv .breadcrumb {
+ background-color:#fff;
+ list-style: outside none none;
+ margin-bottom:17px;
+ padding: 8px 0px;
+  font-size:13px;
+  color:#7a7a7a;
+  font-family: 'Work Sans';
+}
+.breadcrumdiv .breadcrumb > li {
+ display: inline-block;
+  font-size:13px;
+  color:#7a7a7a;
+  font-family: 'Work Sans';
+  font-weight:400;
+}
+.breadcrumdiv a {
+ color: #7a7a7a;
+ text-decoration: none;
+  font-family: 'Work Sans';
+  font-weight:400;
+}
+.breadcrumdiv .breadcrumb > .active {
+ color: #222122;
+  font-size:13px;
+  font-family: 'Work Sans';
+  font-weight:500;
+}
+.breadcrumdiv .breadcrumb > li + li::before {
+ color: #cccccc;
+ content: ">";
+ padding: 0 5px;
+}
+.fig_txtup{
+  float:left;
+}
+
+.balancetexxt2{
+    float: left;
+    font-size: 14px;
+    width: 100%;
+    margin-bottom: 25px;
+}
+.balancedetailsdiv2 {
+    float: left;
+    margin-bottom: 35px;
+    width: 100%;
+}
+.change_form {
+    width: 43%;
+    float: left;
+}
+/**/
+
+/*Error Classess*/
+.has-error .help-block, .has-error .help-inline, .has-error .control-label, .has-error .radio, .has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline {
+    color: #F3565D;
+}
+.help-block {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.has-error input[type='text'] {
+    border-color: #f13e64;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}

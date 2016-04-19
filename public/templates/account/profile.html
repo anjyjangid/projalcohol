@@ -1,0 +1,49 @@
+<div class="breadcrumdiv">
+ <ol class="breadcrumb">
+  <li><a href="#">Home</a></li>
+  <li><a href="#">My Account</a></li>
+  <li><a href="#">Account Settings  </a></li>
+  <li class="active">Profile Settings</li>
+</ol>
+</div>
+
+
+<div class="titlecreidt">Profile Settings</div>
+<div class="balancedetailsdiv2">
+  <div class="balancetexxt">If you want to change the name associated with your Alcohol Delivery customer account, you may do so below. Be sure to click the <a href="">Save Changes</a> button when you are done.</div>
+</div>
+<form name="profileFrm" class="profile_form">
+
+      <div class="registeremailcvr" ng:class="{'has-error':errors.name[0]}">
+        
+        <label>Name</label>
+        <input type="text" placeholder="Name" ng-model="user.name" class="alcohalrestertextbox">
+        
+        <span class="help-block" ng-bind="errors.name[0]"></span>
+        <span class="error" ng-show="profileFrm.name.$error.required">The name field is required.</span>
+
+      </div>
+
+      <div class="registeremailcvr" ng:class="{'has-error':errors.email[0]}">
+        <label>Email</label>
+
+        <input 
+              type="email" 
+              placeholder="email@domain.com" 
+              ng-model="user.email"
+              ng-required=true
+              class="alcohalrestertextbox">
+
+        <span class="help-block" ng-bind="errors.email[0]"></span>
+        <span class="help-block" ng-show="profileFrm.name.$error.email">Not valid email!</span>
+
+      </div>
+      <div class="registeremailcvr" ng:class="{'has-error':errors.mobile_number[0]}">
+        <label>Mobile Phone Number</label>
+        <input type="text" placeholder="mobile number" ng-model="user.mobile_number" class="alcohalrestertextbox">
+        <span class="help-block" ng-bind="errors.mobile_number[0]"></span>
+      </div>
+      <div class="fullwidth">
+        <button class="alcohalfootersign" type="button" ng-click="update()" ng-disabled="!profileFrm.$valid">Save Changes</button>
+      </div>
+</form>

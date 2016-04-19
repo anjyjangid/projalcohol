@@ -6,6 +6,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ngSanitize',
 	'ui.bootstrap', 
 	'bootstrapLightbox', 
+	"19degrees.ngSweetAlert2",
 	'angular-loading-bar',
 	'ngAnimate'
 ]);
@@ -209,7 +210,6 @@ AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state
 	
 }]);
 
-
 AlcoholDelivery.controller('ProductsFeaturedController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
 
 	$scope.ProductsFeaturedController = {};
@@ -245,8 +245,6 @@ AlcoholDelivery.controller('ProductsFeaturedController', ['$scope', '$rootScope'
 	
 	
 }]);
-
-
 
 AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
 
@@ -348,6 +346,88 @@ AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$
 	});
 	
 }]);
+
+AlcoholDelivery.controller('ProfileController',['$scope','$rootScope','$state','$http','sweetAlert',function($scope,$rootScope,$state,$http,sweetAlert){
+
+	$scope.user;
+
+	initController();
+	function initController() {
+
+		$http.get('/loggedUser').success(function(response){
+			
+            $scope.user = response;
+        }).error(function(data, status, headers){
+
+        });
+
+	}
+
+	$scope.update = function(){
+
+		$http.put("/profile", $scope.user, {
+	            
+	        }).error(function(response, status, headers) {            
+	            
+				//sweetAlert.swal({
+				// 	type:'error',
+				// 	title: 'Oops...',
+				// 	text:response.message,					
+				// 	timer: 2000
+				// });
+	            
+	            $scope.errors = response.data;
+	        })
+	        .success(function(response) {	            
+	            
+	            if(!response.success){
+	            	$scope.errors = response;
+	            }
+
+	            sweetAlert.swal({
+					type:'success',
+					title: response.message,					
+					timer: 2000
+				});
+	            $state.go($state.current, {}, {reload: true});
+	        })
+	}
+
+}])
+
+
+AlcoholDelivery.controller('PasswordController',['$scope','$rootScope','$state','$http','sweetAlert',function($scope,$rootScope,$state,$http,sweetAlert){
+
+	$scope.password = {
+		current:'',
+		new:'',
+		confirm:''
+	}
+
+	$scope.update = function(){
+
+		$http.put("/password", $scope.password,{
+	            
+	        }).error(function(response, status, headers) {            
+	            
+	            $scope.errors = response.data;
+	        })
+	        .success(function(response) {	            
+	            
+	            if(!response.success){
+	            	$scope.errors = response;
+	            }
+
+	            sweetAlert.swal({
+					type:'success',
+					title: response.message,					
+					timer: 2000
+				});
+	            $state.go($state.current, {}, {reload: true});
+	        })
+	}
+
+}])
 
 /* Setup global settings */
 AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
@@ -474,7 +554,17 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 
 				.state('accountLayout', {
-						templateUrl: "/templates/accountLayout.html",
+						
+						views : {
+
+							"" : {
+								templateUrl : "/templates/accountLayout.html",
+							},
+							"navLeft@accountLayout" : {
+								templateUrl: "/templates/account/navLeft.html",
+							},
+
+						},
 						controller:function(){
 								 
 						},
@@ -499,13 +589,22 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 										});
 								}]
 						}
+
 				})
-				.state('accountLayout.account', {
-						url: "/myacount",
-						templateUrl: "/templates/account/index.html",
-						controller:function(){
-							
-						}
+				.state('accountLayout.profile', {
+						url: "/profile",
+						templateUrl: "/templates/account/profile.html",
+						controller:"ProfileController"
+				})
+				.state('accountLayout.password', {
+						url: "/password",
+						templateUrl: "/templates/account/password.html",
+						controller:"PasswordController"
+				})
+				.state('accountLayout.credits', {
+						url: "/credits",
+						templateUrl: "/templates/account/credits.html",
+						controller:"CreditsController"
 				})
 
 				.state('mainLayout.product', {

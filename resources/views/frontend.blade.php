@@ -28,6 +28,9 @@
 		<link rel="stylesheet" type="text/css" href="css/jquery.switchButton.css">
 		<link rel="stylesheet" type="text/css" href="css/jquery.mCustomScrollbar.css">
 		<link rel="stylesheet" type="text/css" href="css/jquery.bootstrap-touchspin.css">
+		<!-- SWEET ALERT STYLE -->
+		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/sweetalert2/dist/sweetalert2.css') }}"/>
+
 		<link rel="stylesheet" type="text/css" href="css/common.css">
 		<link rel="stylesheet" type="text/css" href="css/screen-ui.css">
 		<link rel="stylesheet" type="text/css" href="css/ui_responsive.css">
@@ -159,6 +162,11 @@
 	    <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') }}"></script>
 	    
 	    <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap-lightbox/dist/angular-bootstrap-lightbox.js') }}"></script>
+
+	    <!-- SWEET ALERT STYLE -->
+		<script src="{{ asset('bower_components/sweetalert2/dist/sweetalert2.min.js') }}" type="text/javascript"></script>
+		<script src="{{ asset('bower_components/ngSweetAlert2/SweetAlert.js') }}" type="text/javascript"></script>
+		
 	    <!-- <script type="text/javascript" src="{{asset('bower_components/angular-owl-carousel/src/angular-owl-carousel.js')}}"></script> -->
 	    <script src="{{ asset('bower_components/angular-animate/angular-animate.js') }}"></script>	    
 	    <script type="text/javascript" src="js/app.js"></script>

@@ -56,14 +56,14 @@ AlcoholDelivery.directive('sideBar', function() {
 	            });
 			};
 
-			$scope.loginSubmit = function() {
+			$scope.loginSubmit = function(){
 				$http.post('/auth',$scope.login).success(function(response){
 	                $scope.login = {};
 	                $scope.user = response;
 					$scope.user.name = response.email;
 	                $('#login').modal('hide');
 	            }).error(function(data, status, headers) {                            
-	                $scope.errors = data;                
+	                $scope.errors = data;
 	            });
 			};
 
