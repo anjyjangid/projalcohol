@@ -28,12 +28,13 @@
 				<div class="col-md-2" ng-if="appSettings.layout.pageRightbarExist">
 					<div class="right_discount">
 						<div class="huge">Huge</div>
-						<div class="hugediscou">Discounts</div>
+						<div class="hugediscou">Discounts </div>
 						<div class="fullwidth">
 							<div class="slider demo" id="slider-1">
-								<input type="checkbox" value="1" checked>
+								<input ng-model="hugediscount" type="checkbox">
 							</div>
 						</div>
+
 						<div class="hd_des">Only applicable for orders placed in advance. Advanced timings to be chosen upon checkout.</div>
 					</div>
 					<div class="recentorder" ng-show="user.email">

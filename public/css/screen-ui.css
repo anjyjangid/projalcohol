@@ -4379,11 +4379,73 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', end
   float:left;
 }
 
-.balancetexxt2{
+.balancetexxt{
+  width:63%;
+  float:left;
+  font-size:14px;
+}
+
+.balancetexxt a, .balancetexxt a:hover, .balancetexxt a:focus{
+  font-weight:600;
+  color:#424242;
+  text-decoration:none;
+}
+
+.profile_form{
+  width:70%;
+  float:left;
+}
+
+.profile_form .registeremailcvr{
+  width:50%;
+  padding-right:20px;
+  float:left;
+}
+
+.profile_form .registeremailcvr .alcohalrestertextbox{
+  min-height:35px;
+  font-size:14px;
+}
+
+
+.profile_form .fullwidth .alcohalfootersign{
+  font-size:16px;
+  padding:10px 25px;
+}
+
+.balancedetailsdiv2 {
+    float: left;
+    margin-bottom:35px;
+    width: 100%;
+}
+
+
+.change_form{
+  width:43%;
+  float:left;
+}
+
+.change_form .registeremailcvr{
+  width:100%;
+  float:left;
+}
+
+.change_form .registeremailcvr .alcohalrestertextbox{
+  min-height:35px;
+  font-size:14px;
+}
+
+
+.change_form .fullwidth .alcohalfootersign{
+  font-size:16px;
+  padding:10px 25px;
+}
+
+.balancetexxt2 {
     float: left;
     font-size: 14px;
-    width: 100%;
-    margin-bottom: 25px;
+    width:100%;
+  margin-bottom:25px;
 }
 .balancedetailsdiv2 {
     float: left;
