@@ -181,7 +181,6 @@ a, a:hover, a:focus{
 }
 
 .signuplogin{
-  margin-top:33px;
   font-weight:500;
   color:#2c2011;
   text-transform:uppercase;
@@ -195,11 +194,17 @@ a, a:hover, a:focus{
 .signuplogin a, .signuplogin a:hover, .signuplogin a:focus{
   color:#2c2011;
   text-decoration:none;
-  margin-left:30px;
+  padding:33px 15px;
   display:inline-block;
   float:left;
+  -moz-transition:all 0.5s ease 0s;
+  -webkit-transition:all 0.5s ease 0s;  
+  transition:all 0.5s ease 0s;
 }
 
+.signuplogin a:hover{
+	background:#e1b11f;
+}
 .searchtop{
   width:21px;
   height:21px;
@@ -270,11 +275,17 @@ a, a:hover, a:focus{
 
 
 .cart_icon{
-  background:url(../images/sprite.png) no-repeat -348px 0px;
+  background:url(../images/sprite.png) no-repeat -340px 33px;
   width:23px;
   height:20px;
+  min-height:85px;
   margin-left:25px !important;
+  min-width: 40px;
 }
+.cart_icon:hover{
+	background:#e1b11f url(../images/sprite.png) no-repeat -340px 33px !important;
+}
+
 
 .homecallus_cover{
   width:135px;
@@ -1880,11 +1891,31 @@ a, a:hover, a:focus{
 
 
 .navbar-fixed-top.navbar-shrink .signuplogin{
-  margin-top:23px;
   -moz-transition:all 0.5s ease 0s;
   -webkit-transition:all 0.5s ease 0s;  
   transition:all 0.5s ease 0s;
 }
+.navbar-shrink .signuplogin a,.navbar-shrink .signuplogin a:hover,.navbar-shrink .signuplogin a:focus{
+	padding:25px 15px;
+	-moz-transition:all 0.5s ease 0s;
+  -webkit-transition:all 0.5s ease 0s;  
+  transition:all 0.5s ease 0s;
+}
+.navbar-shrink .cart_icon{
+	background-position:-340px 25px;
+	min-height:70px;
+	-moz-transition:all 0.5s ease 0s;
+  -webkit-transition:all 0.5s ease 0s;  
+  transition:all 0.5s ease 0s;
+}
+.navbar-shrink .cart_icon:hover{
+	background-position:-340px 25px !important;
+	min-height:70px;
+	-moz-transition:all 0.5s ease 0s;
+  -webkit-transition:all 0.5s ease 0s;  
+  transition:all 0.5s ease 0s;
+}
+
 .fullwidth.settop {
     margin-top: 80px;
 }
@@ -2611,8 +2642,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', end
 }
 
 .form-control:focus{
-  box-shadow:none;
-  border:none;
+  /*box-shadow:none;
+  border:none;*/
 }
 .prddetailtitle{
   width:100%;
@@ -2921,21 +2952,19 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', end
 }
 
 .navbar-fixed-top .container{
-  position:relative; 
-  overflow:hidden; 
+  position:relative;
   height:85px;
   transition:all 0.3s ease 0s;
 }
-.navbar-fixed-top.navbar-shrink .container{
-  height:70px;
+.navbar-shrink .container{
+  height:69px;
   transition:all 0.3s ease 0s;
 }
 
-.navbar-fixed-top.navbar-shrink .logoss{
-  height:70px;
+.navbar-shrink .logoss{
+  min-height:70px;
   transition:all 0.3s ease 0s;
 }
-
 
 /*---------------inner-Header---------------------*/
 
@@ -2957,13 +2986,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', end
 .navbar-fixed-top{
   background:#FFC412;
 }
-
-.navbar-fixed-top .container{
-  position:relative; 
-  overflow:hidden; 
-  height:85px;
-  transition:all 0.3s ease 0s;
-}*/
 
 
 .navbar-fixed-top.navbar-shrink2 {
@@ -4387,3 +4409,39 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', end
     -webkit-box-shadow: none;
     box-shadow: none;
 }
+.signuplogin ul{
+	padding-left:0px;
+	list-style:none;
+}
+.signuplogin ul li{
+	float:left;
+}
+.profil-dropdown li{
+	float:left;
+	width:100%;
+}
+.signuplogin .dropdown:hover  a {
+    background: #e1b11f none repeat scroll 0 0;
+
+}
+.profil-dropdown li a{
+	float:left;
+	width:100%;
+	background:#fff !important;
+	padding:10px 20px !important;
+}
+.profil-dropdown li a:hover{
+	background:#ddd !important;
+}
+.profil-dropdown:before{
+	border-bottom: 15px solid #ffffff;
+    border-left: 15px solid rgba(0, 0, 0, 0);
+    border-right: 15px solid rgba(0, 0, 0, 0);
+    content: "";
+    height: 0;
+    left: 40%;
+    position: absolute;
+    top: -12px;
+    width: 0;
+}
+

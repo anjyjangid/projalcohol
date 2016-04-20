@@ -21,10 +21,20 @@
       </div>
       <div class="col-md-2 signuplogin_cover">
         <div class="signuplogin">
-          <a ui-sref="mainLayout.cart" class="cart_icon"></a>
-          <a ng-hide="user.email" data-target="#register" data-toggle="modal" href="javascript:;">Signup</a>
-          <a ng-hide="user.email" data-target="#login" data-toggle="modal" href="javascript:;">login</a>         
-          <a ng-show="user.email" data-target="#" ng-click="logout()" data-toggle="modal" href="javascript:;" class="username">Hola, {{user.email}}</a>
+         <ul>
+          <li><a ui-sref="mainLayout.cart" class="cart_icon"></a></li>
+          <li ng-hide="user.email"><a data-target="#register" data-toggle="modal" href="javascript:;">Signup</a></li>
+          <li ng-hide="user.email"><a data-target="#login" data-toggle="modal" href="javascript:;">login</a></li>       
+          <!--<a ng-show="user.email" data-target="#" ng-click="logout()" data-toggle="modal" href="javascript:;" class="username">Hola, {{user.email}}</a>-->
+          <li class="dropdown" ng-show="user.email"><a href="javascript:;" class="username dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+          	Hola, {{user.email}}
+          </a>
+          <ul class="dropdown-menu profil-dropdown">
+            <li><a ui-sref="accountLayout.profile">My Account</a></li>
+            <li><a href="#" ng-click="logout()">Logout</a></li>
+          </ul>
+          </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -324,3 +334,13 @@ function googleTranslateElementInit() {
     </div>
   </div>
 </div>
+<script>
+$(document).ready(function(e) {
+   $('.signuplogin .dropdown').hover(function() {
+  $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeIn(500);
+}, function() {
+  $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut(500);
+}); 
+});
+
+</script>
