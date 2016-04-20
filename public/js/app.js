@@ -38,6 +38,7 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 
 	$scope.AppController = {};
 	$scope.featuredProduct = [];
+	$scope.hugediscount = true;
 
 	$scope.AppController.category = "";
 	$scope.AppController.subCategory = "";
@@ -135,8 +136,7 @@ AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state
 		sort: $stateParams.sort,		
 	}
 
-	$scope.toggle = data.type;
-	
+	$scope.AppController.toggle = data.type;
 
 	var config = {
 		params: data,
@@ -441,18 +441,43 @@ AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
     $rootScope.appSettings = appSettings;
 
     return appSettings;
+
 }]);
 
-/* Setup global settings */
-AlcoholDelivery.factory('UserService', [function() {
-    // supported languages
-    var user = {
-        isLogged: false,
-    	  username: ''        
-    };   
 
-    return user;
+AlcoholDelivery.factory("UserService", ["$q", "$timeout", "$http", function($q, $timeout, $http) {
+
+	function GetUser() {
+		
+		var d = $q.defer();
+		$timeout(function(){
+			
+			$http.get("/loggedUser").success(function(response){
+
+		    	d.resolve(response);
+		    	
+		    })
+
+		}, 500);
+
+		return d.promise;
+	};
+	return {
+		GetUser: GetUser
+        ,currentUser: null
+	};
 }]);
+
+// /* Setup global settings */
+// AlcoholDelivery.factory('UserService', [function() {
+//     // supported languages
+//     var user = {
+//         isLogged: false,
+//     	  username: ''        
+//     };   
+
+//     return user;
+// }]);
 
 /* Setup Rounting For All Pages */
 AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
@@ -463,6 +488,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				.state('mainLayout', {
 						templateUrl: "/templates/index.html",
 						controller:function(){
+
 								setTimeout(function(){
 										initScripts({
 												disableScrollHeader:true
@@ -554,7 +580,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 
 				.state('accountLayout', {
-						
+						abstract: true,
 						views : {
 
 							"" : {
@@ -564,10 +590,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								templateUrl: "/templates/account/navLeft.html",
 							},
 
-						},
-						controller:function(){
-								 
-						},
+						},						
 						resolve: {
 								deps: ['$ocLazyLoad', function($ocLazyLoad) {
 										return $ocLazyLoad.load({
@@ -718,16 +741,31 @@ function ($q, $rootScope, $log) {
 }]);
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "appSettings", "$state" , function($rootScope, settings, $state) {		
-		
-		$rootScope.$state = $state; // state to be accessed from view				
-		
-		$rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
+AlcoholDelivery.run(["$rootScope", "appSettings", "UserService", "$state" , function($rootScope, settings, UserService, $state) {		
 
-		   $state.previous = {state:from, param:fromParams}
-		   $rootScope.appSettings.layout.pageRightbarExist = true;
+	$rootScope.$state = $state; // state to be accessed from view				
+	
+	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){ 
+		
+		var regex = new RegExp('^accountLayout', 'i');
 
-		});
+		UserService.GetUser().then(
+			
+		    function(result) {
+		    	if(result.auth===false && regex.test(toState.name)){
+		    		$state.go('mainLayout.index');
+		    	}
+		       UserService.currentUser = result;
+		    }
+		);
+	})
+
+	$rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
+
+	   $state.previous = {state:from, param:fromParams}
+	   $rootScope.appSettings.layout.pageRightbarExist = true;
+
+	});
 
 }]);
 

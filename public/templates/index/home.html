@@ -39,14 +39,16 @@
 
 			    		}">
 			      <div owl-carousel-item="" ng-repeat="fproduct in pCat['featured']" class="item">
-			        <div class="prod_chilled" ng-class="{notchilled:{{!fproduct.chilled}}}">
+			        
+			        <div class="prod_chilled" ng-class="{notchilled:fproduct.servechilled,invisible:{{!fproduct.chilled}}}" ng-init="fproduct.servechilled=false" ng-click="fproduct.servechilled=!fproduct.servechilled">
+			        
 							<span>Chilled</span>
 							<div class="prod_chilled_icon"></div>
 						</div>
 						<div class="prod_pic">
 							<div class="wishlist_discount">
 								<div class="wishlist">Add to Wishlist</div>
-								<div class="discount">Click here to view Bulk Discounts</div>
+								<div class="discount" ui-sref="mainLayout.product({product:fproduct._id})">Click here to view Bulk Discounts</div>
 							</div>
 
 							<img err-pro-src="" ng-src="products/i/200/{{fproduct.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive"/>
