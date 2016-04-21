@@ -62,6 +62,7 @@ AlcoholDelivery.directive('sideBar', function() {
 	                $scope.user = response;
 					$scope.user.name = response.email;
 	                $('#login').modal('hide');
+	                $scope.errors = {};
 	            }).error(function(data, status, headers) {                            
 	                $scope.errors = data;
 	            });
