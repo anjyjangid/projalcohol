@@ -5,6 +5,10 @@ MetronicApp.factory('productModel', ['$http', '$cookies','$location', function($
             return $http.get("/admin/category/getparentcategories/all");
         },
 
+        getDealers: function(){
+            return $http.get("/admin/dealer/getlist");
+        },
+
         saveProduct: function(data){
             return $http.post("/admin/product/store", {data:data});
         },

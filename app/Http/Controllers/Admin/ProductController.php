@@ -68,7 +68,9 @@ class ProductController extends Controller
         $inputs['price'] = (float)$inputs['price'];        
         $inputs['chilled'] = (int)$inputs['chilled'];
         $inputs['status'] = (int)$inputs['status'];
-        $inputs['isFeatured'] = (int)$inputs['isFeatured'];       
+        $inputs['isFeatured'] = (int)$inputs['isFeatured'];
+        $inputs['threshold'] = (int)$inputs['threshold'];
+        $inputs['maxQuantity'] = (int)$inputs['maxQuantity'];       
 
         if (isset($inputs['advance_order_bulk']['bulk']) && !empty($inputs['advance_order_bulk']['bulk']))
         {
@@ -163,7 +165,9 @@ class ProductController extends Controller
         $inputs['price'] = (float)$inputs['price'];        
         $inputs['chilled'] = (int)$inputs['chilled'];
         $inputs['status'] = (int)$inputs['status'];
-        $inputs['isFeatured'] = (int)$inputs['isFeatured'];       
+        $inputs['isFeatured'] = (int)$inputs['isFeatured'];    
+        $inputs['threshold'] = (int)$inputs['threshold'];
+        $inputs['maxQuantity'] = (int)$inputs['maxQuantity'];   
 
         $unset = [];
 

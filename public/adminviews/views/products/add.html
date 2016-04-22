@@ -82,9 +82,43 @@
 								</label>
 								<div class="col-md-10">
 									<input type="number" class="form-control" ng-model="product.quantity" placeholder="">									
+									<span class="help-block">(in stock)</span>
 									<span class="help-block" ng-bind="errors.quantity[0]"></span>
 								</div>
 							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.threshold[0]}">
+								<label class="col-md-2 control-label">Re-order threshold: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="number" class="form-control" ng-model="product.threshold" placeholder="">									
+									<span class="help-block" ng-bind="errors.threshold[0]"></span>
+								</div>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.maxQuantity[0]}">
+								<label class="col-md-2 control-label">Maximum Quantity: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="number" class="form-control" ng-model="product.maxQuantity" placeholder="">									
+									<span class="help-block">(in stock)</span>
+									<span class="help-block" ng-bind="errors.maxQuantity[0]"></span>
+								</div>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.dealers[0]}">
+								<label class="col-md-2 control-label">Select Dealer: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<select ng-options="d._id as d.title for d in dealerlist" class="form-control" ng-model="product.dealers" multiple="">
+									</select>							
+									<span class="help-block">(in stock)</span>
+									<span class="help-block" ng-bind="errors.dealers[0]"></span>
+								</div>
+							</div>							
 
 							<div class="form-group" ng:class="{'has-error':errors.loyalty[0]}">
 								<label class="col-md-2 control-label">Loyalty Value: <span class="required">

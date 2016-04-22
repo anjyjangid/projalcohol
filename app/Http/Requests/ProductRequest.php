@@ -32,7 +32,7 @@ class ProductRequest extends Request
             'description' => 'required',
             'shortDescription' => 'required',
             'categories' => 'required',
-            'sku' => 'required',
+            'sku' => 'required|unique:products,sku,'.@$input['_id'].',_id',
             'quantity' => 'required|numeric',
             'price' => 'required|numeric',
             'chilled' => 'required|integer',
@@ -43,6 +43,9 @@ class ProductRequest extends Request
             'isFeatured' => 'required|integer',
             'imageFiles' => 'required|array|min:1',            
             'loyalty' => 'required|numeric',
+            'threshold' => 'required|numeric|lt:maxQuantity',
+            'maxQuantity' => 'required|numeric|gte:quantity',
+            'dealers' => 'required|array|min:1',
         ];
         
         if (isset($input['imageFiles']) && is_array($input['imageFiles']))
@@ -101,7 +104,10 @@ class ProductRequest extends Request
             'required' => 'This field is required',
             //'categories.required' => 'Please select a category.',
             //'status.required' => 'Please select :attribute.',
-            'imageFiles.required' => 'Please add atleast one image.'            
+            'imageFiles.required' => 'Please add atleast one image.',
+            'maxQuantity.gte' => 'The value should be greater than or equals to the quantity.',
+            'threshold.lt' => 'The value should be less than maximum quantity.',
+            'dealers.required' => 'Please select atleast one dealer.'
         ]; 
 
         $images = Request::input('imageFiles');

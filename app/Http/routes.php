@@ -71,6 +71,7 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 			
 		Route::post('getdealers', 'Admin\DealerController@getdealers');
 
+		Route::get('getlist','Admin\DealerController@getlist');
 		//Route::post('remove', 'Admin\DealerController@remove');
 
 	});
