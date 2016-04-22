@@ -400,6 +400,54 @@ class ProductController extends Controller
         }
 
     }
+
+    public function orderProduct(Request $request){
+
+      $params = $request->all();
+
+      $products = new Products;
+
+      extract($params);      
+
+      if(isset($params['search']['value']) && trim($params['search']['value'])!=''){
+        $sval = $params['search']['value'];
+        $products = $products->where('name','regexp', "/.*$sval/i");
+      }
+
+      $iTotalRecords = $products->count();      
+      
+      $columns = ['name','quantity','maxQuantity','_id'];
+
+      $notordered = true;
+      if ( isset( $params['order'] ) ){
+          foreach($params['order'] as $orderKey=>$orderField){
+              if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
+                  $notordered = false;                    
+                  $products = $products->orderBy($columns[$orderField['column']],$orderField['dir']);                    
+              }
+          }
+      }
+
+      $products = $products
+      ->skip($start)
+      ->take($length);
+
+      if($notordered){
+        $products = $products->orderBy('quantity','asc')->orderBy('maxQuantity','asc');
+      }
+
+      $products = $products->get($columns);
+      
+      $response = [
+        'recordsTotal' => $iTotalRecords,
+        'recordsFiltered' => $iTotalRecords,
+        'draw' => $draw,
+        'length' => $length,
+        'aaData' => $products
+      ];
+      
+      return response($response,201);
+    }
      
 }
     
