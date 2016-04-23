@@ -271,4 +271,9 @@ class DealerController extends Controller
     }
     
     
+    public function getlist(){
+        $dealers = Dealer::where('status','=',1)->get(['_id','title']);                
+        return response($dealers,201);
+    }
+
 }

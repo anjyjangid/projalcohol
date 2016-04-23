@@ -20,7 +20,7 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 			regular_express_delivery:{},
 			advance_order_bulk:{},
 			express_delivery_bulk:{},	
-			price:null
+			price:null			
 		};
 		
 	});
@@ -67,6 +67,12 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 		$scope.globalPricing = angular.copy(data);
 		$scope.pricing = angular.copy(data);	
 	});
+
+	productModel.getDealers().success(function(data){				
+		$scope.dealerlist = data;	
+	});
+
+
 
 	$scope.errors = {};
 	
