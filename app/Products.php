@@ -42,6 +42,11 @@ class Products extends Eloquent
         //return $this->belongsToMany('AlcoholDelivery\Categories', null, 'products', 'categories');
     }
 
+    public function supplier()
+    {        
+        return $this->belongsToMany('AlcoholDelivery\Dealer', null, 'products', 'dealers');
+    }
+
     public function getSingleProduct($id)
     {
         return Products::where('_id', $id)->first();       

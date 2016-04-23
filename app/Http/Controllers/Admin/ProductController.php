@@ -112,7 +112,7 @@ class ProductController extends Controller
               $inputs['regular_express_delivery']['value'] = (float)$inputs['regular_express_delivery']['value'];
         }
 
-        $product = Products::create($inputs);    
+        $product = Products::create($inputs);            
 
         if($product){
           
@@ -224,6 +224,7 @@ class ProductController extends Controller
         if($product){          
           $files = $inputs['imageFiles'];
           $update = $product->update($inputs);
+          $product->supplier()->sync([$product->_id]);
           foreach ($unset as $key => $value) {
             $product->unset($value);
           }          
@@ -418,7 +419,7 @@ class ProductController extends Controller
 
       $iTotalRecords = $products->count();      
       
-      $columns = ['name','quantity','maxQuantity','_id'];
+      $columns = ['name','quantity','maxQuantity','threshold','_id'];
 
       $notordered = true;
       if ( isset( $params['order'] ) ){
@@ -431,17 +432,14 @@ class ProductController extends Controller
       }
 
       $products = $products
-      ->skip($start)
-      ->take($length);
+      ->skip((int)$start)
+      ->take((int)$length);
 
       if($notordered){
-        $products = $products->orderBy('quantity','asc')->orderBy('maxQuantity','asc');
+        $products = $products->orderBy('quantity','asc')->orderBy('threshold','asc')->orderBy('maxQuantity','asc');
       }
 
-      
-
-
-      $products = $products->get($columns);
+      $products = $products->with('supplier')->get($columns);
       
       $response = [
         'recordsTotal' => $iTotalRecords,
@@ -451,7 +449,7 @@ class ProductController extends Controller
         'aaData' => $products
       ];
       
-      return response($response,201);
+      return response($response,200);
     }
      
 }
