@@ -40,7 +40,7 @@
     </div>
   </div>
 
-  <!-- <div id="google_translate_element"></div><script type="text/javascript">
+<!-- <div id="google_translate_element"></div><script type="text/javascript">
 function googleTranslateElementInit() {
   new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,zh-CN', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
 }
@@ -93,6 +93,7 @@ function googleTranslateElementInit() {
     </div>
   </div>
 </div>
+
 <div class="modal" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
   <div class="modal-dialog alcohal_registermain" role="document">
     <div class="modal-content alcohalregiterconntcvr">
@@ -127,6 +128,43 @@ function googleTranslateElementInit() {
     </div>
   </div>
 </div>
+
+<div class="modal" id="reset" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
+  <div class="modal-dialog alcohal_registermain" role="document">
+    <div class="modal-content alcohalregiterconntcvr">
+      <div class="modal-header alcohalhdr">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>-->
+      </div>
+      <form ng-submit="resetSubmit()" name="resetForm">
+        <div class="modal-body alcohabody">
+          <div class="alcohal_regisemailcvr">
+            <div class="alcohal_regissigntxt">Reset Your Password</div>
+            <div class="registeremailcvr" ng-class="{'has-error':reset.errors.password[0]}">
+              <label>New Password</label>
+              <input type="password" ng-model="reset.password" class="alcohalrestertextbox form-control" placeholder="New Password" />
+              <span class="help-block" ng-bind="reset.errors.password[0]"></span>
+            </div>
+            <div class="registeremailcvr" ng-class="{'has-error':reset.errors.password_confirmation[0]}">
+              <label>Confirm Password</label>
+              <input autocomplete="off" type="password" ng-model="reset.password_confirmation" class="alcohalrestertextbox form-control" placeholder="Confirm Password" />
+              <span class="help-block" ng-bind="reset.errors.password_confirmation[0]"></span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer alcohalfotter">
+          <div class="alcohal_regisemailcvr">
+            <div class="alcohallogin_forgettxt">
+              <a data-dismiss="modal" data-target="#login" data-toggle="modal" href="javascript:;">Login</a>
+            </div>
+            <button type="submit" class="alcohalfootersign alcohal_fotrloginbox">Reset</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="forgot_password" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
   <div class="modal-dialog alcohal_registermain" role="document">
     <div class="modal-content alcohalregiterconntcvr">
@@ -154,6 +192,7 @@ function googleTranslateElementInit() {
     </div>
   </div>
 </div>
+
 <div class="modal" id="forgot_password_sent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
   <div class="modal-dialog alcohal_registermain" role="document">
     <div class="modal-content alcohalregiterconntcvr">
@@ -176,6 +215,7 @@ function googleTranslateElementInit() {
     </div>
   </div>
 </div>
+
 <div class="modal" id="previous_orderhistory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
   <div class="modal-dialog alcohal_orderhistory" role="document">
     <div class="modal-content alcohal_orderhistorycvr">
@@ -213,6 +253,7 @@ function googleTranslateElementInit() {
     </div>
   </div>
 </div>
+
 <div class="modal" id="repeat_order" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
   <div class="modal-dialog alcohal_orderhistory" role="document">
     <div class="modal-content alcohal_orderhistorycvr">
@@ -229,6 +270,7 @@ function googleTranslateElementInit() {
     </div>
   </div>
 </div>
+
 <div class="modal" id="previous_orderhistory_cart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
   <div class="modal-dialog alcohal_orderhistory2" role="document">
     <div class="modal-content alcohal_orderhistorycvr">
@@ -334,6 +376,7 @@ function googleTranslateElementInit() {
     </div>
   </div>
 </div>
+
 <script>
 $(document).ready(function(e) {
    $('.signuplogin .dropdown').hover(function() {

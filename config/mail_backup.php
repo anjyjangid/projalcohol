@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'from' => ['address' => 'alcoholdeliveryis@gmail.com', 'name' => 'Alcohol Delivery'],
+    'from' => ['address' => 'admin@admin.com', 'name' => 'Alcohol Delivery'],
 
     /*
     |--------------------------------------------------------------------------

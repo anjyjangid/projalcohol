@@ -109,7 +109,7 @@ class SettingRequest extends Request
                 'min' => 'Minimum :min is allowed',
                 'max' => 'Maximum :max is allowed',
 
-        ];       
+        ];
         
         return $messages;
 

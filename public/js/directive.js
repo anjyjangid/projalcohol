@@ -31,26 +31,36 @@ AlcoholDelivery.directive('sideBar', function() {
 			user:'='
 		},*/
 		templateUrl: '/templates/partials/topmenu.html',
-		controller: function($scope,$http){			
+		controller: function($scope,$rootScope,$http,$state,sweetAlert){			
 			
 			$scope.list = [];
 
 			$scope.signup = {
-
 				terms:null
 			};
 
 			$scope.login = {};
 			$scope.forgot = {};
+			$scope.reset = {};
 			$scope.errors = {};
 			$scope.signup.errors = {};
 			$scope.forgot.errors = {};
+			$scope.reset.errors = {};
 
 			$scope.signupSubmit = function() {
 				$http.post('/auth/register',$scope.signup).success(function(response){
 	                $scope.user = response;
-						$scope.user.name = response.email;
-	                $('#register').modal('hide');
+					$scope.user.name = response.email;	                
+
+	                sweetAlert.swal({
+						type:'success',
+						title: "Congratulation!",
+						text : "Account Created successfully. Please check your mail to verify your account",
+						timer: 10000
+					});
+
+					$('#register').modal('hide');
+
 	            }).error(function(data, status, headers) {                            
 	                $scope.signup.errors = data;                
 	            });
@@ -77,13 +87,58 @@ AlcoholDelivery.directive('sideBar', function() {
 	        $scope.forgotSubmit = function() {
 				$http.post('/password/email',$scope.forgot).success(function(response){					
 	                $scope.forgot = {};	                
-	                $scope.forgot.message = response;
+	                $scope.forgot.message = response.message;
 	                $('#forgot_password').modal('hide');
 	                $('#forgot_password_sent').modal('show');	                
 	            }).error(function(data, status, headers) {                            
 	                $scope.forgot.errors = data;                
 	            });
 			};
+
+			$scope.resetSubmit = function() {
+
+				$scope.reset.token = $rootScope.token;
+				
+				$http.post('/password/reset',$scope.reset).success(function(response){					
+	                $scope.reset = {};
+	                $scope.reset.errors = {};
+
+	                $('#reset').modal('hide');
+	                
+		                sweetAlert.swal({
+							type:'success',
+							title: "Congratulation!",
+							text : response.message,
+							timer: 4000,
+							closeOnConfirm: false
+						});
+
+		                setTimeout(function(){
+							$('#login').modal('show');
+						},5000)
+						
+
+	            }).error(function(data, status, headers) {
+
+	            	if(typeof data.token !== "undefined" && data.token===false){
+
+	            		$('#reset').modal('hide');
+	            		$state.go('mainLayout.index');
+
+	            		sweetAlert.swal({
+							type:'warning',
+							title: "Not a valid token",							
+							timer: 4000,
+							showConfirmButton:false,
+							closeOnConfirm: false
+						})
+	            	}
+
+	                $scope.reset.errors = data;                
+	            });
+			};
+
+
 
 	        $scope.logout = function() {
 				$http.get('/auth/logout').success(function(response){

@@ -38,7 +38,10 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 
 	$scope.AppController = {};
 	$scope.featuredProduct = [];
-	$scope.hugediscount = true;
+
+	$scope.hugediscount = {
+		active:true
+	};
 
 	$scope.AppController.category = "";
 	$scope.AppController.subCategory = "";
@@ -566,18 +569,30 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						}
 				})
 
-				.state('mainLayout.resetpassword', {
-						url: "/resetpassword?resetkey={key}",
-						templateUrl: "/templates/cart.html",
+				.state('mainLayout.login', {
+
+						url: "/login",
+						templateUrl: "/templates/index/home.html",
 						controller:function(){
-								setTimeout(function(){
-										initScripts({
-												disableScrollHeader:true
-										});
-								},100)
+							setTimeout(function(){
+										$('#login').modal('show');
+								},1000)
+							
+						}
+				})	
+
+				.state('mainLayout.reset', {
+						url: "/reset/{token}",
+						templateUrl: "/templates/index/home.html",
+						controller:function($rootScope,$stateParams){
+
+							$rootScope.token = $stateParams.token;
+							
+							setTimeout(function(){
+									$('#reset').modal('show');
+								},1000)
 						}
 				})
-
 
 				.state('accountLayout', {
 						abstract: true,

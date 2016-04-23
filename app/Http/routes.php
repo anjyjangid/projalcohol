@@ -20,9 +20,7 @@ Route::get('/', function () {
 
 Route::controller('/auth', 'Auth\AuthController');
 
-
 Route::controller('/super', 'SuperController');
-
 
 Route::get('/getproduct', 'ProductController@getproduct');
 
@@ -34,6 +32,10 @@ Route::post('/admin/getcustomers', ['uses' => 'Admin\AdminController@customers']
 
 Route::controller('/password', 'Auth\PasswordController');
  
+Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
+Route::get('reset/{key}', 'Auth\PasswordController@reset');
+
+
 //ADMIN ROUTES
 
 Route::get('/admin/profile', ['uses' => 'Admin\AdminController@profile']);

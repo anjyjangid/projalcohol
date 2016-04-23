@@ -4507,3 +4507,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', end
     width: 0;
 }
 
+.sweet-alert{
+      border: 5px solid #FFC412;
+    box-shadow: 10px 10px 10px;
+}
