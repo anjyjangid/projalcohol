@@ -36,20 +36,20 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 
 		for(var c in allparent){			
 			$scope.cd.push({
-				id:[data[c]._id],
-				name:data[c].cat_title,
-				unique:data[c]._id,
-				advance_order:data[c].advance_order,
-				regular_express_delivery:data[c].regular_express_delivery,
-				advance_order_bulk:data[c].advance_order_bulk,
-				express_delivery_bulk:data[c].express_delivery_bulk,
+				id:[allparent[c]._id],
+				name:allparent[c].cat_title,
+				unique:allparent[c]._id,
+				advance_order:allparent[c].advance_order,
+				regular_express_delivery:allparent[c].regular_express_delivery,
+				advance_order_bulk:allparent[c].advance_order_bulk,
+				express_delivery_bulk:allparent[c].express_delivery_bulk,
 			});
 			var child = $scope.childOf(data,allparent[c]._id);
 			for(var cc in child){
 				$scope.cd.push({
-					id:[allparent[c]._id,child[cc]._id],
+					id:[child[cc]._id,allparent[c]._id],
 					name:allparent[c].cat_title+' > '+child[cc].cat_title,
-					unique:data[c]._id+'|'+child[cc]._id,
+					unique:allparent[c]._id+'|'+child[cc]._id,
 					advance_order:child[cc].advance_order,
 					regular_express_delivery:child[cc].regular_express_delivery,
 					advance_order_bulk:child[cc].advance_order_bulk,
@@ -57,7 +57,6 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 				});
 			}
 		}
-
 		//var unique = $scope.product.categories.join('|');
 		//var k = $scope.getKey($scope.cd,unique);		
 		//$scope.product.categories = $scope.cd[k].id;

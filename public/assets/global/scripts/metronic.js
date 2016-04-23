@@ -134,6 +134,7 @@ var Metronic = function() {
             e.preventDefault();
             var el = $(this).closest(".portlet").children(".portlet-body");
             var url = $(this).attr("data-url");
+            var callback = $(this).attr("data-callback");
             var error = $(this).attr("data-error-display");
             if (url) {
                 Metronic.blockUI({
@@ -166,6 +167,11 @@ var Metronic = function() {
                         }
                     }
                 });
+            }else if(callback){
+                var x = eval(callback)
+                if (typeof x == 'function') {
+                    x();
+                }
             } else {
                 // for demo purpose
                 Metronic.blockUI({

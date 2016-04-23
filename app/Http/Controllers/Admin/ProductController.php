@@ -414,6 +414,8 @@ class ProductController extends Controller
         $products = $products->where('name','regexp', "/.*$sval/i");
       }
 
+      //$products = $products->where('dealers','all',['56ed55ecc31d53b2218b4568']);
+
       $iTotalRecords = $products->count();      
       
       $columns = ['name','quantity','maxQuantity','_id'];
@@ -435,6 +437,9 @@ class ProductController extends Controller
       if($notordered){
         $products = $products->orderBy('quantity','asc')->orderBy('maxQuantity','asc');
       }
+
+      
+
 
       $products = $products->get($columns);
       
