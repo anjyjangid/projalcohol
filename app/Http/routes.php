@@ -22,6 +22,9 @@ Route::controller('/auth', 'Auth\AuthController');
 
 Route::controller('/super', 'SuperController');
 
+Route::controller('/category', 'CategoryController');
+
+
 Route::get('/getproduct', 'ProductController@getproduct');
 
 Route::get('/search', 'ProductController@getproduct');

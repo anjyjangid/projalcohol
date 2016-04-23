@@ -40,7 +40,7 @@
 			    		}">
 			      <div owl-carousel-item="" ng-repeat="fproduct in pCat['featured']" class="item">
 			        
-			        <div class="prod_chilled" ng-class="{notchilled:fproduct.servechilled,invisible:{{!fproduct.chilled}}}" ng-init="fproduct.servechilled=false" ng-click="fproduct.servechilled=!fproduct.servechilled">
+			        	<div class="prod_chilled" ng-class="{notchilled:fproduct.servechilled,invisible:{{!fproduct.chilled}}}" ng-init="fproduct.servechilled=false" ng-click="fproduct.servechilled=!fproduct.servechilled">
 			        
 							<span>Chilled</span>
 							<div class="prod_chilled_icon"></div>
@@ -57,7 +57,12 @@
 
 						<div class="prod_desc">{{fproduct.name}}</div>
 						<div class="prod_price">{{fproduct.price}} {{settings.general.currency}}</div>
-						<div class="prod_discout_price">{{fproduct.discountPrice}} {{settings.general.currency}}</div>
+
+						<div class="hide">
+							{{ fproduct = setPrices(fproduct)}}
+						</div>
+
+						<div class="prod_discout_price">{{fproduct.discountedPrice}} {{settings.general.currency}}</div>
 						<div class="prod_addtocart">
 							<!--<img src="images/addtocart.png" class="img-responsive" />-->
 							<div class="cartbtn">

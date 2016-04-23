@@ -14,3 +14,12 @@ Object.defineProperty(Object.prototype, 'renameProperty',{
   },
   enumerable : false
 });
+
+// Object.prototype.count = function () {
+//     var count = 0;
+//     for(var prop in this) {
+//         if(this.hasOwnProperty(prop))
+//             count = count + 1;
+//     }
+//     return count;
+// }

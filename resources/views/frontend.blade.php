@@ -166,9 +166,8 @@
 	    <!-- SWEET ALERT STYLE -->
 		<script src="{{ asset('bower_components/sweetalert2/dist/sweetalert2.min.js') }}" type="text/javascript"></script>
 		<script src="{{ asset('bower_components/ngSweetAlert2/SweetAlert.js') }}" type="text/javascript"></script>
-		
-	    <!-- <script type="text/javascript" src="{{asset('bower_components/angular-owl-carousel/src/angular-owl-carousel.js')}}"></script> -->
-	    <script src="{{ asset('bower_components/angular-animate/angular-animate.js') }}"></script>	    
+			    
+	    <script type="text/javascript" src="{{ asset('bower_components/angular-animate/angular-animate.js') }}"></script>	    
 	    <script type="text/javascript" src="js/app.js"></script>
 	    <script type="text/javascript" src="js/directive.js"></script>
 	</body>
