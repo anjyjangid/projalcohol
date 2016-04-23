@@ -15,6 +15,7 @@ use Intervention\Image\Facades\Image;
 use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Products;
 use AlcoholDelivery\User;
+use AlcoholDelivery\Dealer;
 use MongoId;
 use Input;
 use DB;
@@ -112,7 +113,7 @@ class ProductController extends Controller
               $inputs['regular_express_delivery']['value'] = (float)$inputs['regular_express_delivery']['value'];
         }
 
-        $product = Products::create($inputs);    
+        $product = Products::create($inputs);            
 
         if($product){
           
@@ -222,11 +223,33 @@ class ProductController extends Controller
         $product = Products::find($id);
 
         if($product){          
+          
           $files = $inputs['imageFiles'];
+
+          //CHECK IF DEALER IS REMOVED
+          $removed = array_diff($product->dealers, $inputs['dealers']);
+          if($removed){
+            $rdealers = Dealer::whereIn('_id',$removed)->get();
+            foreach ($rdealers as $rdkey => $rdvalue) {
+              $rdvalue->pull('products',$product->_id);
+            }
+          }
+
+          //UPDATE PRODUCT          
           $update = $product->update($inputs);
+
+          $dealers = Dealer::whereIn('_id',$product->dealers)->get();
+
+          //ADD PRODUCT IDS IN DEALERS TABLE
+          foreach ($dealers as $dkey => $dvalue) {
+            $dvalue->push('products',$product->_id,true);
+          }          
+
+          //UNSET THE PRICING IF EXISTS AND NOT SET
           foreach ($unset as $key => $value) {
             $product->unset($value);
-          }          
+          }   
+
           $this->saveImages($product,$files);
         }
 
@@ -418,7 +441,7 @@ class ProductController extends Controller
 
       $iTotalRecords = $products->count();      
       
-      $columns = ['name','quantity','maxQuantity','_id'];
+      $columns = ['name','quantity','maxQuantity','threshold','_id'];
 
       $notordered = true;
       if ( isset( $params['order'] ) ){
@@ -431,17 +454,14 @@ class ProductController extends Controller
       }
 
       $products = $products
-      ->skip($start)
-      ->take($length);
+      ->skip((int)$start)
+      ->take((int)$length);
 
       if($notordered){
-        $products = $products->orderBy('quantity','asc')->orderBy('maxQuantity','asc');
+        $products = $products->orderBy('quantity','asc')->orderBy('threshold','asc')->orderBy('maxQuantity','asc');
       }
 
-      
-
-
-      $products = $products->get($columns);
+      $products = $products->with('supplier')->get($columns);
       
       $response = [
         'recordsTotal' => $iTotalRecords,
@@ -451,7 +471,7 @@ class ProductController extends Controller
         'aaData' => $products
       ];
       
-      return response($response,201);
+      return response($response,200);
     }
      
 }
