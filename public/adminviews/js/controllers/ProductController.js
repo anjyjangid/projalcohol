@@ -47,7 +47,7 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 			var child = $scope.childOf(data,allparent[c]._id);
 			for(var cc in child){
 				$scope.cd.push({
-					id:[child[cc]._id,allparent[c]._id],
+					id:[allparent[c]._id,child[cc]._id],
 					name:allparent[c].cat_title+' > '+child[cc].cat_title,
 					unique:allparent[c]._id+'|'+child[cc]._id,
 					advance_order:child[cc].advance_order,
