@@ -114,8 +114,9 @@ AlcoholDelivery.directive('sideBar', function() {
 						});
 
 		                setTimeout(function(){
-							$('#login').modal('show');
-						},5000)
+							$state.go('mainLayout.login');
+						},4000)
+
 						
 
 	            }).error(function(data, status, headers) {

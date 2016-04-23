@@ -114,6 +114,54 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 		
 	}
 
+	$scope.setPrices = function(localpro){
+
+		if(typeof localpro.categories === "undefined"){return true;}
+		
+		var catIdIndex = localpro.categories.length - 1;
+		var catPriceObj = $rootScope.catPricing[localpro.categories[catIdIndex]];	
+
+		localpro = $.extend(catPriceObj, localpro);
+
+		var advanceOrder = localpro.advance_order;
+				
+		if(advanceOrder.type==1){
+			localpro.discountedPrice = localpro.price - (localpro.price * advanceOrder.value/100);
+		}else{
+			localpro.discountedPrice = localpro.price - advanceOrder.value;
+		}
+
+		for(i=0;i<localpro.advance_order_bulk.bulk.length;i++){
+
+			var bulk = localpro.advance_order_bulk.bulk[i];
+
+			if(bulk.type==1){
+				bulk.price = localpro.price - (localpro.price * bulk.value/100);
+			}else{
+				bulk.price = localpro.price - bulk.value;
+			}
+			bulk.price = bulk.price.toFixed(2);
+		}
+
+		for(i=0;i<localpro.express_delivery_bulk.bulk.length;i++){
+
+			var bulk = localpro.express_delivery_bulk.bulk[i];
+
+			if(bulk.type==1){
+				bulk.price = localpro.price - (localpro.price * bulk.value/100);
+			}else{
+				bulk.price = localpro.price - bulk.value;
+			}
+			bulk.price = bulk.price.toFixed(2);
+		}
+
+
+		localpro.discountedPrice = localpro.discountedPrice.toFixed(2);
+
+		return localpro;
+
+	}
+
 }]);
 
 
@@ -447,6 +495,33 @@ AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
 
 }]);
 
+AlcoholDelivery.factory('catPricing', ["$q", "$timeout", "$rootScope", "$http", function($q, $timeout, $rootScope, $http){
+
+	var catPricing = {};
+
+	function GetCategoryPricing() {
+		
+		var d = $q.defer();
+		$timeout(function(){
+
+			$http.get("/category/pricing").success(function(response){
+				
+				d.resolve(response);
+
+			});			
+
+		}, 500);
+
+		return d.promise;
+	};
+	return {
+		GetCategoryPricing: GetCategoryPricing,
+		categoryPricing : null
+
+	};
+
+}]);
+
 
 AlcoholDelivery.factory("UserService", ["$q", "$timeout", "$http", function($q, $timeout, $http) {
 
@@ -623,7 +698,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js',
 														'js/all_animations.js',
 														'js/js_init_scripts.js'
-												] 
+												]
 										});
 								}]
 						}
@@ -756,10 +831,22 @@ function ($q, $rootScope, $log) {
 }]);
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "appSettings", "UserService", "$state" , function($rootScope, settings, UserService, $state) {		
+AlcoholDelivery.run(["$rootScope", "appSettings", "catPricing", "UserService", "$state" , function($rootScope, settings, catPricing, UserService, $state) {		
 
-	$rootScope.$state = $state; // state to be accessed from view				
-	
+	$rootScope.$state = $state; // state to be accessed from view					
+
+	catPricing.GetCategoryPricing().then(
+
+		function(result) {
+
+			catPricing.categoryPricing = result;			
+			$rootScope.catPricing = result;
+
+		}
+
+	);
+
+
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){ 
 		
 		var regex = new RegExp('^accountLayout', 'i');

@@ -1,126 +1,136 @@
+<div class="hide">
+	{{ product = setPrices(product)}}
+</div>
+
 <div class="productdetailbrudcumcover">
-  <a href="">Home</a>
-    <img src="images/productdetail2.png">
-    <a href="">Beer</a>
-    <img src="images/productdetail2.png">
-    <a href="">Carlsberg</a>
-    <img src="images/productdetail2.png">
-    <span>{{product.name}}</span>
+	<a href="">Home</a>
+		<img src="images/productdetail2.png">
+		<a href="">Beer</a>
+		<img src="images/productdetail2.png">
+		<a href="">Carlsberg</a>
+		<img src="images/productdetail2.png">
+		<span>{{product.name}}</span>
 </div>
 <div class="productdetailcovermainbgimg">
-  <div class="row">
-      <div class="col-xs-12 col-sm-6 col-md-6">
-            <data-owl-carousel class="owl-carousel owluperpartcover" data-options="parentOwlOptions" ng-model="sync1">
+	<div class="row">
+			<div class="col-xs-12 col-sm-6 col-md-6">
+						<data-owl-carousel class="owl-carousel owluperpartcover" data-options="parentOwlOptions" ng-model="sync1">
 
-                <img err-pro-src="" ng-src="products/i/400/{{image.source}}" alt="" class="img-responsive"  owl-carousel-item="" ng-repeat="image in product.imageFiles" class="item"/>
-                              
-            </data-owl-carousel >
+								<img err-pro-src="" ng-src="products/i/400/{{image.source}}" alt="" class="img-responsive"  owl-carousel-item="" ng-repeat="image in product.imageFiles" class="item"/>
+															
+						</data-owl-carousel >
 
-            <data-owl-carousel class="owl-carousel owldownpartcover" data-options="childOwlOptions" ng-model="sync2">
+						<data-owl-carousel class="owl-carousel owldownpartcover" data-options="childOwlOptions" ng-model="sync2">
 
-                <img err-pro-src="" ng-src="products/i/200/{{image.source}}" alt="" class="img-responsive" ng-click="syncClick($index)"  owl-carousel-item="" ng-repeat="image in product.imageFiles" class="item"/>
-                              
-            </data-owl-carousel>            
-        </div>
-        
-        <div class="col-xs-12 col-sm-6 col-md-6" >
-          <div class="prddetailtitle">{{product.name}}</div>
-            <div class="prddetailsubexttitle">{{product.shortDescription}}</div>
-            <div class="prddetailnormaltext">{{product.description}}</div>
-            <div class="prddetailchilledcover text-noselect" ng-if="product.chilled" ng-init="product.cart.chilled=1">
+								<img err-pro-src="" ng-src="products/i/200/{{image.source}}" alt="" class="img-responsive" ng-click="syncClick($index)"  owl-carousel-item="" ng-repeat="image in product.imageFiles" class="item"/>
+															
+						</data-owl-carousel>            
+				</div>
+				
+				<div class="col-xs-12 col-sm-6 col-md-6" >
+					<div class="prddetailtitle">{{product.name}}</div>
+						<div class="prddetailsubexttitle">{{product.shortDescription}}</div>
+						<div class="prddetailnormaltext">{{product.description}}</div>
+						<div class="prddetailchilledcover text-noselect" ng-if="product.chilled" ng-init="product.cart.chilled=1">
 
-              <div class="prodchilled-btn" ng-class="{'active':product.cart.chilled}" ng-click="product.cart.chilled=1">
-                <span>Chilled</span>
-                <div class="-icon"></div>
-              </div>
-              
-              <div class="prodnonchilled-btn" ng-class="{'active':!product.cart.chilled}" ng-click="product.cart.chilled=0">
-                <span>Non-Chilled</span>
-                <div class="-icon"></div>
-              </div>
-            </div>
-            <div class="prdquantitybulkcover text-noselect">
-              <div class="checkoutmiddlevlauediv">
-                  <div class="pardqantitytexthead">Quantity</div>
-                  <input type="text" value="1" ng-model="product.cart.quantity" min="1" max="100" ng-touch-spin>                  
-              </div>
-                <div class="prdquantitybulkcoverbulk">
-                  <div class="pardqantitytexthead">Bulk Quantity Discounts Chart (Piece)</div>
-                    <div class="prdquantitybulkcoverbulkbox">
-                      <div class="prdquanbulkboxone">Qty<br />Amount</div>
-                        <div class="prdquanbulkboxtwo" ng-class="{'prdquanbulkActive':product.cart.quantity>1 && product.cart.quantity<6}">2-5<br />$54</div>
-                        <div class="prdquanbulkboxthree" ng-class="{'prdquanbulkActive':product.cart.quantity>5 && product.cart.quantity<11}">5-10<br />$54</div>
-                        <div class="prdquanbulkboxlast" ng-class="{'prdquanbulkActive':product.cart.quantity>10}">11+<br />$50</div>
-                    </div>
-                </div>
-            </div>
-            <div class="prddetailtotalamount">Total Cost</div>
-            <div class="prddetailpricedicnt">{{settings.general.currency}}{{product.discountPrice}}<span> {{settings.general.currency}}{{product.price}}</span></div>
-            <div class="prddetailinstock">In Stock.</div>
-            <div class="productslide_addbutton">
-              <div class="cartbtn">
-                <div class="addcart only-button"><span></span>add to cart</div>              
-              </div>
-            </div>
-        </div>
-    </div>
+							<div class="prodchilled-btn" ng-class="{'active':product.cart.chilled}" ng-click="product.cart.chilled=1">
+								<span>Chilled</span>
+								<div class="-icon"></div>
+							</div>
+							
+							<div class="prodnonchilled-btn" ng-class="{'active':!product.cart.chilled}" ng-click="product.cart.chilled=0">
+								<span>Non-Chilled</span>
+								<div class="-icon"></div>
+							</div>
+						</div>
+						<div class="prdquantitybulkcover text-noselect">
+							<div class="checkoutmiddlevlauediv">
+									<div class="pardqantitytexthead">Quantity</div>
+									<input type="text" value="1" ng-model="product.cart.quantity" min="1" max="100" ng-touch-spin>                  
+							</div>
+								<div class="prdquantitybulkcoverbulk">
+									<div class="pardqantitytexthead">Bulk Quantity Discounts Chart (Piece)</div>
+										<div class="prdquantitybulkcoverbulkbox">
+											<div class="prdquanbulkboxone">Qty<br />Amount</div>
+
+																								
+												<div class="prdquanbulkboxtwo" ng-repeat="bulkBlock in product.advance_order_bulk.bulk" ng-class="{'prdquanbulkActive':product.cart.quantity>=bulkBlock.from_qty && product.cart.quantity<=bulkBlock.to_qty}">
+													
+													{{bulkBlock.from_qty}}<span ng-if="bulkBlock.to_qty!=99999">-{{bulkBlock.to_qty}}</span><br />${{bulkBlock.price}}
+
+												</div>
+												<!-- <div class="prdquanbulkboxthree" ng-class="{'prdquanbulkActive':product.cart.quantity>5 && product.cart.quantity<11}">5-10<br />$54</div>
+												<div class="prdquanbulkboxlast" ng-class="{'prdquanbulkActive':product.cart.quantity>10}">11+<br />$50</div> -->
+										</div>
+								</div>
+						</div>
+						<div class="prddetailtotalamount">Total Cost</div>
+						<div class="prddetailpricedicnt">{{settings.general.currency}}{{product.discountedPrice}}<span> {{settings.general.currency}}{{product.price}}</span></div>
+
+						<div class="prddetailinstock">In Stock.</div>
+						<div class="productslide_addbutton">
+							<div class="cartbtn">
+								<div class="addcart only-button"><span></span>add to cart</div>              
+							</div>
+						</div>
+				</div>
+		</div>
 </div>
 
-
-<!--  -->
+<pre>{{product | json}}</pre>
 
 <div class="combo_slider combo_sliderProduct">
-  <div class="productdetailtitle">Customers Who Bought This Item Also Bought</div>
-  
-    <div class="comboproductdetailitems">
-      <div class="prod_chilled notchilled"> <span>Chilled</span>
-      <div class="prod_chilled_icon"></div>
-    </div>
-    <div class="prod_pic"><img src="images/product.png" class="img-responsive" /></div>
-    <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-    <div class="prod_price">28.00 SGD</div>
-    <div class="prod_discout_price">24.00 SGD</div>
-    <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive" /></div>
-    </div>
-    <div class="comboproductdetailitems">
-      <div class="prod_chilled notchilled"> <span>Chilled</span>
-      <div class="prod_chilled_icon"></div>
-    </div>
-    <div class="prod_pic"><img src="images/product.png" class="img-responsive" /></div>
-    <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-    <div class="prod_price">28.00 SGD</div>
-    <div class="prod_discout_price">24.00 SGD</div>
-    <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive" /></div>
-    </div>
-    <div class="comboproductdetailitems">
-      <div class="prod_chilled notchilled"> <span>Chilled</span>
-      <div class="prod_chilled_icon"></div>
-    </div>
-    <div class="prod_pic"><img src="images/product.png" class="img-responsive" /></div>
-    <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-    <div class="prod_price">28.00 SGD</div>
-    <div class="prod_discout_price">24.00 SGD</div>
-    <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive" /></div>
-    </div>
-    <div class="comboproductdetailitems">
-      <div class="prod_chilled notchilled"> <span>Chilled</span>
-      <div class="prod_chilled_icon"></div>
-    </div>
-    <div class="prod_pic"><img src="images/product.png" class="img-responsive" /></div>
-    <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-    <div class="prod_price">28.00 SGD</div>
-    <div class="prod_discout_price">24.00 SGD</div>
-    <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive" /></div>
-    </div>
-    <div class="comboproductdetailitems">
-      <div class="prod_chilled notchilled"> <span>Chilled</span>
-      <div class="prod_chilled_icon"></div>
-    </div>
-    <div class="prod_pic"><img src="images/product.png" class="img-responsive" /></div>
-    <div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-    <div class="prod_price">28.00 SGD</div>
-    <div class="prod_discout_price">24.00 SGD</div>
-    <div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive" /></div>
-    </div>
-    
+	<div class="productdetailtitle">Customers Who Bought This Item Also Bought</div>
+	
+		<div class="comboproductdetailitems">
+			<div class="prod_chilled notchilled"> <span>Chilled</span>
+			<div class="prod_chilled_icon"></div>
+		</div>
+		<div class="prod_pic"><img src="images/product.png" class="img-responsive" /></div>
+		<div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
+		<div class="prod_price">28.00 SGD</div>
+		<div class="prod_discout_price">24.00 SGD</div>
+		<div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive" /></div>
+		</div>
+		<div class="comboproductdetailitems">
+			<div class="prod_chilled notchilled"> <span>Chilled</span>
+			<div class="prod_chilled_icon"></div>
+		</div>
+		<div class="prod_pic"><img src="images/product.png" class="img-responsive" /></div>
+		<div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
+		<div class="prod_price">28.00 SGD</div>
+		<div class="prod_discout_price">24.00 SGD</div>
+		<div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive" /></div>
+		</div>
+		<div class="comboproductdetailitems">
+			<div class="prod_chilled notchilled"> <span>Chilled</span>
+			<div class="prod_chilled_icon"></div>
+		</div>
+		<div class="prod_pic"><img src="images/product.png" class="img-responsive" /></div>
+		<div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
+		<div class="prod_price">28.00 SGD</div>
+		<div class="prod_discout_price">24.00 SGD</div>
+		<div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive" /></div>
+		</div>
+		<div class="comboproductdetailitems">
+			<div class="prod_chilled notchilled"> <span>Chilled</span>
+			<div class="prod_chilled_icon"></div>
+		</div>
+		<div class="prod_pic"><img src="images/product.png" class="img-responsive" /></div>
+		<div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
+		<div class="prod_price">28.00 SGD</div>
+		<div class="prod_discout_price">24.00 SGD</div>
+		<div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive" /></div>
+		</div>
+		<div class="comboproductdetailitems">
+			<div class="prod_chilled notchilled"> <span>Chilled</span>
+			<div class="prod_chilled_icon"></div>
+		</div>
+		<div class="prod_pic"><img src="images/product.png" class="img-responsive" /></div>
+		<div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
+		<div class="prod_price">28.00 SGD</div>
+		<div class="prod_discout_price">24.00 SGD</div>
+		<div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive" /></div>
+		</div>
+		
 </div>
