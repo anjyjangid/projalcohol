@@ -224,7 +224,7 @@ class ProductController extends Controller
         if($product){          
           $files = $inputs['imageFiles'];
           $update = $product->update($inputs);
-          $product->supplier()->sync([$product->_id]);
+          
           foreach ($unset as $key => $value) {
             $product->unset($value);
           }          
