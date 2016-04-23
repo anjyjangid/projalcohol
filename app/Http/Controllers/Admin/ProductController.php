@@ -117,6 +117,13 @@ class ProductController extends Controller
 
         if($product){
           
+          $dealers = Dealer::whereIn('_id',$product->dealers)->get();
+
+          //ADD PRODUCT IDS IN DEALERS TABLE
+          foreach ($dealers as $dkey => $dvalue) {
+            $dvalue->push('products',$product->_id,true);
+          }
+
           $files = $inputs['imageFiles'];
           
           $this->saveImages($product,$files);
