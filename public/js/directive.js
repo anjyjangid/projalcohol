@@ -390,3 +390,81 @@ AlcoholDelivery.directive('ngTouchSpin', ['$timeout', '$interval', function($tim
 	};
 
 }]);
+
+
+AlcoholDelivery.directive('alTplProduct',[function($rootScope){
+	return {
+		restrict: 'A',
+		transclude: true,
+		scope:{
+			productInfo:'=info',
+			classes : '@'
+		},
+		templateUrl: '/templates/product/product_tpl.html',
+
+		controller: ['$rootScope','$scope',function($rootScope,$scope){
+
+			$scope.settings = $rootScope.settings;
+
+			$scope.setPrices = function(localpro){
+
+				if(typeof localpro.categories === "undefined"){return true;}
+				
+				var catIdIndex = localpro.categories.length - 1;
+				var catPriceObj = $rootScope.catPricing[localpro.categories[catIdIndex]];	
+
+				if(typeof catPriceObj === "undefined"){
+					console.log("Something wrong with this product : "+localpro._id);
+					return false;
+				}
+
+				localpro = $.extend(catPriceObj, localpro);
+
+				var advanceOrder = localpro.advance_order;
+
+				if(advanceOrder.type==1){
+					localpro.discountedPrice = localpro.price - (localpro.price * advanceOrder.value/100);
+				}else{
+					localpro.discountedPrice = localpro.price - advanceOrder.value;
+				}
+
+				for(i=0;i<localpro.advance_order_bulk.bulk.length;i++){
+
+					var bulk = localpro.advance_order_bulk.bulk[i];
+
+					if(bulk.type==1){
+						bulk.price = localpro.price - (localpro.price * bulk.value/100);
+					}else{
+						bulk.price = localpro.price - bulk.value;
+					}
+					bulk.price = bulk.price.toFixed(2);
+				}
+
+				for(i=0;i<localpro.express_delivery_bulk.bulk.length;i++){
+
+					var bulk = localpro.express_delivery_bulk.bulk[i];
+
+					if(bulk.type==1){
+						bulk.price = localpro.price - (localpro.price * bulk.value/100);
+					}else{
+						bulk.price = localpro.price - bulk.value;
+					}
+					bulk.price = bulk.price.toFixed(2);
+				}
+
+
+				localpro.discountedPrice = localpro.discountedPrice.toFixed(2);
+
+				return localpro;
+
+			}
+		
+			$scope.productPricing = $scope.setPrices($scope.productInfo);
+
+
+		}]
+	}
+
+
+
+}])

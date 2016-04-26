@@ -22,6 +22,8 @@
 
 		<!-- Bootstrap -->
 		<link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,700,800,500' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/angular-material/angular-material.min.css') }}"/>
+		
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="css/owl.carousel.css">
 		<link rel="stylesheet" type="text/css" href="css/owl.theme.css">
@@ -167,7 +169,16 @@
 		<script src="{{ asset('bower_components/sweetalert2/dist/sweetalert2.min.js') }}" type="text/javascript"></script>
 		<script src="{{ asset('bower_components/ngSweetAlert2/SweetAlert.js') }}" type="text/javascript"></script>
 			    
-	    <script type="text/javascript" src="{{ asset('bower_components/angular-animate/angular-animate.js') }}"></script>	    
+	    <script type="text/javascript" src="{{ asset('bower_components/angular-animate/angular-animate.js') }}"></script>
+
+	    <script type="text/javascript" src="{{ asset('bower_components/angular-aria/angular-aria.min.js') }}"></script>
+		<script type="text/javascript" src="{{ asset('bower_components/angular-messages/angular-messages.min.js') }}"></script>
+
+
+		<!-- Angular Material Library -->
+		<script type="text/javascript" src="{{ asset('bower_components/angular-material/angular-material.min.js') }}"></script>
+		
+
 	    <script type="text/javascript" src="js/app.js"></script>
 	    <script type="text/javascript" src="js/directive.js"></script>
 	</body>

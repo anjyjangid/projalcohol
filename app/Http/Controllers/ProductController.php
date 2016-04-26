@@ -23,7 +23,7 @@ class ProductController extends Controller
         
         $products = new Products;
 
-        $columns = array('_id',"categories","chilled","description","discountPrice","imageFiles","name","price","shortDescription","sku","quantity");
+        $columns = array('_id',"categories","chilled","description","discountPrice","imageFiles","name","price","shortDescription","sku","quantity","regular_express_delivery","express_delivery","advance_order","express_delivery_bulk","advance_order_bulk");
 
         $products = $products->where('status', 1);
 
@@ -42,7 +42,6 @@ class ProductController extends Controller
             }
 
         }
-
 
 
         $products = $products->where('status', 1);
