@@ -777,6 +777,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             
             .state('products', {
                 url: "/product",
+                abstract:true,
                 templateUrl: "adminviews/views/products/index.html",
                 data: {pageTitle: 'Products'},
                 controller: "ProductsController",
@@ -795,9 +796,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                                 'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
                                 'assets/global/plugins/select2/select2.min.js',
                                 'assets/global/plugins/datatables/all.min.js',
-
-                                'assets/global/scripts/datatable.js',                               
-                                
+                                'assets/global/scripts/datatable.js',
                                 'adminviews/js/models/productModel.js',
                                 'adminviews/js/controllers/ProductController.js'
                             ]
@@ -1191,38 +1190,47 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         })
 
 
-        .state("packages", {
-            //url: "/pakages",
-            abstract: true,
+        .state('packages', {
+            url: "/packages",
+            abstract:true,
             templateUrl: "adminviews/views/packages/index.html",
-            //data: {pageTitle: 'Packages'},                        
-            resolve: {                
+            data: {pageTitle: 'Packages'},
+            controller: "PackageController",
+            resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
                     return $ocLazyLoad.load({
-                        name: 'MetronicApp',  
+                        name: 'MetronicApp',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [                            
+                        files: [
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/select2/select2.css',
+                            'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
+                            'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
+
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+                            'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+                            'assets/global/plugins/select2/select2.min.js',
+                            'assets/global/plugins/datatables/all.min.js',
+                            'assets/global/scripts/datatable.js',
                             'adminviews/js/models/packageModel.js',
                             'adminviews/js/controllers/PackageController.js'
-                        ]                    
+                        ]
                     });
-
-                }]                
+                }]
             }
         })
 
         .state("packages.party", {
-            url: "/packages/party", 
-            controller: "PackageController",          
-            data: {pageSubTitle: 'Party Packages',type:1},
+            url: "/party",
             templateUrl: "adminviews/views/packages/list.html",
+            data: {pageTitle: 'Packages',pageSubTitle: 'Party',type:1}
+            
         })
 
         .state("packages.cocktail", {
-            url: "/packages/cocktail",
-            controller: "PackageController",            
-            data: {pageSubTitle: 'Cocktail Packages',type:2},
+            url: "/cocktail",
             templateUrl: "adminviews/views/packages/list.html",
+            data: {pageTitle: 'Packages',pageSubTitle: 'Cocktail',type:2}            
         });        
 }]);
 
