@@ -1,0 +1,36 @@
+<div class="{{classes}}" ng-class="{comboproductitems_outofstock:{{!productInfo.quantity}}}">
+<div ng-if="product.quantity<1" class="productsoldoutbkbtn">Sold Out</div>
+
+<div class="prod_chilled" ng-class="{notchilled:productInfo.servechilled,invisible:{{!productInfo.chilled}}}" ng-init="productInfo.servechilled=false" ng-click="productInfo.servechilled=!productInfo.servechilled">
+
+	<span>Chilled</span>
+	<div class="prod_chilled_icon"></div>
+</div>
+<div class="prod_pic">
+	<div class="wishlist_discount">
+		<div class="wishlist">Add to Wishlist</div>
+		<div class="discount" ui-sref="mainLayout.product({product:productInfo._id})">Click here to view Bulk Discounts</div>
+	</div>
+
+	<img err-pro-src="" ng-src="products/i/200/{{productInfo.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive"/>
+	
+</div>
+
+<div class="prod_desc">{{productInfo.name}}</div>
+<div class="prod_price">{{productInfo.price}} {{settings.general.currency}}</div>
+
+<div class="prod_discout_price">{{productPricing.discountedPrice}} {{settings.general.currency}}</div>
+<div class="prod_addtocart">
+	<!--<img src="images/addtocart.png" class="img-responsive" />-->
+	<div class="cartbtn">
+		<div class="addcart"><span></span>add to cart</div>
+		<div class="addmore"><input id="addmore_count" type="text" value="" name="addmore_count"><span class="addmorehere">add more</span></div>
+		<div class="addmanual">
+			<div class="relat">
+				<input id="addmore_val" name="" value="" type="text" />
+				<div class="addbuttton">add</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>

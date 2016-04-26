@@ -8,8 +8,15 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'bootstrapLightbox', 
 	"19degrees.ngSweetAlert2",
 	'angular-loading-bar',
-	'ngAnimate'
+	'ngAnimate',
+
+	'ngMaterial',
+	'ngMessages',
+	'ngTouch'
 ]);
+
+
+
 
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
 AlcoholDelivery.config(
@@ -33,6 +40,22 @@ AlcoholDelivery.filter('capitalize', function() {
 			return (!!input) ? input.replace(reg, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}) : '';
 		}
 });
+
+AlcoholDelivery.controller('MaterialController', ['$scope', function($scope) {
+	$scope.data = {
+      selectedIndex: 0,
+      secondLocked: true,
+      secondLabel: "Item Two",
+      bottom: false
+    };
+    $scope.next = function() {
+      $scope.data.selectedIndex = Math.min($scope.data.selectedIndex + 1, 2);
+    };
+    $scope.previous = function() {
+      $scope.data.selectedIndex = Math.max($scope.data.selectedIndex - 1, 0);
+    };
+}]);
+
 
 AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', function($scope, $rootScope,$http) {
 
@@ -121,10 +144,15 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 		var catIdIndex = localpro.categories.length - 1;
 		var catPriceObj = $rootScope.catPricing[localpro.categories[catIdIndex]];	
 
+		// if(typeof catPriceObj === "undefined"){
+		// 	console.log("Something wrong with this product : "+localpro._id);
+		// 	return false;
+		// }
+
 		localpro = $.extend(catPriceObj, localpro);
 
 		var advanceOrder = localpro.advance_order;
-				
+
 		if(advanceOrder.type==1){
 			localpro.discountedPrice = localpro.price - (localpro.price * advanceOrder.value/100);
 		}else{

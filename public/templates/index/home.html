@@ -39,47 +39,13 @@
 
 			    		}">
 			      <div owl-carousel-item="" ng-repeat="fproduct in pCat['featured']" class="item">
-			        
-			        	<div class="prod_chilled" ng-class="{notchilled:fproduct.servechilled,invisible:{{!fproduct.chilled}}}" ng-init="fproduct.servechilled=false" ng-click="fproduct.servechilled=!fproduct.servechilled">
-			        
-							<span>Chilled</span>
-							<div class="prod_chilled_icon"></div>
-						</div>
-						<div class="prod_pic">
-							<div class="wishlist_discount">
-								<div class="wishlist">Add to Wishlist</div>
-								<div class="discount" ui-sref="mainLayout.product({product:fproduct._id})">Click here to view Bulk Discounts</div>
-							</div>
-
-							<img err-pro-src="" ng-src="products/i/200/{{fproduct.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive"/>
-							
-						</div>
-
-						<div class="prod_desc">{{fproduct.name}}</div>
-						<div class="prod_price">{{fproduct.price}} {{settings.general.currency}}</div>
-
-						<div class="hide">
-							{{ fproduct = setPrices(fproduct)}}
-						</div>
-
-						<div class="prod_discout_price">{{fproduct.discountedPrice}} {{settings.general.currency}}</div>
-						<div class="prod_addtocart">
-							<!--<img src="images/addtocart.png" class="img-responsive" />-->
-							<div class="cartbtn">
-								<div class="addcart"><span></span>add to cart</div>
-								<div class="addmore"><input id="addmore_count" type="text" value="" name="addmore_count"><span class="addmorehere">add more</span></div>
-								<div class="addmanual">
-									<div class="relat">
-										<input id="addmore_val" name="" value="" type="text" />
-										<div class="addbuttton">add</div>
-									</div>
-								</div>
-							</div>
-						</div>
+			        	
+			        	<div al-tpl-product info="fproduct"></div>
+			        	
 			      </div>
 			    </data-owl-carousel>							
 			</div>
-			<div class="tab-pane" id="tab2"></div>								
+			
 		</div>
 	</div>
 </div>
