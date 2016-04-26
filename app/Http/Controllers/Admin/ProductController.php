@@ -233,8 +233,10 @@ class ProductController extends Controller
           
           $files = $inputs['imageFiles'];
 
+          $existingdealer = (!empty($product->dealers))?$product->dealers:[];
+
           //CHECK IF DEALER IS REMOVED
-          $removed = array_diff($product->dealers, $inputs['dealers']);
+          $removed = array_diff($existingdealer, $inputs['dealers']);
           if($removed){
             $rdealers = Dealer::whereIn('_id',$removed)->get();
             foreach ($rdealers as $rdkey => $rdvalue) {
@@ -468,7 +470,7 @@ class ProductController extends Controller
         $products = $products->orderBy('quantity','asc')->orderBy('threshold','asc')->orderBy('maxQuantity','asc');
       }
 
-      $products = $products->with('supplier')->get($columns);
+      $products = $products->get($columns);
       
       $response = [
         'recordsTotal' => $iTotalRecords,

@@ -89,10 +89,58 @@ class AdminController extends Controller
         //
     }   
 
-    public function customers()
+    public function customers(Request $request)
     {
+        $params = $request->all();
 
-        $users = User::all()->toArray();
+      $customers = new User;
+
+      extract($params);      
+
+      if(isset($params['search']['value']) && trim($params['search']['value'])!=''){
+        $sval = $params['search']['value'];
+        $customers = $customers->where('name','regexp', "/.*$sval/i");
+      }
+
+      //$customers = $customers->where('dealers','all',['56ed55ecc31d53b2218b4568']);
+
+      $iTotalRecords = $customers->count();      
+      
+      $columns = ['name','email','status','_id'];
+
+      $notordered = true;
+      if ( isset( $params['order'] ) ){
+          foreach($params['order'] as $orderKey=>$orderField){
+              if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
+                  $notordered = false;                    
+                  $customers = $customers->orderBy($columns[$orderField['column']],$orderField['dir']);                    
+              }
+          }
+      }
+
+      $customers = $customers
+      ->skip((int)$start)
+      ->take((int)$length);
+
+      if($notordered){
+        $customers = $customers->orderBy('name','asc')->orderBy('email','asc');
+      }
+
+      $customers = $customers->get($columns);
+      
+      $response = [
+        'recordsTotal' => $iTotalRecords,
+        'recordsFiltered' => $iTotalRecords,
+        'draw' => $draw,
+        'length' => $length,
+        'aaData' => $customers
+      ];
+      
+      return response($response,200);
+
+
+
+        /*$users = User::all()->toArray();
         $status_list = array(
             array("success" => "Pending"),
             array("info" => "Closed"),
@@ -123,7 +171,7 @@ class AdminController extends Controller
         $records["draw"] = $sEcho;
         $records["recordsTotal"] = count($users);
         $records["recordsFiltered"] = count($users);
-       return  json_encode($records);
+       return  json_encode($records);*/
     }
 
     public function home()

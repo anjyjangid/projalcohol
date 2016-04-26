@@ -34,7 +34,8 @@ class Products extends Eloquent
             'loyalty',
             'threshold',
             'maxQuantity',
-            'dealers'
+            'dealers',
+            'packages'
     ];
 
     public function pcategories()
@@ -50,5 +51,10 @@ class Products extends Eloquent
     public function getSingleProduct($id)
     {
         return Products::where('_id', $id)->first();       
+    }
+
+    public function packagelist()
+    {        
+        return $this->belongsToMany('AlcoholDelivery\Packages', null, 'products', 'packages');
     }
 }
