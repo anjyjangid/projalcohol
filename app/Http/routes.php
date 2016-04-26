@@ -152,6 +152,12 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 	Route::resource('brand', 'Admin\BrandController');
 	Route::controller('brand', 'Admin\BrandController');
 
+	Route::group(['prefix' => 'package'], function () {
+		Route::post('listpackage','Admin\PackageController@listpackage');
+	});
+
+	Route::resource('package', 'Admin\PackageController');
+
 });
 
 

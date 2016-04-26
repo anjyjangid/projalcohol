@@ -40,7 +40,7 @@ class Dealer extends Moloquent
     }
 
 
-    public function products()
+    public function productlist()
     {        
         return $this->belongsToMany('AlcoholDelivery\Products', null, 'dealers', 'products');
     }

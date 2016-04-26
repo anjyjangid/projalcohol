@@ -1188,6 +1188,41 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                     });
                 }]
             }
+        })
+
+
+        .state("packages", {
+            //url: "/pakages",
+            abstract: true,
+            templateUrl: "adminviews/views/packages/index.html",
+            //data: {pageTitle: 'Packages'},                        
+            resolve: {                
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',  
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [                            
+                            'adminviews/js/models/packageModel.js',
+                            'adminviews/js/controllers/PackageController.js'
+                        ]                    
+                    });
+
+                }]                
+            }
+        })
+
+        .state("packages.party", {
+            url: "/packages/party", 
+            controller: "PackageController",          
+            data: {pageSubTitle: 'Party Packages',type:1},
+            templateUrl: "adminviews/views/packages/list.html",
+        })
+
+        .state("packages.cocktail", {
+            url: "/packages/cocktail",
+            controller: "PackageController",            
+            data: {pageSubTitle: 'Cocktail Packages',type:2},
+            templateUrl: "adminviews/views/packages/list.html",
         });        
 }]);
 
