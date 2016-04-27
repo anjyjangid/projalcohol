@@ -58,7 +58,9 @@ class CategoryController extends Controller
 		$validator = Validator::make($request->all(), [
 			'title' => 'required',
 			'slug'  => 'required',
-			'thumb' => 'required|mimes:jpeg,jpg,png|max:8000'
+			'isMenu'=> 'required|integer|in:0,1',
+			'thumb' => 'required|mimes:jpeg,jpg,png|max:8000',
+
 		]);
 
 		// if validation fails
@@ -135,6 +137,7 @@ class CategoryController extends Controller
 
 		$category->cat_title = $inputs['title'];
 		$category->slug = $inputs['slug'];
+		$category->isMenu = (int)$inputs['isMenu'];
 		$category->cat_status = 0;
 		$category->cat_thumb = $fileUpload->original['thumb'];
 		$category->cat_lthumb = isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:'';
@@ -265,6 +268,7 @@ class CategoryController extends Controller
 		$validator = Validator::make($inputs, [
 			'title' => 'required',            
 			'slug'=> 'required',
+			'isMenu'=> 'required|integer|in:0,1',
 			//'thumb' => 'mimes:jpeg,jpg,png|max:8000',
 		]);
 
@@ -329,11 +333,10 @@ class CategoryController extends Controller
 		// Pricing section checks ends
 		
 		$fileUpload = $this->uploadThumb($request);
-		
-		
-		
+					
 		$category->cat_title = $inputs['title'];
 		$category->slug = $inputs['slug'];
+		$category->isMenu = (int)$inputs['isMenu'];
 		
 		$category->cat_thumb = isset($fileUpload->original['thumb'])?$fileUpload->original['thumb']:$inputs['thumb'];
 		$category->cat_lthumb = isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:$inputs['lthumb'];

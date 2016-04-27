@@ -748,27 +748,27 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             .state("categories.list", {
                 url: "/list",
                 templateUrl: "adminviews/views/categories/list.html",
-                data: {pageTitle: 'Category List'}
+                data: {pageSubTitle: 'Category List'}
             })
 
             .state("categories.add", {
                 url: "/add",
                 templateUrl: "adminviews/views/categories/add.html",
-                data: {pageTitle: 'Add New Category'},
+                data: {pageSubTitle: 'Add New Category'},
                 
             })
 
             .state("categories.show", {
                 url: "/show/{categoryid}",
                 templateUrl: "adminviews/views/categories/show.html",
-                data: {pageTitle: 'Category Detail'},
+                data: {pageSubTitle: 'Category Detail'},
                 controller: "CategoryShowController",                
                 
             })
             .state("categories.edit",{
                 url: "/edit/{categoryid}",
                 templateUrl: "adminviews/views/categories/add.html",
-                data: {pageTitle: 'Category Detail'},
+                data: {pageSubTitle: 'Update Category'},
                 controller:"CategoryUpdateController"                
             })
             

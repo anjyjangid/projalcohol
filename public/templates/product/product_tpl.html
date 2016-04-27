@@ -13,7 +13,7 @@
 	</div>
 
 	<img err-pro-src="" ng-src="products/i/200/{{productInfo.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive"/>
-	
+
 </div>
 
 <div class="prod_desc">{{productInfo.name}}</div>
@@ -22,7 +22,8 @@
 <div class="prod_discout_price">{{productPricing.discountedPrice}} {{settings.general.currency}}</div>
 <div class="prod_addtocart">
 	<!--<img src="images/addtocart.png" class="img-responsive" />-->
-	<div class="cartbtn">
+	<add-to-cart-btn product="productInfo"></add-to-cart-btn>
+	<!-- <div class="cartbtn">
 		<div class="addcart"><span></span>add to cart</div>
 		<div class="addmore"><input id="addmore_count" type="text" value="" name="addmore_count"><span class="addmorehere">add more</span></div>
 		<div class="addmanual">
@@ -31,6 +32,6 @@
 				<div class="addbuttton">add</div>
 			</div>
 		</div>
-	</div>
+	</div>-->
 </div>
 </div>

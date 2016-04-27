@@ -6,7 +6,7 @@ use Moloquent;
 
 class Categories extends Moloquent
 {
-    
+
     protected $primaryKey = "_id";
     protected $collection = 'categories';
 
@@ -29,6 +29,7 @@ class Categories extends Moloquent
                         'ancestors',
                         'cat_status',
                         'slug',
+                        'isMenu',
                         'advance_order',
                         'regular_express_delivery',
                         'advance_order_bulk',

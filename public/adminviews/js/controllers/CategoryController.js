@@ -24,6 +24,7 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 				regular_express_delivery:{},
 				advance_order_bulk:{},
 				express_delivery_bulk:{},
+				isMenu:"1",
 			};
 			$scope.categories = [];
 			$scope.lthumb = true;
@@ -166,8 +167,10 @@ MetronicApp.controller('CategoryUpdateController',['$rootScope', '$scope', '$tim
     	categoryFormInit: function(){
 
 			$scope.category = {
-				ptitle:'',				
+				ptitle:'',
+				isMenu:"1",
 			};
+
 			$scope.categories = [];
 			$scope.lthumb = true;
 			
@@ -176,15 +179,12 @@ MetronicApp.controller('CategoryUpdateController',['$rootScope', '$scope', '$tim
 			});
 
 			categoryModel.getCategory($stateParams.categoryid).success(function(response) {
-
+				//renameProperty is a protoType created in general js
 				response.renameProperty('cat_title','title');
 				response.renameProperty('cat_thumb','thumb');
 				response.renameProperty('cat_lthumb','lthumb');
-
-				//$scope.category.title = response.cat_title;
-				//$scope.category.thumb = response.cat_thumb;
-				//$scope.category.lthumb = response.cat_lthumb;
-				$scope.category = response;
+				
+				Object.assign($scope.category,response);
 
 				if(!$scope.category.advance_order)
 					$scope.category.advance_order = {};

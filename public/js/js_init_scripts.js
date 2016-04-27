@@ -235,9 +235,7 @@ function initScripts(options){
 
 	$(".addcart").click(function () {
 	      //$(".addmore").show("slide", { direction: "down" }, 1000);
-
 		  if($(this).hasClass("only-button")){return true;}
-
 		  $(".addcart").hide();
 		  $(".addmore").show();
 		  //$(".addmore .bootstrap-touchspin").show('slide', { direction: 'down' }, 250);
