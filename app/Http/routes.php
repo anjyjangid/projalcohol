@@ -152,11 +152,14 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 	Route::resource('brand', 'Admin\BrandController');
 	Route::controller('brand', 'Admin\BrandController');
 
-	Route::group(['prefix' => 'package'], function () {
-		Route::post('listpackage','Admin\PackageController@listpackage');
-	});
 
-	Route::resource('package', 'Admin\PackageController');
+	/*Route::resource('package', 'Admin\PackageController');
+	Route::controller('package', 'Admin\PackageController');*/
+	
+	Route::group(['prefix' => 'package'], function () {
+		Route::post('listpackage','Admin\PackageController@listpackage');		
+		Route::post('store','Admin\PackageController@store');		
+	});		
 
 });
 
@@ -171,6 +174,10 @@ Route::get('products/i/{filename}', function ($filename)
     return Image::make(storage_path('products') . '/' . $filename)->response();
 });
 /*PRODUCT IMAGE ROUTUING*/
+Route::get('asset/i/{filename}', function ($filename)
+{
+    return Image::make(public_path('img') . '/' . $filename)->response();
+});
 
 
 Route::controller('/admin/password', 'Auth\AdminPasswordController');

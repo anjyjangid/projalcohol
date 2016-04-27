@@ -1,0 +1,165 @@
+<div class="row" ng-controller="PackageFormController">
+	<div class="col-md-12">
+		<form role="form" name='packageForm' ng-submit="store()" required="false">
+		<div class="portlet light">			
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-shopping-cart"></i>{{package._id?'Edit ':'Add New '}} {{$state.$current.data.pageSubTitle}} Package
+				</div>
+				<div class="actions btn-set">
+					<a class="btn default" ui-sref="{{$state.$current.data.type==1 ? 'packages.party':'packages.cocktail'}}"><i class="fa fa-angle-left"></i> Back</a>
+					<button class="btn green" type="submit"><i class="fa fa-check"></i> {{package._id?'Update':'Save'}}</button>					
+				</div>
+			</div>
+			<div class="portlet-body">				
+				
+				<tabset active="active">
+					<tab>
+						<tab-heading>General</tab-heading>
+						<div class="form-horizontal">
+							<div class="form-group" ng:class="{'has-error':errors.image[0]}">
+								<label class="col-md-2 control-label">Cover Image: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<div class="fileinput fileinput-new" data-provides="fileinput">
+										<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
+											<img err-src="asset/i/defaultImage.png" 
+												ng-src="products/i/200/{{package.image.source}}" src="asset/i/defaultImage.png" alt=""/>
+
+										</div>
+										<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
+										</div>
+										<div>
+											<span class="btn default btn-file">
+												<span class="fileinput-new">{{ package.image.source ? 'Change':'Select' }}</span>
+												<span class="fileinput-exists">Change</span>
+												<input type="file" placeholder="thumbnail" class="form-control" file-model="package.image.thumb"/>
+											</span>	
+										</div>
+									</div>
+									<span class="help-block" ng-bind="errors.image[0]"></span>
+								</div>
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.title[0]}">
+								<label class="col-md-2 control-label">Title: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="package.title" placeholder="">
+									<span class="help-block" ng-bind="errors.title[0]"></span>
+								</div>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.subTitle[0]}">
+								<label class="col-md-2 control-label">Sub Title: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="package.subTitle" placeholder="">
+									<span class="help-block" ng-bind="errors.subTitle[0]"></span>
+								</div>
+							</div>							
+							<div class="form-group" ng:class="{'has-error':errors.description[0]}">
+								<label class="col-md-2 control-label">Description: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<textarea class="form-control" ng-model="package.description"></textarea>
+									<span class="help-block" ng-bind="errors.description[0]"></span>
+								</div>
+							</div>
+							<div ng-if="$state.$current.data.type == 2">
+								<div class="form-group" ng:class="{'has-error':errors.video.link[0]}">
+									<label class="col-md-2 control-label">Video link (If any): 
+									</label>
+									<div class="col-md-10">
+										<input type="text" class="form-control" ng-model="package.video.link" placeholder="">
+										<span class="help-block" ng-bind="errors.video.link[0]"></span>
+									</div>
+								</div>
+								<div ng-if="package.video.link" class="form-group" ng:class="{'has-error':errors.video.type[0]}">
+									<label class="col-md-2 control-label">Video Type: 
+									</label>
+									<div class="col-md-4">								
+										<div class="radio-list">
+											<label class="radio-inline">
+											<input plugin-uniform ng-model="package.video.type" type="radio" value="1" name="chilled"> Youtube </label>
+											<label class="radio-inline">
+											<input plugin-uniform ng-model="package.video.type" type="radio" value="2" name="chilled"> Vimeo </label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
+								<label class="col-md-2 control-label">Status: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<select class="table-group-action-input form-control input-medium" ng-model="package.status">
+										<option value="">Select...</option>
+										<option value="1">Published</option>
+										<option value="0">Not Published</option>
+									</select>
+									<span class="help-block" ng-bind="errors.status[0]"></span>
+								</div>
+							</div>
+						</div>
+					</tab>					
+					
+					<tab ng-if="$state.$current.data.type == 2">
+						<tab-heading>Receipe</tab-heading>
+						
+						<div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10">
+							<a id="tab_images_uploader_pickfiles" href="#" ng-click="package.recipe.push({})" class="btn yellow">
+								<i class="fa fa-plus"></i> Add Step 
+							</a>							
+						</div>
+
+						<table class="table table-bordered table-hover">
+							<thead>
+								<tr role="row" class="heading">
+									<th>
+										 Step #
+									</th>
+									<th>
+										 Step title
+									</th>
+									<th>
+										 Step Details
+									</th>									
+									<th>
+										Action
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="r in package.recipe">
+									<td>Step {{ $index+1 }}</td>
+									<td ng:class="{'has-error':errors['recipe.'+$index+'.step'][0]}">
+										<input type="text" class="form-control" ng-model="r.step">
+										<span class="help-block" ng-bind="errors['recipe.'+$index+'.step'][0]"></span>
+									</td>
+									<td ng:class="{'has-error':errors['recipe.'+$index+'.description'][0]}">
+										<textarea class="form-control" ng-model="r.description"></textarea>
+										<span class="help-block" ng-bind="errors['recipe.'+$index+'.description'][0]"></span>
+									</td>
+									<td>
+										<a href="#" class="btn default btn-sm" ng-click="package.recipe.splice($index,1)">
+										<i class="fa fa-times"></i> Remove </a>
+									</td>
+								</tr>	
+							</tbody>
+						</table>
+					</tab>
+					<tab>
+						<tab-heading>{{ $state.$current.data.type == 2 ? 'Package Ingredients':'Package Items'}}</tab-heading>
+
+					</tab>	
+				</tabset>																	
+			</div>			
+		</div>
+		</form>
+	</div>
+</div>
+<pre>{{package|json}}</pre>
