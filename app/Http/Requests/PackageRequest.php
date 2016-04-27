@@ -32,31 +32,23 @@ class PackageRequest extends Request
             'title' => 'required',
             'subTitle' => 'required',
             'description' => 'required',
-            'image' => 'required|image|max:5102',
-            'products' => 'required|array|min:1',
-            'video' => 'sometimes|required',
-            'recipe' => 'sometimes|required',
+            'image' => 'required',
+            'image.thumb' => 'image|max:5102',
+            'products' => 'required|array|min:1',            
+            'recipe' => 'sometimes|required|array',
             'packageItems' => 'sometimes|required',
-            'status' => 'required|integer',
-
-            'shortDescription' => 'required',
-            'categories' => 'required',
-            'sku' => 'required|unique:products,sku,'.@$input['_id'].',_id',
-            'quantity' => 'required|numeric',
-            'price' => 'required|numeric',
-            'chilled' => 'required|integer',
-            'status' => 'required|integer',
-            'metaTitle' => 'max:100',
-            'metaKeywords' => 'max:1000',
-            'metaDescription' => 'max:255',            
-            'isFeatured' => 'required|integer',
-            'imageFiles' => 'required|array|min:1',            
-            'loyalty' => 'required|numeric',
-            'threshold' => 'required|numeric|lt:maxQuantity',
-            'maxQuantity' => 'required|numeric|gte:quantity',
-            'dealers' => 'required|array|min:1',
+            'status' => 'required|integer'            
         ];
         
+        
+        //VALIDATION FOR COCKTAIL TYPE
+        if($input['type'] == 2){                
+
+            $rules['video.link'] = 'sometimes|required|url';            
+            $rules['recipe'] = 'required';            
+
+        }
+
         if (isset($input['imageFiles']) && is_array($input['imageFiles']))
         {
             foreach ($input['imageFiles'] as $imageKey => $image)
@@ -113,7 +105,7 @@ class PackageRequest extends Request
             'required' => 'This field is required',
             //'categories.required' => 'Please select a category.',
             //'status.required' => 'Please select :attribute.',
-            'imageFiles.required' => 'Please add atleast one image.',
+            'image.required' => 'Cover image is required.',
             'maxQuantity.gte' => 'The value should be greater than or equals to the quantity.',
             'threshold.lt' => 'The value should be less than maximum quantity.',
             'dealers.required' => 'Please select atleast one dealer.'

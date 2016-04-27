@@ -5,6 +5,7 @@ namespace AlcoholDelivery\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 
 use AlcoholDelivery\Http\Requests;
+use AlcoholDelivery\Http\Requests\PackageRequest;
 use AlcoholDelivery\Http\Controllers\Controller;
 
 use File;
@@ -56,7 +57,7 @@ class PackageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PackageRequest $request)
     {
         //
     }
