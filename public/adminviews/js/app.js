@@ -639,12 +639,32 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                             'assets/global/scripts/datatable.js',
                             'adminviews/js/scripts/table-ajax.js',
 
-                            'adminviews/js/controllers/GeneralPageController.js'
+                            'adminviews/js/controllers/GeneralPageController.js',
+                            'adminviews/js/controllers/CustomerController.js'
                         ]
                     });
                 }]
             }
         })
+
+            .state("customer.list", {
+                url: "/list",
+                templateUrl: "adminviews/views/customer/list.html",
+                data: {pageSubTitle: 'Customer List'}
+            })
+
+            .state("customer.add", {
+                    url: "/add",
+                    templateUrl: "adminviews/views/customer/add.html",
+                    data: {pageSubTitle: 'Add New Customer'},
+                    controller:"CustomerAddController"
+            })
+            .state("customer.edit",{
+                url: "/edit/{userid}",
+                templateUrl: "adminviews/views/customer/edit.html",
+                data: {pageSubTitle: 'Customer update'},
+                controller:"CustomerUpdateController"                
+            })
 
         // dealers complete route start{
 

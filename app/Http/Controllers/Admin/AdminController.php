@@ -93,50 +93,66 @@ class AdminController extends Controller
     {
         $params = $request->all();
 
-      $customers = new User;
+        $customers = new User;
+        //prd($params);
+        extract($params);      
 
-      extract($params);      
+        if(isset($params['search']['name']) && trim($params['search']['name'])!=''){
+            $sval = $params['search']['name'];
+            $customers = $customers->where('name','regexp', "/.*$sval/i");
+        }
 
-      if(isset($params['search']['value']) && trim($params['search']['value'])!=''){
-        $sval = $params['search']['value'];
-        $customers = $customers->where('name','regexp', "/.*$sval/i");
-      }
+        if(isset($params['search']['email']) && trim($params['search']['email'])!=''){
+            $sval = $params['search']['email'];
+            $customers = $customers->where('email','regexp', "/.*$sval/i");
+        }
 
-      //$customers = $customers->where('dealers','all',['56ed55ecc31d53b2218b4568']);
+        if(isset($params['search']['status']) && trim($params['search']['status'])!=''){
+            $sval = $params['search']['status'];
+            $customers = $customers->where('status','regexp', "/.*$sval/i");
+        }
 
-      $iTotalRecords = $customers->count();      
+
+        /*if(isset($params['search']['value']) && trim($params['search']['value'])!=''){
+            $sval = $params['search']['value'];
+            $customers = $customers->where('name','regexp', "/.*$sval/i");
+        }*/
+
+        //$customers = $customers->where('dealers','all',['56ed55ecc31d53b2218b4568']);
+
+        $iTotalRecords = $customers->count();      
       
-      $columns = ['name','email','status','_id'];
+        $columns = ['name','email','status','_id'];
 
-      $notordered = true;
-      if ( isset( $params['order'] ) ){
-          foreach($params['order'] as $orderKey=>$orderField){
-              if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
-                  $notordered = false;                    
-                  $customers = $customers->orderBy($columns[$orderField['column']],$orderField['dir']);                    
-              }
-          }
-      }
+        $notordered = true;
+        if ( isset( $params['order'] ) ){
+            foreach($params['order'] as $orderKey=>$orderField){
+                if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
+                    $notordered = false;                    
+                    $customers = $customers->orderBy($columns[$orderField['column']],$orderField['dir']);                    
+                }
+            }
+        }
 
-      $customers = $customers
-      ->skip((int)$start)
-      ->take((int)$length);
+        $customers = $customers
+        ->skip((int)$start)
+        ->take((int)$length);
 
-      if($notordered){
-        $customers = $customers->orderBy('name','asc')->orderBy('email','asc');
-      }
+        if($notordered){
+            $customers = $customers->orderBy('name','asc')->orderBy('email','asc');
+        }
 
-      $customers = $customers->get($columns);
+        $customers = $customers->get($columns);
       
-      $response = [
+        $response = [
         'recordsTotal' => $iTotalRecords,
         'recordsFiltered' => $iTotalRecords,
         'draw' => $draw,
         'length' => $length,
         'aaData' => $customers
-      ];
-      
-      return response($response,200);
+        ];
+        
+        return response($response,200);
 
 
 
