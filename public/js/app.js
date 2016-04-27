@@ -9,7 +9,6 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	"19degrees.ngSweetAlert2",
 	'angular-loading-bar',
 	'ngAnimate',
-
 	'ngMaterial',
 	'ngMessages',
 	'ngTouch'
