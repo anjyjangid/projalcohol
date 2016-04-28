@@ -259,10 +259,11 @@ AlcoholDelivery.directive('ngTouchSpin', ['$timeout', '$interval', function($tim
 		scope.prefix = attrs.prefix || undefined;
 		scope.postfix = attrs.postfix || undefined;
 		scope.decimals = attrs.decimals || 0;
-		scope.stepInterval = attrs.stepInterval || 100;
+		scope.stepInterval = attrs.stepInterval || 500;
 		scope.stepIntervalDelay = attrs.stepIntervalDelay || 500;
 		scope.initval = attrs.initval || '';
 		scope.val = attrs.value || scope.initval;
+		scope.verticalButtons = attrs.vertical || false;
 	};
 
 	return {
@@ -354,36 +355,47 @@ AlcoholDelivery.directive('ngTouchSpin', ['$timeout', '$interval', function($tim
 			};
 
 		},
-		template: 
-		'<div class="input-group bootstrap-touchspin">'+
+		template:
+		// '<div class="input-group bootstrap-touchspin">'+
 
-		'	<span class="input-group-addon bootstrap-touchspin-prefix" ng-show="prefix" ng-bind="prefix"></span>'+
+		// '	<span class="input-group-addon bootstrap-touchspin-prefix" ng-show="prefix" ng-bind="prefix"></span>'+
 
-		'	<input type="text" ng-model="val" class="form-control" ng-blur="checkValue()">'+
+		// '	<input type="text" ng-model="val" class="form-control" ng-blur="checkValue()">'+
 
-		'	<span class="input-group-addon bootstrap-touchspin-postfix" ng-show="postfix" ng-bind="postfix"></span>'+
+		// '	<span class="input-group-addon bootstrap-touchspin-postfix" ng-show="postfix" ng-bind="postfix"></span>'+
 			
-		'	<span class="input-group-btn-vertical">'+
+		// '	<span class="input-group-btn-vertical">'+
 
-		'		<button class="btn btn-default bootstrap-touchspin-up" ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()" type="button"><i class="glyphicon glyphicon-plus"></i></button>'+
+		// '		<button class="btn btn-default bootstrap-touchspin-up" ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()" type="button"><i class="glyphicon glyphicon-plus"></i></button>'+
 
-		'		<button class="btn btn-default bootstrap-touchspin-down"  ng-mousedown="startSpinDown()" ng-mouseup="stopSpin()" type="button"><i class="glyphicon glyphicon-minus"></i></button>'+
+		// '		<button class="btn btn-default bootstrap-touchspin-down"  ng-mousedown="startSpinDown()" ng-mouseup="stopSpin()" type="button"><i class="glyphicon glyphicon-minus"></i></button>'+
 
-		'	</span>'+
+		// '	</span>'+
 
-		'</div>'
-
-		// '<div class="input-group bootstrap-touchspin">' +
-		// '  <span class="input-group-btn" ng-show="!verticalButtons">' +
-		// '    <button class="btn btn-default" ng-mousedown="startSpinDown()" ng-mouseup="stopSpin()"><i class="fa fa-minus"></i></button>' +
-		// '  </span>' +
-		// '  <span class="input-group-addon" ng-show="prefix" ng-bind="prefix"></span>' +
-		// '  <input type="text" ng-model="val" class="form-control" ng-blur="checkValue()">' +
-		// '  <span class="input-group-addon" ng-show="postfix" ng-bind="postfix"></span>' +
-		// '  <span class="input-group-btn" ng-show="!verticalButtons">' +
-		// '    <button class="btn btn-default" ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()"><i class="fa fa-plus"></i></button>' +
-		// '  </span>' +
 		// '</div>'
+
+		'<div class="input-group bootstrap-touchspin" ng-class={vertical:verticalButtons}>' +
+		'  <span class="input-group-btn" ng-show="verticalButtons">' +
+		'    <button class="btn btn-default bootstrap-touchspin-down" ng-mousedown="startSpinDown()" ng-mouseup="stopSpin()">-</button>' +
+		'  </span>' +
+		'  <span class="input-group-addon bootstrap-touchspin-prefix" ng-show="prefix" ng-bind="prefix"></span>' +
+		'  <input type="text" ng-model="val" class="form-control addmore-count" ng-blur="checkValue()">' +
+		'  <span class="input-group-addon" ng-show="postfix" ng-bind="postfix"></span>' +
+		'  <span class="input-group-btn" ng-show="verticalButtons">' +
+		'    <button class="btn btn-default bootstrap-touchspin-up" ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()">+</button>' +
+		'  </span>' +
+		'</div>'
+		// <div class="input-group bootstrap-touchspin">
+		// 	<span class="input-group-btn">
+		// 		<button class="btn btn-default bootstrap-touchspin-down" type="button">-</button>
+		// 	</span>
+		// 	<span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
+		// 	<input id="addmore_count" type="text" value="" name="addmore_count" class="form-control" style="display: block; top: 0px;">
+		// 	<span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
+		// 	<span class="input-group-btn">
+		// 		<button class="btn btn-default bootstrap-touchspin-up" type="button">+</button>
+		// 	</span>
+		// </div>
 
 
 
@@ -454,7 +466,7 @@ AlcoholDelivery.directive('alTplProduct',[function($rootScope){
 
 
 				localpro.discountedPrice = localpro.discountedPrice.toFixed(2);
-
+				
 				return localpro;
 
 			}
@@ -464,7 +476,60 @@ AlcoholDelivery.directive('alTplProduct',[function($rootScope){
 
 		}]
 	}
-
-
-
 }])
+
+
+AlcoholDelivery.directive('addToCartBtn',[function(){
+	return {
+		restrict : "E",
+		replace: true,
+		templateUrl: function(elem, attr){
+			return '/templates/partials/addToCartBtn.html';
+		},
+		scope: {
+			product:'=',			
+		},
+		controller: function($scope,$element,$timeout){
+
+			$scope.isInCart = false;
+			$scope.addMoreCustom = false;
+			$scope.element = $element;
+			$scope.product.quantity = 1;					
+
+			$scope.addtocart = function(){
+
+				$scope.isInCart = true;				
+				$scope.addMoreCustom = false;
+
+				$timeout(function(){
+					$element.find(".addmore-count").animate({ top: "0px"},300);
+				}, 100);
+			};
+
+			$scope.addtocartcustom = function(){
+				$scope.addMoreCustom = true;
+
+				$timeout(function(){
+					$element.find(".addmanual input").animate({ width: "70%"},250).focus();
+		  			$element.find(".addmanual .addbuttton").animate({ width: "30%"},250);
+				}, 100);
+				
+			};
+
+
+		}
+		
+	}
+}])
+
+AlcoholDelivery.directive('ngBlur', ['$parse', function($parse) {	
+    return function(scope, element, attr) {
+        var fn = $parse(attr['ngBlur']);
+        element.on('blur', function(event) {
+        	
+            scope.$apply(function() {
+                fn(scope, {$event:event});
+            });
+        });
+    };
+}]);

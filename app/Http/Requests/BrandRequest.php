@@ -28,7 +28,7 @@ class BrandRequest extends Request
             
             'title' => 'required|string|max:255',            
             'link' => 'required|max:1000',            
-            'status'=> 'integer|in:0,1',
+            'status'=> 'required|integer|in:0,1',
             
         ];
 

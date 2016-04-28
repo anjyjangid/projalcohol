@@ -63,7 +63,7 @@ class ProductController extends Controller
             $sort = array_pop($sortArr);
             $sortDir = $sort=='asc'?$sort:'desc';
             $sort = array_pop($sortArr);
-            
+
             if($sort=='price'){
                 $products = $products->orderBy($sort, $sortDir);
             }
