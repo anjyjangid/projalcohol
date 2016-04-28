@@ -405,14 +405,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                 data: {pageSubTitle: 'Add New Customer'},
                 controller:"CustomerAddController"
         })
+
         .state("customer.edit",{
             url: "/edit/{userid}",
             templateUrl: "adminviews/views/customer/edit.html",
             data: {pageSubTitle: 'Customer update'},
             controller:"CustomerUpdateController"                
-        })
-
-        // dealer //
+        })        
 
         .state('dealers', {
             url: "/dealers",
@@ -471,7 +470,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             templateUrl: "adminviews/views/dealers/edit.html",
             data: {pageSubTitle: 'Dealer update'},
             controller:"DealerUpdateController"                
-        })
+        })        
 
         .state('categories', {
             url: "/categories",
@@ -510,20 +509,20 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         .state("categories.list", {
             url: "/list",
             templateUrl: "adminviews/views/categories/list.html",
-            data: {pageTitle: 'Category List'}
+            data: {pageSubTitle: 'Category List'}
         })
 
         .state("categories.add", {
             url: "/add",
             templateUrl: "adminviews/views/categories/add.html",
-            data: {pageTitle: 'Add New Category'},
+            data: {pageSubTitle: 'Add New Category'},
             
         })
 
         .state("categories.show", {
             url: "/show/{categoryid}",
             templateUrl: "adminviews/views/categories/show.html",
-            data: {pageTitle: 'Category Detail'},
+            data: {pageSubTitle: 'Category Detail'},
             controller: "CategoryShowController",                
             
         })
@@ -531,152 +530,58 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         .state("categories.edit",{
             url: "/edit/{categoryid}",
             templateUrl: "adminviews/views/categories/add.html",
-            data: {pageTitle: 'Category Detail'},
+            data: {pageSubTitle: 'Update Category'},
             controller:"CategoryUpdateController"                
-        })
+        })            
         
-            .state("dealers.list", {
-                url: "/list",
-                templateUrl: "adminviews/views/dealers/list.html",
-                data: {pageSubTitle: 'Dealers List'}
-            })
+        .state('products', {
+            url: "/product",
+            templateUrl: "adminviews/views/products/index.html",
+            data: {pageTitle: 'Products'},
+            controller: "ProductsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/select2/select2.css',
+                            'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
+                            'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
 
-            .state("dealers.add", {
-                    url: "/add",
-                    templateUrl: "adminviews/views/dealers/add.html",
-                    data: {pageSubTitle: 'Add New Dealer'},
-                    controller:"DealerAddController"
-            })
-            .state("dealers.show", {
-                    url: "/show/{dealerid}",
-                    templateUrl: "adminviews/views/dealers/show.html",
-                    data: {pageSubTitle: 'Dealer Detail'},
-                    controller: "DealerShowController",
-                    
-            })
-            .state("dealers.edit",{
-                url: "/edit/{dealerid}",
-                templateUrl: "adminviews/views/dealers/edit.html",
-                data: {pageSubTitle: 'Dealer update'},
-                controller:"DealerUpdateController"                
-            })
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+                            'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+                            'assets/global/plugins/select2/select2.min.js',
+                            'assets/global/plugins/datatables/all.min.js',
 
-        //  Dealers route end //
+                            'assets/global/scripts/datatable.js',                               
+                            
+                            'adminviews/js/models/productModel.js',
+                            'adminviews/js/controllers/ProductController.js'
+                        ]
+                    });
+                }]
+            }
+        })
 
-        // category complete route start{
+        .state("products.list", {
+            url: "/list",
+            templateUrl: "adminviews/views/products/list.html",
+            data: {pageSubTitle: 'List'}
+        })
 
-            .state('categories', {
-                url: "/categories",
-                templateUrl: "adminviews/views/categories/index.html",
-                data: {pageTitle: 'categories'},
-                controller: "CategoryController",
-                resolve: {
-                    deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                        return $ocLazyLoad.load({
-                            name: 'MetronicApp',
-                            insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                            files: [
-                                'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                                'assets/global/plugins/select2/select2.css',                             
-                                'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
-                                'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
+        .state("products.add", {
+            url: "/add",
+            templateUrl: "adminviews/views/products/add.html",
+            data: {pageSubTitle: 'Add'}
+        })
 
-                                'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                                'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
-                                'assets/global/plugins/select2/select2.min.js',
-                                'assets/global/plugins/datatables/all.min.js',
-
-                                'assets/global/scripts/datatable.js',
-                                'adminviews/js/scripts/table-ajax.js',
-                                'js/angular-slugify.js',
-
-                                'adminviews/js/models/categoryModel.js',
-                                'adminviews/js/models/settingsModel.js',
-                                'adminviews/js/controllers/CategoryController.js'
-                            ]
-                        });
-                    }],                    
-                }
-            })
-
-            .state("categories.list", {
-                url: "/list",
-                templateUrl: "adminviews/views/categories/list.html",
-                data: {pageSubTitle: 'Category List'}
-            })
-
-            .state("categories.add", {
-                url: "/add",
-                templateUrl: "adminviews/views/categories/add.html",
-                data: {pageSubTitle: 'Add New Category'},
-                
-            })
-
-            .state("categories.show", {
-                url: "/show/{categoryid}",
-                templateUrl: "adminviews/views/categories/show.html",
-                data: {pageSubTitle: 'Category Detail'},
-                controller: "CategoryShowController",                
-                
-            })
-            .state("categories.edit",{
-                url: "/edit/{categoryid}",
-                templateUrl: "adminviews/views/categories/add.html",
-                data: {pageSubTitle: 'Update Category'},
-                controller:"CategoryUpdateController"                
-            })
-            
-
-            // }category complete route end
-            
-            .state('products', {
-                url: "/product",
-                templateUrl: "adminviews/views/products/index.html",
-                data: {pageTitle: 'Products'},
-                controller: "ProductsController",
-                resolve: {
-                    deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                        return $ocLazyLoad.load({
-                            name: 'MetronicApp',
-                            insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                            files: [
-                                'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                                'assets/global/plugins/select2/select2.css',
-                                'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
-                                'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
-
-                                'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                                'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
-                                'assets/global/plugins/select2/select2.min.js',
-                                'assets/global/plugins/datatables/all.min.js',
-
-                                'assets/global/scripts/datatable.js',                               
-                                
-                                'adminviews/js/models/productModel.js',
-                                'adminviews/js/controllers/ProductController.js'
-                            ]
-                        });
-                    }]
-                }
-            })
-
-            .state("products.list", {
-                url: "/list",
-                templateUrl: "adminviews/views/products/list.html",
-                data: {pageSubTitle: 'List'}
-            })
-
-            .state("products.add", {
-                url: "/add",
-                templateUrl: "adminviews/views/products/add.html",
-                data: {pageSubTitle: 'Add'}
-            })
-
-            .state("products.edit", {
-                url: "/edit/{productid}",
-                templateUrl: "adminviews/views/products/add.html",
-                data: {pageSubTitle: 'Edit'}
-            })
+        .state("products.edit", {
+            url: "/edit/{productid}",
+            templateUrl: "adminviews/views/products/add.html",
+            data: {pageSubTitle: 'Edit'}
+        })
         
         .state("profile", {
             url: "/profile",
