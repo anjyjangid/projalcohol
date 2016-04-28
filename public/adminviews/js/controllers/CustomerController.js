@@ -1,6 +1,6 @@
 'use strict';
 
-MetronicApp.controller('CustomerController',['$rootScope', '$scope', '$timeout','$http','fileUpload','productModel', function($rootScope, $scope, $timeout,$http,fileUpload,productModel) {
+MetronicApp.controller('CustomerController',['$rootScope', '$scope', '$timeout','$http','fileUpload','userModel', function($rootScope, $scope, $timeout,$http,fileUpload,userModel) {
 
 	$scope.$on('$viewContentLoaded', function() {   
 		Metronic.initAjax(); // initialize core components
@@ -119,11 +119,11 @@ MetronicApp.controller('CustomerController',['$rootScope', '$scope', '$timeout',
 
 }]);
 
-MetronicApp.controller('CustomerAddController',['$scope', '$location','$stateParams','fileUpload','productModel', function($scope,$location,$stateParams,fileUpload,productModel) {
+MetronicApp.controller('CustomerAddController',['$scope', '$location','$stateParams','fileUpload','userModel', function($scope,$location,$stateParams,fileUpload,userModel) {
 
-	if($stateParams.productid){
+	if($stateParams.userid){
 		
-		productModel.getProduct($stateParams.productid).success(function(data){
+		userModel.getUser($stateParams.userid).success(function(data){
 			
 			$scope.product = data;	
 

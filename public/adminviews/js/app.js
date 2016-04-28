@@ -356,7 +356,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                         files: [                            
                             'adminviews/js/models/userModel.js',
                             'adminviews/js/controllers/UserProfileController.js'
-                        ]                    
+                        ]
                     });
 
                 }]                
@@ -411,6 +411,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             data: {pageSubTitle: 'Customer update'},
             controller:"CustomerUpdateController"                
         })
+
+        // dealer //
 
         .state('dealers', {
             url: "/dealers",

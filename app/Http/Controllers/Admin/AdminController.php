@@ -93,6 +93,121 @@ class AdminController extends Controller
     {
         $params = $request->all();
 
+        //$columns = array('_id','','name','email','status');
+
+        $users = new User;
+
+        
+
+        if(isset($params['name']) && trim($params['name'])!=''){
+          $pname = $params['name'];
+          $users = $users->where('name','regexp', "/.*$pname/i");
+        }
+
+        if(isset($params['email']) && trim($params['email'])!=''){
+            $pemail = $params['email'];
+            $users = $users->where('email','regexp',"/.*$pemail/i");
+        }
+
+        if(isset($params['status']) && trim($params['status'])!=''){
+          $users = $users->where('status',(int)$params['status']);
+        }
+
+
+        $iTotalRecords = $users->count();
+        $iDisplayLength = intval($_REQUEST['length']);
+        $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength; 
+        $iDisplayStart = intval($_REQUEST['start']);
+        $sEcho = intval($_REQUEST['draw']);
+        
+        $records = array();
+        $records["data"] = array(); 
+
+        $end = $iDisplayStart + $iDisplayLength;
+        $end = $end > $iTotalRecords ? $iTotalRecords : $end;
+
+        $fstatus = [['danger'=>'Disabled'],['success'=>'Enabled']];
+
+        $notordered = true;
+
+
+        $columns = ['name','email','status','_id'];
+
+        //prd($params);
+        if ( isset( $params['order'] ) ){
+            foreach($params['order'] as $orderKey=>$orderField){
+                if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
+                    $notordered = false;                    
+                    $users = $users->orderBy($columns[$orderField['column']],$orderField['dir']);                    
+                }
+            }
+        }
+        /*if ( isset( $params['order'] ) ){
+
+            foreach($params['order'] as $orderKey=>$orderField){
+
+                if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
+                    $ordered = false;                    
+                    $users = $users->orderBy($columns[$orderField['column']],$orderField['dir']);
+                    
+                }
+            }
+
+        }  */
+
+        //prd($users);
+        
+        if($notordered){
+          $users = $users->orderBy('_id','desc');
+        }
+
+        $users = $users->skip($iDisplayStart)        
+        ->take($iDisplayLength)->get();
+
+        $ids = $iDisplayStart;
+        //prd($users);
+        foreach($users as $i => $user) {
+            
+            if(isset($user->status))
+            {
+                $status1 = $fstatus[$user->status];
+
+                $status = current($status1);
+                $color = key($status1);
+            }
+            else
+            {
+                $status = "";
+                $color = "default";
+            }
+            
+            //prd($user);
+            $records["data"][] = array(
+              "name" => $user->name,
+              "email" => $user->email,
+              "status" => $user->status,
+              "_id" => $user->_id,
+              //'<span class="label label-sm label-'.$color.'">'.$status.'</span>',
+              //'<a href="#/user/edit/'.$user->_id.'" class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>'
+              
+            );
+        }
+
+        if (isset($_REQUEST["customActionType"]) && $_REQUEST["customActionType"] == "group_action") {
+            $records["customActionStatus"] = "OK"; // pass custom message(useful for getting status of group actions)
+            $records["customActionMessage"] = "Group action successfully has been completed. Well done!"; // pass custom message(useful for getting status of group actions)
+        }
+        $records["draw"] = $sEcho;
+        $records["recordsTotal"] = $iTotalRecords;
+        $records["recordsFiltered"] = $iTotalRecords; 
+
+        return response($records);
+
+
+
+
+        /*$params = $request->all();
+
         $customers = new User;
         //prd($params);
         extract($params);      
@@ -111,14 +226,6 @@ class AdminController extends Controller
             $sval = $params['search']['status'];
             $customers = $customers->where('status','regexp', "/.*$sval/i");
         }
-
-
-        /*if(isset($params['search']['value']) && trim($params['search']['value'])!=''){
-            $sval = $params['search']['value'];
-            $customers = $customers->where('name','regexp', "/.*$sval/i");
-        }*/
-
-        //$customers = $customers->where('dealers','all',['56ed55ecc31d53b2218b4568']);
 
         $iTotalRecords = $customers->count();      
       
@@ -152,7 +259,21 @@ class AdminController extends Controller
         'aaData' => $customers
         ];
         
-        return response($response,200);
+        return response($response,200);*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

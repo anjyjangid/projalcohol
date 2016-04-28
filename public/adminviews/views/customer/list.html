@@ -153,7 +153,7 @@
 									<input type="text" class="form-control form-filter input-sm" name="order_id">
 								</td> -->
 								<td>
-									<input type="text" class="form-control form-filter input-sm" name="order_name" id="order_name">
+									<input type="text" class="form-control form-filter input-sm" name="name" id="order_name">
 									<!-- <div class="input-group date date-picker margin-bottom-5" data-date-format="dd/mm/yyyy">
 										<input type="text" class="form-control form-filter input-sm" readonly name="order_date_from" placeholder="From">
 										<span class="input-group-btn">
@@ -168,7 +168,7 @@
 									</div> -->
 								</td>
 								<td>
-									<input type="text" class="form-control form-filter input-sm" name="order_email" id="order_email">
+									<input type="text" class="form-control form-filter input-sm" name="email" id="order_email">
 								</td>
 								<!-- <td>
 									<input type="text" class="form-control form-filter input-sm" name="order_ship_to">
@@ -186,10 +186,10 @@
 									<input type="text" class="form-control form-filter input-sm" name="order_quantity_to" placeholder="To"/>
 								</td> -->
 								<td>
-									<select name="order_status" class="form-control form-filter input-sm" id="order_status">
+									<select name="status" class="form-control form-filter input-sm" id="order_status">
 										<option value="">Select...</option>
-										<option value="1">Enable</option>
-										<option value="0">Disable</option>
+										<option value="1">Active</option>
+										<option value="0">In-Active</option>
 										<!-- <option value="pending">Pending</option>
 										<option value="closed">Closed</option>
 										<option value="hold">On Hold</option>
@@ -218,9 +218,7 @@
 <script>
 	//TableAjax.init();
 
-	var TableAjax = function () {
-
-    
+	/*var TableAjax = function () {
 
     var handleRecords = function () {
 
@@ -232,20 +230,7 @@
 			"dom": 'tp',
 			"pageLength" : 5,
 
-			/*"sAjaxSource": "../admin/getcustomers",
-			"fnServerData": function ( sSource, aoData, fnCallback ) {
-			aoData.push( { "name": "name", "value" : $("#order_name").val() }), 
-			aoData.push( { "name": "email", "value" : $("#order_email").val() }), 
-			aoData.push( { "name": "status", "value" : $("#order_status").val() }), 
-			
-			// etc
-			$.getJSON( sSource, aoData, function (json) { fnCallback(json) } )
-
-
-			},*/
-
 			"columns": [
-				//{ data: "name" },
 				{
 					mData: null,
 					mRender: function(data, type, full) {
@@ -256,7 +241,6 @@
                     }
 				},
 				{ data: "email" },
-				//{ data: "mobile_number" },
 				{
 					mData: null,
 					mRender: function(data, type, full) {
@@ -285,8 +269,6 @@
 			"ajax" : {
 				"url": "../admin/getcustomers",
 				"type":"POST",
-				/*"data": aoData,
-				"success": fnCallback,*/
 				beforeSend:function(){
 					Metronic.blockUI({
 				        target: $('#datatable_ajax'),				        
@@ -299,17 +281,6 @@
 			},
 			"order": []			
 		});
-
-		$(".filter-submit").click(function(){
-			//oTable.fnDraw();
-			//reloadGrid();
-			$('#datatable_ajax').dataTable().addAjaxParam("name",  $('#order_name').val());
-			$('#datatable_ajax').dataTable().addAjaxParam("email",  $('#order_email').val());
-
-			$('#datatable_ajax').dataTable().setAjaxParam("status",  $('#order_status').val());
-			$('#datatable_ajax').getDataTable().fnDraw(); //reload the datatable;
-		});
-        
     }
 
     return {
@@ -324,26 +295,177 @@
 
 	function reloadGrid(){
 		$('#datatable_ajax').dataTable()._fnAjaxUpdate();
-	}
-
-	$(".filter-submit").click(function(){
-		//oTable.fnDraw();
-		//reloadGrid();
-		$('#datatable_ajax').dataTable().addAjaxParam("name",  $('#order_name').val());
-		$('#datatable_ajax').dataTable().addAjaxParam("email",  $('#order_email').val());
-
-		$('#datatable_ajax').dataTable().setAjaxParam("status",  $('#order_status').val());
-		$('#datatable_ajax').getDataTable().fnDraw(); //reload the datatable;
-	});
-
-	/*$('#filter_submit_btn').click(function(){
-  grid.addAjaxParam("param1",  $('#filter_input_1').val());
-  grid.addAjaxParam("param2",  $('#filter_input_2').val());
-
-  grid.setAjaxParam("param3",  $('#filter_input_3').val());
-  grid.setAjaxParam("param3",  $('#filter_input_4').val()); // resets a new value
-  grid.getDataTable().fnDraw(); //reload the datatable;
-});*/
+	}*/
 
 </script>
+
+
+
+<script>
+	
+	var CustomerTableAjax = function () {
+
+    var initPickers = function () {
+        //init date pickers
+        $('.date-picker').datepicker({
+            rtl: Metronic.isRTL(),
+            autoclose: true
+        });
+    }
+
+    var handleRecords = function () {
+
+        var grid = new Datatable();
+
+        grid.init({
+            src: $("#datatable_ajax"),
+            onSuccess: function (grid) {
+                // execute some code after table records loaded
+            },
+            onError: function (grid) {
+                // execute some code on network or other general error  
+            },
+            loadingMessage: 'Loading...',
+            dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
+
+                // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+                // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
+                // So when dropdowns used the scrollable div should be removed. 
+                //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
+                
+                "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+
+                "columns": [
+	                {
+						mData: null,
+						mRender: function(data, type, full) {
+	                        if(typeof(data.name) != "undefined" && data.name !== null)
+	                        	return data.name;
+	                    	else
+	                    		return 'Not Set';
+	                    },
+	                    orderable:true
+					},
+					{ data: "email" },
+					{
+						mData: null,
+						mRender: function(data, type, full) {
+	                        
+	                        var labelColor = "default";
+	                        var labelText = "";
+	                        var status = "";
+
+	                        if(typeof(data.status) != "undefined" && data.status !== null)
+	                        {
+	                        	var labelColor = "warning";
+	                        	var labelText = "In-Active";
+	                        	var status = "1";
+
+	                        	if(data.status=="1")
+	                        	{
+	                        		var labelColor = "success";
+	                        		var labelText = "Active";
+	                        		var status = "0";
+	                        	}
+	                        }
+
+	                    	var divTemplate = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''+data._id+'\')" id="'+data._id+'" data-table="user" data-status="'+status+'" class="label label-sm label-'+labelColor+'">'+labelText+'</span></a>';
+
+							 return divTemplate;
+	                    },
+						orderable:false
+					},
+					{
+						mData: null,
+						sClass: "center",
+						mRender: function(data, type, full) {
+	                        var txt = 'Edit';
+	                        return '<a id="'+data._id+'" href="javascript:;" class="btn btn-default btn-xs green-stripe">'+txt+'</a>';
+	                    },					
+						orderable:false
+					}
+				],
+
+                "lengthMenu": [
+                    [10, 20, 50, 100, 150, -1],
+                    [10, 20, 50, 100, 150, "All"] // change per page values here
+                ],
+                "pageLength": 5, // default record count per page
+				"ajax": {
+                    "url": "../admin/getcustomers", // ajax source
+                    /*"data": function ( d ) {
+                        d._token = $('meta[name="_token"]').attr('content');                        
+                    }*/
+                },   
+                /*"columns": [
+		            { "data": "name" }		            
+		        ],*/
+                "order": [
+                    [1, "asc"]
+                ], // set first column as a default sort by asc
+                "fnDrawCallback": function (oSettings) {
+                	
+					$("tr td span").each(function () {
+					    var content = $(this);
+					    angular.element(document).injector().invoke(function($compile) {
+					        var scope = angular.element(content).scope();
+					        $compile(content)(scope);
+					    });
+					});
+					
+					Metronic.initAjax()
+
+				},
+				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+										
+			    }
+            }
+        });
+
+        // handle group actionsubmit button click
+        grid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
+            e.preventDefault();
+            var action = $(".table-group-action-input", grid.getTableWrapper());
+            if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
+                grid.setAjaxParam("customActionType", "group_action");
+                grid.setAjaxParam("customActionName", action.val());
+                grid.setAjaxParam("id", grid.getSelectedRows());
+                grid.getDataTable().ajax.reload();
+                grid.clearAjaxParams();
+            } else if (action.val() == "") {
+                Metronic.alert({
+                    type: 'danger',
+                    icon: 'warning',
+                    message: 'Please select an action',
+                    container: grid.getTableWrapper(),
+                    place: 'prepend'
+                });
+            } else if (grid.getSelectedRowsCount() === 0) {
+                Metronic.alert({
+                    type: 'danger',
+                    icon: 'warning',
+                    message: 'No record selected',
+                    container: grid.getTableWrapper(),
+                    place: 'prepend'
+                });
+            }
+        });
+    }
+
+    return {
+
+        //main function to initiate the module
+        init: function () {
+
+            initPickers();
+            handleRecords();
+        }
+
+    };
+
+}();
+
+	CustomerTableAjax.init();
+</script>
+
 <!-- END MAIN JS
