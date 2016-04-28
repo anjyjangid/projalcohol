@@ -21,6 +21,8 @@ MetronicApp.controller('PackageController',['$rootScope', '$scope', '$timeout','
 
 MetronicApp.controller('PackageFormController',['$scope', '$location','$stateParams','fileUpload','packageModel', function($scope,$location,$stateParams,fileUpload,packageModel) {
 
+	$scope.itemlist = [];
+
 	if($stateParams.packageid){
 
 	}
@@ -46,6 +48,26 @@ MetronicApp.controller('PackageFormController',['$scope', '$location','$statePar
             });
 			$scope.errors = data;			
 		});
+	}
+
+	$scope.addItem = function(p){
+		console.log(p);
+	};
+
+	$scope.searchItem = function($event){
+		var qry = $event.currentTarget.value;
+		if(qry.length>=3){
+			Metronic.blockUI({
+		        target: $('#orderlist'),				        
+		        overlayColor: '#000'
+		    });
+			packageModel.searchItem(qry).success(function(response){
+				$scope.itemlist = response;
+				Metronic.unblockUI($('#orderlist'));
+			});
+		}else{
+			$scope.itemlist = [];
+		}
 	}
 
 }]);

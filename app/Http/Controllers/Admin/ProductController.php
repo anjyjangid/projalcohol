@@ -482,6 +482,33 @@ class ProductController extends Controller
       
       return response($response,200);
     }
+
+    public function searchProduct(Request $request){
+
+      $params = $request->all();
+
+      $products = new Products;
+
+      extract($params);      
+
+      if(isset($qry) && trim($qry)!=''){        
+        $products = $products->where('name','regexp', "/.*$qry/i");
+      }     
+
+      $iTotalRecords = $products->count();      
+      
+      $columns = ['name','_id','imageFiles'];
+
+      /*$products = $products
+      ->skip(0)
+      ->take((int)$length);*/
+      
+      $products = $products->orderBy('created','desc');      
+
+      $products = $products->get($columns);
+      
+      return response($products,200);
+    }
      
 }
     

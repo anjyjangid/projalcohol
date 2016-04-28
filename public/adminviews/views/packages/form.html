@@ -70,26 +70,15 @@
 								</div>
 							</div>
 							<div ng-if="$state.$current.data.type == 2">
-								<div class="form-group" ng:class="{'has-error':errors.video.link[0]}">
-									<label class="col-md-2 control-label">Video link (If any): 
+								<div class="form-group" ng:class="{'has-error':errors.video[0]}">
+									<label class="col-md-2 control-label">Video Embed (If any): 
 									</label>
 									<div class="col-md-10">
-										<input type="text" class="form-control" ng-model="package.video.link" placeholder="">
-										<span class="help-block" ng-bind="errors.video.link[0]"></span>
+										<textarea class="form-control" ng-model="package.video"></textarea>
+
+										<span class="help-block" ng-bind="errors.video[0]"></span>
 									</div>
-								</div>
-								<div ng-if="package.video.link" class="form-group" ng:class="{'has-error':errors.video.type[0]}">
-									<label class="col-md-2 control-label">Video Type: 
-									</label>
-									<div class="col-md-4">								
-										<div class="radio-list">
-											<label class="radio-inline">
-											<input plugin-uniform ng-model="package.video.type" type="radio" value="1" name="chilled"> Youtube </label>
-											<label class="radio-inline">
-											<input plugin-uniform ng-model="package.video.type" type="radio" value="2" name="chilled"> Vimeo </label>
-										</div>
-									</div>
-								</div>
+								</div>								
 							</div>
 							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
 								<label class="col-md-2 control-label">Status: <span class="required">
@@ -152,8 +141,18 @@
 							</tbody>
 						</table>
 					</tab>
-					<tab>
-						<tab-heading>{{ $state.$current.data.type == 2 ? 'Package Ingredients':'Package Items'}}</tab-heading>
+					<tab ng-if="$state.$current.data.type == 1">
+						<tab-heading>Package Items</tab-heading>
+
+					</tab>
+					<tab ng-if="$state.$current.data.type == 2">
+						<tab-heading>Package Ingredients</tab-heading>
+
+						<div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10">
+							<a id="tab_images_uploader_pickfiles" href="#" data-target='#static' data-toggle="modal" class="btn yellow">
+								<i class="fa fa-plus"></i> Add Item 
+							</a>							
+						</div>
 
 					</tab>	
 				</tabset>																	
@@ -161,5 +160,108 @@
 		</div>
 		</form>
 	</div>
+<div data-replace="true" tabindex="-1" class="modal fade modal-scroll" id="static" style="display: none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button aria-hidden="true" data-dismiss="modal" class="close" type="button"></button>
+				<h4 class="modal-title">Select Package Items</h4>
+			</div>
+			<div class="modal-body">
+				<div class="table-responsive">
+					
+					<input type="search" ng-keyup="searchItem($event)" class="form-control" placeholder="Type to search items">						
+					
+					<table class="table table-striped table-hover" id="orderlist">
+						<tbody>
+							<tr ng-repeat="p in itemlist">
+								<td width="100" valign="middle">
+									<img width="100" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{p.imageFiles[0].source}}">
+								</td>
+								<td valign="middle">									
+									{{p.name}}
+								</td>
+								<td valign="middle">
+									<a ng-click="addItem(p)" class="pull-right btn btn-default btn-xs green-stripe additem"><i class="fa fa-plus"></i> Add</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer">				
+				<button class="btn green" data-dismiss="modal" type="button">Done</button>
+			</div>
+		</div>
+	</div>
 </div>
+</div>
+
+<script>
+	
+	var ProductsTableAjax = function () {   
+
+	    var handleRecords = function () {
+
+	    	$('#orderlist').dataTable( {
+				"bProcessing": true,
+				"bServerSide": true,			
+				"dom": 'ftp',
+				"pageLength" : 5,
+				"columns": [															
+					{
+						mData: null,
+						sClass: "center",
+						mRender: function(data, type, full) {
+	                        return data.name;
+	                    },					
+						orderable:false						
+					},
+					{
+						mData: null,
+						sClass: "center",
+						mRender: function(data, type, full) {
+	                        return '<a id="'+data._id+'" ng-click="addItem($event)" class="pull-right btn btn-default btn-xs green-stripe additem"><i class="fa fa-plus"></i> Add</a>';
+	                    },					
+						orderable:false						
+					}				
+				],	
+				"ajax" : {
+					url: "../admin/product/orderproduct",
+					type:"POST",
+					data:{ltype:1},
+					beforeSend:function(){
+						Metronic.blockUI({
+					        target: $('#orderlist'),				        
+					        overlayColor: '#000'
+					    });
+					},
+					complete:function(){
+						Metronic.unblockUI($('#orderlist'));
+					}
+				},
+				"order": [],
+				drawCallback: function( settings ) {
+			        $(".additem").each(function () {
+					    var content = $(this);
+					    angular.element(document).injector().invoke(function($compile) {
+					        var scope = angular.element(content).scope();
+					        $compile(content)(scope);
+					    });
+					});
+			    }			
+			});
+	    };
+
+	    return {
+	        init: function () {       
+	            handleRecords();
+	        }
+	    };
+
+	}();
+
+	//ProductsTableAjax.init();
+
+</script>
 <pre>{{package|json}}</pre>

@@ -7,8 +7,10 @@ MetronicApp.factory('packageModel', ['$http', '$cookies', '$rootScope', function
 	            transformRequest: angular.identity,	            	            
 	            headers: {'Content-Type': undefined}
 	        });
-	    }    
-
+	    },   
+	    searchItem: function(qry){	       	
+	        return $http.post("/admin/product/searchproduct",{length:10,qry:qry});
+	    }
     };
 
 }]);

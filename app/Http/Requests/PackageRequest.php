@@ -34,66 +34,26 @@ class PackageRequest extends Request
             'description' => 'required',
             'image' => 'required',
             'image.thumb' => 'image|max:5102',
-            'products' => 'required|array|min:1',            
-            'recipe' => 'sometimes|required|array',
-            'packageItems' => 'sometimes|required',
+            'products' => 'required|array|min:1',                                    
             'status' => 'required|integer'            
         ];
         
-        
+        //VALIDATION FOR PARTY TYPE
+        if ($input['type'] == 1){
+            $rules['packageItems'] = 'required|array|min:1';
+        }
+
         //VALIDATION FOR COCKTAIL TYPE
-        if($input['type'] == 2){                
-
-            $rules['video.link'] = 'sometimes|required|url';            
-            $rules['recipe'] = 'required';            
-
-        }
-
-        if (isset($input['imageFiles']) && is_array($input['imageFiles']))
-        {
-            foreach ($input['imageFiles'] as $imageKey => $image)
+        
+        if ($input['type'] == 2){
+            $rules['recipe'] = 'required|array|min:1';
+            foreach ($input['recipe'] as $recipeKey => $step)
             {
-                if(isset($image['source']) && empty($image['thumb'])){continue;}
-                $ruleKey = 'imageFiles.' . $imageKey;
-                $rules[$ruleKey . '.thumb'] = 'required|image|max:5102';
-                $rules[$ruleKey . '.label'] = 'required|max:100';
-                $rules[$ruleKey . '.order'] = 'required|integer';
+                $ruleKey = 'recipe.' . $imageKey;
+                $rules[$ruleKey . '.step'] = 'required';
+                $rules[$ruleKey . '.description'] = 'required';                
             }
-        }        
-
-        if (isset($input['advance_order']) && is_array($input['advance_order'])){
-            $rules['advance_order.value'] = 'required|numeric';
-            $rules['advance_order.type'] = 'required|numeric';                
-        }
-
-        if (isset($input['regular_express_delivery']) && is_array($input['regular_express_delivery'])){
-            $rules['regular_express_delivery.value'] = 'required|numeric';
-            $rules['regular_express_delivery.type'] = 'required|numeric';                            
-        }
-
-        if (isset($input['advance_order_bulk']['bulk']) && is_array($input['advance_order_bulk']['bulk']))
-        {
-            foreach ($input['advance_order_bulk']['bulk'] as $bk => $bval)
-            {
-                $ruleKey = 'advance_order_bulk.bulk.' . $bk;
-                $rules[$ruleKey . '.from_qty'] = 'required|numeric|min:1';
-                $rules[$ruleKey . '.to_qty'] = 'required|numeric|min:1|max:99999';
-                $rules[$ruleKey . '.type'] = 'required|numeric';
-                $rules[$ruleKey . '.value'] = 'required|numeric';
-            }
-        }
-
-        if (isset($input['express_delivery_bulk']['bulk']) && is_array($input['express_delivery_bulk']['bulk']))
-        {
-            foreach ($input['express_delivery_bulk']['bulk'] as $bk => $bval)
-            {
-                $ruleKey = 'express_delivery_bulk.bulk.' . $bk;
-                $rules[$ruleKey . '.from_qty'] = 'required|numeric|min:1';
-                $rules[$ruleKey . '.to_qty'] = 'required|numeric|min:1|max:99999';
-                $rules[$ruleKey . '.type'] = 'required|numeric';
-                $rules[$ruleKey . '.value'] = 'required|numeric';
-            }
-        }   
+        }                  
 
         return $rules;
     }
@@ -105,10 +65,8 @@ class PackageRequest extends Request
             'required' => 'This field is required',
             //'categories.required' => 'Please select a category.',
             //'status.required' => 'Please select :attribute.',
-            'image.required' => 'Cover image is required.',
-            'maxQuantity.gte' => 'The value should be greater than or equals to the quantity.',
-            'threshold.lt' => 'The value should be less than maximum quantity.',
-            'dealers.required' => 'Please select atleast one dealer.'
+            'image.required' => 'Cover image is required.',            
+            'recipe.required' => 'Please add atleast one recipe step.'
         ]; 
 
         $images = Request::input('imageFiles');
