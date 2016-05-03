@@ -13,7 +13,7 @@
 			<div class="tabtitle">Featured Items</div>								
 			<ul class="nav nav-tabs tabsright">	
 
-				<li ng-repeat="cat in parentCategories" ng-if="cat.featured!='undefined' && cat.featured.length>0" ng-class="{'active':AppController.feTabActive==$index}">									
+				<li ng-repeat="cat in parentCategories" ng-if="cat.featured!='undefined' && cat.featured.length>0" ng-class="{'active':AppController.feTabActive==$index}">
 					<a href="javascript:void(0)" class="text-capitalize" ng-click="setFeatured($index);AppController.feTabActive=$index">{{cat.cat_title}}</a>
 				</li>
 
@@ -40,7 +40,7 @@
 			    		}">
 			      <div owl-carousel-item="" ng-repeat="fproduct in pCat['featured']" class="item">
 			        	
-			        	<div al-tpl-product info="fproduct"></div>
+			        	<div al-tpl-product info="fproduct"></div>			        	
 			        	
 			      </div>
 			    </data-owl-carousel>							
