@@ -31,8 +31,6 @@ Route::get('/search', 'ProductController@getproduct');
 
 Route::get('/getproductdetail', 'ProductController@getproductdetail');
 
-Route::post('/admin/getcustomers', ['uses' => 'Admin\AdminController@customers']);
-
 Route::controller('/password', 'Auth\PasswordController');
  
 Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
@@ -82,7 +80,11 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 	});
 
 	Route::resource('dealer', 'Admin\DealerController');
+	
 
+	
+	Route::resource('customer', 'Admin\CustomerController');
+	Route::controller('customer', 'Admin\CustomerController');
 
 	// CMS PAGES ROUTING STARTS
 
@@ -153,7 +155,7 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 	Route::resource('brand', 'Admin\BrandController');
 	Route::controller('brand', 'Admin\BrandController');
 
-
+	Route::post('getcustomers', 'Admin\CustomerController@customers');
 	/*Route::resource('package', 'Admin\PackageController');
 	Route::controller('package', 'Admin\PackageController');*/
 	

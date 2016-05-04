@@ -8,6 +8,7 @@ MetronicApp.factory('userModel', ['$http', '$cookies', '$rootScope', function($h
      * @param  {array} loginData
      * @return {promise}
      */
+
     userModel.submitAccount = function(postedData) {
 
         return $http({

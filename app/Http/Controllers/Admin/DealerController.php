@@ -54,7 +54,7 @@ class DealerController extends Controller
     public function store(DealerRequest $request)
     {        
         $inputs = $request->all();
-        
+
         $inputs['status'] = (int)$inputs['status'];
 
         $dealer = Dealer::create($inputs);    

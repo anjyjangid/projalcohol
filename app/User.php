@@ -46,4 +46,19 @@ class User extends Eloquent implements AuthenticatableContract,
     {
         return $this->hasMany('AlcoholDelivery\Gallery');
     }
+
+    // ykb 28-apr-2016 //
+    public function getCustomers($params = array()){
+
+        $customer = $this->where('_id','=', $params['key']);
+
+        if(isset($params['multiple']) && $params['multiple']){
+            $customer = $customer->get();
+        }else{
+            $customer = $customer->first();
+        }
+        
+        return $customer;
+
+    }
 }

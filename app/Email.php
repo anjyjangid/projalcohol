@@ -82,12 +82,25 @@ class Email extends Moloquent
 				$this->recipient_info["receiver"]['name'] = $data['email'];
 
 				$this->recipient_info["replace"]["{verification_link}"] =url()."/verifyemail/".$data['email_key'];
-				$this->recipient_info["replace"]["{user_name}"] = $data['email'];				
+				$this->recipient_info["replace"]["{user_name}"] = $data['email'];
 
 				$this->recipient_info["message"] = str_ireplace(array_keys($this->recipient_info["replace"]),array_values($this->recipient_info["replace"]),$this->recipient_info["message"]);
 				
 			break ;/* }  end : Registration Email */								
 			
+			case 'login':/* begin : Registration Email from admin { */
+								
+				$this->recipient_info["receiver"]['email'] = $data['email'];
+				$this->recipient_info["receiver"]['name'] = $data['email'];
+
+				$this->recipient_info["replace"]["{login_link}"] =url()."/login";
+				$this->recipient_info["replace"]["{user_name}"] = $data['email'];
+				$this->recipient_info["replace"]["{password}"] = $data['password'];
+
+				$this->recipient_info["message"] = str_ireplace(array_keys($this->recipient_info["replace"]),array_values($this->recipient_info["replace"]),$this->recipient_info["message"]);
+				
+			break ;/* }  end : Registration Email from admin */								
+
 									
 			case 'forgot' :  /* begin  : Reset Password Email { */
 

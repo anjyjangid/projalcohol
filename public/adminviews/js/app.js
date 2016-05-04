@@ -365,9 +365,10 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
         .state('customer', {
             url: "/customer",
-            templateUrl: "adminviews/views/customer/list.html",
-            data: {pageTitle: 'Customer list'},
-            controller: "GeneralPageController",
+            templateUrl: "adminviews/views/customer/index.html",
+            redirectTo: 'customer.list',
+            data: {pageTitle: 'Customer'},
+            controller: "CustomerController",
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
                     return $ocLazyLoad.load({
@@ -385,7 +386,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                             'assets/global/scripts/datatable.js',
                             'adminviews/js/scripts/table-ajax.js',
 
-                            'adminviews/js/controllers/GeneralPageController.js',
+                            'adminviews/js/models/customerModel.js',
+                            //'adminviews/js/controllers/GeneralPageController.js',
                             'adminviews/js/controllers/CustomerController.js'
                         ]
                     });
@@ -407,8 +409,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         })
 
         .state("customer.edit",{
-            url: "/edit/{userid}",
-            templateUrl: "adminviews/views/customer/edit.html",
+            url: "/edit/{customerid}",
+            templateUrl: "adminviews/views/customer/add.html",
             data: {pageSubTitle: 'Customer update'},
             controller:"CustomerUpdateController"                
         })        
