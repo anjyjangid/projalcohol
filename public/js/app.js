@@ -481,8 +481,6 @@ AlcoholDelivery.controller('PasswordController',['$scope','$rootScope','$state',
 }]);
 
 AlcoholDelivery.controller('CartController',['$scope','$http','CartSession',function($scope,$http,CartSession){
-	
-$scope.cart.smoke = 1;
 
 	CartSession.GetDeliveryKey().then(
 
@@ -523,7 +521,7 @@ AlcoholDelivery.factory('catPricing', ["$q", "$timeout", "$rootScope", "$http", 
 		$timeout(function(){
 
 			$http.get("/category/pricing").success(function(response){
-				
+
 				d.resolve(response);
 
 			});			
