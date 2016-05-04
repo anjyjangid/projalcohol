@@ -23,10 +23,9 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 			price:null			
 		};
 		
+
+
 	});
-
-
-	$scope.categories = [];		
 
 
 	productModel.getCategories().success(function(data){
@@ -43,6 +42,7 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 				regular_express_delivery:allparent[c].regular_express_delivery,
 				advance_order_bulk:allparent[c].advance_order_bulk,
 				express_delivery_bulk:allparent[c].express_delivery_bulk,
+				cid:allparent[c]._id
 			});
 			var child = $scope.childOf(data,allparent[c]._id);
 			for(var cc in child){
@@ -54,12 +54,11 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 					regular_express_delivery:child[cc].regular_express_delivery,
 					advance_order_bulk:child[cc].advance_order_bulk,
 					express_delivery_bulk:child[cc].express_delivery_bulk,	
+					cid:child[cc]._id
 				});
 			}
 		}
-		//var unique = $scope.product.categories.join('|');
-		//var k = $scope.getKey($scope.cd,unique);		
-		//$scope.product.categories = $scope.cd[k].id;
+		
 	});
 
 	productModel.getSettings().success(function(data){		
@@ -70,8 +69,6 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 	productModel.getDealers().success(function(data){				
 		$scope.dealerlist = data;	
 	});
-
-
 
 	$scope.errors = {};
 	
@@ -119,7 +116,14 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 
 }]);
 
-MetronicApp.controller('ProductAddController',['$scope', '$location','$stateParams','fileUpload','productModel', function($scope,$location,$stateParams,fileUpload,productModel) {
+MetronicApp.controller('ProductAddController',['$scope', '$location','$stateParams','$timeout','fileUpload','productModel', function($scope,$location,$stateParams,$timeout,fileUpload,productModel) {
+
+	
+	/*$scope.$on('$viewContentLoaded', function() {
+		$scope.selectCategory();
+	});*/
+
+
 
 	if($stateParams.productid){
 		
@@ -147,6 +151,8 @@ MetronicApp.controller('ProductAddController',['$scope', '$location','$statePara
 			if(!$scope.product.express_delivery_bulk)
 				$scope.product.express_delivery_bulk = {};		
 
+			
+			$scope.selectCategory();
 		});	
 	}	
 
@@ -196,65 +202,30 @@ MetronicApp.controller('ProductAddController',['$scope', '$location','$statePara
 		
 		for(var o in tiers){
 			var kname = tiers[o];
-			var exist = angular.copy(selected[kname]);
-			if(exist){								
-				$scope.pricing.settings[kname] = exist;
-			}else{				
-				$scope.pricing.settings[kname] = angular.copy($scope.globalPricing.settings[kname]);
+			//var exist = angular.copy(selected[kname]);
+			$scope.pricing.settings[kname] = angular.copy($scope.globalPricing.settings[kname]);			
+			if(selected){
+				var ctids = selected['id'];
+				for(var ctid in ctids){
+					var t = $scope.customTier(ctids[ctid]);								
+					var exist = angular.copy(t[0][kname]);
+					if(exist){								
+						$scope.pricing.settings[kname] = exist;
+					}
+				}			
 			}
 		}
 	}
 
-}]);
-
-
-MetronicApp.controller('ProductEditController',['$scope', '$location','$stateParams','fileUpload','productModel', function($scope,$location,$stateParams,fileUpload,productModel) {
-
-	productModel.getProduct($stateParams.productid).success(function(data){
-		$scope.product = data;				
-	});
-
-	$scope.discountRemove = function(i){				
-		$scope.product.bulkDiscount.splice(i, 1);
-	};
-
-	$scope.imageRemove = function(i){		
-		$scope.product.imageFiles.splice(i, 1);
-	};
-
-	$scope.isChecked = function(id){		
-
-		var r = false;
-
-		if(!$scope.product.categories) return false;
-
-		for(var c in $scope.categories){
-			if($scope.product.categories[c] == id){
-				r = true;
-			}
-		}
-
-		return r;
-	}
-
-	$scope.store = function(){
-
-		var data = $scope.product;
-		var url = 'product/update/'+$stateParams.productid;
-		//POST DATA WITH FILES
-		productModel.storeProduct(data,url).success(function(response){
-			$location.path("product/list");
-		}).error(function(data, status, headers){						
-			$scope.errors = data;			
+	$scope.customTier = function(ctid){
+		return $scope.cd.filter(function(category){
+			return (category.cid == ctid);
 		});
 	}
 
-	$scope.coverUpdate = function(s){		
-		for(var ci in $scope.product.imageFiles){
-			$scope.product.imageFiles[ci].coverimage = 0;
-		}
-		$scope.product.imageFiles[s].coverimage = 1;
-	}
+	$timeout(function() {
+		$scope.selectCategory();
+	});	
 
 }]);
 

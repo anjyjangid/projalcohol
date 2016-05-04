@@ -13,14 +13,14 @@
 					<i class="fa fa-angle-right"></i>
 				</li>
 				<li>
-					<a href="#/product/list">{{$state.$current.data.pageTitle}}</a>
-					<i class="fa fa-angle-right"></i>
+					<a ng-if="$state.$current.data.type==1" ui-sref="packages.party">{{$state.$current.data.pageTitle}}</a>
+					<a ng-if="$state.$current.data.type==2" ui-sref="packages.cocktail">{{$state.$current.data.pageTitle}}</a>					
+					<i ng-if="$state.$current.data.pageSubTitle" class="fa fa-angle-right"></i>
 				</li>
 				<li>
 					<a href="#{{$state.$current.url.prefix}}">{{$state.$current.data.pageSubTitle}}</a>
 				</li>
-			</ul>
-			
+			</ul>			
 		</div>
 		<!-- END PAGE HEADER-->		
 		<!-- BEGIN PROFILE CONTENT -->

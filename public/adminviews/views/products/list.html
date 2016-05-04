@@ -134,13 +134,7 @@
 	
 	var ProductsTableAjax = function () {
 
-    var initPickers = function () {
-        //init date pickers
-        $('.date-picker').datepicker({
-            rtl: Metronic.isRTL(),
-            autoclose: true
-        });
-    }
+    
 
     var handleRecords = function () {
 
@@ -238,9 +232,7 @@
     return {
 
         //main function to initiate the module
-        init: function () {
-
-            initPickers();
+        init: function () {           
             handleRecords();
         }
 
