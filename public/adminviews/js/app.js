@@ -362,9 +362,10 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
         .state('customer', {
             url: "/customer",
-            templateUrl: "adminviews/views/customer/list.html",
-            data: {pageTitle: 'Customer list'},
-            controller: "GeneralPageController",
+            templateUrl: "adminviews/views/customer/index.html",
+            redirectTo: 'customer.list',
+            data: {pageTitle: 'Customer'},
+            controller: "CustomerController",
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
                     return $ocLazyLoad.load({
@@ -382,7 +383,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                             'assets/global/scripts/datatable.js',
                             'adminviews/js/scripts/table-ajax.js',
 
-                            'adminviews/js/controllers/GeneralPageController.js',
+                            'adminviews/js/models/customerModel.js',
+                            //'adminviews/js/controllers/GeneralPageController.js',
                             'adminviews/js/controllers/CustomerController.js'
                         ]
                     });
@@ -404,8 +406,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         })
 
         .state("customer.edit",{
-            url: "/edit/{userid}",
-            templateUrl: "adminviews/views/customer/edit.html",
+            url: "/edit/{customerid}",
+            templateUrl: "adminviews/views/customer/add.html",
             data: {pageSubTitle: 'Customer update'},
             controller:"CustomerUpdateController"                
         })        
@@ -883,13 +885,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
                         files: [
                             'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/select2/select2.css',
-                            'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
                             'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
-
                             'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                            'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
-                            'assets/global/plugins/select2/select2.min.js',
                             'assets/global/plugins/datatables/all.min.js',
                             'assets/global/scripts/datatable.js',
                             'adminviews/js/models/packageModel.js',
@@ -903,26 +900,38 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         .state("packages.party", {
             url: "/party",
             templateUrl: "adminviews/views/packages/list.html",
-            data: {pageTitle: 'Packages',pageSubTitle: 'Party',type:1}
+            data: {pageTitle: 'Party Packages',type:1}
             
         })
 
         .state("packages.cocktail", {
             url: "/cocktail",
             templateUrl: "adminviews/views/packages/list.html",
-            data: {pageTitle: 'Packages',pageSubTitle: 'Cocktail',type:2}            
+            data: {pageTitle: 'Cocktail Packages',type:2}            
         })
 
         .state("packages.addparty", {
             url: "/addparty",
             templateUrl: "adminviews/views/packages/form.html",
-            data: {pageTitle: 'Packages',pageSubTitle: 'Party',type:1}            
+            data: {pageTitle: 'Party Packages',pageSubTitle: 'Add',type:1}            
+        })
+
+        .state("packages.editparty", {
+            url: "/editcocktail/:packageid",
+            templateUrl: "adminviews/views/packages/form.html",
+            data: {pageTitle: 'Party Packages',pageSubTitle: 'Edit',type:1}            
         })
 
         .state("packages.addcocktail", {
             url: "/addcocktail",
             templateUrl: "adminviews/views/packages/form.html",
-            data: {pageTitle: 'Packages',pageSubTitle: 'Cocktail',type:2}            
+            data: {pageTitle: 'Cocktail Packages',pageSubTitle: 'Add',type:2}            
+        })
+
+        .state("packages.editcocktail", {
+            url: "/editcocktail/:packageid",
+            templateUrl: "adminviews/views/packages/form.html",
+            data: {pageTitle: 'Cocktail Packages',pageSubTitle: 'Edit',type:2}            
         });        
 }]);
 

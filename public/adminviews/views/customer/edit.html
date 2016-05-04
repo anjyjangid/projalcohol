@@ -4,12 +4,11 @@
 			<div class="portlet-title tabbable-line">
 				<div class="caption caption-md">
 					<i class="icon-globe theme-font hide"></i>
-					<span class="caption-subject font-blue-madison bold uppercase">
-					{{customer._id?'Update':'Add'}} Customer</span>
+					<span class="caption-subject font-blue-madison bold uppercase">Add Customer</span>
 				</div>
 				<div class="actions btn-set">
 					<a class="btn default" href="#/customer/list"><i class="fa fa-angle-left"></i> Back</a>
-					<button class="btn green" ng-click="store()"><i class="fa fa-check"></i>{{customer._id?'Update':'Save'}}</button>
+					<button class="btn green" ng-click="store()"><i class="fa fa-check"></i> Save</button>
 				</div>
 			</div>
 			<div class="portlet-body">
@@ -60,9 +59,8 @@
 								</div>
 
 							</div>
-							
-							
-							<div class="form-group" ng-hide="hideBasicInfo" ng:class="{'has-error':errors['password'][0]}">
+
+							<div class="form-group" ng:class="{'has-error':errors['password'][0]}">
 								<label class="col-md-2 control-label">Password: <span class="required">
 								* </span>
 								</label>
@@ -73,7 +71,7 @@
 
 							</div>
 
-							<div class="form-group" ng-hide="hideBasicInfo" ng:class="{'has-error':errors['password_confirmation'][0]}">
+							<div class="form-group" ng:class="{'has-error':errors['password_confirmation'][0]}">
 								<label class="col-md-2 control-label">Confirm password: <span class="required">
 								* </span>
 								</label>
@@ -83,8 +81,6 @@
 								</div>
 
 							</div>
-							
-							
 							<div class="form-group" ng:class="{'has-error':errors['status'][0]}">
 								<label class="col-md-2 control-label">Status: <span class="required">
 								* </span>
