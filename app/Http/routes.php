@@ -37,6 +37,12 @@ Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
 Route::get('reset/{key}', 'Auth\PasswordController@reset');
 
 
+Route::resource('cart', 'CartController');
+Route::controller('cart', 'CartController');
+
+Route::resource('category', 'Admin\CategoryController');
+
+
 //ADMIN ROUTES
 
 Route::get('/admin/profile', ['uses' => 'Admin\AdminController@profile']);
@@ -44,6 +50,8 @@ Route::post('/admin/profile/update', ['uses' => 'Admin\AdminController@update'])
 Route::post('/admin/profile/updatepassword', ['uses' => 'Admin\AdminController@updatepassword']);
 Route::get('/admin', ['uses' => 'Admin\AdminController@index']);
 Route::get('/admin/dashboard', ['uses' => 'Admin\AdminController@dashboard']);
+
+
 
 
 Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
@@ -193,6 +201,8 @@ Route::get('/check', 'UserController@check');
 Route::post('/auth', 'UserController@checkAuth');
 
 Route::get('/loggedUser', 'UserController@loggedUser');
+
+
 
 Route::put('/profile', 'UserController@update');
 Route::put('/password', 'UserController@updatepassword');

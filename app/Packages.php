@@ -4,7 +4,9 @@ namespace AlcoholDelivery;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Packages extends Model
+use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
+
+class Packages extends Eloquent
 {
     protected $primaryKey = "_id";
     protected $collection = 'packages';
@@ -14,11 +16,12 @@ class Packages extends Model
 		'title',
         'subTitle',
         'description',
-        'image',
+        'coverImage',
         'products',
         'video',
         'recipe',
-        'packageItems'        
+        'packageItems',
+        'status'        
     ];
 
     public function productlist()

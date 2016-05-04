@@ -1,6 +1,3 @@
-<div class="hide">
-	{{ product = setPrices(product)}}	
-</div>
 
 <div class="productdetailbrudcumcover">
 	<a href="">Home</a>
@@ -46,7 +43,7 @@
 						<div class="prdquantitybulkcover text-noselect">
 							<div class="checkoutmiddlevlauediv">
 									<div class="pardqantitytexthead">Quantity</div>
-									<input type="text" value="1" ng-model="product.cart.quantity" min="1" max="100" ng-touch-spin>                  
+									<input type="text" value="1" ng-model="product.cart.quantity" min="1" max="100" ng-touch-spin>
 							</div>
 								<div class="prdquantitybulkcoverbulk">
 									<div class="pardqantitytexthead">Bulk Quantity Discounts Chart (Piece)</div>
@@ -54,7 +51,7 @@
 											<div class="prdquanbulkboxone">Qty<br />Amount</div>
 
 																								
-												<div class="prdquanbulkboxtwo" ng-repeat="bulkBlock in product.advance_order_bulk.bulk" ng-class="{'prdquanbulkActive':product.cart.quantity>=bulkBlock.from_qty && product.cart.quantity<=bulkBlock.to_qty}">
+												<div class="prdquanbulkboxtwo" ng-repeat="bulkBlock in product.express_delivery_bulk.bulk" ng-class="{'prdquanbulkActive':product.cart.quantity>=bulkBlock.from_qty && product.cart.quantity<=bulkBlock.to_qty}">
 													
 													{{bulkBlock.from_qty}}<span ng-if="bulkBlock.to_qty!=99999">-{{bulkBlock.to_qty}}</span><br />${{bulkBlock.price}}
 
@@ -65,7 +62,7 @@
 								</div>
 						</div>
 						<div class="prddetailtotalamount">Total Cost</div>
-						<div class="prddetailpricedicnt">{{settings.general.currency}}{{product.discountedPrice}}<span> {{settings.general.currency}}{{product.price}}</span></div>
+						<div class="prddetailpricedicnt">{{settings.general.currency}}{{product.price}}</div>
 
 						<div class="prddetailinstock">In Stock.</div>
 						<div class="productslide_addbutton">

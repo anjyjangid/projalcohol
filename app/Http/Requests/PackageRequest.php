@@ -35,25 +35,32 @@ class PackageRequest extends Request
             'image' => 'required',
             'image.thumb' => 'image|max:5102',
             'products' => 'required|array|min:1',                                    
-            'status' => 'required|integer'            
+            'status' => 'required|integer',
+            'packageItems' => 'required|array|min:1'
         ];
         
-        //VALIDATION FOR PARTY TYPE
-        if ($input['type'] == 1){
-            $rules['packageItems'] = 'required|array|min:1';
-        }
-
         //VALIDATION FOR COCKTAIL TYPE
         
         if ($input['type'] == 2){
             $rules['recipe'] = 'required|array|min:1';
-            foreach ($input['recipe'] as $recipeKey => $step)
-            {
-                $ruleKey = 'recipe.' . $imageKey;
-                $rules[$ruleKey . '.step'] = 'required';
-                $rules[$ruleKey . '.description'] = 'required';                
+            if(isset($input['recipe']) && !empty($input['recipe'])){
+                foreach ($input['recipe'] as $recipeKey => $step)
+                {
+                    $ruleKey = 'recipe.' . $recipeKey;
+                    $rules[$ruleKey . '.step'] = 'required';
+                    $rules[$ruleKey . '.description'] = 'required';                
+                }
             }
-        }                  
+        }  
+
+        if(isset($input['packageItems']) && !empty($input['packageItems'])){
+            foreach ($input['packageItems'] as $pKey => $pVal)
+            {
+                $ruleKey = 'packageItems.' . $pKey;
+                $rules[$ruleKey . '.cprice'] = 'required';
+                $rules[$ruleKey . '.quantity'] = 'required';                
+            }
+        }
 
         return $rules;
     }
@@ -66,7 +73,8 @@ class PackageRequest extends Request
             //'categories.required' => 'Please select a category.',
             //'status.required' => 'Please select :attribute.',
             'image.required' => 'Cover image is required.',            
-            'recipe.required' => 'Please add atleast one recipe step.'
+            'recipe.required' => 'Please add atleast one recipe step.',
+            'packageItems.required' => 'Please add items for the package.'
         ]; 
 
         $images = Request::input('imageFiles');

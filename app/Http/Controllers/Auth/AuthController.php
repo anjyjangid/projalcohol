@@ -94,7 +94,7 @@ class AuthController extends Controller
 	protected function create(array $data)
 	{
 
-		$data['email_key'] = strtotime(date("Y-m-d H:i:s"));		
+		$data['email_key'] = strtotime(date("Y-m-d H:i:s"));
 		
 		try {
 

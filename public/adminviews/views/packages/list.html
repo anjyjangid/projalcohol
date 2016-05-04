@@ -4,7 +4,7 @@
 		<div class="portlet light">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="icon-handbag"></i>{{$state.$current.data.pageSubTitle}} Packages
+					<i class="icon-handbag"></i>{{$state.$current.data.pageTitle}}
 				</div>				
 				<div class="actions">
 					<a ui-sref="{{ $state.$current.data.type==1 ? 'packages.addparty':'packages.addcocktail' }}" class="btn default yellow-stripe">
@@ -19,26 +19,39 @@
 				<div class="table-container">					
 					<table class="table table-striped table-bordered table-hover" id="packagelist">
 						<thead>
-							<tr role="row" class="heading">
-								<th width="1%">
-									<input type="checkbox" class="group-checkable">
-								</th>
+							<tr role="row" class="heading">								
 								<th width="10%">
 									Sr.
 								</th>
 								<th width="15%">
 									Package Name
-								</th>								
-								<th width="10%">
-									Price
-								</th>
+								</th>																
 								<th width="10%">
 									Status
 								</th>								
 								<th width="10%">
 									Action
 								</th>
-							</tr>							
+							</tr>	
+							<tr role="row" class="filter">								
+								<td></td>
+								<td>
+									<input type="text" class="form-control form-filter input-sm" name="name">
+								</td>											
+								<td>
+									<select name="status" class="form-control form-filter input-sm">
+										<option value="">Select...</option>
+										<option value="1">Published</option>
+										<option value="0">Not Published</option>
+									</select>
+								</td>																
+								<td>
+									<div class="margin-bottom-5">
+										<button class="btn btn-sm yellow filter-submit margin-bottom"><i class="fa fa-search"></i> Search</button>
+									</div>
+									<button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> Reset</button>
+								</td>
+							</tr>						
 						</thead>
 						<tbody>
 						</tbody>
@@ -57,67 +70,87 @@
 	
 	var ptype = scope.$state.$current.data.type;
 
-	var PackageTableAjax = function () {    
+	var PackageTableAjax = function () {
 
-		
 
 		var handleRecords = function () {
 
-			$('#packagelist').dataTable( {
-				"bProcessing": true,
-				"bServerSide": true,			
-				"dom": 'ftp',
-				"pageLength" : 5,
-				"columns": [
-					{ data: "name" },
-					{ data: "quantity", sClass: "center" },				
-					{
-						mData: null,
-						sClass: "center",
-						mRender: function(data, type, full) {
-							var req = (data.maxQuantity - data.quantity);
-							var cls = (req > 0)?'danger':'default';
-							var txt = req+' Required';
-							return '<a id="'+data._id+'" href="javascript:;" class="btn btn-'+cls+' btn-xs green-stripe">'+txt+'</a>';
-						},					
-						orderable:false
-					}				
-				],	
-				"ajax" : {
-					"url": "../admin/package/listpackage",
-					"type":"POST",
-					data:{ptype:ptype},
-					beforeSend:function(){
-						Metronic.blockUI({
-							target: $('#packagelist'),				        
-							overlayColor: '#000'
-						});
-					},
-					complete:function(){
-						Metronic.unblockUI($('#packagelist'));
-					}
-				},
-				"order": []			
-			});
+	        var grid = new Datatable();
 
-			
-			
-		}
+	        grid.init({
+	            src: $("#packagelist"),
+	            onSuccess: function (grid) {
+	                // execute some code after table records loaded
+	            },
+	            onError: function (grid) {
+	                // execute some code on network or other general error  
+	            },
+	            loadingMessage: 'Loading...',
+	            dataTable: {	                
+	                //"bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+	                "columns": [{		                
+		                mRender: function(data, type, full, meta) {
+		                	return (meta.row)+1;		                	
+		                },
+		                orderable:false		                
+		            },{	 
+	                	data : "title",
+		                orderable:true
+		            },{
+		            	mData: null,
+		            	mRender: function(data, type, full) {	                        
+	                    	if(data.status == 1){
+	                    		return '<span class="label label-sm label-success">Published</span>'
+	                    	}else{
+	                    		return '<span class="label label-sm label-info">Not Published</span>'
+	                    	}	                    	
+	                    },
+		                orderable:false
+		            },{
+		            	mData: null,
+		            	mRender: function(data, type, full) {
+		            		if(data.type == 2){
+		            			return '<a ui-sref=packages.editcocktail({packageid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+		            		}else{
+		            			return '<a ui-sref=packages.editparty({packageid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+		            		}
+	                    },
+		                orderable:false
+		            }],
+	                "lengthMenu": [
+	                    [10, 20, 50, 100, 150, -1],
+	                    [10, 20, 50, 100, 150, "All"] // change per page values here
+	                ],
+	                "pageLength": 10, // default record count per page
+					"ajax": {
+	                    "url": "../admin/package/listpackage", // ajax source
+	                    "data":{ptype:ptype}
+	                },
+	                "order": [],
+	                "fnDrawCallback": function (oSettings) {                	
+						$("tr td a").each(function () {
+						    var content = $(this);
+						    angular.element(document).injector().invoke(function($compile) {
+						        var scope = angular.element(content).scope();
+						        $compile(content)(scope);
+						    });
+						});						
+						Metronic.initAjax();
+					},
+	            }
+	        });        
+	        
+	    }
 
 		return {
-			init: function () {       
-				
-				//handleRecords();
+			init: function () {       				
+				handleRecords();
 			}
 		};
 
 	}();
 
-		
-		PackageTableAjax.init();
+	PackageTableAjax.init();	
 
-		function reloadGrid(){
-			$('#orderlist').dataTable()._fnAjaxUpdate();
-		}
 </script>
 <!-- END MAIN JS

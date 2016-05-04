@@ -233,9 +233,9 @@ AlcoholDelivery.directive('sideBar', function() {
              }
         });
     };
-});
+})
 
-AlcoholDelivery.directive('errProSrc', function() {
+.directive('errProSrc', function() {
   return {
     link: function(scope, element, attrs) {
       element.bind('error', function() {
@@ -247,9 +247,9 @@ AlcoholDelivery.directive('errProSrc', function() {
       });
     }
   }
-});
+})
 
-AlcoholDelivery.directive('ngTouchSpin', ['$timeout', '$interval', function($timeout, $interval) {
+.directive('ngTouchSpin', ['$timeout', '$interval', function($timeout, $interval) {
 	'use strict';
 
 	var setScopeValues = function (scope, attrs) {
@@ -269,9 +269,13 @@ AlcoholDelivery.directive('ngTouchSpin', ['$timeout', '$interval', function($tim
 	return {
 		restrict: 'EA',
 		require: '?ngModel',
-		scope: true,
+		scope: {
+			'myincrement': '&onIncrement',
+			'mydecrement': '&onDecrement'
+		},
 		replace: true,
 		link: function (scope, element, attrs, ngModel) {
+
 			setScopeValues(scope, attrs);
 
 			var timeout, timer, helper = true, oldval = scope.val, clickStart;
@@ -291,6 +295,7 @@ AlcoholDelivery.directive('ngTouchSpin', ['$timeout', '$interval', function($tim
 
 				scope.val = value;
 				ngModel.$setViewValue(value);
+				scope.mydecrement();
 			};
 
 			scope.increment = function () {
@@ -302,6 +307,7 @@ AlcoholDelivery.directive('ngTouchSpin', ['$timeout', '$interval', function($tim
 				scope.val = value;
 
 				ngModel.$setViewValue(value);
+				scope.myincrement();
 			};
 
 			scope.startSpinUp = function () {
@@ -384,6 +390,11 @@ AlcoholDelivery.directive('ngTouchSpin', ['$timeout', '$interval', function($tim
 		'  <span class="input-group-btn" ng-show="verticalButtons">' +
 		'    <button class="btn btn-default bootstrap-touchspin-up" ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()">+</button>' +
 		'  </span>' +
+
+		'  <span class="input-group-btn-vertical" ng-show="!	verticalButtons">'+
+		'		<button class="btn btn-default bootstrap-touchspin-up" ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()" type="button"><i class="glyphicon glyphicon-plus"></i></button>'+
+		'		<button class="btn btn-default bootstrap-touchspin-down"  ng-mousedown="startSpinDown()" ng-mouseup="stopSpin()" type="button"><i class="glyphicon glyphicon-minus"></i></button>'+
+		'	</span>'+
 		'</div>'
 		// <div class="input-group bootstrap-touchspin">
 		// 	<span class="input-group-btn">
@@ -401,10 +412,9 @@ AlcoholDelivery.directive('ngTouchSpin', ['$timeout', '$interval', function($tim
 
 	};
 
-}]);
+}])
 
-
-AlcoholDelivery.directive('alTplProduct',[function($rootScope){
+.directive('alTplProduct',[function($rootScope){
 	return {
 		restrict: 'A',
 		transclude: true,
@@ -426,30 +436,21 @@ AlcoholDelivery.directive('alTplProduct',[function($rootScope){
 				var catPriceObj = $rootScope.catPricing[localpro.categories[catIdIndex]];	
 
 				if(typeof catPriceObj === "undefined"){
+
 					console.log("Something wrong with this product : "+localpro._id);
-					return false;
+					localpro.quantity = 0;
+					return localpro;
 				}
 
 				localpro = $.extend(catPriceObj, localpro);
+				localpro.price = parseFloat(localpro.price);
 
-				var advanceOrder = localpro.advance_order;
+				var orderValue = localpro.regular_express_delivery;
 
-				if(advanceOrder.type==1){
-					localpro.discountedPrice = localpro.price - (localpro.price * advanceOrder.value/100);
+				if(orderValue.type==1){
+					localpro.price +=  parseFloat(localpro.price * orderValue.value/100);
 				}else{
-					localpro.discountedPrice = localpro.price - advanceOrder.value;
-				}
-
-				for(i=0;i<localpro.advance_order_bulk.bulk.length;i++){
-
-					var bulk = localpro.advance_order_bulk.bulk[i];
-
-					if(bulk.type==1){
-						bulk.price = localpro.price - (localpro.price * bulk.value/100);
-					}else{
-						bulk.price = localpro.price - bulk.value;
-					}
-					bulk.price = bulk.price.toFixed(2);
+					localpro.price += parseFloat(orderValue.value);
 				}
 
 				for(i=0;i<localpro.express_delivery_bulk.bulk.length;i++){
@@ -457,29 +458,26 @@ AlcoholDelivery.directive('alTplProduct',[function($rootScope){
 					var bulk = localpro.express_delivery_bulk.bulk[i];
 
 					if(bulk.type==1){
-						bulk.price = localpro.price - (localpro.price * bulk.value/100);
+						bulk.price = localpro.price + (localpro.price * bulk.value/100);
 					}else{
-						bulk.price = localpro.price - bulk.value;
+						bulk.price = localpro.price + bulk.value;
 					}
 					bulk.price = bulk.price.toFixed(2);
 				}
 
-
-				localpro.discountedPrice = localpro.discountedPrice.toFixed(2);
+				localpro.price = localpro.price.toFixed(2);
 				
 				return localpro;
 
 			}
-		
-			$scope.productPricing = $scope.setPrices($scope.productInfo);
-
+			
+			Object.assign($scope.productInfo, $scope.setPrices($scope.productInfo));
 
 		}]
 	}
 }])
 
-
-AlcoholDelivery.directive('addToCartBtn',[function(){
+.directive('addToCartBtn',[function(){
 	return {
 		restrict : "E",
 		replace: true,
@@ -489,47 +487,102 @@ AlcoholDelivery.directive('addToCartBtn',[function(){
 		scope: {
 			product:'=',			
 		},
-		controller: function($scope,$element,$timeout){
-
+		controller: function($scope,$rootScope,$element,$timeout,$http,CartSession){
+			
 			$scope.isInCart = false;
 			$scope.addMoreCustom = false;
 			$scope.element = $element;
-			$scope.product.quantity = 1;					
+			$scope.product.quantity = 1;
+			$scope.product.quantitycustom = 1;
 
 			$scope.addtocart = function(){
 
-				$scope.isInCart = true;				
+				CartSession.GetDeliveryKey().then(
+
+					function(response){
+						
+						$http.put("/cart/"+response.deliverykey, {"id":$scope.product._id,"quantity":$scope.product.quantity},{
+				            
+				        }).error(function(data, status, headers) {            
+				            
+				        })
+				        .success(function(response) {
+				        	if(!response.success){
+
+				        		switch(response.errorCode){
+				        			case 100:
+				        				$scope.product.quantity = response.data.maxQuantity;
+				        			break;
+				        		}
+
+				        	}
+				        })
+
+					}
+				)
+
+			};
+
+			$scope.addCustom = function(){
+				
+				$scope.product.quantity = $scope.product.quantitycustom;
+				$scope.activeAddToCart();
+
+			};
+
+			$scope.activeAddToCart = function() {
+
+				$scope.isInCart = true;
 				$scope.addMoreCustom = false;
 
 				$timeout(function(){
 					$element.find(".addmore-count").animate({ top: "0px"},300);
 				}, 100);
+
+				$scope.addtocart();
+
 			};
 
-			$scope.addtocartcustom = function(){
+			$scope.activeAddToCartCustom = function(){
 				$scope.addMoreCustom = true;
-
+				$scope.product.quantitycustom = $scope.product.quantity;
 				$timeout(function(){
 					$element.find(".addmanual input").animate({ width: "70%"},250).focus();
 		  			$element.find(".addmanual .addbuttton").animate({ width: "30%"},250);
 				}, 100);
-				
 			};
-
-
 		}
-		
 	}
 }])
 
-AlcoholDelivery.directive('ngBlur', ['$parse', function($parse) {	
-    return function(scope, element, attr) {
-        var fn = $parse(attr['ngBlur']);
-        element.on('blur', function(event) {
-        	
-            scope.$apply(function() {
-                fn(scope, {$event:event});
+AlcoholDelivery.directive('ngBlur', ['$parse', function($parse){
+	return function(scope, element, attr) {
+		var fn = $parse(attr['ngBlur']);
+		element.on('blur', function(event) {
+			scope.$apply(function() {
+				fn(scope, {$event:event});
+			});
+		});
+	};
+}]);
+
+AlcoholDelivery.directive("apFocusOut", ['$document','$parse', function( $document, $parse ){
+    return {
+        link: function( $scope, $element, $attributes ){
+            var scopeExpression = $attributes.apFocusOut,
+                onDocumentClick = function(event){
+                    var isChild = $element.find(event.target).length > 0;
+console.log(isChild);
+                    if(!isChild) {
+                        $scope.$apply(scopeExpression);
+                    }
+                };
+
+            $document.on("click", onDocumentClick);
+
+            $element.on('$destroy', function() {
+                $document.off("click", onDocumentClick);
             });
-        });
-    };
+        }
+    }
 }]);

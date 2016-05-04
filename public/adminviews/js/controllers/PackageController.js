@@ -12,16 +12,20 @@ MetronicApp.controller('PackageController',['$rootScope', '$scope', '$timeout','
 		
 		$scope.package = {
 			type:$state.$current.data.type,
-			recipe:[]
+			recipe:[],
+			products:[],
+			packageItems:[]
 		};
 
 	});
 
 }]);
 
-MetronicApp.controller('PackageFormController',['$scope', '$location','$stateParams','fileUpload','packageModel', function($scope,$location,$stateParams,fileUpload,packageModel) {
+MetronicApp.controller('PackageFormController',['$scope', '$location','$stateParams','$state','fileUpload','packageModel', function($scope,$location,$stateParams,$state,fileUpload,packageModel) {
 
 	$scope.itemlist = [];
+
+	$scope.searching = false;
 
 	if($stateParams.packageid){
 
@@ -37,6 +41,9 @@ MetronicApp.controller('PackageFormController',['$scope', '$location','$statePar
 		//POST DATA WITH FILES
 		packageModel.storePackage($scope.package,url).success(function(response){						
 			
+			var redirect = ($state.$current.data.type==1)?'packages/party':'packages/cocktail';
+			$location.path(redirect);
+
 		}).error(function(data, status, headers){			
 			Metronic.alert({
                 type: 'danger',
@@ -51,23 +58,46 @@ MetronicApp.controller('PackageFormController',['$scope', '$location','$statePar
 	}
 
 	$scope.addItem = function(p){
-		console.log(p);
+		p.added = true;
+		p.quantity = 1;
+		$scope.package.packageItems.push(angular.copy(p));
+		$scope.package.products.push(angular.copy(p._id));
 	};
 
 	$scope.searchItem = function($event){
 		var qry = $event.currentTarget.value;
 		if(qry.length>=3){
-			Metronic.blockUI({
-		        target: $('#orderlist'),				        
-		        overlayColor: '#000'
-		    });
+			$scope.searching = true;
 			packageModel.searchItem(qry).success(function(response){
 				$scope.itemlist = response;
-				Metronic.unblockUI($('#orderlist'));
+				$scope.searching = false;
 			});
 		}else{
 			$scope.itemlist = [];
 		}
+	};
+
+	$scope.removeItem = function(i){
+		$scope.package.packageItems.splice(i,1);
+		$scope.package.products.splice(i,1);
+	}
+
+	$scope.checkItem = function(){
+
+		if(!$scope.itemlist) return [];
+
+		return $scope.itemlist.filter(function(item){
+			if($scope.package.products.indexOf(item._id) > -1){
+				item.added = true;
+			}
+			return item;
+		});
+
+	}
+
+	$scope.clearSearch = function(){
+		$scope.searchbox = '';
+		$scope.itemlist = [];
 	}
 
 }]);

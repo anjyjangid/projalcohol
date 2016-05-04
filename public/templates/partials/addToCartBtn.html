@@ -1,13 +1,13 @@
 <div class="cartbtn" ng-class="{incart:isInCart}">
-	<div class="addcart ng-scope" ng-click="addtocart()" ng-if="!isInCart && !addMoreCustom" role="button" tabindex="0"><span></span>add to cart</div>
+	<div class="addcart ng-scope" ng-click="activeAddToCart()" ng-if="!isInCart && !addMoreCustom" role="button" tabindex="0"><span></span>add to cart</div>
 	<div class="addmore ng-scope" ng-if="!addMoreCustom && isInCart">
-		<input type="text" ng-model="product.quantity" value="{{product.quantity}}" min="1" max="100" ng-touch-spin vertical="true">
-		<span class="addmorehere" ng-click="addtocartcustom()" role="button" tabindex="0">add more</span>
+		<input type="text" ng-model="product.quantity" value="{{product.quantity}}" min="1" max="100" ng-touch-spin on-increment="addtocart()" on-decrement="addtocart()" vertical="true">
+		<span class="addmorehere" ng-click="activeAddToCartCustom()" role="button" tabindex="0">add more</span>
 	</div>
 	<div class="addmanual" ng-if="addMoreCustom">
 			<div class="relat">
-				<input ng-model="product.quantity" type="text" ng-blur="addtocart()"/>
-				<div class="addbuttton">add</div>
+				<input ng-model="product.quantitycustom" type="text"/>
+				<div class="addbuttton" ng-click="addCustom()">add</div>
 			</div>
 		</div>
 </div>
