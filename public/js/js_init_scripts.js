@@ -74,16 +74,16 @@ function initScripts(options){
 	});
 	
 	$("#slider-1.demo input").switchButton({
-	  width: 62,
-	  height: 30,
-	  button_width: 20
+		width: 62,
+		height: 30,
+		button_width: 20
 	});
 	$("#slider-2.demo input").switchButton({
-	  width: 45,
-	  height: 21,
-	  show_labels: false,
-	  button_width: 15
-	});	
+		width: 45,
+		height: 21,
+		show_labels: false,
+		button_width: 15
+	});
 	
 	$('.chk_unchk input:checkbox').change(function(){
     	if($(this).is(":checked")) {
@@ -176,10 +176,6 @@ function initScripts(options){
 	}
 	
   }
-
-
-
-
 
 	function searchbar(){
 			//$(".searchtop").animate({ right: "0%"},200);

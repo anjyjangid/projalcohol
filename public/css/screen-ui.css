@@ -2319,8 +2319,10 @@ a, a:hover, a:focus{
   float:none;
 }
 .checkoutmiddletable .orhistry2_td2procdtcvr > span{
-  margin-top:20px;
-  
+  margin-top: 20px;
+  display: inline-block;
+  width: 70px;
+  height: 70px;	
 }
 .checkoutmiddletabledeleteimg,.checkoutmiddletabledeleteimg:hover,.checkoutmiddletabledeleteimg:focus{
   color:#979797;

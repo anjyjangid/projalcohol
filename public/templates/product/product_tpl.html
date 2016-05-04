@@ -2,7 +2,6 @@
 <div ng-if="product.quantity<1" class="productsoldoutbkbtn">Sold Out</div>
 
 <div class="prod_chilled" ng-class="{notchilled:productInfo.servechilled,invisible:{{!productInfo.chilled}}}" ng-init="productInfo.servechilled=false" ng-click="productInfo.servechilled=!productInfo.servechilled">
-
 	<span>Chilled</span>
 	<div class="prod_chilled_icon"></div>
 </div>
@@ -15,11 +14,10 @@
 	<img err-pro-src="" ng-src="products/i/200/{{productInfo.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive"/>
 
 </div>
-
+<div ui-sref="mainLayout.product({product:productInfo._id})">
 <div class="prod_desc">{{productInfo.name}}</div>
-<div class="prod_price">{{productInfo.price}} {{settings.general.currency}}</div>
-
-<div class="prod_discout_price">{{productPricing.discountedPrice}} {{settings.general.currency}}</div>
+<div class="prod_discout_price">{{productInfo.price}} {{settings.general.currency}}</div>
+</div>
 <div class="prod_addtocart">
 	<!--<img src="images/addtocart.png" class="img-responsive" />-->
 	<add-to-cart-btn product="productInfo"></add-to-cart-btn>

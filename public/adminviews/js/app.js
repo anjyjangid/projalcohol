@@ -252,9 +252,6 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
                     }
                 });
         }
-
-        
-
     }
     
 }]);
