@@ -275,8 +275,9 @@ AlcoholDelivery.directive('sideBar', function() {
 		},
 		replace: true,
 		link: function (scope, element, attrs, ngModel) {
-
+			
 			setScopeValues(scope, attrs);
+
 
 			var timeout, timer, helper = true, oldval = scope.val, clickStart;
 
@@ -387,11 +388,11 @@ AlcoholDelivery.directive('sideBar', function() {
 		'  <span class="input-group-addon bootstrap-touchspin-prefix" ng-show="prefix" ng-bind="prefix"></span>' +
 		'  <input type="text" ng-model="val" class="form-control addmore-count" ng-blur="checkValue()">' +
 		'  <span class="input-group-addon" ng-show="postfix" ng-bind="postfix"></span>' +
-		'  <span class="input-group-btn" ng-show="verticalButtons">' +
+		'  <span class="input-group-btn" ng-if="verticalButtons">' +
 		'    <button class="btn btn-default bootstrap-touchspin-up" ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()">+</button>' +
 		'  </span>' +
 
-		'  <span class="input-group-btn-vertical" ng-show="!	verticalButtons">'+
+		'  <span class="input-group-btn-vertical" ng-if="!verticalButtons">'+
 		'		<button class="btn btn-default bootstrap-touchspin-up" ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()" type="button"><i class="glyphicon glyphicon-plus"></i></button>'+
 		'		<button class="btn btn-default bootstrap-touchspin-down"  ng-mousedown="startSpinDown()" ng-mouseup="stopSpin()" type="button"><i class="glyphicon glyphicon-minus"></i></button>'+
 		'	</span>'+
@@ -501,7 +502,11 @@ AlcoholDelivery.directive('sideBar', function() {
 
 					function(response){
 						
-						$http.put("/cart/"+response.deliverykey, {"id":$scope.product._id,"quantity":$scope.product.quantity},{
+						$http.put("/cart/"+response.deliverykey, {
+								"id":$scope.product._id,
+								"quantity":$scope.product.quantity,
+								"chilled":$scope.product.servechilled,
+							},{
 				            
 				        }).error(function(data, status, headers) {            
 				            

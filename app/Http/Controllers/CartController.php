@@ -8,6 +8,7 @@ use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Cart as Cart;
 use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Products as Products;
+use AlcoholDelivery\Setting as Setting;
 
 class CartController extends Controller
 {
@@ -19,35 +20,6 @@ class CartController extends Controller
 	 */
 	public function index(Request $request)
 	{
-		
-		$cartKey = $request->session()->get('deliverykey', 'default');
-		
-		$cart = Cart::find($cartKey);
-
-		if(empty($cart)){
-			return response(array("success"=>false,"message"=>"something went wrong with cart"));
-		}
-
-		$productsIdInCart = array_keys($cart->bucket);
-
-		$productObj = new Products;
-
-		$productsInCart = $productObj->getProducts(
-									array(
-										"id"=>$productsIdInCart,
-										"with"=>array(
-											"discounts"
-										)
-									)
-								);
-		$cart = $cart->toArray();		
-		foreach($productsInCart as $product){
-
-			$cart['bucket'][$product['_id']]['product'] = $product;
-
-		}
-
-		return response($cart,200);
 
 	}
 
@@ -89,9 +61,46 @@ class CartController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id)
+	public function show(Request $request,$id)
 	{
-		prd("i am show action");
+
+		$cartKey = $request->session()->get('deliverykey', $id);
+		$request->session()->put('deliverykey', $cartKey);
+		
+		$cart = Cart::find($cartKey);
+
+		if(empty($cart)){
+			return response(array("success"=>false,"message"=>"something went wrong with cart"));
+		}
+
+		$productsIdInCart = array_keys($cart->products);
+
+		$productObj = new Products;
+
+		$productsInCart = $productObj->getProducts(
+									array(
+										"id"=>$productsIdInCart,
+										"with"=>array(
+											"discounts"
+										)
+									)
+								);
+
+		$cart = $cart->toArray();
+		
+
+		if(!empty($productsInCart)){
+
+			foreach($productsInCart as $product){
+
+				$cart['products'][$product['_id']]['product'] = $product;			
+
+			}
+
+		}
+	
+
+		return response($cart,200);
 	}
 
 	/**
@@ -114,7 +123,7 @@ class CartController extends Controller
 	 */
 	public function update(Request $request, $id)
 	{        
-
+		
 		$inputs = $request->all();
 
 		$cart = Cart::find($id);
@@ -140,11 +149,12 @@ class CartController extends Controller
 			return response(array("success"=>false,"errorCode"=>"100","message"=>"Product quantity is not available","data"=>$product));
 		}
 
-		$cart->bucket = array_merge($cart->bucket,array($inputs['id']=>array(
+		$cart->products = array_merge($cart->products,array($inputs['id']=>array(
 				"name"=>$product['name'],
 				"price"=>$product['price'],
 				"quantity"=>(int)$inputs['quantity'],
-				"maxQuantity"=>(int)$product['maxQuantity']
+				"maxQuantity"=>(int)$product['maxQuantity'],
+				"chilled"=>(bool)$inputs['chilled']
 			)));
 
 		if($cart->save()){
@@ -188,8 +198,8 @@ class CartController extends Controller
 
         if(!isset($cart->_id)){
             
-        	$cart = new Cart;			
-			$cart->bucket = array();
+        	$cart = new Cart;
+			$cart->products = [];
 
 			try {
 
@@ -209,6 +219,22 @@ class CartController extends Controller
         $request->session()->put('deliverykey', $arr['deliverykey']);
 
         return response($arr,200);
+
+    }
+
+    public function getServices(){
+
+    	$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.cigratte_services.value','settings.non_chilled_delivery.value'])->first();
+
+    	$services = $services['settings'];
+
+		$serviceRes = [
+			"express"=>$services['express_delivery']['value'],
+			"smoke"=>$services['cigratte_services']['value'],
+			"chilled"=>$services['non_chilled_delivery']['value'],
+		];
+
+    	return response($serviceRes,200);
 
     }
 

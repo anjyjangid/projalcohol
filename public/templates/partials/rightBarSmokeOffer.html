@@ -1,21 +1,31 @@
-<div class="right_discount">
+<div class="right_discount" id="smokeneedpanel">
+
     <div class="huge">need</div>
     <div class="hugediscou">Smoke?</div>
     <div class="fullwidth">
-        <div class="slider demo" id="slider-1">
-            <!-- <input type="checkbox" value="1" checked> -->
-            <md-switch ng-model="cart.smoke"></md-switch>
-        </div>
+        <table>
+            <tr>
+                <td>NO</td>
+                <td><md-switch aria-label="smoke" ng-model="cart.smoke"></md-switch></td>
+                <td>YES</td>
+            </tr>
+        </table>
+        
+        <!-- <div class="slider demo" id="slider-1">
+            <input type="checkbox" value="1" checked>            
+        </div> -->
+    </div>
 
+    <div ng-class="{hide:!cart.smoke}">
+        <div class="checkoutrighttext">Let us get your cigarettes for you! For additional $5 service charge, we will purchase your desired cigarette from convenience stores while delivering your alcohol to your doorstep!</div>
+        <div class="checkoutrightpleasediv">Please provide details. (Brand, Quantity)</div>
+        <div class="checkoutrighbuttonouter">
+          <button class="checkoutrighbuttoncancel">Cancel</button>
+          <button class="checkoutrighbuttonadd">Add</button>
+        </div>
+        
+        <div class="checkouter-rightsmalltext ">Cost of cigarettes must be paid in CASH. Service charge does not include cost of cigarettes. Service is not applicable for Express Delivery.</div>
     </div>
-    <div class="checkoutrighttext">Let us get your cigarettes for you! For additional $5 service charge, we will purchase your desired cigarette from convenience stores while delivering your alcohol to your doorstep!</div>
-    <div class="checkoutrightpleasediv">Please provide details. (Brand, Quantity)</div>
-    <div class="checkoutrighbuttonouter">
-      <button class="checkoutrighbuttoncancel">Cancel</button>
-      <button class="checkoutrighbuttonadd">Add</button>
-    </div>
-    
-    <div class="checkouter-rightsmalltext ">Cost of cigarettes must be paid in CASH. Service charge does not include cost of cigarettes. Service is not applicable for Express Delivery.</div>
 </div>
 
 
