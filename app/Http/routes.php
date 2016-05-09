@@ -37,8 +37,15 @@ Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
 Route::get('reset/{key}', 'Auth\PasswordController@reset');
 
 
+Route::group(['prefix' => 'cart'], function () {
+
+	Route::get('deliverykey','CartController@getDeliverykey');
+	Route::get('services','CartController@getServices');	
+
+});
+
 Route::resource('cart', 'CartController');
-Route::controller('cart', 'CartController');
+
 
 Route::resource('category', 'Admin\CategoryController');
 
@@ -52,6 +59,7 @@ Route::get('/admin', ['uses' => 'Admin\AdminController@index']);
 Route::get('/admin/dashboard', ['uses' => 'Admin\AdminController@dashboard']);
 
 
+Route::resource('address', 'AddressController');
 
 
 Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {

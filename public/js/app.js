@@ -40,6 +40,7 @@ AlcoholDelivery.filter('capitalize', function() {
 		}
 });
 
+
 AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', function($scope, $rootScope,$http) {
 
 	$scope.AppController = {};
@@ -480,23 +481,395 @@ AlcoholDelivery.controller('PasswordController',['$scope','$rootScope','$state',
 
 }]);
 
-AlcoholDelivery.controller('CartController',['$scope','$http','CartSession',function($scope,$http,CartSession){
-	
-$scope.cart.smoke = 1;
+AlcoholDelivery.controller('CartController',['$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','CartSession','sweetAlert',function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, CartSession, sweetAlert){
+
+	$scope.cart = {
+					service : {
+						express : {
+							status:false,
+						},
+						smoke : {
+							status:false,
+						},
+						nonchilled:{
+							status:false,
+						},
+						total:0,
+					},
+					total:0,
+					nonchilled:false,										
+				};
+
+	$scope.delivery = {
+						
+						charges:0,
+						address:0,
+						contact:"",
+						instruction:0,
+						leaveatdoor:false,
+
+					};
+
+	$scope.payment = {
+		type:"cod",
+	}
+
+	$scope.step = 1;
+
+	$rootScope.cartController = {};
 
 	CartSession.GetDeliveryKey().then(
 
-		function(response){
+		function(result){
 			
-			$http.get("cart").success(function(response){
-				$scope.cart = response.bucket;
-			});
+			$q.all([
+												
+						$http.get("cart/services").then(function(response){
+
+							$scope.services = response.data;		
+														
+						}),
+						$http.get("cart/"+result.deliverykey+"/").then(function(response){
+							
+							Object.assign($scope.cart, response.data);				
+							
+						}),
+									
+					]).then(function(){			
+						$scope.updatePricing();
+						$scope.setCartChilled();
+						$rootScope.cartController.getAddress();
+					})
+		}
+	);
+
+	$rootScope.cartController.getAddress = function(){
+		$http.get("address")
+				.success(function(response){
+
+					$scope.addresses = response;
+					$rootScope.cartController.addresses = $scope.addresses;
+
+				})
+	}
+	
+	$scope.updatePricing = function(){
+				
+		$scope.setCartSubTotal();
+		$scope.setServicesChargesTotal();		
+		$scope.setCartTotal();
+
+	}
+
+	$scope.setCartChilled = function(status){
+
+		if(typeof status !=="undefined"){
+			
+			$scope.cart.nonchilled = status;
+			$scope.updatePricing();
+
+		}else{
+			$scope.cart.nonchilled = !$scope.isSingleProductChilled();
+		}
+		
+	}
+
+	$scope.isSingleProductChilled = function(){
+
+		var isChilled = false;
+		var p = $scope.cart.products;
+		
+		for (var key in p) {
+			
+			if (p.hasOwnProperty(key)) {
+
+				if(p[key].chilled===true){
+
+					isChilled = true;
+					break;
+				}
+
+			}			
 
 		}
-	)
-			
+		
+		return isChilled;
 
+	}
+
+	$scope.getProductsTotal = function(){
+
+		var productsTotal = 0;
+		var p = $scope.cart.products;
+
+		for (var key in p) {
+			
+			if (p.hasOwnProperty(key)) {
+
+				productsTotal = productsTotal + (p[key].price * p[key].quantity);
+			}
+		}
+		
+		return productsTotal;
+	}
+
+	$scope.getAllServicesCharges = function(){
+
+		var allServicesCharges = 0;
+		var service = $scope.cart.service;
+
+		if(service.express.status){
+			allServicesCharges+= $scope.services.express;
+		}
+		if(service.smoke.status){
+			allServicesCharges+= $scope.services.smoke;
+		}		
+		
+		return allServicesCharges;
+
+	}
+
+	$scope.getAllDiscounts = function(){
+
+		var allDiscounts = 0;
+
+		if($scope.cart.nonchilled){
+			$scope.cart.service.nonchilled.status = $scope.cart.nonchilled;
+			allDiscounts+= $scope.services.chilled;
+		}
+
+		return allDiscounts;
+
+	}
+
+	$scope.setServicesChargesTotal = function(){
+				
+		$scope.cart.service.total = $scope.getAllServicesCharges();
+	}
+	
+	$scope.getCartTotal = function(){
+
+		var cartTotal = 0;
+		
+		cartTotal+= $scope.getCartSubTotal();
+
+		cartTotal+= $scope.getAllServicesCharges();
+
+		cartTotal-= $scope.getAllDiscounts()
+		
+		return cartTotal;
+	}
+
+	$scope.getCartSubTotal = function(){
+
+		var cartSubTotal = 0;
+
+		cartSubTotal+= $scope.getProductsTotal();
+
+		return cartSubTotal;
+
+	}
+
+	$scope.setCartSubTotal = function(){
+
+		$scope.cart.subtotal = $scope.getCartSubTotal();
+
+	}
+	
+	$scope.setCartTotal = function(){
+		
+		$scope.cart.total = $scope.getCartTotal();
+
+	}
+
+
+
+	$scope.showAddressViaMapModal = function(ev) {
+
+		$mdDialog.show({
+			controller: function($scope, $mdDialog) {
+				$scope.hide = function() {
+					$mdDialog.hide();
+				};
+				$scope.cancel = function() {
+					$mdDialog.cancel();
+				};
+				$scope.answer = function(answer) {
+					$mdDialog.hide(answer);
+				};
+
+				$scope.showAddressViaManuallyModal = function(ev) {
+
+					$mdDialog.show({
+						controller: function($scope, $rootScope,$mdDialog, $http) {
+
+							$scope.hide = function() {
+								$mdDialog.hide();
+							};
+							$scope.cancel = function() {
+								$mdDialog.cancel();
+							};
+							$scope.answer = function(answer) {
+								$mdDialog.hide(answer);
+							};
+							$scope.saveAddress = function(){
+
+								$scope.errors = {};								
+
+								$http.post("address", $scope.address, {
+						            
+						        }).success(function(response) {
+						        							        	
+						        	$scope.errors = {};
+						        	$scope.hide();
+						        	$rootScope.cartController.getAddress();
+
+						        }).error(function(data, status, headers) {            
+						        	$scope.errors = data;
+						        })
+
+							}
+
+						},
+						templateUrl: '/templates/partials/addressManually.html',
+						parent: angular.element(document.body),
+						targetEvent: ev,
+						clickOutsideToClose:true
+					})
+					.then(function(answer) {
+						$scope.status = 'You said the information was "' + answer + '".';
+					}, function() {
+						$scope.status = 'You cancelled the dialog.';
+					});
+
+				};
+			},
+			templateUrl: '/templates/partials/addressMap.html',
+			parent: angular.element(document.body),
+			targetEvent: ev,
+			clickOutsideToClose:true
+		})
+		.then(function(answer) {
+			$scope.status = 'You said the information was "' + answer + '".';
+		}, function() {
+			$scope.status = 'You cancelled the dialog.';
+		});
+
+	};
+
+	$scope.updateAddressModal = function(ev,key) {
+
+		$mdDialog.show({
+
+			controller: function($scope, $rootScope, $mdDialog, $http) {
+
+				$scope.address = $rootScope.cartController.addresses[key];
+				
+				$scope.hide = function() {
+					$mdDialog.hide();
+				};
+				$scope.cancel = function() {
+					$mdDialog.cancel();
+				};
+				$scope.answer = function(answer) {
+					$mdDialog.hide(answer);
+				};
+				$scope.saveAddress = function(){
+
+					$scope.errors = {};								
+
+					$http.put("address/"+key, $scope.address, {
+			            
+			        }).success(function(response) {
+
+			        	if(response.success){
+
+			        		$rootScope.cartController.getAddress();
+			        		$scope.errors = {};
+				        	$scope.hide();
+				        	
+
+			        	}else{
+			        		alert(response.message)
+			        	}
+			        	
+
+			        }).error(function(data, status, headers) {            
+			        	$scope.errors = data;
+			        })
+
+				}
+
+			},
+			templateUrl: '/templates/partials/addressManually.html',
+			parent: angular.element(document.body),
+			targetEvent: ev,
+			clickOutsideToClose:true
+		})
+		.then(function(answer) {
+			$scope.status = 'You said the information was "' + answer + '".';
+		}, function() {
+			$scope.status = 'You cancelled the dialog.';
+		});
+
+	};
+
+	$scope.removeAddress = function(key) {
+
+		sweetAlert.swal({
+
+                title: "Are you sure?",   
+                text: "Your will not be able to recover this address!",
+                type: "warning",
+                timer: 3000,
+                showCancelButton: true,   
+                confirmButtonColor: "#DD6B55",   
+                confirmButtonText: "Yes, remove !",
+                closeOnConfirm: false,
+                closeOnCancel: false
+
+            },  function(isConfirm) {
+                    if (isConfirm) {
+                        
+                        $http.delete("address/"+key)
+                            .success(function(response) {
+
+                                if(response.success){
+
+                                    $rootScope.cartController.getAddress();
+                                    sweetAlert.swal({
+                                    	
+                                    	title: response.message,
+						                type: "success",
+						                timer: 2000,
+
+                                    });
+
+
+                                }else{
+
+                                    sweetAlert.swal("Cancelled!", response.message, "error");
+
+                                }
+
+                            })
+                            .error(function(data, status, headers) {
+                                sweetAlert.swal("Cancelled", data.message, "error");
+                            })
+                        
+                    } else {
+                        sweetAlert.swal("Cancelled", "Address safe :)", "error");
+                    }
+                });
+	};
+
+
+
+  	
 }]);
+
+
+
 
 /* Setup global settings */
 AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
@@ -520,15 +893,11 @@ AlcoholDelivery.factory('catPricing', ["$q", "$timeout", "$rootScope", "$http", 
 	function GetCategoryPricing() {
 		
 		var d = $q.defer();
-		$timeout(function(){
+		$http.get("/category/pricing").success(function(response){
 
-			$http.get("/category/pricing").success(function(response){
-				
-				d.resolve(response);
+			d.resolve(response);
 
-			});			
-
-		}, 500);
+		});
 
 		return d.promise;
 	};
@@ -570,9 +939,7 @@ AlcoholDelivery.factory("CartSession", ["$q", "$timeout", "$http","$rootScope", 
 
 		var d = $q.defer();
 
-		$timeout(function(){
-			
-			if(typeof(Storage) !== "undefined"){
+		if(typeof(Storage) !== "undefined"){
 
 				var deliverykey = localStorage.getItem("deliverykey");
 				
@@ -607,10 +974,6 @@ AlcoholDelivery.factory("CartSession", ["$q", "$timeout", "$http","$rootScope", 
 			} else {
 				alert("Browser is not compatible");
 			}
-
-			
-
-		}, 500);
 
 		return d.promise;
 
@@ -718,6 +1081,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								controller:"CartController"
 							},
 							"rightPanel" : {
+
 								templateUrl: "/templates/partials/rightBarSmokeOffer.html",
 								
 							},

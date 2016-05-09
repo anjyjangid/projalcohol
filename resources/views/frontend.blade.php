@@ -32,6 +32,8 @@
 		<link rel="stylesheet" type="text/css" href="css/jquery.bootstrap-touchspin.css">
 		<!-- SWEET ALERT STYLE -->
 		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/sweetalert2/dist/sweetalert2.css') }}"/>
+		<link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
+
 
 		<link rel="stylesheet" type="text/css" href="css/common.css">
 		<link rel="stylesheet" type="text/css" href="css/screen-ui.css">
@@ -164,6 +166,8 @@
 	    <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') }}"></script>
 	    
 	    <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap-lightbox/dist/angular-bootstrap-lightbox.js') }}"></script>
+
+	    <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 
 	    <!-- SWEET ALERT STYLE -->
 		<script src="{{ asset('bower_components/sweetalert2/dist/sweetalert2.min.js') }}" type="text/javascript"></script>
