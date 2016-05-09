@@ -11,7 +11,210 @@ class Setting extends Seeder
      */
     public function run()
     {
+        
         AlcoholDelivery\Setting::create([
+            '_id' => 'timeslot',
+            'settings' => [
+                0 => [
+                    [
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ]
+                ],
+                1 => [
+                    [
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ]
+                ],
+                2 => [
+                    [
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ]
+                ],
+                3 => [
+                    [
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ]
+                ],
+                4 => [
+                    [
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ]
+                ],
+                5 => [
+                    [
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ]
+                ],
+                6 => [
+                    [
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ],[
+                        'from' => 0,
+                        'to' => 30,
+                        'orderlimit' => 10,
+                        'status' => 1
+                    ]
+                ],
+            ]
+        ]);
+
+        /*AlcoholDelivery\Setting::create([
             '_id' => 'pricing',            
             'settings' => [
                 'regular_express_delivery' => [
@@ -91,8 +294,18 @@ class Setting extends Seeder
                     'value' => 1,
                     'type' => 0,
                     'category' => 'discount'
+                ],
+                'minimum_cart_value' => [
+                    'label' => 'Minimum cart value',
+                    'value' => 50,                    
+                    'category' => 'delivery'      
+                ],
+                'non_free_delivery' => [
+                    'label' => 'Delivery charge(If cart value is below minimum cart value)',
+                    'value' => 10,                    
+                    'category' => 'delivery'      
                 ]                
             ]
-        ]);
+        ]);*/
     }
 }

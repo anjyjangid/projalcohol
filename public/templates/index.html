@@ -48,9 +48,9 @@
 </section>
 <section class="fullwidth" ng-show="$state.current.name=='mainLayout.index'">
 	<div class="container">
-		<div class="single_slider">
+		<div class="single_slider" ng-if="testimonials.length">
 			
-			<data-owl-carousel class="owl-carousel owl-theme" data-options="{					
+			<data-owl-carousel class="owl-carousel owl-theme" data-options="{
 						navigation : false,
 						pagination : true,
 						items : 1,

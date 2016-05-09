@@ -1,7 +1,7 @@
 <div class="{{classes}}" ng-class="{comboproductitems_outofstock:{{!productInfo.quantity}}}">
 <div ng-if="product.quantity<1" class="productsoldoutbkbtn">Sold Out</div>
 
-<div class="prod_chilled" ng-class="{notchilled:productInfo.servechilled,invisible:{{!productInfo.chilled}}}" ng-init="productInfo.servechilled=false" ng-click="productInfo.servechilled=!productInfo.servechilled">
+<div class="prod_chilled" ng-class="{notchilled:!productInfo.servechilled,invisible:{{!productInfo.chilled}}}" ng-init="productInfo.servechilled=productInfo.chilled" ng-click="productInfo.servechilled=!productInfo.servechilled">
 	<span>Chilled</span>
 	<div class="prod_chilled_icon"></div>
 </div>

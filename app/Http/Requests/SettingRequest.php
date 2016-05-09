@@ -67,6 +67,8 @@ class SettingRequest extends Request
                     'cigratte_services.type' => 'required|numeric',
                     'express_delivery.type' => 'required|numeric',                    
                     'regular_express_delivery.type' => 'required|numeric',
+                    'minimum_cart_value.value' => 'required|numeric',
+                    'non_free_delivery.value' => 'required|numeric',
                 ];
                 break;
             default:
@@ -93,6 +95,21 @@ class SettingRequest extends Request
                 $rules[$ruleKey . '.type'] = 'required|numeric';
                 $rules[$ruleKey . '.value'] = 'required|numeric';
             }   
+        }
+
+        if($this->setting == 'timeslot'){            
+            $input = Input::all();
+
+            foreach ($input as $bk => $bval)
+            {
+                foreach ($bval as $chkey => $chvalue) {
+                    
+                    $ruleKey = $bk.'.'.$chkey;
+
+                    $rules[$ruleKey . '.orderlimit'] = 'required|numeric';
+                }
+            }
+
         }
                 
         return $rules;

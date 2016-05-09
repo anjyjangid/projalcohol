@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\User as User;
-use AlcoholDelivery\Cart as Cart;
 
 use Illuminate\Support\Facades\Validator;
 
@@ -221,6 +220,8 @@ class UserController extends Controller
 
         return response($userLogged, 200);
     }
+
+
 
 
 }
