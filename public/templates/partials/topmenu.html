@@ -154,6 +154,10 @@ function googleTranslateElementInit() {
               <input autocomplete="off" type="password" ng-model="login.password" class="alcohalrestertextbox form-control" placeholder="Password" />
               <span class="help-block" ng-bind="errors.password[0]"></span>
             </div>
+
+            <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button>
+            <div id="status"></div>
           </div>
         </div>
         <div class="modal-footer alcohalfotter">

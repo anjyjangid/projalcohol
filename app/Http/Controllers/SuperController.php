@@ -9,6 +9,7 @@ use DB;
 use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Testimonial as Testimonial;
 use AlcoholDelivery\Brand as Brand;
+use AlcoholDelivery\Cms as Cms;
 
 class SuperController extends Controller
 {    
@@ -96,6 +97,28 @@ class SuperController extends Controller
         }
         
         return response($settingsData);
+    }
+
+
+    public function getCmsdata(Request $request)
+    {
+        $params = $request->all();
+
+        $cms = new Cms;
+
+        if(isset($params['cmsid']) && $params['cmsid']!=""){
+            $cms = $cms->where('_id', "=", $params['cmsid']);
+        }
+
+        $cms = $cms->get()->first();
+        
+        if(!empty($cms))
+        {
+            $cms->title = ucwords($cms->title);
+            return response($cms);
+        }
+        else 
+            return response(array());
     }
 
 }
