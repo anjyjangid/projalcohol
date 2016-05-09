@@ -4,7 +4,7 @@
 		<div class="portlet light">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="icon-handbag"></i>{{$state.$current.data.pageTitle}}
+					<i class="icon-bag"></i>{{$state.$current.data.pageTitle}}
 				</div>				
 				<div class="actions">
 					<a ui-sref="{{ $state.$current.data.type==1 ? 'packages.addparty':'packages.addcocktail' }}" class="btn default yellow-stripe">
@@ -123,8 +123,8 @@
 	                ],
 	                "pageLength": 10, // default record count per page
 					"ajax": {
-	                    "url": "../admin/package/listpackage", // ajax source
-	                    "data":{ptype:ptype}
+	                    "url": "../admin/package/listpackage/"+ptype, // ajax source
+	                    //"data":{ptype:ptype}
 	                },
 	                "order": [],
 	                "fnDrawCallback": function (oSettings) {                	

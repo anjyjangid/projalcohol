@@ -31,16 +31,18 @@ class PackageRequest extends Request
             'type' => 'required',
             'title' => 'required',
             'subTitle' => 'required',
-            'description' => 'required',
-            'image' => 'required',
-            'image.thumb' => 'image|max:5102',
-            'products' => 'required|array|min:1',                                    
+            'description' => 'required',            
+            //'products' => 'required|array|min:1',                                    
             'status' => 'required|integer',
             'packageItems' => 'required|array|min:1'
         ];
         
         //VALIDATION FOR COCKTAIL TYPE
         
+        if(!isset($input['coverImage']) || !empty($input['image']['thumb'])){
+            $rules['image.thumb'] = 'required|image|max:5102';
+        }
+
         if ($input['type'] == 2){
             $rules['recipe'] = 'required|array|min:1';
             if(isset($input['recipe']) && !empty($input['recipe'])){
@@ -54,11 +56,22 @@ class PackageRequest extends Request
         }  
 
         if(isset($input['packageItems']) && !empty($input['packageItems'])){
-            foreach ($input['packageItems'] as $pKey => $pVal)
-            {
+            foreach ($input['packageItems'] as $pKey => $pVal){
+                
                 $ruleKey = 'packageItems.' . $pKey;
-                $rules[$ruleKey . '.cprice'] = 'required';
-                $rules[$ruleKey . '.quantity'] = 'required';                
+                $rules[$ruleKey . '.products'] = 'required|array|min:1';
+
+                if($input['type'] == 1){
+                    $rules[$ruleKey . '.title'] = 'required';
+                    $rules[$ruleKey . '.quantity'] = 'required';
+                }
+
+                if(isset($pVal['products']) && !empty($pVal['products'])){
+                    foreach ($pVal['products'] as $prokey => $provalue) {
+                        $proruleKey = 'packageItems.' . $pKey . '.products.' .$prokey;                        
+                        $rules[$proruleKey . '.cprice'] = 'required';
+                    }
+                }                
             }
         }
 
@@ -69,29 +82,26 @@ class PackageRequest extends Request
     {
 
         $messages = [
-            'required' => 'This field is required',
-            //'categories.required' => 'Please select a category.',
-            //'status.required' => 'Please select :attribute.',
-            'image.required' => 'Cover image is required.',            
-            'recipe.required' => 'Please add atleast one recipe step.',
-            'packageItems.required' => 'Please add items for the package.'
-        ]; 
+            'required' => 'This field is required',            
+            'coverImage.thumb.required' => 'Cover image is required.',            
+            'recipe.required' => 'Please add atleast one recipe step.',            
+        ];         
 
-        $images = Request::input('imageFiles');
-        
-        if(isset($images) && is_array($images)){
+        $type = Request::input('type');
+        if($type == 1){
+            $messages['packageItems.required'] = 'Please add items for the package.';
+        }else{
+            $messages['packageItems.required'] = 'Please add ingredients for the package.';
+        }
 
-            foreach ($this->request->get('imageFiles') as $key => $contact) {                
-                $messages['imageFiles.'.$key.'.thumb.required'] = 'Please select image file.';
-                $messages['imageFiles.'.$key.'.thumb.image'] = 'Please select image file.';
-                $messages['imageFiles.'.$key.'.thumb.max'] = 'The image file should not be greater than 5MB.';            
-                $messages['imageFiles.'.$key.'.label.required'] = 'Please enter label for the image.';
-                $messages['imageFiles.'.$key.'.label.max'] = 'Label should not be greater than 5 characters.';
-                $messages['imageFiles.'.$key.'.order.required'] = 'Please enter order for the image.';
-                $messages['imageFiles.'.$key.'.order.integer'] = 'Order for the image must be numeric.';
-            }    
-        
-        }       
+        $packageItems = $this->request->get('packageItems');
+
+        if(isset($packageItems) && !empty($packageItems)){
+            foreach ($packageItems as $pKey => $pVal)
+            {
+                $messages['packageItems.' .$pKey. '.products.required'] = 'Please add products.';                
+            }
+        }
 
         return $messages;
 

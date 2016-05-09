@@ -483,66 +483,6 @@ class ProductController extends Controller
       
       return response($response,200);
     }
-
-    public function searchProduct(Request $request){
-
-      $params = $request->all();
-
-      $settingObj = new Setting;
-
-      $global = $settingObj->getSettings(array(
-                  "key"=>'pricing',
-                  "multiple"=>false
-                ));
-
-      $products = new products;
-
-      extract($params);      
-
-      if(isset($qry) && trim($qry)!=''){        
-        $products = $products->where('name','regexp', "/.*$qry/i");
-      }     
-
-      $iTotalRecords = $products->count();      
-      
-      $columns = ['name','_id','imageFiles','categories','price','regular_express_delivery'];
-
-      /*$products = $products
-      ->skip(0)
-      ->take((int)$length);*/
-      
-      $products = $products->orderBy('created','desc');      
-
-      $products = $products->get($columns);
-
-      foreach($products as $key => $value) {
-        $tier = $global->settings['regular_express_delivery'];
-        if(isset($value->regular_express_delivery) && !empty($value->regular_express_delivery)){
-          $tier = $value->regular_express_delivery;          
-        }else{
-          $categories = Categories::whereIn('_id',$value->categories)->get();
-          if($categories){
-            foreach ($categories as $ckey => $cvalue) {
-              if(isset($cvalue->regular_express_delivery) && !empty($cvalue->regular_express_delivery)){
-                $tier = $cvalue->regular_express_delivery;                
-              }
-            }
-          }
-        }
-        $products[$key]['sprice'] = $this->calculatePrice($value->price,$tier);                
-      }
-      
-      return response($products,200);
-    }
-
-    protected function calculatePrice($cost = 0, $tiers){
-      if($tiers['type'] == 1){
-        $p = $cost+($cost/100*$tiers['value']);
-      }else{
-        $p = $cost+$tiers['value'];
-      }      
-      return round($p,2);
-    }
      
 }
     
