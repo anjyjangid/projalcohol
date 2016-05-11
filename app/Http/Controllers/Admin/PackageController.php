@@ -17,6 +17,8 @@ use Input;
 use DB;
 use AlcoholDelivery\Packages;
 use AlcoholDelivery\Products;
+use AlcoholDelivery\Setting;
+use AlcoholDelivery\Categories;
 
 class PackageController extends Controller
 {
@@ -70,14 +72,26 @@ class PackageController extends Controller
 
         if (isset($inputs['packageItems']) && !empty($inputs['packageItems'])){
             foreach ($inputs['packageItems'] as $dKey => $discount){   
-                $packageItems[$dKey] = [
-                    'cprice' => (float)$discount['cprice'],
-                    'quantity' => (int)$discount['quantity'],
-                ];                                               
+                
+                if($inputs['type'] == 1)
+                  $inputs['packageItems'][$dKey]['quantity'] = (int)$discount['quantity'];
+
+                $pckgpro = [];
+                foreach ($discount['products'] as $prokey => $provalue) {
+                  $inputs['packageItems'][$dKey]['products'][$prokey] = [
+                    '_id' => $provalue['_id'],
+                    'cprice' => (int)$provalue['cprice'],
+                  ];
+                }                
+
             }
         }
 
-        $inputs['packageItems'] = $packageItems;
+        if(isset($inputs['recipe']) && !empty($inputs['recipe'])){
+            foreach ($inputs['recipe'] as $rKey => $rVal){   
+                unset($inputs['recipe'][$rKey]['$$hashKey']);            
+            }            
+        }        
 
         $package = Packages::create($inputs);            
 
@@ -111,10 +125,64 @@ class PackageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id,$type)
     {
-        //
-    }
+        $package = new Packages;
+
+        $package = $package->where('_id', $id)->where('type',(int)$type)->with('productlist')->first();           
+
+        if($package){
+
+            $settingObj = new Setting;
+
+            $global = $settingObj->getSettings(array(
+              "key"=>'pricing',
+              "multiple"=>false
+            ));
+
+            
+            $packageItems = $package['packageItems'];
+            $packageupdate = [];
+            foreach ($packageItems as $pkgkey => $pkgvalue) {              
+              $packageupdate[$pkgkey] = $pkgvalue;
+              $pkgpro = [];
+              foreach ($pkgvalue['products'] as $prokey => $provalue) {
+                  $tier = $global->settings['regular_express_delivery'];
+                  $value = $this->getProductById($provalue['_id'], $package['productlist']);     
+
+                  if(isset($value['regular_express_delivery']) && !empty($value['regular_express_delivery'])){
+                  $tier = $value['regular_express_delivery'];          
+                  }else{
+                    $categories = Categories::whereIn('_id',$value['categories'])->get();
+                    if($categories){
+                      foreach ($categories as $ckey => $cvalue) {
+                        if(isset($cvalue['regular_express_delivery']) && !empty($cvalue['regular_express_delivery'])){
+                          $tier = $cvalue['regular_express_delivery'];                
+                        }
+                      }
+                    }
+                  }
+                  $sprice = $this->calculatePrice($value['price'],$tier);
+
+                  $pkgpro[$prokey] = [
+                    '_id' => $provalue['_id'],
+                    'cprice' => $provalue['cprice'],
+                    'name' => $value['name'],
+                    'sprice' => $sprice,
+                    'imageFiles' => $value['imageFiles']
+                  ];
+              }
+              $packageupdate[$pkgkey]['products'] = $pkgpro;              
+            }
+
+            $package->packageItems = $packageupdate;            
+
+            return response($package,200);
+        }
+        else
+            return response('Invalid Package',404);
+
+    }   
 
     /**
      * Update the specified resource in storage.
@@ -123,9 +191,71 @@ class PackageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(PackageRequest $request, $id)
     {
-        //
+        $inputs = $request->all();
+
+        $inputs['status'] = (int)$inputs['status'];
+        $inputs['type'] = (int)$inputs['type'];
+
+        $packageItems = [];
+
+        if (isset($inputs['packageItems']) && !empty($inputs['packageItems'])){
+            foreach ($inputs['packageItems'] as $dKey => $discount){   
+                unset($inputs['packageItems'][$dKey]['$$hashKey']);
+                if($inputs['type'] == 1)
+                  $inputs['packageItems'][$dKey]['quantity'] = (int)$discount['quantity'];
+
+                $pckgpro = [];
+                foreach ($discount['products'] as $prokey => $provalue) {
+                  unset($inputs['packageItems'][$dKey]['products'][$prokey]['$$hashKey']);
+                  $inputs['packageItems'][$dKey]['products'][$prokey] = [
+                    '_id' => $provalue['_id'],
+                    'cprice' => (int)$provalue['cprice'],
+                  ];
+                }                
+
+            }
+        }        
+
+        if(isset($inputs['recipe']) && !empty($inputs['recipe'])){
+            foreach ($inputs['recipe'] as $rKey => $rVal){   
+                unset($inputs['recipe'][$rKey]['$$hashKey']);            
+            }            
+        }        
+
+        $package = Packages::find($id);
+
+        if($package){          
+          
+          $existingproduct = (!empty($package->products))?$package->products:[];
+
+          //CHECK IF Product IS REMOVED
+          $removed = array_diff($existingproduct, $inputs['products']);
+          if($removed){
+            $rdealers = Products::whereIn('_id',$removed)->get();
+            foreach ($rdealers as $rdkey => $rdvalue) {
+              $rdvalue->pull('packages',$package->_id);
+            }
+          }
+
+          //UPDATE PACKAGE          
+          $update = $package->update($inputs);
+
+          $pro = Products::whereIn('_id',$package->products)->get();
+
+          //ADD packages IDS IN Products TABLE
+          foreach ($pro as $dkey => $dvalue) {
+            $dvalue->push('packages',$package->_id,true);
+          }
+          
+          if(isset($inputs['image']) && !empty($inputs['image']))
+            $this->saveImage($package,$inputs['image']);
+
+          return response($package,201);
+        }else{          
+          return response('Unable to update package',422);
+        }
     }
 
     /**
@@ -139,7 +269,7 @@ class PackageController extends Controller
         //
     }
 
-    public function listpackage(Request $request){
+    public function listpackage(Request $request,$type){
         
         $params = $request->all();        
 
@@ -147,11 +277,15 @@ class PackageController extends Controller
 
         $packages = new Packages;
 
-        $packages = $packages->where('type',(int)$ptype);
+        $packages = $packages->where('type',(int)$type);
 
-        if(isset($params['search']['value']) && trim($params['search']['value'])!=''){
-            $sval = $params['search']['value'];
+        if(isset($name) && trim($name)!=''){
+            $sval = $name;
             $packages = $packages->where('title','regexp', "/.*$sval/i");
+        }
+
+        if(isset($status) && trim($status)!=''){            
+            $packages = $packages->where('status',(int)$status);
         }
 
         $iTotalRecords = $packages->count();        
@@ -176,17 +310,89 @@ class PackageController extends Controller
         return response($response,200);
     }
 
-    public function saveImage($package,$file){
-        $image = @$file['thumb'];
-        $destinationPath = storage_path('packages');
-        if (!File::exists($destinationPath)){
-            File::MakeDirectory($destinationPath,0777, true);
+    public function saveImage($package,$file){        
+
+        if(isset($file['thumb'])){
+            $image = @$file['thumb'];
+            $destinationPath = storage_path('packages');
+            if (!File::exists($destinationPath)){
+                File::MakeDirectory($destinationPath,0777, true);
+            }
+            $filename = $package->_id.'.'.$image->getClientOriginalExtension();
+            $upload_success = $image->move($destinationPath, $filename);
+            $package->coverImage = ['source'=>$filename];
+            $package->save();
         }
-        $filename = $package->_id.'.'.$image->getClientOriginalExtension();
-        $upload_success = $image->move($destinationPath, $filename);
+    }
 
-        $package->coverImage = $filename;
-        $package->save();
+    public function searchProduct(Request $request){
 
+      $params = $request->all();
+
+      $settingObj = new Setting;
+
+      $global = $settingObj->getSettings(array(
+                  "key"=>'pricing',
+                  "multiple"=>false
+                ));
+
+      $products = new Products;
+
+      extract($params);      
+
+      if(isset($qry) && trim($qry)!=''){        
+        $products = $products->where('name','regexp', "/.*$qry/i");
+      }     
+
+      $iTotalRecords = $products->count();      
+      
+      $columns = ['name','_id','imageFiles','categories','price','regular_express_delivery'];
+
+      /*$products = $products
+      ->skip(0)
+      ->take((int)$length);*/
+      
+      $products = $products->orderBy('created','desc');      
+
+      $products = $products->get($columns);
+
+      foreach($products as $key => $value) {
+        $tier = $global->settings['regular_express_delivery'];
+        if(isset($value->regular_express_delivery) && !empty($value->regular_express_delivery)){
+          $tier = $value->regular_express_delivery;          
+        }else{
+          $categories = Categories::whereIn('_id',$value->categories)->get();
+          if($categories){
+            foreach ($categories as $ckey => $cvalue) {
+              if(isset($cvalue->regular_express_delivery) && !empty($cvalue->regular_express_delivery)){
+                $tier = $cvalue->regular_express_delivery;                
+              }
+            }
+          }
+        }
+        $products[$key]['sprice'] = $this->calculatePrice($value->price,$tier);                
+      }
+      
+      return response($products,200);
+    }
+
+    protected function calculatePrice($cost = 0, $tiers){
+      if($tiers['type'] == 1){
+        $p = $cost+($cost/100*$tiers['value']);
+      }else{
+        $p = $cost+$tiers['value'];
+      }      
+      return round($p,2);
+    }
+
+    protected function getProductById($id, $parray){
+        $return = [];
+        foreach ($parray as $key => $value) {
+            if($value['_id'] == $id){
+                $return = $value;
+                break;
+            }
+        }
+        return $return;
     }
 }

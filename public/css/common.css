@@ -9,3 +9,16 @@
   -ms-user-select: none;       /* IE/Edge */
   user-select: none;           /* non-prefixed version, currently not supported by any browser */
 }
+
+/* YKB cms page */
+
+.cmsPageTitle {
+    font-size: 26px;
+    margin: 20px 0px 12px 0px;
+}
+
+.cmsPageLine {
+    border-bottom: 1px solid #d9d9d9;
+    margin-bottom: 32px;
+    margin-top: 10px;
+}

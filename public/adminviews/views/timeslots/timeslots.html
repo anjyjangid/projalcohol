@@ -1,0 +1,69 @@
+<div class="row" ng-controller="TimeslotFormController">
+	
+	<div class="col-md-12">
+		<!-- Begin: life time stats -->
+		<form ng-submit="update()" class="form-horizontal form-bordered form-row-stripped">
+			<div class="portlet light">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="icon-clock"></i>{{$state.$current.data.pageTitle}}
+					</div>
+					<div class="actions">
+						<button class="btn green-haze" type="submit"><i class="fa fa-check"></i> Update</button>
+					</div>
+				</div>			
+				<div class="portlet-body form">   
+					<div class="table-container">    
+					    <table class="table table-striped table-bordered table-hover">
+					        <thead>
+					            <tr role="row" class="heading">                        
+					                <th>
+					                     Weekday
+					                </th>
+					                <th>
+					                     Time from
+					                </th>                                   
+					                <th>
+					                     Time to
+					                </th>
+					                <th>
+					                     Order Limit
+					                </th>
+					                <th>
+					                     Status
+					                </th>		                
+					            </tr>
+					        </thead>
+					        <tbody>					        	
+					        	<tr ng-repeat-start="(weekKey,setting) in settings"></tr>					        						        		
+					        		<tr ng-repeat="slot in setting" ng:class="{ 'danger':slot.status==0	}">
+					        			<td>{{ $index == 0 ? (weekDays[weekKey] | uppercase):'' }}</td>
+					        			<td>
+						                    <select ng-disabled="slot.status==0" empty="false" ng-model="slot.from" class="form-control" ng-options="fop.opVal as fop.opTag for fop in getTimeOptions(1)"></select>
+						                    <span class="help-block" ng-bind=""></span>
+						                <td>
+						                    <select ng-disabled="slot.status==0" empty="false" ng-model="slot.to" class="form-control" ng-options="fop.opVal as fop.opTag for fop in getTimeOptions(2)"></select>
+						                    <span class="help-block" ng-bind=""></span>						                    
+						                </td>
+					        			<td ng:class="{'has-error':error[weekKey+'.'+$index+'.orderlimit'][0]}">
+					        				<input ng-disabled="slot.status==0" type="number"  ng-model="slot.orderlimit" class="form-control" placeholder="">
+					        				<span class="help-block" ng-bind="error[weekKey+'.'+$index+'.orderlimit'][0]"></span>    	
+					        			</td>
+					        			<td>
+					        				<select empty="false" class="form-control" ng-model="slot.status">            
+						                        <option value="0">Disable</option>
+						                        <option value="1">Enable</option>
+						                    </select>
+						                    <span class="help-block" ng-bind=""></span>    	
+					        			</td>					        			
+					        		</tr>					        		
+					        	<tr ng-repeat-end></tr>
+					        </tbody>
+					    </table>
+					</div>
+				</div>
+			</div>
+		</form>       
+	</div>
+	<pre>{{settings | json}}</pre>
+</div>

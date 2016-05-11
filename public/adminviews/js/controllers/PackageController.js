@@ -27,7 +27,26 @@ MetronicApp.controller('PackageFormController',['$scope', '$location','$statePar
 
 	$scope.searching = false;
 
+	$scope.currentGroup = 0;
+
 	if($stateParams.packageid){
+
+		packageModel.getPackage($stateParams.packageid,$state.$current.data.type).success(function(response){									
+			
+			$scope.package = response;
+
+		}).error(function(data, status, headers){			
+			var redirect = ($state.$current.data.type==1)?'packages/party':'packages/cocktail';
+			$location.path(redirect);
+			Metronic.alert({
+                type: 'danger',
+                icon: 'warning',
+                message: 'Please validate all fields.',
+                container: '.portlet-body',
+                place: 'prepend',
+                closeInSeconds: 3
+            });			
+		});
 
 	}
 
@@ -35,9 +54,10 @@ MetronicApp.controller('PackageFormController',['$scope', '$location','$statePar
 
 		var url = 'package/store';
 
-		if($stateParams.productid){
+		if($stateParams.packageid){
 			url = 'package/update/'+$stateParams.packageid;
 		}	
+		
 		//POST DATA WITH FILES
 		packageModel.storePackage($scope.package,url).success(function(response){						
 			
@@ -49,9 +69,9 @@ MetronicApp.controller('PackageFormController',['$scope', '$location','$statePar
                 type: 'danger',
                 icon: 'warning',
                 message: 'Please validate all fields.',
-                container: '.portlet-body',
+                container: '.mbody',
                 place: 'prepend',
-                closeInSeconds: 3
+                //closeInSeconds: 3
             });
 			$scope.errors = data;			
 		});
@@ -60,7 +80,13 @@ MetronicApp.controller('PackageFormController',['$scope', '$location','$statePar
 	$scope.addItem = function(p){
 		p.added = true;
 		p.quantity = 1;
-		$scope.package.packageItems.push(angular.copy(p));
+		
+		var cg = $scope.currentGroup;
+
+		$scope.package.packageItems[cg].products.push(angular.copy(p));		
+
+		//$scope.package.packageItems.push(angular.copy(p));
+		
 		$scope.package.products.push(angular.copy(p._id));
 	};
 
@@ -77,9 +103,24 @@ MetronicApp.controller('PackageFormController',['$scope', '$location','$statePar
 		}
 	};
 
-	$scope.removeItem = function(i){
-		$scope.package.packageItems.splice(i,1);
-		$scope.package.products.splice(i,1);
+	$scope.removeItem = function(packKey,proKey,proId){		
+		$scope.package.packageItems[packKey].products.splice(proKey,1);
+		$scope.removeProduct(proId);
+	}
+
+	$scope.removeGroupItem = function(packKey){		
+		angular.forEach($scope.package.packageItems[packKey].products, function(value, key) {
+			$scope.removeProduct(value._id);
+		});
+		$scope.package.packageItems.splice(packKey,1);		
+	}
+
+	$scope.removeProduct = function(proId){
+		$scope.package.products.filter(function(pval,pkey){
+			if(pval == proId){
+				$scope.package.products.splice(pkey,1);				
+			}
+		});
 	}
 
 	$scope.checkItem = function(){
@@ -95,7 +136,8 @@ MetronicApp.controller('PackageFormController',['$scope', '$location','$statePar
 
 	}
 
-	$scope.clearSearch = function(){
+	$scope.clearSearch = function(cg){
+		$scope.currentGroup = cg;
 		$scope.searchbox = '';
 		$scope.itemlist = [];
 	}

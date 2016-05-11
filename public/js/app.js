@@ -995,6 +995,7 @@ AlcoholDelivery.controller('CartDeliveryController',['$scope','$rootScope','$htt
 
 }]);
 
+
 AlcoholDelivery.controller('CartPaymentController',['$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','CartSession','sweetAlert',function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, CartSession, sweetAlert){
 
 }]);
@@ -1003,6 +1004,18 @@ AlcoholDelivery.controller('CartReviewController',['$scope','$rootScope','$http'
 
 }]);
 
+AlcoholDelivery.controller('CmsController',['$scope','$http','$stateParams',function($scope,$http,$stateParams){
+
+$scope.cmsId = $stateParams.cmsId;
+$scope.cmsData = "";
+$scope.cmsTitle = "";
+	
+	$http.get("/super/cmsdata?cmsid="+$scope.cmsId).success(function(response){
+    	$scope.cmsData = response.content;
+    	$scope.cmsTitle = response.title;
+    });
+
+}]);
 
 /* Setup global settings */
 AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
@@ -1210,6 +1223,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								}]
 						}
 				})
+				
 
 				.state('mainLayout.checkout', {
 						abstract: true,						
@@ -1284,6 +1298,87 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 									$('#reset').modal('show');
 								},1000)
 						}
+				})
+
+				// CMS Page YKB //
+
+				.state('cmsLayout', {
+						templateUrl: "/templates/cmsLayout.html",
+						controller:function(){
+
+								setTimeout(function(){
+										initScripts({
+												disableScrollHeader:true
+										});
+								},100)
+						},
+						resolve: {
+								deps: ['$ocLazyLoad', function($ocLazyLoad) {
+										return $ocLazyLoad.load({
+												name: 'AlcoholDelivery',
+												insertBefore: '#ng_load_plugins_before',
+												debug: true,
+												serie: true,
+												files: [
+														//'js/controller/ProductsController.js',
+														'js/owl.carousel.min.js',
+														'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
+														'js/jquery.switchButton.js',
+														'js/jquery.mCustomScrollbar.concat.min.js',
+														'js/jquery.bootstrap-touchspin.min.js',
+														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js',
+														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js',
+														'js/all_animations.js',
+														'js/js_init_scripts.js'
+												] 
+										});
+								}]
+						}
+				})
+
+				.state('cmsLayout.about-us', {
+						url: "/about-us",
+						templateUrl: "/templates/cms/cms.html",
+						params: {pageTitle: 'About Us', cmsId:'56efc34e209a568c2067284d'},
+						controller:function($scope,$http){																
+
+								setTimeout(function(){
+										initScripts({
+												disableScrollHeader:true
+										});
+										$("html, body").animate({ scrollTop: 0 }, 200);
+								},100)
+						},
+				})
+
+				.state('cmsLayout.privacy-policy', {
+						url: "/privacy-policy",
+						templateUrl: "/templates/cms/cms.html",
+						params: {pageTitle: 'Privacy Policy', cmsId:'572d960763e8fe24e06a0f97'},
+						controller:function($scope,$http){																
+
+								setTimeout(function(){
+										initScripts({
+												disableScrollHeader:true
+										});
+										$("html, body").animate({ scrollTop: 0 }, 200);
+								},100)
+						},
+				})
+
+				.state('cmsLayout.terms-conditions', {
+						url: "/terms-conditions",
+						templateUrl: "/templates/cms/cms.html",
+						params: {pageTitle: 'Terms and Conditions', cmsId:'572d976063e8fe24e06a0f98'},
+						controller:function($scope,$http){																
+
+								setTimeout(function(){
+										initScripts({
+												disableScrollHeader:true
+										});
+										$("html, body").animate({ scrollTop: 0 }, 200);
+								},100)
+						},
 				})
 
 				.state('accountLayout', {

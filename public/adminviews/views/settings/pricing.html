@@ -103,6 +103,19 @@
                 <td align="center">N/A</td>
                 <td align="center">N/A</td>
             </tr>
+            <tr>
+                <td colspan="5"><h4>Product Delivery Setting</h4></td>
+            </tr>
+            <tr ng-if="setting.category == 'delivery'" ng-repeat="(kv, setting) in settings">
+                <td class="control-label"> {{setting.label}}: <span class="required"> * </span> </td>                
+                <td align="center">N/A</td>
+                <td ng:class="{'has-error':errors[kv+'.value'][0]}">
+                    <input type="number" step="any" class="form-control" ng-model="setting.value" placeholder="">
+                    <span class="help-block" ng-bind="errors[kv+'.value'][0]"></span>                     
+                </td>                
+                <td align="center">N/A</td>
+                <td align="center">N/A</td>
+            </tr>
         </tbody>
     </table>    
     <div class="row">

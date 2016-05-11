@@ -9,8 +9,11 @@ MetronicApp.factory('packageModel', ['$http', '$cookies', '$rootScope', function
 	        });
 	    },   
 	    searchItem: function(qry){	       	
-	        return $http.post("/admin/product/searchproduct",{length:10,qry:qry});
-	    }
+	        return $http.post("/admin/package/searchproduct",{length:10,qry:qry});
+	    },
+	    getPackage: function(packageid,type){
+            return $http.get("/admin/package/edit/"+packageid+"/"+type);
+        }
     };
 
 }]);

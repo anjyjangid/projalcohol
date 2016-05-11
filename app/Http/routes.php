@@ -150,7 +150,7 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 		Route::get('edit/{id}','Admin\ProductController@edit');
 		Route::post('update/{id}','Admin\ProductController@update');
 		Route::post('orderproduct','Admin\ProductController@orderProduct');
-		Route::post('searchproduct','Admin\ProductController@searchProduct');
+		
 	});
 
 
@@ -176,8 +176,11 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 	Route::controller('package', 'Admin\PackageController');*/
 	
 	Route::group(['prefix' => 'package'], function () {
-		Route::post('listpackage','Admin\PackageController@listpackage');		
-		Route::post('store','Admin\PackageController@store');		
+		Route::post('listpackage/{type}','Admin\PackageController@listpackage');		
+		Route::post('searchproduct','Admin\PackageController@searchProduct');		
+		Route::post('store','Admin\PackageController@store');
+		Route::get('edit/{id}/{type}','Admin\PackageController@edit');
+		Route::post('update/{id}','Admin\PackageController@update');
 	});		
 
 });
@@ -193,6 +196,12 @@ Route::get('products/i/{filename}', function ($filename)
     return Image::make(storage_path('products') . '/' . $filename)->response();
 });
 /*PRODUCT IMAGE ROUTUING*/
+
+Route::get('packages/i/{filename}', function ($filename)
+{
+    return Image::make(storage_path('packages') . '/' . $filename)->response();
+});
+
 Route::get('asset/i/{filename}', function ($filename)
 {
     return Image::make(public_path('img') . '/' . $filename)->response();

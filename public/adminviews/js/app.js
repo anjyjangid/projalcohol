@@ -328,7 +328,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                             'assets/global/plugins/jquery.sparkline.min.js',
                             'assets/admin/pages/scripts/index3.js',
                             'assets/admin/pages/scripts/tasks.js',*/
-
+                            
                             'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
                             'assets/global/plugins/datatables/all.min.js',
                             'assets/global/scripts/datatable.js',
@@ -900,8 +900,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         .state("packages.party", {
             url: "/party",
             templateUrl: "adminviews/views/packages/list.html",
-            data: {pageTitle: 'Party Packages',type:1}
-            
+            data: {pageTitle: 'Party Packages',type:1}            
         })
 
         .state("packages.cocktail", {
@@ -917,7 +916,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         })
 
         .state("packages.editparty", {
-            url: "/editcocktail/:packageid",
+            url: "/editparty/:packageid",
             templateUrl: "adminviews/views/packages/form.html",
             data: {pageTitle: 'Party Packages',pageSubTitle: 'Edit',type:1}            
         })
@@ -932,6 +931,32 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             url: "/editcocktail/:packageid",
             templateUrl: "adminviews/views/packages/form.html",
             data: {pageTitle: 'Cocktail Packages',pageSubTitle: 'Edit',type:2}            
+        })
+
+
+        .state('timeslots', {
+            //url: "/timeslots",            
+            abstract:true,
+            templateUrl: "adminviews/views/timeslots/index.html",
+            data: {pageTitle: 'Time Slots'},
+            controller: "TimeslotController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [                                                        
+                            'adminviews/js/controllers/TimeslotController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('timeslots.list', {
+            url: "/timeslots",
+            templateUrl: "adminviews/views/timeslots/timeslots.html",
+            data: {pageTitle: 'Time Slots'}
         });        
 }]);
 
