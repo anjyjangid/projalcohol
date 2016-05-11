@@ -11,10 +11,9 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ngAnimate',
 	'ngMaterial',
 	'ngMessages',
-	'ngTouch'
+	'ngTouch',
+	'ngMap'
 ]);
-
-
 
 
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
@@ -54,7 +53,7 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 	$scope.AppController.subCategory = "";
 
 	$http.get("/super/settings/").success(function(response){
-    	$rootScope.settings = response;    	
+    	$rootScope.settings = response;
     });
 	   
 
@@ -164,6 +163,7 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 		return localpro;
 
 	}
+
 
 }]);
 
@@ -481,7 +481,7 @@ AlcoholDelivery.controller('PasswordController',['$scope','$rootScope','$state',
 
 }]);
 
-AlcoholDelivery.controller('CartController',['$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','CartSession','sweetAlert',function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, CartSession, sweetAlert){
+AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','CartSession','sweetAlert',function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, CartSession, sweetAlert){
 
 	$scope.cart = {
 					service : {
@@ -510,20 +510,28 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$http','$q',
 
 					};
 
+	$scope.smoke = {
+		status:false,
+		detail:""
+	}
+
 	$scope.payment = {
 		type:"cod",
 	}
 
 	$scope.step = 1;
 
-	$rootScope.cartController = {};
+	$scope.checkout = function(){
+
+
+
+	}
 
 	CartSession.GetDeliveryKey().then(
 
 		function(result){
 			
 			$q.all([
-												
 						$http.get("cart/services").then(function(response){
 
 							$scope.services = response.data;		
@@ -537,21 +545,10 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$http','$q',
 									
 					]).then(function(){			
 						$scope.updatePricing();
-						$scope.setCartChilled();
-						$rootScope.cartController.getAddress();
+						$scope.setCartChilled();						
 					})
 		}
 	);
-
-	$rootScope.cartController.getAddress = function(){
-		$http.get("address")
-				.success(function(response){
-
-					$scope.addresses = response;
-					$rootScope.cartController.addresses = $scope.addresses;
-
-				})
-	}
 	
 	$scope.updatePricing = function(){
 				
@@ -682,12 +679,44 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$http','$q',
 
 	}
 
+  	
+}]);
 
+AlcoholDelivery.controller('CartSmokeController',['$scope','$rootScope','$state','CartSession','sweetAlert',function($scope, $rootScope, $state, $timeout, $http, $q, $mdDialog, $mdMedia, CartSession, sweetAlert){
+
+
+}])
+
+AlcoholDelivery.controller('CartAddressController',['$scope','$rootScope','$state','$timeout','$http','$q', '$mdDialog', '$mdMedia','CartSession','sweetAlert',function($scope, $rootScope, $state, $timeout, $http, $q, $mdDialog, $mdMedia, CartSession, sweetAlert){
+
+	$rootScope.getUserAddress = function(){
+
+		$http.get("address")
+			.success(function(response){
+
+				$scope.addresses = response;
+				$rootScope.addresses = $scope.addresses;
+
+			})
+			.error(function(data, status, headers) {
+			   	if(data.auth===false){			   		
+			   		$state.go("mainLayout.checkout.cart");
+			   	}
+			})
+	}
+
+	$rootScope.getUserAddress();
 
 	$scope.showAddressViaMapModal = function(ev) {
 
 		$mdDialog.show({
-			controller: function($scope, $mdDialog) {
+			controller: function($scope, $rootScope, $mdDialog, NgMap) {
+				
+				$scope.address = {
+					step:1
+				}
+				
+
 				$scope.hide = function() {
 					$mdDialog.hide();
 				};
@@ -722,14 +751,12 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$http','$q',
 						        							        	
 						        	$scope.errors = {};
 						        	$scope.hide();
-						        	$rootScope.cartController.getAddress();
+						        	$rootScope.getUserAddress();
 
 						        }).error(function(data, status, headers) {            
 						        	$scope.errors = data;
 						        })
-
 							}
-
 						},
 						templateUrl: '/templates/partials/addressManually.html',
 						parent: angular.element(document.body),
@@ -743,6 +770,73 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$http','$q',
 					});
 
 				};
+
+
+				// Google map auto complete code start //
+
+				  $scope.types = "['geocode']";
+				  $scope.restrictions="{country:'sg'}"
+				  $scope.placeChanged = function() {
+				  	
+				    $scope.address.place = this.getPlace();				    
+				    $scope.map.setCenter($scope.address.place.geometry.location);
+
+				  }
+
+				NgMap.getMap().then(function(map) {
+					$scope.map = map;
+				}); 			
+				// Google map auto complete code ends //
+
+				$scope.changeAddress = function(){
+
+					$scope.address.step = 1;
+					
+				}
+
+				$scope.setMapAddress = function(){
+
+					var isValid = validateAddress($scope.address.place);
+
+					if(isValid){
+						$scope.address.step = 2;
+					}else{
+						sweetAlert.swal({
+
+			                title: "Please choose a valid address.",   
+			                text: "",
+			                type: "warning",
+			                timer: 1000,
+			                showCancelButton: true,   
+			                confirmButtonColor: "#DD6B55",   
+			                confirmButtonText: "Ok",
+			                closeOnConfirm: true,
+			                closeOnCancel: true
+
+			            });
+					}
+
+				}
+
+				$scope.saveAddress = function(){
+
+					$scope.errors = {};								
+
+					$http.post("address", $scope.address, {
+				        
+				    }).success(function(response) {
+				    							        	
+				    	$scope.errors = {};
+				    	$scope.hide();
+				    	$rootScope.getUserAddress();
+
+				    }).error(function(data, status, headers) {            
+				    	$scope.errors = data;
+				    })
+
+				}				
+
+
 			},
 			templateUrl: '/templates/partials/addressMap.html',
 			parent: angular.element(document.body),
@@ -750,12 +844,42 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$http','$q',
 			clickOutsideToClose:true
 		})
 		.then(function(answer) {
-			$scope.status = 'You said the information was "' + answer + '".';
+			
 		}, function() {
-			$scope.status = 'You cancelled the dialog.';
+			
 		});
 
 	};
+
+	function validateAddress(address){
+		
+		var pullAddress = {
+			route:"",
+			neighborhood:""
+
+		};
+		
+		if(typeof address !== "object" || typeof address.address_components === "undefined"){
+			return false;
+		}
+
+		for(addressObj in address.address_components){
+			switch(address.address_components[addressObj].types[0]){
+				case 'route':
+					pullAddress.route = address.address_components[addressObj].long_name;
+				break;
+				case 'neighborhood':
+					pullAddress.neighborhood = address.address_components[addressObj].long_name;
+				break;
+			}
+		}
+
+		if(pullAddress.route=="" || pullAddress.neighborhood==""){
+			return false;
+		}
+
+		return true;
+	}
 
 	$scope.updateAddressModal = function(ev,key) {
 
@@ -763,7 +887,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$http','$q',
 
 			controller: function($scope, $rootScope, $mdDialog, $http) {
 
-				$scope.address = $rootScope.cartController.addresses[key];
+				$scope.address = $rootScope.user.addresses[key];
 				
 				$scope.hide = function() {
 					$mdDialog.hide();
@@ -784,7 +908,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$http','$q',
 
 			        	if(response.success){
 
-			        		$rootScope.cartController.getAddress();
+			        		$rootScope.getUserAddress();
 			        		$scope.errors = {};
 				        	$scope.hide();
 				        	
@@ -804,7 +928,9 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$http','$q',
 			templateUrl: '/templates/partials/addressManually.html',
 			parent: angular.element(document.body),
 			targetEvent: ev,
-			clickOutsideToClose:true
+			clickOutsideToClose:true,
+			openFrom : angular.element(document.querySelector('#right')),
+        	closeTo : angular.element(document.querySelector('#right'))
 		})
 		.then(function(answer) {
 			$scope.status = 'You said the information was "' + answer + '".';
@@ -836,7 +962,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$http','$q',
 
                                 if(response.success){
 
-                                    $rootScope.cartController.getAddress();
+                                    $rootScope.getUserAddress();
                                     sweetAlert.swal({
                                     	
                                     	title: response.message,
@@ -863,12 +989,19 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$http','$q',
                 });
 	};
 
-
-
-  	
 }]);
 
+AlcoholDelivery.controller('CartDeliveryController',['$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','CartSession','sweetAlert',function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, CartSession, sweetAlert){
 
+}]);
+
+AlcoholDelivery.controller('CartPaymentController',['$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','CartSession','sweetAlert',function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, CartSession, sweetAlert){
+
+}]);
+
+AlcoholDelivery.controller('CartReviewController',['$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','CartSession','sweetAlert',function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, CartSession, sweetAlert){
+
+}]);
 
 
 /* Setup global settings */
@@ -927,9 +1060,16 @@ AlcoholDelivery.factory("UserService", ["$q", "$timeout", "$http", function($q, 
 
 		return d.promise;
 	};
+
+	function GetUserAddress(){
+
+	};
+
 	return {
-		GetUser: GetUser
-        ,currentUser: null
+		GetUser: GetUser,
+		GetUserAddress: GetUserAddress,
+        currentUser: null,
+        currentUserAddress: null
 	};
 }]);
 
@@ -1065,30 +1205,61 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js',
 														'js/all_animations.js',
 														'js/js_init_scripts.js'
-												] 
+												]
 										});
 								}]
 						}
 				})
 
-				.state('mainLayout.cart', {
-						url: "/cart",
-						
+				.state('mainLayout.checkout', {
+						abstract: true,						
 						views : {
 
 							"" : {
-								templateUrl : "/templates/cart.html",
+								templateUrl : "/templates/checkout/index.html",
 								controller:"CartController"
 							},
 							"rightPanel" : {
 
 								templateUrl: "/templates/partials/rightBarSmokeOffer.html",
-								
-							},
+								controller:"CartSmokeController"
 
-						},		
-						
+							},
+						},
 				})
+
+				.state('mainLayout.checkout.cart', {
+						url: "/cart",
+						templateUrl : "/templates/checkout/cart.html",
+						data: {step: 'cart'},
+						// controller:"CartController"
+				})
+				.state('mainLayout.checkout.address', {
+						url: "/cart/address",
+						templateUrl : "/templates/checkout/address.html",
+						data: {step: 'address'},
+						controller:"CartAddressController"
+				})
+				.state('mainLayout.checkout.delivery', {
+						url: "/cart/delivery",
+						templateUrl : "/templates/checkout/delivery.html",
+						data: {step: 'delivery'},
+						controller:"CartDeliveryController"
+				})
+				.state('mainLayout.checkout.payment', {
+						url: "/cart/payment",
+						templateUrl : "/templates/checkout/payment.html",
+						data: {step: 'payment'},
+						controller:"CartPaymentController"
+				})
+				.state('mainLayout.checkout.review', {
+						url: "/cart/review",
+						templateUrl : "/templates/checkout/review.html",
+						data: {step: 'review'},
+						controller:"CartReviewController"
+				})
+
+
 
 				.state('mainLayout.login', {
 
@@ -1262,8 +1433,8 @@ function ($q, $rootScope, $log) {
         },
         response: function (response) {            
             xhrResolutions++;
-            updateStatus();
-            return response;
+			updateStatus();
+			return response;
         },
         responseError: function (rejection) {
             xhrResolutions++;

@@ -44,6 +44,10 @@ a, a:hover, a:focus{
 	float:left;
 }
 
+.cursor-pointer{
+	cursor: pointer;
+}
+
 .header{
 	background:url(../images/bg.jpg) no-repeat center top;
 	min-height:690px;
@@ -57,6 +61,11 @@ a, a:hover, a:focus{
 	background:url(../images/yellow_bg.jpg) no-repeat center top;
 	min-height:369px;
 	background-size:100% 369px;
+}
+
+md-dialog.md-transition-in{
+	background: transparent;
+	box-shadow: 0 0 0 0;
 }
 
 
@@ -2304,12 +2313,6 @@ a, a:hover, a:focus{
 	padding:0px 15px;
 	width:100%;
 	float:left;
-	display:none;
-	transition:all 0.5s ease 0s;
-}
-
-.checkoutmiddleouter.active{
-	display:block;
 	transition:all 0.5s ease 0s;
 }
 
@@ -3855,7 +3858,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', end
 
 /*--------checkoutsteps_modal---------*/
 .modal-dialog.alcohal_addadressmain {
-	width: 702px;
+	width: 960px;
 }
 .modal-content.alcohal_addadressmaincvr {
 	float: left;
@@ -4071,6 +4074,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', end
 	text-transform: uppercase;
 	width: 77%;
 	font-weight:500;
+	cursor: pointer;
 }
 .alchoaladdnewadressbodytitile {
 	float: left;
@@ -5138,16 +5142,25 @@ md-dialog{
 
 	max-height: none;
 	overflow: initial;
+	opacity: 1; 
 }
 
-md-dialog.md-transition-in{
-	background: transparent;
-	box-shadow: 0 0 0 0;
-}
+
 
 md-backdrop.md-dialog-backdrop {
 	z-index: 80000;
 }
-.md-dialog-container{
+.md-dialog-container,md-tooltip,md-toast{
 	z-index: 80001;
+}
+
+.pac-container{
+	z-index: 80200;
+}
+
+.sweet-overlay{
+	z-index: 100000;
+}
+.sweet-alert{
+	z-index: 100001;
 }
