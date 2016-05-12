@@ -1,0 +1,27 @@
+<div class="combo_slider">
+
+	<div class="checkout_title">My Cart</div>
+
+	<div class="steps_notify">
+
+			<div class="step_grid">
+
+				<a ui-sref="mainLayout.checkout.cart" class="step1"><span>Shopping Cart</span></a>
+				<a ui-sref="mainLayout.checkout.address" class="step2"><span>Address</span></a>
+				<a ui-sref="mainLayout.checkout.delivery" class="step3"><span>Delivery</span></a>
+				<a ui-sref="mainLayout.checkout.payment" class="step4"><span>Payment</span></a>
+				<a ui-sref="mainLayout.checkout.review" class="step5"><span>Review &amp; Confirm</span></a>
+
+				<img src="images/step1.png" ng-show="$state.$current.data.step=='cart'">
+				<img src="images/step2.png" ng-show="$state.$current.data.step=='address'">
+				<img src="images/step3.png" ng-show="$state.$current.data.step=='delivery'">
+				<img src="images/step4.png" ng-show="$state.$current.data.step=='payment'">
+				<img src="images/step5.png" ng-show="$state.$current.data.step=='review'">
+
+			</div>
+	</div>
+
+	<div ui-view class="checkoutmiddleouter"></div>
+	
+
+</div>

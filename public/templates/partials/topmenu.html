@@ -1,140 +1,141 @@
-  <nav tscroll class="navbar navbar-default navbar-fixed-top">		
-    <div class="container">
-    <div class="row btm10">
-      <div class="searchtop"> <a class="search_icon" ng-click="searchbar(1)" href="javascript:void(0);"></a>
-        <input type="text" class="" placeholder="Search for items" value="" name="search">
-        <a ng-click="searchbar(0)" class="search_close" href="javascript:void(0);">&times;</a> </div>
-      <div class="col-md-2 homecallus_cover">
-      	<a ui-sref="mainLayout.index">
-        <div class="callshape"><img class="" src="images/Shapecall2.png"></div>
-        <div class="homecallus">Call us now</div>
-        <div class="homechilled">9-chilled</div>
-        <div class="homechilled">9-2445533</div>
-        </a>
-      </div>
-      <div class="col-md-8 text-center">
-      <div class="logoss"> 
-      <a ui-sref="mainLayout.index">
-        <img class="img-responsive logosmall" src="images/logo-small.png"> 
-        <img class="img-responsive logolarge" src="images/ad_logo.png"> </div>
-      </a>  
-      </div>
-      <div class="col-md-2 signuplogin_cover">
-        <div class="signuplogin">
-         <ul class="menuulpadding">
-          <li class="dropdown">
-          	<a ui-sref="mainLayout.cart" class="cart_icon"></a>
-            <div class="dropdown-menu currentorderpopup">
-                <!-- Current order Start-->
-                <!--<div class="currentorderpopuppinkbox">
-                    <div class="currentorderpopuppinkboxleft">Current Order</div>
-                    <div class="currentorderpopuppinkboxright">view Cart</div>
-                </div>
-                <ul class="currentorderpopupul">
-                    <li>
-                        <div class="currentorderpopupulleft">CP Crispy Chicken with Korean Hot…</div>
-                        <div class="currentorderpopupulcenter">2</div>
-                        <div class="currentorderpopupulright">$8.50</div>
-                    </li>
-                    <li>
-                        <div class="currentorderpopupulleft">CP Crispy Chicken with Korean Hot…</div>
-                        <div class="currentorderpopupulcenter">2</div>
-                        <div class="currentorderpopupulright">$8.50</div>
-                    </li>
-                </ul>-->
-                <!-- Current order End-->
-                
-                <!--add item Start-->
-                <div class="additempopuppinkbox">
-                    <div class="additempopuppinkboxleft">4</div>
-                    <div class="additempopuppinkboxright">
-                    	items added to cart
-                        <div class="additempopuppinkboxrightinner">View my cart</div>
-                    </div>
-                </div>
-                <div class="additempopupwhitebox">
-                	<div class="additempopupwhiteblacktext">25.78 more to FREE delivery</div>
-                    <div class="additempopupwhitebarimgcover">
-                    	<div class="additempopupwhitebarcover"></div>
-                    	<img src="images/imgpsh_fullsize_small.png" />
-                    </div>
-                </div>
-                <!--add item End-->                
-            </div>
-          </li>
-          
-          <li ng-hide="user.email"><a data-target="#register" data-toggle="modal" href="javascript:;">Signup</a></li>
-          <li ng-hide="user.email"><a data-target="#login" data-toggle="modal" href="javascript:;">login</a></li>       
-          <!--<a ng-show="user.email" data-target="#" ng-click="logout()" data-toggle="modal" href="javascript:;" class="username">Hola, {{user.email}}</a>-->
-          <li class="dropdown" ng-show="user.email"><a href="javascript:;" class="username dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-          	Hola, {{user.email}}
-          </a>
-          <ul class="dropdown-menu profil-dropdown">
-            <li><a ui-sref="accountLayout.profile">My Account</a></li>
-            <li><a href="#" ng-click="logout()">Logout</a></li>
-          </ul>
-          </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
+	<nav tscroll class="navbar navbar-default navbar-fixed-top">		
+		<div class="container">
+		<div class="row btm10">
+			<div class="searchtop"> <a class="search_icon" ng-click="searchbar(1)" href="javascript:void(0);"></a>
+				<input type="text" class="" placeholder="Search for items" value="" name="search">
+				<a ng-click="searchbar(0)" class="search_close" href="javascript:void(0);">&times;</a> </div>
+			<div class="col-md-2 homecallus_cover">
+				<a ui-sref="mainLayout.index">
+				<div class="callshape"><img class="" src="images/Shapecall2.png"></div>
+				<div class="homecallus">Call us now</div>
+				<div class="homechilled">9-chilled</div>
+				<div class="homechilled">9-2445533</div>
+				</a>
+			</div>
+			<div class="col-md-8 text-center">
+			<div class="logoss"> 
+			<a ui-sref="mainLayout.index">
+				<img class="img-responsive logosmall" src="images/logo-small.png"> 
+				<img class="img-responsive logolarge" src="images/ad_logo.png"> </div>
+			</a>  
+			</div>
+			<div class="col-md-2 signuplogin_cover">
+				<div class="signuplogin">
+				 <ul class="menuulpadding">
+					<li class="dropdown">
+						<a ui-sref="mainLayout.checkout.cart" class="cart_icon"></a>
+						<div class="dropdown-menu currentorderpopup">
+								<!-- Current order Start-->
+								<!--<div class="currentorderpopuppinkbox">
+										<div class="currentorderpopuppinkboxleft">Current Order</div>
+										<div class="currentorderpopuppinkboxright">view Cart</div>
+								</div>
+								<ul class="currentorderpopupul">
+										<li>
+												<div class="currentorderpopupulleft">CP Crispy Chicken with Korean Hot…</div>
+												<div class="currentorderpopupulcenter">2</div>
+												<div class="currentorderpopupulright">$8.50</div>
+										</li>
+										<li>
+												<div class="currentorderpopupulleft">CP Crispy Chicken with Korean Hot…</div>
+												<div class="currentorderpopupulcenter">2</div>
+												<div class="currentorderpopupulright">$8.50</div>
+										</li>
+								</ul>-->
+								<!-- Current order End-->
+								
+								<!--add item Start-->
+								<div class="additempopuppinkbox">
+										<div class="additempopuppinkboxleft">4</div>
+										<div class="additempopuppinkboxright">
+											items added to cart
+												<div class="additempopuppinkboxrightinner">View my cart</div>
+										</div>
+								</div>
+								<div class="additempopupwhitebox">
+									<div class="additempopupwhiteblacktext">25.78 more to FREE delivery</div>
+										<div class="additempopupwhitebarimgcover">
+											<div class="additempopupwhitebarcover"></div>
+											<img src="images/imgpsh_fullsize_small.png" />
+										</div>
+								</div>
+								<!--add item End-->                
+						</div>
+					</li>
+					
+					<li ng-hide="user.email"><a data-target="#register" data-toggle="modal" href="javascript:;">Signup</a></li>
+					<li ng-hide="user.email"><a data-target="#login" data-toggle="modal" href="javascript:;">login</a></li>       
+					<!--<a ng-show="user.email" data-target="#" ng-click="logout()" data-toggle="modal" href="javascript:;" class="username">Hola, {{user.email}}</a>-->
+					<li class="dropdown" ng-show="user.email"><a href="javascript:;" class="username dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+						Hola, {{user.email}}
+					</a>
+					<ul class="dropdown-menu profil-dropdown">
+						<li><a ui-sref="accountLayout.profile">My Account</a></li>
+						<li><a href="#" ng-click="logout()">Logout</a></li>
+					</ul>
+					</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
 
 <!-- <div id="google_translate_element"></div><script type="text/javascript">
 function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,zh-CN', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+	new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,zh-CN', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
 }
 </script><script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script> -->
 
 	</nav>
-  
+	
 <!-- Modal -->
 <div class="modal" id="register" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
-  <div class="modal-dialog alcohal_registermain" role="document">
-    <div class="modal-content alcohalregiterconntcvr">
-      <div class="modal-header alcohalhdr">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      </div>
-      <form ng-submit="signupSubmit()" name="myForm">
-      <div class="modal-body alcohabody">
-        <div class="alcohal_regisemailcvr">         
-          <div class="alcohal_regissigntxt">Sign Up for Free</div>
-          <div class="registeremailcvr" ng-class="{'has-error':signup.errors.email[0]}">
-            <input type="email" name="email" ng-model="signup.email" class="alcohalrestertextbox form-control" placeholder="Email Address" ng-model="formData.email">
-            <!-- <span style="color:red; clear:both" ng-show="myForm.email.$dirty && myForm.email.$invalid">
-                <span ng-show="!myForm.email.$error.required && myForm.email.$error.email && myForm.email.$dirty">invalid email</span>
-              </span> -->
-              <span class="help-block" ng-bind="signup.errors.email[0]"></span>
-          </div>
-          <div class="registeremailcvr" ng-class="{'has-error':signup.errors.password[0]}">
-            <input type="password" ng-model="signup.password" class="alcohalrestertextbox form-control" placeholder="Password">
-            <span class="help-block" ng-bind="signup.errors.password[0]"></span>
-          </div>
-          <div class="registeremailcvr" ng-class="{'has-error':signup.errors.password_confirmation[0]}">
-            <input type="password" ng-model="signup.password_confirmation" class="alcohalrestertextbox form-control" placeholder="Confirm Password">            
-            <span class="help-block" ng-bind="signup.errors.password_confirmation[0]"></span>
-          </div>
-          <div class="registeremailcvr" ng-class="{'has-error':signup.errors.terms[0]}">
-            <input type="checkbox" class="" ng-model="signup.terms" name="regis" id="regis">
-            <label for="regis"><span></span></label> 
-            <div class="register_checktext"> By submitting this form, I confirm that I have read and agree to Alcohol Delivery’s <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a> <span class="help-block" ng-bind="signup.errors.terms[0]"></span></div>
-            
-          </div>
-          
-        </div>
-      </div>
-      <div class="modal-footer alcohalfotter">
-        <div class="alcohal_regisemailcvr">
-          <button type="submit" class="alcohalfootersign">Sign Up</button>
-          <!-- <button type="submit" ng-disabled="myForm.user.$dirty && myForm.user.$invalid ||  myForm.email.$dirty && myForm.email.$invalid" class="alcohalfootersign">Sign Up</button> -->
-        </div>
-      </div>
-      </form>
-    </div>
-  </div>
+	<div class="modal-dialog alcohal_registermain" role="document">
+		<div class="modal-content alcohalregiterconntcvr">
+			<div class="modal-header alcohalhdr">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<form ng-submit="signupSubmit()" name="myForm">
+			<div class="modal-body alcohabody">
+				<div class="alcohal_regisemailcvr">         
+					<div class="alcohal_regissigntxt">Sign Up for Free</div>
+					<div class="registeremailcvr" ng-class="{'has-error':signup.errors.email[0]}">
+						<input type="email" name="email" ng-model="signup.email" class="alcohalrestertextbox form-control" placeholder="Email Address" ng-model="formData.email">
+						<!-- <span style="color:red; clear:both" ng-show="myForm.email.$dirty && myForm.email.$invalid">
+								<span ng-show="!myForm.email.$error.required && myForm.email.$error.email && myForm.email.$dirty">invalid email</span>
+							</span> -->
+							<span class="help-block" ng-bind="signup.errors.email[0]"></span>
+					</div>
+					<div class="registeremailcvr" ng-class="{'has-error':signup.errors.password[0]}">
+						<input type="password" ng-model="signup.password" class="alcohalrestertextbox form-control" placeholder="Password">
+						<span class="help-block" ng-bind="signup.errors.password[0]"></span>
+					</div>
+					<div class="registeremailcvr" ng-class="{'has-error':signup.errors.password_confirmation[0]}">
+						<input type="password" ng-model="signup.password_confirmation" class="alcohalrestertextbox form-control" placeholder="Confirm Password">            
+						<span class="help-block" ng-bind="signup.errors.password_confirmation[0]"></span>
+					</div>
+					<div class="registeremailcvr" ng-class="{'has-error':signup.errors.terms[0]}">
+						<input type="checkbox" class="" ng-model="signup.terms" name="regis" id="regis">
+						<label for="regis"><span></span></label> 
+						<div class="register_checktext"> By submitting this form, I confirm that I have read and agree to Alcohol Delivery’s <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a> <span class="help-block" ng-bind="signup.errors.terms[0]"></span></div>
+						
+					</div>
+					
+				</div>
+			</div>
+			<div class="modal-footer alcohalfotter">
+				<div class="alcohal_regisemailcvr">
+					<button type="submit" class="alcohalfootersign">Sign Up</button>
+					<!-- <button type="submit" ng-disabled="myForm.user.$dirty && myForm.user.$invalid ||  myForm.email.$dirty && myForm.email.$invalid" class="alcohalfootersign">Sign Up</button> -->
+				</div>
+			</div>
+			</form>
+		</div>
+	</div>
 </div>
 
 <div class="modal" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
+
   <div class="modal-dialog alcohal_registermain" role="document">
     <div class="modal-content alcohalregiterconntcvr">
       <div class="modal-header alcohalhdr">
@@ -171,262 +172,263 @@ function googleTranslateElementInit() {
       </form>
     </div>
   </div>
+
 </div>
 
 <div class="modal" id="reset" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
-  <div class="modal-dialog alcohal_registermain" role="document">
-    <div class="modal-content alcohalregiterconntcvr">
-      <div class="modal-header alcohalhdr">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>-->
-      </div>
-      <form ng-submit="resetSubmit()" name="resetForm">
-        <div class="modal-body alcohabody">
-          <div class="alcohal_regisemailcvr">
-            <div class="alcohal_regissigntxt">Reset Your Password</div>
-            <div class="registeremailcvr" ng-class="{'has-error':reset.errors.password[0]}">
-              <label>New Password</label>
-              <input type="password" ng-model="reset.password" class="alcohalrestertextbox form-control" placeholder="New Password" />
-              <span class="help-block" ng-bind="reset.errors.password[0]"></span>
-            </div>
-            <div class="registeremailcvr" ng-class="{'has-error':reset.errors.password_confirmation[0]}">
-              <label>Confirm Password</label>
-              <input autocomplete="off" type="password" ng-model="reset.password_confirmation" class="alcohalrestertextbox form-control" placeholder="Confirm Password" />
-              <span class="help-block" ng-bind="reset.errors.password_confirmation[0]"></span>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer alcohalfotter">
-          <div class="alcohal_regisemailcvr">
-            <div class="alcohallogin_forgettxt">
-              <a data-dismiss="modal" data-target="#login" data-toggle="modal" href="javascript:;">Login</a>
-            </div>
-            <button type="submit" class="alcohalfootersign alcohal_fotrloginbox">Reset</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
+	<div class="modal-dialog alcohal_registermain" role="document">
+		<div class="modal-content alcohalregiterconntcvr">
+			<div class="modal-header alcohalhdr">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>-->
+			</div>
+			<form ng-submit="resetSubmit()" name="resetForm">
+				<div class="modal-body alcohabody">
+					<div class="alcohal_regisemailcvr">
+						<div class="alcohal_regissigntxt">Reset Your Password</div>
+						<div class="registeremailcvr" ng-class="{'has-error':reset.errors.password[0]}">
+							<label>New Password</label>
+							<input type="password" ng-model="reset.password" class="alcohalrestertextbox form-control" placeholder="New Password" />
+							<span class="help-block" ng-bind="reset.errors.password[0]"></span>
+						</div>
+						<div class="registeremailcvr" ng-class="{'has-error':reset.errors.password_confirmation[0]}">
+							<label>Confirm Password</label>
+							<input autocomplete="off" type="password" ng-model="reset.password_confirmation" class="alcohalrestertextbox form-control" placeholder="Confirm Password" />
+							<span class="help-block" ng-bind="reset.errors.password_confirmation[0]"></span>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer alcohalfotter">
+					<div class="alcohal_regisemailcvr">
+						<div class="alcohallogin_forgettxt">
+							<a data-dismiss="modal" data-target="#login" data-toggle="modal" href="javascript:;">Login</a>
+						</div>
+						<button type="submit" class="alcohalfootersign alcohal_fotrloginbox">Reset</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 
 <div class="modal" id="forgot_password" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
-  <div class="modal-dialog alcohal_registermain" role="document">
-    <div class="modal-content alcohalregiterconntcvr">
-      <div class="modal-header alcohalhdr">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>-->
-      </div>
-      <form ng-submit="forgotSubmit()" name="loginForm">
-        <div class="modal-body alcohabody">
-          <div class="alcohal_regisemailcvr">
-            <div class="alcohal_regissigntxt">Forget Password ?</div>            
-            <div class="registeremailcvr" ng-class="{'has-error':forgot.errors.email[0]}">
-              <label>Enter your e-mail address below to reset your password. </label>
-              <input type="text" ng-model="forgot.email" class="alcohalrestertextbox form-control" placeholder="Email Address" />
-              <span class="help-block" ng-bind="forgot.errors.email[0]"></span>
-            </div>            
-          </div>
-        </div>
-        <div class="modal-footer alcohalfotter">
-          <div class="alcohal_regisemailcvr">            
-            <button type="submit" class="alcohalfootersign alcohal_fotrloginbox">Submit</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
+	<div class="modal-dialog alcohal_registermain" role="document">
+		<div class="modal-content alcohalregiterconntcvr">
+			<div class="modal-header alcohalhdr">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>-->
+			</div>
+			<form ng-submit="forgotSubmit()" name="loginForm">
+				<div class="modal-body alcohabody">
+					<div class="alcohal_regisemailcvr">
+						<div class="alcohal_regissigntxt">Forget Password ?</div>            
+						<div class="registeremailcvr" ng-class="{'has-error':forgot.errors.email[0]}">
+							<label>Enter your e-mail address below to reset your password. </label>
+							<input type="text" ng-model="forgot.email" class="alcohalrestertextbox form-control" placeholder="Email Address" />
+							<span class="help-block" ng-bind="forgot.errors.email[0]"></span>
+						</div>            
+					</div>
+				</div>
+				<div class="modal-footer alcohalfotter">
+					<div class="alcohal_regisemailcvr">            
+						<button type="submit" class="alcohalfootersign alcohal_fotrloginbox">Submit</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 
 <div class="modal" id="forgot_password_sent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
-  <div class="modal-dialog alcohal_registermain" role="document">
-    <div class="modal-content alcohalregiterconntcvr">
-      <div class="modal-header alcohalhdr">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>-->
-      </div>
-      
-        <div class="modal-body alcohabody">
-          <div class="alcohal_regisemailcvr">
-            <div class="alcohal_regissigntxt">{{forgot.message}}</div>                        
-          </div>
-        </div>
-        <div class="modal-footer alcohalfotter">
-          <div class="alcohal_regisemailcvr">            
-            <button type="button" data-dismiss="modal" class="alcohalfootersign alcohal_fotrloginbox">OK</button>
-          </div>
-        </div>
-      
-    </div>
-  </div>
+	<div class="modal-dialog alcohal_registermain" role="document">
+		<div class="modal-content alcohalregiterconntcvr">
+			<div class="modal-header alcohalhdr">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>-->
+			</div>
+			
+				<div class="modal-body alcohabody">
+					<div class="alcohal_regisemailcvr">
+						<div class="alcohal_regissigntxt">{{forgot.message}}</div>                        
+					</div>
+				</div>
+				<div class="modal-footer alcohalfotter">
+					<div class="alcohal_regisemailcvr">            
+						<button type="button" data-dismiss="modal" class="alcohalfootersign alcohal_fotrloginbox">OK</button>
+					</div>
+				</div>
+			
+		</div>
+	</div>
 </div>
 
 <div class="modal" id="previous_orderhistory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
-  <div class="modal-dialog alcohal_orderhistory" role="document">
-    <div class="modal-content alcohal_orderhistorycvr">
-      <div class="modal-header alcohal_orderhistoryheader">
-        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
-        <!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>-->
-        <div class="alcohalorderhisttitle">Shop from your previous order</div>
-      </div>
-      <div class="modal-body alcohal_orderhistorybody">
-        <div class="alcohal_orderhistorytxtcvr">
-          <div class="alcohal_orderhistorybodytxt">Shopping from a past order provides a convenient way to quickly shop for the same products again. </div>
-          <div class="alcohal_orderhistorybodytxtclick">Click on a given order and add the desired products to the basket. </div>
-          <div class="alcohal_hisryorderboxcvr">
-            <div class="alcohal_hisryorderboxcvr1" data-toggle="modal" data-target="#previous_orderhistory_cart">
-              <div class="alcohal_hisryorderordertxt">Order: AD-BB0-5873618-ED</div>
-              <div class="alcohal_hisryorderdelitext">Delivered on: Thu 10 Dec 2015</div>
-              <div class="alcohal_hisryorderitemtext">16 Items</div>
-            </div>
-            <div class="alcohal_hisryorderboxcvr1" data-toggle="modal" data-target="#previous_orderhistory_cart">
-              <div class="alcohal_hisryorderordertxt">Order: AD-BB0-5873618-ED</div>
-              <div class="alcohal_hisryorderdelitext">Delivered on: Thu 10 Dec 2015</div>
-              <div class="alcohal_hisryorderitemtext">16 Items</div>
-            </div>
-            <div class="alcohal_hisryorderboxcvr1" data-toggle="modal" data-target="#previous_orderhistory_cart">
-              <div class="alcohal_hisryorderordertxt">Order: AD-BB0-5873618-ED</div>
-              <div class="alcohal_hisryorderdelitext">Delivered on: Thu 10 Dec 2015</div>
-              <div class="alcohal_hisryorderitemtext">16 Items</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer alcohal_orderhistoryfotter">
-        <button type="button" class="alcohalfooter_shopordershopbtn">Nah! let me order a fresh <span> <img src="images/alcholshoporderarrow.png" /></span></button>
-      </div>
-    </div>
-  </div>
+	<div class="modal-dialog alcohal_orderhistory" role="document">
+		<div class="modal-content alcohal_orderhistorycvr">
+			<div class="modal-header alcohal_orderhistoryheader">
+				<!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+				<!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>-->
+				<div class="alcohalorderhisttitle">Shop from your previous order</div>
+			</div>
+			<div class="modal-body alcohal_orderhistorybody">
+				<div class="alcohal_orderhistorytxtcvr">
+					<div class="alcohal_orderhistorybodytxt">Shopping from a past order provides a convenient way to quickly shop for the same products again. </div>
+					<div class="alcohal_orderhistorybodytxtclick">Click on a given order and add the desired products to the basket. </div>
+					<div class="alcohal_hisryorderboxcvr">
+						<div class="alcohal_hisryorderboxcvr1" data-toggle="modal" data-target="#previous_orderhistory_cart">
+							<div class="alcohal_hisryorderordertxt">Order: AD-BB0-5873618-ED</div>
+							<div class="alcohal_hisryorderdelitext">Delivered on: Thu 10 Dec 2015</div>
+							<div class="alcohal_hisryorderitemtext">16 Items</div>
+						</div>
+						<div class="alcohal_hisryorderboxcvr1" data-toggle="modal" data-target="#previous_orderhistory_cart">
+							<div class="alcohal_hisryorderordertxt">Order: AD-BB0-5873618-ED</div>
+							<div class="alcohal_hisryorderdelitext">Delivered on: Thu 10 Dec 2015</div>
+							<div class="alcohal_hisryorderitemtext">16 Items</div>
+						</div>
+						<div class="alcohal_hisryorderboxcvr1" data-toggle="modal" data-target="#previous_orderhistory_cart">
+							<div class="alcohal_hisryorderordertxt">Order: AD-BB0-5873618-ED</div>
+							<div class="alcohal_hisryorderdelitext">Delivered on: Thu 10 Dec 2015</div>
+							<div class="alcohal_hisryorderitemtext">16 Items</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer alcohal_orderhistoryfotter">
+				<button type="button" class="alcohalfooter_shopordershopbtn">Nah! let me order a fresh <span> <img src="images/alcholshoporderarrow.png" /></span></button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <div class="modal" id="repeat_order" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
-  <div class="modal-dialog alcohal_orderhistory" role="document">
-    <div class="modal-content alcohal_orderhistorycvr">
-      <div class="modal-body alcohal_reapeatorederbody">
-        <div class="alcohal_reapeatorederbodycvr">
-          <div class="alcohal_reapeatorederbodytitle">Repeat Last Order</div>
-          <div class="alcohal_repeatorderbodytxt">This will add all the items from last order <br /> to your shopping cart. Choose “Yes, please!” button to continue. </div>
-          <div class="alcohal_reapeatorederbtnsocvercvr">
-            <div class="alcohal_reapeatorenothnxtxt">No, thanks!</div>
-            <button type="button" class="alcohalfooter_repeatorderbtn">YES PLEASE!</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+	<div class="modal-dialog alcohal_orderhistory" role="document">
+		<div class="modal-content alcohal_orderhistorycvr">
+			<div class="modal-body alcohal_reapeatorederbody">
+				<div class="alcohal_reapeatorederbodycvr">
+					<div class="alcohal_reapeatorederbodytitle">Repeat Last Order</div>
+					<div class="alcohal_repeatorderbodytxt">This will add all the items from last order <br /> to your shopping cart. Choose “Yes, please!” button to continue. </div>
+					<div class="alcohal_reapeatorederbtnsocvercvr">
+						<div class="alcohal_reapeatorenothnxtxt">No, thanks!</div>
+						<button type="button" class="alcohalfooter_repeatorderbtn">YES PLEASE!</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <div class="modal" id="previous_orderhistory_cart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
-  <div class="modal-dialog alcohal_orderhistory2" role="document">
-    <div class="modal-content alcohal_orderhistorycvr">
-      <div class="modal-header alcohal_orderhistoryheader">
-        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
-        <!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>-->
-        <div class="alcohalorderhisttitle">Shop from your previous order</div>
-      </div>
-      <div class="modal-body alcohal_orderhistory2body">
-        <div class="alcohal_orderhistory2bodytext1"> Order: AD-BB0-5873618-ED (16 items) </div>
-        <div class="alcohal_orderhistory2bodytext2"> Delivered on: Thu 10 Dec 2015 </div>
-        <div class="alcohal_ordehisty2selctboxcvr">
-          <input type="checkbox" class="orderhistysect_check" name="cc" id="b1">
-          <label for="b1"><span></span> Select all </label>
-        </div>
-        <div class="alcohal_ordehisty2selctblcvr">
-          <table class="table">
-            <thead>
-              <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div class="cheklble">
-                    <input type="checkbox" class="orderhistysect_check" name="cc" id="b2" />
-                    <label for="b2"><span></span></label>
-                  </div>
-                </td>
-                <td>
-                  <div class="orhistry2_td2procdtcvr">
-                    <span><img src="images/lblepi1product1.png" /></span>
-                    <div class="checkouter-td-right-text">
-                      <div class="orhistry2_td2proctext1">Carlsberg Lager Can - Case</div>
-                      <div class="orhistry2_td2proctext2">24 x 323 ml</div>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <div class="orderhistrychilcvr">
-                    <span1><img src="images/product13.png" /></span1>
-                    <span>CHILLED</span>
-                  </div>
-                </td>
-                <td>
-                  <div class="alcohocal_ordrhistryincrmnetdrcrmnt2cvr">
-                    <input id="demo3" type="text" value="" name="demo_vertical2">
-                  </div>
-                </td>
-                <td>
-                  <div class="orderhistry2price">$56.00</div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="cheklble">
-                    <input type="checkbox" class="orderhistysect_check" name="cc" id="b3" />
-                    <label for="b3"><span></span></label>
-                  </div>
-                </td>
-                <td>
-                  <div class="orhistry2_td2procdtcvr">
-                    <span><img src="images/lblepi1product1.png" /></span>
-                    <div class="checkouter-td-right-text">
-                      <div class="orhistry2_td2proctext1">Carlsberg Lager Can - Case</div>
-                      <div class="orhistry2_td2proctext2">24 x 323 ml</div>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <div class="orderhistrychilcvr">
-                    <span1><img src="images/product13.png" /></span1>
-                    <span>CHILLED</span>
-                  </div>
-                </td>
-                <td>
-                  <div class="alcohocal_ordrhistryincrmnetdrcrmnt2cvr">
-                    <input id="demo3" type="text" value="" name="demo_vertical2">
-                  </div>
-                </td>
-                <td>
-                  <div class="orderhistry2price">$56.00</div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="modal-footer  alcohal_orderhistory2fotter">
-        <div class="alcohal_orderhistory2fotter">
-          <img src="images/order_history2backpic.png" /> 
-          <span>Back to orders history</span>
-        </div>
-        <button type="button" class="alcohalfooter_shopordershopbtn">Add to basket <span> <img src="images/alcholshoporderarrow.png" /></span></button>
-      </div>
-    </div>
-  </div>
+	<div class="modal-dialog alcohal_orderhistory2" role="document">
+		<div class="modal-content alcohal_orderhistorycvr">
+			<div class="modal-header alcohal_orderhistoryheader">
+				<!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+				<!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>-->
+				<div class="alcohalorderhisttitle">Shop from your previous order</div>
+			</div>
+			<div class="modal-body alcohal_orderhistory2body">
+				<div class="alcohal_orderhistory2bodytext1"> Order: AD-BB0-5873618-ED (16 items) </div>
+				<div class="alcohal_orderhistory2bodytext2"> Delivered on: Thu 10 Dec 2015 </div>
+				<div class="alcohal_ordehisty2selctboxcvr">
+					<input type="checkbox" class="orderhistysect_check" name="cc" id="b1">
+					<label for="b1"><span></span> Select all </label>
+				</div>
+				<div class="alcohal_ordehisty2selctblcvr">
+					<table class="table">
+						<thead>
+							<tr>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<div class="cheklble">
+										<input type="checkbox" class="orderhistysect_check" name="cc" id="b2" />
+										<label for="b2"><span></span></label>
+									</div>
+								</td>
+								<td>
+									<div class="orhistry2_td2procdtcvr">
+										<span><img src="images/lblepi1product1.png" /></span>
+										<div class="checkouter-td-right-text">
+											<div class="orhistry2_td2proctext1">Carlsberg Lager Can - Case</div>
+											<div class="orhistry2_td2proctext2">24 x 323 ml</div>
+										</div>
+									</div>
+								</td>
+								<td>
+									<div class="orderhistrychilcvr">
+										<span1><img src="images/product13.png" /></span1>
+										<span>CHILLED</span>
+									</div>
+								</td>
+								<td>
+									<div class="alcohocal_ordrhistryincrmnetdrcrmnt2cvr">
+										<input id="demo3" type="text" value="" name="demo_vertical2">
+									</div>
+								</td>
+								<td>
+									<div class="orderhistry2price">$56.00</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="cheklble">
+										<input type="checkbox" class="orderhistysect_check" name="cc" id="b3" />
+										<label for="b3"><span></span></label>
+									</div>
+								</td>
+								<td>
+									<div class="orhistry2_td2procdtcvr">
+										<span><img src="images/lblepi1product1.png" /></span>
+										<div class="checkouter-td-right-text">
+											<div class="orhistry2_td2proctext1">Carlsberg Lager Can - Case</div>
+											<div class="orhistry2_td2proctext2">24 x 323 ml</div>
+										</div>
+									</div>
+								</td>
+								<td>
+									<div class="orderhistrychilcvr">
+										<span1><img src="images/product13.png" /></span1>
+										<span>CHILLED</span>
+									</div>
+								</td>
+								<td>
+									<div class="alcohocal_ordrhistryincrmnetdrcrmnt2cvr">
+										<input id="demo3" type="text" value="" name="demo_vertical2">
+									</div>
+								</td>
+								<td>
+									<div class="orderhistry2price">$56.00</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer  alcohal_orderhistory2fotter">
+				<div class="alcohal_orderhistory2fotter">
+					<img src="images/order_history2backpic.png" /> 
+					<span>Back to orders history</span>
+				</div>
+				<button type="button" class="alcohalfooter_shopordershopbtn">Add to basket <span> <img src="images/alcholshoporderarrow.png" /></span></button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script>
 $(document).ready(function(e) {
-   $('.signuplogin .dropdown').hover(function() {
-  $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeIn(500);
+	 $('.signuplogin .dropdown').hover(function() {
+	$(this).find('.dropdown-menu').stop(true, true).delay(200).fadeIn(500);
 }, function() {
-  $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut(500);
+	$(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut(500);
 }); 
 });
 

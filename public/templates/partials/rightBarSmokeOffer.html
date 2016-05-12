@@ -6,7 +6,7 @@
         <table>
             <tr>
                 <td>NO</td>
-                <td><md-switch aria-label="smoke" ng-model="cart.smoke"></md-switch></td>
+                <td><md-switch aria-label="smoke" ng-model="$parent.smoke.status"></md-switch></td>
                 <td>YES</td>
             </tr>
         </table>
@@ -16,11 +16,12 @@
         </div> -->
     </div>
 
-    <div ng-class="{hide:!cart.smoke}">
-        <div class="checkoutrighttext">Let us get your cigarettes for you! For additional $5 service charge, we will purchase your desired cigarette from convenience stores while delivering your alcohol to your doorstep!</div>
-        <div class="checkoutrightpleasediv">Please provide details. (Brand, Quantity)</div>
+    <div ng-class="{hide:!$parent.smoke.status}">
+        <div class="checkoutrighttext">Let us get your cigarettes for you! For additional {{}} service charge, we will purchase your desired cigarette from convenience stores while delivering your alcohol to your doorstep!</div>
+        <textarea type="text" class="checkoutrightpleasediv" ng-model="$parent.smoke.detail" placeholder="Please provide details. (Brand, Quantity)" rows="5"></textarea>
+
         <div class="checkoutrighbuttonouter">
-          <button class="checkoutrighbuttoncancel">Cancel</button>
+          <button class="checkoutrighbuttoncancel" ng-click="$parent.smoke.detail=''">Cancel</button>
           <button class="checkoutrighbuttonadd">Add</button>
         </div>
         
