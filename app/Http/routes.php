@@ -18,6 +18,8 @@ Route::get('/', function () {
     return view('frontend');
 });
 
+Route::post('auth/registerfb', 'Auth\AuthController@registerfb');
+
 Route::controller('/auth', 'Auth\AuthController');
 
 Route::controller('/super', 'SuperController');
@@ -216,6 +218,8 @@ Route::controller('/admin', 'Auth\AdminAuthController');
 Route::get('/check', 'UserController@check');
 
 Route::post('/auth', 'UserController@checkAuth');
+
+
 
 Route::get('/loggedUser', 'UserController@loggedUser');
 
