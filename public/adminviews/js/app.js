@@ -10,7 +10,8 @@ var MetronicApp = angular.module("MetronicApp", [
     "ngSanitize",
     "ngCookies",
     "19degrees.ngSweetAlert2",
-    "slugifier"
+    "slugifier",
+    "angular-storage"
 ]); 
 
 
@@ -303,6 +304,11 @@ MetronicApp.controller('FooterController', ['$scope', function($scope) {
     });
 }]);
 
+
+MetronicApp.factory("UserService", ["$q", "$timeout", "$http", "store", function($q, $timeout, $http, store) {
+
+}]);
+
 /* Setup Rounting For All Pages */
 MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
     // Redirect any unmatched url
@@ -313,7 +319,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         .state('dashboard', {
             url: "/dashboard",
             templateUrl: "adminviews/views/dashboard.html",            
-            data: {pageTitle: 'Admin Dashboard Template'},
+            data: {pageTitle: 'Dashboard'},
             controller: "DashboardController",
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
@@ -469,6 +475,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             templateUrl: "adminviews/views/dealers/edit.html",
             data: {pageSubTitle: 'Dealer update'},
             controller:"DealerUpdateController"                
+        })
+
+        .state("dealers.orders",{
+            url: "/orders/{dealerid}",
+            templateUrl: "adminviews/views/dealers/orders.html",
+            data: {pageSubTitle: 'Dealer orders'},
+            controller:"DealerOrderController"                
         })        
 
         .state('categories', {
@@ -933,7 +946,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             data: {pageTitle: 'Cocktail Packages',pageSubTitle: 'Edit',type:2}            
         })
 
-
         .state('timeslots', {
             //url: "/timeslots",            
             abstract:true,
@@ -989,6 +1001,31 @@ MetronicApp.run(["$rootScope", "settings", "$state", function($rootScope, settin
 
     $rootScope.$state = $state; // state to be accessed from view    
 
+}]);
+
+MetronicApp.service('myRequestInterceptor', ['$q', '$rootScope', '$log', 
+function ($q, $rootScope, $log) {    
+    'use strict'; 
+    return {
+        request: function (config) {            
+            return config;
+        },
+        requestError: function (rejection) {
+            return $q.reject(rejection);
+        },
+        response: function (response) {            
+            
+            return response;
+        },
+        responseError: function (rejection) {            
+            if(rejection.status == 401){
+                $state.go('/admin/login');
+            }
+            return $q.reject(rejection);
+        }
+    };
+}]).config(['$httpProvider', function($httpProvider) {
+    $httpProvider.interceptors.push('myRequestInterceptor');
 }]);
 
 var objectToFormData = function(obj, form, namespace) {

@@ -32,3 +32,13 @@ a:hover,a:visited{
     top: -50px;
     height: 0px;
 }
+
+td.details-control {
+    background: url('../images/details_open.png') no-repeat center center;
+    cursor: pointer;
+    width: 15px !important;
+    
+}
+tr.detail td.details-control {
+    background: url('../images/details_close.png') no-repeat center center;
+}

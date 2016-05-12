@@ -438,6 +438,43 @@ class ProductController extends Controller
 
       $params = $request->all();
 
+      /*$r = DB::collection('products')->raw(function($collection)
+      {
+          return $collection->aggregate(array(
+              array(
+                  '$project' => array(
+                      'name'=>'$name',
+                      'quantity'=>'$quantity',
+                      'maxQuantity'=>'$maxQuantity',
+                      'threshold'=>'$threshold',
+                      'sum' => array(
+                          '$subtract' => array(
+                            '$maxQuantity',
+                            '$quantity'
+                          )
+                      ),                      
+                  ),                  
+              ),
+              array(
+                  '$sort' => array('sum'=>-1)
+              ),
+              array(
+                  '$skip' => 0
+              ),
+              array(
+                  '$limit' => 5
+              )
+              array(
+                  '$match' => array(
+                    'sum' => 70
+                  )
+              )   
+          ));
+      });     
+
+      return response($r);*/
+
+
       $products = new Products;
 
       extract($params);      
@@ -468,10 +505,12 @@ class ProductController extends Controller
       ->take((int)$length);
 
       if($notordered){
-        $products = $products->orderBy('quantity','asc')->orderBy('threshold','asc')->orderBy('maxQuantity','asc');
+        $products = $products->with('supplier')->orderBy('quantity','asc')->orderBy('threshold','asc')->orderBy('maxQuantity','asc');
       }
 
       $products = $products->get($columns);
+
+
       
       $response = [
         'recordsTotal' => $iTotalRecords,
@@ -484,5 +523,35 @@ class ProductController extends Controller
       return response($response,200);
     }
      
+    public function updateinventory(Request $request){
+
+        $inputs = $request->all();
+        
+        $id = $inputs['_id'];
+
+        $validator = Validator::make($inputs, [
+            'quantity' => 'required|numeric',
+            'threshold' => 'required|numeric|lt:maxQuantity',
+            'maxQuantity' => 'required|numeric|gte:quantity',
+        ],[
+          'maxQuantity.gte' => 'The value should be greater than or equals to the quantity.',
+          'threshold.lt' => 'The value should be less than maximum quantity.',
+        ]);
+
+        if ($validator->fails()){
+            return response($validator->errors(), 422);
+        }
+
+        $product = Products::find($id);    
+        $product->quantity = $inputs['quantity'];
+        $product->threshold = $inputs['threshold'];
+        $product->maxQuantity = $inputs['maxQuantity'];
+
+        if($product->save()){
+          return response($product, 200);
+        }else{
+          return response('Error in updating inventory.', 422);
+        }
+    } 
 }
     

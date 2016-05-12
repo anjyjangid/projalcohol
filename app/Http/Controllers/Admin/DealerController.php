@@ -11,6 +11,8 @@ use AlcoholDelivery\Http\Controllers\Controller;
 
 use Storage;
 use Validator;
+use AlcoholDelivery\Products;
+use DB;
 
 use AlcoholDelivery\Dealer as Dealer;
 
@@ -261,7 +263,8 @@ class DealerController extends Controller
 
             $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="dealer" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
             $row[] = '<a title="View : '.$value['title'].'" href="#/dealers/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
-                     '<a title="Edit : '.$value['title'].'" href="#/dealers/edit/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
+                     '<a title="Edit : '.$value['title'].'" href="#/dealers/edit/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>
+                     <a title="View Order" ui-sref=dealers.orders({dealerid:"'.$value['_id'].'"}) class="btn btn-xs default">View Orders</a>';
             
             $records['data'][] = $row;
         }
@@ -274,6 +277,58 @@ class DealerController extends Controller
     public function getlist(){
         $dealers = Dealer::where('status','=',1)->get(['_id','title']);                
         return response($dealers,201);
+    }
+
+    public function dealerproduct(Request $request,$id){
+        
+        $dealerObj = new Dealer;
+
+        $dealer = $dealerObj->getDealers(array(
+                        "key"=>$id,
+                        "multiple"=>false
+                    ));
+
+        if($dealer && isset($dealer['address']['country'])){
+            $country = DB::collection('countries')->where('_id', $dealer['address']['country'])->first();
+        }
+
+        $products = DB::collection('products')->raw(function($collection) use($id){
+            return $collection->aggregate(array(                
+                array(
+                    '$project' => array(                        
+                        'name'=>'$name',
+                        'quantity'=>'$quantity',
+                        'maxQuantity'=>'$maxQuantity',
+                        'threshold'=>'$threshold',
+                        'dealers'=>'$dealers',
+                        'sku'=>'$sku',
+                        'sum' => array(                            
+                            '$subtract' => array(                                
+                                array('$divide' => array('$quantity','$maxQuantity')),
+                                array('$divide' => array('$threshold','$maxQuantity'))                               
+                            )                            
+                        ),
+                    ),
+                ),
+                array(
+                    '$sort' => array('sum'=>1)
+                ),                
+                array(
+                    '$match' => array(
+                        'dealers' => array('$elemMatch'=>array('$in'=>[$id])),
+                        //'sum' => array('$lt'=>0)
+                    )
+                )   
+            ));
+        });     
+        
+        $res = [
+            'dealer' => $dealer,
+            'products' => $products['result'],
+            'country' => $country
+        ];    
+
+        return response($res,200);
     }
 
 }

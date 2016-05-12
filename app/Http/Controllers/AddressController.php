@@ -11,159 +11,163 @@ use AlcoholDelivery\User as User;
 
 class AddressController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $loggeduser = Auth::user('user');
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function index()
+	{
+		$loggeduser = Auth::user('user');
 
-        $user = User::find($loggeduser->_id);
+		if(!$loggeduser){
+			return response(array("auth"=>false,"message"=>"Login required"),400);
+		}
 
-        $userAddress = $user->address;
+		$user = User::find($loggeduser->_id);
 
-        return response($userAddress,200);
-    }
+		$userAddress = $user->address;
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+		return response($userAddress,200);
+	}
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(UserAddressRequest $request)
-    {
-        $inputs = $request->all();
-        $loggeduser = Auth::user('user');
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function create()
+	{
+		//
+	}
 
-        $user = User::find($loggeduser->_id);
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return \Illuminate\Http\Response
+	 */
+	public function store(UserAddressRequest $request)
+	{
+		$inputs = $request->all();
+		$loggeduser = Auth::user('user');
 
-        $userAddress = $user->address;
-        $userAddress = (array)$userAddress;
+		$user = User::find($loggeduser->_id);
 
-        $user->address = array_merge($userAddress, array($inputs));
+		$userAddress = $user->address;
+		$userAddress = (array)$userAddress;
 
-        $return = array("success"=>false,"message"=>"","data"=>""); 
+		$user->address = array_merge($userAddress, array($inputs));
 
-        try {
+		$return = array("success"=>false,"message"=>"","data"=>""); 
 
-            $user->save();
+		try {
 
-            $return['success'] = true;
-            $return['message'] = "Address added successfully";
-                        
-        } catch(\Exception $e){
-            $return['message'] = $e->getMessage();//$e->getMessage();
-        }
+			$user->save();
 
-        return response($return);
+			$return['success'] = true;
+			$return['message'] = "Address added successfully";
+						
+		} catch(\Exception $e){
+			$return['message'] = $e->getMessage();//$e->getMessage();
+		}
 
-    }
+		return response($return);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+	}
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function show($id)
+	{
+		//
+	}
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UserAddressRequest $request, $id)
-    {
-        $inputs = $request->all();
-        $loggeduser = Auth::user('user');
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function edit($id)
+	{
+		//
+	}
 
-        $user = User::find($loggeduser->_id);
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function update(UserAddressRequest $request, $id)
+	{
+		$inputs = $request->all();
+		$loggeduser = Auth::user('user');
 
-        $address = $user->__get("address");
+		$user = User::find($loggeduser->_id);
 
-        $inputs['updated_at'] = new DateTime();
-        $address[$id] = $inputs;
+		$address = $user->__get("address");
 
-        $user->__set("address",$address);        
+		$inputs['updated_at'] = new DateTime();
+		$address[$id] = $inputs;
 
-        $return = array("success"=>false,"message"=>"","data"=>""); 
+		$user->__set("address",$address);        
 
-        try {
+		$return = array("success"=>false,"message"=>"","data"=>""); 
 
-            $user->save();
+		try {
 
-            $return['success'] = true;
-            $return['message'] = "Address updated successfully";
-                        
-        } catch(\Exception $e){
-            $return['message'] = $e->getMessage();//$e->getMessage();
-        }
+			$user->save();
 
-        return response($return);
-    }
+			$return['success'] = true;
+			$return['message'] = "Address updated successfully";
+						
+		} catch(\Exception $e){
+			$return['message'] = $e->getMessage();//$e->getMessage();
+		}
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
+		return response($return);
+	}
 
-        $loggeduser = Auth::user('user');
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function destroy($id)
+	{
 
-        $user = User::find($loggeduser->_id);
+		$loggeduser = Auth::user('user');
 
-        $address = $user->__get("address");
-        
-        unset($address[$id]);
+		$user = User::find($loggeduser->_id);
 
-        $user->__set("address",$address);
+		$address = $user->__get("address");
+		
+		unset($address[$id]);
 
-        $return = array("success"=>false,"message"=>"","data"=>""); 
+		$user->__set("address",$address);
 
-        try {
+		$return = array("success"=>false,"message"=>"","data"=>""); 
 
-            $user->save();
+		try {
 
-            $return['success'] = true;
-            $return['message'] = "Address successfully removed";
-                        
-        } catch(\Exception $e){
-            $return['message'] = $e->getMessage();//$e->getMessage();
-        }
+			$user->save();
 
-        return response($return);
+			$return['success'] = true;
+			$return['message'] = "Address successfully removed";
+						
+		} catch(\Exception $e){
+			$return['message'] = $e->getMessage();//$e->getMessage();
+		}
 
-    }
+		return response($return);
+
+	}
 }

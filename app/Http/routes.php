@@ -92,6 +92,8 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 			
 		Route::post('getdealers', 'Admin\DealerController@getdealers');
 
+		Route::get('dealerproduct/{id}', 'Admin\DealerController@dealerproduct');
+
 		Route::get('getlist','Admin\DealerController@getlist');
 		//Route::post('remove', 'Admin\DealerController@remove');
 
@@ -152,7 +154,7 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 		Route::get('edit/{id}','Admin\ProductController@edit');
 		Route::post('update/{id}','Admin\ProductController@update');
 		Route::post('orderproduct','Admin\ProductController@orderProduct');
-		
+		Route::post('updateinventory','Admin\ProductController@updateinventory');		
 	});
 
 

@@ -1,0 +1,165 @@
+<div class="checkbox-gray-top">
+<div class="checkbox-gray-top-first">
+		
+	 <md-switch aria-label="cart.nonchilled" ng-model="cart.nonchilled" ng-change="setCartChilled(cart.nonchilled)"></md-switch>
+<!--  <div id="slider-2" class="slider demo">
+			<input type="checkbox" checked="" value="1" style="display: none;"><span class="switch-button-label off" style="display: none;">NO</span><div class="switch-button-background checked" style="width: 45px; height: 21px;"><div class="switch-button-button" style="width: 19px; height: 25px; left: 24px;"></div></div><span class="switch-button-label on" style="display: none;">YES</span><div style="clear: left;"></div>
+	</div> -->
+</div>
+<div class="checkbox-gray-toptext">SAVE {{services.chilled | currency:settings.general.currency:2}} by choosing to have your drinks delivered Non-Chilled.</div>
+</div>
+<div class="checkoutmiddletable">
+<table class="table">          
+	<tbody>
+		<tr ng-repeat="(key, cartproduct) in cart.products">
+			<td width="52%"> 
+				<div class="orhistry2_td2procdtcvr">
+					<span><img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" /></span>
+					<div class="checkouter-td-right-text">
+						<div class="orhistry2_td2proctext1">{{cartproduct.name}}</div>
+						<div class="orhistry2_td2proctext2">{{cartproduct.product.shortDescription}}</div>
+						<div class="orhistry2_td2proctext1">{{settings.general.currency}} {{cartproduct.product.price}}</div>
+						<div class="orhistry2_td2proctext2">unit Price</div>
+				 	</div> 
+				</div>
+			</td>
+			<td>
+					<div class="prod_chilled" ng-class="{
+															notchilled:!cartproduct.chilled,
+															invisible:!cartproduct.product.chilled,
+															invisible:cart.nonchilled
+														}" 
+														ng-click="cartproduct.chilled=!cartproduct.chilled">
+						<span>Chilled</span>
+						<div class="prod_chilled_icon"></div>
+					</div>
+
+					<!-- <div class="orderhistrychilcvr">
+						<span1><img src="images/product13.png"></span1><span>CHILLED</span>
+					</div> -->
+			</td>
+			<td>
+				<div class="checkoutmiddlevlauediv">
+					<input type="text" ng-model="cartproduct.quantity" value="{{cartproduct.quantity}}" min="1" max="100" ng-touch-spin on-increment="addtocart()" on-decrement="addtocart()">
+					
+				</div>
+			</td>
+			<td>
+				<div class="orderhistry2price">{{cartproduct.price | currency:settings.general.currency:2}}</div>
+			</td>
+			<td> 
+				<a class="checkoutmiddletabledeleteimg" href=""><i class="glyphicon glyphicon-trash"></i></a>
+			</td>
+		</tr>
+
+
+	</tbody>
+</table>
+</div>
+<div class="checkboxtotaldiv">
+ <div class="checkboxtotaldiv-top">
+	<div class="checkboxtotaldiv-title">Subtotal</div>
+	<div class="checkboxtotaldiv-text">{{cart.subtotal | currency:settings.general.currency:2}}</div>
+ </div>
+ <div class="checkboxtotaldiv-middle">
+	<div class="checkboxtotaldiv-middle-first">
+	<div class="checkboxtotaldiv-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
+	<div class="checkboxtotaldiv-text">FREE</div>
+	</div>
+	<div class="checkboxtotaldiv-middle-first">
+	<div class="checkboxtotaldiv-title">Service Charge <span class=""><img src="images/questionimg.png"></span></div>
+	<div class="checkboxtotaldiv-text">{{cart.service.total | currency:settings.general.currency:2}}</div>
+	</div>
+	<div class="checkboxtotaldiv-middle-first">
+	<div class="checkboxtotaldiv-title">Discount (Non-Chilled) <span class=""><img src="images/questionimg.png"></span></div>
+	<div class="checkboxtotaldiv-text" ng-class="{txtcross:!cart.nonchilled}">-{{services.chilled | currency:settings.general.currency:2}}</div>
+	</div>
+ </div>
+ <div class="checkboxtotaldiv-buttom">
+	<div class="checkboxtotaldiv-title">Total</div>
+	<div class="checkboxtotaldiv-text">{{cart.total | currency:settings.general.currency:2}}
+		<!-- <div class="congratulationpopup">
+			<div class="congratulationpopupimg"><img src="images/thumbimg.png"></div>
+			<div class="congratulationpopuptext">
+			 <div class="congratulationpopuptext-title">Congratulations!</div>
+			 <div class="congratulationpopuptext-text">Advance ordering discounts have been applied!</div>
+			</div>
+		</div> -->
+	</div>
+ </div>
+</div>
+<div class="checkouterwantbuttonouter">
+	<div class="checkouterwantfirst">
+	<button data-target="#Modal-dontmiss" data-toggle="modal" class="checkouterwantbutton">I want this order Now!</button>
+	<span>(Standard 1 hour delivery)</span>
+	<button class="checkoutergitpackage">Gift Packaging</button>
+</div>
+	<div class="checkouterexprienceouter">
+
+	 <div class="checkouterexpressdivleft checkbox-gray-top-first">
+	 <md-switch aria-label="express" ng-model="cart.service.express.status" ng-change="updatePricing()"></md-switch>
+	
+	</div>
+	 <div class="checkouterexpressdiv">
+		 <div class="checkouterexpresstitle">Express Delivery</div>
+		 <div class="checkouterexpresstext">Gauranteed 30 mins delivery.</div>
+		 <div class="checkouterexpresstext">$50 surcharge applies. <a href="">Terms &amp; Conditions</a> applies.</div>
+	 </div>
+	</div>
+</div>
+
+<div ng-if="cart.service.express.status">
+<div ng-if="1">
+ <div class="checkoutcongratulationouter" >
+	 <div class="checkout-congratulation-title">Congratulations! You qualify for special $100 promotion.</div>
+	 <div class="checkout-congratulation-text">Please select one of the following products. Only applicable for 1 hour deliveries.</div>
+ </div>
+ <div class="checkout-product">
+	<div class="row">
+	 	<div class="col-md-3 col-sm-3 col-xs-12 " ng-repeat="n in [1, 2, 3, 4] track by $index">
+					
+			<div class="prod_pic"><img class="img-responsive" src="images/product.png"></div>
+			<div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
+			<div class="prod_price">28.00 SGD</div>
+			<div class="prod_discout_price">24.00 SGD</div>
+			<button class="checkoutproductbutton">AdD Promo</button>
+
+		</div>
+	 
+	</div>               
+ </div>
+</div>
+
+<div ng-if="1">
+ <div class="checkoutcongratulationouter">
+	 <div class="checkout-congratulation-title">You qualify for special $250 promotion.</div>
+	 <div class="checkout-congratulation-text">Please select one of the following products. Only applicable for 1 hour deliveries.</div>
+ </div>
+ <div class="checkout-product">
+ 	<div class="row">
+			<div class="col-md-3 col-sm-3 col-xs-12" ng-repeat="n in [1, 2, 3, 4] track by $index">
+			<div class="prod_pic"><img class="img-responsive" src="images/product.png"></div>
+			<div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
+			<div class="prod_price">28.00 SGD</div>
+			<div class="prod_discout_price">24.00 SGD</div>
+			<button class="checkoutproductbutton">AdD Promo</button>
+		</div>
+
+	</div>
+ </div>
+</div>
+
+</div>
+
+
+
+<div class="checkouterlastdiv">
+ <div class="checkouterwantfirst">
+	<button class="checkouterwantbutton">I want this order Later!</button>
+	<span>(Scheduled delivery)</span>
+</div>
+<div class="checkouterbackouter">
+ <a class="checkouterback" href=""><span><img src="images/order_history2backpic.png"></span>back to shopping</a>
+ <button class="checkoutcheckoutnowbutton" on-click="checkout()">Checkout Now</button>
+</div>
+</div>

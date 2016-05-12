@@ -561,7 +561,7 @@ AlcoholDelivery.directive('sideBar', function() {
 	}
 }])
 
-AlcoholDelivery.directive('ngBlur', ['$parse', function($parse){
+.directive('ngBlur', ['$parse', function($parse){
 	return function(scope, element, attr) {
 		var fn = $parse(attr['ngBlur']);
 		element.on('blur', function(event) {
@@ -570,9 +570,9 @@ AlcoholDelivery.directive('ngBlur', ['$parse', function($parse){
 			});
 		});
 	};
-}]);
+}])
 
-AlcoholDelivery.directive("apFocusOut", ['$document','$parse', function( $document, $parse ){
+.directive("apFocusOut", ['$document','$parse', function( $document, $parse ){
     return {
         link: function( $scope, $element, $attributes ){
             var scopeExpression = $attributes.apFocusOut,
