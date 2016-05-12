@@ -96,12 +96,12 @@ MetronicApp.controller('TimeslotFormController',['$rootScope', '$scope', '$timeo
             });
         })
         .success(function(response) {               
-            
+            $scope.error = []; 
             Metronic.alert({
                 type: 'success',
                 icon: 'check',
                 message: response.message,
-                container: '#info-message',
+                container: '.portlet-body',
                 place: 'prepend',
                 closeInSeconds: 3
             });

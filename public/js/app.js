@@ -450,6 +450,8 @@ AlcoholDelivery.controller('ProfileController',['$scope','$rootScope','$state','
 
 AlcoholDelivery.controller('PasswordController',['$scope','$rootScope','$state','$http','sweetAlert',function($scope,$rootScope,$state,$http,sweetAlert){
 
+	
+	
 	$scope.password = {
 		current:'',
 		new:'',
