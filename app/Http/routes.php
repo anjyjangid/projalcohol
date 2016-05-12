@@ -209,8 +209,8 @@ Route::get('asset/i/{filename}', function ($filename)
     return Image::make(public_path('img') . '/' . $filename)->response();
 });
 
-
 Route::controller('/admin/password', 'Auth\AdminPasswordController');
+
 Route::controller('/admin', 'Auth\AdminAuthController');
 
 Route::controller('/admin', 'Auth\AdminAuthController');

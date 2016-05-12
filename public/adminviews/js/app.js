@@ -305,7 +305,41 @@ MetronicApp.controller('FooterController', ['$scope', function($scope) {
 }]);
 
 
-MetronicApp.factory("UserService", ["$q", "$timeout", "$http", "store", function($q, $timeout, $http, store) {
+
+MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", function($q, $timeout, $http, store) {
+
+    var currentUser = null;
+
+    this.getUser = function(){
+        if (!currentUser) {
+            currentUser = store.get('AdminUser');
+        }
+        return currentUser;
+    };
+
+    this.storeUser = function(data){
+        return store.set('AdminUser',data);
+    };
+
+    this.removeUser = function(){
+        return store.remove('AdminUser');
+    };
+
+}]);
+
+MetronicApp.controller('LoginController', ['$scope','AdminUserService', '$rootScope', '$http', function($scope, AdminUserService, $rootScope, $http) {    
+    
+    $scope.credentials = {};
+    $scope.errors = [];
+
+    $scope.adminlogin = function(){
+        $http.post('/admin/login',$scope.credentials).success(function(res){
+            AdminUserService.storeUser(res);
+            $scope.errors = [];
+        }).error(function(data, status, headers) {
+            $scope.errors = data;
+        });
+    };
 
 }]);
 
@@ -969,6 +1003,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             url: "/timeslots",
             templateUrl: "adminviews/views/timeslots/timeslots.html",
             data: {pageTitle: 'Time Slots'}
+        })
+
+        .state("login", {
+            url: "/login",
+            templateUrl: "adminviews/views/login.html",
+            data: {pageTitle: 'Administrator Login'},            
+            controller: "LoginController"            
         });        
 }]);
 
