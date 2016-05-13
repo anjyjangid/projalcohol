@@ -1,0 +1,49 @@
+<div class="productdetailbrudcumcover">
+	<a ui-sref="/">Home</a>
+	<img src="images/productdetail2.png">
+	<a>Packages</a>
+	<img src="images/productdetail2.png">
+	<a>Party Packages</a>	
+</div>
+
+<div class="row">
+	
+	<div class="col-md-12">		
+		<v-accordion id="accordionA" class="vAccordion--default" control="accordionA" onexpand="expandCallback(index, id)" oncollapse="collapseCallback(index, id)">
+	        <v-pane id="{{ ::package._id }}" ng-repeat="package in packages">
+	          <v-pane-header id="{{ ::package._id }}-header" aria-controls="{{ ::package._id }}-content">
+	            <div style="position:relative;">
+					<img style="vertical-align:top;" err-src="asset/i/defaultImage.png" class="img-responsive" ng-src="packages/i/{{package.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+					<div style="position: absolute;top: 0;width:100%;">
+						<p>{{package.title}}</p>
+						<p>{{package.subTitle}}</p>
+						<p>{{package.description}}</p>
+					</div>
+				</div>	            
+	          </v-pane-header>
+	          <v-pane-content id="{{ ::package._id }}-content" aria-labelledby="{{ ::package._id }}-header">
+	            <p>Customise your own package</p>
+	            <v-accordion id="nestedAccordionA">
+	              <v-pane id="{{$index}}" ng-repeat="packageItem in package.packageItems" ng-disabled="subpane.isDisabled">
+	                <v-pane-header id="{{ ::subpane.id }}-header" aria-controls="{{ ::subpane.id }}-header">
+	                  <h5>{{ ::packageItem.title }}</h5>
+	                </v-pane-header>
+	                <v-pane-content id="{{ ::subpane.id }}-content" aria-labelledby="{{ ::subpane.id }}-content">
+	                  <p>{{ ::subpane.content }}</p>
+	                </v-pane-content>
+	              </v-pane>
+	            </v-accordion>
+	            <div class="pull-left" style="padding: 15px;margin-left: 15px;">
+	            	<p>Package Amount</p>
+	            	<h3>$54.99</h3>
+	            	<p>Savings</p>
+	            	<p>$10</p>
+	            	<button class="btn product_addcart">Add to Cart</button>
+	            </div>
+	          </v-pane-content>
+	        </v-pane>
+      </v-accordion>		
+	</div>
+
+</div>
+	

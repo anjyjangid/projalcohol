@@ -12,7 +12,8 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ngMaterial',
 	'ngMessages',
 	'ngTouch',
-	'ngMap'
+	'ngMap',
+	'vAccordion'
 ]);
 
 
@@ -1140,6 +1141,32 @@ AlcoholDelivery.factory("CartSession", ["$q", "$timeout", "$http","$rootScope", 
 
 }]);
 
+AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
+	
+	$rootScope.appSettings.layout.pageRightbarExist = false;
+
+	$scope.AppController.category = "packages";
+	$scope.AppController.subCategory = $stateParams.type;
+
+	$scope.packages = [];
+	
+	$http.get('/package/'+$stateParams.type).success(function(response){
+		$scope.packages = response;
+	});	
+
+	  $scope.expandCallback = function (index, id) {
+	    console.log('expand:', index, id);
+	  };
+
+	  $scope.collapseCallback = function (index, id) {
+	    console.log('collapse:', index, id);
+	  };
+
+	  $scope.$on('accordionA:onReady', function () {
+	    console.log('accordionA is ready!');
+	  });
+
+}]);
 // /* Setup global settings */
 // AlcoholDelivery.factory('UserService', [function() {
 //     // supported languages
@@ -1250,32 +1277,34 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						data: {step: 'cart'},
 						// controller:"CartController"
 				})
+
 				.state('mainLayout.checkout.address', {
 						url: "/cart/address",
 						templateUrl : "/templates/checkout/address.html",
 						data: {step: 'address'},
 						controller:"CartAddressController"
 				})
+
 				.state('mainLayout.checkout.delivery', {
 						url: "/cart/delivery",
 						templateUrl : "/templates/checkout/delivery.html",
 						data: {step: 'delivery'},
 						controller:"CartDeliveryController"
 				})
+
 				.state('mainLayout.checkout.payment', {
 						url: "/cart/payment",
 						templateUrl : "/templates/checkout/payment.html",
 						data: {step: 'payment'},
 						controller:"CartPaymentController"
 				})
+
 				.state('mainLayout.checkout.review', {
 						url: "/cart/review",
 						templateUrl : "/templates/checkout/review.html",
 						data: {step: 'review'},
 						controller:"CartReviewController"
 				})
-
-
 
 				.state('mainLayout.login', {
 
@@ -1438,6 +1467,15 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						url: "/product/{product}",
 						templateUrl: "/templates/product/detail.html",
 						controller: "ProductDetailController"
+				})
+
+				.state('mainLayout.packages', {
+						url: "/packages/{type}",
+						templateUrl : function(stateParams){
+							return "/templates/packages/"+stateParams.type+".html";
+						},
+						params: {pageTitle: 'Packages'},
+						controller:"PackagesController",						
 				})
 
 				.state('mainLayout.category', {

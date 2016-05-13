@@ -61,6 +61,8 @@ Route::get('/admin/dashboard', ['uses' => 'Admin\AdminController@dashboard']);
 
 Route::resource('address', 'AddressController');
 
+Route::resource('package', 'PackageController',['only'=>['*']]);
+Route::controller('package', 'PackageController');
 
 Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 	
