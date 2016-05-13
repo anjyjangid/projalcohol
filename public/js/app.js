@@ -12,7 +12,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ngMaterial',
 	'ngMessages',
 	'ngTouch',
-	'ngFacebook'
+	'ngFacebook',
 	'ngMap'
 ]);
 
