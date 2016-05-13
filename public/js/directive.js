@@ -31,7 +31,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			user:'='
 		},*/
 		templateUrl: '/templates/partials/topmenu.html',
-		controller: function($scope,$rootScope,$http,$state,sweetAlert){			
+		controller: function($scope,$rootScope,$http,$state,sweetAlert,$facebook){			
 			
 			$scope.list = [];
 
@@ -143,7 +143,8 @@ AlcoholDelivery.directive('sideBar', function() {
 
 	        $scope.logout = function() {
 				$http.get('/auth/logout').success(function(response){
-	                $scope.user = {};      									
+	                $scope.user = {};
+	                $facebook.logout();   									
 	            }).error(function(data, status, headers) {                            						                
 	            });
 			};

@@ -2543,6 +2543,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', end
 .checkouterexpressdiv{
 	float:left;
 	width:60%;
+	margin-left:15px;
 }
 .checkouterexpressdivleft{
 	float:left;
@@ -2555,6 +2556,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', end
 	color:#222222;
 	font-weight:500;
 	margin-bottom:10px;
+	margin-top:5px;
 }
 .checkouterexpresstext{
 	font-size:12px;
@@ -5163,4 +5165,67 @@ md-backdrop.md-dialog-backdrop {
 }
 .sweet-alert{
 	z-index: 100001;
+}
+md-switch.md-default-theme.md-checked .md-bar, md-switch.md-checked .md-bar {
+    background-color:#ffc412;
+}
+md-switch .md-bar {
+    border-radius: 30px;
+    height:21px;
+    left:-2px;
+    position: absolute;
+    top: 0px;
+    width:45px;
+	margin:0px 0px;
+}
+md-switch.md-default-theme.md-checked .md-thumb, md-switch.md-checked .md-thumb {
+    background-color: #ffffff;
+    border: 2px solid #564111;
+    height: 17px;
+    width: 17px;
+}
+md-switch.md-default-theme.md-checked .md-ink-ripple, md-switch.md-checked .md-ink-ripple {
+    color: #ffc412;
+}
+
+md-switch .md-container {
+    -moz-user-select: none;
+    cursor: grab;
+    float: left;
+    height: 21px;
+    margin-right: 0px;
+    position: relative;
+    width: 45px;
+}
+
+md-switch .md-thumb{
+	 background-color: #ffffff;
+    border: 2px solid #564111;
+    height: 17px;
+    width: 17px;
+}
+md-switch .md-thumb-container{
+	width:23px;
+}
+
+
+#smokeneedpanel md-switch .md-thumb{
+    border: 0px solid #564111;
+    height: 20px;
+    width: 20px;
+}
+
+#smokeneedpanel md-switch .md-container {
+    -moz-user-select: none;
+    cursor: grab;
+    float: left;
+    height: 24px;
+    margin-right: 8px;
+    position: relative;
+    width: 100%;
+}
+
+md-switch{
+	margin-top:0px;
+	margin-bottom:0px;
 }

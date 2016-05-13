@@ -85,6 +85,76 @@ class AuthController extends Controller
 
 	}
 
+	public function registerfb(Request $request)
+	{
+		$data = $request->all();
+		$update = false;
+		$login = false;
+
+		if(isset($data['fbid']) && $data['fbid']!="" 
+			&& isset($data['email']) && $data['email']!="")
+		{
+			$user = User::where("fbid","=",$data['fbid'])->first();
+			if(!empty($user))
+			{
+				// check if email is same or not //
+				/*if(isset($user['email']) && $user['email'] != $data['email'])
+				{
+					// update data //
+					$update = true;
+				}*/
+
+				// login //
+				$login = true;
+			}
+			else
+			{
+				// check based on email //
+				$user = User::where("email","=",$data['email'])->first();
+				if(!empty($user))
+				{
+					$update = true;
+					$login = true;
+				}
+			}
+		}
+		else
+		{
+			return response(array("success"=>false,"message"=>'Incorrect data'));
+		}
+
+		// check if update is true then update data //
+		if($update)
+		{
+			$user->fbid = $data['fbid'];
+			$user->email = $data['email'];
+			$user->save();
+		}
+		else if(!$update && !$login)
+		{
+			// create new record //
+			$user = User::create([
+
+				'email' => $data['email'],
+				'fbid' => $data['fbid'],
+				'name' => $data['name']?$data['name']:'',
+				'status' => 1,
+				'verified' => 1,
+
+			]);
+
+			$login = true;
+		}
+
+		if($login)
+		{
+			Auth::login($user);
+			return response(array("success"=>true,"data"=>$user));
+		}
+
+		return response(array("success"=>false,"message"=>'Please try again'));
+	}
+
 	/**
 	 * Create a new user instance after a valid registration.
 	 *
