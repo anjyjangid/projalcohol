@@ -6,7 +6,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ngSanitize',
 	'ui.bootstrap', 
 	'bootstrapLightbox', 
-	"19degrees.ngSweetAlert2",
+	'19degrees.ngSweetAlert2',
 	'angular-loading-bar',
 	'ngAnimate',
 	'ngMaterial',
@@ -14,8 +14,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ngTouch',
 	'ngMap',
 	'vAccordion',
-	'ngFacebook',
-	'ngMap'
+	'ngFacebook'	
 ]);
 
 

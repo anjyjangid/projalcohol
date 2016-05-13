@@ -39,7 +39,7 @@
 		<link rel="stylesheet" type="text/css" href="css/screen-ui.css">
 		<link rel="stylesheet" type="text/css" href="css/ui_responsive.css">
 		<link rel="stylesheet" type="text/css" href="css/app.css">
-		<link rel="stylesheet" type="text/css" href="css/v-accordion.css">
+		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/v-accordion/dist/v-accordion.css') }}">
 		
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -192,5 +192,6 @@
     <script type="text/javascript" src="js/directive.js"></script>
 
     <script src="js/ngFacebook.js"></script>
+    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>
 	
 </html>

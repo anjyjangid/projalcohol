@@ -4,27 +4,23 @@
 (function(window, document) {
   'use strict';
 
-  window.swalClasses = {
-    container: 'sweet-container',
-    modal: 'sweet-alert',
-    overlay: 'sweet-overlay',
-    close: 'sweet-close',
-    content: 'sweet-content',
-    spacer: 'sweet-spacer',
-    confirm: 'sweet-confirm',
-    cancel: 'sweet-cancel',
-    icon: 'sweet-icon',
-    image: 'sweet-image',
-    iconTypes: {
-      success: 'sweet-success',
-      warning: 'sweet-warning',
-      info: 'sweet-info',
-      question: 'sweet-question',
-      error: 'sweet-error'
+  window.swalPrefix = 'swal2-';
+  var prefix = function(items) {
+    var result = {};
+    for (var i in items) {
+      result[items[i]] = window.swalPrefix + items[i];
     }
+    return result;
   };
 
-  var mediaqueryId = 'sweet-alert-mediaquery';
+  window.swalClasses = prefix([
+    'container', 'modal', 'overlay', 'close', 'content', 'spacer', 'confirm', 'cancel', 'icon', 'image',
+    'input', 'select', 'radio', 'checkbox', 'textarea', 'validationerror'
+  ]);
+
+  window.swalClasses.iconTypes = prefix(['success', 'warning', 'info', 'question', 'error']);
+
+  var mediaqueryId = window.swalPrefix + 'mediaquery';
   var defaultParams = {
     title: '',
     text: '',
@@ -35,8 +31,7 @@
     allowEscapeKey: true,
     showConfirmButton: true,
     showCancelButton: false,
-    closeOnConfirm: true,
-    closeOnCancel: true,
+    preConfirm: null,
     confirmButtonText: 'OK',
     confirmButtonColor: '#3085d6',
     confirmButtonClass: null,
@@ -53,7 +48,15 @@
     timer: null,
     width: 500,
     padding: 20,
-    background: '#fff'
+    background: '#fff',
+    input: null, // 'text' | 'email' | 'password' | 'select' | 'radio' | 'checkbox' | 'textarea'
+    inputPlaceholder: '',
+    inputValue: '',
+    inputOptions: {},
+    inputAutoTrim: true,
+    inputClass: null,
+    inputAttributes: {},
+    inputValidator: null
   };
 
   /*
@@ -71,6 +74,15 @@
     return new RegExp(' ' + className + ' ').test(' ' + elem.className + ' ');
   };
 
+  var focusInput = function(input) {
+    input.focus();
+
+    // http://stackoverflow.com/a/2345915/1331425
+    var val = input.value;
+    input.value = '';
+    input.value = val;
+  };
+
   var addClass = function(elem, className) {
     if (className && !hasClass(elem, className)) {
       elem.className += ' ' + className;
@@ -84,6 +96,14 @@
         newClass = newClass.replace(' ' + className + ' ', ' ');
       }
       elem.className = newClass.replace(/^\s+|\s+$/g, '');
+    }
+  };
+
+  var getChildByClass = function(elem, className) {
+    for (var i = 0; i < elem.childNodes.length; i++) {
+      if (elem.childNodes[i].classList.contains(className)) {
+        return elem.childNodes[i];
+      }
     }
   };
 
@@ -128,11 +148,11 @@
     elem.style.display = 'block';
 
     var height = elem.clientHeight;
-    var padding = parseInt(getComputedStyle(elem).getPropertyValue('padding'), 10);
+    var paddingTop = parseInt(getComputedStyle(elem).getPropertyValue('padding-top'), 10);
 
     elem.style.left = '';
     elem.style.display = 'none';
-    return ('-' + parseInt(height / 2 + padding, 10) + 'px');
+    return ('-' + parseInt(height / 2 + paddingTop, 10) + 'px');
   };
 
   var fadeIn = function(elem, interval) {
@@ -197,7 +217,6 @@
   };
 
   // Remember state in cases where opening and handling a modal will fiddle with it.
-  var previousActiveElement;
   var previousDocumentClick;
   var previousWindowKeyDown;
   var lastFocusedButton;
@@ -207,8 +226,8 @@
     var modal = getModal();
     window.onkeydown = previousWindowKeyDown;
     document.onclick = previousDocumentClick;
-    if (previousActiveElement) {
-      previousActiveElement.focus();
+    if (window.previousActiveElement) {
+      window.previousActiveElement.focus();
     }
     lastFocusedButton = undefined;
     clearTimeout(modal.timeout);
@@ -247,6 +266,7 @@
    * Set type, text and actions on modal
    */
   var setParameters = function(params) {
+    var i;
     var modal = getModal();
 
     // set modal width, padding and margin-left
@@ -285,14 +305,14 @@
       if (typeof params.html === 'object') {
         $content.innerHTML = '';
         if (0 in params.html) {
-          for (var i = 0; i in params.html; i++) {
+          for (i = 0; i in params.html; i++) {
             $content.appendChild(params.html[i]);
           }
         } else {
           $content.appendChild(params.html);
         }
       } else {
-        $content.innerHTML = params.html || ('<p>' + params.text.split('\n').join('<br>') + '</p>');
+        $content.innerHTML = params.html || (params.text.split('\n').join('<br>'));
       }
       show($content);
     } else {
@@ -370,6 +390,110 @@
       hide($customImage);
     }
 
+    // input, select
+    var inputTypes = ['input', 'select', 'radio', 'checkbox', 'textarea'];
+    var input;
+    for (i = 0; i < inputTypes.length; i++) {
+      var inputClass = window.swalClasses[inputTypes[i]];
+      input = getChildByClass(modal, inputClass);
+
+      // set attributes
+      while (input.attributes.length > 0) {
+        input.removeAttribute(input.attributes[0].name);
+      }
+      for (var attr in params.inputAttributes) {
+        input.setAttribute(attr, params.inputAttributes[attr]);
+      }
+
+      // set class
+      input.className = inputClass;
+      if (params.inputClass) {
+        addClass(input, params.inputClass);
+      }
+
+      _hide(input);
+    }
+    switch (params.input) {
+      case 'text':
+      case 'email':
+      case 'password':
+        input = getChildByClass(modal, window.swalClasses.input);
+        input.value = params.inputValue;
+        input.placeholder = params.inputPlaceholder;
+        input.type = params.input;
+        _show(input);
+        break;
+      case 'select':
+        var select = getChildByClass(modal, window.swalClasses.select);
+        select.innerHTML = '';
+        if (params.inputPlaceholder) {
+          var placeholder = document.createElement('option');
+          placeholder.innerHTML = params.inputPlaceholder;
+          placeholder.disabled = true;
+          placeholder.selected = true;
+          select.appendChild(placeholder);
+        }
+        for (var optionValue in params.inputOptions) {
+          var option = document.createElement('option');
+          option.value = optionValue;
+          option.innerHTML = params.inputOptions[optionValue];
+          if (params.inputValue === optionValue) {
+            option.selected = true;
+          }
+          select.appendChild(option);
+        }
+        _show(select);
+        break;
+      case 'radio':
+        var radio = getChildByClass(modal, window.swalClasses.radio);
+        radio.innerHTML = '';
+        for (var radioValue in params.inputOptions) {
+          var id = 1;
+          var radioInput = document.createElement('input');
+          var radioLabel = document.createElement('label');
+          var radioLabelSpan = document.createElement('span');
+          radioInput.type = 'radio';
+          radioInput.name = window.swalClasses.radio;
+          radioInput.value = radioValue;
+          radioInput.id = window.swalClasses.radio + '-' + (id++);
+          if (params.inputValue === radioValue) {
+            radioInput.checked = true;
+          }
+          radioLabelSpan.innerHTML = params.inputOptions[radioValue];
+          radioLabel.appendChild(radioInput);
+          radioLabel.appendChild(radioLabelSpan);
+          radioLabel.for = radioInput.id;
+          radio.appendChild(radioLabel);
+        }
+        _show(radio);
+        break;
+      case 'checkbox':
+        var checkbox = getChildByClass(modal, window.swalClasses.checkbox);
+        var checkboxInput = modal.querySelector('#' + window.swalClasses.checkbox);
+        checkboxInput.value = 1;
+        checkboxInput.checked = Boolean(params.inputValue);
+        var label = checkbox.getElementsByTagName('span');
+        if (label.length) {
+          checkbox.removeChild(label[0]);
+        }
+        label = document.createElement('span');
+        label.innerHTML = params.inputPlaceholder;
+        checkbox.appendChild(label);
+        _show(checkbox);
+        break;
+      case 'textarea':
+        var textarea = getChildByClass(modal, window.swalClasses.textarea);
+        textarea.value = params.inputValue;
+        textarea.placeholder = params.inputPlaceholder;
+        _show(textarea);
+        break;
+      case null:
+        break;
+      default:
+        window.console.error('Unexpected type of input! Expected "text" or "email" or "password", "select", "checkbox" or "textarea", got ' + typeof arguments[0]);
+        break;
+    }
+
     // Cancel button
     if (params.showCancelButton) {
       $cancelBtn.style.display = 'inline-block';
@@ -434,10 +558,10 @@
     var modal = getModal();
     fadeIn(getOverlay(), 10);
     show(modal);
-    addClass(modal, 'show-sweet-alert');
-    removeClass(modal, 'hide-sweet-alert');
+    addClass(modal, 'show-swal2');
+    removeClass(modal, 'hide-swal2');
 
-    previousActiveElement = document.activeElement;
+    window.previousActiveElement = document.activeElement;
 
     addClass(modal, 'visible');
   };
@@ -454,7 +578,7 @@
   function modalDependant() {
 
     if (arguments[0] === undefined) {
-      window.console.error('sweetAlert expects at least 1 attribute!');
+      window.console.error('sweetAlert2 expects at least 1 attribute!');
       return false;
     }
 
@@ -480,8 +604,7 @@
         params.allowEscapeKey     = arguments[0].allowEscapeKey !== undefined ? arguments[0].allowEscapeKey : defaultParams.allowEscapeKey;
         params.showConfirmButton  = arguments[0].showConfirmButton !== undefined ? arguments[0].showConfirmButton : defaultParams.showConfirmButton;
         params.showCancelButton   = arguments[0].showCancelButton !== undefined ? arguments[0].showCancelButton : defaultParams.showCancelButton;
-        params.closeOnConfirm     = arguments[0].closeOnConfirm !== undefined ? arguments[0].closeOnConfirm : defaultParams.closeOnConfirm;
-        params.closeOnCancel      = arguments[0].closeOnCancel !== undefined ? arguments[0].closeOnCancel : defaultParams.closeOnCancel;
+        params.preConfirm         = arguments[0].preConfirm || defaultParams.preConfirm;
         params.timer              = parseInt(arguments[0].timer, 10) || defaultParams.timer;
         params.width              = parseInt(arguments[0].width, 10) || defaultParams.width;
         params.padding            = parseInt(arguments[0].padding, 10) || defaultParams.padding;
@@ -500,6 +623,30 @@
         params.imageWidth         = arguments[0].imageWidth || defaultParams.imageWidth;
         params.imageHeight        = arguments[0].imageHeight || defaultParams.imageHeight;
         params.imageClass         = arguments[0].imageClass || defaultParams.imageClass;
+
+        params.input              = arguments[0].input || defaultParams.input;
+        params.inputPlaceholder   = arguments[0].inputPlaceholder || defaultParams.inputPlaceholder;
+        params.inputValue         = arguments[0].inputValue || defaultParams.inputValue;
+        params.inputOptions       = arguments[0].inputOptions || defaultParams.inputOptions;
+        params.inputAutoTrim      = arguments[0].inputAutoTrim !== undefined ? arguments[0].inputAutoTrim : defaultParams.inputAutoTrim;
+        params.inputClass         = arguments[0].inputClass || defaultParams.inputClass;
+        params.inputAttributes    = arguments[0].inputAttributes || defaultParams.inputAttributes;
+        params.inputValidator     = arguments[0].inputValidator || defaultParams.inputValidator;
+
+        params.extraParams        = arguments[0].extraParams;
+
+        if (params.input === 'email' && params.inputValidator === null) {
+          params.inputValidator = function(email) {
+            return new Promise(function(resolve, reject) {
+              var emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+              if (emailRegex.test(email)) {
+                resolve();
+              } else {
+                reject('Invalid email address');
+              }
+            });
+          };
+        }
 
         break;
 
@@ -524,6 +671,52 @@
           resolve(undefined);
         }, params.timer);
       }
+
+      // input/select autofocus
+      var getInput = function() {
+        switch (params.input) {
+          case 'select':
+            return getChildByClass(modal, window.swalClasses.select);
+          case 'radio':
+            return modal.querySelector('.' + window.swalClasses.radio + ' input:checked') ||
+              modal.querySelector('.' + window.swalClasses.radio + ' input:first-child');
+          case 'checkbox':
+            return modal.querySelector('#' + window.swalClasses.checkbox);
+          case 'textarea':
+            return getChildByClass(modal, window.swalClasses.textarea);
+          default:
+            return getChildByClass(modal, window.swalClasses.input);
+        }
+      };
+      var getInputValue = function() {
+        var input = getInput();
+        switch (params.input) {
+          case 'checkbox':
+            return input.checked ? 1 : 0;
+          case 'radio':
+            return input.checked ? input.value : null;
+          default:
+            return params.inputAutoTrim? input.value.trim() : input.value;
+        }
+      };
+
+      if (params.input) {
+        setTimeout(function() {
+          focusInput(getInput());
+        }, 0);
+      }
+
+      var confirm = function(value) {
+        if (params.preConfirm) {
+          params.preConfirm(value, params.extraParams).then(function(preConfirmValue) {
+            resolve(preConfirmValue || value);
+            window.swal.closeModal();
+          });
+        } else {
+          resolve(value);
+          window.swal.closeModal();
+        }
+      };
 
       // Mouse interactions
       var onButtonEvent = function(event) {
@@ -568,19 +761,29 @@
             // Clicked 'confirm'
             if (targetedConfirm && modalIsVisible) {
 
-              if (params.closeOnConfirm) {
-                window.swal.closeModal();
-              }
+              if (params.input) {
+                var inputValue = getInputValue();
+                if (params.inputValidator) {
+                  params.inputValidator(inputValue, params.extraParams).then(
+                    function() {
+                      confirm(inputValue);
+                    },
+                    function(error) {
+                      window.swal.showValidationError(error);
+                    }
+                  );
+                } else {
+                  confirm(inputValue);
+                }
 
-              resolve(true);
+              } else {
+                confirm(true);
+              }
 
             // Clicked 'cancel'
             } else if (targetedCancel && modalIsVisible) {
 
-              if (params.closeOnCancel) {
-                window.swal.closeModal();
-              }
-
+              window.swal.closeModal();
               resolve(false);
 
             } else {
@@ -616,9 +819,9 @@
       // Keyboard interactions
       var $confirmButton = modal.querySelector('button.' + window.swalClasses.confirm);
       var $cancelButton = modal.querySelector('button.' + window.swalClasses.cancel);
-      var $modalElements = [$confirmButton, $cancelButton].concat(
-        modal.querySelectorAll('button:not([class^=sweet-]), input:not([type=hidden]), textarea, select')
-      );
+      var $modalElements = [$confirmButton, $cancelButton].concat(Array.prototype.slice.call(
+        modal.querySelectorAll('button:not([class^=' + window.swalPrefix + ']), input:not([type=hidden]), textarea, select')
+      ));
       for (i = 0; i < $modalElements.length; i++) {
         $modalElements[i].onfocus = onButtonEvent;
         $modalElements[i].onblur = onButtonEvent;
@@ -733,8 +936,27 @@
         $cancelButton.disabled = true;
       };
 
+      window.swal.showValidationError = function(error) {
+        var $validationError = modal.querySelector('.' + window.swalClasses.validationerror);
+        $validationError.innerHTML = error;
+        show($validationError);
+
+        var input = getInput();
+        focusInput(input);
+        addClass(input, 'error');
+      };
+
+      window.swal.resetValidationError = function() {
+        var $validationError = modal.querySelector('.' + window.swalClasses.validationerror);
+        hide($validationError);
+
+        var input = getInput();
+        removeClass(input, 'error');
+      };
+
       window.swal.enableButtons();
       window.swal.disableLoading();
+      window.swal.resetValidationError();
 
       window.onfocus = function() {
         // When the user has focused away and focused back from the whole window.
@@ -777,8 +999,8 @@
     var modal = getModal();
     _hide(getOverlay());
     _hide(modal);
-    removeClass(modal, 'showSweetAlert');
-    addClass(modal, 'hideSweetAlert');
+    removeClass(modal, 'show-swal2');
+    addClass(modal, 'hide-swal2');
     removeClass(modal, 'visible');
 
     // Reset icon animations
@@ -838,8 +1060,16 @@
           '<div class="placeholder"></div> <div class="fix"></div>' +
         '</div>' +
         '<img class="' + window.swalClasses.image + '">' +
-        '<h2>Title</h2>' +
-        '<div class="' + window.swalClasses.content + '">Text</div>' +
+        '<h2></h2>' +
+        '<div class="' + window.swalClasses.content + '"></div>' +
+        '<input class="' + window.swalClasses.input + '">' +
+        '<select class="' + window.swalClasses.select + '"></select>' +
+        '<div class="' + window.swalClasses.radio + '"></div>' +
+        '<label for="' + window.swalClasses.checkbox + '" class="' + window.swalClasses.checkbox + '">' +
+          '<input type="checkbox" id="' + window.swalClasses.checkbox + '">' +
+        '</label>' +
+        '<textarea class="' + window.swalClasses.textarea + '"></textarea>' +
+        '<div class="' + window.swalClasses.validationerror + '"></div>' +
         '<hr class="' + window.swalClasses.spacer + '">' +
         '<button class="' + window.swalClasses.confirm + '">OK</button>' +
         '<button class="' + window.swalClasses.cancel + '">Cancel</button>' +
@@ -851,6 +1081,35 @@
     sweetWrap.innerHTML = sweetHTML;
 
     document.body.appendChild(sweetWrap);
+
+    var modal = getModal();
+    var $input = getChildByClass(modal, window.swalClasses.input);
+    var $select = getChildByClass(modal, window.swalClasses.select);
+    var $checkbox = modal.querySelector('#' + window.swalClasses.checkbox);
+    var $textarea = getChildByClass(modal, window.swalClasses.textarea);
+
+    $input.oninput = function() {
+      window.swal.resetValidationError();
+    };
+
+    $input.onkeyup = function(event) {
+      event.stopPropagation();
+      if (event.keyCode === 13) {
+        window.swal.clickConfirm();
+      }
+    };
+
+    $select.onchange = function() {
+      window.swal.resetValidationError();
+    };
+
+    $checkbox.onchange = function() {
+      window.swal.resetValidationError();
+    };
+
+    $textarea.onchange = function() {
+      window.swal.resetValidationError();
+    };
   };
 
   /**

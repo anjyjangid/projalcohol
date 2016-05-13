@@ -1,7 +1,7 @@
 SweetAlert2 [![Build Status](https://travis-ci.org/limonte/sweetalert2.svg?branch=master)](https://travis-ci.org/limonte/sweetalert2)
 -----------
 
-An awesome replacement for JavaScript's alert.
+An awesome replacement for JavaScript's popup boxes.
 
 What's the difference between SweetAlert and SweetAlert2?
 ---------------------------------------------------------
@@ -21,6 +21,12 @@ To install:
 
 ```bash
 bower install sweetalert2
+```
+
+Or:
+
+```bash
+npm install sweetalert2
 ```
 
 To use:
@@ -105,7 +111,7 @@ Configuration
 | -------------------- | ------------- | ----------- |
 | `title`              | `null`        | The title of the modal. It can either be added to the object under the key "title" or passed as the first parameter of the function. |
 | `text`               | `null`        | A description for the modal. It can either be added to the object under the key "text" or passed as the second parameter of the function. |
-| `html`               | `null`        | A HTML description for the modal. If "text" and "html" parameters are provided in the same time, "text" will be used. |
+| `html`               | `null`        | A HTML description for the modal. If `text` and `html` parameters are provided in the same time, "text" will be used. |
 | `type `              | `null`        | The type of the modal. SweetAlert2 comes with [5 built-in types](#modal-types) which will show a corresponding icon animation: `warning`, `error`, `success`, `info` and `question`. It can either be put in the array under the key `type` or passed as the third parameter of the function. |
 | `customClass`        | `null`        | A custom CSS class for the modal. |
 | `animation`          | `true`        | If set to `false`, modal CSS animation will be disabled. |
@@ -122,7 +128,7 @@ Configuration
 | `buttonsStyling`     | `true`        | Apply default swal2 styling to buttons. If you want to use your own classes (e.g. Bootstrap classes) set this parameter to `false`. |
 | `reverseButtons`     | `false`       | Set this parameter to `true` if you want to invert default buttons positions. |
 | `showCloseButton`    | `false`       | Set this parameter to `true` to show close button in top right corner of the modal. |
-| `closeOnConfirm`     | `true`        | Set to `false` if you want the modal to stay open even if the user presses the "Confirm"-button. This is especially useful if the function attached to the "Confirm"-button is another SweetAlert2. |
+| `preConfirm`         | `null`        | Function to execute before confirm, should return Promise, see <a href="https://limonte.github.io/sweetalert2/#ajax-request">usage example</a>. |
 | `imageUrl`           | `null`        | Add a customized icon for the modal. Should contain a string with the path or URL to the image. |
 | `imageWidth`         | `null`        | If imageUrl is set, you can specify imageWidth to describes image width in px. |
 | `imageHeight`        | `null`        | Custom image height in px. |
@@ -131,6 +137,13 @@ Configuration
 | `width`              | `500`         | Modal window width, including paddings (`box-sizing: border-box`). |
 | `padding`            | `20`          | Modal window padding. |
 | `background`         | `"#fff"`      | Modal window background (CSS `background` property). |
+| `input`              | `null`        | Input field type, can be `"text"`, `"email"`, `"password"`, `"textarea"`, `"select"`, `"radio"` and `"checkbox"`. |
+| `inputPlaceholder`   | `""`          | Input field placeholder. |
+| `inputValue`         | `""`          | Input field initial value. |
+| `inputOptions`       | `{}`          | If `input` parameter is set to `"select"`, you can provide options. Object keys will represent options values, object values will represent options text values. |
+| `inputAutoTrim`      | `true`        | Automatically remove whitespaces from both ends of a result string. Set this parameter to `false` to disable auto-trimming. |
+| `inputValidator`     | `null`        | Validator for input field, should return Promise, see <a href="https://limonte.github.io/sweetalert2/#select-box">usage example</a>. |
+| `inputClass`         | `null`        | A custom CSS class for the input field. |
 
 You can redefine default params by using `swal.setDefaults(customParams)` where `customParams` is an object.
 
@@ -148,6 +161,21 @@ Methods
 | `swal.disableLoading()`               | Enable buttons and hide loader. |
 | `swal.clickConfirm()`                 | Click "Confirm"-button programmatically. |
 | `swal.clickCancel()`                  | Click "Cancel"-button programmatically. |
+| `swal.showValidationError(error)`     | Show validation error message. |
+| `swal.resetValidationError()`         | Hide validation error message. |
+
+
+Browser compatibility
+---------------------
+
+SweetAlert works in most major browsers (yes, even IE). Some details:
+
+- **IE: 10+**, Promise polyfill should be included (see [usage example](#usage)).
+- **Microsoft Edge: 12+**
+- **Safari: 4+**
+- **Firefox: 4+**
+- **Chrome 14+**
+- **Opera: 15+**
 
 
 Contributing
