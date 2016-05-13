@@ -6,6 +6,6 @@ storage/database.sqlite
 storage/products
 storage/graphics
 .idea
-#public/bower_components/
-#public/assets
+public/bower_components/
+public/assets
 db
