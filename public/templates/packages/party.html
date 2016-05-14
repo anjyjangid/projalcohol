@@ -8,34 +8,37 @@
 <!-- <pre>{{packages | json}}</pre> -->
 <div class="row">
 	
-	<div class="col-md-12">		
+	<div class="col-md-12 party-alcholcover">		
 		<v-accordion id="accordionA" class="vAccordion--default" control="accordionA" onexpand="expandCallback(index, id)" oncollapse="collapseCallback(index, id)">
+        <div class="partypackegescover"><img src="images/party_package.png" class="img-responsive" ></div>
 	        <v-pane id="{{ ::package._id }}" ng-repeat="package in packages">
-	          <v-pane-header id="{{ ::package._id }}-header" aria-controls="{{ ::package._id }}-content">
+	          <v-pane-header id="{{ ::package._id }}-header" aria-controls="{{ ::package._id }}-content" class="bg-removepackage">
 	            <div style="position:relative;">
-					<img style="vertical-align:top;" err-src="asset/i/defaultImage.png" class="img-responsive" ng-src="packages/i/{{package.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+                <img src="images/party_package1.png" />
+					<!--<img style="vertical-align:top;" err-src="asset/i/party_package1.png" class="img-responsive" ng-src="packages/i/{{package.coverImage.source}}" src="asset/i/party_package1.png" alt=""/>-->
 					<div style="position: absolute;top: 0;width:100%;">
-						<p>{{package.title}}</p>
-						<p>{{package.subTitle}}</p>
-						<p>{{package.description}}</p>
+						<p class="title-propertset"> <!--{{package.title}}--> Party Packages [2-4 PAX]</p>
+						<p class="subtitl-propertset"> <!--{{package.subTitle}}--> Cartival </p>
+						<p class="btmcontn-set"> <!--{{package.description}}--> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, </p>
 					</div>
 				</div>	            
 	          </v-pane-header>
-	          <v-pane-content id="{{ ::package._id }}-content" aria-labelledby="{{ ::package._id }}-header">
-	            <p>Customise your own package</p>
-	            <v-accordion id="nestedAccordionA" style="width:70%;float: left;">
-	              <v-pane id="{{$index}}" ng-repeat="packageItem in package.packageItems" ng-disabled="subpane.isDisabled">
-	                <v-pane-header id="{{$index}}-header" aria-controls="{{ ::subpane.id }}-header">
-	                  <h5>{{ ::packageItem.title }}</h5>
+	          <v-pane-content id="{{ ::package._id }}-content" aria-labelledby="{{ ::package._id }}-header" class="xyz">
+	            <p class="customize-propertyset">Customise your own package</p>
+	            <v-accordion id="nestedAccordionA" style="width:70%;float: left; margin-bottom:0" >
+	              <v-pane id="{{$index}}" ng-repeat="packageItem in package.packageItems" ng-disabled="subpane.isDisabled" >
+	                <v-pane-header id="{{$index}}-header"  aria-controls="{{ ::subpane.id }}-header" class="byz">
+                    <div class="ttile-divcover">
+	                  <h5  class="custmize-contntset">{{ ::packageItem.title }}</h5><span>carlsbeg</span></div>
 	                </v-pane-header>
 	                <v-pane-content id="{{$index}}-content" aria-labelledby="{{ ::subpane.id }}-content">
 	                  
 	                  <div class="row">													
 						<div ng-repeat-start="pcprod in packageItem.products" ng:class="{'row':($index!=0 && $index%3==0)}"></div>
-						<div class="col-md-4">							
-							<div class="thumbnail">								
+						<div class="col-md-4 ">							
+							<div class="thumbnail thumbnailheightset">								
 								<div class="caption">
-									<h5>{{ pcprod.name }}</h5>
+									<h5 class="item-btmtitle">{{ pcprod.name }}</h5>
 									<!-- <h5>Before Price : <b>{{pcprod.sprice}}</b></h5>
 									<h5>After Price : <b>{{pcprod.cprice}}</b></h5> -->
 								</div>
@@ -54,11 +57,12 @@
 	                </v-pane-content>
 	              </v-pane>
 	            </v-accordion>
-	            <div class="pull-left" style="padding: 15px;margin-left: 10px;">
-	            	<p>Package Amount</p>
-	            	<h3>$54.99</h3>
-	            	<p>Savings</p>
-	            	<p>$10</p>
+                
+	            <div class="pull-left" style="padding: 20px 15px 15px;margin-left: 10px;">
+	            	<p class="packtiti-rightset">Package Amount</p>
+	            	<h3 class="amntrupee-cls">$54.99</h3>
+	            	<p class="packtiti-rightset">Savings</p>
+	            	<p class="packtiti-rightset">$10</p>
 					<div class="checkoutmiddlevlauediv">
 	            		<div class="pardqantitytexthead">Quantity</div>
 						<input type="text" value="1" ng-model="package.cart.quantity" min="1" max="10" ng-touch-spin>

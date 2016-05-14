@@ -50,16 +50,37 @@ class AddressController extends Controller
 	public function store(UserAddressRequest $request)
 	{
 		$inputs = $request->all();
+		
 		$loggeduser = Auth::user('user');
 
 		$user = User::find($loggeduser->_id);
+		
 
 		$userAddress = $user->address;
 		$userAddress = (array)$userAddress;
 
+		if(isset($inputs['place'])){
+
+			foreach($inputs['place']['address_components'] as $addresscom){
+
+				if($addresscom['types'][0]=="route"){					
+					$inputs['street']=$addresscom['long_name'];
+				}
+
+				if($addresscom['types'][0]=="postal_code"){				
+					$inputs['postal']=$addresscom['long_name'];
+				}
+				
+			}
+
+			unset($inputs['step']);
+
+		}
+
 		$user->address = array_merge($userAddress, array($inputs));
 
 		$return = array("success"=>false,"message"=>"","data"=>""); 
+
 
 		try {
 

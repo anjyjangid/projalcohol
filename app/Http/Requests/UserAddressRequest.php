@@ -23,11 +23,9 @@ class UserAddressRequest extends Request
 	 * @return array
 	 */
 	public function rules()
-	{
+	{		
 
 		$input = Input::all();
-
-
 
 		$rules = [
 			
@@ -45,15 +43,28 @@ class UserAddressRequest extends Request
 		];
 
 
-		if(!isset($input['place'])){
-			$rules = [							
-				
-				'street'=>'required|string|max:100',
-				'postal'=>'required|string|max:10',
-				'house'=>'string|max:10',
-				
+		if(isset($input['place'])){
 
-			];
+			foreach($input['place']['address_components'] as $addresscom){
+
+				if($addresscom['types'][0]=="route"){
+					$this->request->add(['street' => $addresscom['long_name']]);
+					$rules['street']='string|max:100';
+				}
+
+				if($addresscom['types'][0]=="postal_code"){
+
+					$this->request->add(['postal' => $addresscom['long_name']]);
+					$rules['postal']='string|max:10';
+				}				
+				
+			}
+			
+
+						
+			$rules['house']='string|max:10';
+				
+			
 		}
 		
 

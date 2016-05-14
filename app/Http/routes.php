@@ -39,14 +39,25 @@ Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
 Route::get('reset/{key}', 'Auth\PasswordController@reset');
 
 
+Route::put('deploycart','CartController@deploycart');
+Route::put('confirmorder','CartController@confirmorder');
+
+
 Route::group(['prefix' => 'cart'], function () {
 
 	Route::get('deliverykey','CartController@getDeliverykey');
 	Route::get('services','CartController@getServices');	
+	Route::get('timeslots/{date}','CartController@getTimeslots');
+	Route::put('merge/{cartkey}','CartController@mergecarts');
+
+	Route::delete('product/{key}/{type}','CartController@removeproduct');
 
 });
 
+
 Route::resource('cart', 'CartController');
+
+Route::get('/order/summary/{id}','OrderController@getSummary');
 
 
 Route::resource('category', 'Admin\CategoryController');
