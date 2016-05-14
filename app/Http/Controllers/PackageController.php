@@ -138,10 +138,8 @@ class PackageController extends Controller
                       ];
                   }
                   $packageupdate[$pkgkey]['products'] = $pkgpro;              
-                }
-                
+                }                
                 $packages[$key]->packageItems = $packageupdate;
-                //$package->packageItems = $packageupdate;
             }
         }
 

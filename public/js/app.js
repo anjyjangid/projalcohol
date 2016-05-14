@@ -1187,9 +1187,15 @@ AlcoholDelivery.factory("CartSession", ["$q", "$timeout", "$http","$rootScope", 
 
 }]);
 
-AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
+AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll){
 	
 	$rootScope.appSettings.layout.pageRightbarExist = false;
+
+	$rootScope.$on("$locationChangeSuccess", function(){
+        $timeout(function() {
+            $anchorScroll();
+       });
+    }); 
 
 	$scope.AppController.category = "packages";
 	$scope.AppController.subCategory = $stateParams.type;
@@ -1201,16 +1207,25 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 	});	
 
 	  $scope.expandCallback = function (index, id) {
-	    console.log('expand:', index, id);
+	    $timeout(function() {
+        	$anchorScroll(id+'-header');
+       	});
+
+	    // console.log('expand:', index, id);
 	  };
 
 	  $scope.collapseCallback = function (index, id) {
-	    console.log('collapse:', index, id);
+	  	$timeout(function() {
+        	$anchorScroll(id);
+       	});
+	    // console.log('collapse:', index, id);
 	  };
 
 	  $scope.$on('accordionA:onReady', function () {
 	    console.log('accordionA is ready!');
 	  });
+
+	 
 
 }]);
 // /* Setup global settings */
@@ -1647,6 +1662,8 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "catPricing","UserService", "$
 
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
 		
+		
+		
 		var regex = new RegExp('^accountLayout', 'i');
 
 		UserService.GetUser().then(
@@ -1666,6 +1683,8 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "catPricing","UserService", "$
 	   $rootScope.appSettings.layout.pageRightbarExist = true;
 
 	});
+
+
 
 
 	(function(d, s, id) {
