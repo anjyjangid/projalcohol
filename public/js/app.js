@@ -577,9 +577,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 														
 						}),
 						$http.get("cart/"+result.deliverykey+"/").then(function(response){
-							console.log($scope.cart);
-							console.log(response.data);
-
+							
 							Object.assign($scope.cart, response.data);
 
 							$scope.cart.productslength = Object.keys($scope.cart.products).length;
@@ -864,7 +862,10 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 			        });
 
 			        if($scope.cart.products[key].quantity==0){
+
 			        	delete $scope.cart.products[key];
+			        	$scope.cart.productslength = Object.keys($scope.cart.products).length;
+
 					}
 
 				}
@@ -882,10 +883,16 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 				    if(response.success){
 
 				    	if(response.removeCode==300){
-				    		delete $scope.cart.products[key]
+
+				    		delete $scope.cart.products[key];
+
 				    	}else if(response.removeCode==200){
+
 				    		$scope.cart.products[key][type] = 0;
+
 				    	}
+
+				    	$scope.cart.productslength = Object.keys($scope.cart.products).length;
 
 				    }else{
 
@@ -1534,7 +1541,7 @@ AlcoholDelivery.controller('CartReviewController',['$scope','$rootScope','$http'
 
 	        })
 
-	        
+
 	}
 
 }]);
