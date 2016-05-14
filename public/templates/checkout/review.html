@@ -5,14 +5,18 @@
 				 <div class="checkoutstep5-left-first">
 					 <div class="checkoutstep5-left-first-left">
 						 <div class="checkoutstep5-left-first-lefttext">Delivery Address</div>
-						 <div class="checkoutstep5-left-first-lefttitle">15, Lorong 15 Geylang, 388607</div>
+						 <div class="checkoutstep5-left-first-lefttitle">
+						 	<span ng-if="address.detail.street">{{address.detail.street}},</span>
+						 	<span ng-if="address.detail.house">{{address.detail.house}},</span>
+						 	<span ng-if="address.detail.postal">{{address.detail.postal}}</span>
+						 </div>
 					 </div>
 					 <a class="checkoutstep5-left-edit" ui-sref="mainLayout.checkout.address"><img src="images/checkoutstep5-editimg.png"></a>
 				 </div>
-				 <div class="checkoutstep5-left-first">
+				 <div class="checkoutstep5-left-first" ng-if="cart.delivery.type==1">
 					 <div class="checkoutstep5-left-first-left">
 						 <div class="checkoutstep5-left-first-lefttext">Delivery Time</div>
-						 <div class="checkoutstep5-left-first-lefttitle">Wednesday 3 Feb 2016, between 10am - 12pm</div>
+						 <div class="checkoutstep5-left-first-lefttitle">{{daySlug}}, between {{slotslug}}</div>
 					 </div>
 					 <a class="checkoutstep5-left-edit" ui-sref="mainLayout.checkout.delivery"><img src="images/checkoutstep5-editimg.png"></a>
 				 </div>
@@ -26,15 +30,17 @@
 				 <div class="checkoutstep5-left-first">
 					 <div class="checkoutstep5-left-first-left">
 						 <div class="checkoutstep5-left-first-lefttext">Delivery mode</div>
-						 <div class="checkoutstep5-left-first-lefttitle">Express Delivery<span class=""><img src="images/questionimg.png">
-</span></div>
+						 
+						 <div class="checkoutstep5-left-first-lefttitle" ng-if="cart.delivery.type==0">Express Delivery<span class=""><img src="images/questionimg.png"></span></div>
+						 <div class="checkoutstep5-left-first-lefttitle" ng-if="cart.delivery.type==1">Advance Delivery<span class=""><img src="images/questionimg.png"></span></div>
+
 					 </div>
 					 <a class="checkoutstep5-left-edit" ui-sref="mainLayout.checkout.cart"><img src="images/checkoutstep5-editimg.png"></a>
 				 </div>
 			 </div>
 				<div class="col-md-5 col-sm-6 col-xs-12 checkoutstep5-mid-right">
 					<div class="checkboxtotaldiv">
-						<button class="checkoutstep5-mid-button">Confirm Order <i class="glyphicon glyphicon-menu-right"></i></button>
+						<button class="checkoutstep5-mid-button" ng-click="orderConfirm()">Confirm Order <i class="glyphicon glyphicon-menu-right"></i></button>
 						<div class="checkoutstep5right-middle ">
 							<div class="checkoutstep5right-middle-first">
 								<div class="checkoutstep5right-middle-title">Subtotal <span class=""></span></div>
@@ -89,24 +95,29 @@
 									<span1><img src="images/product13.png"></span1><span>CHILLED</span>
 								</div> -->
 						</td>
-						<td>
+						<td>						
 							<div class="checkoutmiddlevlauediv">
-								<input type="text" ng-model="cartproduct.quantity" value="{{cartproduct.quantity}}" min="1" max="100" ng-touch-spin on-increment="addtocart()" on-decrement="addtocart()">
+
+								<input type="text" ng-model="cartproduct.quantity" value="cartproduct.quantity" min="0" max="{{cartproduct.product.quantity}}" ng-touch-spin on-increment="addtocart(cartproduct.product._id)" on-decrement="addtocart(cartproduct.product._id)">
 								
 							</div>
 						</td>
 						<td>
-							<div class="orderhistry2price">{{cartproduct.price | currency:settings.general.currency:2}}</div>
+							<div class="orderhistry2price">{{cartproduct.finalprice | currency:settings.general.currency:2}}</div>
+							
 						</td>						
 					</tr>
 				</tbody>
 				</table>
-				</div>                                
+				</div>  
+
+
+
 				<div class="checkoutstep5-mid-button-outer">
 				
+				<a class="checkouterback2" ui-sref="mainLayout.checkout.payment"><span><img src="images/order_history2backpic.png"></span>back</a>				
 				
-				
-				<button class="checkoutstep5-mid-button">Confirm Order <i class="glyphicon glyphicon-menu-right"></i></button>
+				<button class="checkoutstep5-mid-button" ng-click="orderConfirm()">Confirm Order <i class="glyphicon glyphicon-menu-right"></i></button>
 				
 				</div>
 		

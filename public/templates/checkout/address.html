@@ -3,7 +3,7 @@
 	<div class="coverboxsegment_div">
 	
 	<!-- Address Boxes Start-->
-	<div class="div_addsboxs" ng-class="{active:delivery.address == key}" ng-repeat="(key, address) in addresses" >
+	<div class="div_addsboxs" ng-class="{active:cart.delivery.address.key == key}" ng-repeat="(key, address) in addresses" >
 		<div class="addsboxs_innerdiv">
 			<div class="cover_rt_lftdiv">
 				<div class="rgt_iconadd_div"><img data-target="#Modalmapadess" data-toggle="modal" src="images/add_pic_iconrt.png"></div>
@@ -25,13 +25,11 @@
 				</div>
 			</div>
 			<div class="yelo_btn_div">
-				<button data-toggle="modal" type="button" class="yelo_btn" ng-click="delivery.address = key">ship to this address</button>
+				<button data-toggle="modal" type="button" class="yelo_btn" ng-click="setSelectedAddress(key)">ship to this address</button>
 			</div>
 		</div>
 	</div>
 	<!-- Address Boxes Ends-->
-
-	
 
 	 <div data-target="#Modal-addnewaddress" data-toggle="modal" class="add-newaddbox" ng-click="showAddressViaMapModal($event)">
 		<div class="add-newaddinner">
@@ -44,16 +42,21 @@
 	 <div class="specil_intertion_div">
 		<div class="div_specil_intertion_title">Special Instructions</div>
 		<div class="cover_secilinform">
-			<div class="alcohlinputext2">
-				<label>Contact Number<span>*</span></label>
-				<input type="text" class="alcohalpopuptext2" ng-model="delivery.contact">
+			
+
+			<div class="alcohlinputext2" ng:class="{'has-error':errors.contact[0]}">
+
+				<label>Contact Number<span>*</span></label>			
+				<input type="number" class="alcohalpopuptext2" ng-model="cart.delivery.contact" min="10" max="13" required="">
+				<span class="help-block" ng-bind="errors.contact"></span>
+
 			</div>
 		 <div class="alcohlinputextarea12">
 			<label>Any Special Instructions (optional)</label>
-			<textarea class="alcohlinputextareaa2" placeholder="" ng-model="delivery.instructions"></textarea>
+			<textarea class="alcohlinputextareaa2" placeholder="" ng-model="cart.delivery.instructions"></textarea>
 		 </div>
 		 <div class="alcohlchekboxdiv12">						 
-				 <md-checkbox ng-model="delivery.leaveatdoor" aria-label="leaveatdoor-checkbox"></md-checkbox>
+				 <md-checkbox ng-model="cart.delivery.leaveatdoor" aria-label="leaveatdoor-checkbox"></md-checkbox>
 				 <label for="c1"><span></span>Leave this order at my doorstep.</label>
 				 <div class="gry_itlic_text">We’ll leave your items at your doorstep without contacting you. To be eligible, we must have unrestricted access to your doorstep.</div>
 		 </div>
@@ -61,10 +64,11 @@
 		</div>
 	 </div>
 	</div>
- </div>                                 
-	<div class="checkouterlastdiv">
-	<div class="checkouterbackouter">
-	 <a class="checkouterback" href=""><span><img src="images/order_history2backpic.png"></span>back to shopping</a>
-	<button class="checkoutcheckoutnowbutton">Checkout Now</button>
+ </div>            
+
+<div class="checkouterlastdiv">
+	<div class="checkouterbackouter2"> 
+		<a class="checkouterback2" ui-sref="mainLayout.checkout.cart"><span><img src="images/order_history2backpic.png"></span>back</a>
+		<button class="checkoutcheckoutnowbutton2" ng-click="addressCheckout()">Next<span><img src="images/leftarrowpic.png"></span></button>
 	</div>
- </div>
+</div>

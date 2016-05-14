@@ -1,13 +1,5 @@
 <?php
-	
-	function pr($arr){
 		
-		echo "<pre>";
-		print_r($arr);
-		echo "</pre>";
-
-	}
-
 	function prd($arr){
 		
 		pr($arr);
@@ -15,12 +7,13 @@
 
 	}
 
-	function aprd($arr){
-
-		echo json_encode($arr);
-		exit;
+	function pr($arr){
+		
+		echo "<pre>";
+		print_r($arr);
+		echo "</pre>";
 
 	}
-
+	
 
 ?>
