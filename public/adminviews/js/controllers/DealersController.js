@@ -96,7 +96,36 @@ MetronicApp.controller('DealerShowController',['$rootScope', '$scope', '$timeout
     
     dealerModel.getDealer($stateParams.dealerid).success(function(response){
 		$scope.dealer = response;
-	});
-    
+	});   
 	  
 }]);
+
+MetronicApp.controller('DealerOrderController', function($rootScope, $scope, $http, $timeout, $stateParams) {
+
+	$scope.orders = [];
+	$scope.dealer = {};
+	$scope.country = {};
+
+	$http.get("/admin/dealer/dealerproduct/"+$stateParams.dealerid).success(function(response) {               
+		$scope.orders = response.products;        
+		$scope.dealer = response.dealer;        
+		$scope.country = response.country;        
+    });
+
+
+    $scope.listOrder = function(type){
+    	if($scope.orders.length == 0) return [];
+
+    	if(type == 1){
+	    	return $scope.orders.filter(function(order){
+	    		return (order.sum <= 0);
+	    	});
+    	}else{
+    		return $scope.orders.filter(function(order){
+	    		return (order.sum > 0);
+	    	});
+    	}
+
+    }
+
+});

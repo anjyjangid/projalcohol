@@ -147,6 +147,7 @@ class UserController extends Controller
         $user = Auth::user('user');
         // validation rules
         $curruser = User::find($user->_id);
+         
 
         $inputs['old'] = '';
 
@@ -163,17 +164,36 @@ class UserController extends Controller
            'new.digits_between' => 'password must be between 6 to 12 digits'
         ]);
 
-
+        $validatorForFbLogin = Validator::make($inputs, [
+            'new' => 'required|digits_between:6,12|different:current',
+            'confirm' => 'required|same:new',            
+        ],[                      
+           'new.digits_between' => 'password must be between 6 to 12 digits'
+        ]);
 
         $return = array("success"=>false,"message"=>"","data"=>"");
 
-        if ($validator->fails()) {
+        // if fb login then do not check current password //
+        if($curruser->password=="")
+        {
+            if ($validatorForFbLogin->fails()) {
 
-            $return['message'] = "Please check form again";
-            $return['data'] = $validator->errors();
+                $return['message'] = "Please check form again";
+                $return['data'] = $validator->errors();
 
-            return response($return, 400);
+                return response($return, 400);
+            }
         }
+        else
+        {
+            if ($validator->fails()) {
+
+                $return['message'] = "Please check form again";
+                $return['data'] = $validator->errors();
+
+                return response($return, 400);
+            }
+        } 
 
         $curruser->password = \Hash::make($request->input('new'));
                 
@@ -213,6 +233,10 @@ class UserController extends Controller
 
         if(!empty($userLogged)){
             $userLogged = User::find($userLogged->_id);
+            
+            $userLogged['loginfb'] = false;
+            if($userLogged['password']=="")
+                $userLogged['loginfb'] = true;
         }
         else{
             $userLogged = array("auth"=>false);

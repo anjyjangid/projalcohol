@@ -36,7 +36,7 @@
 					        </thead>
 					        <tbody>					        	
 					        	<tr ng-repeat-start="(weekKey,setting) in settings"></tr>					        						        		
-					        		<tr ng-repeat="slot in setting" ng:class="{ 'danger':slot.status==0	}">
+					        		<tr ng-repeat="slot in setting track by $index" ng:class="{ 'danger':slot.status==0	}">
 					        			<td>{{ $index == 0 ? (weekDays[weekKey] | uppercase):'' }}</td>
 					        			<td>
 						                    <select ng-disabled="slot.status==0" empty="false" ng-model="slot.from" class="form-control" ng-options="fop.opVal as fop.opTag for fop in getTimeOptions(1)"></select>
@@ -65,5 +65,4 @@
 			</div>
 		</form>       
 	</div>
-	
 </div>

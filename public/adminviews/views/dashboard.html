@@ -1,70 +1,41 @@
-<!-- BEGIN PAGE HEADER -->
-<div class="page-bar">
-	<ul class="page-breadcrumb">
-		<li>
-			<i class="fa fa-home"></i>
-			<a href="#/dashboard.html">Home</a>
-			<i class="fa fa-angle-right"></i>
-		</li>
-		<li>
-			<a href="#">Dashboard</a>
-		</li>
-	</ul>
-	<!-- <div class="page-toolbar">
-		<div class="btn-group pull-right">
-			<button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" dropdown-menu-hover data-delay="1000" data-close-others="true">
-			Actions <i class="fa fa-angle-down"></i>
-			</button>
-			<ul class="dropdown-menu pull-right" role="menu">
+<div class="row">
+	<div class="col-md-12">		
+		<!-- BEGIN PAGE HEADER--> 		
+		<h3 class="page-title">
+			{{$state.$current.data.pageTitle}}
+		</h3>
+		<div class="page-bar">
+			<ul class="page-breadcrumb">
 				<li>
-					<a href="#">
-					<i class="icon-user"></i> New User </a>
+					<i class="fa fa-home"></i>
+					<a ui-sref="dashboard">Home</a>
+					<i class="fa fa-angle-right"></i>
 				</li>
 				<li>
-					<a href="#">
-					<i class="icon-present"></i> New Event <span class="badge badge-success">4</span>
-					</a>
+					<a ui-sref="dashboard">{{$state.$current.data.pageTitle}}</a>					
 				</li>
 				<li>
-					<a href="#">
-					<i class="icon-basket"></i> New order </a>
+					<a href="#{{$state.$current.url.prefix}}">{{$state.$current.data.pageSubTitle}}</a>
 				</li>
-				<li class="divider">
-				</li>
-				<li>
-					<a href="#">
-					<i class="icon-flag"></i> Pending Orders <span class="badge badge-danger">4</span>
-					</a>
-				</li>
-				<li>
-					<a href="#">
-					<i class="icon-users"></i> Pending Users <span class="badge badge-warning">12</span>
-					</a>
-				</li>
-			</ul>
+			</ul>			
 		</div>
-	</div> -->
-</div>
-<h3 class="page-title">
-	Dashboard
-</h3>
-<!-- END PAGE HEADER-->
-<!-- BEGIN MAIN CONTENT -->
-<div ng-controller="DashboardController">
+		<!-- END PAGE HEADER-->
+		<!-- BEGIN MAIN CONTENT -->
+		<div ng-controller="DashboardController">
 
-	<!-- <div class="note note-success note-bordered">
-		<h3>Meet Metronic AngularJS Version! <span class="close" data-close="note"></span></h3>
-		<p>
-			AngularJS version of Metronic gives an extremely fast browsing experience to users. 
-			It uses lazy loading of dependency resources(modules, controllers, templates, jquery plugins, javascripts and even css files) on demand.
-			UI-Router is used for flexible routing with nested views. UI Bootstrap enables using all Bootstrap framework components 
-			with pure AngularJS directives.
-		</p>
-		<span class="label label-danger">NOTE:</span> All Metronic features from the HTML version(pages, layout options, components, plugins, etc) are fully compatible in the AngularJS version.</span>
-		</p>
-	</div> -->
+			<!-- <div class="note note-success note-bordered">
+				<h3>Meet Metronic AngularJS Version! <span class="close" data-close="note"></span></h3>
+				<p>
+					AngularJS version of Metronic gives an extremely fast browsing experience to users. 
+					It uses lazy loading of dependency resources(modules, controllers, templates, jquery plugins, javascripts and even css files) on demand.
+					UI-Router is used for flexible routing with nested views. UI Bootstrap enables using all Bootstrap framework components 
+					with pure AngularJS directives.
+				</p>
+				<span class="label label-danger">NOTE:</span> All Metronic features from the HTML version(pages, layout options, components, plugins, etc) are fully compatible in the AngularJS version.</span>
+				</p>
+			</div> -->
 
-	<!-- BEGIN PAGE CONTENT-->
+			<!-- BEGIN PAGE CONTENT-->
 			<div class="row">
 				<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 margin-bottom-10">
 					<div class="dashboard-stat blue-madison">
@@ -121,8 +92,8 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-md-6">
+			<div class="row" id="inventory" ng-controller="ProductInventoryController">
+				<div class="col-md-12">
 					<!-- Begin: life time stats -->
 					<div class="portlet box blue-steel">
 						<div class="portlet-title">
@@ -144,15 +115,13 @@
 											<table class="table table-striped table-hover table-bordered" id="orderlist">
 											<thead>
 											<tr>
+												<th></th>
 												<th>
 													 Product Name
 												</th>
 												<th>
 													 Current Quantity
-												</th>												
-												<th>
-													Action
-												</th>
+												</th>																								
 											</tr>
 											</thead>
 											<tbody>
@@ -168,260 +137,232 @@
 					<!-- End: life time stats -->
 				</div>
 
-				<div class="col-md-6">
-					<!-- Begin: life time stats -->
-					<div class="portlet box blue-steel">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-shopping-cart"></i>Orders
-							</div>
-							<div class="tools">
-								<a href="javascript:;" class="collapse">
-								</a>																
-							</div>
-						</div>
-						<div class="portlet-body">
-							<div class="">								
-								<div class="tab-content">
-									<div class="tab-pane active" id="overview_4">
-										<div class="table-responsive">
-											<table class="table table-striped table-hover table-bordered">
-											<thead>
-											<tr>
-												<th>
-													 Customer Name
-												</th>
-												<th>
-													 Date
-												</th>
-												<th>
-													 Amount
-												</th>
-												<th>
-													 Status
-												</th>
-												<th>
-												</th>
-											</tr>
-											</thead>
-											<tbody>
-											<tr>
-												<td>
-													<a href="javascript:;">
-													David Wilson </a>
-												</td>
-												<td>
-													 3 Jan, 2013
-												</td>
-												<td>
-													 $625.50
-												</td>
-												<td>
-													<span class="label label-sm label-warning">
-													Pending </span>
-												</td>
-												<td>
-													<a href="javascript:;" class="btn default btn-xs green-stripe">
-													View </a>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<a href="javascript:;">
-													Amanda Nilson </a>
-												</td>
-												<td>
-													 13 Feb, 2013
-												</td>
-												<td>
-													 $12625.50
-												</td>
-												<td>
-													<span class="label label-sm label-warning">
-													Pending </span>
-												</td>
-												<td>
-													<a href="javascript:;" class="btn default btn-xs green-stripe">
-													View </a>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<a href="javascript:;">
-													Jhon Doe </a>
-												</td>
-												<td>
-													 20 Mar, 2013
-												</td>
-												<td>
-													 $125.00
-												</td>
-												<td>
-													<span class="label label-sm label-success">
-													Success </span>
-												</td>
-												<td>
-													<a href="javascript:;" class="btn default btn-xs green-stripe">
-													View </a>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<a href="javascript:;">
-													Bill Chang </a>
-												</td>
-												<td>
-													 29 May, 2013
-												</td>
-												<td>
-													 $12,125.70
-												</td>
-												<td>
-													<span class="label label-sm label-info">
-													In Process </span>
-												</td>
-												<td>
-													<a href="javascript:;" class="btn default btn-xs green-stripe">
-													View </a>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<a href="javascript:;">
-													Paul Strong </a>
-												</td>
-												<td>
-													 1 Jun, 2013
-												</td>
-												<td>
-													 $890.85
-												</td>
-												<td>
-													<span class="label label-sm label-success">
-													Success </span>
-												</td>
-												<td>
-													<a href="javascript:;" class="btn default btn-xs green-stripe">
-													View </a>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<a href="javascript:;">
-													Jane Hilson </a>
-												</td>
-												<td>
-													 5 Aug, 2013
-												</td>
-												<td>
-													 $239.85
-												</td>
-												<td>
-													<span class="label label-sm label-danger">
-													Canceled </span>
-												</td>
-												<td>
-													<a href="javascript:;" class="btn default btn-xs green-stripe">
-													View </a>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<a href="javascript:;">
-													Patrick Walker </a>
-												</td>
-												<td>
-													 6 Aug, 2013
-												</td>
-												<td>
-													 $1239.85
-												</td>
-												<td>
-													<span class="label label-sm label-success">
-													Success </span>
-												</td>
-												<td>
-													<a href="javascript:;" class="btn default btn-xs green-stripe">
-													View </a>
-												</td>
-											</tr>
-											</tbody>
-											</table>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!-- End: life time stats -->
-				</div>				
+				<!-- {{ product|json }} -->
 			</div>
 			<!-- END PAGE CONTENT-->
+		</div>
+	</div>
+</div>
+
+<div class="col-md-12 hide" id="pform">
+	<div class="row">
+		<div class="col-md-6">
+			<form role="form" name="productForm" ng-submit="update()" required="false">
+				<div class="portlet box blue-hoki">		
+					<div class="portlet-title">
+						<div class="caption">
+							<i class="fa fa-shopping-cart"></i>Product Inventory
+						</div>
+						<div class="actions">
+							<button type="submit" class="btn default btn-sm">
+							<i class="fa fa-check"></i> Update </button>				
+						</div>
+					</div>		
+					<div class="portlet-body">
+						<div class="row">
+							<div class="col-md-12">					
+									<div class="form-horizontal">
+										<div class="form-group" ng:class="{'has-error':errors.quantity[0]}">
+											<label class="col-md-5 control-label">Quantity: <span class="required">
+											* </span>
+											</label>
+											<div class="col-md-7">
+												<input type="number" class="form-control" ng-model="product.quantity" placeholder="">									
+												<span class="help-block">(in stock)</span>
+												<span class="help-block" ng-bind="errors.quantity[0]"></span>
+											</div>
+										</div>
+
+										<div class="form-group" ng:class="{'has-error':errors.threshold[0]}">
+											<label class="col-md-5 control-label">Re-order threshold: <span class="required">
+											* </span>
+											</label>
+											<div class="col-md-7">
+												<input type="number" class="form-control" ng-model="product.threshold" placeholder="">									
+												<span class="help-block" ng-bind="errors.threshold[0]"></span>
+											</div>
+										</div>
+
+										<div class="form-group" ng:class="{'has-error':errors.maxQuantity[0]}">
+											<label class="col-md-5 control-label">Maximum Quantity: <span class="required">
+											* </span>
+											</label>
+											<div class="col-md-7">
+												<input type="number" class="form-control" ng-model="product.maxQuantity" placeholder="">									
+												<span class="help-block">(in stock)</span>
+												<span class="help-block" ng-bind="errors.maxQuantity[0]"></span>
+											</div>
+										</div>
+									</div>
+								
+							</div>
+						</div>
+					</div>		
+				</div>
+			</form>
+		</div>
+		<div class="col-md-6">			
+			<div class="portlet box blue-hoki">		
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa fa-shopping-cart"></i>Dealers
+					</div>	
+					<div class="actions">
+						<a id="dealeraddlink" target="_blank" class="btn default btn-sm"><i class="fa fa-plus"></i> Add Dealer </a>				
+					</div>				
+				</div>		
+				<div class="portlet-body">
+					<table class="table table-striped table-hover table-bordered">
+						<thead>
+						<tr>
+							<th>#</th>
+							<th>
+								 Dealer Name
+							</th>
+							<th>
+								 Action
+							</th>																								
+						</tr>
+						</thead>
+						<tbody id="supplierlist">
+							
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 <!-- END MAIN CONTENT -->
 <!-- BEGIN MAIN JS & CSS -->
 <script>
-	
-	
+var grid;
+var detailRows = [];
+	var ProductsTableAjax = function () {    
 
-	var ProductsTableAjax = function () {
-
-    
-
-    var handleRecords = function () {
-
-    	$('#orderlist').dataTable( {
-			"bProcessing": true,
-			"bServerSide": true,			
-			"dom": 'ftp',
-			"pageLength" : 5,
-			"columns": [
-				{ data: "name" },
-				{ data: "quantity", sClass: "center" },				
-				{
-					mData: null,
-					sClass: "center",
-					mRender: function(data, type, full) {
-                        var req = (data.maxQuantity - data.quantity);
-                        var cls = (req > 0)?'danger':'default';
-                        var txt = req+' Required';
-                        return '<a id="'+data._id+'" href="javascript:;" class="btn btn-'+cls+' btn-xs green-stripe">'+txt+'</a>';
-                    },					
-					orderable:false
-				}				
-			],	
-			"ajax" : {
-				"url": "../admin/product/orderproduct",
-				"type":"POST",
-				beforeSend:function(){
-					Metronic.blockUI({
-				        target: $('#orderlist'),				        
-				        overlayColor: '#000'
-				    });
+	    var handleRecords = function () {
+	    	
+	    grid = $('#orderlist').dataTable( {
+				"bProcessing": true,
+				"bServerSide": true,			
+				"dom": 'ftp',
+				"pageLength" : 5,
+				"columns": [
+					{
+		                "class":"details-control",		                
+		                "orderable":false,
+		                "data":null,
+		                "defaultContent":""
+		            },
+					{
+						mData: null,
+						sClass: "center",
+						mRender: function(data, type, full) {
+	                        var req = (data.maxQuantity - data.quantity);
+	                        var r = '<h5>'+data.name+'</h5>';
+	                        if(req > 0){	                        	
+	                        	r = '<h5>'+data.name+' <span class="label label-danger">'+req+' Required</span></h5>';
+	                        }
+	                        return r;
+	                    },					
+						orderable:false
+					},
+					{ data: "quantity", sClass: "center" },				
+				],	
+				"ajax" : {
+					"url": "../admin/product/orderproduct",
+					"type":"POST",
+					beforeSend:function(){
+						Metronic.blockUI({
+					        target: $('#orderlist'),				        
+					        overlayColor: '#000'
+					    });
+					},
+					complete:function(){
+						Metronic.unblockUI($('#orderlist'));
+					}
 				},
-				complete:function(){
-					Metronic.unblockUI($('#orderlist'));
-				}
-			},
-			"order": []			
-		});
+				"order": [],
+				"fnDrawCallback": function (oSettings) {                	
+					$("tr td a").each(function () {
+					    var content = $(this);
+					    angular.element(document).injector().invoke(function($compile) {
+					        var scope = angular.element(content).scope();
+					        $compile(content)(scope);
+					    });
+					});						
+					Metronic.initAjax();
+				},			
+			});		
+	        
+	    }
 
-		
-        
-    }
+	    return {
+	        init: function () {       
+	            handleRecords();
+	        }
+	    };
 
-    return {
-        init: function () {       
-            handleRecords();
-        }
-    };
-
-}();
+	}();
 
 	ProductsTableAjax.init();
 
 	function reloadGrid(){
 		$('#orderlist').dataTable()._fnAjaxUpdate();
+	}	
+
+	function format ( d ) {
+		
+		var htm = $('#pform').clone().removeClass('hide');
+		
+		htm.find('#dealeraddlink').attr('ui-sref','products.edit({productid:"'+d._id+'"})')	
+
+		if(d.supplier.length){
+
+			for(sup in d.supplier){
+				var tr = $('<tr></tr>').html('<td>'+(parseInt(sup)+1)+'</td><td>'+d.supplier[sup].title+'</td><td><a target="_blank" class="btn default btn-sm" ui-sref=dealers.orders({dealerid:"'+d.supplier[sup]._id+'"})>View Orders</a></td>');
+				htm.find('#supplierlist').append(tr);
+			}
+		}else{
+			var tr = $('<tr></tr>').html('<td colspan="3">No Suppliers Found.</td>');
+			htm.find('#supplierlist').append(tr);
+		}
+
+		return htm;
+
+		
 	}
+
+	var preopen = '';
+
+	$('#orderlist tbody').on('click', 'tr td.details-control', function (e) {
+		
+		var tr = $(this).closest('tr');
+        var row = grid.fnGetData( tr );
+        var idx = $.inArray( tr.attr('id'), detailRows ); 		
+ 		var childrow = 'tr#'+row._id;
+
+		if(preopen && $(childrow).length==0){
+			$(preopen).prev('tr').removeClass( 'detail' );
+			$(preopen).remove();
+		}		
+		preopen = childrow;			       
+
+ 		if($(childrow).length){
+ 			tr.removeClass( 'detail' );
+ 			$(childrow).remove();
+ 		}else{
+ 			tr.addClass( 'detail' );
+ 			var newrow = $('<tr id="'+row._id+'"></tr>').html($('<td colspan="4"></td>').html(format(row)));
+ 			tr.after(newrow).show();
+
+		    var content = $(childrow);
+		    angular.element(document).injector().invoke(function($compile) {
+		        var scope = angular.element(content).scope();
+		        scope.product = row;
+		        $compile(content)(scope);
+		    });			
+ 		}
+    });
 
 </script>

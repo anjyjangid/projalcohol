@@ -18,6 +18,8 @@ Route::get('/', function () {
     return view('frontend');
 });
 
+Route::post('auth/registerfb', 'Auth\AuthController@registerfb');
+
 Route::controller('/auth', 'Auth\AuthController');
 
 Route::controller('/super', 'SuperController');
@@ -72,6 +74,8 @@ Route::get('/admin/dashboard', ['uses' => 'Admin\AdminController@dashboard']);
 
 Route::resource('address', 'AddressController');
 
+Route::resource('package', 'PackageController',['only'=>['*']]);
+Route::controller('package', 'PackageController');
 
 Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 	
@@ -100,6 +104,8 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 		Route::get('getdealer/{id}','Admin\DealerController@getdealer');
 			
 		Route::post('getdealers', 'Admin\DealerController@getdealers');
+
+		Route::get('dealerproduct/{id}', 'Admin\DealerController@dealerproduct');
 
 		Route::get('getlist','Admin\DealerController@getlist');
 		//Route::post('remove', 'Admin\DealerController@remove');
@@ -161,7 +167,7 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 		Route::get('edit/{id}','Admin\ProductController@edit');
 		Route::post('update/{id}','Admin\ProductController@update');
 		Route::post('orderproduct','Admin\ProductController@orderProduct');
-		
+		Route::post('updateinventory','Admin\ProductController@updateinventory');		
 	});
 
 
@@ -218,8 +224,8 @@ Route::get('asset/i/{filename}', function ($filename)
     return Image::make(public_path('img') . '/' . $filename)->response();
 });
 
-
 Route::controller('/admin/password', 'Auth\AdminPasswordController');
+
 Route::controller('/admin', 'Auth\AdminAuthController');
 
 Route::controller('/admin', 'Auth\AdminAuthController');
@@ -227,6 +233,8 @@ Route::controller('/admin', 'Auth\AdminAuthController');
 Route::get('/check', 'UserController@check');
 
 Route::post('/auth', 'UserController@checkAuth');
+
+
 
 Route::get('/loggedUser', 'UserController@loggedUser');
 

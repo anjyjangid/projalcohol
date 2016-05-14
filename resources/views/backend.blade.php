@@ -17,15 +17,13 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--<![endif]-->
 <!-- BEGIN HEAD -->
 <head>
-
 <title data-ng-bind="'Admin Alcohol Delivery | ' + $state.current.data.pageTitle"></title>
-
 <meta charset="utf-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 <meta content="" name="description"/>
 <meta content="" name="author"/>
-
 <!-- BEGIN GLOBAL MANDATORY STYLES -->
 <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css"/>
 <link href="{{ asset('assets/global/plugins/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css"/>
@@ -37,34 +35,22 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- END GLOBAL MANDATORY STYLES -->
 
 
-<link href="{{ asset('assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css"/>
-<link href="{{ asset('assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet" type="text/css"/>
-<link href="{{ asset('assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css"/>  
-
-<!-- SWEET ALERT STYLE -->
-<link href="{{ asset('bower_components/sweetalert2/dist/sweetalert2.css') }}" rel="stylesheet" type="text/css"/>
-
-
-<!-- BEGIN DYMANICLY LOADED CSS FILES(all plugin and page related styles must be loaded between GLOBAL and THEME css files ) -->
-<link id="ng_load_plugins_before"/>
-<!-- END DYMANICLY LOADED CSS FILES -->
-
+<!-- END GLOBAL MANDATORY STYLES -->
+<!-- BEGIN PAGE LEVEL STYLES -->
+<link href="{{ asset('assets/admin/pages/css/login.css') }}" rel="stylesheet" type="text/css"/>
+<!-- END PAGE LEVEL SCRIPTS -->
 <!-- BEGIN THEME STYLES -->
 <!-- DOC: To use 'rounded corners' style just load 'components-rounded.css' stylesheet instead of 'components.css' in the below style tag -->
 <link href="{{ asset('assets/global/css/components-md.css') }}" id="style_components" rel="stylesheet" type="text/css"/>
 <link href="{{ asset('assets/global/css/plugins-md.css') }}" rel="stylesheet" type="text/css"/>
-                        
-
 <link href="{{ asset('assets/admin/layout/css/layout.css') }}" rel="stylesheet" type="text/css"/>
 <link href="{{ asset('assets/admin/layout/css/themes/darkblue.css') }}" rel="stylesheet" type="text/css" id="style_color"/>
 <link href="{{ asset('assets/admin/layout/css/custom.css') }}" rel="stylesheet" type="text/css"/>
 <link href="{{ asset('css/admincustom.css') }}" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
-
 <link rel="shortcut icon" href="favicon.ico"/>
 </head>
 <!-- END HEAD -->
-
 <!-- BEGIN BODY -->
 <!-- DOC: Apply "page-header-fixed-mobile" and "page-footer-fixed-mobile" class to body element to force fixed header or footer in mobile devices -->
 <!-- DOC: Apply "page-sidebar-closed" class to the body and "page-sidebar-menu-closed" class to the sidebar menu element to hide the sidebar by default -->
@@ -75,8 +61,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- DOC: Apply "page-footer-fixed" class to the body element to have fixed footer -->
 <!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
 <!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
-<body ng-controller="AppController" class="page-md page-header-fixed page-sidebar-closed-hide-logo page-quick-sidebar-over-content page-on-load" ng-class="{'page-container-bg-solid': settings.layout.pageBodySolid, 'page-sidebar-closed': settings.layout.pageSidebarClosed}">
-
+<body ng-controller="AppController" class="page-md login page-header-fixed page-sidebar-closed-hide-logo page-quick-sidebar-over-content page-on-load" ng-class="{'page-container-bg-solid': settings.layout.pageBodySolid, 'page-sidebar-closed': settings.layout.pageSidebarClosed}">
 	<!-- BEGIN PAGE SPINNER -->
 	<div ng-spinner-bar class="page-spinner-bar">
 		<div class="bounce1"></div>
@@ -84,15 +69,12 @@ License: You must have a valid license purchased only from themeforest(the above
 		<div class="bounce3"></div>
 	</div>
 	<!-- END PAGE SPINNER -->
-
 	<!-- BEGIN HEADER -->
 	<div data-ng-include="'{{ asset('adminviews/tpl/header.html') }}'" data-ng-controller="HeaderController" class="page-header md-shadow-z-1-i navbar navbar-fixed-top">
 	</div>
 	<!-- END HEADER -->
-
 	<div class="clearfix">
 	</div>
-
 	<!-- BEGIN CONTAINER -->
 	<div class="page-container">
 		<!-- BEGIN SIDEBAR -->
@@ -184,13 +166,18 @@ License: You must have a valid license purchased only from themeforest(the above
 	<script src="{{ asset('assets/admin/layout/scripts/layout.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/admin/layout/scripts/quick-sidebar.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/admin/layout/scripts/demo.js') }}" type="text/javascript"></script>  
+	<script src="{{ asset('assets/admin/pages/scripts/login.js') }}" type="text/javascript"></script>
 	<!-- END APP LEVEL JQUERY SCRIPTS -->
+
+	<script src="{{ asset('js/angular-storage.js') }}" type="text/javascript"></script>
 
 	<script type="text/javascript">
 		/* Init Metronic's core jquery plugins and layout scripts */
 		$(document).ready(function() {   
 			Metronic.init(); // Run metronic theme
 			Metronic.setAssetsPath('{{ asset("assets") }}/'); // Set the assets folder path			
+
+			
 		});
 	</script>
 	<!-- END JAVASCRIPTS -->

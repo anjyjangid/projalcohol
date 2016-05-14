@@ -31,7 +31,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			user:'='
 		},*/
 		templateUrl: '/templates/partials/topmenu.html',
-		controller: function($scope,$rootScope,$http,$state,sweetAlert){			
+		controller: function($scope,$rootScope,$http,$state,sweetAlert,$facebook){			
 			
 			$scope.list = [];
 
@@ -177,7 +177,8 @@ AlcoholDelivery.directive('sideBar', function() {
 	                $state.go("mainLayout.index", {}, {reload: true});
 
 	            }).error(function(data, status, headers) {
-
+	                $scope.user = {};
+	                $facebook.logout();   									
 	            });
 			};
 
@@ -668,4 +669,12 @@ console.log(isChild);
             });
         }
     }
-}]);
+}]).directive('backImg', function(){
+    return function(scope, element, attrs){
+        var url = attrs.backImg;
+        element.css({
+            'background-image': 'url(' + url +')',
+            'background-size' : 'cover'
+        });
+    };
+});;

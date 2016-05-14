@@ -10,7 +10,8 @@ var MetronicApp = angular.module("MetronicApp", [
     "ngSanitize",
     "ngCookies",
     "19degrees.ngSweetAlert2",
-    "slugifier"
+    "slugifier",
+    "angular-storage"
 ]); 
 
 
@@ -303,6 +304,45 @@ MetronicApp.controller('FooterController', ['$scope', function($scope) {
     });
 }]);
 
+
+
+MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", function($q, $timeout, $http, store) {
+
+    var currentUser = null;
+
+    this.getUser = function(){
+        if (!currentUser) {
+            currentUser = store.get('AdminUser');
+        }
+        return currentUser;
+    };
+
+    this.storeUser = function(data){
+        return store.set('AdminUser',data);
+    };
+
+    this.removeUser = function(){
+        return store.remove('AdminUser');
+    };
+
+}]);
+
+MetronicApp.controller('LoginController', ['$scope','AdminUserService', '$rootScope', '$http', function($scope, AdminUserService, $rootScope, $http) {    
+    
+    $scope.credentials = {};
+    $scope.errors = [];
+
+    $scope.adminlogin = function(){
+        $http.post('/admin/login',$scope.credentials).success(function(res){
+            AdminUserService.storeUser(res);
+            $scope.errors = [];
+        }).error(function(data, status, headers) {
+            $scope.errors = data;
+        });
+    };
+
+}]);
+
 /* Setup Rounting For All Pages */
 MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
     // Redirect any unmatched url
@@ -313,7 +353,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         .state('dashboard', {
             url: "/dashboard",
             templateUrl: "adminviews/views/dashboard.html",            
-            data: {pageTitle: 'Admin Dashboard Template'},
+            data: {pageTitle: 'Dashboard'},
             controller: "DashboardController",
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
@@ -469,6 +509,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             templateUrl: "adminviews/views/dealers/edit.html",
             data: {pageSubTitle: 'Dealer update'},
             controller:"DealerUpdateController"                
+        })
+
+        .state("dealers.orders",{
+            url: "/orders/{dealerid}",
+            templateUrl: "adminviews/views/dealers/orders.html",
+            data: {pageSubTitle: 'Dealer orders'},
+            controller:"DealerOrderController"                
         })        
 
         .state('categories', {
@@ -933,7 +980,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             data: {pageTitle: 'Cocktail Packages',pageSubTitle: 'Edit',type:2}            
         })
 
-
         .state('timeslots', {
             //url: "/timeslots",            
             abstract:true,
@@ -957,6 +1003,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             url: "/timeslots",
             templateUrl: "adminviews/views/timeslots/timeslots.html",
             data: {pageTitle: 'Time Slots'}
+        })
+
+        .state("login", {
+            url: "/login",
+            templateUrl: "adminviews/views/login.html",
+            data: {pageTitle: 'Administrator Login'},            
+            controller: "LoginController"            
         });        
 }]);
 
@@ -989,6 +1042,31 @@ MetronicApp.run(["$rootScope", "settings", "$state", function($rootScope, settin
 
     $rootScope.$state = $state; // state to be accessed from view    
 
+}]);
+
+MetronicApp.service('myRequestInterceptor', ['$q', '$rootScope', '$log', 
+function ($q, $rootScope, $log) {    
+    'use strict'; 
+    return {
+        request: function (config) {            
+            return config;
+        },
+        requestError: function (rejection) {
+            return $q.reject(rejection);
+        },
+        response: function (response) {            
+            
+            return response;
+        },
+        responseError: function (rejection) {            
+            if(rejection.status == 401){
+                $state.go('/admin/login');
+            }
+            return $q.reject(rejection);
+        }
+    };
+}]).config(['$httpProvider', function($httpProvider) {
+    $httpProvider.interceptors.push('myRequestInterceptor');
 }]);
 
 var objectToFormData = function(obj, form, namespace) {

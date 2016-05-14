@@ -6,13 +6,15 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ngSanitize',
 	'ui.bootstrap', 
 	'bootstrapLightbox', 
-	"19degrees.ngSweetAlert2",
+	'19degrees.ngSweetAlert2',
 	'angular-loading-bar',
 	'ngAnimate',
 	'ngMaterial',
 	'ngMessages',
 	'ngTouch',
-	'ngMap'
+	'ngMap',
+	'vAccordion',
+	'ngFacebook'	
 ]);
 
 
@@ -22,7 +24,11 @@ AlcoholDelivery.config(
 		$ocLazyLoadProvider.config({
 			// global configs go here
 		});
-}]);	
+}]);
+
+AlcoholDelivery.config(['$facebookProvider', function($facebookProvider) {
+    $facebookProvider.setAppId('273669936304095').setPermissions(['email','user_friends']);
+}]);
 
 AlcoholDelivery.config(['$controllerProvider', function($controllerProvider) {
   // this option might be handy for migrating old apps, but please don't use it
@@ -40,7 +46,7 @@ AlcoholDelivery.filter('capitalize', function() {
 });
 
 
-AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', function($scope, $rootScope,$http) {
+AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', '$facebook', function($scope, $rootScope,$http,$facebook) {
 
 	$scope.AppController = {};
 	$scope.featuredProduct = [];
@@ -164,6 +170,39 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', fun
 
 	}
 
+
+	// YKB Facebook start //
+	$scope.$on('fb.auth.authResponseChange', function() {
+      $scope.status = $facebook.isConnected();
+      if($scope.status) {
+        $facebook.api('/me?fields=email,name').then(function(user) {
+          //$scope.user = user;
+          //console.log(user);
+          user.fbid = user.id;
+          $http.post('/auth/registerfb',user).success(function(response){
+
+					if(response.success==true)
+					{
+						$scope.user = response.data;
+						$('#login').modal('hide');
+					}
+
+	            }).error(function(data, status, headers) {                            
+	                $scope.login.errors = data;                
+	            });
+
+        });
+      }
+    });
+
+    $scope.loginToggle = function() {
+      if($scope.status) {
+        $facebook.logout();
+      } else {
+        $facebook.login();
+      }
+    };
+    // YKB facebook end //
 
 }]);
 
@@ -448,8 +487,18 @@ AlcoholDelivery.controller('ProfileController',['$scope','$rootScope','$state','
 
 }]);
 
-AlcoholDelivery.controller('PasswordController',['$scope','$rootScope','$state','$http','sweetAlert',function($scope,$rootScope,$state,$http,sweetAlert){
+AlcoholDelivery.controller('PasswordController',['$scope','$rootScope','$state','$http','sweetAlert','UserService',function($scope,$rootScope,$state,$http,sweetAlert,UserService){
 
+	UserService.GetUser().then(
+			
+	    function(result) {
+	    	$scope.currentPasswordHide = result.loginfb;
+	    }
+	);
+
+
+	
+	
 	$scope.password = {
 		current:'',
 		new:'',
@@ -1744,6 +1793,32 @@ AlcoholDelivery.factory("CartSession", ["$q", "$timeout", "$http","$rootScope", 
 
 }]);
 
+AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
+	
+	$rootScope.appSettings.layout.pageRightbarExist = false;
+
+	$scope.AppController.category = "packages";
+	$scope.AppController.subCategory = $stateParams.type;
+
+	$scope.packages = [];
+	
+	$http.get('/package/'+$stateParams.type).success(function(response){
+		$scope.packages = response;
+	});	
+
+	  $scope.expandCallback = function (index, id) {
+	    console.log('expand:', index, id);
+	  };
+
+	  $scope.collapseCallback = function (index, id) {
+	    console.log('collapse:', index, id);
+	  };
+
+	  $scope.$on('accordionA:onReady', function () {
+	    console.log('accordionA is ready!');
+	  });
+
+}]);
 // /* Setup global settings */
 // AlcoholDelivery.factory('UserService', [function() {
 //     // supported languages
@@ -1854,32 +1929,34 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						data: {step: 'cart'},
 						//controller:"CartController"
 				})
+
 				.state('mainLayout.checkout.address', {
 						url: "/cart/address",
 						templateUrl : "/templates/checkout/address.html",
 						data: {step: 'address'},
 						controller:"CartAddressController"
 				})
+
 				.state('mainLayout.checkout.delivery', {
 						url: "/cart/delivery",
 						templateUrl : "/templates/checkout/delivery.html",
 						data: {step: 'delivery'},
 						controller:"CartDeliveryController"
 				})
+
 				.state('mainLayout.checkout.payment', {
 						url: "/cart/payment",
 						templateUrl : "/templates/checkout/payment.html",
 						data: {step: 'payment'},
 						controller:"CartPaymentController"
 				})
+
 				.state('mainLayout.checkout.review', {
 						url: "/cart/review",
 						templateUrl : "/templates/checkout/review.html",
 						data: {step: 'review'},
 						controller:"CartReviewController"
 				})
-
-
 
 				.state('mainLayout.login', {
 
@@ -2050,6 +2127,15 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						controller: "ProductDetailController"
 				})
 
+				.state('mainLayout.packages', {
+						url: "/packages/{type}",
+						templateUrl : function(stateParams){
+							return "/templates/packages/"+stateParams.type+".html";
+						},
+						params: {pageTitle: 'Packages'},
+						controller:"PackagesController",						
+				})
+
 				.state('mainLayout.category', {
 						abstract : true,
 
@@ -2153,7 +2239,7 @@ function ($q, $rootScope, $log) {
 }]);
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "appSettings", "catPricing","UserService", "$state" , function($rootScope, settings, catPricing, UserService, $state) {		
+AlcoholDelivery.run(["$rootScope", "appSettings", "catPricing","UserService", "$state", "$window", function($rootScope, settings, catPricing, UserService, $state, $window) {		
 
 	$rootScope.$state = $state; // state to be accessed from view
 
@@ -2192,7 +2278,16 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "catPricing","UserService", "$
 	});
 
 
-
+	(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+    $rootScope.$on('fb.load', function() {
+      $window.dispatchEvent(new Event('fb.load'));
+    });
 
 }]);
 

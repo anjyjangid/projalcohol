@@ -15,6 +15,11 @@ Object.defineProperty(Object.prototype, 'renameProperty',{
   enumerable : false
 });
 
+$( document ).ajaxComplete(function(e,res) {
+  if(res.status==401){
+    window.location.href = '/';
+  }  
+});
 // Object.prototype.count = function () {
 //     var count = 0;
 //     for(var prop in this) {
