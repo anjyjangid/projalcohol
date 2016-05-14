@@ -5,7 +5,7 @@
 	<img src="images/productdetail2.png">
 	<a>Party Packages</a>	
 </div>
-
+<!-- <pre>{{packages | json}}</pre> -->
 <div class="row">
 	
 	<div class="col-md-12">		
@@ -23,22 +23,49 @@
 	          </v-pane-header>
 	          <v-pane-content id="{{ ::package._id }}-content" aria-labelledby="{{ ::package._id }}-header">
 	            <p>Customise your own package</p>
-	            <v-accordion id="nestedAccordionA">
+	            <v-accordion id="nestedAccordionA" style="width:70%;float: left;">
 	              <v-pane id="{{$index}}" ng-repeat="packageItem in package.packageItems" ng-disabled="subpane.isDisabled">
-	                <v-pane-header id="{{ ::subpane.id }}-header" aria-controls="{{ ::subpane.id }}-header">
+	                <v-pane-header id="{{$index}}-header" aria-controls="{{ ::subpane.id }}-header">
 	                  <h5>{{ ::packageItem.title }}</h5>
 	                </v-pane-header>
-	                <v-pane-content id="{{ ::subpane.id }}-content" aria-labelledby="{{ ::subpane.id }}-content">
-	                  <p>{{ ::subpane.content }}</p>
+	                <v-pane-content id="{{$index}}-content" aria-labelledby="{{ ::subpane.id }}-content">
+	                  
+	                  <div class="row">													
+						<div ng-repeat-start="pcprod in packageItem.products" ng:class="{'row':($index!=0 && $index%3==0)}"></div>
+						<div class="col-md-4">							
+							<div class="thumbnail">								
+								<div class="caption">
+									<h5>{{ pcprod.name }}</h5>
+									<!-- <h5>Before Price : <b>{{pcprod.sprice}}</b></h5>
+									<h5>After Price : <b>{{pcprod.cprice}}</b></h5> -->
+								</div>
+								<img width="100" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{pcprod.imageFiles[0].source}}">	
+								
+								<div class="checkoutmiddlevlauediv" style="float: none;">
+									<input type="text" value="1" ng-model="pcprod.cart.quantity" min="1" max="100" ng-touch-spin>
+								</div>
+								
+							</div>														
+							
+						</div>
+						<div ng-repeat-end></div>													
+					</div>
+
 	                </v-pane-content>
 	              </v-pane>
 	            </v-accordion>
-	            <div class="pull-left" style="padding: 15px;margin-left: 15px;">
+	            <div class="pull-left" style="padding: 15px;margin-left: 10px;">
 	            	<p>Package Amount</p>
 	            	<h3>$54.99</h3>
 	            	<p>Savings</p>
 	            	<p>$10</p>
-	            	<button class="btn product_addcart">Add to Cart</button>
+					<div class="checkoutmiddlevlauediv">
+	            		<div class="pardqantitytexthead">Quantity</div>
+						<input type="text" value="1" ng-model="package.cart.quantity" min="1" max="10" ng-touch-spin>
+					</div>
+	            	<div>
+	            		<button class="btn product_addcart">Add to Cart</button>
+	            	</div>
 	            </div>
 	          </v-pane-content>
 	        </v-pane>
