@@ -1,3 +1,29 @@
 <div class="checkoutstepthree_dayfordelivery">Reserve your Delivery Slot</div>
-<div class="checkoutstepthree_showdate">Sunday, 24th January, 2016 <img src="images/checkoutstep3_calender.png"></div>
+<div class="checkoutstepthree_showdate">{{daySlug}}
+
+	<md-datepicker ng-model="myDate" md-placeholder="Enter date" md-min-date="minDate" md-max-date="maxDate"></md-datepicker>
+</div>
 <div class="checkoutstepthree_dayfordelivery">Please choose a timeslot from below</div>
+
+<div id="timeslots">
+	<div class="slots-bunch" ng-repeat="(key, slotbunch)  in timeslots" ng-class="{active:timeslot.datekey==slotbunch.datekey}">
+		<div class="slots-bunch-title">
+			<div class="week-stamp">{{key}}</div>
+			<div class="date-stamp">{{slotbunch.datestamp}}</div>
+		</div>
+
+		<div class="single-slot" ng-repeat="(skey,slot) in slotbunch.slots" ng-class="{inactive:slot.status==0,selected:timeslot.slotkey===skey}" ng-click="setSlot(slot.status,slotbunch.datekey,skey)">
+				{{timerange[slot.from]}} - {{timerange[slot.to]}}
+		</div>	
+
+	</div>	
+</div>
+{{timeslot}}
+
+<div class="checkouterlastdiv">
+	<div class="checkouterbackouter2"> 
+		<a class="checkouterback2" ui-sref="mainLayout.checkout.address"><span><img src="images/order_history2backpic.png"></span>back</a>
+		<button class="checkoutcheckoutnowbutton2" ng-click="timeslotCheckout()">Next<span><img src="images/leftarrowpic.png"></span></button>
+	</div>
+</div>
+

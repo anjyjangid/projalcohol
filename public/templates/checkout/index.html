@@ -2,15 +2,23 @@
 
 	<div class="checkout_title">My Cart</div>
 
+	<div ng-if="cart.productslength>0">
+
 	<div class="steps_notify">
 
 			<div class="step_grid">
 
-				<a ui-sref="mainLayout.checkout.cart" class="step1"><span>Shopping Cart</span></a>
+				<!-- <a ui-sref="mainLayout.checkout.cart" class="step1"><span>Shopping Cart</span></a>
 				<a ui-sref="mainLayout.checkout.address" class="step2"><span>Address</span></a>
 				<a ui-sref="mainLayout.checkout.delivery" class="step3"><span>Delivery</span></a>
 				<a ui-sref="mainLayout.checkout.payment" class="step4"><span>Payment</span></a>
-				<a ui-sref="mainLayout.checkout.review" class="step5"><span>Review &amp; Confirm</span></a>
+				<a ui-sref="mainLayout.checkout.review" class="step5"><span>Review &amp; Confirm</span></a> -->
+
+				<a class="step1"><span>Shopping Cart</span></a>
+				<a class="step2"><span>Address</span></a>
+				<a class="step3"><span>Delivery</span></a>
+				<a class="step4"><span>Payment</span></a>
+				<a class="step5"><span>Review &amp; Confirm</span></a>
 
 				<img src="images/step1.png" ng-show="$state.$current.data.step=='cart'">
 				<img src="images/step2.png" ng-show="$state.$current.data.step=='address'">
@@ -23,5 +31,10 @@
 
 	<div ui-view class="checkoutmiddleouter"></div>
 	
+	</div>
+	<div ng-if="cart.productslength==0" class="emptycart">
+		<div>There is nothing in your cart</div>
+		<div><a class="checkouterback" ui-sref="mainLayout.index">back to shopping</a></div>
+	</div>
 
 </div>

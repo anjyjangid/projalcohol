@@ -67,14 +67,36 @@ AlcoholDelivery.directive('sideBar', function() {
 			};
 
 			$scope.loginSubmit = function(){
+
 				$http.post('/auth',$scope.login).success(function(response){
+	                
 	                $scope.login = {};
 	                $scope.user = response;
 					$scope.user.name = response.email;
 	                $('#login').modal('hide');
 	                $scope.errors = {};
-	            }).error(function(data, status, headers) {                            
+	                
+	                var deliverykey = localStorage.getItem("deliverykey");
+					console.log(deliverykey)
+	                if(deliverykey!==null && typeof deliverykey!=="undefined"){
+						
+						$http.put('cart/merge/'+deliverykey).success(function(response){
+							
+							$state.go($state.current, {}, {reload: true});
+
+						}).error(function(data, status, headers) {
+
+			                $scope.errors = data;
+
+			            });
+
+	            	}
+
+
+				}).error(function(data, status, headers) {
+
 	                $scope.errors = data;
+
 	            });
 			};
 
@@ -143,8 +165,19 @@ AlcoholDelivery.directive('sideBar', function() {
 
 	        $scope.logout = function() {
 				$http.get('/auth/logout').success(function(response){
-	                $scope.user = {};      									
-	            }).error(function(data, status, headers) {                            						                
+	                
+	                $scope.user = {};	                
+
+	                // Destroy Cart Params start
+	                delete $rootScope.deliverykey
+	                localStorage.removeItem("deliverykey");
+	                // Destroy Cart Params end
+
+
+	                $state.go("mainLayout.index", {}, {reload: true});
+
+	            }).error(function(data, status, headers) {
+
 	            });
 			};
 
@@ -249,6 +282,28 @@ AlcoholDelivery.directive('sideBar', function() {
   }
 })
 
+.directive('onlyDigits', function () {
+    return {
+      require: 'ngModel',
+      restrict: 'A',
+      link: function (scope, element, attr, ctrl) {
+        function inputValue(val) {
+          if (val) {
+            var digits = val.replace(/[^0-9]/g, '');
+
+            if (digits !== val) {
+              ctrl.$setViewValue(digits);
+              ctrl.$render();
+            }
+            return parseInt(digits,10);
+          }
+          return undefined;
+        }            
+        ctrl.$parsers.push(inputValue);
+      }
+    };
+})
+
 .directive('ngTouchSpin', ['$timeout', '$interval', function($timeout, $interval) {
 	'use strict';
 
@@ -262,7 +317,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		scope.stepInterval = attrs.stepInterval || 500;
 		scope.stepIntervalDelay = attrs.stepIntervalDelay || 500;
 		scope.initval = attrs.initval || '';
-		scope.val = attrs.value || scope.initval;
+		//scope.val = attrs.value || scope.initval;
 		scope.verticalButtons = attrs.vertical || false;
 	};
 
@@ -271,7 +326,8 @@ AlcoholDelivery.directive('sideBar', function() {
 		require: '?ngModel',
 		scope: {
 			'myincrement': '&onIncrement',
-			'mydecrement': '&onDecrement'
+			'mydecrement': '&onDecrement',
+			'val': "=value"
 		},
 		replace: true,
 		link: function (scope, element, attrs, ngModel) {
@@ -319,11 +375,12 @@ AlcoholDelivery.directive('sideBar', function() {
 				clickStart = Date.now();
 				scope.stopSpin();
 
-				$timeout(function() {
-					timer = $interval(function() {
-						scope.increment();
-					}, scope.stepInterval);
-				}, scope.stepIntervalDelay);
+				// $timeout(function() {
+				// 	timer = $interval(function() {
+				// 		scope.increment();
+				// 	}, scope.stepInterval);
+				// }, scope.stepIntervalDelay);
+
 			};
 
 			scope.startSpinDown = function () {
@@ -332,11 +389,11 @@ AlcoholDelivery.directive('sideBar', function() {
 
 				clickStart = Date.now();
 
-				var timeout = $timeout(function() {
-					timer = $interval(function() {
-						scope.decrement();
-					}, scope.stepInterval);
-				}, scope.stepIntervalDelay);
+				// var timeout = $timeout(function() {
+				// 	timer = $interval(function() {
+				// 		scope.decrement();
+				// 	}, scope.stepInterval);
+				// }, scope.stepIntervalDelay);
 			};
 
 			scope.stopSpin = function () {
@@ -353,7 +410,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			scope.checkValue = function () {
 				var val;
-
+				scope.val = String(scope.val);
 				if (scope.val !== '' && !scope.val.match(/^-?(?:\d+|\d*\.\d+)$/i)) {
 					val = oldval !== '' ? parseFloat(oldval).toFixed(scope.decimals) : parseFloat(scope.min).toFixed(scope.decimals);
 					scope.val = val;
@@ -381,12 +438,13 @@ AlcoholDelivery.directive('sideBar', function() {
 
 		// '</div>'
 
-		'<div class="input-group bootstrap-touchspin" ng-class={vertical:verticalButtons}>' +
+		'<div class="input-group bootstrap-touchspin" ng-class={vertical:!verticalButtons}>' +
 		'  <span class="input-group-btn" ng-show="verticalButtons">' +
 		'    <button class="btn btn-default bootstrap-touchspin-down" ng-mousedown="startSpinDown()" ng-mouseup="stopSpin()">-</button>' +
 		'  </span>' +
 		'  <span class="input-group-addon bootstrap-touchspin-prefix" ng-show="prefix" ng-bind="prefix"></span>' +
-		'  <input type="text" ng-model="val" class="form-control addmore-count" ng-blur="checkValue()">' +
+		'  <span class="addmore-count" ng-bind="val"></span>'+
+		// '  <input type="text" ng-model="val" class="form-control addmore-count" ng-blur="checkValue()" disabled>' +
 		'  <span class="input-group-addon" ng-show="postfix" ng-bind="postfix"></span>' +
 		'  <span class="input-group-btn" ng-if="verticalButtons">' +
 		'    <button class="btn btn-default bootstrap-touchspin-up" ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()">+</button>' +
@@ -493,44 +551,64 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.isInCart = false;
 			$scope.addMoreCustom = false;
 			$scope.element = $element;
-			$scope.product.quantity = 1;
+			
 			$scope.product.quantitycustom = 1;
 
 			$scope.addtocart = function(){
 
-				CartSession.GetDeliveryKey().then(
+				// $timeout(function() {
+				// 	timer = $interval(function() {
+				// 		scope.increment();
+				// 	}, scope.stepInterval);
+				// }, scope.stepIntervalDelay);
 
-					function(response){
-						
-						$http.put("/cart/"+response.deliverykey, {
-								"id":$scope.product._id,
-								"quantity":$scope.product.quantity,
-								"chilled":$scope.product.servechilled,
-							},{
-				            
-				        }).error(function(data, status, headers) {            
-				            
-				        })
-				        .success(function(response) {
-				        	if(!response.success){
+				if(typeof $scope.proUpdateTimeOut!=="undefined"){
+					$timeout.cancel($scope.proUpdateTimeOut);
+				}
+				
+				$scope.proUpdateTimeOut = $timeout(function(){
 
-				        		switch(response.errorCode){
-				        			case 100:
-				        				$scope.product.quantity = response.data.maxQuantity;
-				        			break;
-				        		}
+					CartSession.GetDeliveryKey().then(
 
-				        	}
-				        })
+						function(response){						
 
-					}
-				)
+							$http.put("/cart/"+response.deliverykey, {
+									"id":$scope.product._id,
+									"quantity":$scope.product.quantitycustom,
+									"chilled":$scope.product.servechilled,
+								},{
+
+					        }).error(function(data, status, headers) {
+
+					        }).success(function(response) {
+					        	if(!response.success){
+					        		
+					        		switch(response.errorCode){
+										case "100":
+											$scope.product.quantitycustom = response.data.quantity;
+											console.log($scope.product.quantitycustom);
+										break;
+					        		}
+
+					        	}
+					        });
+
+					        if($scope.product.quantitycustom==0){
+								$scope.isInCart = false;
+								$scope.addMoreCustom = false;
+								$scope.product.quantitycustom = 1;
+							}
+
+						}
+
+					)
+				},1500)
+				
 
 			};
 
 			$scope.addCustom = function(){
-				
-				$scope.product.quantity = $scope.product.quantitycustom;
+								
 				$scope.activeAddToCart();
 
 			};
@@ -550,7 +628,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.activeAddToCartCustom = function(){
 				$scope.addMoreCustom = true;
-				$scope.product.quantitycustom = $scope.product.quantity;
+				
 				$timeout(function(){
 					$element.find(".addmanual input").animate({ width: "70%"},250).focus();
 		  			$element.find(".addmanual .addbuttton").animate({ width: "30%"},250);

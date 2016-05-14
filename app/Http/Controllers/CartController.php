@@ -9,6 +9,9 @@ use AlcoholDelivery\Cart as Cart;
 use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Products as Products;
 use AlcoholDelivery\Setting as Setting;
+use AlcoholDelivery\Orders as Orders;
+use MongoDate;
+use MongoId;
 
 class CartController extends Controller
 {
@@ -64,7 +67,8 @@ class CartController extends Controller
 	public function show(Request $request,$id)
 	{
 
-		$cartKey = $request->session()->get('deliverykey', $id);
+		//$cartKey = $request->session()->get('deliverykey', $id);
+		$cartKey = $id;
 		$request->session()->put('deliverykey', $cartKey);
 		
 		$cart = Cart::find($cartKey);
@@ -144,24 +148,116 @@ class CartController extends Controller
 
 		$product = $product[0];
 
+		$updateProData = array(
+				"name"=>$product['name'],
+				"price"=>$product['price'],				
+				"maxQuantity"=>(int)$product['maxQuantity'],
+				"chilled"=>0,
+				"nonchilled"=>0,
+				"quantity"=>0
+			);
+
+		if((bool)$inputs['chilled']){
+			$updateProData['chilled'] = (int)$inputs['quantity'];
+		}else{
+			$updateProData['nonchilled'] = (int)$inputs['quantity'];
+		}
+
+		$oldQuantity = 0;
+		if(isset($cart->products[$inputs['id']])){
+			$oldQuantity = $cart->products[$inputs['id']]['quantity'];
+		}
+
+		$cart->products = array_merge($cart->products,array($inputs['id']=>$updateProData));
+
+
+		// Code to update total quantity
+		$updateProData = $cart->products[$inputs['id']];
+
+		$quantity = isset($cart->products[$inputs['id']]['chilled'])?$cart->products[$inputs['id']]['chilled']:0;
+		$quantity+= isset($cart->products[$inputs['id']]['nonchilled'])?$cart->products[$inputs['id']]['nonchilled']:0;
+
+		$updateProData['quantity'] = $quantity;
+
+		$product['change'] = $quantity - $oldQuantity;//Track change in quantity
+
 		// Condition to check quantity is not more than available quantity
-		if((int)$inputs['quantity']>(int)$product['maxQuantity']){
+		if((int)$quantity>(int)$product['maxQuantity']){
 			return response(array("success"=>false,"errorCode"=>"100","message"=>"Product quantity is not available","data"=>$product));
 		}
 
-		$cart->products = array_merge($cart->products,array($inputs['id']=>array(
-				"name"=>$product['name'],
-				"price"=>$product['price'],
-				"quantity"=>(int)$inputs['quantity'],
-				"maxQuantity"=>(int)$product['maxQuantity'],
-				"chilled"=>(bool)$inputs['chilled']
-			)));
 
-		if($cart->save()){
+		try {
+					
+			if($quantity>0){
+
+				$cart->products = array_merge($cart->products,array($inputs['id']=>$updateProData));
+				$cart->save();
+
+			}else{
+
+				$cart->unset('products.'.$inputs['id']);
+
+			}
+
 			return response(array("success"=>true,"message"=>"cart updated successfully","data"=>$product));
+
+		} catch(\Exception $e){
+
+			return response(array("success"=>false,"message"=>"Something went worng"));
+			return response(array("success"=>false,"message"=>$e->getMessage()));
+
 		}
-		
+
 		return response(array("success"=>false,"message"=>"Something went worng"));
+
+		
+	}
+
+	public function mergecarts($cartkey){
+
+		$user = Auth::user('user');
+        
+        $cart = "";
+
+        if(isset($user->_id)){
+            
+            $userCart = Cart::where("user","=",new MongoId($user->_id))->first();
+            
+            $sessionCart = Cart::find($cartkey);
+
+            if(empty($userCart)){
+            				
+				$sessionCart->user = new MongoId($user->_id);
+
+            }else{
+            	
+            	$sessionCart->products = array_merge($sessionCart->products,$userCart->products);
+
+            }
+
+            try{
+
+            	$sessionCart->save();
+
+            	if(!empty($userCart)){
+
+            		$userCart->delete();
+
+            	}
+            	return response(["success"=>true,"message"=>"cart merge successfully"],200);
+
+            }catch(\Exception $e){
+            	return response(["success"=>false,"message"=>$e->getMessage()],400);
+            }
+
+
+        }else{
+        	return response(["success"=>false,"message"=>"login required to merge"],400);
+        }
+
+        return response(["success"=>false,"message"=>"something went wrong"],400);
+
 	}
 
 	/**
@@ -224,7 +320,7 @@ class CartController extends Controller
 
     public function getServices(){
 
-    	$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.cigratte_services.value','settings.non_chilled_delivery.value'])->first();
+    	$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value'])->first();
 
     	$services = $services['settings'];
 
@@ -232,12 +328,197 @@ class CartController extends Controller
 			"express"=>$services['express_delivery']['value'],
 			"smoke"=>$services['cigratte_services']['value'],
 			"chilled"=>$services['non_chilled_delivery']['value'],
+			"mincart"=>$services['minimum_cart_value']['value'],
+			"delivery"=>$services['non_free_delivery']['value'],
+			
 		];
 
     	return response($serviceRes,200);
 
     }
 
+    public function getTimeslots($date){
+
+    	$timeSlots = Setting::where("_id","=","timeslot")->get(['settings'])->first();
+    	$timeSlots = $timeSlots['settings'];
+    
+			
+		$currDate = date("Y-m-d", strtotime('tomorrow'));
+
+    	if(isset($data)!==""){
+
+    		$passedDate = date("Y-m-d",strtotime($date));
+
+    		if(strtotime($passedDate)<strtotime($currDate)){
+    			$passedDate = $currDate;
+    		}
+    		
+    	}else{
+    		
+    		$passedDate = $currDate;
+
+    	}
+
+    	$weeknumber = date("N",strtotime($passedDate));
+		
+		$weekKeys = array(
+			
+			"1"=>"mon",
+			"2"=>"tue",
+			"3"=>"wed",
+			"4"=>"thu",
+			"5"=>"fri",
+			"6"=>"sat",
+			"7"=>"sun"
+		);
+
+		$slotArr = [];
+
+		$tempDate = $passedDate;
+		for($i=1;$i<=7;$i++){
+			//$slotArr[$weekKeys[$weeknumber]] = [];
+			$slotArr[$weekKeys[$weeknumber]]['slots'] = $timeSlots[$weeknumber-1];			
+			$slotArr[$weekKeys[$weeknumber]]['datestamp'] = date("d M",strtotime($tempDate));
+			$slotArr[$weekKeys[$weeknumber]]['datekey'] = strtotime($tempDate);
+			
+			$tempDate = date("Y-m-d",strtotime('+1 day', strtotime($tempDate)));
+
+			if($weeknumber==7){
+				$weeknumber = 0;
+			}
+			$weeknumber++;
+
+		}
+
+    	return response($slotArr,200);
+    }
+
+    public function removeproduct($proId,$type,Request $request){
+    	
+    	$cartKey = $request->session()->get('deliverykey');
+				
+		$cart = Cart::find($cartKey);
+
+		$products = $cart->products;
+		$products[$proId][$type]=0;
+
+		$products[$proId]['quantity'] = (int)$products[$proId]['chilled'] + (int)$products[$proId]['nonchilled'];
+		
+
+			try {
+
+				if($products[$proId]['quantity']>0){
+
+					$cart->products = $products;
+
+					$cart->save();
+				
+					return response(array("success"=>true,"message"=>"cart updated successfully","removeCode"=>200));
+					//200 to know only chilled/nonchilled is removed
+
+				}else{
+
+					$cart->unset('products.'.$proId);
+
+					return response(array("success"=>true,"message"=>"cart updated successfully","removeCode"=>300));
+					//300 to know complete product is removed
+
+				}
+				
+
+			} catch(\Exception $e){
+				
+				return response(array("success"=>false,"message"=>$e->getMessage()));
+
+			}
+	
+		return response(array("success"=>false,"message"=>"Something went wrong"));
+
+    }
+
+    public function confirmorder(Request $request){
+
+    	$cartKey = $request->session()->get('deliverykey');
+				
+		$cart = Cart::find($cartKey);
+
+		$cartArr = $cart->toArray();
+	
+		$user = Auth::user('user');
+		
+		$cartArr['user'] = new MongoId($user->_id);
+
+		try {
+
+			$order = Orders::create($cartArr);
+
+			$cart->delete();
+			
+			$request->session()->forget('deliverykey');
+			
+			return response(array("success"=>true,"message"=>"order placed successfully","order"=>$order['_id']));
+
+		} catch(\Exception $e){
+			
+			return response(array("success"=>false,"message"=>$e->getMessage()));
+
+		}
+
+    }
+
+    public function deploycart(Request $request){
+
+    	$cartKey = $request->session()->get('deliverykey');
+				
+		$cart = Cart::find($cartKey);
+
+		if(empty($cart)){
+			return response(array("success"=>false,"message"=>"something went wrong with cart"));
+		}
+
+    	$params = $request->all();
+
+    	if(isset($params['nonchilled'])){
+    		$cart->nonchilled = $params['nonchilled'];
+    	}
+
+    	if(isset($params['delivery'])){
+    		$cart->delivery = $params['delivery'];
+    	}
+
+    	if(isset($params['service'])){
+    		$cart->service = $params['service'];
+    	}
+
+    	if(isset($params['timeslot'])){
+    		$cart->timeslot = $params['timeslot'];
+    	}
+
+    	if(isset($params['total'])){
+    		$cart->total = $params['total'];
+    	}
+
+    	if(isset($params['subtotal'])){
+    		$cart->subtotal = $params['subtotal'];
+    	}
+    	
+
+
+    	try {
+
+			$cart->save();
+			
+			return response(array("success"=>true,"message"=>"cart updated successfully"));
+
+		} catch(\Exception $e){
+			
+			return response(array("success"=>false,"message"=>$e->getMessage()));
+
+		}
+
+		return response(array("success"=>false,"message"=>"Something went worng"));
+
+    }
 
     public function missingMethod($parameters = array())
 	{
