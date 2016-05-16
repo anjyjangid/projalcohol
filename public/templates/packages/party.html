@@ -14,12 +14,12 @@
 	        <v-pane id="{{ ::package._id }}" ng-repeat="package in packages">
 	          <v-pane-header id="{{ ::package._id }}-header" aria-controls="{{ ::package._id }}-content" class="bg-removepackage">
 	            <div style="position:relative;">
-                <img src="images/party_package1.png" />
-					<!--<img style="vertical-align:top;" err-src="asset/i/party_package1.png" class="img-responsive" ng-src="packages/i/{{package.coverImage.source}}" src="asset/i/party_package1.png" alt=""/>-->
+                	<!-- <img src="images/party_package1.png" /> -->
+					<img err-src="asset/i/party_package1.png" class="img-responsive" ng-src="packages/i/{{package.coverImage.source}}" src="asset/i/party_package1.png" alt=""/>
 					<div style="position: absolute;top: 0;width:100%;">
-						<p class="title-propertset"> <!--{{package.title}}--> Party Packages [2-4 PAX]</p>
-						<p class="subtitl-propertset"> <!--{{package.subTitle}}--> Cartival </p>
-						<p class="btmcontn-set"> <!--{{package.description}}--> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, </p>
+						<p class="title-propertset"> {{package.title}}</p>
+						<p class="subtitl-propertset"> {{package.subTitle}} </p>
+						<p class="btmcontn-set"> {{package.description}}</p>
 					</div>
 				</div>	            
 	          </v-pane-header>

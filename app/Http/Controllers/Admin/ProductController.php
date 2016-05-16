@@ -212,7 +212,8 @@ class ProductController extends Controller
             $unset[] = 'express_delivery_bulk';
         }
 
-        $inputs['bulkDisable'] = (int)($inputs['bulkDisable']);
+        $bd = (isset($inputs['bulkDisable']))?$inputs['bulkDisable']:0;
+        $inputs['bulkDisable'] = (int)($bd);
 
         $inputs['loyalty'] = (int)($inputs['loyalty']);
 
