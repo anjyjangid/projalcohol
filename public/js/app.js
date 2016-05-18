@@ -1836,6 +1836,7 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 
 AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll){
 	
+	
 	$rootScope.appSettings.layout.pageRightbarExist = false;
 
 	$rootScope.$on("$locationChangeSuccess", function(){
