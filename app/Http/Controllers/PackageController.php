@@ -88,11 +88,13 @@ class PackageController extends Controller
         //
     }
 
-    public function getParty(Request $request){
+    public function getPackages(Request $request,$type){
+        
+        $ptype = ($type == 'party')?1:2;
         
         $packages = new Packages;
 
-        $packages = $packages->with('productlist')->where('type',1)->get();
+        $packages = $packages->with('productlist')->where('type',$ptype)->get();
 
         if($packages){
             
@@ -105,57 +107,161 @@ class PackageController extends Controller
 
             foreach ($packages as $key => $package) {
                 
-
                 $packageItems = $package['packageItems'];
                 $packageupdate = [];
+                $packagePrice = $productOrgPrice = 0;
+                
                 foreach ($packageItems as $pkgkey => $pkgvalue) {              
-                  $packageupdate[$pkgkey] = $pkgvalue;
-                  $pkgpro = [];
-                  foreach ($pkgvalue['products'] as $prokey => $provalue) {
-                      $tier = $global->settings['regular_express_delivery'];
-                      $value = $this->getProductById($provalue['_id'], $package['productlist']);     
+                    $packageupdate[$pkgkey] = $pkgvalue;
+                    $pkgpro = [];
+                    $minprice = [];
+                    $quantity = 1;                  
+                    if($ptype == 1){
+                        $quantity = (int)$pkgvalue['quantity'];
+                    }
 
-                      if(isset($value['regular_express_delivery']) && !empty($value['regular_express_delivery'])){
-                      $tier = $value['regular_express_delivery'];          
-                      }else{
+                    foreach ($pkgvalue['products'] as $prokey => $provalue) {
+                      
+                        $tier = $global->settings['regular_express_delivery'];
+
+                        $value = $this->getProductById($provalue['_id'], $package['productlist']);     
+
+                        if(isset($value['regular_express_delivery']) && !empty($value['regular_express_delivery'])){
+                            $tier = $value['regular_express_delivery'];
+                        }else{
+                            $categories = Categories::whereIn('_id',$value['categories'])->get();
+                            if($categories){
+                              foreach ($categories as $ckey => $cvalue) {
+                                if(isset($cvalue['regular_express_delivery']) && !empty($cvalue['regular_express_delivery'])){
+                                  $tier = $cvalue['regular_express_delivery'];
+                                }
+                              }
+                            }
+                        }
+                        $sprice = $this->calculatePrice($value['price'],$tier);
+
+                        $pkgpro[$prokey] = [
+                            '_id' => $provalue['_id'],
+                            'cprice' => $provalue['cprice'],
+                            'name' => $value['name'],
+                            'sprice' => $sprice,
+                            'imageFiles' => $value['imageFiles'],
+                            'cartquantity' => 0
+                        ];
+                        $minprice[$prokey] = $provalue['cprice'];
+                    }
+                  
+                    $minDiscountPrice = min($minprice);
+
+                    $minPriceKey = array_search($minDiscountPrice, $minprice);
+
+                    $minDiscountProductPrice = $pkgpro[$minPriceKey]['sprice'];
+
+                    $productOrgPrice += ($minDiscountProductPrice*$quantity);
+
+                    $packagePrice += ($minDiscountPrice*$quantity);                                    
+
+                    $pkgpro[$minPriceKey]['cartquantity'] = $quantity;
+
+                    $packageupdate[$pkgkey]['products'] = $pkgpro;              
+                  
+                }  
+                
+                $packages[$key]->packageSavings = round(($productOrgPrice - $packagePrice),2);
+                $packages[$key]->packagePrice = round($packagePrice,2);
+                $packages[$key]->packageItems = $packageupdate;
+            }
+        }
+        return response($packages,200);
+    }
+
+    public function getPackagedetail(Request $request,$type,$id){
+        
+        $ptype = ($type == 'party')?1:2;
+        
+        $package = new Packages;
+
+        $package = $package->with('productlist')->where('_id',$id)->where('type',$ptype)->first();
+        
+        if($package){
+            
+            $settingObj = new Setting;
+            
+            $global = $settingObj->getSettings(array(
+              "key"=>'pricing',
+              "multiple"=>false
+            ));
+
+                
+            $packageItems = $package['packageItems'];
+            $packageupdate = [];
+            $packagePrice = $productOrgPrice = 0;
+            
+            foreach ($packageItems as $pkgkey => $pkgvalue) {              
+                $packageupdate[$pkgkey] = $pkgvalue;
+                $pkgpro = [];
+                $minprice = [];
+                $quantity = 1;                  
+                if($ptype == 1){
+                    $quantity = (int)$pkgvalue['quantity'];
+                }
+
+                foreach ($pkgvalue['products'] as $prokey => $provalue) {
+                  
+                    $tier = $global->settings['regular_express_delivery'];
+
+                    $value = $this->getProductById($provalue['_id'], $package['productlist']);     
+
+                    if(isset($value['regular_express_delivery']) && !empty($value['regular_express_delivery'])){
+                        $tier = $value['regular_express_delivery'];
+                    }else{
                         $categories = Categories::whereIn('_id',$value['categories'])->get();
                         if($categories){
                           foreach ($categories as $ckey => $cvalue) {
                             if(isset($cvalue['regular_express_delivery']) && !empty($cvalue['regular_express_delivery'])){
-                              $tier = $cvalue['regular_express_delivery'];                
+                              $tier = $cvalue['regular_express_delivery'];
                             }
                           }
                         }
-                      }
-                      $sprice = $this->calculatePrice($value['price'],$tier);
+                    }
+                    $sprice = $this->calculatePrice($value['price'],$tier);
 
-                      $pkgpro[$prokey] = [
+                    $pkgpro[$prokey] = [
                         '_id' => $provalue['_id'],
                         'cprice' => $provalue['cprice'],
                         'name' => $value['name'],
                         'sprice' => $sprice,
-                        'imageFiles' => $value['imageFiles']
-                      ];
-                  }
-                  $packageupdate[$pkgkey]['products'] = $pkgpro;              
-                }                
-                $packages[$key]->packageItems = $packageupdate;
-            }
+                        'imageFiles' => $value['imageFiles'],
+                        'cartquantity' => 0
+                    ];
+                    $minprice[$prokey] = $provalue['cprice'];
+                }
+              
+                $minDiscountPrice = min($minprice);
+
+                $minPriceKey = array_search($minDiscountPrice, $minprice);
+
+                $minDiscountProductPrice = $pkgpro[$minPriceKey]['sprice'];
+
+                $productOrgPrice += ($minDiscountProductPrice*$quantity);
+
+                $packagePrice += ($minDiscountPrice*$quantity);                                    
+
+                $pkgpro[$minPriceKey]['cartquantity'] = $quantity;
+
+                $packageupdate[$pkgkey]['products'] = $pkgpro;              
+              
+            }  
+            
+            $package->packageSavings = round(($productOrgPrice - $packagePrice),2);
+            $package->packagePrice = round($packagePrice,2);
+            $package->packageItems = $packageupdate;
+            
+            return response($package,200);
+        }else{
+            return response('No package found',404);
         }
-
-        return response($packages,200);
-
-    }
-
-    public function getCocktail(Request $request){
         
-        $packages = new Packages;
-
-        $packages = $packages->with('productlist')->where('type',2)->get();
-
-
-        return response($packages,200);
-
     }
 
     protected function calculatePrice($cost = 0, $tiers){
@@ -177,4 +283,6 @@ class PackageController extends Controller
         }
         return $return;
     }
+
+    
 }
