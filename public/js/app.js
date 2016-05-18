@@ -1808,30 +1808,71 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 
 	$scope.packages = [];
 	
-	$http.get('/package/'+$stateParams.type).success(function(response){
+	$http.get('/package/packages/'+$stateParams.type).success(function(response){
 		$scope.packages = response;
 	});	
 
-	  $scope.expandCallback = function (index, id) {
-	    $timeout(function() {
-        	$anchorScroll(id+'-header');
-       	});
+	$scope.expandCallback = function (index, id) {
+	$timeout(function() {
+		$anchorScroll(id);
+		});	    
+	};
 
-	    // console.log('expand:', index, id);
-	  };
+	$scope.collapseCallback = function (index, id) {
+		$timeout(function() {
+			$anchorScroll(id);
+		});
+	};
 
-	  $scope.collapseCallback = function (index, id) {
-	  	$timeout(function() {
-        	$anchorScroll(id);
-       	});
-	    // console.log('collapse:', index, id);
-	  };
+	$scope.validateSelection = function (index, id) {
+			
+	};
 
-	  $scope.$on('accordionA:onReady', function () {
+	  /*$scope.$on('accordionA:onReady', function () {
 	    console.log('accordionA is ready!');
-	  });
+	  });*/	  
 
-	 
+}]);
+
+AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll){
+	
+	$rootScope.appSettings.layout.pageRightbarExist = false;
+
+	$rootScope.$on("$locationChangeSuccess", function(){
+        $timeout(function() {
+            $anchorScroll();
+       });
+    }); 
+
+	$scope.AppController.category = "packages";
+	$scope.AppController.subCategory = $stateParams.type;
+
+	$scope.packages = [];
+	
+	$http.get('/package/packagedetail/'+$stateParams.type+'/'+$stateParams.id).success(function(response){
+		$scope.packages = response;
+	});	
+
+	$scope.expandCallback = function (index, id) {
+	
+		/*$timeout(function() {
+			$anchorScroll(id);
+		});*/	    
+	};
+
+	$scope.collapseCallback = function (index, id) {
+		/*$timeout(function() {
+			$anchorScroll(id);
+		});*/
+	};
+
+	$scope.validateSelection = function (index, id) {
+			
+	};
+
+	  /*$scope.$on('accordionA:onReady', function () {
+	    console.log('accordionA is ready!');
+	  });*/	  
 
 }]);
 // /* Setup global settings */
@@ -2149,6 +2190,15 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						},
 						params: {pageTitle: 'Packages'},
 						controller:"PackagesController",						
+				})
+
+				.state('mainLayout.packagedetail', {
+						url: "/packagedetail/{type}/{id}",
+						templateUrl : function(stateParams){
+							return "/templates/packages/"+stateParams.type+"detail.html";
+						},
+						params: {pageTitle: 'Packages Detail'},
+						controller:"PackageDetailController",						
 				})
 
 				.state('mainLayout.category', {
