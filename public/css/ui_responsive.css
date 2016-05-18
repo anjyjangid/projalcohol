@@ -484,6 +484,150 @@
     box-shadow: 0 10px 10px 0 #bbbbbb;
 }
 
+/*cocktail-page*/
+.cocktail-packagecover{
+	margin-bottom:65px
+	
+	
+}
+.media-bodyheader{
+	background:#fff;
+	padding:15px;
+	margin-bottom:21px
+	
+}
+.media.media-bodyheader:first-child {
+    margin-top: 10px;
+}
+
+.cocktail-leftimgdiv{
+	width:284px;
+	height:286px;
+	float:left;
+	border-radius:4px;
+	overflow:hidden;
+	
+}
+.cockatil-bodycover{
+	width:68%;
+	float:left;
+	padding-left: 20px;
+}
+
+.cocktail-heading{
+	width:100%;
+	float:left;
+	color:#666566;
+	font-size:24px;
+	padding-top: 5px;
+	margin-bottom:0
+}
+.cocktail-subtitlbtm{
+	width:100%;
+	float:left;
+	color:#656565;
+	font-size:13px;
+	padding:3px 0; 
+	margin:0
+}
+.moredetail-cocktailtext{
+	width:100%;
+	float:left;
+	
+	margin:0;
+	
+	padding:0 0 3px;
+	
+}
+.product-desccocktail{
+	width:84%;
+	float:left;
+	text-overflow: ellipsis;
+    white-space: nowrap;
+	overflow:hidden;
+	color:#656565;
+	font-size:13px;
+}
+.moredetail-cocktailtext a{
+	 width:16%;
+	color:#aa00ff;
+	font-size:15px;
+	margin:0;
+	padding:0;
+	text-decoration:none;
+	float:right;
+	text-align:right
+}
+.sub-headingcocktail{
+	width:100%;
+	float:left;
+	color:#656565;
+	font-size:18px;
+	font-weight:500
+}
+
+.thumbnail.cocktail-products-div {
+    float: left;
+    height: 116px;
+    overflow: hidden;
+    text-align: center;
+    width: 93px;
+	 margin-right: 4px;
+	 margin-bottom: 5px;
+}
+.thumbnail.cocktail-products-div .caption{
+	width:100%;
+	float:left;
+	font-size:11px;
+	color:#222122;
+	font-weight:600;
+	padding:5px 0; height: 20px;
+text-overflow: ellipsis;
+    white-space: nowrap;
+	overflow:hidden;
+}
+
+.cocktail-cartbtn {
+    float: left;
+    width: 100%;
+}
+.cocktail-cartbtn .product_addcart, .cocktail-cartbtn .product_addcart:hover{
+	float:right;
+	margin-top:0;
+	margin-left:25px
+}
+ .cocktail-cartbtn .product_addcart:hover,  .cocktail-cartbtn .product_addcart:active,
+ .cocktail-cartbtn .product_addcart:focus{
+	 color:#fff
+ }
+.owl-carousel{
+	float:left
+}
+
+.cocktail-amntdivcover > span{
+	font-size:13px;
+	color:#656565;
+	float:right; margin-top: 12px;
+	
+}
+.amntrupee{
+	font-size:30px;
+	color:#222122;
+	font-weight:600;
+	float:right;
+	padding-left:15px
+}
+
+.cocktail-amntdivcover{
+	width:65%;
+	float:right
+}
+
+.cocktail-cartbtn .product_addcart, .cocktail-cartbtn .product_addcart:hover
+
+
+
+
 @media (min-width : 1024px) and (max-width : 1200px){
 }
 

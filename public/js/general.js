@@ -20,6 +20,14 @@ $( document ).ajaxComplete(function(e,res) {
     window.location.href = '/';
   }  
 });
+
+$(function() {
+	if(!$('.social_block').is(':hidden')){
+			alert("do something");
+	}
+  
+});
+
 // Object.prototype.count = function () {
 //     var count = 0;
 //     for(var prop in this) {

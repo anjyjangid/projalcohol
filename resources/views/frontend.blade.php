@@ -193,5 +193,5 @@
 
     <script src="js/ngFacebook.js"></script>
     <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>
-	
+		
 </html>

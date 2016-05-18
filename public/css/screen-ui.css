@@ -124,7 +124,7 @@ md-dialog.md-transition-in{
 
 .modify .dropdown-menu{
 	left:101%;
-	top:-25px;
+	top:50px;
 	padding:28px;
 	z-index: 999999;
 	border-radius:5px !important;
@@ -5342,4 +5342,20 @@ md-switch .md-thumb-container{
 md-switch{
 	margin-top:0px;
 	margin-bottom:0px;
+}
+
+
+
+.innerpagemargintop .nav.navbar-nav .dropdown-menu{
+	position:absolute;
+}
+
+.innerpagemargintop .nav.navbar-nav > li{
+	position:inherit;
+}
+
+
+.innerpagemargintop .nav.navbar-nav .dropdown-menu {
+    animation-duration: 0s;
+    animation-fill-mode:inherit;
 }
