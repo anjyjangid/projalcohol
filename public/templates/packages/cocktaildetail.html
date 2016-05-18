@@ -3,35 +3,94 @@
 	<img src="images/productdetail2.png">
 	<a>Packages</a>
 	<img src="images/productdetail2.png">
-	<a>Cocktail Packages</a>	
+	<a ui-sref="mainLayout.packages({type:'cocktail'})">Cocktail Packages</a>
+	<img src="images/productdetail2.png">
+	<a>{{packages.title}}</a>
 </div>
-<!-- <pre>{{packages|json}}</pre> -->
-<div style="clear: both;"></div>
-<div class="media" ng-repeat="package in packages">
-  <div class="media-left">
-    <a href="#">
-      <img width="250" style="vertical-align:top;" err-src="asset/i/defaultImage.png" class="" ng-src="packages/i/{{package.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
-    </a>
-
-  </div>
-  <div class="media-body">
-    <h4 class="media-heading">{{package.title}}</h4>
-    <p>{{package.subTitle}}</p>
-    <p>{{package.description}}</p>    
-	<h4 class="media-heading">Ingredients</h4>
-    <data-owl-carousel class="owl-carousel owl-theme" data-options="{navigation : false,pagination : true,items : 6}">
-		<div owl-carousel-item="" ng-repeat="productItem in package.productlist">
-			<div class="thumbnail">
-				<img width="100" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{productItem.imageFiles[0].source}}">	
-				<div class="caption">
-					{{ productItem.name }}
-				</div>
+<!-- <pre>{{packages | json}}</pre> -->
+<div class="productdetailbrudcumcover">
+	<div class="row">
+		<div class="col-md-8">
+			<div class="media">
+				<div class="media-left">
+			    <a href="#">
+			      <img width="250" err-src="asset/i/defaultImage.png" class="" ng-src="packages/i/{{packages.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+			    </a>
+			  	</div>
+				<div class="media-body">
+					<h4 class="media-heading">{{packages.title}}</h4>
+					<p>{{packages.subTitle}}</p>
+					<p>{{packages.description}}</p>    			
+				</div>			
 			</div>
+		</div>	
+		<div class="col-md-2">
+			<p class="packtiti-rightset">Package Amount</p>
+	    	<h3 class="amntrupee-cls">${{packages.packagePrice}}</h3>
+	    	<p class="packtiti-rightset">Savings</p>
+	    	<p class="packtiti-rightset">${{packages.packageSavings}}</p>
+			<div class="checkoutmiddlevlauediv">
+	    		<div class="pardqantitytexthead">Quantity</div>
+				<input type="text" value="1" ng-model="package.quantity" min="1" max="10" ng-touch-spin>
+			</div>
+	    	<div>
+	    		<a class="btn product_addcart">Add to Cart</a>    		
+	    	</div>
 		</div>
-    </data-owl-carousel>
-  </div>
-  <div>
-	<button class="btn product_addcart">Add to Cart</button>
-	<span>Amount : $56.5</span>
-  </div>
+	</div>
 </div>
+<div class="productdetailbrudcumcover">
+	<div class="row">
+		<div class="col-md-12" ng-cloak>
+			<md-content>
+				<md-tabs md-dynamic-height md-border-bottom>
+					<md-tab label="Ingredients">
+						<md-content class="md-padding">							
+							<div class="md-display-12" ng-repeat="packageItem in packages.packageItems">
+								<div class="ttile-divcover">
+									<h4  class="custmize-contntset">Ingredient # {{$index+1}}</h4><span>carlsbeg</span>
+								</div>
+								<div class="row">													
+									<div ng-repeat-start="pcprod in packageItem.products" ng:class="{'row':($index!=0 && $index%4==0)}"></div>
+									<div class="col-md-3"> 							
+										<div class="thumbnail thumbnailheightset" ng:class="{'selectedproductcart':pcprod.cartquantity > 0}">								
+											<div class="caption"> 
+												<h5 class="item-btmtitle">{{ pcprod.name }}</h5>									
+											</div>
+											<img width="100" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{pcprod.imageFiles[0].source}}">	
+										</div>
+									</div>
+									<div ng-repeat-end></div>													
+								</div>
+							</div>
+						</md-content>
+					</md-tab>
+					<md-tab label="Receipe">
+						<md-content class="md-padding">							
+							<div class="md-display-12">
+								<v-accordion id="accordionA" class="vAccordion--default" control="accordionA">        
+							        <v-pane id="{{$index}}" ng-repeat="rstep in packages.recipe">
+						                <v-pane-header id="{{$index}}-header"  aria-controls="{{ ::subpane.id }}-header" class="byz">
+						                <div class="ttile-divcover">
+						                  <h5  class="custmize-contntset">{{rstep.step}}</div>
+						                </v-pane-header>
+						                <v-pane-content id="{{$index}}-content" aria-labelledby="{{ ::subpane.id }}-content">
+						                  	{{rstep.description}}
+						                </v-pane-content>
+							        </v-pane>
+						      	</v-accordion>
+							</div>
+						</md-content>
+					</md-tab>
+					<md-tab label="Video">
+						<md-content class="md-padding">							
+							<div class="md-display-12">
+								
+							</div>
+						</md-content>
+					</md-tab>
+				</md-tabs>
+			</md-content>
+		</div>	
+	</div>
+</div>	

@@ -35,7 +35,7 @@
 			</data-owl-carousel>    
 			<div ng-if="(package.productlist.length) < 6">&nbsp;</div>
 			<div class="cocktail-cartbtn">
-				<button class="btn product_addcart">Add to Cart</button>
+				<a class="btn product_addcart" ui-sref="mainLayout.packagedetail({type:'cocktail',id:package._id})">Add to Cart</a>
 				<div class="cocktail-amntdivcover"><div class="amntrupee"> $56.5</div><span>Amount :</span></div>
 			</div>
 		</div>
