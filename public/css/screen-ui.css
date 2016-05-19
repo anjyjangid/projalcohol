@@ -128,7 +128,7 @@ md-dialog.md-transition-in{
 
 .modify .dropdown-menu{
 	left:101%;
-	top:-25px;
+	top:50px;
 	padding:28px;
 	z-index: 999999;
 	border-radius:5px !important;
@@ -5394,7 +5394,6 @@ md-switch{
 	margin-bottom:0px;
 }
 
-
 .mCSB_container_wrapper > .mCSB_container{
 	padding-right: 0px !important;
 }
@@ -5443,5 +5442,19 @@ md-switch{
 
 .order-history .order .-rating .-rating-value .glyphicon-heart:before{
 	color: #FFC412;
+}
+
+.innerpagemargintop .nav.navbar-nav .dropdown-menu{
+	position:absolute;
+}
+
+.innerpagemargintop .nav.navbar-nav > li{
+	position:inherit;
+}
+
+
+.innerpagemargintop .nav.navbar-nav .dropdown-menu {
+    animation-duration: 0s;
+    animation-fill-mode:inherit;
 }
 

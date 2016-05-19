@@ -6,32 +6,38 @@
 	<a>Cocktail Packages</a>	
 </div>
 <!-- <pre>{{packages|json}}</pre> -->
+<div class="partypackegescover ng-scope"><img class="img-responsive" src="images/cocktail-banner.png"></div>
 <div style="clear: both;"></div>
-<div class="media" ng-repeat="package in packages">
-  <div class="media-left">
-    <a href="#">
-      <img width="250" style="vertical-align:top;" err-src="asset/i/defaultImage.png" class="img-responsive" ng-src="packages/i/{{package.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
-    </a>
-
-  </div>
-  <div class="media-body">
-    <h4 class="media-heading">{{package.title}}</h4>
-    <p>{{package.subTitle}}</p>
-    <p>{{package.description}}</p>    
-	<h4 class="media-heading">Ingredients</h4>
-    <data-owl-carousel class="owl-carousel owl-theme" data-options="{navigation : false,pagination : true,items : 6}">
-		<div owl-carousel-item="" ng-repeat="productItem in package.productlist">
-			<div class="thumbnail">
-				<img width="100" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{productItem.imageFiles[0].source}}">	
-				<div class="caption">
-					{{ productItem.name }}
-				</div>
+<div class="cocktail-packagecover">
+	<div class="media media-bodyheader" ng-repeat="package in packages">
+		<div class="media-left cocktail-leftimgdiv">
+			<a href="#">
+			  <img err-src="asset/i/defaultImage.png" ng-src="packages/i/{{package.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+			</a>
+		</div>
+		<div class="media-body cockatil-bodycover">
+			<h4 class="media-heading cocktail-heading">{{package.title}}</h4>
+			<p class="cocktail-subtitlbtm">{{package.subTitle}}</p>
+			<div class=" moredetail-cocktailtext">
+				<div class="product-desccocktail">{{package.description}}</div>
+				<a href="">More Detail</a>
+			</div>    
+			<h4 class="media-heading sub-headingcocktail">Ingredients</h4>
+			<data-owl-carousel class="owl-carousel owl-theme" data-options="{navigation : false,pagination : true,items : 6}">
+				<div owl-carousel-item="" ng-repeat="productItem in package.productlist">
+					<div class="thumbnail cocktail-products-div">
+					<img err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{productItem.imageFiles[0].source}}">	
+						<div class="caption">
+							{{ productItem.name }}
+						</div>
+					</div>
+				</div>		
+			</data-owl-carousel>    
+			<div ng-if="(package.productlist.length) < 6">&nbsp;</div>
+			<div class="cocktail-cartbtn">
+				<a class="btn product_addcart" ui-sref="mainLayout.packagedetail({type:'cocktail',id:package._id})">Add to Cart</a>
+				<div class="cocktail-amntdivcover"><div class="amntrupee"> $56.5</div><span>Amount :</span></div>
 			</div>
 		</div>
-    </data-owl-carousel>
-  </div>
-  <div>
-	<button class="btn product_addcart">Add to Cart</button>
-	<span>Amount : $56.5</span>
-  </div>
+	</div>
 </div>

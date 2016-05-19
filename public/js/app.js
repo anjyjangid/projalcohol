@@ -1927,30 +1927,146 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 
 	$scope.packages = [];
 	
-	$http.get('/package/'+$stateParams.type).success(function(response){
+	$http.get('/package/packages/'+$stateParams.type).success(function(response){
 		$scope.packages = response;
 	});	
 
-	  $scope.expandCallback = function (index, id) {
-	    $timeout(function() {
-        	$anchorScroll(id+'-header');
-       	});
+	$scope.expandCallback = function (index, id) {
+	$timeout(function() {
+		$anchorScroll(id);
+		});	    
+	};
 
-	    // console.log('expand:', index, id);
-	  };
+	$scope.collapseCallback = function (index, id) {
+		$timeout(function() {
+			$anchorScroll(id);
+		});
+	};
 
-	  $scope.collapseCallback = function (index, id) {
-	  	$timeout(function() {
-        	$anchorScroll(id);
-       	});
-	    // console.log('collapse:', index, id);
-	  };
+	$scope.validateSelection = function (index, id) {
+			
+	};
 
-	  $scope.$on('accordionA:onReady', function () {
+	  /*$scope.$on('accordionA:onReady', function () {
 	    console.log('accordionA is ready!');
-	  });
+	  });*/	  
 
-	 
+}]);
+
+AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll){
+	
+	$scope.errors = [];
+	
+	$rootScope.appSettings.layout.pageRightbarExist = false;
+
+	$rootScope.$on("$locationChangeSuccess", function(){
+        $timeout(function() {
+            $anchorScroll();
+       });
+    }); 
+
+	$scope.AppController.category = "packages";
+	$scope.AppController.subCategory = $stateParams.type;
+
+	$scope.packages = [];
+	
+	$http.get('/package/packagedetail/'+$stateParams.type+'/'+$stateParams.id).success(function(response){
+		$scope.packages = response;
+	});	
+
+	$scope.expandCallback = function (index, id) {		
+		/*$timeout(function() {
+			$anchorScroll(id);
+		});*/	    
+	};
+
+	//PARTY PACKAGE CUSTOMISATION FUNCTION 
+	$scope.collapseCallback = function (index, id) {		
+		
+		var totalseleted = 0;		
+		var packageItems = angular.copy($scope.packages.packageItems[index]);
+		var maxQuantity = parseInt(packageItems.quantity);
+		var packageUpdate = true;
+		var hasErrors = [];
+
+		angular.forEach($scope.packages.packageItems, function(pkgItem, pkgKey) {
+			
+			var totalseleted = 0;
+			var maxQuantity = parseInt(pkgItem.quantity);
+
+			angular.forEach(pkgItem.products, function(value, key) {
+				totalseleted+=parseInt(value.customizequantity);
+			});
+
+			if(totalseleted!=maxQuantity){
+				$scope.errors[pkgKey] = 'You must select total of '+maxQuantity+' items.';				
+				hasErrors[pkgKey] = 1;
+			}else{
+				$scope.errors[pkgKey] = '';
+				hasErrors.splice(pkgKey,1);
+			}		
+			
+		});
+
+		if(hasErrors.length==0){
+			//ADD IN CARTQUATITY IF THERE IS NO ERROR
+			angular.forEach($scope.packages.packageItems[index].products, function(inPkgItem, inPkgKey) {
+				
+				$scope.packages.packageItems[index].products[inPkgKey].cartquantity = parseInt(inPkgItem.customizequantity);
+				
+			});
+			$scope.updatePackage();
+		}else{
+			$scope.accordionA.toggle(index);
+		}		
+	};
+
+	$scope.customizeCocktail = function(pkgKey, proKey){
+		
+		angular.forEach($scope.packages.packageItems[pkgKey].products, function(item, key) {
+			if(key == proKey){
+				item.cartquantity = 1;
+			}else{
+				item.cartquantity = 0;
+			}	
+		});
+		$scope.updatePackage();
+	};
+
+	$scope.updatePackage = function(){
+
+		var discountAmount = 0;
+		var originalAmount = 0;
+		angular.forEach($scope.packages.packageItems, function(pkgItem, pkgkey) {
+			var lineofproductadded = [];
+			angular.forEach(pkgItem.products, function(value, key) {
+				var quantityadded = parseInt(value.cartquantity);
+				if(quantityadded > 0)
+					lineofproductadded.push(quantityadded+' x '+value.name);
+
+				discountAmount += parseFloat(value.cprice)*parseInt(quantityadded);
+				originalAmount += parseFloat(value.sprice)*parseInt(quantityadded);
+			});			
+			$scope.packages.packageItems[pkgkey].selectedProducts = lineofproductadded.join(', ');	
+		});			
+		$scope.packages.packagePrice = discountAmount.toFixed(2);
+		$scope.packages.packageSavings = parseFloat(originalAmount-discountAmount).toFixed(2);
+		
+	}
+
+	$scope.validateSelection = function (index, id) {
+			
+	};
+
+	$scope.$watch('pcprod.cartquantity', function(newValue) {
+        if (newValue != undefined) {
+            console.log(newValue);
+        }
+    });
+
+	/*$scope.$on('accordionA:onReady', function () {	    	
+			
+	});*/	  
 
 }]);
 // /* Setup global settings */
@@ -2277,6 +2393,15 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						},
 						params: {pageTitle: 'Packages'},
 						controller:"PackagesController",						
+				})
+
+				.state('mainLayout.packagedetail', {
+						url: "/packagedetail/{type}/{id}",
+						templateUrl : function(stateParams){
+							return "/templates/packages/"+stateParams.type+"detail.html";
+						},
+						params: {pageTitle: 'Packages Detail'},
+						controller:"PackageDetailController",						
 				})
 
 				.state('mainLayout.category', {
