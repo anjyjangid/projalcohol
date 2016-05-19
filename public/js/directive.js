@@ -547,7 +547,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		scope: {
 			product:'=',			
 		},
-		controller: function($scope,$rootScope,$element,$timeout,$http,CartSession){
+		controller: function($scope,$rootScope,$element,$timeout,$http,CartSession,alcoholCart){
 			
 			$scope.isInCart = false;
 			$scope.addMoreCustom = false;
@@ -569,40 +569,14 @@ AlcoholDelivery.directive('sideBar', function() {
 				
 				$scope.proUpdateTimeOut = $timeout(function(){
 
-					CartSession.GetDeliveryKey().then(
+					alcoholCart.addItem($scope.product._id,$scope.product.quantitycustom,$scope.product.servechilled);
 
-						function(response){						
+					if($scope.product.quantitycustom==0){
+						$scope.isInCart = false;
+						$scope.addMoreCustom = false;
+						$scope.product.quantitycustom = 1;
+					}
 
-							$http.put("/cart/"+response.deliverykey, {
-									"id":$scope.product._id,
-									"quantity":$scope.product.quantitycustom,
-									"chilled":$scope.product.servechilled,
-								},{
-
-					        }).error(function(data, status, headers) {
-
-					        }).success(function(response) {
-					        	if(!response.success){
-					        		
-					        		switch(response.errorCode){
-										case "100":
-											$scope.product.quantitycustom = response.data.quantity;
-											console.log($scope.product.quantitycustom);
-										break;
-					        		}
-
-					        	}
-					        });
-
-					        if($scope.product.quantitycustom==0){
-								$scope.isInCart = false;
-								$scope.addMoreCustom = false;
-								$scope.product.quantitycustom = 1;
-							}
-
-						}
-
-					)
 				},1500)
 				
 

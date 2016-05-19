@@ -65,7 +65,7 @@ class CartController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 	public function show(Request $request,$id)
-	{
+	{		
 
 		//$cartKey = $request->session()->get('deliverykey', $id);
 		$cartKey = $id;
@@ -129,6 +129,8 @@ class CartController extends Controller
 	{        
 		
 		$inputs = $request->all();
+		
+		$proIdToUpdate = $inputs['id'];
 
 		$cart = Cart::find($id);
 
@@ -139,7 +141,7 @@ class CartController extends Controller
 		$productObj = new Products;
 		$product = $productObj->getProducts(
 									array(
-										"id"=>$inputs['id'],
+										"id"=>$proIdToUpdate,
 										"with"=>array(
 											"discounts"
 										)
@@ -149,40 +151,46 @@ class CartController extends Controller
 		$product = $product[0];
 
 		$updateProData = array(
-				"name"=>$product['name'],
-				"price"=>$product['price'],				
-				"maxQuantity"=>(int)$product['maxQuantity'],
-				"chilled"=>0,
-				"nonchilled"=>0,
+				"maxQuantity"=>(int)$product['quantity'],
+				"chilled"=>array(
+					"quantity"=>isset($cart->products[$proIdToUpdate])?$cart->products[$proIdToUpdate]['chilled']['quantity']:0,
+					"status"=>"chilled",
+				),
+				"nonchilled"=>array(
+					"quantity"=>isset($cart->products[$proIdToUpdate])?$cart->products[$proIdToUpdate]['nonchilled']['quantity']:0,
+					"status"=>"nonchilled",
+				),
 				"quantity"=>0
 			);
 
 		if((bool)$inputs['chilled']){
-			$updateProData['chilled'] = (int)$inputs['quantity'];
+			
+			$updateProData['chilled']['quantity'] = (int)$inputs['quantity'];
+
 		}else{
-			$updateProData['nonchilled'] = (int)$inputs['quantity'];
+			$updateProData['nonchilled']['quantity'] = (int)$inputs['quantity'];
 		}
 
 		$oldQuantity = 0;
-		if(isset($cart->products[$inputs['id']])){
-			$oldQuantity = $cart->products[$inputs['id']]['quantity'];
+		if(isset($cart->products[$proIdToUpdate])){
+			$oldQuantity = $cart->products[$proIdToUpdate]['quantity'];
 		}
 
-		$cart->products = array_merge($cart->products,array($inputs['id']=>$updateProData));
+		$cart->products = array_merge($cart->products,array($proIdToUpdate=>$updateProData));
 
 
 		// Code to update total quantity
-		$updateProData = $cart->products[$inputs['id']];
+		$updateProData = $cart->products[$proIdToUpdate];
 
-		$quantity = isset($cart->products[$inputs['id']]['chilled'])?$cart->products[$inputs['id']]['chilled']:0;
-		$quantity+= isset($cart->products[$inputs['id']]['nonchilled'])?$cart->products[$inputs['id']]['nonchilled']:0;
+		$quantity = isset($cart->products[$proIdToUpdate]['chilled'])?$cart->products[$proIdToUpdate]['chilled']['quantity']:0;
+		$quantity+= isset($cart->products[$proIdToUpdate]['nonchilled'])?$cart->products[$proIdToUpdate]['nonchilled']['quantity']:0;
 
 		$updateProData['quantity'] = $quantity;
 
 		$product['change'] = $quantity - $oldQuantity;//Track change in quantity
 
 		// Condition to check quantity is not more than available quantity
-		if((int)$quantity>(int)$product['maxQuantity']){
+		if((int)$quantity>(int)$product['quantity']){
 			return response(array("success"=>false,"errorCode"=>"100","message"=>"Product quantity is not available","data"=>$product));
 		}
 
@@ -191,12 +199,12 @@ class CartController extends Controller
 					
 			if($quantity>0){
 
-				$cart->products = array_merge($cart->products,array($inputs['id']=>$updateProData));
+				$cart->products = array_merge($cart->products,array($proIdToUpdate=>$updateProData));
 				$cart->save();
 
 			}else{
 
-				$cart->unset('products.'.$inputs['id']);
+				$cart->unset('products.'.$proIdToUpdate);
 
 			}
 
@@ -448,6 +456,17 @@ class CartController extends Controller
 		
 		$cartArr['user'] = new MongoId($user->_id);
 
+		$cartProductsArr = [];
+		
+		foreach($cartArr['products'] as $key=>$product){		
+
+			$product['_id'] = new MongoId($key);
+			$cartProductsArr[] = $product;
+						
+		}
+
+		$cartArr['products'] = $cartProductsArr;
+
 		try {
 
 			$order = Orders::create($cartArr);
@@ -490,6 +509,10 @@ class CartController extends Controller
     		$cart->service = $params['service'];
     	}
 
+    	if(isset($params['discount'])){
+    		$cart->discount = $params['discount'];
+    	}
+
     	if(isset($params['timeslot'])){
     		$cart->timeslot = $params['timeslot'];
     	}
@@ -522,6 +545,6 @@ class CartController extends Controller
 
     public function missingMethod($parameters = array())
 	{
-	    prd($parameters);
+	    prd("Missing");
 	}
 }

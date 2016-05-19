@@ -15,5 +15,18 @@
 
 	}
 	
+	function getUserName($user){
+
+		if(isset($user['name'])){
+			
+			return $user['name'];
+
+		}else{
+
+			return $user['email'];
+			
+		}
+
+	}
 
 ?>
