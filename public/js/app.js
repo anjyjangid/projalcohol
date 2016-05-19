@@ -746,7 +746,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 						$http.get("cart/services").then(function(response){
 
 							$scope.services = response.data;							
-														
+
 						}),
 						$http.get("cart/"+result.deliverykey+"/").then(function(response){
 							
@@ -1026,7 +1026,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 			        		
 			        		switch(response.errorCode){
 								case "100":
-									$scope.cart.products[key].quantity = response.data.quantity;									
+									$scope.cart.products[key].quantity = response.data.quantity;
 								break;
 			        		}
 
@@ -2563,34 +2563,50 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "CartS
 
     // Cart synchronization
 	$rootScope.$on('alcoholCart:change', function(){
-		
-		console.log(alcoholCart.getProducts());
+				
 		//alcoholCart.$save();
 
 	});
 
+	store.init();
 
-	CartSession.GetDeliveryKey().then(
 
-		function(response){
+	// CartSession.GetDeliveryKey().then(
 
-			$http.get("cart/"+response.deliverykey+"/").then(function(response){
+	// 	function(response){
 
-				if(response.status==200){
+	// 		$http.get("cart/"+response.deliverykey+"/").then(
+
+	// 			function successCallback(successRes){
+	// 				console.log("asdasd");
+	// 				console.log(successRes);
+
+	// 				// if(response.status==200){
+						
+	// 				// 	alcoholCart.$restore(response.data);
+
+	// 				// }else{
+
+	// 				// 	alcoholCart.init();
+	// 				// 	alcoholCart.setServices();
+
+	// 				// }
 					
-					alcoholCart.$restore(response.data);
+	// 			},
 
-				}else{
+	// 			function errorCallback(errorRes){
+	// 				if(errorRes.status===400){
 
-					alcoholCart.init();
-					alcoholCart.setServices();
+	// 					alcoholCart.empty();
+	// 					window.location = window.location;
 
-				}
-				
-			})
-		}
+	// 				}
+	// 			}
 
-	)
+	// 		)
+	// 	}
+
+	// )
 
 
 }]);

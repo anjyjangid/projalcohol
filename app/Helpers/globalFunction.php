@@ -2,7 +2,7 @@
 		
 	function prd($arr){
 		
-		pr($arr);
+		pr(json_encode($arr));
 		die;
 
 	}

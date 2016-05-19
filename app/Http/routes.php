@@ -54,7 +54,6 @@ Route::group(['prefix' => 'cart'], function () {
 
 });
 
-
 Route::resource('cart', 'CartController');
 
 Route::get('/order/summary/{id}','OrderController@getSummary');

@@ -47,6 +47,9 @@ ui-sref{
 	width:calc(100% - 17px);
 }
 
+.required-astrik{
+	color: rgba(255, 0, 0, 1);
+}
 
 .fullwidth{
 	width:100%;
@@ -5036,6 +5039,13 @@ md-dialog.md-transition-in{
 	border-radius: 5px 5px 0 0;
 	padding:14px 8px 0 20px;
 }
+
+.currentorderpopuppinkbox.on-blank {
+    text-align: center;
+    color: #fff;
+    border-radius: 5px;
+}
+
 .currentorderpopuppinkboxleft{
 	float:left;
 	width:110px;
@@ -5079,11 +5089,11 @@ md-dialog.md-transition-in{
 	border-radius:0 0 4px 4px;
 }
 .currentorderpopupulleft{
-	width:110px;
+	width:150px;
 	float:left;
 }
 .currentorderpopupulcenter{
-	width:80px;
+	width:40px;
 	text-align:right;
 	float:left;
 }

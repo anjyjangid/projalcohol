@@ -16,7 +16,7 @@
 
       <div class="registeremailcvr" ng:class="{'has-error':errors.name[0]}">
         
-        <label>Name</label>
+        <label>Name <span class="required-astrik">*</span></label>
         <input type="text" placeholder="Name" ng-model="user.name" class="alcohalrestertextbox">
         
         <span class="help-block" ng-bind="errors.name[0]"></span>
@@ -25,7 +25,7 @@
       </div>
 
       <div class="registeremailcvr" ng:class="{'has-error':errors.email[0]}">
-        <label>Email</label>
+        <label>Email <span class="required-astrik">*</span></label>
 
         <input 
               type="email" 
@@ -39,7 +39,7 @@
 
       </div>
       <div class="registeremailcvr" ng:class="{'has-error':errors.mobile_number[0]}">
-        <label>Mobile Phone Number</label>
+        <label>Mobile Phone Number <span class="required-astrik">*</span></label>
         <input type="text" placeholder="mobile number" ng-model="user.mobile_number" class="alcohalrestertextbox">
         <span class="help-block" ng-bind="errors.mobile_number[0]"></span>
       </div>

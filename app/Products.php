@@ -101,13 +101,13 @@ class Products extends Eloquent
 		}
 
 
-		$categories = Categories::whereIn("_id",$categyIds)->get(['_id', 'ancestors','express_delivery_bulk','advance_order_bulk','regular_express_delivery']);
+		$categories = Categories::whereIn("_id",$categyIds)->get(['_id', 'ancestors','advance_order','advance_order_bulk']);
 
 		//Fetch Global Pricing
 		$globalPricing = Setting::where("_id",'=',"pricing")
 									->first([
-										'settings.express_delivery_bulk',										
-										'settings.regular_express_delivery',										
+										'settings.advance_order',
+										'settings.advance_order_bulk',										
 									]);
 		$globalPricing = $globalPricing->settings;
 
@@ -141,6 +141,7 @@ class Products extends Eloquent
 		}
 
 		$products = $products->toArray();
+
 		foreach($products as &$product){			
 			$tempCat = $categories[end($product['categories'])];
 			unset($tempCat["_id"]);
