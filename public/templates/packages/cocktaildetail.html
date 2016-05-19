@@ -10,71 +10,72 @@
 <!-- <pre>{{packages | json}}</pre> -->
 <div class="productdetailbrudcumcover">
 	<div class="row">
-		<div class="col-md-8">
-			<div class="media">
+		<div class="col-md-12">
+			<div class="media cocktaildetail-cover">
 				<div class="media-left">
 			    <a href="#">
-			      <img width="250" err-src="asset/i/defaultImage.png" class="" ng-src="packages/i/{{packages.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+			      <img  err-src="asset/i/defaultImage.png" class="" ng-src="packages/i/{{packages.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
 			    </a>
 			  	</div>
-				<div class="media-body">
+				<div class="media-body cocktail-detailcontent">
 					<h4 class="media-heading">{{packages.title}}</h4>
-					<p>{{packages.subTitle}}</p>
-					<p>{{packages.description}}</p>    			
-				</div>			
-			</div>
-		</div>	
-		<div class="col-md-2">
+					<p class="cocktaildetail-btmset">{{packages.subTitle}}</p>
+					<p class="cocktaildetail-btmset">{{packages.description}}</p>    			
+			<div class="cockdetail-leftposion">
 			<p class="packtiti-rightset">Package Amount</p>
-	    	<h3 class="amntrupee-cls">${{packages.packagePrice}}</h3>
+	    	<h3 class="amntrupee-clsdetail">${{packages.packagePrice}}</h3>
 	    	<p class="packtiti-rightset">Savings</p>
-	    	<p class="packtiti-rightset">${{packages.packageSavings}}</p>
-			<div class="checkoutmiddlevlauediv">
+	    	<p class="packtiti-rightset amnt-savingclr">${{packages.packageSavings}}</p>
+			<div class="checkoutmiddlevlauediv quantity-detailmarginrmv">
 	    		<div class="pardqantitytexthead">Quantity</div>
 				<input type="text" value="packages.packageQuantity" ng-model="packages.packageQuantity" min="1" max="10" ng-touch-spin>
 			</div>
-	    	<div>
-	    		<a class="btn product_addcart">Add to Cart</a>    		
-	    	</div>
+	    	<div class="addcart-btncover">
+	    		<a class="btn product_addcart addcart-detail"><img src="images/cart-icon.png" />Add to Cart</a>    		
+	    	</div></div>
+            </div>
 		</div>
-	</div>
+	</div>	</div>			
+			</div>
 </div>
-<div class="productdetailbrudcumcover">
-	<div class="row">
+<div class="productdetailbrudcumcover cocktail-detailpagecover">
+	<div class="row ">
 		<div class="col-md-12" ng-cloak>
 			<md-content>
-				<md-tabs md-dynamic-height md-border-bottom>
+				<md-tabs md-dynamic-height md-border-bottom class="">
+                <div class="tabing-mainheading">
 					<md-tab label="Ingredients">
-						<md-content class="md-padding">							
-							<div class="md-display-12" ng-repeat="(pkgKey,packageItem) in packages.packageItems">
-								<div class="ttile-divcover">
-									<h4  class="custmize-contntset">Ingredient # {{$index+1}}</h4><span>{{packageItem.selectedProducts}}</span>
-								</div>
-								<div class="row">													
+						<md-content class="md-padding ingrdients-tabpadingrmv ">							
+							<div class="md-display-12 cocktail-btmborder" ng-repeat="(pkgKey,packageItem) in packages.packageItems">
+								<div class="ttile-divcover ">
+                                <div class="cocktaildetail-coverdiv">
+									<h4  class=" ingredintwidthset">Ingredient # {{$index+1}}</h4><span class="product-cocktailtitle">{{packageItem.selectedProducts}}</span>
+								</div></div>
+								<div class="row ">													
 									<div ng-repeat-start="(proKey, pcprod) in packageItem.products" ng:class="{'row':($index!=0 && $index%4==0)}"></div>
 									<div class="col-md-3" ng-click="customizeCocktail(pkgKey, proKey)"> 							
-										<div class="thumbnail thumbnailheightset" ng:class="{'selectedproductcart':pcprod.cartquantity > 0}">								
+										<div class="thumbnail thumbnailheightset marginset-detailpage" ng:class="{'selectedproductcart':pcprod.cartquantity > 0}">								
 											<div class="caption"> 
 												<h5 class="item-btmtitle">{{ pcprod.name }}</h5>									
 											</div>
-											<img width="100" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{pcprod.imageFiles[0].source}}">	
+											<div class="detail-productdiv"><img err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{pcprod.imageFiles[0].source}}">	</div>
 										</div>
 									</div>
 									<div ng-repeat-end></div>													
 								</div>
 							</div>
 						</md-content>
-					</md-tab>
+					</md-tab></div>
 					<md-tab label="Receipe">
-						<md-content class="md-padding">							
-							<div class="md-display-12">
+						<md-content class="md-padding ingrdients-tabpadingrmv paddingrmvcls-cocktail">							
+							<div class="md-display-12 cocktail-btmborder reipie-marginset-titl">
 								<v-accordion id="accordionA" class="vAccordion--default" control="accordionA">        
 							        <v-pane id="{{$index}}" ng-repeat="rstep in packages.recipe">
 						                <v-pane-header id="{{$index}}-header"  aria-controls="{{ ::subpane.id }}-header" class="byz">
 						                <div class="ttile-divcover">
-						                  <h5  class="custmize-contntset">{{rstep.step}}</div>
+						                  <h5  class="custmize-contntset recipie-titlediv">{{rstep.step}}</h5></div>
 						                </v-pane-header>
-						                <v-pane-content id="{{$index}}-content" aria-labelledby="{{ ::subpane.id }}-content">
+						                <v-pane-content id="{{$index}}-content" class="btm-contetnrecipie" aria-labelledby="{{ ::subpane.id }}-content">
 						                  	{{rstep.description}}
 						                </v-pane-content>
 							        </v-pane>
