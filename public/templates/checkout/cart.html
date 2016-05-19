@@ -13,7 +13,7 @@
 	<tbody>
 		
 		<tr ng-repeat-start="(key, cartproduct) in cart.products"></tr>
-		<tr ng-repeat="type in ['chilled','nonchilled']" ng-if="cartproduct[type]>0">
+		<tr ng-repeat="type in ['chilled','nonchilled']" ng-if="cartproduct[type].quantity>0">
 
 			<td width="52%">
 				<div class="orhistry2_td2procdtcvr" ui-sref="mainLayout.product({product:cartproduct.product._id})">

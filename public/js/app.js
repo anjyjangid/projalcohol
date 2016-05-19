@@ -10,11 +10,14 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'angular-loading-bar',
 	'ngAnimate',
 	'ngMaterial',
+	'ngScrollbars',
 	'ngMessages',
 	'ngTouch',
 	'ngMap',
 	'vAccordion',
-	'ngFacebook'	
+	'ngFacebook',
+	'alcoholCart.directives'
+
 ]);
 
 
@@ -44,6 +47,47 @@ AlcoholDelivery.filter('capitalize', function() {
 			return (!!input) ? input.replace(reg, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}) : '';
 		}
 });
+
+
+
+AlcoholDelivery.filter('deliveryDateSlug',function(){
+
+	return function(input,all){
+		var weeksName = new Array(7);
+		weeksName[0]=  "Sunday";
+		weeksName[1] = "Monday";
+		weeksName[2] = "Tuesday";
+		weeksName[3] = "Wednesday";
+		weeksName[4] = "Thursday";
+		weeksName[5] = "Friday";
+		weeksName[6] = "Saturday";
+
+		var monthsName = new Array(12);
+		monthsName[0]=  "January";
+		monthsName[1] = "February";
+		monthsName[2] = "March";
+		monthsName[3] = "April";
+		monthsName[4] = "May";
+		monthsName[5] = "June";
+		monthsName[6] = "July";
+		monthsName[7] = "August";
+		monthsName[8] = "September";
+		monthsName[9] = "Octomber";
+		monthsName[10] = "November";
+		monthsName[11] = "December";
+
+		var mili = input * 1000;
+		myDate = new Date(mili);
+
+		var day = myDate.getDate();
+		var year = myDate.getFullYear();
+		var mWeekName = weeksName[myDate.getDay()];
+		var mMonthName = monthsName[myDate.getMonth()];
+
+		daySlug = mWeekName+', '+day+' '+mMonthName+', '+year;
+		return daySlug;
+	}
+})
 
 
 AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', '$facebook', function($scope, $rootScope,$http,$facebook) {
@@ -530,6 +574,85 @@ AlcoholDelivery.controller('PasswordController',['$scope','$rootScope','$state',
 
 }]);
 
+AlcoholDelivery.controller('OrdersController',['$scope','$rootScope','$state','$http','sweetAlert','UserService',function($scope,$rootScope,$state,$http,sweetAlert,UserService){
+
+
+	$scope.rate = 3;
+	$scope.max = 5;
+	$scope.isReadonly = false;
+
+	$scope.hoveringOver = function(value) {
+		$scope.overStar = value;
+		$scope.percent = 100 * (value / $scope.max);
+	};
+
+	$scope.ratingStates = [
+
+		{stateOn: 'glyphicon-ok-sign', stateOff: 'glyphicon-ok-circle'},
+		{stateOn: 'glyphicon-star', stateOff: 'glyphicon-star-empty'},
+		{stateOn: 'glyphicon-heart', stateOff: 'glyphicon-ban-circle'},
+		{stateOn: 'glyphicon-heart'},
+		{stateOff: 'glyphicon-off'}
+
+	];	
+
+
+	$scope.order = [];
+    
+    $http.get("order/orders")
+			.success(function(response){
+
+				$scope.orders = response;
+				//$scope.shipping = UserService.currentUser.address[response.delivery.address.key];
+
+			})
+			.error(function(data, status, headers) {
+			   	if(data.auth===false){			   		
+			   		$state.go("mainLayout.checkout.cart");
+			   	}
+			})   
+
+}]);
+
+AlcoholDelivery.controller('OrderDetailController',['$scope','$rootScope','$state','$stateParams','$http','sweetAlert','UserService',function($scope,$rootScope,$state,$stateParams,$http,sweetAlert,UserService){
+
+	$scope.rate = 3;
+	$scope.max = 5;
+	$scope.isReadonly = false;
+	$scope.orderid = $stateParams.orderid;
+
+	$scope.hoveringOver = function(value) {
+		$scope.overStar = value;
+		$scope.percent = 100 * (value / $scope.max);
+	};
+
+	$scope.ratingStates = [
+
+		{stateOn: 'glyphicon-ok-sign', stateOff: 'glyphicon-ok-circle'},
+		{stateOn: 'glyphicon-star', stateOff: 'glyphicon-star-empty'},
+		{stateOn: 'glyphicon-heart', stateOff: 'glyphicon-ban-circle'},
+		{stateOn: 'glyphicon-heart'},
+		{stateOff: 'glyphicon-off'}
+
+	];	
+
+	$scope.order = [];
+    
+    $http.get("order/"+$stateParams.orderid)
+			.success(function(response){
+
+				$scope.order = response;
+				$scope.address = $scope.order.delivery.address;
+				
+				//$scope.shipping = UserService.currentUser.address[response.delivery.address.key];
+			})
+			.error(function(data, status, headers) {
+			   	
+			})   
+
+}]);
+
+
 AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$timeout','CartSession','UserService','sweetAlert',function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $timeout, CartSession, UserService, sweetAlert){
 
 	//cart
@@ -888,7 +1011,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 			CartSession.GetDeliveryKey().then(
 
-				function(response){						
+				function(response){
 
 					$http.put("/cart/"+response.deliverykey, {
 							"id":key,
@@ -1653,9 +1776,6 @@ AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$statePara
 
 
     });
-
-	
-
 	
 }]);
 
@@ -1709,7 +1829,6 @@ AlcoholDelivery.factory('catPricing', ["$q", "$timeout", "$rootScope", "$http", 
 	};
 
 }]);
-
 
 AlcoholDelivery.factory("UserService", ["$q", "$timeout", "$http", function($q, $timeout, $http) {
 
@@ -2035,10 +2154,9 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								}]
 						}
 				})
-				
 
 				.state('mainLayout.checkout', {
-						abstract: true,						
+						abstract: true,
 						views : {
 
 							"" : {
@@ -2251,6 +2369,16 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						templateUrl: "/templates/account/credits.html",
 						controller:"CreditsController"
 				})
+				.state('accountLayout.orders', {
+						url: "/orders",
+						templateUrl: "/templates/account/orders.html",
+						controller:"OrdersController"
+				})
+				.state('accountLayout.order', {
+						url: "/order/{orderid}",
+						templateUrl: "/templates/account/order.html",
+						controller:"OrderDetailController"
+				})
 
 				.state('mainLayout.product', {
 						url: "/product/{product}",
@@ -2379,7 +2507,7 @@ function ($q, $rootScope, $log) {
 }]);
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "appSettings", "catPricing","UserService", "$state", "$window", function($rootScope, settings, catPricing, UserService, $state, $window) {		
+AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "CartSession","catPricing","UserService", "$state", "$http", "$window", function($rootScope, settings, alcoholCart, store, CartSession, catPricing, UserService, $state, $http, $window) {
 
 	$rootScope.$state = $state; // state to be accessed from view
 
@@ -2420,8 +2548,6 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "catPricing","UserService", "$
 	});
 
 
-
-
 	(function(d, s, id) {
       var js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) return;
@@ -2429,9 +2555,43 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "catPricing","UserService", "$
       js.src = "//connect.facebook.net/en_US/sdk.js";
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
+
     $rootScope.$on('fb.load', function() {
       $window.dispatchEvent(new Event('fb.load'));
     });
+
+
+    // Cart synchronization
+	$rootScope.$on('alcoholCart:change', function(){
+		
+		console.log(alcoholCart.getProducts());
+		//alcoholCart.$save();
+
+	});
+
+
+	CartSession.GetDeliveryKey().then(
+
+		function(response){
+
+			$http.get("cart/"+response.deliverykey+"/").then(function(response){
+
+				if(response.status==200){
+					
+					alcoholCart.$restore(response.data);
+
+				}else{
+
+					alcoholCart.init();
+					alcoholCart.setServices();
+
+				}
+				
+			})
+		}
+
+	)
+
 
 }]);
 

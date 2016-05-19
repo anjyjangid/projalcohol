@@ -1,0 +1,286 @@
+<!-- BEGIN MAIN CONTENT -->
+
+<div class="row">
+	<!-- <pre>{{dealer | json}}</pre> -->
+	<div class="col-md-6 col-sm-12">
+		<div class="portlet blue-hoki box">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-user"></i>Dealer Information
+				</div>				
+			</div>
+			<div class="portlet-body">
+				<div class="row static-info">
+					<div class="col-md-5 name">
+						 Title:
+					</div>
+					<div class="col-md-7 value">
+						 {{dealer.title}}
+					</div>
+				</div>
+				<div class="row static-info">
+					<div class="col-md-5 name">
+						 Description:
+					</div>
+					<div class="col-md-7 value">
+						 {{dealer.description}}
+					</div>
+				</div>
+				<div class="row static-info">
+					<div class="col-md-5 name">
+						 No. of sku under the dealer:
+					</div>
+					<div class="col-md-7 value">
+						 {{dealer.products.length}}
+					</div>
+				</div>
+				<div class="row static-info">
+					<div class="col-md-5 name">
+						 Address:
+					</div>
+					<div class="col-md-7 value">
+						 {{dealer.address.street}}, {{dealer.address.city}}
+						 <br>
+						 {{dealer.address.state}}, {{country.name}}
+					</div>
+				</div>				
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6 col-sm-12">
+		<div class="portlet blue-hoki box">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-phone"></i>Dealer Contact
+				</div>				
+			</div>
+			<div class="portlet-body">
+				<div class="table-scrollable">
+					<table class="table table-hover table-bordered">
+					<thead>
+					<tr>
+						<th>
+							 #
+						</th>
+						<th>
+							 Contact Name
+						</th>
+						<th>
+							 Designation
+						</th>
+						<th>
+							 Contact #
+							 <small>(in stock)</small>
+						</th>						
+					</tr>
+					</thead>
+					<tbody>					
+						<tr ng-repeat="contact in dealer.contacts">
+							<td>{{$index+1}}</td>
+							<td>{{contact.name}}</td>
+							<td>{{contact.des}}</td>
+							<td>{{contact.number}}</td>							
+						</tr>
+					</tbody>
+					</table>
+				</div>				
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<!-- BEGIN SAMPLE TABLE PORTLET-->
+		<div class="portlet box red">
+			<div class="portlet-title">
+				<div class="caption">
+					Products reaching reorder threshold
+				</div>
+				<!-- <div class="actions">
+					<a class="btn btn-default" href="javascript:;">
+						<i class="fa fa-print"></i> Print
+					</a>						
+				</div> -->
+			</div>
+			<div class="portlet-body" style="">
+				<div class="table-scrollable">
+					<table class="table table-hover table-bordered">
+					<thead>
+					<tr>
+						<th width="5%">
+							 #
+						</th>
+						<th width="25%">
+							 Product Name
+						</th>
+						<th width="20%">
+							 SKU
+						</th>
+						<th width="25%">
+							 Quantity
+							 <small>(in stock)</small>
+						</th>
+						<th width="25%">
+							 Quantity Required
+						</th>						
+					</tr>
+					</thead>
+					<tbody>					
+						<tr ng-if="product.sum <= 0" ng-repeat="product in listOrder(1)">
+							<td>{{$index+1}}</td>
+							<td>{{product.name}} <span class="label label-danger">{{product.sum*100}}%</span></td>
+							<td>{{product.sku}}</td>
+							<td>{{product.quantity}}</td>
+							<td>{{ product.maxQuantity - product.quantity }}</td>
+						</tr>
+						<tr ng-if="listOrder(1).length == 0"><td colspan="5" align="center">No record found</td></tr>
+					</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- END SAMPLE TABLE PORTLET-->
+	</div>
+	<div class="col-md-12">
+		<!-- BEGIN SAMPLE TABLE PORTLET-->
+		<div class="portlet box green">
+			<div class="portlet-title">
+				<div class="caption">
+					Other products
+				</div>
+				<!-- <div class="actions">
+					<a class="btn btn-default" href="javascript:;">
+						<i class="fa fa-print"></i> Print
+					</a>						
+				</div> -->
+			</div>
+			<div class="portlet-body" style="">
+				<div class="table-scrollable">
+					<table class="table table-hover table-bordered">
+					<thead>
+					<tr>
+						<th width="5%">
+							 #
+						</th>
+						<th width="25%">
+							 Product Name
+						</th>
+						<th width="20%">
+							 SKU
+						</th>
+						<th width="25%">
+							 Quantity
+							 <small>(in stock)</small>
+						</th>
+						<th width="25%">
+							 Quantity Required
+						</th>						
+					</tr>
+					</thead>
+					<tbody>					
+						<tr ng-if="product.sum > 0" ng-repeat="product in listOrder(2)">
+							<td>{{$index+1}}</td>
+							<td>{{product.name}} <span class="label label-danger">{{product.sum*100}}%</span></td>
+							<td>{{product.sku}}</td>
+							<td>{{product.quantity}}</td>
+							<td>{{ product.maxQuantity - product.quantity }}</td>
+						</tr>
+						<tr ng-if="listOrder(2).length == 0"><td colspan="5" align="center">No record found</td></tr>
+					</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<!-- END SAMPLE TABLE PORTLET-->
+	</div>	
+</div>
+
+<!-- END MAIN CONTENT -->
+<!-- BEGIN MAIN JS -->
+<script>
+	
+	var PackageTableAjax = function () {
+
+
+		var handleRecords = function () {
+
+	        var grid = new Datatable();
+
+	        grid.init({
+	            src: $("#packagelist"),
+	            onSuccess: function (grid) {
+	                // execute some code after table records loaded
+	            },
+	            onError: function (grid) {
+	                // execute some code on network or other general error  
+	            },
+	            loadingMessage: 'Loading...',
+	            dataTable: {	                
+	                //"bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+	                "columns": [{		                
+		                mRender: function(data, type, full, meta) {
+		                	return (meta.row)+1;		                	
+		                },
+		                orderable:false		                
+		            },{	 
+	                	data : "title",
+		                orderable:true
+		            },{
+		            	mData: null,
+		            	mRender: function(data, type, full) {	                        
+	                    	if(data.status == 1){
+	                    		return '<span class="label label-sm label-success">Published</span>'
+	                    	}else{
+	                    		return '<span class="label label-sm label-info">Not Published</span>'
+	                    	}	                    	
+	                    },
+		                orderable:false
+		            },{
+		            	mData: null,
+		            	mRender: function(data, type, full) {
+		            		if(data.type == 2){
+		            			return '<a ui-sref=packages.editcocktail({packageid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+		            		}else{
+		            			return '<a ui-sref=packages.editparty({packageid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+		            		}
+	                    },
+		                orderable:false
+		            }],
+	                "lengthMenu": [
+	                    [10, 20, 50, 100, 150, -1],
+	                    [10, 20, 50, 100, 150, "All"] // change per page values here
+	                ],
+	                "pageLength": 10, // default record count per page
+					"ajax": {
+	                    "url": "../admin/package/listpackage/"+ptype, // ajax source
+	                    //"data":{ptype:ptype}
+	                },
+	                "order": [],
+	                "fnDrawCallback": function (oSettings) {                	
+						$("tr td a").each(function () {
+						    var content = $(this);
+						    angular.element(document).injector().invoke(function($compile) {
+						        var scope = angular.element(content).scope();
+						        $compile(content)(scope);
+						    });
+						});						
+						Metronic.initAjax();
+					},
+	            }
+	        });        
+	        
+	    }
+
+		return {
+			init: function () {       				
+				handleRecords();
+			}
+		};
+
+	}();
+
+	//PackageTableAjax.init();	
+
+</script>
+<!-- END MAIN JS

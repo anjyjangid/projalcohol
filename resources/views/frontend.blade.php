@@ -28,13 +28,13 @@
 		<link rel="stylesheet" type="text/css" href="css/owl.carousel.css">
 		<link rel="stylesheet" type="text/css" href="css/owl.theme.css">
 		<link rel="stylesheet" type="text/css" href="css/jquery.switchButton.css">
-		<link rel="stylesheet" type="text/css" href="css/jquery.mCustomScrollbar.css">
+		
+		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.min.css')}}">
+		
 		<link rel="stylesheet" type="text/css" href="css/jquery.bootstrap-touchspin.css">
 		<!-- SWEET ALERT STYLE -->
 		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/sweetalert2/dist/sweetalert2.css') }}"/>
-		<link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
-
-
+		
 		<link rel="stylesheet" type="text/css" href="css/common.css">
 		<link rel="stylesheet" type="text/css" href="css/screen-ui.css">
 		<link rel="stylesheet" type="text/css" href="css/ui_responsive.css">
@@ -47,6 +47,8 @@
 			<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
+
+		<link rel="shortcut icon" href="images/favicon.ico"/>
 	</head>
 	<body ng-controller="AppController">		
 		
@@ -182,14 +184,20 @@
     <script type="text/javascript" src="{{ asset('bower_components/angular-aria/angular-aria.min.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('bower_components/angular-messages/angular-messages.min.js') }}"></script>
 
+	<script src="{{ asset('bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js')}}"></script>
+	<script src="{{ asset('bower_components/ng-scrollbars/dist/scrollbars.min.js')}}"></script>
+	
 
 	<!-- Angular Material Library -->
 	<script type="text/javascript" src="{{ asset('bower_components/angular-material/angular-material.min.js') }}"></script>
 	
 
-
+    
     <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/alcoholCart.js"></script>
+    <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
     <script type="text/javascript" src="js/directive.js"></script>
+
 
     <script src="js/ngFacebook.js"></script>
     <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>
