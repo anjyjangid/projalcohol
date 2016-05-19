@@ -31,7 +31,7 @@
 	    	<p class="packtiti-rightset">${{packages.packageSavings}}</p>
 			<div class="checkoutmiddlevlauediv">
 	    		<div class="pardqantitytexthead">Quantity</div>
-				<input type="text" value="1" ng-model="package.quantity" min="1" max="10" ng-touch-spin>
+				<input type="text" value="packages.packageQuantity" ng-model="packages.packageQuantity" min="1" max="10" ng-touch-spin>
 			</div>
 	    	<div>
 	    		<a class="btn product_addcart">Add to Cart</a>    		
@@ -46,13 +46,13 @@
 				<md-tabs md-dynamic-height md-border-bottom>
 					<md-tab label="Ingredients">
 						<md-content class="md-padding">							
-							<div class="md-display-12" ng-repeat="packageItem in packages.packageItems">
+							<div class="md-display-12" ng-repeat="(pkgKey,packageItem) in packages.packageItems">
 								<div class="ttile-divcover">
-									<h4  class="custmize-contntset">Ingredient # {{$index+1}}</h4><span>carlsbeg</span>
+									<h4  class="custmize-contntset">Ingredient # {{$index+1}}</h4><span>{{packageItem.selectedProducts}}</span>
 								</div>
 								<div class="row">													
-									<div ng-repeat-start="pcprod in packageItem.products" ng:class="{'row':($index!=0 && $index%4==0)}"></div>
-									<div class="col-md-3"> 							
+									<div ng-repeat-start="(proKey, pcprod) in packageItem.products" ng:class="{'row':($index!=0 && $index%4==0)}"></div>
+									<div class="col-md-3" ng-click="customizeCocktail(pkgKey, proKey)"> 							
 										<div class="thumbnail thumbnailheightset" ng:class="{'selectedproductcart':pcprod.cartquantity > 0}">								
 											<div class="caption"> 
 												<h5 class="item-btmtitle">{{ pcprod.name }}</h5>									

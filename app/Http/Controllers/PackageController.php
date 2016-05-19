@@ -232,7 +232,8 @@ class PackageController extends Controller
                         'name' => $value['name'],
                         'sprice' => $sprice,
                         'imageFiles' => $value['imageFiles'],
-                        'cartquantity' => 0
+                        'cartquantity' => 0,
+                        'customizequantity' => 0
                     ];
                     $minprice[$prokey] = $provalue['cprice'];
                 }
@@ -249,12 +250,17 @@ class PackageController extends Controller
 
                 $pkgpro[$minPriceKey]['cartquantity'] = $quantity;
 
+                $pkgpro[$minPriceKey]['customizequantity'] = $quantity;
+
                 $packageupdate[$pkgkey]['products'] = $pkgpro;              
+
+                $packageupdate[$pkgkey]['selectedProducts'] = $quantity.' x '.$pkgpro[$minPriceKey]['name'];
               
             }  
             
-            $package->packageSavings = round(($productOrgPrice - $packagePrice),2);
-            $package->packagePrice = round($packagePrice,2);
+            $package->packageSavings = number_format(($productOrgPrice - $packagePrice),2);
+            $package->packagePrice = number_format($packagePrice,2);
+            $package->packageQuantity = 1;
             $package->packageItems = $packageupdate;
             
             return response($package,200);

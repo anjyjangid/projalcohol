@@ -125,7 +125,7 @@
 	margin:0 auto;
 	margin-top:10px
 }
-.thumbnailheightset:hover, .thumbnailheightset:active, .thumbnailheightset:focus, .selectedproductcart{
+/*.thumbnailheightset:hover, .thumbnailheightset:active, .thumbnailheightset:focus,*/ .selectedproductcart{
 	border:1px solid #8c00d3;
 	box-shadow: 3px 3px 3px 3px #e5c8f6;
 }

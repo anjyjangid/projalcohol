@@ -211,5 +211,3 @@ li.subactive a, li.subactive a span {
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
 }
-
-md-content{display: block;}
