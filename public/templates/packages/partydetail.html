@@ -55,7 +55,7 @@
 	                  	<div class="row">													
 							<div ng-repeat-start="pcprod in packageItem.products" ng:class="{'row':($index!=0 && $index%3==0)}"></div>
 							<div class="col-md-4"> 							
-								<div class="thumbnail thumbnailheightset" ng:class="{'selectedproductcart':pcprod.cartquantity > 0}">						
+								<div class="thumbnail thumbnailheightset" ng:class="{'selectedproductcart':pcprod.customizequantity > 0}">						
 									<div class="caption">
 										<h5 class="item-btmtitle">{{ pcprod.name }}</h5>
 										<!-- <p>{{pcprod.cprice}} - {{pcprod.sprice}}</p> -->
