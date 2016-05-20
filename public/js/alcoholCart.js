@@ -65,7 +65,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', 'alcoh
 					
 					switch(response.errorCode){
 						case "100":
-							$cart.product.quantitycustom = response.data.quantity;											
+							//$cart.product.quantitycustom = response.data.quantity;
 						break;
 					}
 
@@ -74,7 +74,10 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', 'alcoh
 
 					if(inCart){
 
-						inCart.setQuantity(quantity, false);
+						inCart.setTQuantity(quantity, false);
+						inCart.setPrice(response.product);
+						
+
 						//$rootScope.$broadcast('alcoholCart:itemAdded', response.data);
 
 					}else{
@@ -294,8 +297,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', 'alcoh
 				_self.$cart.products[key] = newItem;
 				
 			});
-
-			console.log(_self.$cart.products);
+			
 		};
 
 		this.$save = function () {
@@ -314,8 +316,9 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 
 		var item = function (id, data) {
 			this.setId(id);
-			this.setPrice(data);
-			this.setQuantity(data.quantity);
+			this.setRQuantity(data.chilled.quantity,data.nonchilled.quantity);
+			this.setTQuantity(data.quantity);
+			this.setPrice(data);			
 			this.setLastServedAs(data.lastServedChilled);
 			this.setProduct(data);
 		};
@@ -357,7 +360,7 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 
 			var unitPrice = originalPrice;
 
-			var quantity = product.quantity;
+			var quantity = this.getQuantity();
 
 			var advancePricing = original.advance_order;
 			
@@ -407,8 +410,22 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 			return this.price;
 		};
 
+		item.prototype.setRQuantity = function(cQuantity,ncQuantity){
+			this.qChilled = cQuantity;
+			this.qNChilled = ncQuantity
+		}
 
-		item.prototype.setQuantity = function(quantity, relative){
+		item.prototype.getRQuantity = function(type){
+
+			if(type=='chilled'){
+				return this.qChilled;
+			}
+
+			return this.qNChilled;
+			
+		}
+
+		item.prototype.setTQuantity = function(quantity, relative){
 
 			var quantityInt = parseInt(quantity);
 			if (quantityInt % 1 === 0){

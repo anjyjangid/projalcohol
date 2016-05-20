@@ -310,7 +310,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 	var setScopeValues = function (scope, attrs) {
 		scope.min = attrs.min || 0;
-		scope.max = attrs.max || 100;
+		// scope.max = attrs.max || 100;
 		scope.step = attrs.step || 1;
 		scope.prefix = attrs.prefix || undefined;
 		scope.postfix = attrs.postfix || undefined;
@@ -328,13 +328,13 @@ AlcoholDelivery.directive('sideBar', function() {
 		scope: {
 			'myincrement': '&onIncrement',
 			'mydecrement': '&onDecrement',
-			'val': "=value"
+			'val': "=value",
+			'max': "=mquantity"
 		},
 		replace: true,
 		link: function (scope, element, attrs, ngModel) {
 			
 			setScopeValues(scope, attrs);
-
 
 			var timeout, timer, helper = true, oldval = scope.val, clickStart;
 
@@ -478,15 +478,26 @@ AlcoholDelivery.directive('sideBar', function() {
 	return {
 		restrict: 'A',
 		transclude: true,
+		priority: 100,
 		scope:{
 			productInfo:'=info',
 			classes : '@'
 		},
 		templateUrl: '/templates/product/product_tpl.html',
 
-		controller: ['$rootScope','$scope',function($rootScope,$scope){
+		controller: ['$rootScope','$scope','alcoholCart',function($rootScope,$scope,alcoholCart){
 
 			$scope.settings = $rootScope.settings;
+
+			var isInCart = alcoholCart.getProductById($scope.productInfo._id);
+
+			$scope.productInfo.servechilled=$scope.productInfo.chilled;
+
+			if(isInCart!==false){
+
+				$scope.productInfo.servechilled = isInCart.getLastServedAs();
+
+			}
 
 			$scope.setPrices = function(localpro){
 
@@ -541,11 +552,12 @@ AlcoholDelivery.directive('sideBar', function() {
 	return {
 		restrict : "E",
 		replace: true,
+		priority: 99,
 		templateUrl: function(elem, attr){
 			return '/templates/partials/addToCartBtn.html';
 		},
 		scope: {
-			product:'=',			
+			product:'=',
 		},
 		controller: function($scope,$rootScope,$element,$timeout,$http,CartSession,alcoholCart){
 			
@@ -553,15 +565,44 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.addMoreCustom = false;
 			$scope.element = $element;
 			
-			$scope.product.quantitycustom = 1;
+			$scope.product.qChilled = 1;
+			$scope.product.qNChilled = 1;
 
-			$scope.addtocart = function(){
+			var isInCart = alcoholCart.getProductById($scope.product._id);
 
-				// $timeout(function() {
-				// 	timer = $interval(function() {
-				// 		scope.increment();
-				// 	}, scope.stepInterval);
-				// }, scope.stepIntervalDelay);
+
+			if(isInCart!==false){
+
+				$scope.isInCart = true;
+				$scope.product.qChilled = isInCart.getRQuantity('chilled');
+				$scope.product.qNChilled = isInCart.getRQuantity('nonchilled');
+
+			}
+
+			$scope.maxQuantity = $scope.product.quantity;
+
+			var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
+
+			if(available<0){
+				
+				$scope.overQunatity = true;
+				$scope.product.qNChilled = $scope.product.qNChilled + available;				
+
+			}
+
+			var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
+
+			if(available<0){
+				
+				$scope.product.qChilled = $scope.product.qChilled + available;
+
+			}
+
+			$scope.product.chilledMaxQuantity = $scope.maxQuantity - $scope.product.qNChilled;
+			$scope.product.nonChilledMaxQuantity = $scope.maxQuantity - $scope.product.qChilled;
+
+
+			$scope.addtocart = function(){			
 
 				if(typeof $scope.proUpdateTimeOut!=="undefined"){
 					$timeout.cancel($scope.proUpdateTimeOut);
@@ -569,7 +610,12 @@ AlcoholDelivery.directive('sideBar', function() {
 				
 				$scope.proUpdateTimeOut = $timeout(function(){
 
-					alcoholCart.addItem($scope.product._id,$scope.product.quantitycustom,$scope.product.servechilled);
+					if($scope.product.servechilled){
+						alcoholCart.addItem($scope.product._id,$scope.product.qChilled,$scope.product.servechilled);
+					}else{
+						alcoholCart.addItem($scope.product._id,$scope.product.qNChilled,$scope.product.servechilled);
+					}
+
 
 					if($scope.product.quantitycustom==0){
 						$scope.isInCart = false;
@@ -590,13 +636,18 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.activeAddToCart = function() {
 
-				$scope.isInCart = true;
 				$scope.addMoreCustom = false;
 
 				$timeout(function(){
 					$element.find(".addmore-count").animate({ top: "0px"},300);
 				}, 100);
 
+				if($scope.product.servechilled){
+					$scope.product.qChilled = 1;
+				}else{
+					$scope.product.qNChilled = 1;
+				}
+								
 				$scope.addtocart();
 
 			};

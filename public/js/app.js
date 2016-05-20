@@ -382,7 +382,7 @@ AlcoholDelivery.controller('ProductsFeaturedController', ['$scope', '$rootScope'
 	
 }]);
 
-AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
+AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$state','$http','$stateParams','alcoholCart', function($scope, $rootScope,$state,$http,$stateParams,alcoholCart){
 
 	$rootScope.appSettings.layout.pageRightbarExist = false;
 
@@ -475,7 +475,65 @@ AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$
 	
 	$http.get("/getproductdetail", config).then(function(response) {
 
-	   $scope.product = $scope.setPrices(response.data);
+		$scope.product = $scope.setPrices(response.data);
+
+		var isInCart = alcoholCart.getProductById($scope.product._id);
+
+		$scope.product.qChilled = 1;
+		$scope.product.qNChilled = 1;
+		$scope.product.servechilled=$scope.product.chilled;
+
+		if(isInCart!==false){
+
+			$scope.isInCart = true;
+			$scope.product.qChilled = isInCart.getRQuantity('chilled');
+			$scope.product.qNChilled = isInCart.getRQuantity('nonchilled');
+			$scope.product.servechilled = isInCart.getLastServedAs();
+
+		}
+
+		$scope.maxQuantity = $scope.product.quantity;
+
+		var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
+
+		if(available<0){
+			
+			$scope.overQunatity = true;
+			$scope.product.qNChilled = $scope.product.qNChilled + available;				
+
+		}
+
+		var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
+
+		if(available<0){
+			
+			$scope.product.qChilled = $scope.product.qChilled + available;
+
+		}
+		
+		$scope.$watchGroup(['product.qNChilled','product.qChilled','maxQuantity'],
+					function(newValue, oldValue) {
+
+						$scope.updateQuantity();
+
+					},true
+				);
+
+		$scope.updateQuantity = function(){
+
+			$scope.product.chilledMaxQuantity = $scope.maxQuantity - $scope.product.qNChilled;
+			$scope.product.nonChilledMaxQuantity = $scope.maxQuantity - $scope.product.qChilled;
+			$scope.tquantity = parseInt($scope.product.qNChilled)+parseInt($scope.product.qChilled);
+
+		}
+
+		$scope.addtocart = function(){
+
+			alcoholCart.addItem($scope.product._id,$scope.product.qChilled,true);
+			alcoholCart.addItem($scope.product._id,$scope.product.qNChilled,false);
+
+		};
+
 
 	 }, function(response) {
 
@@ -653,7 +711,7 @@ AlcoholDelivery.controller('OrderDetailController',['$scope','$rootScope','$stat
 }]);
 
 
-AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$timeout','CartSession','UserService','sweetAlert',function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $timeout, CartSession, UserService, sweetAlert){
+AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$timeout','CartSession','UserService','sweetAlert','alcoholCart',function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $timeout, CartSession, UserService, sweetAlert, alcoholCart){
 
 	//cart
 	$scope.cart = {
@@ -691,9 +749,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 						slotslug:""
 					}
 				};
-	
-	
-
+		
 	$scope.smoke = {
 		status:false,
 		detail:""
@@ -703,6 +759,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 		type:"cod",
 	}
 
+	$scope.alcoholCart = alcoholCart;
 
 	$scope.step = 1;
 

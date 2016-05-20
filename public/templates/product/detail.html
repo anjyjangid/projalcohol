@@ -1,4 +1,3 @@
-
 <div class="productdetailbrudcumcover">
 	<a href="">Home</a>
 		<img src="images/productdetail2.png">
@@ -28,14 +27,14 @@
 					<div class="prddetailtitle">{{product.name}}</div>
 						<div class="prddetailsubexttitle">{{product.shortDescription}}</div>
 						<div class="prddetailnormaltext">{{product.description}}</div>
-						<div class="prddetailchilledcover text-noselect" ng-if="product.chilled" ng-init="product.cart.chilled=1">
+						<div class="prddetailchilledcover text-noselect" ng-if="product.chilled">
 
-							<div class="prodchilled-btn" ng-class="{'active':product.cart.chilled}" ng-click="product.cart.chilled=1">
+							<div class="prodchilled-btn" ng-class="{'active':product.servechilled}" ng-click="product.servechilled=1">
 								<span>Chilled</span>
 								<div class="-icon"></div>
 							</div>
 							
-							<div class="prodnonchilled-btn" ng-class="{'active':!product.cart.chilled}" ng-click="product.cart.chilled=0">
+							<div class="prodnonchilled-btn" ng-class="{'active':!product.servechilled}" ng-click="product.servechilled=0">
 								<span>Non-Chilled</span>
 								<div class="-icon"></div>
 							</div>
@@ -43,7 +42,15 @@
 						<div class="prdquantitybulkcover text-noselect">
 							<div class="checkoutmiddlevlauediv">
 									<div class="pardqantitytexthead">Quantity</div>
-									<input type="text" value="1" ng-model="product.cart.quantity" min="1" max="100" ng-touch-spin>
+									<div ng-if="product.servechilled">
+										<input type="text" value="product.qChilled" ng-model="product.qChilled" min="0" mquantity="product.chilledMaxQuantity" ng-touch-spin>
+									</div>
+
+									<div ng-if="!product.servechilled">
+										<input type="text" value="product.qNChilled" ng-model="product.qNChilled" min="0" mquantity	="product.nonChilledMaxQuantity" ng-touch-spin>
+									</div>
+
+
 							</div>
 								<div class="prdquantitybulkcoverbulk">
 									<div class="pardqantitytexthead">Bulk Quantity Discounts Chart (Piece)</div>
@@ -51,7 +58,7 @@
 											<div class="prdquanbulkboxone">Qty<br />Amount</div>
 
 																								
-												<div class="prdquanbulkboxtwo" ng-repeat="bulkBlock in product.express_delivery_bulk.bulk" ng-class="{'prdquanbulkActive':product.cart.quantity>=bulkBlock.from_qty && product.cart.quantity<=bulkBlock.to_qty}">
+												<div class="prdquanbulkboxtwo" ng-repeat="bulkBlock in product.express_delivery_bulk.bulk" ng-class="{'prdquanbulkActive':tquantity>=bulkBlock.from_qty && tquantity<=bulkBlock.to_qty}">
 													
 													{{bulkBlock.from_qty}}<span ng-if="bulkBlock.to_qty!=99999">-{{bulkBlock.to_qty}}</span><br />${{bulkBlock.price}}
 
@@ -67,7 +74,7 @@
 						<div class="prddetailinstock">In Stock.</div>
 						<div class="productslide_addbutton">
 							<div class="cartbtn">
-								<div class="addcart only-button"><span></span>add to cart</div>              
+								<div class="addcart only-button" ng-click="addtocart()"><span></span>add to cart</div>              
 							</div>
 						</div>
 				</div>
