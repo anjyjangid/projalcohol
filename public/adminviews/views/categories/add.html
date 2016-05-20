@@ -11,7 +11,7 @@
 
 				<form name='categoryForm' ng-submit="submitCategory()" data-ng-init="categoryFormInit()">
 
-					<div class="form-group" ng-if="!category">
+					<div class="form-group" ng-if="!edit">
 						<label class="control-label">Parent Category</label>
 
 						<div class="margin-top-10" ng-repeat="subcategory in categories">

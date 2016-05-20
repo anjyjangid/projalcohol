@@ -60,6 +60,13 @@ ui-sref{
 	cursor: pointer;
 }
 
+.addcart-btncover .fa-spinner {
+    position: relative;
+    left: -12px;
+    font-size: 17px;
+    top: 1px;
+}
+
 .header{
 	background:url(../images/bg.jpg) no-repeat center top;
 	min-height:690px;

@@ -2,6 +2,13 @@
 		
 	function prd($arr){
 		
+		pr($arr);
+		die;
+
+	}
+
+	function jprd($arr){
+		
 		pr(json_encode($arr));
 		die;
 

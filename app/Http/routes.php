@@ -50,7 +50,12 @@ Route::group(['prefix' => 'cart'], function () {
 	Route::get('timeslots/{date}','CartController@getTimeslots');
 	Route::put('merge/{cartkey}','CartController@mergecarts');
 
+	Route::post('package/{cartkey}','CartController@createpackage');
+		
+
 	Route::delete('product/{key}/{type}','CartController@removeproduct');
+
+
 
 });
 

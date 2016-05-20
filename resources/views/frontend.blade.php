@@ -28,6 +28,7 @@
 		<link rel="stylesheet" type="text/css" href="css/owl.carousel.css">
 		<link rel="stylesheet" type="text/css" href="css/owl.theme.css">
 		<link rel="stylesheet" type="text/css" href="css/jquery.switchButton.css">
+		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
 		
 		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.min.css')}}">
 		

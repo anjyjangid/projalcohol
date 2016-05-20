@@ -67,17 +67,7 @@ class CartController extends Controller
 	public function store(Request $request)
 	{
 
-		try {
 
-			Brand::create($inputs);
-
-		} catch(\Exception $e){
-
-			return response(array("success"=>false,"message"=>$e->getMessage()));
-
-		}
-		
-		return response(array("success"=>true,"message"=>"Brand created successfully"));
 	}
 
 	/**
@@ -269,6 +259,65 @@ class CartController extends Controller
 		return response(array("success"=>false,"message"=>"Something went worng"));
 
 		
+	}
+
+	public function createpackage(Request $request, $cartKey){
+
+		$inputs = $request->all();
+		$packageId = $inputs['id'];
+		$packageDetail = $inputs['package'];
+
+		$cart = Cart::find($cartKey);
+
+		if(empty($cart)){
+
+			return response(array("success"=>false,"message"=>"Not a valid request"),400);
+
+		}
+
+		$packages = $cart->packages;
+
+		if(empty($packages)){
+
+			$packages = [];
+
+		}
+
+		$packageDetail['_unique'] = sha1(time());
+
+		if(isset($packageDetail['unique'])){
+			foreach ($packages as $key => $package) {
+				if(!isset($package["_unique"])){
+					unset($packages[$key]);
+					continue;
+				}
+				if($package["_unique"]==$packageDetail['unique']){
+					unset($packages[$key]);
+					$packageDetail['_unique'] = $package["_unique"];
+					break;
+				}
+			}
+		}
+			
+		array_unshift($packages, $packageDetail);
+		
+		$cart->packages = $packages;
+		
+
+		try {						
+			
+			$cart->save();
+
+			return response(array("success"=>true,"message"=>"cart updated successfully","key"=>$packageDetail['_unique']));
+
+		} catch(\Exception $e){
+
+			return response(array("success"=>false,"message"=>"Something went worng"));
+			return response(array("success"=>false,"message"=>$e->getMessage()));
+
+		}
+
+
 	}
 
 	public function mergecarts($cartkey){

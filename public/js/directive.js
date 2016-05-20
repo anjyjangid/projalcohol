@@ -602,7 +602,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.product.nonChilledMaxQuantity = $scope.maxQuantity - $scope.product.qChilled;
 
 
-			$scope.addtocart = function(){			
+			$scope.addtocart = function(){
 
 				if(typeof $scope.proUpdateTimeOut!=="undefined"){
 					$timeout.cancel($scope.proUpdateTimeOut);

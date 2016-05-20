@@ -13,7 +13,6 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
     });       
 
     
-    
 	angular.extend($scope, {
 
 		categoryFormInit : function(){
@@ -173,6 +172,7 @@ MetronicApp.controller('CategoryUpdateController',['$rootScope', '$scope', '$tim
 
 			$scope.categories = [];
 			$scope.lthumb = true;
+			$scope.edit = true;
 			
 			categoryModel.getPricingSettings().success(function(data){
 				$scope.pricing = data;

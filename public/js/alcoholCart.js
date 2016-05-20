@@ -1,10 +1,11 @@
-AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', 'alcoholCartItem', 'CartSession', function ($rootScope, $window, $http, alcoholCartItem, CartSession) {
+AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 'alcoholCartItem', 'CartSession', function ($rootScope, $window, $http, $q, alcoholCartItem, CartSession) {
 
 		this.init = function(){
 			
 			this.$cart = {
 				
 				products : {},
+				packages : [],
 				nonchilled : false,
 				delivery : {
 					type : 1,
@@ -46,7 +47,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', 'alcoh
 
 		this.addItem = function (id, quantity, serveAs) {
 
-			var inCart = this.getProductById(id);
+			var inCart = this.getPackageById(id);
 			var _self = this;
 			var deliveryKey = _self.getCartKey();
 
@@ -99,6 +100,71 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', 'alcoh
 
 		};
 
+		this.addPackage = function (id, detail) {
+
+			var _self = this;
+			var deliveryKey = _self.getCartKey();
+
+			var d = $q.defer();
+
+			$http.post("/cart/package/"+deliveryKey, {
+					"id":id,
+					"package":detail,					
+					"type":"package",
+				},{
+
+			}).error(function(data, status, headers) {
+
+
+
+			}).success(function(response) {
+
+				if(!response.success){
+					
+					switch(response.errorCode){
+						case "100":
+							//$cart.product.quantitycustom = response.data.quantity;
+						break;
+					}
+
+					d.reject('oh no an error! try again');
+
+				}else{
+					
+					var inCart = this.getPackageByUniqueId(response.key);
+
+					if(inCart){
+
+						inCart.setTQuantity(quantity, false);
+						inCart.setPrice(response.product);
+						
+
+						//$rootScope.$broadcast('alcoholCart:itemAdded', response.data);
+
+					}else{
+
+						//$rootScope.$broadcast('alcoholCart:itemAdded', response.data);
+						
+			    		var newPackage = new alcoholCartPackage(id, response.key, detail);
+			    		this.$cart.packages.push(newPackage);
+						
+						//$rootScope.$broadcast('alcoholCart:itemAdded', newItem);
+
+					}
+
+					$rootScope.$broadcast('alcoholCart:change', {});
+
+					d.resolve(response);
+
+				}
+			});
+
+			return d.promise;
+
+				
+
+		};
+
 		this.getProductById = function (productId) {
 			var products = this.getCart().products;
 			var build = false;
@@ -112,6 +178,21 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', 'alcoh
 			// 	}
 			// });
 			return build;
+		};
+
+
+		this.getPackageByUniqueId = function(packageUniqueId){
+			
+			var packages = this.getCart().packages;
+			var build = false;
+			
+			angular.forEach(packages, function (package) {
+				if  (package.getUniqueId() === packageUniqueId) {
+					build = package;
+				}
+			});
+			return build;
+
 		};
 
 		this.setShipping = function(shipping){
@@ -165,6 +246,8 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', 'alcoh
 			
 			return Object.keys(this.getCart().products).length;
 		};
+
+
 
 		this.getSubTotal = function(){
 			var total = 0;
@@ -312,15 +395,20 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', 'alcoh
 
 	}]);
 
-AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($rootScope, $log) {
+AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($rootScope, $log){
 
 		var item = function (id, data) {
+
 			this.setId(id);
 			this.setRQuantity(data.chilled.quantity,data.nonchilled.quantity);
+
+			this.setRChilledStatus(data.chilled.status,data.nonchilled.status);
+
 			this.setTQuantity(data.quantity);
 			this.setPrice(data);			
 			this.setLastServedAs(data.lastServedChilled);
 			this.setProduct(data);
+
 		};
 
 		item.prototype.setId = function(id){
@@ -415,6 +503,13 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 			this.qNChilled = ncQuantity
 		}
 
+		item.prototype.setRChilledStatus = function(cLastStatus,ncLastStatus){
+			this.cLastStatus = cLastStatus;
+			this.ncLastStatus = ncLastStatus
+		}
+
+		
+
 		item.prototype.getRQuantity = function(type){
 
 			if(type=='chilled'){
@@ -477,6 +572,65 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 
 	}]);
 
+AlcoholDelivery.factory('alcoholCartPackage', ['$rootScope', '$log', function ($rootScope, $log){
+
+		var package = function (id, uniqueId, data) {
+
+			this.setId(id);		
+			this.setUniqueId(uniqueId);
+			this.setName(data.title);
+			this.setQuantity(data.);
+			this.setPrice(data);			
+			this.setProduct(data);
+
+		};
+
+		item.prototype.setId = function(id){
+			if (id)  this._id = id;
+			else {
+				$log.error('An ID must be provided');
+			}
+		};
+
+		item.prototype.getId = function(){
+			return this._id;
+		};
+
+		item.prototype.setUniqueId = function(uniqueId){
+			if (uniqueId)  this._uniqueId = uniqueId;
+			else {
+				$log.error('An Unique Id must be provided');
+			}
+		};
+
+		item.prototype.getUniqueId = function(){
+			return this._uniqueId;
+		};
+		
+		item.prototype.setName = function(name){
+			if (name)  this._name = name;
+			else {
+				$log.error('A name must be provided');
+			}
+		};
+		item.prototype.getName = function(){
+			return this._name;
+		};		
+		
+		item.prototype.setOriginal = function(data){
+			if (data.original) this.original = data;
+		};
+
+		item.prototype.getOriginal = function(){
+			if (this.original) return this.original;
+			else $log.info('This item has no original detail');
+		};
+		
+
+		return package;
+
+	}]);
+
 AlcoholDelivery.service('store', ['$window','$http','alcoholCart', function ($window,$http,alcoholCart) {
 
 		return {
@@ -494,7 +648,7 @@ AlcoholDelivery.service('store', ['$window','$http','alcoholCart', function ($wi
 					$http.get("cart/"+deliverykey).success(function(response){
 
 						alcoholCart.$restore(response.cart);
-
+						
 					})
 
 				}else{
