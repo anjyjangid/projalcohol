@@ -90,7 +90,7 @@ AlcoholDelivery.filter('deliveryDateSlug',function(){
 })
 
 
-AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', '$facebook', function($scope, $rootScope,$http,$facebook) {
+AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', '$facebook', "$mdToast", function($scope, $rootScope,$http,$facebook,$mdToast) {
 
 	$scope.AppController = {};
 	$scope.featuredProduct = [];
@@ -248,7 +248,52 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', '$f
     };
     // YKB facebook end //
 
+
+    // Toast settings
+
+		var last = {
+			bottom: false,
+			top: true,
+			left: false,
+			right: true
+		};
+
+		$scope.toastPosition = angular.extend({},last);
+
+		$scope.getToastPosition = function() {
+
+			sanitizePosition();
+			return Object.keys($scope.toastPosition)
+				.filter(function(pos) { return $scope.toastPosition[pos]; })
+				.join(' ');
+
+		};
+
+		function sanitizePosition() {
+			var current = $scope.toastPosition;
+			if ( current.bottom && last.top ) current.top = false;
+			if ( current.top && last.bottom ) current.bottom = false;
+			if ( current.right && last.left ) current.left = false;
+			if ( current.left && last.right ) current.right = false;
+			last = angular.extend({},current);
+		}
+
+		$rootScope.showSimpleToast = function(msg) {
+			$mdToast.show(
+			$mdToast.simple()
+				.textContent(msg)
+				.position($scope.getToastPosition())
+				.hideDelay(300000)
+			);
+		};
+  
+    // Toast Settings
+
 }]);
+
+
+
+
 
 AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
 
@@ -707,6 +752,25 @@ AlcoholDelivery.controller('OrderDetailController',['$scope','$rootScope','$stat
 			.error(function(data, status, headers) {
 			   	
 			})   
+
+}]);
+
+AlcoholDelivery.controller('WishlistController',['$scope','$rootScope','$state','$stateParams','$http','sweetAlert','UserService','alcoholCart','alcoholWishlist',function($scope,$rootScope,$state,$stateParams,$http,sweetAlert,UserService,alcoholCart,alcoholWishlist){
+
+	$scope.alcoholCart = alcoholCart;
+	$scope.alcoholWishlist = alcoholWishlist;
+    
+   //  $http.get("order/"+$stateParams.orderid)
+			// .success(function(response){
+
+			// 	$scope.order = response;
+			// 	$scope.address = $scope.order.delivery.address;
+				
+			// 	//$scope.shipping = UserService.currentUser.address[response.delivery.address.key];
+			// })
+			// .error(function(data, status, headers) {
+			   	
+			// })
 
 }]);
 
@@ -2020,6 +2084,7 @@ AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$
 	$scope.errors = [];
 	
 	$scope.processing = false;
+	$scope.btnText = "ADD TO CART";
 
 	$rootScope.appSettings.layout.pageRightbarExist = false;
 
@@ -2141,15 +2206,10 @@ AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$
 		alcoholCart.addPackage($stateParams.id,$scope.packages).then(function(response) {
 						
 						if(response.success){
-
-							sweetAlert.swal({
-								type:'success',
-								title: "Package added successfully",					
-								timer: 4000
-							});
-
+							
 							$scope.packages.unique = response.key;
 							$scope.processing = false;
+							$scope.btnText = "UPDATE CART";
 
 						}
 
@@ -2472,6 +2532,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						templateUrl: "/templates/account/orders.html",
 						controller:"OrdersController"
 				})
+				.state('accountLayout.wishlist', {
+						url: "/wishlist",
+						templateUrl: "/templates/account/wishlist.html",
+						controller:"WishlistController"
+				})
 				.state('accountLayout.order', {
 						url: "/order/{orderid}",
 						templateUrl: "/templates/account/order.html",
@@ -2504,7 +2569,6 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 				.state('mainLayout.category', {
 						abstract : true,
-
 						views : {
 
 							'' : {
@@ -2605,7 +2669,8 @@ function ($q, $rootScope, $log) {
 }]);
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "CartSession","catPricing","UserService", "$state", "$http", "$window", function($rootScope, settings, alcoholCart, store, CartSession, catPricing, UserService, $state, $http, $window) {
+AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "CartSession","catPricing","UserService", "$state", "$http", "$window","$mdToast",
+			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, CartSession, catPricing, UserService, $state, $http, $window, $mdToast) {
 
 	$rootScope.$state = $state; // state to be accessed from view
 
@@ -2666,7 +2731,17 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "CartS
 
 	});
 
+	$rootScope.$on('alcoholWishlist:itemRemoved', function(product){
+
+		$rootScope.showSimpleToast("Removed from wishlist !");
+
+	});
+
+	
+
 	store.init();
+	alcoholWishlist.init();
+
 
 
 	// CartSession.GetDeliveryKey().then(

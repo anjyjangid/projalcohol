@@ -485,11 +485,14 @@ AlcoholDelivery.directive('sideBar', function() {
 		},
 		templateUrl: '/templates/product/product_tpl.html',
 
-		controller: ['$rootScope','$scope','alcoholCart',function($rootScope,$scope,alcoholCart){
+		controller: ['$rootScope','$scope','sweetAlert','alcoholCart','alcoholWishlist',"$mdToast",function($rootScope,$scope,sweetAlert,alcoholCart,alcoholWishlist,$mdToast){
 
 			$scope.settings = $rootScope.settings;
+			
 
 			var isInCart = alcoholCart.getProductById($scope.productInfo._id);
+
+			$scope.isInwishList = alcoholWishlist.getProductById($scope.productInfo._id);	
 
 			$scope.productInfo.servechilled=$scope.productInfo.chilled;
 
@@ -497,6 +500,35 @@ AlcoholDelivery.directive('sideBar', function() {
 
 				$scope.productInfo.servechilled = isInCart.getLastServedAs();
 
+			}
+
+			$scope.addToWishlist = function(){
+
+				alcoholWishlist.add($scope.productInfo._id).then(function(response) {
+						
+						if(response.success){			
+
+							$scope.isInwishList = alcoholWishlist.getProductById($scope.productInfo._id);
+
+						}
+
+
+					}, function(error) {
+
+						var toast = $mdToast.simple()
+							.textContent(error.message)
+							.action('OK')
+							.highlightAction(false)
+							.position("top right");
+
+						$mdToast.show(toast).then(function(response) {
+							if ( response == 'ok' ) {
+								$('#login').modal('show');
+							}
+						});
+						
+
+					});
 			}
 
 			$scope.setPrices = function(localpro){
@@ -565,8 +597,8 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.addMoreCustom = false;
 			$scope.element = $element;
 			
-			$scope.product.qChilled = 1;
-			$scope.product.qNChilled = 1;
+			$scope.product.qChilled = 0;
+			$scope.product.qNChilled = 0;
 
 			var isInCart = alcoholCart.getProductById($scope.product._id);
 
@@ -629,7 +661,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			};
 
 			$scope.addCustom = function(){
-								
+
 				$scope.activeAddToCart();
 
 			};

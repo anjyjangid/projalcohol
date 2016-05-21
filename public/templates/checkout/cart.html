@@ -56,6 +56,40 @@
 			</td>
 		</tr>
 		<tr ng-repeat-end></tr>
+
+		<tr ng-repeat="(key, package) in alcoholCart.getPackages()">
+		
+			<td width="52%">
+			
+				<div class="orhistry2_td2procdtcvr" ui-sref="mainLayout.packages({type:package.original.type==2?'cocktail':'party'})">
+					<span><img err-pro-src="" ng-src="packages/i/{{package.original.coverImage.source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" /></span>
+
+
+					<div class="checkouter-td-right-text">
+						<div class="orhistry2_td2proctext1">{{package._name}}</div>
+						<div class="orhistry2_td2proctext2">{{package.original.description}}</div>
+						<div class="orhistry2_td2proctext1">{{settings.general.currency}} {{package.original.packagePrice}}</div>
+						<div class="orhistry2_td2proctext2">unit Price</div>
+				 	</div> 
+				</div>
+			</td>
+			<td>					
+			</td>
+			<td>
+				<div class="checkoutmiddlevlauediv">
+
+					<input type="text" ng-model="package._quantity" value="package._quantity" min="0" max="100" ng-touch-spin on-increment="alcoholCart.addPackage(package._id,package.original)" on-decrement="alcoholCart.addPackage(package._id,package.original)">
+					
+				</div>
+			</td>
+			<td>
+				<div class="orderhistry2price">{{package._price | currency:settings.general.currency:2}}</div>
+			</td>
+			<td> 
+				<a class="checkoutmiddletabledeleteimg" ng-click="removepackage(package._uniqueId)"><i class="glyphicon glyphicon-trash"></i></a>
+			</td>
+		</tr>
+		
 		
 	</tbody>
 </table>

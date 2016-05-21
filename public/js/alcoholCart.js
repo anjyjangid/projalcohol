@@ -1,4 +1,4 @@
-AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 'alcoholCartItem', 'CartSession', function ($rootScope, $window, $http, $q, alcoholCartItem, CartSession) {
+AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 'alcoholCartItem', 'alcoholCartPackage', 'CartSession', function ($rootScope, $window, $http, $q, alcoholCartItem, alcoholCartPackage, CartSession) {
 
 		this.init = function(){
 			
@@ -47,7 +47,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 		this.addItem = function (id, quantity, serveAs) {
 
-			var inCart = this.getPackageById(id);
+			var inCart = this.getProductById(id);
 			var _self = this;
 			var deliveryKey = _self.getCartKey();
 
@@ -75,7 +75,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 					if(inCart){
 
-						inCart.setTQuantity(quantity, false);
+						inCart.setTQuantity(response.product.quantity);
 						inCart.setPrice(response.product);
 						
 
@@ -131,14 +131,13 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 				}else{
 					
-					var inCart = this.getPackageByUniqueId(response.key);
+					var inCart = _self.getPackageByUniqueId(response.key);
 
 					if(inCart){
 
-						inCart.setTQuantity(quantity, false);
-						inCart.setPrice(response.product);
+						inCart.setQuantity(detail.packageQuantity);
+						inCart.setPrice(detail.packagePrice);
 						
-
 						//$rootScope.$broadcast('alcoholCart:itemAdded', response.data);
 
 					}else{
@@ -146,7 +145,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 						//$rootScope.$broadcast('alcoholCart:itemAdded', response.data);
 						
 			    		var newPackage = new alcoholCartPackage(id, response.key, detail);
-			    		this.$cart.packages.push(newPackage);
+			    		_self.$cart.packages.push(newPackage);
 						
 						//$rootScope.$broadcast('alcoholCart:itemAdded', newItem);
 
@@ -231,6 +230,10 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			
 			return this.getCart().products;
 		};
+		this.getPackages = function(){
+			
+			return this.getCart().packages;
+		};
 
 		this.getTotalItems = function () {
 			var count = 0;
@@ -242,12 +245,19 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			return count;
 		};
 
-		this.getTotalUniqueItems = function () {
+		this.getTotalPackages = function () {
 			
-			return Object.keys(this.getCart().products).length;
+			return this.getCart().packages.length
 		};
 
+		this.getTotalUniqueItems = function () {
+			
+			var count = Object.keys(this.getCart().products).length;
 
+			count+= this.getCart().packages.length;
+
+			return count;
+		};
 
 		this.getSubTotal = function(){
 			var total = 0;
@@ -365,10 +375,13 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			_self.init();
 
 			var products = {};
+			var packages = [];
 
 			angular.copy(storedCart.products,products);
+			angular.copy(storedCart.packages,packages);
 
 			storedCart.products = {};
+			storedCart.packages = [];
 
 			angular.copy(storedCart,_self.$cart);
 
@@ -380,6 +393,14 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 				_self.$cart.products[key] = newItem;
 				
 			});
+
+			angular.forEach(packages, function (package,key) {
+
+				var newPackage = new alcoholCartPackage(package._id,package._unique,package);
+				_self.$cart.packages.push(newPackage);
+				
+			});
+
 			
 		};
 
@@ -520,21 +541,10 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 			
 		}
 
-		item.prototype.setTQuantity = function(quantity, relative){
+		item.prototype.setTQuantity = function(quantity){
 
 			var quantityInt = parseInt(quantity);
-			if (quantityInt % 1 === 0){
-				if (relative === true){
-					this.quantity  += quantityInt;
-				} else {
-					this.quantity = quantityInt;
-				}
-				if (this.quantity < 1) this.quantity = 1;
-
-			} else {
-				this.quantity = 1;	
-				$log.info('Quantity must be an integer and was defaulted to 1');
-			}
+			return this.quantity = quantityInt;
 
 
 		};
@@ -579,53 +589,79 @@ AlcoholDelivery.factory('alcoholCartPackage', ['$rootScope', '$log', function ($
 			this.setId(id);		
 			this.setUniqueId(uniqueId);
 			this.setName(data.title);
-			this.setQuantity(data.);
-			this.setPrice(data);			
-			this.setProduct(data);
+			this.setQuantity(data.packageQuantity);
+			this.setPrice(data.packagePrice);
+			this.setOriginal(data);
 
 		};
 
-		item.prototype.setId = function(id){
+		package.prototype.setId = function(id){
 			if (id)  this._id = id;
 			else {
 				$log.error('An ID must be provided');
 			}
 		};
 
-		item.prototype.getId = function(){
+		package.prototype.getId = function(){
 			return this._id;
 		};
 
-		item.prototype.setUniqueId = function(uniqueId){
+		package.prototype.setUniqueId = function(uniqueId){
 			if (uniqueId)  this._uniqueId = uniqueId;
 			else {
 				$log.error('An Unique Id must be provided');
 			}
 		};
 
-		item.prototype.getUniqueId = function(){
+		package.prototype.getUniqueId = function(){
 			return this._uniqueId;
 		};
 		
-		item.prototype.setName = function(name){
+		package.prototype.setName = function(name){
 			if (name)  this._name = name;
 			else {
 				$log.error('A name must be provided');
 			}
 		};
-		item.prototype.getName = function(){
+		package.prototype.getName = function(){
 			return this._name;
 		};		
 		
-		item.prototype.setOriginal = function(data){
-			if (data.original) this.original = data;
+		package.prototype.setOriginal = function(data){
+			if (data) this.original = data;
 		};
 
-		item.prototype.getOriginal = function(){
+		package.prototype.getOriginal = function(){
 			if (this.original) return this.original;
-			else $log.info('This item has no original detail');
+			else $log.info('This package has no original detail');
 		};
 		
+		package.prototype.setQuantity = function(quantity){
+			if (quantity) this._quantity = parseInt(quantity);
+		};
+
+		package.prototype.getQuantity = function(){
+			if (this._quantity) return parseInt(this._quantity);
+			else $log.info('This package has no original detail');
+		};
+
+		
+		package.prototype.setPrice = function(price){					
+
+			var unitPrice = parseFloat(price);
+
+			var quantity = this.getQuantity();
+							
+			price = quantity * unitPrice;
+			price = parseFloat(price.toFixed(2));
+					
+			return this._price = price;	
+			
+		};
+
+		package.prototype.getPrice = function(){
+			return this._price;
+		};
 
 		return package;
 

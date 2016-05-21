@@ -52,14 +52,14 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::post('package/{cartkey}','CartController@createpackage');
 		
-
 	Route::delete('product/{key}/{type}','CartController@removeproduct');
-
-
 
 });
 
 Route::resource('cart', 'CartController');
+
+Route::resource('wishlist', 'WishlistController');
+
 
 Route::get('/order/summary/{id}','OrderController@getSummary');
 Route::get('/order/orders','OrderController@getOrders');

@@ -68,7 +68,7 @@ class Products extends Eloquent
 
 			$products = $products->get();
 
-			if($params['with']){
+			if(isset($params['with'])){
 
 				foreach($params['with'] as $with){
 
