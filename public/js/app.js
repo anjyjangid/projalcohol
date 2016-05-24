@@ -214,6 +214,7 @@ AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state
 	
 	$scope.AppController.category = $stateParams.categorySlug;
 	$scope.AppController.subCategory = "";
+	$scope.AppController.showpackage = false;
 
 	$category = $stateParams.categorySlug;
 
@@ -1683,6 +1684,57 @@ AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
 
     $rootScope.appSettings = appSettings;
 
+    $rootScope.timerange = [
+        {opVal:0,opTag:'12:00 am'},
+        {opVal:30,opTag:'12:30 am'},
+        {opVal:60,opTag:'01:00 am'},
+        {opVal:90,opTag:'01:30 am'},
+        {opVal:120,opTag:'02:00 am'},
+        {opVal:150,opTag:'02:30 am'},
+        {opVal:180,opTag:'03:00 am'},
+        {opVal:210,opTag:'03:30 am'},
+        {opVal:240,opTag:'04:00 am'},
+        {opVal:270,opTag:'04:30 am'},
+        {opVal:300,opTag:'05:00 am'},
+        {opVal:330,opTag:'05:30 am'},
+        {opVal:360,opTag:'06:00 am'},
+        {opVal:390,opTag:'06:30 am'},
+        {opVal:420,opTag:'07:00 am'},
+        {opVal:450,opTag:'07:30 am'},
+        {opVal:480,opTag:'08:00 am'},
+        {opVal:510,opTag:'08:30 am'},
+        {opVal:540,opTag:'09:00 am'},
+        {opVal:570,opTag:'09:30 am'},
+        {opVal:600,opTag:'10:00 am'},
+        {opVal:630,opTag:'10:30 am'},
+        {opVal:660,opTag:'11:00 am'},
+        {opVal:690,opTag:'11:30 am'},
+        {opVal:720,opTag:'12:00 pm'},
+        {opVal:750,opTag:'12:30 pm'},
+        {opVal:780,opTag:'01:00 pm'},
+        {opVal:810,opTag:'01:30 pm'},
+        {opVal:840,opTag:'02:00 pm'},
+        {opVal:870,opTag:'02:30 pm'},
+        {opVal:900,opTag:'03:00 pm'},
+        {opVal:930,opTag:'03:30 pm'},
+        {opVal:960,opTag:'04:00 pm'},
+        {opVal:990,opTag:'04:30 pm'},
+        {opVal:1020,opTag:'05:00 pm'},
+        {opVal:1050,opTag:'05:30 pm'},
+        {opVal:1080,opTag:'06:00 pm'},
+        {opVal:1120,opTag:'06:30 pm'},
+        {opVal:1150,opTag:'07:00 pm'},
+        {opVal:1180,opTag:'07:30 pm'},
+        {opVal:1210,opTag:'08:00 pm'},
+        {opVal:1240,opTag:'08:30 pm'},
+        {opVal:1270,opTag:'09:00 pm'},
+        {opVal:1300,opTag:'09:30 pm'},
+        {opVal:1330,opTag:'10:00 pm'},
+        {opVal:1370,opTag:'10:30 pm'},
+        {opVal:1400,opTag:'11:00 pm'},
+        {opVal:1430,opTag:'11:30 pm'},
+    ];
+
     return appSettings;
 
 }]);
@@ -1805,6 +1857,7 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 
 	$scope.AppController.category = "packages";
 	$scope.AppController.subCategory = $stateParams.type;
+	$scope.AppController.showpackage = true;
 
 	$scope.packages = [];
 	
@@ -1848,6 +1901,7 @@ AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$
 
 	$scope.AppController.category = "packages";
 	$scope.AppController.subCategory = $stateParams.type;
+	$scope.AppController.showpackage = true;
 
 	$scope.packages = [];
 	
@@ -1935,16 +1989,6 @@ AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$
 		
 	}
 
-	$scope.validateSelection = function (index, id) {
-			
-	};
-
-	$scope.$watch('pcprod.cartquantity', function(newValue) {
-        if (newValue != undefined) {
-            console.log(newValue);
-        }
-    });
-
 	/*$scope.$on('accordionA:onReady', function () {	    	
 			
 	});*/	  
@@ -1960,6 +2004,143 @@ AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$
 
 //     return user;
 // }]);
+
+AlcoholDelivery.controller('SearchController', [
+	'$timeout', '$q', '$log', '$http', '$state', '$scope', '$rootScope', '$timeout', '$anchorScroll', '$stateParams', 'Search',
+	function($timeout, $q, $log, $http, $state, $scope, $rootScope, $timeout, $anchorScroll, $stateParams, Search){
+
+		$scope.AppController.category = "";
+		$scope.AppController.subCategory = "";
+		$scope.AppController.showpackage = false;
+
+		$timeout(function() {
+			$anchorScroll();
+		});	
+		
+		$rootScope.appSettings.layout.pageRightbarExist = true;
+
+		var self = this;
+	    self.simulateQuery = true;
+	    self.isDisabled    = false;
+	    // list of `state` value/display objects
+	    
+	    self.querySearch   = querySearch;
+	    self.selectedItemChange = selectedItemChange;
+	    self.searchTextChange   = searchTextChange;
+	    self.submitQuery   = submitQuery;
+    
+    
+    // ******************************
+    // Internal methods
+    // ******************************
+    /**
+     * Search for states... use $timeout to simulate
+     * remote dataservice call.
+     */
+    function querySearch (query) {
+		return $http.get('/site/search/' + query).then(function(result){
+		    return result.data;
+		});
+    }
+    function searchTextChange(text) {
+      //$log.info('Text changed to ' + text);
+    }
+    function selectedItemChange(item) {      				      	
+		if(item){
+			$state.go('mainLayout.product',{product:item._id});      	
+			self.searchText = '';
+			$timeout(function() {
+				$anchorScroll();
+			});      	
+		    $scope.searchbar(0);
+		}	    
+    }
+
+    function submitQuery(){
+    	if(self.searchText!=''){
+    		$log.info(self.searchText);
+			var autoChild = document.getElementById('Auto').firstElementChild;
+		    var el = angular.element(autoChild);
+		    el.scope().$mdAutocompleteCtrl.hidden = true;    		
+    		$state.go('mainLayout.search',{keyword:self.searchText});
+    	}
+    	return false;
+    }
+
+    $scope.searchbar = function(toggle){
+		if(toggle){
+			$(".searchtop").addClass("searchtop100").removeClass("again21");			
+			$(".search_close").addClass("search_close_opaque");		
+			$(".logoss").addClass("leftminusopacity leftminus100").removeClass("again0left againopacity");
+			$(".homecallus_cover").addClass("leftminus2100").removeClass("again0left");
+			$(".signuplogin_cover").addClass("rightminus100").removeClass("again0right");	
+
+			if($.trim($(".searchtop input").val())=="")
+				$(".searchtop input").focus();
+		}else{
+			$(".searchtop").removeClass("searchtop100").addClass("again21");			
+			$(".search_close").removeClass("search_close_opaque");		
+			$(".logoss").removeClass("leftminusopacity leftminus100").addClass("again0left againopacity");
+			$(".homecallus_cover").removeClass("leftminus2100").addClass("again0left");
+			$(".signuplogin_cover").removeClass("rightminus100").addClass("again0right");
+		}
+	}
+
+	if($stateParams.keyword){
+    	if($stateParams.keyword!=''){
+    		$scope.keyword = $stateParams.keyword;
+    		$scope.filter = $stateParams.filter;
+    		$scope.sortby = $stateParams.sort;
+			$scope.products = new Search($stateParams.keyword,$stateParams.filter,$stateParams.sort);						
+    	}
+    }
+
+}]);
+
+AlcoholDelivery.factory('Search', function($http) {
+  var Search = function(keyword,filter,sortby) {
+    this.items = [];
+    this.busy = false;
+    this.skip = 0;
+    this.keyword = keyword;
+    this.take = 20;
+    this.limitreached = false;
+    this.totalResult = 0;
+    this.filter = filter;
+    this.sortby = sortby;
+  };
+
+  Search.prototype.nextPage = function() {  	
+    if (this.busy || this.limitreached) return;
+    this.busy = true;
+
+    $http.get('/site/searchlist',{
+    	params : {
+    		keyword:this.keyword,
+	    	skip:this.skip,
+	    	take:this.take,
+	    	filter:this.filter,
+	    	sortby:this.sortby
+	    }	
+    }).then(function(result){
+		var items = result.data.products;
+		this.totalResult = result.data.total;
+		for (var i = 0; i < items.length; i++) {
+			this.items.push(items[i]);
+		}
+		this.busy = false;
+		if(result.data.products.length < parseInt(this.take)){			
+			this.limitreached = true;		
+		}else{			
+			this.skip+= parseInt(this.take);
+		}
+	}.bind(this));
+    
+  };
+
+  return Search;
+});
+
 
 /* Setup Rounting For All Pages */
 AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
@@ -1994,7 +2175,8 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js',
 														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js',
 														'js/all_animations.js',
-														'js/js_init_scripts.js'
+														'js/js_init_scripts.js',
+														
 												] 
 										});
 								}]
@@ -2006,7 +2188,9 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						templateUrl: "/templates/index/home.html",
 						data: {pageTitle: 'User Account'},
 						controller:function($scope,$http){																
-
+								$scope.AppController.category = "";
+								$scope.AppController.subCategory = "";
+								$scope.AppController.showpackage = false;
 								setTimeout(function(){
 										initScripts({
 												disableScrollHeader:true
@@ -2276,6 +2460,28 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						controller:"PackageDetailController",						
 				})
 
+				.state('mainLayout.search', {
+						url: '/search/{keyword}?{filter}&{sort}',
+						templateUrl : function(stateParams){
+							return "/templates/search.html";
+						},
+						params: {pageTitle: 'Search'},
+						controller:"SearchController",						
+						resolve: {
+								deps: ['$ocLazyLoad', function($ocLazyLoad) {
+										return $ocLazyLoad.load({
+												name: 'AlcoholDelivery',
+												insertBefore: '#ng_load_plugins_before',
+												// debug: true,
+												serie: true,
+												files: [
+														'bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',														
+												]
+										});
+								}]
+						}
+				})				
+
 				.state('mainLayout.category', {
 						abstract : true,
 
@@ -2412,11 +2618,9 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "catPricing","UserService", "$
 		);
 	})
 
-	$rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
-
+	$rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {		
 	   $state.previous = {state:from, param:fromParams}
 	   $rootScope.appSettings.layout.pageRightbarExist = true;
-
 	});
 
 

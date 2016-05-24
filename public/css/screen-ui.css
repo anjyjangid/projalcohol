@@ -2418,7 +2418,7 @@ md-dialog.md-transition-in{
 	font-size:16px;
 	color:#222222;
 	font-weight:500;
-	float:right;
+	/*float:right;*/
 	position:relative;
 }
 .checkboxtotaldiv-middle-first{

@@ -77,6 +77,9 @@ Route::resource('address', 'AddressController');
 Route::resource('package', 'PackageController',['only'=>['*']]);
 Route::controller('package', 'PackageController');
 
+Route::resource('site', 'SiteController',['only'=>['*']]);
+Route::controller('site', 'SiteController');
+
 Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 	
 	Route::group(['prefix' => 'category'], function () {
@@ -243,7 +246,7 @@ Route::get('/loggedUser', 'UserController@loggedUser');
 Route::put('/profile', 'UserController@update');
 Route::put('/password', 'UserController@updatepassword');
 
-
+Route::controller('user', 'UserController');
 
 
 //TO WORK FOR ANGULAR DIRECT URL

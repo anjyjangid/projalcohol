@@ -19,9 +19,10 @@
   100% {opacity: 1;} 
 } 
 </style>
+
 <ul class="nav navbar-nav modify capitalize">
 
-	<li ng-class="{'active':AppController.category==''}"><a href="#">On Sale! <span class="sr-only">(current)</span></a></li>	
+	<li ng-class="{'active':$state.current.url=='/'}"><a href="#">On Sale! <span class="sr-only">(current)</span></a></li>	
 	<li ng-class="{'active':AppController.category==c.slug}" class="dropdown" ng-repeat="c in childOf(categories)" ng-mouseover="showPersonSubMenu=true" ng-mouseleave="showPersonSubMenu=false">
 
 	<div style="display: none;">
@@ -36,8 +37,8 @@
 		</ul>
 	</li>
 	<li ng-class="{'active':AppController.category=='packages'}" class="dropdown">
-		<a ng-click="showpackage = !showpackage" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Packages</a>
-		<ul class="navbar-nav" ng-show="showpackage">
+		<a ng-click="AppController.showpackage = !AppController.showpackage" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Packages</a>
+		<ul class="navbar-nav" ng-show="AppController.showpackage">
 			<li ng-class="{'active':AppController.subCategory=='party'}" class="dropdown"><a ui-sref="mainLayout.packages({type:'party'})">Party Packages</a></li>
 			<li ng-class="{'active':AppController.subCategory=='cocktail'}" class="dropdown"><a ui-sref="mainLayout.packages({type:'cocktail'})">Cocktail Packages</a></li>
 		</ul>

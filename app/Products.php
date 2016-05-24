@@ -38,7 +38,10 @@ class Products extends Eloquent
 			'threshold',
 			'maxQuantity',
 			'dealers',
-			'packages'
+			'packages',
+			'outOfStockType',
+			'availabilityDays',
+			'availabilityTime'
 	];
 
 	public function pcategories()

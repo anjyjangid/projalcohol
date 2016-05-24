@@ -20,7 +20,10 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 			regular_express_delivery:{},
 			advance_order_bulk:{},
 			express_delivery_bulk:{},	
-			price:null			
+			price:null,
+			outOfStockType:2,
+			availabilityDays:2,
+			availabilityTime:990
 		};
 		
 
@@ -116,7 +119,7 @@ MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout',
 
 }]);
 
-MetronicApp.controller('ProductAddController',['$scope', '$location','$stateParams','$timeout','fileUpload','productModel', function($scope,$location,$stateParams,$timeout,fileUpload,productModel) {
+MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$location','$stateParams','$timeout','fileUpload','productModel', function($rootScope, $scope,$location,$stateParams,$timeout,fileUpload,productModel) {
 
 	
 	/*$scope.$on('$viewContentLoaded', function() {
@@ -226,6 +229,15 @@ MetronicApp.controller('ProductAddController',['$scope', '$location','$statePara
 	$timeout(function() {
 		$scope.selectCategory();
 	});	
+
+	$scope.getTimeOptions = function(){		
+		return $rootScope.timerange;
+	};
+
+	$scope.outOfStockType = [
+		{id:1,label:'Notify when available'},
+		{id:2,label:'Available after'},
+	];
 
 }]);
 

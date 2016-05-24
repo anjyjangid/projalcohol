@@ -182,22 +182,7 @@ AlcoholDelivery.directive('sideBar', function() {
 	            });
 			};
 
-			$scope.searchbar = function(toggle){
-				if(toggle){
-					$(".searchtop").addClass("searchtop100").removeClass("again21");			
-					$(".search_close").addClass("search_close_opaque");		
-					$(".logoss").addClass("leftminusopacity leftminus100").removeClass("again0left againopacity");
-					$(".homecallus_cover").addClass("leftminus2100").removeClass("again0left");
-					$(".signuplogin_cover").addClass("rightminus100").removeClass("again0right");	
-					$("input[name='search']").focus();
-				}else{
-					$(".searchtop").removeClass("searchtop100").addClass("again21");			
-					$(".search_close").removeClass("search_close_opaque");		
-					$(".logoss").removeClass("leftminusopacity leftminus100").addClass("again0left againopacity");
-					$(".homecallus_cover").removeClass("leftminus2100").addClass("again0left");
-					$(".signuplogin_cover").removeClass("rightminus100").addClass("again0right");
-				}
-			}
+			
 		}
 	};
 })
@@ -687,4 +672,88 @@ console.log(isChild);
       });
     }
   }
-});
+}).directive('outOfStock',[function(){
+	return {
+		restrict : "E",
+		replace: true,
+		templateUrl: function(elem, attr){
+			return '/templates/partials/outOfStock.html';
+		},
+		scope: {
+			product:'=',			
+		},
+		controller: function($scope,$rootScope,$http,$mdToast,$document,UserService,$log){
+			
+			$scope.nlabel = 'Notify Me';
+
+			$scope.showCustomToast = function() {
+
+				$scope.nlabel = 'Wait..';
+
+				UserService.GetUser().then(
+
+					function(result) {
+
+						if(result.auth===false){
+							$scope.nlabel = 'Notify Me';
+							$('#login').modal('show');
+
+						}else{
+							
+
+							$http.post('/user/notifyme',{pid:$scope.product._id}).success(function(){
+								$scope.showPopover(result);
+							}).error(function(){
+								$scope.nlabel = 'Notify Me';
+							});
+						}
+
+					}
+				);
+			};	
+
+
+			$scope.showPopover = function(result){
+				$mdToast.show({			      
+			      controller:function($scope){
+			      	$scope.user = result;
+			      	$scope.closeToast = function(){
+			      		$mdToast.hide();
+			      	}
+			      },
+			      templateUrl: '/templates/toast-tpl/notify-template.html',
+			      parent : $document[0].querySelector('#toastBounds'),			      
+			      //parent : $document[0].querySelector('nav'),
+			      position: 'top center',
+			      hideDelay:6000
+			    });
+
+				$scope.nlabel = 'Notify Me';
+			};
+
+		}
+	}
+}]).directive('notAvailable',[function(){
+	return {
+		restrict : "E",
+		replace: true,
+		templateUrl: function(elem, attr){
+			return '/templates/partials/available-tag.html';
+		},		
+		scope: {
+			product:'=',			
+		},
+		controller: function($scope,$rootScope,$log){
+
+			$scope.addDays = function(days,mins){
+				var curDate = new Date();				
+				curDate.setHours(0,0,0,0);
+				curDate.setDate(curDate.getDate() + days);
+				return curDate.setMinutes(mins);								
+			}
+
+			$scope.availDate = $scope.addDays($scope.product.availabilityDays,$scope.product.availabilityTime);
+
+		}
+	}
+}]);

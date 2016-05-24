@@ -245,7 +245,19 @@ class UserController extends Controller
         return response($userLogged, 200);
     }
 
+    public function postNotifyme(Request $request){
 
+        $param = $request->all();
+
+        $userLogged = Auth::user('user');
+
+        $user = User::find($userLogged->_id);
+
+        $user->push('productAddedNotification',$param['pid'],true);        
+
+        return response ($user,200);
+
+    }
 
 
 }

@@ -81,18 +81,47 @@
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<input type="number" class="form-control" ng-model="product.quantity" placeholder="">									
+									<input type="number" min="0" class="form-control" ng-model="product.quantity" placeholder="">									
 									<span class="help-block">(in stock)</span>
 									<span class="help-block" ng-bind="errors.quantity[0]"></span>
 								</div>
 							</div>
 
+							<div class="form-group" ng:class="{'has-error':errors.outOfStockType[0]}">
+								<label class="col-md-2 control-label">Out of Stock Status: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<select ng-options="data.id as data.label for data in outOfStockType" class="form-control" ng-model="product.outOfStockType">
+									</select>									
+									<span class="help-block">(status shown when a product is out of stock)</span>
+									<span class="help-block" ng-bind="errors.outOfStockType[0]"></span>
+								</div>
+							</div>
+
+
+							<div ng-show="product.outOfStockType==2" class="form-group" >
+								<label class="col-md-2 control-label">Set Availability: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-2" ng:class="{'has-error':errors.availabilityDays[0]}">
+									<input type="number" min="1" class="form-control" ng-model="product.availabilityDays" placeholder="Days">
+									<span class="help-block">Days</span>
+									<span class="help-block" ng-bind="errors.availabilityDays[0]"></span>
+								</div>
+								<div class="col-md-2">
+									<select ng-options="fop.opVal as fop.opTag for fop in getTimeOptions()" class="form-control" ng-model="product.availabilityTime">
+									</select>	
+									<span class="help-block">Time</span>
+									<span class="help-block" ng-bind="errors.availabilityTime[0]"></span>
+								</div>
+							</div>
 							<div class="form-group" ng:class="{'has-error':errors.threshold[0]}">
 								<label class="col-md-2 control-label">Re-order threshold: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<input type="number" class="form-control" ng-model="product.threshold" placeholder="">									
+									<input type="number" min="1" class="form-control" ng-model="product.threshold" placeholder="">									
 									<span class="help-block" ng-bind="errors.threshold[0]"></span>
 								</div>
 							</div>
@@ -102,7 +131,7 @@
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<input type="number" class="form-control" ng-model="product.maxQuantity" placeholder="">									
+									<input type="number" min="1" class="form-control" ng-model="product.maxQuantity" placeholder="">									
 									<span class="help-block">(in stock)</span>
 									<span class="help-block" ng-bind="errors.maxQuantity[0]"></span>
 								</div>
@@ -125,7 +154,7 @@
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<input type="number" class="form-control" ng-model="product.loyalty" placeholder="">																		
+									<input type="number" min="0" class="form-control" ng-model="product.loyalty" placeholder="">																		
 									<span class="help-block">Loyalty points to be given on product purhcase</span>
 									<span class="help-block" ng-bind="errors.loyalty[0]"></span>
 								</div>
@@ -186,7 +215,7 @@
 						            	<td ng:class="{'has-error':errors.price[0]}" colspan="6">
 						            		<div class="col-md-5">
 							            		<div class="input-group">
-													<input type="number" step="any" class="form-control" ng-model="product.price" placeholder="">									
+													<input min="0" type="number" step="any" class="form-control" ng-model="product.price" placeholder="">									
 													<span class="input-group-addon">
 														Per Unit
 													</span>
@@ -245,7 +274,7 @@
 						                		{{ price.value }}
 						                	</label>
 						                    <div ng-if="!(product[kp] | isEmpty)" ng:class="{'has-error':errors[kp+'.value'][0]}">
-						                    	<input  type="number" step="any" class="form-control" ng-model="product[kp].value" placeholder="">						                    
+						                    	<input min="0" type="number" step="any" class="form-control" ng-model="product[kp].value" placeholder="">						                    
 						                    	<span class="help-block" ng-bind="errors[kp+'.value'][0]"></span>
 						                    </div>
 						                </td>						                
@@ -323,15 +352,15 @@
 						                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.type'][0]"></span>
 						                </td>
 						                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.value'][0]}">						                    
-						                    <input type="number" step="any" class="form-control" ng-model="slots.value" placeholder="">
+						                    <input min="1" type="number" step="any" class="form-control" ng-model="slots.value" placeholder="">
 						                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.value'][0]"></span>
 						                </td>
 						                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.from_qty'][0]}">						                    
-						                    <input type="number" class="form-control" ng-model="slots.from_qty" placeholder="From Qty">						                    
+						                    <input min="1" type="number" class="form-control" ng-model="slots.from_qty" placeholder="From Qty">						                    
 						                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.from_qty'][0]"></span>
 						                </td>
 						                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.to_qty'][0]}">						                   
-						                    <input type="number" class="form-control" ng-model="slots.to_qty" placeholder="To Qty" max="99999">						                    
+						                    <input min="1" type="number" class="form-control" ng-model="slots.to_qty" placeholder="To Qty" max="99999">						                    
 						                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.to_qty'][0]"></span>
 						                </td>
 						                <td>
