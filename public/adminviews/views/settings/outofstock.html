@@ -1,0 +1,61 @@
+<div class="form-horizontal">
+    <div class="form-group" ng:class="{'has-error':errors.title[0]}">
+        <label class="col-md-2 control-label">{{settings.facebook.title}}: <span class="required">
+        * </span>
+        </label>
+        <div class="col-md-10">
+            <input type="text" class="form-control" ng-model="settings.facebook.value" placeholder="">
+            <span class="help-block" ng-bind="errors.title[0]"></span>
+        </div>
+    </div>
+
+    <div class="form-group" ng:class="{'has-error':errors.title[0]}">
+        <label class="col-md-2 control-label">{{settings.googleplus.title}}: <span class="required">
+        * </span>
+        </label>
+        <div class="col-md-10">
+            <input type="text" class="form-control" ng-model="settings.googleplus.value" placeholder="">
+            <span class="help-block" ng-bind="errors.title[0]"></span>
+        </div>
+    </div>
+
+    <div class="form-group hide" ng:class="{'has-error':errors.title[0]}">
+        <label class="col-md-2 control-label">{{settings.instagram.title}}: <span class="required">
+        * </span>
+        </label>
+        <div class="col-md-10">
+            <input type="text" class="form-control" ng-model="settings.instagram.value" placeholder="">
+            <span class="help-block" ng-bind="errors.title[0]"></span>
+        </div>
+    </div>
+
+    <div class="form-group" ng:class="{'has-error':errors.title[0]}">
+        <label class="col-md-2 control-label">{{settings.twitter.title}}: <span class="required">
+        * </span>
+        </label>
+        <div class="col-md-10">
+            <input type="text" class="form-control" ng-model="settings.twitter.value" placeholder="">
+            <span class="help-block" ng-bind="errors.title[0]"></span>
+        </div>
+    </div>
+
+    <div class="form-group hide" ng:class="{'has-error':errors.title[0]}">
+        <label class="col-md-2 control-label">{{settings.youtube.title}}: <span class="required">
+        * </span>
+        </label>
+        <div class="col-md-10">
+            <input type="text" class="form-control" ng-model="settings.youtube.value" placeholder="">
+            <span class="help-block" ng-bind="errors.title[0]"></span>
+        </div>
+    </div>
+
+    <hr>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="margiv-top-10 pull-right">
+                <button class="btn green-haze" ng-click="update()"><i class="fa fa-check"></i> Update</button>
+                <input type="reset" name="reset" value="Reset" class="btn default">
+            </div>
+        </div>
+    </div>
+</div>

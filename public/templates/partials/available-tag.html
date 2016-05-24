@@ -1,0 +1,8 @@
+<span>
+	<span class="label label-warning" ng-if="product.quantity<1 && product.outOfStockType==2"> 	
+		{{ availDate | date:'EEE ha' }}
+		<md-tooltip class="blktool" md-direction="top" >
+			Available after  {{availDate | date:'ha, EEEE, dMMM'}}
+	  	</md-tooltip>
+	</span>
+</span>

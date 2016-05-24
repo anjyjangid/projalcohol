@@ -1,9 +1,37 @@
 	<nav tscroll class="navbar navbar-default navbar-fixed-top">		
 		<div class="container">
-		<div class="row btm10">
-			<div class="searchtop"> <a class="search_icon" ng-click="searchbar(1)" href="javascript:void(0);"></a>
-				<input type="text" class="" placeholder="Search for items" value="" name="search">
-				<a ng-click="searchbar(0)" class="search_close" href="javascript:void(0);">&times;</a> </div>
+		<div class="row btm10" ng-controller="SearchController as ctrl">
+			<div class="searchtop"> 
+				<a class="search_icon" ng-click="searchbar(1)" href="javascript:void(0);"></a>
+				<div layout="column" ng-cloak>
+				  <md-content class="globalsearch">
+				    <form ng-submit="ctrl.submitQuery()">			      
+				      <md-autocomplete				          
+				          md-no-cache="ctrl.noCache"
+				          md-selected-item="ctrl.selectedItem"
+				          md-search-text-change="ctrl.searchTextChange(ctrl.searchText)"
+				          md-search-text="ctrl.searchText"
+				          md-selected-item-change="ctrl.selectedItemChange(item)"
+				          md-items="item in ctrl.querySearch(ctrl.searchText)"
+				          md-item-text="item.name"
+				          md-min-length="2"
+				          placeholder="Search for items" clear-autocomplete id="Auto">
+				        <md-item-template>				  				          
+				          <img width="40" err-src="asset/i/defaultImage.png" src="products/i/200/{{item.imageFiles[0].source}}">
+				          <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i">
+				          	{{item.name}}
+				          </span>
+				        </md-item-template>				        
+				        <md-not-found>
+				          No products matching "{{ctrl.searchText}}" were found.
+				          <!-- <a ng-click="ctrl.newState(ctrl.searchText)">Create a new one!</a> -->
+				        </md-not-found>
+				      </md-autocomplete>			      
+				    </form>
+				  </md-content>
+				</div>
+				<a ng-click="searchbar(0)" class="search_close" href="javascript:void(0);">&times;</a> 
+			</div>
 			<div class="col-md-2 homecallus_cover">
 				<a ui-sref="mainLayout.index">
 				<div class="callshape"><img class="" src="images/Shapecall2.png"></div>
@@ -402,9 +430,9 @@ function googleTranslateElementInit() {
 <script>
 $(document).ready(function(e) {
 	 $('.signuplogin .dropdown').hover(function() {
-	$(this).find('.dropdown-menu').stop(true, true).delay(200).fadeIn(500);
+	$(this).find('.dropdown-menu').stop(true, true).fadeIn();
 }, function() {
-	$(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut(500);
+	$(this).find('.dropdown-menu').stop(true, true).fadeOut();
 }); 
 });
 

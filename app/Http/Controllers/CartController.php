@@ -15,7 +15,6 @@ use MongoId;
 
 class CartController extends Controller
 {
-	
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -23,7 +22,79 @@ class CartController extends Controller
 	 */
 	public function index(Request $request)
 	{
+		$user = Auth::user('user');
+		
+		if(empty($user)){
 
+			$cart = new Cart;
+			$isCreated = $cart->generate();
+
+			if($isCreated->success){
+
+				return response((array)$isCreated,200);
+
+			}else{
+
+				return response((array)$isCreated,400);
+
+			}
+
+		}else{
+
+			$userCart = Cart::where("user","=",new MongoId($user->_id))->first();
+
+			$cart = new Cart;
+			$isCreated = $cart->generate();
+			
+			if(empty($userCart)){
+			
+				$cart = Cart::find($isCreated->cart['_id']);
+				$cart->user = new MongoId($user->_id);
+				try{
+
+					$cart->save();
+					return response(["success"=>true,"message"=>"cart created successfully","cart"=>$cart->toArray()],200);
+
+				}catch(\Exception $e){
+
+					return (object)["success"=>false,"message"=>$e->getMessage()];
+
+				}
+			}
+			else{
+
+				$userCart = $userCart->toArray();
+
+				$productsIdInCart = array_keys((array)$userCart['products']);
+
+				$productObj = new Products;
+
+				$productsInCart = $productObj->getProducts(
+											array(
+												"id"=>$productsIdInCart,
+												"with"=>array(
+													"discounts"
+												)
+											)
+										);
+
+				if(!empty($productsInCart)){
+
+					foreach($productsInCart as $product){
+
+						$userCart['products'][$product['_id']]['product'] = $product;
+
+					}
+
+				}
+
+				return response(["success"=>true,"message"=>"cart created successfully","cart"=>$userCart],200);				
+
+			}
+
+			// prd("Portion due");
+		}
+		
 	}
 
 	/**
@@ -33,7 +104,7 @@ class CartController extends Controller
 	 */
 	public function create()
 	{
-		//
+		prd("Create module called");
 	}
 
 	/**
@@ -45,17 +116,7 @@ class CartController extends Controller
 	public function store(Request $request)
 	{
 
-		try {
 
-			Brand::create($inputs);
-
-		} catch(\Exception $e){
-
-			return response(array("success"=>false,"message"=>$e->getMessage()));
-
-		}
-		
-		return response(array("success"=>true,"message"=>"Brand created successfully"));
 	}
 
 	/**
@@ -65,19 +126,40 @@ class CartController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 	public function show(Request $request,$id)
-	{		
-
-		//$cartKey = $request->session()->get('deliverykey', $id);
-		$cartKey = $id;
-		$request->session()->put('deliverykey', $cartKey);
+	{
+		$cart = Cart::findUpdated($id);
 		
-		$cart = Cart::find($cartKey);
+		if(empty($cart)){		
 
-		if(empty($cart)){
-			return response(array("success"=>false,"message"=>"something went wrong with cart"));
+			$cartObj = new Cart;
+
+			$isCreated = $cartObj->generate();
+
+			if($isCreated->success){
+
+				$cart = $isCreated->cart;
+
+			}else{
+
+				return response((array)$isCreated,400);
+
+			}
+
+		}else{
+
+			$cart = $cart->toArray();			
+
+		}
+		
+		$isMerged = $this->mergecarts($cart['_id']);
+
+		if($isMerged->success){
+
+			$cart = $isMerged->cart;
+
 		}
 
-		$productsIdInCart = array_keys($cart->products);
+		$productsIdInCart = array_keys((array)$cart['products']);
 
 		$productObj = new Products;
 
@@ -90,21 +172,21 @@ class CartController extends Controller
 									)
 								);
 
-		$cart = $cart->toArray();
-		
-
 		if(!empty($productsInCart)){
 
 			foreach($productsInCart as $product){
 
-				$cart['products'][$product['_id']]['product'] = $product;			
+				$cart['products'][$product['_id']]['product'] = $product;
 
 			}
 
 		}
-	
 
-		return response($cart,200);
+		$cart['products'] = (object)$cart['products'];
+		$cart['packages'] = (object)$cart['packages'];
+
+		return response(["sucess"=>true,"cart"=>$cart],200);
+
 	}
 
 	/**
@@ -126,7 +208,7 @@ class CartController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 	public function update(Request $request, $id)
-	{        
+	{
 		
 		$inputs = $request->all();
 		
@@ -135,7 +217,9 @@ class CartController extends Controller
 		$cart = Cart::find($id);
 
 		if(empty($cart)){
-			return response(array("success"=>false,"message"=>"There is some issue with cart"));
+
+			return response(array("success"=>false,"message"=>"Not a valid request"),400);
+
 		}
 
 		$productObj = new Products;
@@ -151,6 +235,7 @@ class CartController extends Controller
 		$product = $product[0];
 
 		$updateProData = array(
+
 				"maxQuantity"=>(int)$product['quantity'],
 				"chilled"=>array(
 					"quantity"=>isset($cart->products[$proIdToUpdate])?$cart->products[$proIdToUpdate]['chilled']['quantity']:0,
@@ -160,7 +245,8 @@ class CartController extends Controller
 					"quantity"=>isset($cart->products[$proIdToUpdate])?$cart->products[$proIdToUpdate]['nonchilled']['quantity']:0,
 					"status"=>"nonchilled",
 				),
-				"quantity"=>0
+				"quantity"=>0,
+				"lastServedChilled" => (bool)$inputs['chilled']
 			);
 
 		if((bool)$inputs['chilled']){
@@ -208,7 +294,9 @@ class CartController extends Controller
 
 			}
 
-			return response(array("success"=>true,"message"=>"cart updated successfully","data"=>$product));
+			$updateProData['product'] = $product;
+
+			return response(array("success"=>true,"message"=>"cart updated successfully","product"=>$updateProData));
 
 		} catch(\Exception $e){
 
@@ -222,6 +310,65 @@ class CartController extends Controller
 		
 	}
 
+	public function createpackage(Request $request, $cartKey){
+
+		$inputs = $request->all();
+		$packageId = $inputs['id'];
+		$packageDetail = $inputs['package'];
+
+		$cart = Cart::find($cartKey);
+
+		if(empty($cart)){
+
+			return response(array("success"=>false,"message"=>"Not a valid request"),400);
+
+		}
+
+		$packages = $cart->packages;
+
+		if(empty($packages)){
+
+			$packages = [];
+
+		}
+
+		$packageDetail['_unique'] = sha1(time());
+
+		if(isset($packageDetail['unique'])){
+			foreach ($packages as $key => $package) {
+				if(!isset($package["_unique"])){
+					unset($packages[$key]);
+					continue;
+				}
+				if($package["_unique"]==$packageDetail['unique']){
+					unset($packages[$key]);
+					$packageDetail['_unique'] = $package["_unique"];
+					break;
+				}
+			}
+		}
+			
+		array_unshift($packages, $packageDetail);
+		
+		$cart->packages = $packages;
+		
+
+		try {						
+			
+			$cart->save();
+
+			return response(array("success"=>true,"message"=>"cart updated successfully","key"=>$packageDetail['_unique']));
+
+		} catch(\Exception $e){
+
+			return response(array("success"=>false,"message"=>"Something went worng"));
+			return response(array("success"=>false,"message"=>$e->getMessage()));
+
+		}
+
+
+	}
+
 	public function mergecarts($cartkey){
 
 		$user = Auth::user('user');
@@ -230,19 +377,17 @@ class CartController extends Controller
 
         if(isset($user->_id)){
             
-            $userCart = Cart::where("user","=",new MongoId($user->_id))->first();
+            $userCart = Cart::where("user","=",new MongoId($user->_id))->where("_id","!=",new MongoId($cartkey))->first();
             
             $sessionCart = Cart::find($cartkey);
 
-            if(empty($userCart)){
-            				
-				$sessionCart->user = new MongoId($user->_id);
+            if(!empty($userCart)){
 
-            }else{
-            	
             	$sessionCart->products = array_merge($sessionCart->products,$userCart->products);
 
             }
+
+            $sessionCart->user = new MongoId($user->_id);
 
             try{
 
@@ -253,18 +398,18 @@ class CartController extends Controller
             		$userCart->delete();
 
             	}
-            	return response(["success"=>true,"message"=>"cart merge successfully"],200);
+            	return (object)["success"=>true,"message"=>"cart merge successfully","cart"=>$sessionCart->toArray()];
 
             }catch(\Exception $e){
-            	return response(["success"=>false,"message"=>$e->getMessage()],400);
+            	return (object)["success"=>false,"message"=>$e->getMessage()];
             }
 
 
         }else{
-        	return response(["success"=>false,"message"=>"login required to merge"],400);
+        	return (object)["success"=>false,"message"=>"login required to merge"];
         }
 
-        return response(["success"=>false,"message"=>"something went wrong"],400);
+        return (object)["success"=>false,"message"=>"something went wrong"];
 
 	}
 
@@ -279,9 +424,39 @@ class CartController extends Controller
 		//
 	}
 
+	public function updateProductChilledStatus(Request $request,$cartKey){
+
+		$cart = Cart::find($cartKey);
+
+		$productId = $request->input('id');
+		$chilled = $request->input('chilled');
+		$nonchilled = $request->input('nonchilled');
+
+		$product = $cart->products[$productId];
+		
+		$product['chilled']['status'] = $chilled?'chilled':'nonchilled';
+		$product['nonchilled']['status'] = $nonchilled?'chilled':'nonchilled';
+
+		$products = array_merge($cart->products,[$productId=>$product]);
+
+		$cart->__set("products",$products);
+
+		try{
+
+			$cart->save();
+			return response(["success"=>true,"message"=>"status changed"],200);
+
+		}catch(\Exception $e){
+
+			return (object)["success"=>false,"message"=>$e->getMessage()];
+
+		}
+		
+
+	}
+
 	public function getDeliverykey(Request $request){
 
-		
 		$arr = [];
 		$deliverykey = $request->session()->get('deliverykey');
 

@@ -50,12 +50,19 @@ Route::group(['prefix' => 'cart'], function () {
 	Route::get('timeslots/{date}','CartController@getTimeslots');
 	Route::put('merge/{cartkey}','CartController@mergecarts');
 
+	Route::post('package/{cartkey}','CartController@createpackage');
+		
 	Route::delete('product/{key}/{type}','CartController@removeproduct');
+
+	Route::put('chilledstatus/{cartkey}','CartController@updateProductChilledStatus');
+	
 
 });
 
-
 Route::resource('cart', 'CartController');
+
+Route::resource('wishlist', 'WishlistController');
+
 
 Route::get('/order/summary/{id}','OrderController@getSummary');
 Route::get('/order/orders','OrderController@getOrders');
@@ -80,6 +87,9 @@ Route::resource('address', 'AddressController');
 
 Route::resource('package', 'PackageController',['only'=>['*']]);
 Route::controller('package', 'PackageController');
+
+Route::resource('site', 'SiteController',['only'=>['*']]);
+Route::controller('site', 'SiteController');
 
 Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 	
@@ -249,7 +259,7 @@ Route::get('/loggedUser', 'UserController@loggedUser');
 Route::put('/profile', 'UserController@update');
 Route::put('/password', 'UserController@updatepassword');
 
-
+Route::controller('user', 'UserController');
 
 
 //TO WORK FOR ANGULAR DIRECT URL

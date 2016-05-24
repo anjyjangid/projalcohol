@@ -94,7 +94,7 @@ class PackageController extends Controller
         
         $packages = new Packages;
 
-        $packages = $packages->with('productlist')->where('type',$ptype)->get();
+        $packages = $packages->with('productlist')->where('status',1)->where('type',$ptype)->get();
 
         if($packages){
             
@@ -181,7 +181,7 @@ class PackageController extends Controller
         
         $package = new Packages;
 
-        $package = $package->with('productlist')->where('_id',$id)->where('type',$ptype)->first();
+        $package = $package->with('productlist')->where('status',1)->where('_id',$id)->where('type',$ptype)->first();
         
         if($package){
             

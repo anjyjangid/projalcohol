@@ -2,17 +2,11 @@
 
 	<div class="checkout_title">My Cart</div>
 
-	<div ng-if="cart.productslength>0">
+	<div ng-if="alcoholCart.getTotalUniqueItems()">
 
 	<div class="steps_notify">
 
-			<div class="step_grid">
-
-				<!-- <a ui-sref="mainLayout.checkout.cart" class="step1"><span>Shopping Cart</span></a>
-				<a ui-sref="mainLayout.checkout.address" class="step2"><span>Address</span></a>
-				<a ui-sref="mainLayout.checkout.delivery" class="step3"><span>Delivery</span></a>
-				<a ui-sref="mainLayout.checkout.payment" class="step4"><span>Payment</span></a>
-				<a ui-sref="mainLayout.checkout.review" class="step5"><span>Review &amp; Confirm</span></a> -->
+			<div class="step_grid">			
 
 				<a class="step1"><span>Shopping Cart</span></a>
 				<a class="step2"><span>Address</span></a>
@@ -32,9 +26,11 @@
 	<div ui-view class="checkoutmiddleouter"></div>
 	
 	</div>
-	<div ng-if="cart.productslength==0" class="emptycart">
+	<div ng-if="!alcoholCart.getTotalUniqueItems()" class="emptycart">
 		<div>There is nothing in your cart</div>
 		<div><a class="checkouterback" ui-sref="mainLayout.index">back to shopping</a></div>
 	</div>
 
 </div>
+<input type="button" ng-click="cartdata = alcoholCart.getCart()" value="View alcoholcart data">
+<pre>{{cartdata}}</pre>

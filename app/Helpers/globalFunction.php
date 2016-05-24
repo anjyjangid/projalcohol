@@ -7,6 +7,13 @@
 
 	}
 
+	function jprd($arr){
+		
+		pr(json_encode($arr));
+		die;
+
+	}
+
 	function pr($arr){
 		
 		echo "<pre>";

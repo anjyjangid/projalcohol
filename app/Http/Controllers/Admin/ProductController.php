@@ -72,7 +72,16 @@ class ProductController extends Controller
         $inputs['status'] = (int)$inputs['status'];
         $inputs['isFeatured'] = (int)$inputs['isFeatured'];
         $inputs['threshold'] = (int)$inputs['threshold'];
-        $inputs['maxQuantity'] = (int)$inputs['maxQuantity'];       
+        $inputs['maxQuantity'] = (int)$inputs['maxQuantity'];
+        
+        if(isset($inputs['outOfStockType']))
+          $inputs['outOfStockType'] = (int)$inputs['outOfStockType'];
+
+        if(isset($inputs['availabilityDays']))
+          $inputs['availabilityDays'] = (int)$inputs['availabilityDays'];
+        
+        if(isset($inputs['availabilityTime']))
+          $inputs['availabilityTime'] = (int)$inputs['availabilityTime'];       
 
         if (isset($inputs['advance_order_bulk']['bulk']) && !empty($inputs['advance_order_bulk']['bulk']))
         {
@@ -177,6 +186,15 @@ class ProductController extends Controller
         $inputs['isFeatured'] = (int)$inputs['isFeatured'];    
         $inputs['threshold'] = (int)$inputs['threshold'];
         $inputs['maxQuantity'] = (int)$inputs['maxQuantity'];   
+
+        if(isset($inputs['outOfStockType']))
+          $inputs['outOfStockType'] = (int)$inputs['outOfStockType'];
+
+        if(isset($inputs['availabilityDays']))
+          $inputs['availabilityDays'] = (int)$inputs['availabilityDays'];
+        
+        if(isset($inputs['availabilityTime']))
+          $inputs['availabilityTime'] = (int)$inputs['availabilityTime'];
 
         $unset = [];
 

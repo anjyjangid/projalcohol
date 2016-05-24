@@ -1,4 +1,3 @@
-
 <div class="productdetailbrudcumcover">
 	<a ui-sref="/">Home</a>
 	<img src="images/productdetail2.png">
@@ -8,69 +7,68 @@
 	<img src="images/productdetail2.png">
 	<a>{{packages.title}}</a>
 </div>
-
+<!-- <pre>{{packages|json}}</pre> -->
 <div class="productdetailbrudcumcover">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="media cocktaildetail-cover">
 				<div class="media-left">
-			    <a href="#">
-			     <!--<img  err-src="asset/i/defaultImage.png" class="" ng-src="packages/i/{{packages.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>-->
-                 <img src="images/party-detail-img.png" />
-			    </a>
+				    <a href="#">
+				    	<img src="images/party-detail-img.png" />
+				    </a>
 			  	</div>
 				<div class="media-body party-detail-contentcover">
 					<h4 class="media-heading party-detail-heading">{{packages.title}}</h4>
 					<div class="party-detail-btm-title">{{packages.subTitle}}</div>
-					<div class="party-product-desc">{{packages.description}}</div>    			
-							
-			<p class="packtiti-rightset">Package Amount</p>
-	    	<h3 class="amntrupee-cls party-detail-amt">${{packages.packagePrice}}</h3>
-	    	<p class="packtiti-rightset">Savings</p>
-	    	<p class="packtiti-rightset">${{packages.packageSavings}}</p>
-			<div class="checkoutmiddlevlauediv ">
-	    		<div class="pardqantitytexthead party-qtn-titl">Quantity</div>
-				<input type="text" value="packages.packageQuantity" ng-model="packages.packageQuantity" min="1" max="10" ng-touch-spin>
-			</div>			
-	<div class="quantiy-party-detail add-cart-btm">
-	    
-	    		<a class="btn product_addcart addcart-detail"><img src="images/cart-icon.png" />Add to Cart</a> </div>   </div>			<div>
-	    	</div></div>
-		</div>
-	</div>
-	<div class="row">	
-		<div class="party-detail-btmtitl4"><h4>Customise your own package</h4></div>
-		<div class="col-md-8 party-alcholcover ">		
-			<v-accordion id="accordionA" class="vAccordion--default" control="accordionA" multiple onexpand="expandCallback(index, id)" oncollapse="collapseCallback(index, id)">        
-		        <v-pane id="{{$index}}" ng-repeat="packageItem in packages.packageItems">
-	                <v-pane-header id="{{$index}}-header"  aria-controls="{{ ::subpane.id }}-header" class="byz">
-		                <div class="ttile-divcover party-deatil-pading5">
-		                  <h5  class="custmize-contntset ">{{ ::packageItem.title }}</h5>
-		                  <span ng-bind="packageItem.selectedProducts"></span>
-		                </div>		                
-	                </v-pane-header>
-	                <v-pane-content id="{{$index}}-content" aria-labelledby="{{ ::subpane.id }}-content">
-	                  	<div class="alert alert-danger" ng-show="errors[$index]" ng-bind="errors[$index]"></div>
-	                  	<div class="row">													
-							<div ng-repeat-start="pcprod in packageItem.products" ng:class="{'row':($index!=0 && $index%3==0)}"></div>
-							<div class="col-md-4"> 							
-								<div class="thumbnail thumbnailheightset" ng:class="{'selectedproductcart':pcprod.customizequantity > 0}">						
-									<div class="caption party-detail-caption">
-										<h5 class="item-btmtitle">{{ pcprod.name }}</h5>
-										<!-- <p>{{pcprod.cprice}} - {{pcprod.sprice}}</p> -->
+					<div class="party-product-desc">{{packages.description}}</div>    										
+					<p class="packtiti-rightset">Package Amount</p>
+			    	<h3 class="amntrupee-cls party-detail-amt">${{packages.packagePrice}}</h3>
+			    	<p class="packtiti-rightset">Savings</p>
+			    	<p class="packtiti-rightset">${{packages.packageSavings}}</p>
+					<div class="checkoutmiddlevlauediv ">
+			    		<div class="pardqantitytexthead party-qtn-titl">Quantity</div>
+						<input type="text" value="packages.packageQuantity" ng-model="packages.packageQuantity" min="1" max="10" ng-touch-spin>
+					</div>
+			    	<div class="quantiy-party-detail add-cart-btm">
+			    		<a class="btn product_addcart addcart-detail"><img src="images/cart-icon.png" />{{btnText}}</a>    		
+			    	</div>
+				</div>
+			</div>
+			<div class="row">	
+				<div class="party-detail-btmtitl4"><h4>Customise your own package</h4></div>
+				<div class="col-md-8 party-alcholcover ">		
+					<v-accordion id="accordionA" class="vAccordion--default" control="accordionA" multiple onexpand="expandCallback(index, id)" oncollapse="collapseCallback(index, id)">        
+				        <v-pane id="{{$index}}" ng-repeat="packageItem in packages.packageItems">
+			                <v-pane-header id="{{$index}}-header"  aria-controls="{{ ::subpane.id }}-header" class="byz">
+				                <div class="ttile-divcover party-deatil-pading5">
+				                  <h5  class="custmize-contntset ">{{ ::packageItem.title }}</h5>
+				                  <span ng-bind="packageItem.selectedProducts"></span>
+				                </div>		                
+			                </v-pane-header>
+			                <v-pane-content id="{{$index}}-content" aria-labelledby="{{ ::subpane.id }}-content">
+			                  	<div class="alert alert-danger" ng-show="errors[$index]" ng-bind="errors[$index]"></div>
+			                  	<div class="row">													
+									<div ng-repeat-start="pcprod in packageItem.products" ng:class="{'row':($index!=0 && $index%3==0)}"></div>
+									<div class="col-md-4"> 							
+										<div class="thumbnail thumbnailheightset" ng:class="{'selectedproductcart':pcprod.customizequantity > 0}">						
+											<div class="caption party-detail-caption">
+												<h5 class="item-btmtitle">{{ pcprod.name }}</h5>
+												<!-- <p>{{pcprod.cprice}} - {{pcprod.sprice}}</p> -->
+											</div>
+		                                    <div class="detail-productdiv">
+											<img  err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{pcprod.imageFiles[0].source}}"></div>
+											<div class="checkoutmiddlevlauediv party-checkout-detail" style="float: none;">
+												<input type="text" value="pcprod.customizequantity" ng-model="pcprod.customizequantity" max="{{packageItem.quantity}}" min="0" ng-touch-spin>
+											</div>
+										</div>
 									</div>
-                                    <div class="detail-productdiv">
-									<img  err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{pcprod.imageFiles[0].source}}"></div>
-									<div class="checkoutmiddlevlauediv party-checkout-detail" style="float: none;">
-										<input type="text" value="pcprod.customizequantity" ng-model="pcprod.customizequantity" max="{{packageItem.quantity}}" min="0" ng-touch-spin>
-									</div>
+									<div ng-repeat-end></div>													
 								</div>
-							</div>
-							<div ng-repeat-end></div>													
-						</div>
-	                </v-pane-content>
-		        </v-pane>
-	      </v-accordion>		
-		</div>
+			                </v-pane-content>
+				        </v-pane>
+			      </v-accordion>		
+				</div>
+			</div>
+		</div>	
 	</div>
-</div>	
+</div>		

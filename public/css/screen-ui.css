@@ -47,6 +47,9 @@ ui-sref{
 	width:calc(100% - 17px);
 }
 
+.required-astrik{
+	color: rgba(255, 0, 0, 1);
+}
 
 .fullwidth{
 	width:100%;
@@ -55,6 +58,13 @@ ui-sref{
 
 .cursor-pointer{
 	cursor: pointer;
+}
+
+.addcart-btncover .fa-spinner {
+    position: relative;
+    left: -12px;
+    font-size: 17px;
+    top: 1px;
 }
 
 .header{
@@ -2329,12 +2339,24 @@ md-dialog.md-transition-in{
 .addmore .bootstrap-touchspin-down, .addmore .bootstrap-touchspin-up {
 	background-color: transparent;
 	border-color: transparent;
+	border: 0px;
 	color: #fff;
 	font-size: 19px;
 	font-weight: 500;
 	padding: 0;
+	margin-top: -3px;
 }
 
+.addmore .bootstrap-touchspin-down:focus, .addmore .bootstrap-touchspin-up:focus,
+.addmore .bootstrap-touchspin-down:active, .addmore .bootstrap-touchspin-up:active,
+.addmore .bootstrap-touchspin-down:hover, .addmore .bootstrap-touchspin-up:hover{
+	outline: none;
+    background: transparent;
+    border: 0px;
+    color: #000;
+    background-color: transparent;    
+    box-shadow: 0px 0px 0px 0px;
+}
 
 .checkoutmiddleouter{
 	padding:0px 15px;
@@ -2438,7 +2460,7 @@ md-dialog.md-transition-in{
 	font-size:16px;
 	color:#222222;
 	font-weight:500;
-	float:right;
+	/*float:right;*/
 	position:relative;
 }
 .checkboxtotaldiv-middle-first{
@@ -5036,6 +5058,13 @@ md-dialog.md-transition-in{
 	border-radius: 5px 5px 0 0;
 	padding:14px 8px 0 20px;
 }
+
+.currentorderpopuppinkbox.on-blank {
+    text-align: center;
+    color: #fff;
+    border-radius: 5px;
+}
+
 .currentorderpopuppinkboxleft{
 	float:left;
 	width:110px;
@@ -5079,11 +5108,11 @@ md-dialog.md-transition-in{
 	border-radius:0 0 4px 4px;
 }
 .currentorderpopupulleft{
-	width:110px;
+	width:150px;
 	float:left;
 }
 .currentorderpopupulcenter{
-	width:80px;
+	width:40px;
 	text-align:right;
 	float:left;
 }
@@ -5458,3 +5487,16 @@ md-switch{
     animation-fill-mode:inherit;
 }
 
+md-toast{
+	position: fixed !important;
+}
+md-toast.md-top {
+    top: 70px;
+}
+md-toast .md-toast-content {
+    background-color: #AA00FF;
+    color: #fff;
+}
+md-toast-animation{
+	overflow: auto !important;
+}

@@ -31,7 +31,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			user:'='
 		},*/
 		templateUrl: '/templates/partials/topmenu.html',
-		controller: function($scope,$rootScope,$http,$state,sweetAlert,$facebook){			
+		controller: function($scope,$rootScope,$http,$state,sweetAlert,$facebook,store){
 			
 			$scope.list = [];
 
@@ -75,22 +75,23 @@ AlcoholDelivery.directive('sideBar', function() {
 					$scope.user.name = response.email;
 	                $('#login').modal('hide');
 	                $scope.errors = {};
-	                
-	                var deliverykey = localStorage.getItem("deliverykey");
-					console.log(deliverykey)
-	                if(deliverykey!==null && typeof deliverykey!=="undefined"){
+
+	                store.init();
+	     //            var deliverykey = localStorage.getItem("deliverykey");
+					
+	     //            if(deliverykey!==null && typeof deliverykey!=="undefined"){
 						
-						$http.put('cart/merge/'+deliverykey).success(function(response){
+						// $http.put('cart/merge/'+deliverykey).success(function(response){
 							
-							$state.go($state.current, {}, {reload: true});
+						// 	$state.go($state.current, {}, {reload: true});
 
-						}).error(function(data, status, headers) {
+						// }).error(function(data, status, headers) {
 
-			                $scope.errors = data;
+			   //              $scope.errors = data;
 
-			            });
+			   //          });
 
-	            	}
+	     //        	}
 
 
 				}).error(function(data, status, headers) {
@@ -169,8 +170,9 @@ AlcoholDelivery.directive('sideBar', function() {
 	                $scope.user = {};	                
 
 	                // Destroy Cart Params start
-	                delete $rootScope.deliverykey
+	                delete $rootScope.deliverykey;
 	                localStorage.removeItem("deliverykey");
+	                store.init();	
 	                // Destroy Cart Params end
 
 
@@ -182,22 +184,7 @@ AlcoholDelivery.directive('sideBar', function() {
 	            });
 			};
 
-			$scope.searchbar = function(toggle){
-				if(toggle){
-					$(".searchtop").addClass("searchtop100").removeClass("again21");			
-					$(".search_close").addClass("search_close_opaque");		
-					$(".logoss").addClass("leftminusopacity leftminus100").removeClass("again0left againopacity");
-					$(".homecallus_cover").addClass("leftminus2100").removeClass("again0left");
-					$(".signuplogin_cover").addClass("rightminus100").removeClass("again0right");	
-					$("input[name='search']").focus();
-				}else{
-					$(".searchtop").removeClass("searchtop100").addClass("again21");			
-					$(".search_close").removeClass("search_close_opaque");		
-					$(".logoss").removeClass("leftminusopacity leftminus100").addClass("again0left againopacity");
-					$(".homecallus_cover").removeClass("leftminus2100").addClass("again0left");
-					$(".signuplogin_cover").removeClass("rightminus100").addClass("again0right");
-				}
-			}
+			
 		}
 	};
 })
@@ -310,7 +297,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 	var setScopeValues = function (scope, attrs) {
 		scope.min = attrs.min || 0;
-		scope.max = attrs.max || 100;
+		// scope.max = attrs.max || 100;
 		scope.step = attrs.step || 1;
 		scope.prefix = attrs.prefix || undefined;
 		scope.postfix = attrs.postfix || undefined;
@@ -328,13 +315,13 @@ AlcoholDelivery.directive('sideBar', function() {
 		scope: {
 			'myincrement': '&onIncrement',
 			'mydecrement': '&onDecrement',
-			'val': "=value"
+			'val': "=value",
+			'max': "=mquantity"
 		},
 		replace: true,
 		link: function (scope, element, attrs, ngModel) {
 			
 			setScopeValues(scope, attrs);
-
 
 			var timeout, timer, helper = true, oldval = scope.val, clickStart;
 
@@ -478,15 +465,58 @@ AlcoholDelivery.directive('sideBar', function() {
 	return {
 		restrict: 'A',
 		transclude: true,
+		priority: 100,
 		scope:{
 			productInfo:'=info',
 			classes : '@'
 		},
 		templateUrl: '/templates/product/product_tpl.html',
 
-		controller: ['$rootScope','$scope',function($rootScope,$scope){
+		controller: ['$rootScope','$scope','sweetAlert','alcoholCart','alcoholWishlist',"$mdToast",function($rootScope,$scope,sweetAlert,alcoholCart,alcoholWishlist,$mdToast){
 
 			$scope.settings = $rootScope.settings;
+			
+
+			var isInCart = alcoholCart.getProductById($scope.productInfo._id);
+
+			$scope.isInwishList = alcoholWishlist.getProductById($scope.productInfo._id);	
+
+			$scope.productInfo.servechilled=$scope.productInfo.chilled;
+
+			if(isInCart!==false){
+
+				$scope.productInfo.servechilled = isInCart.getLastServedAs();
+
+			}
+
+			$scope.addToWishlist = function(){
+
+				alcoholWishlist.add($scope.productInfo._id).then(function(response) {
+						
+						if(response.success){			
+
+							$scope.isInwishList = alcoholWishlist.getProductById($scope.productInfo._id);
+
+						}
+
+
+					}, function(error) {
+
+						var toast = $mdToast.simple()
+							.textContent(error.message)
+							.action('OK')
+							.highlightAction(false)
+							.position("top right");
+
+						$mdToast.show(toast).then(function(response) {
+							if ( response == 'ok' ) {
+								$('#login').modal('show');
+							}
+						});
+						
+
+					});
+			}
 
 			$scope.setPrices = function(localpro){
 
@@ -541,11 +571,12 @@ AlcoholDelivery.directive('sideBar', function() {
 	return {
 		restrict : "E",
 		replace: true,
+		priority: 99,
 		templateUrl: function(elem, attr){
 			return '/templates/partials/addToCartBtn.html';
 		},
 		scope: {
-			product:'=',			
+			product:'=',
 		},
 		controller: function($scope,$rootScope,$element,$timeout,$http,CartSession,alcoholCart){
 			
@@ -553,15 +584,56 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.addMoreCustom = false;
 			$scope.element = $element;
 			
-			$scope.product.quantitycustom = 1;
+			$scope.product.qChilled = 0;
+			$scope.product.qNChilled = 0;
+
+			var isInCart = alcoholCart.getProductById($scope.product._id);
+
+			if(isInCart!==false){
+
+				$scope.isInCart = true;
+				$scope.product.qChilled = isInCart.getRQuantity('chilled');
+				$scope.product.qNChilled = isInCart.getRQuantity('nonchilled');
+
+			}
+
+			$scope.maxQuantity = $scope.product.quantity;
+
+			var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
+
+			if(available<0){
+				
+				$scope.overQunatity = true;
+				$scope.product.qNChilled = $scope.product.qNChilled + available;				
+
+			}
+
+			var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
+
+			if(available<0){
+				
+				$scope.product.qChilled = $scope.product.qChilled + available;
+
+			}
+			
+			$scope.$watchGroup(['product.qNChilled','product.qChilled','maxQuantity'],
+						function(newValue, oldValue) {
+
+							$scope.updateQuantity();
+
+						},true
+					);
+
+			$scope.updateQuantity = function(){
+
+				$scope.product.chilledMaxQuantity = $scope.maxQuantity - $scope.product.qNChilled;
+				$scope.product.nonChilledMaxQuantity = $scope.maxQuantity - $scope.product.qChilled;
+				$scope.tquantity = parseInt($scope.product.qNChilled)+parseInt($scope.product.qChilled);
+
+			}
+
 
 			$scope.addtocart = function(){
-
-				// $timeout(function() {
-				// 	timer = $interval(function() {
-				// 		scope.increment();
-				// 	}, scope.stepInterval);
-				// }, scope.stepIntervalDelay);
 
 				if(typeof $scope.proUpdateTimeOut!=="undefined"){
 					$timeout.cancel($scope.proUpdateTimeOut);
@@ -569,7 +641,12 @@ AlcoholDelivery.directive('sideBar', function() {
 				
 				$scope.proUpdateTimeOut = $timeout(function(){
 
-					alcoholCart.addItem($scope.product._id,$scope.product.quantitycustom,$scope.product.servechilled);
+					if($scope.product.servechilled){
+						alcoholCart.addItem($scope.product._id,$scope.product.qChilled,$scope.product.servechilled);
+					}else{
+						alcoholCart.addItem($scope.product._id,$scope.product.qNChilled,$scope.product.servechilled);
+					}
+
 
 					if($scope.product.quantitycustom==0){
 						$scope.isInCart = false;
@@ -583,20 +660,25 @@ AlcoholDelivery.directive('sideBar', function() {
 			};
 
 			$scope.addCustom = function(){
-								
+
 				$scope.activeAddToCart();
 
 			};
 
 			$scope.activeAddToCart = function() {
 
-				$scope.isInCart = true;
 				$scope.addMoreCustom = false;
 
 				$timeout(function(){
 					$element.find(".addmore-count").animate({ top: "0px"},300);
 				}, 100);
 
+				if($scope.product.servechilled){
+					$scope.product.qChilled = 1;
+				}else{
+					$scope.product.qNChilled = 1;
+				}
+								
 				$scope.addtocart();
 
 			};
@@ -661,4 +743,88 @@ console.log(isChild);
       });
     }
   }
-});
+}).directive('outOfStock',[function(){
+	return {
+		restrict : "E",
+		replace: true,
+		templateUrl: function(elem, attr){
+			return '/templates/partials/outOfStock.html';
+		},
+		scope: {
+			product:'=',			
+		},
+		controller: function($scope,$rootScope,$http,$mdToast,$document,UserService,$log){
+			
+			$scope.nlabel = 'Notify Me';
+
+			$scope.showCustomToast = function() {
+
+				$scope.nlabel = 'Wait..';
+
+				UserService.GetUser().then(
+
+					function(result) {
+
+						if(result.auth===false){
+							$scope.nlabel = 'Notify Me';
+							$('#login').modal('show');
+
+						}else{
+							
+
+							$http.post('/user/notifyme',{pid:$scope.product._id}).success(function(){
+								$scope.showPopover(result);
+							}).error(function(){
+								$scope.nlabel = 'Notify Me';
+							});
+						}
+
+					}
+				);
+			};	
+
+
+			$scope.showPopover = function(result){
+				$mdToast.show({			      
+			      controller:function($scope){
+			      	$scope.user = result;
+			      	$scope.closeToast = function(){
+			      		$mdToast.hide();
+			      	}
+			      },
+			      templateUrl: '/templates/toast-tpl/notify-template.html',
+			      parent : $document[0].querySelector('#toastBounds'),			      
+			      //parent : $document[0].querySelector('nav'),
+			      position: 'top center',
+			      hideDelay:6000
+			    });
+
+				$scope.nlabel = 'Notify Me';
+			};
+
+		}
+	}
+}]).directive('notAvailable',[function(){
+	return {
+		restrict : "E",
+		replace: true,
+		templateUrl: function(elem, attr){
+			return '/templates/partials/available-tag.html';
+		},		
+		scope: {
+			product:'=',			
+		},
+		controller: function($scope,$rootScope,$log){
+
+			$scope.addDays = function(days,mins){
+				var curDate = new Date();				
+				curDate.setHours(0,0,0,0);
+				curDate.setDate(curDate.getDate() + days);
+				return curDate.setMinutes(mins);								
+			}
+
+			$scope.availDate = $scope.addDays($scope.product.availabilityDays,$scope.product.availabilityTime);
+
+		}
+	}
+}]);

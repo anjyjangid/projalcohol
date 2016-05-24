@@ -157,18 +157,18 @@ class UserController extends Controller
 
         $validator = Validator::make($inputs, [
             'current' => 'required|same:old',
-            'new' => 'required|digits_between:6,12|different:current',
+            'new' => 'required|between:6,12|different:current',
             'confirm' => 'required|same:new',            
         ],[                      
            'current.same' => 'Incorrect current password.',
-           'new.digits_between' => 'password must be between 6 to 12 digits'
+           'new.digits_between' => 'password must be between 6 to 12 characters'
         ]);
 
         $validatorForFbLogin = Validator::make($inputs, [
-            'new' => 'required|digits_between:6,12|different:current',
+            'new' => 'required|between:6,12|different:current',
             'confirm' => 'required|same:new',            
         ],[                      
-           'new.digits_between' => 'password must be between 6 to 12 digits'
+           'new.digits_between' => 'password must be between 6 to 12 characters'
         ]);
 
         $return = array("success"=>false,"message"=>"","data"=>"");
@@ -245,7 +245,19 @@ class UserController extends Controller
         return response($userLogged, 200);
     }
 
+    public function postNotifyme(Request $request){
 
+        $param = $request->all();
+
+        $userLogged = Auth::user('user');
+
+        $user = User::find($userLogged->_id);
+
+        $user->push('productAddedNotification',$param['pid'],true);        
+
+        return response ($user,200);
+
+    }
 
 
 }
