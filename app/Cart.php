@@ -68,22 +68,22 @@ class Cart extends Moloquent
 			"service" => [
 				"express" => [
 					"status" => false,
-					"charges" => $services['express_delivery']['value']
+					"charges" => null
 				],
 				"smoke" => [
 					"status" => false,
-					"charges" => $services['cigratte_services']['value']
+					"charges" => null
 				],
 				"delivery" => [
 					"free" => false,
-					"charges" => $services['non_free_delivery']['value'],
-					"mincart" => $services['minimum_cart_value']['value'],
+					"charges" => null,
+					"mincart" => null
 				],
 			],
 			"discount" => [
 				"nonchilled" => [
 					"status" => false,
-					"exemption" => $services['non_chilled_delivery']['value']
+					"exemption" => null
 				]
 			],
 			"timeslot" => [
@@ -103,7 +103,7 @@ class Cart extends Moloquent
 		];
 
 
-		$cart = self.setServices($cart);
+		$cart = self::setServices($cart);
 
 		try{
 			

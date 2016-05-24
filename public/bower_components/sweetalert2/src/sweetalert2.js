@@ -15,12 +15,14 @@
       exports = module.exports = mod;
     }
 
-    exports['default'] = mod;
+    exports.default = mod;
   } else {
     factory(root);
   }
 }(typeof window !== 'undefined' ? window : this, function(window) {
   'use strict';
+
+  var swalPrefix = 'swal2-';
 
   var prefix = function(items) {
     var result = {};
@@ -30,7 +32,6 @@
     return result;
   };
 
-  var swalPrefix = 'swal2-';
   var swalClasses = prefix([
     'container', 'modal', 'overlay', 'close', 'content', 'spacer', 'confirm',
     'cancel', 'icon', 'image', 'input', 'select', 'radio', 'checkbox', 'textarea',
@@ -184,11 +185,33 @@
       elem.style.display = 'block';
       var last = +new Date();
       var tick = function() {
-        elem.style.opacity = +elem.style.opacity + (new Date() - last) / 100;
+        var newOpacity = +elem.style.opacity + (new Date() - last) / 100;
+        elem.style.opacity = (newOpacity > 1) ? 1 : newOpacity;
         last = +new Date();
 
         if (+elem.style.opacity < 1) {
           setTimeout(tick, interval);
+        }
+      };
+      tick();
+    }
+  };
+
+  var fadeOut = function(elem, interval) {
+    if (+elem.style.opacity > 0) {
+      interval = interval || 16;
+      var opacity = elem.style.opacity;
+      var last = +new Date();
+      var tick = function() {
+        var change = new Date() - last;
+        var newOpacity = +elem.style.opacity - change / (opacity * 100);
+        elem.style.opacity = newOpacity;
+        last = +new Date();
+
+        if (+elem.style.opacity > 0) {
+          setTimeout(tick, interval);
+        } else {
+          _hide(elem);
         }
       };
       tick();
@@ -238,9 +261,29 @@
     }
   };
 
+  var animationEndEvent = (function() {
+    var testEl = document.createElement('div'),
+      transEndEventNames = {
+        'WebkitAnimation': 'webkitAnimationEnd',
+        'MozAnimation': 'animationend',
+        'OAnimation': 'oAnimationEnd oanimationend',
+        'msAnimation': 'MSAnimationEnd',
+        'animation': 'animationend'
+      };
+    for (var i in transEndEventNames) {
+      if (transEndEventNames.hasOwnProperty(i) && 
+        testEl.style[i] !== undefined) {
+        return transEndEventNames[i];
+      }
+    }
+
+    return false;
+  })();
+
   // Remember state in cases where opening and handling a modal will fiddle with it.
   var previousDocumentClick;
   var previousWindowKeyDown;
+  var previousActiveElement;
   var lastFocusedButton;
 
   // Reset the page to its previous state
@@ -248,8 +291,8 @@
     var modal = getModal();
     window.onkeydown = previousWindowKeyDown;
     document.onclick = previousDocumentClick;
-    if (window.previousActiveElement) {
-      window.previousActiveElement.focus();
+    if (previousActiveElement) {
+      previousActiveElement.focus();
     }
     lastFocusedButton = undefined;
     clearTimeout(modal.timeout);
@@ -454,6 +497,7 @@
         if (params.inputPlaceholder) {
           var placeholder = document.createElement('option');
           placeholder.innerHTML = params.inputPlaceholder;
+          placeholder.value = '';
           placeholder.disabled = true;
           placeholder.selected = true;
           select.appendChild(placeholder);
@@ -586,7 +630,7 @@
     addClass(modal, 'show-swal2');
     removeClass(modal, 'hide-swal2');
 
-    window.previousActiveElement = document.activeElement;
+    previousActiveElement = document.activeElement;
 
     addClass(modal, 'visible');
   };
@@ -785,15 +829,18 @@
           case 'click':
             // Clicked 'confirm'
             if (targetedConfirm && modalIsVisible) {
-
               if (params.input) {
                 var inputValue = getInputValue();
+
                 if (params.inputValidator) {
+                  sweetAlert.disableInput();
                   params.inputValidator(inputValue, params.extraParams).then(
                     function() {
+                      sweetAlert.enableInput();
                       confirm(inputValue);
                     },
                     function(error) {
+                      sweetAlert.enableInput();
                       sweetAlert.showValidationError(error);
                     }
                   );
@@ -958,6 +1005,32 @@
         $cancelButton.disabled = true;
       };
 
+      sweetAlert.enableInput = function() {
+        var input = getInput();
+        if (input.type === 'radio') {
+          var radiosContainer = input.parentNode.parentNode;
+          var radios = radiosContainer.querySelectorAll('input');
+          for (var i = 0; i < radios.length; i++) {
+            radios[i].disabled = false;
+          }
+        } else {
+          input.disabled = false;
+        }
+      };
+
+      sweetAlert.disableInput = function() {
+        var input = getInput();
+        if (input.type === 'radio') {
+          var radiosContainer = input.parentNode.parentNode;
+          var radios = radiosContainer.querySelectorAll('input');
+          for (var i = 0; i < radios.length; i++) {
+            radios[i].disabled = true;
+          }
+        } else {
+          input.disabled = true;
+        }
+      };
+
       sweetAlert.showValidationError = function(error) {
         var $validationError = modal.querySelector('.' + swalClasses.validationerror);
         $validationError.innerHTML = error;
@@ -1010,21 +1083,18 @@
     }
 
     return modalDependant.apply(this, args);
-  };
+  }
 
   /*
    * Global function to close sweetAlert
    */
   sweetAlert.close = sweetAlert.closeModal = function() {
     var modal = getModal();
-    _hide(getOverlay());
-    _hide(modal);
     removeClass(modal, 'show-swal2');
     addClass(modal, 'hide-swal2');
     removeClass(modal, 'visible');
 
     // Reset icon animations
-
     var $successIcon = modal.querySelector('.' + swalClasses.icon + '.' + swalClasses.iconTypes.success);
     removeClass($successIcon, 'animate');
     removeClass($successIcon.querySelector('.tip'), 'animate-success-tip');
@@ -1038,6 +1108,19 @@
     removeClass($warningIcon, 'pulse-warning');
 
     resetPrevState();
+    
+    if (animationEndEvent && !hasClass(modal, 'no-animation')) {
+      modal.addEventListener(animationEndEvent, function swalCloseEventFinished() {
+        modal.removeEventListener(animationEndEvent, swalCloseEventFinished);
+        if (hasClass(modal, 'hide-swal2')) {
+          _hide(modal);
+          fadeOut(getOverlay(), 0);
+        }
+      });
+    } else {
+      _hide(modal);
+      fadeOut(getOverlay(), 0);
+    }
   };
 
   /*
@@ -1063,10 +1146,9 @@
    */
   sweetAlert.init = function() {
     if (typeof document === 'undefined') {
-      console.log("SweetAlert2 requires document to initialize");
+      console.log('SweetAlert2 requires document to initialize');
       return;
-    }
-    else if (document.getElementsByClassName(swalClasses.container).length) {
+    } else if (document.getElementsByClassName(swalClasses.container).length) {
       return;
     }
 
@@ -1160,19 +1242,10 @@
     if (document.readyState === 'complete' || document.readyState === 'interactive' && document.body) {
       sweetAlert.init();
     } else {
-      if (document.addEventListener) {
-        document.addEventListener('DOMContentLoaded', function onDomContentLoaded() {
-          document.removeEventListener('DOMContentLoaded', onDomContentLoaded, false);
-          sweetAlert.init();
-        }, false);
-      } else if (document.attachEvent) {
-        document.attachEvent('onreadystatechange', function onReadyStateChange() {
-          if (document.readyState === 'complete') {
-            document.detachEvent('onreadystatechange', onReadyStateChange);
-            sweetAlert.init();
-          }
-        });
-      }
+      document.addEventListener('DOMContentLoaded', function onDomContentLoaded() {
+        document.removeEventListener('DOMContentLoaded', onDomContentLoaded, false);
+        sweetAlert.init();
+      }, false);
     }
   })();
 
