@@ -302,7 +302,7 @@ class DealerController extends Controller
                         'threshold'=>'$threshold',
                         'dealers'=>'$dealers',
                         'sku'=>'$sku',
-                        'sum' => array(                            
+                        'sum' => array(
                             '$subtract' => array(                                
                                 array('$divide' => array('$quantity','$maxQuantity')),
                                 array('$divide' => array('$threshold','$maxQuantity'))                               

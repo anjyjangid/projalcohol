@@ -50,14 +50,25 @@ Route::group(['prefix' => 'cart'], function () {
 	Route::get('timeslots/{date}','CartController@getTimeslots');
 	Route::put('merge/{cartkey}','CartController@mergecarts');
 
+	Route::post('package/{cartkey}','CartController@createpackage');
+		
 	Route::delete('product/{key}/{type}','CartController@removeproduct');
+
+	Route::put('chilledstatus/{cartkey}','CartController@updateProductChilledStatus');
+	
 
 });
 
-
 Route::resource('cart', 'CartController');
 
+Route::resource('wishlist', 'WishlistController');
+
+
 Route::get('/order/summary/{id}','OrderController@getSummary');
+Route::get('/order/orders','OrderController@getOrders');
+Route::get('/order/{order}','OrderController@show');
+
+
 
 
 Route::resource('category', 'Admin\CategoryController');
@@ -190,6 +201,10 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 
 	Route::resource('brand', 'Admin\BrandController');
 	Route::controller('brand', 'Admin\BrandController');
+	
+	Route::resource('order', 'Admin\OrderController');
+	Route::controller('order', 'Admin\OrderController');
+
 
 	Route::post('getcustomers', 'Admin\CustomerController@customers');
 	/*Route::resource('package', 'Admin\PackageController');
@@ -240,8 +255,6 @@ Route::post('/auth', 'UserController@checkAuth');
 
 
 Route::get('/loggedUser', 'UserController@loggedUser');
-
-
 
 Route::put('/profile', 'UserController@update');
 Route::put('/password', 'UserController@updatepassword');

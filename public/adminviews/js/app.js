@@ -4,22 +4,22 @@ Metronic AngularJS App Main Script
 
 /* Metronic App */
 var MetronicApp = angular.module("MetronicApp", [
-    "ui.router", 
-    "ui.bootstrap", 
-    "oc.lazyLoad",  
-    "ngSanitize",
-    "ngCookies",
-    "19degrees.ngSweetAlert2",
-    "slugifier",
-    "angular-storage"
+	"ui.router", 
+	"ui.bootstrap", 
+	"oc.lazyLoad",  
+	"ngSanitize",
+	"ngCookies",
+	"19degrees.ngSweetAlert2",
+	"slugifier",
+	"angular-storage"
 ]); 
 
 
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
 MetronicApp.config(['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
-    $ocLazyLoadProvider.config({
-        // global configs go here
-    });
+	$ocLazyLoadProvider.config({
+		// global configs go here
+	});
 }]);
 
 /********************************************
@@ -139,173 +139,174 @@ MetronicApp.factory('settings', ['$rootScope', function($rootScope) {
     ];
 
     return settings;
+
 }]);
 
 
 MetronicApp.service('fileUpload', ['$http','$location', function ($http,$location) {
 
-    this.uploadFileToUrl = function(files,fields,uploadUrl){
+	this.uploadFileToUrl = function(files,fields,uploadUrl){
 
-        //var fd = new FormData();
-        var fd = objectToFormData(fields);            
-                
-        for (var file in files) {
-            fd.append(file, files[file]);
-        }
-        
-        // for (var field in fields) {
-        //     fd.append(field, fields[field]);
-        // }
-            
-        return $http.post(uploadUrl, fd, {
-            transformRequest: angular.identity,
-            headers: {'Content-Type': undefined}
+		//var fd = new FormData();
+		var fd = objectToFormData(fields);            
+				
+		for (var file in files) {
+			fd.append(file, files[file]);
+		}
+		
+		// for (var field in fields) {
+		//     fd.append(field, fields[field]);
+		// }
+			
+		return $http.post(uploadUrl, fd, {
+			transformRequest: angular.identity,
+			headers: {'Content-Type': undefined}
 
-        })
-        .success(function(response) {
-            
-            if(response.success){
-                $location.path("categories/list");
-                Metronic.alert({
-                    type: 'success',
-                    icon: 'check',
-                    message: response.message,
-                    container: '#info-message',
-                    place: 'prepend',
-                    closeInSeconds: 3
-                });
-                
-            }else{
+		})
+		.success(function(response) {
+			
+			if(response.success){
+				$location.path("categories/list");
+				Metronic.alert({
+					type: 'success',
+					icon: 'check',
+					message: response.message,
+					container: '#info-message',
+					place: 'prepend',
+					closeInSeconds: 3
+				});
+				
+			}else{
 
-                Metronic.alert({
-                    type: 'danger',
-                    icon: 'warning',
-                    message: response.message,
-                    container: '#info-message',
-                    place: 'prepend',
-                    closeInSeconds: 3
-                });
-            }
+				Metronic.alert({
+					type: 'danger',
+					icon: 'warning',
+					message: response.message,
+					container: '#info-message',
+					place: 'prepend',
+					closeInSeconds: 3
+				});
+			}
 
 
-        }).error(function(data, status, headers) {            
-            Metronic.alert({
-                type: 'danger',
-                icon: 'warning',
-                message: data,
-                container: '.portlet-body',
-                place: 'prepend',
-                closeInSeconds: 3
-            });
-        });
+		}).error(function(data, status, headers) {            
+			Metronic.alert({
+				type: 'danger',
+				icon: 'warning',
+				message: data,
+				container: '.portlet-body',
+				place: 'prepend',
+				closeInSeconds: 3
+			});
+		});
 
-    }
+	}
 }]);
 
 
 /* Setup App Main Controller */
 MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAlert', function($scope, $rootScope,$http,sweetAlert) {
 
-    $scope.$on('$viewContentLoaded', function() {
-        Metronic.initComponents(); // init core components        
-        //Layout.init(); //  Init entire layout(header, footer, sidebar, etc) on page load if the partials included in server side instead of loading with ng-include directive 
-    });
+	$scope.$on('$viewContentLoaded', function() {
+		Metronic.initComponents(); // init core components        
+		//Layout.init(); //  Init entire layout(header, footer, sidebar, etc) on page load if the partials included in server side instead of loading with ng-include directive 
+	});
 
-    $scope.changeStatus = function(id){
+	$scope.changeStatus = function(id){
 
-        var currObj = $("#"+id);
-        var table = $(currObj).data("table");
-        var status = parseInt($(currObj).data("status"));
+		var currObj = $("#"+id);
+		var table = $(currObj).data("table");
+		var status = parseInt($(currObj).data("status"));
 
-        $http.get("/admin/global/status/"+id+'/'+table+'/'+status).success(function(response) {
+		$http.get("/admin/global/status/"+id+'/'+table+'/'+status).success(function(response) {
 
-            Metronic.alert({
-                        type: 'success',
-                        icon: 'check',
-                        message: response.message,
-                        container: '#info-message',
-                        place: 'prepend',
-                        closeInSeconds: 3
-                    });
+			Metronic.alert({
+						type: 'success',
+						icon: 'check',
+						message: response.message,
+						container: '#info-message',
+						place: 'prepend',
+						closeInSeconds: 3
+					});
 
-            var currObj = $("#"+id);
+			var currObj = $("#"+id);
 
-            if(response.status){
+			if(response.status){
 
-                $(currObj).removeClass("label-success").addClass("label-warning").text("In-Active");
+				$(currObj).removeClass("label-success").addClass("label-warning").text("In-Active");
 
-            }else{
-                
-                $(currObj).removeClass("label-warning").addClass("label-success").text("Active");
-                
-            }
-    
-            $(currObj).data("status",response.status);
-            
+			}else{
+				
+				$(currObj).removeClass("label-warning").addClass("label-success").text("Active");
+				
+			}
+	
+			$(currObj).data("status",response.status);
+			
 
-        });
+		});
 
-    }
+	}
 
-    $scope.globalRemove = function(tab,tabForIds){
+	$scope.globalRemove = function(tab,tabForIds){
 
-        var checkedKeys = $(tabForIds).find("tbody").find("input:checkbox:checked").map(function () {
-                          return this.value;
-                        }).get();
-        
+		var checkedKeys = $(tabForIds).find("tbody").find("input:checkbox:checked").map(function () {
+						  return this.value;
+						}).get();
+		
 
-        if(!checkedKeys.length){
-        
-            Metronic.alert({
-                type: 'info',
-                icon: 'warning',
-                message: "Please select records you want to remove",
-                container: '#info-message',
-                place: 'prepend',
-                closeInSeconds: 3
-            });
+		if(!checkedKeys.length){
+		
+			Metronic.alert({
+				type: 'info',
+				icon: 'warning',
+				message: "Please select records you want to remove",
+				container: '#info-message',
+				place: 'prepend',
+				closeInSeconds: 3
+			});
 
-        }else{
-            sweetAlert.swal({   
-                title: "Are you sure?",   
-                text: "Your will not be able to recover them!",   
-                type: "warning",   
-                showCancelButton: true,   
-                confirmButtonColor: "#DD6B55",   
-                confirmButtonText: "Yes, remove !",
-                closeOnConfirm: false,
-                closeOnCancel: false
+		}else{
+			sweetAlert.swal({   
+				title: "Are you sure?",   
+				text: "Your will not be able to recover them!",   
+				type: "warning",   
+				showCancelButton: true,   
+				confirmButtonColor: "#DD6B55",   
+				confirmButtonText: "Yes, remove !",
+				closeOnConfirm: false,
+				closeOnCancel: false
 
-            },  function(isConfirm) {
-                    if (isConfirm) {
-                        
-                        $http.delete("/admin/"+tab+"/"+checkedKeys)
-                            .success(function(response) {
+			},  function(isConfirm) {
+					if (isConfirm) {
+						
+						$http.delete("/admin/"+tab+"/"+checkedKeys)
+							.success(function(response) {
 
-                                if(response.success){
+								if(response.success){
 
-                                    sweetAlert.swal("Deleted!", response.message, "success");
+									sweetAlert.swal("Deleted!", response.message, "success");
 
-                                    grid.getDataTable().ajax.reload();//var grid = new Datatable(); Datatable should be init like this with global scope
+									grid.getDataTable().ajax.reload();//var grid = new Datatable(); Datatable should be init like this with global scope
 
-                                }else{
+								}else{
 
-                                    sweetAlert.swal("Cancelled!", response.message, "error");
+									sweetAlert.swal("Cancelled!", response.message, "error");
 
-                                }
+								}
 
-                            })
-                            .error(function(data, status, headers) {
-                                sweetAlert.swal("Cancelled", data.message, "error");
-                            })
-                        
-                    } else {
-                        sweetAlert.swal("Cancelled", "Record(s) safe :)", "error");
-                    }
-                });
-        }
-    }
-    
+							})
+							.error(function(data, status, headers) {
+								sweetAlert.swal("Cancelled", data.message, "error");
+							})
+						
+					} else {
+						sweetAlert.swal("Cancelled", "Record(s) safe :)", "error");
+					}
+				});
+		}
+	}
+	
 }]);
 
 /***
@@ -316,81 +317,81 @@ initialization can be disabled and Layout.init() should be called on page load c
 
 /* Setup Layout Part - Header */
 MetronicApp.controller('HeaderController', ['$scope','$http', '$rootScope', function($scope,$http,$rootScope) {
-    $scope.$on('$includeContentLoaded', function() {
-        Layout.initHeader(); // init header
-    });
-    $http.get('admin/profile').success(function(response) {
-        $rootScope.user = response;
-        $rootScope.user.name = response.first_name+' '+response.last_name;
-    });
+	$scope.$on('$includeContentLoaded', function() {
+		Layout.initHeader(); // init header
+	});
+	$http.get('admin/profile').success(function(response) {
+		$rootScope.user = response;
+		$rootScope.user.name = response.first_name+' '+response.last_name;
+	});
 }]);
 
 /* Setup Layout Part - Sidebar */
 MetronicApp.controller('SidebarController', ['$scope', function($scope) {
-    $scope.$on('$includeContentLoaded', function() {
-        Layout.initSidebar(); // init sidebar
-    });
+	$scope.$on('$includeContentLoaded', function() {
+		Layout.initSidebar(); // init sidebar
+	});
 }]);
 
 /* Setup Layout Part - Quick Sidebar */
 MetronicApp.controller('QuickSidebarController', ['$scope', function($scope) {    
-    $scope.$on('$includeContentLoaded', function() {
-        setTimeout(function(){
-            QuickSidebar.init(); // init quick sidebar        
-        }, 2000)
-    });
+	$scope.$on('$includeContentLoaded', function() {
+		setTimeout(function(){
+			QuickSidebar.init(); // init quick sidebar        
+		}, 2000)
+	});
 }]);
 
 /* Setup Layout Part - Theme Panel */
 MetronicApp.controller('ThemePanelController', ['$scope', function($scope) {    
-    $scope.$on('$includeContentLoaded', function() {
-        Demo.init(); // init theme panel
-    });
+	$scope.$on('$includeContentLoaded', function() {
+		Demo.init(); // init theme panel
+	});
 }]);
 
 /* Setup Layout Part - Footer */
 MetronicApp.controller('FooterController', ['$scope', function($scope) {
-    $scope.$on('$includeContentLoaded', function() {
-        Layout.initFooter(); // init footer
-    });
+	$scope.$on('$includeContentLoaded', function() {
+		Layout.initFooter(); // init footer
+	});
 }]);
 
 
 
 MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", function($q, $timeout, $http, store) {
 
-    var currentUser = null;
+	var currentUser = null;
 
-    this.getUser = function(){
-        if (!currentUser) {
-            currentUser = store.get('AdminUser');
-        }
-        return currentUser;
-    };
+	this.getUser = function(){
+		if (!currentUser) {
+			currentUser = store.get('AdminUser');
+		}
+		return currentUser;
+	};
 
-    this.storeUser = function(data){
-        return store.set('AdminUser',data);
-    };
+	this.storeUser = function(data){
+		return store.set('AdminUser',data);
+	};
 
-    this.removeUser = function(){
-        return store.remove('AdminUser');
-    };
+	this.removeUser = function(){
+		return store.remove('AdminUser');
+	};
 
 }]);
 
 MetronicApp.controller('LoginController', ['$scope','AdminUserService', '$rootScope', '$http', function($scope, AdminUserService, $rootScope, $http) {    
-    
-    $scope.credentials = {};
-    $scope.errors = [];
+	
+	$scope.credentials = {};
+	$scope.errors = [];
 
-    $scope.adminlogin = function(){
-        $http.post('/admin/login',$scope.credentials).success(function(res){
-            AdminUserService.storeUser(res);
-            $scope.errors = [];
-        }).error(function(data, status, headers) {
-            $scope.errors = data;
-        });
-    };
+	$scope.adminlogin = function(){
+		$http.post('/admin/login',$scope.credentials).success(function(res){
+			AdminUserService.storeUser(res);
+			$scope.errors = [];
+		}).error(function(data, status, headers) {
+			$scope.errors = data;
+		});
+	};
 
 }]);
 
@@ -501,7 +502,53 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             templateUrl: "adminviews/views/customer/add.html",
             data: {pageSubTitle: 'Customer update'},
             controller:"CustomerUpdateController"                
-        })        
+        })    
+
+        .state("orders",{
+			url: "/orders",
+			templateUrl: "adminviews/views/orders/index.html",
+			data: {pageTitle: 'Orders'},
+			controller:"OrdersController",
+			resolve: {
+				deps: ['$ocLazyLoad',function($ocLazyLoad){
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: "#ng_load_plugins_before",
+						files: [
+
+							'assets/global/plugins/select2/select2.css',                             
+							'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
+							'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
+
+							'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+							'assets/global/plugins/select2/select2.min.js',
+							'assets/global/plugins/datatables/all.min.js',
+
+							'assets/global/scripts/datatable.js',
+							'adminviews/js/scripts/table-ajax.js',
+
+							'adminviews/js/models/orderModel.js',
+							'adminviews/js/controllers/OrdersController.js'
+
+						]
+					});
+				}]
+			}
+		})
+
+		.state("orders.list",{
+			url: "/list",
+			templateUrl: "adminviews/views/orders/list.html",
+			data: {pageSubTitle: 'Orders List'}
+		})
+		
+		.state("orders.show",{
+			url: "/{order}",
+			controller:"OrderShowController",
+			templateUrl: "adminviews/views/orders/show.html",
+			data: {pageSubTitle: 'Order View'}
+
+		})    
 
         .state('dealers', {
             url: "/dealers",
@@ -1071,94 +1118,95 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             data: {pageTitle: 'Administrator Login'},            
             controller: "LoginController"            
         });        
+
 }]);
 
 MetronicApp.filter("ucwords", function () {
-    return function (input){
-        if(input) { //when input is defined the apply filter
-           input = input.toLowerCase().replace(/\b[a-z]/g, function(letter) {
-              return letter.toUpperCase();
-           });
-        }
-        return input; 
-    }    
+	return function (input){
+		if(input) { //when input is defined the apply filter
+		   input = input.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+			  return letter.toUpperCase();
+		   });
+		}
+		return input; 
+	}    
 });
 
 MetronicApp.filter('isEmpty', [function() {
   return function(object) {
-    return angular.equals({}, object);
+	return angular.equals({}, object);
   }
 }]);
 
 /* Init global settings and run the app */
 MetronicApp.run(["$rootScope", "settings", "$state", function($rootScope, settings, $state) {
 
-    $rootScope.$on('$stateChangeStart', function(evt, to, params) {
-      if (to.redirectTo) {
-        evt.preventDefault();
-        $state.go(to.redirectTo, params)
-      }
-    });
+	$rootScope.$on('$stateChangeStart', function(evt, to, params) {
+	  if (to.redirectTo) {
+		evt.preventDefault();
+		$state.go(to.redirectTo, params)
+	  }
+	});
 
-    $rootScope.$state = $state; // state to be accessed from view    
+	$rootScope.$state = $state; // state to be accessed from view    
 
 }]);
 
 MetronicApp.service('myRequestInterceptor', ['$q', '$rootScope', '$log', 
 function ($q, $rootScope, $log) {    
-    'use strict'; 
-    return {
-        request: function (config) {            
-            return config;
-        },
-        requestError: function (rejection) {
-            return $q.reject(rejection);
-        },
-        response: function (response) {            
-            
-            return response;
-        },
-        responseError: function (rejection) {            
-            if(rejection.status == 401){
-                $state.go('/admin/login');
-            }
-            return $q.reject(rejection);
-        }
-    };
+	'use strict'; 
+	return {
+		request: function (config) {            
+			return config;
+		},
+		requestError: function (rejection) {
+			return $q.reject(rejection);
+		},
+		response: function (response) {            
+			
+			return response;
+		},
+		responseError: function (rejection) {            
+			if(rejection.status == 401){
+				$state.go('/admin/login');
+			}
+			return $q.reject(rejection);
+		}
+	};
 }]).config(['$httpProvider', function($httpProvider) {
-    $httpProvider.interceptors.push('myRequestInterceptor');
+	$httpProvider.interceptors.push('myRequestInterceptor');
 }]);
 
 var objectToFormData = function(obj, form, namespace) {
-    
+	
   var fd = form || new FormData();
   var formKey;
   
   for(var property in obj) {
-    if(obj.hasOwnProperty(property)) {
-      
-      if(namespace) {
-        formKey = namespace + '[' + property + ']';
-      } else {
-        formKey = property;
-      }
-        
-      // if the property is an object, but not a File,
-      // use recursivity.
-      if(typeof obj[property] === 'object' && !(obj[property] instanceof File)) {
+	if(obj.hasOwnProperty(property)) {
+	  
+	  if(namespace) {
+		formKey = namespace + '[' + property + ']';
+	  } else {
+		formKey = property;
+	  }
+		
+	  // if the property is an object, but not a File,
+	  // use recursivity.
+	  if(typeof obj[property] === 'object' && !(obj[property] instanceof File)) {
 
-        objectToFormData(obj[property], fd, formKey);
-        
-      } else {
-        
-        // if it's a string or a File object
-        fd.append(formKey, obj[property]);
-      }
-      
-    }
+		objectToFormData(obj[property], fd, formKey);
+		
+	  } else {
+		
+		// if it's a string or a File object
+		fd.append(formKey, obj[property]);
+	  }
+	  
+	}
   }
   
   return fd;
-    
+	
 };
 

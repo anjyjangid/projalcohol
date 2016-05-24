@@ -95,8 +95,10 @@
 							</div>
 							<div class="col-md-8 value">
 								<div class="profile-userbuttons">
-									<button ng-if="categoryData.cat_status == 1" type="button" class="btn green-haze btn-sm">Active</button>
-									<button ng-if="categoryData.cat_status == 0" type="button" class="btn green-haze btn-sm">In-Active</button>
+									<span ng-if="categoryData.cat_status == 1" class="label label-success">Active</span>
+									<span ng-if="categoryData.cat_status == 0" class="label label-success">In-Active</span>
+									
+									
 								</div>
 								
 							</div>

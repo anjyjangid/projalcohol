@@ -36,14 +36,15 @@
 .ttile-divcover.ng-scope > span{
 	color:#bbb;
 	
-	width:30%
+display: inline-block;
+    width: 67%;
 }
 .custmize-contntset{
 	margin-top:0;
 	padding-left:12px;
 		color:#676767;
 		width:30%;
-		display:inline-block
+		 float: left;
 }
 .margincbtm-packg{
 }
@@ -138,7 +139,8 @@
 }
 
 .pardqantitytexthead{
-	margin-top:20px
+	margin-top:20px;
+	font-weight:500
 }
 .party-alcholcover {
     margin-bottom: 70px;
@@ -547,6 +549,7 @@
 	overflow:hidden;
 	color:#656565;
 	font-size:13px;
+	font-weight: 500;
 }
 .moredetail-cocktailtext a{
 	 width:16%;
@@ -556,7 +559,8 @@
 	padding:0;
 	text-decoration:none;
 	float:left;
-	text-align:right
+	text-align:right;
+	margin: -1px 0 0;
 }
 .sub-headingcocktail{
 	width:100%;
@@ -624,14 +628,222 @@ text-overflow: ellipsis;
 }
 .media-left.cocktail-leftimgdiv img {
     width: 100%;
-	height:100%
+	height:100%;
+	border-radius:4px
 }
 
 .navbar-default .navbar-nav li{
 	list-style:none
 }
+.product_addcart, .product_addcart:hover{
+	padding-top:9px
+}
+
+/*cocktail-detail*/
+.cocktaildetail-cover .media-left{
+	width:350px;
+	height:350px;
+	float:left
+}
+.cocktaildetail-cover .media-left a{
+	width:100%;
+	float:left;
+	height:100%;
+}
+.cocktaildetail-cover .media-left img{
+	width:100%;
+	height:100%;
+	margin:0
+}
 
 
+.cocktail-detailcontent .media-heading{
+	width:100%;
+	float:left;
+	font-size:28px;
+	color:#666566;
+	font-weight:500;
+}
+.media-body.cocktail-detailcontent {
+    float: left;
+    padding-left: 26px;
+    width: 60%;
+}
+.amntrupee-clsdetail{
+	width:100%;
+	float:left;
+	color: #222122;
+    font-size: 28px;
+    font-weight: 600;
+	 margin-top: 0;
+}
+.cocktail-detailcontent .cocktaildetail-btmset{
+	margin-bottom:15px
+}
+.btn.product_addcart.addcart-detail {
+    color: #fff;
+    font-size: 14.4px;
+    font-weight: 600;
+	 margin-top: 25px;
+}
+.addcart-btncover{
+	width:100%;
+	float:left
+}
+.btn.product_addcart.addcart-detail > img {
+    float: left;
+    margin-left: 0;
+}
+.media-body p{
+	font-weight:500
+}
+.amnt-savingclr{
+	color:#aa00ff ;
+	font-size:22px;
+}
+
+.checkoutmiddlevlauediv.quantity-detailmarginrmv .pardqantitytexthead {
+    margin-top: 10px;
+}
+
+
+.checkoutmiddlevlauediv.quantity-detailmarginrmv {
+    margin-top: 0;
+}
+.cockdetail-leftposion{
+	padding-left:6px
+}
+
+.ingredintwidthset{
+
+	max-width:80%;
+	color: #676767;
+    float: left;
+    margin-top: 0;
+    padding-left: 12px;
+	padding-left:0
+}
+.ttile-divcover{
+	width:100%;
+}
+.cocktaildetail-coverdiv{
+	float: left;
+    margin-bottom: 13px;
+    margin-top: 30px;
+    width: 100%;
+}
+.cocktaildetail-coverdiv span{
+	float: left;
+	padding-left: 15px;
+}
+.cocktail-btmborder .byz.ng-scope{
+	border-bottom:none !important;
+	
+}
+
+.cocktail-btmborder  .byz::after, .cocktail-btmborder .byz::before{
+	 background-color: #cccccc;
+    background-image: url("../images/cocktail-accordian-close.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 22px;
+    margin-top:-2px;
+    width: 22px;
+	left:0
+	
+}
+.cocktail-btmborder   .byz::before {
+	background-image:url("../images/cocktail-accordian-open.png") ;
+	background-repeat:no-repeat;
+	background-position:center center;
+	transform:none !important; 
+	 background-color: #8d00d4;
+	
+}
+
+
+.marginset-detailpage{
+	margin-bottom:32px;
+}
+
+.cocktail-btmborder{
+	border-bottom:1px solid #e3e5e5
+
+}
+.cocktail-btmborder:last-child{
+	border-bottom:none
+}
+
+	.detail-productdiv {
+    height: 111px;
+    margin: 0 auto;
+    width: 111px;
+}
+.detail-productdiv > img {
+    height: 100%;
+    margin: 0;
+    width: 100%;
+}
+.btm-contetnrecipie{
+	width:100%;
+	border-bottom:1px solid #e3e5e5;
+}
+.recipie-titlediv{
+	width:100%;
+	float:left;
+	color: #000;
+    font-size: 15px;
+    font-weight: 500;
+	padding-left:40px
+}
+
+
+.cocktail-detailpagecover span{
+	color:#363535;
+	font-size:12px;
+}
+.product-cocktailtitle{
+	font-size:13px !important
+}
+.btm-contetnrecipie span{
+	font-size:13px;
+	color:#69696a;
+	width:100%;
+	display:inline-block;
+	 line-height: 1.7;
+	
+}
+
+.paddingrmvcls-cocktail{
+	padding-left:0
+}
+
+
+.cocktail-btmborder.reipie-marginset-titl .byz{
+	margin:12px 0 30px
+}
+
+.productdetailbrudcumcover.cocktail-detailpagecover.ng-scope {
+    margin-bottom: 55px;
+    margin-top: 10px;
+    padding:0
+   
+}
+
+.ingrdients-tabpadingrmv{
+	padding-top: 10px;
+padding-left: 29px;
+padding-right: 29px;
+	
+}
+
+.cocktail-detailpagecover  md-tabs-wrapper{
+padding-left: 25px;
+padding-right: 25px;
+}
+.cocktail-detailpagecover .md-tab{
+	padding:17px 24px
+}
 @media (min-width : 1024px) and (max-width : 1200px){
 }
 

@@ -1,0 +1,58 @@
+<a href="javascript:void(0)" class="cart_icon"></a>
+<div class="dropdown-menu currentorderpopup">
+	<!-- Current order Start-->
+
+	<div ng-if="alcoholCart.getTotalUniqueItems()">
+		<div class="currentorderpopuppinkbox">
+			<div class="currentorderpopuppinkboxleft">Current Order</div>
+			<div class="currentorderpopuppinkboxright"><a ui-sref="mainLayout.checkout.cart">view Cart</a></div>
+		</div>
+
+
+		<div>
+			<ul class="currentorderpopupul" ng-scrollbars ng-scrollbars-config="scrollconfig">
+			
+				<li ng-repeat="(id,product) in alcoholCart.getProducts()">
+					<div class="currentorderpopupulleft">{{product.product.name}}</div>
+					<div class="currentorderpopupulcenter">{{product.quantity}}</div>
+					<div class="currentorderpopupulright">{{product.getPrice()}}</div>
+				</li>
+
+				<li ng-repeat="(key,package) in alcoholCart.getPackages()">
+					<div class="currentorderpopupulleft">{{package._name}}</div>
+					<div class="currentorderpopupulcenter">{{package._quantity}}</div>
+					<div class="currentorderpopupulright">{{package._price}}</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div ng-if="!alcoholCart.getTotalUniqueItems()">
+		<div class="currentorderpopuppinkbox on-blank">
+			There is nothing in cart
+		</div>
+	</div>
+
+
+
+	<!--Current order End-->
+
+</div>
+
+<div class="productaddedpopup">
+	
+	<div class="additempopuppinkbox">
+			<div class="additempopuppinkboxleft">4</div>
+			<div class="additempopuppinkboxright">
+				items added to cart
+					<div class="additempopuppinkboxrightinner">View my cart</div>
+			</div>
+	</div>
+	<div class="additempopupwhitebox">
+		<div class="additempopupwhiteblacktext">25.78 more to FREE delivery</div>
+			<div class="additempopupwhitebarimgcover">
+				<div class="additempopupwhitebarcover"></div>
+				<img src="images/imgpsh_fullsize_small.png" />
+			</div>
+	</div>
+
+</div>

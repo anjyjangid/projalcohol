@@ -1,0 +1,40 @@
+<div class="breadcrumdiv">
+ <ol class="breadcrumb">
+	<li><a href="#">Home</a></li>
+	<li><a ui-sref="accountLayout.profile">My Account</a></li>
+	<li><a ui-sref="accountLayout.orders">Orders </a></li>
+	<li class="active">Order History</li>
+</ol>
+</div>
+
+<div class="titlecreidt">Order History</div>
+
+<div class="col-sm-12 order-history" ng-repeat="(key, order) in orders">
+	<div class="row order">
+		<div class="col-sm-6">
+
+			<div class="-key cursor-pointer" ui-sref="accountLayout.order({orderid:order._id.$id})">Order: {{order._id.$id}}</div>
+			<div class="-timeslot">Delivered on: {{ order.timeslot.datekey | deliveryDateSlug}} {{order.timeslot.slotslug}}</div>
+			<div class="-items">{{order.quantity}} Items</div>
+		</div>
+		<div class="col-sm-3">
+			<div class="-status">
+				STATUS 
+				<div class="deep-status">Delivered Successfully</div>
+			</div>
+		</div>
+		<div class="col-sm-3">
+			<div class="-rating">
+				<div class="-rating-status">THANKS FOR RATING!</div>
+				<div class="-rating-value">
+					<rating ng-model="order.rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null" state-on="'glyphicon-heart'" state-off="'glyphicon-heart-empty'"></rating>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div ng-if="!orders" class="emptycart">
+	<div>There is no order history</div>
+	<div><a class="checkouterback" ui-sref="mainLayout.index">back to shopping</a></div>
+</div>

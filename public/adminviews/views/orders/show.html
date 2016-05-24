@@ -1,0 +1,294 @@
+<div class="row">
+	<div class="col-md-12">
+		<!-- Begin: life time stats -->
+		<div class="portlet">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-shopping-cart"></i>Order #{{order._id}} <span class="hidden-480">
+					| {{order.dateslug}} </span>
+				</div>
+				<div class="actions">
+					<a ui-sref="orders.list" class="btn default yellow-stripe">
+					<i class="fa fa-angle-left"></i>
+					<span class="hidden-480">
+					Back </span>
+					</a>
+					
+				</div>
+			</div>
+			<div class="portlet-body">
+				<div class="tabbable">
+					
+					<div class="tab-content">
+						<div class="tab-pane active" id="tab_1">
+							<div class="row">
+								<div class="col-md-6 col-sm-12">
+									<div class="portlet yellow-crusta box">
+										<div class="portlet-title">
+											<div class="caption">
+												<i class="fa fa-cogs"></i>Order Details
+											</div>											
+										</div>
+										<div class="portlet-body">
+											<div class="row static-info">
+												<div class="col-md-5 name">
+													 Order #:
+												</div>
+												<div class="col-md-7 value">
+													 {{order._id}} <!-- <span class="label label-info label-sm">
+													Email confirmation was sent </span> -->
+												</div>
+											</div>
+											<div class="row static-info">
+												<div class="col-md-5 name">
+													 Order Date & Time:
+												</div>
+												<div class="col-md-7 value">
+													 {{order.dateslug}}
+												</div>
+											</div>
+											<div class="row static-info">
+												<div class="col-md-5 name">
+													 Order Status:
+												</div>
+												<div class="col-md-7 value">
+													
+													<span class="label label-success" ng-if="order.status==0">Under Process</span>
+													<span class="label label-success" ng-if="order.status==1">Dispatch</span>
+													<span class="label label-success" ng-if="order.status==2">Delivered</span>
+
+												</div>
+											</div>
+											<div class="row static-info">
+												<div class="col-md-5 name">
+													 Grand Total:
+												</div>
+												<div class="col-md-7 value">
+													 ${{order.total}}
+												</div>
+											</div>
+											<div class="row static-info">
+												<div class="col-md-5 name">
+													 Payment Information:
+												</div>
+												<div class="col-md-7 value">
+													 <span>C.O.D</span>
+												</div>
+											</div>
+
+											<div class="row static-info">
+												<div class="col-md-5 name">
+													 Delivery Type:
+												</div>
+												<div class="col-md-7 value">
+													<div ng-if="order.delivery.type==0">
+														Standard
+														<span ng-if="order.service.express.status">(Express)</span>
+													</div>
+													<div ng-if="order.delivery.type==1">Advance Order</div>
+												</div>
+											</div>
+
+											<div class="row static-info" ng-if="order.delivery.type==1">
+												<div class="col-md-5 name">
+													 Time Slot:
+												</div>
+												<div class="col-md-7 value">
+													 <span class="label label-danger">{{order.timeslot.dateslug}} / {{order.timeslot.slotslug}}</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6 col-sm-12">
+									<div class="portlet blue-hoki box">
+										<div class="portlet-title">
+											<div class="caption">
+												<i class="fa fa-cogs"></i>Customer Information
+											</div>
+											
+										</div>
+										<div class="portlet-body">
+											<div class="row static-info" ng-if="order.user.name">
+												<div class="col-md-5 name">
+													 Customer Name:
+												</div>
+												<div class="col-md-7 value">
+													 {{order.user.name}}
+												</div>
+											</div>
+											<div class="row static-info" ng-if="order.user.email">
+												<div class="col-md-5 name">
+													 Email:
+												</div>
+												<div class="col-md-7 value">
+													 {{order.user.email}}
+												</div>
+											</div>
+											
+											<div class="row static-info" ng-if="order.user.mobile_number">
+												<div class="col-md-5 name">
+													 Phone Number:
+												</div>
+												<div class="col-md-7 value">
+													 {{order.user.mobile_number}}
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">								
+								<div class="col-md-6 col-sm-12">
+									<div class="portlet red-sunglo box">
+										<div class="portlet-title">
+											<div class="caption">
+												<i class="fa fa-cogs"></i>Delivery Address
+											</div>
+											
+										</div>
+										<div class="portlet-body">
+											<div class="row static-info">
+												<div class="col-md-12 value">
+																										
+													 {{shipping.firstname}} {{shipping.lastname}}<br>
+													 {{shipping.street}}<br>													 
+													 {{shipping.postal}} Singapore<br>
+
+													 <div ng-if="shipping.instruction"><br>Address Instruction : <br>{{shipping.instruction}}</div>
+													 <span ng-if="order.delivery.contact">{{'T:' + order.delivery.contact}}</span><br>
+
+													 <div ng-if="order.delivery.instructions">
+													 	Delivery Instructions : {{order.delivery.instructions}}
+													 </div>
+
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12 col-sm-12">
+									<div class="portlet grey-cascade box">
+										<div class="portlet-title">
+											<div class="caption">
+												<i class="fa fa-cogs"></i>Shopping Cart
+											</div>
+											
+										</div>
+										<div class="portlet-body">
+											<div class="table-responsive">
+												<table class="table table-hover table-bordered table-striped">
+												<thead>
+												<tr>
+													<th>
+														 Product
+													</th>
+													<th>
+														 Status
+													</th>
+													<th>
+														 Original Price
+													</th>
+													<th>
+														 Price
+													</th>
+													<th>
+														 Quantity
+													</th>
+													<th>
+														 Total
+													</th>
+												</tr>
+												</thead>
+												<tbody>
+													<tr ng-repeat-start="(key, orderproduct) in order.products"></tr>
+													<tr ng-repeat="type in ['chilled','nonchilled']" ng-if="orderproduct[type].quantity>0">
+														<td width="52%">
+															<div class="orhistry2_td2procdtcvr" ui-sref="mainLayout.product({product:orderproduct.product._id})">
+																<div class="checkouter-td-right-text">
+																	<div class="orhistry2_td2proctext1">{{orderproduct.product.name}}</div>
+															 	</div> 
+															</div>
+														</td>
+														<td>{{type}}</td>
+														<td>{{orderproduct.product.price}}</td>
+														<td>{{orderproduct.product.price}}</td>
+														<td>{{orderproduct[type].quantity}}</td>
+														<td>{{10 * orderproduct[type].quantity}}</td>
+
+													</tr>
+													<tr ng-repeat-end></tr>
+												</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+								</div>
+								<div class="col-md-6">
+									<div class="well">
+										<div class="row static-info align-reverse">
+											<div class="col-md-8 name">
+												 Sub Total:
+											</div>
+											<div class="col-md-3 value">
+												 $1,124.50
+											</div>
+										</div>
+										<div class="row static-info align-reverse">
+											<div class="col-md-8 name">
+												 Shipping:
+											</div>
+											<div class="col-md-3 value" ng-if="!order.delivery.free">${{order.delivery.charges}}</div>
+											<div class="col-md-3 value" ng-if="order.delivery.free">Free</div>
+										</div>
+										<div class="row static-info align-reverse">
+											<div class="col-md-8 name">
+												 Grand Total:
+											</div>
+											<div class="col-md-3 value">
+												 $1,260.00
+											</div>
+										</div>
+										<div class="row static-info align-reverse">
+											<div class="col-md-8 name">
+												 Total Paid:
+											</div>
+											<div class="col-md-3 value">
+												 $1,260.00
+											</div>
+										</div>
+										<div class="row static-info align-reverse">
+											<div class="col-md-8 name">
+												 Total Refunded:
+											</div>
+											<div class="col-md-3 value">
+												 $0.00
+											</div>
+										</div>
+										<div class="row static-info align-reverse">
+											<div class="col-md-8 name">
+												 Total Due:
+											</div>
+											<div class="col-md-3 value">
+												 $1,124.50
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End: life time stats -->
+	</div>
+</div>

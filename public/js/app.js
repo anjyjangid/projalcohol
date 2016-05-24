@@ -10,11 +10,14 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'angular-loading-bar',
 	'ngAnimate',
 	'ngMaterial',
+	'ngScrollbars',
 	'ngMessages',
 	'ngTouch',
 	'ngMap',
 	'vAccordion',
-	'ngFacebook'	
+	'ngFacebook',
+	'alcoholCart.directives'
+
 ]);
 
 
@@ -46,7 +49,48 @@ AlcoholDelivery.filter('capitalize', function() {
 });
 
 
-AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', '$facebook', function($scope, $rootScope,$http,$facebook) {
+
+AlcoholDelivery.filter('deliveryDateSlug',function(){
+
+	return function(input,all){
+		var weeksName = new Array(7);
+		weeksName[0]=  "Sunday";
+		weeksName[1] = "Monday";
+		weeksName[2] = "Tuesday";
+		weeksName[3] = "Wednesday";
+		weeksName[4] = "Thursday";
+		weeksName[5] = "Friday";
+		weeksName[6] = "Saturday";
+
+		var monthsName = new Array(12);
+		monthsName[0]=  "January";
+		monthsName[1] = "February";
+		monthsName[2] = "March";
+		monthsName[3] = "April";
+		monthsName[4] = "May";
+		monthsName[5] = "June";
+		monthsName[6] = "July";
+		monthsName[7] = "August";
+		monthsName[8] = "September";
+		monthsName[9] = "Octomber";
+		monthsName[10] = "November";
+		monthsName[11] = "December";
+
+		var mili = input * 1000;
+		myDate = new Date(mili);
+
+		var day = myDate.getDate();
+		var year = myDate.getFullYear();
+		var mWeekName = weeksName[myDate.getDay()];
+		var mMonthName = monthsName[myDate.getMonth()];
+
+		daySlug = mWeekName+', '+day+' '+mMonthName+', '+year;
+		return daySlug;
+	}
+})
+
+
+AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', '$facebook', "$mdToast", function($scope, $rootScope,$http,$facebook,$mdToast) {
 
 	$scope.AppController = {};
 	$scope.featuredProduct = [];
@@ -204,7 +248,52 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', '$f
     };
     // YKB facebook end //
 
+
+    // Toast settings
+
+		var last = {
+			bottom: false,
+			top: true,
+			left: false,
+			right: true
+		};
+
+		$scope.toastPosition = angular.extend({},last);
+
+		$scope.getToastPosition = function() {
+
+			sanitizePosition();
+			return Object.keys($scope.toastPosition)
+				.filter(function(pos) { return $scope.toastPosition[pos]; })
+				.join(' ');
+
+		};
+
+		function sanitizePosition() {
+			var current = $scope.toastPosition;
+			if ( current.bottom && last.top ) current.top = false;
+			if ( current.top && last.bottom ) current.bottom = false;
+			if ( current.right && last.left ) current.left = false;
+			if ( current.left && last.right ) current.right = false;
+			last = angular.extend({},current);
+		}
+
+		$rootScope.showSimpleToast = function(msg) {
+			$mdToast.show(
+			$mdToast.simple()
+				.textContent(msg)
+				.position($scope.getToastPosition())
+				.hideDelay(300000)
+			);
+		};
+  
+    // Toast Settings
+
 }]);
+
+
+
+
 
 AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
 
@@ -339,7 +428,7 @@ AlcoholDelivery.controller('ProductsFeaturedController', ['$scope', '$rootScope'
 	
 }]);
 
-AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
+AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$state','$http','$stateParams','alcoholCart', function($scope, $rootScope,$state,$http,$stateParams,alcoholCart){
 
 	$rootScope.appSettings.layout.pageRightbarExist = false;
 
@@ -432,7 +521,65 @@ AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$
 	
 	$http.get("/getproductdetail", config).then(function(response) {
 
-	   $scope.product = $scope.setPrices(response.data);
+		$scope.product = $scope.setPrices(response.data);
+
+		var isInCart = alcoholCart.getProductById($scope.product._id);
+
+		$scope.product.qChilled = 1;
+		$scope.product.qNChilled = 1;
+		$scope.product.servechilled=$scope.product.chilled;
+
+		if(isInCart!==false){
+
+			$scope.isInCart = true;
+			$scope.product.qChilled = isInCart.getRQuantity('chilled');
+			$scope.product.qNChilled = isInCart.getRQuantity('nonchilled');
+			$scope.product.servechilled = isInCart.getLastServedAs();
+
+		}
+
+		$scope.maxQuantity = $scope.product.quantity;
+
+		var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
+
+		if(available<0){
+			
+			$scope.overQunatity = true;
+			$scope.product.qNChilled = $scope.product.qNChilled + available;				
+
+		}
+
+		var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
+
+		if(available<0){
+			
+			$scope.product.qChilled = $scope.product.qChilled + available;
+
+		}
+		
+		$scope.$watchGroup(['product.qNChilled','product.qChilled','maxQuantity'],
+					function(newValue, oldValue) {
+
+						$scope.updateQuantity();
+
+					},true
+				);
+
+		$scope.updateQuantity = function(){
+
+			$scope.product.chilledMaxQuantity = $scope.maxQuantity - $scope.product.qNChilled;
+			$scope.product.nonChilledMaxQuantity = $scope.maxQuantity - $scope.product.qChilled;
+			$scope.tquantity = parseInt($scope.product.qNChilled)+parseInt($scope.product.qChilled);
+
+		}
+
+		$scope.addtocart = function(){
+
+			alcoholCart.addItem($scope.product._id,$scope.product.qChilled,true);
+			alcoholCart.addItem($scope.product._id,$scope.product.qNChilled,false);
+
+		};
+
 
 	 }, function(response) {
 
@@ -531,48 +678,145 @@ AlcoholDelivery.controller('PasswordController',['$scope','$rootScope','$state',
 
 }]);
 
-AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$timeout','CartSession','UserService','sweetAlert',function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $timeout, CartSession, UserService, sweetAlert){
+AlcoholDelivery.controller('OrdersController',['$scope','$rootScope','$state','$http','sweetAlert','UserService',function($scope,$rootScope,$state,$http,sweetAlert,UserService){
+
+
+	$scope.rate = 3;
+	$scope.max = 5;
+	$scope.isReadonly = false;
+
+	$scope.hoveringOver = function(value) {
+		$scope.overStar = value;
+		$scope.percent = 100 * (value / $scope.max);
+	};
+
+	$scope.ratingStates = [
+
+		{stateOn: 'glyphicon-ok-sign', stateOff: 'glyphicon-ok-circle'},
+		{stateOn: 'glyphicon-star', stateOff: 'glyphicon-star-empty'},
+		{stateOn: 'glyphicon-heart', stateOff: 'glyphicon-ban-circle'},
+		{stateOn: 'glyphicon-heart'},
+		{stateOff: 'glyphicon-off'}
+
+	];	
+
+
+	$scope.order = [];
+    
+    $http.get("order/orders")
+			.success(function(response){
+
+				$scope.orders = response;
+				//$scope.shipping = UserService.currentUser.address[response.delivery.address.key];
+
+			})
+			.error(function(data, status, headers) {
+			   	if(data.auth===false){			   		
+			   		$state.go("mainLayout.checkout.cart");
+			   	}
+			})   
+
+}]);
+
+AlcoholDelivery.controller('OrderDetailController',['$scope','$rootScope','$state','$stateParams','$http','sweetAlert','UserService',function($scope,$rootScope,$state,$stateParams,$http,sweetAlert,UserService){
+
+	$scope.rate = 3;
+	$scope.max = 5;
+	$scope.isReadonly = false;
+	$scope.orderid = $stateParams.orderid;
+
+	$scope.hoveringOver = function(value) {
+		$scope.overStar = value;
+		$scope.percent = 100 * (value / $scope.max);
+	};
+
+	$scope.ratingStates = [
+
+		{stateOn: 'glyphicon-ok-sign', stateOff: 'glyphicon-ok-circle'},
+		{stateOn: 'glyphicon-star', stateOff: 'glyphicon-star-empty'},
+		{stateOn: 'glyphicon-heart', stateOff: 'glyphicon-ban-circle'},
+		{stateOn: 'glyphicon-heart'},
+		{stateOff: 'glyphicon-off'}
+
+	];	
+
+	$scope.order = [];
+    
+    $http.get("order/"+$stateParams.orderid)
+			.success(function(response){
+
+				$scope.order = response;
+				$scope.address = $scope.order.delivery.address;
+				
+				//$scope.shipping = UserService.currentUser.address[response.delivery.address.key];
+			})
+			.error(function(data, status, headers) {
+			   	
+			})   
+
+}]);
+
+AlcoholDelivery.controller('WishlistController',['$scope','$rootScope','$state','$stateParams','$http','sweetAlert','UserService','alcoholCart','alcoholWishlist',function($scope,$rootScope,$state,$stateParams,$http,sweetAlert,UserService,alcoholCart,alcoholWishlist){
+
+	$scope.alcoholCart = alcoholCart;
+	$scope.alcoholWishlist = alcoholWishlist;
+    
+   //  $http.get("order/"+$stateParams.orderid)
+			// .success(function(response){
+
+			// 	$scope.order = response;
+			// 	$scope.address = $scope.order.delivery.address;
+				
+			// 	//$scope.shipping = UserService.currentUser.address[response.delivery.address.key];
+			// })
+			// .error(function(data, status, headers) {
+			   	
+			// })
+
+}]);
+
+
+AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$timeout','CartSession','UserService','sweetAlert','alcoholCart','store',function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $timeout, CartSession, UserService, sweetAlert, alcoholCart,store){
 
 	//cart
-	$scope.cart = {
-					service : {
-						express : {
-							status:false,
-						},
-						smoke : {
-							status:false,
-						},
-						nonchilled:{
-							status:false,
-						},
-						total:0,
-					},
-					total:0,
-					nonchilled:false,
-					delivery : {
-						type:1, // 0 => Express; 1 => advance;
-						charges:0,
-						address:{
+	// $scope.cart = {
+	// 				service : {
+	// 					express : {
+	// 						status:false,
+	// 					},
+	// 					smoke : {
+	// 						status:false,
+	// 					},
+	// 					nonchilled:{
+	// 						status:false,
+	// 					},
+	// 					total:0,
+	// 				},
+	// 				total:0,
+	// 				nonchilled:false,
+	// 				delivery : {
+	// 					type:1, // 0 => Express; 1 => advance;
+	// 					charges:0,
+	// 					address:{
 
-							key:0,
-							detail:""
+	// 						key:0,
+	// 						detail:""
 							
-						},
-						contact:"",
-						instruction:0,
-						leaveatdoor:false,
-					},
-					timeslot : {
-						datekey:false,
-						slotkey:false,
-						slug:"",
-						slotslug:""
-					}
-				};
-	
-	
-
+	// 					},
+	// 					contact:"",
+	// 					instruction:0,
+	// 					leaveatdoor:false,
+	// 				},
+	// 				timeslot : {
+	// 					datekey:false,
+	// 					slotkey:false,
+	// 					slug:"",
+	// 					slotslug:""
+	// 				}
+	// 			};
+		
 	$scope.smoke = {
+
 		status:false,
 		detail:""
 	}
@@ -581,6 +825,16 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 		type:"cod",
 	}
 
+	store.init().then(
+
+		function(result) {
+
+			$scope.alcoholCart = alcoholCart;
+
+			$scope.cart = alcoholCart.$cart;
+			
+		}
+	);		
 
 	$scope.step = 1;
 
@@ -616,48 +870,48 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 		$scope.cart.delivery.type = type;
 	}
 
-	CartSession.GetDeliveryKey().then(
+	// CartSession.GetDeliveryKey().then(
 
-		function(result){
+	// 	function(result){
 			
-			$q.all([
-						$http.get("cart/services").then(function(response){
+	// 		$q.all([
+	// 					$http.get("cart/services").then(function(response){
 
-							$scope.services = response.data;							
-														
-						}),
-						$http.get("cart/"+result.deliverykey+"/").then(function(response){
+	// 						$scope.services = response.data;							
+
+	// 					}),
+	// 					$http.get("cart/"+result.deliverykey+"/").then(function(response){
 							
-							Object.assign($scope.cart, response.data);
+	// 						Object.assign($scope.cart, response.data);
 
-							$scope.cart.productslength = Object.keys($scope.cart.products).length;
+	// 						$scope.cart.productslength = Object.keys($scope.cart.products).length;
 
-							for(key in $scope.cart.products){
+	// 						for(key in $scope.cart.products){
 
-								$scope.$watch('cart.products["'+key+'"].quantity',
-									function(newValue, oldValue) {
-										$scope.updatePricing();
+	// 							$scope.$watch('cart.products["'+key+'"].quantity',
+	// 								function(newValue, oldValue) {
+	// 									$scope.updatePricing();
 
-									},true
-								);
+	// 								},true
+	// 							);
 
-							}
+	// 						}
 
 
-						}),
+	// 					}),
 									
-					]).then(function(){			
-						$scope.updatePricing();						
+	// 				]).then(function(){			
+	// 					$scope.updatePricing();						
 
-						$scope.$watch('cart.nonchilled',
-							function(newValue, oldValue) {							
-								$scope.deployCart();
-							},true
-						);
+	// 					$scope.$watch('cart.nonchilled',
+	// 						function(newValue, oldValue) {							
+	// 							$scope.deployCart();
+	// 						},true
+	// 					);
 
-					})
-		}
-	);
+	// 				})
+	// 	}
+	// );
 
 	$scope.deployCart = function(){
 		
@@ -734,18 +988,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 	}
 
-	$scope.setCartChilled = function(status){
-
-		if(typeof status !=="undefined"){
-			
-			$scope.cart.nonchilled = status;
-			$scope.updatePricing();
-
-		}else{
-			$scope.cart.nonchilled = $scope.isSingleProductChilled();
-		}
-		
-	}
+	
 
 	$scope.isSingleProductChilled = function(){
 
@@ -889,7 +1132,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 			CartSession.GetDeliveryKey().then(
 
-				function(response){						
+				function(response){
 
 					$http.put("/cart/"+response.deliverykey, {
 							"id":key,
@@ -904,7 +1147,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 			        		
 			        		switch(response.errorCode){
 								case "100":
-									$scope.cart.products[key].quantity = response.data.quantity;									
+									$scope.cart.products[key].quantity = response.data.quantity;
 								break;
 			        		}
 
@@ -954,7 +1197,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 				.error(function(data, status, headers) {
 				    sweetAlert.swal("Cancelled", data.message, "error");
 				})
-	}
+	};
 
   	
 }]);
@@ -1654,9 +1897,6 @@ AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$statePara
 
 
     });
-
-	
-
 	
 }]);
 
@@ -1754,6 +1994,7 @@ AlcoholDelivery.factory('catPricing', ["$q", "$timeout", "$rootScope", "$http", 
 
 		return d.promise;
 	};
+
 	return {
 		GetCategoryPricing: GetCategoryPricing,
 		categoryPricing : null
@@ -1761,7 +2002,6 @@ AlcoholDelivery.factory('catPricing', ["$q", "$timeout", "$rootScope", "$http", 
 	};
 
 }]);
-
 
 AlcoholDelivery.factory("UserService", ["$q", "$timeout", "$http", function($q, $timeout, $http) {
 
@@ -1887,10 +2127,13 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 
 }]);
 
-AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll){
+AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll','alcoholCart','sweetAlert', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll,alcoholCart,sweetAlert){
 	
 	$scope.errors = [];
 	
+	$scope.processing = false;
+	$scope.btnText = "ADD TO CART";
+
 	$rootScope.appSettings.layout.pageRightbarExist = false;
 
 	$rootScope.$on("$locationChangeSuccess", function(){
@@ -1906,6 +2149,9 @@ AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$
 	$scope.packages = [];
 	
 	$http.get('/package/packagedetail/'+$stateParams.type+'/'+$stateParams.id).success(function(response){
+
+		delete response.productlist;
+
 		$scope.packages = response;
 	});	
 
@@ -1916,7 +2162,7 @@ AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$
 	};
 
 	//PARTY PACKAGE CUSTOMISATION FUNCTION 
-	$scope.collapseCallback = function (index, id) {		
+	$scope.collapseCallback = function (index, id) {
 		
 		var totalseleted = 0;		
 		var packageItems = angular.copy($scope.packages.packageItems[index]);
@@ -1989,9 +2235,29 @@ AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$
 		
 	}
 
-	/*$scope.$on('accordionA:onReady', function () {	    	
+	$scope.addPackage = function(){
+		
+		$scope.processing = true;
+
+		alcoholCart.addPackage($stateParams.id,$scope.packages).then(function(response) {
+						
+						if(response.success){
+							
+							$scope.packages.unique = response.key;
+							$scope.processing = false;
+							$scope.btnText = "UPDATE CART";
+
+						}
+
+					}, function(error) {
+
+						console.error(error);
+						$scope.processing = false;
+
+					});
 			
-	});*/	  
+
+	}	
 
 }]);
 // /* Setup global settings */
@@ -2219,10 +2485,9 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								}]
 						}
 				})
-				
 
 				.state('mainLayout.checkout', {
-						abstract: true,						
+						abstract: true,
 						views : {
 
 							"" : {
@@ -2435,6 +2700,21 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						templateUrl: "/templates/account/credits.html",
 						controller:"CreditsController"
 				})
+				.state('accountLayout.orders', {
+						url: "/orders",
+						templateUrl: "/templates/account/orders.html",
+						controller:"OrdersController"
+				})
+				.state('accountLayout.wishlist', {
+						url: "/wishlist",
+						templateUrl: "/templates/account/wishlist.html",
+						controller:"WishlistController"
+				})
+				.state('accountLayout.order', {
+						url: "/order/{orderid}",
+						templateUrl: "/templates/account/order.html",
+						controller:"OrderDetailController"
+				})
 
 				.state('mainLayout.product', {
 						url: "/product/{product}",
@@ -2484,7 +2764,6 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 				.state('mainLayout.category', {
 						abstract : true,
-
 						views : {
 
 							'' : {
@@ -2585,7 +2864,8 @@ function ($q, $rootScope, $log) {
 }]);
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "appSettings", "catPricing","UserService", "$state", "$window", function($rootScope, settings, catPricing, UserService, $state, $window) {		
+AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "CartSession","catPricing","UserService", "$state", "$http", "$window","$mdToast",
+			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, CartSession, catPricing, UserService, $state, $http, $window, $mdToast) {
 
 	$rootScope.$state = $state; // state to be accessed from view
 
@@ -2624,8 +2904,6 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "catPricing","UserService", "$
 	});
 
 
-
-
 	(function(d, s, id) {
       var js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) return;
@@ -2633,9 +2911,69 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "catPricing","UserService", "$
       js.src = "//connect.facebook.net/en_US/sdk.js";
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
+
     $rootScope.$on('fb.load', function() {
       $window.dispatchEvent(new Event('fb.load'));
     });
+
+
+    // Cart synchronization
+	$rootScope.$on('alcoholCart:change', function(){
+				
+		//alcoholCart.$save();
+
+	});
+
+	$rootScope.$on('alcoholWishlist:itemRemoved', function(product){
+
+		$rootScope.showSimpleToast("Removed from wishlist !");
+
+	});
+
+	
+
+	store.init();
+	alcoholWishlist.init();
+
+
+
+	// CartSession.GetDeliveryKey().then(
+
+	// 	function(response){
+
+	// 		$http.get("cart/"+response.deliverykey+"/").then(
+
+	// 			function successCallback(successRes){
+	// 				console.log("asdasd");
+	// 				console.log(successRes);
+
+	// 				// if(response.status==200){
+						
+	// 				// 	alcoholCart.$restore(response.data);
+
+	// 				// }else{
+
+	// 				// 	alcoholCart.init();
+	// 				// 	alcoholCart.setServices();
+
+	// 				// }
+					
+	// 			},
+
+	// 			function errorCallback(errorRes){
+	// 				if(errorRes.status===400){
+
+	// 					alcoholCart.empty();
+	// 					window.location = window.location;
+
+	// 				}
+	// 			}
+
+	// 		)
+	// 	}
+
+	// )
+
 
 }]);
 

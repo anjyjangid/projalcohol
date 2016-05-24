@@ -1,0 +1,75 @@
+<div class="breadcrumdiv">
+	<ol class="breadcrumb">
+		<li><a href="#">Home</a></li>
+		<li><a href="#">My Account</a></li>
+		<li><a href="#">Account Settings</a></li>
+		<li class="active">Wish List</li>
+	</ol>
+</div>
+<div class="titlecreidt">Wish List</div>
+<div class="wishlist-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</div>
+
+<div class="checkoutmiddletable">           
+	<table class="table wislistborbtm">
+		<tbody>
+			<tr ng-repeat="(key, product) in alcoholWishlist.getList()" ng-init="product.cart = alcoholCart.getProductById(product._id)">
+				<td>
+					
+					<div class="orhistry2_td2procdtcvr">
+						
+						<span><img err-pro-src="" ng-src="products/i/200/{{product._original.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" /></span>
+
+						<div class="checkouter-td-right-text">
+							<div class="orhistry2_td2proctext1">{{product._name}}</div>
+							<div class="orhistry2_td2proctext2">{{product._original.shortDescription}}</div> 
+							<div class="orhistry2_td2proctext1 wishgaptop">{{settings.general.currency}} {{product._price}}</div>
+						</div>  
+					</div>
+				</td>
+
+				<td>
+					<div class="wishlist-tbledatecover">
+						<div class="wishlist-tbledate">Added {{product._addedSlug}}</div>
+						<div class="prod_addtocart">
+							
+							<add-to-cart-btn product="product"></add-to-cart-btn>
+
+							<!-- <input type="text" ng-model="cart.quantity" value="cartproduct[type]" min="0" max="{{cartproduct.product.quantity}}" ng-touch-spin on-increment="addtocart(cartproduct.product._id)" on-decrement="addtocart(cartproduct.product._id)"> -->
+
+							<!-- <div class="cartbtn">
+								<div class="addcart"><span></span>add to cart</div>
+								<div class="addmore">
+									<input id="addmore_count" type="text" value="" name="addmore_count">
+									<span class="addmorehere">add more</span>
+								</div>
+								<div class="addmanual">
+									<div class="relat">
+										<input id="addmore_val" name="" value="" type="text" />
+										<div class="addbuttton">add</div>
+									</div>
+								</div>
+							</div> -->
+						</div>
+
+						<div class="wishlist-tblestock" ng-if="product._isAvailable">In Stock</div>
+						<div class="wishlist-tblestock" ng-if="!product._isAvailable">Not In Stock</div>
+
+					</div>
+				</td>
+
+				<td> 
+
+					<a ng-click="alcoholWishlist.removeById(product._id)" class="checkoutmiddletabledeleteimg" href="javascript:void(0)"><i class="glyphicon glyphicon-trash"></i></a>
+
+				</td>
+			</tr>
+
+
+		</tbody>
+	</table>
+
+	<div class="wish-nextprvicvr">
+		<button type="button" class="wishprev"><span class="glyphicon glyphicon-menu-left"></span> Previous </button>
+		<button type="button" class="wishnext">Next <span class="glyphicon glyphicon-menu-right"></span></button>
+	</div>
+</div>
