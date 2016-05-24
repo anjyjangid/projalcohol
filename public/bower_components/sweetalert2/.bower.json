@@ -28,12 +28,12 @@
     "url": "git@github.com:limonte/sweetalert2.git"
   },
   "license": "MIT",
-  "version": "2.2.13",
-  "_release": "2.2.13",
+  "version": "3.0.1",
+  "_release": "3.0.1",
   "_resolution": {
     "type": "version",
-    "tag": "v2.2.13",
-    "commit": "785ca497ab73526e43c82ea8efdc1367d76c58ed"
+    "tag": "v3.0.1",
+    "commit": "2c5487ce9f5b3798fe4df1279b2affee08e7a15c"
   },
   "_source": "https://github.com/limonte/sweetalert2.git",
   "_target": ">=0.1.9",

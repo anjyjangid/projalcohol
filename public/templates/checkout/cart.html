@@ -94,7 +94,7 @@
 	<div class="checkouterwantfirst">
 	<button data-target="#Modal-dontmiss" data-toggle="modal" class="checkouterwantbutton" ng-class="{selected:cart.delivery.type==0}" ng-click="setdeliverytype(0)">I want this order Now!</button>
 	<span>(Standard 1 hour delivery)</span>
-	<button class="checkoutergitpackage">Gift Packaging</button>
+	<button class="checkoutergitpackage"  ng-click="showAlert($event)" >Gift Packaging</button>
 </div>
 	<div class="checkouterexprienceouter" ng-show="cart.delivery.type==0">
 
@@ -132,6 +132,7 @@
  </div>
 </div>
 
+    
 <div ng-if="1">
  <div class="checkoutcongratulationouter">
 	 <div class="checkout-congratulation-title">You qualify for special $250 promotion.</div>
@@ -165,3 +166,6 @@
  <button class="checkoutcheckoutnowbutton" ng-click="checkout()">Checkout Now</button>
 </div>
 </div>
+<md-button class="md-primary md-raised" ng-click="showAlert($event)"  >
+      Alert Dialog
+    </md-button>

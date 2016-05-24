@@ -12,18 +12,91 @@
 		<v-accordion id="accordionA" class="vAccordion--default" control="accordionA" onexpand="expandCallback(index, id)" oncollapse="collapseCallback(index, id)">
         <div class="partypackegescover"><img src="images/party_package.png" class="img-responsive" ></div>
 	        <v-pane id="{{ ::package._id }}" ng-repeat="package in packages">
-	          <v-pane-header id="{{ ::package._id }}-header" aria-controls="{{ ::package._id }}-content" class="bg-removepackage">
-	            <div style="position:relative;">
+	         <!-- <v-pane-header id="{{ ::package._id }}-header" aria-controls="{{ ::package._id }}-content" class="bg-removepackage">-->
+	            <div style="position:relative;" class="party-package-coverdiv">
+                <div class="left-party-content ">
                 	<!-- <img src="images/party_package1.png" /> -->
-					<img class="img-responsive" ng-src="packages/i/{{package.coverImage.source}}" err-src="http://placehold.it/930x300/{{($index+1)*100}}/?text=No+Image"/>
-					<div style="position: absolute;top: 0;width:100%;">
-						<p class="title-propertset"> {{package.title}}</p>
-						<p class="subtitl-propertset"> {{package.subTitle}} </p>
-						<p class="btmcontn-set"> {{package.description}}</p>
+					<!--<img class="img-responsive" ng-src="packages/i/{{package.coverImage.source}}" err-src="http://placehold.it/930x300/{{($index+1)*100}}/?text=No+Image"/>-->
+                  <div class="party-topimgdiv">  <img src="images/party_package1.png" /></div>
+					<div style="width:100%; " class="part-content-btm-desc">
+						<div class="title-propertset"> {{package.title}}</div>
+						<div class="subtitl-propertset"> {{package.subTitle}} </div>
+						<div class="btmcontn-set"> <div class="package-desc"> <!--An apple martini is a cocktail containing vodka and...--> {{package.description}}</div><a href="">More Detail</a></div>
+                        <div class="party-leftposion">
+			<div class="package-amtcover"><p class="packtiti-rightset">Package Amount</p>
+	    	<h3 class="amntrupee-clsdetail ng-binding">$222.00</h3></div>
+            
+	    	<div class="saving-amount-cover"><p class="packtiti-rightset">Savings</p>
+	    	<p class="packtiti-rightset ">$1.69</p></div>
+            
+			<div class="add-cart-cover">   <a class="btn product_addcart" ui-sref="mainLayout.packagedetail({type:'party',id:package._id})">Add to Cart</a></div>
+            </div>
+            			<div class="package-contain-cover">
+                        <div class="package-contain-titl">Package contain</div>
+                        <div class="package-inner-cover5">
+                    <div class="ttile-divcover-main ng-scope">
+                 <h5 class="custmize-contntset ng-binding">2 Cartons of Beer</h5><span> Carlsberg</span></div>
+                      
+                      <div class="ttile-divcover-main ng-scope">
+	                  <h5 class="custmize-contntset ng-binding">1 Bottle of Coniac</h5><span>Marvell V.S.O.P</span></div>
+                      
+                      <div class="ttile-divcover-main ng-scope">
+	                  <h5 class="custmize-contntset ng-binding">1 Vodka</h5><span>42 Below</span></div>
+                      
+                      <div class="ttile-divcover-main ng-scope">
+	                  <h5 class="custmize-contntset ng-binding">5 Bottles of Mixer </h5><span>2x Pokka Green Tea, 3x Original...</span></div>
+                      
+                     
+
+
+
+	                </div>
+                        </div>
 					</div>
-				</div>	            
-	          </v-pane-header>
-	          <v-pane-content id="{{ ::package._id }}-content" aria-labelledby="{{ ::package._id }}-header" class="xyz">
+				</div>
+                <div class="left-party-content right-party-content">
+                	<!-- <img src="images/party_package1.png" /> -->
+					<!--<img class="img-responsive" ng-src="packages/i/{{package.coverImage.source}}" err-src="http://placehold.it/930x300/{{($index+1)*100}}/?text=No+Image"/>-->
+                  <div class="party-topimgdiv">  <img src="images/party_package1.png" /></div>
+					<div style="width:100%; " class="part-content-btm-desc">
+						<div class="title-propertset"> {{package.title}}</div>
+						<div class="subtitl-propertset"> {{package.subTitle}} </div>
+						<div class="btmcontn-set"> <div class="package-desc"> <!--An apple martini is a cocktail containing vodka and...--> {{package.description}}</div><a href="">More Detail</a></div>
+                        <div class="party-leftposion">
+			<div class="package-amtcover"><p class="packtiti-rightset">Package Amount</p>
+	    	<h3 class="amntrupee-clsdetail ng-binding">$222.00</h3></div>
+            
+	    	<div class="saving-amount-cover"><p class="packtiti-rightset">Savings</p>
+	    	<p class="packtiti-rightset ">$1.69</p></div>
+            
+			<div class="add-cart-cover">   <a class="btn product_addcart" ui-sref="mainLayout.packagedetail({type:'party',id:package._id})">Add to Cart</a></div>
+            </div>
+            			<div class="package-contain-cover">
+                        <div class="package-contain-titl">Package contain</div>
+                        <div class="package-inner-cover5">
+                    <div class="ttile-divcover-main ng-scope">
+                 <h5 class="custmize-contntset ng-binding">2 Cartons of Beer</h5><span> Carlsberg</span></div>
+                      
+                      <div class="ttile-divcover-main ng-scope">
+	                  <h5 class="custmize-contntset ng-binding">1 Bottle of Coniac</h5><span>Marvell V.S.O.P</span></div>
+                      
+                      <div class="ttile-divcover-main ng-scope">
+	                  <h5 class="custmize-contntset ng-binding">1 Vodka</h5><span>42 Below</span></div>
+                      
+                      <div class="ttile-divcover-main ng-scope">
+	                  <h5 class="custmize-contntset ng-binding">5 Bottles of Mixer </h5><span>2x Pokka Green Tea, 3x Original...</span></div>
+                      
+                     
+
+
+
+	                </div>
+                        </div>
+					</div>
+				</div>
+                	            </div>
+	        <!--  </v-pane-header>-->
+	          <!--<v-pane-content id="{{ ::package._id }}-content" aria-labelledby="{{ ::package._id }}-header" class="xyz">
 	            <p class="customize-propertyset">Customise your own package</p>
 	            <v-accordion id="nestedAccordionA" style="width:70%;float: left; margin-bottom:0" oncollapse="validateSelection(index, id)">
 	              <v-pane id="{{$index}}" ng-repeat="packageItem in package.packageItems" ng-disabled="subpane.isDisabled" >
@@ -41,7 +114,7 @@
 									<h5 class="item-btmtitle">{{ pcprod.name }}</h5>
 									<!-- <h5>Before Price : <b>{{pcprod.sprice}}</b></h5>
 									<h5>After Price : <b>{{pcprod.cprice}}</b></h5> -->
-								</div>
+								<!--</div>
 								<img width="100" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{pcprod.imageFiles[0].source}}">	
 								
 								<div class="checkoutmiddlevlauediv" style="float: none;">
@@ -69,7 +142,7 @@
 	            		<a class="btn product_addcart" ui-sref="mainLayout.packagedetail({type:'party',id:package._id})">Add to Cart</a>	            		
 	            	</div>
 	            </div>
-	          </v-pane-content>
+	          </v-pane-content>-->
 	        </v-pane>
       </v-accordion>		
 	</div>

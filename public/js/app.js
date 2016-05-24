@@ -655,6 +655,28 @@ AlcoholDelivery.controller('OrderDetailController',['$scope','$rootScope','$stat
 
 AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$timeout','CartSession','UserService','sweetAlert',function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $timeout, CartSession, UserService, sweetAlert){
 
+	$scope.showAlert = function(ev) {     
+	    $mdDialog.show(
+	    	{	
+				controller: function($scope, $rootScope,$mdDialog, $http) {
+
+					$scope.hide = function() {
+						$mdDialog.hide();
+					};
+				},	
+				templateUrl: '/templates/partials/gift-packaging-popup.html',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: true			
+			}
+		)
+	};
+  
+  
+  
+  
+  
+
 	//cart
 	$scope.cart = {
 					service : {
