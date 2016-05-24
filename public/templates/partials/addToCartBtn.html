@@ -5,8 +5,8 @@
 	
 		<div class="addcart ng-scope" ng-click="activeAddToCart()" ng-if="product.qChilled<1 && !addMoreCustom" role="button" tabindex="0"><span></span>add to cart</div>
 
-		<div class="addmore ng-scope" ng-if="product.qChilled && !addMoreCustom">
-			<input type="text" ng-model="product.qChilled" value="product.qChilled" min="0" max="{{chilledMaxQuantity}}" ng-touch-spin on-increment="addtocart()" on-decrement="addtocart()" vertical="true">
+		<div class="addmore ng-scope" ng-if="product.qChilled>0 && !addMoreCustom">
+			<input type="text" ng-model="product.qChilled" value="product.qChilled" min="0" mquantity="product.chilledMaxQuantity" ng-touch-spin on-increment="addtocart()" on-decrement="addtocart()" vertical="true">
 			<span class="addmorehere" ng-click="activeAddToCartCustom()" role="button" tabindex="0">add more</span>
 		</div>
 		<div class="addmanual" ng-if="addMoreCustom">
@@ -21,10 +21,10 @@
 	<!-- Add to cart button to add non chilled product start -->
 	<div class="cartbtn" ng-if="!product.servechilled">
 	
-		<div class="addcart ng-scope" ng-click="activeAddToCart()" ng-if="!product.qNChilled && !addMoreCustom" role="button" tabindex="0"><span></span>add to cart</div>
+		<div class="addcart ng-scope" ng-click="activeAddToCart()" ng-if="product.qNChilled<1 && !addMoreCustom" role="button" tabindex="0"><span></span>add to cart</div>
 
-		<div class="addmore ng-scope" ng-if="product.qNChilled && !addMoreCustom">
-			<input type="text" ng-model="product.qNChilled" value="product.qNChilled" min="0" max="{{nonChilledMaxQuantity}}" ng-touch-spin on-increment="addtocart()" on-decrement="addtocart()" vertical="true">
+		<div class="addmore ng-scope" ng-if="product.qNChilled>0 && !addMoreCustom">
+			<input type="text" ng-model="product.qNChilled" value="product.qNChilled" min="0" mquantity="product.nonChilledMaxQuantity" ng-touch-spin on-increment="addtocart()" on-decrement="addtocart()" vertical="true">
 			<span class="addmorehere" ng-click="activeAddToCartCustom()" role="button" tabindex="0">add more</span>
 		</div>
 

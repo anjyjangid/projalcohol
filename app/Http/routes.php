@@ -54,6 +54,9 @@ Route::group(['prefix' => 'cart'], function () {
 		
 	Route::delete('product/{key}/{type}','CartController@removeproduct');
 
+	Route::put('chilledstatus/{cartkey}','CartController@updateProductChilledStatus');
+	
+
 });
 
 Route::resource('cart', 'CartController');

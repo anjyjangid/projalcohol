@@ -778,41 +778,41 @@ AlcoholDelivery.controller('WishlistController',['$scope','$rootScope','$state',
 AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$timeout','CartSession','UserService','sweetAlert','alcoholCart','store',function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $timeout, CartSession, UserService, sweetAlert, alcoholCart,store){
 
 	//cart
-	$scope.cart = {
-					service : {
-						express : {
-							status:false,
-						},
-						smoke : {
-							status:false,
-						},
-						nonchilled:{
-							status:false,
-						},
-						total:0,
-					},
-					total:0,
-					nonchilled:false,
-					delivery : {
-						type:1, // 0 => Express; 1 => advance;
-						charges:0,
-						address:{
+	// $scope.cart = {
+	// 				service : {
+	// 					express : {
+	// 						status:false,
+	// 					},
+	// 					smoke : {
+	// 						status:false,
+	// 					},
+	// 					nonchilled:{
+	// 						status:false,
+	// 					},
+	// 					total:0,
+	// 				},
+	// 				total:0,
+	// 				nonchilled:false,
+	// 				delivery : {
+	// 					type:1, // 0 => Express; 1 => advance;
+	// 					charges:0,
+	// 					address:{
 
-							key:0,
-							detail:""
+	// 						key:0,
+	// 						detail:""
 							
-						},
-						contact:"",
-						instruction:0,
-						leaveatdoor:false,
-					},
-					timeslot : {
-						datekey:false,
-						slotkey:false,
-						slug:"",
-						slotslug:""
-					}
-				};
+	// 					},
+	// 					contact:"",
+	// 					instruction:0,
+	// 					leaveatdoor:false,
+	// 				},
+	// 				timeslot : {
+	// 					datekey:false,
+	// 					slotkey:false,
+	// 					slug:"",
+	// 					slotslug:""
+	// 				}
+	// 			};
 		
 	$scope.smoke = {
 
@@ -824,10 +824,16 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 		type:"cod",
 	}
 
-	store.init();
-	
-	$scope.alcoholCart = alcoholCart;
+	store.init().then(
 
+		function(result) {
+
+			$scope.alcoholCart = alcoholCart;
+
+			$scope.cart = alcoholCart.$cart;
+			
+		}
+	);		
 
 	$scope.step = 1;
 
@@ -981,18 +987,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 	}
 
-	$scope.setCartChilled = function(status){
-
-		if(typeof status !=="undefined"){
-			
-			$scope.cart.nonchilled = status;
-			$scope.updatePricing();
-
-		}else{
-			$scope.cart.nonchilled = $scope.isSingleProductChilled();
-		}
-		
-	}
+	
 
 	$scope.isSingleProductChilled = function(){
 

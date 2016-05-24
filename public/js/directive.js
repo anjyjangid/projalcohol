@@ -31,7 +31,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			user:'='
 		},*/
 		templateUrl: '/templates/partials/topmenu.html',
-		controller: function($scope,$rootScope,$http,$state,sweetAlert,$facebook){			
+		controller: function($scope,$rootScope,$http,$state,sweetAlert,$facebook,store){
 			
 			$scope.list = [];
 
@@ -75,22 +75,23 @@ AlcoholDelivery.directive('sideBar', function() {
 					$scope.user.name = response.email;
 	                $('#login').modal('hide');
 	                $scope.errors = {};
-	                
-	                var deliverykey = localStorage.getItem("deliverykey");
-					console.log(deliverykey)
-	                if(deliverykey!==null && typeof deliverykey!=="undefined"){
+
+	                store.init();
+	     //            var deliverykey = localStorage.getItem("deliverykey");
+					
+	     //            if(deliverykey!==null && typeof deliverykey!=="undefined"){
 						
-						$http.put('cart/merge/'+deliverykey).success(function(response){
+						// $http.put('cart/merge/'+deliverykey).success(function(response){
 							
-							$state.go($state.current, {}, {reload: true});
+						// 	$state.go($state.current, {}, {reload: true});
 
-						}).error(function(data, status, headers) {
+						// }).error(function(data, status, headers) {
 
-			                $scope.errors = data;
+			   //              $scope.errors = data;
 
-			            });
+			   //          });
 
-	            	}
+	     //        	}
 
 
 				}).error(function(data, status, headers) {
@@ -169,8 +170,9 @@ AlcoholDelivery.directive('sideBar', function() {
 	                $scope.user = {};	                
 
 	                // Destroy Cart Params start
-	                delete $rootScope.deliverykey
+	                delete $rootScope.deliverykey;
 	                localStorage.removeItem("deliverykey");
+	                store.init();	
 	                // Destroy Cart Params end
 
 
@@ -602,7 +604,6 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			var isInCart = alcoholCart.getProductById($scope.product._id);
 
-
 			if(isInCart!==false){
 
 				$scope.isInCart = true;
@@ -629,9 +630,22 @@ AlcoholDelivery.directive('sideBar', function() {
 				$scope.product.qChilled = $scope.product.qChilled + available;
 
 			}
+			
+			$scope.$watchGroup(['product.qNChilled','product.qChilled','maxQuantity'],
+						function(newValue, oldValue) {
 
-			$scope.product.chilledMaxQuantity = $scope.maxQuantity - $scope.product.qNChilled;
-			$scope.product.nonChilledMaxQuantity = $scope.maxQuantity - $scope.product.qChilled;
+							$scope.updateQuantity();
+
+						},true
+					);
+
+			$scope.updateQuantity = function(){
+
+				$scope.product.chilledMaxQuantity = $scope.maxQuantity - $scope.product.qNChilled;
+				$scope.product.nonChilledMaxQuantity = $scope.maxQuantity - $scope.product.qChilled;
+				$scope.tquantity = parseInt($scope.product.qNChilled)+parseInt($scope.product.qChilled);
+
+			}
 
 
 			$scope.addtocart = function(){

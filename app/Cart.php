@@ -30,12 +30,28 @@ class Cart extends Moloquent
 		$this->key = $keyVal;
 	}
 
-
-	public function generate(){
+	public function setServices($cart){
 
 		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value'])->first();
 
-		$services = $services['settings'];        
+		$services = $services['settings'];
+
+		$cart["service"]["express"]["charges"] = $services['express_delivery']['value'];
+		$cart["smoke"]["charges"] = $services['cigratte_services']['value'];
+
+		$cart["delivery"] = [
+								"free" => false,
+								"charges" => $services['non_free_delivery']['value'],
+								"mincart" => $services['minimum_cart_value']['value'],
+							];
+
+		$cart["discount"]["nonchilled"]["exemption"] = $services['non_chilled_delivery']['value'];
+
+		return $cart;
+
+	}
+
+	public function generate(){
 
 		$cart = [
 
@@ -86,19 +102,66 @@ class Cart extends Moloquent
 			"user" => null
 		];
 
+
+		$cart = self.setServices($cart);
+
 		try{
 			
 			$cart = self::create($cart);
-			$cart = $cart->toArray();
+			$cart = $cart->toArray();		
+
 			$cart['products'] = (object)$cart['products'];
 			$cart['packages'] = (object)$cart['packages'];
 
 			return (object)array("success"=>true,"message"=>"cart generated succesfully","cart"=>$cart);
 
 		}catch(Exception $e){
+
 			return (object)array("success"=>false,"message"=>$e->getMessage());
+
+		}		
+
+	}
+
+	public static function findUpdated($id){
+
+		$cart = self::find($id);
+
+		if(empty($cart)){
+			return false;
 		}
-		
+
+		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value'])->first();
+
+		$services = $services['settings'];
+
+		$cartServices = $cart->service;
+
+		$cartServices["express"]["charges"] = $services['express_delivery']['value'];
+		$cartServices["smoke"]["charges"] = $services['cigratte_services']['value'];
+
+		$cartServices["delivery"] = [
+								"free" => false,
+								"charges" => $services['non_free_delivery']['value'],
+								"mincart" => $services['minimum_cart_value']['value'],
+							];
+
+		$cart->service = $cartServices;							
+
+		$cartDiscount = $cart->discount;							
+		$cartDiscount['nonchilled']['exemption'] = $services['non_chilled_delivery']['value'];
+		$cart->discount = $cartDiscount;
+
+		try{
+
+			$cart->save();			
+			return $cart;
+
+		}catch(\Exception $e){
+
+			return false;
+			
+		}
 
 	}
 

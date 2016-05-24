@@ -15,7 +15,6 @@ use MongoId;
 
 class CartController extends Controller
 {
-	
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -42,8 +41,58 @@ class CartController extends Controller
 
 		}else{
 
-			$cart = Cart::where("user","=",new MongoId($user->_id));
-			prd($cart);
+			$userCart = Cart::where("user","=",new MongoId($user->_id))->first();
+
+			$cart = new Cart;
+			$isCreated = $cart->generate();
+			
+			if(empty($userCart)){
+			
+				$cart = Cart::find($isCreated->cart['_id']);
+				$cart->user = new MongoId($user->_id);
+				try{
+
+					$cart->save();
+					return response(["success"=>true,"message"=>"cart created successfully","cart"=>$cart->toArray()],200);
+
+				}catch(\Exception $e){
+
+					return (object)["success"=>false,"message"=>$e->getMessage()];
+
+				}
+			}
+			else{
+
+				$userCart = $userCart->toArray();
+
+				$productsIdInCart = array_keys((array)$userCart['products']);
+
+				$productObj = new Products;
+
+				$productsInCart = $productObj->getProducts(
+											array(
+												"id"=>$productsIdInCart,
+												"with"=>array(
+													"discounts"
+												)
+											)
+										);
+
+				if(!empty($productsInCart)){
+
+					foreach($productsInCart as $product){
+
+						$userCart['products'][$product['_id']]['product'] = $product;
+
+					}
+
+				}
+
+				return response(["success"=>true,"message"=>"cart created successfully","cart"=>$userCart],200);				
+
+			}
+
+			// prd("Portion due");
 		}
 		
 	}
@@ -77,14 +126,14 @@ class CartController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 	public function show(Request $request,$id)
-	{		
+	{
+		$cart = Cart::findUpdated($id);
+		
+		if(empty($cart)){		
 
-		$cart = Cart::find($id);
+			$cartObj = new Cart;
 
-		if(empty($cart)){
-
-			$cart = new Cart;
-			$isCreated = $cart->generate();
+			$isCreated = $cartObj->generate();
 
 			if($isCreated->success){
 
@@ -98,17 +147,17 @@ class CartController extends Controller
 
 		}else{
 
-			$cart = $cart->toArray();
+			$cart = $cart->toArray();			
 
 		}
-
 		
 		$isMerged = $this->mergecarts($cart['_id']);
 
 		if($isMerged->success){
-			$cart = $isMerged->cart; 
-		}
 
+			$cart = $isMerged->cart;
+
+		}
 
 		$productsIdInCart = array_keys((array)$cart['products']);
 
@@ -328,19 +377,17 @@ class CartController extends Controller
 
         if(isset($user->_id)){
             
-            $userCart = Cart::where("user","=",new MongoId($user->_id))->first();
+            $userCart = Cart::where("user","=",new MongoId($user->_id))->where("_id","!=",new MongoId($cartkey))->first();
             
             $sessionCart = Cart::find($cartkey);
 
-            if(empty($userCart)){
-            				
-				$sessionCart->user = new MongoId($user->_id);
+            if(!empty($userCart)){
 
-            }else{
-            	
             	$sessionCart->products = array_merge($sessionCart->products,$userCart->products);
 
             }
+
+            $sessionCart->user = new MongoId($user->_id);
 
             try{
 
@@ -375,6 +422,37 @@ class CartController extends Controller
 	public function destroy($id)
 	{
 		//
+	}
+
+	public function updateProductChilledStatus(Request $request,$cartKey){
+
+		$cart = Cart::find($cartKey);
+
+		$productId = $request->input('id');
+		$chilled = $request->input('chilled');
+		$nonchilled = $request->input('nonchilled');
+
+		$product = $cart->products[$productId];
+		
+		$product['chilled']['status'] = $chilled?'chilled':'nonchilled';
+		$product['nonchilled']['status'] = $nonchilled?'chilled':'nonchilled';
+
+		$products = array_merge($cart->products,[$productId=>$product]);
+
+		$cart->__set("products",$products);
+
+		try{
+
+			$cart->save();
+			return response(["success"=>true,"message"=>"status changed"],200);
+
+		}catch(\Exception $e){
+
+			return (object)["success"=>false,"message"=>$e->getMessage()];
+
+		}
+		
+
 	}
 
 	public function getDeliverykey(Request $request){

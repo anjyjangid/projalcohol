@@ -2339,12 +2339,24 @@ md-dialog.md-transition-in{
 .addmore .bootstrap-touchspin-down, .addmore .bootstrap-touchspin-up {
 	background-color: transparent;
 	border-color: transparent;
+	border: 0px;
 	color: #fff;
 	font-size: 19px;
 	font-weight: 500;
 	padding: 0;
+	margin-top: -3px;
 }
 
+.addmore .bootstrap-touchspin-down:focus, .addmore .bootstrap-touchspin-up:focus,
+.addmore .bootstrap-touchspin-down:active, .addmore .bootstrap-touchspin-up:active,
+.addmore .bootstrap-touchspin-down:hover, .addmore .bootstrap-touchspin-up:hover{
+	outline: none;
+    background: transparent;
+    border: 0px;
+    color: #000;
+    background-color: transparent;    
+    box-shadow: 0px 0px 0px 0px;
+}
 
 .checkoutmiddleouter{
 	padding:0px 15px;
