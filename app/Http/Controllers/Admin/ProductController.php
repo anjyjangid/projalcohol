@@ -523,13 +523,13 @@ class ProductController extends Controller
       ->skip((int)$start)
       ->take((int)$length);
 
+      $products = $products->with('supplier');
+
       if($notordered){
-        $products = $products->with('supplier')->orderBy('quantity','asc')->orderBy('threshold','asc')->orderBy('maxQuantity','asc');
+        $products = $products->orderBy('quantity','asc')->orderBy('threshold','asc')->orderBy('maxQuantity','asc');
       }
 
       $products = $products->get($columns);
-
-
       
       $response = [
         'recordsTotal' => $iTotalRecords,

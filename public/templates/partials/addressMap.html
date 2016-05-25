@@ -16,7 +16,7 @@
 					  Enter your postal code or location name
 					<div>
 							
-					<input places-auto-complete class="alcohalpopuptext" ng-model="address.typed" component-restrictions="{{restrictions}}" types="{{types}}" on-place-changed="placeChanged()" />
+					<input places-auto-complete class="alcohalpopuptext" ng-model="address.typed" zoom="{{zoom}}"  component-restrictions="{{restrictions}}" types="{{types}}" on-place-changed="placeChanged()" />
 						
 
 					<div ng-click="showAddressViaManuallyModal()">Can't find your address?</div>
@@ -71,7 +71,7 @@
 
 				<div class="alcohlinputext" ng:class="{'has-error':errors.company[0]}">
 
-					<label>Company Name (optional) <span>*</span></label>
+					<label>Company Name (optional)</label>
 
 					<input type="text" class="alcohalpopuptext" ng-model="address.company" placeholder="">
 					<span class="help-block" ng-bind="errors.company[0]"></span>
@@ -82,17 +82,14 @@
 			</div>
 			<div class="alcohlinputextcvr">
 
-
 				<div class="alcohlinputext" ng:class="{'has-error':errors.instruction[0]}">
 
-					<label>Address Specific Instructions (optional) <span>*</span></label>
+					<label>Address Specific Instructions (optional) </label>
 
 					<textarea class="alcohlinputextareaa" placeholder="E.g. Please call my contact number instead of pressing the doorbell when you have arrived at my address." ng-model="address.instruction"></textarea>
 					<span class="help-block" ng-bind="errors.instruction[0]"></span>
 
-				</div>
-
-			  
+				</div>			 
 
 			</div>
 			</div>

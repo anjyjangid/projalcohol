@@ -8,21 +8,27 @@
 </div>
 <div class="checkoutmiddletable">
 
-<table class="table">          
+<table class="table cart-table">          
 	<tbody>
 		<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getProducts()"></tr>
 		<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0">
-
+			
 			<td width="52%">
+				
+				<span ng-if="(cartproduct.onlyForAdvance && cart.delivery.type==0) || cartproduct.isNotAvailable" class="cart-alert">!
+				<md-tooltip class="cart-alert-tooltip" md-direction="top" >Sorry! This item is either out of stock, or unavailable for the quantity or delivery time selected.</md-tooltip>
+	  	</span>
+
 				<div class="orhistry2_td2procdtcvr">
 					<span ui-sref="mainLayout.product({product:cartproduct.product._id})" class="cursor-pointer"><img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" /></span>
 
 					<div class="checkouter-td-right-text">
 						<div class="orhistry2_td2proctext1">{{cartproduct.product.name}}</div>
 						<div class="orhistry2_td2proctext2">{{cartproduct.product.shortDescription}}</div>
-						<div class="orhistry2_td2proctext1">{{settings.general.currency}} {{cartproduct.product.price}}</div>
+						<div class="orhistry2_td2proctext1">{{settings.general.currency}} {{cartproduct.unitPrice}}</div>
 						<div class="orhistry2_td2proctext2">unit Price</div>
 				 	</div> 
+
 				</div>
 
 			</td>
@@ -40,13 +46,13 @@
 			</td>
 			<td>
 				<div class="checkoutmiddlevlauediv">
-
-					<input type="text" ng-model="cartproduct[type]" value="cartproduct[type]" min="0" max="{{cartproduct.product.quantity}}" ng-touch-spin on-increment="addtocart(cartproduct.product._id)" on-decrement="addtocart(cartproduct.product._id)">
+				
+					<input type="text" ng-model="cartproduct[type]" value="cartproduct[type]" min="0" mquantity="cartproduct[type+'Max']" ng-touch-spin on-increment="addtocart(cartproduct.product._id,type)" on-decrement="addtocart(cartproduct.product._id,type)">
 					
 				</div>
 			</td>
 			<td>
-				<div class="orderhistry2price">{{cartproduct.finalprice | currency:settings.general.currency:2}}</div>
+				<div class="orderhistry2price">{{cartproduct.discountedUnitPrice * cartproduct[type] | currency:settings.general.currency:2}}</div>
 			</td>
 			<td> 
 				<a class="checkoutmiddletabledeleteimg" ng-click="remove(key,type)"><i class="glyphicon glyphicon-trash"></i></a>
@@ -73,9 +79,10 @@
 			<td>					
 			</td>
 			<td>
+
 				<div class="checkoutmiddlevlauediv">
 
-					<input type="text" ng-model="package._quantity" value="package._quantity" min="0" max="100" ng-touch-spin on-increment="alcoholCart.addPackage(package._id,package.original)" on-decrement="alcoholCart.addPackage(package._id,package.original)">
+					<input type="text" ng-model="package._quantity" value="package._quantity" min="0" mquantity="package._maxquantity" ng-touch-spin on-increment="alcoholCart.addPackage(package._id,package.original)" on-decrement="alcoholCart.addPackage(package._id,package.original)">
 					
 				</div>
 			</td>
@@ -100,7 +107,8 @@
 	<div class="checkboxtotaldiv-middle-first">
 		<div class="checkboxtotaldiv-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
 
-		<div class="checkboxtotaldiv-text">{{alcoholCart.getDeliveryCharges() | currency:settings.general.currency:2 }}</div>
+		<div class="checkboxtotaldiv-text" ng-if="!cart.delivery.charges">Free</div>
+		<div class="checkboxtotaldiv-text" ng-if="cart.delivery.charges>0">{{alcoholCart.getDeliveryCharges() | currency:settings.general.currency:2 }}</div>
 		
 	</div>
 	<div class="checkboxtotaldiv-middle-first">
@@ -197,10 +205,7 @@
 	<span>(Scheduled delivery)</span>
 </div>
 <div class="checkouterbackouter">
- <a class="checkouterback" href=""><span><img src="images/order_history2backpic.png"></span>back to shopping</a>
+ <a class="checkouterback" ui-sref="mainLayout.index"><span><img src="images/order_history2backpic.png"></span>back to shopping</a>
  <button class="checkoutcheckoutnowbutton" ng-click="checkout()">Checkout Now</button>
 </div>
 </div>
-<md-button class="md-primary md-raised" ng-click="showAlert($event)"  >
-      Alert Dialog
-    </md-button>

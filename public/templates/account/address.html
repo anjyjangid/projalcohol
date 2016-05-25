@@ -1,0 +1,63 @@
+<div class="breadcrumdiv">
+		 <ol class="breadcrumb">
+		  <li><a href="#">Home</a></li>
+		  <li><a href="#">My Account</a></li>
+		  <li><a href="#">Account Settings</a></li>
+		  <li class="active">Address Book</li>
+		</ol>
+		 </div>
+		  <div class="titlecreidt">Address Book</div>
+		  <div class="wishlist-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</div>
+		  
+		  
+		  
+		  <div class="addressbook-btmpannelcover" >
+		  
+			<div class="addressbokk-trvaichacovr" ng-repeat="(key, address) in addresses">
+				<div class="addressbok-travis">
+					<span><img src="images/addressbookpic1.png" /></span>
+
+					<div class="addrestravis-text">{{address.firstname +' '+address.lastname}}</div>
+					<div class="addresseditdltpic">
+
+						<a href="javascript:void(0)" ng-click="updateAddressModal($event,key)"><img src="images/savedcardedit.png"></a>
+
+						<a href="javascript:void(0)" ng-click="removeAddress(key)"><i class="glyphicon glyphicon-trash"></i></a>
+
+					</div>
+				</div>
+				<div class="addressbok-address">
+					<span ng-if="address.street">{{address.street}}<br/></span>
+					<span ng-if="address.house">{{address.house}}<br/></span>
+					<span ng-if="address.postal">Singapore - {{address.postal}}<br/></span>
+					<span ng-if="address.phone">Phone - {{address.phone}}</span>
+				</div>
+			</div>
+			
+			<!-- <div class="adressmiddlepartcvr">
+			<div class="adressmiddlepartcvr2">
+			<div class="addressbok-travis">
+			<span><img src="images/addressbookpic1.png" /></span>
+
+			<div class="addrestravis-text">Travis Chia</div>
+			<div class="addresseditdltpic">
+
+			<a href=""><img src="images/savedcardedit.png"></a>
+
+			<a href=""><i class="glyphicon glyphicon-trash"></i></a>
+
+			</div>
+			</div>
+			<div class="addressbok-address">2 Aliwal Street<br/>
+			#03 - 01<br/>
+			Singapore - 199895<br/>
+			Phone - 9898273875
+			</div>
+			</div>
+			</div> -->
+			<div class="addressbokk-addnewadresscovr" ng-click="showAddressViaMapModal($event)">
+			  <img src="images/addnewadrrspic2.png" />
+				<div class="addnewadresstext">Add new address</div>
+			</div>
+		  
+		  </div>

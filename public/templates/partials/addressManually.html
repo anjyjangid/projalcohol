@@ -1,79 +1,101 @@
 <div class="modal-dialog alcohal_addadressmain" role="document">
-    <div class="modal-content alcohal_addadressmaincvr">
-      <div class="modal-header alcohal_addadress_header"> 
-        
-        <div class="alcohal_addadress_headercurmain">
-          <div class="alcohal_addadress_headercurclecvr">
-            <div class="alcohal_addadress_headercurcle">1</div>
-          </div>
-          <div class="alcohal_addadress_headertitle">Add an Address manually</div>
-        </div>
-      </div>
-      <div class="modal-body alcohaladdadrebody">
-        <div class="alcohlinputextcvr">
-          
-          <div class="alcohlinputext" ng:class="{'has-error':errors.firstname[0]}">
-            <label>First Name: <span>*</span></label>
-            
-              <input type="text" class="alcohalpopuptext" ng-model="address.firstname" placeholder="">
-              <span class="help-block" ng-bind="errors.firstname[0]"></span>
+<div class="modal-content alcohal_addadressmaincvr">
+	<div class="modal-header alcohal_addadress_header"> 
+		
+		<div class="alcohal_addadress_headercurmain">
 
-          </div>
+			<div ng-if="!update" class="alcohal_addadress_headercurclecvr">
+				<div class="alcohal_addadress_headercurcle">1</div>
+			</div>
 
-          <div class="alcohlinputrighttext">
-            <label>Last Name <span>*</span></label>
-            <input type="text" class="alcohalpopuptext" ng-model="address.lastname"/>
-          </div>
-        </div>
-        <div class="alcohlinputextcvr">
-          <div class="alcohlinputext">
-            <label>Company Name (optional)</label>
-            <input type="text" class="alcohalpopuptext" ng-model="address.company"/>
-          </div>
-          <div class="alcohlinputrighttext">
-            <label>Building Name (optional)</label>
-            <input type="text" class="alcohalpopuptext" ng-model="address.building"/>
-          </div>
-        </div>
-        <div class="alcohlinputextcvr addrestopmar">
-          <div class="alcohlinputext">
-            <label>Street <span>*</span></label>
-            <input type="text" class="alcohalpopuptext" ng-model="address.street"/>
-          </div>
-          <div class="alcohlinputrighttext">
-            <label>Postal Code <span>*</span></label>
-            <input type="text" class="alcohalpopuptext" ng-model="address.postal"/>
-          </div>
-        </div>
-        <div class="alcohlinputextcvr">
-          <div class="alcohlinputext">
-            <label>Block/House No <span>*</span></label>
-            <input type="text" class="alcohalpopuptext" ng-model="address.house"/>
-          </div>
-          <div class="alcohlinputrighttext">
-            <div class="adresfloortxtcvr">
-              <label>Floor</label>
-              <input type="text" class="addadressflortext" ng-model="address.floor"/>
-            </div>
-            <div class="adresfloortxtcvrspce"> - </div>
-            <div class="adressunit">
-              <label>Unit</label>
-              <input type="text" class="addadressflortext" ng-model="address.unit"/>
-            </div>
-          </div>
-        </div>
-        <div class="alcohlinputextcvr addrestopmar">
-          <div class="alcohlinputextarea1">
-            <label>Address Specific Instructions (optional) </label>
-            <textarea class="alcohlinputextareaa" placeholder="E.g. Please call my contact number instead of pressing the doorbell when you have arrived at my address." ng-model="address.instruction"></textarea>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer alcohal_addadressfooter">
-        <div class="alcohal_adress2fotter" ng-click="hide()"> <img src="images/order_history2backpic.png"> <span>Change address</span> </div>
-        <div class="alcohalosavebntcvr">
-            <button class="adresssvaebtn" ng-click="saveAddress()" type="button">SAVE <span> <img src="images/alcholshoporderarrow.png"></span></button>
-        </div>
-      </div>
-    </div>
-  </div>
+			<div ng-if="update" class="alcohal_addadress_headertitle">Edit your Delivery Address</div>
+			<div ng-if="!update" class="alcohal_addadress_headertitle">Add address manually</div>
+			
+
+		</div>
+	</div>
+	<div class="modal-body alcohaladdadrebody">
+		<div class="alcohlinputextcvr">
+			
+			<div class="alcohlinputext" ng:class="{'has-error':errors.firstname[0]}">
+				<label>First Name: <span>*</span></label>
+				
+					<input type="text" class="alcohalpopuptext" ng-model="address.firstname" placeholder="">
+					<span class="help-block" ng-bind="errors.firstname[0]"></span>
+
+			</div>
+
+			<div class="alcohlinputrighttext">
+				<label>Last Name <span>*</span></label>
+				<input type="text" class="alcohalpopuptext" ng-model="address.lastname"/>
+			</div>
+		</div>
+		<div class="alcohlinputextcvr">
+			<div class="alcohlinputext">
+				<label>Company Name (optional)</label>
+				<input type="text" class="alcohalpopuptext" ng-model="address.company"/>
+			</div>
+			<div class="alcohlinputrighttext">
+				<label>Building Name (optional)</label>
+				<input type="text" class="alcohalpopuptext" ng-model="address.building"/>
+			</div>
+		</div>
+		<div class="alcohlinputextcvr addrestopmar">
+
+			<div class="alcohlinputext" ng:class="{'has-error':errors.street[0]}">
+				<label>Street <span>*</span></label>
+				<input type="text" class="alcohalpopuptext" ng-model="address.street"/>
+				<span class="help-block" ng-bind="errors.street[0]"></span>
+			</div>
+
+			<div class="alcohlinputrighttext" ng:class="{'has-error':errors.postal[0]}">
+				<label>Postal Code <span>*</span></label>
+
+				<input type="text" class="alcohalpopuptext" ng-model="address.postal" placeholder="">
+				<span class="help-block" ng-bind="errors.postal[0]"></span>
+
+			</div>
+
+
+		</div>
+		<div class="alcohlinputextcvr">
+			<div class="alcohlinputext" ng:class="{'has-error':errors.house[0]}">
+				<label>Block/House No <span>*</span></label>
+
+				<input type="text" class="alcohalpopuptext" ng-model="address.house" placeholder="">
+				<span class="help-block" ng-bind="errors.house[0]" ng-focus="errors.house[0]=''"></span>
+
+			</div>
+			
+			<div class="alcohlinputrighttext">
+				<div class="adresfloortxtcvr">
+					<label>Floor</label>
+					<input type="text" class="addadressflortext" ng-model="address.floor"/>
+				</div>
+				<div class="adresfloortxtcvrspce"> - </div>
+				<div class="adressunit">
+					<label>Unit</label>
+					<input type="text" class="addadressflortext" ng-model="address.unit"/>
+				</div>
+			</div>
+		</div>
+		<div class="alcohlinputextcvr addrestopmar">
+			<div class="alcohlinputextarea1">
+				<label>Address Specific Instructions (optional) </label>
+				<textarea class="alcohlinputextareaa" placeholder="E.g. Please call my contact number instead of pressing the doorbell when you have arrived at my address." ng-model="address.instruction"></textarea>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer alcohal_addadressfooter">
+
+
+		<div ng-if="!update" class="alcohal_adress2fotter" ng-click="hide()"> <img src="images/order_history2backpic.png"> <span>Change address</span> </div>
+		
+
+
+		<div class="alcohalosavebntcvr">
+				<button class="adresssvaebtn" ng-click="saveAddress()" type="button">SAVE <span> <img src="images/alcholshoporderarrow.png"></span></button>
+		</div>
+	</div>
+</div>
+</div>

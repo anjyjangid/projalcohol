@@ -4907,6 +4907,8 @@ md-dialog.md-transition-in{
 	float: left;
 	padding: 25px 26px;
 	width: 31%;
+	margin:10px;
+	min-height: 155px;
 }
 
 .addressbokk-addnewadresscovr{
@@ -4915,10 +4917,9 @@ md-dialog.md-transition-in{
 	float: left;
 	padding: 25px 26px;
 	width: 31%;
+	margin:10px;
 	text-align:center;
-
 }
-
 
 .addressbok-travis {
 	float: left;
@@ -5487,16 +5488,3 @@ md-switch{
     animation-fill-mode:inherit;
 }
 
-md-toast{
-	position: fixed !important;
-}
-md-toast.md-top {
-    top: 70px;
-}
-md-toast .md-toast-content {
-    background-color: #AA00FF;
-    color: #fff;
-}
-md-toast-animation{
-	overflow: auto !important;
-}

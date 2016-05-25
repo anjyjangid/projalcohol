@@ -276,6 +276,10 @@ class CartController extends Controller
 		$product['change'] = $quantity - $oldQuantity;//Track change in quantity
 
 		// Condition to check quantity is not more than available quantity
+		if($product['quantity']==0 && $product['outOfStockType']==2){
+			$product['quantity'] = $product['maxQuantity'];
+		}
+		
 		if((int)$quantity>(int)$product['quantity']){
 			return response(array("success"=>false,"errorCode"=>"100","message"=>"Product quantity is not available","data"=>$product));
 		}
@@ -410,6 +414,61 @@ class CartController extends Controller
         }
 
         return (object)["success"=>false,"message"=>"something went wrong"];
+
+	}
+
+	public function availability($cartKey){
+
+		$cart = Cart::find($cartKey);
+
+		if(empty($cart)){
+			return response(array("success"=>false,"message"=>"cart not found"),401);
+		}
+
+		$products = $cart->products;
+
+		$productsIdInCart = array_keys((array)$products);
+
+				$productObj = new Products;
+
+				$productsInCart = $productObj->getProducts(
+											array(
+												"id"=>$productsIdInCart,
+												"with"=>array(
+													"discounts"
+												)
+											)
+										);
+
+		$notAvail = [];
+
+		foreach($productsInCart as $product){
+
+			$cartProduct = $products[$product["_id"]];
+
+if($product['quantity']==0)
+jprd($product);
+
+
+			if($product['quantity']==0 && $product['outOfStockType']===2){
+
+				$notAvail[] = [
+					"id"=>$product["_id"]
+					
+				];
+
+			};			
+
+			if($cartProduct['quantity']<=$product['quantity']){
+
+				$notAvail[] = [
+					"id"=>$product["_id"]
+					
+				];
+
+			}
+		}
+
 
 	}
 
@@ -619,10 +678,8 @@ class CartController extends Controller
 
     }
 
-    public function confirmorder(Request $request){
+    public function confirmorder(Request $request,$cartKey){
 
-    	$cartKey = $request->session()->get('deliverykey');
-				
 		$cart = Cart::find($cartKey);
 
 		$cartArr = $cart->toArray();
@@ -633,15 +690,33 @@ class CartController extends Controller
 
 		$cartProductsArr = [];
 		
-		foreach($cartArr['products'] as $key=>$product){		
+		$productsIdInCart = array_keys((array)$cartArr['products']);
 
-			$product['_id'] = new MongoId($key);
-			$cartProductsArr[] = $product;
+				$productObj = new Products;
+
+				$productsInCart = $productObj->getProducts(
+											array(
+												"id"=>$productsIdInCart,
+												"with"=>array(
+													"discounts"
+												)
+											)
+										);
+
+		foreach($productsInCart as $key=>$product){		
+
+			$cartArr['products'][$product["_id"]]['_id'] = new MongoId($product["_id"]);
+
+			$cartArr['products'][$product["_id"]]['original'] = $product;
+			$cartProductsArr[] = $cartArr['products'][$product["_id"]];
 						
-		}
+		}	
 
 		$cartArr['products'] = $cartProductsArr;
 
+		$cartArr['packages'] = $cartArr['packages'];
+
+	
 		try {
 
 			$order = Orders::create($cartArr);
@@ -660,9 +735,7 @@ class CartController extends Controller
 
     }
 
-    public function deploycart(Request $request){
-
-    	$cartKey = $request->session()->get('deliverykey');
+    public function deploycart(Request $request,$cartKey){    	
 				
 		$cart = Cart::find($cartKey);
 
@@ -684,6 +757,10 @@ class CartController extends Controller
     		$cart->service = $params['service'];
     	}
 
+    	if(isset($params['payment'])){
+    		$cart->payment = $params['payment'];
+    	}
+
     	if(isset($params['discount'])){
     		$cart->discount = $params['discount'];
     	}
@@ -691,16 +768,6 @@ class CartController extends Controller
     	if(isset($params['timeslot'])){
     		$cart->timeslot = $params['timeslot'];
     	}
-
-    	if(isset($params['total'])){
-    		$cart->total = $params['total'];
-    	}
-
-    	if(isset($params['subtotal'])){
-    		$cart->subtotal = $params['subtotal'];
-    	}
-    	
-
 
     	try {
 

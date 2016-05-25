@@ -21,7 +21,7 @@ class Orders extends Moloquent
      *
      * @var array
      */
-    protected $fillable = ['timeslot', 'status' , 'service', 'delivery' , 'nonchilled','products','user','total'];
+    protected $fillable = ['timeslot', 'status' , 'service', 'delivery' , 'nonchilled','products','packages','user','total','payment','discount'];
 
     public function getOrders($params = array()){
         
