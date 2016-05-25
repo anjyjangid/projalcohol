@@ -61,6 +61,7 @@ class Cart extends Moloquent
 				"type" => 1,
 				"charges" => null,
 				"address" => null,
+				"contact" => null,
 				"instruction" => null,
 				"leaveatdoor" => false,
 				"instructions" => null,

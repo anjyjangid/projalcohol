@@ -73,8 +73,10 @@ class AddressController extends Controller
 				
 			}
 
-			unset($inputs['step']);
-
+			unset($inputs['step']);	
+			
+			unset($inputs['place']);
+		
 		}
 
 		$user->address = array_merge($userAddress, array($inputs));
@@ -129,6 +131,8 @@ class AddressController extends Controller
 	public function update(UserAddressRequest $request, $id)
 	{
 		$inputs = $request->all();
+
+
 		$loggeduser = Auth::user('user');
 
 		$user = User::find($loggeduser->_id);
@@ -136,6 +140,13 @@ class AddressController extends Controller
 		$address = $user->__get("address");
 
 		$inputs['updated_at'] = new DateTime();
+
+		if(isset($inputs['place'])){
+			
+			unset($inputs['place']);
+
+		}
+
 		$address[$id] = $inputs;
 
 		$user->__set("address",$address);        

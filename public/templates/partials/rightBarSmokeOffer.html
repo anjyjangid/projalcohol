@@ -6,7 +6,7 @@
         <table>
             <tr>
                 <td>NO</td>
-                <td><md-switch aria-label="smoke" ng-model="$parent.smoke.status"></md-switch></td>
+                <td><md-switch aria-label="smoke" ng-model="smoke.status" ng-change="alcoholCart.setSmokeStatus(smoke.status)"></md-switch></td>
                 <td>YES</td>
             </tr>
         </table>
@@ -16,18 +16,15 @@
         </div> -->
     </div>
 
-    <div ng-class="{hide:!$parent.smoke.status}">
+    <div ng-class="{hide:!smoke.status}">
         <div class="checkoutrighttext">Let us get your cigarettes for you! For additional {{}} service charge, we will purchase your desired cigarette from convenience stores while delivering your alcohol to your doorstep!</div>
-        <textarea type="text" class="checkoutrightpleasediv" ng-model="$parent.smoke.detail" placeholder="Please provide details. (Brand, Quantity)" rows="5"></textarea>
+        <textarea type="text" class="checkoutrightpleasediv" ng-model="smoke.detail" placeholder="Please provide details. (Brand, Quantity)" rows="5"></textarea>
 
         <div class="checkoutrighbuttonouter">
-          <button class="checkoutrighbuttoncancel" ng-click="$parent.smoke.detail=''">Cancel</button>
-          <button class="checkoutrighbuttonadd">Add</button>
+          <button class="checkoutrighbuttoncancel" ng-click="alcoholCart.removeSmoke()">Cancel</button>
+          <button class="checkoutrighbuttonadd" ng-click="alcoholCart.addSmoke(smoke.detail)">Add</button>
         </div>
         
         <div class="checkouter-rightsmalltext ">Cost of cigarettes must be paid in CASH. Service charge does not include cost of cigarettes. Service is not applicable for Express Delivery.</div>
     </div>
 </div>
-
-
-

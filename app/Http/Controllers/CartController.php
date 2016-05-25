@@ -660,9 +660,7 @@ class CartController extends Controller
 
     }
 
-    public function deploycart(Request $request){
-
-    	$cartKey = $request->session()->get('deliverykey');
+    public function deploycart(Request $request,$cartKey){    	
 				
 		$cart = Cart::find($cartKey);
 
@@ -684,6 +682,10 @@ class CartController extends Controller
     		$cart->service = $params['service'];
     	}
 
+    	if(isset($params['payment'])){
+    		$cart->payment = $params['payment'];
+    	}
+
     	if(isset($params['discount'])){
     		$cart->discount = $params['discount'];
     	}
@@ -691,16 +693,6 @@ class CartController extends Controller
     	if(isset($params['timeslot'])){
     		$cart->timeslot = $params['timeslot'];
     	}
-
-    	if(isset($params['total'])){
-    		$cart->total = $params['total'];
-    	}
-
-    	if(isset($params['subtotal'])){
-    		$cart->subtotal = $params['subtotal'];
-    	}
-    	
-
 
     	try {
 

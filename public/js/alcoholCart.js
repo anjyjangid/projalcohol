@@ -1,4 +1,4 @@
-AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 'alcoholCartItem', 'alcoholCartPackage', 'CartSession', function ($rootScope, $window, $http, $q, alcoholCartItem, alcoholCartPackage, CartSession) {
+AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', '$mdToast', 'alcoholCartItem', 'alcoholCartPackage','CartSession', function ($rootScope, $window, $http, $q, $mdToast, alcoholCartItem, alcoholCartPackage, CartSession) {
 
 		this.init = function(){
 			
@@ -11,6 +11,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 					type : 1,
 					charges : null,
 					address : null,
+					contact : null,
 					instruction : null,
 					leaveatdoor : false,
 					instructions : null,
@@ -239,7 +240,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 				allServicesCharges+= service.express.charges;
 			}
 			if(service.smoke.status){
-				allServicesCharges+= service.status.charges;				
+				allServicesCharges+= service.smoke.charges;				
 			}		
 			
 			return +parseFloat(allServicesCharges).toFixed(2);
@@ -326,13 +327,13 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 			var cartTotal = 0;
 			
-			cartTotal+= this.getSubTotal();
+			cartTotal+= parseFloat(this.getSubTotal());
 
-			cartTotal+= this.getAllServicesCharges();
+			cartTotal+= parseFloat(this.getAllServicesCharges());
 
-			cartTotal+= this.getDeliveryCharges();
+			cartTotal+= parseFloat(this.getDeliveryCharges());
 
-			cartTotal-= this.getDiscount();
+			cartTotal-= parseFloat(this.getDiscount());
 
 			return +parseFloat(cartTotal).toFixed(2);
 
@@ -396,6 +397,61 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			$rootScope.$broadcast('alcoholCart:change', {});
 		};
 
+		this.setSmokeStatus = function(status){
+
+			var status = Boolean(status);
+
+			this.$cart.service.smoke.status = status;
+			
+			if(!status){
+				this.removeSmoke();
+			}
+
+		}
+
+		this.addSmoke = function(detail){
+
+			var smoke = this.$cart.service.smoke;
+			if(!smoke.status){
+
+				var toast = $mdToast.simple()
+					.textContent("Activate need smoke")
+					.action('OK')
+					.highlightAction(false)
+					.position("top right");
+
+				$mdToast.show(toast).then(function(response) {
+					if ( response == 'ok' ) {
+						this.setSmokeStatus(true);
+					}
+				});
+			}
+
+			if(typeof detail==="undefined" || detail==""){
+
+				var toast = $mdToast.simple()
+					.textContent("Please provide smoke detail")
+					
+					.highlightAction(false)
+					.position("top right fixed smokedetail")
+					.hideDelay(1000);
+
+				$mdToast.show(toast);
+
+			}else{
+
+				smoke.detail = detail;
+
+			}
+
+		}
+
+		this.removeSmoke = function(){
+
+			this.$cart.service.smoke.detail = "";
+
+		}
+
 		this.empty = function () {
 			
 			$rootScope.$broadcast('alcoholCart:change', {});
@@ -453,7 +509,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		this.setDeliveryType = function(status){
 		
 			if(typeof status !=="undefined"){
-				console.log(status);
+				
 				this.$cart.delivery.type = status;
 
 				if(status==1){
@@ -543,7 +599,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			storedCart.products = {};
 			storedCart.packages = [];
 
-			angular.copy(storedCart,_self.$cart);
+			angular.merge(_self.$cart,storedCart);
 
 			_self.setCartKey(storedCart._id);
 
@@ -563,6 +619,38 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 			
 		};
+
+		this.deployCart = function(){
+
+			var cart = {};
+			var cartKey = this.getCartKey();
+
+			angular.copy(this.getCart(),cart);
+			
+			delete cart.packages;
+			delete cart.products;
+			delete cart._id;
+			delete cart.created_at;
+			delete cart.updated_at;
+			delete cart.user;
+
+			var d = $q.defer();
+
+			$http.put("deploycart/"+cartKey, cart,{
+
+	        }).error(function(data, status, headers) {
+
+	        	d.reject(data);
+
+	        }).success(function(response) {	        		      
+
+	        	d.resolve(response);
+
+	        });	
+				
+			return d.promise;
+
+		}
 
 		this.$save = function () {
 			

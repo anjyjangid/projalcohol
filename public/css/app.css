@@ -289,3 +289,13 @@ li.subactive a, li.subactive a span {
     font-size: 11px; 
     background-color: rgb(0,0,0,1);    
   }
+
+  .md-fixed{
+    position: fixed !important;
+  }
+
+  .md-smokedetail .md-toast-content{
+    background-color: #FFC412;
+    color: #000;
+    text-align: center;  
+  }

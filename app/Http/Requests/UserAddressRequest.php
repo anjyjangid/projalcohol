@@ -57,19 +57,15 @@ class UserAddressRequest extends Request
 					$this->request->add(['postal' => $addresscom['long_name']]);
 					$rules['postal']='string|max:10';
 				}				
-				
-			}
-			
 
-						
+			}
+
+			$this->request->add(['geometry'=>$input['place']['geometry']['location']]);
+
+
 			$rules['house']='string|max:10';
-				
-			
 		}
 		
-
-
-
 		return $rules;
 	}
 

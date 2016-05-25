@@ -32,5 +32,5 @@
 	</div>
 
 </div>
-<input type="button" ng-click="cartdata = alcoholCart.getCart()" value="View alcoholcart data">
-<pre>{{cartdata}}</pre>
+
+<pre>{{alcoholCart.$cart.delivery | json}}</pre>
