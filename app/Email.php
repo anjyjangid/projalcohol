@@ -160,7 +160,32 @@ class Email extends Moloquent
 				return $is_send_to_user;
 				 
 			break; /* } End Contact Us Email Section  */						
-																															
+			
+
+			case 'notifyuseronproductadd':/* begin : Notification Email { */
+								
+				$this->recipient_info["receiver"]['email'] = $data['email'];
+				$this->recipient_info["receiver"]['name'] = $data['username'];
+
+				$this->recipient_info["replace"]["{product_link}"] = url()."/product/".$data['p_id'];
+				$this->recipient_info["replace"]["{user_name}"] = $data['username'];
+				$this->recipient_info["replace"]["{product_name}"] = $data['product_name'];
+
+				$this->recipient_info["message"] = str_ireplace(array_keys($this->recipient_info["replace"]),array_values($this->recipient_info["replace"]),$this->recipient_info["message"]);
+				
+			break ;
+
+			case 'invite':/* begin : Invitation Email { */
+								
+				$this->recipient_info["receiver"]['email'] = $data['email'];			
+
+				$this->recipient_info["replace"]["{invitation_link}"] = url()."/acceptinvitation/".$data['id'];
+				$this->recipient_info["replace"]["{user_name}"] = $data['username'];				
+
+				$this->recipient_info["message"] = str_ireplace(array_keys($this->recipient_info["replace"]),array_values($this->recipient_info["replace"]),$this->recipient_info["message"]);
+				
+			break ;
+
 			
 			default:return  (object)array("error"=>true , "success"=>false , "message"=>" Please Define Proper Type for  Email");
 									

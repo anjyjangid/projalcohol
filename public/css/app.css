@@ -179,7 +179,7 @@
 
 /* ANIMATE */
 .open > .dropdown-menu{
-  /*display: none;*/
+  display: none;
 }
 
 .isloading{  

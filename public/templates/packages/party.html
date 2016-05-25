@@ -5,147 +5,46 @@
 	<img src="images/productdetail2.png">
 	<a>Party Packages</a>	
 </div>
-<!-- <pre>{{packages | json}}</pre> -->
-<div class="row">
-	
-	<div class="col-md-12 party-alcholcover">		
-		<v-accordion id="accordionA" class="vAccordion--default" control="accordionA" onexpand="expandCallback(index, id)" oncollapse="collapseCallback(index, id)">
-        <div class="partypackegescover"><img src="images/party_package.png" class="img-responsive" ></div>
-	        <v-pane id="{{ ::package._id }}" ng-repeat="package in packages">
-	         <!-- <v-pane-header id="{{ ::package._id }}-header" aria-controls="{{ ::package._id }}-content" class="bg-removepackage">-->
-	            <div style="position:relative;" class="party-package-coverdiv">
-                <div class="left-party-content ">
-                	<!-- <img src="images/party_package1.png" /> -->
-					<!--<img class="img-responsive" ng-src="packages/i/{{package.coverImage.source}}" err-src="http://placehold.it/930x300/{{($index+1)*100}}/?text=No+Image"/>-->
-                  <div class="party-topimgdiv">  <img src="images/party_package1.png" /></div>
-					<div style="width:100%; " class="part-content-btm-desc">
+<div class="row">	
+	<div class="col-md-12 party-alcholcover">
+		<div class="partypackegescover"><img src="images/party_package.png" class="img-responsive" ></div>	        
+        <div class="party-package-coverdiv">
+        	<div ng-repeat-start="package in packages" ng:class="{'row':($index%2==0)}"></div>
+	        	<div class="left-party-content"  ng:class="{'right-party-content':$odd}">                	
+	          		<div class="party-topimgdiv">  
+	          			<img ng-src="packages/i/{{package.coverImage.source}}" err-src="http://placehold.it/455x303/{{($index+1)*100}}/?text=No+Image"/>
+	          		</div>
+	          		<div class="part-content-btm-desc">
 						<div class="title-propertset"> {{package.title}}</div>
 						<div class="subtitl-propertset"> {{package.subTitle}} </div>
-						<div class="btmcontn-set"> <div class="package-desc"> <!--An apple martini is a cocktail containing vodka and...--> {{package.description}}</div><a href="">More Detail</a></div>
-                        <div class="party-leftposion">
-			<div class="package-amtcover"><p class="packtiti-rightset">Package Amount</p>
-	    	<h3 class="amntrupee-clsdetail ng-binding">$222.00</h3></div>
-            
-	    	<div class="saving-amount-cover"><p class="packtiti-rightset">Savings</p>
-	    	<p class="packtiti-rightset ">$1.69</p></div>
-            
-			<div class="add-cart-cover">   <a class="btn product_addcart" ui-sref="mainLayout.packagedetail({type:'party',id:package._id})">Add to Cart</a></div>
-            </div>
-            			<div class="package-contain-cover">
-                        <div class="package-contain-titl">Package contain</div>
-                        <div class="package-inner-cover5">
-                    <div class="ttile-divcover-main ng-scope">
-                 <h5 class="custmize-contntset ng-binding">2 Cartons of Beer</h5><span> Carlsberg</span></div>
-                      
-                      <div class="ttile-divcover-main ng-scope">
-	                  <h5 class="custmize-contntset ng-binding">1 Bottle of Coniac</h5><span>Marvell V.S.O.P</span></div>
-                      
-                      <div class="ttile-divcover-main ng-scope">
-	                  <h5 class="custmize-contntset ng-binding">1 Vodka</h5><span>42 Below</span></div>
-                      
-                      <div class="ttile-divcover-main ng-scope">
-	                  <h5 class="custmize-contntset ng-binding">5 Bottles of Mixer </h5><span>2x Pokka Green Tea, 3x Original...</span></div>
-                      
-                     
-
-
-
-	                </div>
-                        </div>
-					</div>
-				</div>
-                <div class="left-party-content right-party-content">
-                	<!-- <img src="images/party_package1.png" /> -->
-					<!--<img class="img-responsive" ng-src="packages/i/{{package.coverImage.source}}" err-src="http://placehold.it/930x300/{{($index+1)*100}}/?text=No+Image"/>-->
-                  <div class="party-topimgdiv">  <img src="images/party_package1.png" /></div>
-					<div style="width:100%; " class="part-content-btm-desc">
-						<div class="title-propertset"> {{package.title}}</div>
-						<div class="subtitl-propertset"> {{package.subTitle}} </div>
-						<div class="btmcontn-set"> <div class="package-desc"> <!--An apple martini is a cocktail containing vodka and...--> {{package.description}}</div><a href="">More Detail</a></div>
-                        <div class="party-leftposion">
-			<div class="package-amtcover"><p class="packtiti-rightset">Package Amount</p>
-	    	<h3 class="amntrupee-clsdetail ng-binding">$222.00</h3></div>
-            
-	    	<div class="saving-amount-cover"><p class="packtiti-rightset">Savings</p>
-	    	<p class="packtiti-rightset ">$1.69</p></div>
-            
-			<div class="add-cart-cover">   <a class="btn product_addcart" ui-sref="mainLayout.packagedetail({type:'party',id:package._id})">Add to Cart</a></div>
-            </div>
-            			<div class="package-contain-cover">
-                        <div class="package-contain-titl">Package contain</div>
-                        <div class="package-inner-cover5">
-                    <div class="ttile-divcover-main ng-scope">
-                 <h5 class="custmize-contntset ng-binding">2 Cartons of Beer</h5><span> Carlsberg</span></div>
-                      
-                      <div class="ttile-divcover-main ng-scope">
-	                  <h5 class="custmize-contntset ng-binding">1 Bottle of Coniac</h5><span>Marvell V.S.O.P</span></div>
-                      
-                      <div class="ttile-divcover-main ng-scope">
-	                  <h5 class="custmize-contntset ng-binding">1 Vodka</h5><span>42 Below</span></div>
-                      
-                      <div class="ttile-divcover-main ng-scope">
-	                  <h5 class="custmize-contntset ng-binding">5 Bottles of Mixer </h5><span>2x Pokka Green Tea, 3x Original...</span></div>
-                      
-                     
-
-
-
-	                </div>
-                        </div>
-					</div>
-				</div>
-                	            </div>
-	        <!--  </v-pane-header>-->
-	          <!--<v-pane-content id="{{ ::package._id }}-content" aria-labelledby="{{ ::package._id }}-header" class="xyz">
-	            <p class="customize-propertyset">Customise your own package</p>
-	            <v-accordion id="nestedAccordionA" style="width:70%;float: left; margin-bottom:0" oncollapse="validateSelection(index, id)">
-	              <v-pane id="{{$index}}" ng-repeat="packageItem in package.packageItems" ng-disabled="subpane.isDisabled" >
-	                <v-pane-header id="{{$index}}-header"  aria-controls="{{ ::subpane.id }}-header" class="byz">
-                    <div class="ttile-divcover">
-	                  <h5  class="custmize-contntset">{{ ::packageItem.title }}</h5><span>carlsbeg</span></div>
-	                </v-pane-header>
-	                <v-pane-content id="{{$index}}-content" aria-labelledby="{{ ::subpane.id }}-content">
-	                  
-	                  <div class="row">													
-						<div ng-repeat-start="pcprod in packageItem.products" ng:class="{'row':($index!=0 && $index%3==0)}"></div>
-						<div class="col-md-4"> 							
-							<div class="thumbnail thumbnailheightset" ng:class="{'selectedproductcart':pcprod.cartquantity > 0}">								
-								<div class="caption"> 
-									<h5 class="item-btmtitle">{{ pcprod.name }}</h5>
-									<!-- <h5>Before Price : <b>{{pcprod.sprice}}</b></h5>
-									<h5>After Price : <b>{{pcprod.cprice}}</b></h5> -->
-								<!--</div>
-								<img width="100" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{pcprod.imageFiles[0].source}}">	
-								
-								<div class="checkoutmiddlevlauediv" style="float: none;">
-									<input type="text" value="pcprod.cartquantity" ng-model="pcprod.cartquantity" max="{{packageItem.quantity}}" min="0" ng-touch-spin>
-								</div>								
+						<div class="btmcontn-set"> 
+						<div class="package-desc"> {{package.description}}</div><a href="">More Detail</a></div>
+	            		<div class="party-leftposion">
+							<div class="package-amtcover">
+								<p class="packtiti-rightset">Package Amount</p>
+								<h3 class="amntrupee-clsdetail">${{package.packagePrice}}</h3>
+							</div>            
+							<div class="saving-amount-cover">
+								<p class="packtiti-rightset">Savings</p>
+								<p class="packtiti-rightset ">${{package.packageSavings}}</p>
+							</div>            
+							<div class="add-cart-cover">   
+								<a class="btn product_addcart" ui-sref="mainLayout.packagedetail({type:'party',id:package._id})">Add to Cart</a>
 							</div>
 						</div>
-						<div ng-repeat-end></div>													
+						<div class="package-contain-cover">
+	            			<div class="package-contain-titl">Package contain</div>
+	            			<div class="package-inner-cover5">
+	        					<div class="ttile-divcover-main ng-scope" ng-repeat="packageItem in package.packageItems">
+	     							<h5 class="custmize-contntset">{{packageItem.title}}</h5>
+	     							<span>{{packageItem.selectedProducts}}</span>
+	     						</div>                                        					
+	        				</div>
+	            		</div>
 					</div>
-
-	                </v-pane-content>
-	              </v-pane>
-	            </v-accordion>
-                
-	            <div class="pull-left" style="padding: 20px 15px 15px;margin-left: 10px;">
-	            	<p class="packtiti-rightset">Package Amount</p>
-	            	<h3 class="amntrupee-cls">${{package.packagePrice}}</h3>
-	            	<p class="packtiti-rightset">Savings</p>
-	            	<p class="packtiti-rightset">${{package.packageSavings}}</p>
-					<div class="checkoutmiddlevlauediv">
-	            		<div class="pardqantitytexthead">Quantity</div>
-						<input type="text" value="1" ng-model="package.quantity" min="1" max="10" ng-touch-spin>
-					</div>
-	            	<div>
-	            		<a class="btn product_addcart" ui-sref="mainLayout.packagedetail({type:'party',id:package._id})">Add to Cart</a>	            		
-	            	</div>
-	            </div>
-	          </v-pane-content>-->
-	        </v-pane>
-      </v-accordion>		
+				</div>
+			<div ng-repeat-end></div>
+		</div>	        
 	</div>
-
 </div>
 	

@@ -20,7 +20,7 @@ use MongoId;
 use Input;
 use DB;
 use AlcoholDelivery\Setting;
-
+use AlcoholDelivery\Email;
 
 class ProductController extends Controller
 {
@@ -565,6 +565,24 @@ class ProductController extends Controller
         $product->quantity = $inputs['quantity'];
         $product->threshold = $inputs['threshold'];
         $product->maxQuantity = $inputs['maxQuantity'];
+
+        //NOTIFY USER FOR AVAILABILITY
+        if($product->quantity > 0){
+          $userlist = User::where('productAddedNotification','all',[$id]);
+          foreach ($userlist as $key => $value) {
+            $username = (isset($value->name))?$value->name:$value->email;
+            $data = [
+              'email' => $value->email,
+              'p_id' => $id,
+              'username' => $username,
+              'product_name' => $product->name
+            ];
+
+            $email = new Email('notifyuseronproductadd');
+            $email->sendEmail($data);
+
+          }
+        }
 
         if($product->save()){
           return response($product, 200);

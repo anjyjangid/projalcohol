@@ -2429,6 +2429,24 @@ AlcoholDelivery.factory('Search', function($http) {
   return Search;
 });
 
+AlcoholDelivery.controller('InviteController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll){
+
+	$timeout(function() {
+		$anchorScroll();
+	});
+
+	$scope.errors = [];
+
+	$scope.sendinvitation = function(){
+		$http.post('/user/inviteusers',$scope.invite).success(function(res){
+			$scope.errors = [];
+			$scope.invite = res;
+		}).error(function(data, status, headers){
+			$scope.errors = data;	
+		});
+	}
+
+}]);
 
 /* Setup Rounting For All Pages */
 AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
@@ -2585,6 +2603,14 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						}
 				})
 
+				.state('mainLayout.invite', {
+						url: "/acceptinvitation/{reffererid}",
+						templateUrl: "/templates/index/home.html",						
+						controller:function($rootScope,$stateParams,$state){
+							$rootScope.refferal = $stateParams.reffererid;
+							$state.go('mainLayout.index');
+						}
+				})
 				// CMS Page YKB //
 
 				.state('cmsLayout', {
@@ -2736,6 +2762,12 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						url: "/order/{orderid}",
 						templateUrl: "/templates/account/order.html",
 						controller:"OrderDetailController"
+				})
+
+				.state('accountLayout.invite', {
+						url: "/invite",
+						templateUrl: "/templates/account/invite.html",
+						controller:"InviteController"
 				})
 
 				.state('mainLayout.product', {

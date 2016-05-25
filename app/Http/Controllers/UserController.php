@@ -259,5 +259,52 @@ class UserController extends Controller
 
     }
 
+    public function postInviteusers(Request $request){
+        
+        $data = $request->all();
 
+        $empty = true;
+
+        $notvalid = false;
+
+        if(isset($data['emails']) && !empty($data['emails'])){
+
+            $empty = false;
+
+            $emailsaddresses = preg_split('/;|,/', $data['emails']);            
+
+            foreach ($emailsaddresses as $key => $emailaddress) {            
+                $data = ['email' => $emailaddress];
+                $validator = Validator::make($data,['email'=>'required|email']);
+                if ($validator->fails()) {
+                    $notvalid = true;
+                }
+            }       
+
+        }
+
+        if ($notvalid || $empty){
+            if($empty)
+                return response(['emails'=>'Please enter email.'],422);
+            else
+                return response(['emails'=>'One or more of the email addresses are not valid.'],422);
+        }else{            
+            
+            $userLogged = Auth::user('user');
+            $username = (isset($userLogged->name))?$userLogged->name:$userLogged->email;
+            foreach ($emailsaddresses as $key => $emailaddress) {
+                if($emailaddress!=$userLogged->email){                
+                    $data = [
+                        'email' => $emailaddress,
+                        'username' => $username,
+                        'id' => $userLogged->_id                 
+                    ];
+                    $email = new Email('invite');
+                    $email->sendEmail($data);
+                }
+            }
+        }
+
+        return response(['success'=>'Invitation(s) sent successfully.'],200);
+    }
 }

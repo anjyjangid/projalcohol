@@ -1,8 +1,7 @@
 /*party-package-page*/
-.partypackegescover.ng-scope {
-	 padding-bottom: 20px;
-    padding-top: 5px;
+.partypackegescover {	
     width: 100%;
+    margin-bottom: 10px;
 }
 .title-propertset {
 	color: #656565;
@@ -962,7 +961,7 @@
 	color: #a9a8a9;
     display: inline-block;
     font-size: 13px;
-    width:auto;
+    width:52%;
 	overflow:hidden;
 	white-space:nowrap;
 	 text-overflow: ellipsis;

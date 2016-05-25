@@ -94,7 +94,7 @@ class PackageController extends Controller
         
         $packages = new Packages;
 
-        $packages = $packages->with('productlist')->where('status',1)->where('type',$ptype)->get();
+        $packages = $packages->with('productlist')->where('status',1)->where('type',$ptype)->orderBy('created_at','desc')->get();
 
         if($packages){
             
@@ -163,7 +163,11 @@ class PackageController extends Controller
 
                     $pkgpro[$minPriceKey]['cartquantity'] = $quantity;
 
+                    $pkgpro[$minPriceKey]['customizequantity'] = $quantity;
+
                     $packageupdate[$pkgkey]['products'] = $pkgpro;              
+
+                    $packageupdate[$pkgkey]['selectedProducts'] = $quantity.' x '.$pkgpro[$minPriceKey]['name'];              
                   
                 }  
                 
@@ -197,7 +201,8 @@ class PackageController extends Controller
             $packageupdate = [];
             $packagePrice = $productOrgPrice = 0;
             
-            foreach ($packageItems as $pkgkey => $pkgvalue) {              
+            foreach ($packageItems as $pkgkey => $pkgvalue) { 
+
                 $packageupdate[$pkgkey] = $pkgvalue;
                 $pkgpro = [];
                 $minprice = [];

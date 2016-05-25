@@ -8,7 +8,7 @@
 .animate {
 	display: block;
 	-webkit-animation-name: fadeIn; 
-  animation-name: fadeIn;     
+  	animation-name: fadeIn;     
 }
 @-webkit-keyframes fadeIn { 
   0% {opacity: 0;} 
@@ -20,15 +20,15 @@
 } 
 </style>
 
-<ul class="nav navbar-nav modify capitalize">
+<ul class="nav navbar-nav modify capitalize" ng-cloak>
 	<li ng-class="{'active':$state.current.url=='/'}"><a href="#">On Sale! <span class="sr-only">(current)</span></a></li>	
-	<li ng-class="{'active':AppController.category==c.slug}" class="dropdown" ng-repeat="c in childOf(categories)" ng-mouseover="showPersonSubMenu=true" ng-mouseleave="showPersonSubMenu=false">
+	<li ng-class="{'active':AppController.category==c.slug}" class="dropdown" ng-repeat="c in childOf(categories)" ng-mouseover="showPersonSubMenu=true" ng-mouseleave="showPersonSubMenu=false" hover-class="open">
 
 	<div style="display: none;">
 		{{childCategories = childOf(categories,c._id)}}
 		{{isChildExist = childCategories.length > 0}}		
 	</div>
-		<a ui-sref="mainLayout.category.products({categorySlug:c.slug})" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{c.cat_title}} <span class="caret" ng-show='isChildExist'></span></a>
+		<a ui-sref="mainLayout.category.products({categorySlug:c.slug})" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >{{c.cat_title}} <span class="caret" ng-show='isChildExist'></span></a>
 
 		<ul class="dropdown-menu" ng-class="{'animate':showPersonSubMenu}" ng-style="{'background-image':'url(/assets/resources/category/lthumb/400/{{c.cat_lthumb}})'}" ng-if='isChildExist'>
 			<li class="dm_title">{{c.cat_title}}</li>
@@ -37,7 +37,7 @@
 	</li>
 	<li ng-class="{'active':AppController.category=='packages'}" class="dropdown">
 		<a ng-click="AppController.showpackage = !AppController.showpackage" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Packages</a>
-		<ul class="navbar-nav party-cocktail-liset" ng-show="AppController.showpackage">
+		<ul class="nav navbar-nav party-cocktail-liset" ng-show="AppController.showpackage">
 			<li ng-class="{'active':AppController.subCategory=='party'}" class="dropdown"><a ui-sref="mainLayout.packages({type:'party'})">Party Packages</a></li>
 			<li ng-class="{'active':AppController.subCategory=='cocktail'}" class="dropdown"><a ui-sref="mainLayout.packages({type:'cocktail'})">Cocktail Packages</a></li>
 		</ul>

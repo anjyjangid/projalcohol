@@ -1,0 +1,26 @@
+<div class="breadcrumdiv">
+ <ol class="breadcrumb">
+  <li><a href="#">Home</a></li>
+  <li><a href="#">My Account</a></li>  
+  <li class="active">Invite</li>
+</ol>
+</div>
+<div class="titlecreidt">Invite your friends</div>
+<!-- <div class="balancedetailsdiv2">
+  <div class="balancetexxt">
+    Invite your friend
+  </div>  
+</div> -->
+<form ng-submit="sendinvitation()" class="profile_form">              
+    <div ng-show="invite.success" class="alert alert-success" role="alert" ng-bind="invite.success"></div>
+    <div class="fullwidth" ng:class="{'has-error':errors.emails}">
+      <label>To <span class="required-astrik">*</span></label>
+      <textarea placeholder="Eg. jack@xyz.com, sarah@xyz.com" ng-model="invite.emails" class="alcohalrestertextbox form-control"></textarea>        
+      <span class="help-block">You can add multiple email(s) separated by a comma(,) or a semi colon (;).</span>
+      <span class="help-block" ng-bind="errors.emails"></span>        
+    </div>
+    <div class="fullwidth">
+      <button class="alcohalfootersign" type="submit" >Send Invitation</button>
+    </div>
+</form>
+
