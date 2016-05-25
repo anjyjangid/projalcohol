@@ -40,7 +40,7 @@ Route::get('reset/{key}', 'Auth\PasswordController@reset');
 
 
 Route::put('deploycart/{cartKey}','CartController@deploycart');
-Route::put('confirmorder','CartController@confirmorder');
+Route::put('confirmorder/{cartKey}','CartController@confirmorder');
 
 
 Route::group(['prefix' => 'cart'], function () {
@@ -48,6 +48,8 @@ Route::group(['prefix' => 'cart'], function () {
 	Route::get('deliverykey','CartController@getDeliverykey');
 	Route::get('services','CartController@getServices');	
 	Route::get('timeslots/{date}','CartController@getTimeslots');
+	Route::get('availability/{cartkey}','CartController@availability');
+
 	Route::put('merge/{cartkey}','CartController@mergecarts');
 
 	Route::post('package/{cartkey}','CartController@createpackage');
@@ -56,6 +58,7 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::put('chilledstatus/{cartkey}','CartController@updateProductChilledStatus');
 	
+
 
 });
 

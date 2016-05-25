@@ -14,6 +14,12 @@
 
 	}
 
+	function jpr($arr){
+		
+		pr(json_encode($arr));
+
+	}
+
 	function pr($arr){
 		
 		echo "<pre>";

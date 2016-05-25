@@ -17,7 +17,7 @@
 			<div class="portlet-body">
 				<div class="table-container">
 					
-					<table class="table table-striped table-bordered table-hover" id="dealerslisttab">
+					<table class="table table-striped table-bordered table-hover" id="orderslisttab">
 						<thead>
 							<tr role="row" class="heading">
 
@@ -79,9 +79,9 @@
 <!-- BEGIN MAIN JS -->
 <script>
 	
-	var grid = new Datatable();
+	var orderGrid = new Datatable();
 
-	var DealersTableAjax = function () {
+	var OrdersTableAjax = function () {
 
     var initPickers = function () {
         //init date pickers
@@ -93,12 +93,12 @@
 
     var handleRecords = function () {
 
-        grid.init({
-            src: $("#dealerslisttab"),
-            onSuccess: function (grid) {
+        orderGrid.init({
+            src: $("#orderslisttab"),
+            onSuccess: function (orderGrid) {
                 // execute some code after table records loaded
             },
-            onError: function (grid) {
+            onError: function (orderGrid) {
                 // execute some code on network or other general error  
             },
             loadingMessage: 'Loading...',
@@ -161,29 +161,29 @@
         });
 
         // handle group actionsubmit button click
-        grid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
+        orderGrid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
             e.preventDefault();
-            var action = $(".table-group-action-input", grid.getTableWrapper());
-            if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
-                grid.setAjaxParam("customActionType", "group_action");
-                grid.setAjaxParam("customActionName", action.val());
-                grid.setAjaxParam("id", grid.getSelectedRows());
-                grid.getDataTable().ajax.reload();
-                grid.clearAjaxParams();
+            var action = $(".table-group-action-input", orderGrid.getTableWrapper());
+            if (action.val() != "" && orderGrid.getSelectedRowsCount() > 0) {
+                orderGrid.setAjaxParam("customActionType", "group_action");
+                orderGrid.setAjaxParam("customActionName", action.val());
+                orderGrid.setAjaxParam("id", orderGrid.getSelectedRows());
+                orderGrid.getDataTable().ajax.reload();
+                orderGrid.clearAjaxParams();
             } else if (action.val() == "") {
                 Metronic.alert({
                     type: 'danger',
                     icon: 'warning',
                     message: 'Please select an action',
-                    container: grid.getTableWrapper(),
+                    container: orderGrid.getTableWrapper(),
                     place: 'prepend'
                 });
-            } else if (grid.getSelectedRowsCount() === 0) {
+            } else if (orderGrid.getSelectedRowsCount() === 0) {
                 Metronic.alert({
                     type: 'danger',
                     icon: 'warning',
                     message: 'No record selected',
-                    container: grid.getTableWrapper(),
+                    container: orderGrid.getTableWrapper(),
                     place: 'prepend'
                 });
             }
@@ -203,6 +203,6 @@
 
 }();
 
-	DealersTableAjax.init();
+	OrdersTableAjax.init();
 </script>
 <!-- END MAIN JS

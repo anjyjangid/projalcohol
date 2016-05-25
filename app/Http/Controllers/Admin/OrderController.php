@@ -326,9 +326,9 @@ class OrderController extends Controller
 
 			
 			$delivery = $deliveryType[(int)$order['delivery']['type']];			
-			$row[] = '<a href="javascript:void(0)"><span class="label label-sm label-'.(key($delivery)).'">'.(current($delivery)).'</span></a>';
+			$row[] = '<span class="label label-sm label-'.(key($delivery)).'">'.(current($delivery)).'</span>';
 
-			$row[] = '<a href="javascript:void(0)"><span class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
+			$row[] = '<span class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span>';
 
 			// $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$order['_id'].'\')" id="'.$order['_id'].'" data-table="dealer" data-status="0" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
 
