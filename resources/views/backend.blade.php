@@ -40,6 +40,10 @@ License: You must have a valid license purchased only from themeforest(the above
 <link href="{{ asset('assets/admin/pages/css/login.css') }}" rel="stylesheet" type="text/css"/>
 <!-- END PAGE LEVEL SCRIPTS -->
 <!-- BEGIN THEME STYLES -->
+
+<link href="{{ asset('bower_components/sweetalert2/dist/sweetalert2.css') }}" rel="stylesheet" type="text/css"/>
+
+
 <!-- DOC: To use 'rounded corners' style just load 'components-rounded.css' stylesheet instead of 'components.css' in the below style tag -->
 <link href="{{ asset('assets/global/css/components-md.css') }}" id="style_components" rel="stylesheet" type="text/css"/>
 <link href="{{ asset('assets/global/css/plugins-md.css') }}" rel="stylesheet" type="text/css"/>
@@ -146,7 +150,7 @@ License: You must have a valid license purchased only from themeforest(the above
 	<script src="{{ asset('assets/global/plugins/angularjs/plugins/ocLazyLoad.min.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/global/plugins/angularjs/plugins/ui-bootstrap-tpls.min.js') }}" type="text/javascript"></script>
 		
-	<!-- SWEET ALERT STYLE -->
+	<!-- SWEET ALERT SCRIPT -->
 	<script src="{{ asset('bower_components/sweetalert2/dist/sweetalert2.min.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('bower_components/ngSweetAlert2/SweetAlert.js') }}" type="text/javascript"></script>
 

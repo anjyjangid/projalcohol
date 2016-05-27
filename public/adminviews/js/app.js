@@ -267,7 +267,7 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 			});
 
 		}else{
-			sweetAlert.swal({   
+			sweetAlert.swal({
 				title: "Are you sure?",   
 				text: "Your will not be able to recover them!",   
 				type: "warning",   
@@ -277,7 +277,8 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 				closeOnConfirm: false,
 				closeOnCancel: false
 
-			},  function(isConfirm) {
+			}).then(
+				function(isConfirm) {
 					if (isConfirm) {
 						
 						$http.delete("/admin/"+tab+"/"+checkedKeys)
@@ -303,7 +304,8 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 					} else {
 						sweetAlert.swal("Cancelled", "Record(s) safe :)", "error");
 					}
-				});
+				}
+			);
 		}
 	}
 	
@@ -916,6 +918,50 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             templateUrl: "adminviews/views/brand/add.html",
             data: {pageSubTitle: 'Update Brand'},
             controller:"BrandUpdateController",            
+        })
+
+        .state('promotion', {
+            url: "/promotion",
+            templateUrl: "adminviews/views/promotion/index.html",
+            data: {pageTitle: 'Promotions'},
+            controller: "PromotionController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',                            
+
+                            'adminviews/js/models/promotionModel.js',
+                            'adminviews/js/models/packageModel.js',
+                            'adminviews/js/controllers/PromotionController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state("promotion.list", {
+            url: "/list",
+            templateUrl: "adminviews/views/promotion/list.html",
+            data: {pageSubTitle: 'Promotions Listing'}
+        })
+
+        .state("promotion.add", {
+            url: "/add",
+            templateUrl: "adminviews/views/promotion/add.html",
+            data: {pageSubTitle: 'Add Promotion'},
+            controller: "PromotionAddController"
+        })
+
+        .state("promotion.edit",{
+            url: "/edit/{promotionId}",
+            templateUrl: "adminviews/views/promotion/add.html",
+            data: {pageSubTitle: 'Update Promotion'},
+            controller:"PromotionAddController",            
         })
 
         .state('emailtemplates', {

@@ -2,6 +2,11 @@ a:hover,a:visited{
   text-decoration: none ;
 }
 
+a[href^="javascript"]:focus {
+    text-decoration: none;
+}
+
+
 .html-preview img{
 	max-width: 100%;
 }

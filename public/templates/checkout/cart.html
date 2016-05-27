@@ -82,7 +82,7 @@
 
 				<div class="checkoutmiddlevlauediv">
 
-					<input type="text" ng-model="package._quantity" value="package._quantity" min="0" mquantity="package._maxquantity" ng-touch-spin on-increment="alcoholCart.addPackage(package._id,package.original)" on-decrement="alcoholCart.addPackage(package._id,package.original)">
+					<input type="text" ng-model="package.original.packageQuantity" value="package._quantity" min="0" mquantity="package._maxquantity" ng-touch-spin on-increment="alcoholCart.addPackage(package._uniqueId,package.original)" on-decrement="alcoholCart.addPackage(package._uniqueId,package.original)">
 					
 				</div>
 			</td>
@@ -90,7 +90,7 @@
 				<div class="orderhistry2price">{{package._price | currency:settings.general.currency:2}}</div>
 			</td>
 			<td> 
-				<a class="checkoutmiddletabledeleteimg" ng-click="removepackage(package._uniqueId)"><i class="glyphicon glyphicon-trash"></i></a>
+				<a class="checkoutmiddletabledeleteimg" ng-click="package.original.packageQuantity=0;alcoholCart.addPackage(package._uniqueId,package.original)"><i class="glyphicon glyphicon-trash"></i></a>
 			</td>
 		</tr>
 		

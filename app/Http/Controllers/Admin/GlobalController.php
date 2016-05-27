@@ -59,6 +59,12 @@ class GlobalController extends Controller
                 'field_status'  => 'status',
                 'alias'         => 'User'
             ),
+            "promotions" =>array(
+                'table'         => "promotions",
+                'field_id'      => "_id",
+                'field_status'  => 'status',
+                'alias'         => 'Promotion'
+            ),
 
             
             

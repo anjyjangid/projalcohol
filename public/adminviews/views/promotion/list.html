@@ -1,0 +1,191 @@
+
+<!-- BEGIN MAIN CONTENT -->
+<div class="row">
+	<div class="col-md-12">
+				
+		<div class="portlet">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-list"></i>{{$state.$current.data.pageSubTitle}}
+				</div>			
+                <div class="actions">
+
+                    <a ui-sref="promotion.add" class="btn default">
+                    <i class="fa fa-plus"></i>
+                    <span class="hidden-480">
+                    New promotion </span>
+                    </a>
+
+                    <a class="btn default" ng-click="globalRemove('promotion','#promotionlisttab')">
+                    <i class="fa fa-trash"></i>
+                    <span class="hidden-480">Remove promotion</span>
+                    </a>
+
+
+                </div>	
+			</div>
+			<div class="portlet-body">
+				<div class="table-container">
+					
+					<table class="table table-striped table-bordered table-hover" id="promotionlisttab">
+						<thead>
+							<tr role="row" class="heading">
+
+                                <th width="2%">
+                                    <input type="checkbox" class="group-checkable">
+                                </th>
+
+								<th width="5%">
+									Sr.
+								</th>
+
+								<th width="15%">
+									Title
+								</th>
+
+								<th width="">
+									Price
+								</th>
+
+                                <th width="">
+                                    Products
+                                </th>
+
+								<th width="10%">
+									Status
+								</th>
+                                
+								<th width="10%">
+									Actions
+								</th>
+
+							</tr>
+							
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- End: life time stats -->
+	</div>
+</div>
+<!-- END MAIN CONTENT -->
+<!-- BEGIN MAIN JS -->
+<script>
+	
+    var grid = new Datatable();
+
+	var DealersTableAjax = function () {
+
+    var initPickers = function () {
+        //init date pickers
+        $('.date-picker').datepicker({
+            rtl: Metronic.isRTL(),
+            autoclose: true
+        });
+    }
+
+    var handleRecords = function () {    
+
+        grid.init({
+            src: $("#promotionlisttab"),
+            onSuccess: function (grid) {
+                // execute some code after table records loaded
+            },
+            onError: function (grid) {
+                // execute some code on network or other general error  
+            },
+            loadingMessage: 'Loading...',
+            dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
+
+                // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+                // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
+                // So when dropdowns used the scrollable div should be removed. 
+                //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
+                
+                "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+
+                "lengthMenu": [
+
+                    [10, 20, 50, 100, 150, -1],
+                    [10, 20, 50, 100, 150, "All"] // change per page values here
+                ],
+                "pageLength": 10, // default record count per page
+                "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
+                        'orderable': false,
+                        'targets': [0,2,6]
+                    }],
+                "ajax": {
+                    "url": "../admin/promotion/listing", // ajax source                    
+                    "type": "POST"
+                },
+                "order": [
+                    [1, "asc"],
+                ], // set first column as a default sort by asc
+                "fnDrawCallback": function (oSettings) {
+                	
+					$("tr td span").each(function () {
+					    var content = $(this);
+					    angular.element(document).injector().invoke(function($compile) {
+					        var scope = angular.element(content).scope();
+					        $compile(content)(scope);
+					    });
+					});
+					
+					Metronic.initAjax()
+
+				},
+				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+										
+			    }
+            }
+        });
+
+        // handle group actionsubmit button click
+        grid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
+            e.preventDefault();
+            var action = $(".table-group-action-input", grid.getTableWrapper());
+            if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
+                grid.setAjaxParam("customActionType", "group_action");
+                grid.setAjaxParam("customActionName", action.val());
+                grid.setAjaxParam("id", grid.getSelectedRows());
+                grid.getDataTable().ajax.reload();
+                grid.clearAjaxParams();
+            } else if (action.val() == "") {
+                Metronic.alert({
+                    type: 'danger',
+                    icon: 'warning',
+                    message: 'Please select an action',
+                    container: grid.getTableWrapper(),
+                    place: 'prepend'
+                });
+            } else if (grid.getSelectedRowsCount() === 0) {
+                Metronic.alert({
+                    type: 'danger',
+                    icon: 'warning',
+                    message: 'No record selected',
+                    container: grid.getTableWrapper(),
+                    place: 'prepend'
+                });
+            }
+        });
+    }
+
+    return {
+
+        //main function to initiate the module
+        init: function () {
+
+            initPickers();
+            handleRecords();
+        }
+
+    };
+
+}();
+
+	DealersTableAjax.init();
+</script>
+<!-- END MAIN JS

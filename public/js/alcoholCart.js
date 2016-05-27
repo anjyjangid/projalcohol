@@ -109,10 +109,11 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 		};
 
-		this.addPackage = function (id, detail) {
+		this.addPackage = function (id,detail) {
 
 			var _self = this;
-			var deliveryKey = _self.getCartKey();
+			var deliveryKey = _self.getCartKey();		
+			
 
 			var d = $q.defer();
 
@@ -139,12 +140,20 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 				}else{
 					
-					var inCart = _self.getPackageByUniqueId(response.key);
+					var inCart = _self.getPackageByUniqueId(id);
 
 					if(inCart){
 
-						inCart.setQuantity(detail.packageQuantity);
-						inCart.setPrice(detail.packagePrice);
+						if(detail.packageQuantity==0){
+
+							_self.removePackage(response.key);
+
+						}else{	
+
+							inCart.setQuantity(detail.packageQuantity);
+							inCart.setPrice(detail.packagePrice);
+
+						}
 						
 						//$rootScope.$broadcast('alcoholCart:itemAdded', response.data);
 
@@ -419,6 +428,24 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			});
 			//this.setCart(cart);
 			$rootScope.$broadcast('alcoholCart:itemRemoved', item);
+			$rootScope.$broadcast('alcoholCart:change', {});
+		};
+
+
+		this.removePackage = function (id) {
+
+			var locPackage;
+			var cart = this.getCart();
+			angular.forEach(cart.packages, function (package, index) {
+
+				if(package.getUniqueId() === id) {
+
+					var locPackage = cart.packages.splice(index, 1)[0] || {};
+														
+				}	
+			});
+			
+			$rootScope.$broadcast('alcoholCart:itemRemoved', locPackage);
 			$rootScope.$broadcast('alcoholCart:change', {});
 		};
 
@@ -950,7 +977,9 @@ AlcoholDelivery.factory('alcoholCartPackage', ['$rootScope', '$log', function ($
 		};
 
 		package.prototype.setUniqueId = function(uniqueId){
-			if (uniqueId)  this._uniqueId = uniqueId;
+			if (uniqueId){
+				this._uniqueId = uniqueId;				
+			}
 			else {
 				$log.error('An Unique Id must be provided');
 			}
@@ -971,7 +1000,10 @@ AlcoholDelivery.factory('alcoholCartPackage', ['$rootScope', '$log', function ($
 		};		
 		
 		package.prototype.setOriginal = function(data){
-			if (data) this.original = data;
+			if (data) {
+				this.original = data;
+				this.original.unique = this.getUniqueId();
+			}
 		};
 
 		package.prototype.getOriginal = function(){
@@ -987,7 +1019,7 @@ AlcoholDelivery.factory('alcoholCartPackage', ['$rootScope', '$log', function ($
 
 		package.prototype.getQuantity = function(){
 			if (this._quantity) return parseInt(this._quantity);
-			else $log.info('This package has no original detail');
+			else $log.info('This package quantity has some issue');
 		};
 
 		package.prototype.setPrice = function(price){

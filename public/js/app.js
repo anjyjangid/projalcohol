@@ -184,7 +184,7 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', '$f
 
 		localpro = $.extend(catPriceObj, localpro);
 		localpro.price = parseFloat(localpro.price);
-
+		localpro.unitprice = localpro.price;
 		var orderValue = localpro.regular_express_delivery;
 		
 		if(orderValue.type==1){
@@ -199,9 +199,9 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', '$f
 			var bulk = localpro.express_delivery_bulk.bulk[i];
 
 			if(bulk.type==1){
-				bulk.price = localpro.price + (localpro.price * bulk.value/100);
+				bulk.price = localpro.unitprice + (localpro.unitprice * bulk.value/100);
 			}else{
-				bulk.price = localpro.price + bulk.value;
+				bulk.price = localpro.unitprice + bulk.value;
 			}
 
 			bulk.price = bulk.price.toFixed(2);
@@ -524,8 +524,9 @@ AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$
 
 		var isInCart = alcoholCart.getProductById($scope.product._id);
 
-		$scope.product.qChilled = 1;
-		$scope.product.qNChilled = 1;
+		$scope.product.qChilled = 0;
+		$scope.product.qNChilled = 0;
+		
 		$scope.product.servechilled=$scope.product.chilled;
 
 		if(isInCart!==false){
@@ -878,10 +879,10 @@ AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','
 						$scope.map.setZoom(12);
 						$scope.map.setOptions({draggable: false});
 
-        				$scope.marker = new google.maps.Marker({
-								            position: point,
-								            map: $scope.map,						            
-								        });
+        				// $scope.marker = new google.maps.Marker({
+								    //         position: point,
+								    //         map: $scope.map,						            
+								    //     });
 
 					}, 500);
 					
@@ -923,7 +924,7 @@ AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','
 			                title: "Please choose a valid address.",   
 			                text: "",
 			                type: "warning",
-			                timer: 1000,
+			                
 			                showCancelButton: true,   
 			                confirmButtonColor: "#DD6B55",   
 			                confirmButtonText: "Ok",
@@ -987,7 +988,7 @@ AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','
 				break;
 				case 'neighborhood':
 					pullAddress.neighborhood = address.address_components[addressObj].long_name;
-				break;
+				break;			
 			}
 		}
 
@@ -1144,6 +1145,8 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 		function(result) {
 
 			$scope.alcoholCart = alcoholCart;
+
+			angular.alcoholCart = alcoholCart;
 
 			$scope.cart = alcoholCart.$cart;
 
@@ -1551,7 +1554,7 @@ AlcoholDelivery.controller('CartAddressController',['$scope','$rootScope','$stat
 			                title: "Please choose a valid address.",   
 			                text: "",
 			                type: "warning",
-			                timer: 1000,
+			                
 			                showCancelButton: true,   
 			                confirmButtonColor: "#DD6B55",   
 			                confirmButtonText: "Ok",
