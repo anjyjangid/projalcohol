@@ -1430,14 +1430,16 @@ MetronicApp.filter('isEmpty', [function() {
 }]);
 
 /* Init global settings and run the app */
-MetronicApp.run(["$rootScope", "settings", "$state", function($rootScope, settings, $state) {
+MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "store", "$location", function($rootScope, settings, $state, $cookieStore, $log, store, $location) {
 
-	$rootScope.$on('$stateChangeStart', function(evt, to, params) {
-	  if (to.redirectTo) {
-		evt.preventDefault();
-		$state.go(to.redirectTo, params)
-	  }
-	});
+	$rootScope.$on('$locationChangeStart', function (event, next, current) {
+        // redirect to login page if not logged in and trying to access a restricted page
+        /*var restrictedPage = $.inArray($location.path(), ['/login', '/register']) === -1;
+        var loggedIn = $rootScope.globals.currentUser;
+        if (restrictedPage && !loggedIn) {
+            $location.path('/login');
+        }*/
+    });
 
 	$rootScope.$state = $state; // state to be accessed from view    
 
