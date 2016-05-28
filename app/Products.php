@@ -29,10 +29,8 @@ class Products extends Eloquent
 			'metaDescription',
 			'images',
 			'isFeatured',
-			'bulkDisable',
-			'advance_order',
-			'regular_express_delivery',
-			'advance_order_bulk',
+			'bulkDisable',			
+			'regular_express_delivery',			
 			'express_delivery_bulk',
 			'loyalty',
 			'threshold',
@@ -103,14 +101,13 @@ class Products extends Eloquent
 			$categyIds = array_merge($categyIds,$product['categories']);
 		}
 
-
-		$categories = Categories::whereIn("_id",$categyIds)->get(['_id', 'ancestors','advance_order','advance_order_bulk']);
+		$categories = Categories::whereIn("_id",$categyIds)->get(['_id', 'ancestors','regular_express_delivery','express_delivery_bulk']);
 
 		//Fetch Global Pricing
 		$globalPricing = Setting::where("_id",'=',"pricing")
 									->first([
-										'settings.advance_order',
-										'settings.advance_order_bulk',										
+										'settings.regular_express_delivery',
+										'settings.express_delivery_bulk',										
 									]);
 		$globalPricing = $globalPricing->settings;
 

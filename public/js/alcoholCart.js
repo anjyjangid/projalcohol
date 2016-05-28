@@ -812,7 +812,7 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 
 			var quantity = this.getQuantity();
 
-			var advancePricing = original.advance_order;
+			var advancePricing = original.regular_express_delivery;
 			
 			if(advancePricing.type==1){
 
@@ -821,17 +821,15 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 			}else{
 
 				unitPrice += parseFloat(advancePricing.value);
-
+				
 			}
-
-			
 
 			price = unitPrice;
 			price = parseFloat(price.toFixed(2));
 
 			this.unitPrice = price;
 
-			var bulkArr = original.advance_order_bulk.bulk;
+			var bulkArr = original.express_delivery_bulk.bulk;
 
 			for(i=0;i<bulkArr.length;i++){
 
