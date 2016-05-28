@@ -204,6 +204,9 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 
 	Route::resource('brand', 'Admin\BrandController');
 	Route::controller('brand', 'Admin\BrandController');
+
+	Route::resource('promotion', 'Admin\PromotionController');
+	Route::controller('promotion', 'Admin\PromotionController');
 	
 	Route::resource('order', 'Admin\OrderController');
 	Route::controller('order', 'Admin\OrderController');

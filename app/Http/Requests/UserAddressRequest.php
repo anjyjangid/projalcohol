@@ -62,7 +62,7 @@ class UserAddressRequest extends Request
 
 			$this->request->add(['geometry'=>$input['place']['geometry']['location']]);
 
-
+			$rules['postal']='string|max:10';
 			$rules['house']='string|max:10';
 		}
 		

@@ -129,7 +129,7 @@ class PackageController extends Controller
     {
         $package = new Packages;
 
-        $package = $package->where('_id', $id)->where('type',(int)$type)->with('productlist')->first();           
+        $package = $package->where('_id', $id)->where('type',(int)$type)->with('productlist')->first();
 
         if($package){
 

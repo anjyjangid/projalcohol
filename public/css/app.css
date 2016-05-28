@@ -385,3 +385,9 @@ md-toast.desired-quantity-na-toast:before {
     overflow: hidden;
     line-height: 15px;
   }
+  .swal2-overlay{
+    z-index: 1000000;
+  }
+  .swal2-modal{
+    z-index: 1000001;
+  }

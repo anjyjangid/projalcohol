@@ -45,9 +45,8 @@ MetronicApp.controller('PackageFormController',['$scope', '$location','$statePar
                 container: '.portlet-body',
                 place: 'prepend',
                 closeInSeconds: 3
-            });			
+            });
 		});
-
 	}
 
 	$scope.store = function(){
@@ -56,7 +55,7 @@ MetronicApp.controller('PackageFormController',['$scope', '$location','$statePar
 
 		if($stateParams.packageid){
 			url = 'package/update/'+$stateParams.packageid;
-		}	
+		}
 		
 		//POST DATA WITH FILES
 		packageModel.storePackage($scope.package,url).success(function(response){						

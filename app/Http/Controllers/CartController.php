@@ -340,6 +340,7 @@ class CartController extends Controller
 
 		if(isset($packageDetail['unique'])){
 			foreach ($packages as $key => $package) {
+
 				if(!isset($package["_unique"])){
 					unset($packages[$key]);
 					continue;
@@ -349,10 +350,13 @@ class CartController extends Controller
 					$packageDetail['_unique'] = $package["_unique"];
 					break;
 				}
+
 			}
 		}
-			
-		array_unshift($packages, $packageDetail);
+		
+		if($packageDetail['packageQuantity']>0){
+			array_unshift($packages, $packageDetail);
+		}
 		
 		$cart->packages = $packages;
 		

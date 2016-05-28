@@ -30,7 +30,9 @@
 						<input type="text" value="packages.packageQuantity" ng-model="packages.packageQuantity" min="1" max="10" ng-touch-spin>
 					</div>
 			    	<div class="quantiy-party-detail add-cart-btm">
-			    		<a class="btn product_addcart addcart-detail"><img src="images/cart-icon.png" />{{btnText}}</a>    		
+			    		<!-- <a class="btn product_addcart addcart-detail"><img src="images/cart-icon.png" />{{btnText}}</a>    		 -->
+			    		<a class="btn product_addcart addcart-detail" ng-if="!processing" ng-click="addPackage()"><img src="images/cart-icon.png" />{{btnText}}</a>
+	    				<a class="btn product_addcart addcart-detail" ng-if="processing"><i class="fa fa-spinner fa-spin"></i> {{btnText}}</a>	
 			    	</div>
 				</div>
 			</div>
