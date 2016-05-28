@@ -386,7 +386,7 @@ class ProductController extends Controller
               '<span class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span>',
               '<span class="label label-sm label-'.(key($isFeatured)).'">'.(current($isFeatured)).'</span>',
               $product->quantity,
-              '<a href="#/product/edit/'.$product->_id.'" class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>'
+              '<a ui-sref=products.edit({productid:"'.$product->_id.'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>'
               
             );
         }

@@ -30,7 +30,7 @@
 							</tr>
 							
 						</thead>
-						<tbody>
+						<tbody id="tBody">
 						</tbody>
 					</table>
 				</div>
@@ -92,14 +92,16 @@
                 "order": [
                     [1, "asc"],
                 ], // set first column as a default sort by asc
-                "fnDrawCallback": function (oSettings) {
-                	
-					Metronic.initAjax()
-
-				},
-				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-										
-			    }
+                "fnDrawCallback": function (oSettings) {                    
+                        
+                    var content = $('#tBody');
+                    angular.element(document).injector().invoke(function($compile) {
+                        var scope = angular.element(content).scope();
+                        $compile(content)(scope);
+                    });
+                    
+                    Metronic.initAjax();
+                }
             }
         });
 

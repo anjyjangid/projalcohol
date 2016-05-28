@@ -16,7 +16,7 @@ MetronicApp.controller('TimeslotController',['$rootScope', '$scope', '$timeout',
 			return (topt.opVal!=idnot);
 		});
 	};
-
+	
 	$scope.weekDays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
 }]);

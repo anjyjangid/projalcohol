@@ -42,3 +42,10 @@ td.details-control {
 tr.detail td.details-control {
     background: url('../images/details_close.png') no-repeat center center;
 }
+
+.selectedsubmenu{
+    background: #3e4b5c none repeat scroll 0 0 !important
+}
+.page-header.navbar .page-logo{
+    padding-right: 0px;
+}

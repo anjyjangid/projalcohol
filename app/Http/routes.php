@@ -221,6 +221,8 @@ Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 		Route::post('update/{id}','Admin\PackageController@update');
 	});		
 
+	Route::controller('admin', 'Admin\AdminController');
+
 });
 
 
@@ -263,6 +265,7 @@ Route::put('/profile', 'UserController@update');
 Route::put('/password', 'UserController@updatepassword');
 
 Route::controller('user', 'UserController');
+
 
 
 //TO WORK FOR ANGULAR DIRECT URL

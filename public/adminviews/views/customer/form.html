@@ -4,31 +4,31 @@
 			<div class="portlet-title tabbable-line">
 				<div class="caption caption-md">
 					<i class="icon-globe theme-font hide"></i>
-					<span class="caption-subject font-blue-madison bold uppercase">Add Dealer</span>
+					<span class="caption-subject font-blue-madison bold uppercase">
+					{{customer._id?'Update':'Add'}} Customer</span>
 				</div>
-				<div class="actions btn-set">
-					<a class="btn default" href="#/dealers/list"><i class="fa fa-angle-left"></i> Back</a>
-					<button class="btn green" ng-click="store()"><i class="fa fa-check"></i> Save</button>
+				<div class="actions btn-set">					
+					<button class="btn green" ng-click="store()"><i class="fa fa-check"></i>{{customer._id?'Update':'Save'}}</button>
 				</div>
 			</div>
 			<div class="portlet-body">
 				
-				<tabset active="active">
+				<!-- <tabset active="active">
 				<tab>
-						<tab-heading>General</tab-heading>
+						<tab-heading>General</tab-heading> -->
 
 						<div class="form-horizontal">
-							<div class="form-group" ng:class="{'has-error':errors.title[0]}">
+							<div class="form-group" ng:class="{'has-error':errors['name'][0]}">
 								<label class="col-md-2 control-label">Name: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<input type="text" class="form-control" ng-model="dealer.title" placeholder="">
-									<span class="help-block" ng-bind="errors.title[0]"></span>
+									<input type="text" class="form-control" ng-model="customer.name" placeholder="">
+									<span class="help-block" ng-bind="errors['name'][0]"></span>
 								</div>
 
 							</div>
-							<div class="form-group" ng:class="{'has-error':errors.description[0]}">
+							<!-- <div class="form-group" ng:class="{'has-error':errors.description[0]}">
 								<label class="col-md-2 control-label">Description: <span class="required">
 								* </span>
 								</label>
@@ -36,72 +36,68 @@
 									<textarea class="form-control" ng-model="dealer.description"></textarea>
 									<span class="help-block" ng-bind="errors.description[0]"></span>
 								</div>
-							</div>
+							</div> -->
 
-							<div class="form-group" ng:class="{'has-error':errors['address.street'][0]}">
-								<label class="col-md-2 control-label">Street: <span class="required">
+							<div class="form-group" ng:class="{'has-error':errors['email'][0]}">
+								<label class="col-md-2 control-label">Email: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<input type="text" class="form-control" ng-model="dealer.address.street" placeholder="">
-									<span class="help-block" ng-bind="errors['address.street'][0]"></span>
+									<input type="text" class="form-control" ng-model="customer.email" placeholder="">
+									<span class="help-block" ng-bind="errors['email'][0]"></span>
 								</div>
 
 							</div>
 
-							<div class="form-group" ng:class="{'has-error':errors['address.city'][0]}">
-								<label class="col-md-2 control-label">City: <span class="required">
+							<div class="form-group" ng:class="{'has-error':errors['mobile_number'][0]}">
+								<label class="col-md-2 control-label">Mobile number: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<input type="text" class="form-control" ng-model="dealer.address.city" placeholder="">
-									<span class="help-block" ng-bind="errors['address.city'][0]"></span>
+									<input type="text" class="form-control" ng-model="customer.mobile_number" placeholder="">
+									<span class="help-block" ng-bind="errors['mobile_number'][0]"></span>
+								</div>
+
+							</div>
+							
+							
+							<div class="form-group" ng-hide="hideBasicInfo" ng:class="{'has-error':errors['password'][0]}">
+								<label class="col-md-2 control-label">Password: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="password" class="form-control" ng-model="customer.password" placeholder="">
+									<span class="help-block" ng-bind="errors['password'][0]"></span>
 								</div>
 
 							</div>
 
-							<div class="form-group" ng:class="{'has-error':errors['address.state'][0]}">
-								<label class="col-md-2 control-label">State: <span class="required">
+							<div class="form-group" ng-hide="hideBasicInfo" ng:class="{'has-error':errors['password_confirmation'][0]}">
+								<label class="col-md-2 control-label">Confirm password: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<input type="text" class="form-control" ng-model="dealer.address.state" placeholder="">
-									<span class="help-block" ng-bind="errors['address.state'][0]"></span>
+									<input type="password" class="form-control" ng-model="customer.password_confirmation" placeholder="">
+									<span class="help-block" ng-bind="errors['password_confirmation'][0]"></span>
 								</div>
 
 							</div>
-
-							<div class="form-group" ng:class="{'has-error':errors['address.country'][0]}">
-								<label class="col-md-2 control-label">Country: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-
-									<select class="form-control" 
-										ng-model="dealer.address.country" 
-										ng-options="option.name for option in countries"
-										>
-										<option value="">---- Select Country ----</option>
-									</select>
-									
-									<span class="help-block" ng-bind="errors['address.country'][0]"></span>
-								</div>
-
-							</div>
-							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
+							
+							
+							<div class="form-group" ng:class="{'has-error':errors['status'][0]}">
 								<label class="col-md-2 control-label">Status: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<select class="form-control" ng-model="dealer.status">
+									<select class="form-control" ng-model="customer.status">
 										<option value="1">Active</option>
 										<option value="0">In-Active</option>
 									</select>
-									<span class="help-block" ng-bind="errors.status[0]"></span>
+									<span class="help-block" ng-bind="errors['status'][0]"></span>
 								</div>
 							</div>
 						</div>
-					</tab>
+					<!-- </tab>
 
 					<tab>
 
@@ -158,7 +154,7 @@
 							</tbody>
 						</table>
 					</tab>
-				</tabset>
+				</tabset> -->
 
 			</div>
 		</div>

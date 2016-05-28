@@ -6,159 +6,31 @@
 	<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
 	<!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
 	<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-	<ul class="page-sidebar-menu page-sidebar-menu-hover-submenu page-sidebar-menu-light " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}">
+	
+
+
+	<ul class="page-sidebar-menu page-sidebar-menu-hover-submenu page-sidebar-menu-light" data-keep-expanded="true" data-auto-scroll="true" data-slide-speed="200" ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}">
 		<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-		<li class="sidebar-search-wrapper">
-			<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-			<!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-			<!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-			<!-- <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-				<a href="javascript:;" class="remove">
-				<i class="icon-close"></i>
-				</a>
-				<div class="input-group">
-					<input type="text" class="form-control" placeholder="Search...">
-					<span class="input-group-btn">
-					<a href="javascript:;" class="btn submit"><i class="icon-magnifier"></i></a>
-					</span>
-				</div>
-			</form> -->
-			<!-- END RESPONSIVE QUICK SEARCH FORM -->
-		</li>
-		<br>
-		<br>
-		<li class="start">
-			<a ui-sref="dashboard" id="sidebar_menu_link_dashboard">
-			<i class="icon-home"></i>
-			<span class="title">Dashboard</span>
+		<li ng-repeat="item in menuOptions">			
+			<a ng-if="item.uisref" ui-sref="{{item.uisref}}" id="{{item.id}}">
+				<i class="{{item.icon}}"></i>
+				<span class="title" ng-bind="item.label"></span>
+				<span class="arrow" ng-if="item.subItems"></span>
 			</a>
-		</li>
-		<li>
-			<a ui-sref="customer" id="sidebar_menu_link_customer">
-			<i class="icon-user"></i>			
-			<span class="title">Customers</span>
+			<a ng-if="!item.uisref" href="javascript:void(0)" id="{{item.id}}">
+				<i class="{{item.icon}}"></i>
+				<span class="title" ng-bind="item.label"></span>
+				<span class="arrow" ng-if="item.subItems"></span>
 			</a>
-		</li>
-
-		<li>
-			<a ui-sref="orders.list" id="sidebar_menu_link_orders">
-			<i class="icon-user"></i>			
-			<span class="title">Orders</span>
-			</a>
-		</li>
-
-		<li>
-
-			<a ui-sref="categories.list" id="sidebar_menu_link_categories">
-			<i class="icon-wrench"></i>
-			<span class="title">Categories</span>
-			</a>
-		</li>
-		<li>
-			<a ui-sref="products.list" id="sidebar_menu_link_products">
-			<i class="icon-handbag"></i>
-			<span class="title">Products</span>
-			</a>
-		</li>
-
-		<li>			
-			<a href="javascript:void(0)" id="sidebar_packages" >
-			<i class="icon-social-dropbox"></i>
-			<span class="title">Packages</span>
-			<span class="arrow"></span>
-			</a>
-			<ul class="sub-menu">				
-				<li>
-					<a ui-sref="packages.party">
-					<i class="icon-bag"></i>
-					Party Packages </a>
+			<ul class="sub-menu" ng-if="item.subItems">
+				<li ng-repeat="subItem in item.subItems" ng-class="{'selectedsubmenu':isActivelink(subItem.links,$state.$current.name)}" class="ms-hover">
+					<a ui-sref="{{subItem.uisref}}">
+						<i class="{{subItem.icon}}"></i>			
+						<span ng-bind="subItem.label"></span>
+					</a>	
 				</li>
-				<li>
-					<a ui-sref="packages.cocktail">
-					<i class="icon-bag"></i>
-					Cocktail Packages</a>
-				</li>				
-			</ul>
+			</ul>			
 		</li>
-		<li>
-			<a ui-sref="timeslots.list" id="sidebar_menu_link_timeslots">
-			<i class="icon-clock"></i>
-			<span class="title">Time Slots</span>
-			</a>
-		</li>
-		<!-- <li>
-			<a href="#/dashboard.html" id="sidebar_menu_link_dashboard">
-			<i class="icon-user"></i>
-			<span class="title">Business Orders</span>
-			</a>
-		</li> -->
-		<!-- <li>
-			<a href="#/dashboard.html" id="sidebar_menu_link_dashboard">
-			<i class="icon-user"></i>
-			<span class="title">Payments & Transactions</span>
-			</a>
-		</li> -->		
-		<li>
-			<a href="#/dealers/list" id="sidebar_menu_link_dealers">
-			<i class="icon-user"></i>
-			<span class="title">Dealers</span>
-			</a>
-		</li>
-		
-		
-
-		<li>			
-			<a href="javascript:void(0)" id="sidebar_menu_link_settings" >
-			<i class="icon-settings"></i>
-			<span class="title">Global Settings</span>
-			<span class="arrow"></span>
-			</a>
-			<ul class="sub-menu">				
-				<li>
-					<a ui-sref="settings.general">
-					<i class="icon-settings"></i>
-					General </a>
-				</li>
-				<li>
-					<a ui-sref="settings.social">
-					<i class="icon-share"></i>
-					Social Links </a>
-				</li>
-				<li>
-					<a ui-sref="settings.pricing">
-					<i class="icon-wallet"></i>
-					Pricing </a>
-				</li>				
-			</ul>
-		</li>
-
-		<li>
-			<a href="#/emailtemplates/list" id="sidebar_menu_link_emailtemplate">
-			<i class="icon-envelope"></i>
-			<span class="title">Email Contents</span>
-			</a>
-		</li>
-		<li>
-			<a href="#/cms/list" id="sidebar_menu_link_cms">
-			<i class="icon-folder"></i>
-			<span class="title">CMS pages</span>
-			</a>
-		</li>
-		<li>
-			<a href="#/testimonial/list" id="sidebar_menu_link_testimonial">
-			<i class="icon-speech"></i>
-			<span class="title">Testimonials</span>
-			</a>
-		</li>
-
-		<li>
-			<a href="#/brand/list" id="sidebar_menu_link_brand">
-			<i class="icon-book-open"></i>
-			<span class="title">Brands</span>
-			</a>
-		</li>
-
-		
 	</ul>
 	<!-- END SIDEBAR MENU -->
 </div>	

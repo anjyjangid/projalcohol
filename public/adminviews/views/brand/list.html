@@ -59,7 +59,7 @@
 							</tr>
 							
 						</thead>
-						<tbody>
+						<tbody id="tBody">
 						</tbody>
 					</table>
 				</div>
@@ -122,15 +122,11 @@
                     [1, "asc"],
                 ], // set first column as a default sort by asc
                 "fnDrawCallback": function (oSettings) {
-                	
-					$("tr td span").each(function () {
-					    var content = $(this);
-					    angular.element(document).injector().invoke(function($compile) {
-					        var scope = angular.element(content).scope();
-					        $compile(content)(scope);
-					    });
-					});
-					
+				    var content = $('#tBody');
+				    angular.element(document).injector().invoke(function($compile) {
+				        var scope = angular.element(content).scope();
+				        $compile(content)(scope);
+				    });
 					Metronic.initAjax()
 
 				},

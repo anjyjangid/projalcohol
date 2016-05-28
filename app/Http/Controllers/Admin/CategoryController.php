@@ -518,8 +518,8 @@ class CategoryController extends Controller
 			$row[] = ucfirst($value['cat_title']);
 			$row[] = isset($value['ancestors'][0]['title'])?ucfirst($value['ancestors'][0]['title']):'';
 			$row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="category" data-status="'.((int)$value['cat_status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
-			$row[] = '<a title="View : '.$value['cat_title'].'" href="#/categories/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
-					 '<a title="Edit : '.$value['cat_title'].'" href="#/categories/edit/'.$value['_id'].'" href="#/categories/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
+			$row[] = '<a title="View : '.$value['cat_title'].'" ui-sref=categories.show({categoryid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
+					 '<a title="Edit : '.$value['cat_title'].'" ui-sref=categories.edit({categoryid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
 			
 			$records['data'][] = $row;
 		}

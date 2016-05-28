@@ -237,8 +237,8 @@ class CmsController extends Controller
             $row[] = $value['description'];
 
             $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="pages" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
-            $row[] = '<a title="View : '.$value['title'].'" href="#/cms/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
-                     '<a title="Edit : '.$value['title'].'" href="#/cms/edit/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
+            $row[] = '<a title="View : '.$value['title'].'" ui-sref=cms.show({pageid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
+                     '<a title="Edit : '.$value['title'].'" ui-sref=cms.edit({pageid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
             
             $records['data'][] = $row;
         }

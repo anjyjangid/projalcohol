@@ -7,15 +7,12 @@ MetronicApp.controller('SettingsController',['$rootScope', '$scope', '$timeout',
 		Layout.setSidebarMenuActiveLink('set', $('#sidebar_menu_link_settings')); // set profile link active in sidebar menu         
 		// set sidebar closed and body solid layout mode
 		$rootScope.settings.layout.pageBodySolid = false;
-		$rootScope.settings.layout.pageSidebarClosed = false;  
-
-		settingsModel.getSettings($state.$current.data.key).success(function(response){			
-			$scope.settings = response.settings;
-		});
+		$rootScope.settings.layout.pageSidebarClosed = false;  		
 
     });    
 
     $scope.errors = {};
+    
     $scope.currency = [
     	{name:"$",sign:"$"},
     	{name:"£",sign:"£"},
@@ -39,6 +36,12 @@ MetronicApp.controller('SettingsController',['$rootScope', '$scope', '$timeout',
 	$scope.popt = ['Fixed Amount','% Amount'];
 		
 
+	
+
+}]);
+
+MetronicApp.controller('SettingFormController',['$rootScope', '$scope', '$timeout','$http','$state','settingsModel', function($rootScope, $scope, $timeout,$http,$state,settingsModel) {
+
 	$scope.update = function(){
 		
 		var data = $scope.settings;
@@ -57,6 +60,8 @@ MetronicApp.controller('SettingsController',['$rootScope', '$scope', '$timeout',
 		});
 	}
 
-
+	settingsModel.getSettings($state.$current.data.key).success(function(response){			
+		$scope.settings = response.settings;
+	});
 
 }]);

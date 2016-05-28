@@ -363,7 +363,7 @@ class TestimonialController extends Controller
             $row[] = $value['content'];
             
             $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="testimonial" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
-            $row[] = '<a title="Edit : '.$value['name'].'" href="#/testimonial/edit/'.$value['_id'].'" href="#/testimonial/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
+            $row[] = '<a title="Edit : '.$value['name'].'" ui-sref=testimonial.edit({testimonialid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
             
             $records['data'][] = $row;
         }

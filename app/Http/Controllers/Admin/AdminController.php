@@ -10,6 +10,7 @@ use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\User as User;
 use Illuminate\Support\Facades\Validator;
 use AlcoholDelivery\Admin;
+use AlcoholDelivery\Http\Requests\SubadminRequest;
 
 class AdminController extends Controller
 {
@@ -156,4 +157,87 @@ class AdminController extends Controller
         return response($admin, 200);
     }
 
+    public function postSubadmin(SubadminRequest $request,$id=null){
+
+        $data = $request->all();
+
+        $inputs = [
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'email' => $data['email'],            
+            'status' => (int)$data['status'],
+            'role' => 2
+        ];
+
+        $saved = false;
+        
+        if($id){//IN CASE OF UPDATE            
+            $saved = Admin::find($id);            
+            $saved->update($inputs);
+        }else{//IN CASE OF NEW
+            $inputs['password'] = bcrypt($data['password']);
+            $saved = Admin::create($inputs);
+            if($saved){
+
+            }
+        }
+
+        if($saved){
+            return response($saved,201);
+
+        }else{
+            return response(['message'=>'Error in saving subadministrator'],422);
+        }
+
+    }
+
+    public function postSubadminlist(Request $request){
+
+        $params = $request->all();
+
+        extract($params);
+        
+        $subadmin = new Admin;
+
+        if(isset($name) && trim($name)!=''){
+            $subadmin = $subadmin->where('first_name','like', '%'.$name.'%')->orWhere('last_name','like', '%'.$name.'%');            
+        }
+
+        $subadmin = $subadmin->where('role',2);
+
+        $iTotalRecords = $subadmin->count();
+
+        if(isset($email) && trim($email)!=''){
+            $subadmin = $subadmin->where('email','like', '%'.$email.'%');            
+        }
+
+        if(isset($status) && trim($status)!=''){
+            $subadmin = $subadmin->where('status',(int)$status);            
+        }
+
+        $subadmin = $subadmin->orderBy('created_at','desc');
+
+        $subadmin = $subadmin
+        ->skip((int)$start)
+        ->take((int)$length)->get();
+
+        $response = [
+            'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+            'data' => $subadmin            
+        ];      
+        return response($response,200);
+    }
+
+    public function getSubadminuser(Request $request,$id){
+
+        $subadmin = Admin::where('_id',$id)->where('role',2)->first();
+
+        if($subadmin){
+            return response($subadmin,200);
+        }else{
+            return response(['message'=>'Invalid user.'],404);
+        }
+    }
 }

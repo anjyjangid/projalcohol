@@ -47,6 +47,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <link href="{{ asset('assets/admin/layout/css/themes/darkblue.css') }}" rel="stylesheet" type="text/css" id="style_color"/>
 <link href="{{ asset('assets/admin/layout/css/custom.css') }}" rel="stylesheet" type="text/css"/>
 <link href="{{ asset('css/admincustom.css') }}" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
 <link rel="shortcut icon" href="images/favicon.ico"/>
 </head>
@@ -170,6 +171,8 @@ License: You must have a valid license purchased only from themeforest(the above
 	<!-- END APP LEVEL JQUERY SCRIPTS -->
 
 	<script src="{{ asset('js/angular-storage.js') }}" type="text/javascript"></script>
+
+	<script src="{{ asset('assets/global/plugins/datatables/all.min.js') }}" type="text/javascript"></script>
 
 	<script type="text/javascript">
 		/* Init Metronic's core jquery plugins and layout scripts */

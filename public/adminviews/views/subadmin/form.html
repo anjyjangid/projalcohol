@@ -1,0 +1,78 @@
+<div class="row" ng-controller="SubadminFormController">
+	<div class="col-md-12">
+		<form role="form" name='packageForm' ng-submit="store()" required="false">
+		<div class="portlet light">			
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-user"></i>{{subadmin._id?'Edit Package':'Add New Subadministrator'}}
+				</div>
+				<div class="actions btn-set">					
+					<button class="btn green" type="submit"><i class="fa fa-check"></i> {{subadmin._id?'Update':'Save'}}</button>
+				</div>
+			</div>
+			<div class="portlet-body mbody">
+				<div class="form-horizontal">							
+					<div class="form-group" ng:class="{'has-error':errors.first_name[0]}">
+						<label class="col-md-2 control-label">First Name: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<input type="text" class="form-control" ng-model="subadmin.first_name" placeholder="First Name">
+							<span class="help-block" ng-bind="errors.first_name[0]"></span>
+						</div>
+					</div>
+					<div class="form-group" ng:class="{'has-error':errors.last_name[0]}">
+						<label class="col-md-2 control-label">Last Name: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<input type="text" class="form-control" ng-model="subadmin.last_name" placeholder="Last Name">
+							<span class="help-block" ng-bind="errors.last_name[0]"></span>
+						</div>
+					</div>
+					<div class="form-group" ng:class="{'has-error':errors.email[0]}">
+						<label class="col-md-2 control-label">Email: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<input type="text" class="form-control" ng-model="subadmin.email" placeholder="Email">
+							<span class="help-block" ng-bind="errors.email[0]"></span>
+						</div>
+					</div>							
+					<div ng-hide="subadmin._id" class="form-group" ng:class="{'has-error':errors.password[0]}">
+						<label class="col-md-2 control-label">Password: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<input type="password" class="form-control" ng-model="subadmin.password" placeholder="Password">
+							<span class="help-block" ng-bind="errors.password[0]"></span>
+						</div>
+					</div>
+					<div ng-hide="subadmin._id" class="form-group" ng:class="{'has-error':errors.confirmPassword[0]}">
+						<label class="col-md-2 control-label">Confirm Password: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<input type="password" class="form-control" ng-model="subadmin.confirmPassword" placeholder="Confirm Password">
+							<span class="help-block" ng-bind="errors.confirmPassword[0]"></span>
+						</div>
+					</div>
+					<div class="form-group" ng:class="{'has-error':errors.status[0]}">
+						<label class="col-md-2 control-label">Status: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<select class="table-group-action-input form-control input-medium" ng-model="subadmin.status">
+								<option value="">Select...</option>
+								<option value="1">Active</option>
+								<option value="0">In-active</option>
+							</select>
+							<span class="help-block" ng-bind="errors.status[0]"></span>
+						</div>
+					</div>
+				</div>																						
+			</div>			
+		</div>
+		</form>
+	</div>	
+</div>

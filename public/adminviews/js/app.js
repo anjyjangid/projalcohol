@@ -205,7 +205,7 @@ MetronicApp.service('fileUpload', ['$http','$location', function ($http,$locatio
 
 
 /* Setup App Main Controller */
-MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAlert', function($scope, $rootScope,$http,sweetAlert) {
+MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAlert','$state', function($scope, $rootScope,$http,sweetAlert,$state) {
 
 	$scope.$on('$viewContentLoaded', function() {
 		Metronic.initComponents(); // init core components        
@@ -306,7 +306,139 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 				});
 		}
 	}
-	
+
+	$scope.isActivelink = function(arr,val){
+
+		return (arr.indexOf(val) != -1);
+
+	}
+
+	$scope.menuOptions = [
+		{
+			label:'Dashboard',
+			uisref:'dashboard',
+			icon:'icon-home',
+			id:'sidebar_menu_link_dashboard'
+		},
+		{
+			label:'Users',			
+			icon:'icon-user',
+			id:'sidebar_menu_link_user',
+			subItems:[
+				{
+					label:'Customers',
+					uisref:'customer.list',
+					icon:'icon-user',					
+					links:['customer.list','customer.add','customer.edit']
+				},
+				{
+					label:'Dealers',
+					uisref:'dealers.list',
+					icon:'icon-user',					
+					links:['dealers.list','dealers.add','dealers.edit','dealers.show','dealers.orders']
+				},
+				{
+					label:'Sub Administrator',
+					uisref:'subadmin.list',
+					icon:'icon-user',					
+					links:['subadmin.list','subadmin.add','subadmin.edit']
+				}
+			]
+		},
+		{
+			label:'Orders',
+			uisref:'orders.list',
+			icon:'icon-user',
+			id:'sidebar_menu_link_orders',
+
+		},
+		{
+			label:'Categories',
+			uisref:'categories.list',
+			icon:'icon-wrench',
+			id:'sidebar_menu_link_categories'
+		},
+		{
+			label:'Products',
+			uisref:'products.list',
+			icon:'icon-handbag',
+			id:'sidebar_menu_link_products'
+		},
+		{
+			label:'Packages',			
+			icon:'icon-social-dropbox',
+			id:'sidebar_packages',
+			subItems:[
+				{
+					label:'Party Packages',
+					uisref:'packages.party',
+					icon:'icon-bag',					
+					links:['packages.party','packages.addparty','packages.editparty']
+				},
+				{
+					label:'Cocktail Packages',
+					uisref:'packages.cocktail',
+					icon:'icon-bag',					
+					links:['packages.cocktail','packages.addcocktail','packages.editcocktail']
+				}
+			]
+		},
+		{
+			label:'Time Slots',
+			uisref:'timeslots.list',
+			icon:'icon-clock',
+			id:'sidebar_menu_link_timeslots'
+		},
+		{
+			label:'Global Settings',			
+			icon:'icon-settings',
+			id:'sidebar_menu_link_settings',
+			subItems:[
+				{
+					label:'General',
+					uisref:'settings.general',
+					icon:'icon-settings',					
+					links:['settings.general']
+				},
+				{
+					label:'Social Links',
+					uisref:'settings.social',
+					icon:'icon-share',					
+					links:['settings.social']
+				},
+				{
+					label:'Pricing',
+					uisref:'settings.pricing',
+					icon:'icon-wallet',					
+					links:['settings.pricing']
+				}
+			]
+		},
+		{
+			label:'Email Templates',
+			uisref:'emailtemplates.list',
+			icon:'icon-envelope',
+			id:'sidebar_menu_link_emailtemplate'
+		},
+		{
+			label:'CMS Pages',
+			uisref:'cms.list',
+			icon:'icon-folder',
+			id:'sidebar_menu_link_cms'
+		},
+		{
+			label:'Testimonials',
+			uisref:'testimonial.list',
+			icon:'icon-speech',
+			id:'sidebar_menu_link_testimonial'
+		},
+		{
+			label:'Brands',
+			uisref:'brand.list',
+			icon:'icon-book-open',
+			id:'sidebar_menu_link_brand'
+		}
+	];	
 }]);
 
 /***
@@ -413,17 +545,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                         name: 'MetronicApp',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
                         files: [
-                            /*'assets/global/plugins/morris/morris.css',
-                            'assets/admin/pages/css/tasks.css',                            
-                            'assets/global/plugins/morris/morris.min.js',
-                            'assets/global/plugins/morris/raphael-min.js',
-                            'assets/global/plugins/jquery.sparkline.min.js',
-                            'assets/admin/pages/scripts/index3.js',
-                            'assets/admin/pages/scripts/tasks.js',*/
-                            
-                            'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
-                            'assets/global/plugins/datatables/all.min.js',
-                            'assets/global/scripts/datatable.js',
                             'adminviews/js/controllers/DashboardController.js'
                         ] 
                     });
@@ -450,13 +571,11 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
                 }]                
             }
-        })        
+        })               
 
         .state('customer', {
-            url: "/customer",
-            templateUrl: "adminviews/views/customer/index.html",
-            redirectTo: 'customer.list',
-            data: {pageTitle: 'Customer'},
+            abstract:true,            
+            templateUrl:'adminviews/views/auth.html',                        
             controller: "CustomerController",
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
@@ -464,19 +583,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                         name: 'MetronicApp',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
                         files: [
-                            'assets/global/plugins/select2/select2.css',                             
-                            'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
-                            'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
-
-                            'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
-                            'assets/global/plugins/select2/select2.min.js',
-                            'assets/global/plugins/datatables/all.min.js',
-
-                            'assets/global/scripts/datatable.js',
-                            'adminviews/js/scripts/table-ajax.js',
-
                             'adminviews/js/models/customerModel.js',
-                            //'adminviews/js/controllers/GeneralPageController.js',
                             'adminviews/js/controllers/CustomerController.js'
                         ]
                     });
@@ -485,94 +592,52 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         })
 
         .state("customer.list", {
-            url: "/list",
+            url: "/customer/list",
             templateUrl: "adminviews/views/customer/list.html",
-            data: {pageSubTitle: 'Customer List'}
+            data:{
+				pageTitle:'Customers',
+				breadCrumb:[
+					{title:'Customers','uisref':'#'}					
+				]				
+			}            
         })
 
         .state("customer.add", {
-                url: "/add",
-                templateUrl: "adminviews/views/customer/add.html",
-                data: {pageSubTitle: 'Add New Customer'},
-                controller:"CustomerAddController"
+            url: "/customer/add",
+            templateUrl: "adminviews/views/customer/form.html",
+            data:{
+				pageTitle:'Add New Customer',
+				breadCrumb:[
+					{title:'Customers','uisref':'customer.list'},
+					{title:'Add','uisref':'#'}
+				]				
+			},            
+            controller:"CustomerAddController"
         })
 
         .state("customer.edit",{
-            url: "/edit/{customerid}",
-            templateUrl: "adminviews/views/customer/add.html",
-            data: {pageSubTitle: 'Customer update'},
+            url: "/customer/edit/{customerid}",
+            templateUrl: "adminviews/views/customer/form.html",
+            data:{
+				pageTitle:'Edit Customer',
+				breadCrumb:[
+					{title:'Customers','uisref':'customer.list'},
+					{title:'Edit','uisref':'#'}
+				]				
+			},            
             controller:"CustomerUpdateController"                
         })    
 
-        .state("orders",{
-			url: "/orders",
-			templateUrl: "adminviews/views/orders/index.html",
-			data: {pageTitle: 'Orders'},
-			controller:"OrdersController",
-			resolve: {
-				deps: ['$ocLazyLoad',function($ocLazyLoad){
-					return $ocLazyLoad.load({
-						name: 'MetronicApp',
-						insertBefore: "#ng_load_plugins_before",
-						files: [
-
-							'assets/global/plugins/select2/select2.css',                             
-							'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
-							'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
-
-							'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
-							'assets/global/plugins/select2/select2.min.js',
-							'assets/global/plugins/datatables/all.min.js',
-
-							'assets/global/scripts/datatable.js',
-							'adminviews/js/scripts/table-ajax.js',
-
-							'adminviews/js/models/orderModel.js',
-							'adminviews/js/controllers/OrdersController.js'
-
-						]
-					});
-				}]
-			}
-		})
-
-		.state("orders.list",{
-			url: "/list",
-			templateUrl: "adminviews/views/orders/list.html",
-			data: {pageSubTitle: 'Orders List'}
-		})
-		
-		.state("orders.show",{
-			url: "/{order}",
-			controller:"OrderShowController",
-			templateUrl: "adminviews/views/orders/show.html",
-			data: {pageSubTitle: 'Order View'}
-
-		})    
-
         .state('dealers', {
-            url: "/dealers",
-            templateUrl: "adminviews/views/dealers/dealers.html",
-            redirectTo: 'dealers.list',
-            data: {pageTitle: 'Dealers'},
+            abstract:true,            
+            templateUrl:'adminviews/views/auth.html',            
             controller: "DealersController",
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         name: 'MetronicApp',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'assets/global/plugins/select2/select2.css',                             
-                            'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
-                            'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
-
-                            'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
-                            'assets/global/plugins/select2/select2.min.js',
-                            'assets/global/plugins/datatables/all.min.js',
-
-                            'assets/global/scripts/datatable.js',
-                            'adminviews/js/scripts/table-ajax.js',
-
+                        files: [                            
                             'adminviews/js/models/dealerModel.js',
                             'adminviews/js/controllers/DealersController.js'
                         ]
@@ -582,44 +647,165 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         })
         
         .state("dealers.list", {
-            url: "/list",
+            url: "/dealers/list",
             templateUrl: "adminviews/views/dealers/list.html",
-            data: {pageSubTitle: 'Dealers List'}
+            data:{
+				pageTitle:'Dealers',
+				breadCrumb:[
+					{title:'Dealers','uisref':'#'}					
+				]				
+			}            
         })
 
         .state("dealers.add", {
-                url: "/add",
-                templateUrl: "adminviews/views/dealers/add.html",
-                data: {pageSubTitle: 'Add New Dealer'},
-                controller:"DealerAddController"
+            url: "/dealers/add",
+            templateUrl: "adminviews/views/dealers/add.html",            
+            data:{
+				pageTitle:'Add New Dealer',
+				breadCrumb:[
+					{title:'Dealers','uisref':'dealers.list'},
+					{title:'Add','uisref':'#'}
+				]				
+			},
+            controller:"DealerAddController"
         })
 
         .state("dealers.show", {
-                url: "/show/{dealerid}",
-                templateUrl: "adminviews/views/dealers/show.html",
-                data: {pageSubTitle: 'Dealer Detail'},
-                controller: "DealerShowController",
-                
+            url: "/dealers/show/{dealerid}",
+            templateUrl: "adminviews/views/dealers/show.html",
+            data:{
+				pageTitle:'View Dealer',
+				breadCrumb:[
+					{title:'Dealers','uisref':'dealers.list'},
+					{title:'View','uisref':'#'}
+				]				
+			},
+            controller: "DealerShowController"                
         })
 
         .state("dealers.edit",{
-            url: "/edit/{dealerid}",
-            templateUrl: "adminviews/views/dealers/edit.html",
-            data: {pageSubTitle: 'Dealer update'},
+            url: "/dealers/edit/{dealerid}",
+            templateUrl: "adminviews/views/dealers/edit.html",            
+            data:{
+				pageTitle:'Edit Dealer',
+				breadCrumb:[
+					{title:'Dealers','uisref':'dealers.list'},
+					{title:'Edit','uisref':'#'}
+				]				
+			},
             controller:"DealerUpdateController"                
         })
 
         .state("dealers.orders",{
-            url: "/orders/{dealerid}",
+            url: "/dealers/orders/{dealerid}",
             templateUrl: "adminviews/views/dealers/orders.html",
-            data: {pageSubTitle: 'Dealer orders'},
+            data:{
+				pageTitle:'Dealer orders',
+				breadCrumb:[
+					{title:'Dealers','uisref':'dealers.list'},
+					{title:'Orders','uisref':'#'}
+				]				
+			},            
             controller:"DealerOrderController"                
-        })        
+        })
+
+        .state('subadmin', {
+			abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+			controller:'SubadminController',			
+			resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before',
+                        files: [                                                        
+                            'adminviews/js/controllers/SubadminController.js'
+                        ]
+                    });
+                }]
+            }
+		})
+
+		.state('subadmin.list', {
+			url: '/subadmin/list',
+			templateUrl:'adminviews/views/subadmin/list.html',		
+			data:{
+				pageTitle:'Sub Administrators',
+				breadCrumb:[
+					{title:'Sub Administrators','uisref':'#'}					
+				]				
+			}
+		})
+
+		.state('subadmin.add', {
+			url: '/subadmin/add',
+			templateUrl:'adminviews/views/subadmin/form.html',		
+			data:{
+				pageTitle:'Add Sub Administrator',
+				breadCrumb:[
+					{title:'Sub Administrators','uisref':'subadmin.list'},
+					{title:'Add','uisref':'#'}
+				]				
+			}
+		})
+
+		.state('subadmin.edit', {
+			url: '/subadmin/edit/{id}',
+			templateUrl:'adminviews/views/subadmin/form.html',		
+			data:{
+				pageTitle:'Edit Sub Administrator',
+				breadCrumb:[
+					{title:'Sub Administrators','uisref':'subadmin.list'},
+					{title:'Edit','uisref':'#'}
+				]				
+			}
+		})
+
+        .state("orders",{
+			abstract:true,
+			templateUrl:'adminviews/views/auth.html',			
+			controller:"OrdersController",
+			resolve: {
+				deps: ['$ocLazyLoad',function($ocLazyLoad){
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: "#ng_load_plugins_before",
+						files: [
+							'adminviews/js/models/orderModel.js',
+							'adminviews/js/controllers/OrdersController.js'
+						]
+					});
+				}]
+			}
+		})
+
+		.state("orders.list",{
+			url: "/orders/list",
+			templateUrl: "adminviews/views/orders/list.html",
+			data:{
+				pageTitle:'Orders List',
+				breadCrumb:[
+					{title:'Orders','uisref':'#'}
+				]				
+			}			
+		})
+		
+		.state("orders.show",{
+			url: "/orders/show/{order}",
+			controller:"OrderShowController",
+			templateUrl: "adminviews/views/orders/show.html",
+			data:{
+				pageTitle:'View Order',
+				breadCrumb:[
+					{title:'Orders','uisref':'orders.list'},
+					{title:'View','uisref':'#'}
+				]				
+			}
+		})                    
 
         .state('categories', {
-            url: "/categories",
-            templateUrl: "adminviews/views/categories/index.html",
-            data: {pageTitle: 'categories'},
+            abstract:true,            
+            templateUrl:'adminviews/views/auth.html',
             controller: "CategoryController",
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
@@ -628,19 +814,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
                         files: [
                             'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/select2/select2.css',                             
-                            'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
-                            'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
-
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                            'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
-                            'assets/global/plugins/select2/select2.min.js',
-                            'assets/global/plugins/datatables/all.min.js',
-
-                            'assets/global/scripts/datatable.js',
-                            'adminviews/js/scripts/table-ajax.js',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',                            
                             'js/angular-slugify.js',
-
                             'adminviews/js/models/categoryModel.js',
                             'adminviews/js/models/settingsModel.js',
                             'adminviews/js/controllers/CategoryController.js'
@@ -651,22 +826,38 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         })
 
         .state("categories.list", {
-            url: "/list",
+            url: "/categories/list",
             templateUrl: "adminviews/views/categories/list.html",
-            data: {pageSubTitle: 'Category List'}
+            data:{
+				pageTitle:'Categories',
+				breadCrumb:[
+					{title:'Categories','uisref':'#'}
+				]				
+			}            
         })
 
         .state("categories.add", {
-            url: "/add",
+            url: "/categories/add",
             templateUrl: "adminviews/views/categories/add.html",
-            data: {pageSubTitle: 'Add New Category'},
-            
+            data:{
+				pageTitle:'Add New Category',
+				breadCrumb:[
+					{title:'Categories','uisref':'categories.list'},
+					{title:'Add','uisref':'#'}
+				]				
+			}
         })
 
         .state("categories.show", {
-            url: "/show/{categoryid}",
+            url: "/categories/show/{categoryid}",
             templateUrl: "adminviews/views/categories/show.html",
-            data: {pageSubTitle: 'Category Detail'},
+            data:{
+				pageTitle:'View Category',
+				breadCrumb:[
+					{title:'Categories','uisref':'categories.list'},
+					{title:'View','uisref':'#'}
+				]				
+			},            
             controller: "CategoryShowController",                
             
         })
@@ -674,14 +865,19 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         .state("categories.edit",{
             url: "/edit/{categoryid}",
             templateUrl: "adminviews/views/categories/add.html",
-            data: {pageSubTitle: 'Update Category'},
+            data:{
+				pageTitle:'Edit Category',
+				breadCrumb:[
+					{title:'Categories','uisref':'categories.list'},
+					{title:'Edit','uisref':'#'}
+				]				
+			},            
             controller:"CategoryUpdateController"                
         })            
         
         .state('products', {
-            url: "/product",
-            templateUrl: "adminviews/views/products/index.html",
-            data: {pageTitle: 'Products'},
+            abstract:true,            
+            templateUrl:'adminviews/views/auth.html',
             controller: "ProductsController",
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
@@ -689,18 +885,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                         name: 'MetronicApp',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
                         files: [
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/select2/select2.css',
-                            'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
-                            'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
-
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',                            
                             'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                            'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
-                            'assets/global/plugins/select2/select2.min.js',
-                            'assets/global/plugins/datatables/all.min.js',
-
-                            'assets/global/scripts/datatable.js',                               
-                            
                             'adminviews/js/models/productModel.js',
                             'adminviews/js/controllers/ProductController.js'
                         ]
@@ -710,327 +896,43 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         })
 
         .state("products.list", {
-            url: "/list",
+            url: "/products/list",
             templateUrl: "adminviews/views/products/list.html",
-            data: {pageSubTitle: 'List'}
+            data:{
+				pageTitle:'Products',
+				breadCrumb:[
+					{title:'Products','uisref':'#'}					
+				]				
+			},            
         })
 
         .state("products.add", {
-            url: "/add",
-            templateUrl: "adminviews/views/products/add.html",
-            data: {pageSubTitle: 'Add'}
+            url: "/products/add",
+            templateUrl: "adminviews/views/products/form.html",
+            data:{
+				pageTitle:'Add New Product',
+				breadCrumb:[
+					{title:'Products','uisref':'products.list'},
+					{title:'Add','uisref':'#'}					
+				]				
+			}            
         })
 
         .state("products.edit", {
-            url: "/edit/{productid}",
-            templateUrl: "adminviews/views/products/add.html",
-            data: {pageSubTitle: 'Edit'}
-        })
-        
-        .state("profile", {
-            url: "/profile",
-            templateUrl: "adminviews/views/profile/main.html",
-            data: {pageTitle: 'User Profile'},
-            controller: "UserProfileController",
-            resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',  
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/admin/pages/css/profile.css',
-                            'assets/admin/pages/css/tasks.css',
-                            
-                            'assets/global/plugins/jquery.sparkline.min.js',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-
-                            'assets/admin/pages/scripts/profile.js',
-
-                            'adminviews/js/models/userModel.js',
-                            'adminviews/js/controllers/UserProfileController.js'
-                            
-
-                        ]                    
-                    });
-
-                }]
-            }
-        })        
-        
-        .state("profile.dashboard", {
-            url: "/dashboard",
-            templateUrl: "adminviews/views/profile/dashboard.html",
-            data: {pageTitle: 'User Profile'}
-        })
-        
-        .state("profile.account", {
-            url: "/account",
-            templateUrl: "adminviews/views/profile/account.html",
-            data: {pageTitle: 'User Account'}
-        })
-        
-        .state("profile.help", {
-            url: "/help",
-            templateUrl: "adminviews/views/profile/help.html",
-            data: {pageTitle: 'User Help'}      
-        })
-        
-        .state('cms', {
-            url: "/cms",
-            templateUrl: "adminviews/views/cms/index.html",
-            data: {pageTitle: 'CMS Pages'},
-            controller: "CmsController",
-            resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-
-                            'assets/global/plugins/ckeditor/ckeditor.js',                            
-
-                            'adminviews/js/models/cmsModel.js',
-                            'adminviews/js/controllers/CmsController.js'
-                        ]
-                    });
-                }]
-            }
+            url: "/products/edit/{productid}",
+            templateUrl: "adminviews/views/products/form.html",
+            data:{
+				pageTitle:'Edit Product',
+				breadCrumb:[
+					{title:'Products','uisref':'products.list'},
+					{title:'Edit','uisref':'#'}					
+				]				
+			}            
         })
 
-        .state("cms.list", {
-            url: "/list",
-            templateUrl: "adminviews/views/cms/list.html",
-            data: {pageTitle: 'CMS List'}
-        })
-
-        .state("cms.edit",{
-            url: "/edit/{pageid}",
-            templateUrl: "adminviews/views/cms/edit.html",
-            data: {pageTitle: 'Update Cms Page'},
-            controller:"CmsUpdateController",
-            resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                                                  
-                        ]
-                    });
-                }]
-            }
-        })
-
-        .state("cms.show", {
-                url: "/show/{pageid}",
-                templateUrl: "adminviews/views/cms/show.html",
-                data: {pageTitle: 'Page Preview'},
-                controller: "CmsPageShowController",
-                
-    })           
-
-        .state('testimonial', {
-            url: "/testimonial",
-            templateUrl: "adminviews/views/testimonial/index.html",
-            data: {pageTitle: 'Testimonials'},
-            controller: "TestimonialController",
-            resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                            'assets/global/plugins/ckeditor/ckeditor.js',                            
-
-                            'adminviews/js/models/testimonialModel.js',
-                            'adminviews/js/controllers/TestimonialController.js'
-                        ]
-                    });
-                }]
-            }
-        })
-
-        .state("testimonial.list", {
-            url: "/list",
-            templateUrl: "adminviews/views/testimonial/list.html",
-            data: {pageSubTitle: 'Testimonials Listing'}
-        })
-
-        .state("testimonial.add", {
-            url: "/add",
-            templateUrl: "adminviews/views/testimonial/add.html",
-            data: {pageSubTitle: 'Add Testimonial'},
-            controller: "TestimonialAddController"
-        })
-
-        .state("testimonial.edit",{
-            url: "/edit/{testimonialid}",
-            templateUrl: "adminviews/views/testimonial/add.html",
-            data: {pageSubTitle: 'Update Testimonial'},
-            controller:"TestimonialUpdateController",            
-        })
-
-        .state('brand', {
-            url: "/brand",
-            templateUrl: "adminviews/views/brand/index.html",
-            data: {pageTitle: 'Brands'},
-            controller: "BrandController",
-            resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',                            
-
-                            'adminviews/js/models/brandModel.js',
-                            'adminviews/js/controllers/BrandController.js'
-                        ]
-                    });
-                }]
-            }
-        })
-
-        .state("brand.list", {
-            url: "/list",
-            templateUrl: "adminviews/views/brand/list.html",
-            data: {pageSubTitle: 'Brands Listing'}
-        })
-
-        .state("brand.add", {
-            url: "/add",
-            templateUrl: "adminviews/views/brand/add.html",
-            data: {pageSubTitle: 'Add Brand'},
-            controller: "BrandAddController"
-        })
-
-        .state("brand.edit",{
-            url: "/edit/{brandid}",
-            templateUrl: "adminviews/views/brand/add.html",
-            data: {pageSubTitle: 'Update Brand'},
-            controller:"BrandUpdateController",            
-        })
-
-        .state('emailtemplates', {
-            url: "/emailtemplates",
-            templateUrl: "adminviews/views/emailtemplates/index.html",
-            data: {pageTitle: 'CMS Pages'},
-            controller: "EmailTemplateController",
-            resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'adminviews/js/models/emailTemplateModel.js',
-                            'adminviews/js/controllers/EmailTemplateController.js'
-                        ]
-                    });
-                }]
-            }
-        })
-        
-        .state("emailtemplates.list", {
-            url: "/list",
-            templateUrl: "adminviews/views/emailtemplates/list.html",
-            data: {pageTitle: 'Email Template List'}
-        })
-
-        .state("emailtemplates.edit",{
-            url: "/edit/{templateid}",
-            templateUrl: "adminviews/views/emailtemplates/edit.html",
-            data: {pageTitle: 'Update Cms Page'},
-            controller:"EmailTemplateUpdateController",
-            resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'assets/global/plugins/ckeditor/ckeditor.js'
-                        ]
-                    });
-                }]
-            }
-        })
-        
-        .state("emailtemplates.show", {
-                url: "/show/{templateid}",
-                templateUrl: "adminviews/views/emailtemplates/show.html",
-                data: {pageTitle: 'Template Preview'},
-                controller: "EmailTemplateShowController",
-                
-        })            
-
-        .state('settings', {
-            url: "/settings",
-            templateUrl: "adminviews/views/settings/index.html",
-            redirectTo: 'settings.general',
-            data: {pageTitle: 'Settings'},
-            controller: "SettingsController",
-            resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                                                        
-                            'adminviews/js/models/settingsModel.js',
-                            'adminviews/js/controllers/SettingsController.js'
-                        ]
-                    });
-                }]
-            }
-        })
-
-        .state("settings.general", {
-            url: "/general",
-            templateUrl: "adminviews/views/settings/general.html",
-            data: {
-                pageSubTitle: 'General Settings',
-                "key":"general"
-            }
-        })
-
-        .state("settings.social", {
-            url: "/social",
-            templateUrl: "adminviews/views/settings/social.html",
-            data: {
-                pageSubTitle: 'Social Settings',
-                "key":"social"
-            }
-        })
-
-        .state("settings.pricing", {
-            url: "/pricing",
-            templateUrl: "adminviews/views/settings/pricing.html",
-            data: {
-                pageSubTitle: 'Pricing Settings',
-                "key":"pricing"
-            }
-        })
-
-        .state("settings.stock", {
-            url: "/outofstock",
-            templateUrl: "adminviews/views/settings/outofstock.html",
-            data: {
-                pageSubTitle: 'Out Of Stock Settings',
-                "key":"stock"
-            }
-        })
-        
         .state('packages', {
-            url: "/packages",
-            abstract:true,
-            templateUrl: "adminviews/views/packages/index.html",
-            data: {pageTitle: 'Packages'},
+            abstract:true,            
+            templateUrl:'adminviews/views/auth.html',            
             controller: "PackageController",
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
@@ -1039,10 +941,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
                         files: [
                             'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                            'assets/global/plugins/datatables/all.min.js',
-                            'assets/global/scripts/datatable.js',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',                            
                             'adminviews/js/models/packageModel.js',
                             'adminviews/js/controllers/PackageController.js'
                         ]
@@ -1052,47 +951,85 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         })
 
         .state("packages.party", {
-            url: "/party",
+            url: "/packages/party",
             templateUrl: "adminviews/views/packages/list.html",
-            data: {pageTitle: 'Party Packages',type:1}            
+            data:{
+				pageTitle:'Party Packages',
+				type:1,
+				breadCrumb:[
+					{title:'Party Packages','uisref':'#'}					
+				]				
+			}            
         })
 
         .state("packages.cocktail", {
-            url: "/cocktail",
+            url: "/packages/cocktail",
             templateUrl: "adminviews/views/packages/list.html",
-            data: {pageTitle: 'Cocktail Packages',type:2}            
+            data:{
+				pageTitle:'Cocktail Packages',
+				type:2,
+				breadCrumb:[
+					{title:'Cocktail Packages','uisref':'#'}					
+				]				
+			}            
         })
 
         .state("packages.addparty", {
-            url: "/addparty",
+            url: "/packages/addparty",
             templateUrl: "adminviews/views/packages/form.html",
-            data: {pageTitle: 'Party Packages',pageSubTitle: 'Add',type:1}            
+            data:{
+				pageTitle:'Add Party Package',
+				type:1,
+				breadCrumb:[
+					{title:'Party Packages','uisref':'packages.party'},
+					{title:'Add','uisref':'#'}					
+				]				
+			}            
         })
 
         .state("packages.editparty", {
-            url: "/editparty/:packageid",
+            url: "/packages/editparty/:packageid",
             templateUrl: "adminviews/views/packages/form.html",
-            data: {pageTitle: 'Party Packages',pageSubTitle: 'Edit',type:1}            
+            data:{
+				pageTitle:'Edit Party Package',
+				type:1,
+				breadCrumb:[
+					{title:'Party Packages','uisref':'packages.party'},
+					{title:'Edit','uisref':'#'}					
+				]				
+			}            
         })
 
         .state("packages.addcocktail", {
-            url: "/addcocktail",
+            url: "/packages/addcocktail",
             templateUrl: "adminviews/views/packages/form.html",
-            data: {pageTitle: 'Cocktail Packages',pageSubTitle: 'Add',type:2}            
+            data:{
+				pageTitle:'Add Cocktail Package',
+				type:2,
+				breadCrumb:[
+					{title:'Cocktail Packages','uisref':'packages.cocktail'},
+					{title:'Add','uisref':'#'}					
+				]				
+			}            
         })
 
         .state("packages.editcocktail", {
-            url: "/editcocktail/:packageid",
+            url: "/packages/editcocktail/:packageid",
             templateUrl: "adminviews/views/packages/form.html",
-            data: {pageTitle: 'Cocktail Packages',pageSubTitle: 'Edit',type:2}            
+            data:{
+				pageTitle:'Edit Cocktail Package',
+				type:2,
+				breadCrumb:[
+					{title:'Cocktail Packages','uisref':'packages.cocktail'},
+					{title:'Edit','uisref':'#'}					
+				]				
+			}            
         })
 
-        .state('timeslots', {
-            //url: "/timeslots",            
-            abstract:true,
-            templateUrl: "adminviews/views/timeslots/index.html",
-            data: {pageTitle: 'Time Slots'},
-            controller: "TimeslotController",
+        .state('timeslots', {            
+            abstract:true,            
+			controller:"TimeslotController",					            
+            templateUrl:'adminviews/views/auth.html',
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
                     return $ocLazyLoad.load({
@@ -1107,9 +1044,295 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         })
 
         .state('timeslots.list', {
-            url: "/timeslots",
-            templateUrl: "adminviews/views/timeslots/timeslots.html",
-            data: {pageTitle: 'Time Slots'}
+            url: "/timeslots/list",            
+            templateUrl: "adminviews/views/timeslots/timeslots.html",		            
+            data:{
+				pageTitle:'Time Slots',
+				breadCrumb:[
+					{title:'Time Slots','uisref':'#'}					
+				]				
+			}           
+        })
+
+        .state('settings', {
+            abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+            controller: "SettingsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [                                                        
+                            'adminviews/js/models/settingsModel.js',
+                            'adminviews/js/controllers/SettingsController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state("settings.general", {
+            url: "/settings/general",
+            templateUrl: "adminviews/views/settings/general.html",
+            data:{
+				pageTitle:'General Settings',				
+				key:"general",
+				breadCrumb:[
+					{title:'General Settings','uisref':'#'}					
+				]				
+			}            
+        })
+
+        .state("settings.social", {
+            url: "/settings/social",
+            templateUrl: "adminviews/views/settings/social.html",
+            data:{
+				pageTitle:'Social Settings',
+				key:"social",
+				breadCrumb:[
+					{title:'Social Settings','uisref':'#'}					
+				]				
+			}            
+        })
+
+        .state("settings.pricing", {
+            url: "/pricing",
+            templateUrl: "adminviews/views/settings/pricing.html",
+            data:{
+				pageTitle:'Pricing Settings',
+				key:"pricing",
+				breadCrumb:[
+					{title:'Pricing Settings','uisref':'#'}					
+				]				
+			}            
+        })
+
+        .state('emailtemplates', {
+            abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+            controller: "EmailTemplateController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'assets/global/plugins/ckeditor/ckeditor.js',
+                            'adminviews/js/models/emailTemplateModel.js',
+                            'adminviews/js/controllers/EmailTemplateController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+        
+        .state("emailtemplates.list", {
+            url: "/emailtemplates/list",
+            templateUrl: "adminviews/views/emailtemplates/list.html",
+            data:{
+				pageTitle:'Email Templates',
+				breadCrumb:[
+					{title:'Email Templates','uisref':'#'}					
+				]				
+			}            
+        })
+
+        .state("emailtemplates.edit",{
+            url: "/emailtemplates/edit/{templateid}",
+            templateUrl: "adminviews/views/emailtemplates/edit.html",
+            data:{
+				pageTitle:'Edit Email Templates',
+				breadCrumb:[
+					{title:'Email Templates','uisref':'emailtemplates.list'},
+					{title:'Edit','uisref':'#'}
+				]				
+			},            
+            controller:"EmailTemplateUpdateController"            
+        })
+        
+        .state("emailtemplates.show", {
+            url: "/emailtemplates/view/{templateid}",
+            templateUrl: "adminviews/views/emailtemplates/show.html",
+            data:{
+				pageTitle:'Email Templates Preview',
+				breadCrumb:[
+					{title:'Email Templates','uisref':'emailtemplates.list'},
+					{title:'View','uisref':'#'}
+				]				
+			},            
+            controller: "EmailTemplateShowController",                
+        })        
+        
+        .state('cms', {
+            abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+            controller: "CmsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'assets/global/plugins/ckeditor/ckeditor.js',                            
+                            'adminviews/js/models/cmsModel.js',
+                            'adminviews/js/controllers/CmsController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state("cms.list", {
+            url: "/cms/list",
+            templateUrl: "adminviews/views/cms/list.html",
+            data:{
+				pageTitle:'CMS Pages',
+				breadCrumb:[
+					{title:'CMS Pages','uisref':'#'}					
+				]				
+			}            
+        })
+
+        .state("cms.edit",{
+            url: "/cms/edit/{pageid}",
+            templateUrl: "adminviews/views/cms/edit.html",
+            data:{
+				pageTitle:'Edit CMS Pages',
+				breadCrumb:[
+					{title:'CMS Pages','uisref':'cms.list'},
+					{title:'Edit','uisref':'#'}					
+				]				
+			},
+            controller:"CmsUpdateController",            
+        })
+
+        .state("cms.show", {
+            url: "/cms/show/{pageid}",
+            templateUrl: "adminviews/views/cms/show.html",
+            data:{
+				pageTitle:'Preview CMS Pages',
+				breadCrumb:[
+					{title:'CMS Pages','uisref':'cms.list'},
+					{title:'Show','uisref':'#'}					
+				]				
+			},
+            controller: "CmsPageShowController"                
+    	})           
+
+        .state('testimonial', {
+            abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+            controller: "TestimonialController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+                            'assets/global/plugins/ckeditor/ckeditor.js',                            
+                            'adminviews/js/models/testimonialModel.js',
+                            'adminviews/js/controllers/TestimonialController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state("testimonial.list", {
+            url: "/testimonial/list",
+            templateUrl: "adminviews/views/testimonial/list.html",
+            data:{
+				pageTitle:'Testimonials',
+				breadCrumb:[
+					{title:'Testimonials','uisref':'#'}					
+				]				
+			}            
+        })
+
+        .state("testimonial.add", {
+            url: "/testimonial/add",
+            templateUrl: "adminviews/views/testimonial/add.html",
+            data:{
+				pageTitle:'Add Testimonial',
+				breadCrumb:[
+					{title:'Testimonials','uisref':'testimonial.list'},
+					{title:'Add','uisref':'#'}					
+				]				
+			},            
+            controller: "TestimonialAddController"
+        })
+
+        .state("testimonial.edit",{
+            url: "/testimonial/edit/{testimonialid}",
+            templateUrl: "adminviews/views/testimonial/add.html",
+            data:{
+				pageTitle:'Edit Testimonial',
+				breadCrumb:[
+					{title:'Testimonials','uisref':'testimonial.list'},
+					{title:'Edit','uisref':'#'}					
+				]				
+			},             
+            controller:"TestimonialUpdateController",            
+        })
+
+        .state('brand', {
+            abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+            controller: "BrandController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',                            
+                            'adminviews/js/models/brandModel.js',
+                            'adminviews/js/controllers/BrandController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state("brand.list", {
+            url: "/brands/list",
+            templateUrl: "adminviews/views/brand/list.html",
+            data:{
+				pageTitle:'Brands',
+				breadCrumb:[
+					{title:'Brands','uisref':'#'}					
+				]				
+			},
+        })
+
+        .state("brand.add", {
+            url: "/brands/add",
+            templateUrl: "adminviews/views/brand/add.html",            
+            data:{
+				pageTitle:'Add Brand',
+				breadCrumb:[
+					{title:'Brands','uisref':'brand.list'},
+					{title:'Add','uisref':'#'}
+				]				
+			},
+            controller: "BrandAddController"
+        })
+
+        .state("brand.edit",{
+            url: "/brands/edit/{brandid}",
+            templateUrl: "adminviews/views/brand/add.html",
+            data:{
+				pageTitle:'Edit Brands',
+				breadCrumb:[
+					{title:'Brands','uisref':'brand.list'},
+					{title:'Edit','uisref':'#'}
+				]				
+			},
+            controller:"BrandUpdateController",            
         })
 
         .state("login", {

@@ -242,7 +242,17 @@ li.subactive a, li.subactive a span {
   md-content.globalsearch md-autocomplete{
     background: transparent; 
     overflow: hidden;
+    margin:0 10px;
   }
+
+  md-content.globalsearch md-autocomplete-wrap.md-menu-showing{
+    background: rgb(250, 250, 250) none repeat scroll 0 0;
+  }
+
+  .md-virtual-repeat-container.md-autocomplete-suggestions-container{
+    box-shadow: 0 5px 6px rgba(0, 0, 0, 0.25);
+  }
+
   md-content.globalsearch button{
     display: none;
     overflow: hidden;

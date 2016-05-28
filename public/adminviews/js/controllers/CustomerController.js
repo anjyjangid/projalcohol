@@ -4,7 +4,7 @@ MetronicApp.controller('CustomerController',['$rootScope', '$scope', '$timeout',
 
 	$scope.$on('$viewContentLoaded', function() {   
 		Metronic.initAjax(); // initialize core components
-		Layout.setSidebarMenuActiveLink('set', $('#sidebar_menu_link_customer')); // set profile link active in sidebar menu         
+		Layout.setSidebarMenuActiveLink('set', $('#sidebar_menu_link_user')); // set profile link active in sidebar menu         
 		
 		// set sidebar closed and body solid layout mode
 		$rootScope.settings.layout.pageBodySolid = false;

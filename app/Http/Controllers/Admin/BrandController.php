@@ -365,7 +365,7 @@ class BrandController extends Controller
             $row[] = $value['link'];
             
             $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="brands" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
-            $row[] = '<a title="Edit : '.$value['title'].'" href="#/brand/edit/'.$value['_id'].'" href="#/brand/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
+            $row[] = '<a title="Edit : '.$value['title'].'" ui-sref=brand.edit({brandid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
             
             $records['data'][] = $row;
         }
