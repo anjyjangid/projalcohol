@@ -197,7 +197,7 @@ MetronicApp.controller('CategoryUpdateController',['$rootScope', '$scope', '$tim
 
 				if(!$scope.category.express_delivery_bulk)
 					$scope.category.express_delivery_bulk = {};
-				
+
 			});
 
 		},

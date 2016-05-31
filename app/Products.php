@@ -95,9 +95,10 @@ class Products extends Eloquent
 
 	private function attachProductPricing(&$products){
 
-		$categyIds = array();
+		$categyIds = [];
 
 		foreach($products as $product){
+
 			$categyIds = array_merge($categyIds,$product['categories']);
 		}
 
@@ -122,7 +123,10 @@ class Products extends Eloquent
 		////////////////////////
 		$categories = array_combine(array_column($categories, '_id'),$categories);
 
+
 		foreach($categories as &$category){
+
+			
 
 			if(isset($category['ancestors'])){
 
@@ -131,12 +135,19 @@ class Products extends Eloquent
 				if(isset($categories[$anceskey])){
 
 					$parentCat = $categories[$anceskey];
+
+
+
 					$category = array_merge($globalPricing,$parentCat,$category);
 
+
 				}
+				 
 
 			}else{
+
 				$category = array_merge($globalPricing,$category);
+
 			}
 		}
 
@@ -145,7 +156,7 @@ class Products extends Eloquent
 		foreach($products as &$product){			
 			$tempCat = $categories[end($product['categories'])];
 			unset($tempCat["_id"]);
-			$product = array_merge($product,$tempCat);
+			$product = array_merge($tempCat,$product);
 		}
 				
 	}

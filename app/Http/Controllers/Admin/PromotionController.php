@@ -16,333 +16,313 @@ use AlcoholDelivery\Products as Products;
 
 class PromotionController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(PromotionRequest $request)
-    {
-
-       	$inputs = $request->all();
-        
-        $inputs['status'] = (int)$inputs['status'];
-
-        $products = $inputs['products'];
-
-       	$inputs['items'] = [];
-        $inputs['products'] = [];
-
-        foreach($products as $product){
-            
-            array_push($inputs['products'], $product['_id']);
-
-            $inputs['items'][] = [
-                                    '_id' => new MongoId($product['_id']),
-                                    'type'=> (int)$product['type'],
-                                    'price' => isset($product['dprice'])?(float)$product['dprice']:null
-                                ];
-        }
-
-        $inputs['count'] = count($inputs['items']);
-        
-        try {
-
-            Promotion::create($inputs);
-
-        } catch(\Exception $e){
-
-            return response(array("success"=>false,"message"=>$e->getMessage()),400);
-
-        }
-       	
-        return response(array("success"=>true,"message"=>"Promotion created successfully"),200);
-       	
-       	
-    }
-
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-
-        $result = Promotion::where("_id",$id)->first();
-
-        return response($result, 201);
-
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {        
-        $result = Promotion::find($id);
-
-        $products = Products::whereIn("_id",$result['products'])->get();
-        $products = $products->toArray();
+	/**
+	 * Create a new controller instance.
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
+		
+	}
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function index()
+	{
+		
+	}
+
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function create()
+	{
+		//
+	}
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return \Illuminate\Http\Response
+	 */
+	public function store(PromotionRequest $request)
+	{
+
+		$inputs = $request->all();
+		
+		$inputs['status'] = (int)$inputs['status'];
+
+		$products = $inputs['products'];
+
+		$inputs['items'] = [];
+		$inputs['products'] = [];
+
+		foreach($products as $product){
+			
+			array_push($inputs['products'], $product['_id']);
+
+			$inputs['items'][] = [
+									'_id' => new MongoId($product['_id']),
+									'type'=> (int)$product['type'],
+									'price' => isset($product['dprice'])?(float)$product['dprice']:null
+								];
+		}
+
+		$inputs['count'] = count($inputs['items']);
+		
+		try {
+
+			Promotion::create($inputs);
+
+		} catch(\Exception $e){
+
+			return response(array("success"=>false,"message"=>$e->getMessage()),400);
+
+		}
+		
+		return response(array("success"=>true,"message"=>"Promotion created successfully"),200);
+		
+		
+	}
+
+
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function show($id)
+	{
+
+		$result = Promotion::where("_id",$id)->first();
+
+		return response($result, 201);
+
+	}
+
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function edit($id)
+	{
+		$promotion = new promotion;
+		$result = $promotion->getPromotion($id);
 
-        $tempProducts = [];
+		return response($result, 201);
 
-        foreach($result['items'] as $product){
-            $tempProducts[(string)$product['_id']] = [
-                                                            'type'=>$product['type'],
-                                                            'price'=>$product['price'],
-                                                        ];
-        }
+	}
 
-        foreach($products as &$product){
-            $product['type'] = $tempProducts[$product['_id']]['type'];
-            $product['dprice'] = $tempProducts[$product['_id']]['price'];
-        }    
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function update(PromotionRequest $request, $id)
+	{   
 
-        $result->__set('products',$products);
+		$promotion = Promotion::find($id);
 
-        unset($result['items']);
+		if(is_null($promotion)){
 
-        return response($result, 201);
+			return response(array("success"=>false,"message"=>"Invalid Request :: Record you want to update is not exist"));
 
-    }
+		}
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(PromotionRequest $request, $id)
-    {   
+		$inputs = $request->all();            
 
-        $promotion = Promotion::find($id);
+		$products = $inputs['products'];
 
-        if(is_null($promotion)){
+		$inputs['items'] = [];
+		$inputs['products'] = [];
 
-            return response(array("success"=>false,"message"=>"Invalid Request :: Record you want to update is not exist"));
+		foreach($products as $product){
+			
+			array_push($inputs['products'], $product['_id']);
 
-        }
+			$inputs['items'][] = [
+									'_id' => new MongoId($product['_id']),
+									'type'=> (int)$product['type'],
+									'price' => isset($product['dprice'])?(float)$product['dprice']:null
+								];
+		}
 
-        $inputs = $request->all();            
+		$promotion->status = (int)$inputs['status'];
+		$promotion->count = count($inputs['items']);
+		$promotion->items = $inputs['items'];
+		$promotion->products = $inputs['products'];
+		
+		try {
 
-        $products = $inputs['products'];
+			$promotion->save();
 
-        $inputs['items'] = [];
-        $inputs['products'] = [];
+		} catch(\Exception $e){
 
-        foreach($products as $product){
-            
-            array_push($inputs['products'], $product['_id']);
+			return response(array("success"=>false,"message"=>$e->getMessage()),400);
 
-            $inputs['items'][] = [
-                                    '_id' => new MongoId($product['_id']),
-                                    'type'=> (int)$product['type'],
-                                    'price' => isset($product['dprice'])?(float)$product['dprice']:null
-                                ];
-        }
+		}
+		
+		return response(array("success"=>true,"message"=>"Promotion $promotion->title Updated successfully"));
 
-        $promotion->status = (int)$inputs['status'];
-        $promotion->count = count($inputs['items']);
-        $promotion->items = $inputs['items'];
-        $promotion->products = $inputs['products'];
-        
-        try {
+	}
 
-            $promotion->save();
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function destroy($ids)
+	{        
+		$keys = explode(",", $ids);
+		
+		try {
 
-        } catch(\Exception $e){
+			$promotions = Promotion::whereIn('_id', $keys)->delete();
 
-            return response(array("success"=>false,"message"=>$e->getMessage()),400);
+		} catch(\Illuminate\Database\QueryException $e){
 
-        }
-        
-        return response(array("success"=>true,"message"=>"Promotion $promotion->title Updated successfully"));
+			return response(array($e,"success"=>false,"message"=>"There is some issue with deletion process"));
 
-    }
+		}
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($ids)
-    {        
-        $keys = explode(",", $ids);
-        
-        try {
+		return response(array($promotions,"success"=>true,"message"=>"Record(s) Removed Successfully"));
+	}
 
-            $promotions = Promotion::whereIn('_id', $keys)->delete();
+	public function postListing(Request $request,$id = false)
+	{
+		$params = $request->all();
 
-        } catch(\Illuminate\Database\QueryException $e){
+		$promotions = new Promotion;                
 
-            return response(array($e,"success"=>false,"message"=>"There is some issue with deletion process"));
+		$columns = array('_id','title',"price","status",'count');
+		$indexColumn = '_id';
+		$table = 'promotions';
 
-        }
+		/* Individual column filtering */    
 
-        return response(array($promotions,"success"=>true,"message"=>"Record(s) Removed Successfully"));
-    }
+		foreach($columns as $fieldKey=>$fieldTitle)
+		{              
 
-    public function postListing(Request $request,$id = false)
-    {
-        $params = $request->all();
+			if ( isset($params[$fieldTitle]) && $params[$fieldTitle]!="" )
+			{
+							
+				if($fieldTitle=="status"){
 
-        $promotions = new Promotion;                
+					$promotions = $promotions->where($fieldTitle, '=', (int)$params[$fieldTitle]);
+				}
+				else{
 
-        $columns = array('_id','title',"price","status",'count');
-        $indexColumn = '_id';
-        $table = 'promotions';
+					$promotions = $promotions->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
 
-        /* Individual column filtering */    
+				}
+							
+			}
+		}
+	
+		/*
+		 * Ordering
+		 */        
 
-        foreach($columns as $fieldKey=>$fieldTitle)
-        {              
+		if ( isset( $params['order'] ) )
+		{
 
-            if ( isset($params[$fieldTitle]) && $params[$fieldTitle]!="" )
-            {
-                            
-                if($fieldTitle=="status"){
+			foreach($params['order'] as $orderKey=>$orderField){
 
-                    $promotions = $promotions->where($fieldTitle, '=', (int)$params[$fieldTitle]);
-                }
-                else{
+				if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
+					
+					$promotions = $promotions->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
+					
+				}
+			}
 
-                    $promotions = $promotions->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
+		}
+		
+		/* Data set length after filtering */        
 
-                }
-                            
-            }
-        }
-    
-        /*
-         * Ordering
-         */        
+		$iFilteredTotal = $promotions->count();
 
-        if ( isset( $params['order'] ) )
-        {
+		/*
+		 * Paging
+		 */
+		if ( isset( $params['start'] ) && $params['length'] != '-1' )
+		{
+			$promotions = $promotions->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
+		}
 
-            foreach($params['order'] as $orderKey=>$orderField){
+		$iTotal = $promotions->count();
 
-                if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
-                    
-                    $promotions = $promotions->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
-                    
-                }
-            }
+		$promotions = $promotions->get($columns);
 
-        }
-        
-        /* Data set length after filtering */        
+		$promotions = $promotions->toArray();
+				
+		/*
+		 * Output
+		 */
+		 
+		
+		$records = array(
+			"iTotalRecords" => $iTotal,
+			"iTotalDisplayRecords" => $iFilteredTotal,
+			"data" => array()
+		);
 
-        $iFilteredTotal = $promotions->count();
+			 
+		
+		$status_list = array(            
+			array("warning" => "in-Active"),
+			array("success" => "Active")
+		  );
 
-        /*
-         * Paging
-         */
-        if ( isset( $params['start'] ) && $params['length'] != '-1' )
-        {
-            $promotions = $promotions->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
-        }
 
-        $iTotal = $promotions->count();
 
-        $promotions = $promotions->get($columns);
+		$srStart = intval( $params['start'] );
+		if($params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
+			$srStart = intval($iTotal);
+		}
 
-        $promotions = $promotions->toArray();
-                
-        /*
-         * Output
-         */
-         
-        
-        $records = array(
-            "iTotalRecords" => $iTotal,
-            "iTotalDisplayRecords" => $iFilteredTotal,
-            "data" => array()
-        );
+		$i = 1;
 
-             
-        
-        $status_list = array(            
-            array("warning" => "in-Active"),
-            array("success" => "Active")
-          );
+		foreach($promotions as $key=>$value) {
 
+			$row=array();
 
+			$row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';
 
-        $srStart = intval( $params['start'] );
-        if($params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
-            $srStart = intval($iTotal);
-        }
+			if($params['order'][0]['column']==0 && $params['order'][0]['dir']=='asc'){
+				$row[] = $srStart--;//$row1[$aColumns[0]];
+			}else{
+				$row[] = ++$srStart;//$row1[$aColumns[0]];
+			}
 
-        $i = 1;
+			$status = $status_list[(int)$value['status']];
 
-        foreach($promotions as $key=>$value) {
+			$row[] = ucfirst($value['title']);
 
-            $row=array();
+			$row[] = $value['price'];
 
-            $row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';
-
-            if($params['order'][0]['column']==0 && $params['order'][0]['dir']=='asc'){
-                $row[] = $srStart--;//$row1[$aColumns[0]];
-            }else{
-                $row[] = ++$srStart;//$row1[$aColumns[0]];
-            }
-
-            $status = $status_list[(int)$value['status']];
-
-            $row[] = ucfirst($value['title']);
-
-            $row[] = $value['price'];
-
-            $row[] = (int)$value['count'];
-            
-            $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="promotions" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
-            $row[] = '<a title="Edit : '.$value['title'].'" href="#/promotion/edit/'.$value['_id'].'" href="#/promotion/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
-            
-            $records['data'][] = $row;
-        }
-        
-        return response($records, 201);
-        
-    }
+			$row[] = (int)$value['count'];
+			
+			$row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="promotions" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
+			$row[] = '<a title="Edit : '.$value['title'].'" href="#/promotion/edit/'.$value['_id'].'" href="#/promotion/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
+			
+			$records['data'][] = $row;
+		}
+		
+		return response($records, 201);
+		
+	}
 
 
 }

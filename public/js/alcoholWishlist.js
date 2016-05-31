@@ -181,7 +181,7 @@ AlcoholDelivery.factory('wishlistProduct', ['$rootScope', '$log', function ($roo
 		var product = function (id, data) {
 
 			this.setId(id);
-			this.setPrice(data);			
+			//this.setPrice(data);
 			this.setName(data.name);
 			this.setAddedSlug(data.wishlist.added_slug);			
 			this.setAvailability(data.quantity);

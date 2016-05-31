@@ -47,6 +47,14 @@ AlcoholDelivery.filter('capitalize', function() {
 		}
 });
 
+AlcoholDelivery.filter('freeTxt', function() {
+		return function(input) {
+			input = parseFloat(input);
+			return input>0?input:'free';
+		}
+});
+
+
 
 
 AlcoholDelivery.filter('deliveryDateSlug',function(){
@@ -1327,38 +1335,27 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 		}else{
 			alcoholCart.addItem(key,0,false);
 		}
-
-		// $http.delete("cart/product/"+key+"/"+type)
-		// 		.success(function(response) {
-
-		// 		    if(response.success){
-
-		// 		    	if(response.removeCode==300){
-
-		// 		    		delete $scope.cart.products[key];
-
-		// 		    	}else if(response.removeCode==200){
-
-		// 		    		$scope.cart.products[key][type] = 0;
-
-		// 		    	}
-
-		// 		    	$scope.cart.productslength = Object.keys($scope.cart.products).length;
-
-		// 		    }else{
-
-		// 		        sweetAlert.swal("Cancelled!", response.message, "error");
-
-		// 		    }
-
-		// 		})
-		// 		.error(function(data, status, headers) {
-		// 		    sweetAlert.swal("Cancelled", data.message, "error");
-		// 		})
+		
 	};
 
   	
 }]);
+
+AlcoholDelivery.controller('PromotionsController',['$scope', '$rootScope', '$http', '$interval', 'alcoholCart', 'promotionsService',function($scope, $rootScope, $http, $interval, alcoholCart, promotionsService){
+
+var timer = $interval(function() {
+				
+				if(!$rootScope.storeInitUP){
+					$interval.cancel(timer);
+				}
+								
+				$scope.alcoholCart = alcoholCart;				
+				$scope._promo = promotionsService;
+
+				
+			}, 500);					
+
+}])			
 
 AlcoholDelivery.controller('CartSmokeController',['$scope','$rootScope','$state', '$interval','alcoholCart',function($scope, $rootScope, $state, $interval, alcoholCart){
 
@@ -2791,8 +2788,16 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('mainLayout.checkout.cart', {
-						url: "/cart",
-						templateUrl : "/templates/checkout/cart.html",
+						url: "/cart",						
+						views : {
+							"":{
+								templateUrl : "/templates/checkout/cart.html",
+							},
+							"promotions@mainLayout.checkout.cart":{
+								templateUrl: "/templates/partials/promotions.html",
+								controller:"PromotionsController"
+							},
+						},
 						data: {step: 'cart'},
 						//controller:"CartController"
 				})

@@ -19,7 +19,7 @@ MetronicApp.controller('PromotionAddController',['$rootScope','$scope','$http','
 	$scope.itemlist = [];
 
 	$scope.searching = false;
-
+	$scope.isupdate = false;
 	$scope.errors = {};
 
 	$scope.promotion = {		
@@ -31,7 +31,7 @@ MetronicApp.controller('PromotionAddController',['$rootScope','$scope','$http','
 	
 	if($stateParams.promotionId){
 
-		$scope.update = true;
+		$scope.isupdate = true;
 
 		promotionModel.getPromotion($stateParams.promotionId).success(function(response){									
 			

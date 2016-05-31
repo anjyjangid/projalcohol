@@ -23,6 +23,13 @@
 					<div class="currentorderpopupulcenter">{{package._quantity}}</div>
 					<div class="currentorderpopupulright">{{package._price}}</div>
 				</li>
+
+				<li ng-repeat="(key,promotion) in alcoholCart.getPromotions()">
+					<div class="currentorderpopupulleft">{{promotion.product._title}}</div>
+					<div class="currentorderpopupulcenter">promo</div>
+					<div class="currentorderpopupulright">{{package._price | freeTxt}}</div>
+				</li>
+
 			</ul>
 		</div>
 	</div>

@@ -466,16 +466,21 @@ AlcoholDelivery.directive('sideBar', function() {
 		restrict: 'A',
 		transclude: true,
 		priority: 100,
+		replace: true,
 		scope:{
 			productInfo:'=info',
-			classes : '@'
+			classes : '@',
+			promotion : '='
 		},
 		templateUrl: '/templates/product/product_tpl.html',
 
-		controller: ['$rootScope','$scope','sweetAlert','alcoholCart','alcoholWishlist',"$mdToast",function($rootScope,$scope,sweetAlert,alcoholCart,alcoholWishlist,$mdToast){
+		controller: ['$rootScope','$scope','sweetAlert','alcoholCart','alcoholWishlist','promotionsService',"$mdToast",function($rootScope,$scope,sweetAlert,alcoholCart,alcoholWishlist,promotionsService,$mdToast){
 
 			$scope.settings = $rootScope.settings;
 			
+			$scope.alcoholCart = alcoholCart;
+			
+			$scope._sPromotion = promotionsService;
 
 			var isInCart = alcoholCart.getProductById($scope.productInfo._id);
 

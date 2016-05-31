@@ -46,19 +46,24 @@ Route::put('confirmorder/{cartKey}','CartController@confirmorder');
 Route::group(['prefix' => 'cart'], function () {
 
 	Route::get('deliverykey','CartController@getDeliverykey');
+
 	Route::get('services','CartController@getServices');	
+
 	Route::get('timeslots/{date}','CartController@getTimeslots');
+
 	Route::get('availability/{cartkey}','CartController@availability');
 
 	Route::put('merge/{cartkey}','CartController@mergecarts');
 
+	Route::put('chilledstatus/{cartkey}','CartController@updateProductChilledStatus');
+
 	Route::post('package/{cartkey}','CartController@createpackage');
+	
+	Route::put('promotion/{cartkey}','CartController@putPromotion');	
 		
 	Route::delete('product/{key}/{type}','CartController@removeproduct');
 
-	Route::put('chilledstatus/{cartkey}','CartController@updateProductChilledStatus');
-	
-
+	Route::delete('promotion/{key}','CartController@deletePromotion');
 
 });
 

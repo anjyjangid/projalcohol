@@ -252,6 +252,10 @@ li.subactive a, li.subactive a span {
   .md-virtual-repeat-container.md-autocomplete-suggestions-container{
     box-shadow: 0 5px 6px rgba(0, 0, 0, 0.25);
   }
+ 
+  body.md-toast-animating{
+    overflow: auto !important; 
+  }
 
   md-content.globalsearch button{
     display: none;
@@ -302,6 +306,10 @@ li.subactive a, li.subactive a span {
 
   .md-fixed{
     position: fixed !important;
+  }
+  
+  .md-top.md-right.md-fixed{
+    top: 70px;
   }
 
   .md-smokedetail .md-toast-content{
@@ -390,4 +398,33 @@ md-toast.desired-quantity-na-toast:before {
   }
   .swal2-modal{
     z-index: 1000001;
+  }
+
+
+  .m-top-5{
+    margin-top: 5px
+  }
+  .m-top-15{
+    margin-top: 15px
+  }
+
+  .m-bottom-5{
+    margin-bottom: 5px
+  }
+  .m-bottom-15{
+    margin-bottom: 15px
+  }
+
+  .m-top-10{
+    margin-top: 10px
+  }
+  .m-top-20{
+    margin-top: 10px
+  }
+
+  .m-bottom-10{
+    margin-bottom: 20px
+  }
+  .m-bottom-20{
+    margin-bottom: 20px
   }

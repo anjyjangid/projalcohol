@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Products as Products;
 use AlcoholDelivery\Setting as Setting;
 use AlcoholDelivery\Orders as Orders;
+use AlcoholDelivery\Promotion as Promotion;
 use MongoDate;
 use MongoId;
 
@@ -20,8 +21,7 @@ class CartController extends Controller
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index(Request $request)
-	{
+	public function index(Request $request){
 		$user = Auth::user('user');
 		
 		if(empty($user)){
@@ -30,6 +30,8 @@ class CartController extends Controller
 			$isCreated = $cart->generate();
 
 			if($isCreated->success){
+
+				$request->session()->put('deliverykey', $isCreated->cart->_id);
 
 				return response((array)$isCreated,200);
 
@@ -134,6 +136,7 @@ class CartController extends Controller
 			$cartObj = new Cart;
 
 			$isCreated = $cartObj->generate();
+			
 
 			if($isCreated->success){
 
@@ -184,6 +187,9 @@ class CartController extends Controller
 
 		$cart['products'] = (object)$cart['products'];
 		$cart['packages'] = (object)$cart['packages'];
+
+		
+		$request->session()->put('deliverykey', $cart['_id']);
 
 		return response(["sucess"=>true,"cart"=>$cart],200);
 
@@ -374,6 +380,80 @@ class CartController extends Controller
 
 		}
 
+
+	}
+
+	public function putPromotion(Request $request, $cartKey){
+
+		$productId = $request->input('id');
+
+		$promoId = $request->input('promoId');
+
+		$cart = Cart::find($cartKey);
+
+		if(empty($cart)){
+
+        	return response(array("success"=>false,"message"=>"cart not found"),400);
+
+        }
+
+        $cartPromotion = $cart->__get("promotions");
+
+        if(!is_array($cartPromotion)){
+        	$cartPromotion = [];
+        }
+
+        $promotion = Promotion::find($promoId);
+
+        if(empty($promotion)){
+        	return response(array("success"=>false,"message"=>"promotion not found"),400);
+        }
+
+        $isInPromotion = false;
+        foreach($promotion['items'] as $product){
+
+        	if((string)$product["_id"] == $productId){
+        		$isInPromotion = true;
+        	}
+        	
+        }
+
+        if($isInPromotion===false){
+        	return response(array("success"=>false,"message"=>"product not in promotion"),400);
+        }
+
+		$isPromotionInCart = false;
+		
+		foreach($cartPromotion as $key => $promotion){
+
+			if($promotion['promoId']===$promoId){
+
+				unset($cartPromotion[$key]);
+
+			}
+
+		};
+		
+		$promoToInsert = [
+			"productId" => $productId,
+			"promoId" => $promoId
+		];
+
+		$cartPromotion = array_merge([$promoToInsert],$cartPromotion);	
+
+		try{
+
+			$cart->__set("promotions",$cartPromotion);
+
+			$cart->save();
+
+			return response(["success"=>true,"message"=>"promotion added successfully"],200);
+
+		}catch(\Exception $e){
+
+			return response(["success"=>false,"message"=>$e->getMessage()],400);
+
+		}
 
 	}
 
@@ -682,6 +762,44 @@ jprd($product);
 
     }
 
+
+    public function deletePromotion($promoId,Request $request){
+    	
+    	$cartKey = $request->session()->get('deliverykey');
+    	$cart = Cart::find($cartKey);
+
+    	if(empty($cart)){
+			return response(array("success"=>false,"message"=>"cart not found"),400);
+		}
+
+		$promotions = $cart->promotions;
+
+		if(empty($promotions)){
+			return response(["success"=>false,"message"=>"no promotion to remove"],400);
+		}
+
+		foreach ($promotions as $key => $promotion) {
+			if($promotion['promoId'] == $promoId){
+				unset($promotions[$key]);
+			}
+		}
+
+		try{
+
+			$cart->__set("promotions",$promotions);
+			$cart->save();
+
+			return response(["success"=>true,"message"=>"promotion removed successfully"],200);
+
+		}catch(\Exception $e){
+
+			return (object)["success"=>false,"message"=>$e->getMessage()];
+
+		}
+	
+    	return response(["success"=>false,"message"=>"Something went wrong"],400);
+    }
+
     public function confirmorder(Request $request,$cartKey){
 
 		$cart = Cart::find($cartKey);
@@ -739,7 +857,7 @@ jprd($product);
 
     }
 
-    public function deploycart(Request $request,$cartKey){    	
+    public function deploycart(Request $request,$cartKey){
 				
 		$cart = Cart::find($cartKey);
 
@@ -791,6 +909,6 @@ jprd($product);
 
     public function missingMethod($parameters = array())
 	{
-	    prd("Missing");
+	    jprd("Missing");
 	}
 }
