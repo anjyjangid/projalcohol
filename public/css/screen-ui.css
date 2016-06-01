@@ -163,7 +163,7 @@ md-dialog.md-transition-in{
 	width:100% !important;
 	float:left;
 	font-size:24px;
-	color:#ef5350;
+	color:#aa00ff;
 	padding:0px 0px 8px 0px;
 }
 
@@ -560,6 +560,7 @@ md-dialog.md-transition-in{
 	margin:0 14px;
 	text-transform: capitalize;
 	font-size: 0.9em;
+	border-bottom:solid 2px #ffffff;
 }
 
 .prod_chilled{
@@ -1891,7 +1892,7 @@ md-dialog.md-transition-in{
 .logolarge{
 	width:171px;
 	position:absolute;
-	left:45%;
+	left:46%;
 	top:5px;
 	-moz-transition:all 0.5s ease 0s;
 	-webkit-transition:all 0.5s ease 0s;  
