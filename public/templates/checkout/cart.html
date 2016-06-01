@@ -35,8 +35,8 @@
 			<td width="131px">
 				<div class="prod_chilled" ng-class="{
 														notchilled:!cartproduct[type+'Status'],
-														invisible:!cartproduct.product.chilled,
-														invisible:cart.nonchilled,
+														invisible:!cartproduct.product.chilled || cart.nonchilled,
+														
 													}"
 													ng-click="alcoholCart.updateChilledStatus(cartproduct._id,type)">
 					<span>Chilled</span>
