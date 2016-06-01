@@ -4,7 +4,7 @@
 			<div class="portlet-title tabbable-line">
 				<div class="caption caption-md">
 					<i class="icon-globe theme-font hide"></i>
-					<span class="caption-subject font-blue-madison bold uppercase">{{$state.$current.data.pageSubTitle}}</span>
+					<span class="caption-subject font-blue-madison bold uppercase">{{$state.$current.data.pageTitle}}</span>
 				</div>				
 			</div>
 			<div class="portlet-body">
@@ -53,7 +53,7 @@
 								Add Product
 							</a>
 							<span class="help-block" ng-bind="errors['products'][0]"></span>
-
+														
 							<div ng-repeat-start="product in promotion.products" ng:class="{'row':($index!=0 && $index%4==0)}"></div>
 								<div class="col-md-3" ng:class="{'has-error':errors['products.'+$index+'.type'][0],'has-error':errors['products.'+$index+'.dprice'][0]}">
 									<div class="thumbnail">
@@ -63,11 +63,11 @@
 											<h5>Cost price : {{product.price}}</h5>
 											<div>
 
-												<select class="form-control" ng-model="product.type" ng-init="product.type=1" ng-if="!update">
+												<select class="form-control" ng-model="product.type" ng-init="product.type=1" ng-if="!isupdate">
 													<option value="0">Free</option>
 													<option value="1">Discounted</option>													
 												</select>												
-												<select class="form-control" ng-model="product.type" ng-if="update">
+												<select class="form-control" ng-model="product.type" ng-if="isupdate">
 													<option value="0">Free</option>
 													<option value="1">Discounted</option>													
 												</select>
@@ -87,9 +87,7 @@
 						<div class="col-sm-12">
 							<hr>
 							<div class="margin-top-10 pull-right">
-
 								<button class="btn green" type="submit"><i class="fa fa-check"></i> {{ update?'Update':'Save'}}</button>								
-								
 								<a ui-sref="userLayout.promotion.list" class="btn default">Cancel </a>
 							</div>
 						</div>

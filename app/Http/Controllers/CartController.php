@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Products as Products;
 use AlcoholDelivery\Setting as Setting;
 use AlcoholDelivery\Orders as Orders;
+use AlcoholDelivery\Promotion as Promotion;
 use MongoDate;
 use MongoId;
 
@@ -20,16 +21,17 @@ class CartController extends Controller
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index(Request $request)
-	{
+	public function index(Request $request){
 		$user = Auth::user('user');
-		
+
 		if(empty($user)){
 
 			$cart = new Cart;
 			$isCreated = $cart->generate();
 
 			if($isCreated->success){
+
+				$request->session()->put('deliverykey', $isCreated->cart['_id']);
 
 				return response((array)$isCreated,200);
 
@@ -45,9 +47,9 @@ class CartController extends Controller
 
 			$cart = new Cart;
 			$isCreated = $cart->generate();
-			
+
 			if(empty($userCart)){
-			
+
 				$cart = Cart::find($isCreated->cart['_id']);
 				$cart->user = new MongoId($user->_id);
 				try{
@@ -88,13 +90,13 @@ class CartController extends Controller
 
 				}
 
-				return response(["success"=>true,"message"=>"cart created successfully","cart"=>$userCart],200);				
+				return response(["success"=>true,"message"=>"cart created successfully","cart"=>$userCart],200);
 
 			}
 
 			// prd("Portion due");
 		}
-		
+
 	}
 
 	/**
@@ -128,12 +130,13 @@ class CartController extends Controller
 	public function show(Request $request,$id)
 	{
 		$cart = Cart::findUpdated($id);
-		
-		if(empty($cart)){		
+
+		if(empty($cart)){
 
 			$cartObj = new Cart;
 
 			$isCreated = $cartObj->generate();
+
 
 			if($isCreated->success){
 
@@ -147,10 +150,10 @@ class CartController extends Controller
 
 		}else{
 
-			$cart = $cart->toArray();			
+			$cart = $cart->toArray();
 
 		}
-		
+
 		$isMerged = $this->mergecarts($cart['_id']);
 
 		if($isMerged->success){
@@ -185,6 +188,9 @@ class CartController extends Controller
 		$cart['products'] = (object)$cart['products'];
 		$cart['packages'] = (object)$cart['packages'];
 
+
+		$request->session()->put('deliverykey', $cart['_id']);
+
 		return response(["sucess"=>true,"cart"=>$cart],200);
 
 	}
@@ -209,9 +215,9 @@ class CartController extends Controller
 	 */
 	public function update(Request $request, $id)
 	{
-		
+
 		$inputs = $request->all();
-		
+
 		$proIdToUpdate = $inputs['id'];
 
 		$cart = Cart::find($id);
@@ -250,7 +256,7 @@ class CartController extends Controller
 			);
 
 		if((bool)$inputs['chilled']){
-			
+
 			$updateProData['chilled']['quantity'] = (int)$inputs['quantity'];
 
 		}else{
@@ -279,14 +285,14 @@ class CartController extends Controller
 		if($product['quantity']==0 && $product['outOfStockType']==2){
 			$product['quantity'] = $product['maxQuantity'];
 		}
-		
+
 		if((int)$quantity>(int)$product['quantity']){
 			return response(array("success"=>false,"errorCode"=>"100","message"=>"Product quantity is not available","data"=>$product));
 		}
 
 
 		try {
-					
+
 			if($quantity>0){
 
 				$cart->products = array_merge($cart->products,array($proIdToUpdate=>$updateProData));
@@ -311,7 +317,7 @@ class CartController extends Controller
 
 		return response(array("success"=>false,"message"=>"Something went worng"));
 
-		
+
 	}
 
 	public function createpackage(Request $request, $cartKey){
@@ -353,16 +359,16 @@ class CartController extends Controller
 
 			}
 		}
-		
+
 		if($packageDetail['packageQuantity']>0){
 			array_unshift($packages, $packageDetail);
 		}
-		
-		$cart->packages = $packages;
-		
 
-		try {						
-			
+		$cart->packages = $packages;
+
+
+		try {
+
 			$cart->save();
 
 			return response(array("success"=>true,"message"=>"cart updated successfully","key"=>$packageDetail['_unique']));
@@ -377,16 +383,90 @@ class CartController extends Controller
 
 	}
 
+	public function putPromotion(Request $request, $cartKey){
+
+		$productId = $request->input('id');
+
+		$promoId = $request->input('promoId');
+
+		$cart = Cart::find($cartKey);
+
+		if(empty($cart)){
+
+        	return response(array("success"=>false,"message"=>"cart not found"),400);
+
+        }
+
+        $cartPromotion = $cart->__get("promotions");
+
+        if(!is_array($cartPromotion)){
+        	$cartPromotion = [];
+        }
+
+        $promotion = Promotion::find($promoId);
+
+        if(empty($promotion)){
+        	return response(array("success"=>false,"message"=>"promotion not found"),400);
+        }
+
+        $isInPromotion = false;
+        foreach($promotion['items'] as $product){
+
+        	if((string)$product["_id"] == $productId){
+        		$isInPromotion = true;
+        	}
+
+        }
+
+        if($isInPromotion===false){
+        	return response(array("success"=>false,"message"=>"product not in promotion"),400);
+        }
+
+		$isPromotionInCart = false;
+
+		foreach($cartPromotion as $key => $promotion){
+
+			if($promotion['promoId']===$promoId){
+
+				unset($cartPromotion[$key]);
+
+			}
+
+		};
+
+		$promoToInsert = [
+			"productId" => $productId,
+			"promoId" => $promoId
+		];
+
+		$cartPromotion = array_merge([$promoToInsert],$cartPromotion);
+
+		try{
+
+			$cart->__set("promotions",$cartPromotion);
+
+			$cart->save();
+
+			return response(["success"=>true,"message"=>"promotion added successfully"],200);
+
+		}catch(\Exception $e){
+
+			return response(["success"=>false,"message"=>$e->getMessage()],400);
+
+		}
+
+	}
+
 	public function mergecarts($cartkey){
 
 		$user = Auth::user('user');
-        
+
         $cart = "";
 
         if(isset($user->_id)){
-            
+
             $userCart = Cart::where("user","=",new MongoId($user->_id))->where("_id","!=",new MongoId($cartkey))->first();
-            
+
             $sessionCart = Cart::find($cartkey);
 
             if(!empty($userCart)){
@@ -458,16 +538,16 @@ jprd($product);
 
 				$notAvail[] = [
 					"id"=>$product["_id"]
-					
+
 				];
 
-			};			
+			};
 
 			if($cartProduct['quantity']<=$product['quantity']){
 
 				$notAvail[] = [
 					"id"=>$product["_id"]
-					
+
 				];
 
 			}
@@ -496,7 +576,7 @@ jprd($product);
 		$nonchilled = $request->input('nonchilled');
 
 		$product = $cart->products[$productId];
-		
+
 		$product['chilled']['status'] = $chilled?'chilled':'nonchilled';
 		$product['nonchilled']['status'] = $nonchilled?'chilled':'nonchilled';
 
@@ -514,7 +594,7 @@ jprd($product);
 			return (object)["success"=>false,"message"=>$e->getMessage()];
 
 		}
-		
+
 
 	}
 
@@ -529,17 +609,17 @@ jprd($product);
 		// }
 
 		$user = Auth::user('user');
-        
+
         $cart = "";
 
         if(isset($user->_id)){
-            
+
             $cart = Cart::where("user","=",$user->_id);
 
         }
 
         if(!isset($cart->_id)){
-            
+
         	$cart = new Cart;
 			$cart->products = [];
 
@@ -576,7 +656,7 @@ jprd($product);
 			"chilled"=>$services['non_chilled_delivery']['value'],
 			"mincart"=>$services['minimum_cart_value']['value'],
 			"delivery"=>$services['non_free_delivery']['value'],
-			
+
 		];
 
     	return response($serviceRes,200);
@@ -587,8 +667,8 @@ jprd($product);
 
     	$timeSlots = Setting::where("_id","=","timeslot")->get(['settings'])->first();
     	$timeSlots = $timeSlots['settings'];
-    
-			
+
+
 		$currDate = date("Y-m-d", strtotime('tomorrow'));
 
     	if(isset($data)!==""){
@@ -598,17 +678,17 @@ jprd($product);
     		if(strtotime($passedDate)<strtotime($currDate)){
     			$passedDate = $currDate;
     		}
-    		
+
     	}else{
-    		
+
     		$passedDate = $currDate;
 
     	}
 
     	$weeknumber = date("N",strtotime($passedDate));
-		
+
 		$weekKeys = array(
-			
+
 			"1"=>"mon",
 			"2"=>"tue",
 			"3"=>"wed",
@@ -623,10 +703,10 @@ jprd($product);
 		$tempDate = $passedDate;
 		for($i=1;$i<=7;$i++){
 			//$slotArr[$weekKeys[$weeknumber]] = [];
-			$slotArr[$weekKeys[$weeknumber]]['slots'] = $timeSlots[$weeknumber-1];			
+			$slotArr[$weekKeys[$weeknumber]]['slots'] = $timeSlots[$weeknumber-1];
 			$slotArr[$weekKeys[$weeknumber]]['datestamp'] = date("d M",strtotime($tempDate));
 			$slotArr[$weekKeys[$weeknumber]]['datekey'] = strtotime($tempDate);
-			
+
 			$tempDate = date("Y-m-d",strtotime('+1 day', strtotime($tempDate)));
 
 			if($weeknumber==7){
@@ -640,16 +720,16 @@ jprd($product);
     }
 
     public function removeproduct($proId,$type,Request $request){
-    	
+
     	$cartKey = $request->session()->get('deliverykey');
-				
+
 		$cart = Cart::find($cartKey);
 
 		$products = $cart->products;
 		$products[$proId][$type]=0;
 
 		$products[$proId]['quantity'] = (int)$products[$proId]['chilled'] + (int)$products[$proId]['nonchilled'];
-		
+
 
 			try {
 
@@ -658,7 +738,7 @@ jprd($product);
 					$cart->products = $products;
 
 					$cart->save();
-				
+
 					return response(array("success"=>true,"message"=>"cart updated successfully","removeCode"=>200));
 					//200 to know only chilled/nonchilled is removed
 
@@ -670,16 +750,54 @@ jprd($product);
 					//300 to know complete product is removed
 
 				}
-				
+
 
 			} catch(\Exception $e){
-				
+
 				return response(array("success"=>false,"message"=>$e->getMessage()));
 
 			}
-	
+
 		return response(array("success"=>false,"message"=>"Something went wrong"));
 
+    }
+
+
+    public function deletePromotion($promoId,Request $request){
+
+    	$cartKey = $request->session()->get('deliverykey');
+    	$cart = Cart::find($cartKey);
+
+    	if(empty($cart)){
+			return response(array("success"=>false,"message"=>"cart not found"),400);
+		}
+
+		$promotions = $cart->promotions;
+
+		if(empty($promotions)){
+			return response(["success"=>false,"message"=>"no promotion to remove"],400);
+		}
+
+		foreach ($promotions as $key => $promotion) {
+			if($promotion['promoId'] == $promoId){
+				unset($promotions[$key]);
+			}
+		}
+
+		try{
+
+			$cart->__set("promotions",$promotions);
+			$cart->save();
+
+			return response(["success"=>true,"message"=>"promotion removed successfully"],200);
+
+		}catch(\Exception $e){
+
+			return (object)["success"=>false,"message"=>$e->getMessage()];
+
+		}
+
+    	return response(["success"=>false,"message"=>"Something went wrong"],400);
     }
 
     public function confirmorder(Request $request,$cartKey){
@@ -687,13 +805,13 @@ jprd($product);
 		$cart = Cart::find($cartKey);
 
 		$cartArr = $cart->toArray();
-	
+
 		$user = Auth::user('user');
-		
+
 		$cartArr['user'] = new MongoId($user->_id);
 
 		$cartProductsArr = [];
-		
+
 		$productsIdInCart = array_keys((array)$cartArr['products']);
 
 				$productObj = new Products;
@@ -707,40 +825,40 @@ jprd($product);
 											)
 										);
 
-		foreach($productsInCart as $key=>$product){		
+		foreach($productsInCart as $key=>$product){
 
 			$cartArr['products'][$product["_id"]]['_id'] = new MongoId($product["_id"]);
 
 			$cartArr['products'][$product["_id"]]['original'] = $product;
 			$cartProductsArr[] = $cartArr['products'][$product["_id"]];
-						
-		}	
+
+		}
 
 		$cartArr['products'] = $cartProductsArr;
 
 		$cartArr['packages'] = $cartArr['packages'];
 
-	
+
 		try {
 
 			$order = Orders::create($cartArr);
 
 			$cart->delete();
-			
+
 			$request->session()->forget('deliverykey');
-			
+
 			return response(array("success"=>true,"message"=>"order placed successfully","order"=>$order['_id']));
 
 		} catch(\Exception $e){
-			
+
 			return response(array("success"=>false,"message"=>$e->getMessage()));
 
 		}
 
     }
 
-    public function deploycart(Request $request,$cartKey){    	
-				
+    public function deploycart(Request $request,$cartKey){
+
 		$cart = Cart::find($cartKey);
 
 		if(empty($cart)){
@@ -776,11 +894,11 @@ jprd($product);
     	try {
 
 			$cart->save();
-			
+
 			return response(array("success"=>true,"message"=>"cart updated successfully"));
 
 		} catch(\Exception $e){
-			
+
 			return response(array("success"=>false,"message"=>$e->getMessage()));
 
 		}
@@ -791,6 +909,6 @@ jprd($product);
 
     public function missingMethod($parameters = array())
 	{
-	    prd("Missing");
+	    jprd("Missing");
 	}
 }
