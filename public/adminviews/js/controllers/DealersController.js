@@ -24,7 +24,7 @@ MetronicApp.controller('DealerAddController',['$scope','$http','dealerModel', fu
 		contacts : [{}]
 	};	
 		
-	$http.get("/admin/global/getcountries").success(function(response){
+	$http.get("/adminapi/global/getcountries").success(function(response){
 		$scope.countries = response;
 	});
 	
@@ -54,13 +54,13 @@ MetronicApp.controller('DealerUpdateController',['$rootScope', '$scope', '$timeo
     
     $scope.errors = {};
 
-	$http.get("/admin/global/getcountries").success(function(response){
+	$http.get("/adminapi/global/getcountries").success(function(response){
 		$scope.countries = response;
 	});
 
 	dealerModel.getDealer($stateParams.dealerid).success(function(response){
 		$scope.dealer = response;		
-		$scope.dealer.address.country=$scope.dealer.address.country._id.$id;
+		$scope.dealer.address.country=$scope.dealer.address.country;//._id.$id;
 	});
 
 		
@@ -106,7 +106,7 @@ MetronicApp.controller('DealerOrderController', function($rootScope, $scope, $ht
 	$scope.dealer = {};
 	$scope.country = {};
 
-	$http.get("/admin/dealer/dealerproduct/"+$stateParams.dealerid).success(function(response) {               
+	$http.get("/adminapi/dealer/dealerproduct/"+$stateParams.dealerid).success(function(response) {               
 		$scope.orders = response.products;        
 		$scope.dealer = response.dealer;        
 		$scope.country = response.country;        

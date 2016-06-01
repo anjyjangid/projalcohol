@@ -52,7 +52,7 @@ class CustomerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CustomerRequest $request)
+    public function postStore(CustomerRequest $request)
     {
         $inputs = $request->all();
 
@@ -111,7 +111,7 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
     **/
-    public function update(CustomerRequest $request, $id)
+    public function postUpdate(CustomerRequest $request, $id)
     {
         $inputs = $request->all();
 
@@ -132,7 +132,7 @@ class CustomerController extends Controller
     }
 
 
-    public function getCustomer($customerId)
+    public function getDetail($customerId)
     {
         $customerObj = new User;
 
@@ -145,7 +145,7 @@ class CustomerController extends Controller
     }
 
 
-    public function customers(Request $request)
+    public function postList(Request $request)
     {
         $params = $request->all();
         $users = new User;

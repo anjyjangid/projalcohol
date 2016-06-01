@@ -55,27 +55,27 @@ MetronicApp.controller('PromotionAddController',['$rootScope','$scope','$http','
 		
 		var data = $scope.promotion;
 		
+		if($stateParams.promotionId){
+
+			promotionModel.update(data,$stateParams.promotionId).success(function(response){
+
+			}).error(function(data, status, headers){
+
+				$scope.errors = data;
+
+			});
+
+		}else{
+			promotionModel.storePromotion(data).success(function(response){
+
+			}).error(function(data, status, headers){
+
+				$scope.errors = data;
+
+			});	
+		}
 		//POST DATA WITH FILES
-		promotionModel.storePromotion(data).success(function(response){
-
-		}).error(function(data, status, headers){
-
-			$scope.errors = data;
-
-		});
-	}
-
-	$scope.update = function(){
 		
-		var data = $scope.promotion;
-				
-		promotionModel.update(data,$stateParams.promotionId).success(function(response){
-
-		}).error(function(data, status, headers){
-
-			$scope.errors = data;
-
-		});
 	}
 
 

@@ -1,5 +1,5 @@
 <!-- BEGIN PAGE CONTENT-->
-<div class="row">
+<div class="row" ng-controller="PublicholidaysController">
 	<div class="col-md-12">		
 		<!-- BEGIN PAGE HEADER--> 
 		<h3 class="page-title">
@@ -20,8 +20,15 @@
 		</div>
 		<!-- END PAGE HEADER-->		
 		<!-- BEGIN PROFILE CONTENT -->
-		<div ui-view class="my-content fade-in-up"> 
-		</div>
+		{{eventSources|json}}
+		<button ng-click="addNewevent()">Add New</button>
+		<div class="row">				
+			<div class="col-md-6">
+			</div>
+			<div class="col-md-6">
+				<div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div>
+			</div>
+		</div>		
 		<!-- END PROFILE CONTENT -->
 	</div>
 </div>

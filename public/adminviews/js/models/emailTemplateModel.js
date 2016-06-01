@@ -3,12 +3,12 @@ MetronicApp.factory('emailTemplateModel', ['$http', '$cookies','$location', func
     return {
         
         getTemplate: function(templateId){
-            return $http.get("/admin/emailtemplate/gettemplate/"+templateId);
+            return $http.get("/adminapi/emailtemplate/template/"+templateId);
         },       
 
         storePage: function(fields){
 	       	
-	        return $http.post("/admin/emailtemplate", fields, {
+	        return $http.post("/adminapi/emailtemplate", fields, {
 	            
 	        }).error(function(data, status, headers) {            
 	            Metronic.alert({
@@ -49,7 +49,7 @@ MetronicApp.factory('emailTemplateModel', ['$http', '$cookies','$location', func
 	       	
 	       	//put is used to updated data, Laravel router automatically redirect to update function 
 
-	        return $http.put("/admin/emailtemplate/"+templateId, fields, {
+	        return $http.put("/adminapi/emailtemplate/"+templateId, fields, {
 	            
 	        }).error(function(data, status, headers) {            
 	            Metronic.alert({

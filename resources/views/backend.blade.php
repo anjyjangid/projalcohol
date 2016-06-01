@@ -74,49 +74,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		<div class="bounce3"></div>
 	</div>
 	<!-- END PAGE SPINNER -->
-	<!-- BEGIN HEADER -->
-	<div data-ng-include="'{{ asset('adminviews/tpl/header.html') }}'" data-ng-controller="HeaderController" class="page-header md-shadow-z-1-i navbar navbar-fixed-top">
-	</div>
-	<!-- END HEADER -->
-	<div class="clearfix">
-	</div>
-	<!-- BEGIN CONTAINER -->
-	<div class="page-container">
-		<!-- BEGIN SIDEBAR -->
-		<div data-ng-include="'{{ asset('adminviews/tpl/sidebar.html') }}'" data-ng-controller="SidebarController" class="page-sidebar-wrapper">			
-		</div>
-		<!-- END SIDEBAR -->
-
-		<!-- BEGIN CONTENT -->
-		<div class="page-content-wrapper">
-			<div class="page-content">
-				<!-- BEGIN STYLE CUSTOMIZER(optional) -->
-				
-				<!-- <div data-ng-include="'{{ asset('adminviews/tpl/theme-panel.html') }}'" data-ng-controller="ThemePanelController" class="theme-panel hidden-xs hidden-sm">				
-				</div> -->
-				
-				<!-- END STYLE CUSTOMIZER -->
-						
-				<!-- BEGIN ACTUAL CONTENT -->
-				
-				<div ui-view class="fade-in-up">
-				</div> 
-				<!-- END ACTUAL CONTENT -->
-			</div>	
-		</div>
-		<!-- END CONTENT -->
-		
-		<!-- BEGIN QUICK SIDEBAR -->
-		<a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
-		<div data-ng-include="'{{ asset('adminviews/tpl/quick-sidebar.html') }}'" data-ng-controller="QuickSidebarController" class="page-quick-sidebar-wrapper"></div>
-		<!-- END QUICK SIDEBAR -->
-	</div>
-	<!-- END CONTAINER -->
-
-	<!-- BEGIN FOOTER -->
-	<div data-ng-include="'{{ asset('adminviews/tpl/footer.html') }}'" data-ng-controller="FooterController" class="page-footer">
-	</div>
-	<!-- END FOOTER -->
+	<div ui-view></div>
 
 	<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 
@@ -174,18 +132,51 @@ License: You must have a valid license purchased only from themeforest(the above
 	<script src="{{ asset('assets/admin/pages/scripts/login.js') }}" type="text/javascript"></script>
 	<!-- END APP LEVEL JQUERY SCRIPTS -->
 
+	
+
 	<script src="{{ asset('js/angular-storage.js') }}" type="text/javascript"></script>
 
 	<script src="{{ asset('assets/global/plugins/datatables/all.min.js') }}" type="text/javascript"></script>
 
+	<!-- FULL CALENDER -->
+
+	<link rel="stylesheet" href="{{ asset('bower_components/fullcalendar/dist/fullcalendar.css') }}"/>
+	
+	
+	<script type="text/javascript" src="{{ asset('bower_components/moment/min/moment.min.js') }}"></script>	
+	<script type="text/javascript" src="{{ asset('bower_components/angular-ui-calendar/src/calendar.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bower_components/fullcalendar/dist/fullcalendar.min.js') }}"></script>
+	
+	<!-- FULL CALENDER -->
+
 	<script type="text/javascript">
 		/* Init Metronic's core jquery plugins and layout scripts */
+		function getCookie(c_name) {
+	        if(document.cookie.length > 0) {
+	            c_start = document.cookie.indexOf(c_name + "=");
+	            if(c_start != -1) {
+	                c_start = c_start + c_name.length + 1;
+	                c_end = document.cookie.indexOf(";", c_start);
+	                if(c_end == -1) c_end = document.cookie.length;
+	                return unescape(document.cookie.substring(c_start,c_end));
+	            }
+	        }
+	        return "";
+	    }
+
 		$(document).ready(function() {   
 			Metronic.init(); // Run metronic theme
-			Metronic.setAssetsPath('{{ asset("assets") }}/'); // Set the assets folder path			
-
-			
+			Metronic.setAssetsPath('{{ asset("assets") }}/'); // Set the assets folder path						
 		});
+
+		$(function () {
+	        $.ajaxSetup({
+	            headers: {
+	                "X-CSRF-TOKEN": getCookie("XSRF-TOKEN")
+	            }
+	        });
+	    });	
+		
 	</script>
 	<!-- END JAVASCRIPTS -->
 </body>

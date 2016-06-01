@@ -51,17 +51,18 @@
 				</div>
 				<ul class="nav nav-tabs">
 					<li class="active">
-						<a href="#" data-target="#tab_1_1" data-toggle="tab"> detail</a>
+						<a href="#" data-target="#tab_1_1" data-toggle="tab">Detail</a>
 					</li>
-					<li>
+					<li ng-show="categoryData.ancestors.length != 0">
 						<a href="#" data-target="#tab_1_2" data-toggle="tab">Child Categories</a>
 					</li>
-					<li>
+					<!-- <li>
 						<a href="#" data-target="#tab_1_3" data-toggle="tab">Products</a>
-					</li>
+					</li> -->
 					
 				</ul>
 			</div>
+
 			<div class="portlet-body">
 				<div class="tab-content">
 					<!-- Child Category TAB -->
@@ -71,9 +72,8 @@
 							<div class="col-md-4 name">
 								 Title:
 							</div>
-							<div class="col-md-8 value">
-								<span class="label label-success">
-								{{categoryData.cat_title}} </span>
+							<div class="col-md-8 value">								
+								{{categoryData.cat_title}}
 							</div>
 						</div>
 						<div class="row static-info" ng-if="categoryData.ancestors">
@@ -83,7 +83,7 @@
 							<div class="col-md-8 value">
 								<ul class="list-inline">
 								<li ng-repeat="parent in categoryData.ancestors">
-								<a title="view : {{parent.title}}" ui-sref="categories.show({categoryid:parent._id['$id']})"><span class="label label-success">{{parent.title}}</span></a>&nbsp&nbsp<span ng-if="!$last" class="fa fa-long-arrow-right"></span>
+								<a title="view : {{parent.title}}" ui-sref="userLayout.categories.show({categoryid:parent._id['$id']})">{{parent.title}}</a>&nbsp&nbsp<span ng-if="!$last" class="fa fa-long-arrow-right"></span>
 								</li>
 								</ul>
 							</div>
@@ -121,7 +121,7 @@
 <!-- Begin: life time stats -->
 		<div class="table-container">
 					<div class="actions pull-right">
-					<a ui-sref="categories.add" class="btn default yellow-stripe">
+					<a ui-sref="userLayout.categories.add" class="btn default yellow-stripe">
 					<i class="fa fa-plus"></i>
 					<span class="hidden-480">
 					New Category </span>
@@ -235,7 +235,7 @@
                         'targets': [1,5]
                     }],
                 "ajax": {
-                    "url": "admin/category/getcategories/"+categoryId,// ajax source
+                    "url": "adminapi/category/categorylist/"+categoryId,// ajax source
                     // "data": function ( d ) {
                     //     d._token = $('meta[name="_token"]').attr('content');
 
@@ -249,7 +249,7 @@
                     //     // d.custom = $('#myInput').val();
                     //     // etc
                     // },
-                    "type": "GET"
+                    "type": "POST"
                 },
                 "order": [
                     [1, "asc"],

@@ -28,7 +28,7 @@ class AdminAuthController extends Controller
         $this->middleware('admin.guest', ['except' => 'getLogout']);
     }
 
-    /*public function postLogin(Request $request)
+    public function postLogin(Request $request)
     {        
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
@@ -60,6 +60,13 @@ class AdminAuthController extends Controller
         }
 
         return response(Auth::user('admin'), 200);
-    }*/
+    }
+
+    public function getLogout()
+    {
+        if(Auth::logout($this->user())){
+            return response(Auth::user('admin'), 200);
+        }
+    }
 
 }

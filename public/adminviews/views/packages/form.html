@@ -7,7 +7,7 @@
 					<i class="fa fa-shopping-cart"></i>{{package._id?'Edit Package':'Add New Package'}}
 				</div>
 				<div class="actions btn-set">
-					<a class="btn default" ui-sref="{{$state.$current.data.type==1 ? 'packages.party':'packages.cocktail'}}"><i class="fa fa-angle-left"></i> Back</a>
+					<a class="btn default" ui-sref="{{$state.$current.data.type==1 ? 'userLayout.packages.party':'userLayout.packages.cocktail'}}"><i class="fa fa-angle-left"></i> Back</a>
 					<button class="btn green" type="submit"><i class="fa fa-check"></i> {{package._id?'Update':'Save'}}</button>
 
 
@@ -189,7 +189,7 @@
 											* </span>
 											</label>
 											<div class="col-md-5">
-												<input type="number" class="form-control" ng-model="pc.quantity" placeholder="">
+												<input type="number" min="1" class="form-control" ng-model="pc.quantity" placeholder="">
 												<span class="help-block" ng-bind="errors['packageItems.'+pckey+'.quantity'][0]"></span>
 											</div>
 										</div>

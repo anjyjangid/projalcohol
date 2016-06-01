@@ -8,7 +8,7 @@
 					| {{order.dateslug}} </span>
 				</div>
 				<div class="actions">
-					<a ui-sref="orders.list" class="btn default yellow-stripe">
+					<a ui-sref="userLayout.orders.list" class="btn default yellow-stripe">
 					<i class="fa fa-angle-left"></i>
 					<span class="hidden-480">
 					Back </span>
@@ -207,7 +207,7 @@
 													<tr ng-repeat-start="(key, orderproduct) in order.products"></tr>
 													<tr ng-repeat="type in ['chilled','nonchilled']" ng-if="orderproduct[type].quantity>0">
 														<td width="52%">
-															<div class="orhistry2_td2procdtcvr" ui-sref="mainLayout.product({product:orderproduct.product._id})">
+															<div class="orhistry2_td2procdtcvr">
 																<div class="checkouter-td-right-text">
 																	<div class="orhistry2_td2proctext1">{{orderproduct.product.name}}</div>
 															 	</div> 

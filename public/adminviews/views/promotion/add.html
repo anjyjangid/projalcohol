@@ -8,7 +8,7 @@
 				</div>				
 			</div>
 			<div class="portlet-body">
-				<form role="form" name='promotionForm'>
+				<form role="form" name='promotionForm' ng-submit="store()">
 
 					<div class="form-group row" ng:class="{'has-error':errors.title[0]}">
 						<label class="col-md-2 control-label">Title: <span class="required">
@@ -88,11 +88,9 @@
 							<hr>
 							<div class="margin-top-10 pull-right">
 
-								<button class="btn green" ng-click="store()" ng-if="!update"><i class="fa fa-check"></i> Save</button>
-
-								<button class="btn green" ng-click="update()" ng-if="update"><i class="fa fa-check"></i> Update</button>
+								<button class="btn green" type="submit"><i class="fa fa-check"></i> {{ update?'Update':'Save'}}</button>								
 								
-								<a ui-sref="promotion.list" class="btn default">Cancel </a>
+								<a ui-sref="userLayout.promotion.list" class="btn default">Cancel </a>
 							</div>
 						</div>
 					</div>

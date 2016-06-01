@@ -3,12 +3,12 @@ MetronicApp.factory('testimonialModel', ['$http', '$cookies','$location', functi
     return {
         
         getTestimonial: function(id){
-            return $http.get("/admin/testimonial/"+id);
+            return $http.get("/adminapi/testimonial/"+id);
         },       
 
         storeTestimonial: function(fields){
         	   	      
-	        return $http.post("/admin/testimonial", fields, {
+	        return $http.post("/adminapi/testimonial", fields, {
 
 	        	transformRequest: angular.identity,
 	            headers: {'Content-Type': undefined}
@@ -55,7 +55,7 @@ MetronicApp.factory('testimonialModel', ['$http', '$cookies','$location', functi
 	       	fields = objectToFormData(fields);
 	       	
 	       	//put is used to updated data, Laravel router automatically redirect to update function 
-	        return $http.post("/admin/testimonial/update/"+id, fields, {
+	        return $http.post("/adminapi/testimonial/update/"+id, fields, {
 
 	            transformRequest: angular.identity,	            	            
 	            headers: {'Content-Type': undefined}

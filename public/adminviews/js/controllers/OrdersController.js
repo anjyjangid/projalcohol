@@ -18,7 +18,7 @@ MetronicApp.controller('OrderUpdateController',['$rootScope', '$scope', '$timeou
     
     $scope.errors = {};
 
-	$http.get("/admin/global/getcountries").success(function(response){
+	$http.get("/adminapi/global/getcountries").success(function(response){
 		$scope.countries = response;
 	});
 

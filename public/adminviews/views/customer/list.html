@@ -15,7 +15,7 @@
 					<i class="fa fa-user"></i>Customer Listing
 				</div>
 				<div class="actions">
-					<a ui-sref="customer.add" class="btn default">
+					<a ui-sref="userLayout.customer.add" class="btn default">
 					<i class="fa fa-plus"></i>
 					<span class="hidden-480">
 					New Customer </span>
@@ -152,7 +152,7 @@
 						mRender: function(data, type, full) {
 	                        var txt = 'Edit';
 
-	                        return '<a title="Edit" ui-sref=customer.edit({customerid:"'+data._id+'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
+	                        return '<a title="Edit" ui-sref=userLayout.customer.edit({customerid:"'+data._id+'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
 	                    },					
 						orderable:false
 					}
@@ -164,7 +164,7 @@
                 ],
                 "pageLength": 10, // default record count per page
 				"ajax": {
-                    "url": "../admin/getcustomers", // ajax source
+                    "url": "../adminapi/customer/list", // ajax source
                 },   
                 "order": [
                     [1, "asc"]

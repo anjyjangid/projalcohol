@@ -6,6 +6,7 @@ use AlcoholDelivery\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Categories as Categories;
+use AlcoholDelivery\Email;
 use AlcoholDelivery\User as User;
 
 use Illuminate\Support\Facades\Validator;

@@ -3,12 +3,12 @@ MetronicApp.factory('cmsModel', ['$http', '$cookies','$location', function($http
     return {
         
         getPage: function(pageId){
-            return $http.get("/admin/cms/getpage/"+pageId);
+            return $http.get("/adminapi/cms/detail/"+pageId);
         },       
 
         storePage: function(fields){
 	       	
-	        return $http.post("/admin/cms", fields, {
+	        return $http.post("/adminapi/cms", fields, {
 	            
 	        }).error(function(data, status, headers) {            
 	            Metronic.alert({
@@ -50,7 +50,7 @@ MetronicApp.factory('cmsModel', ['$http', '$cookies','$location', function($http
 	       	
 	       	//put is used to updated data, Laravel router automatically redirect to update function 
 
-	        return $http.put("/admin/cms/"+pageId, fields, {
+	        return $http.put("/adminapi/cms/"+pageId, fields, {
 	            
 	        }).error(function(data, status, headers) {            
 	            Metronic.alert({

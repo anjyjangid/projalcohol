@@ -61,7 +61,7 @@ class PackageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(PackageRequest $request)
+    public function postStore(PackageRequest $request)
     {
         $inputs = $request->all();
 
@@ -125,7 +125,7 @@ class PackageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id,$type)
+    public function getDetail($id,$type)
     {
         $package = new Packages;
 
@@ -191,7 +191,7 @@ class PackageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(PackageRequest $request, $id)
+    public function postUpdate(PackageRequest $request, $id)
     {
         $inputs = $request->all();
 
@@ -269,7 +269,7 @@ class PackageController extends Controller
         //
     }
 
-    public function listpackage(Request $request,$type){
+    public function postListpackage(Request $request,$type){
         
         $params = $request->all();        
 
@@ -325,7 +325,7 @@ class PackageController extends Controller
         }
     }
 
-    public function searchProduct(Request $request){
+    public function getSearchproduct(Request $request){
 
       $params = $request->all();
 

@@ -9,10 +9,69 @@
 | and give it the controller to call when that URI is requested.
 |
  */
+Route::group(['prefix' => 'adminapi'], function () {
 
-post('upload-image', 'GalleryController@uploadImage');
-Route::resource('gallery', 'GalleryController');
+	Route::controller('auth', 'Auth\AdminAuthController');
 
+});
+
+Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
+	
+	Route::controller('order', 'Admin\OrderController');
+	
+	Route::resource('product', 'Admin\ProductController',['only'=>['update','store']]);
+	Route::controller('product', 'Admin\ProductController');
+
+	Route::controller('admin', 'Admin\AdminController');
+	
+	Route::controller('customer', 'Admin\CustomerController');
+	
+	Route::group(['prefix' => 'global'], function () {		
+		Route::get('status/{id}/{table}/{status}','Admin\GlobalController@setstatus');
+		Route::get('getcountries','Admin\GlobalController@getcountries');		
+		Route::get('browsegraphics','Admin\GlobalController@browsegraphics');
+		Route::post('uploadgraphics','Admin\GlobalController@uploadgraphics');
+	});
+
+	
+	Route::controller('dealer', 'Admin\DealerController');
+
+	Route::controller('category', 'Admin\CategoryController');	
+
+	Route::resource('setting', 'Admin\SettingController',['only'=>'update']);
+	Route::controller('setting', 'Admin\SettingController');
+
+	Route::controller('package', 'Admin\PackageController');
+
+	Route::resource('emailtemplate', 'Admin\EmailTemplateController',['only'=>'update']);
+	Route::controller('emailtemplate', 'Admin\EmailTemplateController');
+
+	Route::resource('cms', 'Admin\CmsController',['only'=>'update']);
+	Route::controller('cms', 'Admin\CmsController');
+
+	Route::resource('testimonial', 'Admin\TestimonialController',['only'=>['update','store','show']]);
+	Route::controller('testimonial', 'Admin\TestimonialController');
+
+	Route::resource('brand', 'Admin\BrandController',['only'=>['update','store','show']]);
+	Route::controller('brand', 'Admin\BrandController');
+
+	Route::resource('promotion', 'Admin\PromotionController',['only'=>['update','store','show']]);
+	Route::controller('promotion', 'Admin\PromotionController');
+
+});
+
+Route::group(['prefix' => 'admin'], function () {					
+	Route::any('{catchall}', function ( $page ) {
+	    return view('backend');    
+	} )->where('catchall', '(.*)');
+
+	Route::get('/', function () {
+	    return view('backend');
+	});	
+});
+
+//post('upload-image', 'GalleryController@uploadImage');
+//Route::resource('gallery', 'GalleryController');
 
 Route::get('/', function () {
     return view('frontend');
@@ -79,11 +138,11 @@ Route::resource('category', 'Admin\CategoryController');
 
 //ADMIN ROUTES
 
-Route::get('/admin/profile', ['uses' => 'Admin\AdminController@profile']);
+/*Route::get('/admin/profile', ['uses' => 'Admin\AdminController@profile']);
 Route::post('/admin/profile/update', ['uses' => 'Admin\AdminController@update']);
 Route::post('/admin/profile/updatepassword', ['uses' => 'Admin\AdminController@updatepassword']);
 Route::get('/admin', ['uses' => 'Admin\AdminController@index']);
-Route::get('/admin/dashboard', ['uses' => 'Admin\AdminController@dashboard']);
+Route::get('/admin/dashboard', ['uses' => 'Admin\AdminController@dashboard']);*/
 
 
 Route::resource('address', 'AddressController');
@@ -94,7 +153,7 @@ Route::controller('package', 'PackageController');
 Route::resource('site', 'SiteController',['only'=>['*']]);
 Route::controller('site', 'SiteController');
 
-Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
+Route::group(['prefix' => 'admintetet','middleware' => 'admin'], function () {
 	
 	Route::group(['prefix' => 'category'], function () {
 
@@ -250,11 +309,9 @@ Route::get('asset/i/{filename}', function ($filename)
     return Image::make(public_path('img') . '/' . $filename)->response();
 });
 
-Route::controller('/admin/password', 'Auth\AdminPasswordController');
+/*Route::controller('/admin/password', 'Auth\AdminPasswordController');
 
-Route::controller('/admin', 'Auth\AdminAuthController');
-
-Route::controller('/admin', 'Auth\AdminAuthController');
+Route::controller('/admin', 'Auth\AdminAuthController');*/
 
 Route::get('/check', 'UserController@check');
 
