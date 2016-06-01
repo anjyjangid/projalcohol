@@ -3,12 +3,12 @@ MetronicApp.factory('brandModel', ['$http', '$cookies','$location', function($ht
     return {
         
         getBrand: function(id){
-            return $http.get("/admin/brand/"+id);
+            return $http.get("/adminapi/brand/"+id);
         },       
 
         storeBrand: function(fields){
         	   	      
-	        return $http.post("/admin/brand", fields, {
+	        return $http.post("/adminapi/brand", fields, {
 
 	        	transformRequest: angular.identity,
 	            headers: {'Content-Type': undefined}
@@ -55,7 +55,7 @@ MetronicApp.factory('brandModel', ['$http', '$cookies','$location', function($ht
 	       	fields = objectToFormData(fields);
 	       	
 	       	//put is used to updated data, Laravel router automatically redirect to update function 
-	        return $http.post("/admin/brand/update/"+id, fields, {
+	        return $http.post("/adminapi/brand/update/"+id, fields, {
 
 	            transformRequest: angular.identity,	            	            
 	            headers: {'Content-Type': undefined}

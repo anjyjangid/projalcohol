@@ -1,0 +1,19 @@
+<div ng-if="cart.delivery.type==0">
+	<div ng-repeat="promotion in _promo.$promotions" ng-if="promotion.eligible.already || promotion.eligible.nearest">
+		<div class="checkoutcongratulationouter">
+			<div class="checkout-congratulation-title">Congratulations! You qualify for special ${{promotion.price}} promotion.</div>
+			<div class="checkout-congratulation-text">Please select one of the following products. Only applicable for 1 hour deliveries.</div>
+		</div>
+
+		<div class="checkout-product">
+			<div class="row">
+				<div al-tpl-product 
+									classes="col-md-3 col-sm-3 col-xs-12 m-bottom-20" 
+									info="product" 
+									promotion="promotion._id" 
+									ng-repeat="product in promotion.products"
+					></div>
+			</div>
+		</div>
+	</div>
+</div>

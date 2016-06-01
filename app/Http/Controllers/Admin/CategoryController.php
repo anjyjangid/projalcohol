@@ -115,7 +115,7 @@ class CategoryController extends Controller
 
 		// Pricing section checks ends
 		
-		$fileUpload = $this->uploadThumb($request);
+		$fileUpload = $this->uploadthumb($request);
 
 		
 
@@ -167,7 +167,7 @@ class CategoryController extends Controller
 
 	}
 
-	public function uploadThumb(Request $request){
+	public function uploadthumb(Request $request){
 		
 		$files = array();
 
@@ -260,7 +260,7 @@ class CategoryController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Request $request, $id)
+	public function postUpdate(Request $request, $id)
 	{
 		$inputs = $request->all();
 		
@@ -332,7 +332,7 @@ class CategoryController extends Controller
 
 		// Pricing section checks ends
 		
-		$fileUpload = $this->uploadThumb($request);
+		$fileUpload = $this->uploadthumb($request);
 					
 		$category->cat_title = $inputs['title'];
 		$category->slug = $inputs['slug'];
@@ -385,29 +385,28 @@ class CategoryController extends Controller
 		return response(array("success"=>true,"message"=>"Record(s) Removed Successfully"));
 	}
 
-	public function getparentcategories($id = false){
-		
+	public function getAllparent(Request $request,$id = false){
+		$categories = [];
 		if($id==""){
 			$categories = Categories::whereNull('ancestors')->get();
-			   
-		
 		}elseif($id == 'all'){
 			$categories = Categories::all()->toArray();
 		}else{
 			$categories = Categories::where('ancestors.0._id','=',$id)->get();
 		}
 
-		return response($categories);
+		return response($categories,200);
 	}
 
-	public function getcategories(Request $request,$id = false)
+	public function postCategorylist(Request $request,$id = false)
 	{        
 		$params = $request->all();
 
 		$categories = new Categories;        
 		
 
-		$columns = array('_id',"cat_title",'cat_title','ancestors','updated_at','cat_status');
+		//$columns = array('_id',"cat_title",'cat_title','ancestors','updated_at','cat_status');
+		$columns = array("cat_title",'cat_title','ancestors','updated_at','cat_status');
 		$indexColumn = '_id';      
 		$table = 'categoies';
 			   
@@ -513,13 +512,16 @@ class CategoryController extends Controller
 			}
 
 			$status = $status_list[(int)$value['cat_status']];
-			$row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';
+			
+			//$row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';
 					
 			$row[] = ucfirst($value['cat_title']);
 			$row[] = isset($value['ancestors'][0]['title'])?ucfirst($value['ancestors'][0]['title']):'';
 			$row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="category" data-status="'.((int)$value['cat_status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
-			$row[] = '<a title="View : '.$value['cat_title'].'" ui-sref=categories.show({categoryid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
-					 '<a title="Edit : '.$value['cat_title'].'" ui-sref=categories.edit({categoryid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
+			/*$row[] = '<a title="View : '.$value['cat_title'].'" ui-sref=userLayout.categories.show({categoryid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
+					 '<a title="Edit : '.$value['cat_title'].'" ui-sref=userLayout.categories.edit({categoryid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';*/
+
+			$row[] = '<a title="Edit : '.$value['cat_title'].'" ui-sref=userLayout.categories.edit({categoryid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';		 
 			
 			$records['data'][] = $row;
 		}
@@ -528,8 +530,7 @@ class CategoryController extends Controller
 		
 	}
 
-
-	public function getcategory($categoryId){
+	public function getDetail($categoryId){
 		
 		$categoryObj = new Categories;
 

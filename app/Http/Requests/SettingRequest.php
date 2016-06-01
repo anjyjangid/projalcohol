@@ -25,7 +25,6 @@ class SettingRequest extends Request
      */
     public function rules()
     {
-        
         switch ($this->setting) {
 
             case 'general':
@@ -58,12 +57,10 @@ class SettingRequest extends Request
                 ];
                 break;
             case 'pricing':
-                $rules = [
-                    'advance_order.value' => 'required|numeric',                    
+                $rules = [                    
                     'cigratte_services.value' => 'required|numeric',
                     'express_delivery.value' => 'required|numeric',                    
-                    'regular_express_delivery.value' => 'required|numeric',
-                    'advance_order.type' => 'required|numeric',                    
+                    'regular_express_delivery.value' => 'required|numeric',                    
                     'cigratte_services.type' => 'required|numeric',
                     'express_delivery.type' => 'required|numeric',                    
                     'regular_express_delivery.type' => 'required|numeric',
@@ -78,15 +75,6 @@ class SettingRequest extends Request
 
         if($this->setting == 'pricing'){            
             $input = Input::all();
-            foreach ($input['advance_order_bulk']['bulk'] as $bk => $bval)
-            {
-                $ruleKey = 'advance_order_bulk.bulk.' . $bk;
-                $rules[$ruleKey . '.from_qty'] = 'required|numeric|min:1';
-                $rules[$ruleKey . '.to_qty'] = 'required|numeric|min:1|max:99999';
-                $rules[$ruleKey . '.type'] = 'required|numeric';
-                $rules[$ruleKey . '.value'] = 'required|numeric';
-            }
-
             foreach ($input['express_delivery_bulk']['bulk'] as $bk => $bval)
             {
                 $ruleKey = 'express_delivery_bulk.bulk.' . $bk;

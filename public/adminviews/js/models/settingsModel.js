@@ -10,12 +10,12 @@ MetronicApp.factory('settingsModel', ['$http', '$cookies','$location', function(
      * @return {promise}
      */
     settingsModel.getSettings = function(settingKey){            
-            return $http.get("/admin/setting/settings/"+settingKey);
+            return $http.get("/adminapi/setting/settings/"+settingKey);
         },
 
     settingsModel.updateSetting = function(settingKey,postedData) {
 
-        return $http.put("/admin/setting/"+settingKey, postedData, {
+        return $http.put("/adminapi/setting/"+settingKey, postedData, {
                 
             }).error(function(data, status, headers) {            
                 Metronic.alert({

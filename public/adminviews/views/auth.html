@@ -9,7 +9,7 @@
 			<ul class="page-breadcrumb">
 				<li>
 					<i class="fa fa-home"></i>
-					<a ui-sref="dashboard">Home</a>
+					<a ui-sref="userLayout.dashboard">Home</a>
 					<i class="fa fa-angle-right"></i>
 				</li>
 				<li ng-repeat="crumbs in $state.$current.data.breadCrumb">
@@ -18,6 +18,8 @@
 				</li>				
 			</ul>			
 		</div>
+
+		<div id="info-message"></div>
 		<!-- END PAGE HEADER-->		
 		<!-- BEGIN PROFILE CONTENT -->
 		<div ui-view class="my-content fade-in-up"> 

@@ -16,15 +16,7 @@ Object.defineProperty(Object.prototype, 'renameProperty',{
 });
 
 $( document ).ajaxComplete(function(e,res) {
-  if(res.status==401){
-    window.location.href = '/';
+  if(res.status==401){    
+    window.location.hash = '#/logout'    
   }  
 });
-// Object.prototype.count = function () {
-//     var count = 0;
-//     for(var prop in this) {
-//         if(this.hasOwnProperty(prop))
-//             count = count + 1;
-//     }
-//     return count;
-// }

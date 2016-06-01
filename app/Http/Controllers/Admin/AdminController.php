@@ -95,7 +95,7 @@ class AdminController extends Controller
         return view('backend');
     }
 
-    public function profile()
+    public function getProfile()
     {
         return response(\Auth::user('admin'), 200);
     }
@@ -108,7 +108,7 @@ class AdminController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function update(Request $request)
+    public function postUpdate(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|min:3',
@@ -129,7 +129,7 @@ class AdminController extends Controller
         return response($admin, 200);
     }
 
-    public function updatepassword(Request $request)
+    public function postUpdatepassword(Request $request)
     {
         
         $admin = Admin::where('_id', Auth::user('admin')->id)->first();

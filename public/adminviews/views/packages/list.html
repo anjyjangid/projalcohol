@@ -7,7 +7,7 @@
 					<i class="icon-bag"></i>{{$state.$current.data.pageTitle}}
 				</div>				
 				<div class="actions">
-					<a ui-sref="{{ $state.$current.data.type==1 ? 'packages.addparty':'packages.addcocktail' }}" class="btn default yellow-stripe">
+					<a ui-sref="{{ $state.$current.data.type==1 ? 'userLayout.packages.addparty':'userLayout.packages.addcocktail' }}" class="btn default yellow-stripe">
 					<i class="fa fa-plus"></i>
 					<span class="hidden-480">
 					Add New </span>
@@ -110,9 +110,9 @@
 		            	mData: null,
 		            	mRender: function(data, type, full) {
 		            		if(data.type == 2){
-		            			return '<a ui-sref=packages.editcocktail({packageid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+		            			return '<a ui-sref=userLayout.packages.editcocktail({packageid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
 		            		}else{
-		            			return '<a ui-sref=packages.editparty({packageid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+		            			return '<a ui-sref=userLayout.packages.editparty({packageid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
 		            		}
 	                    },
 		                orderable:false
@@ -123,7 +123,7 @@
 	                ],
 	                "pageLength": 10, // default record count per page
 					"ajax": {
-	                    "url": "../admin/package/listpackage/"+ptype, // ajax source
+	                    "url": "../adminapi/package/listpackage/"+ptype, // ajax source
 	                    //"data":{ptype:ptype}
 	                },
 	                "order": [],

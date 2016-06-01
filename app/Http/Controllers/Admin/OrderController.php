@@ -71,7 +71,7 @@ class OrderController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id)
+	public function getDetail($id)
 	{
 		$order = Orders::find($id);
 
@@ -332,7 +332,7 @@ class OrderController extends Controller
 
 			// $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$order['_id'].'\')" id="'.$order['_id'].'" data-table="dealer" data-status="0" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
 
-			$row[] = '<a title="" ui-sref=orders.show({order:"'.$order['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a>';
+			$row[] = '<a title="" ui-sref=userLayout.orders.show({order:"'.$order['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a>';
 			
 			$records['data'][] = $row;
 		}

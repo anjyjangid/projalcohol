@@ -10,115 +10,132 @@ use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Testimonial as Testimonial;
 use AlcoholDelivery\Brand as Brand;
 use AlcoholDelivery\Cms as Cms;
+use AlcoholDelivery\Promotion as Promotion;
 
 class SuperController extends Controller
 {    
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getCategory(Request $request)
-    {
-        $params = $request->all();
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function getCategory(Request $request)
+	{
+		$params = $request->all();
 
-        $categories = new Categories;
+		$categories = new Categories;
 
-        if(isset($params['category']) && $params['category']!=""){
-            $categories = $categories->where('slug', "=", $params['category']);
-        }
+		if(isset($params['category']) && $params['category']!=""){
+			$categories = $categories->where('slug', "=", $params['category']);
+		}
 
-        $categories = $categories->where('cat_status',1);
+		$categories = $categories->where('cat_status',1);
 
-        $categories = $categories->get();
-
-
-        if(isset($params['withChild']) && $params['withChild']){
-
-            foreach($categories as &$category){
-                $category['children'] = array(); 
-                $category['children'] = Categories::where('cat_status',1)->where('ancestors.0._id','=',$category['_id'])->get(array('_id','slug','cat_title'));
-            }
-
-        }
-
-        return response($categories);
-    }
+		$categories = $categories->get();
 
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getTestimonial(Request $request)
-    {
-        $params = $request->all();
+		if(isset($params['withChild']) && $params['withChild']){
 
-        $testimonials = Testimonial::where('status', '=', 1)->take(10)->get();
-        
-        return response($testimonials);
-    }
+			foreach($categories as &$category){
+				$category['children'] = array(); 
+				$category['children'] = Categories::where('cat_status',1)->where('ancestors.0._id','=',$category['_id'])->get(array('_id','slug','cat_title'));
+			}
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getBrand(Request $request)
-    {
-        $params = $request->all();
+		}
 
-        $brands = Brand::where('status', '=', 1)->take(10)->get();
-        
-        return response($brands);
-    }
+		return response($categories);
+	}
 
 
-    
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getSettings(Request $request)
-    {        
-        $settings = DB::collection('settings')->whereIn("_id",['general','social'])->get();
-        
-        $settingsData = array();
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function getTestimonial(Request $request)
+	{
+		$params = $request->all();
 
-        foreach($settings as $setting){        
+		$testimonials = Testimonial::where('status', '=', 1)->take(10)->get();
+		
+		return response($testimonials);
+	}
 
-            foreach($setting['settings'] as $subKey=>$subSetting){
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function getBrand(Request $request)
+	{
+		$params = $request->all();
 
-                $settingsData[$setting['_id']][$subKey] = $subSetting['value'];
-                
-            }
-        }
-        
-        return response($settingsData);
-    }
+		$brands = Brand::where('status', '=', 1)->take(10)->get();
+		
+		return response($brands);
+	}
 
 
-    public function getCmsdata(Request $request)
-    {
-        $params = $request->all();
+	
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function getSettings(Request $request)
+	{        
+		$settings = DB::collection('settings')->whereIn("_id",['general','social'])->get();
+		
+		$settingsData = array();
 
-        $cms = new Cms;
+		foreach($settings as $setting){        
 
-        if(isset($params['cmsid']) && $params['cmsid']!=""){
-            $cms = $cms->where('_id', "=", $params['cmsid']);
-        }
+			foreach($setting['settings'] as $subKey=>$subSetting){
 
-        $cms = $cms->get()->first();
-        
-        if(!empty($cms))
-        {
-            $cms->title = ucwords($cms->title);
-            return response($cms);
-        }
-        else 
-            return response(array());
-    }
+				$settingsData[$setting['_id']][$subKey] = $subSetting['value'];
+				
+			}
+		}
+		
+		return response($settingsData);
+	}
+
+
+	public function getCmsdata(Request $request)
+	{
+		$params = $request->all();
+
+		$cms = new Cms;
+
+		if(isset($params['cmsid']) && $params['cmsid']!=""){
+			$cms = $cms->where('_id', "=", $params['cmsid']);
+		}
+
+		$cms = $cms->get()->first();
+		
+		if(!empty($cms))
+		{
+			$cms->title = ucwords($cms->title);
+			return response($cms);
+		}
+		else 
+			return response(array());
+	}
+
+
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function getPromotions()
+	{	
+
+		$promotion = new promotion;	
+
+		$promotions = $promotion->getAllPromotions();
+	
+		return response($promotions);
+	}
 
 }

@@ -23,7 +23,7 @@ MetronicApp.controller('emailTemplateAddController',['$scope','$http','emailTemp
 		contacts : [{}]
 	};	
 		
-	$http.get("/admin/global/getcountries").success(function(response){
+	$http.get("/adminapi/global/getcountries").success(function(response){
 		$scope.countries = response;
 	});
 	

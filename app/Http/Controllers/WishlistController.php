@@ -13,6 +13,7 @@ use AlcoholDelivery\User as User;
 
 use MongoDate;
 use MongoId;
+use DB;
 
 class WishlistController extends Controller
 {
@@ -27,7 +28,6 @@ class WishlistController extends Controller
 		$response = ['success'=>false,"message"=>"","auth"=>false];
 
 		$loggeduser = Auth::user('user');
-
 		
 
 		if(!$loggeduser){
@@ -235,6 +235,35 @@ class WishlistController extends Controller
 	 */
 	public function destroy($id)
 	{
-		//
+							
+		$response = ['success'=>false,"message"=>""];
+
+		$loggeduser = Auth::user('user');
+		
+		if(!$loggeduser){
+
+			$response['message'] = "Login Required";			
+			return response($response,400);
+
+		}	
+		
+		try {
+
+			$isRemoved = DB::collection('user')->where('_id', $loggeduser->_id)->pull('wishlist', ['_id' => new MongoId($id)]);				
+
+			$response['success'] = true;
+			$response['message'] = "Removed from wishlist";
+
+			return response($response,200);
+						
+		} catch(\Exception $e){
+
+			$response['message'] = $e->getMessage();
+
+		}
+		
+		return response($response,400);
+
+	
 	}
 }

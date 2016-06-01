@@ -10,7 +10,7 @@ MetronicApp.factory('categoryModel', ['$http', '$cookies', function($http, $cook
      * @return {promise}
      */
     categoryModel.getCategory = function(categoryId){
-            return $http.get("/admin/category/getcategory/"+categoryId);
+            return $http.get("/adminapi/category/detail/"+categoryId);
         },
 
     categoryModel.submitAccount = function(postedData) {
@@ -41,7 +41,7 @@ MetronicApp.factory('categoryModel', ['$http', '$cookies', function($http, $cook
     };
 
     categoryModel.getPricingSettings = function(data){
-            return $http.get("/admin/setting/settings/pricing");
+            return $http.get("/adminapi/setting/settings/pricing");
         },
 
         
@@ -56,7 +56,7 @@ MetronicApp.factory('categoryModel', ['$http', '$cookies', function($http, $cook
             headers: {
                 'Content-Type': 'application/json'
             },
-            url: 'admin/category/getparentcategories/'+$level,
+            url: 'adminapi/category/allparent/'+$level,
             method: "GET",
             data: {
                 level: $level,                

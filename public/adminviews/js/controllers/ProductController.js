@@ -1,6 +1,6 @@
 'use strict';
 
-MetronicApp.controller('ProductsController',['$rootScope', '$scope', '$timeout','$http','fileUpload','productModel', function($rootScope, $scope, $timeout,$http,fileUpload,productModel) {
+MetronicApp.controller('ProductController',['$rootScope', '$scope', '$timeout','$http','fileUpload','productModel', function($rootScope, $scope, $timeout,$http,fileUpload,productModel) {
 
 	$scope.$on('$viewContentLoaded', function() {   
 		Metronic.initAjax(); // initialize core components
@@ -142,36 +142,33 @@ MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$locatio
 			else
 				$scope.product.categories = [];
 
-			if(!$scope.product.advance_order)
-				$scope.product.advance_order = {};
-
 			if(!$scope.product.regular_express_delivery)
 				$scope.product.regular_express_delivery = {};
 
-			if(!$scope.product.advance_order_bulk)
-				$scope.product.advance_order_bulk = {};
-
 			if(!$scope.product.express_delivery_bulk)
 				$scope.product.express_delivery_bulk = {};		
-
 			
 			$scope.selectCategory();
 		});	
 	}	
 
-	$scope.store = function(){
-
-		var url = 'product/store';
+	$scope.store = function(){	
 
 		if($stateParams.productid){
-			url = 'product/update/'+$stateParams.productid;
+			productModel.updateProduct($scope.product,$stateParams.productid).success(function(response){						
+				$location.path("products/list");
+			}).error(function(data, status, headers){			
+				$scope.errors = data;			
+			});
+
+		}else{
+			productModel.storeProduct($scope.product).success(function(response){						
+				$location.path("products/list");
+			}).error(function(data, status, headers){			
+				$scope.errors = data;			
+			});
 		}	
-		//POST DATA WITH FILES
-		productModel.storeProduct($scope.product,url).success(function(response){						
-			$location.path("product/list");
-		}).error(function(data, status, headers){			
-			$scope.errors = data;			
-		});
+		
 	};	
 
 	$scope.imageRemove = function(i){		
@@ -195,9 +192,12 @@ MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$locatio
 
 	$scope.selectCategory = function(){
 		
-		var tiers = ['advance_order','regular_express_delivery','advance_order_bulk','express_delivery_bulk'];
+		var tiers = ['regular_express_delivery','express_delivery_bulk'];
 
-		var unique = $scope.product.categories.join('|');
+		var unique = '';
+
+		if($scope.product.categories)
+			unique = $scope.product.categories.join('|');
 		
 		var k = $scope.getKey($scope.cd,unique);		
 
@@ -226,9 +226,8 @@ MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$locatio
 		});
 	}
 
-	$timeout(function() {
-		$scope.selectCategory();
-	});	
+
+	
 
 	$scope.getTimeOptions = function(){		
 		return $rootScope.timerange;

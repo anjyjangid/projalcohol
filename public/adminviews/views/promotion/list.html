@@ -6,17 +6,17 @@
 		<div class="portlet">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="fa fa-list"></i>{{$state.$current.data.pageSubTitle}}
+					<i class="fa fa-list"></i>{{$state.$current.data.pageTitle}}
 				</div>			
                 <div class="actions">
 
-                    <a ui-sref="promotion.add" class="btn default">
+                    <a ui-sref="userLayout.promotion.add" class="btn default">
                     <i class="fa fa-plus"></i>
                     <span class="hidden-480">
                     New promotion </span>
                     </a>
 
-                    <a class="btn default" ng-click="globalRemove('promotion','#promotionlisttab')">
+                    <a class="btn default" ng-click="globalRemove('promotions','#promotionlisttab')">
                     <i class="fa fa-trash"></i>
                     <span class="hidden-480">Remove promotion</span>
                     </a>
@@ -118,7 +118,7 @@
                         'targets': [0,2,6]
                     }],
                 "ajax": {
-                    "url": "../admin/promotion/listing", // ajax source                    
+                    "url": "../adminapi/promotion/listing", // ajax source                    
                     "type": "POST"
                 },
                 "order": [

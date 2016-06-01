@@ -27,45 +27,18 @@ class CustomerRequest extends Request
         $input = Input::all();
 
         $rules = [];
-        
-        switch ($this->method()) {
-            case 'GET':
-            case 'DELETE':
-                # code...
-                break;
-            
-            case 'POST':
-            {
-                $rules = [
-                    'name' => 'required|string|max:255',
-                    'email' => 'required|email|max:255|unique:user',
-                    'mobile_number'=> 'required|numeric|digits_between:10,12',
-                    'password' => 'required|min:6|confirmed',
-                    'password_confirmation' => 'required',
-                    'status'=> 'required|integer|in:0,1',
-                ];
 
-                break;
-            }
+        $rules = [
+            'name' => 'required|string|max:255',            
+            'email' => 'required|email|max:255|unique:user,email,'.@$input['_id'].",_id",            
+            'mobile_number'=> 'required|numeric|digits_between:10,12',            
+            'status'=> 'required|integer|in:0,1',
+        ];
 
-            case 'PUT':
-            case 'PATCH':
-            {
-                $rules = [
-                    'name' => 'required|string|max:255',
-                    'email' => 'required|email|max:255|unique:user,'.$input['_id'].',_id',
-                    'mobile_number'=> 'required|numeric|digits_between:10,12',
-                    'status'=> 'required|integer|in:0,1',
-                ];
-
-                break;
-            }
-
-            default:
-                # code...
-                break;
+        if(!isset($input['_id']) && empty($input['_id'])){
+            $rules['password'] = 'required|min:6|confirmed';
+            $rules['password_confirmation'] = 'required';
         }
-        
 
         return $rules;
     }

@@ -15,7 +15,7 @@ MetronicApp.factory('userModel', ['$http', '$cookies', '$rootScope', function($h
             headers: {
                 'Content-Type': 'application/json'
             },
-            url: 'admin/profile/update',
+            url: 'adminapi/admin/update',
             method: "POST",
             data: {
                 first_name: postedData.first_name,
@@ -60,7 +60,7 @@ MetronicApp.factory('userModel', ['$http', '$cookies', '$rootScope', function($h
     };  
 
     userModel.getUserDetails = function() {
-        return $http.get('admin/profile');
+        return $http.get('adminapi/admin');
     };  
 
     userModel.changePassword = function(postedData) {
@@ -69,7 +69,7 @@ MetronicApp.factory('userModel', ['$http', '$cookies', '$rootScope', function($h
             headers: {
                 'Content-Type': 'application/json'
             },
-            url: 'admin/profile/updatepassword',
+            url: 'adminapi/admin/updatepassword',
             method: "POST",
             data: {
                 current_password: postedData.current_password,

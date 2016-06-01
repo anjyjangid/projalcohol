@@ -56,7 +56,8 @@ class Cart extends Moloquent
 		$cart = [
 
 			"products" => [],
-			"packages" => [],            
+			"packages" => [],
+			"promotions" => [],
 			"delivery" => [
 				"type" => 1,
 				"charges" => null,

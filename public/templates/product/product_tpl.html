@@ -18,10 +18,17 @@
 		<div class="prod_desc">
 			{{productInfo.name}} <not-available product="productInfo"></not-available>
 		</div>
+		
 		<div class="prod_discout_price">{{productInfo.price}} {{settings.general.currency}}</div>
+
 	</div>
 	<div class="prod_addtocart">
-		<add-to-cart-btn product="productInfo" ng-if="productInfo.quantity || productInfo.outOfStockType == 2"></add-to-cart-btn>
-		<out-of-stock product="productInfo" ng-if="productInfo.quantity<1 && productInfo.outOfStockType == 1"></out-of-stock>					
+
+		<button class="checkoutproductbutton" ng-if="productInfo.promo" ng-click="alcoholCart.addPromo(promotion,productInfo._id)">Add Promo</button>
+
+		<add-to-cart-btn product="productInfo" ng-if="!productInfo.promo && (productInfo.quantity || productInfo.outOfStockType == 2)"></add-to-cart-btn>
+
+		<out-of-stock product="productInfo" ng-if="productInfo.quantity<1 && productInfo.outOfStockType == 1"></out-of-stock>
+
 	</div>
 </div>

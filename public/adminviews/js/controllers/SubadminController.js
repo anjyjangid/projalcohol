@@ -19,14 +19,14 @@ MetronicApp.controller('SubadminFormController',['$rootScope', '$scope', '$timeo
     $scope.subadmin = {};	
 
     if($stateParams.id){
-        $http.get("/admin/admin/subadminuser/"+$stateParams.id).success(function(response){           
+        $http.get("/adminapi/admin/subadminuser/"+$stateParams.id).success(function(response){           
             $scope.subadmin = response;
         });
     }   
 
 	$scope.store = function(){
 
-        var url = '/admin/admin/subadmin';
+        var url = '/adminapi/admin/subadmin';
 
         if($stateParams.id){
             url += '/'+$stateParams.id;
@@ -47,7 +47,7 @@ MetronicApp.controller('SubadminFormController',['$rootScope', '$scope', '$timeo
         })
         .success(function(response) {                           
             $scope.error = []; 
-            $state.go('subadmin.list');            
+            $state.go('userLayout.subadmin.list');            
         })
 
 	};

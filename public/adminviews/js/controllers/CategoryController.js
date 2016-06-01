@@ -114,7 +114,7 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 
 			
 
-			var uploadUrl = "admin/category/store";
+			var uploadUrl = "adminapi/category";
 			fileUpload.uploadFileToUrl(files, data, uploadUrl)
 		        .success(function(response) {
 
@@ -197,7 +197,7 @@ MetronicApp.controller('CategoryUpdateController',['$rootScope', '$scope', '$tim
 
 				if(!$scope.category.express_delivery_bulk)
 					$scope.category.express_delivery_bulk = {};
-				
+
 			});
 
 		},
@@ -219,7 +219,7 @@ MetronicApp.controller('CategoryUpdateController',['$rootScope', '$scope', '$tim
 				"lthumb":$scope.category.lthumb
 			};
 
-			var uploadUrl = "admin/category/update/"+$stateParams.categoryid;
+			var uploadUrl = "adminapi/category/update/"+$stateParams.categoryid;
 
 			fileUpload.uploadFileToUrl(files, data, uploadUrl)
 		        .success(function(response) {

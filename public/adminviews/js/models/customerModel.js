@@ -3,7 +3,7 @@ MetronicApp.factory('customerModel', ['$http', '$cookies','$location', function(
     return {
         
         getCustomer: function(customerid){
-            return $http.get("/admin/customer/customer/"+customerid);
+            return $http.get("/adminapi/customer/detail/"+customerid);
         },
 
         /*saveProduct: function(data){
@@ -12,7 +12,7 @@ MetronicApp.factory('customerModel', ['$http', '$cookies','$location', function(
 
         storeCustomer: function(fields){
 	       	
-	        return $http.post("/admin/customer/", fields, {
+	        return $http.post("/adminapi/customer/store", fields, {
 	            
 	        }).error(function(data, status, headers) {            
 	            Metronic.alert({
@@ -53,7 +53,7 @@ MetronicApp.factory('customerModel', ['$http', '$cookies','$location', function(
 	       	
 	       	//put is used to updated data, Laravel router automatically redirect to update function 
 
-	        return $http.put("/admin/customer/"+customerid, fields, {
+	        return $http.post("/adminapi/customer/update/"+customerid, fields, {
 	            
 	        }).error(function(data, status, headers) {            
 	            Metronic.alert({

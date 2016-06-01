@@ -240,9 +240,9 @@
 		            	mData: null,
 		            	mRender: function(data, type, full) {
 		            		if(data.type == 2){
-		            			return '<a ui-sref=packages.editcocktail({packageid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+		            			return '<a ui-sref=userLayout.packages.editcocktail({packageid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
 		            		}else{
-		            			return '<a ui-sref=packages.editparty({packageid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+		            			return '<a ui-sref=userLayout.packages.editparty({packageid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
 		            		}
 	                    },
 		                orderable:false

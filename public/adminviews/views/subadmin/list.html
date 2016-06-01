@@ -7,7 +7,7 @@
 					<i class="icon-user"></i>{{$state.$current.data.pageTitle}}
 				</div>				
 				<div class="actions">
-					<a ui-sref="subadmin.add" class="btn default yellow-stripe">
+					<a ui-sref="userLayout.subadmin.add" class="btn default yellow-stripe">
 					<i class="fa fa-plus"></i>
 					<span class="hidden-480">
 					Add New </span>
@@ -117,7 +117,7 @@
 		            },{
 		            	mData: null,
 		            	mRender: function(data, type, full) {		            		
-		            		return '<a ui-sref=subadmin.edit({id:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';		            		
+		            		return '<a ui-sref=userLayout.subadmin.edit({id:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';		            		
 	                    },
 		                orderable:false
 		            }],
@@ -127,7 +127,7 @@
 	                ],
 	                "pageLength": 10, // default record count per page
 					"ajax": {
-	                    "url": "../admin/admin/subadminlist",
+	                    "url": "../adminapi/admin/subadminlist",
 	                    //"data":{ptype:ptype}
 	                },
 	                "order": [],

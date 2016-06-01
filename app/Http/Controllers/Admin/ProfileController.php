@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use AlcoholDelivery\User as User;
 
-class profileController extends Controller
+class ProfileController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -75,7 +75,7 @@ class profileController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function postUpdate(Request $request, $id)
     {
         //Auth::user()->id
         return Validator::make($data, [

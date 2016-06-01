@@ -3,7 +3,8 @@
   "homepage": "https://limonte.github.io/sweetalert2/",
   "authors": [
     "Tristan Edwards <tristan.edwards@me.com> (http://tristanedwards.me)",
-    "Limon Monte <limon.monte@gmail.com> (http://limonte.github.io)"
+    "Limon Monte <limon.monte@gmail.com> (https://limonte.github.io)",
+    "Sam Turrell <sam@samturrell.co.uk> (http://samturrell.co.uk)"
   ],
   "dependencies": {
     "es6-promise-polyfill": "*"
@@ -28,12 +29,12 @@
     "url": "git@github.com:limonte/sweetalert2.git"
   },
   "license": "MIT",
-  "version": "3.0.3",
-  "_release": "3.0.3",
+  "version": "3.1.1",
+  "_release": "3.1.1",
   "_resolution": {
     "type": "version",
-    "tag": "v3.0.3",
-    "commit": "ca66ecd9bf7f4187554f21906e962efea0dc52b7"
+    "tag": "v3.1.1",
+    "commit": "e3407eeaf8a69ce213b4acf17d8967fde7699f28"
   },
   "_source": "https://github.com/limonte/sweetalert2.git",
   "_target": ">=0.1.9",

@@ -1,6 +1,6 @@
 'use strict';
 
-MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeout','userModel', function($rootScope, $scope, $timeout,userModel) {
+MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeout','userModel','AdminUserService', function($rootScope, $scope, $timeout,userModel,AdminUserService) {
     
 
     $scope.$on('$viewContentLoaded', function() {
@@ -28,8 +28,7 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
             };
 
             userModel.submitAccount(data).success(function(response){
-                $rootScope.user = response;
-                $rootScope.user.name = response.first_name+' '+response.last_name;
+                AdminUserService.storeUser(response);
                 Metronic.alert({
                     type: 'success',
                     icon: 'success',

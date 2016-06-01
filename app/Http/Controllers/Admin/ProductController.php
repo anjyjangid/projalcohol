@@ -168,6 +168,12 @@ class ProductController extends Controller
         return $galleryObj->getSingleProduct($id);
     }
 
+    public function getDetail($id)
+    {
+        $galleryObj = new Products;
+        return $galleryObj->getSingleProduct($id);
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -175,7 +181,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductRequest $request, $id)
+    public function postUpdate(ProductRequest $request, $id)
     {
         $inputs = $request->all();
         
@@ -297,17 +303,16 @@ class ProductController extends Controller
     }
 
 
-    public function productlist(Request $request){   
+    public function postProductlist(Request $request){   
 
-        $params = $request->all();
+        $params = $request->all();        
 
-        $columns = array('_id','','name','categories','price','status','isFeatured');
+        extract($params);
 
         $products = new Products;
 
-        if(isset($params['name']) && trim($params['name'])!=''){
-          $pname = $params['name'];
-          $products = $products->where('name','regexp', "/.*$pname/i");
+        if(isset($name) && trim($name)!=''){
+            $products = $products->where('name','regexp', "/.*$name/i");            
         }
 
         if(isset($params['categories']) && trim($params['categories'])!=''){          
@@ -320,86 +325,46 @@ class ProductController extends Controller
 
         if(isset($params['isFeatured']) && trim($params['isFeatured'])!=''){
           $products = $products->where('isFeatured',(int)$params['isFeatured']);
+        }        
+
+        $iTotalRecords = $products->count();        
+
+        $columns = array('_id','name','categories','price','status','isFeatured','quantity');        
+
+        if(isset($params['order']) && !empty($params['order'])){
+
+          $field = $columns[$params['order'][0]['column']];
+          $direction = $params['order'][0]['dir'];
+          $products = $products->orderBy($field,$direction);  
+
+        }else{
+          $products = $products->orderBy('created_at','desc');  
         }
 
-        $iTotalRecords = $products->count();
-        $iDisplayLength = intval($_REQUEST['length']);
-        $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength; 
-        $iDisplayStart = intval($_REQUEST['start']);
-        $sEcho = intval($_REQUEST['draw']);
+        $products = $products
+        ->skip((int)$start)
+        ->take((int)$length);
 
-        $records = array();
-        $records["data"] = array(); 
-
-        $end = $iDisplayStart + $iDisplayLength;
-        $end = $end > $iTotalRecords ? $iTotalRecords : $end;
-
-        $status_list = array(            
-            array("info" => "Not Published"),            
-            array("success" => "Published"),
-        );
-
-        $fstatus = [['success'=>'No'],['info'=>'Yes']];
-
-        $notordered = true;
-
-        if ( isset( $params['order'] ) ){
-
-            foreach($params['order'] as $orderKey=>$orderField){
-
-                if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
-                    $ordered = false;                    
-                    $products = $products->orderBy($columns[$orderField['column']],$orderField['dir']);
-                    
-                }
-            }
-
-        }  
-
-        if($notordered){
-          $products = $products->orderBy('created_at','desc');
-        }
-
-        $products = $products->skip($iDisplayStart)        
-        ->take($iDisplayLength)->get();
-
-        $ids = $iDisplayStart;
+        $products = $products->get($columns);
 
         foreach($products as $i => $product) {
-            $status = $status_list[$product->status];
-            $isFeatured  = $fstatus[$product->isFeatured];            
-            $ids += 1;
-            
             $categories = Categories::whereIn('_id', $product->categories)->get();
-
             $cname = [];
             foreach ($categories as $key => $value) {                
               $cname[] = $value->cat_title;                
-            }
-
-            $records["data"][] = array(
-              '<input type="checkbox" name="id[]" value="'.$product->_id.'">',
-              $ids,
-              $product->name,
-              implode(', ', $cname),
-              $product->price,      
-              '<span class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span>',
-              '<span class="label label-sm label-'.(key($isFeatured)).'">'.(current($isFeatured)).'</span>',
-              $product->quantity,
-              '<a ui-sref=products.edit({productid:"'.$product->_id.'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>'
-              
-            );
+            }  
+            $products[$i]->category = implode(', ', $cname);
         }
 
-        if (isset($_REQUEST["customActionType"]) && $_REQUEST["customActionType"] == "group_action") {
-            $records["customActionStatus"] = "OK"; // pass custom message(useful for getting status of group actions)
-            $records["customActionMessage"] = "Group action successfully has been completed. Well done!"; // pass custom message(useful for getting status of group actions)
-        }
-        $records["draw"] = $sEcho;
-        $records["recordsTotal"] = $iTotalRecords;
-        $records["recordsFiltered"] = $iTotalRecords; 
+        $response = [
+            'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+            'data' => $products            
+        ];
 
-        return response($records);
+        return response($response,200);
+
     }
 
     protected function saveImages($product,$files){
@@ -453,7 +418,7 @@ class ProductController extends Controller
 
     }
 
-    public function orderProduct(Request $request){
+    public function postOrderproduct(Request $request){
 
       $params = $request->all();
 
@@ -542,7 +507,7 @@ class ProductController extends Controller
       return response($response,200);
     }
      
-    public function updateinventory(Request $request){
+    public function postUpdateinventory(Request $request){
 
         $inputs = $request->all();
         

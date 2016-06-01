@@ -8,11 +8,11 @@
 			<ul class="page-breadcrumb">
 				<li>
 					<i class="fa fa-home"></i>
-					<a ui-sref="dashboard">Home</a>
+					<a ui-sref="userLayout.dashboard">Home</a>
 					<i class="fa fa-angle-right"></i>
 				</li>
 				<li>
-					<a ui-sref="dashboard">{{$state.$current.data.pageTitle}}</a>					
+					<a ui-sref="userLayout.dashboard">{{$state.$current.data.pageTitle}}</a>					
 				</li>
 				<li>
 					<a href="#{{$state.$current.url.prefix}}">{{$state.$current.data.pageSubTitle}}</a>
@@ -50,7 +50,7 @@
 								 Total Products
 							</div>
 						</div>
-						<a class="more" ui-sref="products.list">
+						<a class="more" ui-sref="userLayout.products.list">
 						View more <i class="m-icon-swapright m-icon-white"></i>
 						</a>
 					</div>
@@ -352,7 +352,7 @@ var detailRows = [];
 					{ data: "quantity", sClass: "center" },				
 				],	
 				"ajax" : {
-					"url": "../admin/product/orderproduct",
+					"url": "../adminapi/product/orderproduct",
 					"type":"POST",
 					beforeSend:function(){
 						Metronic.blockUI({
@@ -397,12 +397,12 @@ var detailRows = [];
 		
 		var htm = $('#pform').clone().removeClass('hide');
 		
-		htm.find('#dealeraddlink').attr('ui-sref','products.edit({productid:"'+d._id+'"})')	
+		htm.find('#dealeraddlink').attr('ui-sref','userLayout.products.edit({productid:"'+d._id+'"})')	
 
 		if(d.supplier.length){
 
 			for(sup in d.supplier){
-				var tr = $('<tr></tr>').html('<td>'+(parseInt(sup)+1)+'</td><td>'+d.supplier[sup].title+'</td><td><a target="_blank" class="btn default btn-sm" ui-sref=dealers.orders({dealerid:"'+d.supplier[sup]._id+'"})>View Orders</a></td>');
+				var tr = $('<tr></tr>').html('<td>'+(parseInt(sup)+1)+'</td><td>'+d.supplier[sup].title+'</td><td><a target="_blank" class="btn default btn-sm" ui-sref=userLayout.dealers.orders({dealerid:"'+d.supplier[sup]._id+'"})>View Orders</a></td>');
 				htm.find('#supplierlist').append(tr);
 			}
 		}else{
@@ -497,7 +497,7 @@ var detailRows = [];
                         'targets': [0,1,2,3,4,5]
                     }],
                 "ajax": {
-                    "url": "../admin/order/orders", // ajax source
+                    "url": "../adminapi/order/orders", // ajax source
                     // "data": function ( d ) {
                     //     d._token = $('meta[name="_token"]').attr('content');
 

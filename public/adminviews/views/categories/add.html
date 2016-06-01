@@ -73,7 +73,7 @@
 										Select thumb </span>
 										<span class="fileinput-exists">
 										Change </span>
-										<input type="file" name="thumb" placeholder="thumbnail" class="form-control" ng-required="!category.thumb" file-model="category.thumb"/>
+										<input type="file" accept="image/*" name="thumb" placeholder="thumbnail" class="form-control" ng-required="!category.thumb" file-model="category.thumb"/>
 										</span>
 										<a href="#" class="btn default fileinput-exists" data-dismiss="fileinput">
 										Remove </a>
@@ -82,7 +82,7 @@
 								
 
 							</div>						
-						</div>
+						</div>						
 						<div class="col-sm-6" ng-if="!category.ancestors">
 							<label class="control-label">listing Thumbnail</label>
 							<div class="form-group">
@@ -98,7 +98,7 @@
 										<span class="btn default btn-file">
 										<span class="fileinput-new">Select thumb</span>
 										<span class="fileinput-exists">Change</span>
-										<input type="file" name="lthumb" placeholder="thumbnail" class="form-control" file-model="category.lthumb"/>
+										<input type="file" accept="image/*" name="lthumb" placeholder="thumbnail" class="form-control" file-model="category.lthumb"/>
 										</span>
 										<a href="#" class="btn default fileinput-exists" data-dismiss="fileinput">
 										Remove </a>
@@ -245,9 +245,8 @@
 					<!-- Pricing Block -->
 
 					<div class="margin-top-10">
-						<input type="submit" name="save" value="Save" class="btn green-haze">
-						
-						<a href="#" class="btn default">Cancel </a>
+						<input type="submit" name="save" value="Save" class="btn green-haze">						
+						<a ui-sref="userLayout.categories.list" class="btn default">Cancel </a>
 					</div>
 
 				</form>

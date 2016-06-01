@@ -9,7 +9,7 @@
 					<i class="fa fa-users"></i>Categories Listing
 				</div>
 				<div class="actions">
-					<a ui-sref="categories.add" class="btn default yellow-stripe">
+					<a ui-sref="userLayout.categories.add" class="btn default yellow-stripe">
 					<i class="fa fa-plus"></i>
 					<span class="hidden-480">
 					New Category </span>
@@ -32,9 +32,9 @@
 								<th width="5%">									
 									Sr.
 								</th>
-								<th width="2%">
+								<!-- <th width="2%">
 									<input type="checkbox" class="group-checkable">
-								</th>
+								</th> -->
 								<th width="30%">
 									Title
 								</th>
@@ -50,7 +50,7 @@
 							</tr>
 							<tr role="row" class="filter">
 								<td></td>
-								<td></td>
+								<!-- <td></td> -->
 								<td>
 									<input type="text" class="form-control form-filter input-sm" name="cat_title">
 								</td>
@@ -127,10 +127,10 @@
                 "pageLength": 10, // default record count per page
                 "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
                         'orderable': false,
-                        'targets': [1,5]
+                        'targets': [0,3,4]
                     }],
                 "ajax": {
-                    "url": "../admin/category/getcategories", // ajax source
+                    "url": "../adminapi/category/categorylist", // ajax source
                     // "data": function ( d ) {
                     //     d._token = $('meta[name="_token"]').attr('content');
 

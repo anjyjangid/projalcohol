@@ -25,13 +25,13 @@ MetronicApp.controller('TimeslotFormController',['$rootScope', '$scope', '$timeo
 	
 	$scope.error = [];
 
-	$http.get("/admin/setting/settings/timeslot").success(function(response){			
+	$http.get("/adminapi/setting/settings/timeslot").success(function(response){			
 		$scope.settings = response.settings;
 	});	
 
 	$scope.update = function(){
 
-		$http.put("/admin/setting/timeslot", $scope.settings, {
+		$http.put("/adminapi/setting/timeslot", $scope.settings, {
                 
         }).error(function(data, status, headers) {            
             $scope.error = data;

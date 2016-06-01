@@ -3,16 +3,16 @@ MetronicApp.factory('dealerModel', ['$http', '$cookies','$location', function($h
     return {
         
         getDealer: function(dealerId){
-            return $http.get("/admin/dealer/getdealer/"+dealerId);
+            return $http.get("/adminapi/dealer/dealer/"+dealerId);
         },
 
         saveProduct: function(data){
-            return $http.post("/admin/product/store", {data:data});
+            return $http.post("/adminapi/product/store", {data:data});
         },
 
         storeDealer: function(fields){
 	       	
-	        return $http.post("/admin/dealer", fields, {
+	        return $http.post("/adminapi/dealer", fields, {
 	            
 	        }).error(function(data, status, headers) {            
 	            Metronic.alert({
@@ -53,7 +53,7 @@ MetronicApp.factory('dealerModel', ['$http', '$cookies','$location', function($h
 	       	
 	       	//put is used to updated data, Laravel router automatically redirect to update function 
 
-	        return $http.put("/admin/dealer/"+dealerId, fields, {
+	        return $http.put("/adminapi/dealer/"+dealerId, fields, {
 	            
 	        }).error(function(data, status, headers) {            
 	            Metronic.alert({

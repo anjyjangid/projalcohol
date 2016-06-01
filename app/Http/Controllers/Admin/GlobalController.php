@@ -94,7 +94,7 @@ class GlobalController extends Controller
         exit();
     }
 
-    public function getcountries(){
+    public function getCountries(){
 
         $countries = DB::collection("countries")->get();
 

@@ -5,10 +5,10 @@
 		<div class="portlet light">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="icon-handbag"></i>{{$state.$current.data.pageSubTitle}}
+					<i class="icon-handbag"></i>{{$state.$current.data.pageTitle}}
 				</div>
 				<div class="actions">
-					<a ui-sref="products.add" class="btn default yellow-stripe">
+					<a ui-sref="userLayout.products.add" class="btn default yellow-stripe">
 					<i class="fa fa-plus"></i>
 					<span class="hidden-480">
 					New Product </span>
@@ -51,9 +51,9 @@
 					<table class="table table-striped table-bordered table-hover" id="productlist">
 						<thead>
 							<tr role="row" class="heading">
-								<th width="1%">
+								<!-- <th width="1%">
 									<input type="checkbox" class="group-checkable">
-								</th>
+								</th> -->
 								<th width="10%">
 									Sr.
 								</th>
@@ -80,7 +80,7 @@
 								</th>
 							</tr>
 							<tr role="row" class="filter">
-								<td></td>
+								<!-- <td></td> -->
 								<td></td>
 								<td>
 									<input type="text" class="form-control form-filter input-sm" name="name">
@@ -155,29 +155,52 @@
                 // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
                 // So when dropdowns used the scrollable div should be removed. 
                 //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
-                
-                "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
-
-                "columns": [{	                
-	                "orderable": false
-	            }, {	                
-	                "orderable": false
-	            }, {	                
-	                "orderable": true
-	            }, {
-	                "orderable": false
-	            }, {
-	                "orderable": true
-	            }, {
-	                "orderable": false
-	            }, {
-	                "orderable": false
-	            }, {
-	                "orderable": false,
-	                "sClass": "right"
-	            }, {
-	                "orderable": false
-	            }],
+                "columns": [{		                
+	                	mRender: function(data, type, full, meta) {
+	                		return (meta.row)+1;		                	
+		                },
+		                orderable:false		                
+		            },{	 
+	                	data : "name",
+		                orderable:true
+		            },{	 
+	                	data : "category",
+		                orderable:false
+		            },{	 
+	                	data : "price",
+		                orderable:true
+		            },{
+		            	mData: null,
+		            	mRender: function(data, type, full) {	                        
+	                    	if(data.status == 1){
+	                    		return '<span class="label label-sm label-success">Published</span>'
+	                    	}else{
+	                    		return '<span class="label label-sm label-info">Not Published</span>'
+	                    	}	                    	
+	                    },
+		                orderable:true
+		            },{
+		            	mData: null,
+		            	mRender: function(data, type, full) {	                        
+	                    	if(data.isFeatured == 1){
+	                    		return '<span class="label label-sm label-success">Yes</span>'
+	                    	}else{
+	                    		return '<span class="label label-sm label-info">No</span>'
+	                    	}	                    	
+	                    },
+		                orderable:true
+		            },{	 
+	                	data : "quantity",
+		                orderable:true
+		            },{
+		            	mData: null,
+		            	mRender: function(data, type, full) {		            		
+		            		return '<a ui-sref=userLayout.products.edit({productid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+		            		
+	                    },
+		                orderable:false
+		            }
+		        ],
 
                 "lengthMenu": [
                     [10, 20, 50, 100, 150, -1],
@@ -185,29 +208,16 @@
                 ],
                 "pageLength": 10, // default record count per page
 				"ajax": {
-                    "url": "../admin/product/productlist", // ajax source
-                    /*"data": function ( d ) {
-                        d._token = $('meta[name="_token"]').attr('content');                        
-                    }*/
-                },   
-                /*"columns": [
-		            { "data": "name" }		            
-		        ],*/
-                "order": [
-                    [1, "asc"]
-                ],
+                    "url": "../adminapi/product/productlist", // ajax source                    
+                },                   
+                "order": [],
                 "fnDrawCallback": function (oSettings) {
-                	
-					
 				    var content = $('#tBody');
 				    angular.element(document).injector().invoke(function($compile) {
 				        var scope = angular.element(content).scope();
 				        $compile(content)(scope);
 				    });
-					
-					
-					Metronic.initAjax()
-
+					Metronic.initAjax();
 				},
             }
         });

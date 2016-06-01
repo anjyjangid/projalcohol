@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="AlcoholDelivery">
 
-	<head>		
+	<head>
 		<!-- <base href="/"> -->
 		<style>
 		.modal-open .navbar-fixed-top{
@@ -15,7 +15,8 @@
 
 		</style>
 		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 		<title class="hide" ng-bind="settings.general.site_title"></title>
@@ -23,25 +24,25 @@
 		<!-- Bootstrap -->
 		<link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,700,800,500' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/angular-material/angular-material.min.css') }}"/>
-		
+
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="css/owl.carousel.css">
 		<link rel="stylesheet" type="text/css" href="css/owl.theme.css">
 		<link rel="stylesheet" type="text/css" href="css/jquery.switchButton.css">
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
-		
+
 		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.min.css')}}">
-		
+
 		<link rel="stylesheet" type="text/css" href="css/jquery.bootstrap-touchspin.css">
 		<!-- SWEET ALERT STYLE -->
 		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/sweetalert2/dist/sweetalert2.css') }}"/>
-		
+
 		<link rel="stylesheet" type="text/css" href="css/common.css">
 		<link rel="stylesheet" type="text/css" href="css/screen-ui.css">
 		<link rel="stylesheet" type="text/css" href="css/ui_responsive.css">
 		<link rel="stylesheet" type="text/css" href="css/app.css">
 		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/v-accordion/dist/v-accordion.css') }}">
-		
+
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 		<!--[if lt IE 9]>
@@ -51,12 +52,12 @@
 
 		<link rel="shortcut icon" href="images/favicon.ico"/>
 	</head>
-	<body ng-controller="AppController">		
-		
+	<body ng-controller="AppController">
+
 		<top-menu></top-menu>
-		
-		<div ui-view class="ancontainer"></div>		
-		
+
+		<div ui-view class="ancontainer"></div>
+
 		<section class="fullwidth social_block">
 			<div class="container">
 				<div class="socilblok_folowtxt">
@@ -75,7 +76,7 @@
 				</div>
 			</div>
 		</section>
-		
+
 		<section class="fullwidth footer1">
 			<div class="container">
 				<div class="row">
@@ -141,7 +142,7 @@
 				</div>
 			</div>
 		</section>
-		
+
 		<section class="fullwidth footer2">
 			<div class="container">
 				<div class="footer2_btmcvr">
@@ -150,9 +151,9 @@
 				</div>
 			</div>
 		</section>
-		
+
 	</body>
-		
+
 	<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
 
     <script type="text/javascript" src="{{ asset('bower_components/dropzone/dist/dropzone.js') }}"></script>
@@ -160,8 +161,8 @@
     <script type="text/javascript" src="{{ asset('bower_components/angular/angular.min.js') }}"></script>
 
     <script src="{{ asset('assets/global/plugins/angularjs/angular-sanitize.min.js') }}" type="text/javascript"></script>
-	
-	<script src="{{ asset('assets/global/plugins/angularjs/angular-touch.min.js') }}" type="text/javascript"></script>	
+
+	<script src="{{ asset('assets/global/plugins/angularjs/angular-touch.min.js') }}" type="text/javascript"></script>
 
     <script type="text/javascript" src="{{ asset('bower_components/angular-route/angular-route.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/angular-cookies/angular-cookies.min.js') }}"></script>
@@ -170,30 +171,28 @@
     <script type="text/javascript" src="{{ asset('bower_components/angular-ui-router/release/angular-ui-router.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/oclazyload/dist/ocLazyLoad.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') }}"></script>
-    
+
     <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap-lightbox/dist/angular-bootstrap-lightbox.js') }}"></script>
 
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
     <script type="text/javascript" src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.js"></script>
-    
+
     <!-- SWEET ALERT STYLE -->
 	<script src="{{ asset('bower_components/sweetalert2/dist/sweetalert2.min.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('bower_components/ngSweetAlert2/SweetAlert.js') }}" type="text/javascript"></script>
-		    
+
     <script type="text/javascript" src="{{ asset('bower_components/angular-animate/angular-animate.js') }}"></script>
 
-    <script type="text/javascript" src="{{ asset('bower_components/angular-aria/angular-aria.min.js') }}"></script>
+		<script type="text/javascript" src="{{ asset('bower_components/angular-aria/angular-aria.min.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('bower_components/angular-messages/angular-messages.min.js') }}"></script>
 
 	<script src="{{ asset('bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js')}}"></script>
 	<script src="{{ asset('bower_components/ng-scrollbars/dist/scrollbars.min.js')}}"></script>
-	
+
 
 	<!-- Angular Material Library -->
 	<script type="text/javascript" src="{{ asset('bower_components/angular-material/angular-material.min.js') }}"></script>
-	
 
-    
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/alcoholCart.js"></script>
     <script type="text/javascript" src="js/alcoholWishlist.js"></script>
@@ -203,6 +202,5 @@
 
     <script src="js/ngFacebook.js"></script>
     <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>
-    <script src="{{ asset('bower_components/ngSticky/lib/sticky.js') }}"></script>
-		
+
 </html>

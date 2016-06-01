@@ -2,26 +2,22 @@ MetronicApp.factory('productModel', ['$http', '$cookies','$location', function($
 
     return {
         getCategories: function(){
-            return $http.get("/admin/category/getparentcategories/all");
+            return $http.get("/adminapi/category/allparent/all");
         },
 
         getDealers: function(){
-            return $http.get("/admin/dealer/getlist");
-        },
-
-        saveProduct: function(data){
-            return $http.post("/admin/product/store", {data:data});
-        },
+            return $http.get("/adminapi/dealer/list");
+        },       
 
         getSettings: function(data){
-            return $http.get("/admin/setting/settings/pricing");
+            return $http.get("/adminapi/setting/settings/pricing");
         },
 
-        storeProduct: function(fields,url){
+        storeProduct: function(fields){
 
 	       	var fd = objectToFormData(fields);	       	  
 
-	        return $http.post("/admin/"+url, fd, {
+	        return $http.post("/adminapi/product", fd, {
 	            transformRequest: angular.identity,	            	            
 	            headers: {'Content-Type': undefined}
 	        }).error(function(data, status, headers) {            
@@ -36,8 +32,27 @@ MetronicApp.factory('productModel', ['$http', '$cookies','$location', function($
 	        });
         },
 
+        updateProduct: function(fields,id){
+
+            var fd = objectToFormData(fields);            
+
+            return $http.post("/adminapi/product/update/"+id, fd, {
+                transformRequest: angular.identity,                             
+                headers: {'Content-Type': undefined}
+            }).error(function(data, status, headers) {            
+                Metronic.alert({
+                    type: 'danger',
+                    icon: 'warning',
+                    message: 'Please validate all fields.',
+                    container: '.portlet-body',
+                    place: 'prepend',
+                    closeInSeconds: 3
+                });
+            });
+        },
+
         getProduct: function(productid){
-            return $http.get("/admin/product/edit/"+productid);
+            return $http.get("/adminapi/product/detail/"+productid);
         },
 
     };

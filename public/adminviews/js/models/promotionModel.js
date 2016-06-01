@@ -3,12 +3,12 @@ MetronicApp.factory('promotionModel', ['$http', '$cookies','$location', function
     return {
         
         getPromotion: function(id){
-            return $http.get("/admin/promotion/"+id+"/edit");
+            return $http.get("/adminapi/promotion/detail/"+id);
         },       
 
         storePromotion: function(fields){
         	   	      
-	        return $http.post("/admin/promotion", fields, {	        
+	        return $http.post("/adminapi/promotion", fields, {	        
 	            
 	        }).error(function(data, status, headers) {            
 
@@ -50,7 +50,7 @@ MetronicApp.factory('promotionModel', ['$http', '$cookies','$location', function
         update: function(fields,id){
 
 	       	//put is used to updated data, Laravel router automatically redirect to update function 
-	        return $http.put("/admin/promotion/"+id, fields, {
+	        return $http.put("/adminapi/promotion/"+id, fields, {
 
 	        }).error(function(data, status, headers) {
 	        

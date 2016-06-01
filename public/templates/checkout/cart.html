@@ -35,8 +35,8 @@
 			<td width="131px">
 				<div class="prod_chilled" ng-class="{
 														notchilled:!cartproduct[type+'Status'],
-														invisible:!cartproduct.product.chilled,
-														invisible:cart.nonchilled,
+														invisible:!cartproduct.product.chilled || cart.nonchilled,
+														
 													}"
 													ng-click="alcoholCart.updateChilledStatus(cartproduct._id,type)">
 					<span>Chilled</span>
@@ -91,6 +91,31 @@
 			</td>
 			<td> 
 				<a class="checkoutmiddletabledeleteimg" ng-click="package.original.packageQuantity=0;alcoholCart.addPackage(package._uniqueId,package.original)"><i class="glyphicon glyphicon-trash"></i></a>
+			</td>
+		</tr>
+
+		<tr ng-repeat="(key, promotion) in alcoholCart.getPromotions()">
+		
+			<td width="52%">
+			
+				<div class="orhistry2_td2procdtcvr">
+					<span ui-sref="mainLayout.product({product:promotion.product._id})" class="cursor-pointer"><img err-pro-src="" ng-src="products/i/200/{{promotion.product._image}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" /></span>
+
+					<div class="checkouter-td-right-text">
+						<div class="orhistry2_td2proctext1">{{promotion.product._title}}</div>
+						<div class="orhistry2_td2proctext2">{{promotion.product.description}}</div>						
+						<div class="orhistry2_td2proctext2">({{promotion._title}})</div>
+				 	</div> 
+				</div>
+			</td>
+			<td></td>
+			<td></td>
+			<td>
+				<div class="orderhistry2price" ng-if="promotion.product._price">{{promotion.product._price | currency:settings.general.currency:2}}</div>
+				<div class="orderhistry2price" ng-if="!promotion.product._price">Free</div>
+			</td>
+			<td> 
+				<a class="checkoutmiddletabledeleteimg" ng-click="removePromotion(promotion._id)"><i class="glyphicon glyphicon-trash"></i></a>
 			</td>
 		</tr>
 		
@@ -154,49 +179,7 @@
 	</div>
 </div>
 
-<div ng-if="cart.service.express.status">
-<div ng-if="1">
- <div class="checkoutcongratulationouter" >
-	 <div class="checkout-congratulation-title">Congratulations! You qualify for special $100 promotion.</div>
-	 <div class="checkout-congratulation-text">Please select one of the following products. Only applicable for 1 hour deliveries.</div>
- </div>
- <div class="checkout-product">
-	<div class="row">
-	 	<div class="col-md-3 col-sm-3 col-xs-12 " ng-repeat="n in [1, 2, 3, 4] track by $index">
-					
-			<div class="prod_pic"><img class="img-responsive" src="images/product.png"></div>
-			<div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-			<div class="prod_price">28.00 SGD</div>
-			<div class="prod_discout_price">24.00 SGD</div>
-			<button class="checkoutproductbutton">AdD Promo</button>
-
-		</div>
-	 
-	</div>               
- </div>
-</div>
-
-    
-<div ng-if="1">
- <div class="checkoutcongratulationouter">
-	 <div class="checkout-congratulation-title">You qualify for special $250 promotion.</div>
-	 <div class="checkout-congratulation-text">Please select one of the following products. Only applicable for 1 hour deliveries.</div>
- </div>
- <div class="checkout-product">
- 	<div class="row">
-			<div class="col-md-3 col-sm-3 col-xs-12" ng-repeat="n in [1, 2, 3, 4] track by $index">
-			<div class="prod_pic"><img class="img-responsive" src="images/product.png"></div>
-			<div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-			<div class="prod_price">28.00 SGD</div>
-			<div class="prod_discout_price">24.00 SGD</div>
-			<button class="checkoutproductbutton">AdD Promo</button>
-		</div>
-
-	</div>
- </div>
-</div>
-
-</div>
+<div ui-view="promotions"></div>
 
 
 <div class="checkouterlastdiv">

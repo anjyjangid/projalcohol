@@ -136,7 +136,7 @@ class DealerController extends Controller
         return response(array("success"=>true,"message"=>"Record(s) Removed Successfully"));
     }
 
-    public function getdealer($dealerId){
+    public function getDealer($dealerId){
 
         $dealerObj = new Dealer;
 
@@ -149,7 +149,7 @@ class DealerController extends Controller
 
     }
 
-    public function getdealers(Request $request)
+    public function postDealers(Request $request)
     {
         $params = $request->all();
 
@@ -247,7 +247,7 @@ class DealerController extends Controller
 
             $row=array();
 
-            $row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';
+            //$row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';
 
             if($params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
                 $row[] = $srStart--;//$row1[$aColumns[0]];
@@ -262,24 +262,23 @@ class DealerController extends Controller
             $row[] = count($value['contacts']);
 
             $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="dealer" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
-            $row[] = '<a title="View : '.$value['title'].'" href="#/dealers/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
-                     '<a title="Edit : '.$value['title'].'" href="#/dealers/edit/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>
-                     <a title="View Order" ui-sref=dealers.orders({dealerid:"'.$value['_id'].'"}) class="btn btn-xs default">View Orders</a>';
+            $row[] = '<a title="View : '.$value['title'].'" ui-sref=userLayout.dealers.show({dealerid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
+                     '<a title="Edit : '.$value['title'].'" ui-sref=userLayout.dealers.edit({dealerid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>
+                     <a title="View Order" ui-sref=userLayout.dealers.orders({dealerid:"'.$value['_id'].'"}) class="btn btn-xs default">View Orders</a>';
             
             $records['data'][] = $row;
         }
         
         return response($records, 201);
         
-    }
+    }    
     
-    
-    public function getlist(){
+    public function getList(){
         $dealers = Dealer::where('status','=',1)->get(['_id','title']);                
         return response($dealers,201);
     }
 
-    public function dealerproduct(Request $request,$id){
+    public function getDealerproduct(Request $request,$id){
         
         $dealerObj = new Dealer;
 
