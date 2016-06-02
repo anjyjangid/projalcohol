@@ -2520,7 +2520,7 @@ md-dialog.md-transition-in{
 	float:left;
 	padding:15px 0px;
 	text-align:center;
-	
+	border-bottom: 1px solid #e2e2e2;	
 }
 .checkout-congratulation-title{
 	width:100%;

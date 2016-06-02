@@ -29,6 +29,7 @@ class WishlistController extends Controller
 
 		$loggeduser = Auth::user('user');
 		
+		
 
 		if(!$loggeduser){
 

@@ -31,7 +31,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			user:'='
 		},*/
 		templateUrl: '/templates/partials/topmenu.html',
-		controller: function($scope,$rootScope,$http,$state,sweetAlert,$facebook,store){
+		controller: function($scope,$rootScope,$http,$state,sweetAlert,$facebook,store,alcoholWishlist){
 
 			$scope.list = [];
 
@@ -76,23 +76,15 @@ AlcoholDelivery.directive('sideBar', function() {
 	                $('#login').modal('hide');
 	                $scope.errors = {};
 
-	                store.init();
-	     //            var deliverykey = localStorage.getItem("deliverykey");
+	                store.init().then(
+	                	function(successRes){
+	                		$state.go($state.current, {}, {reload: true});
+	                	},
+	                	function(errorRes){}
+	                );
+	                alcoholWishlist.init();
 
-	     //            if(deliverykey!==null && typeof deliverykey!=="undefined"){
-
-						// $http.put('cart/merge/'+deliverykey).success(function(response){
-
-						// 	$state.go($state.current, {}, {reload: true});
-
-						// }).error(function(data, status, headers) {
-
-			   //              $scope.errors = data;
-
-			   //          });
-
-	     //        	}
-
+	                
 
 				}).error(function(data, status, headers) {
 
@@ -171,12 +163,18 @@ AlcoholDelivery.directive('sideBar', function() {
 
 	                // Destroy Cart Params start
 	                delete $rootScope.deliverykey;
+
 	                localStorage.removeItem("deliverykey");
-	                store.init();
-	                // Destroy Cart Params end
-
-
-	                $state.go("mainLayout.index", {}, {reload: true});
+	                
+	                store.init().then(
+	                	function(successRes){
+	                		$state.go("mainLayout.index", {}, {reload: true});
+	                	},
+	                	function(errorRes){}
+	                );
+	                alcoholWishlist.init();
+	                
+	                
 
 	            }).error(function(data, status, headers) {
 	                $scope.user = {};
@@ -475,7 +473,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		templateUrl: '/templates/product/product_tpl.html',
 
 		controller: ['$rootScope','$scope','sweetAlert','alcoholCart','alcoholWishlist','promotionsService',"$mdToast",function($rootScope,$scope,sweetAlert,alcoholCart,alcoholWishlist,promotionsService,$mdToast){
-
+			
 			$scope.settings = $rootScope.settings;
 
 			$scope.alcoholCart = alcoholCart;
@@ -504,7 +502,6 @@ AlcoholDelivery.directive('sideBar', function() {
 
 						}
 
-
 					}, function(error) {
 
 						var toast = $mdToast.simple()
@@ -526,17 +523,26 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.setPrices = function(localpro){
 
 				if(typeof localpro.categories === "undefined"){return true;}
+			
 
-				var catIdIndex = localpro.categories.length - 1;
+				var catIdIndex = localpro.categories.length - 1;			
+
 				var catPriceObj = $rootScope.catPricing[localpro.categories[catIdIndex]];
+				
 				if(typeof catPriceObj === "undefined"){
 
 					console.log("Something wrong with this product : "+localpro._id);
 					localpro.quantity = 0;
 					return localpro;
-				}
+				}			
 
-				localpro = $.extend(catPriceObj, localpro);
+				angular.extend(localpro,catPriceObj);
+
+				// console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+				// 	console.log(angular.copy(catPriceObj));				
+				// 	console.log(localpro);
+				// console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+
 				localpro.price = parseFloat(localpro.price);
 
 				var orderValue = localpro.regular_express_delivery;
@@ -560,12 +566,13 @@ AlcoholDelivery.directive('sideBar', function() {
 				}
 
 				localpro.price = localpro.price.toFixed(2);
-
+				
 				return localpro;
 
 			}
 
 			angular.extend($scope.productInfo, $scope.setPrices($scope.productInfo));
+			
 
 		}]
 	}
@@ -593,6 +600,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.product.qNChilled = 0;
 
 			var isInCart = alcoholCart.getProductById($scope.product._id);
+
 
 			if(isInCart!==false){
 

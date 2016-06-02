@@ -28,7 +28,7 @@ class PromotionRequest extends Request
         $rules = [
 
             'title' => 'required|string|max:255',            
-            'price' => 'required|numeric|max:1000|unique:promotions',
+            'price' => 'required|numeric|max:1000000|unique:promotions',
             'status'=> 'required|integer|in:0,1',
             'products'=> 'required|array'
 
@@ -38,7 +38,7 @@ class PromotionRequest extends Request
             case 'PUT':
             case 'PATCH':
             {                
-                $rules['price'] = 'required|numeric|max:1000|unique:promotions,'.$this->promotion.',_id';
+                $rules['price'] = 'required|numeric|max:1000000|unique:promotions,'.$this->promotion.',_id';
             }
         }
         

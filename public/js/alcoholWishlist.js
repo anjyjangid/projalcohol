@@ -4,8 +4,7 @@ AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$
 
 			var _self = this;
 			this.$wishlist = [];
-			angular.wish=this.$wishlist;
-
+			
 			$http.get("wishlist",{
 
 			}).error(function(data, status, headers) {
@@ -15,7 +14,6 @@ AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$
 				_self.$restore(response.list);
 
 			})
-
 
 		};
 
