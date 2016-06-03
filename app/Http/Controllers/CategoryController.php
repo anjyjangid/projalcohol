@@ -20,15 +20,13 @@ class CategoryController extends Controller
 	public function getPricing(Request $request){
 
 		$params = $request->all();
-		$categories = Categories::where("cat_status","=",1)->orderBy('created_at', 'asc')->get(['_id', 'ancestors','express_delivery_bulk','advance_order_bulk','regular_express_delivery','advance_order']);
+		$categories = Categories::where("cat_status","=",1)->orderBy('created_at', 'asc')->get(['_id', 'ancestors','express_delivery_bulk','regular_express_delivery']);
 
 		//Fetch Global Pricing
 		$globalPricing = Setting::where("_id",'=',"pricing")
 									->first([
-										'settings.express_delivery_bulk',
-										'settings.advance_order_bulk',
-										'settings.regular_express_delivery',
-										'settings.advance_order'
+										'settings.express_delivery_bulk',										
+										'settings.regular_express_delivery',										
 									]);
 		$globalPricing = $globalPricing->settings;
 

@@ -527,21 +527,19 @@ AlcoholDelivery.directive('sideBar', function() {
 
 				var catIdIndex = localpro.categories.length - 1;			
 
-				var catPriceObj = $rootScope.catPricing[localpro.categories[catIdIndex]];
+				var catPriceObj = angular.copy($rootScope.catPricing[localpro.categories[catIdIndex]]);
+				delete catPriceObj._id;
 				
 				if(typeof catPriceObj === "undefined"){
 
 					console.log("Something wrong with this product : "+localpro._id);
 					localpro.quantity = 0;
 					return localpro;
-				}			
+				}
 
-				angular.extend(localpro,catPriceObj);
-
-				// console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-				// 	console.log(angular.copy(catPriceObj));				
-				// 	console.log(localpro);
-				// console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+				var dst = {};
+				angular.extend(dst,catPriceObj,localpro);
+				angular.extend(localpro,dst);
 
 				localpro.price = parseFloat(localpro.price);
 
@@ -571,7 +569,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			}
 
-			angular.extend($scope.productInfo, $scope.setPrices($scope.productInfo));
+			$scope.setPrices($scope.productInfo);
 			
 
 		}]
