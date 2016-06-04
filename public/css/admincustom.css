@@ -54,3 +54,7 @@ tr.detail td.details-control {
 .page-header.navbar .page-logo{
     padding-right: 0px;
 }
+
+.mClass div{
+    white-space:normal !important;
+}

@@ -3,6 +3,11 @@
 namespace AlcoholDelivery\Http\Controllers\Auth;
 use AlcoholDelivery\Http\Controllers\Controller;
 use Sarav\Multiauth\Foundation\ResetsPasswords;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Mail\Message;
+use Illuminate\Support\Facades\Mail;
+
  
 class AdminPasswordController extends Controller
 {
@@ -17,6 +22,37 @@ class AdminPasswordController extends Controller
     {        
         $this->user = "admin";
         $this->middleware('admin.guest');
-    }    
+    }   
+
+    /**
+     * Send a reset link to the given user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function postEmail(Request $request)
+    {
+        $this->validate($request, ['email' => 'required|email']);
+
+        $app = app();
+
+        $class = str_ireplace('App\Http\Controllers\\', '', get_called_class());
+
+        view()->composer($app->config['auth.password.email'], function($view) use ($class) {
+            $view->with('action', $class.'@getReset');
+        });             
+
+        $response = Password::sendResetLink($request->only('email'), function (Message $message) {
+            $message->subject($this->getEmailSubject());
+        });
+
+        switch ($response) {
+            case Password::RESET_LINK_SENT:
+                return response(['status'=>[trans($response)]],200);
+            case Password::INVALID_USER:
+                return response(['email' => [trans($response)]],422);
+                                
+        }
+    } 
 
 }

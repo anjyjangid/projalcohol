@@ -320,6 +320,7 @@
 <script>
 var grid;
 var detailRows = [];
+
 	var ProductsTableAjax = function () {    
 
 	    var handleRecords = function () {
@@ -377,11 +378,15 @@ var detailRows = [];
 				},			
 			});		
 	        
+	    
+	    //$('#orderlist').on( 'error.dt',
+
 	    }
 
 	    return {
 	        init: function () {       
 	            handleRecords();
+	            $.fn.dataTableExt.sErrMode = 'throw';
 	        }
 	    };
 
@@ -447,12 +452,8 @@ var detailRows = [];
  		}
     });
 
-</script>
 
-
-
-<!-- BEGIN ORDER MAIN JS -->
-<script>
+	/*ORDER TABLE*/
 	
 	var orderGrid = new Datatable();
 
@@ -460,10 +461,10 @@ var detailRows = [];
 
     var initPickers = function () {
         //init date pickers
-        $('.date-picker').datepicker({
+        /*$('.date-picker').datepicker({
             rtl: Metronic.isRTL(),
             autoclose: true
-        });
+        });*/
     }
 
     var handleRecords = function () {
@@ -572,6 +573,8 @@ var detailRows = [];
 
             initPickers();
             handleRecords();
+
+            $.fn.dataTableExt.sErrMode = 'throw';
         }
 
     };

@@ -392,12 +392,12 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 			icon:'icon-clock',
 			id:'sidebar_menu_link_timeslots'
 		},
-		/*{
+		{
 			label:'Public Holidays',
 			uisref:'userLayout.publicholidays',
 			icon:'icon-calendar',
 			id:'sidebar_menu_link_holidays'
-		},*/
+		},
 		{
 			label:'Global Settings',			
 			icon:'icon-settings',
@@ -536,14 +536,19 @@ MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", fun
 MetronicApp.controller('LoginController', ['$scope','AdminUserService', '$rootScope', '$http', '$state', '$location', function($scope, AdminUserService, $rootScope, $http, $state, $location) {    
 	
 	$scope.credentials = {};
+	$scope.reset = {};
 	$scope.errors = [];
+	$scope.reseterrors = [];
+	$scope.showlogin = true;
+
+	
 
 	$scope.adminlogin = function(){
+		$scope.errors = [];
 		$http.post('/adminapi/auth/login',$scope.credentials).success(function(res){
 			if(res.email){
 				AdminUserService.storeUser(res);				
-				$state.go('userLayout.dashboard');
-				$scope.errors = [];
+				$state.go('userLayout.dashboard');				
 			}else{
 				$scope.errors = {email:['Error in login']};
 			}
@@ -551,6 +556,30 @@ MetronicApp.controller('LoginController', ['$scope','AdminUserService', '$rootSc
 			$scope.errors = data;
 		});
 	};
+
+	$scope.resetRequest = function(){
+		$scope.reseterrors = [];
+		$http.post('/adminapi/password/email',$scope.reset).success(function(res){
+		
+			$scope.loginForm(true);
+
+			Metronic.alert({
+		        type: 'success',
+		        icon: 'success',
+		        message: res.status,
+		        container: '.content',
+		        place: 'prepend'        
+		    });
+		    $scope.reset = {};
+
+		}).error(function(data, status, headers) {
+			$scope.reseterrors = data;
+		});
+	}
+
+	$scope.loginForm = function(f){
+		$scope.showlogin = f;
+	}
 
 }]);
 
