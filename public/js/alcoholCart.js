@@ -421,17 +421,23 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		this.setSubTotal =function(){
 			
 			var total = 0;
-			angular.forEach(this.getCart().products, function (product) {
+			var cart = this.getCart();
+
+			angular.forEach(cart.products, function (product) {
 				total += parseFloat(product.getTotal());
 			});
 
-			angular.forEach(this.getCart().packages, function (package) {
+			angular.forEach(cart.packages, function (package) {
 				total += parseFloat(package.getTotal());
-			});
+			});		
 
-			
-			
 			promotionsService.setEligibility(total);
+			
+			this.removeNonEligiblePromotions(total);
+
+			angular.forEach(cart.promotions, function (promotion) {
+				total += parseFloat(promotion.getPrice());
+			});
 
 			return +parseFloat(total).toFixed(2);
 
@@ -580,6 +586,30 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 		};
 		
+		this.removeNonEligiblePromotions = function(subTotal){
+
+			var promotions = this.getCart().promotions;
+
+			angular.forEach(promotions, function (promotion,key) {
+
+				var isEligible = promotionsService.isEligible(promotion._id,subTotal);
+
+				if(isEligible===false){
+
+					var toast = $mdToast.simple()
+						.textContent("Promotion Product removed from your cart due to non eligilibility")
+						.highlightAction(false)
+						.position("top right");
+					$mdToast.show(toast);
+
+					promotions.splice(key, 1)[0] || {};
+
+				}
+				
+			});
+
+		}
+
 		this.setSmokeStatus = function(status){
 
 			var status = Boolean(status);
@@ -1033,7 +1063,7 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 		};
 
 		item.prototype.getPrice = function(){
-			return this.price;
+			return parseFloat(this.price);
 		};
 
 		item.prototype.setRQuantity = function(cQuantity,ncQuantity){
@@ -1207,7 +1237,7 @@ AlcoholDelivery.factory('alcoholCartPackage', ['$rootScope', '$log', function ($
 		};
 
 		package.prototype.getPrice = function(){
-			return this._price;
+			return parseFloat(this._price);
 		};
 
 		package.prototype.getTotal = function(){
@@ -1257,11 +1287,15 @@ AlcoholDelivery.factory('alcoholCartPromotion',['$log','$filter',function($log,$
 			this.product._price = parseFloat(product.promo.price);
 		}
 	}
+
+	oPromotion.prototype.getPrice = function(){
+		return parseFloat(this.product._price);
+	}
 	
 	return oPromotion;
 }]);
 
-AlcoholDelivery.service('store', ['$window','$http','alcoholCart','promotionsService','$q', function ($window,$http,alcoholCart,promotionsService,$q) {
+AlcoholDelivery.service('store', ['$rootScope','$window','$http','alcoholCart','promotionsService','$q', function ($rootScope,$window,$http,alcoholCart,promotionsService,$q) {
 
 		return {
 
@@ -1302,7 +1336,16 @@ AlcoholDelivery.service('store', ['$window','$http','alcoholCart','promotionsSer
 
 				return d.promise;
 
-			},		
+			},
+
+			orderPlaced : function(){
+
+				delete $rootScope.deliverykey
+				localStorage.removeItem("deliverykey");
+
+				this.init();
+
+			},
 
 			set: function (val,fnCallBack) {
 
@@ -1408,7 +1451,7 @@ AlcoholDelivery.service("promotionsService",["$http","$log","$q",function($http,
 		var subTotal = parseFloat(subTotal);
 		
 		var nearest = true;
-
+		
 		angular.forEach(this.$promotions,function(promotion){
 
 			promotion.eligible = {

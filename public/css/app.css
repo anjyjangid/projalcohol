@@ -330,9 +330,8 @@ li.subactive a, li.subactive a span {
 
 
 .desired-quantity-na-toast .-icon {
-	width: 32px;
-	float: left;
-	margin: 0 6px 0px 0;
+	font-size: 30px;
+	margin-right: 10px;
 }
 .desired-quantity-na-toast .-text {
 	color: #fff;

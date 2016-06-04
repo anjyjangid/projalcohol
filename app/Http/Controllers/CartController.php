@@ -844,6 +844,17 @@ jprd($product);
 			$order = Orders::create($cartArr);
 
 			$cart->delete();
+			
+			$reference = "ADSG";
+
+			$reference.= ((int)date("ymd",strtotime($order->created_at)) - 123456);			
+			$reference.="O";			
+			$reference.= (string)date("Hi",strtotime($order->created_at));
+
+			$order->reference = $reference;
+
+			$order->save();
+
 
 			$request->session()->forget('deliverykey');
 

@@ -508,7 +508,7 @@ AlcoholDelivery.directive('sideBar', function() {
 							.textContent(error.message)
 							.action('OK')
 							.highlightAction(false)
-							.position("top right");
+							.position("top right fixed");
 
 						$mdToast.show(toast).then(function(response) {
 							if ( response == 'ok' ) {
@@ -599,7 +599,6 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			var isInCart = alcoholCart.getProductById($scope.product._id);
 
-
 			if(isInCart!==false){
 
 				$scope.isInCart = true;
@@ -685,7 +684,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.activeAddToCart = function() {
 
-				if($scope.tquantity+1 > $scope.maxQuantity){
+				if($scope.maxQuantity < $scope.tquantity){
 
 					var ele = $scope.element;
 					var qChilled = $scope.product.qChilled;

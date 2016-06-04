@@ -5,7 +5,7 @@
 			 	<div class="checkoutstep5-left-first">
 					 <div class="checkoutstep5-left-first-left">
 						 <div class="checkoutstep5-left-first-lefttext">Order Id</div>
-						 <div class="checkoutstep5-left-first-lefttitle">{{order._id}}</div>
+						 <div class="checkoutstep5-left-first-lefttitle">{{order.reference}}</div>
 					 </div>
 				 </div>
 			 </div>
@@ -16,31 +16,26 @@
 				<table class="table">
 
 				<tbody>
-					<tr ng-repeat="(key, cartproduct) in order.products">
+					<tr ng-repeat="(key, orderproduct) in order.products">
 						<td width="52%"> 
 							<div class="orhistry2_td2procdtcvr">
-								<span><img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" /></span>
+								<span><img err-pro-src="" ng-src="products/i/200/{{orderproduct.original.imageFiles | getProductThumb}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" /></span>
 								<div class="checkouter-td-right-text">
-									<div class="orhistry2_td2proctext1">{{cartproduct.name}}</div>
-									<div class="orhistry2_td2proctext2">{{cartproduct.product.shortDescription}}</div>
-									<div class="orhistry2_td2proctext1">{{settings.general.currency}} {{cartproduct.product.price}}</div>
-									<div class="orhistry2_td2proctext2">unit Price</div>
+									<div class="orhistry2_td2proctext1">{{orderproduct.original.name}}</div>
+									<div class="orhistry2_td2proctext2">{{orderproduct.original.shortDescription}}</div>
+									<div class="orhistry2_td2proctext1">{{settings.general.currency}} {{orderproduct.original.price}}</div>					
 							 	</div> 
 							</div>
 						</td>
 						<td>
-								<div class="prod_chilled" ng-show="!order.nonchilled" ng-class="{notchilled:!cartproduct.chilled,invisible:!cartproduct.product.chilled}" ng-click="cartproduct.chilled=!cartproduct.chilled">
+								<div class="prod_chilled" ng-show="!order.nonchilled" ng-class="{notchilled:!orderproduct.original.chilled,invisible:!orderproduct.original.chilled}" ng-click="orderproduct.original.chilled=!orderproduct.original.chilled">
 									<span>Chilled</span>
 									<div class="prod_chilled_icon"></div>
 								</div>
-
-								<!-- <div class="orderhistrychilcvr">
-									<span1><img src="images/product13.png"></span1><span>CHILLED</span>
-								</div> -->
 						</td>
 						
 						<td>
-							<div class="orderhistry2price">{{cartproduct.finalprice | currency:settings.general.currency:2}}</div>
+							<div class="orderhistry2price">{{orderproduct.original.finalprice | currency:settings.general.currency:2}}</div>
 							
 						</td>						
 					</tr>
@@ -93,15 +88,15 @@
 						<div class="checkoutstep5right-middle ">
 							<div class="checkoutstep5right-middle-first">
 								<div class="checkoutstep5right-middle-title">Subtotal <span class=""></span></div>
-								<div class="checkboxtotaldiv-text">{{order.subtotal | currency:settings.general.currency:2}}</div>
+								<div class="checkboxtotaldiv-text">{{order.payment.subtotal | currency:settings.general.currency:2}}</div>
 							</div>
 							<div class="checkoutstep5right-middle-first">
 								<div class="checkoutstep5right-middle-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
-								<div class="checkboxtotaldiv-text">FREE</div>
+								<div class="checkboxtotaldiv-text">{{order.delivery.charges | pricingTxt}}</div>
 							</div>
 							<div class="checkoutstep5right-middle-first">
 								<div class="checkoutstep5right-middle-title">Service Charge <span class=""><img src="images/questionimg.png"></span></div>
-								<div class="checkboxtotaldiv-text">{{order.service.total | currency:settings.general.currency:2}}</div>
+								<div class="checkboxtotaldiv-text">{{order.service.total | pricingTxt}}</div>
 							</div>
 							<div class="checkoutstep5right-middle-first">
 								<div class="checkoutstep5right-middle-title" >Discount (Non-Chilled) <span class=""><img src="images/questionimg.png"></span></div>
@@ -110,7 +105,7 @@
 						</div>
 						<div class="checkoutstep5right-buttom">
 							<div class="checkoutstep5right-bottom-title">Total</div>
-							<div class="checkoutstep5right-bottom-text">{{order.total | currency:settings.general.currency:2}}</div>
+							<div class="checkoutstep5right-bottom-text">{{order.payment.total | currency:settings.general.currency:2}}</div>
 						</div>
 					</div>
 				</div>

@@ -246,6 +246,7 @@ class OrderController extends Controller
 					'$project' => array(
 						'_id'=>1,
 						'service'=>1,
+						'reference'=>1,
 						'delivery.type'=>1,
 						'nonchilled'=>1,
 						'total'=>1,
@@ -320,6 +321,8 @@ class OrderController extends Controller
 
 			$status = $status_list[0];
 			
+			$row[] = $order['reference'];
+
 			$row[] = ucfirst(getUserName($users[(string)$order['user']]));
 			
 			$row[] = $order['quantity'];

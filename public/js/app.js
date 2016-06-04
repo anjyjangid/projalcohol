@@ -12,7 +12,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ngMaterial',
 	'ngScrollbars',
 	'ngMessages',
-	'ngTouch',
+	// 'ngTouch',
 	'ngMap',
 	'vAccordion',
 	'ngFacebook',
@@ -345,6 +345,8 @@ AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state
 		$category = $stateParams.subcategorySlug;
 		$scope.AppController.subCategory = $stateParams.subcategorySlug;
 	}
+
+	if(typeof $stateParams.toggle==="undefined"){$stateParams.toggle="all";}
 
 	var data = {
 		category:$category,
@@ -1990,7 +1992,7 @@ AlcoholDelivery.controller('CartPaymentController',['$scope','$rootScope','$http
 
 }]);
 
-AlcoholDelivery.controller('CartReviewController',['$scope','$rootScope','$http','$q','$state', '$mdDialog', '$mdMedia', '$interval', 'alcoholCart','sweetAlert',function($scope, $rootScope, $http, $q, $state, $mdDialog, $mdMedia, $interval, alcoholCart, sweetAlert){
+AlcoholDelivery.controller('CartReviewController',['$scope','$rootScope','$http','$q','$state', '$mdDialog', '$mdMedia', '$interval', 'alcoholCart','store','sweetAlert',function($scope, $rootScope, $http, $q, $state, $mdDialog, $mdMedia, $interval, alcoholCart, store, sweetAlert){
 
 	var timer = $interval(function() {
 
@@ -2076,8 +2078,7 @@ AlcoholDelivery.controller('CartReviewController',['$scope','$rootScope','$http'
 								timer: 1000
 							});
 
-				            delete $rootScope.deliverykey
-				            localStorage.removeItem("deliverykey");
+				            store.orderPlaced();
 
 				            $state.go('orderplaced',{order:response.order},{reload: false, location: 'replace'});
 
@@ -2104,7 +2105,7 @@ AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$statePara
 	$http.get("order/summary/"+$scope.order).success(function(response){
     	$scope.order = response;
 
-    	$scope.orderNumber = $scope.order._id.substr(3, 10);
+    	$scope.orderNumber = $scope.order.reference;
 
     	$scope.weeksName = new Array(7);
 		$scope.weeksName[0]=  "Sunday";
@@ -2261,7 +2262,7 @@ AlcoholDelivery.factory('catPricing', ["$q", "$timeout", "$rootScope", "$http", 
 
 AlcoholDelivery.factory("UserService", ["$q", "$timeout", "$http", function($q, $timeout, $http) {
 
-	function GetUser() {
+	function GetUser(){
 
 		var d = $q.defer();
 		$timeout(function(){
@@ -3183,8 +3184,6 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 
 
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-
-
 
 		var regex = new RegExp('^accountLayout', 'i');
 

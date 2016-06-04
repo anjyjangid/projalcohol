@@ -17,9 +17,9 @@
     <div class="fullwidth">
     
       <ul class="nav nav-tabs productcomboul">
-        <li ng-class="{active:(AppController.toggle=='all')}"><a ng-click="$broadcast('filterproduct', {toggle: 'all'})" data-toggle="tab">All</a></li>
-        <li ng-class="{active:AppController.toggle=='new'}"><a ng-click="$broadcast('filterproduct', {toggle: 'new'})" data-toggle="tab">New</a></li>
-        <li ng-class="{active:AppController.toggle=='in-stock'}"><a ng-click="$broadcast('filterproduct', {toggle: 'in-stock'})" data-toggle="tab">In Stock</a></li>      
+        <li ng-class="{active:AppController.toggle=='all'}"><a href="javascript:void(0)" ng-click="$broadcast('filterproduct', {toggle: 'all'})" data-toggle="tab">All</a></li>
+        <li ng-class="{active:AppController.toggle=='new'}"><a href="javascript:void(0)" ng-click="$broadcast('filterproduct', {toggle: 'new'})" data-toggle="tab">New</a></li>
+        <li ng-class="{active:AppController.toggle=='in-stock'}"><a href="javascript:void(0)" ng-click="$broadcast('filterproduct', {toggle: 'in-stock'})" data-toggle="tab">In Stock</a></li>      
 
         <div class="dropdown productdropdownbtn" uib-dropdown>
           <button class="btn dropdown-toggle" type="button" id="dropdownMenu1" uib-dropdown-toggle aria-haspopup="true" aria-expanded="true">
@@ -28,8 +28,8 @@
           </button>
 
           <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" uib-dropdown-menu>
-            <li><a ng-click="$broadcast('filterproduct', {sort: 'price_asc'})">Price Ascending</a></li>
-            <li><a ng-click="$broadcast('filterproduct', {sort: 'price_desc'})">Price Descending</a></li>            
+            <li><a href="javascript:void(0)" ng-click="$broadcast('filterproduct', {sort: 'price_asc'})">Price Ascending</a></li>
+            <li><a href="javascript:void(0)" ng-click="$broadcast('filterproduct', {sort: 'price_desc'})">Price Descending</a></li>            
           </ul>
         </div>
       </ul>

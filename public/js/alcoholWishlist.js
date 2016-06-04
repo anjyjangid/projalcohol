@@ -1,10 +1,14 @@
-AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$q', 'wishlistProduct', function ($rootScope, $window, $http, $q, wishlistProduct) {
+AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$q', 'wishlistProduct','UserService', function ($rootScope, $window, $http, $q, wishlistProduct, UserService){
 
 		this.init = function(){
 
 			var _self = this;
 			this.$wishlist = [];
 			
+			if(UserService.currentUser==="" || UserService.currentUser===null){
+				return false;
+			}
+
 			$http.get("wishlist",{
 
 			}).error(function(data, status, headers) {
@@ -20,9 +24,15 @@ AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$
 		this.add = function (id) {
 
 			var _self = this;
-			var isInList = _self.getProductById(id);
+			var isInList = _self.getProductById(id);		
 
 			var d = $q.defer();
+
+			if(UserService.currentUser.auth===false){
+				
+				d.reject({"success":false,"message":"Login Required","auth":false});
+
+			}else{
 
 			$http.post("wishlist", {"id":id},{
 
@@ -50,6 +60,8 @@ AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$
 				}
 
 			});
+
+			}
 
 			return d.promise;
 
@@ -153,27 +165,6 @@ AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$
 
 			return (getTotalUniqueItems() > 0 ? false : true);
 
-		};
-
-		
-
-		this.toObject = function() {
-
-			if (this.getProducts().length === 0) return false;
-
-			var items = [];
-			angular.forEach(this.getProducts(), function(item){
-				items.push (item.toObject());
-			});
-
-			return {
-				shipping: this.getShipping(),
-				tax: this.getTax(),
-				taxRate: this.getTaxRate(),
-				subTotal: this.getSubTotal(),
-				totalCost: this.totalCost(),
-				items:items
-			}
 		};
 
 		this.$restore = function(products){

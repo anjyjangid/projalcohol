@@ -30,9 +30,14 @@
 				<td>
 					<div class="wishlist-tbledatecover">
 						<div class="wishlist-tbledate">Added {{product._addedSlug}}</div>
-						<div class="prod_addtocart">
+						
+						<div class="prod_addtocart" ng-init="product._original.servechilled = false">
 							
-							<add-to-cart-btn product="product"></add-to-cart-btn>
+							<!-- <add-to-cart-btn product="product"></add-to-cart-btn> -->
+
+							<add-to-cart-btn product="product._original" ng-if="(product.cart.quantity || product._original.outOfStockType == 2)"></add-to-cart-btn>
+
+							<out-of-stock product="product._original" ng-if="product.cart.quantity<1 && product._original.outOfStockType == 1"></out-of-stock>
 							
 						</div>
 
