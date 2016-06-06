@@ -439,3 +439,13 @@ md-toast.desired-quantity-na-toast:before {
 	border-bottom: 1px dashed;
 }
   
+.scale {
+	background: #aa00ff;
+	position: absolute;
+	left: 0;
+	right: 0;
+	width: 0%;
+	height: 10px;
+	transition-duration: 2s;
+	border-radius: 50px;
+}

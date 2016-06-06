@@ -1,0 +1,27 @@
+<div class="productaddedpopup">
+	
+	<div class="additempopuppinkbox">
+		<table>
+			<tr>
+				<td class="additempopuppinkboxleft">{{quantity}}</td>
+				<td class="additempopuppinkboxright">
+					{{message}}
+					<div class="additempopuppinkboxrightinner">View my cart</div>
+				</td>
+			</tr>
+		</table>					
+	</div>
+	<div class="additempopupwhitebox">
+		
+		<div class="additempopupwhiteblacktext" ng-if="!isFreeDelivery">25.78 more to FREE delivery</div>
+		<div class="additempopupwhiteblacktext" ng-if="isFreeDelivery">Nice! You've unlocked FREE delivery!</div>
+
+		<div class="additempopupwhitebarimgcover">
+			<div class="additempopupwhitebarcover">
+				<div class="scale"></div>
+			</div>
+			<img src="images/imgpsh_fullsize_small.png" />
+		</div>
+	</div>
+
+</div>

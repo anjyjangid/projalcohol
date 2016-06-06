@@ -48,7 +48,7 @@
 			<td>
 				<div class="checkoutmiddlevlauediv">
 				
-					<input type="text" ng-model="cartproduct[type]" value="cartproduct[type]" min="0" mquantity="cartproduct[type+'Max']" ng-touch-spin on-increment="addtocart(cartproduct.product._id,type)" on-decrement="addtocart(cartproduct.product._id,type)">
+					<input type="text" ng-model="cartproduct[type]" value="cartproduct[type]" min="1" mquantity="cartproduct[type+'Max']" ng-touch-spin on-increment="addtocart(cartproduct.product._id,type)" on-decrement="addtocart(cartproduct.product._id,type)">
 					
 				</div>
 			</td>
@@ -56,7 +56,7 @@
 				<div class="orderhistry2price">{{cartproduct.discountedUnitPrice * cartproduct[type] | pricingTxt}}</div>
 			</td>
 			<td> 
-				<a class="checkoutmiddletabledeleteimg" ng-click="remove(key,type)"><i class="glyphicon glyphicon-trash"></i></a>
+				<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="remove(key,type)"><i class="glyphicon glyphicon-trash"></i></a>
 			</td>
 		</tr>
 		<tr ng-repeat-end></tr>
@@ -83,7 +83,7 @@
 
 				<div class="checkoutmiddlevlauediv">
 
-					<input type="text" ng-model="package.original.packageQuantity" value="package._quantity" min="0" mquantity="package._maxquantity" ng-touch-spin on-increment="alcoholCart.addPackage(package._uniqueId,package.original)" on-decrement="alcoholCart.addPackage(package._uniqueId,package.original)">
+					<input type="text" ng-model="package.original.packageQuantity" value="package._quantity" min="1" mquantity="package._maxquantity" ng-touch-spin on-increment="alcoholCart.addPackage(package._uniqueId,package.original)" on-decrement="alcoholCart.addPackage(package._uniqueId,package.original)">
 					
 				</div>
 			</td>
@@ -91,7 +91,7 @@
 				<div class="orderhistry2price">{{package._price | pricingTxt}}</div>
 			</td>
 			<td> 
-				<a class="checkoutmiddletabledeleteimg" ng-click="package.original.packageQuantity=0;alcoholCart.addPackage(package._uniqueId,package.original)"><i class="glyphicon glyphicon-trash"></i></a>
+				<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="package.original.packageQuantity=0;alcoholCart.addPackage(package._uniqueId,package.original)"><i class="glyphicon glyphicon-trash"></i></a>
 			</td>
 		</tr>
 
@@ -116,7 +116,7 @@
 				
 			</td>
 			<td> 
-				<a class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removePromotion(promotion._id)"><i class="glyphicon glyphicon-trash"></i></a>
+				<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removePromotion(promotion._id)"><i class="glyphicon glyphicon-trash"></i></a>
 			</td>
 		</tr>
 		
@@ -175,7 +175,7 @@
 	 <div class="checkouterexpressdiv">
 		 <div class="checkouterexpresstitle">Express Delivery</div>
 		 <div class="checkouterexpresstext">Gauranteed 30 mins delivery.</div>
-		 <div class="checkouterexpresstext">$50 surcharge applies. <a href="">Terms &amp; Conditions</a> applies.</div>
+		 <div class="checkouterexpresstext">$50 surcharge applies. <a href="javascript:void(0)">Terms &amp; Conditions</a> applies.</div>
 	 </div>
 	</div>
 </div>

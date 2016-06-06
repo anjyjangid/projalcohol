@@ -5023,15 +5023,14 @@ md-dialog.md-transition-in{
 	width: 20px;
 }
 
-.productaddedpopup{
-	display: none;
+.productaddedpopup{	
 	background: #ffffff none repeat scroll 0 0;
 	border-radius: 5px;
 	left: -135px;
 	position: absolute;
-	top: 95%;
+	top: 100%;
 	width: 290px;
-	z-index:9;
+	z-index:19;
 	padding:0;
 	-webkit-box-shadow: 0px 29px 60px 0px rgba(86,111,140,0.6);
 	-moz-box-shadow: 0px 29px 60px 0px rgba(86,111,140,0.6);
@@ -5137,19 +5136,16 @@ md-dialog.md-transition-in{
 .additempopuppinkboxleft{
 	font-size:30px;
 	color:#fff;
-	font-family: 'Work Sans', sans-serif;
-	float:left;
+	font-family: 'Work Sans', sans-serif;	
 	font-weight:500;
 }
-.additempopuppinkboxright{
-	width:80%;
+.additempopuppinkboxright{	
 	font-size:14px;
 	color:#fff;
-	font-family: 'Work Sans', sans-serif;
-	float:left;
+	font-family: 'Work Sans', sans-serif;	
 	font-weight:normal;
 	text-transform:none;
-	margin-left:32px;
+	padding-left:15px;
 }
 .additempopuppinkboxrightinner{
 	width:100%;

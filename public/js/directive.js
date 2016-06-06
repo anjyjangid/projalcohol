@@ -609,7 +609,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			if($scope.product.quantity==0 && $scope.product.outOfStockType==2){
 
-				$scope.maxQuantity = $scope.product.maxQuantity;
+				$scope.maxQuantity = $scope.product.maxQuantity; //if product is out of stock then its max quantity is available for future order.
 
 			}else{
 
@@ -658,13 +658,81 @@ AlcoholDelivery.directive('sideBar', function() {
 
 				$scope.proUpdateTimeOut = $timeout(function(){
 
-					if($scope.product.servechilled){
-						alcoholCart.addItem($scope.product._id,$scope.product.qChilled,$scope.product.servechilled);
-					}else{
-						alcoholCart.addItem($scope.product._id,$scope.product.qNChilled,$scope.product.servechilled);
-					}
+					var quantity = $scope.product.servechilled?$scope.product.qChilled:$scope.product.qNChilled;
+					
+					alcoholCart.addItem($scope.product._id,quantity,$scope.product.servechilled).then(
 
+						function(successRes){
 
+							if(successRes.success){							
+
+								switch(successRes.code){
+									case 100:
+
+										$scope.product.qNChilled = successRes.product.nonchilled.quantity;
+										$scope.product.qChilled = successRes.product.chilled.quantity;
+										$scope.maxQuantity = successRes.product.maxQuantity;
+										$scope.product.quantity = successRes.product.product.quantity;
+
+										$scope.product.chilledMaxQuantity = $scope.maxQuantity - $scope.product.qNChilled;
+										$scope.product.nonChilledMaxQuantity = $scope.maxQuantity - $scope.product.qChilled;
+										$scope.tquantity = parseInt($scope.product.qNChilled)+parseInt($scope.product.qChilled);
+
+										$timeout(function(){
+										$mdToast.show({
+											controller:function($scope){
+
+												$scope.qChilled = 0;
+												$scope.qNchilled = 0;
+
+												$scope.closeToast = function(){
+													$mdToast.hide();
+												}
+											},											
+											templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+											parent : $element,											
+											position: 'top center',
+											hideDelay:10000
+										});
+										},1000);
+
+									break;
+									case 101:
+										
+										$scope.product.outOfStockType = successRes.product.product.outOfStockType;
+										$scope.product.quantity = successRes.product.product.quantity;
+
+										$timeout(function(){
+										$mdToast.show({
+											controller:function($scope){
+
+												$scope.qChilled = 0;
+												$scope.qNchilled = 0;
+
+												$scope.closeToast = function(){
+													$mdToast.hide();
+												}
+											},											
+											templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+											parent : $element,											
+											position: 'top center',
+											hideDelay:10000
+										});
+										},1000);
+
+									break;
+
+								}
+								
+							}
+
+						},
+						function(errorRes){
+
+						}
+
+					);
+					
 					if($scope.product.quantitycustom==0){
 						$scope.isInCart = false;
 						$scope.addMoreCustom = false;

@@ -223,9 +223,13 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', '$f
 		var orderValue = localpro.regular_express_delivery;
 
 		if(orderValue.type==1){
+
 			localpro.price +=  parseFloat(localpro.price * orderValue.value/100);
+
 		}else{
+
 			localpro.price += parseFloat(orderValue.value);
+			
 		}
 
 
@@ -3166,8 +3170,14 @@ function ($q, $rootScope, $log) {
 }]);
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "CartSession","catPricing","UserService", "$state", "$http", "$window","$mdToast",
-			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, CartSession, catPricing, UserService, $state, $http, $window, $mdToast) {
+AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "CartSession","catPricing","UserService", "$state", "$http", "$window","$mdToast","$document",
+			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, CartSession, catPricing, UserService, $state, $http, $window, $mdToast,$document) {
+
+	
+	angular.rootScope = $rootScope;
+	angular.mdtoast = $mdToast;
+
+
 
 	$rootScope.$state = $state; // state to be accessed from view
 	
@@ -3238,6 +3248,25 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 				.position("top right fixed")
 				.hideDelay(4000)
 			);
+
+	});
+
+	$rootScope.$on('alcoholCart:updated', function(object,params){
+
+		$mdToast.show({
+						controller:function($scope){
+
+							$scope.quantity = params.quantity;
+							$scope.message = params.msg;
+							$scope.isFreeDelivery = false;
+							$scope.freeRequired = 28;
+
+						},						
+						templateUrl: '/templates/toast-tpl/cart-update.html',						
+						parent : $document[0].querySelector('#cart-summary-icon'),
+						position: 'top center',
+						hideDelay:3000
+					});
 
 	});
 
