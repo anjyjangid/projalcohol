@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Mail;
-
+use Illuminate\Auth\Passwords\TokenRepositoryInterface;
+use Validator;
+use AlcoholDelivery\Admin;
+use AlcoholDelivery\Email;
  
 class AdminPasswordController extends Controller
 {
@@ -30,11 +33,40 @@ class AdminPasswordController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function postEmail(Request $request)
+    public function postEmail(Request $request, TokenRepositoryInterface $tokens)
     {
-        $this->validate($request, ['email' => 'required|email']);
+        //$this->validate($request, ['email' => 'required|email']);
 
-        $app = app();
+        $validator = Validator::make($request->all(), [            
+                        'email' => 'required|email|exists:admin',            
+                    ],[
+                       'email.exists' => 'We can\'t find a user with that e-mail address.',                       
+                    ]);
+        if ($validator->fails()) {
+            return response($validator->errors(), 422);
+        }
+
+        $user = Admin::where('email','=',$request->input('email'))->first();
+
+        $user->email_key = $tokens->create($user);
+        
+        $user->save();
+
+        $email = new Email('forgot');
+        
+        $data = $user->toArray();
+        $data['isAdmin'] = true;
+
+        $res = $email->sendEmail($data);       
+
+        if($res){
+            return response(['status'=>'We have mailed you the instruction!'],200);
+        }else{
+            return response(['email'=>'Error in sending email'],200);
+        }
+
+
+        /*$app = app();
 
         $class = str_ireplace('App\Http\Controllers\\', '', get_called_class());
 
@@ -52,7 +84,7 @@ class AdminPasswordController extends Controller
             case Password::INVALID_USER:
                 return response(['email' => [trans($response)]],422);
                                 
-        }
+        }*/
     } 
 
 }

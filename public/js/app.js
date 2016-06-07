@@ -16,7 +16,8 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ngMap',
 	'vAccordion',
 	'ngFacebook',
-	'alcoholCart.directives'
+	'alcoholCart.directives',
+	'angular-ladda'
 ]);
 
 
@@ -3124,6 +3125,13 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							},
 
 						},
+				})
+
+				.state('invitation',{
+					url:'/acceptinvitation/{rid}',
+					controller:function($state){
+						$state.go('/');
+					}
 				});
 
 				/*$locationProvider.html5Mode(true);

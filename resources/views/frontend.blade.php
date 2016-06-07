@@ -51,6 +51,7 @@
 		<![endif]-->
 
 		<link rel="shortcut icon" href="images/favicon.ico"/>
+		<link rel="stylesheet" href="{{ asset('bower_components/ladda/dist/ladda-themeless.min.css') }}">
 	</head>
 	<body ng-controller="AppController">
 
@@ -202,5 +203,9 @@
 
     <script src="js/ngFacebook.js"></script>
     <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>
+
+    <script src="{{ asset('bower_components/ladda/js/spin.js') }}"></script>
+	<script src="{{ asset('bower_components/ladda/js/ladda.js') }}"></script>
+	<script src="{{ asset('bower_components/angular-ladda/dist/angular-ladda.min.js') }}"></script>
 
 </html>

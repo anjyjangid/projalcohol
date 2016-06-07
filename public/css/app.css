@@ -178,6 +178,9 @@
 }
 
 /* ANIMATE */
+.open > .dropdown-menu{
+  /*display: none;*/
+}
 
 .isloading{  
   background: url('../img/loading.gif');
@@ -439,4 +442,3 @@ md-toast.desired-quantity-na-toast:before {
 	padding: 10px;
 	border-bottom: 1px dashed;
 }
-  

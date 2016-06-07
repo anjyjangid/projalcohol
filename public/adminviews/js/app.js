@@ -534,14 +534,12 @@ MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", fun
 }]);
 
 MetronicApp.controller('LoginController', ['$scope','AdminUserService', '$rootScope', '$http', '$state', '$location', function($scope, AdminUserService, $rootScope, $http, $state, $location) {    
-	
+
 	$scope.credentials = {};
 	$scope.reset = {};
 	$scope.errors = [];
 	$scope.reseterrors = [];
 	$scope.showlogin = true;
-
-	
 
 	$scope.adminlogin = function(){
 		$scope.errors = [];
@@ -586,10 +584,25 @@ MetronicApp.controller('LoginController', ['$scope','AdminUserService', '$rootSc
 /* Setup Rounting For All Pages */
 MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
     // Redirect any unmatched url
-    $urlRouterProvider.otherwise("/dashboard");     
+    $urlRouterProvider.otherwise("/");     
     
     $stateProvider
         
+        /*REDIRECT USER AS PER CONDITION*/
+        .state('blank',{
+        	url: "/",
+        	controller:function(AdminUserService, $state, $timeout) {
+	      		if (AdminUserService.isLogged()) {
+	      			$s = 'userLayout.dashboard'	      			
+	      		}else{
+	      			$s = 'login'	      			
+	      		}
+	      		$timeout(function(){
+	      			$state.go($s);
+	      		});
+        	}
+        })
+
         .state('userLayout',{
         	
         	views:{
@@ -613,11 +626,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
         .state('userLayout.dashboard', {
             url: "/dashboard",
-            /*views : {
-            	"" : {
-					templateUrl : "adminviews/views/dashboard.html",					
-				},
-            },*/
             templateUrl: "adminviews/views/dashboard.html",            
             data: {pageTitle: 'Dashboard'},
             controller: "DashboardController",
@@ -1659,7 +1667,10 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             url: "/login",
             templateUrl: "adminviews/views/login.html",
             data: {pageTitle: 'Administrator Login'},            
-            controller: "LoginController"            
+            controller: "LoginController",
+            resolve: {                
+                checkStatus: checkStatus
+            }            
         })
 
         .state("logout", {
@@ -1674,11 +1685,21 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 					
 				});
             }            
+        })
+
+        .state("resetpassword", {
+            url: "/resetpassword",
+            templateUrl: "adminviews/views/resetpassword.html",
+            data: {pageTitle: 'Reset password'},            
+            controller: function($http,AdminUserService, $state){
+            	
+            }            
         });        
 
 
 
-        function authenticate($q, AdminUserService, $state, $timeout) {
+        function authenticate($q, AdminUserService, $state, $timeout, $location) {
+
 	      if (AdminUserService.isLogged()) {
 	        // Resolve the promise successfully
 	        return $q.when()
@@ -1693,6 +1714,24 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
 	        // Reject the authentication promise to prevent the state from loading
 	        return $q.reject()
+	      }
+	    }
+
+	    function checkStatus($q, AdminUserService, $state, $timeout, $location) {
+
+	      if (AdminUserService.isLogged()) {
+	        // Resolve the promise successfully
+	        $timeout(function() {
+	          // This code runs after the authentication promise has been rejected.
+	          // Go to the log-in page
+	          $state.go('userLayout.dashboard');
+	        })
+
+	        // Reject the authentication promise to prevent the state from loading
+	        return $q.reject();
+
+	      } else {
+	        return $q.when();
 	      }
 	    }
 

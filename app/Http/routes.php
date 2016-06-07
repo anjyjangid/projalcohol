@@ -9,6 +9,12 @@
 | and give it the controller to call when that URI is requested.
 |
  */
+
+/*TO VIEW MAIL TEMPLATE*/
+/*Route::get('/mymail', function () {
+    return view('emails.mail',['content'=>'<b>HELLO</b>']);
+});*/
+
 Route::group(['prefix' => 'adminapi'], function () {
 
 	Route::controller('auth', 'Auth\AdminAuthController');
