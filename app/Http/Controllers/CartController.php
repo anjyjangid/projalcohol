@@ -16,6 +16,13 @@ use MongoId;
 
 class CartController extends Controller
 {
+
+	/**
+	 * ErrorCode
+	 * 100 => Quantity requested is not available
+	 * 101 => Product is not available for sale	 
+	 */
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -222,13 +229,23 @@ class CartController extends Controller
 
 		$cart = Cart::find($id);
 
+		$response = [
+			"success"=>false,
+			"message"=>"Something went worng",
+			"code" => 000,
+		];
+		
 		if(empty($cart)){
 
-			return response(array("success"=>false,"message"=>"Not a valid request"),400);
+			$response['message'] = "Not a valid request";
+			return response($response,400);
 
-		}
+		}	
+
+		$productInCart = isset($cart->products[$proIdToUpdate])?$cart->products[$proIdToUpdate]:false;
 
 		$productObj = new Products;
+
 		$product = $productObj->getProducts(
 									array(
 										"id"=>$proIdToUpdate,
@@ -240,15 +257,54 @@ class CartController extends Controller
 
 		$product = $product[0];
 
+		if((int)$product['quantity']>0){
+			
+			$maxAvailQuantity = (int)$product['quantity'];
+
+		}elseif($product['outOfStockType']==2){
+			
+			$maxAvailQuantity = (int)$product['maxQuantity'];
+
+		}else{
+
+			// Handel if product goes dis-continue in middle of processing
+			$response['success'] = true;
+			$response['code'] = 101;
+			$response['message'] = "Product is no longer available";
+
+			$product['change'] = -$productInCart['quantity'];
+			$response['product']['quantity'] = 0;
+
+			$response['product']['product'] = $product;
+
+			try {
+				
+				if($productInCart!==false){
+
+					$cart->unset('products.'.$proIdToUpdate);
+
+				}
+				
+				return response($response,200);
+
+			} catch(\Exception $e){
+
+				return response($response);
+
+			}
+
+		}
+		
+
 		$updateProData = array(
 
-				"maxQuantity"=>(int)$product['quantity'],
+				"maxQuantity"=>$maxAvailQuantity,
 				"chilled"=>array(
-					"quantity"=>isset($cart->products[$proIdToUpdate])?$cart->products[$proIdToUpdate]['chilled']['quantity']:0,
+					"quantity"=>$productInCart!==false?$productInCart['chilled']['quantity']:0,
 					"status"=>"chilled",
 				),
 				"nonchilled"=>array(
-					"quantity"=>isset($cart->products[$proIdToUpdate])?$cart->products[$proIdToUpdate]['nonchilled']['quantity']:0,
+					"quantity"=>$productInCart!==false?$productInCart['nonchilled']['quantity']:0,
 					"status"=>"nonchilled",
 				),
 				"quantity"=>0,
@@ -260,40 +316,75 @@ class CartController extends Controller
 			$updateProData['chilled']['quantity'] = (int)$inputs['quantity'];
 
 		}else{
+
 			$updateProData['nonchilled']['quantity'] = (int)$inputs['quantity'];
+
 		}
 
-		$oldQuantity = 0;
-		if(isset($cart->products[$proIdToUpdate])){
-			$oldQuantity = $cart->products[$proIdToUpdate]['quantity'];
-		}
+		$oldQuantity = $productInCart!==false?(int)$productInCart['quantity']:0;
 
-		$cart->products = array_merge($cart->products,array($proIdToUpdate=>$updateProData));
-
+		$cart->products = array_merge($cart->products,[$proIdToUpdate=>$updateProData]);
 
 		// Code to update total quantity
 		$updateProData = $cart->products[$proIdToUpdate];
 
-		$quantity = isset($cart->products[$proIdToUpdate]['chilled'])?$cart->products[$proIdToUpdate]['chilled']['quantity']:0;
-		$quantity+= isset($cart->products[$proIdToUpdate]['nonchilled'])?$cart->products[$proIdToUpdate]['nonchilled']['quantity']:0;
-
-		$updateProData['quantity'] = $quantity;
-
-		$product['change'] = $quantity - $oldQuantity;//Track change in quantity
+		$updateProData['quantity'] = (int)$updateProData['chilled']['quantity'] + (int)$updateProData['nonchilled']['quantity'];
+		
+		$product['change'] = $updateProData['quantity'] - $oldQuantity;//Track change in quantity
 
 		// Condition to check quantity is not more than available quantity
-		if($product['quantity']==0 && $product['outOfStockType']==2){
-			$product['quantity'] = $product['maxQuantity'];
-		}
+		// if($product['quantity']==0 && $product['outOfStockType']==2){
 
-		if((int)$quantity>(int)$product['quantity']){
-			return response(array("success"=>false,"errorCode"=>"100","message"=>"Product quantity is not available","data"=>$product));
-		}
+		// 	$product['quantity'] = $product['maxQuantity'];
 
+		// }
+
+
+		if($updateProData['quantity']>(int)$updateProData['maxQuantity']){
+
+			// Handel if product quantity is greater than available quantity
+			$response['code'] = 100;
+			$response['message'] = "Requested quantity is not available, max available is added to cart";
+
+			$extraQuantity = $updateProData['quantity'] - $updateProData['maxQuantity'];
+			$product['change'] = $updateProData['maxQuantity'] - $oldQuantity;
+			
+			if($extraQuantity>0){
+
+				if($extraQuantity > $updateProData['chilled']['quantity']){
+
+					$extraQuantity-= $updateProData['chilled']['quantity'];
+					$updateProData['chilled']['quantity'] = 0;
+
+				}else{
+					
+
+					$updateProData['chilled']['quantity']-=$extraQuantity;
+					$extraQuantity = 0;
+
+				}
+
+				if($extraQuantity > $updateProData['nonchilled']['quantity']){
+
+					$extraQuantity-= $updateProData['nonchilled']['quantity'];
+					$updateProData['nonchilled']['quantity'] = 0;
+
+				}else{
+
+					$updateProData['nonchilled']['quantity']-=$extraQuantity;
+					$extraQuantity = 0;
+
+				}
+			}
+
+			$updateProData['quantity'] = (int)$updateProData['chilled']['quantity'] + (int)$updateProData['nonchilled']['quantity'];
+			
+			
+		}
 
 		try {
 
-			if($quantity>0){
+			if($updateProData['quantity']>0){
 
 				$cart->products = array_merge($cart->products,array($proIdToUpdate=>$updateProData));
 				$cart->save();
@@ -305,17 +396,20 @@ class CartController extends Controller
 			}
 
 			$updateProData['product'] = $product;
+			$response['success'] = true;
+			$response['message'] = "cart updated successfully";
+			$response['product'] = $updateProData;
 
-			return response(array("success"=>true,"message"=>"cart updated successfully","product"=>$updateProData));
+			return response($response);
 
 		} catch(\Exception $e){
 
-			return response(array("success"=>false,"message"=>"Something went worng"));
-			return response(array("success"=>false,"message"=>$e->getMessage()));
+			return response(["success"=>false,"message"=>"Something went worng"]);
+			return response(["success"=>false,"message"=>$e->getMessage()]);
 
 		}
 
-		return response(array("success"=>false,"message"=>"Something went worng"));
+		return response(["success"=>false,"message"=>"Something went worng"]);
 
 
 	}
@@ -730,7 +824,6 @@ jprd($product);
 
 		$products[$proId]['quantity'] = (int)$products[$proId]['chilled'] + (int)$products[$proId]['nonchilled'];
 
-
 			try {
 
 				if($products[$proId]['quantity']>0){
@@ -844,6 +937,17 @@ jprd($product);
 			$order = Orders::create($cartArr);
 
 			$cart->delete();
+			
+			$reference = "ADSG";
+
+			$reference.= ((int)date("ymd",strtotime($order->created_at)) - 123456);			
+			$reference.="O";			
+			$reference.= (string)date("Hi",strtotime($order->created_at));
+
+			$order->reference = $reference;
+
+			$order->save();
+
 
 			$request->session()->forget('deliverykey');
 

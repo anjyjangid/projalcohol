@@ -333,9 +333,8 @@ li.subactive a, li.subactive a span {
 
 
 .desired-quantity-na-toast .-icon {
-	width: 32px;
-	float: left;
-	margin: 0 6px 0px 0;
+	font-size: 30px;
+	margin-right: 10px;
 }
 .desired-quantity-na-toast .-text {
 	color: #fff;
@@ -441,4 +440,15 @@ md-toast.desired-quantity-na-toast:before {
 	border-top: 1px dashed;
 	padding: 10px;
 	border-bottom: 1px dashed;
+}
+  
+.scale {
+	background: #aa00ff;
+	position: absolute;
+	left: 0;
+	right: 0;
+	width: 0%;
+	height: 10px;
+	transition-duration: 2s;
+	border-radius: 50px;
 }

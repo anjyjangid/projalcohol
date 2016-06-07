@@ -51,6 +51,8 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 	this.addItem = function (id, quantity, serveAs) {
 
+		var defer = $q.defer();
+
 		var inCart = this.getProductById(id);
 		var _self = this;
 		var deliveryKey = _self.getCartKey();
@@ -64,49 +66,52 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 		}).error(function(data, status, headers) {
 
+			defer.reject(data);
+
 		}).success(function(response) {
 
-			if(!response.success){
-				
-				switch(response.errorCode){
-					case "100":
-						//$cart.product.quantitycustom = response.data.quantity;
-					break;
-				}
+			if(response.success){
 
-			}else{					
+				var resProduct = response.product;
 
-				if(inCart){
-					if(response.product.quantity==0){
+				if(inCart){				
+
+					if(resProduct.quantity==0){
 
 						_self.removeItemById(id);
 
-					}else{						
+					}else{
 
-						inCart.setRQuantity(response.product.chilled.quantity,response.product.nonchilled.quantity);			
-						inCart.setTQuantity(response.product.quantity);							
-						inCart.setPrice(response.product);
+						inCart.setRQuantity(resProduct.chilled.quantity,resProduct.nonchilled.quantity);
+						inCart.setTQuantity(resProduct.quantity);
+						inCart.setPrice(resProduct);
 
-						inCart.setRMaxQuantity(response.product);
+						inCart.setRMaxQuantity(resProduct);
 
-					}
+					}									
+
+				}else{				
 					
-					//$rootScope.$broadcast('alcoholCart:itemAdded', response.data);
-
-				}else{
-
-					//$rootScope.$broadcast('alcoholCart:itemAdded', response.data);
-					
-		    		var newItem = new alcoholCartItem(id, response.product);
+		    		var newItem = new alcoholCartItem(id, resProduct);
 					_self.$cart.products[id] = newItem;
-					//$rootScope.$broadcast('alcoholCart:itemAdded', newItem);
-
+					
 				}
 
-				$rootScope.$broadcast('alcoholCart:change', {});
+				if(resProduct.product.change!==0){
+					if(resProduct.product.change>0){
+						$rootScope.$broadcast('alcoholCart:updated',{msg:"Items added to cart",quantity:Math.abs(resProduct.product.change)});
+					}else{
+						$rootScope.$broadcast('alcoholCart:updated',{msg:"Items removed from cart",quantity:Math.abs(resProduct.product.change)});
+					}
+				}
 
 			}
+
+			defer.resolve(response);
+
 		});
+
+		return defer.promise
 	};
 
 	this.addPackage = function (id,detail) {
@@ -167,8 +172,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 					//$rootScope.$broadcast('alcoholCart:itemAdded', newItem);
 
 				}
-
-				$rootScope.$broadcast('alcoholCart:change', {});
+				
 
 				d.resolve(response);
 
@@ -179,7 +183,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 	};
 
-	this.addPromo = function(promoId,id){
+	this.addPromo = function(promoId,productId){
 
 		var _self = this;
 
@@ -189,7 +193,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 		$http.put("/cart/promotion/"+deliveryKey, {
 				"promoId":promoId,
-				"id":id,
+				"id":productId,
 			},{
 
 		}).error(function(data, status, headers) {
@@ -207,12 +211,32 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 				d.reject('oh no an error! try again');
 
-			}else{
-			
-				// var inCart = _self.getPackageByUniqueId(id);
+			}else{							
+				
+				var isExist = promotionsService.isExist(promoId,productId);
 
-				// var newPackage = new alcoholCartPackage(id, response.key, detail);
-				//  _self.$cart.packages.push(newPackage);
+				if(isExist===false){
+					
+					d.reject(data);
+
+				}else{
+
+					var cart = _self.getCart();
+					angular.forEach(cart.promotions, function (promotion, index) {
+
+						if(promotion._id===promoId)
+						var locPromotion = cart.promotions.splice(index, 1)[0] || {};						
+
+					});
+
+					var oPromotion = new alcoholCartPromotion(isExist.promotion,isExist.product);
+					_self.$cart.promotions.push(oPromotion);
+
+					_self.setPromotionsInCart();
+
+					$rootScope.$broadcast('alcoholCart:promotionAdded', "Promotion added to cart");
+
+				}							
 
 				d.resolve(response);
 
@@ -223,6 +247,34 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 	};
 
+	this.setPromotionsInCart = function(){
+
+		_oCart = this;
+		angular.forEach(promotionsService.$promotions,function(promotion){
+
+			if(_oCart.getPromotionById(promotion._id)!==false ){
+				promotion.inCart = true;
+			}else{
+				promotion.inCart = false;
+			}
+		
+		});	
+
+	}
+
+		this.getPromotionById = function(promoId){
+
+			var promotions = this.getCart().promotions;
+			var build = false;
+			
+			angular.forEach(promotions, function (promotion) {
+				if  (promotion._id === promoId) {
+					build = promotion;
+				}
+			});
+			return build;
+		}
+
 		this.getProductById = function (productId){
 
 			var products = this.getCart().products;
@@ -231,11 +283,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			if(typeof products[productId] !== 'undefined'){
 				build = products[productId];
 			}
-			// angular.forEach(items, function (item) {
-			// 	if  (item.getId() === itemId) {
-			// 		build = item;
-			// 	}
-			// });
+			
 			return build;
 		};
 
@@ -369,7 +417,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		};
 
 		this.getTotalUniqueItems = function () {
-			
+
 			var count = Object.keys(this.getCart().products).length;
 
 			count+= this.getCart().packages.length;
@@ -380,15 +428,23 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		this.setSubTotal =function(){
 			
 			var total = 0;
-			angular.forEach(this.getCart().products, function (product) {
+			var cart = this.getCart();
+
+			angular.forEach(cart.products, function (product) {
 				total += parseFloat(product.getTotal());
 			});
 
-			angular.forEach(this.getCart().packages, function (package) {
+			angular.forEach(cart.packages, function (package) {
 				total += parseFloat(package.getTotal());
-			});
+			});		
 
 			promotionsService.setEligibility(total);
+			
+			this.removeNonEligiblePromotions(total);
+
+			angular.forEach(cart.promotions, function (promotion) {
+				total += parseFloat(promotion.getPrice());
+			});
 
 			return +parseFloat(total).toFixed(2);
 
@@ -459,8 +515,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 		this.removeItem = function (index) {
 			var item = this.$cart.items.splice(index, 1)[0] || {};
-			$rootScope.$broadcast('alcoholCart:itemRemoved', item);
-			$rootScope.$broadcast('alcoholCart:change', {});
+			$rootScope.$broadcast('alcoholCart:itemRemoved', item);			
 
 		};
 
@@ -478,7 +533,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			});
 			//this.setCart(cart);
 			$rootScope.$broadcast('alcoholCart:itemRemoved', item);
-			$rootScope.$broadcast('alcoholCart:change', {});
+			
 		};
 
 
@@ -496,14 +551,14 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			});
 			
 			$rootScope.$broadcast('alcoholCart:itemRemoved', locPackage);
-			$rootScope.$broadcast('alcoholCart:change', {});
+			
 		};
 
 		this.removePromotion = function (id) {
 
 			var locPromotion;
 			var cart = this.getCart();
-
+			var _self = this;
 			var d = $q.defer();
 
 			angular.forEach(cart.promotions, function (promotion, index) {
@@ -516,28 +571,52 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 							
 							var locPromotion = cart.promotions.splice(index, 1)[0] || {};
 
-							$rootScope.$broadcast('alcoholCart:promotionRemoved', locPromotion);
-							$rootScope.$broadcast('alcoholCart:change', {});
+							$rootScope.$broadcast('alcoholCart:promotionRemoved', "Promotion removed from cart");
+
+							_self.setPromotionsInCart();
+
 							d.resolve(successRes);
 
 						},
 						function(errorRes){
 
-							$rootScope.$broadcast('alcoholCart:promotionRemoved', "locPromotion");
 							d.reject(errorRes);
-							
 
 						}
 
 					);
-							   
-				}	
+
+				}
 			});
 			
 			return d.promise;
 
 		};
 		
+		this.removeNonEligiblePromotions = function(subTotal){
+
+			var promotions = this.getCart().promotions;
+
+			angular.forEach(promotions, function (promotion,key) {
+
+				var isEligible = promotionsService.isEligible(promotion._id,subTotal);
+
+				if(isEligible===false){
+
+					var toast = $mdToast.simple()
+						.textContent("Promotion Product removed from your cart due to non eligilibility")
+						.highlightAction(false)
+						.position("top right");
+					$mdToast.show(toast);
+
+					promotions.splice(key, 1)[0] || {};
+
+				}
+				
+			});
+
+		}
+
 		this.setSmokeStatus = function(status){
 
 			var status = Boolean(status);
@@ -577,7 +656,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 					
 					.highlightAction(false)
 					.position("top right fixed smokedetail")
-					.hideDelay(1000);
+					.hideDelay(2000);
 
 				$mdToast.show(toast);
 
@@ -598,8 +677,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		}
 
 		this.empty = function () {
-			
-			$rootScope.$broadcast('alcoholCart:change', {});
+
 			this.$cart.products = {};
 			$window.localStorage.removeItem('deliverykey');
 		};
@@ -841,7 +919,8 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 				
 			});
 
-			
+			_self.setPromotionsInCart();
+
 		};
 
 		this.deployCart = function(){
@@ -991,7 +1070,7 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 		};
 
 		item.prototype.getPrice = function(){
-			return this.price;
+			return parseFloat(this.price);
 		};
 
 		item.prototype.setRQuantity = function(cQuantity,ncQuantity){
@@ -1165,7 +1244,7 @@ AlcoholDelivery.factory('alcoholCartPackage', ['$rootScope', '$log', function ($
 		};
 
 		package.prototype.getPrice = function(){
-			return this._price;
+			return parseFloat(this._price);
 		};
 
 		package.prototype.getTotal = function(){
@@ -1215,11 +1294,15 @@ AlcoholDelivery.factory('alcoholCartPromotion',['$log','$filter',function($log,$
 			this.product._price = parseFloat(product.promo.price);
 		}
 	}
+
+	oPromotion.prototype.getPrice = function(){
+		return parseFloat(this.product._price);
+	}
 	
 	return oPromotion;
 }]);
 
-AlcoholDelivery.service('store', ['$window','$http','alcoholCart','promotionsService','$q', function ($window,$http,alcoholCart,promotionsService,$q) {
+AlcoholDelivery.service('store', ['$rootScope','$window','$http','alcoholCart','promotionsService','$q', function ($rootScope,$window,$http,alcoholCart,promotionsService,$q) {
 
 		return {
 
@@ -1260,7 +1343,16 @@ AlcoholDelivery.service('store', ['$window','$http','alcoholCart','promotionsSer
 
 				return d.promise;
 
-			},		
+			},
+
+			orderPlaced : function(){
+
+				delete $rootScope.deliverykey
+				localStorage.removeItem("deliverykey");
+
+				this.init();
+
+			},
 
 			set: function (val,fnCallBack) {
 
@@ -1297,8 +1389,7 @@ AlcoholDelivery.service("promotionsService",["$http","$log","$q",function($http,
 		$http.get("super/promotions").then(
 
 			function(succRes){
-
-				$log.log("Value assigned to promotions");
+				
 				_self.$promotions = succRes.data;
 
 				defer.resolve(this.$promotions);
@@ -1366,6 +1457,8 @@ AlcoholDelivery.service("promotionsService",["$http","$log","$q",function($http,
 
 		var subTotal = parseFloat(subTotal);
 		
+		var nearest = true;
+		
 		angular.forEach(this.$promotions,function(promotion){
 
 			promotion.eligible = {
@@ -1373,9 +1466,7 @@ AlcoholDelivery.service("promotionsService",["$http","$log","$q",function($http,
 				already :false,
 				required : 0,
 
-			};
-
-			var nearest = true;
+			};		
 
 			var promoPrice = parseFloat(promotion.price);
 
@@ -1387,7 +1478,7 @@ AlcoholDelivery.service("promotionsService",["$http","$log","$q",function($http,
 			}else{
 
 				promotion.eligible.nearest = nearest;
-				promotion.eligible.required = promoPrice - subTotal;
+				promotion.eligible.required = parseFloat(promoPrice - subTotal).toFixed(2);
 				nearest = false;
 				
 			}

@@ -31,7 +31,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			user:'='
 		},*/
 		templateUrl: '/templates/partials/topmenu.html',
-		controller: function($scope,$rootScope,$http,$state,sweetAlert,$facebook,store){
+		controller: function($scope,$rootScope,$http,$state,sweetAlert,$facebook,store,alcoholWishlist){
 
 			$scope.list = [];
 
@@ -76,23 +76,15 @@ AlcoholDelivery.directive('sideBar', function() {
 	                $('#login').modal('hide');
 	                $scope.errors = {};
 
-	                store.init();
-	     //            var deliverykey = localStorage.getItem("deliverykey");
+	                store.init().then(
+	                	function(successRes){
+	                		$state.go($state.current, {}, {reload: true});
+	                	},
+	                	function(errorRes){}
+	                );
+	                alcoholWishlist.init();
 
-	     //            if(deliverykey!==null && typeof deliverykey!=="undefined"){
-
-						// $http.put('cart/merge/'+deliverykey).success(function(response){
-
-						// 	$state.go($state.current, {}, {reload: true});
-
-						// }).error(function(data, status, headers) {
-
-			   //              $scope.errors = data;
-
-			   //          });
-
-	     //        	}
-
+	                
 
 				}).error(function(data, status, headers) {
 
@@ -171,12 +163,18 @@ AlcoholDelivery.directive('sideBar', function() {
 
 	                // Destroy Cart Params start
 	                delete $rootScope.deliverykey;
+
 	                localStorage.removeItem("deliverykey");
-	                store.init();
-	                // Destroy Cart Params end
-
-
-	                $state.go("mainLayout.index", {}, {reload: true});
+	                
+	                store.init().then(
+	                	function(successRes){
+	                		$state.go("mainLayout.index", {}, {reload: true});
+	                	},
+	                	function(errorRes){}
+	                );
+	                alcoholWishlist.init();
+	                
+	                
 
 	            }).error(function(data, status, headers) {
 	                $scope.user = {};
@@ -475,7 +473,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		templateUrl: '/templates/product/product_tpl.html',
 
 		controller: ['$rootScope','$scope','sweetAlert','alcoholCart','alcoholWishlist','promotionsService',"$mdToast",function($rootScope,$scope,sweetAlert,alcoholCart,alcoholWishlist,promotionsService,$mdToast){
-
+			
 			$scope.settings = $rootScope.settings;
 
 			$scope.alcoholCart = alcoholCart;
@@ -504,14 +502,13 @@ AlcoholDelivery.directive('sideBar', function() {
 
 						}
 
-
 					}, function(error) {
 
 						var toast = $mdToast.simple()
 							.textContent(error.message)
 							.action('OK')
 							.highlightAction(false)
-							.position("top right");
+							.position("top right fixed");
 
 						$mdToast.show(toast).then(function(response) {
 							if ( response == 'ok' ) {
@@ -526,9 +523,13 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.setPrices = function(localpro){
 
 				if(typeof localpro.categories === "undefined"){return true;}
+			
 
-				var catIdIndex = localpro.categories.length - 1;
-				var catPriceObj = $rootScope.catPricing[localpro.categories[catIdIndex]];
+				var catIdIndex = localpro.categories.length - 1;			
+
+				var catPriceObj = angular.copy($rootScope.catPricing[localpro.categories[catIdIndex]]);
+				delete catPriceObj._id;
+				
 				if(typeof catPriceObj === "undefined"){
 
 					console.log("Something wrong with this product : "+localpro._id);
@@ -536,7 +537,10 @@ AlcoholDelivery.directive('sideBar', function() {
 					return localpro;
 				}
 
-				localpro = $.extend(catPriceObj, localpro);
+				var dst = {};
+				angular.extend(dst,catPriceObj,localpro);
+				angular.extend(localpro,dst);
+
 				localpro.price = parseFloat(localpro.price);
 
 				var orderValue = localpro.regular_express_delivery;
@@ -560,12 +564,13 @@ AlcoholDelivery.directive('sideBar', function() {
 				}
 
 				localpro.price = localpro.price.toFixed(2);
-
+				
 				return localpro;
 
 			}
 
-			angular.extend($scope.productInfo, $scope.setPrices($scope.productInfo));
+			$scope.setPrices($scope.productInfo);
+			
 
 		}]
 	}
@@ -604,7 +609,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			if($scope.product.quantity==0 && $scope.product.outOfStockType==2){
 
-				$scope.maxQuantity = $scope.product.maxQuantity;
+				$scope.maxQuantity = $scope.product.maxQuantity; //if product is out of stock then its max quantity is available for future order.
 
 			}else{
 
@@ -653,13 +658,81 @@ AlcoholDelivery.directive('sideBar', function() {
 
 				$scope.proUpdateTimeOut = $timeout(function(){
 
-					if($scope.product.servechilled){
-						alcoholCart.addItem($scope.product._id,$scope.product.qChilled,$scope.product.servechilled);
-					}else{
-						alcoholCart.addItem($scope.product._id,$scope.product.qNChilled,$scope.product.servechilled);
-					}
+					var quantity = $scope.product.servechilled?$scope.product.qChilled:$scope.product.qNChilled;
+					
+					alcoholCart.addItem($scope.product._id,quantity,$scope.product.servechilled).then(
 
+						function(successRes){
 
+							if(successRes.success){							
+
+								switch(successRes.code){
+									case 100:
+
+										$scope.product.qNChilled = successRes.product.nonchilled.quantity;
+										$scope.product.qChilled = successRes.product.chilled.quantity;
+										$scope.maxQuantity = successRes.product.maxQuantity;
+										$scope.product.quantity = successRes.product.product.quantity;
+
+										$scope.product.chilledMaxQuantity = $scope.maxQuantity - $scope.product.qNChilled;
+										$scope.product.nonChilledMaxQuantity = $scope.maxQuantity - $scope.product.qChilled;
+										$scope.tquantity = parseInt($scope.product.qNChilled)+parseInt($scope.product.qChilled);
+
+										$timeout(function(){
+										$mdToast.show({
+											controller:function($scope){
+
+												$scope.qChilled = 0;
+												$scope.qNchilled = 0;
+
+												$scope.closeToast = function(){
+													$mdToast.hide();
+												}
+											},											
+											templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+											parent : $element,											
+											position: 'top center',
+											hideDelay:10000
+										});
+										},1000);
+
+									break;
+									case 101:
+										
+										$scope.product.outOfStockType = successRes.product.product.outOfStockType;
+										$scope.product.quantity = successRes.product.product.quantity;
+
+										$timeout(function(){
+										$mdToast.show({
+											controller:function($scope){
+
+												$scope.qChilled = 0;
+												$scope.qNchilled = 0;
+
+												$scope.closeToast = function(){
+													$mdToast.hide();
+												}
+											},											
+											templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+											parent : $element,											
+											position: 'top center',
+											hideDelay:10000
+										});
+										},1000);
+
+									break;
+
+								}
+								
+							}
+
+						},
+						function(errorRes){
+
+						}
+
+					);
+					
 					if($scope.product.quantitycustom==0){
 						$scope.isInCart = false;
 						$scope.addMoreCustom = false;
@@ -679,7 +752,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.activeAddToCart = function() {
 
-				if($scope.tquantity+1 > $scope.maxQuantity){
+				if($scope.maxQuantity < $scope.tquantity){
 
 					var ele = $scope.element;
 					var qChilled = $scope.product.qChilled;

@@ -307,10 +307,18 @@ Route::group(['prefix' => 'admintetet','middleware' => 'admin'], function () {
 /*PRODUCT IMAGE ROUTUING*/
 Route::get('products/i/{folder}/{filename}', function ($folder,$filename)
 {
+	if(!file_exists(storage_path('products/') .$folder. '/' . $filename)){
+		$filename = "product-default.jpg";
+	}
+    
     return Image::make(storage_path('products/') .$folder. '/' . $filename)->response();
+
 });
 Route::get('products/i/{filename}', function ($filename)
 {
+	if(!file_exists(storage_path('products') . '/' . $filename)){
+		$filename = "product-default.jpg";
+	}
     return Image::make(storage_path('products') . '/' . $filename)->response();
 });
 /*PRODUCT IMAGE ROUTUING*/

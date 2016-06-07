@@ -159,11 +159,13 @@ class PromotionController extends Controller
 								];
 		}
 
+		$promotion->title = $inputs['title'];
 		$promotion->status = (int)$inputs['status'];
 		$promotion->count = count($inputs['items']);
 		$promotion->items = $inputs['items'];
 		$promotion->products = $inputs['products'];
-		
+		$promotion->price = (int)$inputs['price'];
+
 		try {
 
 			$promotion->save();

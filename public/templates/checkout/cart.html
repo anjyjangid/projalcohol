@@ -4,7 +4,7 @@
 	<md-switch aria-label="cart.nonchilled" ng-model="cart.nonchilled" ng-change="alcoholCart.setCartChilled(cart.nonchilled)"></md-switch>
 
 </div>
-<div class="checkbox-gray-toptext">SAVE {{services.chilled | currency:settings.general.currency:2}} by choosing to have your drinks delivered Non-Chilled.</div>
+<div class="checkbox-gray-toptext">SAVE {{services.chilled | pricingTxt}} by choosing to have your drinks delivered Non-Chilled.</div>
 </div>
 <div class="checkoutmiddletable">
 
@@ -25,7 +25,7 @@
 					<div class="checkouter-td-right-text">
 						<div class="orhistry2_td2proctext1">{{cartproduct.product.name}}</div>
 						<div class="orhistry2_td2proctext2">{{cartproduct.product.shortDescription}}</div>
-						<div class="orhistry2_td2proctext1">{{settings.general.currency}} {{cartproduct.unitPrice}}</div>
+						<div class="orhistry2_td2proctext1">{{cartproduct.unitPrice | pricingTxt}}</div>
 						<div class="orhistry2_td2proctext2">unit Price</div>
 				 	</div> 
 
@@ -33,6 +33,7 @@
 
 			</td>
 			<td width="131px">
+			
 				<div class="prod_chilled" ng-class="{
 														notchilled:!cartproduct[type+'Status'],
 														invisible:!cartproduct.product.chilled || cart.nonchilled,
@@ -47,15 +48,15 @@
 			<td>
 				<div class="checkoutmiddlevlauediv">
 				
-					<input type="text" ng-model="cartproduct[type]" value="cartproduct[type]" min="0" mquantity="cartproduct[type+'Max']" ng-touch-spin on-increment="addtocart(cartproduct.product._id,type)" on-decrement="addtocart(cartproduct.product._id,type)">
+					<input type="text" ng-model="cartproduct[type]" value="cartproduct[type]" min="1" mquantity="cartproduct[type+'Max']" ng-touch-spin on-increment="addtocart(cartproduct.product._id,type)" on-decrement="addtocart(cartproduct.product._id,type)">
 					
 				</div>
 			</td>
 			<td>
-				<div class="orderhistry2price">{{cartproduct.discountedUnitPrice * cartproduct[type] | currency:settings.general.currency:2}}</div>
+				<div class="orderhistry2price">{{cartproduct.discountedUnitPrice * cartproduct[type] | pricingTxt}}</div>
 			</td>
 			<td> 
-				<a class="checkoutmiddletabledeleteimg" ng-click="remove(key,type)"><i class="glyphicon glyphicon-trash"></i></a>
+				<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="remove(key,type)"><i class="glyphicon glyphicon-trash"></i></a>
 			</td>
 		</tr>
 		<tr ng-repeat-end></tr>
@@ -71,7 +72,7 @@
 					<div class="checkouter-td-right-text">
 						<div class="orhistry2_td2proctext1">{{package._name}}</div>
 						<div class="orhistry2_td2proctext2">{{package.original.description}}</div>
-						<div class="orhistry2_td2proctext1">{{settings.general.currency}} {{package.original.packagePrice}}</div>
+						<div class="orhistry2_td2proctext1">{{package.original.packagePrice | pricingTxt}}</div>
 						<div class="orhistry2_td2proctext2">unit Price</div>
 				 	</div> 
 				</div>
@@ -82,15 +83,15 @@
 
 				<div class="checkoutmiddlevlauediv">
 
-					<input type="text" ng-model="package.original.packageQuantity" value="package._quantity" min="0" mquantity="package._maxquantity" ng-touch-spin on-increment="alcoholCart.addPackage(package._uniqueId,package.original)" on-decrement="alcoholCart.addPackage(package._uniqueId,package.original)">
+					<input type="text" ng-model="package.original.packageQuantity" value="package._quantity" min="1" mquantity="package._maxquantity" ng-touch-spin on-increment="alcoholCart.addPackage(package._uniqueId,package.original)" on-decrement="alcoholCart.addPackage(package._uniqueId,package.original)">
 					
 				</div>
 			</td>
 			<td>
-				<div class="orderhistry2price">{{package._price | currency:settings.general.currency:2}}</div>
+				<div class="orderhistry2price">{{package._price | pricingTxt}}</div>
 			</td>
 			<td> 
-				<a class="checkoutmiddletabledeleteimg" ng-click="package.original.packageQuantity=0;alcoholCart.addPackage(package._uniqueId,package.original)"><i class="glyphicon glyphicon-trash"></i></a>
+				<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="package.original.packageQuantity=0;alcoholCart.addPackage(package._uniqueId,package.original)"><i class="glyphicon glyphicon-trash"></i></a>
 			</td>
 		</tr>
 
@@ -111,11 +112,11 @@
 			<td></td>
 			<td></td>
 			<td>
-				<div class="orderhistry2price" ng-if="promotion.product._price">{{promotion.product._price | currency:settings.general.currency:2}}</div>
-				<div class="orderhistry2price" ng-if="!promotion.product._price">Free</div>
+				<div class="orderhistry2price">{{promotion.product._price | pricingTxt:true}}</div>
+				
 			</td>
 			<td> 
-				<a class="checkoutmiddletabledeleteimg" ng-click="removePromotion(promotion._id)"><i class="glyphicon glyphicon-trash"></i></a>
+				<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removePromotion(promotion._id)"><i class="glyphicon glyphicon-trash"></i></a>
 			</td>
 		</tr>
 		
@@ -126,28 +127,28 @@
 <div class="checkboxtotaldiv">
  <div class="checkboxtotaldiv-top">
 	<div class="checkboxtotaldiv-title">Subtotal</div>
-	<div class="checkboxtotaldiv-text">{{alcoholCart.getSubTotal() | currency:settings.general.currency:2}}</div>
+	<div class="checkboxtotaldiv-text">{{alcoholCart.getSubTotal() | pricingTxt}}</div>
  </div>
  <div class="checkboxtotaldiv-middle">
 	<div class="checkboxtotaldiv-middle-first">
 		<div class="checkboxtotaldiv-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
 
 		<div class="checkboxtotaldiv-text" ng-if="!cart.delivery.charges">Free</div>
-		<div class="checkboxtotaldiv-text" ng-if="cart.delivery.charges>0">{{alcoholCart.getDeliveryCharges() | currency:settings.general.currency:2 }}</div>
+		<div class="checkboxtotaldiv-text" ng-if="cart.delivery.charges>0">{{alcoholCart.getDeliveryCharges() | pricingTxt }}</div>
 		
 	</div>
 	<div class="checkboxtotaldiv-middle-first">
 	<div class="checkboxtotaldiv-title">Service Charge <span class=""><img src="images/questionimg.png"></span></div>
-	<div class="checkboxtotaldiv-text">{{alcoholCart.getAllServicesCharges() | currency:settings.general.currency:2}}</div>
+	<div class="checkboxtotaldiv-text">{{alcoholCart.getAllServicesCharges() | pricingTxt}}</div>
 	</div>
 	<div class="checkboxtotaldiv-middle-first">
 	<div class="checkboxtotaldiv-title">Discount (Non-Chilled) <span class=""><img src="images/questionimg.png"></span></div>
-	<div class="checkboxtotaldiv-text" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount() | currency:settings.general.currency:2}}</div>
+	<div class="checkboxtotaldiv-text" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount() | pricingTxt}}</div>
 	</div>
  </div>
  <div class="checkboxtotaldiv-buttom">
 	<div class="checkboxtotaldiv-title">Total</div>
-	<div class="checkboxtotaldiv-text">{{alcoholCart.getCartTotal() | currency:settings.general.currency:2}}
+	<div class="checkboxtotaldiv-text">{{alcoholCart.getCartTotal() | pricingTxt}}
 		<!-- <div class="congratulationpopup">
 			<div class="congratulationpopupimg"><img src="images/thumbimg.png"></div>
 			<div class="congratulationpopuptext">
@@ -174,7 +175,7 @@
 	 <div class="checkouterexpressdiv">
 		 <div class="checkouterexpresstitle">Express Delivery</div>
 		 <div class="checkouterexpresstext">Gauranteed 30 mins delivery.</div>
-		 <div class="checkouterexpresstext">$50 surcharge applies. <a href="">Terms &amp; Conditions</a> applies.</div>
+		 <div class="checkouterexpresstext">$50 surcharge applies. <a href="javascript:void(0)">Terms &amp; Conditions</a> applies.</div>
 	 </div>
 	</div>
 </div>

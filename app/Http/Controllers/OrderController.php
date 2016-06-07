@@ -52,7 +52,7 @@ class OrderController extends Controller
 
 		$user = Auth::user('user');
 
-		$order = Orders::where("_id",'=',$id)->where("user",'=',new MongoId($user->_id))->orderBy('created_at', 'desc')->first();
+		$order = Orders::where("_id",'=',$id)->where("user",'=',new MongoId($user->_id))->first();
 
 		$order->dop = strtotime($order->created_at);
 		
@@ -78,6 +78,7 @@ class OrderController extends Controller
 				array(
 					'$project' => array(
 						'_id'=>1,
+						'reference'=>1,
 						'service'=>1,
 						'delivery.type'=>1,
 						'nonchilled'=>1,

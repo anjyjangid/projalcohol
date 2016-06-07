@@ -13,7 +13,7 @@
 	<div class="row order">
 		<div class="col-sm-6">
 
-			<div class="-key cursor-pointer" ui-sref="accountLayout.order({orderid:order._id.$id})">Order: {{order._id.$id}}</div>
+			<div class="-key cursor-pointer" ui-sref="accountLayout.order({orderid:order._id.$id})">Order: {{order.reference}}</div>
 			<div class="-timeslot">Delivered on: {{ order.timeslot.datekey | deliveryDateSlug}} {{order.timeslot.slotslug}}</div>
 			<div class="-items">{{order.quantity}} Items</div>
 		</div>

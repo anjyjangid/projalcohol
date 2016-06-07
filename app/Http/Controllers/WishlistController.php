@@ -28,12 +28,11 @@ class WishlistController extends Controller
 		$response = ['success'=>false,"message"=>"","auth"=>false];
 
 		$loggeduser = Auth::user('user');
-		
 
 		if(!$loggeduser){
 
 			$response['message'] = "Login Required";			
-			return response($response,400);
+			return response($response,401);
 
 		}
 
