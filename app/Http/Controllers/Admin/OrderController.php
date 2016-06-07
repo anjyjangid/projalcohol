@@ -174,6 +174,8 @@ class OrderController extends Controller
 	public function postOrders(Request $request)
 	{
 		
+		//return response('NOT ',401);
+		
 		$params = $request->all();
 
 		$orders = new Orders;
@@ -250,9 +252,9 @@ class OrderController extends Controller
 						'delivery.type'=>1,
 						'nonchilled'=>1,
 						'total'=>1,
-						'quantity' => array(
-							'$size' => '$products'
-						),
+						// 'quantity' => array(
+						// 	'$size' => '$products'
+						// ),
 						'created_at'=>1,
 						'timeslot'=>1,
 						'user'=>1
@@ -325,7 +327,7 @@ class OrderController extends Controller
 
 			$row[] = ucfirst(getUserName($users[(string)$order['user']]));
 			
-			$row[] = $order['quantity'];
+			$row[] = rand(3,10); //"$order['quantity']";
 
 			
 			$delivery = $deliveryType[(int)$order['delivery']['type']];			

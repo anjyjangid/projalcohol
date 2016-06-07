@@ -107,7 +107,14 @@ class Email extends Moloquent
 				$this->recipient_info["receiver"]['email'] = $data['email'];
 				$this->recipient_info["receiver"]['name'] = $data['email'];
 
-				$this->recipient_info["replace"]["{reset_link}"] =url()."/reset/".$data['email_key'];
+				if(isset($data['isAdmin'])){
+					$this->recipient_info["replace"]["{reset_link}"] =url()."/admin/#/reset/".$data['email_key'];
+				}else{
+					$this->recipient_info["replace"]["{reset_link}"] =url()."/reset/".$data['email_key'];	
+				}
+
+				
+				
 				$this->recipient_info["replace"]["{user_name}"] = $data['email'];
 
 				$this->recipient_info["message"] = str_ireplace(array_keys($this->recipient_info["replace"]),array_values($this->recipient_info["replace"]),$this->recipient_info["message"]);
@@ -179,8 +186,9 @@ class Email extends Moloquent
 								
 				$this->recipient_info["receiver"]['email'] = $data['email'];			
 
-				$this->recipient_info["replace"]["{invitation_link}"] = url()."/acceptinvitation/".$data['id'];
-				$this->recipient_info["replace"]["{user_name}"] = $data['username'];				
+				$this->recipient_info["replace"]["{invitation_link}"] = url()."/#/acceptinvitation/".$data['id'];
+				$this->recipient_info["replace"]["{sender_name}"] = $data['sender_name'];				
+				$this->recipient_info["replace"]["{user_name}"] = $data['email'];				
 
 				$this->recipient_info["message"] = str_ireplace(array_keys($this->recipient_info["replace"]),array_values($this->recipient_info["replace"]),$this->recipient_info["message"]);
 				
@@ -192,8 +200,18 @@ class Email extends Moloquent
 		}
 
 		try {			
+				
+				/*LAYOUT BASED MAIL*/
+
+				$data = ['content' => $this->recipient_info['message']];
+
+				Mail::send('emails.mail', $data, function ($message) {
+				    $message->setTo(array($this->recipient_info["receiver"]['email']=>$this->recipient_info["receiver"]['name']));
+				    $message->setSubject($this->recipient_info['subject']);
+				});
+
 				// Backup your default mailer
-				$backup = Mail::getSwiftMailer();
+				/*$backup = Mail::getSwiftMailer();
 
 				// Setup your gmail mailer
 				$transport = SmtpTransport::newInstance('aspmx.l.google.com', 25, 'tls');
@@ -213,15 +231,15 @@ class Email extends Moloquent
 				$mailer->send($message);		       
 
 				// Restore your original mailer
-				Mail::setSwiftMailer($backup);
+				Mail::setSwiftMailer($backup);*/
 			
 		} catch(\Exception $e){
 
-            return response(array("success"=>false,"message"=>$e->getMessage()));
+            return false;//response(array("success"=>false,"message"=>$e->getMessage()));
 				
 		}										
 
-		return response(array("error"=>false , "success"=>true , "message"=>" Mail Successfully Sent"));	
+		return true;//response(array("error"=>false , "success"=>true , "message"=>" Mail Successfully Sent"));	
 
 	 }	 	 
 					

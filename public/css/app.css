@@ -178,6 +178,9 @@
 }
 
 /* ANIMATE */
+.open > .dropdown-menu{
+  /*display: none;*/
+}
 
 .isloading{  
   background: url('../img/loading.gif');

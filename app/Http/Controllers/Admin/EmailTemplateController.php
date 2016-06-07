@@ -118,7 +118,7 @@ class EmailTemplateController extends Controller
         //
     }
 
-    public function smplate($templateId){
+    public function getTemplate($templateId){
 
         $templateObj = new EmailTemplate;
 

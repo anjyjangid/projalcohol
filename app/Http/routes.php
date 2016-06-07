@@ -9,9 +9,17 @@
 | and give it the controller to call when that URI is requested.
 |
  */
+
+/*TO VIEW MAIL TEMPLATE*/
+/*Route::get('/mymail', function () {
+    return view('emails.mail',['content'=>'<b>HELLO</b>']);
+});*/
+
 Route::group(['prefix' => 'adminapi'], function () {
 
 	Route::controller('auth', 'Auth\AdminAuthController');
+
+	Route::controller('password', 'Auth\AdminPasswordController');
 
 });
 
@@ -57,6 +65,9 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 
 	Route::resource('promotion', 'Admin\PromotionController',['only'=>['update','store','show']]);
 	Route::controller('promotion', 'Admin\PromotionController');
+
+	Route::resource('holiday', 'Admin\HolidayController',['only'=>['update','store','destroy']]);
+	Route::controller('holiday', 'Admin\HolidayController');
 
 });
 
