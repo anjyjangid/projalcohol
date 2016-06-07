@@ -43,7 +43,7 @@
 					<span>Chilled</span>
 					<div class="prod_chilled_icon"></div>
 				</div>
-					
+				
 			</td>
 			<td>
 				<div class="checkoutmiddlevlauediv">
@@ -91,7 +91,7 @@
 				<div class="orderhistry2price">{{package._price | pricingTxt}}</div>
 			</td>
 			<td> 
-				<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="package.original.packageQuantity=0;alcoholCart.addPackage(package._uniqueId,package.original)"><i class="glyphicon glyphicon-trash"></i></a>
+				<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="package.original.packageQuantity=0;alcoholCart.removePackage(package._uniqueId,true)"><i class="glyphicon glyphicon-trash"></i></a>
 			</td>
 		</tr>
 

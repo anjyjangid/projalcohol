@@ -411,7 +411,6 @@ class CartController extends Controller
 
 		return response(["success"=>false,"message"=>"Something went worng"]);
 
-
 	}
 
 	public function createpackage(Request $request, $cartKey){
@@ -958,7 +957,6 @@ jprd($product);
 			return response(array("success"=>false,"message"=>$e->getMessage()));
 
 		}
-
     }
 
     public function deploycart(Request $request,$cartKey){
@@ -1008,6 +1006,14 @@ jprd($product);
 		}
 
 		return response(array("success"=>false,"message"=>"Something went worng"));
+
+    }
+
+    public function freezcart($id){
+
+    	$deliverykey = $request->session()->get('deliverykey');
+
+    	prd($deliverykey);
 
     }
 

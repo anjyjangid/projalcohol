@@ -145,34 +145,22 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 			}else{
 				
-				var inCart = _self.getPackageByUniqueId(id);
+				var inCart = _self.getPackageByUniqueId(response.key);
 
 				if(inCart){
 
-					if(detail.packageQuantity==0){
-
-						_self.removePackage(response.key);
-
-					}else{	
-
-						inCart.setQuantity(detail.packageQuantity);
-						inCart.setPrice(detail.packagePrice);
-
-					}
-					
-					//$rootScope.$broadcast('alcoholCart:itemAdded', response.data);
-
-				}else{
-
-					//$rootScope.$broadcast('alcoholCart:itemAdded', response.data);
-					
-		    		var newPackage = new alcoholCartPackage(id, response.key, detail);
-		    		_self.$cart.packages.push(newPackage);
-					
-					//$rootScope.$broadcast('alcoholCart:itemAdded', newItem);
+					_self.removePackage(response.key);
 
 				}
-				
+
+				var newPackage = new alcoholCartPackage(id, response.key, detail);
+		    	_self.$cart.packages.push(newPackage);
+
+		    	if(inCart){
+		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Promotion updated"});
+		    	}else{
+		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Promotion added to cart"});
+		    	}
 
 				d.resolve(response);
 
@@ -537,10 +525,11 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		};
 
 
-		this.removePackage = function (id) {
+		this.removePackage = function (id,fromServerSide) {
 
 			var locPackage;
 			var cart = this.getCart();
+			
 			angular.forEach(cart.packages, function (package, index) {
 
 				if(package.getUniqueId() === id) {
