@@ -1825,7 +1825,9 @@ AlcoholDelivery.controller('CartDeliveryController',['$scope','$rootScope','$sta
 
 				$scope.$watch('myDate',
 						function(newValue, oldValue) {
+
 							$scope.dateChangeAction();
+
 						}
 					);
 
@@ -1927,9 +1929,9 @@ AlcoholDelivery.controller('CartDeliveryController',['$scope','$rootScope','$sta
 				};
 
 
-				$scope.setSlot = function(status,dateKey,slotKey){
+				$scope.setSlot = function(dateKey,slotKey){				
 
-					if(status==0){
+					if(!$scope.isSlotAvailable(dateKey,slotKey)){						
 						return false;
 					}
 
@@ -1955,6 +1957,31 @@ AlcoholDelivery.controller('CartDeliveryController',['$scope','$rootScope','$sta
 
 						}
 					}
+
+				}
+				
+				$scope.isSlotAvailable = function(dateKey,slotKey){
+
+					for(key in $scope.timeslots){
+						var slot = $scope.timeslots[key];
+
+						if(slot.datekey == dateKey){
+							
+							if(slot.status==0){
+								return false;
+							}
+
+							for(currSlotKey in slot.slots){
+								if(currSlotKey==slotKey && slot.slots[currSlotKey].status==0){
+									return false;
+								}
+							}
+
+						}
+
+					}
+
+					return true;
 
 				}
 

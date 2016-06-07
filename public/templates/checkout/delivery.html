@@ -12,7 +12,7 @@
 			<div class="date-stamp">{{slotbunch.datestamp}}</div>
 		</div>
 
-		<div class="single-slot" ng-repeat="(skey,slot) in slotbunch.slots" ng-class="{inactive:slot.status==0,selected:timeslot.slotkey===skey}" ng-click="setSlot(slot.status,slotbunch.datekey,skey)">
+		<div class="single-slot" ng-repeat="(skey,slot) in slotbunch.slots" ng-class="{inactive:slot.status==0 || slotbunch.status==0,selected:timeslot.slotkey===skey}" ng-click="setSlot(slotbunch.datekey,skey)">
 				{{timerange[slot.from]}} - {{timerange[slot.to]}}
 		</div>	
 

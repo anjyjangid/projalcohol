@@ -389,7 +389,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 		};
 
-		this.setTimeslotDefault = function(){
+		this.resetTimeslot = function(){
 
 			this.$cart.timeslot = {
 						datekey:false,
