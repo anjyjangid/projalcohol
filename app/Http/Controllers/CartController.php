@@ -1001,7 +1001,9 @@ jprd($product);
     	}
 
     	if(isset($params['timeslot'])){
+
     		$cart->timeslot = $params['timeslot'];
+
     	}
 
     	try {
@@ -1020,13 +1022,28 @@ jprd($product);
 
     }
 
-    public function freezcart($id){
+	public function freezcart(Request $request){
 
-    	$deliverykey = $request->session()->get('deliverykey');
+		$cartKey = $request->session()->get('deliverykey');
 
-    	prd($deliverykey);
+		$cart = Cart::findUpdated($cartKey);
 
-    }
+		$isValid = $this->validateCart($cart->toArray());
+
+		jprd($cart);
+
+	}
+
+	public function validateCart($cartData){
+
+		$products = Cart::getAllProductsInCart($cartData);
+		jprd($products);
+
+	}
+
+
+
+
 
     public function missingMethod($parameters = array())
 	{

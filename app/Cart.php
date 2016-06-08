@@ -5,6 +5,7 @@ namespace AlcoholDelivery;
 use Moloquent;
 
 use AlcoholDelivery\Setting as Setting;
+use AlcoholDelivery\Products as Products;
 
 class Cart extends Moloquent
 {
@@ -167,5 +168,71 @@ class Cart extends Moloquent
 
 	}
 
+	public static function getAllProductsInCart($data){
+
+		$products = [];
+
+		foreach($data['products'] as $key=>$product){
+			
+			$products[$key] = (int)$product['chilled']['quantity'] +  (int)$product['nonchilled']['quantity'];
+
+		}
+
+		foreach($data['packages'] as $key=>$package){
+			
+			foreach($package['packageItems'] as $packageItem){
+
+				foreach($packageItem['products'] as $product){
+
+					if($product['cartquantity']>0){
+
+						if(isset($products[$product['_id']])){
+
+							$products[$product['_id']] = (int)$products[$product['_id']] + ($package['packageQuantity'] * (int)$product['cartquantity']);
+
+						}else{
+
+							$products[$product['_id']] = (int)$package['packageQuantity'] * (int)$product['cartquantity'];
+
+						}
+						
+
+					}
+
+				}			
+
+			}
+
+		}
+
+		foreach($data['promotions'] as $promotion){
+
+			if(isset($products[$promotion['productId']])){
+
+				$products[$promotion['productId']]++;
+
+			}else{
+
+				$products[$promotion['productId']] = 1;
+
+			}
+
+		}
+
+		$productObj = new products();
+		$productsIdInCart = array_keys($products);
+
+		$productsInCart = $productObj->getProducts(
+											array(
+												"id"=>$productsIdInCart,
+												"with"=>array(
+													"discounts"
+												)
+											)
+										);
+		prd($productsInCart);
+		jprd($products);
+
+	}
 
 }
