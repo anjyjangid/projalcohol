@@ -39,6 +39,10 @@ class Promotion extends Moloquent
 
 		$tempProducts = [];
 
+		if(empty($result)){
+			return $result;
+		}
+
 		foreach($result['items'] as $product){
 
 			$tempProducts[(string)$product['_id']] = [
