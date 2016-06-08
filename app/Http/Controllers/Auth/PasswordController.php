@@ -39,7 +39,6 @@ class PasswordController extends Controller
 
 	public function postEmail(Request $request, TokenRepositoryInterface $tokens)
 	{
-		
 		$validator = Validator::make($request->all(), [            
 						'email' => 'required|email|exists:user',            
 					],[           

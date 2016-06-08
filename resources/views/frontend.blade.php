@@ -50,7 +50,7 @@
 			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
 
-		<link rel="shortcut icon" href="images/favicon.ico"/>
+		<link rel="shortcut icon" href="images/favicon.ico"/>		
 	</head>
 	<body ng-controller="AppController">
 
@@ -194,6 +194,7 @@
 	<script type="text/javascript" src="{{ asset('bower_components/angular-material/angular-material.min.js') }}"></script>
 
     <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/alcoholServices.js"></script>
     <script type="text/javascript" src="js/alcoholCart.js"></script>
     <script type="text/javascript" src="js/alcoholWishlist.js"></script>
     <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
@@ -201,6 +202,6 @@
 
 
     <script src="js/ngFacebook.js"></script>
-    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>
+    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>   
 
 </html>

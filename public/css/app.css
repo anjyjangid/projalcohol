@@ -178,6 +178,9 @@
 }
 
 /* ANIMATE */
+.open > .dropdown-menu{
+  /*display: none;*/
+}
 
 .isloading{  
   background: url('../img/loading.gif');
@@ -439,3 +442,21 @@ md-toast.desired-quantity-na-toast:before {
 	border-bottom: 1px dashed;
 }
   
+.scale {
+	background: #aa00ff;
+	position: absolute;
+	left: 0;
+	right: 0;
+	width: 0%;
+	height: 10px;
+	transition-duration: 2s;
+	border-radius: 50px;
+}
+
+.signuplogin li:hover .dropdown-menu{
+	display: block;
+}
+
+.signuplogin li.hideOp .dropdown-menu{
+	display: none;
+}

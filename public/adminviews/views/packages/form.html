@@ -8,7 +8,7 @@
 				</div>
 				<div class="actions btn-set">
 					<a class="btn default" ui-sref="{{$state.$current.data.type==1 ? 'userLayout.packages.party':'userLayout.packages.cocktail'}}"><i class="fa fa-angle-left"></i> Back</a>
-					<button class="btn green" type="submit"><i class="fa fa-check"></i> {{package._id?'Update':'Save'}}</button>
+					<button ng-disabled="loading" class="btn green" type="submit"><i class="fa fa-check"></i> {{package._id?'Update':'Save'}}</button>
 
 
 				</div>
@@ -208,7 +208,7 @@
 																<h5>{{ pcprod.name }} New Product</h5>
 																<h5>Before Price : <b>{{pcprod.sprice}}</b></h5>
 																<div >
-																	<input type="number" placeholder="After Price" step="any" class="form-control" ng-model="pcprod.cprice">
+																	<input min="1" type="number" placeholder="After Price" step="any" class="form-control" ng-model="pcprod.cprice">
 																	<span class="help-block" ng-bind="errors['packageItems.'+pckey+'.products.'+$index+'.cprice'][0]"></span>
 																</div>
 																<a class="btn btn-default" ng-click="removeItem(pckey,$index,pcprod._id)"><i class="fa fa-trash"></i> Remove</a>

@@ -5,14 +5,14 @@
 </div>
 <!-- END LOGO -->
 <!-- BEGIN LOGIN -->
-<div class="content">
+<div class="content" ng-controller="LoginController">
 	<!-- BEGIN LOGIN FORM -->
-	<form class="login-form" ng-submit="adminlogin()" method="post">
+	<form class="login-form" ng-submit="adminlogin()" method="post" ng-show="showlogin">
 		<h3 class="form-title">Sign In</h3>		
 		<div class="form-group" ng:class="{'has-error':errors.email[0]}">
 			<!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
 			<label class="control-label visible-ie8 visible-ie9">Email</label>
-			<input ng-model="credentials.email" class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="emai"/>
+			<input ng-model="credentials.email" class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email"/>
 			<span class="help-block" ng-bind="errors.email[0]"></span>
 		</div>
 		<div class="form-group" ng:class="{'has-error':errors.password[0]}">
@@ -21,39 +21,29 @@
 			<span class="help-block" ng-bind="errors.password[0]"></span>
 		</div>
 		<div class="form-actions">
-			<button type="submit" class="btn btn-success uppercase">Login</button>
+			<button ng-disabled="loading" type="submit" class="btn btn-success uppercase">Login</button>
 			<label class="rememberme check">
 			<input ng-model="credentials.remember" type="checkbox" name="remember" value="1"/>Remember </label>
-			<a href="javascript:;" id="forget-password" class="forget-password">Forgot Password?</a>
+			<a href="javascript:;" id="forget-password" ng-click="loginForm(false)" class="forget-password">Forgot Password?</a>
 		</div>
 		
 	</form>
 	<!-- END LOGIN FORM -->
 	<!-- BEGIN FORGOT PASSWORD FORM -->
-	<form class="forget-form" action="index.html" method="post">
+	<form class="forget-form" method="post" ng-submit="resetRequest()" ng-hide="showlogin">
 		<h3>Forget Password ?</h3>
 		<p>
 			 Enter your e-mail address below to reset your password.
 		</p>
-		<div class="form-group">
-			<input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email"/>
-		</div>
+		<div class="form-group" ng:class="{'has-error':reseterrors.email[0]}">			
+			<input ng-model="reset.email" class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email"/>
+			<span class="help-block" ng-bind="reseterrors.email[0]"></span>
+		</div>		
 		<div class="form-actions">
-			<button type="button" id="back-btn" class="btn btn-default">Back</button>
-			<button type="submit" class="btn btn-success uppercase pull-right">Submit</button>
+			<button type="button" ng-click="loginForm(true)" id="back-btn" class="btn btn-default">Back</button>
+			<button ng-disabled="loading" type="submit" class="btn btn-success uppercase pull-right">Submit</button>
 		</div>
 	</form>
 	<!-- END FORGOT PASSWORD FORM -->
 
 </div>
-<script type="text/javascript">
-	$('#forget-password').on('click',function() {
-    	$('.login-form').hide();
-        $('.forget-form').show();
-    });
-
-    $('#back-btn').on('click',function() {
-        $('.login-form').show();
-        $('.forget-form').hide();
-    });
-</script>

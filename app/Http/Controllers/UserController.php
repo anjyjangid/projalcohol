@@ -15,7 +15,6 @@ class UserController extends Controller
 {
     public function checkAuth(Request $request)
     {
-        
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required',            
@@ -297,7 +296,8 @@ class UserController extends Controller
                 if($emailaddress!=$userLogged->email){                
                     $data = [
                         'email' => $emailaddress,
-                        'username' => $username,
+                        'sender_name' => $username,
+                        'sender_email' => $userLogged->email,
                         'id' => $userLogged->_id                 
                     ];
                     $email = new Email('invite');

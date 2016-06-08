@@ -87,7 +87,7 @@
 						<div class="col-sm-12">
 							<hr>
 							<div class="margin-top-10 pull-right">
-								<button class="btn green" type="submit"><i class="fa fa-check"></i> {{ update?'Update':'Save'}}</button>								
+								<button ng-disabled="loading" class="btn green" type="submit"><i class="fa fa-check"></i> {{ update?'Update':'Save'}}</button>								
 								<a ui-sref="userLayout.promotion.list" class="btn default">Cancel </a>
 							</div>
 						</div>

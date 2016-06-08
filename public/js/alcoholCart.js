@@ -51,6 +51,8 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 	this.addItem = function (id, quantity, serveAs) {
 
+		var defer = $q.defer();
+
 		var inCart = this.getProductById(id);
 		var _self = this;
 		var deliveryKey = _self.getCartKey();
@@ -64,47 +66,52 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 		}).error(function(data, status, headers) {
 
+			defer.reject(data);
+
 		}).success(function(response) {
 
-			if(!response.success){
-				
-				switch(response.errorCode){
-					case "100":
-						//$cart.product.quantitycustom = response.data.quantity;
-					break;
-				}
+			if(response.success){
 
-			}else{					
+				var resProduct = response.product;
 
-				if(inCart){
-					if(response.product.quantity==0){
+				if(inCart){				
+
+					if(resProduct.quantity==0){
 
 						_self.removeItemById(id);
 
-					}else{						
+					}else{
 
-						inCart.setRQuantity(response.product.chilled.quantity,response.product.nonchilled.quantity);			
-						inCart.setTQuantity(response.product.quantity);							
-						inCart.setPrice(response.product);
+						inCart.setRQuantity(resProduct.chilled.quantity,resProduct.nonchilled.quantity);
+						inCart.setTQuantity(resProduct.quantity);
+						inCart.setPrice(resProduct);
 
-						inCart.setRMaxQuantity(response.product);
+						inCart.setRMaxQuantity(resProduct);
 
-					}
+					}									
+
+				}else{				
 					
-					//$rootScope.$broadcast('alcoholCart:itemAdded', response.data);
-
-				}else{
-
-					//$rootScope.$broadcast('alcoholCart:itemAdded', response.data);
-					
-		    		var newItem = new alcoholCartItem(id, response.product);
+		    		var newItem = new alcoholCartItem(id, resProduct);
 					_self.$cart.products[id] = newItem;
-					//$rootScope.$broadcast('alcoholCart:itemAdded', newItem);
-
+					
 				}
-				
+
+				if(resProduct.product.change!==0){
+					if(resProduct.product.change>0){
+						$rootScope.$broadcast('alcoholCart:updated',{msg:"Items added to cart",quantity:Math.abs(resProduct.product.change)});
+					}else{
+						$rootScope.$broadcast('alcoholCart:updated',{msg:"Items removed from cart",quantity:Math.abs(resProduct.product.change)});
+					}
+				}
+
 			}
+
+			defer.resolve(response);
+
 		});
+
+		return defer.promise
 	};
 
 	this.addPackage = function (id,detail) {
@@ -138,34 +145,22 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 			}else{
 				
-				var inCart = _self.getPackageByUniqueId(id);
+				var inCart = _self.getPackageByUniqueId(response.key);
 
 				if(inCart){
 
-					if(detail.packageQuantity==0){
-
-						_self.removePackage(response.key);
-
-					}else{	
-
-						inCart.setQuantity(detail.packageQuantity);
-						inCart.setPrice(detail.packagePrice);
-
-					}
-					
-					//$rootScope.$broadcast('alcoholCart:itemAdded', response.data);
-
-				}else{
-
-					//$rootScope.$broadcast('alcoholCart:itemAdded', response.data);
-					
-		    		var newPackage = new alcoholCartPackage(id, response.key, detail);
-		    		_self.$cart.packages.push(newPackage);
-					
-					//$rootScope.$broadcast('alcoholCart:itemAdded', newItem);
+					_self.removePackage(response.key);
 
 				}
-				
+
+				var newPackage = new alcoholCartPackage(id, response.key, detail);
+		    	_self.$cart.packages.push(newPackage);
+
+		    	if(inCart){
+		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Promotion updated"});
+		    	}else{
+		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Promotion added to cart"});
+		    	}
 
 				d.resolve(response);
 
@@ -394,7 +389,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 		};
 
-		this.setTimeslotDefault = function(){
+		this.resetTimeslot = function(){
 
 			this.$cart.timeslot = {
 						datekey:false,
@@ -530,10 +525,11 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		};
 
 
-		this.removePackage = function (id) {
+		this.removePackage = function (id,fromServerSide) {
 
 			var locPackage;
 			var cart = this.getCart();
+			
 			angular.forEach(cart.packages, function (package, index) {
 
 				if(package.getUniqueId() === id) {

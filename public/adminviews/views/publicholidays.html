@@ -20,16 +20,81 @@
 		</div>
 		<!-- END PAGE HEADER-->		
 		<!-- BEGIN PROFILE CONTENT -->
-		{{eventSources|json}}
-		<button ng-click="addNewevent()">Add New</button>
-		<div class="row">				
+		<!-- {{eventSources|json}} -->
+		<!-- <a class="btn default" ng-click="clearForm()" data-target='#static' data-toggle="modal">
+			<i class="fa fa-lg fa-plus"></i> Add Holiday
+		</a> -->		
+		<div class="row" >									
 			<div class="col-md-6">
+				<div class="portlet">
+					<div class="portlet-title" >
+						<div class="caption">						
+							<i class="fa fa-calendar"></i> 
+							<span ng-hide="holiday.allDay">Public Holidays</span>
+							<span ng-show="holiday.allDay && holiday.dow">Weekly Holidays</span>
+							<span ng-show="holiday.allDay && !holiday.dow">
+								<span>{{ (holiday.title=='') ? 'New Holiday' : holiday.title}} : </span>
+								<span><b>{{dt | date:'d'}}</b></span>
+								<span><b>{{dt | date:'MMMM'}}</b></span>
+								<span><b ng-hide="holiday.repeat">{{dt | date:'yyyy'}}</b></span>	
+							</span>
+							
+						</div>							
+						<div ng-hide="holiday.allDay" class="actions">
+							<a class="btn default" ng-click="weeklyEdit()">Manage Weekly holidays</a>
+						</div>
+					</div>
+					<div class="portlet-body form">
+						<form role="form" ng-submit="addHoliday()" ng-show="holiday.allDay" class="form-horizontal">
+							<div class="form-body">									
+								<div class="form-group" ng:class="{'has-error':adderrors['title'][0]}">
+									<label class="col-md-4 control-label">Title: <span class="required">* </span>
+									</label>
+									<div class="col-md-8">								
+										<input maxlength="50" type="text" class="form-control" ng-model="holiday.title" placeholder="">
+										<span class="help-block" ng-bind="adderrors['title'][0]"></span>
+									</div>
+								</div>																	
+								<div class="form-group" ng-if="holiday._id == 'weekdayoff'">
+									<label class="col-md-4 control-label">Select days for weekly holiday</label>
+									<div class="col-md-8">
+										<div class="checkbox-list">										
+											<label ng-repeat="days in weekdays track by $index">
+												<input ng-checked="isChecked($index)" ng-model="ids[$index]" value="$index" ng-click="addDays($index)" type="checkbox"> {{days}} 
+											</label>																			
+										</div>
+									</div>
+								</div>									
+							</div>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-offset-4 col-md-8">
+										<button ng-disabled="loading" class="btn green" type="submit">Save</button>
+										<button ng-disabled="loading" class="btn red" type="button" ng-click="removeHoliday()" ng-show="holiday._id && holiday._id != 'weekdayoff'">Delete</button>
+										<button type="button" class="btn default" ng-click="showList()">Cancel</button>
+									</div>
+								</div>
+							</div>							
+						</form>
+						<div ng-hide="holiday.allDay">							
+							<ul class="list-group">
+								<li ng-repeat="hlist in pulicholidays" class="list-group-item">
+									 {{hlist.title}} <span class="badge badge-danger"> {{hlist.timeStamp | date :'dd MMMM'}} </span>
+								</li>								
+							</ul>							
+							<div align="center" ng-if="pulicholidays.length==0">No public holiday(s) in this range</div>							
+						</div>
+					</div>
+				</div>
+				<!-- <pre>{{holiday|json}}</pre> -->
 			</div>
-			<div class="col-md-6">
-				<div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div>
+			<div class="col-md-6" id="holidaycontainer">
+				<p align="center"><strong>Click on the dates to add/update holiday</strong></p>
+				<div ui-calendar="uiConfig.calendar" ng-model="eventSources" id="calendar"></div>
 			</div>
 		</div>		
 		<!-- END PROFILE CONTENT -->
 	</div>
+
 </div>
 <!-- END PAGE CONTENT -->

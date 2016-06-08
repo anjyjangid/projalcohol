@@ -208,5 +208,6 @@ return [
         'Form' => 'Collective\Html\FormFacade',
         'Html' => 'Collective\Html\HtmlFacade',
     ],
-
+    'appName' => 'Alcohol Delivery',
+    'appContact' => '92445533'
 ];
