@@ -405,6 +405,10 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		};
 
 		this.getTotalUniqueItems = function () {
+			
+			if(typeof this.getCart() === "undefined"){
+				return 0;
+			}
 
 			var count = Object.keys(this.getCart().products).length;
 

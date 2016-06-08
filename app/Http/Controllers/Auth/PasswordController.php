@@ -43,7 +43,7 @@ class PasswordController extends Controller
 						'email' => 'required|email|exists:user',            
 					],[           
 					   'email.required' => 'Please provide your email to reset password.',
-					   'email.exists' => 'Seems this email is not rgistered with us.'
+					   'email.exists' => 'Seems this email is not registered with us.'
 					]);
 
 
