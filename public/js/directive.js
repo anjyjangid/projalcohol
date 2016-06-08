@@ -19,6 +19,9 @@ AlcoholDelivery.directive('sideBar', function() {
 						});
 				}
 
+				$scope.hideMenu = function(){					
+					$('.dropdown-menu').removeClass('animate');
+				}
 		}
 	};
 });

@@ -16,8 +16,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ngMap',
 	'vAccordion',
 	'ngFacebook',
-	'alcoholCart.directives',
-	'angular-ladda'
+	'alcoholCart.directives'
 ]);
 
 
@@ -2586,7 +2585,7 @@ AlcoholDelivery.controller('SearchController', [
 
     function submitQuery(){
     	if(self.searchText!=''){
-    		$log.info(self.searchText);
+    		//$log.info(self.searchText);
 			var autoChild = document.getElementById('Auto').firstElementChild;
 		    var el = angular.element(autoChild);
 		    el.scope().$mdAutocompleteCtrl.hidden = true;

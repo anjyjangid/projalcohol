@@ -21,7 +21,7 @@
 			<span class="help-block" ng-bind="errors.password[0]"></span>
 		</div>
 		<div class="form-actions">
-			<button type="submit" class="btn btn-success uppercase">Login</button>
+			<button ng-disabled="loading" type="submit" class="btn btn-success uppercase">Login</button>
 			<label class="rememberme check">
 			<input ng-model="credentials.remember" type="checkbox" name="remember" value="1"/>Remember </label>
 			<a href="javascript:;" id="forget-password" ng-click="loginForm(false)" class="forget-password">Forgot Password?</a>
@@ -41,7 +41,7 @@
 		</div>		
 		<div class="form-actions">
 			<button type="button" ng-click="loginForm(true)" id="back-btn" class="btn btn-default">Back</button>
-			<button type="submit" class="btn btn-success uppercase pull-right">Submit</button>
+			<button ng-disabled="loading" type="submit" class="btn btn-success uppercase pull-right">Submit</button>
 		</div>
 	</form>
 	<!-- END FORGOT PASSWORD FORM -->

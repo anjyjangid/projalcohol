@@ -8,7 +8,7 @@
 					{{customer._id?'Update':'Add'}} Customer</span>
 				</div>
 				<div class="actions btn-set">					
-					<button class="btn green" ng-click="store()"><i class="fa fa-check"></i>{{customer._id?'Update':'Save'}}</button>
+					<button ng-disabled="loading" class="btn green" ng-click="store()"><i class="fa fa-check"></i>{{customer._id?'Update':'Save'}}</button>
 				</div>
 			</div>
 			<div class="portlet-body">

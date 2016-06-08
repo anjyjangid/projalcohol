@@ -57,10 +57,11 @@
 					<li ng-hide="user.email"><a data-target="#register" data-toggle="modal" href="javascript:;">Signup</a></li>
 					<li ng-hide="user.email"><a data-target="#login" data-toggle="modal" href="javascript:;">login</a></li>       
 					<!--<a ng-show="user.email" data-target="#" ng-click="logout()" data-toggle="modal" href="javascript:;" class="username">Hola, {{user.email}}</a>-->
-					<li class="dropdown" ng-show="user.email"><a href="javascript:;" class="username dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+					<li ng:class="{'hideOp':hideOp}" class="dropdown" ng-show="user.email" ng-mouseover="hideOp=false" ng-mouseleave="hideOp=true">
+					<a href="javascript:;" class="username dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" >
 						Hola, {{user.email}}
 					</a>
-					<ul class="dropdown-menu profil-dropdown">
+					<ul ng-click="hideOp=true" class="dropdown-menu profil-dropdown">
 						<li><a ui-sref="accountLayout.profile">My Account</a></li>
 						<li><a href="#" ng-click="logout()">Logout</a></li>
 					</ul>
@@ -116,7 +117,8 @@ function googleTranslateElementInit() {
 			</div>
 			<div class="modal-footer alcohalfotter">
 				<div class="alcohal_regisemailcvr">
-					<button type="submit" class="alcohalfootersign">Sign Up</button>
+					<button ng-disabled="loading" type="submit" class="alcohalfootersign">Sign Up</button>
+
 					<!-- <button type="submit" ng-disabled="myForm.user.$dirty && myForm.user.$invalid ||  myForm.email.$dirty && myForm.email.$invalid" class="alcohalfootersign">Sign Up</button> -->
 				</div>
 			</div>
@@ -170,7 +172,8 @@ function googleTranslateElementInit() {
             <div class="alcohallogin_forgettxt">
               <a data-dismiss="modal" data-target="#forgot_password" data-toggle="modal" href="javascript:;">Forgot Password?</a>
             </div>
-            <button type="submit" class="alcohalfootersign alcohal_fotrloginbox">Log in</button>
+            <button ng-disabled="loading" type="submit" class="alcohalfootersign alcohal_fotrloginbox">Log in</button>
+
           </div>
         </div>
       </form>
@@ -207,7 +210,7 @@ function googleTranslateElementInit() {
 						<div class="alcohallogin_forgettxt">
 							<a data-dismiss="modal" data-target="#login" data-toggle="modal" href="javascript:;">Login</a>
 						</div>
-						<button type="submit" class="alcohalfootersign alcohal_fotrloginbox">Reset</button>
+						<button ng-disabled="loading" type="submit" class="alcohalfootersign alcohal_fotrloginbox">Reset</button>
 					</div>
 				</div>
 			</form>
@@ -235,7 +238,7 @@ function googleTranslateElementInit() {
 				</div>
 				<div class="modal-footer alcohalfotter">
 					<div class="alcohal_regisemailcvr">            
-						<button type="submit" class="alcohalfootersign alcohal_fotrloginbox">Submit</button>
+						<button ng-disabled="loading" type="submit" class="alcohalfootersign alcohal_fotrloginbox">Submit</button>
 					</div>
 				</div>
 			</form>
@@ -426,14 +429,3 @@ function googleTranslateElementInit() {
 		</div>
 	</div>
 </div>
-
-<script>
-$(document).ready(function(e) {
-	 $('.signuplogin .dropdown').hover(function() {
-	$(this).find('.dropdown-menu').stop(true, true).fadeIn();
-}, function() {
-	$(this).find('.dropdown-menu').stop(true, true).fadeOut();
-}); 
-});
-
-</script>

@@ -1688,7 +1688,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         })
 
         .state("resetpassword", {
-            url: "/resetpassword",
+            url: "/resetpassword/{rKey}",
             templateUrl: "adminviews/views/resetpassword.html",
             data: {pageTitle: 'Reset password'},            
             controller: function($http,AdminUserService, $state){
@@ -1775,17 +1775,37 @@ MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "st
 MetronicApp.service('myRequestInterceptor', ['$q', '$rootScope', '$log', 
 function ($q, $rootScope, $log) {    
 	'use strict'; 
+
+	var xhrCreations = 0;
+    var xhrResolutions = 0;
+
+    function isLoading() {
+        return xhrResolutions < xhrCreations;
+    }
+
+    function updateStatus() {
+        $rootScope.loading = isLoading();
+    }
+
 	return {
 		request: function (config) {            
+			xhrCreations++;
+            updateStatus();
 			return config;
 		},
 		requestError: function (rejection) {
+			xhrResolutions++;
+            updateStatus();
 			return $q.reject(rejection);
 		},
 		response: function (response) {
+			xhrResolutions++;
+			updateStatus();
 			return response;
 		},
 		responseError: function (rejection) {            			
+			xhrResolutions++;
+            updateStatus();
 			if(rejection.status == 401){				
 				AdminUserService.removeUser();
 				$state.go('login');

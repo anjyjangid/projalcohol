@@ -69,8 +69,8 @@
 							<div class="form-actions">
 								<div class="row">
 									<div class="col-md-offset-4 col-md-8">
-										<button class="btn green" type="submit">Save</button>
-										<button class="btn red" type="button" ng-click="removeHoliday()" ng-show="holiday._id && holiday._id != 'weekdayoff'">Delete</button>
+										<button ng-disabled="loading" class="btn green" type="submit">Save</button>
+										<button ng-disabled="loading" class="btn red" type="button" ng-click="removeHoliday()" ng-show="holiday._id && holiday._id != 'weekdayoff'">Delete</button>
 										<button type="button" class="btn default" ng-click="showList()">Cancel</button>
 									</div>
 								</div>

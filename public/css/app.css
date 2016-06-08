@@ -452,3 +452,11 @@ md-toast.desired-quantity-na-toast:before {
 	transition-duration: 2s;
 	border-radius: 50px;
 }
+
+.signuplogin li:hover .dropdown-menu{
+	display: block;
+}
+
+.signuplogin li.hideOp .dropdown-menu{
+	display: none;
+}

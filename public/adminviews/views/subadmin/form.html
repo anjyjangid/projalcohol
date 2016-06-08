@@ -7,7 +7,7 @@
 					<i class="fa fa-user"></i>{{subadmin._id?'Edit Package':'Add New Subadministrator'}}
 				</div>
 				<div class="actions btn-set">					
-					<button class="btn green" type="submit"><i class="fa fa-check"></i> {{subadmin._id?'Update':'Save'}}</button>
+					<button ng-disabled="loading" class="btn green" type="submit"><i class="fa fa-check"></i> {{subadmin._id?'Update':'Save'}}</button>
 				</div>
 			</div>
 			<div class="portlet-body mbody">

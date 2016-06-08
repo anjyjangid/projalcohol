@@ -4589,6 +4589,7 @@ md-dialog.md-transition-in{
 }
 .profil-dropdown{
 	padding-left:0 !important;
+	margin-top: -3px;
 }
 .profil-dropdown li{
 	float:left;

@@ -108,7 +108,7 @@ class Email extends Moloquent
 				$this->recipient_info["receiver"]['name'] = $data['email'];
 
 				if(isset($data['isAdmin'])){
-					$this->recipient_info["replace"]["{reset_link}"] =url()."/admin/#/reset/".$data['email_key'];
+					$this->recipient_info["replace"]["{reset_link}"] =url()."/admin#/resetpassword/".$data['email_key'];
 				}else{
 					$this->recipient_info["replace"]["{reset_link}"] =url()."/reset/".$data['email_key'];	
 				}
