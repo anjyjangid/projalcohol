@@ -719,7 +719,8 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		};	
 
 		this.setDeliveryType = function(status){
-		
+			
+			var _self = this;
 			if(typeof status !=="undefined"){
 				
 				this.$cart.delivery.type = status;
@@ -730,17 +731,16 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 			}
 
-			if(this.$cart.delivery.type==0){
+			var products = this.getCart().products;
+			angular.forEach(products, function (product,key) {
 
-				var products = this.getCart().products;
-				angular.forEach(products, function (product,key) {
+				if(product.onlyForAdvance && _self.$cart.delivery.type==0){
+					product.setNonAvailability(true);
+				}else{
+					product.setNonAvailability(false);
+				}
 
-					if(product.onlyForAdvance){
-						product.setNonAvailability(true);
-					}
-
-				});
-			}
+			});
 
 			this.deployCart();
 		}
@@ -940,6 +940,31 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 	        });	
 				
+			return d.promise;
+
+		}
+
+		this.freezCart = function(){
+
+			var d = $q.defer();
+
+			this.deployCart().then(
+				
+				function(successRes){
+
+					$http.get("freezcart").error(function(data, status, headers) {
+
+			        	d.reject(data);
+
+			        }).success(function(response) {	        		      
+
+			        	d.resolve(response);
+
+			        });	
+				},
+				function(errorRes){}
+			);
+
 			return d.promise;
 
 		}

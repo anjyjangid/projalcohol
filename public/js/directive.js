@@ -531,8 +531,7 @@ AlcoholDelivery.directive('sideBar', function() {
 				var catIdIndex = localpro.categories.length - 1;			
 
 				var catPriceObj = angular.copy($rootScope.catPricing[localpro.categories[catIdIndex]]);
-				delete catPriceObj._id;
-				
+								
 				if(typeof catPriceObj === "undefined"){
 
 					console.log("Something wrong with this product : "+localpro._id);
@@ -540,6 +539,8 @@ AlcoholDelivery.directive('sideBar', function() {
 					return localpro;
 				}
 
+				delete catPriceObj._id;
+				
 				var dst = {};
 				angular.extend(dst,catPriceObj,localpro);
 				angular.extend(localpro,dst);

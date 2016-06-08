@@ -1788,7 +1788,7 @@ function ($q, $rootScope, $log) {
     }
 
 	return {
-		request: function (config) {            
+		request: function (config) {
 			xhrCreations++;
             updateStatus();
 			return config;
@@ -1803,12 +1803,14 @@ function ($q, $rootScope, $log) {
 			updateStatus();
 			return response;
 		},
-		responseError: function (rejection) {            			
+		responseError: function (rejection) {
 			xhrResolutions++;
             updateStatus();
-			if(rejection.status == 401){				
+			if(rejection.status == 401){
+
 				AdminUserService.removeUser();
 				$state.go('login');
+
 			}
 			return $q.reject(rejection);
 		}

@@ -2074,51 +2074,54 @@ AlcoholDelivery.controller('CartReviewController',['$scope','$rootScope','$http'
 
 				$scope.orderConfirm = function(){
 
+					//alcoholCart.freezCart().then(
 					alcoholCart.deployCart().then(
+
 						function(result){
+							console.log("freeze call complete");
+							return false;
+
 							var cartKey = alcoholCart.getCartKey();
 
-					$http.put("confirmorder/"+cartKey, {} ,{
+						$http.put("confirmorder/"+cartKey, {} ,{
 
-					}).error(function(response, status, headers) {
+						}).error(function(response, status, headers) {
 
-							sweetAlert.swal({
-								type:'error',
-								title: 'Oops...',
-								text:response.message,
-								timer: 2000
-							});
-
-				        })
-				        .success(function(response) {
-
-				            if(!response.success){
-
-				            	sweetAlert.swal({
+								sweetAlert.swal({
 									type:'error',
 									title: 'Oops...',
 									text:response.message,
 									timer: 2000
 								});
 
-				            }
+					        })
+					        .success(function(response) {
 
-				            sweetAlert.swal({
-								type:'success',
-								title: response.message,
-								timer: 1000
-							});
+					            if(!response.success){
 
-				            store.orderPlaced();
+					            	sweetAlert.swal({
+										type:'error',
+										title: 'Oops...',
+										text:response.message,
+										timer: 2000
+									});
 
-				            $state.go('orderplaced',{order:response.order},{reload: false, location: 'replace'});
+					            }
 
-				        })
+					            sweetAlert.swal({
+									type:'success',
+									title: response.message,
+									timer: 1000
+								});
+
+					            store.orderPlaced();
+
+					            $state.go('orderplaced',{order:response.order},{reload: false, location: 'replace'});
+
+					        })
 						}
+
 					)
-
-
-
 
 				}
 			});
@@ -3177,6 +3180,7 @@ function ($q, $rootScope, $log) {
 
     return {
         request: function (config) {
+        	
             xhrCreations++;
             updateStatus();
             return config;
