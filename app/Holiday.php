@@ -19,6 +19,15 @@ class Holiday extends Eloquent
         'y',
         'allDay',        
         'dow',
-        'timeStamp'        
+        'timeStamp'
     ];
+
+
+    public function getHolidays($params){
+
+        $holidays = Holiday::whereBetween('timeStamp', [$params['start'], $params['end']])->orWhere('_id','weekdayoff')->get(["_id","dow","timeStamp"]);
+        
+        return $holidays->toArray();
+
+    }
 }

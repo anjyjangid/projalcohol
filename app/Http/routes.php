@@ -135,6 +135,8 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::delete('promotion/{key}','CartController@deletePromotion');
 
+	
+
 });
 
 Route::resource('cart', 'CartController');

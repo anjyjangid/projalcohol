@@ -11,6 +11,8 @@ use AlcoholDelivery\Products as Products;
 use AlcoholDelivery\Setting as Setting;
 use AlcoholDelivery\Orders as Orders;
 use AlcoholDelivery\Promotion as Promotion;
+use AlcoholDelivery\Holiday as Holiday;
+
 use MongoDate;
 use MongoId;
 
@@ -411,7 +413,6 @@ class CartController extends Controller
 
 		return response(["success"=>false,"message"=>"Something went worng"]);
 
-
 	}
 
 	public function createpackage(Request $request, $cartKey){
@@ -760,26 +761,30 @@ jprd($product);
     public function getTimeslots($date){
 
     	$timeSlots = Setting::where("_id","=","timeslot")->get(['settings'])->first();
-    	$timeSlots = $timeSlots['settings'];
+    	$timeSlots = $timeSlots['settings'];    
 
+    	$tomorrowTimeStr = strtotime('tomorrow');
+    	$passedTimeStr = strtotime($date);
+	
+		if($passedTimeStr < $tomorrowTimeStr){
+			return response(["message"=>"In-valid date passed, Time slot is not available for previous date"],400);
+		}
 
-		$currDate = date("Y-m-d", strtotime('tomorrow'));
+		$holiday = new Holiday;
+		$holidays = $holiday->getHolidays(['start'=>(int)$passedTimeStr*1000, 'end'=>((int)$passedTimeStr + 86400) * 1000]);	
 
-    	if(isset($data)!==""){
+		$currDate = date("Y-m-d", $tomorrowTimeStr);
 
-    		$passedDate = date("Y-m-d",strtotime($date));
+    	$passedDate = date("Y-m-d",$passedTimeStr);
 
-    		if(strtotime($passedDate)<strtotime($currDate)){
-    			$passedDate = $currDate;
+    	$weeknumber = date("N",strtotime($passedDate));//pass "3" for 2016-06-08(wednesday)
+
+    	$weekDaysOff = [];
+    	foreach($holidays as $holiday){
+    		if($holiday['_id']==="weekdayoff"){
+    			$weekDaysOff = $holiday['dow'];
     		}
-
-    	}else{
-
-    		$passedDate = $currDate;
-
     	}
-
-    	$weeknumber = date("N",strtotime($passedDate));
 
 		$weekKeys = array(
 
@@ -795,17 +800,22 @@ jprd($product);
 		$slotArr = [];
 
 		$tempDate = $passedDate;
+
 		for($i=1;$i<=7;$i++){
-			//$slotArr[$weekKeys[$weeknumber]] = [];
-			$slotArr[$weekKeys[$weeknumber]]['slots'] = $timeSlots[$weeknumber-1];
-			$slotArr[$weekKeys[$weeknumber]]['datestamp'] = date("d M",strtotime($tempDate));
-			$slotArr[$weekKeys[$weeknumber]]['datekey'] = strtotime($tempDate);
+
+			$slotArr[$weekKeys[$weeknumber]] = [
+				'slots' => $timeSlots[$weeknumber-1],
+				'datestamp' => date("d M",strtotime($tempDate)),
+				'datekey' => strtotime($tempDate),
+				'status' => in_array($weeknumber==7?0:$weeknumber, $weekDaysOff)?0:1,
+			];
 
 			$tempDate = date("Y-m-d",strtotime('+1 day', strtotime($tempDate)));
 
 			if($weeknumber==7){
 				$weeknumber = 0;
 			}
+
 			$weeknumber++;
 
 		}
@@ -958,7 +968,6 @@ jprd($product);
 			return response(array("success"=>false,"message"=>$e->getMessage()));
 
 		}
-
     }
 
     public function deploycart(Request $request,$cartKey){
@@ -1008,6 +1017,14 @@ jprd($product);
 		}
 
 		return response(array("success"=>false,"message"=>"Something went worng"));
+
+    }
+
+    public function freezcart($id){
+
+    	$deliverykey = $request->session()->get('deliverykey');
+
+    	prd($deliverykey);
 
     }
 
