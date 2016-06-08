@@ -128,10 +128,18 @@
 	width: 100%;
 }
 .checkoutmiddlevlauediv {
-	
 	margin:15px auto 0
 }
-/*.thumbnailheightset:hover, .thumbnailheightset:active, .thumbnailheightset:focus,*/ .selectedproductcart {
+
+
+
+/*.thumbnailheightset:hover, .thumbnailheightset:active, .thumbnailheightset:focus,*/ 
+
+.cart-table .checkoutmiddlevlauediv {	
+	margin:0px auto 0
+}
+
+.selectedproductcart {
 	border: 1px solid #8c00d3;
 	box-shadow: 3px 3px 3px 3px #e5c8f6;
 }
