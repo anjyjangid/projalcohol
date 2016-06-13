@@ -67,7 +67,9 @@ class Products extends Eloquent
 
 			$products = $products->where('status','=',1);
 
-			$products = $products->get();
+			$params['fields'] = isset($params['fields'])?$params['fields']:[];
+
+			$products = $products->get($params['fields']);
 
 			if(isset($params['with'])){
 

@@ -1873,8 +1873,10 @@ MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "st
 
 }]);
 
-MetronicApp.service('myRequestInterceptor', ['$q', '$rootScope', '$log', 
-function ($q, $rootScope, $log) {    
+
+
+
+MetronicApp.service('myRequestInterceptor', ['$q', '$rootScope', '$log', function ($q, $rootScope, $log) {
 	'use strict'; 
 
 	var xhrCreations = 0;
@@ -1889,9 +1891,10 @@ function ($q, $rootScope, $log) {
     }
 
 	return {
-		request: function (config) {            
+		request: function (config) {
 			xhrCreations++;
-            updateStatus();
+            updateStatus();		
+
 			return config;
 		},
 		requestError: function (rejection) {
@@ -1904,7 +1907,7 @@ function ($q, $rootScope, $log) {
 			updateStatus();
 			return response;
 		},
-		responseError: function (rejection) {            			
+		responseError: function (rejection) {
 			xhrResolutions++;
             updateStatus();
 			if(rejection.status == 401){				

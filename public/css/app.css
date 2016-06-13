@@ -1,3 +1,8 @@
+.img-responsive-h{
+	max-height: 100% !important;
+	margin: auto;
+}
+
 .navbar .make-active {
   font-weight: bold;
 }
@@ -458,5 +463,6 @@ md-toast.desired-quantity-na-toast:before {
 }
 
 .signuplogin li.hideOp .dropdown-menu{
-	display: none;
+	display: none !important;
 }
+

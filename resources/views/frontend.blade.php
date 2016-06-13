@@ -194,6 +194,7 @@
 	<script type="text/javascript" src="{{ asset('bower_components/angular-material/angular-material.min.js') }}"></script>
 
     <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/controller.js"></script>
     <script type="text/javascript" src="js/alcoholServices.js"></script>
     <script type="text/javascript" src="js/alcoholCart.js"></script>
     <script type="text/javascript" src="js/alcoholWishlist.js"></script>

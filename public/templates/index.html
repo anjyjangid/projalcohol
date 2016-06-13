@@ -34,6 +34,7 @@
 		</div>
 	</div>
 </section>
+
 <section class="fullwidth" ng-if="$state.current.name=='mainLayout.index'">
 	<div class="container">
 		<div class="offers">
@@ -48,49 +49,10 @@
 		</div>
 	</div>
 </section>
-<section class="fullwidth" ng-show="$state.current.name=='mainLayout.index'">
-	<div class="container">
-		<div class="single_slider" ng-if="testimonials.length">
-			
-			<data-owl-carousel class="owl-carousel owl-theme" data-options="{
-						navigation : false,
-						pagination : true,
-						items : 1,
-						loop : true,
-						autoPlay : true,
-					    autoPlayTimeout : 500,
-					    autoPlayHoverPause : true	
-					}">
-				<div owl-carousel-item="" ng-repeat="testimonial in testimonials" class="item">
-					<div class="slido_left">
-						<div class="slido_pic"><img ng-src="assets/resources/testimonial/200/{{testimonial.image}}" class="img-circle" height="113px" width="113px" /></div>
-						<div class="slido_txt">{{testimonial.name}}</div>
-					</div>
-					<div class="slido_right" ng-bind-html="testimonial.content"></div>
-				</div>
 
-			</data-owl-carousel>	
-				
-			
-		</div>
-	</div>
-</section>
-<section class="fullwidth" ng-show="$state.current.name=='mainLayout.index'">
-	<div class="container">
-		<div class="row brands">
-			<data-owl-carousel class="owl-carousel owl-theme" data-options="{					
-						navigation : false,
-						pagination : true,
-						items : 6					
-					}">
-				<div owl-carousel-item="" ng-repeat="brand in brands" class="item col-md-2 text-center">
-					<a target="_blank" href="{{brand.link}}" title="{{brand.title}}"><img ng-src="assets/resources/brand/{{brand.image}}" class="img-responsive" /></a>
-				</div>
+<div ui-view="testimonials"></div>
+<div ui-view="brands"></div>
 
-			</data-owl-carousel>
-		</div>
-	</div>
-</section>
 <section class="fullwidth onthego_block" ng-show="$state.current.name=='mainLayout.index'">
 	<div class="container">
 		<div class="row">

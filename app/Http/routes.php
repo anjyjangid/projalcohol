@@ -106,10 +106,9 @@ Route::controller('/password', 'Auth\PasswordController');
 Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
 Route::get('reset/{key}', 'Auth\PasswordController@reset');
 
-
 Route::put('deploycart/{cartKey}','CartController@deploycart');
 Route::put('confirmorder/{cartKey}','CartController@confirmorder');
-
+Route::get('freezcart','CartController@freezcart');
 
 Route::group(['prefix' => 'cart'], function () {
 

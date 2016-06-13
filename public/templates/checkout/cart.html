@@ -4,7 +4,7 @@
 	<md-switch aria-label="cart.nonchilled" ng-model="cart.nonchilled" ng-change="alcoholCart.setCartChilled(cart.nonchilled)"></md-switch>
 
 </div>
-<div class="checkbox-gray-toptext">SAVE {{services.chilled | pricingTxt}} by choosing to have your drinks delivered Non-Chilled.</div>
+<div class="checkbox-gray-toptext">SAVE {{cart.discount.nonchilled.exemption | pricingTxt}} by choosing to have your drinks delivered Non-Chilled.</div>
 </div>
 <div class="checkoutmiddletable">
 
@@ -14,13 +14,17 @@
 		<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0">
 			
 			<td width="52%">
-				
+
 				<span ng-if="(cartproduct.onlyForAdvance && cart.delivery.type==0) || cartproduct.isNotAvailable" class="cart-alert">!
 				<md-tooltip class="cart-alert-tooltip" md-direction="top" >Sorry! This item is either out of stock, or unavailable for the quantity or delivery time selected.</md-tooltip>
 	  	</span>
 
 				<div class="orhistry2_td2procdtcvr">
-					<span ui-sref="mainLayout.product({product:cartproduct.product._id})" class="cursor-pointer"><img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" /></span>
+					<span class="cursor-pointer">
+						<a ui-sref="mainLayout.product({product:cartproduct.product._id})" title="View Product">
+							<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="img-responsive" />
+						</a>
+					</span>
 
 					<div class="checkouter-td-right-text">
 						<div class="orhistry2_td2proctext1">{{cartproduct.product.name}}</div>
@@ -65,8 +69,13 @@
 		
 			<td width="52%">
 			
-				<div class="orhistry2_td2procdtcvr" ui-sref="mainLayout.packages({type:package.original.type==2?'cocktail':'party'})">
-					<span><img err-pro-src="" ng-src="packages/i/{{package.original.coverImage.source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" /></span>
+				<div class="orhistry2_td2procdtcvr">
+					<span>
+						<a ui-sref="mainLayout.packages({type:package.original.type==2?'cocktail':'party'})">
+							<img err-pro-src="" ng-src="packages/i/{{package.original.coverImage.source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" />
+						</a>
+					
+					</span>
 
 
 					<div class="checkouter-td-right-text">
@@ -96,11 +105,15 @@
 		</tr>
 
 		<tr ng-repeat="(key, promotion) in alcoholCart.getPromotions()">
-		
+
 			<td width="52%">
-			
+
 				<div class="orhistry2_td2procdtcvr">
-					<span ui-sref="mainLayout.product({product:promotion.product._id})" class="cursor-pointer"><img err-pro-src="" ng-src="products/i/200/{{promotion.product._image}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" /></span>
+					<span>
+						<a ui-sref="mainLayout.product({product:promotion.product._id})">
+							<img err-pro-src="" ng-src="products/i/200/{{promotion.product._image}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" />
+						</a>
+					</span>
 
 					<div class="checkouter-td-right-text">
 						<div class="orhistry2_td2proctext1">{{promotion.product._title}}</div>
@@ -175,13 +188,14 @@
 	 <div class="checkouterexpressdiv">
 		 <div class="checkouterexpresstitle">Express Delivery</div>
 		 <div class="checkouterexpresstext">Gauranteed 30 mins delivery.</div>
-		 <div class="checkouterexpresstext">$50 surcharge applies. <a href="javascript:void(0)">Terms &amp; Conditions</a> applies.</div>
+		 <div class="checkouterexpresstext">{{cart.service.express.charges | pricingTxt}} surcharge applies. <a href="javascript:void(0)">Terms &amp; Conditions</a> applies.</div>
 	 </div>
 	</div>
 </div>
 
+<!-- Promotion view Starts-->
 <div ui-view="promotions"></div>
-
+<!-- Promotion view Ends-->
 
 <div class="checkouterlastdiv">
  <div class="checkouterwantfirst">
