@@ -11,12 +11,11 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ngAnimate',
 	'ngMaterial',
 	'ngScrollbars',
-	'ngMessages',
-	// 'ngTouch',
+	'ngMessages',	
 	'ngMap',
-	'vAccordion',
-	'ngFacebook',
-	'alcoholCart.directives'
+	'vAccordion',	
+	'alcoholCart.directives',
+	'angularFblogin'
 ]);
 
 
@@ -26,10 +25,6 @@ AlcoholDelivery.config(
 		$ocLazyLoadProvider.config({
 			// global configs go here
 		});
-}]);
-
-AlcoholDelivery.config(['$facebookProvider', function($facebookProvider) {
-    $facebookProvider.setAppId('273669936304095').setPermissions(['email','user_friends']);
 }]);
 
 AlcoholDelivery.config(['$controllerProvider', function($controllerProvider) {
@@ -124,7 +119,7 @@ AlcoholDelivery.filter('deliveryDateSlug',function(){
 })
 
 
-AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', '$facebook', "$mdToast", function($scope, $rootScope,$http,$facebook,$mdToast) {
+AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', '$mdToast', function($scope, $rootScope,$http,$mdToast) {
 
 	$scope.AppController = {};
 	$scope.featuredProduct = [];
@@ -254,7 +249,7 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', '$f
 
 
 	// YKB Facebook start //
-	$scope.$on('fb.auth.authResponseChange', function() {
+	/*$scope.$on('fb.auth.authResponseChange', function() {
       $scope.status = $facebook.isConnected();
       if($scope.status) {
         $facebook.api('/me?fields=email,name').then(function(user) {
@@ -275,15 +270,9 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', '$f
 
         });
       }
-    });
+    });*/
 
-    $scope.loginToggle = function() {
-      if($scope.status) {
-        $facebook.logout();
-      } else {
-        $facebook.login();
-      }
-    };
+    
     // YKB facebook end //
 
 
@@ -2941,7 +2930,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						templateUrl: "/templates/cms/cms.html",
 						params: {pageTitle: 'Privacy Policy', cmsId:'572d960763e8fe24e06a0f97'},
 						controller:function($scope,$http){
-
+								
 								setTimeout(function(){
 										initScripts({
 												disableScrollHeader:true
@@ -3256,9 +3245,9 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 
-    $rootScope.$on('fb.load', function() {
+    /*$rootScope.$on('fb.load', function() {
       $window.dispatchEvent(new Event('fb.load'));
-    });
+    });*/
    
 
 	$rootScope.$on('alcoholCart:promotionAdded', function(data,msg){

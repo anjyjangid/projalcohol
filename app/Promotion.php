@@ -76,6 +76,10 @@ class Promotion extends Moloquent
 			$promoProductKeys = array_merge($promoProductKeys,$promotion['products']);
 		}
 
+		if(empty($promoProductKeys)){
+			return [];
+		}
+
 		$productObj = new products;
 
 		$promoProducts = $productObj->getProducts(

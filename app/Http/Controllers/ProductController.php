@@ -90,9 +90,9 @@ class ProductController extends Controller
 
 
     public function getproductdetail(Request $request){
-
-        $params = $request->all();
         
+        $params = $request->all();
+
         $product = Products::find($params['product']);
 
         return response($product,200);

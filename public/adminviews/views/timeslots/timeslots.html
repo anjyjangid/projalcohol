@@ -46,7 +46,7 @@
 						                    <span class="help-block" ng-bind=""></span>						                    
 						                </td>
 					        			<td ng:class="{'has-error':error[weekKey+'.'+$index+'.orderlimit'][0]}">
-					        				<input ng-disabled="slot.status==0" type="number"  ng-model="slot.orderlimit" class="form-control" placeholder="">
+					        				<input min="0" ng-disabled="slot.status==0" type="number"  ng-model="slot.orderlimit" class="form-control" placeholder="">
 					        				<span class="help-block" ng-bind="error[weekKey+'.'+$index+'.orderlimit'][0]"></span>    	
 					        			</td>
 					        			<td>

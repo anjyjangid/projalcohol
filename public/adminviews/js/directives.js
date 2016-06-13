@@ -203,12 +203,14 @@ MetronicApp.directive('ckeditor', ['$timeout', '$q', function ($timeout, $q) {
                         configLoaderDef.resolve();
                     });
 
-                    ngModel.$render = function () {
-                        data.push(ngModel.$viewValue);
-                        if (isReady) {
-                            onUpdateModelData();
-                        }
-                    };
+                    //$timeout(function(){
+                        ngModel.$render = function () {                        
+                            data.push(ngModel.$viewValue);
+                            if (isReady) {
+                                onUpdateModelData();
+                            }
+                        };
+                    //});
                 };
 
                 if (CKEDITOR.status === 'loaded') {

@@ -37,16 +37,21 @@ class AdminPasswordController extends Controller
     {
         //$this->validate($request, ['email' => 'required|email']);
 
-        $validator = Validator::make($request->all(), [            
-                        'email' => 'required|email|exists:admin',            
-                    ],[
-                       'email.exists' => 'We can\'t find a user with that e-mail address.',                       
-                    ]);
+        $data = $request->all();
+        
+        if(isset($data['email']))
+            $data['email'] = strtolower($data['email']);
+
+        $validator = Validator::make($data, 
+            ['email' => 'required|email|exists:admin'],
+            ['email.exists' => 'We can\'t find a user with that e-mail address.']
+        );
+
         if ($validator->fails()) {
             return response($validator->errors(), 422);
         }
 
-        $user = Admin::where('email','=',$request->input('email'))->first();
+        $user = Admin::where('email','=',$data['email'])->first();
 
         $user->email_key = $tokens->create($user);
         
@@ -60,7 +65,7 @@ class AdminPasswordController extends Controller
         $res = $email->sendEmail($data);       
 
         if($res){
-            return response(['status'=>'We have mailed you the instruction!'],200);
+            return response(['status'=>'Check your email for a link to reset your password.'],200);
         }else{
             return response(['email'=>'Error in sending email'],200);
         }
@@ -86,5 +91,52 @@ class AdminPasswordController extends Controller
                                 
         }*/
     } 
+
+
+    /**
+     * Reset the given user's password.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function postReset(Request $request)
+    {
+        $data = $request->all();
+        $user = Admin::where('email_key','=',$request->input('token'))->first();
+        if(!$user){
+            return response(['invalid'=>'Invalid or expired link.'],422);
+        }        
+        $validator = Validator::make($data, [
+            'token'    => 'required',
+            'password' => 'required|confirmed|between:8,32',
+            'password_confirmation' => 'required',
+        ],[           
+           
+        ]);
+        if ($validator->fails()) {
+            return response($validator->errors(), 422);
+        }
+        $user->password = bcrypt($request->input('password'));
+        $user->save();
+        $user->unset('email_key');
+        return response(['message'=>'Password reset successfully'],200);       
+        
+    }
+
+    public function getReset(Request $request,$token = null)
+    {
+        $isExpired = ['message'=>'Invalid or expired link'];
+        if (is_null($token)) {
+            return response($isExpired,400);
+        }
+
+        $user = Admin::where('email_key','=',$token)->first();
+
+        if(!$user){
+            return response($isExpired,400);
+        }else{
+            return response([],200);
+        }        
+    }
 
 }

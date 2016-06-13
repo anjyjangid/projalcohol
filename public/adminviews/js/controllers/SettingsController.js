@@ -51,6 +51,8 @@ MetronicApp.controller('SettingFormController',['$rootScope', '$scope', '$timeou
 		//POST DATA WITH FILES
 		settingsModel.updateSetting($state.$current.data.key,data).success(function(response){
 
+			
+
 			$scope.errors = {};
 
 		}).error(function(data, status, headers){
@@ -62,6 +64,11 @@ MetronicApp.controller('SettingFormController',['$rootScope', '$scope', '$timeou
 
 	settingsModel.getSettings($state.$current.data.key).success(function(response){			
 		$scope.settings = response.settings;
+		$scope.master = angular.copy($scope.settings); 
 	});
+
+	$scope.reset = function() {
+		$scope.settings = angular.copy($scope.master);
+	};
 
 }]);

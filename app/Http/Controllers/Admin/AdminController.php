@@ -110,10 +110,15 @@ class AdminController extends Controller
 
     public function postUpdate(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $data = $request->all();
+        if(isset($data['email'])){
+            $data['email'] = strtolower($data['email']);
+        }
+
+        $validator = Validator::make($data, [
             'first_name' => 'required|min:3',
             'last_name' => 'required|min:3',
-            'email' => 'required|email|max:255',
+            'email' => 'required|email|max:255|unique:admin,email,'.Auth::user('admin')->id.',_id',
         ]);
 
         if ($validator->fails()) {
@@ -122,9 +127,9 @@ class AdminController extends Controller
 
         $admin = Admin::where('_id', Auth::user('admin')->id)->first();
         
-		$admin->first_name = $request->input('first_name');
-		$admin->last_name = $request->input('last_name');
-		$admin->email = $request->input('email');
+		$admin->first_name = $data['first_name'];
+		$admin->last_name = $data['last_name'];
+		$admin->email = $data['email'];
 		$admin->save();
         return response($admin, 200);
     }
@@ -140,7 +145,7 @@ class AdminController extends Controller
 
         $validator = Validator::make($request->all(), [
             'current_password' => 'required',
-            'new_password' => 'required|min:6|max:8|different:current_password',
+            'new_password' => 'required|between:8,32|different:current_password',
             'retype_password' => 'required|same:new_password',
         ]);
 
@@ -157,9 +162,35 @@ class AdminController extends Controller
         return response($admin, 200);
     }
 
-    public function postSubadmin(SubadminRequest $request,$id=null){
+    public function postSubadmin(Request $request,$id=null){
 
-        $data = $request->all();
+        $data = $request->all();        
+
+        if(isset($data['email'])){
+            $data['email'] = strtolower($data['email']);
+        }
+
+        $rules = [            
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',            
+            'email' => 'required|email|max:255|unique:admin,email,'.@$id.',_id',            
+            'password' => 'required|between:8,32',
+            'confirmPassword' => 'required|same:password',
+            'status'=> 'required|integer|in:0,1',            
+        ];
+
+        if($id!=null){
+            unset($rules['password']);
+            unset($rules['confirmPassword']);
+        }        
+
+        $validator = Validator::make($data, $rules, [
+            'required' => 'This field is required'
+        ]);
+
+        if ($validator->fails()) {
+            return response($validator->errors(), 422);
+        }
 
         $inputs = [
             'first_name' => $data['first_name'],
