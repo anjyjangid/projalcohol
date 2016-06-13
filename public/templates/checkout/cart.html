@@ -4,7 +4,7 @@
 	<md-switch aria-label="cart.nonchilled" ng-model="cart.nonchilled" ng-change="alcoholCart.setCartChilled(cart.nonchilled)"></md-switch>
 
 </div>
-<div class="checkbox-gray-toptext">SAVE {{services.chilled | pricingTxt}} by choosing to have your drinks delivered Non-Chilled.</div>
+<div class="checkbox-gray-toptext">SAVE {{cart.discount.nonchilled.exemption | pricingTxt}} by choosing to have your drinks delivered Non-Chilled.</div>
 </div>
 <div class="checkoutmiddletable">
 
@@ -21,8 +21,8 @@
 
 				<div class="orhistry2_td2procdtcvr">
 					<span class="cursor-pointer">
-						<a ui-sref="mainLayout.product({product:cartproduct.product._id})">
-							<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles || getProductThumb}}" alt="" class="img-responsive" />
+						<a ui-sref="mainLayout.product({product:cartproduct.product._id})" title="View Product">
+							<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="img-responsive" />
 						</a>
 					</span>
 
@@ -188,7 +188,7 @@
 	 <div class="checkouterexpressdiv">
 		 <div class="checkouterexpresstitle">Express Delivery</div>
 		 <div class="checkouterexpresstext">Gauranteed 30 mins delivery.</div>
-		 <div class="checkouterexpresstext">$50 surcharge applies. <a href="javascript:void(0)">Terms &amp; Conditions</a> applies.</div>
+		 <div class="checkouterexpresstext">{{cart.service.express.charges | pricingTxt}} surcharge applies. <a href="javascript:void(0)">Terms &amp; Conditions</a> applies.</div>
 	 </div>
 	</div>
 </div>

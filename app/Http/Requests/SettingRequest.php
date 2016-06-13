@@ -48,10 +48,10 @@ class SettingRequest extends Request
             case 'social':
                 $rules = [
 
-                    'facebook.value' => 'required|string|max:255',
-                    'googleplus.value' => 'required|string|max:255',
+                    'facebook.value' => 'required|url',
+                    'googleplus.value' => 'required|url',
                     'instagram.value' => 'required|string|max:255',
-                    'twitter.value' => 'required|string|max:255',
+                    'twitter.value' => 'required|url',
                     'youtube.value' => 'required|string|max:255',
 
                 ];
@@ -113,6 +113,7 @@ class SettingRequest extends Request
                 'numeric' => 'Field must be numeric',
                 'min' => 'Minimum :min is allowed',
                 'max' => 'Maximum :max is allowed',
+                'url' => 'The value must be a valid url.'
 
         ];
         

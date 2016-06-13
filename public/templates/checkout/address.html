@@ -47,7 +47,7 @@
 			<div class="alcohlinputext2" ng:class="{'has-error':errors.contact[0]}">
 
 				<label>Contact Number<span>*</span></label>			
-				<input type="number" class="alcohalpopuptext2" ng-model="delivery.contact" min="10" max="99999999999">
+				<input type="text" class="alcohalpopuptext2" ng-model="delivery.contact" ng-minlength="8" ng-maxlength="13">
 				<span class="help-block" ng-bind="errors.contact"></span>
 
 			</div>

@@ -206,8 +206,8 @@ class Email extends Moloquent
 				$data = ['content' => $this->recipient_info['message']];
 
 				Mail::send('emails.mail', $data, function ($message) {
-				    $message->setTo(array($this->recipient_info["receiver"]['email']=>$this->recipient_info["receiver"]['name']));
-				    $message->setSubject($this->recipient_info['subject']);
+					$message->setTo(array($this->recipient_info["receiver"]['email']=>$this->recipient_info["receiver"]['name']));
+					$message->setSubject($this->recipient_info['subject']);
 				});
 
 				// Backup your default mailer

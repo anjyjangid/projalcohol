@@ -38,14 +38,14 @@ class AdminAuthController extends Controller
         
         // setting the credentials array
         $credentials = [
-            'email' => $request->input('email'),
+            'email' => strtolower($request->input('email')),
             'password' => $request->input('password'),
         ];
 
         $invalidcredentials = false;
 
         // if the credentials are wrong
-        if (!Auth::attempt('admin',$credentials, $request->has('remember'))) {
+        if (!Auth::attempt('admin',$credentials, $request->input('remember'))) {
             $invalidcredentials = 'Username password does not match';            
         }
         

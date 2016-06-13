@@ -39,7 +39,12 @@ class PasswordController extends Controller
 
 	public function postEmail(Request $request, TokenRepositoryInterface $tokens)
 	{
-		$validator = Validator::make($request->all(), [            
+		$data = $request->all();
+		
+		if(isset($data['email']))
+			$data['email'] = strtolower($data['email']);
+		
+		$validator = Validator::make($data, [            
 						'email' => 'required|email|exists:user',            
 					],[           
 					   'email.required' => 'Please provide your email to reset password.',
@@ -50,8 +55,8 @@ class PasswordController extends Controller
 		if ($validator->fails()) {
 			return response($validator->errors(), 422);
 		}
-		
-		$user = User::where("email",'=',$request->input("email"))->first();
+
+		$user = User::where('email','=',$data['email'])->first();
 
 		$user->email_key = $tokens->create($user);
 		
@@ -97,7 +102,7 @@ class PasswordController extends Controller
         
         $validator = Validator::make($request->all(), [
         					'token'    => 'required',
-				            'password' => 'required|confirmed|min:6',
+				            'password' => 'required|confirmed|between:8,32',
 							'password_confirmation' => 'required',
 						],[           
 						   

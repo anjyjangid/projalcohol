@@ -65,12 +65,12 @@
 					</div>
 				</div>
 				<div class="socilblok_twtr">
-					<a href="@{{settings.social.twitter}}"><img class="img-responsive" src="images/socl_itwtr.png" />
+					<a target="_blank" href="@{{settings.social.twitter}}"><img class="img-responsive" src="images/socl_itwtr.png" />
 					<span>Twitter</span>
 					</a>
 				</div>
 				<div class="socilblok_fb">
-					<a href="@{{settings.social.facebook}}"><img class="img-responsive" src="images/social_fbicon.png" />
+					<a target="_blank" href="@{{settings.social.facebook}}"><img class="img-responsive" src="images/social_fbicon.png" />
 					<span>Facebook</span>
 					</a>
 				</div>
@@ -87,9 +87,9 @@
 						<div class="footer1_custmertext">10,000 Customers <br /> Already Connected</div>
 						<div class="footer1_custmerbtmtxt">She was bouncing away, when a cry from the two women, who had turned towards the bed, caused her to look round.</div>
 						<div class="footer1_sociallink">
-							<a href="@{{settings.social.twitter}}"><img class="img-responsive" src="images/footer1_twitter.png" /></a>
-							<a href="@{{settings.social.facebook}}"><img class="img-responsive" src="images/footer1_fb.png" /></a>
-							<a href="@{{settings.social.googleplus}}"><img class="img-responsive" src="images/footergoogle.png" /></a>
+							<a target="_blank" href="@{{settings.social.twitter}}"><img class="img-responsive" src="images/footer1_twitter.png" /></a>
+							<a target="_blank" href="@{{settings.social.facebook}}"><img class="img-responsive" src="images/footer1_fb.png" /></a>
+							<a target="_blank" href="@{{settings.social.googleplus}}"><img class="img-responsive" src="images/footergoogle.png" /></a>
 						</div>
 						<div class="footer1_privcvr">
 							<div class="footer1_privcytext"><a ui-sref="cmsLayout.privacy-policy">Privacy Policy</a></div>
@@ -194,6 +194,7 @@
 	<script type="text/javascript" src="{{ asset('bower_components/angular-material/angular-material.min.js') }}"></script>
 
     <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/controller.js"></script>
     <script type="text/javascript" src="js/alcoholServices.js"></script>
     <script type="text/javascript" src="js/alcoholCart.js"></script>
     <script type="text/javascript" src="js/alcoholWishlist.js"></script>
@@ -201,7 +202,7 @@
     <script type="text/javascript" src="js/directive.js"></script>
 
 
-    <script src="js/ngFacebook.js"></script>
+    <script src="{{ asset('bower_components/angular-fblogin/dist/angular-fblogin.js') }}"></script>   
     <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>   
 
 </html>

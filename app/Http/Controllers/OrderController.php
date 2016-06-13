@@ -87,7 +87,7 @@ class OrderController extends Controller
 							'$size' => '$products'
 						),
 						'created_at'=>1,
-						'timeslot'=>1,						
+						'timeslot'=>1,
 					),
 				),				
 				array(
@@ -96,10 +96,6 @@ class OrderController extends Controller
 			));
 		});
 
-		
-
 		return response($orders['result'],200);
 	}
-	
-
 }

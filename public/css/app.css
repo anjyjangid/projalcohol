@@ -463,5 +463,6 @@ md-toast.desired-quantity-na-toast:before {
 }
 
 .signuplogin li.hideOp .dropdown-menu{
-	display: none;
+	display: none !important;
 }
+

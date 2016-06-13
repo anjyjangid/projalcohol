@@ -282,7 +282,7 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 				function(isConfirm) {
 					if (isConfirm) {
 						
-						$http.delete("/admin/"+tab+"/"+checkedKeys)
+						$http.delete("/adminapi/"+tab+"/"+checkedKeys)
 							.success(function(response) {
 
 								if(response.success){
@@ -463,13 +463,17 @@ initialization can be disabled and Layout.init() should be called on page load c
 ***/
 
 /* Setup Layout Part - Header */
-MetronicApp.controller('HeaderController', ['$scope','$http', '$rootScope', function($scope,$http,$rootScope) {
+MetronicApp.controller('HeaderController', ['$scope','$http', '$rootScope','AdminUserService', function($scope,$http,$rootScope,AdminUserService) {
 	$scope.$on('$includeContentLoaded', function() {
 		Layout.initHeader(); // init header
 	});
 
+	/*var data = AdminUserService.getUser();
 	
-
+	if(data){
+		$scope.user = data;
+		$scope.user.name = data.first_name+' '+data.last_name;		
+	}*/
 	/*$http.get('admin/profile').success(function(response) {
 		$rootScope.user = response;
 		$rootScope.user.name = response.first_name+' '+response.last_name;
@@ -506,9 +510,17 @@ MetronicApp.controller('FooterController', ['$scope', function($scope) {
 	});
 }]);
 
+MetronicApp.factory('AuthServices', ['$rootScope','$http', 'store', function($rootScope,$http,store) {
+	var service = {};
+
+	service.Login = function (username, password, callback) {
+
+	}
 
 
-MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", function($q, $timeout, $http, store) {
+}]);
+
+MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", "$rootScope", function($q, $timeout, $http, store, $rootScope) {
 
 	var currentUser = false;
 
@@ -519,34 +531,76 @@ MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", fun
 		return currentUser;
 	};
 
-	this.storeUser = function(data){
-		return store.set('AdminUserData',data);
+	this.storeUser = function(data){								
+		var deferred = $q.defer();
+		store.set('AdminUserData',data);		
+		$rootScope.user = data;
+		$rootScope.user.name = data.first_name+' '+data.last_name;
+		deferred.resolve(data);
+		return deferred.promise;
 	};
 
 	this.removeUser = function(){
-		return store.remove('AdminUserData');
+		var deferred = $q.defer();	
+		store.remove('AdminUserData');
+		deferred.resolve();
+		return deferred.promise;
 	};
 
 	this.isLogged = function(){		
 		return store.get('AdminUserData');
 	};
 
+	this.chkUser = function(){		
+		var deferred = $q.defer();
+		if(store.get('AdminUserData')){
+			var data = store.get('AdminUserData');
+			$rootScope.user = data;
+			$rootScope.user.name = data.first_name+' '+data.last_name;
+			deferred.resolve(data);			
+		}else{
+			deferred.reject();
+		}
+		return deferred.promise;
+	};
+
+	this.checkToken = function(token){
+		var deferred = $q.defer();
+		$http.get('/adminapi/password/reset/'+token).success(function(res){
+			deferred.resolve(res);
+		}).error(function(err){
+			
+			deferred.reject(err);
+		});
+		return deferred.promise;
+	}
+
 }]);
 
 MetronicApp.controller('LoginController', ['$scope','AdminUserService', '$rootScope', '$http', '$state', '$location', function($scope, AdminUserService, $rootScope, $http, $state, $location) {    
 
-	$scope.credentials = {};
+	$scope.credentials = {remember:0};
 	$scope.reset = {};
 	$scope.errors = [];
 	$scope.reseterrors = [];
-	$scope.showlogin = true;
+	
+	if(typeof $rootScope.flash != 'undefined'){
+		$scope.showlogin = $rootScope.flash.showlogin;
+		$scope.linkerror = 1;
+		$scope.linkerrormsg = $rootScope.flash.message; 
+	    delete $rootScope.flash;
+	}else{
+		$scope.linkerror = 0;
+		$scope.showlogin = true;	
+	}
 
 	$scope.adminlogin = function(){
 		$scope.errors = [];
 		$http.post('/adminapi/auth/login',$scope.credentials).success(function(res){
 			if(res.email){
-				AdminUserService.storeUser(res);				
-				$state.go('userLayout.dashboard');				
+				AdminUserService.storeUser(res).then(function(res){
+					$state.go('userLayout.dashboard',{},{reload:true});	
+				});
 			}else{
 				$scope.errors = {email:['Error in login']};
 			}
@@ -557,10 +611,8 @@ MetronicApp.controller('LoginController', ['$scope','AdminUserService', '$rootSc
 
 	$scope.resetRequest = function(){
 		$scope.reseterrors = [];
-		$http.post('/adminapi/password/email',$scope.reset).success(function(res){
-		
+		$http.post('/adminapi/password/email',$scope.reset).success(function(res){		
 			$scope.loginForm(true);
-
 			Metronic.alert({
 		        type: 'success',
 		        icon: 'success',
@@ -581,6 +633,30 @@ MetronicApp.controller('LoginController', ['$scope','AdminUserService', '$rootSc
 
 }]);
 
+MetronicApp.controller('ResetpasswordController', ['$rootScope','$scope','$http', '$state', '$stateParams', function($rootScope, $scope, $http, $state, $stateParams) {    
+	
+	$scope.credentials = {token:$stateParams.key};
+	$scope.resetPass = function(){
+		$scope.errors = {};
+		$http.post('/adminapi/password/reset',$scope.credentials).success(function(){
+			$rootScope.flash = {
+				showlogin:true,
+				message:'Your password has been changed successfully!'
+			};
+			$state.go('login');
+		}).error(function(errors){
+			$scope.errors = errors;
+			if(errors.invalid){							
+				$rootScope.flash = {
+					showlogin:false,
+					message:'It looks like you clicked on an invalid password reset link. Please try again.'
+				};	
+				$state.go('login');			
+			}
+		});
+	}
+
+}]);
 /* Setup Rounting For All Pages */
 MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
     // Redirect any unmatched url
@@ -591,7 +667,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         /*REDIRECT USER AS PER CONDITION*/
         .state('blank',{
         	url: "/",
-        	controller:function(AdminUserService, $state, $timeout) {
+        	controller:function(AdminUserService, $state, $timeout) {	      		
 	      		if (AdminUserService.isLogged()) {
 	      			$s = 'userLayout.dashboard'	      			
 	      		}else{
@@ -1679,8 +1755,9 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             //data: {pageTitle: 'Administrator Login'},            
             controller: function($http,AdminUserService, $state){
             	$http.get('/adminapi/auth/logout').success(function(res){
-					AdminUserService.removeUser();
-					$state.go('login');					
+					AdminUserService.removeUser().then(function(){
+						$state.go('login',{},{reload:true});						
+					});					
 				}).error(function(data, status, headers) {
 					
 				});
@@ -1688,11 +1765,35 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         })
 
         .state("resetpassword", {
-            url: "/resetpassword/{rKey}",
+            url: "/resetpassword/{key}",
             templateUrl: "adminviews/views/resetpassword.html",
             data: {pageTitle: 'Reset password'},            
-            controller: function($http,AdminUserService, $state){
-            	
+            controller: "ResetpasswordController",
+            resolve: {                
+                checkStatus: function($location,AdminUserService,$state,$q,$timeout,$rootScope){
+                	if (AdminUserService.isLogged()) {
+				        // Resolve the promise successfully
+				        $timeout(function() {
+				          // This code runs after the authentication promise has been rejected.
+				          // Go to the log-in page
+				          $state.go('userLayout.dashboard');
+				        })
+
+				        // Reject the authentication promise to prevent the state from loading
+				        return $q.reject();
+				    } else {
+                		var token = $location.path().replace('/resetpassword/','');	
+						AdminUserService.checkToken(token).then(function(){
+
+						},function(err){
+							$rootScope.flash = {
+								showlogin:false,
+								message:'It looks like you clicked on an invalid password reset link. Please try again.'
+							};	
+							$state.go('login',{},{reload:true});														
+						});
+					}	
+                }
             }            
         });        
 
@@ -1700,7 +1801,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
         function authenticate($q, AdminUserService, $state, $timeout, $location) {
 
-	      if (AdminUserService.isLogged()) {
+	      if (AdminUserService.isLogged()) {	      	
 	        // Resolve the promise successfully
 	        return $q.when()
 	      } else {
@@ -1709,7 +1810,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 	        $timeout(function() {
 	          // This code runs after the authentication promise has been rejected.
 	          // Go to the log-in page
-	          $state.go('login')
+	          $state.go('login',{},{reload:true})
 	        })
 
 	        // Reject the authentication promise to prevent the state from loading
@@ -1733,7 +1834,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 	      } else {
 	        return $q.when();
 	      }
-	    }
+	    }    
 
 }]);
 
@@ -1755,25 +1856,27 @@ MetronicApp.filter('isEmpty', [function() {
 }]);
 
 /* Init global settings and run the app */
-MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "store", "$location", "AdminUserService", function($rootScope, settings, $state, $cookieStore, $log, store, $location, AdminUserService) {
+MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "store", "$location", "AdminUserService", "$timeout", "$stateParams", function($rootScope, settings, $state, $cookieStore, $log, store, $location, AdminUserService, $timeout, $stateParams) {
 
 	$rootScope.$on('$locationChangeStart', function (event, next, current) {
-        if(AdminUserService.isLogged()){        	        	        	
-			var res = AdminUserService.getUser();	
-			$rootScope.user = res;
-			$rootScope.user.name = res.first_name+' '+res.last_name;
-        }else{        
-			//THROUGH USER TO LOGIN IN CASE OF SESSION TIMEOUT OR NOT LOGIN
-			$location.path('/login');		
-		}        
+		AdminUserService.chkUser().then(function(userdata){
+			//USER IS LOOGED IN 
+		},function(){
+			//THROW USER TO LOGIN IN CASE OF SESSION TIMEOUT OR NOT LOGIN AND ALLOW RESETPASSWORD
+			if($location.path().indexOf('resetpassword') <= 0){
+				$location.path('/login');
+			}			
+		});                
     });
 	
 	$rootScope.$state = $state; // state to be accessed from view    
 
 }]);
 
-MetronicApp.service('myRequestInterceptor', ['$q', '$rootScope', '$log', 
-function ($q, $rootScope, $log) {    
+
+
+
+MetronicApp.service('myRequestInterceptor', ['$q', '$rootScope', '$log', function ($q, $rootScope, $log) {
 	'use strict'; 
 
 	var xhrCreations = 0;
@@ -1790,7 +1893,8 @@ function ($q, $rootScope, $log) {
 	return {
 		request: function (config) {
 			xhrCreations++;
-            updateStatus();
+            updateStatus();		
+
 			return config;
 		},
 		requestError: function (rejection) {
@@ -1806,11 +1910,10 @@ function ($q, $rootScope, $log) {
 		responseError: function (rejection) {
 			xhrResolutions++;
             updateStatus();
-			if(rejection.status == 401){
-
-				AdminUserService.removeUser();
-				$state.go('login');
-
+			if(rejection.status == 401){				
+				AdminUserService.removeUser().then(function(){
+					$state.go('login',{},{reload:true});	
+				});				
 			}
 			return $q.reject(rejection);
 		}
@@ -1852,3 +1955,4 @@ var objectToFormData = function(obj, form, namespace) {
 	
 };
 
+	

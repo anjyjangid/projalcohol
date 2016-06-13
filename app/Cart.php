@@ -168,16 +168,19 @@ class Cart extends Moloquent
 
 	}
 
-	public static function getAllProductsInCart($data){
-
+	public function getProductIncartCount($data){
+		
 		$products = [];
 
-		foreach($data['products'] as $key=>$product){
-			
-			$products[$key] = (int)$product['chilled']['quantity'] +  (int)$product['nonchilled']['quantity'];
+		if(isset($data['products'])){
+			foreach($data['products'] as $key=>$product){
+				
+				$products[$key] = (int)$product['chilled']['quantity'] +  (int)$product['nonchilled']['quantity'];
 
+			}
 		}
 
+		if(isset($data['packages'])){
 		foreach($data['packages'] as $key=>$package){
 			
 			foreach($package['packageItems'] as $packageItem){
@@ -204,20 +207,31 @@ class Cart extends Moloquent
 			}
 
 		}
+		}
 
-		foreach($data['promotions'] as $promotion){
+		if(isset($data['promotions'])){
+			foreach($data['promotions'] as $promotion){
 
-			if(isset($products[$promotion['productId']])){
+				if(isset($products[$promotion['productId']])){
 
-				$products[$promotion['productId']]++;
+					$products[$promotion['productId']]++;
 
-			}else{
+				}else{
 
-				$products[$promotion['productId']] = 1;
+					$products[$promotion['productId']] = 1;
+
+				}
 
 			}
-
 		}
+
+		return $products;
+
+	}
+
+	public function getAllProductsInCart($data){
+
+		$products = $this->getProductIncartCount($data);
 
 		$productObj = new products();
 		$productsIdInCart = array_keys($products);
@@ -225,13 +239,19 @@ class Cart extends Moloquent
 		$productsInCart = $productObj->getProducts(
 											array(
 												"id"=>$productsIdInCart,
-												"with"=>array(
-													"discounts"
-												)
+												"fields"=>["quantity","maxQuantity","outOfStockType","availabilityDays","availabilityTime","status"],
+												// "with"=>["discounts"]
 											)
 										);
-		prd($productsInCart);
-		jprd($products);
+
+		foreach($productsInCart as $key=>$pic){
+
+			$productsInCart[$pic['_id']] = $pic;
+			unset($productsInCart[$key]);
+
+		}
+
+		return $productsInCart->toArray();
 
 	}
 

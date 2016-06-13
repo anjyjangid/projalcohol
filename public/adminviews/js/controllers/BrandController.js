@@ -28,6 +28,7 @@ MetronicApp.controller('BrandAddController',['$rootScope','$scope','$http','file
 		
 		//POST DATA WITH FILES
 		brandModel.storeBrand(data).success(function(response){
+			
 
 		}).error(function(data, status, headers){
 

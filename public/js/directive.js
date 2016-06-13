@@ -34,7 +34,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			user:'='
 		},*/
 		templateUrl: '/templates/partials/topmenu.html',
-		controller: function($scope,$rootScope,$http,$state,sweetAlert,$facebook,store,alcoholWishlist){
+		controller: function($scope,$rootScope,$http,$state,sweetAlert,store,alcoholWishlist,$fblogin){
 
 			$scope.list = [];
 
@@ -45,23 +45,21 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.login = {};
 			$scope.forgot = {};
 			$scope.reset = {};
-			$scope.errors = {};
-			$scope.signup.errors = {};
-			$scope.forgot.errors = {};
-			$scope.reset.errors = {};
 
 			$scope.signupSubmit = function() {
+				$scope.signup.errors = {};
 				$http.post('/auth/register',$scope.signup).success(function(response){
 	                $scope.user = response;
 					$scope.user.name = response.email;
-
 	                sweetAlert.swal({
 						type:'success',
 						title: "Congratulation!",
 						text : "Account Created successfully. Please check your mail to verify your account",
 						timer: 10000
 					});
-
+	                $scope.signup = {
+						terms:null
+					};
 					$('#register').modal('hide');
 
 	            }).error(function(data, status, headers) {
@@ -70,29 +68,11 @@ AlcoholDelivery.directive('sideBar', function() {
 			};
 
 			$scope.loginSubmit = function(){
-
-				$http.post('/auth',$scope.login).success(function(response){
-
-	                $scope.login = {};
-	                $scope.user = response;
-					$scope.user.name = response.email;
-	                $('#login').modal('hide');
-	                $scope.errors = {};
-
-	                store.init().then(
-	                	function(successRes){
-	                		$state.go($state.current, {}, {reload: true});
-	                	},
-	                	function(errorRes){}
-	                );
-	                alcoholWishlist.init();
-
-	                
-
+				$scope.errors = {};
+				$http.post('/auth',$scope.login).success(function(response){				  
+                  $scope.loginSuccess(response);
 				}).error(function(data, status, headers) {
-
 	                $scope.errors = data;
-
 	            });
 			};
 
@@ -103,6 +83,7 @@ AlcoholDelivery.directive('sideBar', function() {
 	        });
 
 	        $scope.forgotSubmit = function() {
+				$scope.forgot.errors = {};
 				$http.post('/password/email',$scope.forgot).success(function(response){
 	                $scope.forgot = {};
 	                $scope.forgot.message = response.message;
@@ -114,9 +95,8 @@ AlcoholDelivery.directive('sideBar', function() {
 			};
 
 			$scope.resetSubmit = function() {
-
+				$scope.reset.errors = {};
 				$scope.reset.token = $rootScope.token;
-
 				$http.post('/password/reset',$scope.reset).success(function(response){
 	                $scope.reset = {};
 	                $scope.reset.errors = {};
@@ -157,18 +137,12 @@ AlcoholDelivery.directive('sideBar', function() {
 	            });
 			};
 
-
-
 	        $scope.logout = function() {
 				$http.get('/auth/logout').success(function(response){
-
 	                $scope.user = {};
-
 	                // Destroy Cart Params start
 	                delete $rootScope.deliverykey;
-
-	                localStorage.removeItem("deliverykey");
-	                
+	                localStorage.removeItem("deliverykey");	                
 	                store.init().then(
 	                	function(successRes){
 	                		$state.go("mainLayout.index", {}, {reload: true});
@@ -176,16 +150,45 @@ AlcoholDelivery.directive('sideBar', function() {
 	                	function(errorRes){}
 	                );
 	                alcoholWishlist.init();
-	                
-	                
-
 	            }).error(function(data, status, headers) {
-	                $scope.user = {};
-	                $facebook.logout();
+	                $scope.user = {};	                
 	            });
 			};
 
+			//FACEBOOK LOGIN
+			$scope.loginToggle = function() {      
+		    	$fblogin({
+		            fbId: '273669936304095',
+		            permissions: 'email,user_birthday',
+		            fields: 'first_name,last_name,locale,email,birthday'
+		        })
+		        .then(
+		            function(response){
+		            	$('#login').modal('hide');
+		            	$http.post('/auth/registerfb',response)
+		            	.success(function(res){
+		            		$scope.loginSuccess(res);
+		            	});
+		            }
+		        );
+		    };
 
+		    //INTIALIZE AFTER USER LOGIN(FB & NORMAL)
+		    $scope.loginSuccess = function(response){
+		    	$scope.login = {};
+                $scope.user = response;
+				$scope.user.name = response.email;
+                $('#login').modal('hide');
+                $scope.errors = {};
+
+                store.init().then(
+                	function(successRes){
+                		$state.go($state.current, {}, {reload: true});
+                	},
+                	function(errorRes){}
+                );
+                alcoholWishlist.init();
+		    }
 		}
 	};
 })
