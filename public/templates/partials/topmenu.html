@@ -51,13 +51,12 @@
 				<div class="signuplogin">
 				 <ul class="menuulpadding">
 
-					
+				<!-- Cart Summary Template -->
 					<alcoholcart-summary></alcoholcart-summary>
-					
-					
-					<li ng-hide="user.email"><a data-target="#register" data-toggle="modal" href="javascript:;">Signup</a></li>
-					<li ng-hide="user.email"><a data-target="#login" data-toggle="modal" href="javascript:;">login</a></li>       
-					<!--<a ng-show="user.email" data-target="#" ng-click="logout()" data-toggle="modal" href="javascript:;" class="username">Hola, {{user.email}}</a>-->
+				<!-- Cart Summary Template -->
+					<li ng-hide="user.email"><a data-target="#register" ng-click="resetSignup()" data-toggle="modal" href="javascript:;">Signup</a></li>
+					<li ng-hide="user.email"><a data-target="#login" data-toggle="modal" href="javascript:;">login</a></li>
+
 					<li ng:class="{'hideOp':hideOp}" class="dropdown" ng-show="user.email" ng-mouseover="hideOp=false" ng-mouseleave="hideOp=true">
 						<a href="javascript:;" class="username dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" >
 							Hola, {{user.email}}
@@ -83,6 +82,7 @@ function googleTranslateElementInit() {
 	
 <!-- Modal -->
 <div class="modal" id="register" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
+
 	<div class="modal-dialog alcohal_registermain" role="document">
 		<div class="modal-content alcohalregiterconntcvr">
 			<div class="modal-header alcohalhdr">
@@ -93,7 +93,7 @@ function googleTranslateElementInit() {
 				<div class="alcohal_regisemailcvr">         
 					<div class="alcohal_regissigntxt">Sign Up for Free</div>
 					<div class="registeremailcvr" ng-class="{'has-error':signup.errors.email[0]}">
-						<input type="email" name="email" ng-model="signup.email" class="alcohalrestertextbox form-control" placeholder="Email Address" ng-model="formData.email">
+						<input type="email" name="email" ng-model="signup.email" class="alcohalrestertextbox form-control" placeholder="Email Address">
 						<!-- <span style="color:red; clear:both" ng-show="myForm.email.$dirty && myForm.email.$invalid">
 								<span ng-show="!myForm.email.$error.required && myForm.email.$error.email && myForm.email.$dirty">invalid email</span>
 							</span> -->

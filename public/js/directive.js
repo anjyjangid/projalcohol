@@ -51,6 +51,14 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.reset.errors = {};
 			$scope.menu = {hideOp:false};
 
+			$scope.resetSignup = function(){
+
+				$scope.signup = {
+					terms:null
+				};
+
+			}
+
 			$scope.signupSubmit = function() {
 				$http.post('/auth/register',$scope.signup).success(function(response){
 	                $scope.user = response;
