@@ -656,7 +656,7 @@ AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','
 	$scope.showAddressViaMapModal = function(ev) {
 
 		$mdDialog.show({
-			controller: function($scope, $rootScope, $mdDialog, NgMap) {
+			controller: function($scope, $rootScope, $mdDialog, NgMap, $document) {
 
 				$scope.address = {
 					step:1
@@ -758,6 +758,8 @@ AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','
 								    //         position: point,
 								    //         map: $scope.map,
 								    //     });
+
+						
 
 					}, 500);
 
@@ -1224,9 +1226,9 @@ AlcoholDelivery.controller('CartAddressController',['$scope','$rootScope','$stat
 	$rootScope.getUserAddress();
 
 	$scope.showAddressViaMapModal = function(ev) {
-
+		
 		$mdDialog.show({
-			controller: function($scope, $rootScope, $mdDialog, NgMap) {
+			controller: function($scope, $rootScope, $mdDialog, NgMap, $document) {
 
 				$scope.address = {
 					step:1
@@ -1327,7 +1329,6 @@ AlcoholDelivery.controller('CartAddressController',['$scope','$rootScope','$stat
 						$scope.map.setZoom(12);
 						$scope.map.setOptions({draggable: false});
         				
-
 					}, 500);
 
 
@@ -1997,7 +1998,17 @@ AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$statePara
 		$scope.monthsName[10] = "November";
 		$scope.monthsName[11] = "December";
 
-		var mili = $scope.order.timeslot.datekey * 1000;
+		if($scope.order.timeslot.datekey!==false){
+			
+			var mili = $scope.order.timeslot.datekey * 1000;
+
+		}else{
+
+			var mili = $scope.order.dop * 1000;
+
+		}
+		
+
 		$scope.myDate = new Date(mili);
 
 		$scope.day = $scope.myDate.getDate();
@@ -2008,8 +2019,6 @@ AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$statePara
 		$scope.daySlug = $scope.day+' '+$scope.monthName+', '+$scope.year;
 		$scope.slotslug = $scope.order.timeslot.slotslug;
 
-
-
 		var dopmili = $scope.order.dop * 1000;
 		$scope.dopDate = new Date(dopmili);
 
@@ -2018,6 +2027,9 @@ AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$statePara
 		$scope.dopMonthName = $scope.monthsName[$scope.dopDate.getMonth()];
 		$scope.dopSlug = $scope.dopMonthName+' '+$scope.dopDay+', '+$scope.year;
 
+		$scope.hour = $scope.dopDate.getHours() % 12 || 12;
+		$scope.minute = $scope.dopDate.getMinutes();
+		$scope.aMpM = $scope.dopDate.getHours() > 12 ? 'PM' : 'AM';
 
 
     });

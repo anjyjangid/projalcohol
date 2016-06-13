@@ -157,9 +157,9 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		    	_self.$cart.packages.push(newPackage);
 
 		    	if(inCart){
-		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Promotion updated"});
+		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Package updated"});
 		    	}else{
-		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Promotion added to cart"});
+		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Package added to cart"});
 		    	}
 
 				d.resolve(response);

@@ -525,9 +525,9 @@ AlcoholDelivery.directive('sideBar', function() {
 							.position("top right fixed");
 
 						$mdToast.show(toast).then(function(response) {
-							if ( response == 'ok' ) {
-								$('#login').modal('show');
-							}
+							// if ( response == 'ok' ) {
+							// 	$('#login').modal('show');
+							// }
 						});
 
 
