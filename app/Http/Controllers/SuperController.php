@@ -70,7 +70,7 @@ class SuperController extends Controller
 	{
 		$params = $request->all();
 
-		$brands = Brand::where('status', '=', 1)->take(10)->get();
+		$brands = Brand::where('status', '=', 1)->get();
 		
 		return response($brands);
 	}

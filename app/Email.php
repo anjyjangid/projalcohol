@@ -235,7 +235,7 @@ class Email extends Moloquent
 			
 		} catch(\Exception $e){
 
-            return false;//response(array("success"=>false,"message"=>$e->getMessage()));
+            return response(array("success"=>false,"message"=>$e->getMessage()),422);
 				
 		}										
 

@@ -35,7 +35,7 @@ MetronicApp.factory('brandModel', ['$http', '$cookies','$location', function($ht
 	                place: 'prepend',
 	                closeInSeconds: 3
 	            });
-	            $location.path("brand/list");
+	            $location.path("brands/list");
 
 	        })
 	        /*.error(function(data, status, headers) {            
@@ -84,7 +84,7 @@ MetronicApp.factory('brandModel', ['$http', '$cookies','$location', function($ht
 		                place: 'prepend',
 		                closeInSeconds: 3
 		            });
-		            $location.path("brand/list");
+		            $location.path("brands/list");
 
 	        	}else{
 
