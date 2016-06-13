@@ -1224,6 +1224,7 @@ md-dialog.md-transition-in{
 
 .brands img{
 	display:inline-block;
+	max-height: 100px;
 }
 
 .brands .text-center {
@@ -2983,13 +2984,13 @@ md-dialog.md-transition-in{
 	line-height:17px;
 }
 .prdquanbulkboxtwo{
-	float:left;
-	width:65px;
-	font-size:14px;
-	color:#666;
-	font-weight:400;
-	padding-left:9px;
-	line-height:19px;
+	float: left;
+	font-size: 14px;
+	color: #666;
+	font-weight: 400;
+	padding: 0 9px;
+	line-height: 19px;
+
 }
 
 .prdquantitybulkcoverbulkbox > div{

@@ -79,6 +79,7 @@ angular.module('alcoholCart.directives',[])
 		return {
 			restrict : 'E',
 			controller : 'CartTopController',
+			replace: true,
 			scope: {},
 			transclude: true,
 			templateUrl: function(element, attrs) {

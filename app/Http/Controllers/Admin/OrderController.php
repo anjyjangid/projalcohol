@@ -272,7 +272,7 @@ class OrderController extends Controller
 		 */
 		
 		
-
+		$users = [];
 		foreach($orders['result'] as $key=>$order) {
 			$users[] = (string)$order['user'];
 		}

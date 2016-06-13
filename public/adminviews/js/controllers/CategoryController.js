@@ -184,7 +184,7 @@ MetronicApp.controller('CategoryUpdateController',['$rootScope', '$scope', '$tim
 				response.renameProperty('cat_thumb','thumb');
 				response.renameProperty('cat_lthumb','lthumb');
 				
-				Object.assign($scope.category,response);
+				angular.extend($scope.category,response);
 
 				if(!$scope.category.advance_order)
 					$scope.category.advance_order = {};

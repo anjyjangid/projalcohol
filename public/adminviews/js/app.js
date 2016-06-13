@@ -1755,9 +1755,11 @@ MetronicApp.filter('isEmpty', [function() {
 }]);
 
 /* Init global settings and run the app */
-MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "store", "$location", "AdminUserService", function($rootScope, settings, $state, $cookieStore, $log, store, $location, AdminUserService) {
+MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "store", "$location", "AdminUserService" , function($rootScope, settings, $state, $cookieStore, $log, store, $location, AdminUserService ) {
 
 	$rootScope.$on('$locationChangeStart', function (event, next, current) {
+
+				
         if(AdminUserService.isLogged()){        	        	        	
 			var res = AdminUserService.getUser();	
 			$rootScope.user = res;
@@ -1766,14 +1768,16 @@ MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "st
 			//THROUGH USER TO LOGIN IN CASE OF SESSION TIMEOUT OR NOT LOGIN
 			$location.path('/login');		
 		}        
-    });
+    });   
 	
 	$rootScope.$state = $state; // state to be accessed from view    
 
 }]);
 
-MetronicApp.service('myRequestInterceptor', ['$q', '$rootScope', '$log', 
-function ($q, $rootScope, $log) {    
+
+
+
+MetronicApp.service('myRequestInterceptor', ['$q', '$rootScope', '$log', function ($q, $rootScope, $log) {
 	'use strict'; 
 
 	var xhrCreations = 0;
@@ -1790,7 +1794,8 @@ function ($q, $rootScope, $log) {
 	return {
 		request: function (config) {
 			xhrCreations++;
-            updateStatus();
+            updateStatus();		
+
 			return config;
 		},
 		requestError: function (rejection) {
@@ -1809,7 +1814,7 @@ function ($q, $rootScope, $log) {
 			if(rejection.status == 401){
 
 				AdminUserService.removeUser();
-				$state.go('login');
+				$state.go('login');			
 
 			}
 			return $q.reject(rejection);

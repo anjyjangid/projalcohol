@@ -249,6 +249,7 @@ class BrandController extends Controller
 
     public function postListing(Request $request,$id = false)
     {
+
         $params = $request->all();
 
         $brands = new Brand;        

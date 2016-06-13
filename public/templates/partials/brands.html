@@ -1,0 +1,16 @@
+<section class="fullwidth">
+	<div class="container">
+		<div class="row brands">
+			<data-owl-carousel class="owl-carousel owl-theme" data-options="{					
+						navigation : false,
+						pagination : true,
+						items : 6					
+					}">
+				<div owl-carousel-item="" ng-repeat="brand in brands" class="item col-md-2 text-center">
+					<a href="{{brand.link}}" title="{{brand.title}}"><img ng-src="assets/resources/brand/{{brand.image}}" class="img-responsive" /></a>
+				</div>
+
+			</data-owl-carousel>
+		</div>
+	</div>
+</section>
