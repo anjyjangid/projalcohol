@@ -23,7 +23,7 @@ class UserController extends Controller
         
         // setting the credentials array
         $credentials = [
-            'email' => $request->input('email'),
+            'email' => strtolower($request->input('email')),
             'password' => $request->input('password'),
         ];
 
@@ -92,6 +92,9 @@ class UserController extends Controller
     {
         $inputs = $request->all();
         $user = Auth::user('user');
+
+        if(isset($inputs['email']))
+            $inputs['email'] = strtolower($inputs['email']);
         // validation rules
         $validator = Validator::make($inputs, [
             'name' => 'required',
@@ -116,7 +119,7 @@ class UserController extends Controller
         $curruser = User::find($user->_id);
 
         $curruser->name = $inputs['name'];
-        $curruser->email = $inputs['email'];
+        $curruser->email = strtolower($inputs['email']);
         $curruser->mobile_number = $inputs['mobile_number'];
 
         try {
@@ -157,18 +160,18 @@ class UserController extends Controller
 
         $validator = Validator::make($inputs, [
             'current' => 'required|same:old',
-            'new' => 'required|between:6,12|different:current',
+            'new' => 'required|between:6,32|different:current',
             'confirm' => 'required|same:new',            
         ],[                      
            'current.same' => 'Incorrect current password.',
-           'new.digits_between' => 'password must be between 6 to 12 characters'
+           'new.digits_between' => 'Password must be between 6 to 32 characters'
         ]);
 
         $validatorForFbLogin = Validator::make($inputs, [
-            'new' => 'required|between:6,12|different:current',
+            'new' => 'required|between:6,32|different:current',
             'confirm' => 'required|same:new',            
         ],[                      
-           'new.digits_between' => 'password must be between 6 to 12 characters'
+           'new.digits_between' => 'password must be between 6 to 32 characters'
         ]);
 
         $return = array("success"=>false,"message"=>"","data"=>"");
@@ -274,8 +277,8 @@ class UserController extends Controller
             $emailsaddresses = preg_split('/;|,/', $data['emails']);            
 
             foreach ($emailsaddresses as $key => $emailaddress) {            
-                $data = ['email' => $emailaddress];
-                $validator = Validator::make($data,['email'=>'required|email']);
+                $data = ['email' => strtolower($emailaddress)];
+                $validator = Validator::make($data,['email'=>'required|email|max:255']);
                 if ($validator->fails()) {
                     $notvalid = true;
                 }
@@ -295,7 +298,7 @@ class UserController extends Controller
             foreach ($emailsaddresses as $key => $emailaddress) {
                 if($emailaddress!=$userLogged->email){                
                     $data = [
-                        'email' => $emailaddress,
+                        'email' => strtolower($emailaddress),
                         'sender_name' => $username,
                         'sender_email' => $userLogged->email,
                         'id' => $userLogged->_id                 

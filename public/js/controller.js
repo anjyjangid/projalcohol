@@ -1,4 +1,4 @@
-AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', '$facebook', "$mdToast", function($scope, $rootScope,$http,$facebook,$mdToast) {
+AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', "$mdToast", function($scope, $rootScope,$http,$mdToast) {
 
 	$scope.AppController = {};
 	$scope.featuredProduct = [];
@@ -116,42 +116,6 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', '$f
 		return localpro;
 
 	}
-
-
-	// YKB Facebook start //
-	$scope.$on('fb.auth.authResponseChange', function() {
-      $scope.status = $facebook.isConnected();
-      if($scope.status) {
-        $facebook.api('/me?fields=email,name').then(function(user) {
-          //$scope.user = user;
-          //console.log(user);
-          user.fbid = user.id;
-          $http.post('/auth/registerfb',user).success(function(response){
-
-					if(response.success==true)
-					{
-						$scope.user = response.data;
-						$('#login').modal('hide');
-					}
-
-	            }).error(function(data, status, headers) {
-	                $scope.login.errors = data;
-	            });
-
-        });
-      }
-    });
-
-    $scope.loginToggle = function() {
-      if($scope.status) {
-        $facebook.logout();
-      } else {
-        $facebook.login();
-      }
-    };
-    // YKB facebook end //
-
-
     // Toast settings
 
 		var last = {

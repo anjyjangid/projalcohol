@@ -41,7 +41,7 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 		Route::post('uploadgraphics','Admin\GlobalController@uploadgraphics');
 	});
 
-	
+	Route::resource('dealer', 'Admin\DealerController',['only'=>'store','update']);	
 	Route::controller('dealer', 'Admin\DealerController');
 
 	Route::controller('category', 'Admin\CategoryController');	
@@ -57,10 +57,10 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::resource('cms', 'Admin\CmsController',['only'=>'update']);
 	Route::controller('cms', 'Admin\CmsController');
 
-	Route::resource('testimonial', 'Admin\TestimonialController',['only'=>['update','store','show']]);
+	Route::resource('testimonial', 'Admin\TestimonialController',['only'=>['update','store','show','destroy']]);
 	Route::controller('testimonial', 'Admin\TestimonialController');
 
-	Route::resource('brand', 'Admin\BrandController',['only'=>['update','store','show']]);
+	Route::resource('brand', 'Admin\BrandController',['only'=>['update','store','show','destroy']]);
 	Route::controller('brand', 'Admin\BrandController');
 
 	Route::resource('promotion', 'Admin\PromotionController',['only'=>['update','store','show']]);
@@ -87,8 +87,6 @@ Route::group(['prefix' => 'admin'], function () {
 Route::get('/', function () {
     return view('frontend');
 });
-
-Route::post('auth/registerfb', 'Auth\AuthController@registerfb');
 
 Route::controller('/auth', 'Auth\AuthController');
 
@@ -169,140 +167,6 @@ Route::controller('package', 'PackageController');
 
 Route::resource('site', 'SiteController',['only'=>['*']]);
 Route::controller('site', 'SiteController');
-
-Route::group(['prefix' => 'admintetet','middleware' => 'admin'], function () {
-	
-	Route::group(['prefix' => 'category'], function () {
-
-	    Route::match(['get', 'post'],'getcategories/{categoryId?}', ['uses' => 'Admin\CategoryController@getcategories']);
-
-	    Route::get('getparentcategories/{id?}', ['uses' => 'Admin\CategoryController@getparentcategories']);
-
-	    Route::post('store','Admin\CategoryController@store');
-
-	    Route::post('update/{id}','Admin\CategoryController@update');
-
-	    Route::get('show','Admin\CategoryController@show');
-
-	    Route::get('getcategory/{id}','Admin\CategoryController@getcategory');
-	  
-    });
-
-    Route::resource('category', 'Admin\CategoryController');
-		
-	
-
-	Route::group(['prefix' => 'dealer'], function () {
-
-		Route::get('getdealer/{id}','Admin\DealerController@getdealer');
-			
-		Route::post('getdealers', 'Admin\DealerController@getdealers');
-
-		Route::get('dealerproduct/{id}', 'Admin\DealerController@dealerproduct');
-
-		Route::get('getlist','Admin\DealerController@getlist');
-		//Route::post('remove', 'Admin\DealerController@remove');
-
-	});
-
-	Route::resource('dealer', 'Admin\DealerController');
-	
-
-	
-	Route::resource('customer', 'Admin\CustomerController');
-	Route::controller('customer', 'Admin\CustomerController');
-
-	// CMS PAGES ROUTING STARTS
-
-	Route::group(['prefix' => 'cms'], function () {
-
-		Route::get('getpage/{id}','Admin\CmsController@getpage');
-			
-		Route::post('getpages', 'Admin\CmsController@getpages');
-
-	});
-
-	Route::resource('cms', 'Admin\CmsController');
-
-	// CMS PAGES ROUTING STARTS
-
-
-	// EMAIL TEMPLATES PAGES ROUTING STARTS
-
-	Route::group(['prefix' => 'emailtemplate'], function () {
-
-		Route::get('gettemplate/{id}','Admin\EmailTemplateController@gettemplate');
-			
-		Route::post('gettemplates', 'Admin\EmailTemplateController@gettemplates');
-
-	});
-
-	Route::resource('emailtemplate', 'Admin\EmailTemplateController');
-
-	// EMAIL TEMPLATES PAGES ROUTING STARTS
-	
-
-	Route::group(['prefix' => 'global'], function () {
-		
-		Route::get('status/{id}/{table}/{status}','Admin\GlobalController@setstatus');
-
-		Route::get('getcountries','Admin\GlobalController@getcountries');
-		
-		Route::get('browsegraphics','Admin\GlobalController@browsegraphics');
-
-		Route::post('uploadgraphics','Admin\GlobalController@uploadgraphics');
-
-	});
-
-	Route::group(['prefix' => 'product'], function () {
-		Route::post('store','Admin\ProductController@store');
-		Route::post('productlist','Admin\ProductController@productlist');
-		Route::get('edit/{id}','Admin\ProductController@edit');
-		Route::post('update/{id}','Admin\ProductController@update');
-		Route::post('orderproduct','Admin\ProductController@orderProduct');
-		Route::post('updateinventory','Admin\ProductController@updateinventory');		
-	});
-
-
-	// Route::group(['prefix' => 'setting'], function () {
-
-	// 	Route::get('getsetting', 'Admin\SettingController@getsettings');
-
-	// });
-
-	Route::resource('setting', 'Admin\SettingController',
-                ['except' => ['create', 'store', 'destroy']]);
-	Route::controller('setting', 'Admin\SettingController');
-
-
-	Route::resource('testimonial', 'Admin\TestimonialController');
-	Route::controller('testimonial', 'Admin\TestimonialController');
-
-	Route::resource('brand', 'Admin\BrandController');
-	Route::controller('brand', 'Admin\BrandController');
-
-	Route::resource('promotion', 'Admin\PromotionController');
-	Route::controller('promotion', 'Admin\PromotionController');
-	
-	Route::resource('order', 'Admin\OrderController');
-	Route::controller('order', 'Admin\OrderController');
-
-
-	Route::post('getcustomers', 'Admin\CustomerController@customers');
-	/*Route::resource('package', 'Admin\PackageController');
-	Route::controller('package', 'Admin\PackageController');*/
-	
-	Route::group(['prefix' => 'package'], function () {
-		Route::post('listpackage/{type}','Admin\PackageController@listpackage');		
-		Route::post('searchproduct','Admin\PackageController@searchProduct');		
-		Route::post('store','Admin\PackageController@store');
-		Route::get('edit/{id}/{type}','Admin\PackageController@edit');
-		Route::post('update/{id}','Admin\PackageController@update');
-	});		
-
-	Route::controller('admin', 'Admin\AdminController');
-
-});
 
 
 /*PRODUCT IMAGE ROUTUING*/

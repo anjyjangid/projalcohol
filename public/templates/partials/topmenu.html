@@ -93,24 +93,26 @@ function googleTranslateElementInit() {
 				<div class="alcohal_regisemailcvr">         
 					<div class="alcohal_regissigntxt">Sign Up for Free</div>
 					<div class="registeremailcvr" ng-class="{'has-error':signup.errors.email[0]}">
+
 						<input type="email" name="email" ng-model="signup.email" class="alcohalrestertextbox form-control" placeholder="Email Address">
+
 						<!-- <span style="color:red; clear:both" ng-show="myForm.email.$dirty && myForm.email.$invalid">
 								<span ng-show="!myForm.email.$error.required && myForm.email.$error.email && myForm.email.$dirty">invalid email</span>
 							</span> -->
 							<span class="help-block" ng-bind="signup.errors.email[0]"></span>
 					</div>
 					<div class="registeremailcvr" ng-class="{'has-error':signup.errors.password[0]}">
-						<input type="password" ng-model="signup.password" class="alcohalrestertextbox form-control" placeholder="Password">
+						<input maxlength="32" type="password" ng-model="signup.password" class="alcohalrestertextbox form-control" placeholder="Password">
 						<span class="help-block" ng-bind="signup.errors.password[0]"></span>
 					</div>
 					<div class="registeremailcvr" ng-class="{'has-error':signup.errors.password_confirmation[0]}">
-						<input type="password" ng-model="signup.password_confirmation" class="alcohalrestertextbox form-control" placeholder="Confirm Password">            
+						<input maxlength="32" type="password" ng-model="signup.password_confirmation" class="alcohalrestertextbox form-control" placeholder="Confirm Password">            
 						<span class="help-block" ng-bind="signup.errors.password_confirmation[0]"></span>
 					</div>
 					<div class="registeremailcvr" ng-class="{'has-error':signup.errors.terms[0]}">
 						<input type="checkbox" class="" ng-model="signup.terms" name="regis" id="regis">
 						<label for="regis"><span></span></label> 
-						<div class="register_checktext"> By submitting this form, I confirm that I have read and agree to Alcohol Delivery’s <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a> <span class="help-block" ng-bind="signup.errors.terms[0]"></span></div>
+						<div class="register_checktext"> By submitting this form, I confirm that I have read and agree to Alcohol Delivery’s <a target="_blank" ui-sref="cmsLayout.terms-conditions">Terms of Use</a> and <a target="_blank" ui-sref="cmsLayout.privacy-policy">Privacy Policy</a> <span class="help-block" ng-bind="signup.errors.terms[0]"></span></div>
 						
 					</div>
 					

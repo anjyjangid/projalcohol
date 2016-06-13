@@ -194,7 +194,7 @@ class TestimonialController extends Controller
                     $constraint->aspectRatio();
                 })->save($path.'/400/'.$thumbNewName);            
 
-                $brand->image = $thumbNewName;
+                $testimonial->image = $thumbNewName;
 
             }else{
 
