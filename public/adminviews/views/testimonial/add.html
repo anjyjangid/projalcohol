@@ -27,7 +27,7 @@
 					<div class="form-group" ng-class="{'has-error':testimonialForm.content.$touched && testimonialForm.content.$invalid , 'has-error':errors.content[0]}">
 						<label class="col-md-2 control-label">Description</label>
 						<div class="col-md-10">
-						<textarea name="page_content" ckeditor="editorOptions" class="form-control" ng-model="testimonial.content" rows="6"  cols="80"></textarea>
+						<textarea name="page_content" class="form-control" ng-model="testimonial.content" rows="6"  cols="80"></textarea>
 						
 						<span class="help-block" ng-bind="errors.content[0]"></span>
 						<span ng-show="testimonial.content.$touched && testimonial.content.$invalid">Description is required.</span>

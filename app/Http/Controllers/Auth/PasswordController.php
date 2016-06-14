@@ -102,7 +102,7 @@ class PasswordController extends Controller
         
         $validator = Validator::make($request->all(), [
         					'token'    => 'required',
-				            'password' => 'required|confirmed|between:8,32',
+				            'password' => 'required|confirmed|between:8,12',
 							'password_confirmation' => 'required',
 						],[           
 						   

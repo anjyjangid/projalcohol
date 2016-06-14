@@ -57,16 +57,10 @@ MetronicApp.controller('CmsUpdateController',['$rootScope', '$scope','$http','$t
 
 		$scope.page = response;
 
-		$timeout(function () {
-
-			$scope.editorOptions = {
-				language: 'en',
-				uiColor: '#cfcfcf'
-			};
-
-		},500)
-		
-		
+		$scope.editorOptions = {
+			language: 'en',
+			uiColor: '#cfcfcf'
+		};
 
 	});
 

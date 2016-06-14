@@ -534,7 +534,14 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							$rootScope.token = $stateParams.token;
 
 							setTimeout(function(){
-									$('#reset').modal('show');
+
+									$('#reset').modal({
+									    backdrop: 'static',
+				                        keyboard: true, 
+				                        show: true
+									})
+									
+
 								},1000)
 						}
 				})

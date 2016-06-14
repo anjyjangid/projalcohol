@@ -160,18 +160,18 @@ class UserController extends Controller
 
         $validator = Validator::make($inputs, [
             'current' => 'required|same:old',
-            'new' => 'required|between:6,32|different:current',
+            'new' => 'required|between:8,12|different:current',
             'confirm' => 'required|same:new',            
         ],[                      
            'current.same' => 'Incorrect current password.',
-           'new.digits_between' => 'Password must be between 6 to 32 characters'
+           'new.digits_between' => 'Password must be between 8 to 12 characters'
         ]);
 
         $validatorForFbLogin = Validator::make($inputs, [
-            'new' => 'required|between:6,32|different:current',
+            'new' => 'required|between:6,82|different:current',
             'confirm' => 'required|same:new',            
         ],[                      
-           'new.digits_between' => 'password must be between 6 to 32 characters'
+           'new.digits_between' => 'password must be between 8 to 12 characters'
         ]);
 
         $return = array("success"=>false,"message"=>"","data"=>"");
