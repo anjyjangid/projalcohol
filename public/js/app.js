@@ -117,6 +117,14 @@ AlcoholDelivery.filter('deliveryDateSlug',function(){
 	}
 })
 
+
+AlcoholDelivery.filter('categoryBreadCrumb', function($rootScope,AppController) {
+
+		return function(product) {
+			
+		}
+});
+
 /* Setup global settings */
 AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
 

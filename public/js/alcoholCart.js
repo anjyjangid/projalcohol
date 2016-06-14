@@ -342,6 +342,8 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 				allServicesCharges+= service.smoke.charges;				
 			}		
 			
+			service.total = allServicesCharges;
+
 			return +parseFloat(allServicesCharges).toFixed(2);
 		};
 

@@ -622,8 +622,7 @@ AlcoholDelivery.controller('OrderDetailController',['$scope','$rootScope','$stat
 
 				$scope.order = response;
 				$scope.address = $scope.order.delivery.address;
-
-				//$scope.shipping = UserService.currentUser.address[response.delivery.address.key];
+				
 			})
 			.error(function(data, status, headers) {
 
@@ -2319,7 +2318,7 @@ AlcoholDelivery.controller('SearchController', [
 }]);
 
 
-AlcoholDelivery.controller('InviteController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll){
+AlcoholDelivery.controller('InviteController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll','sweetAlert', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll,sweetAlert){
 
 	$timeout(function() {
 		$anchorScroll();
@@ -2331,6 +2330,14 @@ AlcoholDelivery.controller('InviteController', ['$scope', '$rootScope','$state',
 		$http.post('/user/inviteusers',$scope.invite).success(function(res){
 			$scope.errors = [];
 			$scope.invite = res;
+			
+
+			sweetAlert.swal({
+				type:'success',
+				title: res.success,
+				timer: 2000
+			});
+
 		}).error(function(data, status, headers){
 			$scope.errors = data;
 		});

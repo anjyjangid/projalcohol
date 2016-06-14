@@ -4,24 +4,24 @@ AlcoholDelivery.directive('sideBar', function() {
 		templateUrl: '/templates/partials/sidebar.html',
 		controller: function($scope){
 
-				$scope.childOf = function(categories, parent){
+			$scope.childOf = function(categories, parent){
 
-						if(!categories) return [];
+					if(!categories) return [];
 
-						if(!parent || parent==0){
-								return categories.filter(function(category){
-										return (!category.ancestors || category.ancestors.length==0);
-								});
-						}
+					if(!parent || parent==0){
+							return categories.filter(function(category){
+									return (!category.ancestors || category.ancestors.length==0);
+							});
+					}
 
-						return categories.filter(function(category){
-								return (category.ancestors && category.ancestors.length > 0 && category.ancestors[0]._id["$id"] == parent);
-						});
-				}
+					return categories.filter(function(category){
+							return (category.ancestors && category.ancestors.length > 0 && category.ancestors[0]._id["$id"] == parent);
+					});
+			}
 
-				$scope.hideMenu = function(){					
-					$('.dropdown-menu').removeClass('animate');
-				}
+			$scope.hideMenu = function(){					
+				$('.dropdown-menu').removeClass('animate');
+			}
 		}
 	};
 });
@@ -760,6 +760,10 @@ AlcoholDelivery.directive('sideBar', function() {
 			};
 
 			$scope.addCustom = function(){
+
+				var currQ = $scope.product.servechilled
+				
+				if($scope.product.qNChilled)
 
 				$scope.activeAddToCart();
 

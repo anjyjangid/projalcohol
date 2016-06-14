@@ -1,10 +1,11 @@
-<div class="productdetailbrudcumcover">
-	<a href="">Home</a>
+<div class="productdetailbrudcumcover">	
+
+		<a href="">Home</a>
 		<img src="images/productdetail2.png">
-		<a href="">Beer</a>
-		<img src="images/productdetail2.png">
-		<a href="">Carlsberg</a>
-		<img src="images/productdetail2.png">
+
+		<a href="" ng-repeat-start="category in product.categories">{{category | categoryBreadCrumb}}</a>
+		<img src="images/productdetail2.png" ng-repeat-end>
+
 		<span>{{product.name}}</span>
 </div>
 <div class="productdetailcovermainbgimg">
@@ -59,16 +60,15 @@
 																								
 												<div class="prdquanbulkboxtwo" ng-repeat="bulkBlock in product.express_delivery_bulk.bulk" ng-class="{'prdquanbulkActive':tquantity>=bulkBlock.from_qty && tquantity<=bulkBlock.to_qty}">
 													
-													{{bulkBlock.from_qty}}<span ng-if="bulkBlock.to_qty!=99999">-{{bulkBlock.to_qty}}</span><br />${{bulkBlock.price}}
+													{{bulkBlock.from_qty}}<span ng-if="bulkBlock.to_qty!=99999">-{{bulkBlock.to_qty}}</span><span ng-if="bulkBlock.to_qty==99999">+</span>
+													<br />${{bulkBlock.price}}
 
-												</div>
-												<!-- <div class="prdquanbulkboxthree" ng-class="{'prdquanbulkActive':product.cart.quantity>5 && product.cart.quantity<11}">5-10<br />$54</div>
-												<div class="prdquanbulkboxlast" ng-class="{'prdquanbulkActive':product.cart.quantity>10}">11+<br />$50</div> -->
+												</div>												
 										</div>
 								</div>
 						</div>
 						<div class="prddetailtotalamount">Total Cost</div>
-						<div class="prddetailpricedicnt">{{settings.general.currency}}{{product.price}}</div>
+						<div class="prddetailpricedicnt">{{product.price | pricingTxt}}</div>
 
 						<div class="prddetailinstock" ng-if="product.quantity || product.outOfStockType == 2">
 						In Stock <not-available product="product"></not-available></div>
