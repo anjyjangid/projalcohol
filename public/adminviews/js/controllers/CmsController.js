@@ -49,7 +49,7 @@ MetronicApp.controller('CmsAddController',['$scope','$http','cmsModel', function
 }]);
 
 
-MetronicApp.controller('CmsUpdateController',['$rootScope', '$scope', '$timeout','$http','$stateParams','cmsModel', function($rootScope, $scope, $timeout,$http,$stateParams,cmsModel) {
+MetronicApp.controller('CmsUpdateController',['$rootScope', '$scope','$http','$timeout','$stateParams','cmsModel', function($rootScope, $scope, $http, $timeout, $stateParams, cmsModel) {
     
     $scope.errors = {};
 	
@@ -57,12 +57,20 @@ MetronicApp.controller('CmsUpdateController',['$rootScope', '$scope', '$timeout'
 
 		$scope.page = response;
 
+		$timeout(function () {
+
+			$scope.editorOptions = {
+				language: 'en',
+				uiColor: '#cfcfcf'
+			};
+
+		},500)
+		
+		
+
 	});
 
-	$scope.editorOptions = {
-                language: 'en',
-                uiColor: '#cfcfcf'
-            };
+	
 	
 	$scope.update = function(){
 

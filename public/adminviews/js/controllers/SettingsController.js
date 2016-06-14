@@ -50,9 +50,7 @@ MetronicApp.controller('SettingFormController',['$rootScope', '$scope', '$timeou
 		
 		//POST DATA WITH FILES
 		settingsModel.updateSetting($state.$current.data.key,data).success(function(response){
-
 			
-
 			$scope.errors = {};
 
 		}).error(function(data, status, headers){

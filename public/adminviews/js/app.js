@@ -144,10 +144,11 @@ MetronicApp.factory('settings', ['$rootScope', function($rootScope) {
 }]);
 
 
-MetronicApp.service('fileUpload', ['$http','$location', function ($http,$location) {
+MetronicApp.service('fileUpload', ['$http','$location','$q', function ($http,$location,$q) {
 
 	this.uploadFileToUrl = function(files,fields,uploadUrl){
 
+		var defer = $q.defer();
 		//var fd = new FormData();
 		var fd = objectToFormData(fields);            
 				
@@ -189,18 +190,24 @@ MetronicApp.service('fileUpload', ['$http','$location', function ($http,$locatio
 				});
 			}
 
+			defer.resolve(response);
 
-		}).error(function(data, status, headers) {            
+
+		}).error(function(data, status, headers) {
+
 			Metronic.alert({
 				type: 'danger',
 				icon: 'warning',
-				message: data,
+				message: "Please check all fields",
 				container: '.portlet-body',
 				place: 'prepend',
 				closeInSeconds: 3
 			});
+			defer.reject(data);
+
 		});
 
+		return defer.promise;
 	}
 }]);
 
