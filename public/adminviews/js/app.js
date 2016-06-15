@@ -424,10 +424,10 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 			]
 		},
 		{
-			label:'Email Templates',
+			label:'Email Templates',			
 			uisref:'userLayout.emailtemplates.list',
 			icon:'icon-envelope',
-			id:'sidebar_menu_link_emailtemplate'
+			id:'sidebar_menu_link_emailtemplate',			
 		},
 		{
 			label:'CMS Pages',
@@ -488,13 +488,13 @@ MetronicApp.controller('SidebarController', ['$scope', function($scope) {
 }]);
 
 /* Setup Layout Part - Quick Sidebar */
-/*MetronicApp.controller('QuickSidebarController', ['$scope', function($scope) {    
+MetronicApp.controller('QuickSidebarController', ['$scope', function($scope) {    
 	$scope.$on('$includeContentLoaded', function() {
 		setTimeout(function(){
 			QuickSidebar.init(); // init quick sidebar        
 		}, 2000)
 	});
-}]);*/
+}]);
 
 /* Setup Layout Part - Theme Panel */
 MetronicApp.controller('ThemePanelController', ['$scope', function($scope) {    
@@ -1871,16 +1871,20 @@ MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "st
 	
 	$rootScope.$state = $state; // state to be accessed from view    
 
+	
+
 }]);
 
 
 
 
-MetronicApp.service('myRequestInterceptor', ['$q', '$rootScope', '$log', function ($q, $rootScope, $log) {
+MetronicApp.service('myRequestInterceptor', ['$q', '$rootScope', '$log', '$injector', '$location', function ($q, $rootScope, $log, $injector, $location) {
 	'use strict'; 
 
 	var xhrCreations = 0;
     var xhrResolutions = 0;
+
+    //var AdminUserService = $injector.get('AdminUserService');
 
     function isLoading() {
         return xhrResolutions < xhrCreations;
@@ -1893,26 +1897,25 @@ MetronicApp.service('myRequestInterceptor', ['$q', '$rootScope', '$log', functio
 	return {
 		request: function (config) {
 			xhrCreations++;
-            updateStatus();		
-
+            updateStatus();
 			return config;
 		},
 		requestError: function (rejection) {
 			xhrResolutions++;
-            updateStatus();
+            updateStatus();             
 			return $q.reject(rejection);
 		},
-		response: function (response) {
+		response: function (response) {			
 			xhrResolutions++;
 			updateStatus();
 			return response;
 		},
 		responseError: function (rejection) {
 			xhrResolutions++;
-            updateStatus();
+            updateStatus();			
 			if(rejection.status == 401){				
-				AdminUserService.removeUser().then(function(){
-					$state.go('login',{},{reload:true});	
+				$injector.get('AdminUserService').removeUser().then(function(){
+					$location.path('/login');										
 				});				
 			}
 			return $q.reject(rejection);

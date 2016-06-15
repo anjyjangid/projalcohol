@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d104cf4d8177fa01177d6be0a1a12d79",
-    "content-hash": "49ea5a3df6065587c565ed617673ddc8",
+    "hash": "92853534f1243ce0b937835a83942cb0",
+    "content-hash": "06f885d4d61fefc1ac516ff5b46d3491",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -467,6 +467,48 @@
                 "uri"
             ],
             "time": "2016-02-18 21:54:00"
+        },
+        {
+            "name": "hoiio/hoiio-php",
+            "version": "v0.06",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hoiio/hoiio-php.git",
+                "reference": "6e927bd04015ff633497aff6280c7fbe9621d7ee"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hoiio/hoiio-php/zipball/6e927bd04015ff633497aff6280c7fbe9621d7ee",
+                "reference": "6e927bd04015ff633497aff6280c7fbe9621d7ee",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.1.0"
+            },
+            "suggest": {
+                "ext-curl": "PHP Curl",
+                "ext-json": "PHP JSON"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "hoiio": "Services/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Hoiio API provides telephony services such as call, SMS and interactive voice responses (IVR). This SDK makes using the API a breeze.",
+            "homepage": "http://developer.hoiio.com/",
+            "keywords": [
+                "Conference",
+                "call",
+                "ivr",
+                "sms",
+                "telephony"
+            ],
+            "time": "2014-01-23 06:22:50"
         },
         {
             "name": "intervention/image",

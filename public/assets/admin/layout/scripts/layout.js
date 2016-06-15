@@ -58,15 +58,11 @@ var Layout = function () {
             el = $(el);
         } else if (mode === 'match') {
             menu.find("li > a").each(function() {
-                if(typeof $(this).attr("href") != 'undefined'){
-                    var path = $(this).attr("href").toLowerCase();       
-                    // url match condition         
-                    if (path.length > 1 && url.substr(1, path.length - 1) == path.substr(1)) {
-                        el = $(this);
-                        return; 
-                    }
-                }else{
-                    return;
+                var path = $(this).attr("href").toLowerCase();       
+                // url match condition         
+                if (path.length > 1 && url.substr(1, path.length - 1) == path.substr(1)) {
+                    el = $(this);
+                    return; 
                 }
             });
         }
@@ -381,13 +377,13 @@ var Layout = function () {
             $('body').addClass('page-sidebar-closed');
             $('.page-sidebar-menu').addClass('page-sidebar-menu-closed');
         }
-
+        console.log('ascasc');
         // handle sidebar show/hide
         $('body').on('click', '.sidebar-toggler', function (e) {
             var sidebar = $('.page-sidebar');
             var sidebarMenu = $('.page-sidebar-menu');
             $(".sidebar-search", sidebar).removeClass("open");
-
+            
             if (body.hasClass("page-sidebar-closed")) {
                 body.removeClass("page-sidebar-closed");
                 sidebarMenu.removeClass("page-sidebar-menu-closed");
@@ -559,7 +555,7 @@ var Layout = function () {
             handleSidebarMenuActiveLink(mode, el);
         },
 
-        initSidebar: function() {
+        initSidebar: function() {            
             //layout handlers
             handleFixedSidebar(); // handles fixed sidebar menu
             handleSidebarMenu(); // handles main menu

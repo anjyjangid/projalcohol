@@ -11,6 +11,8 @@ use Swift_SmtpTransport as SmtpTransport;
 
 use AlcoholDelivery\EmailTemplate as EmailTemplate;
 
+use GuzzleHttp\Client;
+
 class Email extends Moloquent
 {
 
@@ -194,6 +196,20 @@ class Email extends Moloquent
 				
 			break ;
 
+			case 'deliverynotification':/* begin : Invitation Email { */
+								
+				$this->recipient_info["receiver"]['email'] = $data['email'];			
+
+				$this->recipient_info["replace"]["{user_name}"] = isset($data['name'])?$data['name']:$data['email'];
+
+				$this->recipient_info["replace"]["{order_number}"] = $data['order_number'];
+
+				$this->recipient_info["replace"]["{time_of_delivery}"] = $data['time_of_delivery'];
+
+				$this->recipient_info["message"] = str_ireplace(array_keys($this->recipient_info["replace"]),array_values($this->recipient_info["replace"]),$this->recipient_info["message"]);
+				
+			break ;
+
 			
 			default:return  (object)array("error"=>true , "success"=>false , "message"=>" Please Define Proper Type for  Email");
 									
@@ -241,6 +257,26 @@ class Email extends Moloquent
 
 		return true;//response(array("error"=>false , "success"=>true , "message"=>" Mail Successfully Sent"));	
 
-	 }	 	 
+	 }	 
+
+	 public static function sendSms($to,$message,$live = false){ 	
+	 	$data = [];
+	 	$data['app_id'] = 'P58Pj7OmUdXCVLAr';
+	 	$data['access_token'] = 'raAgFSlPDk656ECe';
+	 	if($live){
+			$data['app_id'] = '5NzoHw54tcPCjWBa';
+	 		$data['access_token'] = 'xIpKlcaqSBjIUfVL';	 		
+	 	}
+        $data['dest'] = $to;
+	 	$data['msg'] = $message;     
+
+	 	$client = new Client();
+        $res = $client->request('POST', 'https://secure.hoiio.com/open/sms/send', [
+            'form_params'=>$data
+        ]);                
+        $result = $res->getBody();
+        $result = json_decode($result);         
+        return (isset($result->{'status'}) && $result->{'status'}=='success_ok');
+	 }
 					
 }

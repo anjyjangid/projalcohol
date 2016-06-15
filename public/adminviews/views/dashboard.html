@@ -21,7 +21,7 @@
 		</div>
 		<!-- END PAGE HEADER-->
 		<!-- BEGIN MAIN CONTENT -->
-		<div ng-controller="DashboardController">
+		<div>
 
 			<!-- <div class="note note-success note-bordered">
 				<h3>Meet Metronic AngularJS Version! <span class="close" data-close="note"></span></h3>
@@ -44,7 +44,7 @@
 						</div>
 						<div class="details">
 							<div class="number">
-								 16,849
+								 {{stats.totalProducts|number}}
 							</div>
 							<div class="desc">
 								 Total Products
@@ -62,13 +62,13 @@
 						</div>
 						<div class="details">
 							<div class="number">
-								 1,127,390
+								 {{stats.totalOrder|number}}
 							</div>
 							<div class="desc">
 								 Total Orders
 							</div>
 						</div>
-						<a class="more" href="javascript:;">
+						<a class="more" ui-sref="userLayout.orders.list">
 						View more <i class="m-icon-swapright m-icon-white"></i>
 						</a>
 					</div>
@@ -80,13 +80,13 @@
 						</div>
 						<div class="details">
 							<div class="number">
-								 $670.54
+								 ${{stats.avgOrders|number}}
 							</div>
 							<div class="desc">
 								 Average Orders
 							</div>
 						</div>
-						<a class="more" href="javascript:;">
+						<a class="more" ui-sref="userLayout.orders.list">
 						View more <i class="m-icon-swapright m-icon-white"></i>
 						</a>
 					</div>
@@ -264,23 +264,29 @@
 								</th>								
 
 								<th width="15%">
+									Order ID
+								</th>
+								
+								<th width="10%">
 									User
 								</th>
 								
 								<th width="10%">
 									Products
 								</th>
-								
+
 								<th width="10%">
-									Order Type
+									Type
 								</th>
 
 								<th width="10%">
 									Status
 								</th>
-
 								<th width="10%">
-									Actions
+									Notify
+								</th>
+								<th width="10%">
+									Action
 								</th>
 							</tr>
 							<tr role="row" class="filter hide" >
@@ -288,7 +294,7 @@
 								<td></td>
 								<td></td>
 								<td></td>
-								
+								<td></td>
 								<td>
 									<select name="status" class="form-control form-filter input-sm">
 										<option value="">Select...</option>
@@ -296,12 +302,14 @@
 										<option value="0">In-Active</option>
 									</select>
 								</td>
+								<td></td>
 								<td>
 									<div class="margin-bottom-5">
 										<button class="btn btn-sm yellow filter-submit margin-bottom"><i class="fa fa-search"></i> Search</button>
 									</div>
 									<button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> Reset</button>
 								</td>
+
 							</tr>
 						</thead>
 						<tbody id="tabBody">
@@ -314,6 +322,64 @@
 	</div>
 </div>
 <!-- END ORDER MAIN CONTENT -->
+
+<div data-replace="true" tabindex="-1" class="modal fade modal-scroll" id="notify" style="display: none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button aria-hidden="true" data-dismiss="modal" class="close" type="button"></button>
+				<h4 class="modal-title"><i class="glyphicon glyphicon-comment"></i> Notify user</h4>
+			</div>
+			<div class="modal-body">				
+				<div class="portlet-body form">
+					<form role="form" class="form-horizontal" ng-submit="sendNotification()">
+						<div class="form-body">									
+							<div class="form-group">
+								<label class="col-md-3 control-label">Select time</label>
+								<div class="col-md-9">
+									<select class="form-control" ng-model="notify.time">
+										<option value="30">30mins</option>
+										<option value="45">45mins</option>
+										<option value="60">60mins</option>
+										<option value="75">75mins</option>
+										<option value="90">90mins</option>
+										<option value="120">120mins</option>
+									</select>
+									<span class="help-block">Estimated time of delivery</span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-3 control-label">Send</label>
+								<div class="col-md-9">
+									<div class="checkbox-list">
+									<label ng-hide="notify.numDisable" class="pull-left control-label">
+										<input ng-model="notify.sms" ng-true-value="1" ng-false-value="0" type="checkbox" plugin-uniform> SMS
+									</label>
+									<label class="pull-left control-label">
+										<input ng-model="notify.mail" ng-true-value="1" ng-false-value="0" type="checkbox" plugin-uniform> Mail
+									</label>
+									</div>											
+								</div>
+							</div>									
+						</div>
+						<div class="form-actions">
+							<div class="row">
+								<div class="col-md-offset-3 col-md-9">
+									<button ng-disabled="notify.loading" class="btn green" type="submit">
+										<i ng-hide="notify.loading" class="glyphicon glyphicon-send"></i> {{notify.loading ? 'Sending...':'Send'}}							
+									</button>
+									<button class="btn default" type="button" data-dismiss="modal">Cancel</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>	
+			</div>			
+		</div>
+	</div>
+</div>
+
+
 
 
 <!-- BEGIN MAIN JS & CSS -->
@@ -485,17 +551,26 @@ var detailRows = [];
                 // So when dropdowns used the scrollable div should be removed. 
                 //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
                 
-                "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
-
+                //"bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+                "columns": [
+			        { "data": 0 },
+			        { "data": 1 },
+			        { "data": 2 },
+			        { "data": 3 },
+			        { "data": 4 },
+			        { "data": 5 },
+			        { "data": 7 },
+			        { "data": 6 }
+			    ],
                 "lengthMenu": [
 
-                    [10, 20, 50, 100, 150, -1],
-                    [10, 20, 50, 100, 150, "All"] // change per page values here
+                    [10, 20, 50, 100, 150],
+                    [10, 20, 50, 100, 150] // change per page values here
                 ],
                 "pageLength": 10, // default record count per page
                 "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
                         'orderable': false,
-                        'targets': [0,1,2,3,4,5]
+                        'targets': [0,1,2,3,4,5,7,6]
                     }],
                 "ajax": {
                     "url": "../adminapi/order/orders", // ajax source
@@ -514,9 +589,7 @@ var detailRows = [];
                     // },
                     "type": "POST"
                 },
-                "order": [
-                    [1, "asc"],
-                ], // set first column as a default sort by asc
+                "order": [], // set first column as a default sort by asc
                 "fnDrawCallback": function (oSettings) {
                 	
 					
@@ -581,6 +654,6 @@ var detailRows = [];
 
 }();
 
-	OrdersTableAjax.init();
+OrdersTableAjax.init();
 </script>
 <!-- END ORDER MAIN JS

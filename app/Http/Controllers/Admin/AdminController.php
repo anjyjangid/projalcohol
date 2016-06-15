@@ -11,6 +11,11 @@ use AlcoholDelivery\User as User;
 use Illuminate\Support\Facades\Validator;
 use AlcoholDelivery\Admin;
 use AlcoholDelivery\Http\Requests\SubadminRequest;
+use Hoiio\HoiioService;
+use GuzzleHttp\Client;
+use AlcoholDelivery\Products;
+use AlcoholDelivery\Orders;
+use AlcoholDelivery\Email;
 
 class AdminController extends Controller
 {
@@ -270,5 +275,52 @@ class AdminController extends Controller
         }else{
             return response(['message'=>'Invalid user.'],404);
         }
+    }    
+
+    public function getStats(Request $request){        
+        $totalProducts = Products::count();
+        $totalOrder = Orders::count();   
+        $avgOrders = Orders::avg('payment.total');
+
+        $res = ['totalProducts'=>$totalProducts,'totalOrder'=>$totalOrder,'avgOrders'=>$avgOrders];
+
+        return response($res,200);
     }
+
+    public function postNotify(Request $request){
+        
+        $data = $request->all();  
+
+        if($data['sms']==0 && $data['mail']==0){
+            return response(['message'=>'Please select atleast 1 sending option.'],400);
+        }
+
+        $order = Orders::find($data['oid']);
+
+        $mailsent = $smssent = false;
+        
+        if($order){
+            $user = User::find((string)$order['user'])->toArray();
+            
+            if($data['mail'] == 1){
+                $mail = new Email('deliverynotification');
+                $user['order_number'] = $order['reference'];
+                $user['time_of_delivery'] = $data['time'];
+                $mailsent = $mail->sendEmail($user);
+            }
+            
+            if(isset($user['mobile_number']) && $data['sms'] == 1){
+                $msgtxt = 'Your designated {site_title} dispatch personnel will be delivering order #{order_number} within {time_of_delivery} minutes! Need help? Call us @ 9-2445533 (9-CHILLED). Thank you!';
+
+                $msgtxt = str_ireplace(['{site_title}','{order_number}','{time_of_delivery}'],[config('app.appName'),$order->reference,$data['time']],$msgtxt);
+
+                $smssent = Email::sendSms($user['mobile_number'],$msgtxt);
+            }
+            return response(['message'=>'Notification sent successfully.','mailsent'=>$mailsent,'smssent'=>$smssent],200);
+        }else{
+            return response(['message'=>'Invalid order. Please try again'],400);
+        }
+        
+    }
+
 }

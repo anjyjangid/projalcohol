@@ -279,7 +279,7 @@ class OrderController extends Controller
 		
 		
 
-		$users = User::whereIn('_id', $users)->get(["email","name"]);
+		$users = User::whereIn('_id', $users)->get(["email","name","mobile_number"]);
 		$users = $users->toArray();
 		foreach($users as $key=>$user){
 			$users[$user['_id']] = $user;
@@ -294,18 +294,18 @@ class OrderController extends Controller
 
 		$status_list = array(            
 			array("warning" => "Under Process"),
-			array("notice" => "Dispatch"),
+			array("danger" => "Dispatch"),
 			array("success" => "Delivered")
 		);
 
 		$deliveryType = array(			
-			array("notice" => "Express"),
+			array("danger" => "Express"),
 			array("success" => "Advance")
 		);
 
 
 		$srStart = intval( $params['start'] );
-        if($params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
+        if(isset($params['order']) && $params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
             $srStart = intval($iTotal);
         }
 
@@ -315,7 +315,7 @@ class OrderController extends Controller
 
 			$row=array();
 
-			if($params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
+			if(isset($params['order']) && $params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
 				$row[] = $srStart--;//$row1[$aColumns[0]];
 			}else{
 				$row[] = ++$srStart;//$row1[$aColumns[0]];
@@ -337,7 +337,15 @@ class OrderController extends Controller
 
 			// $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$order['_id'].'\')" id="'.$order['_id'].'" data-table="dealer" data-status="0" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
 
-			$row[] = '<a title="" ui-sref=userLayout.orders.show({order:"'.$order['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a>';
+			$row[] = '<a title="" ui-sref=userLayout.orders.show({order:"'.$order['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+
+			$mnum = $users[(string)$order['user']]['mobile_number'];
+			if($mnum==''){
+				$mnum = 0;
+			}
+
+			$row[] = '<a title="Notify user" ng-click=addInventry("'.$order['_id'].'",$mnum) class="btn btn-xs default"><i class="glyphicon glyphicon-comment"></i> Notify user</a>';
+			
 			
 			$records['data'][] = $row;
 		}
