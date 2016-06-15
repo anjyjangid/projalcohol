@@ -57,7 +57,7 @@ AlcoholDelivery.filter('getProductThumb', function() {
 AlcoholDelivery.filter('freeTxt', function() {
 		return function(input) {
 			input = parseFloat(input);
-			return input>0?input:'free';
+			return input>0?input:'FREE';
 		}
 });
 
