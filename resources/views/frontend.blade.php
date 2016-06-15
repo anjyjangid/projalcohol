@@ -23,6 +23,8 @@
 
 		<!-- Bootstrap -->
 		<link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,700,800,500' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
+		
 		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/angular-material/angular-material.min.css') }}"/>
 
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">

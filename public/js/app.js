@@ -381,6 +381,13 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								}]
 						}
 				})
+				.state('mainLayout.notfound', {
+						url: "/404",
+						templateUrl: "/templates/404.html",
+						// controller:function($rootScope,$stateParams,$state){
+
+						// }
+				})
 
 				.state('mainLayout.index', {
 						url: "/",						
@@ -453,6 +460,8 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								}]
 						}
 				})
+
+				
 
 				.state('mainLayout.checkout', {
 						abstract: true,
@@ -830,8 +839,8 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 		}]);
 
 
-AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log',
-function ($q, $rootScope, $log) {
+AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$location',
+function ($q, $rootScope, $log, $location) {
     'use strict';
 
     var xhrCreations = 0;
@@ -866,7 +875,11 @@ function ($q, $rootScope, $log) {
         responseError: function (rejection) {
             xhrResolutions++;
             updateStatus();
-            //$log.error('Response error:', rejection);
+            if(rejection.status == 404){
+				
+				$location.url('/404').replace();
+			};
+
             return $q.reject(rejection);
         }
     };

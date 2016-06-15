@@ -14,7 +14,7 @@
 				<div owl-carousel-item="" ng-repeat="testimonial in testimonials" class="item">
 					<div class="slido_left">
 						<div class="slido_pic"><img ng-src="assets/resources/testimonial/200/{{testimonial.image}}" class="img-circle" height="113px" width="113px" /></div>
-						<div class="slido_txt">{{testimonial.name}}</div>
+						<div class="slido_txt" title="{{testimonial.name}}" ng-bind="testimonial.name"></div>
 					</div>
 					<div class="slido_right" ng-bind-html="testimonial.content"></div>
 				</div>

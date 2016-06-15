@@ -38,7 +38,7 @@
 					<div class="form-group" ng-class="{'has-error':errors.slug[0]}">
 						<slug from="category.title" to="category.slug"></slug>
 						<label class="control-label">Slug</label>
-						<input type="text" name="slug" placeholder="Slug" class="form-control" ng-model="category.slug" />
+						<input type="text" placeholder="Slug" class="form-control" ng-model="category.slug" disabled="true"/>
 						<span class="help-block" ng-show="errors.slug[0]" ng-bind="errors.slug[0]"></span>						
 					</div>
 

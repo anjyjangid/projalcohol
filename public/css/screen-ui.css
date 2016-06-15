@@ -1201,11 +1201,16 @@ md-dialog.md-transition-in{
 }
 
 .slido_txt{
-	width:100%;
-	float:left;
-	text-align:center;
-	font-size:15px;
-	margin-top:10px;
+	width: 100%;
+	
+	text-align: center;
+	font-size: 15px;
+	margin-top: 10px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 200px;
+	margin: auto;
 }
 
 

@@ -299,7 +299,7 @@ AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$
 
 	$scope.ProductDetailController = {};
 
-	$scope.product = {};
+	
 
   	$scope.syncPosition = function(el){
 
@@ -457,7 +457,7 @@ AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$
 
 
 	 }, function(response) {
-
+	 	$scope.product = false;
 	});
 
 }]);

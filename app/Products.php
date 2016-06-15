@@ -16,6 +16,7 @@ class Products extends Eloquent
 
 	protected $fillable = [
 			'name',
+			'slug',
 			'description',
 			'shortDescription',
 			'categories',
