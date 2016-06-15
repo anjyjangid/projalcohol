@@ -24,9 +24,9 @@ AlcoholDelivery.directive('sideBar', function() {
 			}
 		}
 	};
-});
+})
 
- AlcoholDelivery.directive('topMenu', function(){
+.directive('topMenu', function(){
 
 	return {
 		restrict: 'E',

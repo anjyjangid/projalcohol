@@ -1216,6 +1216,7 @@ md-dialog.md-transition-in{
 	margin-top:60px;
 	font-size:18px;
 	font-weight:500;
+	word-wrap: break-word;
 }
 
 .brands{

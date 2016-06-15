@@ -171,13 +171,29 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 	};
 
-	this.addPromo = function(promoId,productId){
+	this.addPromo = function(promoId,productId,$event){
 
-		var _self = this;
+		var _self = this;	
 
 		var deliveryKey = _self.getCartKey();
 		
 		var d = $q.defer();
+
+		if(!this.isEligibleForPromotion(promoId)){
+
+			console.log($event);
+			$mdToast.show({
+				controller:function($scope){
+
+				},
+				templateUrl: '/templates/toast-tpl/notify-promo-nq.html',
+				parent : $event.currentTarget.parentElement,
+				position: 'top center',
+				hideDelay:2000
+			});
+			
+			return false;
+		}
 
 		$http.put("/cart/promotion/"+deliveryKey, {
 				"promoId":promoId,
@@ -234,6 +250,15 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		return d.promise;
 
 	};
+
+	this.isEligibleForPromotion = function(promoId){
+
+		var cartSubTotal = this.getSubTotal();
+		var isEligible = promotionsService.isEligible(promoId,cartSubTotal);
+
+		return isEligible;
+
+	}
 
 	this.setPromotionsInCart = function(){
 

@@ -32,7 +32,7 @@
 
 	<div class="prod_addtocart">	
 
-		<button class="checkoutproductbutton" ng-if="productInfo.promo && !promotion.inCart" ng-click="alcoholCart.addPromo(promotion._id,productInfo._id)">Add Promo</button>
+		<button class="checkoutproductbutton" ng-if="productInfo.promo && !promotion.inCart" ng-click="alcoholCart.addPromo(promotion._id,productInfo._id,$event)">Add Promo</button>
 		
 		<add-to-cart-btn product="productInfo" ng-if="promotion.inCart || !productInfo.promo && (productInfo.quantity || productInfo.outOfStockType == 2)"></add-to-cart-btn>
 

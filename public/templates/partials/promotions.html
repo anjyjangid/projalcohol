@@ -5,12 +5,12 @@
 	</div>
 	<div class="checkoutcongratulationouter" ng-if="promotion.eligible.already">
 		<div class="checkout-congratulation-title">Congratulations! You qualify for special {{promotion.price | pricingTxt}} promotion.</div>
-		<div class="checkout-congratulation-text">Please select one of the following products. Only applicable for 1 hour deliveries.</div>
+		<div class="checkout-congratulation-text">Please select one of the following products.</div>
 	</div>
 
-	<div class="checkout-product" ng-if="promotion.eligible.nearest">
+	<div class="checkout-product"  ng-class="{notEligible:!promotion.eligible.already}">
 		<div class="row">
-			<div al-tpl-product 
+			<div al-tpl-product
 							classes="col-md-3 col-sm-3 col-xs-12 m-bottom-20" 									
 							ng-repeat="product in promotion.products"
 							info="product"
