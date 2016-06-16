@@ -11,6 +11,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			promotions :[],
 			nonchilled : false,
 			delivery : {
+
 				type : 1,
 				charges : null,
 				address : null,
@@ -18,6 +19,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 				instruction : null,
 				leaveatdoor : false,
 				instructions : null,
+
 			},
 			service : {
 				express : {

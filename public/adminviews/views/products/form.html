@@ -465,6 +465,7 @@
 							<tbody>
 								<tr ng-repeat="f in product.imageFiles">
 									<td ng:class="{'has-error':errors['imageFiles.'+$index+'.thumb'][0]}">
+
 										<div class="fileinput fileinput-new" data-provides="fileinput">
 											<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
 												<img err-src="asset/i/defaultImage.png" 
@@ -482,6 +483,7 @@
 											</div>
 										</div>
 										<span class="help-block" ng-bind="errors['imageFiles.'+$index+'.thumb'][0]"></span>
+										
 									</td>
 									<td ng:class="{'has-error':errors['imageFiles.'+$index+'.label'][0]}">
 										<input type="text" class="form-control" ng-model="f.label">

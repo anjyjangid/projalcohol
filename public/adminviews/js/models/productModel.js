@@ -18,8 +18,10 @@ MetronicApp.factory('productModel', ['$http', '$cookies','$location', function($
 	       	var fd = objectToFormData(fields);	       	  
 
 	        return $http.post("/adminapi/product", fd, {
-	            transformRequest: angular.identity,	            	            
+	            
+                transformRequest: angular.identity,
 	            headers: {'Content-Type': undefined}
+
 	        }).error(function(data, status, headers) {            
 	            Metronic.alert({
 	                type: 'danger',

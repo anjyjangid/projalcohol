@@ -15,7 +15,7 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', "$m
     });
 
 
-    $http.get("/super/category/").success(function(response){
+    $http.get("/super/category/",{params: {withCount:true}}).success(function(response){
 
 		$scope.categories = response;
 		$scope.AppController.categories = response;
@@ -118,41 +118,41 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', "$m
 	}
     // Toast settings
 
-		var last = {
-			bottom: false,
-			top: true,
-			left: false,
-			right: true
-		};
+		// var last = {
+		// 	bottom: false,
+		// 	top: true,
+		// 	left: false,
+		// 	right: true
+		// };
 
-		$scope.toastPosition = angular.extend({},last);
+		// $scope.toastPosition = angular.extend({},last);
 
-		$scope.getToastPosition = function() {
+		// $scope.getToastPosition = function() {
 
-			sanitizePosition();
-			return Object.keys($scope.toastPosition)
-				.filter(function(pos) { return $scope.toastPosition[pos]; })
-				.join(' ');
+		// 	sanitizePosition();
+		// 	return Object.keys($scope.toastPosition)
+		// 		.filter(function(pos) { return $scope.toastPosition[pos]; })
+		// 		.join(' ');
 
-		};
+		// };
 
-		function sanitizePosition() {
-			var current = $scope.toastPosition;
-			if ( current.bottom && last.top ) current.top = false;
-			if ( current.top && last.bottom ) current.bottom = false;
-			if ( current.right && last.left ) current.left = false;
-			if ( current.left && last.right ) current.right = false;
-			last = angular.extend({},current);
-		}
+		// function sanitizePosition() {
+		// 	var current = $scope.toastPosition;
+		// 	if ( current.bottom && last.top ) current.top = false;
+		// 	if ( current.top && last.bottom ) current.bottom = false;
+		// 	if ( current.right && last.left ) current.left = false;
+		// 	if ( current.left && last.right ) current.right = false;
+		// 	last = angular.extend({},current);
+		// }
 
-		$rootScope.showSimpleToast = function(msg) {
-			$mdToast.show(
-			$mdToast.simple()
-				.textContent(msg)
-				.position($scope.getToastPosition())
-				.hideDelay(300000)
-			);
-		};
+		// $rootScope.showSimpleToast = function(msg) {
+		// 	$mdToast.show(
+		// 	$mdToast.simple()
+		// 		.textContent(msg)
+		// 		.position($scope.getToastPosition())
+		// 		.hideDelay(300000)
+		// 	);
+		// };
 
     // Toast Settings
 
@@ -999,7 +999,7 @@ AlcoholDelivery.controller('WishlistController',['$scope','$rootScope','$state',
 
 }]);
 
-AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$timeout','CartSession','UserService','sweetAlert','alcoholCart','store',function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $timeout, CartSession, UserService, sweetAlert, alcoholCart,store){
+AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$timeout','UserService','sweetAlert','alcoholCart','store',function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $timeout, UserService, sweetAlert, alcoholCart,store){
 
 	$rootScope.storeInitUP = true;
 	
@@ -1854,7 +1854,7 @@ AlcoholDelivery.controller('CartDeliveryController',['$scope','$rootScope','$sta
 
 }]);
 
-AlcoholDelivery.controller('CartPaymentController',['$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','CartSession','sweetAlert',function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, CartSession, sweetAlert){
+AlcoholDelivery.controller('CartPaymentController',['$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','sweetAlert',function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, sweetAlert){
 
 }]);
 

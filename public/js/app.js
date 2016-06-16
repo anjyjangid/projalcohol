@@ -118,11 +118,12 @@ AlcoholDelivery.filter('deliveryDateSlug',function(){
 })
 
 
-AlcoholDelivery.filter('categoryBreadCrumb', function($rootScope,AppController) {
+AlcoholDelivery.filter('categoryBreadCrumb', function($rootScope) {
 
-		return function(product) {
-			
-		}
+	return function(categoryKey){
+
+	}
+
 });
 
 /* Setup global settings */
@@ -191,6 +192,7 @@ AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
 
 }]);
 
+
 AlcoholDelivery.factory('catPricing', ["$q", "$timeout", "$rootScope", "$http", function($q, $timeout, $rootScope, $http){
 
 	var catPricing = {};
@@ -208,12 +210,16 @@ AlcoholDelivery.factory('catPricing', ["$q", "$timeout", "$rootScope", "$http", 
 	};
 
 	return {
+
 		GetCategoryPricing: GetCategoryPricing,
 		categoryPricing : null
 
 	};
 
 }]);
+
+
+
 
 AlcoholDelivery.factory("UserService", ["$q", "$timeout", "$http", function($q, $timeout, $http) {
 
@@ -245,57 +251,57 @@ AlcoholDelivery.factory("UserService", ["$q", "$timeout", "$http", function($q, 
 	};
 }]);
 
-AlcoholDelivery.factory("CartSession", ["$q", "$timeout", "$http","$rootScope", function($q, $timeout, $http, $rootScope) {
+// AlcoholDelivery.factory("CartSession", ["$q", "$timeout", "$http","$rootScope", function($q, $timeout, $http, $rootScope) {
 
-	function GetDeliveryKey() {
+// 	function GetDeliveryKey() {
 
-		var d = $q.defer();
+// 		var d = $q.defer();
 
-		if(typeof(Storage) !== "undefined"){
+// 		if(typeof(Storage) !== "undefined"){
 
-				var deliverykey = localStorage.getItem("deliverykey");
+// 				var deliverykey = localStorage.getItem("deliverykey");
 
-				if(deliverykey===null || typeof deliverykey==="undefined" || deliverykey==="undefined"){
-					deliverykey = $rootScope.deliverykey;
-				}
+// 				if(deliverykey===null || typeof deliverykey==="undefined" || deliverykey==="undefined"){
+// 					deliverykey = $rootScope.deliverykey;
+// 				}
 
-				if(deliverykey===null || typeof deliverykey==="undefined" || deliverykey==="undefined"){
+// 				if(deliverykey===null || typeof deliverykey==="undefined" || deliverykey==="undefined"){
 
-					$http.get("cart/deliverykey").success(function(response){
+// 					$http.get("cart/deliverykey").success(function(response){
 
-						localStorage.setItem("deliverykey",response.deliverykey);
-						$rootScope.deliverykey = response.deliverykey;
+// 						localStorage.setItem("deliverykey",response.deliverykey);
+// 						$rootScope.deliverykey = response.deliverykey;
 
-						d.resolve(response);
+// 						d.resolve(response);
 
-					})
+// 					})
 
-				}else{
+// 				}else{
 
-					var response = {"deliverykey":deliverykey}
+// 					var response = {"deliverykey":deliverykey}
 
-					localStorage.setItem("deliverykey",deliverykey);
-					$rootScope.deliverykey = deliverykey;
+// 					localStorage.setItem("deliverykey",deliverykey);
+// 					$rootScope.deliverykey = deliverykey;
 
-					d.resolve(response);
+// 					d.resolve(response);
 
-				}
+// 				}
 
 
 
-			} else {
-				alert("Browser is not compatible");
-			}
+// 			} else {
+// 				alert("Browser is not compatible");
+// 			}
 
-		return d.promise;
+// 		return d.promise;
 
-	};
+// 	};
 
-	return {
-		GetDeliveryKey: GetDeliveryKey,key: null
-	};
+// 	return {
+// 		GetDeliveryKey: GetDeliveryKey,key: null
+// 	};
 
-}]);
+// }]);
 
 AlcoholDelivery.factory('Search', function($http) {
   var Search = function(keyword,filter,sortby) {
@@ -334,11 +340,13 @@ AlcoholDelivery.factory('Search', function($http) {
 		}else{
 			this.skip+= parseInt(this.take);
 		}
+
 	}.bind(this));
 
   };
 
   return Search;
+
 });
 
 /* Setup Rounting For All Pages */
@@ -888,8 +896,8 @@ function ($q, $rootScope, $log, $location) {
 }]);
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "CartSession","catPricing","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll",
-			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, CartSession, catPricing, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll) {
+AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "catPricing","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll",
+			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, catPricing, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll) {
 
 	
 	angular.rootScope = $rootScope;
