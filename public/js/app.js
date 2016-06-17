@@ -118,14 +118,6 @@ AlcoholDelivery.filter('deliveryDateSlug',function(){
 })
 
 
-AlcoholDelivery.filter('categoryBreadCrumb', function($rootScope) {
-
-	return function(categoryKey){
-
-	}
-
-});
-
 /* Setup global settings */
 AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
 
@@ -213,6 +205,34 @@ AlcoholDelivery.factory('catPricing', ["$q", "$timeout", "$rootScope", "$http", 
 
 		GetCategoryPricing: GetCategoryPricing,
 		categoryPricing : null
+
+	};
+
+}]);
+
+
+AlcoholDelivery.factory('categoriesFac', ["$q", "$http", function($q, $http){
+
+	var categoriesFac = {};
+
+	function getCategories() {
+
+		var d = $q.defer();
+
+		$http.get("/super/category/",{params: {withCount:true}}).success(function(response){
+
+			d.resolve(response);
+
+		});
+
+		return d.promise;
+
+	};
+
+	return {
+
+		getCategories: getCategories,
+		categories : null
 
 	};
 
@@ -896,8 +916,8 @@ function ($q, $rootScope, $log, $location) {
 }]);
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "catPricing","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll",
-			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, catPricing, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll) {
+AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "catPricing", "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll",
+			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll) {
 
 	
 	angular.rootScope = $rootScope;
@@ -905,6 +925,15 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 
 	$rootScope.$state = $state; // state to be accessed from view
 	
+	categoriesFac.getCategories().then(
+
+		function(response){			
+			categoriesFac.categories = response;
+		},
+		function(errorRes){}
+	);
+
+
 	catPricing.GetCategoryPricing().then(
 
 		function(result) {

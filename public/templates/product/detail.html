@@ -1,14 +1,6 @@
 
-<div class="productdetailbrudcumcover">	
+<div product-breadcrumb info="product"></div>
 
-		<a href="">Home</a>
-		<img src="images/productdetail2.png">
-
-		<a href="" ng-repeat-start="category in product.categories">{{category | categoryBreadCrumb}}</a>
-		<img src="images/productdetail2.png" ng-repeat-end>
-
-		<span>{{product.name}}</span>
-</div>
 <div class="productdetailcovermainbgimg">
 	<div class="row">
 			<div class="col-xs-12 col-sm-6 col-md-6" ng-class="{comboproductitems_outofstock:{{!product.quantity}}}">

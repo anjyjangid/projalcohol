@@ -12,8 +12,8 @@
     <div class="productinner_leftslide">
         <div class="featured_product">Featured Product</div>
         <div class="productslide_heading">{{product.name}}</div>
-        <div class="productslide_normaltext">{{product.description}}</div>
-        <div class="productslide_actualprice">{{settings.general.currency}}{{product.price}}</div>        
+        <div class="productslide_normaltext">{{product.shortDescription}}</div>
+        <div class="productslide_discountprice">{{product.price | pricingTxt}}</div>
         <div class="productslide_addbutton"><button class="btn product_addcart" ui-sref="mainLayout.product({product:product.slug})">Add to Cart</button></div>
     </div>
     <div class="productinner_rightslide">

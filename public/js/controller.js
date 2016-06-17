@@ -1,4 +1,4 @@
-AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', "$mdToast", function($scope, $rootScope,$http,$mdToast) {
+AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", function($scope, $rootScope,$http,$mdToast,categoriesFac) {
 
 	$scope.AppController = {};
 	$scope.featuredProduct = [];
@@ -12,8 +12,7 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', "$m
 
 	$http.get("/super/settings/").success(function(response){
     	$rootScope.settings = response;
-    });
-
+    });   
 
     $http.get("/super/category/",{params: {withCount:true}}).success(function(response){
 

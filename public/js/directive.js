@@ -833,6 +833,71 @@ AlcoholDelivery.directive('sideBar', function() {
 	}
 }])
 
+.directive('productBreadcrumb', ['categoriesFac', function(categoriesFac){
+	'use strict';
+
+	return {
+		restrict: 'EA',
+		transclude: true,
+		scope: {
+			productInfo: "=info"
+		},
+		replace: true,
+		controller: function ($scope) {
+
+			$scope.categoryBread = [];
+
+			$scope.$watch('productInfo',
+
+				function(newValue, oldValue) {
+
+					if(typeof $scope.productInfo === "undefined"){
+						return $scope.categoryBread;
+					}
+
+					angular.forEach($scope.productInfo.categories, function (catId, index) {
+
+						for(i=0;i<categoriesFac.categories.length;i++){
+
+							var cat = categoriesFac.categories[i];
+							if(cat["_id"]===catId){
+
+								$scope.categoryBread.push({
+
+									_id:catId,
+									title:cat.cat_title,
+									slug:cat.slug
+								})
+								
+							}
+						}
+
+					});
+
+				}
+			);			
+
+			
+
+		},
+		template:'<div class="productdetailbrudcumcover">'+
+
+				'<a href="">Home</a>'+
+				'<img src="images/productdetail2.png">'+			
+
+				'<span ng-repeat="category in categoryBread">'+
+				
+				'<a ng-if="$first" ui-sref="mainLayout.category.products({categorySlug:category.slug})">{{category.title}}</a>'+				
+				'<a ng-if="!$first" ui-sref="mainLayout.category.subCatProducts({categorySlug:categoryBread[$index-1].slug,subcategorySlug:category.slug})">{{category.title}}</a>'+
+				'<img src="images/productdetail2.png">'+
+
+				'</span>'+
+
+				'<span>{{productInfo.name}}</span>'+
+				'</div>'
+	};
+}])
+
 .directive('ngBlur', ['$parse', function($parse){
 	return function(scope, element, attr) {
 		var fn = $parse(attr['ngBlur']);
@@ -843,6 +908,8 @@ AlcoholDelivery.directive('sideBar', function() {
 		});
 	};
 }])
+
+
 
 .directive("apFocusOut", ['$document','$parse', function( $document, $parse ){
     return {
@@ -863,7 +930,8 @@ console.log(isChild);
             });
         }
     }
-}]).directive('backImg', function(){
+}])
+.directive('backImg', function(){
     return function(scope, element, attrs){
         var url = attrs.backImg;
         element.css({

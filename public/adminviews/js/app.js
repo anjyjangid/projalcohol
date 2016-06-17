@@ -161,6 +161,7 @@ MetronicApp.service('fileUpload', ['$http','$location','$q', function ($http,$lo
 		// }
 			
 		return $http.post(uploadUrl, fd, {
+			
 			transformRequest: angular.identity,
 			headers: {'Content-Type': undefined}
 
