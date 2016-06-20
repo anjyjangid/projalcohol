@@ -457,7 +457,8 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							},
 							"rightPanel" : {
 
-								templateUrl : "/templates/partials/rightBarRecentOrder.html",							
+								templateUrl : "/templates/partials/rightBarRecentOrder.html",
+								controller : "RepeatOrderController"
 
 							},
 

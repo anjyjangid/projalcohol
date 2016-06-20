@@ -1954,6 +1954,7 @@ var objectToFormData = function(obj, form, namespace) {
 		
 		// if it's a string or a File object
 		fd.append(formKey, obj[property]);
+		
 	  }
 	  
 	}

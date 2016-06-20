@@ -1959,9 +1959,6 @@ AlcoholDelivery.controller('CartReviewController',['$scope','$rootScope','$http'
 
 				}
 			});
-
-
-
 }]);
 
 AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$stateParams',function($scope,$http,$stateParams){
@@ -2031,6 +2028,43 @@ AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$statePara
 
 
     });
+
+}]);
+
+AlcoholDelivery.controller('RepeatOrderController',['$scope','$http','UserService',function($scope,$http,UserService){
+
+	$scope.user = UserService.currentUser;
+	
+	$scope.$watch('user',
+
+		function(newValue, oldValue) {
+
+			if($scope.user){
+
+				$fetching = true;	
+				$scope.repeatOrderInit();
+
+			}
+			
+		},true
+	);
+
+	$scope.repeatOrderInit = function(){
+
+		if(UserService.currentUser===null){
+			console.log("Repeat order cannot initialized");
+			return false;
+		}
+
+		$http.get("user/orderstorepeat").then(
+			function(response){
+				$scope.orders = response.data;
+			},
+			function(errorRes){}
+		)
+
+	}
+	
 
 }]);
 

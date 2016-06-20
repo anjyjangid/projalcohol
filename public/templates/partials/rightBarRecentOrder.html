@@ -1,108 +1,22 @@
-<!-- 
-					// Html to show advance order discount toggle button
-					
-					<div class="right_discount">
-						<div class="huge">Huge</div>
-						<div class="hugediscou">Discounts </div>
-						<div class="fullwidth">
-							<div class="slider demo" id="slider-1">
-								<input ng-model="hugediscount.active" type="checkbox">
-							</div>
-						</div>
-						
-						<div class="hd_des">Only applicable for orders placed in advance. Advanced timings to be chosen upon checkout.</div>
-					</div> -->
-					<div class="recentorder" ng-show="user.email">
-						<div class="recentorder_title">Recent Order</div>
-						<div class="fullwidth modifyscroll">
-							<div class="ro_items">
-								<div class="chk_unchk">
-									<input type="checkbox" class="modcheck" name="cc" id="c1">
-									<label for="c1"><span></span></label>                                 
-								</div>
-								<div class="ro_pic"><img src="images/product-thumb.png" class="img-responsive" /></div>
-								<div class="ro_desc">CP Crispy Chicken with Korean...</div>
-							</div>
-							<div class="ro_items">
-								<div class="chk_unchk">
-									<input type="checkbox" class="modcheck" name="cc" id="c2">
-									<label for="c2"><span></span></label>                                 
-								</div>
-								<div class="ro_pic"><img src="images/product-thumb.png" class="img-responsive" /></div>
-								<div class="ro_desc">CP Crispy Chicken with Korean...</div>
-							</div>
-							<div class="ro_items">
-								<div class="chk_unchk">
-									<input type="checkbox" class="modcheck" name="cc" id="c3">
-									<label for="c3"><span></span></label>                                 
-								</div>
-								<div class="ro_pic"><img src="images/product-thumb.png" class="img-responsive" /></div>
-								<div class="ro_desc">CP Crispy Chicken with Korean...</div>
-							</div>
-							<div class="ro_items">
-								<div class="chk_unchk">
-									<input type="checkbox" class="modcheck" name="cc" id="c4">
-									<label for="c4"><span></span></label>                                 
-								</div>
-								<div class="ro_pic"><img src="images/product-thumb.png" class="img-responsive" /></div>
-								<div class="ro_desc">CP Crispy Chicken with Korean...</div>
-							</div>
-							<div class="ro_items">
-								<div class="chk_unchk">
-									<input type="checkbox" class="modcheck" name="cc" id="c5">
-									<label for="c5"><span></span></label>                                 
-								</div>
-								<div class="ro_pic"><img src="images/product-thumb.png" class="img-responsive" /></div>
-								<div class="ro_desc">CP Crispy Chicken with Korean...</div>
-							</div>
-							<div class="ro_items">
-								<div class="chk_unchk">
-									<input type="checkbox" class="modcheck" name="cc" id="c6">
-									<label for="c6"><span></span></label>                                 
-								</div>
-								<div class="ro_pic"><img src="images/product-thumb.png" class="img-responsive" /></div>
-								<div class="ro_desc">CP Crispy Chicken with Korean...</div>
-							</div>
-							<div class="ro_items">
-								<div class="chk_unchk">
-									<input type="checkbox" class="modcheck" name="cc" id="c7">
-									<label for="c7"><span></span></label>                                 
-								</div>
-								<div class="ro_pic"><img src="images/product-thumb.png" class="img-responsive" /></div>
-								<div class="ro_desc">CP Crispy Chicken with Korean...</div>
-							</div>
-							<div class="ro_items">
-								<div class="chk_unchk">
-									<input type="checkbox" class="modcheck" name="cc" id="c8">
-									<label for="c8"><span></span></label>                                 
-								</div>
-								<div class="ro_pic"><img src="images/product-thumb.png" class="img-responsive" /></div>
-								<div class="ro_desc">CP Crispy Chicken with Korean...</div>
-							</div>
-							<div class="ro_items">
-								<div class="chk_unchk">
-									<input type="checkbox" class="modcheck" name="cc" id="c9">
-									<label for="c9"><span></span></label>                                 
-								</div>
-								<div class="ro_pic"><img src="images/product-thumb.png" class="img-responsive" /></div>
-								<div class="ro_desc">CP Crispy Chicken with Korean...</div>
-							</div>
-							<div class="ro_items">
-								<div class="chk_unchk">
-									<input type="checkbox" class="modcheck" name="cc" id="c10">
-									<label for="c10"><span></span></label>                                   
-								</div>
-								<div class="ro_pic"><img src="images/product-thumb.png" class="img-responsive" /></div>
-								<div class="ro_desc">CP Crispy Chicken with Korean...</div>
-							</div>
-						</div>
-						<div class="recentorder_buttons">
-							<div class="addbtn"><img src="images/add.png" class="img-responsive" /></div>
-							<div class="repeatbtn" data-toggle="modal" data-target="#repeat_order"><img src="images/repeat.png" class="img-responsive" /></div>
-						</div>
-						<div class="recentorder_title">Order History</div>
-						<div class="orderhistorytext">Shopping from a past order provides a convenient way to quickly shop for the same products again.</div>
-						<div class="recentorder_buttons">
-							<div class="viewbtns" data-toggle="modal" data-target="#previous_orderhistory"><img src="images/view.jpg" class="img-responsive" /></div>
-						</div>
-					</div>
+<div class="recentorder" ng-show="user.email">
+	<div class="recentorder_title">Recent Order</div>
+	<div class="fullwidth modifyscroll">
+		<div class="ro_items">
+			<div class="chk_unchk">
+				<input type="checkbox" class="modcheck" name="cc" id="c1">
+				<label for="c1"><span></span></label>                                 
+			</div>
+			<div class="ro_pic"><img src="images/product-thumb.png" class="img-responsive" /></div>
+			<div class="ro_desc">CP Crispy Chicken with Korean...</div>
+		</div>
+	</div>
+	<div class="recentorder_buttons">
+		<div class="addbtn"><img src="images/add.png" class="img-responsive" /></div>
+		<div class="repeatbtn" data-toggle="modal" data-target="#repeat_order"><img src="images/repeat.png" class="img-responsive" /></div>
+	</div>
+	<div class="recentorder_title">Order History</div>
+	<div class="orderhistorytext">Shopping from a past order provides a convenient way to quickly shop for the same products again.</div>
+	<div class="recentorder_buttons">
+		<div class="viewbtns" data-toggle="modal" data-target="#previous_orderhistory"><img src="images/view.jpg" class="img-responsive" /></div>
+	</div>
+</div>
