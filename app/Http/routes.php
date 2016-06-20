@@ -69,6 +69,9 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::resource('holiday', 'Admin\HolidayController',['only'=>['update','store','destroy']]);
 	Route::controller('holiday', 'Admin\HolidayController');
 
+	Route::resource('gift', 'Admin\GiftController',['only'=>['store','show','index']]);
+	Route::controller('gift', 'Admin\GiftController');
+
 });
 
 Route::group(['prefix' => 'admin'], function () {					
@@ -191,6 +194,11 @@ Route::get('products/i/{filename}', function ($filename)
 Route::get('packages/i/{filename}', function ($filename)
 {
     return Image::make(storage_path('packages') . '/' . $filename)->response();
+});
+
+Route::get('gifts/i/{filename}', function ($filename)
+{
+    return Image::make(storage_path('gifts') . '/' . $filename)->response();
 });
 
 Route::get('asset/i/{filename}', function ($filename)

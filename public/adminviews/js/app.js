@@ -387,6 +387,12 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 			]
 		},
 		{
+			label:'Gifts',
+			uisref:'userLayout.gifts.list',
+			icon:'icon-present',
+			id:'sidebar_menu_link_gifts'
+		},
+		{
 			label:'Time Slots',
 			uisref:'userLayout.timeslots.list',
 			icon:'icon-clock',
@@ -464,7 +470,8 @@ initialization can be disabled and Layout.init() should be called on page load c
 
 /* Setup Layout Part - Header */
 MetronicApp.controller('HeaderController', ['$scope','$http', '$rootScope','AdminUserService', function($scope,$http,$rootScope,AdminUserService) {
-	$scope.$on('$includeContentLoaded', function() {
+	
+	$scope.$on('$includeContentLoaded', function() {		
 		Layout.initHeader(); // init header
 	});
 
@@ -488,13 +495,13 @@ MetronicApp.controller('SidebarController', ['$scope', function($scope) {
 }]);
 
 /* Setup Layout Part - Quick Sidebar */
-MetronicApp.controller('QuickSidebarController', ['$scope', function($scope) {    
+/*MetronicApp.controller('QuickSidebarController', ['$scope', function($scope) {    
 	$scope.$on('$includeContentLoaded', function() {
 		setTimeout(function(){
 			QuickSidebar.init(); // init quick sidebar        
 		}, 2000)
 	});
-}]);
+}]);*/
 
 /* Setup Layout Part - Theme Panel */
 MetronicApp.controller('ThemePanelController', ['$scope', function($scope) {    
@@ -1280,6 +1287,71 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 			resolve: {                
                 authenticate: authenticate
             }            
+        })
+
+        .state('userLayout.gifts', {            
+            abstract:true,            
+			controller:"GiftController",					            
+            templateUrl:'adminviews/views/auth.html',
+            resolve: {                
+                authenticate: authenticate,
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [                                                        
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+							'adminviews/js/models/giftModel.js',
+                            'adminviews/js/controllers/GiftController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('userLayout.gifts.list', {
+            url: "/gifts/list",            
+            templateUrl: "adminviews/views/gifts/list.html",		            
+            data:{
+				pageTitle:'Gifts',
+				breadCrumb:[
+					{title:'Gifts','uisref':'#'}					
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }           
+        })
+
+        .state('userLayout.gifts.add', {
+            url: "/gifts/add",            
+            templateUrl: "adminviews/views/gifts/form.html",		            
+            data:{
+				pageTitle:'Add Gift',
+				breadCrumb:[
+					{title:'Gifts','uisref':'userLayout.gifts.list'},
+					{title:'Add','uisref':'#'}
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }           
+        })
+
+        .state('userLayout.gifts.edit', {
+            url: "/gifts/edit/{giftid}",            
+            templateUrl: "adminviews/views/gifts/form.html",		            
+            data:{
+				pageTitle:'Edit Gift',
+				breadCrumb:[
+					{title:'Gifts','uisref':'userLayout.gifts.list'},
+					{title:'Add','uisref':'#'}
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }           
         })
 
         .state('userLayout.timeslots', {            

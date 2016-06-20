@@ -95,7 +95,7 @@
 			<div class="row" id="inventory" ng-controller="ProductInventoryController">
 				<div class="col-md-12">
 					<!-- Begin: life time stats -->
-					<div class="portlet box blue-steel">
+					<div class="portlet box blue-hoki">
 						<div class="portlet-title">
 							<div class="caption">
 								<i class="fa fa-thumb-tack"></i>Product Inventory
@@ -108,30 +108,24 @@
 							</div>
 						</div>
 						<div class="portlet-body">
-							<div class="">								
-								<div class="tab-content">
-									<div class="tab-pane active" id="overview_1">
-										<div class="table-responsive">
-											<table class="table table-striped table-hover table-bordered" id="orderlist">
-											<thead>
-											<tr>
-												<th></th>
-												<th>
-													 Product Name
-												</th>
-												<th>
-													 Current Quantity
-												</th>																								
-											</tr>
-											</thead>
-											<tbody>
-											
-											</tbody>
-											</table>
-										</div>
-									</div>									
-								</div>
-							</div>
+							<div class="table-container">
+								<table class="table table-striped table-bordered table-hover" id="orderlist">
+								<thead>
+								<tr>
+									<th></th>
+									<th>
+										 Product Name
+									</th>
+									<th>
+										 Current Quantity
+									</th>																								
+								</tr>
+								</thead>
+								<tbody>
+								
+								</tbody>
+								</table>
+							</div>										
 						</div>
 					</div>
 					<!-- End: life time stats -->
@@ -394,8 +388,12 @@ var detailRows = [];
 	    grid = $('#orderlist').dataTable( {
 				"bProcessing": true,
 				"bServerSide": true,			
-				"dom": 'ftp',
+				//"dom": 'ftp',
 				"pageLength" : 5,
+				"lengthMenu": [
+                    [5, 10, 50, 100],
+                    [5, 10, 50, 100] // change per page values here
+                ],
 				"columns": [
 					{
 		                "class":"details-control",		                

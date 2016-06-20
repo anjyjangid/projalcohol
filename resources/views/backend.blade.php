@@ -171,13 +171,17 @@ License: You must have a valid license purchased only from themeforest(the above
 			//Layout.init();			
 		});
 
-		$(function () {
-	        $.ajaxSetup({
-	            headers: {
-	                "X-CSRF-TOKEN": getCookie("XSRF-TOKEN")
-	            }
-	        });
-	    });	
+		window.onload = function(){
+			Layout.init();
+		}
+
+		
+        $( document ).ajaxComplete(function(e,res) {
+		  if(res.status==401){    
+		    window.location.hash = '#/logout'    
+		  }  
+		});
+	    
 		
 	</script>
 	<!-- END JAVASCRIPTS -->

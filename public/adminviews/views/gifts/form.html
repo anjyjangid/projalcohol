@@ -1,0 +1,103 @@
+<div class="row" ng-controller="GiftFormController">
+	<div class="col-md-12">
+		<form role="form" name='giftForm' ng-submit="store()" required="false">
+		<div class="portlet light">			
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-gift"></i>{{gift._id?'Edit Gift':'Add New Gift'}}
+				</div>
+				<div class="actions btn-set">
+					<a class="btn default" ui-sref="userLayout.gifts.list"><i class="fa fa-angle-left"></i> Back</a>
+					<button ng-disabled="loading" class="btn green" type="submit"><i class="fa fa-check"></i> {{gift._id?'Update':'Save'}}</button>
+				</div>
+			</div>				
+			<div class="portlet-body mbody">
+				<div class="form-horizontal">
+					<div class="form-group" ng:class="{'has-error':errors.type[0]}">
+						<label class="col-md-2 control-label">Gift type: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<select ng-options="giftoption.category.indexOf(selectedItem) as selectedItem for selectedItem in giftoption.category" class="table-group-action-input form-control input-medium" ng-model="gift.type">	
+							</select>
+							<span class="help-block" ng-bind="errors.status[0]"></span>
+						</div>
+					</div>
+					<div class="form-group" ng:class="{'has-error':errors['coverImage.thumb'][0]}">
+						<label class="col-md-2 control-label">Cover Image: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<div class="fileinput fileinput-new" data-provides="fileinput">
+								<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
+									<img err-src="asset/i/defaultImage.png" 
+										ng-src="gifts/i/{{gift.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+
+								</div>
+								<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
+								</div>
+								<div>
+									<span class="btn default btn-file">
+										<span class="fileinput-new">{{ gift.coverImage ? 'Change':'Select' }}</span>
+										<span class="fileinput-exists">Change</span>
+										<input type="file" placeholder="thumbnail" class="form-control" file-model="gift.image.thumb"/>
+									</span>	
+								</div>
+							</div>
+							<span class="help-block" ng-bind="errors['coverImage.thumb'][0]"></span>
+						</div>
+					</div>
+					<div class="form-group" ng:class="{'has-error':errors.title[0]}">
+						<label class="col-md-2 control-label">Title: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<input type="text" class="form-control" ng-model="gift.title" placeholder="">
+							<span class="help-block" ng-bind="errors.title[0]"></span>
+						</div>
+					</div>
+					<div class="form-group" ng:class="{'has-error':errors.subTitle[0]}">
+						<label class="col-md-2 control-label">Sub Title: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<input type="text" class="form-control" ng-model="gift.subTitle" placeholder="">
+							<span class="help-block" ng-bind="errors.subTitle[0]"></span>
+						</div>
+					</div>							
+					<div class="form-group" ng:class="{'has-error':errors.description[0]}">
+						<label class="col-md-2 control-label">Description: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<textarea class="form-control" ng-model="gift.description"></textarea>
+							<span class="help-block" ng-bind="errors.description[0]"></span>
+						</div>
+					</div>
+					<div ng-show="gift.type != 0" class="form-group" ng:class="{'has-error':errors.limit[0]}">
+						<label class="col-md-2 control-label">Product limit: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-3">
+							<input type="number" step="1" min="1" class="form-control" ng-model="gift.limit" placeholder="">
+							<span class="help-block">Number of product that can be added.</span>
+							<span class="help-block" ng-bind="errors.limit[0]"></span>
+						</div>
+					</div>							
+					<div class="form-group" ng:class="{'has-error':errors.status[0]}">
+						<label class="col-md-2 control-label">Status: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<select ng-options="['Published','Not Published'].indexOf(statusItem) as statusItem for statusItem in ['Published','Not Published']" class="table-group-action-input form-control input-medium" ng-model="gift.status">
+								<option value="">Select...</option>								
+							</select>
+							<span class="help-block" ng-bind="errors.status[0]"></span>
+						</div>
+					</div>
+				</div>																					
+			</div>			
+		</div>
+		</form>
+	</div>
+</div>

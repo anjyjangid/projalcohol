@@ -2,9 +2,7 @@ vendor/*
 node_modules/
 Homestead.yaml
 .env
-storage/database.sqlite
-storage/products
-storage/graphics
+storage/*
 .idea
 public/bower_components/
 public/assets

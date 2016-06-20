@@ -42,7 +42,7 @@
 		<link rel="stylesheet" type="text/css" href="css/ui_responsive.css">
 		<link rel="stylesheet" type="text/css" href="css/app.css">
 		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/v-accordion/dist/v-accordion.css') }}">
-
+		<link rel="stylesheet" type="text/css" href="css/pushy.css">
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 		<!--[if lt IE 9]>
@@ -54,7 +54,13 @@
 	</head>
 	<body ng-controller="AppController">
 
-		<top-menu></top-menu>
+		
+
+        <top-menu></top-menu>
+
+        
+
+        <div id="container">		
 
 		<div ui-view class="ancontainer"></div>
 
@@ -102,7 +108,7 @@
 							<ul>
 								<li><a ui-sref="cmsLayout.about-us">About us</a></li>
 								<li><a href="#">How it Works</a></li>
-								<li><a href="#">Team us</a></li>
+								<li><a href="#">Team</a></li>
 								<li><a href="#">Mobile App</a></li>
 								<li><a href="#">Desktop App</a></li>
 								<li><a href="#">Security</a></li>
@@ -151,6 +157,7 @@
 				</div>
 			</div>
 		</section>
+		</div>
 
 	</body>
 
@@ -200,7 +207,7 @@
     <script type="text/javascript" src="js/alcoholWishlist.js"></script>
     <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
     <script type="text/javascript" src="js/directive.js"></script>
-
+    
 
     <script src="{{ asset('bower_components/angular-fblogin/dist/angular-fblogin.js') }}"></script>   
     <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>   
