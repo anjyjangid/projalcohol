@@ -39,7 +39,8 @@
 
 		<link rel="stylesheet" type="text/css" href="css/common.css">
 		<link rel="stylesheet" type="text/css" href="css/screen-ui.css">
-		<link rel="stylesheet" type="text/css" href="css/ui_responsive.css">
+		<link rel="stylesheet" type="text/css" href="css/ui_responsive.css">       
+        
 		<link rel="stylesheet" type="text/css" href="css/app.css">
 		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/v-accordion/dist/v-accordion.css') }}">
 
@@ -55,6 +56,8 @@
 	<body ng-controller="AppController">
 
 		<top-menu></top-menu>
+
+		<div class="site-overlay"></div>
 
 		<div ui-view class="ancontainer"></div>
 
@@ -159,6 +162,7 @@
     <script type="text/javascript" src="{{ asset('bower_components/dropzone/dist/dropzone.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/angular/angular.min.js') }}"></script>
+   
 
     <script src="{{ asset('assets/global/plugins/angularjs/angular-sanitize.min.js') }}" type="text/javascript"></script>
 
@@ -168,6 +172,36 @@
     <script type="text/javascript" src="{{ asset('bower_components/angular-cookies/angular-cookies.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/angular-loading-bar/build/loading-bar.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap.min.js') }}"></script>
+    
+    <script type="text/javascript">
+     $(document).ready(function () {     	
+     	var trigger = $('.hamburger'),overlay = $('.overlay'),isClosed = false;
+
+	    trigger.click(function () {
+	      hamburger_cross();      
+	    });
+
+	    function hamburger_cross() {
+
+	      if (isClosed == true) {          
+	        overlay.hide();
+	        trigger.removeClass('is-open');
+	        trigger.addClass('is-closed');
+	        isClosed = false;
+	      } else {   
+	        overlay.show();
+	        trigger.removeClass('is-closed');
+	        trigger.addClass('is-open');
+	        isClosed = true;
+	      }
+	  } 
+	    
+	 });
+     
+     $('#offcanvas').on('click',function () {        	  		  	
+	  	$('#wrapper').toggleClass('toggled');
+	 });
+</script>
     <script type="text/javascript" src="{{ asset('bower_components/angular-ui-router/release/angular-ui-router.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/oclazyload/dist/ocLazyLoad.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') }}"></script>
@@ -199,9 +233,8 @@
     <script type="text/javascript" src="js/alcoholWishlist.js"></script>
     <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
     <script type="text/javascript" src="js/directive.js"></script>
-
-
+    
     <script src="js/ngFacebook.js"></script>
     <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>   
-
+    
 </html>

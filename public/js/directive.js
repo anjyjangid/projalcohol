@@ -38,6 +38,8 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.list = [];
 
+			$scope.menu = {openSearch:true};
+
 			$scope.signup = {
 				terms:null
 			};
@@ -185,7 +187,9 @@ AlcoholDelivery.directive('sideBar', function() {
 	            });
 			};
 
-
+			$scope.openMenu = function(){
+				angular.element('#wrapper').toggleClass('toggled');
+			}			
 		}
 	};
 })

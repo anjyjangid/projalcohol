@@ -1008,6 +1008,7 @@ AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','
 		});
 
 	};
+	
 
 	function validateAddress(address){
 
@@ -1196,7 +1197,8 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 				templateUrl: '/templates/partials/gift-packaging-popup.html',
 				parent: angular.element(document.body),
 				targetEvent: ev,
-				clickOutsideToClose: true
+				clickOutsideToClose: true,
+				fullscreen:false
 			}
 		)
 	};
@@ -2607,6 +2609,8 @@ AlcoholDelivery.controller('SearchController', [
 				$anchorScroll();
 			});
 		    $scope.searchbar(0);
+
+		    $scope.openSearch = false;
 		}
     }
 
@@ -2631,13 +2635,19 @@ AlcoholDelivery.controller('SearchController', [
 
 			if($.trim($(".searchtop input").val())=="")
 				$(".searchtop input").focus();
+
+			$('#page-content-wrapper').addClass('searchopen');
 		}else{
 			$(".searchtop").removeClass("searchtop100").addClass("again21");
 			$(".search_close").removeClass("search_close_opaque");
 			$(".logoss").removeClass("leftminusopacity leftminus100").addClass("again0left againopacity");
 			$(".homecallus_cover").removeClass("leftminus2100").addClass("again0left");
 			$(".signuplogin_cover").removeClass("rightminus100").addClass("again0right");
+			$('#page-content-wrapper').removeClass('searchopen');
+
 		}
+
+
 	}
 
 	if($stateParams.keyword){
