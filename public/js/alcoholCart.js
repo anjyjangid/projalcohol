@@ -11,6 +11,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			promotions :[],
 			nonchilled : false,
 			delivery : {
+
 				type : 1,
 				charges : null,
 				address : null,
@@ -18,6 +19,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 				instruction : null,
 				leaveatdoor : false,
 				instructions : null,
+
 			},
 			service : {
 				express : {
@@ -157,9 +159,9 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		    	_self.$cart.packages.push(newPackage);
 
 		    	if(inCart){
-		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Promotion updated"});
+		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Package updated"});
 		    	}else{
-		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Promotion added to cart"});
+		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Package added to cart"});
 		    	}
 
 				d.resolve(response);
@@ -171,13 +173,29 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 	};
 
-	this.addPromo = function(promoId,productId){
+	this.addPromo = function(promoId,productId,$event){
 
-		var _self = this;
+		var _self = this;	
 
 		var deliveryKey = _self.getCartKey();
 		
 		var d = $q.defer();
+
+		if(!this.isEligibleForPromotion(promoId)){
+
+			console.log($event);
+			$mdToast.show({
+				controller:function($scope){
+
+				},
+				templateUrl: '/templates/toast-tpl/notify-promo-nq.html',
+				parent : $event.currentTarget.parentElement,
+				position: 'top center',
+				hideDelay:2000
+			});
+			
+			return false;
+		}
 
 		$http.put("/cart/promotion/"+deliveryKey, {
 				"promoId":promoId,
@@ -234,6 +252,15 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		return d.promise;
 
 	};
+
+	this.isEligibleForPromotion = function(promoId){
+
+		var cartSubTotal = this.getSubTotal();
+		var isEligible = promotionsService.isEligible(promoId,cartSubTotal);
+
+		return isEligible;
+
+	}
 
 	this.setPromotionsInCart = function(){
 
@@ -342,6 +369,8 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 				allServicesCharges+= service.smoke.charges;				
 			}		
 			
+			service.total = allServicesCharges;
+
 			return +parseFloat(allServicesCharges).toFixed(2);
 		};
 
@@ -405,6 +434,10 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		};
 
 		this.getTotalUniqueItems = function () {
+			
+			if(typeof this.getCart() === "undefined"){
+				return 0;
+			}
 
 			var count = Object.keys(this.getCart().products).length;
 
@@ -719,7 +752,8 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		};	
 
 		this.setDeliveryType = function(status){
-		
+			
+			var _self = this;
 			if(typeof status !=="undefined"){
 				
 				this.$cart.delivery.type = status;
@@ -730,17 +764,16 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 			}
 
-			if(this.$cart.delivery.type==0){
+			var products = this.getCart().products;
+			angular.forEach(products, function (product,key) {
 
-				var products = this.getCart().products;
-				angular.forEach(products, function (product,key) {
+				if(product.onlyForAdvance && _self.$cart.delivery.type==0){
+					product.setNonAvailability(true);
+				}else{
+					product.setNonAvailability(false);
+				}
 
-					if(product.onlyForAdvance){
-						product.setNonAvailability(true);
-					}
-
-				});
-			}
+			});
 
 			this.deployCart();
 		}
@@ -940,6 +973,31 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 	        });	
 				
+			return d.promise;
+
+		}
+
+		this.freezCart = function(){
+
+			var d = $q.defer();
+
+			this.deployCart().then(
+				
+				function(successRes){
+
+					$http.get("freezcart").error(function(data, status, headers) {
+
+			        	d.reject(data);
+
+			        }).success(function(response) {	        		      
+
+			        	d.resolve(response);
+
+			        });	
+				},
+				function(errorRes){}
+			);
+
 			return d.promise;
 
 		}

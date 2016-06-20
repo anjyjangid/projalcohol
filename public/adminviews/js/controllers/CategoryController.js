@@ -12,7 +12,7 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 
     });       
 
-    
+    $scope.error = {};
 	angular.extend($scope, {
 
 		categoryFormInit : function(){
@@ -81,7 +81,7 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 			// 	ptitle:'',				
 			// };
 
-			var data = $scope.category;			
+			var data = $scope.category;
 
 			if($scope.categories[0].categoryList.length>0){
 				
@@ -115,20 +115,19 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 			
 
 			var uploadUrl = "adminapi/category";
-			fileUpload.uploadFileToUrl(files, data, uploadUrl)
-		        .success(function(response) {
 
+			fileUpload.uploadFileToUrl(files, data, uploadUrl).then(
+				function(successRes){
 
-		        }).error(function(data, status, headers) {            
-		            Metronic.alert({
-		                type: 'danger',
-		                icon: 'warning',
-		                message: data,
-		                container: '.portlet-body',
-		                place: 'prepend',
-		                closeInSeconds:3
-		            });
-		        });
+				},	
+				function(errorRes) {
+
+		        	$scope.errors = errorRes.data;
+		            
+		        }
+			)
+
+		        
 
 		},
 
@@ -161,6 +160,8 @@ MetronicApp.controller('CategoryShowController',['$rootScope', '$scope', '$timeo
 
 MetronicApp.controller('CategoryUpdateController',['$rootScope', '$scope', '$timeout','$http','$stateParams','fileUpload','categoryModel', function($rootScope, $scope, $timeout,$http,$stateParams,fileUpload,categoryModel) {
     
+    $scope.errors = {};
+
     angular.extend($scope, {
 
     	categoryFormInit: function(){
@@ -184,7 +185,7 @@ MetronicApp.controller('CategoryUpdateController',['$rootScope', '$scope', '$tim
 				response.renameProperty('cat_thumb','thumb');
 				response.renameProperty('cat_lthumb','lthumb');
 				
-				Object.assign($scope.category,response);
+				angular.extend($scope.category,response);
 
 				if(!$scope.category.advance_order)
 					$scope.category.advance_order = {};
@@ -221,21 +222,16 @@ MetronicApp.controller('CategoryUpdateController',['$rootScope', '$scope', '$tim
 
 			var uploadUrl = "adminapi/category/update/"+$stateParams.categoryid;
 
-			fileUpload.uploadFileToUrl(files, data, uploadUrl)
-		        .success(function(response) {
-		            
-		            //$location.path("categories/list");
+			fileUpload.uploadFileToUrl(files, data, uploadUrl).then(
+				function(successRes){
 
-		        }).error(function(data, status, headers) {            
-		            Metronic.alert({
-		                type: 'danger',
-		                icon: 'warning',
-		                message: data,
-		                container: '.portlet-body',
-		                place: 'prepend',
-		                closeInSeconds: 3
-		            });
-		        });
+				},	
+				function(errorRes) {
+
+		        	$scope.errors = errorRes.data;
+		            
+		        }
+			)		
 
 		},
     	

@@ -54,7 +54,7 @@ class OrderController extends Controller
 
 		$order = Orders::where("_id",'=',$id)->where("user",'=',new MongoId($user->_id))->first();
 
-		$order->dop = strtotime($order->created_at);
+		$order->dop = strtotime($order->created_at);		
 		
 		return response($order,200);
 	}
@@ -87,7 +87,7 @@ class OrderController extends Controller
 							'$size' => '$products'
 						),
 						'created_at'=>1,
-						'timeslot'=>1,						
+						'timeslot'=>1,
 					),
 				),				
 				array(
@@ -96,10 +96,6 @@ class OrderController extends Controller
 			));
 		});
 
-		
-
 		return response($orders['result'],200);
 	}
-	
-
 }

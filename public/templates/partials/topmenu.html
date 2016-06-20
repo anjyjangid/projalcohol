@@ -44,10 +44,8 @@
                   <li><a href="#" ng-click="logout()">Logout</a></li>
                 </ul>
               </li>
-              <li ng-hide="user.email"><a data-target="#register" data-toggle="modal" href="javascript:;">Signup</a></li>
-              <li class="dropdown cart-icon-set" id="cart-summary-icon">
-                <alcoholcart-summary></alcoholcart-summary>
-              </li>
+              <li ng-hide="user.email"><a data-target="#register" data-toggle="modal" href="javascript:;">Signup</a></li>              
+              <alcoholcart-summary></alcoholcart-summary>              
               <li>
                 <a class="search_icon" ng-click="searchbar(1); openSearch=!openSearch" ></a>
               </li>
@@ -90,7 +88,7 @@
     </div>
   </div></div>
   
-  <!-- <div id="google_translate_element"></div><script type="text/javascript">
+<!-- <div id="google_translate_element"></div><script type="text/javascript">
 function googleTranslateElementInit() {
 	new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,zh-CN', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
 }
@@ -124,7 +122,7 @@ function googleTranslateElementInit() {
             <div class="registeremailcvr" ng-class="{'has-error':signup.errors.terms[0]}">
               <input type="checkbox" class="" ng-model="signup.terms" name="regis" id="regis">
               <label for="regis"><span></span></label>
-              <div class="register_checktext"> By submitting this form, I confirm that I have read and agree to Alcohol Delivery’s <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a> <span class="help-block" ng-bind="signup.errors.terms[0]"></span></div>
+              <div class="register_checktext"> By submitting this form, I confirm that I have read and agree to Alcohol Delivery’s <a target="_blank" ui-sref="cmsLayout.terms-conditions">Terms of Use</a> and <a target="_blank" ui-sref="cmsLayout.privacy-policy">Privacy Policy</a> <span class="help-block" ng-bind="signup.errors.terms[0]"></span></div>
             </div>
           </div>
         </div>

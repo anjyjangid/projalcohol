@@ -497,10 +497,9 @@ ui-sref {
 .combo_slider .nav-tabs {
 	border-bottom: 0px solid #ddd;
 }
-.combo_slider .nav li a {
-
-	padding: 8px 0;
-	margin: 0 0px;
+.combo_slider.main .nav  li  a{
+	padding:8px 0;
+	margin:0 0px;
 	text-transform: capitalize;
 	font-size: 0.9em;
 	border-bottom: solid 2px #ffffff;
@@ -1024,26 +1023,32 @@ ui-sref {
 .slido_pic img {
 	display: inline-block;
 }
-.slido_txt {
-	width: 100%;
-	float: left;
+.slido_txt{
+	width: 100%;	
 	text-align: center;
 	font-size: 15px;
 	margin-top: 10px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 200px;
+	margin: auto;
 }
 .slido_right {
 	float: right;
 	padding: 0 30px;
 	width: 55%;
-	margin-top: 60px;
-	font-size: 18px;
-	font-weight: 500;
+	margin-top:60px;
+	font-size:18px;
+	font-weight:500;
+	word-wrap: break-word;
 }
 .brands {
 	margin-bottom: 45px;
 }
-.brands img {
-	display: inline-block;
+.brands img{
+	display:inline-block;
+	max-height: 100px;
 }
 .brands .text-center {
 	display: table-cell;
@@ -2404,19 +2409,20 @@ ui-sref {
 /*box-shadow:none;
 	border:none;*/
 }
-.prddetailtitle {
-	width: 100%;
-	float: left;
-	font-size: 28px;
-	color: #666;
-	font-weight: 600;
+.prddetailtitle{
+	width:100%;
+	float:left;
+	font-size:28px;
+	color:#666;
+	font-weight:500;
 }
-.prddetailsubexttitle {
-	width: 100%;
-	float: left;
-	font-size: 14px;
-	color: #666;
-	font-weight: 500;
+
+.prddetailsubexttitle{
+	width:100%;
+	float:left;
+	font-size:14px;
+	color:#666;
+	font-weight:500;
 }
 .prddetailnormaltext {
 	width: 100%;
@@ -2580,12 +2586,33 @@ ui-sref {
 	text-transform: capitalize;
 	width: 100%;
 }
-.prdquantitybulkcoverbulkbox {
-	width: 100%;
+
+.prdquantitybulkcoverbulkbox{
+	width:100%;
+	float:left;
+	border:solid 1px #d7d7d7;
+	border-radius:4px;
+	margin-top:-1px;
+}
+.prdquanbulkboxone{
+	float:left;
+	background:#d7d7d7;
+	width:65px;
+	font-size:10px;
+	color:#222122;
+	font-weight:400;
+	text-align:right;
+	text-transform:uppercase;
+	padding:2px 6px;
+	line-height:17px;
+}
+.prdquanbulkboxtwo{
 	float: left;
-	border: solid 1px #d7d7d7;
-	border-radius: 4px;
-	margin-top: -1px;
+	font-size: 14px;
+	color: #666;
+	font-weight: 400;
+	padding: 0 9px;
+	line-height: 19px;
 }
 .prdquanbulkboxone {
 	float: left;

@@ -10,11 +10,11 @@
 			<div class="wishlist" ng-if="!isInwishList" ng-click="addToWishlist()">Add to Wishlist</div>
 			<div class="wishlist" ui-sref="accountLayout.wishlist" ng-if="isInwishList">Added to Wishlist</div>
 
-			<div class="discount" ui-sref="mainLayout.product({product:productInfo._id})">Click here to view Bulk Discounts</div>
+			<div class="discount" ui-sref="mainLayout.product({product:productInfo.slug})">Click here to view Bulk Discounts</div>
 		</div>
 		<img err-pro-src="" ng-src="products/i/200/{{productInfo.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive"/>
 	</div>
-	<div ui-sref="mainLayout.product({product:productInfo._id})">
+	<div ui-sref="mainLayout.product({product:productInfo.slug})">
 		<div class="prod_desc">
 			{{productInfo.name}} <not-available product="productInfo"></not-available>
 		</div>
@@ -32,7 +32,7 @@
 
 	<div class="prod_addtocart">	
 
-		<button class="checkoutproductbutton" ng-if="productInfo.promo && !promotion.inCart" ng-click="alcoholCart.addPromo(promotion._id,productInfo._id)">Add Promo</button>
+		<button class="checkoutproductbutton" ng-if="productInfo.promo && !promotion.inCart" ng-click="alcoholCart.addPromo(promotion._id,productInfo._id,$event)">Add Promo</button>
 		
 		<add-to-cart-btn product="productInfo" ng-if="promotion.inCart || !productInfo.promo && (productInfo.quantity || productInfo.outOfStockType == 2)"></add-to-cart-btn>
 

@@ -28,13 +28,17 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
             };
 
             userModel.submitAccount(data).success(function(response){
+
+                $scope.errors = {};
+
                 AdminUserService.storeUser(response);
                 Metronic.alert({
                     type: 'success',
                     icon: 'success',
                     message: 'Profile updated successfully',
                     container: '#tab_1_1',
-                    place: 'prepend'
+                    place: 'prepend',
+                    closeInSeconds: 3
                 });
             }).error(function(data, status, headers) {                            
                 $scope.errors = data;                
@@ -49,13 +53,15 @@ MetronicApp.controller('UserProfileController',['$rootScope', '$scope', '$timeou
                 retype_password: $scope.user.retype_password
             };
 
-            userModel.changePassword(data).success(function(response){                
+            userModel.changePassword(data).success(function(response){
+                $scope.errors = {};
                 Metronic.alert({
                     type: 'success',
                     icon: 'success',
                     message: 'Password updated successfully',
                     container: '#tab_1_3',
-                    place: 'prepend'
+                    place: 'prepend',
+                    closeInSeconds: 3
                 });
                 $scope.user.current_password = '';
                 $scope.user.new_password = '';

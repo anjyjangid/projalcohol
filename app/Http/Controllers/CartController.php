@@ -905,9 +905,16 @@ jprd($product);
 
     public function confirmorder(Request $request,$cartKey){
 
-		$cart = Cart::find($cartKey);
+		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
+		$cart = Cart::where("_id","=",$cartKey)->first();
 
-		$cartArr = $cart->toArray();
+		if(empty($cart)){
+
+			return response(["success"=>false,"message"=>"cart not found"],405); //405 => method not allowed
+
+		}
+
+		$cartArr = $cart->toArray();	
 
 		$user = Auth::user('user');
 
@@ -1001,7 +1008,9 @@ jprd($product);
     	}
 
     	if(isset($params['timeslot'])){
+
     		$cart->timeslot = $params['timeslot'];
+
     	}
 
     	try {
@@ -1020,13 +1029,129 @@ jprd($product);
 
     }
 
-    public function freezcart($id){
+	public function freezcart(Request $request){
 
-    	$deliverykey = $request->session()->get('deliverykey');
+		$cartKey = $request->session()->get('deliverykey');
 
-    	prd($deliverykey);
+		$cartObj = new Cart;
 
-    }
+		$cart = Cart::findUpdated($cartKey);
+
+		// if(isset($cart->freeze) && $cart->freeze===true){
+
+		// 	return response(["success"=>false,"message"=>"Cart is already freezed"],405); //405 => method not allowed
+
+		// }
+
+		$cart->freeze = true;
+
+		$cart->save();
+
+
+
+		$cartArr = $cart->toArray();
+
+		$isValid = $this->validateCart($cartArr);
+
+		if($isValid['valid']==false){
+
+			$cart->freeze = false;
+
+			$cart->save();
+
+			return response(["success"=>false,"valid"=>false,"message"=>"Cart is not valid"],405); //405 => method not allowed
+		}
+
+		$productWithCount = $cartObj->getProductIncartCount($cartArr);
+
+		foreach($productWithCount as $productKey=>$productCount){
+
+			$product = Products::where('_id', $productKey)->decrement('quantity', $productCount);
+
+		}
+
+
+
+
+		return response(["success"=>true,"message"=>"Cart freezed sucessfully"],200);
+
+	}
+
+	public function validateCart($cartData){
+
+		$response = [
+			"valid"=>false
+		];
+
+		$cartObj = new Cart;
+		$productsData = $cartObj->getAllProductsInCart($cartData);	
+
+		$isNotAvailable = false;
+
+		if(isset($cartData['products'])){
+			foreach($cartData['products'] as $key=>&$product){
+
+				$quantity = (int)$product['chilled']['quantity'] + (int)$product['nonchilled']['quantity'];
+				
+				$productsData[$key]['quantity'] = $productsData[$key]['quantity'] - $quantity;
+
+				if($productsData[$key]['quantity']<0){
+					$product['isNotAvailable'] = true;
+					$isNotAvailable = true;
+				}
+
+			}
+		}
+
+		if(isset($cartData['packages'])){
+			foreach($cartData['packages'] as $key=>&$package){
+				
+				foreach($package['packageItems'] as $packageItem){
+
+					foreach($packageItem['products'] as $product){
+
+						if($product['cartquantity']>0){					
+
+							$quantity = (int)$package['packageQuantity'] * (int)$product['cartquantity'];				
+							
+							$productsData[$product['_id']]['quantity']-= $quantity;
+
+							if($productsData[$product['_id']]['quantity']<0){
+								$package['isNotAvailable'] = true;
+								$isNotAvailable = true;
+							}
+
+						}
+
+					}			
+
+				}
+
+			}
+		}
+
+		if(isset($cartData['promotions'])){
+			foreach($cartData['promotions'] as &$promotion){
+
+				$productsData[$promotion['productId']]['quantity']-= 1;
+
+				if($productsData[$promotion['productId']]['quantity']<0){
+					$promotion['isNotAvailable'] = true;
+					$isNotAvailable = true;
+				}
+			}
+	    }
+
+		$response['cartData'] = $cartData;
+
+		if($isNotAvailable !== true){
+			$response['valid'] = true;			
+		}
+		
+
+		return $response;
+
+	}
 
     public function missingMethod($parameters = array())
 	{

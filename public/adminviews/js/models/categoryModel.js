@@ -48,7 +48,7 @@ MetronicApp.factory('categoryModel', ['$http', '$cookies', function($http, $cook
     categoryModel.getParentCategories = function($level){
 
         if(typeof $level === 'undefined'){
-            $level = '';
+            $level = 'parents';
         }
 
         return $http({

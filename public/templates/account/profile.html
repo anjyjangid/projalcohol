@@ -1,8 +1,7 @@
 <div class="breadcrumdiv">
- <ol class="breadcrumb">
-  <li><a href="#">Home</a></li>
-  <li><a href="#">My Account</a></li>
-  <li><a href="#">Account Settings  </a></li>
+ <ol class="breadcrumb">  
+  <li><a ui-sref="mainLayout.index">Home</a></li>  
+  <li><a>My Account</a></li>  
   <li class="active">Profile Settings</li>
 </ol>
 </div>
@@ -12,7 +11,7 @@
 <div class="balancedetailsdiv2">
   <div class="balancetexxt">If you want to change the name associated with your Alcohol Delivery customer account, you may do so below. Be sure to click the <a href="">Save Changes</a> button when you are done.</div>
 </div>
-<form name="profileFrm" class="profile_form">
+<form name="profileFrm" class="profile_form" ng-submit="update()">
 
       <div class="registeremailcvr" ng:class="{'has-error':errors.name[0]}">
         
@@ -44,6 +43,6 @@
         <span class="help-block" ng-bind="errors.mobile_number[0]"></span>
       </div>
       <div class="fullwidth">
-        <button class="alcohalfootersign" type="button" ng-click="update()" ng-disabled="!profileFrm.$valid || loading">Save Changes</button>
+        <button class="alcohalfootersign" type="submit"  ng-disabled="!profileFrm.$valid || loading">Save Changes</button>
       </div>
 </form>

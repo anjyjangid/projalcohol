@@ -1,12 +1,14 @@
+<li ng-class="{'hideOp':hideOpcart.hide}" class="dropdown cart-icon-set" id="cart-summary-icon" ng-mouseover="hideOpcart.hide=false" ng-mouseleave="hideOpcart.hide=true">
 <a href="javascript:void(0)" class="cart_icon"></a><span>$2555.00</span>
-
+<!-- <a href="javascript:void(0)" ng-if="alcoholCart.getTotalUniqueItems()">{{alcoholCart.getCartTotal() | pricingTxt}}</a> -->
 <div class="dropdown-menu currentorderpopup">
 	<!-- Current order Start-->
 
 	<div ng-if="alcoholCart.getTotalUniqueItems()">
 		<div class="currentorderpopuppinkbox">
 			<div class="currentorderpopuppinkboxleft">Current Order</div>
-			<div class="currentorderpopuppinkboxright"><a ui-sref="mainLayout.checkout.cart">view Cart</a></div>
+			
+			<div class="currentorderpopuppinkboxright" ng-click="hideOpcart.hide=1"><a ui-sref="mainLayout.checkout.cart" >view Cart</a></div>
 		</div>
 
 
@@ -16,13 +18,13 @@
 				<li ng-repeat="(id,product) in alcoholCart.getProducts()">
 					<div class="currentorderpopupulleft">{{product.product.name}}</div>
 					<div class="currentorderpopupulcenter">{{product.quantity}}</div>
-					<div class="currentorderpopupulright">{{product.getPrice()}}</div>
+					<div class="currentorderpopupulright">{{product.getPrice() | pricingTxt}}</div>
 				</li>
 
 				<li ng-repeat="(key,package) in alcoholCart.getPackages()">
 					<div class="currentorderpopupulleft">{{package._name}}</div>
 					<div class="currentorderpopupulcenter">{{package._quantity}}</div>
-					<div class="currentorderpopupulright">{{package._price}}</div>
+					<div class="currentorderpopupulright">{{package._price | pricingTxt}}</div>
 				</li>
 
 				<li ng-repeat="(key,promotion) in alcoholCart.getPromotions()">
@@ -45,3 +47,4 @@
 	<!--Current order End-->
 
 </div>
+</li>

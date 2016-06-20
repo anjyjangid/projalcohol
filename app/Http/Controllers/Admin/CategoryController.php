@@ -54,19 +54,33 @@ class CategoryController extends Controller
 	{
 		$inputs = $request->all();
 		
+		
+		if(isset($inputs['thumb']) && $inputs['thumb']=="undefined"){
+			unset($inputs['thumb']);
+		}
+		if(isset($inputs['lthumb']) && $inputs['lthumb']=="undefined"){
+			unset($inputs['lthumb']);
+		}
+
 		// validation rules
-		$validator = Validator::make($request->all(), [
+
+		$rules = [
 			'title' => 'required',
 			'slug'  => 'required',
 			'isMenu'=> 'required|integer|in:0,1',
 			'thumb' => 'required|mimes:jpeg,jpg,png|max:8000',
+		];
 
-		]);
+		if(!isset($inputs['ptitle']) || $inputs['ptitle']==""){
+			$rules['lthumb'] = 'required|mimes:jpeg,jpg,png|max:8000';
+		}
+
+		$validator = Validator::make($inputs, $rules);
 
 		// if validation fails
 		if ($validator->fails()) {
 			
-			return response('There are errors in the form data', 400);
+			return response($validator->errors(), 422);
 		}
 		
 		$category = new Categories;
@@ -263,20 +277,38 @@ class CategoryController extends Controller
 	public function postUpdate(Request $request, $id)
 	{
 		$inputs = $request->all();
-		
-		// validation rules
-		$validator = Validator::make($inputs, [
-			'title' => 'required',            
-			'slug'=> 'required',
-			'isMenu'=> 'required|integer|in:0,1',
-			//'thumb' => 'mimes:jpeg,jpg,png|max:8000',
-		]);
 
+		$rules = [
+			'title' => 'required',
+			'slug'  => 'required',
+			'isMenu'=> 'required|integer|in:0,1',			
+		];
+			
+
+		if ($request->hasFile('thumb')){
+			$rules['thumb'] = 'mimes:jpeg,jpg,png|max:8000';
+		}
+		if ($inputs['thumb']=='undefined'){
+			$rules['thumb'] = 'required|mimes:jpeg,jpg,png|max:8000';
+		}
+
+		if ($request->hasFile('lthumb')){
+			$rules['lthumb'] = 'mimes:jpeg,jpg,png|max:8000';
+		}
+		if ($inputs['lthumb']=='undefined'){
+			$rules['lthumb'] = 'required|mimes:jpeg,jpg,png|max:8000';
+		}
+
+
+		$validator = Validator::make($inputs, $rules);
 
 		// if validation fails
 		if ($validator->fails()) {
-			return response('There are errors in the form data', 400);
+			
+			return response($validator->errors(), 422);
 		}
+		
+
 		
 		$category = Categories::find($id);
 
@@ -333,15 +365,13 @@ class CategoryController extends Controller
 		// Pricing section checks ends
 		
 		$fileUpload = $this->uploadthumb($request);
-					
+
 		$category->cat_title = $inputs['title'];
 		$category->slug = $inputs['slug'];
 		$category->isMenu = (int)$inputs['isMenu'];
 		
 		$category->cat_thumb = isset($fileUpload->original['thumb'])?$fileUpload->original['thumb']:$inputs['thumb'];
 		$category->cat_lthumb = isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:$inputs['lthumb'];
-		
-		
 
 		try {
 
@@ -385,9 +415,12 @@ class CategoryController extends Controller
 		return response(array("success"=>true,"message"=>"Record(s) Removed Successfully"));
 	}
 
-	public function getAllparent(Request $request,$id = false){
+	public function getAllparent(Request $request){
 		$categories = [];
-		if($id==""){
+
+		$id = $request->one;
+		
+		if($id=="parents"){
 			$categories = Categories::whereNull('ancestors')->get();
 		}elseif($id == 'all'){
 			$categories = Categories::all()->toArray();

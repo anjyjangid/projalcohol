@@ -1,24 +1,18 @@
-<div class="productdetailbrudcumcover">
-	<a href="">Home</a>
-		<img src="images/productdetail2.png">
-		<a href="">Beer</a>
-		<img src="images/productdetail2.png">
-		<a href="">Carlsberg</a>
-		<img src="images/productdetail2.png">
-		<span>{{product.name}}</span>
-</div>
+
+<div product-breadcrumb info="product"></div>
+
 <div class="productdetailcovermainbgimg">
 	<div class="row">
 			<div class="col-xs-12 col-sm-6 col-md-6" ng-class="{comboproductitems_outofstock:{{!product.quantity}}}">
 						<data-owl-carousel class="owl-carousel owluperpartcover" data-options="parentOwlOptions" ng-model="sync1">
 
-								<img err-pro-src="" ng-src="products/i/400/{{image.source}}" alt="" class="img-responsive"  owl-carousel-item="" ng-repeat="image in product.imageFiles" class="item"/>
+								<img err-pro-src="" ng-src="products/i/400/{{image.source}}" alt="" class="img-responsive img-responsive-h"  owl-carousel-item="" ng-repeat="image in product.imageFiles" class="item"/>
 															
 						</data-owl-carousel >
 
 						<data-owl-carousel class="owl-carousel owldownpartcover" data-options="childOwlOptions" ng-model="sync2">
 
-								<img err-pro-src="" ng-src="products/i/200/{{image.source}}" alt="" class="img-responsive" ng-click="syncClick($index)"  owl-carousel-item="" ng-repeat="image in product.imageFiles" class="item"/>
+								<img err-pro-src="" ng-src="products/i/200/{{image.source}}" alt="" class="img-responsive img-responsive-h" ng-click="syncClick($index)"  owl-carousel-item="" ng-repeat="image in product.imageFiles" class="item"/>
 															
 						</data-owl-carousel>            
 				</div>
@@ -59,16 +53,15 @@
 																								
 												<div class="prdquanbulkboxtwo" ng-repeat="bulkBlock in product.express_delivery_bulk.bulk" ng-class="{'prdquanbulkActive':tquantity>=bulkBlock.from_qty && tquantity<=bulkBlock.to_qty}">
 													
-													{{bulkBlock.from_qty}}<span ng-if="bulkBlock.to_qty!=99999">-{{bulkBlock.to_qty}}</span><br />${{bulkBlock.price}}
+													{{bulkBlock.from_qty}}<span ng-if="bulkBlock.to_qty!=99999">-{{bulkBlock.to_qty}}</span><span ng-if="bulkBlock.to_qty==99999">+</span>
+													<br />${{bulkBlock.price}}
 
-												</div>
-												<!-- <div class="prdquanbulkboxthree" ng-class="{'prdquanbulkActive':product.cart.quantity>5 && product.cart.quantity<11}">5-10<br />$54</div>
-												<div class="prdquanbulkboxlast" ng-class="{'prdquanbulkActive':product.cart.quantity>10}">11+<br />$50</div> -->
+												</div>												
 										</div>
 								</div>
 						</div>
 						<div class="prddetailtotalamount">Total Cost</div>
-						<div class="prddetailpricedicnt">{{settings.general.currency}}{{product.price}}</div>
+						<div class="prddetailpricedicnt">{{product.price | pricingTxt}}</div>
 
 						<div class="prddetailinstock" ng-if="product.quantity || product.outOfStockType == 2">
 						In Stock <not-available product="product"></not-available></div>
@@ -77,7 +70,10 @@
 						</div>
 						<div class="productslide_addbutton">
 							<div class="cartbtn" ng-if="product.quantity || product.outOfStockType == 2">
-								<div class="addcart only-button" ng-click="addtocart()"><span></span>add to cart</div> 
+								
+								<div class="addcart only-button" ng-click="addtocart()" ng-if="!isInCart"><span></span>add to cart</div>
+								<div class="addcart only-button" ng-click="addtocart()" ng-if="isInCart"><span></span>Update cart</div>
+
 							</div>				
 							<div class="row">			
 								<div class="col-md-4">

@@ -1,21 +1,22 @@
-<div class="form-horizontal" ng-controller="SettingFormController" id="info-message">
-    <div class="form-group" ng:class="{'has-error':errors.title[0]}">
+<form ng-submit="update()" ng-controller="SettingFormController">
+<div class="form-horizontal"  id="info-message">
+    <div class="form-group" ng:class="{'has-error':errors['facebook.value'][0]}">
         <label class="col-md-2 control-label">{{settings.facebook.title}}: <span class="required">
         * </span>
         </label>
         <div class="col-md-10">
             <input type="text" class="form-control" ng-model="settings.facebook.value" placeholder="">
-            <span class="help-block" ng-bind="errors.title[0]"></span>
+            <span class="help-block" ng-bind="errors['facebook.value'][0]"></span>
         </div>
     </div>
 
-    <div class="form-group" ng:class="{'has-error':errors.title[0]}">
+    <div class="form-group" ng:class="{'has-error':errors['googleplus.value'][0]}">
         <label class="col-md-2 control-label">{{settings.googleplus.title}}: <span class="required">
         * </span>
         </label>
         <div class="col-md-10">
             <input type="text" class="form-control" ng-model="settings.googleplus.value" placeholder="">
-            <span class="help-block" ng-bind="errors.title[0]"></span>
+            <span class="help-block" ng-bind="errors['googleplus.value'][0]"></span>
         </div>
     </div>
 
@@ -29,13 +30,13 @@
         </div>
     </div>
 
-    <div class="form-group" ng:class="{'has-error':errors.title[0]}">
+    <div class="form-group" ng:class="{'has-error':errors['twitter.value'][0]}">
         <label class="col-md-2 control-label">{{settings.twitter.title}}: <span class="required">
         * </span>
         </label>
         <div class="col-md-10">
             <input type="text" class="form-control" ng-model="settings.twitter.value" placeholder="">
-            <span class="help-block" ng-bind="errors.title[0]"></span>
+            <span class="help-block" ng-bind="errors['twitter.value'][0]"></span>
         </div>
     </div>
 
@@ -53,9 +54,10 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="margiv-top-10 pull-right">
-                <button ng-disabled="loading" class="btn green-haze" ng-click="update()"><i class="fa fa-check"></i> Update</button>
-                <input type="reset" name="reset" value="Reset" class="btn default">
+                <button type="submit" ng-disabled="loading" class="btn green-haze" ><i class="fa fa-check"></i> Update</button>
+                <input type="button" ng-click="reset()" name="reset" value="Reset" class="btn default">
             </div>
         </div>
     </div>
 </div>
+</form>

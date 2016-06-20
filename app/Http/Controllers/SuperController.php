@@ -33,12 +33,52 @@ class SuperController extends Controller
 
 		$categories = $categories->get();
 
-
 		if(isset($params['withChild']) && $params['withChild']){
 
 			foreach($categories as &$category){
 				$category['children'] = array(); 
 				$category['children'] = Categories::where('cat_status',1)->where('ancestors.0._id','=',$category['_id'])->get(array('_id','slug','cat_title'));
+			}
+
+		}	
+		
+		
+		if(isset($params['withCount']) && $params['withCount']){
+
+			// db.products.aggregate([{$group:{_id:"$categories",count:{$sum:1}}}])
+
+			$products = DB::collection('products')->raw(function($collection){
+
+				return $collection->aggregate(array(
+					array(
+						'$match' => array(
+							'status' => 1
+						)
+					),
+					array(						
+						'$group' => array(
+							'_id'=>'$categories',
+							'count' => array(
+								'$sum' => 1
+							)
+						)
+					)
+				));
+			});
+
+			$processedPro = [];
+			foreach($products['result'] as $product){
+
+				$cat = array_pop($product['_id']);
+
+				$processedPro[$cat] = $product['count'];
+
+			}
+
+			foreach($categories as &$category){
+
+				$category['productCount'] = isset($processedPro[$category['_id']])?$processedPro[$category['_id']]:0;
+
 			}
 
 		}
@@ -70,7 +110,7 @@ class SuperController extends Controller
 	{
 		$params = $request->all();
 
-		$brands = Brand::where('status', '=', 1)->take(10)->get();
+		$brands = Brand::where('status', '=', 1)->get();
 		
 		return response($brands);
 	}

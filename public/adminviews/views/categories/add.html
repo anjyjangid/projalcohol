@@ -4,7 +4,7 @@
 			<div class="portlet-title tabbable-line">
 				<div class="caption caption-md">
 					<i class="icon-globe theme-font hide"></i>
-					<span class="caption-subject font-blue-madison bold uppercase">{{$state.$current.data.pageSubTitle}}</span>
+					<span class="caption-subject font-blue-madison bold uppercase">{{$state.$current.data.pageTitle}}</span>
 				</div>				
 			</div>
 			<div class="portlet-body">
@@ -26,29 +26,29 @@
 							</select>
 						</div>
 
-					</div>
-					<p ng-show="loading">Please Wait...</p>
-
-					<div class="form-group" ng-class="{'has-error':categoryForm.title.$touched && categoryForm.title.$invalid}">
-						
-						<label class="control-label">Title</label>
-						<input type="text" name="title" placeholder="Title" class="form-control" required ng-model="category.title"/>
-						<span class="help-block" ng-show="categoryForm.title.$touched && categoryForm.title.$invalid">Title is required.</span>
-					</div>
-
-					<div class="form-group">
-						<slug from="category.title" to="category.slug"></slug>
-						<label class="control-label">Slug</label>
-						<input type="text" name="slug" placeholder="Slug" class="form-control" required ng-model="category.slug" />
-						<span ng-show="categoryForm.slug.$touched && categoryForm.slug.$invalid">Slug is required.</span>						
 					</div>					
 
-					<div class="form-group">
+					<div class="form-group" ng-class="{'has-error':(categoryForm.title.$touched && categoryForm.title.$invalid) || errors.title[0]}">
+						
+						<label class="control-label">Title</label>
+						<input type="text" name="title" placeholder="Title" class="form-control" ng-model="category.title"/>
+						<span class="help-block" ng-show="(categoryForm.title.$touched && categoryForm.title.$invalid) || errors.title[0]">Title is required.</span>
+					</div>
+
+					<div class="form-group" ng-class="{'has-error':errors.slug[0]}">
+						<slug from="category.title" to="category.slug"></slug>
+						<label class="control-label">Slug</label>
+						<input type="text" placeholder="Slug" class="form-control" ng-model="category.slug" disabled="true"/>
+						<span class="help-block" ng-show="errors.slug[0]" ng-bind="errors.slug[0]"></span>						
+					</div>
+
+					<div class="form-group" ng-class="{'has-error':errors.isMenu[0]}">
 						<label class="control-label">Is added to main menu</label>
-						<select ng-model="category.isMenu" required class="form-control">
+						<select ng-model="category.isMenu" class="form-control">
 							<option value="1">Yes</option>
 							<option value="0">No</option>
 						</select>
+						<span class="help-block" ng-show="errors.isMenu[0]" ng-bind="errors.isMenu[0]"></span>
 					</div>
 
 					<div class="clearfix margin-top-10">
@@ -57,9 +57,9 @@
 					<br>
 
 					<div class="row">
-						<div class="col-sm-6">
+						<div class="col-sm-6" ng-class="{'has-error':errors.thumb[0]}">
 							<label class="control-label">Thumbnail</label>
-							<div class="form-group">								
+							<div class="form-group">
 								<div class="fileinput fileinput-new" data-provides="fileinput">
 									<div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
 										<img ng-if="!category.thumb" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Thumbnail" alt=""/>
@@ -73,19 +73,20 @@
 										Select thumb </span>
 										<span class="fileinput-exists">
 										Change </span>
-										<input type="file" accept="image/*" name="thumb" placeholder="thumbnail" class="form-control" ng-required="!category.thumb" file-model="category.thumb"/>
+										<!-- ng-required="!category.thumb" -->
+										<input type="file" accept="image/*" name="thumb" placeholder="thumbnail" class="form-control" file-model="category.thumb"/>
 										</span>
 										<a href="#" class="btn default fileinput-exists" data-dismiss="fileinput">
 										Remove </a>
 									</div>
-								</div>
-								
-
-							</div>						
+								</div>															
+							</div>	
+							<span class="help-block" ng-show="errors.thumb[0]">Thumbnail is required and must be in jpg or png format</span>					
 						</div>						
-						<div class="col-sm-6" ng-if="!category.ancestors">
+
+						<div class="col-sm-6" ng-if="!category.ancestors" ng-class="{'has-error':errors.lthumb[0]}">
 							<label class="control-label">listing Thumbnail</label>
-							<div class="form-group">
+							<div class="form-group" >
 								
 								<div class="fileinput fileinput-new" data-provides="fileinput">
 									<div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
@@ -103,10 +104,10 @@
 										<a href="#" class="btn default fileinput-exists" data-dismiss="fileinput">
 										Remove </a>
 									</div>
-								</div>
-								
+								</div>															
 
-							</div>						
+							</div>	
+							<span class="help-block" ng-show="errors.lthumb[0]">Listing thumbnail is required and must be in jpg or png format</span>					
 						</div>
 					</div>
 					

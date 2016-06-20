@@ -39,6 +39,10 @@ class Promotion extends Moloquent
 
 		$tempProducts = [];
 
+		if(empty($result)){
+			return $result;
+		}
+
 		foreach($result['items'] as $product){
 
 			$tempProducts[(string)$product['_id']] = [
@@ -70,6 +74,10 @@ class Promotion extends Moloquent
 		foreach($promotions as $promotion){
 
 			$promoProductKeys = array_merge($promoProductKeys,$promotion['products']);
+		}
+
+		if(empty($promoProductKeys)){
+			return [];
 		}
 
 		$productObj = new products;

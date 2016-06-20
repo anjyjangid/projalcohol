@@ -32,7 +32,9 @@
     "ng-scrollbars": "^0.0.10",
     "angular-ui-calendar": "^1.0.1",
     "angular-ladda": "^0.3.4",
-    "ngInfiniteScroll": "^1.2.2"
+    "ngInfiniteScroll": "^1.2.2",
+    "v-accordion": "^1.6.0",
+    "angular-fblogin": "*"
   },
   "resolutions": {
     "angular": "~1.4.0"

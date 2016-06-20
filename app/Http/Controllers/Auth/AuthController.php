@@ -49,11 +49,13 @@ class AuthController extends Controller
 	 */
 	protected function validator(array $data)
 	{
+		if(isset($data['email']))
+			$data['email'] = strtolower($data['email']);
 		
 		return Validator::make($data, [
 			//'name' => 'required|max:255',
 			'email' => 'required|email|max:255|unique:user',
-			'password' => 'required|confirmed|min:6',
+			'password' => 'required|confirmed|between:8,12',
 			'password_confirmation' => 'required',
 			'terms' => 'required'
 		],[           
@@ -85,74 +87,32 @@ class AuthController extends Controller
 
 	}
 
-	public function registerfb(Request $request)
+	public function postRegisterfb(Request $request)
 	{
 		$data = $request->all();
-		$update = false;
-		$login = false;
-
-		if(isset($data['fbid']) && $data['fbid']!="" 
-			&& isset($data['email']) && $data['email']!="")
-		{
-			$user = User::where("fbid","=",$data['fbid'])->first();
-			if(!empty($user))
-			{
-				// check if email is same or not //
-				/*if(isset($user['email']) && $user['email'] != $data['email'])
-				{
-					// update data //
-					$update = true;
-				}*/
-
-				// login //
-				$login = true;
-			}
-			else
-			{
-				// check based on email //
-				$user = User::where("email","=",$data['email'])->first();
-				if(!empty($user))
-				{
-					$update = true;
-					$login = true;
-				}
-			}
-		}
-		else
-		{
-			return response(array("success"=>false,"message"=>'Incorrect data'));
-		}
-
-		// check if update is true then update data //
-		if($update)
-		{
-			$user->fbid = $data['fbid'];
-			$user->email = $data['email'];
-			$user->save();
-		}
-		else if(!$update && !$login)
-		{
-			// create new record //
+		
+		if(isset($data['email']))
+			$data['email'] = strtolower($data['email']);
+		
+		$checkUser = User::where('fbid', '=', $data['id'])->orWhere('email', $data['email'])->first();
+		$name = $data['first_name'].' '.$data['last_name'];
+		if($checkUser){
+			$checkUser->fbid = $data['id'];
+			$checkUser->email = $data['email'];
+			$checkUser->name = $name;	
+			$checkUser->save();
+			Auth::login($checkUser);
+		}else{	
 			$user = User::create([
-
 				'email' => $data['email'],
-				'fbid' => $data['fbid'],
-				'name' => $data['name']?$data['name']:'',
+				'fbid' => $data['id'],
+				'name' => $name,
 				'status' => 1,
 				'verified' => 1,
-
 			]);
-
-			$login = true;
-		}
-
-		if($login)
-		{
 			Auth::login($user);
-			return response(array("success"=>true,"data"=>$user));
 		}
-
-		return response(array("success"=>false,"message"=>'Please try again'));
+		return response(Auth::user('user'),200);		
 	}
 
 	/**
@@ -165,6 +125,7 @@ class AuthController extends Controller
 	{
 
 		$data['email_key'] = strtotime(date("Y-m-d H:i:s"));
+		$data['email'] = strtolower($data['email']);
 		
 		try {
 

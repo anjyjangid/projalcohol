@@ -32,7 +32,9 @@
 
 		<ul ng-click="hideMenu()" class="dropdown-menu" ng-class="{'animate':showPersonSubMenu}" ng-style="{'background-image':'url(/assets/resources/category/lthumb/400/{{c.cat_lthumb}})'}" ng-if='isChildExist'>
 			<li class="dm_title">{{c.cat_title}}</li>			
-			<li ng-class="{'subactive':AppController.subCategory==cc.slug}" ng-repeat="cc in childCategories"><a href="#/{{c.slug}}/{{cc.slug}}"  >{{cc.cat_title}}<span>10</span></a></li>
+			<li ng-class="{'subactive':AppController.subCategory==cc.slug}" ng-repeat="cc in childCategories">
+				<a ui-sref="mainLayout.category.subCatProducts({categorySlug:c.slug,subcategorySlug:cc.slug})">{{cc.cat_title}}<span>{{cc.productCount}}</span></a>
+			</li>
 		</ul>
 	</li>
 	<li ng-class="{'active':AppController.category=='packages'}" class="dropdown">

@@ -30,8 +30,8 @@ class SubadminRequest extends Request
         $rules = [            
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',            
-            'email' => 'required|email|max:255|unique:admin,email,'.@$input['_id'].",_id",            
-            'password' => 'required|between:6,12',
+            'email' => 'required|email|max:255|unique:admin,email,'.@$input['_id'].',_id',            
+            'password' => 'required|between:8,32',
             'confirmPassword' => 'required|same:password',
             'status'=> 'required|integer|in:0,1',            
         ];

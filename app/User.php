@@ -71,4 +71,5 @@ class User extends Eloquent implements AuthenticatableContract,
         return $customer;
 
     }
+    
 }
