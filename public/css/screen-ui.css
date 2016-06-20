@@ -702,6 +702,7 @@ ui-sref {
 	padding: 15px 0px;
 	margin-top: 11px;
 	overflow: hidden;
+	position: relative
 }
 .recentorder_title {
 	width: 100%;
@@ -1263,6 +1264,8 @@ ui-sref {
 	width: 100%;
 	padding-bottom: 27px;
 	padding-top: 27px;
+	min-height: 263px;
+	position: relative;
 }
 .modal-footer.alcohal_orderhistoryfotter {
 	float: left;

@@ -2031,42 +2031,120 @@ AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$statePara
 
 }]);
 
-AlcoholDelivery.controller('RepeatOrderController',['$scope','$http','UserService',function($scope,$http,UserService){
+AlcoholDelivery.controller('RepeatOrderController',['$scope','$http','$mdDialog','UserService',function($scope,$http,$mdDialog,UserService){
 
 	$scope.user = UserService.currentUser;
-	
+	$scope.orders = {};
+	$scope.lastorder = {};
+
 	$scope.$watch('user',
 
 		function(newValue, oldValue) {
+			
+			if(UserService.currentUser === null || typeof UserService.currentUser._id === 'undefined'){
 
-			if($scope.user){
-
-				$fetching = true;	
-				$scope.repeatOrderInit();
+				console.log("Repeat order cannot initialized");
+				return false;
 
 			}
-			
+
+			$scope.fetching = true;
+
+			$scope.repeatOrderInit();
+
 		},true
 	);
 
 	$scope.repeatOrderInit = function(){
+	
+		$http.get("user/lastorder").then(
 
-		if(UserService.currentUser===null){
-			console.log("Repeat order cannot initialized");
-			return false;
-		}
-
-		$http.get("user/orderstorepeat").then(
 			function(response){
-				$scope.orders = response.data;
+				
+				$scope.lastorder = response.data.order;
+				$scope.fetching = false;	
 			},
-			function(errorRes){}
+			function(errorRes){
+
+			}
 		)
 
 	}
-	
+
+	$scope.repeatOrder = function(ev) {
+
+		$mdDialog.show({
+
+			controller: function($scope) {
+
+				$scope.close = function(){
+					$mdDialog.hide();
+				}
+				
+			},
+			templateUrl: '/templates/users/repeat-order.html',
+			parent: angular.element(document.body),
+			targetEvent: ev,
+			clickOutsideToClose:false
+
+		})
+		.then(function(answer) {
+
+		}, function() {
+
+		});
+
+	};
+
+	$scope.shopFromPrevious = function(ev){
+		
+		$mdDialog.show({
+
+			controller: "ShopFromPreviousController",
+			templateUrl: '/templates/users/shopFromPrevious.html',
+			parent: angular.element(document.body),
+			targetEvent: ev,
+			clickOutsideToClose:false
+
+		})
+		.then(function(answer) {
+
+		}, function() {
+
+		});
+
+	}
 
 }]);
+
+AlcoholDelivery.controller('ShopFromPreviousController',['$scope','$http','$mdDialog',function($scope,$http,$mdDialog){
+
+	$scope.orders = {};
+	$scope.order = {};
+	$scope.fetchingOrders = true;
+	$scope.fetchingOrder = true;
+	$scope.viewDetail = false;
+
+	$http.get("order/orders").then(
+
+		function(response){
+			
+			$scope.orders = response;
+			$scope.fetchingOrders = false;
+
+		},
+		function(errorRes){
+
+		}
+
+	)	
+
+	$scope.close = function(){
+		$mdDialog.hide();
+	}
+
+}]);
+
 
 AlcoholDelivery.controller('CmsController',['$scope','$http','$stateParams',function($scope,$http,$stateParams){
 

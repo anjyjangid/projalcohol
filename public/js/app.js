@@ -78,6 +78,26 @@ AlcoholDelivery.filter('pricingTxt', function(currencyFilter,$rootScope) {
 		}
 });
 
+AlcoholDelivery.filter('truncate', function (){
+  return function (text, length, end){
+    if (text !== undefined){
+      if (isNaN(length)){
+        length = 10;
+      }
+
+      if (end === undefined){
+        end = "...";
+      }
+
+      if (text.length <= length || text.length - end.length <= length){
+        return text;
+      }else{
+        return String(text).substring(0, length - end.length) + end;
+      }
+    }
+  };
+});
+
 AlcoholDelivery.filter('deliveryDateSlug',function(){
 
 	return function(input,all){
@@ -258,6 +278,10 @@ AlcoholDelivery.factory("UserService", ["$q", "$timeout", "$http", function($q, 
 
 	function GetUserAddress(){
 
+	};
+
+	function LogoutReset(){
+		console.log(this);
 	};
 
 	return {
@@ -865,13 +889,20 @@ function ($q, $rootScope, $log, $location) {
 /* Init global settings and run the app */
 AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "catPricing", "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll",
 			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll) {
-
 	
-	angular.rootScope = $rootScope;
-	angular.mdtoast = $mdToast;
+	angular.UserService = UserService;
 
 	$rootScope.$state = $state; // state to be accessed from view
 	
+	UserService.GetUser().then(
+		function(result) {
+			UserService.currentUser = result;
+		},
+		function(errorRes){
+			UserService.currentUser = result;
+		}
+	);
+
 	categoriesFac.getCategories().then(
 
 		function(response){			
@@ -897,14 +928,15 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 
 		var regex = new RegExp('^accountLayout', 'i');
 		$anchorScroll();
+
 		UserService.GetUser().then(
 
-		    function(result) {
-		    	if(result.auth===false && regex.test(toState.name)){
-		    		$state.go('mainLayout.index');
-		    	}
-		       UserService.currentUser = result;
-		    }
+			function(result) {
+				if(result.auth===false && regex.test(toState.name)){
+					$state.go('mainLayout.index');
+				}
+				//UserService.currentUser = result;
+			}
 		);
 
 

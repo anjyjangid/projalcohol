@@ -9,7 +9,7 @@ use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Email;
 use AlcoholDelivery\User as User;
 use AlcoholDelivery\Orders as Orders;
-
+use mongoId;
 
 use Illuminate\Support\Facades\Validator;
 
@@ -325,6 +325,50 @@ class UserController extends Controller
 		$orders = $ordersModel->getOrdersToRepeat($userLogged->_id);
 
 		return response($orders,200);
+
+	}
+
+	public function getLastorder(){
+
+		$return = ["message"=>"","data"=>"","auth"=>false];
+
+		$userLogged = Auth::user('user');
+
+		if(empty($userLogged)){
+			
+			$return['message'] = 'login required';
+			
+			return response($return,401);
+		}
+
+		$return['auth'] = true;
+
+		try{
+
+			$ordersModel = new Orders;
+
+			$order = $ordersModel->where("user",new mongoId($userLogged->_id))->orderBy("created_at","desc")->first(["products","packages","updated_at","reference"]);
+
+			$order = $order->toArray();
+
+			if(empty($order)){
+				return response([],400);
+			}
+
+			$products = $ordersModel->getProducts([$order],false);
+			$order = $ordersModel->mergeProducts([$order],$products);
+			$order = $order[0];
+
+		} catch(\Exception $e){
+
+			$return['message'] = "Something wrong";//$e->getMessage();            
+			return response($order,400);
+
+		}
+
+		$return['order'] = $order;
+
+		return response($return,200);
 
 	}
 

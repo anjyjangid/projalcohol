@@ -1,6 +1,6 @@
 <li ng-class="{'hideOp':hideOpcart.hide}" class="dropdown cart-icon-set" id="cart-summary-icon" ng-mouseover="hideOpcart.hide=false" ng-mouseleave="hideOpcart.hide=true">
-<a href="javascript:void(0)" class="cart_icon"></a><span>$2555.00</span>
-<!-- <a href="javascript:void(0)" ng-if="alcoholCart.getTotalUniqueItems()">{{alcoholCart.getCartTotal() | pricingTxt}}</a> -->
+
+<a href="javascript:void(0)" class="cart_icon"></a><span ng-if="alcoholCart.getTotalUniqueItems()">{{alcoholCart.getCartTotal() | pricingTxt}}</span>
 <div class="dropdown-menu currentorderpopup">
 	<!-- Current order Start-->
 
@@ -10,7 +10,6 @@
 			
 			<div class="currentorderpopuppinkboxright" ng-click="hideOpcart.hide=1"><a ui-sref="mainLayout.checkout.cart" >view Cart</a></div>
 		</div>
-
 
 		<div>
 			<ul class="currentorderpopupul" ng-scrollbars ng-scrollbars-config="scrollconfig">

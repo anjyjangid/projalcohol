@@ -526,3 +526,29 @@ md-toast.promo-notqualified-toast:before {
 	text-align: center;
 	font-size: 4em;
 }
+
+.order-fetching {	
+	background-color: rgba(235, 238, 240, 0.5);
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	z-index: 1;
+	background-image: url('../img/loading.gif');
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#prevOrdersFetchLoading{
+	background-color: rgba(235, 238, 240, 0.5);
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	z-index: 1;
+	background-image: url('../img/loading.gif');
+	background-repeat: no-repeat;
+	background-position: center;
+}

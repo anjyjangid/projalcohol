@@ -1,22 +1,29 @@
 <div class="recentorder" ng-show="user.email">
 	<div class="recentorder_title">Recent Order</div>
 	<div class="fullwidth modifyscroll">
-		<div class="ro_items">
+
+		
+		<div class="order-fetching" ng-if="fetching"></div>
+
+		<div class="ro_items" ng-class="{'itemselect':product.incart}" ng-repeat="product in lastorder.products" title="{{product.original.shortDescription}}">
+
 			<div class="chk_unchk">
-				<input type="checkbox" class="modcheck" name="cc" id="c1">
-				<label for="c1"><span></span></label>                                 
+				<md-checkbox ng-model="product.incart" aria-label="Checkbox 1"></md-checkbox>			
 			</div>
-			<div class="ro_pic"><img src="images/product-thumb.png" class="img-responsive" /></div>
-			<div class="ro_desc">CP Crispy Chicken with Korean...</div>
+			<div class="ro_pic">				
+				<img ng-src="products/i/200/{{product.original.imageFiles | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
+			</div>
+			<div class="ro_desc">{{product.original.shortDescription | truncate:35}}</div>
 		</div>
+
 	</div>
 	<div class="recentorder_buttons">
 		<div class="addbtn"><img src="images/add.png" class="img-responsive" /></div>
-		<div class="repeatbtn" data-toggle="modal" data-target="#repeat_order"><img src="images/repeat.png" class="img-responsive" /></div>
+		<div class="repeatbtn" data-toggle="modal" ng-click="repeatOrder($event)"><img src="images/repeat.png" class="img-responsive" /></div>
 	</div>
 	<div class="recentorder_title">Order History</div>
 	<div class="orderhistorytext">Shopping from a past order provides a convenient way to quickly shop for the same products again.</div>
 	<div class="recentorder_buttons">
-		<div class="viewbtns" data-toggle="modal" data-target="#previous_orderhistory"><img src="images/view.jpg" class="img-responsive" /></div>
+		<div class="viewbtns" ng-click="shopFromPrevious($event)"><img src="images/view.jpg" class="img-responsive" /></div>
 	</div>
 </div>
