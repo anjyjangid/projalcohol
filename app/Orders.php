@@ -3,6 +3,7 @@
 namespace AlcoholDelivery;
 
 use Moloquent;
+use MongoId;
 
 class Orders extends Moloquent
 {
@@ -38,6 +39,14 @@ class Orders extends Moloquent
 
         );
         $order->save();
+        
+    }
+
+    public function getOrdersToRepeat($userId){
+
+        $fields = ["products","packages","updated_at","reference"];
+        $orders = $this::where("user",new MongoId($userId))->get($fields);
+        return $orders;
         
     }
 

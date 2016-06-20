@@ -57,7 +57,7 @@ AlcoholDelivery.filter('getProductThumb', function() {
 AlcoholDelivery.filter('freeTxt', function() {
 		return function(input) {
 			input = parseFloat(input);
-			return input>0?input:'free';
+			return input>0?input:'FREE';
 		}
 });
 
@@ -116,6 +116,7 @@ AlcoholDelivery.filter('deliveryDateSlug',function(){
 		return daySlug;
 	}
 })
+
 
 /* Setup global settings */
 AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
@@ -183,6 +184,7 @@ AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
 
 }]);
 
+
 AlcoholDelivery.factory('catPricing', ["$q", "$timeout", "$rootScope", "$http", function($q, $timeout, $rootScope, $http){
 
 	var catPricing = {};
@@ -200,8 +202,37 @@ AlcoholDelivery.factory('catPricing', ["$q", "$timeout", "$rootScope", "$http", 
 	};
 
 	return {
+
 		GetCategoryPricing: GetCategoryPricing,
 		categoryPricing : null
+
+	};
+
+}]);
+
+
+AlcoholDelivery.factory('categoriesFac', ["$q", "$http", function($q, $http){
+
+	var categoriesFac = {};
+
+	function getCategories() {
+
+		var d = $q.defer();
+
+		$http.get("/super/category/",{params: {withCount:true}}).success(function(response){
+
+			d.resolve(response);
+
+		});
+
+		return d.promise;
+
+	};
+
+	return {
+
+		getCategories: getCategories,
+		categories : null
 
 	};
 
@@ -237,57 +268,6 @@ AlcoholDelivery.factory("UserService", ["$q", "$timeout", "$http", function($q, 
 	};
 }]);
 
-AlcoholDelivery.factory("CartSession", ["$q", "$timeout", "$http","$rootScope", function($q, $timeout, $http, $rootScope) {
-
-	function GetDeliveryKey() {
-
-		var d = $q.defer();
-
-		if(typeof(Storage) !== "undefined"){
-
-				var deliverykey = localStorage.getItem("deliverykey");
-
-				if(deliverykey===null || typeof deliverykey==="undefined" || deliverykey==="undefined"){
-					deliverykey = $rootScope.deliverykey;
-				}
-
-				if(deliverykey===null || typeof deliverykey==="undefined" || deliverykey==="undefined"){
-
-					$http.get("cart/deliverykey").success(function(response){
-
-						localStorage.setItem("deliverykey",response.deliverykey);
-						$rootScope.deliverykey = response.deliverykey;
-
-						d.resolve(response);
-
-					})
-
-				}else{
-
-					var response = {"deliverykey":deliverykey}
-
-					localStorage.setItem("deliverykey",deliverykey);
-					$rootScope.deliverykey = deliverykey;
-
-					d.resolve(response);
-
-				}
-
-
-
-			} else {
-				alert("Browser is not compatible");
-			}
-
-		return d.promise;
-
-	};
-
-	return {
-		GetDeliveryKey: GetDeliveryKey,key: null
-	};
-
-}]);
 
 AlcoholDelivery.factory('Search', function($http) {
   var Search = function(keyword,filter,sortby) {
@@ -326,11 +306,13 @@ AlcoholDelivery.factory('Search', function($http) {
 		}else{
 			this.skip+= parseInt(this.take);
 		}
+
 	}.bind(this));
 
   };
 
   return Search;
+
 });
 
 /* Setup Rounting For All Pages */
@@ -373,6 +355,13 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								}]
 						}
 				})
+				.state('mainLayout.notfound', {
+						url: "/404",
+						templateUrl: "/templates/404.html",
+						// controller:function($rootScope,$stateParams,$state){
+
+						// }
+				})
 
 				.state('mainLayout.index', {
 						url: "/",						
@@ -414,7 +403,8 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							},
 							"rightPanel" : {
 
-								templateUrl : "/templates/partials/rightBarRecentOrder.html",							
+								templateUrl : "/templates/partials/rightBarRecentOrder.html",
+								controller : "RepeatOrderController"
 
 							},
 
@@ -445,6 +435,8 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								}]
 						}
 				})
+
+				
 
 				.state('mainLayout.checkout', {
 						abstract: true,
@@ -526,7 +518,14 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							$rootScope.token = $stateParams.token;
 
 							setTimeout(function(){
-									$('#reset').modal('show');
+
+									$('#reset').modal({
+									    backdrop: 'static',
+				                        keyboard: true, 
+				                        show: true
+									})
+									
+
 								},1000)
 						}
 				})
@@ -815,8 +814,8 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 		}]);
 
 
-AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log',
-function ($q, $rootScope, $log) {
+AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$location',
+function ($q, $rootScope, $log, $location) {
     'use strict';
 
     var xhrCreations = 0;
@@ -851,7 +850,11 @@ function ($q, $rootScope, $log) {
         responseError: function (rejection) {
             xhrResolutions++;
             updateStatus();
-            //$log.error('Response error:', rejection);
+            if(rejection.status == 404){
+				
+				$location.url('/404').replace();
+			};
+
             return $q.reject(rejection);
         }
     };
@@ -860,8 +863,8 @@ function ($q, $rootScope, $log) {
 }]);
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "CartSession","catPricing","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll",
-			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, CartSession, catPricing, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll) {
+AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "catPricing", "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll",
+			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll) {
 
 	
 	angular.rootScope = $rootScope;
@@ -869,6 +872,15 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 
 	$rootScope.$state = $state; // state to be accessed from view
 	
+	categoriesFac.getCategories().then(
+
+		function(response){			
+			categoriesFac.categories = response;
+		},
+		function(errorRes){}
+	);
+
+
 	catPricing.GetCategoryPricing().then(
 
 		function(result) {

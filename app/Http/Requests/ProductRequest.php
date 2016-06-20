@@ -28,11 +28,12 @@ class ProductRequest extends Request
         $input = Input::all();
 
         $rules = [            
-            'name' => 'required',
+            'name' => 'requiredunique:products',
+            'slug' => 'required|unique:products',
             'description' => 'required',
             'shortDescription' => 'required',
             'categories' => 'required',
-            'sku' => 'required|unique:products,sku,'.@$input['_id'].',_id',
+            'sku' => 'required|unique:products',
             'quantity' => 'required|numeric',
             'price' => 'required|numeric',
             'chilled' => 'required|integer',
@@ -50,6 +51,14 @@ class ProductRequest extends Request
             'availabilityDays' => 'required_if:outOfStockType,2',
             'availabilityTime' => 'required_if:outOfStockType,2',
         ];
+
+        if(isset($input['_id'])){
+
+            $rules['name'] = 'required|unique:products,name,'.$input['_id'].',_id';
+            $rules['slug'] = 'required|unique:products,slug,'.$input['_id'].',_id';
+            $rules['sku'] = 'required|unique:products,sku,'.$input['_id'].',_id';
+
+        }
         
         if (isset($input['imageFiles']) && is_array($input['imageFiles']))
         {

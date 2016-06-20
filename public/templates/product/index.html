@@ -56,13 +56,13 @@
             <div class="prod_pic">
               <div class="wishlist_discount" ng-if="product.quantity>0">
                 <div class="wishlist">Add to Wishlist</div>
-                <div class="discount" ui-sref="mainLayout.product({product:product._id})">Click here to view Bulk Discounts</div>
+                <div class="discount" ui-sref="mainLayout.product({product:product.slug})">Click here to view Bulk Discounts</div>
               </div>
               <img err-pro-src=""
                         ng-src="products/i/200/{{product.imageFiles[0].source}}" alt="" class="img-responsive"/>
             </div>
 
-            <div class="prod_desc"><a ui-sref="mainLayout.product({product:product._id})">{{product.name}}</a></div>
+            <div class="prod_desc"><a ui-sref="mainLayout.product({product:product.slug})">{{product.name}}</a></div>
             <div class="prod_price">{{product.price}} {{settings.general.currency}}</div>
             <div class="prod_discout_price">{{product.discountPrice}} {{settings.general.currency}}</div>
 

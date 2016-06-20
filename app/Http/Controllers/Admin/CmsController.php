@@ -128,7 +128,7 @@ class CmsController extends Controller
                         "key"=>$pageId,
                         "multiple"=>false
                     ));
-        
+
         return response($result, 201);
 
     }

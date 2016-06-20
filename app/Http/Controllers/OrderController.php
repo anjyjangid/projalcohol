@@ -54,7 +54,7 @@ class OrderController extends Controller
 
 		$order = Orders::where("_id",'=',$id)->where("user",'=',new MongoId($user->_id))->first();
 
-		$order->dop = strtotime($order->created_at);
+		$order->dop = strtotime($order->created_at);		
 		
 		return response($order,200);
 	}

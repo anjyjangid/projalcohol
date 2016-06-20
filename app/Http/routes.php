@@ -41,9 +41,10 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 		Route::post('uploadgraphics','Admin\GlobalController@uploadgraphics');
 	});
 
-	Route::resource('dealer', 'Admin\DealerController',['only'=>'store','update']);	
+	Route::resource('dealer', 'Admin\DealerController',['only'=>['store','update']]);
 	Route::controller('dealer', 'Admin\DealerController');
 
+	Route::resource('category', 'Admin\CategoryController');
 	Route::controller('category', 'Admin\CategoryController');	
 
 	Route::resource('setting', 'Admin\SettingController',['only'=>'update']);
@@ -135,8 +136,6 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::delete('promotion/{key}','CartController@deletePromotion');
 
-	
-
 });
 
 Route::resource('cart', 'CartController');
@@ -151,7 +150,7 @@ Route::get('/order/{order}','OrderController@show');
 
 
 
-Route::resource('category', 'Admin\CategoryController');
+
 
 
 //ADMIN ROUTES

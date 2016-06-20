@@ -11,8 +11,7 @@
     Invite your friend
   </div>  
 </div> -->
-<form ng-submit="sendinvitation()" class="profile_form">              
-    <div ng-show="invite.success" class="alert alert-success" role="alert" ng-bind="invite.success"></div>
+<form ng-submit="sendinvitation()" class="profile_form">                  
     <div class="fullwidth" ng:class="{'has-error':errors.emails}">
       <label>To <span class="required-astrik">*</span></label>
       <textarea placeholder="Eg. jack@xyz.com, sarah@xyz.com" ng-model="invite.emails" class="alcohalrestertextbox form-control"></textarea>        

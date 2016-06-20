@@ -66,6 +66,10 @@ class SettingRequest extends Request
                     'regular_express_delivery.type' => 'required|numeric',
                     'minimum_cart_value.value' => 'required|numeric',
                     'non_free_delivery.value' => 'required|numeric',
+
+                    'non_chilled_delivery.type' => 'required|numeric',
+                    'non_chilled_delivery.value' => 'required|numeric',
+
                 ];
                 break;
             default:

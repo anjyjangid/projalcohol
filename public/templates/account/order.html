@@ -28,7 +28,7 @@
 							</div>
 						</td>
 						<td>
-								<div class="prod_chilled" ng-show="!order.nonchilled" ng-class="{notchilled:!orderproduct.original.chilled,invisible:!orderproduct.original.chilled}" ng-click="orderproduct.original.chilled=!orderproduct.original.chilled">
+								<div class="prod_chilled" ng-show="!order.nonchilled" ng-class="{notchilled:!orderproduct.original.chilled,invisible:!orderproduct.original.chilled}">
 									<span>Chilled</span>
 									<div class="prod_chilled_icon"></div>
 								</div>
@@ -81,6 +81,17 @@
 					 </div>
 					 
 				 </div>
+
+				 <div class="checkoutstep5-left-first" ng-if="order.service.smoke.status">
+					 <div class="checkoutstep5-left-first-left">
+
+						 <div class="checkoutstep5-left-first-lefttext">Smoke detail</div>
+						 <div class="checkoutstep5-left-first-lefttitle">{{order.service.smoke.detail}}</div>
+
+					 </div>
+
+				 </div>
+
 			 </div>
 				<div class="col-md-5 col-sm-6 col-xs-12 checkoutstep5-mid-right">
 					<div class="checkboxtotaldiv">

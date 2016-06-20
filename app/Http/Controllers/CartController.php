@@ -905,7 +905,8 @@ jprd($product);
 
     public function confirmorder(Request $request,$cartKey){
 
-		$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
+		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
+		$cart = Cart::where("_id","=",$cartKey)->first();
 
 		if(empty($cart)){
 
@@ -1036,11 +1037,11 @@ jprd($product);
 
 		$cart = Cart::findUpdated($cartKey);
 
-		if(isset($cart->freeze) && $cart->freeze===true){
+		// if(isset($cart->freeze) && $cart->freeze===true){
 
-			return response(["success"=>false,"message"=>"Cart is already freezed"],405); //405 => method not allowed
+		// 	return response(["success"=>false,"message"=>"Cart is already freezed"],405); //405 => method not allowed
 
-		}
+		// }
 
 		$cart->freeze = true;
 

@@ -4,29 +4,29 @@ AlcoholDelivery.directive('sideBar', function() {
 		templateUrl: '/templates/partials/sidebar.html',
 		controller: function($scope){
 
-				$scope.childOf = function(categories, parent){
+			$scope.childOf = function(categories, parent){
 
-						if(!categories) return [];
+					if(!categories) return [];
 
-						if(!parent || parent==0){
-								return categories.filter(function(category){
-										return (!category.ancestors || category.ancestors.length==0);
-								});
-						}
+					if(!parent || parent==0){
+							return categories.filter(function(category){
+									return (!category.ancestors || category.ancestors.length==0);
+							});
+					}
 
-						return categories.filter(function(category){
-								return (category.ancestors && category.ancestors.length > 0 && category.ancestors[0]._id["$id"] == parent);
-						});
-				}
+					return categories.filter(function(category){
+							return (category.ancestors && category.ancestors.length > 0 && category.ancestors[0]._id["$id"] == parent);
+					});
+			}
 
-				$scope.hideMenu = function(){					
-					$('.dropdown-menu').removeClass('animate');
-				}
+			$scope.hideMenu = function(){					
+				$('.dropdown-menu').removeClass('animate');
+			}
 		}
 	};
-});
+})
 
- AlcoholDelivery.directive('topMenu', function(){
+.directive('topMenu', function(){
 
 	return {
 		restrict: 'E',
@@ -37,6 +37,8 @@ AlcoholDelivery.directive('sideBar', function() {
 		controller: function($scope,$rootScope,$http,$state,sweetAlert,store,alcoholWishlist,$fblogin){
 
 			$scope.list = [];
+
+			$scope.menu = {openSearch:true};
 
 			$scope.signup = {
 				terms:null
@@ -163,6 +165,9 @@ AlcoholDelivery.directive('sideBar', function() {
 	            });
 			};
 
+			$scope.openMenu = function(){
+				angular.element('#wrapper').toggleClass('toggled');
+			}			
 			//FACEBOOK LOGIN
 			$scope.loginToggle = function() {      
 		    	$fblogin({
@@ -525,9 +530,9 @@ AlcoholDelivery.directive('sideBar', function() {
 							.position("top right fixed");
 
 						$mdToast.show(toast).then(function(response) {
-							if ( response == 'ok' ) {
-								$('#login').modal('show');
-							}
+							// if ( response == 'ok' ) {
+							// 	$('#login').modal('show');
+							// }
 						});
 
 
@@ -761,6 +766,10 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.addCustom = function(){
 
+				var currQ = $scope.product.servechilled
+				
+				if($scope.product.qNChilled)
+
 				$scope.activeAddToCart();
 
 			};
@@ -829,6 +838,71 @@ AlcoholDelivery.directive('sideBar', function() {
 	}
 }])
 
+.directive('productBreadcrumb', ['categoriesFac', function(categoriesFac){
+	'use strict';
+
+	return {
+		restrict: 'EA',
+		transclude: true,
+		scope: {
+			productInfo: "=info"
+		},
+		replace: true,
+		controller: function ($scope) {
+
+			$scope.categoryBread = [];
+
+			$scope.$watch('productInfo',
+
+				function(newValue, oldValue) {
+
+					if(typeof $scope.productInfo === "undefined"){
+						return $scope.categoryBread;
+					}
+
+					angular.forEach($scope.productInfo.categories, function (catId, index) {
+
+						for(i=0;i<categoriesFac.categories.length;i++){
+
+							var cat = categoriesFac.categories[i];
+							if(cat["_id"]===catId){
+
+								$scope.categoryBread.push({
+
+									_id:catId,
+									title:cat.cat_title,
+									slug:cat.slug
+								})
+								
+							}
+						}
+
+					});
+
+				}
+			);			
+
+			
+
+		},
+		template:'<div class="productdetailbrudcumcover">'+
+
+				'<a href="">Home</a>'+
+				'<img src="images/productdetail2.png">'+			
+
+				'<span ng-repeat="category in categoryBread">'+
+				
+				'<a ng-if="$first" ui-sref="mainLayout.category.products({categorySlug:category.slug})">{{category.title}}</a>'+				
+				'<a ng-if="!$first" ui-sref="mainLayout.category.subCatProducts({categorySlug:categoryBread[$index-1].slug,subcategorySlug:category.slug})">{{category.title}}</a>'+
+				'<img src="images/productdetail2.png">'+
+
+				'</span>'+
+
+				'<span>{{productInfo.name}}</span>'+
+				'</div>'
+	};
+}])
+
 .directive('ngBlur', ['$parse', function($parse){
 	return function(scope, element, attr) {
 		var fn = $parse(attr['ngBlur']);
@@ -839,6 +913,8 @@ AlcoholDelivery.directive('sideBar', function() {
 		});
 	};
 }])
+
+
 
 .directive("apFocusOut", ['$document','$parse', function( $document, $parse ){
     return {
@@ -859,7 +935,8 @@ console.log(isChild);
             });
         }
     }
-}]).directive('backImg', function(){
+}])
+.directive('backImg', function(){
     return function(scope, element, attrs){
         var url = attrs.backImg;
         element.css({

@@ -1,4 +1,4 @@
-AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', "$mdToast", function($scope, $rootScope,$http,$mdToast) {
+AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", function($scope, $rootScope,$http,$mdToast,categoriesFac) {
 
 	$scope.AppController = {};
 	$scope.featuredProduct = [];
@@ -12,10 +12,9 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', "$m
 
 	$http.get("/super/settings/").success(function(response){
     	$rootScope.settings = response;
-    });
+    });   
 
-
-    $http.get("/super/category/").success(function(response){
+    $http.get("/super/category/",{params: {withCount:true}}).success(function(response){
 
 		$scope.categories = response;
 		$scope.AppController.categories = response;
@@ -118,41 +117,41 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', "$m
 	}
     // Toast settings
 
-		var last = {
-			bottom: false,
-			top: true,
-			left: false,
-			right: true
-		};
+		// var last = {
+		// 	bottom: false,
+		// 	top: true,
+		// 	left: false,
+		// 	right: true
+		// };
 
-		$scope.toastPosition = angular.extend({},last);
+		// $scope.toastPosition = angular.extend({},last);
 
-		$scope.getToastPosition = function() {
+		// $scope.getToastPosition = function() {
 
-			sanitizePosition();
-			return Object.keys($scope.toastPosition)
-				.filter(function(pos) { return $scope.toastPosition[pos]; })
-				.join(' ');
+		// 	sanitizePosition();
+		// 	return Object.keys($scope.toastPosition)
+		// 		.filter(function(pos) { return $scope.toastPosition[pos]; })
+		// 		.join(' ');
 
-		};
+		// };
 
-		function sanitizePosition() {
-			var current = $scope.toastPosition;
-			if ( current.bottom && last.top ) current.top = false;
-			if ( current.top && last.bottom ) current.bottom = false;
-			if ( current.right && last.left ) current.left = false;
-			if ( current.left && last.right ) current.right = false;
-			last = angular.extend({},current);
-		}
+		// function sanitizePosition() {
+		// 	var current = $scope.toastPosition;
+		// 	if ( current.bottom && last.top ) current.top = false;
+		// 	if ( current.top && last.bottom ) current.bottom = false;
+		// 	if ( current.right && last.left ) current.left = false;
+		// 	if ( current.left && last.right ) current.right = false;
+		// 	last = angular.extend({},current);
+		// }
 
-		$rootScope.showSimpleToast = function(msg) {
-			$mdToast.show(
-			$mdToast.simple()
-				.textContent(msg)
-				.position($scope.getToastPosition())
-				.hideDelay(300000)
-			);
-		};
+		// $rootScope.showSimpleToast = function(msg) {
+		// 	$mdToast.show(
+		// 	$mdToast.simple()
+		// 		.textContent(msg)
+		// 		.position($scope.getToastPosition())
+		// 		.hideDelay(300000)
+		// 	);
+		// };
 
     // Toast Settings
 
@@ -299,7 +298,7 @@ AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$
 
 	$scope.ProductDetailController = {};
 
-	$scope.product = {};
+	
 
   	$scope.syncPosition = function(el){
 
@@ -457,7 +456,7 @@ AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$
 
 
 	 }, function(response) {
-
+	 	$scope.product = false;
 	});
 
 }]);
@@ -622,8 +621,7 @@ AlcoholDelivery.controller('OrderDetailController',['$scope','$rootScope','$stat
 
 				$scope.order = response;
 				$scope.address = $scope.order.delivery.address;
-
-				//$scope.shipping = UserService.currentUser.address[response.delivery.address.key];
+				
 			})
 			.error(function(data, status, headers) {
 
@@ -656,7 +654,7 @@ AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','
 	$scope.showAddressViaMapModal = function(ev) {
 
 		$mdDialog.show({
-			controller: function($scope, $rootScope, $mdDialog, NgMap) {
+			controller: function($scope, $rootScope, $mdDialog, NgMap, $document) {
 
 				$scope.address = {
 					step:1
@@ -758,6 +756,8 @@ AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','
 								    //         position: point,
 								    //         map: $scope.map,
 								    //     });
+
+						
 
 					}, 500);
 
@@ -998,7 +998,7 @@ AlcoholDelivery.controller('WishlistController',['$scope','$rootScope','$state',
 
 }]);
 
-AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$timeout','CartSession','UserService','sweetAlert','alcoholCart','store',function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $timeout, CartSession, UserService, sweetAlert, alcoholCart,store){
+AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$timeout','UserService','sweetAlert','alcoholCart','store',function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $timeout, UserService, sweetAlert, alcoholCart,store){
 
 	$rootScope.storeInitUP = true;
 	
@@ -1224,9 +1224,9 @@ AlcoholDelivery.controller('CartAddressController',['$scope','$rootScope','$stat
 	$rootScope.getUserAddress();
 
 	$scope.showAddressViaMapModal = function(ev) {
-
+		
 		$mdDialog.show({
-			controller: function($scope, $rootScope, $mdDialog, NgMap) {
+			controller: function($scope, $rootScope, $mdDialog, NgMap, $document) {
 
 				$scope.address = {
 					step:1
@@ -1327,7 +1327,6 @@ AlcoholDelivery.controller('CartAddressController',['$scope','$rootScope','$stat
 						$scope.map.setZoom(12);
 						$scope.map.setOptions({draggable: false});
         				
-
 					}, 500);
 
 
@@ -1854,7 +1853,7 @@ AlcoholDelivery.controller('CartDeliveryController',['$scope','$rootScope','$sta
 
 }]);
 
-AlcoholDelivery.controller('CartPaymentController',['$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','CartSession','sweetAlert',function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, CartSession, sweetAlert){
+AlcoholDelivery.controller('CartPaymentController',['$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','sweetAlert',function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, sweetAlert){
 
 }]);
 
@@ -1960,9 +1959,6 @@ AlcoholDelivery.controller('CartReviewController',['$scope','$rootScope','$http'
 
 				}
 			});
-
-
-
 }]);
 
 AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$stateParams',function($scope,$http,$stateParams){
@@ -1997,7 +1993,17 @@ AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$statePara
 		$scope.monthsName[10] = "November";
 		$scope.monthsName[11] = "December";
 
-		var mili = $scope.order.timeslot.datekey * 1000;
+		if($scope.order.timeslot.datekey!==false){
+			
+			var mili = $scope.order.timeslot.datekey * 1000;
+
+		}else{
+
+			var mili = $scope.order.dop * 1000;
+
+		}
+		
+
 		$scope.myDate = new Date(mili);
 
 		$scope.day = $scope.myDate.getDate();
@@ -2008,8 +2014,6 @@ AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$statePara
 		$scope.daySlug = $scope.day+' '+$scope.monthName+', '+$scope.year;
 		$scope.slotslug = $scope.order.timeslot.slotslug;
 
-
-
 		var dopmili = $scope.order.dop * 1000;
 		$scope.dopDate = new Date(dopmili);
 
@@ -2018,9 +2022,49 @@ AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$statePara
 		$scope.dopMonthName = $scope.monthsName[$scope.dopDate.getMonth()];
 		$scope.dopSlug = $scope.dopMonthName+' '+$scope.dopDay+', '+$scope.year;
 
+		$scope.hour = $scope.dopDate.getHours() % 12 || 12;
+		$scope.minute = $scope.dopDate.getMinutes();
+		$scope.aMpM = $scope.dopDate.getHours() > 12 ? 'PM' : 'AM';
 
 
     });
+
+}]);
+
+AlcoholDelivery.controller('RepeatOrderController',['$scope','$http','UserService',function($scope,$http,UserService){
+
+	$scope.user = UserService.currentUser;
+	
+	$scope.$watch('user',
+
+		function(newValue, oldValue) {
+
+			if($scope.user){
+
+				$fetching = true;	
+				$scope.repeatOrderInit();
+
+			}
+			
+		},true
+	);
+
+	$scope.repeatOrderInit = function(){
+
+		if(UserService.currentUser===null){
+			console.log("Repeat order cannot initialized");
+			return false;
+		}
+
+		$http.get("user/orderstorepeat").then(
+			function(response){
+				$scope.orders = response.data;
+			},
+			function(errorRes){}
+		)
+
+	}
+	
 
 }]);
 
@@ -2307,7 +2351,7 @@ AlcoholDelivery.controller('SearchController', [
 }]);
 
 
-AlcoholDelivery.controller('InviteController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll){
+AlcoholDelivery.controller('InviteController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll','sweetAlert', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll,sweetAlert){
 
 	$timeout(function() {
 		$anchorScroll();
@@ -2319,6 +2363,14 @@ AlcoholDelivery.controller('InviteController', ['$scope', '$rootScope','$state',
 		$http.post('/user/inviteusers',$scope.invite).success(function(res){
 			$scope.errors = [];
 			$scope.invite = res;
+			
+
+			sweetAlert.swal({
+				type:'success',
+				title: res.success,
+				timer: 2000
+			});
+
 		}).error(function(data, status, headers){
 			$scope.errors = data;
 		});

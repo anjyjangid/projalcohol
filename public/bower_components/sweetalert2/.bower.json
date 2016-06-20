@@ -7,16 +7,22 @@
     "Sam Turrell <sam@samturrell.co.uk> (http://samturrell.co.uk)"
   ],
   "dependencies": {
-    "es6-promise-polyfill": "*"
+    "es6-promise": "*"
   },
   "ignore": [
-    "example",
+    "package.json",
     "gulpfile.js",
-    "sweetalert.gif"
+    "example",
+    "images",
+    "sweetalert2.gif",
+    ".eslintrc",
+    ".github",
+    ".gitignore",
+    ".travis.yml"
   ],
   "description": "A replacement for JavaScript's popup boxes, supported fork of sweetalert",
   "main": [
-    "src/sweetalert2.js",
+    "dist/sweetalert2.js",
     "src/sweetalert2.scss",
     "dist/sweetalert2.css"
   ],
@@ -29,12 +35,12 @@
     "url": "git@github.com:limonte/sweetalert2.git"
   },
   "license": "MIT",
-  "version": "3.2.3",
-  "_release": "3.2.3",
+  "version": "3.3.8",
+  "_release": "3.3.8",
   "_resolution": {
     "type": "version",
-    "tag": "v3.2.3",
-    "commit": "7a0e294807dddf237f8e141c92a65473e287706d"
+    "tag": "v3.3.8",
+    "commit": "e81052e3ab18481f47d375cfb4bc815df2c03d6e"
   },
   "_source": "https://github.com/limonte/sweetalert2.git",
   "_target": ">=0.1.9",
