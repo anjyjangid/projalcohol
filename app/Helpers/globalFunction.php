@@ -42,4 +42,16 @@
 
 	}
 
+	function valueToKey($array,$key){
+
+		$newArray = [];
+		foreach($array as $value){
+			
+			$newArray[(string)$value[$key]] = $value;
+		}
+
+		return $newArray;
+
+	}
+
 ?>

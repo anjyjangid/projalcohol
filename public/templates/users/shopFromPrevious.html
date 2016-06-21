@@ -1,100 +1,117 @@
-<div ng-if="!viewDetail">
 <div class="modal-header alcohal_orderhistoryheader">   
 	<div class="alcohalorderhisttitle">Shop from your previous order</div>
 </div>
-<div class="modal-body alcohal_orderhistorybody">	
-	<div ng-if="fetchingOrders" id="prevOrdersFetchLoading"></div>
-	<div ng-if="!fetchingOrders" class="alcohal_orderhistorytxtcvr">
-		<div class="alcohal_orderhistorybodytxt">Shopping from a past order provides a convenient way to quickly shop for the same products again. </div>	
-		<div class="alcohal_orderhistorybodytxtclick">Click on a given order and add the desired products to the basket. </div>
-		<div class="alcohal_hisryorderboxcvr">
 
-			<div class="alcohal_hisryorderboxcvr1" ng-repeat="order in orders">
-				<div class="alcohal_hisryorderordertxt">Order: {{order.reference}}</div>
-				<div class="alcohal_hisryorderdelitext">Delivered on: Thu 10 Dec 2015</div>
-				<div class="alcohal_hisryorderitemtext">16 Items</div>
+<div ng-if="!viewDetail">
+	<div class="modal-body alcohal_orderhistorybody">	
+		<div ng-if="fetchingOrders" id="prevOrdersFetchLoading"></div>
+		<div ng-if="!fetchingOrders" class="alcohal_orderhistorytxtcvr">
+			<div class="alcohal_orderhistorybodytxt">Shopping from a past order provides a convenient way to quickly shop for the same products again. </div>	
+			<div class="alcohal_orderhistorybodytxtclick">Click on a given order and add the desired products to the basket. </div>
+			<div class="alcohal_hisryorderboxcvr">
+
+				<div class="alcohal_hisryorderboxcvr1" ng-repeat="orderSummary in orders" ng-click="previousOrder(orderSummary.reference,$event)">
+					<div class="alcohal_hisryorderordertxt">Order: {{orderSummary.reference}}</div>
+					<div class="alcohal_hisryorderdelitext">Delivered on: Thu 10 Dec 2015</div>
+					<div class="alcohal_hisryorderitemtext">16 Items</div>
+				</div>
+
 			</div>
-
 		</div>
 	</div>
+	<div class="modal-footer alcohal_orderhistoryfotter">
+		<button type="button" class="alcohalfooter_shopordershopbtn" ng-click="close()">Nah! let me order a fresh<span> 
+			<img src="images/alcholshoporderarrow.png" /></span>
+		</button>
+	</div>
 </div>
-<div class="modal-footer alcohal_orderhistoryfotter">
-	<button type="button" class="alcohalfooter_shopordershopbtn" ng-click="close()">Nah! let me order a fresh <span> <img src="images/alcholshoporderarrow.png" /></span>
-	</button>
-</div>
-</div>
-
 
 
 <div ng-if="viewDetail">
-<div class="modal-header alcohal_orderhistoryheader">
-	<div class="alcohalorderhisttitle">Shop from your previous order</div>
-</div>
-<div class="modal-body alcohal_orderhistory2body">
-	<div class="alcohal_orderhistory2bodytext1"> Order: AD-BB0-5873618-ED (16 items) </div>
-	<div class="alcohal_orderhistory2bodytext2"> Delivered on: Thu 10 Dec 2015 </div>
-	<div class="alcohal_ordehisty2selctboxcvr">
-		<input type="checkbox" class="orderhistysect_check" name="cc" id="b1">
-		<label for="b1"><span></span> Select all </label>
-	</div>
-	<div class="alcohal_ordehisty2selctblcvr">
-		<table class="table">
-			<thead>
-				<tr>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td><div class="cheklble">
-							<input type="checkbox" class="orderhistysect_check" name="cc" id="b2" />
-							<label for="b2"><span></span></label>
-						</div></td>
-					<td><div class="orhistry2_td2procdtcvr"> <span><img src="images/lblepi1product1.png" /></span>
-							<div class="checkouter-td-right-text">
-								<div class="orhistry2_td2proctext1">Carlsberg Lager Can - Case</div>
-								<div class="orhistry2_td2proctext2">24 x 323 ml</div>
+
+	<div class="modal-body alcohal_orderhistory2body">
+
+		<div ng-if="fetchingOrder" id="prevOrderFetchLoading"></div>
+
+		<div ng-if="!fetchingOrder">
+		<div class="alcohal_orderhistory2bodytext1"> Order: {{order.reference}} (16 items) </div>
+		<div class="alcohal_orderhistory2bodytext2"> Delivered on: {{order.reference}} </div>
+		<div class="alcohal_ordehisty2selctboxcvr">
+			<input type="checkbox" class="orderhistysect_check" name="cc" id="b1">
+			<label for="b1"><span></span> Select all </label>
+		</div>
+		<div class="alcohal_ordehisty2selctblcvr">
+			<table class="table">
+				<thead>
+					<tr>
+						<th width="20px"></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="product in order.products">
+						<td>
+							<div class="cheklble">
+								<md-checkbox ng-model="product.selected" aria-label="Checkbox 1"></md-checkbox>			
 							</div>
-						</div></td>
-					<td><div class="orderhistrychilcvr">
-							<span1><img src="images/product13.png" /></span1>
-							<span>CHILLED</span> </div></td>
-					<td><div class="alcohocal_ordrhistryincrmnetdrcrmnt2cvr">
-							<input id="demo3" type="text" value="" name="demo_vertical2">
-						</div></td>
-					<td><div class="orderhistry2price">$56.00</div></td>
-				</tr>
-				<tr>
-					<td><div class="cheklble">
-							<input type="checkbox" class="orderhistysect_check" name="cc" id="b3" />
-							<label for="b3"><span></span></label>
-						</div></td>
-					<td><div class="orhistry2_td2procdtcvr"> <span><img src="images/lblepi1product1.png" /></span>
-							<div class="checkouter-td-right-text">
-								<div class="orhistry2_td2proctext1">Carlsberg Lager Can - Case</div>
-								<div class="orhistry2_td2proctext2">24 x 323 ml</div>
+							
+						</td>
+						<td>
+							<div class="orhistry2_td2procdtcvr"> 
+								
+								<span class="cursor-pointer">
+									<a ui-sref="mainLayout.product({product:product.original.slug})" title="View Product">
+										<img ng-src="products/i/200/{{product.original.imageFiles | getProductThumb}}" alt="Product Icon" class="img-responsive img-responsive-h" />
+									</a>
+								</span>
+
+								<div class="checkouter-td-right-text">
+									<div class="orhistry2_td2proctext1">{{product.original.name}}</div>
+									<div class="orhistry2_td2proctext2">{{product.original.shortDescription}}</div>
+								</div>
 							</div>
-						</div></td>
-					<td><div class="orderhistrychilcvr">
-							<span1><img src="images/product13.png" /></span1>
-							<span>CHILLED</span> </div></td>
-					<td><div class="alcohocal_ordrhistryincrmnetdrcrmnt2cvr">
-							<input id="demo3" type="text" value="" name="demo_vertical2">
-						</div></td>
-					<td><div class="orderhistry2price">$56.00</div></td>
-				</tr>
-			</tbody>
-		</table>
+						</td>
+						<td>
+							
+							<div class="prod_chilled" ng-class="{
+															notchilled:!product.lastServedChilled,
+															invisible:!product.original.chilled,
+														}"
+														ng-click="product.lastServedChilled=!product.lastServedChilled"
+														>
+								<span>Chilled</span>
+								<div class="prod_chilled_icon"></div>
+							</div>
+						</td>
+						<td>
+							<div class="alcohocal_ordrhistryincrmnetdrcrmnt2cvr">													
+
+								<input type="text" ng-model="product.qtytoadd" value="product.quantity" min="0" mquantity="product.original.maxQuantity" ng-touch-spin>
+								
+							</div>
+						</td>
+						<td>
+							<div class="orderhistry2price">{{product.original.price | pricingTxt}}</div>
+						</td>
+					</tr>
+					
+				</tbody>
+			</table>
+		</div>
+		</div>
+
 	</div>
-</div>
-<div class="modal-footer  alcohal_orderhistory2fotter">
-	<div class="alcohal_orderhistory2fotter"> <img src="images/order_history2backpic.png" /> <span>Back to orders history</span> </div>
-	<button type="button" class="alcohalfooter_shopordershopbtn">Add to basket <span> <img src="images/alcholshoporderarrow.png" /></span></button>
-</div>
+	<div class="modal-footer  alcohal_orderhistory2fotter">
+		<div class="alcohal_orderhistory2fotter">
+			<img src="images/order_history2backpic.png" /> <span ng-click="viewHistory()">Back to orders history</span> 
+		</div>
+
+		<button ng-disabled="processAdding" type="button" class="alcohalfooter_shopordershopbtn" ng-click="addToBasket()">Add to basket <span> <img src="images/alcholshoporderarrow.png" /></span></button>
+
+	</div>
 </div>

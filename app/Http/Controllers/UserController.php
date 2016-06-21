@@ -328,9 +328,9 @@ class UserController extends Controller
 
 	}
 
-	public function getLastorder(){
-
-		$return = ["message"=>"","data"=>"","auth"=>false];
+	public function getLastorder($reference=false){
+		
+		$return = ["message"=>"","auth"=>false];
 
 		$userLogged = Auth::user('user');
 
@@ -347,13 +347,21 @@ class UserController extends Controller
 
 			$ordersModel = new Orders;
 
-			$order = $ordersModel->where("user",new mongoId($userLogged->_id))->orderBy("created_at","desc")->first(["products","packages","updated_at","reference"]);
+			$order = $ordersModel
+							->where("user",new mongoId($userLogged->_id));
 
-			$order = $order->toArray();
+			if($reference){
+				$order = $order->where("reference",$reference);
+			}
+							
+			$order = $order->orderBy("created_at","desc")
+						   ->first(["products","packages","updated_at","reference"]);		
 
 			if(empty($order)){
-				return response([],400);
+				return response(["message"=>"Order not found"],400);
 			}
+
+			$order = $order->toArray();
 
 			$products = $ordersModel->getProducts([$order],false);
 			$order = $ordersModel->mergeProducts([$order],$products);

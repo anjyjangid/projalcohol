@@ -21,7 +21,7 @@
 
 				<div class="orhistry2_td2procdtcvr">
 					<span class="cursor-pointer">
-						<a ui-sref="mainLayout.product({product:cartproduct.product._id})" title="View Product">
+						<a ui-sref="mainLayout.product({product:cartproduct.product.slug})" title="View Product">
 							<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="img-responsive" />
 						</a>
 					</span>
@@ -110,7 +110,7 @@
 
 				<div class="orhistry2_td2procdtcvr">
 					<span>
-						<a ui-sref="mainLayout.product({product:promotion.product._id})">
+						<a ui-sref="mainLayout.product({product:promotion.product.slug})">
 							<img err-pro-src="" ng-src="products/i/200/{{promotion.product._image}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" />
 						</a>
 					</span>

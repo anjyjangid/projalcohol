@@ -130,11 +130,16 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::post('package/{cartkey}','CartController@createpackage');
 	
-	Route::put('promotion/{cartkey}','CartController@putPromotion');	
-		
+	Route::put('promotion/{cartkey}','CartController@putPromotion');
+
+	Route::put('bulk','CartController@putBulk');
+
+	Route::post('repeatlast','CartController@postRepeatlast');
+
 	Route::delete('product/{key}/{type}','CartController@removeproduct');
 
 	Route::delete('promotion/{key}','CartController@deletePromotion');
+
 
 });
 

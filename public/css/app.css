@@ -540,7 +540,7 @@ md-toast.promo-notqualified-toast:before {
 	background-position: center;
 }
 
-#prevOrdersFetchLoading{
+#prevOrdersFetchLoading,#prevOrderFetchLoading{
 	background-color: rgba(235, 238, 240, 0.5);
 	position: absolute;
 	top: 0;
@@ -551,4 +551,12 @@ md-toast.promo-notqualified-toast:before {
 	background-image: url('../img/loading.gif');
 	background-repeat: no-repeat;
 	background-position: center;
+}
+
+#prevOrderFetchLoading{
+	min-height: 
+}
+
+button.alcohalfooter_shopordershopbtn:disabled {
+background-color: rgba(170, 0, 255, 0.5);
 }

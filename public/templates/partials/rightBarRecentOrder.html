@@ -3,12 +3,12 @@
 	<div class="fullwidth modifyscroll">
 
 		
-		<div class="order-fetching" ng-if="fetching"></div>
+		<div class="order-fetching" ng-if="fetching || processAdding"></div>
 
-		<div class="ro_items" ng-class="{'itemselect':product.incart}" ng-repeat="product in lastorder.products" title="{{product.original.shortDescription}}">
+		<div class="ro_items" ng-class="{'itemselect':product.selected}" ng-repeat="product in lastorder.products" title="{{product.original.shortDescription}}">
 
 			<div class="chk_unchk">
-				<md-checkbox ng-model="product.incart" aria-label="Checkbox 1"></md-checkbox>			
+				<md-checkbox ng-model="product.selected" aria-label="Checkbox 1"></md-checkbox>			
 			</div>
 			<div class="ro_pic">				
 				<img ng-src="products/i/200/{{product.original.imageFiles | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
@@ -18,7 +18,7 @@
 
 	</div>
 	<div class="recentorder_buttons">
-		<div class="addbtn"><img src="images/add.png" class="img-responsive" /></div>
+		<div class="addbtn" ng-click="addSelected()"><img src="images/add.png" class="img-responsive" /></div>
 		<div class="repeatbtn" data-toggle="modal" ng-click="repeatOrder($event)"><img src="images/repeat.png" class="img-responsive" /></div>
 	</div>
 	<div class="recentorder_title">Order History</div>
