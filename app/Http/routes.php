@@ -73,6 +73,9 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::resource('gift', 'Admin\GiftController',['only'=>['store','show','index']]);
 	Route::controller('gift', 'Admin\GiftController');
 
+	Route::resource('giftcategory', 'Admin\GiftCategoryController',['only'=>['store','edit','index']]);
+	Route::controller('giftcategory','Admin\GiftCategoryController');
+
 });
 
 Route::group(['prefix' => 'admin'], function () {					

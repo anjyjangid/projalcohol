@@ -139,7 +139,7 @@
 				        </thead>
 				        <tbody>					            
 				            <tr><td colspan="7"><h4>Single Purchase</h4></td></tr>
-				            <tr ng-if="price.category == 'pricing'" ng-repeat="(kp, price) in pricing.settings">						                
+				            <tr ng-if="price.category == 'pricing' && kp!='gift_packaging'" ng-repeat="(kp, price) in pricing.settings">						                
 				                <td class="control-label"> 
 				                	<label class="control-label">
 				                		{{price.label}}: <span class="required"> * </span>

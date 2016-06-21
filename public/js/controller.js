@@ -2300,11 +2300,12 @@ AlcoholDelivery.controller('SearchController', [
     }
     function selectedItemChange(item) {
 		if(item){
-			$state.go('mainLayout.product',{product:item._id});
+			$state.go('mainLayout.product',{product:item.slug});
 			self.searchText = '';
 			$timeout(function() {
 				$anchorScroll();
 			});
+		    $scope.openSearch = false;
 		    $scope.searchbar(0);
 		}
     }

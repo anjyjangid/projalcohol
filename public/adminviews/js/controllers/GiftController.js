@@ -1,6 +1,6 @@
 'use strict';
 
-MetronicApp.controller('GiftController',['$rootScope', '$scope', '$timeout','$http','$state','fileUpload', function($rootScope, $scope, $timeout,$http,$state,fileUpload) {
+MetronicApp.controller('GiftController',['$rootScope', '$scope', '$timeout','$http','$state','fileUpload','giftcategoryModel', function($rootScope, $scope, $timeout,$http,$state,fileUpload, giftcategoryModel) {
 
 	$scope.$on('$viewContentLoaded', function() {   
 		Metronic.initAjax(); // initialize core components
@@ -22,6 +22,14 @@ MetronicApp.controller('GiftController',['$rootScope', '$scope', '$timeout','$ht
 		category : ['Greeting Cards','Gift Wrappers','Bags & Basket']		
 	}
 
+	$scope.category = {
+		parentlist:[]
+	};
+
+	giftcategoryModel.getParentlist().success(function(response){
+		$scope.category.parentlist = response;
+	});
+
 }]);
 
 MetronicApp.controller('GiftFormController',['$scope', '$location','$stateParams','$state','fileUpload', 'giftModel', function($scope,$location,$stateParams,$state,fileUpload,giftModel) {
@@ -42,6 +50,39 @@ MetronicApp.controller('GiftFormController',['$scope', '$location','$stateParams
 
 		giftModel.store(url,$scope.gift).success(function(){
 			$state.go('userLayout.gifts.list');
+		}).error(function(data){
+			$scope.errors = data;
+			Metronic.alert({
+                type: 'danger',
+                icon: 'warning',
+                message: 'Please enter all required fields.',
+                container: '.portlet-body',
+                place: 'prepend',
+                closeInSeconds: 3
+            });
+		});	
+
+	}	
+
+}]);
+
+MetronicApp.controller('GiftCategoryFormController',['$scope', '$location','$stateParams','$state','fileUpload', 'giftcategoryModel', function($scope,$location,$stateParams,$state,fileUpload,giftcategoryModel) {
+
+	if($stateParams.categoryid){
+		giftcategoryModel.get($stateParams.categoryid).success(function(response){
+			$scope.giftcategory	= response;
+		}).error(function(){
+			$location.path('gifts/categorylist');
+		});
+	}
+
+	$scope.storecategory = function(){
+		var cid = null;
+		if($stateParams.giftid){
+			cid = $stateParams.giftid;
+		}
+		giftcategoryModel.store($scope.giftcategory,cid).success(function(){
+			$state.go('userLayout.gifts.categorylist');
 		}).error(function(data){
 			$scope.errors = data;
 			Metronic.alert({

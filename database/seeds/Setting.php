@@ -12,7 +12,7 @@ class Setting extends Seeder
     public function run()
     {
         
-        AlcoholDelivery\Setting::create([
+        /*AlcoholDelivery\Setting::create([
             '_id' => 'timeslot',
             'settings' => [
                 0 => [
@@ -212,66 +212,30 @@ class Setting extends Seeder
                     ]
                 ],
             ]
-        ]);
+        ]);*/
 
-        /*AlcoholDelivery\Setting::create([
+        AlcoholDelivery\Setting::create([
             '_id' => 'pricing',            
             'settings' => [
-                'regular_express_delivery' => [
-                	'label' => 'Regular express delivery',
-                    'value' => 0.5,
-                	'type' => 1,
-                    'category' => 'pricing'
-                ],
-                'advance_order' => [
-                	'label' => 'Advance order',
-                    'value' => 0.25,
-                	'type' => 1,
-                    'category' => 'pricing'
-                ],
-                'advance_order_bulk' => [
-                    'label' => 'Bulk purchase (Advance order)',                	
-                    'bulk' => [
-                        [
-                            'from_qty' => 2,
-                            'to_qty' => 5,    
-                            'value' => 0.15,
-                            'type' => 1
-                        ],                    
-                        [
-                            'from_qty' => 6,
-                            'to_qty' => 10,    
-                            'value' => 0.12,
-                            'type' => 1
-                        ],
-                        [
-                            'from_qty' => 11,
-                            'to_qty' => 99999,    
-                            'value' => 0.10,
-                            'type' => 1
-                        ]
-                    ],                    
-                    'category' => 'bulk_pricing',                    
-                ],
                 'express_delivery_bulk' => [
-                	'label' => 'Bulk purchase (Regular express delivery)',
+                    'label' => 'Bulk purchase (Regular express delivery)',
                     'bulk' => [
                         [
                             'from_qty' => 2,
-                            'to_qty' => 5,    
+                            'to_qty' => 5,
                             'value' => 0.15,
                             'type' => 1
-                        ],                    
+                        ],
                         [
-                            'from_qty' => 6,
-                            'to_qty' => 10,    
+                            'from_qty' => 1,
+                            'to_qty' => 10,
                             'value' => 0.12,
                             'type' => 1
                         ],
                         [
                             'from_qty' => 11,
-                            'to_qty' => 99999,    
-                            'value' => 0.10,
+                            'to_qty' => 99999,
+                            'value' => 0.1,
                             'type' => 1
                         ]
                     ],
@@ -279,14 +243,14 @@ class Setting extends Seeder
                 ],
                 'express_delivery' => [
                     'label' => 'Express delivery (Order within 30mins)',
-                	'value' => 50,
-                	'type' => 0,
+                    'value' => 50,
+                    'type' => 0,
                     'category' => 'service'
                 ],
                 'cigratte_services' => [
                     'label' => 'Cigratte service',
-                	'value' => 5,
-                	'type' => 1,
+                    'value' => 5,
+                    'type' => 1,
                     'category' => 'service'
                 ],
                 'non_chilled_delivery' => [
@@ -297,15 +261,28 @@ class Setting extends Seeder
                 ],
                 'minimum_cart_value' => [
                     'label' => 'Minimum cart value',
-                    'value' => 50,                    
-                    'category' => 'delivery'      
+                    'value' => 4000,
+                    'category' => 'delivery'
                 ],
                 'non_free_delivery' => [
                     'label' => 'Delivery charge(If cart value is below minimum cart value)',
-                    'value' => 10,                    
-                    'category' => 'delivery'      
-                ]                
-            ]
-        ]);*/
+                    'value' => 10,
+                    'category' => 'delivery'
+                ],
+                'regular_express_delivery' => [
+                    'label' => 'Regular express delivery',
+                    'value' => 0.5,
+                    'type' => 1,
+                    'category' => 'pricing'
+                ]
+                ,
+                'gift_packaging' => [
+                    'label' => 'Gift Packaging',
+                    'value' => 0.5,
+                    'type' => 1,
+                    'category' => 'pricing'
+                ]
+            ],
+        ]);
     }
 }

@@ -395,10 +395,29 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 			]
 		},
 		{
-			label:'Gifts',
-			uisref:'userLayout.gifts.list',
+			label:'Gifts',			
 			icon:'icon-present',
-			id:'sidebar_menu_link_gifts'
+			id:'sidebar_menu_link_gifts',
+			subItems:[
+				{
+					label:'Gift Categories',
+					uisref:'userLayout.gifts.categorylist',
+					icon:'icon-layers',
+					links:['userLayout.gifts.categorylist']
+				},
+				{
+					label:'Gift Items',
+					uisref:'userLayout.gifts.list',
+					icon:'icon-bag',
+					links:['userLayout.gifts.list']
+				},
+				{
+					label:'Gift Cards',
+					uisref:'userLayout.gifts.cards',
+					icon:'icon-credit-card',
+					links:['userLayout.gifts.cards']
+				}
+			]
 		},
 		{
 			label:'Time Slots',
@@ -1310,6 +1329,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                         files: [                                                        
                             'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
                             'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+                            'js/angular-slugify.js',
 							'adminviews/js/models/giftModel.js',
                             'adminviews/js/controllers/GiftController.js'
                         ]
@@ -1322,9 +1342,9 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             url: "/gifts/list",            
             templateUrl: "adminviews/views/gifts/list.html",		            
             data:{
-				pageTitle:'Gifts',
+				pageTitle:'Gifts Items',
 				breadCrumb:[
-					{title:'Gifts','uisref':'#'}					
+					{title:'Gifts Items','uisref':'#'}					
 				]				
 			},
 			resolve: {                
@@ -1338,7 +1358,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             data:{
 				pageTitle:'Add Gift',
 				breadCrumb:[
-					{title:'Gifts','uisref':'userLayout.gifts.list'},
+					{title:'Gifts Items','uisref':'userLayout.gifts.list'},
 					{title:'Add','uisref':'#'}
 				]				
 			},
@@ -1353,8 +1373,52 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             data:{
 				pageTitle:'Edit Gift',
 				breadCrumb:[
-					{title:'Gifts','uisref':'userLayout.gifts.list'},
+					{title:'Gifts Items','uisref':'userLayout.gifts.list'},
 					{title:'Add','uisref':'#'}
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }           
+        })
+
+        .state('userLayout.gifts.categorylist', {
+            url: "/gifts/categorylist",            
+            templateUrl: "adminviews/views/gifts/categorylist.html",		            
+            data:{
+				pageTitle:'Gift Categories',
+				breadCrumb:[
+					{title:'Gift Categories','uisref':'#'},					
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }           
+        })
+
+        .state('userLayout.gifts.categoryadd', {
+            url: "/gifts/categoryadd",            
+            templateUrl: "adminviews/views/gifts/categoryform.html",		            
+            data:{
+				pageTitle:'Gift Category Add',
+				breadCrumb:[
+					{title:'Gift Categories','uisref':'userLayout.gifts.categorylist'},					
+					{title:'Add','uisref':'#'},					
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }           
+        })
+
+        .state('userLayout.gifts.categoryedit', {
+            url: "/gifts/categoryedit/{categoryid}",            
+            templateUrl: "adminviews/views/gifts/categoryform.html",		            
+            data:{
+				pageTitle:'Gift Category Edit',
+				breadCrumb:[
+					{title:'Gift Categories','uisref':'userLayout.gifts.categorylist'},					
+					{title:'Edit','uisref':'#'},					
 				]				
 			},
 			resolve: {                
