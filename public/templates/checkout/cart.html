@@ -161,23 +161,17 @@
  </div>
  <div class="checkboxtotaldiv-buttom">
 	<div class="checkboxtotaldiv-title">Total</div>
-	<div class="checkboxtotaldiv-text">{{alcoholCart.getCartTotal() | pricingTxt}}
-		<!-- <div class="congratulationpopup">
-			<div class="congratulationpopupimg"><img src="images/thumbimg.png"></div>
-			<div class="congratulationpopuptext">
-			 <div class="congratulationpopuptext-title">Congratulations!</div>
-			 <div class="congratulationpopuptext-text">Advance ordering discounts have been applied!</div>
-			</div>
-		</div> -->
-	</div>
+	<div class="checkboxtotaldiv-text">{{alcoholCart.getCartTotal() | pricingTxt}}</div>
  </div>
 </div>
 <!-- Promotion view Starts-->
-<div ui-view="promotions"></div>
+	<div ui-view="promotions"></div>
 <!-- Promotion view Ends-->
 <div class="checkouterwantbuttonouter">
 	<div class="checkouterwantfirst">
+
 	<button data-target="#Modal-dontmiss" data-toggle="modal" class="checkouterwantbutton" ng-class="{selected:cart.delivery.type==0}" ng-click="alcoholCart.setDeliveryType(0)">I want this order Now!</button>
+
 	<span>(Standard 1 hour delivery)</span>
 	<button class="checkoutergitpackage"  ng-click="showAlert($event)" >Gift Packaging</button>
 </div>

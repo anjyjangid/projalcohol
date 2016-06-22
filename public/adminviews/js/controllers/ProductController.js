@@ -23,7 +23,10 @@ MetronicApp.controller('ProductController',['$rootScope', '$scope', '$timeout','
 			price:null,
 			outOfStockType:2,
 			availabilityDays:2,
-			availabilityTime:990
+			availabilityTime:990,
+			deliveryType:0,
+			isLoyalty:0,
+			loyaltyType : 0,
 		};
 		
 
@@ -132,7 +135,8 @@ MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$locatio
 		
 		productModel.getProduct($stateParams.productid).success(function(data){
 			
-			$scope.product = data;	
+			$scope.product = data;
+			
 
 			var unique = $scope.product.categories.join('|');
 			var k = $scope.getKey($scope.cd,unique);			

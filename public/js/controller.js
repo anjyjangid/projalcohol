@@ -1044,14 +1044,15 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 		type:"cod",
 	}
 
-
 	$scope.step = 1;
 
 	$scope.checkout = function() {
 
+		isCartValid = alcoholCart.validate($scope.step);
+
 		UserService.GetUser().then(
 
-			function(result) {
+			function(result){
 
 				if(result.auth===false){
 

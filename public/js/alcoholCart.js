@@ -12,7 +12,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			nonchilled : false,
 			delivery : {
 
-				type : 1,
+				type : null,
 				charges : null,
 				address : null,
 				contact : null,
@@ -665,7 +665,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 				if(package.getUniqueId() === id) {
 
 					var locPackage = cart.packages.splice(index, 1)[0] || {};
-														
+
 				}	
 			});
 			
@@ -1109,7 +1109,12 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 		}
 
+		this.validate = function(step){
+			return false;
+		}
+
 	}]);
+
 
 AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($rootScope, $log){
 		
