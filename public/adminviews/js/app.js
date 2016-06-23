@@ -1341,6 +1341,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         .state('userLayout.gifts.list', {
             url: "/gifts/list",            
             templateUrl: "adminviews/views/gifts/list.html",		            
+            controller:"GiftFormController",
             data:{
 				pageTitle:'Gifts Items',
 				breadCrumb:[
@@ -1355,6 +1356,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         .state('userLayout.gifts.add', {
             url: "/gifts/add",            
             templateUrl: "adminviews/views/gifts/form.html",		            
+            controller:"GiftFormController",
             data:{
 				pageTitle:'Add Gift',
 				breadCrumb:[
@@ -1370,6 +1372,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         .state('userLayout.gifts.edit', {
             url: "/gifts/edit/{giftid}",            
             templateUrl: "adminviews/views/gifts/form.html",		            
+            controller:"GiftFormController",
             data:{
 				pageTitle:'Edit Gift',
 				breadCrumb:[
@@ -1385,6 +1388,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         .state('userLayout.gifts.categorylist', {
             url: "/gifts/categorylist",            
             templateUrl: "adminviews/views/gifts/categorylist.html",		            
+            controller:"GiftCategoryFormController",
             data:{
 				pageTitle:'Gift Categories',
 				breadCrumb:[
@@ -1399,6 +1403,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         .state('userLayout.gifts.categoryadd', {
             url: "/gifts/categoryadd",            
             templateUrl: "adminviews/views/gifts/categoryform.html",		            
+            controller:"GiftCategoryFormController",
             data:{
 				pageTitle:'Gift Category Add',
 				breadCrumb:[
@@ -1414,11 +1419,27 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         .state('userLayout.gifts.categoryedit', {
             url: "/gifts/categoryedit/{categoryid}",            
             templateUrl: "adminviews/views/gifts/categoryform.html",		            
+            controller:"GiftCategoryFormController",
             data:{
 				pageTitle:'Gift Category Edit',
 				breadCrumb:[
 					{title:'Gift Categories','uisref':'userLayout.gifts.categorylist'},					
 					{title:'Edit','uisref':'#'},					
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }           
+        })
+
+        .state('userLayout.gifts.cards', {
+            url: "/gifts/giftcards",            
+            templateUrl: "adminviews/views/gifts/giftcards.html",		            
+            controller:"GiftCardController",
+            data:{
+				pageTitle:'Gift Cards',
+				breadCrumb:[
+					{title:'Gift Cards','uisref':'#'}									
 				]				
 			},
 			resolve: {                

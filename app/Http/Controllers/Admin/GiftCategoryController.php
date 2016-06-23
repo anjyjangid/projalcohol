@@ -9,6 +9,8 @@ use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Http\Requests\GiftCategoryRequest;
 use AlcoholDelivery\GiftCategory;
 use File;
+use MongoId;
+
 class GiftCategoryController extends Controller
 {
     /**
@@ -102,6 +104,10 @@ class GiftCategoryController extends Controller
 
         $inputs['status'] = (int)$inputs['status'];
 
+        /*if(isset($inputs['parent']) && $inputs['parent']!=''){
+            $inputs['parent'] = new MongoId($inputs['parent']);
+        }*/
+
         $model = GiftCategory::find($id);
 
         if($model){
@@ -171,6 +177,10 @@ class GiftCategoryController extends Controller
             $model = $model->where('status',(int)$status);
         }
 
+        if(isset($parent) && trim($parent)!=''){            
+            $model = $model->where('parent','=',$parent);
+        }
+
         $iTotalRecords = $model->count();        
 
         $columns = array('_id','title','parent','status');
@@ -180,6 +190,10 @@ class GiftCategoryController extends Controller
         ->take((int)$length);
 
         $model = $model->get($columns);
+
+        foreach ($model as $key => $value) {
+            $model[$key]->ancestor = GiftCategory::find($value->parent);
+        }
 
         $response = [
             'recordsTotal' => $iTotalRecords,

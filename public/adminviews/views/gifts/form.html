@@ -18,7 +18,8 @@
 						* </span>
 						</label>
 						<div class="col-md-10">
-							<select ng-options="giftoption.category.indexOf(selectedItem) as selectedItem for selectedItem in giftoption.category" class="table-group-action-input form-control input-medium" ng-model="gift.type">	
+							<select ng-options="cat._id as cat.title for cat in category.parentlist" class="table-group-action-input form-control input-medium" ng-model="gift.type">	
+								<option value="">Select</option>														
 							</select>
 							<span class="help-block" ng-bind="errors.status[0]"></span>
 						</div>

@@ -203,6 +203,11 @@ Route::get('gifts/i/{filename}', function ($filename)
     return Image::make(storage_path('gifts') . '/' . $filename)->response();
 });
 
+Route::get('giftcategory/i/{filename}', function ($filename)
+{
+    return Image::make(storage_path('giftcategory') . '/' . $filename)->response();
+});
+
 Route::get('asset/i/{filename}', function ($filename)
 {
     return Image::make(public_path('img') . '/' . $filename)->response();

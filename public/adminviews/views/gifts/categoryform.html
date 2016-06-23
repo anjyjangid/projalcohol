@@ -15,7 +15,29 @@
 			<!-- {{giftcategory|json}} -->
 			<div class="portlet-body mbody">
 				<div class="form-horizontal">					
-					<div class="form-group" ng:class="{'has-error':errors['coverImage.thumb'][0]}">
+					
+					<div class="form-group" ng:class="{'has-error':errors.title[0]}">
+						<label class="col-md-2 control-label">Title: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<input type="text" class="form-control input-medium" ng-model="giftcategory.title" placeholder="">
+							<span class="help-block" ng-bind="errors.title[0]"></span>
+						</div>
+					</div>
+					<slug from="giftcategory.title" to="giftcategory.slug"></slug>
+					<div class="form-group" ng:class="{'has-error':errors.type[0]}">
+						<label class="col-md-2 control-label">Parent: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<select ng-options="cat._id as cat.title for cat in category.parentlist" class="table-group-action-input form-control input-medium" ng-model="giftcategory.parent">	
+								<option value="">Self</option>
+							</select>														
+							<span class="help-block" ng-bind="errors.parent[0]"></span>
+						</div>
+					</div>
+					<div class="form-group" ng:class="{'has-error':errors['coverImage.thumb'][0]}" ng-hide="giftcategory.parent">
 						<label class="col-md-2 control-label">Icon Image: <span class="required">
 						* </span>
 						</label>
@@ -37,27 +59,6 @@
 								</div>
 							</div>
 							<span class="help-block" ng-bind="errors['coverImage.thumb'][0]"></span>
-						</div>
-					</div>
-					<div class="form-group" ng:class="{'has-error':errors.title[0]}">
-						<label class="col-md-2 control-label">Title: <span class="required">
-						* </span>
-						</label>
-						<div class="col-md-10">
-							<input type="text" class="form-control input-medium" ng-model="giftcategory.title" placeholder="">
-							<span class="help-block" ng-bind="errors.title[0]"></span>
-						</div>
-					</div>
-					<slug from="giftcategory.title" to="giftcategory.slug"></slug>
-					<div class="form-group" ng:class="{'has-error':errors.type[0]}">
-						<label class="col-md-2 control-label">Parent: <span class="required">
-						* </span>
-						</label>
-						<div class="col-md-10">
-							<select ng-options="cat._id as cat.title for cat in category.parentlist" class="table-group-action-input form-control input-medium" ng-model="giftcategory.parent">	
-								<option value="">Self</option>
-							</select>														
-							<span class="help-block" ng-bind="errors.parent[0]"></span>
 						</div>
 					</div>																						
 					<div class="form-group" ng:class="{'has-error':errors.status[0]}">

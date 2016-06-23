@@ -377,7 +377,6 @@ var Layout = function () {
             $('body').addClass('page-sidebar-closed');
             $('.page-sidebar-menu').addClass('page-sidebar-menu-closed');
         }
-        console.log('ascasc');
         // handle sidebar show/hide
         $('body').on('click', '.sidebar-toggler', function (e) {
             var sidebar = $('.page-sidebar');

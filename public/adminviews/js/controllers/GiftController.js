@@ -9,10 +9,12 @@ MetronicApp.controller('GiftController',['$rootScope', '$scope', '$timeout','$ht
 		// set sidebar closed and body solid layout mode
 		$rootScope.settings.layout.pageBodySolid = false;
 		$rootScope.settings.layout.pageSidebarClosed = false;  		
-		
-		
 
-	});
+	});	
+
+}]);
+
+MetronicApp.controller('GiftFormController',['$scope', '$location','$stateParams','$state','fileUpload', 'giftModel', function($scope,$location,$stateParams,$state,fileUpload,giftModel) {
 
 	$scope.gift = {
 		type:0
@@ -21,18 +23,6 @@ MetronicApp.controller('GiftController',['$rootScope', '$scope', '$timeout','$ht
 	$scope.giftoption = {
 		category : ['Greeting Cards','Gift Wrappers','Bags & Basket']		
 	}
-
-	$scope.category = {
-		parentlist:[]
-	};
-
-	giftcategoryModel.getParentlist().success(function(response){
-		$scope.category.parentlist = response;
-	});
-
-}]);
-
-MetronicApp.controller('GiftFormController',['$scope', '$location','$stateParams','$state','fileUpload', 'giftModel', function($scope,$location,$stateParams,$state,fileUpload,giftModel) {
 
 	if($stateParams.giftid){
 		giftModel.get($stateParams.giftid).success(function(response){
@@ -68,6 +58,14 @@ MetronicApp.controller('GiftFormController',['$scope', '$location','$stateParams
 
 MetronicApp.controller('GiftCategoryFormController',['$scope', '$location','$stateParams','$state','fileUpload', 'giftcategoryModel', function($scope,$location,$stateParams,$state,fileUpload,giftcategoryModel) {
 
+	$scope.category = {
+		parentlist:[]
+	};
+	
+	giftcategoryModel.getParentlist().success(function(response){
+		$scope.category.parentlist = response;
+	});
+
 	if($stateParams.categoryid){
 		giftcategoryModel.get($stateParams.categoryid).success(function(response){
 			$scope.giftcategory	= response;
@@ -78,8 +76,8 @@ MetronicApp.controller('GiftCategoryFormController',['$scope', '$location','$sta
 
 	$scope.storecategory = function(){
 		var cid = null;
-		if($stateParams.giftid){
-			cid = $stateParams.giftid;
+		if($stateParams.categoryid){
+			cid = $stateParams.categoryid;
 		}
 		giftcategoryModel.store($scope.giftcategory,cid).success(function(){
 			$state.go('userLayout.gifts.categorylist');
@@ -96,5 +94,9 @@ MetronicApp.controller('GiftCategoryFormController',['$scope', '$location','$sta
 		});	
 
 	}	
+
+}]);
+
+MetronicApp.controller('GiftCardController',['$scope', '$location','$stateParams','$state','fileUpload', 'giftModel', function($scope,$location,$stateParams,$state,fileUpload,giftModel) {
 
 }]);
