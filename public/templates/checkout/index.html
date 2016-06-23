@@ -26,7 +26,8 @@
 	<div ui-view="" class="checkoutmiddleouter"></div>
 	
 	</div>
-	<div ng-if="!alcoholCart.getTotalUniqueItems()" class="emptycart">
+
+	<div ng-if="!alcoholCart.getTotalUniqueItems() && !storeInitUP" class="emptycart">
 		<div>There is nothing in your cart</div>
 		<div><a class="checkouterback" ui-sref="mainLayout.index">back to shopping</a></div>
 	</div>

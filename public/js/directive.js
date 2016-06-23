@@ -34,7 +34,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			user:'='
 		},*/
 		templateUrl: '/templates/partials/topmenu.html',
-		controller: function($scope,$rootScope,$http,$state,sweetAlert,store,alcoholWishlist,$fblogin){
+		controller: function($scope,$rootScope,$http,$state,sweetAlert,UserService,store,alcoholWishlist,$fblogin){
 
 			$scope.list = [];
 
@@ -80,9 +80,11 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.loginSubmit = function(){
 				$scope.errors = {};
 				$http.post('/auth',$scope.login).success(function(response){				  
-                  $scope.loginSuccess(response);
+
+					$scope.loginSuccess(response);
+
 				}).error(function(data, status, headers) {
-	                $scope.errors = data;
+					$scope.errors = data;
 	            });
 			};
 
@@ -148,7 +150,9 @@ AlcoholDelivery.directive('sideBar', function() {
 			};
 
 	        $scope.logout = function() {
-				$http.get('/auth/logout').success(function(response){
+
+				$http.get('/auth/logout').success(function(response){				
+
 	                $scope.user = {};
 	                // Destroy Cart Params start
 	                delete $rootScope.deliverykey;
@@ -163,6 +167,7 @@ AlcoholDelivery.directive('sideBar', function() {
 	            }).error(function(data, status, headers) {
 	                $scope.user = {};	                
 	            });
+
 			};
 
 			$scope.openMenu = function(){
@@ -188,12 +193,14 @@ AlcoholDelivery.directive('sideBar', function() {
 
 		    //INTIALIZE AFTER USER LOGIN(FB & NORMAL)
 		    $scope.loginSuccess = function(response){
+
+		    	UserService.currentUser = response;
+
 		    	$scope.login = {};
                 $scope.user = response;
 				$scope.user.name = response.email;
                 $('#login').modal('hide');
-                $scope.errors = {};
-
+                $scope.errors = {};                
                 store.init().then(
                 	function(successRes){
                 		$state.go($state.current, {}, {reload: true});

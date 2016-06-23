@@ -702,6 +702,7 @@ ui-sref {
 	padding: 15px 0px;
 	margin-top: 11px;
 	overflow: hidden;
+	position: relative
 }
 .recentorder_title {
 	width: 100%;
@@ -1264,6 +1265,8 @@ ui-sref {
 	width: 100%;
 	padding-bottom: 27px;
 	padding-top: 27px;
+	min-height: 263px;
+	position: relative;
 }
 .modal-footer.alcohal_orderhistoryfotter {
 	float: left;
@@ -1315,6 +1318,7 @@ ui-sref {
 	margin-bottom: 18px;
 	width: 257px;
 	margin-right: 19px;
+	cursor: pointer;
 }
 .alcohal_hisryorderordertxt {
 	float: left;
@@ -1480,6 +1484,8 @@ ui-sref {
 .orhistry2_td2procdtcvr > span {
 	float: left;
 	margin-right: 20px;
+	width: 70px;
+	height: 70px;
 }
 .orhistry2_td2proctext2 {
 	float: left;

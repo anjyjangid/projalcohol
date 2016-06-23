@@ -1044,14 +1044,15 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 		type:"cod",
 	}
 
-
 	$scope.step = 1;
 
 	$scope.checkout = function() {
 
+		isCartValid = alcoholCart.validate($scope.step);
+
 		UserService.GetUser().then(
 
-			function(result) {
+			function(result){
 
 				if(result.auth===false){
 
@@ -2031,48 +2032,305 @@ AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$statePara
 
 }]);
 
-AlcoholDelivery.controller('RepeatOrderController',['$scope','$http','UserService',function($scope,$http,UserService){
+AlcoholDelivery.controller('RepeatOrderController',['$scope','$rootScope','$http','$mdDialog','UserService','alcoholCart','sweetAlert',function($scope,$rootScope,$http,$mdDialog,UserService,alcoholCart,sweetAlert){
 
-	$scope.user = UserService.currentUser;
-	
+	$scope.user = UserService.currentUser;	
+	$scope.lastorder = {};
+
 	$scope.$watch('user',
 
 		function(newValue, oldValue) {
+			
+			if(UserService.currentUser === null || typeof UserService.currentUser._id === 'undefined'){
 
-			if($scope.user){
-
-				$fetching = true;	
-				$scope.repeatOrderInit();
+				console.log("Repeat order cannot initialized");
+				return false;
 
 			}
-			
+
+			$scope.fetching = true;
+
+			$scope.repeatOrderInit();
+
 		},true
 	);
 
 	$scope.repeatOrderInit = function(){
+	
+		$http.get("user/lastorder").then(
 
-		if(UserService.currentUser===null){
-			console.log("Repeat order cannot initialized");
-			return false;
-		}
-
-		$http.get("user/orderstorepeat").then(
 			function(response){
-				$scope.orders = response.data;
+				
+				$scope.lastorder = response.data.order;
+				$scope.fetching = false;	
 			},
-			function(errorRes){}
+			function(errorRes){
+
+			}
 		)
 
 	}
+
+	$scope.repeatOrder = function(ev) {
+
+		$mdDialog.show({
+
+			controller: "ShopFromPreviousController",
+			templateUrl: '/templates/users/repeat-order.html',
+			parent: angular.element(document.body),
+			targetEvent: ev,
+			clickOutsideToClose:false
+
+		})
+		.then(function(answer) {
+
+		}, function() {
+
+		});
+
+	};
+
+	$scope.shopFromPrevious = function(ev){
+		
+		$mdDialog.show({
+
+			controller: "ShopFromPreviousController",
+			templateUrl: '/templates/users/shopFromPrevious.html',
+			parent: angular.element(document.body),
+			targetEvent: ev,
+			clickOutsideToClose:false
+
+		})
+		.then(function(answer) {
+
+		}, function() {
+
+		});
+
+	}
+
+	$scope.addSelected = function(){
+
+		var selected = {
+			products : []
+		};
+		angular.forEach($scope.lastorder.products, function(product) {
+
+			if(product.selected){
+				var selPro = {
+					id : product.original._id,
+					quantity : 1,
+					chilled : product.lastServedChilled
+				};
+
+				selected.products.push(selPro);
+			}		
+
+		})
+
+		if(selected.products.length){
+
+			$scope.processAdding = true;
+
+			alcoholCart.addBulk(selected).then(
+				
+				function(response){
+					$rootScope.$broadcast('alcoholCart:updated',{msg:"Previous order products added to cart"});
+				},
+				function(errorRes){
+
+					sweetAlert.swal({
+						type:'error',
+						title: 'Oops...',
+						text:'Something went wrong',
+						timer: 2000
+					});
+
+				}
+
+			).finally(function(){
+
+				$scope.processAdding = false;
+
+			});
+
+		}else{
+
+			sweetAlert.swal({
+				type:'error',
+				title: 'Oops...',
+				text:'Please select a product to add',
+				timer: 2000
+			});
+
+		}
+
+	}
+
+}]);
+
+AlcoholDelivery.controller('ShopFromPreviousController',['$scope','$rootScope','$http','$mdDialog','$timeout','alcoholCart','sweetAlert',function($scope,$rootScope,$http,$mdDialog,$timeout,alcoholCart,sweetAlert){
+
+	$scope.orders = {};
+	$scope.order = {};
+	$scope.fetchingOrders = true;
+	$scope.fetchingOrder = true;
+	$scope.viewDetail = false;
+
+	$http.get("order/orders").then(
+
+		function(response){
+			
+			$scope.orders = response.data;
+
+			$timeout(function(){
+				$scope.fetchingOrders = false;
+			},1000);
+
+		},
+		function(errorRes){
+
+		}
+
+	);
+
+	$scope.repeatOrderConfirmed = function(){
+
+		$scope.processAdding = true;
+		
+		alcoholCart.repeatLastOrder().then(
+			
+			function(response){
+				
+				$rootScope.$broadcast('alcoholCart:updated',{msg:"Your last order is added to cart"});
+
+			},
+			function(errorRes){
+
+				sweetAlert.swal({
+					type:'error',
+					title: 'Oops...',
+					text:'Something went wrong',
+					timer: 2000
+				});
+
+			}
+
+		).finally(function(){
+
+			$scope.close();			
+
+		});
+
 	
+
+	}
+
+	$scope.previousOrder = function(reference,ev){
+
+		$scope.viewDetail = true;
+		$scope.fetchingOrder = true;
+
+		$http.get("user/lastorder/"+reference).then(
+		
+			function(response){
+				
+				$scope.order = response.data.order;
+				$timeout(function(){
+					$scope.fetchingOrder = false;	
+				},1500);
+			},
+			function(errorRes){
+
+			}
+		)
+
+	}
+
+	$scope.viewHistory = function(){
+
+		$scope.viewDetail = false;
+
+	}
+
+	$scope.addToBasket = function(){
+
+		$scope.processAdding = true;
+
+		var selected = {
+			products : []
+		};
+
+		angular.forEach($scope.order.products, function(product) {
+
+			if(product.selected){
+				var selPro = {
+					id : product.original._id,
+					quantity : product.quantity,
+					chilled : product.lastServedChilled
+				};
+
+				selected.products.push(selPro);
+			}		
+
+		})
+
+		if(selected.products.length){
+
+			alcoholCart.addBulk(selected).then(
+				
+				function(response){
+					
+					$rootScope.$broadcast('alcoholCart:updated',{msg:"Previous order products added to cart"});
+
+				},
+				function(errorRes){
+
+					sweetAlert.swal({
+						type:'error',
+						title: 'Oops...',
+						text:'Something went wrong',
+						timer: 2000
+					});
+
+				}
+
+			).finally(function(){
+
+				$scope.close();			
+
+			});
+
+		}else{
+
+			sweetAlert.swal({
+				type:'error',
+				title: 'Oops...',
+				text:'Please select a product to add',
+				timer: 2000
+			});
+			$scope.processAdding = false;
+
+		}
+
+	}
+
+	$scope.close = function(){
+
+		$scope.processAdding = false;
+		$scope.viewDetail = false;
+
+		$mdDialog.hide();
+
+	}
 
 }]);
 
 AlcoholDelivery.controller('CmsController',['$scope','$http','$stateParams',function($scope,$http,$stateParams){
 
-$scope.cmsId = $stateParams.cmsId;
-$scope.cmsData = "";
-$scope.cmsTitle = "";
+	$scope.cmsId = $stateParams.cmsId;
+	$scope.cmsData = "";
+	$scope.cmsTitle = "";
 
 	$http.get("/super/cmsdata?cmsid="+$scope.cmsId).success(function(response){
     	$scope.cmsData = response.content;

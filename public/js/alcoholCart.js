@@ -12,7 +12,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			nonchilled : false,
 			delivery : {
 
-				type : 1,
+				type : null,
 				charges : null,
 				address : null,
 				contact : null,
@@ -114,6 +114,103 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		});
 
 		return defer.promise
+	};
+
+	this.addBulk = function(products){
+
+		var defer = $q.defer();
+		var _self = this;
+		$http.put('cart/bulk',products)
+				.success(function(response){
+
+					if(response.success){					
+
+						angular.forEach(response.data.products, function (product, index) {
+							
+							var id = product.product._id;
+							var inCart = _self.getProductById(id);
+
+							if(inCart){
+
+								inCart.setRQuantity(product.chilled.quantity,product.nonchilled.quantity);
+								inCart.setTQuantity(product.quantity);
+								inCart.setPrice(product);
+
+								inCart.setRMaxQuantity(product);
+
+							}else{				
+								
+					    		var newItem = new alcoholCartItem(id, product);
+								_self.$cart.products[id] = newItem;
+								
+							}
+
+						});
+
+						defer.resolve("added success fully");
+
+					}
+
+					defer.reject("something went wrong");
+
+				})
+				.error(function(data, status, headers){
+
+					defer.reject("something went wrong");
+
+				})
+
+		return defer.promise;
+		
+	};
+
+	this.repeatLastOrder = function(){
+
+		var defer = $q.defer();
+		var _self = this;
+
+		$http.post('cart/repeatlast')
+				.success(function(response){
+
+					if(response.success){					
+
+						angular.forEach(response.data.products, function (product, index) {
+							
+							var id = product.product._id;
+							var inCart = _self.getProductById(id);
+
+							if(inCart){
+
+								inCart.setRQuantity(product.chilled.quantity,product.nonchilled.quantity);
+								inCart.setTQuantity(product.quantity);
+								inCart.setPrice(product);
+
+								inCart.setRMaxQuantity(product);
+
+							}else{				
+								
+					    		var newItem = new alcoholCartItem(id, product);
+								_self.$cart.products[id] = newItem;
+								
+							}
+
+						});
+
+						defer.resolve("added success fully");
+
+					}
+
+					defer.reject("something went wrong");
+
+				})
+				.error(function(data, status, headers){
+
+					defer.reject("something went wrong");
+
+				})
+
+		return defer.promise;
+		
 	};
 
 	this.addPackage = function (id,detail) {
@@ -568,7 +665,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 				if(package.getUniqueId() === id) {
 
 					var locPackage = cart.packages.splice(index, 1)[0] || {};
-														
+
 				}	
 			});
 			
@@ -1012,7 +1109,12 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 		}
 
+		this.validate = function(step){
+			return false;
+		}
+
 	}]);
+
 
 AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($rootScope, $log){
 		

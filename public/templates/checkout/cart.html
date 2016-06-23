@@ -21,7 +21,7 @@
 
 				<div class="orhistry2_td2procdtcvr">
 					<span class="cursor-pointer">
-						<a ui-sref="mainLayout.product({product:cartproduct.product._id})" title="View Product">
+						<a ui-sref="mainLayout.product({product:cartproduct.product.slug})" title="View Product">
 							<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="img-responsive" />
 						</a>
 					</span>
@@ -110,7 +110,7 @@
 
 				<div class="orhistry2_td2procdtcvr">
 					<span>
-						<a ui-sref="mainLayout.product({product:promotion.product._id})">
+						<a ui-sref="mainLayout.product({product:promotion.product.slug})">
 							<img err-pro-src="" ng-src="products/i/200/{{promotion.product._image}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" />
 						</a>
 					</span>
@@ -162,23 +162,17 @@
  </div>
  <div class="checkboxtotaldiv-buttom">
 	<div class="checkboxtotaldiv-title">Total</div>
-	<div class="checkboxtotaldiv-text">{{alcoholCart.getCartTotal() | pricingTxt}}
-		<!-- <div class="congratulationpopup">
-			<div class="congratulationpopupimg"><img src="images/thumbimg.png"></div>
-			<div class="congratulationpopuptext">
-			 <div class="congratulationpopuptext-title">Congratulations!</div>
-			 <div class="congratulationpopuptext-text">Advance ordering discounts have been applied!</div>
-			</div>
-		</div> -->
-	</div>
+	<div class="checkboxtotaldiv-text">{{alcoholCart.getCartTotal() | pricingTxt}}</div>
  </div>
 </div>
 <!-- Promotion view Starts-->
-<div ui-view="promotions"></div>
+	<div ui-view="promotions"></div>
 <!-- Promotion view Ends-->
 <div class="checkouterwantbuttonouter">
 	<div class="checkouterwantfirst">
+
 	<button data-target="#Modal-dontmiss" data-toggle="modal" class="checkouterwantbutton" ng-class="{selected:cart.delivery.type==0}" ng-click="alcoholCart.setDeliveryType(0)">I want this order Now!</button>
+
 	<span>(Standard 1 hour delivery)</span>
 	<button class="checkoutergitpackage"  ng-click="showAlert($event)" >Gift Packaging</button>
 </div>

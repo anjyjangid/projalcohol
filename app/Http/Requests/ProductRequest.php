@@ -43,11 +43,17 @@ class ProductRequest extends Request
             'metaDescription' => 'max:255',            
             'isFeatured' => 'required|integer',
             'imageFiles' => 'required|array|min:1',            
-            'loyalty' => 'required|numeric',
+            'isLoyalty' => 'required|integer|in:0,1',
+            'loyalty' => 'required_if:isLoyalty,1|numeric',
+            'loyaltyType' => 'required_if:isLoyalty,1|integer|in:0,1',
+            
+
             'threshold' => 'required|numeric|lt:maxQuantity',
             'maxQuantity' => 'required|numeric|gte:quantity',
             'dealers' => 'required|array|min:1',
             'outOfStockType' => 'required|integer',
+            'deliveryType' => 'required|integer|in:0,1,2',
+
             'availabilityDays' => 'required_if:outOfStockType,2',
             'availabilityTime' => 'required_if:outOfStockType,2',
         ];
