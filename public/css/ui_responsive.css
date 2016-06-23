@@ -1484,13 +1484,18 @@ body.menu-slider.in #wrapper {
 	transition: all 0.5s ease 0s;
 }
 
+.credis-table-main{
+	width:100%;
+	float:left
 
-
+}
 
  @media (min-width : 1024px) and (max-width : 1200px) {
 
 .christmas-mainouter.col-md-8 {
-	width: 71% !important;
+	/*width: 71% !important;*/
+	padding-left: 0;
+    padding-right: 0;
 }
 /*.single_slider.ng-scope .owl-carousel .owl-item{
 	width:623px!important
@@ -1502,7 +1507,7 @@ body.menu-slider.in #wrapper {
 	width: 159px !important;
 }
 .christmas-mainouter .combo_slider .item {
-	margin: 24px 13px
+	margin: 24px 4px
 }
 .single_slider {
 	background-size: cover
@@ -1560,7 +1565,8 @@ md-dialog {
 	display: none
 }
 .signuplogin a, .signuplogin > a:hover, .signuplogin a:focus{
-	padding:33px 9px !important
+	padding-left: 9px !important;
+    padding-right: 9px !important;
 }
 .logoss{
 	min-width:60%
@@ -1568,7 +1574,96 @@ md-dialog {
 .signuplogin_cover{
 	max-width:39%
 }
+.addressbokk-trvaichacovr{
+	width:42%
 }
+.addressbokk-addnewadresscovr{
+	width:42%
+}
+.checkouter-td-right-text {
+    display: inline-block;
+    float: none;
+    width: 67%;
+}
+.checkouterwantbutton{
+	width:240px
+}
+.step1 {
+    left: 23px;
+}
+.step2 {
+    left: 158px;
+}
+.step3 {
+    left: 304px;
+}
+.step4 {
+    left: 447px;
+}
+.step5 {
+    right: 27px;
+}
+.right-smoke-main{
+	/*width:100%*/
+/*	padding-right: 0;
+*/}
+.ro_desc{
+	width:66%;
+	padding:0
+}
+.ro_items{
+	padding:0
+}
+.viewbtns{
+	width:68px
+}
+.addbtn {
+    cursor: pointer;
+    float: left;
+    margin-bottom: 10px;
+    text-align: center;
+    width: 100%;
+}
+.addbtn  img{
+	display:inline-block
+}
+.repeatbtn{
+    float: left;
+    margin-bottom: 10px;
+    text-align: center;
+    width: 100%;
+}
+.repeatbtn  img{
+	display:inline-block
+}
+#smokeneedpanel td {
+    color: #d6b8ee;
+    display: inline-block;
+    font-size: 1em;
+    padding: 0;
+}
+#smokeneedpanel md-switch{
+	width:50px;
+	  margin: 25px 2px;
+}
+.step5 {
+    right: 0;
+    top: 13px !important;
+}
+.steps_notify .step_grid a{
+	white-space:normal;
+	word-wrap:break-word;
+}
+.steps_notify .step_grid a span{
+	width:90px
+}
+.coverboxsegment_div {
+    margin-bottom: 20px;
+}
+.footer-container-borderset{
+	width:94%
+}
+ }
  @media (min-width : 768px) and (max-width : 1023px) {
 .col-md-2.homecallus_cover {
 	display: none;
@@ -1918,6 +2013,70 @@ md-dialog {
  .profile_form{
 	 width:100%
  }
+ .order-history .-status{
+	 padding:8px 13px
+ }
+ .wishlist-text{
+	 width:100%;
+	 margin-bottom:30px
+ }
+ .addressbokk-trvaichacovr.ng-scope{
+	 width:48.5%;
+	 margin-left:0;
+	 padding:25px 13px;
+	
+ }
+ .addressbokk-trvaichacovr:nth-child(2){
+	margin-right:0
+}
+.addressbokk-addnewadresscovr{
+	  margin: 10px 10px 10px 0;
+    min-height: 145px;
+    padding: 20px 15px;
+    width: 48.5%;
+		margin-right:0;
+		 min-height:155px
+}
+.orhistry2_td2procdtcvr > span {
+    margin-right: 0;
+}
+.checkouter-td-right-text{
+	width:73%
+}
+.step5 {
+    right: 29px;
+}
+.steps_notify .step_grid a span{
+	width:96px
+}
+.coverboxsegment_div {
+    margin-bottom: 20px;
+}
+.footer-container-borderset{
+	width:94%
+}
+.right-smoke-main .fullwidth > table {
+    display: inline-block;
+    width: 100%;
+}
+.right-smoke-main .fullwidth tbody{
+    display: inline-block;
+    width: 100%;
+}
+.right-smoke-main .fullwidth tr {
+    float: left;
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+}
+.right-smoke-main .fullwidth td {
+    display: inline-block;
+}
+.right-smoke-main.ng-scope {
+    float: left;
+    margin-bottom: 20px;
+    width: 100%;
+}
 }
  @media only screen and (max-width : 767px) {
 .col-md-2.homecallus_cover {
@@ -1985,7 +2144,7 @@ md-dialog {
 	margin-bottom: 15px;
 }
 .prod_desc.ng-binding {
-	height: auto;
+	height: 40px;
 	margin-bottom: 0;
 }
 .prod_addtocart {
@@ -2315,12 +2474,327 @@ md-dialog {
 	padding-left: 13px;
 	
 }
+.balancetexxt2{
+	margin-bottom:0
+}
+.change_form{
+	width:100%
+}
+.change_form .registeremailcvr.paswrd-width-set5 {
+    float: left;
+    margin-right: 10px;
+    width: 48.5%;
+}
+.change_form .registeremailcvr.paswrd-width-set5:nth-child(2){
+	margin-right:0
+}
+.wishlist-text.ng-scope {
+    margin-bottom: 10px;
+    width: 100%;
+}
+.addressbokk-trvaichacovr {
+   
+    margin: 10px 10px 10px 0;
+    min-height: 145px;
+    padding: 20px 10px;
+    width:48.5%;
+}
+.addressbokk-trvaichacovr:nth-child(2){
+	margin-right:0
+}
+.addressbokk-addnewadresscovr{
+
+}
+.addressbokk-addnewadresscovr{
+	  margin: 10px 10px 10px 0;
+    min-height: 145px;
+    padding: 20px 15px;
+    width: 48.5%;
+		margin-right:0
+}
+.addressbook-btmpannelcover{
+	margin-bottom:10px
+}
+.checkouter-td-right-text {
+    float: none;
+    margin-right: 20px;
+    width: 73%;
+	display:inline-block
+}
+.checkoutmiddletable .orhistry2_td2proctext2{
+	float:left
+}
+.checkoutmiddletable .orhistry2_td2procdtcvr > span{
+	margin-top:5px
+}
+.wishlist-tblestock.ng-scope {
+    float: left;
+    width: 100%;
+}
+.orhistry2_td2procdtcvr > span {
+    margin-right: 0;
+}
+.table.wislistborbtm.ng-scope {
+    border-bottom: medium none;
+    margin-bottom: 0 !important;
+}
+.orhistry2_td2proctext1 {
+    float: left;
+   
+    width: 100%;
+}
+.table-responsive {
+    border: medium none;
+}
+.wishlist-tbledatecover {
+    display: inline-block;
+    float: right;
+    padding-left: 50px;
+}
+.checkboxtotaldiv-top{
+	 padding: 15px 20px 15px 0;
+}
+.checkboxtotaldiv-title{
+	width:75%
+}
+.checkboxtotaldiv-middle{
+	 padding: 15px 20px 15px 0;
+}
+.checkboxtotaldiv-buttom{
+	 padding: 15px 20px 15px 0;
+}
+.checkout-product .col-md-3.col-sm-3.col-xs-12.m-bottom-20{
+	width:50%
+}
+.step_grid .img-responsive {
+    padding: 0 10px;
+	width: 100%;
+}
+ 
+/*.step1 {
+    left: 35px;
+}
+.step2 {
+    left: 114px;
+  
+}
+.steps_notify .step_grid a span
+{
+	width:auto
+}
+.step3 {
+    left: 171px;
+  
+}
+.step4 {
+    left: 230px;
+  
+}
+.step5 {
+    right: 7px;
+	float:right !important
+}
+.steps_notify {
+    float: left;
+    margin: -14px 0 91px;
+    min-height: 60px;
+    position: relative;
+    width: 100%;
+}
+
+.steps_notify .step_grid{
+position:relative
+}
+.steps_notify .step_grid a {
+    border-radius: 50%;
+    display: inline-block;
+    float: left;
+    height: 60px;
+    position: relative;
+    top: 47px;
+    vertical-align: middle;
+    white-space: normal;
+    width: 25px;
+    word-wrap: break-word;
+}*/
+.cover_div_addsboxs{
+	width:100%
+}
+	.div_addsboxs.ng-scope {
+    margin: 0 0 20px;
+    width: 48.5%;
+	margin-right:10px;
+	 padding: 20px 10px;
+	
+}
+.div_addsboxs.ng-scope:nth-of-type(2n) {
+    margin-right: 0;
+}
+.addressbokk-trvaichacovr.ng-scope:nth-of-type(2n) {
+    margin-right: 0;
+}
+.lft_textadd_div{
+	position:relative
+}
+.edit_del_icondiv {
+    float: left;
+    position: absolute;
+    width: 100%;
+}
+.coverboxsegment_div {
+    margin-bottom: 10px;
+}
+.alcohlchekboxdiv12{
+	width:100%
+}
+.checkouterlastdiv.ng-scope {
+    padding-top: 0;
+}
+.alcohlinputext2{
+	width:80%
+}
+.alcohlinputextarea12{
+	width:100%
+}
+.cover_creadetcard_cashdiv{
+	margin-top:30px
+}
+.prod_chilled{
+	margin-left:0;
+	margin-right:0
+}
+.checkoutstep5-mid-right {
+    float: left;
+    margin-top: 20px;
+    width: 100%;
+}
+.checkoutstep5-mid-left{
+	width:100%
+}
+
+.step1 > span{
+	display:none
+}
+.step2 > span{
+	display:none
+}
+.step3 > span{
+	display:none
+}
+.step4 > span{
+	display:none
+}
+.step5 > span{
+	display:none
+}
+.steps_notify .step_grid a span{
+	display:none;
+	width:100%;
+	left:52px;
+	top:64px
+}
+
+.step1.currentstep > span{
+	display:block!important
+}
+.step2.currentstep > span{
+	display:block !important
+}
+.step3.currentstep > span{
+	display:block!important
+}
+.step4.currentstep > span{
+	display:block!important
+}
+.step5.currentstep > span{
+	display:block !important
+}
+button.checkoutergitpackage {
+    float: left;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+button.checkoutergitpackage{
+	width:276px
+}
+.steps_notify .step_grid a{
+	width:100%
+}
+.steps_notify .step_grid a span {
+    display: none;
+    font-size: 21px;
+    left: 0;
+    top: 67px;
+    width: 100%;
+	color:#666666
+}
+.steps_notify .step_grid a{
+	left:0
+}
+.right-smoke-main .fullwidth > table {
+    display: inline-block;
+    width: 100%;
+}
+.right-smoke-main .fullwidth tbody{
+    display: inline-block;
+    width: 100%;
+}
+.right-smoke-main .fullwidth tr {
+    float: left;
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+}
+.right-smoke-main .fullwidth td {
+    display: inline-block;
+}
+.right-smoke-main.ng-scope {
+    float: left;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+
+.chckoutstep6main-cover {
+    width: 100%;
+    float: left;
+    text-align: center;
+}
+.checkout-step6-innercover{
+	width:100%;
+	float:left
+}
+.checkout-step6-innercover {
+    width: 100%;
+}
+.order-numberinnercover.ng-binding {
+    padding: 0 ;
+    width: 100%;
+	font-size:21px
+}
+.paymentdetail-fixwidth {
+    width: 100%;
+}
+.ahare-purchase-btmtxt {
+    padding: 0 5px;
+    width: 100%;
+}
+.ordernno-divcenterset{
+	width:100%
+}
+md-datepicker{
+	margin-right:0
+}
+.md-button.md-icon-button{
+	margin-right:0;
+	margin-left:0;
+}
+.footer-container-borderset{
+	width:94%
+}
 }
 @media only screen and (width : 640px) {
-.logolarge {
-	left: 47%;
-	width: 171px;
-}
+
 .alcohal_addadress_headertitle {
 	font-size: 23px
 }
@@ -2740,8 +3214,160 @@ md-content.globalsearch md-autocomplete {
  .profile_form .registeremailcvr{padding-right:0;
  width:100%
  }
- 
+ .change_form .registeremailcvr.paswrd-width-set5 {
+    float: left;
+    margin-right: 0;
+    width: 100%;
+}
 
+.addressbokk-trvaichacovr.ng-scope {
+    margin: 0 0 20px;
+    width: 100%;
+}
+.addressbokk-addnewadresscovr {
+    margin: 0;
+    width: 100%;
+}
+.addressbook-btmpannelcover{
+	margin-bottom:10px
+}
+.balancedetailsdivinner{
+	margin-right:38px;
+}
+.balancedetailsdiv{
+	margin-bottom:30px
+}
+ .orhistry2_td2proctext1 {
+    float: left;
+  
+    width: 100%;
+}
+.checkouter-td-right-text {
+    float: none;
+    margin-right: 20px;
+    width: 73%;
+	display:inline-block
+}
+.checkboxtotaldiv-title{
+	width:65%
+}
+.checkout-product .col-md-3.col-sm-3.col-xs-12.m-bottom-20{
+	width:100%
 
+ }
+ /*.steps_notify .step_grid a {
+    border-radius: 50%;
+    display: inline-block;
+    height: 60px;
+    position: absolute;
+    top: -18px;
+    white-space: normal;
+    width: 20px;
+    word-wrap: break-word;
+	float:none
+}
+.step1 {
+    left: 31px;
+}
+.step2 {
+    left: 88px;
+    top: -32px !important;
+}
+.steps_notify .step_grid a span
+{
+	width:auto
+}
+.step3 {
+    left: 146px;
+    top: -32px !important;
+}
+.step4 {
+    left: 206px;
+    top: -32px !important;
+}
+.step5 {
+   float: none !important;
+    right: 4px !important;
+    width: 22px !important;
+}
+.steps_notify {
+    float: left;
+    margin: 30px 0 45px;
+    min-height: 60px;
+    position: relative;
+    width: 100%;
+}
+.steps_notify .step_grid {
+    position: absolute;
+}*/
+.div_addsboxs.ng-scope {
+    margin: 0 0 20px;
+    width: 100%;
+	margin-right:0
+}
+.add_alltext{
+	width:69%
+}
+.single-slot{
+	font-size:11px
+	
+}
+.slots-bunch-title .week-stamp{
+	font-size:1em
+}
+.cover_cashdiv_left.paymenttype.active {
+    width: 100%;
+}
+.cover_creadetcard_right{
+	width:100%
+}
+.checkoutstep5-left-first-left{
+	width:88%
+}
  
+ .checkouterwantbutton {
+    width: 100%;
+}
+button.checkoutergitpackage{
+	width:100%
+}
+.steps_notify .step_grid a span {
+top:45px
+}
+.checkouterback {
+    margin-bottom: 10px;
+    text-align: center;
+    width: 100%;
+}
+.checkouterbackouter{
+	text-align:center
+}
+.add-newaddbox{
+	width:100%; margin-top: 10px;
+}
+.slots-bunch-title .date-stamp {
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 0.9em;
+    word-wrap: break-word;
+    white-space: normal;
+    width: 40px;
+ }
+ .checkoutstepthree_showdate{
+	 margin-bottom:0;
+	 font-size:21px;
+ }
+ .checkoutcheckoutnowbutton2 {
+    min-width: 175px;
+}
+md-datepicker{
+	margin-right:0
+}
+.md-button.md-icon-button{
+margin-right:0;
+	margin-left:0;
+}
+.sharepurchasecover{
+	font-size:22px
+}
  }

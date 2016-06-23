@@ -45,7 +45,6 @@
         
 		<link rel="stylesheet" type="text/css" href="css/app.css">
 		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/v-accordion/dist/v-accordion.css') }}">
-		<link rel="stylesheet" type="text/css" href="css/pushy.css">
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 		<!--[if lt IE 9]>
@@ -63,7 +62,7 @@
 
         
 
-        <div id="container">		
+        <div>		
 
 		<div class="site-overlay"></div>
 
@@ -155,12 +154,14 @@
 		</section>
 
 		<section class="fullwidth footer2">
-			<div class="container">
+        <div class="footer-container-borderset">
+			<div class="container ">
 				<div class="footer2_btmcvr">
 					<div class="footer2_madetxt">Made with <img class="img-responsive" src="images/footerhearicon.png" /> in SG</div>
 					<div class="footer2_copytxt">Copyright &copy; <?php echo date('Y');?> AlcoholDelivery.com</div>
 				</div>
 			</div>
+            </div>
 		</section>
 		</div>
 
