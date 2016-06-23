@@ -72,6 +72,16 @@ class SettingRequest extends Request
 
                 ];
                 break;
+
+            case 'loyalty':
+                $rules = [
+
+                    'order_sharing.value' => 'required|numeric',
+                    'site_sharing.value' => 'required|numeric',                    
+
+                ];
+                break;
+
             default:
                 # code...
                 break;

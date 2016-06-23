@@ -15,9 +15,9 @@
 			
 			<td width="52%">
 
-				<span ng-if="(cartproduct.onlyForAdvance && cart.delivery.type==0) || cartproduct.isNotAvailable" class="cart-alert">!
-				<md-tooltip class="cart-alert-tooltip" md-direction="top" >Sorry! This item is either out of stock, or unavailable for the quantity or delivery time selected.</md-tooltip>
-	  	</span>
+				<span ng-if="cartproduct.isAvail()" class="cart-alert">!
+					<md-tooltip class="cart-alert-tooltip" md-direction="top">Sorry! This item is either out of stock, or unavailable for the quantity or delivery time selected.</md-tooltip>
+	  			</span>
 
 				<div class="orhistry2_td2procdtcvr">
 					<span class="cursor-pointer">

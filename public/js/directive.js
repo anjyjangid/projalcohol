@@ -251,8 +251,10 @@ AlcoholDelivery.directive('sideBar', function() {
 
           	if(scope.$first && typeof $(element.parent()).data('owlCarousel') !== "undefined"){
 
+          		
+				$(element.parent()).find(".owl-wrapper-outer").remove();//$(element.parent()).find(".owl-wrapper").remove();
           		$(element.parent()).data('owlCarousel').destroy();
-          		$(element.parent()).find(".owl-wrapper").remove();
+          		
 
           	}
 

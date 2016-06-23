@@ -280,7 +280,6 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 		if(!this.isEligibleForPromotion(promoId)){
 
-			console.log($event);
 			$mdToast.show({
 				controller:function($scope){
 
@@ -654,7 +653,6 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			
 		};
 
-
 		this.removePackage = function (id,fromServerSide) {
 
 			var locPackage;
@@ -889,10 +887,38 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 	        	d.resolve(response);
 
-	        });	
+	        });
 
 			return d.promise;
 
+		}
+
+		this.setProductsAvailability = function(){
+
+			var products = this.getProducts();
+			var packages = this.getPackages();
+			var promotions = this.getPromotions();
+
+			angular.forEach(products, function (item,key) {
+
+
+
+			});
+
+			// angular.forEach(packages, function (package,key) {
+				
+			// 	(cartproduct.onlyForAdvance && cart.delivery.type==0) || cartproduct.isNotAvailable
+
+			// });
+
+			// angular.forEach(promotions, function (promotion,key) {
+
+			// 	(cartproduct.onlyForAdvance && cart.delivery.type==0) || cartproduct.isNotAvailable			
+				
+			// });
+
+			
+			
 		}
 
 		this.setExpressStatus = function(status){
@@ -929,9 +955,6 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		}
 
 
-		this.getDeliveryCharge = function(){
-
-		}
 
 		this.getCartKey = function(){
 

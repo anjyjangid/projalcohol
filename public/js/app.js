@@ -299,7 +299,54 @@ AlcoholDelivery.factory('Search', function($http) {
     this.busy = false;
     this.skip = 0;
     this.keyword = keyword;
-    this.take = 20;
+    this.take = 2;
+    this.limitreached = false;
+    this.totalResult = 0;
+    this.filter = filter;
+    this.sortby = sortby;
+  };
+
+  Search.prototype.nextPage = function() {
+    if (this.busy || this.limitreached) return;
+    this.busy = true;
+
+    $http.get('/site/searchlist',{
+    	params : {
+    		keyword:this.keyword,
+	    	skip:this.skip,
+	    	take:this.take,
+	    	filter:this.filter,
+	    	sortby:this.sortby
+	    }
+    }).then(function(result){
+		var items = result.data.products;
+		this.totalResult = result.data.total;
+		for (var i = 0; i < items.length; i++) {
+			this.items.push(items[i]);
+		}
+		this.busy = false;
+		if(result.data.products.length < parseInt(this.take)){
+			this.limitreached = true;
+		}else{
+			this.skip+= parseInt(this.take);
+		}
+
+	}.bind(this));
+
+  };
+
+  return Search;
+
+});
+
+
+AlcoholDelivery.factory('ScrollPagination', function($http) {
+  var Search = function(keyword,filter,sortby) {
+    this.items = [];
+    this.busy = false;
+    this.skip = 0;
+    this.keyword = keyword;
+    this.take = 2;
     this.limitreached = false;
     this.totalResult = 0;
     this.filter = filter;
@@ -757,6 +804,26 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						},
 						params: {pageTitle: 'Search'},
 						controller:"SearchController",
+						resolve: {
+								deps: ['$ocLazyLoad', function($ocLazyLoad) {
+										return $ocLazyLoad.load({
+												name: 'AlcoholDelivery',
+												insertBefore: '#ng_load_plugins_before',
+												// debug: true,
+												serie: true,
+												files: [
+														'bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
+												]
+										});
+								}]
+						}
+				})
+
+				.state('mainLayout.loyaltystore', {
+						url: '/loyalty-store',
+						templateUrl : "/templates/search.html",
+						params: {pageTitle: 'Loyalty Store'},
+						controller:"LoyaltyStoreController",
 						resolve: {
 								deps: ['$ocLazyLoad', function($ocLazyLoad) {
 										return $ocLazyLoad.load({
