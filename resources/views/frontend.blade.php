@@ -154,12 +154,14 @@
 		</section>
 
 		<section class="fullwidth footer2">
-			<div class="container">
+        <div class="footer-container-borderset">
+			<div class="container ">
 				<div class="footer2_btmcvr">
 					<div class="footer2_madetxt">Made with <img class="img-responsive" src="images/footerhearicon.png" /> in SG</div>
 					<div class="footer2_copytxt">Copyright &copy; <?php echo date('Y');?> AlcoholDelivery.com</div>
 				</div>
 			</div>
+            </div>
 		</section>
 		</div>
 

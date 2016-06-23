@@ -34,13 +34,18 @@ class Products extends Eloquent
 			'regular_express_delivery',			
 			'express_delivery_bulk',
 			'loyalty',
+			'isLoyalty',
+            'loyaltyType',
 			'threshold',
 			'maxQuantity',
 			'dealers',
 			'packages',
 			'outOfStockType',
 			'availabilityDays',
-			'availabilityTime'
+			'availabilityTime',
+			'deliveryType'
+
+			
 	];
 
 	public function pcategories()

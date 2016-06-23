@@ -146,7 +146,6 @@ class CartController extends Controller
 
 			$isCreated = $cartObj->generate();
 
-
 			if($isCreated->success){
 
 				$cart = $isCreated->cart;
@@ -865,7 +864,6 @@ jprd($product);
 
     }
 
-
     public function deletePromotion($promoId,Request $request){
 
     	$cartKey = $request->session()->get('deliverykey');
@@ -1047,8 +1045,6 @@ jprd($product);
 
 		$cart->save();
 
-
-
 		$cartArr = $cart->toArray();
 
 		$isValid = $this->validateCart($cartArr);
@@ -1151,6 +1147,218 @@ jprd($product);
 
 		return $response;
 
+	}
+
+	public function putBulk(Request $request){
+		
+		$params = $request->all();
+		$cartKey = $request->session()->get('deliverykey');
+		$cart = Cart::find($cartKey);
+		$cartProducts = $cart->products;
+
+		if(isset($params['products']) && is_array($params['products'])){
+
+			$productKeys = [];
+
+			$params['products'] = valueToKey($params['products'],"id");
+
+			foreach($params['products'] as $key=>$product){
+
+				array_push($productKeys, $key);
+
+			}
+
+			$productObj = new Products;
+
+			$products = $productObj->getProducts(
+											array(
+												"id"=>$productKeys,
+												"with"=>array(
+													"discounts"
+												)
+											)
+										);
+
+			$updatedData = [
+				"products"=>[]				
+			];
+
+			foreach($products as $product){
+
+				$proPutValues = $params['products'][$product['_id']];
+
+				$updateProData = array(
+
+							"maxQuantity"=>$product['maxQuantity'],
+							"chilled"=>array(
+								"quantity"=>0,
+								"status"=>"chilled",
+							),
+							"nonchilled"=>array(
+								"quantity"=>0,
+								"status"=>"nonchilled",
+							),
+							"quantity"=>0,
+							"lastServedChilled" => (bool)$proPutValues['chilled']
+						);
+
+				if(isset($cartProducts[$product['_id']])){
+
+					$cartPro = $cartProducts[$product['_id']];
+
+					if((bool)$proPutValues['chilled']){
+
+						$updateProData['chilled']['quantity'] = (int)$cartPro['chilled']['quantity'] + (int)$proPutValues['quantity'];
+
+					}else{
+
+						$updateProData['nonchilled']['quantity'] = (int)$cartPro['nonchilled']['quantity'] + (int)$proPutValues['quantity'];
+					}	
+
+				}else{
+					
+					if((bool)$proPutValues['chilled']){
+
+						$updateProData['chilled']['quantity'] = (int)$proPutValues['quantity'];
+
+					}else{
+
+						$updateProData['nonchilled']['quantity'] = (int)$proPutValues['quantity'];
+
+					}				
+
+				}
+
+				$updateProData['quantity'] = (int)$updateProData['chilled']['quantity'] + (int)$updateProData['nonchilled']['quantity'];
+
+				$cartProducts[$product['_id']] = $updateProData;
+				$updateProData['product'] = $product; //product original detail required in cart
+
+				array_push($updatedData['products'],$updateProData);
+
+			}
+		
+
+			try{
+
+				$cart->products = $cartProducts;
+
+				//$cart->save();
+
+				return response(["success"=>true,"message"=>"cart updated successfully","data"=>$updatedData],200);
+
+			}catch(\Exception $e){
+
+				return response(["success"=>false,"message"=>$e->getMessage()],400);
+
+			}
+
+		}
+		
+	}
+
+	public function postRepeatlast(Request $request){
+		
+		$userLogged = Auth::user('user');
+
+		if(empty($userLogged)){
+			
+			$return['message'] = 'login required';
+			
+			return response($return,401);
+		}
+
+		$params = Orders::where("user",new mongoId($userLogged->_id))->orderBy("created_at","desc")->first(["products","packages","updated_at","reference"]);			
+
+		$cartKey = $request->session()->get('deliverykey');
+		$cart = Cart::find($cartKey);
+		$cartProducts = $cart->products;
+
+		if(isset($params['products']) && is_array($params['products'])){
+
+			$productKeys = [];
+
+			$params['products'] = valueToKey($params['products'],"_id");
+
+			foreach($params['products'] as $key=>$product){
+
+				array_push($productKeys, $key);
+
+			}
+
+			$productObj = new Products;
+
+			$products = $productObj->getProducts(
+											array(
+												"id"=>$productKeys,
+												"with"=>array(
+													"discounts"
+												)
+											)
+										);
+
+			$updatedData = [
+				"products"=>[]				
+			];
+
+			foreach($products as $product){
+
+				$proPutValues = $params['products'][$product['_id']];
+
+				$updateProData = array(
+
+							"maxQuantity"=>$product['maxQuantity'],
+							"chilled"=>array(
+								"quantity"=>0,
+								"status"=>"chilled",
+							),
+							"nonchilled"=>array(
+								"quantity"=>0,
+								"status"=>"nonchilled",
+							),
+							"quantity"=>0,
+							"lastServedChilled" => (bool)$proPutValues['chilled']
+						);
+
+				if(isset($cartProducts[$product['_id']])){
+
+					$cartPro = $cartProducts[$product['_id']];
+					
+						$updateProData['chilled']['quantity'] = (int)$cartPro['chilled']['quantity'] + (int)$proPutValues['chilled']['quantity'];				
+						$updateProData['nonchilled']['quantity'] = (int)$cartPro['nonchilled']['quantity'] + (int)$proPutValues['nonchilled']['quantity'];						
+
+				}else{
+
+					$updateProData['chilled']['quantity'] = (int)$proPutValues['chilled']['quantity'];
+					$updateProData['nonchilled']['quantity'] = (int)$proPutValues['nonchilled']['quantity'];
+
+				}
+
+				$updateProData['quantity'] = (int)$updateProData['chilled']['quantity'] + (int)$updateProData['nonchilled']['quantity'];
+
+				$cartProducts[$product['_id']] = $updateProData;
+				$updateProData['product'] = $product; //product original detail required in cart
+
+				array_push($updatedData['products'],$updateProData);
+
+			}
+		
+
+			try{
+
+				$cart->products = $cartProducts;				
+				$cart->save();
+
+				return response(["success"=>true,"message"=>"cart updated successfully","data"=>$updatedData],200);
+
+			}catch(\Exception $e){
+
+				return response(["success"=>false,"message"=>$e->getMessage()],400);
+
+			}
+
+		}
+		
 	}
 
     public function missingMethod($parameters = array())

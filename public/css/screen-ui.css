@@ -419,7 +419,7 @@ ui-sref {
 	padding: 15px 0;
 }
 .innerpagemargintop .combo_slider {
-	margin-bottom: 25px;
+	margin-bottom: 20px;
 }
 /*------owl-carousel-----------*/
 
@@ -702,6 +702,7 @@ ui-sref {
 	padding: 15px 0px;
 	margin-top: 11px;
 	overflow: hidden;
+	position: relative
 }
 .recentorder_title {
 	width: 100%;
@@ -810,6 +811,7 @@ ui-sref {
 .footer1_pannel1cvr {
 	padding-right: 0;
 	width: 41%;
+	padding-left: 20px;
 }
 .footer1_pannel2cvr {
 	padding-right: 0;
@@ -864,11 +866,11 @@ ui-sref {
 	width: 29%;
 }
 .footer2_btmcvr {
-	border-top: 1px solid #3a3b40;
-	float: left;
+/*	border-top: 1px solid #3a3b40;
+*/	float: left;
 	width: 100%;
-	margin-top: 59px;
-}
+/*	margin-top: 59px;
+*/}
 .footer2_madetxt {
 	float: left;
 	text-align: center;
@@ -925,7 +927,7 @@ ui-sref {
 	font-family: 'Work Sans', sans-serif;
 }
 .social_block {
-	padding: 41px 0 43px;
+	padding: 41px 0 42px;
 }
 .socilblok_fb img {
 	float: left;
@@ -940,12 +942,12 @@ ui-sref {
 .socilblok_fb > a > span {
 	float: left;
 	padding-left: 21px;
-	padding-top: 7px;
+	padding-top: 5px;
 }
 .socilblok_twtr > a > span {
 	float: left;
 	padding-left: 21px;
-	padding-top: 4px;
+	padding-top: 5px;
 }
 /*-------------footer-ENDS---------*/
 
@@ -1005,7 +1007,7 @@ ui-sref {
 }
 .single_slider {
 	width: 66%;
-	margin: 20px auto 45px;
+	margin:20px auto 45px;
 	overflow: hidden;
 	background: url(../images/bg_grey.png) no-repeat center center;
 	min-height: 335px;
@@ -1179,7 +1181,7 @@ ui-sref {
 	width: 100%;
 	font-size: 16px;
 	font-family: 'Work Sans', sans-serif;
-	color: #888888;
+	color: #2c2011;
 }
 .alcohalhdr button.close {
 	font-size: 44px;
@@ -1263,6 +1265,8 @@ ui-sref {
 	width: 100%;
 	padding-bottom: 27px;
 	padding-top: 27px;
+	min-height: 263px;
+	position: relative;
 }
 .modal-footer.alcohal_orderhistoryfotter {
 	float: left;
@@ -1314,6 +1318,7 @@ ui-sref {
 	margin-bottom: 18px;
 	width: 257px;
 	margin-right: 19px;
+	cursor: pointer;
 }
 .alcohal_hisryorderordertxt {
 	float: left;
@@ -1479,6 +1484,8 @@ ui-sref {
 .orhistry2_td2procdtcvr > span {
 	float: left;
 	margin-right: 20px;
+	width: 70px;
+	height: 70px;
 }
 .orhistry2_td2proctext2 {
 	float: left;
@@ -5002,7 +5009,7 @@ md-dialog {
 }
 md-toolbar {
 	background: transparent none repeat scroll 0 0 !important;
-	min-height: auto;
+	min-height: 70px;
 }
 .col-sm-4.enter-locationdiv > div {
 	padding-top: 5px;
@@ -5040,9 +5047,7 @@ md-toolbar {
 	box-shadow: none;
 	width:98%
 }
-.col-md-3 {
-	padding: 0
-}
+
 .btm10.ng-scope{
 	width:100%;
 	display:inline-block;
@@ -5051,4 +5056,41 @@ md-toolbar {
 
 .col-md-10.top-logo-sideacnt-cover.text-center {
     padding: 0;
+}
+
+md-dialog .md-actions, md-dialog md-dialog-actions{
+	width:100% !important;
+	padding-left:0;
+	padding-right:0
+}
+.layout-row input{
+	color:#2c2011 !important
+}
+::-webkit-input-placeholder {
+  color:#888888 !important
+}
+input::-moz-placeholder {
+      color: #888888;
+	  opacity: 1;
+    }
+    input:-moz-placeholder {
+      color: #888888;
+	  opacity: 1;
+    }
+:-ms-input-placeholder { /* IE 10+ */
+  color:#888888 !important
+}
+.reviewtable-cover{
+	width:100%;
+	float:left
+}
+.fullwidth.ng-scope.header {
+    margin-bottom: 0;
+}
+.footer-container-borderset {
+    border-top: 1px solid #3a3b40;
+    margin-top: 59px;
+	margin:59px auto 0;
+	width:1200px;
+	float:none
 }

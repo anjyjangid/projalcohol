@@ -24,6 +24,7 @@ class OrderController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
+
 	public function show($id)
 	{
 		
@@ -58,7 +59,6 @@ class OrderController extends Controller
 		
 		return response($order,200);
 	}
-
 
 	public function getOrders(){
 
@@ -98,4 +98,10 @@ class OrderController extends Controller
 
 		return response($orders['result'],200);
 	}
+
+	public function getTorepeat($id){
+
+	}
+
+
 }

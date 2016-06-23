@@ -99,6 +99,20 @@
 								</div>
 							</div>
 
+							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
+								<label class="col-md-2 control-label">Avail for order : <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<select class="table-group-action-input form-control input-medium" ng-model="product.deliveryType">
+										<option value="0">Both</option>
+										<option value="1">Express</option>
+										<option value="2">Advanced</option>
+									</select>
+									<span class="help-block" ng-bind="errors.status[0]"></span>
+								</div>
+							</div>
+
 							<div class="form-group" ng:class="{'has-error':errors.outOfStockType[0]}">
 								<label class="col-md-2 control-label">Out of Stock Status: <span class="required">
 								* </span>
@@ -110,7 +124,6 @@
 									<span class="help-block" ng-bind="errors.outOfStockType[0]"></span>
 								</div>
 							</div>
-
 
 							<div ng-show="product.outOfStockType==2" class="form-group" >
 								<label class="col-md-2 control-label">Set Availability: <span class="required">
@@ -161,16 +174,8 @@
 								</div>
 							</div>							
 
-							<div class="form-group" ng:class="{'has-error':errors.loyalty[0]}">
-								<label class="col-md-2 control-label">Loyalty Value: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<input type="number" min="0" class="form-control" ng-model="product.loyalty" placeholder="">																		
-									<span class="help-block">Loyalty points to be given on product purhcase</span>
-									<span class="help-block" ng-bind="errors.loyalty[0]"></span>
-								</div>
-							</div>
+							
+
 							<div class="form-group">
 								<label class="control-label col-md-2">Chilled/Non-chilled <span class="required" aria-required="true">
 								* </span></label>
@@ -185,6 +190,7 @@
 
 								</div>
 							</div>
+							
 							<div class="form-group">
 								<label class="control-label col-md-2">Is Featured<span class="required" aria-required="true">
 								* </span></label>
@@ -198,7 +204,10 @@
 									</div>
 
 								</div>
-							</div>														
+							</div>
+
+							
+
 							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
 								<label class="col-md-2 control-label">Status: <span class="required">
 								* </span>
@@ -210,6 +219,51 @@
 										<option value="0">Not Published</option>
 									</select>
 									<span class="help-block" ng-bind="errors.status[0]"></span>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-2">Is Loyalty Product<span class="required" aria-required="true">
+								* </span></label>
+								<div class="col-md-4">
+								
+									<div class="radio-list">
+										<label class="radio-inline">
+										<input plugin-uniform ng-model="product.isLoyalty" type="radio" value="1"> Yes </label>
+										<label class="radio-inline">
+										<input plugin-uniform ng-model="product.isLoyalty" type="radio" value="0"> No </label>
+									</div>
+
+								</div>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.loyalty[0]}" ng-show="product.isLoyalty==1">
+
+								<label class="col-md-2 control-label">Loyalty Value:<span class="required">*</span>
+								</label>
+								<div class="col-md-10">
+									<div class="row">
+									<div class="col-sm-2">
+										<input type="number" min="0" class="form-control" ng-model="product.loyalty" placeholder="loyalty points">
+									</div>
+									
+									<div class="col-sm-2">
+									<div class="row">
+										<select class="form-control" ng-model="product.loyaltyType">
+											<option value="0">% of price</option>
+											<option value="1">Points</option>
+										</select>
+									</div>
+									</div>
+
+									</div>
+									<div class="row">
+									<div class="col-sm-12">
+										<span class="help-block">Loyalty points to be given on product purhcase</span>
+										<span class="help-block" ng-bind="errors.loyalty[0]"></span>
+									</div>
+									</div>
+									
 								</div>
 							</div>
 						</div>
