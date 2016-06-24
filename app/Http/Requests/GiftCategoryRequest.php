@@ -35,6 +35,10 @@ class GiftCategoryRequest extends Request
             $rules['image.thumb'] = '   image|max:5102';
         }
 
+        if(!isset($input['iconImage']) || !empty($input['image']['iconthumb'])){
+            $rules['image.iconthumb'] = '   image|max:5102';
+        }
+
         if(isset($input['type']) && $input['type']=='giftcard'){
             $rules['subTitle'] = 'required';
             $rules['description'] = 'required';

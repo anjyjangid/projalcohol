@@ -18,6 +18,7 @@ class GiftCategory extends Eloquent
         'description',
         'parent',
         'slug',
+        'iconImage',
         'coverImage',
         'type',
         'cards',

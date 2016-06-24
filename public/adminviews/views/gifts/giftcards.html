@@ -59,8 +59,32 @@
 					</div>
 					
 					<slug from="giftcategory.title" to="giftcategory.slug"></slug>					
-					<div class="form-group" ng:class="{'has-error':errors['coverImage.thumb'][0]}" ng-hide="giftcategory.parent">
+					<div class="form-group" ng:class="{'has-error':errors['iconImage.thumb'][0]}" ng-hide="giftcategory.parent">
 						<label class="col-md-2 control-label">Icon Image: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<div class="fileinput fileinput-new" data-provides="fileinput">
+								<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
+									<img err-src="asset/i/defaultImage.png" 
+										ng-src="giftcategory/i/{{giftcategory.iconImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+
+								</div>
+								<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
+								</div>
+								<div>
+									<span class="btn default btn-file">
+										<span class="fileinput-new">{{ giftcategory.iconImage ? 'Change':'Select' }}</span>
+										<span class="fileinput-exists">Change</span>
+										<input type="file" placeholder="thumbnail" class="form-control" file-model="giftcategory.image.iconthumb"/>
+									</span>	
+								</div>
+							</div>
+							<span class="help-block" ng-bind="errors['iconImage.thumb'][0]"></span>
+						</div>
+					</div>
+					<div class="form-group" ng:class="{'has-error':errors['coverImage.thumb'][0]}" ng-hide="giftcategory.parent">
+						<label class="col-md-2 control-label">Cover Image: <span class="required">
 						* </span>
 						</label>
 						<div class="col-md-10">

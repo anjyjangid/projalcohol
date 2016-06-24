@@ -186,7 +186,13 @@ class GiftCategoryController extends Controller
             }
             $filename = $giftcategory->_id.'.'.$image->getClientOriginalExtension();
             $upload_success = $image->move($destinationPath, $filename);
+
+            $iconimage = @$file['iconthumb'];                        
+            $iconfilename = $giftcategory->_id.'_icon.'.$iconimage->getClientOriginalExtension();
+            $upload_success = $iconimage->move($destinationPath, $iconfilename);
+
             $giftcategory->coverImage = ['source'=>$filename];
+            $giftcategory->iconImage = ['source'=>$iconfilename];
             $giftcategory->save();
         }
     }
