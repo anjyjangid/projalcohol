@@ -70,7 +70,7 @@ class Promotion extends Moloquent
 
 		$promotions = Promotion::where("status","=",1)->orderBy('price', 'asc')->get();
 
-		$promoProductKeys = [];
+		$promoProductKeys = [];	
 		foreach($promotions as $promotion){
 
 			$promoProductKeys = array_merge($promoProductKeys,$promotion['products']);
@@ -89,8 +89,8 @@ class Promotion extends Moloquent
 											"discounts"
 										)
 									)
-								);
-		
+								);			
+
 		foreach ($promoProducts as $key => $value) {
 
 			$promoProducts[$value['_id']] = $value;
@@ -102,9 +102,17 @@ class Promotion extends Moloquent
 
 		foreach ($promotions as $key => &$promotion) {
 
-			foreach ($promotion['items'] as $key => &$item) {
+			foreach ($promotion['items'] as $itemskey => &$item) {
+
+				if(!isset($promoProducts[(string)$item['_id']])){
+
+					unset($promotions[$key]['items'][$itemskey]);
+					continue;
+
+				}
 
 				$tempPromoPro = $promoProducts[(string)$item['_id']];
+
 				$tempPromoPro['promo'] = [
 											'type'=>$item['type'],
 											'price'=>$item['price'],
