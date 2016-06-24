@@ -1,4 +1,4 @@
-<div class="row" ng-controller="GiftFormController">
+<div class="row">
 	<div class="col-md-12">
 		<form role="form" name='giftForm' ng-submit="store()" required="false">
 		<div class="portlet light">			
@@ -10,44 +10,10 @@
 					<a class="btn default" ui-sref="userLayout.gifts.list"><i class="fa fa-angle-left"></i> Back</a>
 					<button ng-disabled="loading" class="btn green" type="submit"><i class="fa fa-check"></i> {{gift._id?'Update':'Save'}}</button>
 				</div>
-			</div>				
+			</div>	
+			<pre>{{gift|json}}</pre>			
 			<div class="portlet-body mbody">
 				<div class="form-horizontal">
-					<div class="form-group" ng:class="{'has-error':errors.type[0]}">
-						<label class="col-md-2 control-label">Gift type: <span class="required">
-						* </span>
-						</label>
-						<div class="col-md-10">
-							<select ng-options="cat._id as cat.title for cat in category.parentlist" class="table-group-action-input form-control input-medium" ng-model="gift.type">	
-								<option value="">Select</option>														
-							</select>
-							<span class="help-block" ng-bind="errors.status[0]"></span>
-						</div>
-					</div>
-					<div class="form-group" ng:class="{'has-error':errors['coverImage.thumb'][0]}">
-						<label class="col-md-2 control-label">Cover Image: <span class="required">
-						* </span>
-						</label>
-						<div class="col-md-10">
-							<div class="fileinput fileinput-new" data-provides="fileinput">
-								<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
-									<img err-src="asset/i/defaultImage.png" 
-										ng-src="gifts/i/{{gift.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
-
-								</div>
-								<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
-								</div>
-								<div>
-									<span class="btn default btn-file">
-										<span class="fileinput-new">{{ gift.coverImage ? 'Change':'Select' }}</span>
-										<span class="fileinput-exists">Change</span>
-										<input type="file" placeholder="thumbnail" class="form-control" file-model="gift.image.thumb"/>
-									</span>	
-								</div>
-							</div>
-							<span class="help-block" ng-bind="errors['coverImage.thumb'][0]"></span>
-						</div>
-					</div>
 					<div class="form-group" ng:class="{'has-error':errors.title[0]}">
 						<label class="col-md-2 control-label">Title: <span class="required">
 						* </span>
@@ -75,6 +41,54 @@
 							<span class="help-block" ng-bind="errors.description[0]"></span>
 						</div>
 					</div>
+
+					<div class="form-group" ng:class="{'has-error':errors.gtype[0]}">
+						<label class="col-md-2 control-label">Select type: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<select ng-options="cat._id as cat.title for cat in onlyParent(giftoption.category)" class="table-group-action-input form-control" ng-model="gift.gtype">	
+								<option value="">Select</option>													
+							</select>
+							<span class="help-block" ng-bind="errors.gtype[0]"></span>
+						</div>
+					</div>
+					<div class="form-group" ng:class="{'has-error':errors.gsubtype[0]}">
+						<label class="col-md-2 control-label">Select subtype: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<select ng-options="cat._id as cat.title for cat in onlyChild(giftoption.category,gift.gtype)" class="table-group-action-input form-control" ng-model="gift.gsubtype">	
+								<option value="">Select</option>													
+							</select>
+							<span class="help-block" ng-bind="errors.gsubtype[0]"></span>
+						</div>
+					</div>
+					<div class="form-group" ng:class="{'has-error':errors['coverImage.thumb'][0]}">
+						<label class="col-md-2 control-label">Cover Image: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<div class="fileinput fileinput-new" data-provides="fileinput">
+								<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
+									<img err-src="asset/i/defaultImage.png" 
+										ng-src="gifts/i/{{gift.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+
+								</div>
+								<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
+								</div>
+								<div>
+									<span class="btn default btn-file">
+										<span class="fileinput-new">{{ gift.coverImage ? 'Change':'Select' }}</span>
+										<span class="fileinput-exists">Change</span>
+										<input type="file" placeholder="thumbnail" class="form-control" file-model="gift.image.thumb"/>
+									</span>	
+								</div>
+							</div>
+							<span class="help-block" ng-bind="errors['coverImage.thumb'][0]"></span>
+						</div>
+					</div>
+					
 					<div ng-show="gift.type != 0" class="form-group" ng:class="{'has-error':errors.limit[0]}">
 						<label class="col-md-2 control-label">Product limit: <span class="required">
 						* </span>

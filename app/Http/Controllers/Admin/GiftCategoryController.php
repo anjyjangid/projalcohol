@@ -45,6 +45,16 @@ class GiftCategoryController extends Controller
 
         $inputs['status'] = (int)$inputs['status'];
 
+        if(!isset($inputs['type']))
+            $inputs['type'] = 'category';
+
+        if(isset($inputs['cards'])){
+            foreach ($inputs['cards'] as $key => $value) {
+                unset($inputs['cards'][$key]['$$hashKey']);
+                $inputs['cards'][$key]['value'] = (int)$inputs['cards'][$key]['value'];
+            }
+        }
+
         $model = GiftCategory::create($inputs);
 
         if($model){
@@ -104,9 +114,15 @@ class GiftCategoryController extends Controller
 
         $inputs['status'] = (int)$inputs['status'];
 
-        /*if(isset($inputs['parent']) && $inputs['parent']!=''){
-            $inputs['parent'] = new MongoId($inputs['parent']);
-        }*/
+        if(!isset($inputs['type']))
+            $inputs['type'] = 'category';
+
+        if(isset($inputs['cards'])){
+            foreach ($inputs['cards'] as $key => $value) {
+                unset($inputs['cards'][$key]['$$hashKey']);
+                $inputs['cards'][$key]['value'] = (int)$inputs['cards'][$key]['value'];
+            }
+        }
 
         $model = GiftCategory::find($id);
 
@@ -168,6 +184,8 @@ class GiftCategoryController extends Controller
 
         $model = new GiftCategory;
 
+        $model = $model->where('type','=','category');
+
         if(isset($name) && trim($name)!=''){
             $sval = $name;
             $model = $model->where('title','regexp', "/.*$sval/i");
@@ -205,5 +223,20 @@ class GiftCategoryController extends Controller
         ];
       
         return response($response,200);
+    }
+
+    public function getGiftcard(Request $request){        
+        $model = GiftCategory::where('type','=','giftcard')->first();
+        if($model)
+            return response($model,200);
+        else
+            return response(['No cards found'],404);
+    }
+
+    public function getCategorylist(Request $Request,$pid = null){
+
+        $list = GiftCategory::where('type','=','category')->get();
+        
+        return response($list,200);
     }
 }

@@ -44,7 +44,7 @@
 								<td>
 									<select name="parent" class="form-control form-filter input-sm" ng-model="filtertype">	
 										<option value="">Select</option>
-										<option ng-repeat="cat in category.parentlist" value="{{cat._id}}">{{cat.title}}</option>
+										<option ng-repeat="cat in giftoption.category" value="{{cat.unique}}">{{cat.title}}</option>
 									</select>
 								</td>
 								<td>
@@ -75,9 +75,7 @@
 <!-- BEGIN MAIN JS -->
 <script>
 	
-	var scope = angular.element("#list").scope();
-
-	var gcategory = scope.giftoption.category;
+	
 
 	var TableAjax = function () {
 
@@ -108,7 +106,7 @@
 		            	mData: null,
 		            	mRender: function(data, type, full) {	                        	                    	
 		            		//var gtypes = ['Greeting Card','Gift Wrapper','Bags & Basket'];
-		            		return gcategory[data.type];
+		            		return '';
 	                    },
 		                orderable:false
 		            },{

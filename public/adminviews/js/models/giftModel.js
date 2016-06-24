@@ -15,6 +15,14 @@ MetronicApp.factory('giftModel', ['$http', '$cookies','$location', function($htt
                 headers: {'Content-Type': undefined}
             });        
 
+        },
+
+        getGiftcard : function(){
+            return $http.get('/adminapi/giftcategory/giftcard');
+        },
+
+        getCategorylist : function(){
+            return $http.get('/adminapi/giftcategory/categorylist');
         }             
 
     };

@@ -1,0 +1,103 @@
+<div class="row" ng-controller="GiftCategoryFormController">
+	<div class="col-md-12">
+		<form role="form" name='giftForm' ng-submit="storecategory()" required="false">
+		<div class="portlet light">			
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="icon-credit-card"></i>Gift Cards
+				</div>
+				<div class="actions btn-set">					
+					<button ng-disabled="loading" class="btn green" type="submit"><i class="fa fa-check"></i> {{giftcategory._id?'Update':'Save'}}</button>
+				</div>
+			</div>		
+			<!-- <pre>{{giftcategory|json}}		</pre> -->
+			<div class="portlet-body mbody">
+				<div class="form-horizontal">					
+					
+					<div class="form-group" ng:class="{'has-error':errors.title[0]}">
+						<label class="col-md-2 control-label">Title: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<input type="text" class="form-control" ng-model="giftcategory.title" placeholder="">
+							<span class="help-block" ng-bind="errors.title[0]"></span>
+						</div>
+					</div>
+					<div class="form-group" ng:class="{'has-error':errors.subTitle[0]}">
+						<label class="col-md-2 control-label">Sub title: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<input type="text" class="form-control" ng-model="giftcategory.subTitle" placeholder="">
+							<span class="help-block" ng-bind="errors.subTitle[0]"></span>
+						</div>
+					</div>
+					<div class="form-group" ng:class="{'has-error':errors.description[0]}">
+						<label class="col-md-2 control-label">Description: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<textarea class="form-control" ng-model="giftcategory.description" placeholder=""></textarea>
+							<span class="help-block" ng-bind="errors.description[0]"></span>
+						</div>
+					</div>
+					<div class="form-group" ng:class="{'has-error':errors['cards.'+$index+'.value'][0]}" ng-repeat="(k,cards) in giftcategory.cards">
+						<label  class="col-md-2 control-label">
+							<span ng-if="$index == 0">Card value: <span class="required"> * </span></span>
+						</label>
+						<div class="col-md-3">
+							<div class="input-group input-medium">
+							<input type="number" step="1" min="1" class="form-control" ng-model="cards.value" placeholder="">
+							<span class="input-group-btn">
+								<a title="Add More" ng-if="$index == 0" ng-click="giftcategory.cards.push({})" class="btn default"><i class="fa fa-plus"></i></a>
+								<a title="Remove" ng-if="$index != 0" ng-click="giftcategory.cards.splice(k,1)" class="btn default"><i class="fa fa-trash"></i></a>
+								
+							</span>
+							</div>
+							<span class="help-block" ng-bind="errors['cards.'+$index+'.value'][0]"></span>			
+						</div>
+					</div>
+					
+					<slug from="giftcategory.title" to="giftcategory.slug"></slug>					
+					<div class="form-group" ng:class="{'has-error':errors['coverImage.thumb'][0]}" ng-hide="giftcategory.parent">
+						<label class="col-md-2 control-label">Icon Image: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<div class="fileinput fileinput-new" data-provides="fileinput">
+								<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
+									<img err-src="asset/i/defaultImage.png" 
+										ng-src="giftcategory/i/{{giftcategory.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+
+								</div>
+								<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
+								</div>
+								<div>
+									<span class="btn default btn-file">
+										<span class="fileinput-new">{{ giftcategory.coverImage ? 'Change':'Select' }}</span>
+										<span class="fileinput-exists">Change</span>
+										<input type="file" placeholder="thumbnail" class="form-control" file-model="giftcategory.image.thumb"/>
+									</span>	
+								</div>
+							</div>
+							<span class="help-block" ng-bind="errors['coverImage.thumb'][0]"></span>
+						</div>
+					</div>																						
+					<div class="form-group" ng:class="{'has-error':errors.status[0]}">
+						<label class="col-md-2 control-label">Status: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<select ng-options="['Published','Not Published'].indexOf(statusItem) as statusItem for statusItem in ['Published','Not Published']" class="table-group-action-input form-control input-medium" ng-model="giftcategory.status">
+								<option value="">Select</option>								
+							</select>
+							<span class="help-block" ng-bind="errors.status[0]"></span>
+						</div>
+					</div>
+					
+				</div>																					
+			</div>			
+		</div>
+		</form>
+	</div>
+</div>

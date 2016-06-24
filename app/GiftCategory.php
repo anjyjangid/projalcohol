@@ -14,9 +14,13 @@ class GiftCategory extends Eloquent
 
     protected $fillable = [
 		'title',
+        'subTitle',
+        'description',
         'parent',
         'slug',
         'coverImage',
+        'type',
+        'cards',    
         'status'        
     ];    
 
