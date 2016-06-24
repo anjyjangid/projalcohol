@@ -16,9 +16,20 @@ class Gift extends Eloquent
 		'title',
         'subTitle',
         'description',
+        'category',
+        'subcategory',
         'coverImage',
-        'limit',
-        'range',        
+        'limit',     
+        'costprice',
+        'gift_packaging',     
         'status'        
     ];
+
+    public function categorydetail(){
+        return $this->belongsTo('AlcoholDelivery\GiftCategory','category','_id');
+    }
+
+    public function subcategorydetail(){
+        return $this->belongsTo('AlcoholDelivery\GiftCategory','subcategory','_id');
+    }    
 }

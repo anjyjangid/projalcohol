@@ -44,7 +44,15 @@ class GiftController extends Controller
 
         $inputs['status'] = (int)$inputs['status'];
         $inputs['type'] = (int)$inputs['type'];
-        $inputs['limit'] = (int)$inputs['limit'];
+        $inputs['costprice'] = (float)$inputs['costprice'];
+        
+        if(isset($inputs['limit']))
+            $inputs['limit'] = (int)$inputs['limit'];
+
+        if(isset($inputs['gift_packaging'])){
+            $inputs['gift_packaging']['type'] = (int)$inputs['gift_packaging']['type'];
+            $inputs['gift_packaging']['value'] = (float)$inputs['gift_packaging']['value'];            
+        }
 
         $gift = Gift::create($inputs);
 
@@ -66,7 +74,7 @@ class GiftController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
+    {  
         $model = new Gift;
 
         $model = $model->find($id);
@@ -101,9 +109,19 @@ class GiftController extends Controller
 
         $inputs['status'] = (int)$inputs['status'];
         $inputs['type'] = (int)$inputs['type'];
-        $inputs['limit'] = (int)$inputs['limit'];
+        $inputs['costprice'] = (float)$inputs['costprice'];
+
+        if(isset($inputs['limit']))
+            $inputs['limit'] = (int)$inputs['limit'];
 
         $model = Gift::find($id);
+
+        if(isset($inputs['gift_packaging'])){
+            $inputs['gift_packaging']['type'] = (int)$inputs['gift_packaging']['type'];
+            $inputs['gift_packaging']['value'] = (float)$inputs['gift_packaging']['value'];            
+        }else{
+            $model->unset('gift_packaging');
+        }       
 
         if($model){
             $update = $model->update($inputs);
@@ -150,7 +168,7 @@ class GiftController extends Controller
 
         $model = new Gift;
 
-        $model = $model->where('type','!=', 4);
+        $model = $model->with('categorydetail','subcategorydetail');
         
         if(isset($name) && trim($name)!=''){
             $sval = $name;
@@ -161,6 +179,14 @@ class GiftController extends Controller
             $model = $model->where('status',(int)$status);
         }
 
+        if(isset($category) && trim($category)!=''){            
+            $model = $model->where('category',$category);
+        }
+
+        if(isset($subcategory) && trim($subcategory)!=''){            
+            $model = $model->where('subcategory',$subcategory);
+        }
+
         $iTotalRecords = $model->count();        
 
         $columns = array('_id','title','status','type');
@@ -169,7 +195,7 @@ class GiftController extends Controller
         ->skip((int)$start)
         ->take((int)$length);
 
-        $model = $model->get($columns);
+        $model = $model->get();
 
         $response = [
             'recordsTotal' => $iTotalRecords,
@@ -183,7 +209,8 @@ class GiftController extends Controller
         return response($response,200);
     }
 
-    public function postUpdatecard(GiftRequest $request){
-
+    public function test(Request $request){
+        $model = Gift::with('categorydetail')->first();
+        return dd($model);
     }    
 }

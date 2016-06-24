@@ -23,7 +23,11 @@ MetronicApp.factory('giftModel', ['$http', '$cookies','$location', function($htt
 
         getCategorylist : function(){
             return $http.get('/adminapi/giftcategory/categorylist');
-        }             
+        },
+
+        getSettings: function(){
+            return $http.get("/adminapi/setting/settings/pricing");
+        },
 
     };
 }]);
@@ -57,6 +61,6 @@ MetronicApp.factory('giftcategoryModel', ['$http', '$cookies','$location', funct
 
         getParentlist: function(){
             return $http.get('/adminapi/giftcategory/allparent');
-        }
+        },
     };
 }])

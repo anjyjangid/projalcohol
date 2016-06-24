@@ -55,6 +55,11 @@ class GiftCategoryController extends Controller
             }
         }
 
+        if(isset($inputs['gift_packaging'])){
+            $inputs['gift_packaging']['type'] = (int)$inputs['gift_packaging']['type'];
+            $inputs['gift_packaging']['value'] = (float)$inputs['gift_packaging']['value'];            
+        }
+
         $model = GiftCategory::create($inputs);
 
         if($model){
@@ -124,7 +129,16 @@ class GiftCategoryController extends Controller
             }
         }
 
+        
+
         $model = GiftCategory::find($id);
+
+        if(isset($inputs['gift_packaging'])){
+            $inputs['gift_packaging']['type'] = (int)$inputs['gift_packaging']['type'];
+            $inputs['gift_packaging']['value'] = (float)$inputs['gift_packaging']['value'];            
+        }else{
+            $model->unset('gift_packaging');
+        }
 
         if($model){
             $update = $model->update($inputs);
@@ -203,23 +217,17 @@ class GiftCategoryController extends Controller
 
         $columns = array('_id','title','parent','status');
 
-        $model = $model
+        $model = $model->with('ancestor')
         ->skip((int)$start)
         ->take((int)$length);
 
         $model = $model->get($columns);
 
-        foreach ($model as $key => $value) {
-            $model[$key]->ancestor = GiftCategory::find($value->parent);
-        }
-
         $response = [
             'recordsTotal' => $iTotalRecords,
             'recordsFiltered' => $iTotalRecords,
             'draw' => $draw,
-            'data' => $model
-            /*'length' => $length,
-            'aaData' => []*/
+            'data' => $model            
         ];
       
         return response($response,200);

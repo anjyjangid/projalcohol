@@ -32,16 +32,22 @@ class GiftRequest extends Request
             'title' => 'required',
             'subTitle' => 'required',
             'description' => 'required',
-            'limit' => 'required_if:type,1,2',                        
-            'range' => 'required_if:type,4|array|min:1',
+            'category' => 'required',
+            'subcategory' => 'required',
+            'limit' => 'required_if:type,1',
+            'costprice' => 'required|numeric',
             'status' => 'required|integer'            
         ];
         
-        //VALIDATION FOR COCKTAIL TYPE
-        
+        //VALIDATION FOR COCKTAIL TYPE        
         if(!isset($input['coverImage']) || !empty($input['image']['thumb'])){
-            $rules['image.thumb'] = 'required|image|max:5102';
+            $rules['image.thumb'] = 'image|max:5102';
         }       
+
+        if(isset($input['gift_packaging'])){
+            $rules['gift_packaging.value'] = 'required|numeric';
+            $rules['gift_packaging.type'] = 'required|numeric';
+        }
 
         return $rules;
     }
@@ -50,7 +56,8 @@ class GiftRequest extends Request
 
         $messages = [
             'required' => 'This field is required',            
-            'coverImage.thumb.required' => 'Cover image is required.',                        
+            'coverImage.thumb.required' => 'Cover image is required.',
+            'limit.required_if' => 'This field is required.'                        
         ];                
         return $messages;
     }

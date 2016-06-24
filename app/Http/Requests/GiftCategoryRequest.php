@@ -50,6 +50,11 @@ class GiftCategoryRequest extends Request
             }
         }
 
+        if(isset($input['gift_packaging'])){
+            $rules['gift_packaging.value'] = 'required|numeric';
+            $rules['gift_packaging.type'] = 'required|numeric';
+        }
+
         return $rules;
     }
 
