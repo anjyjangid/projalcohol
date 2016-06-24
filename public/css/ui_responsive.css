@@ -1663,6 +1663,28 @@ md-dialog {
 .footer-container-borderset{
 	width:94%
 }
+ 
+ .alcohal_hisryorderboxcvr1:nth-child(2n+2) {
+    margin-right: 19px;
+}
+.alcohal_hisryorderboxcvr1:nth-child(3n+3) {
+    margin-right: 0;
+}
+.alcohal_hisryorderboxcvr1{
+	width:226px
+}
+.comboproductitems_outofstock {
+    padding: 0;
+    width: 49%;
+}
+.product-detail-right-set {
+    padding: 0;
+    width: 51%;
+}
+ .productdetailcovermainbgimg.ng-scope {
+    padding-left: 10px;
+    padding-right: 10px;
+}
  }
  @media (min-width : 768px) and (max-width : 1023px) {
 .col-md-2.homecallus_cover {
@@ -1941,10 +1963,11 @@ md-dialog {
 	width: 95%;
 }
 .currentorderpopup {
-	left: -169px
+	left: -203px;
+	width: 266px;
 }
 .currentorderpopup::before {
-	left: 61%
+	left: 79%
 }
 .modal-dialog.alcohal_registermain {
 	float: none;
@@ -2077,6 +2100,40 @@ md-dialog {
     margin-bottom: 20px;
     width: 100%;
 }
+.alcohal_hisryorderboxcvr1{
+	width:254px;
+}
+.alcohal_hisryorderboxcvr1:nth-child(2n+2) {
+    margin-right: 0;
+}
+.alcohal_hisryorderboxcvr1:nth-child(3n+3) {
+    margin-right: inherit;
+}
+.alcohal_hisryorderboxcvr1.ng-scope:nth-child(2n+1) {
+    margin-right: 19px;
+}
+.comboproductitems_outofstock {
+    padding: 0;
+    width: 48%;
+}
+.product-detail-right-set {
+    padding: 0;
+    width: 50%;
+}
+.productdetailcovermainbgimg.ng-scope {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.prdquantitybulkcoverbulk {
+    float: left;
+    width: 74%;
+}
+.prddetailtitle.ng-binding {
+    font-size: 25px;
+}
+/*.comboproductitems_outofstock .owl-wrapper {
+    width: 100% !important;
+}*/
 }
  @media only screen and (max-width : 767px) {
 .col-md-2.homecallus_cover {
@@ -2341,10 +2398,10 @@ md-dialog {
 	width:100%;
 }
 .currentorderpopup {
-	left: -221px
+	left: -238px
 }
 .currentorderpopup::before {
-	left: 80%
+	left: 85%
 }
 .modal-dialog.alcohal_registermain {
 	text-align: center;
@@ -2791,6 +2848,62 @@ md-datepicker{
 }
 .footer-container-borderset{
 	width:94%
+}
+.alcohal_reapeatorederbodycvr{
+	width:100%
+}
+.repaet-layout-height{
+	height:auto !important;
+	border-top: medium none !important;
+}
+.alcohal_reapeatorederbtnsocvercvr {
+    margin: 0 auto;
+    padding: 0;
+    width: 70%;
+	padding-bottom:20px
+}
+.md-dialog-content.alcohaladdadrebody.alcohal_reapeatorederbody {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+.alcohal_reapeatorederbodytitle{
+	font-size:28px
+}
+.alcohal_orderhistorytxtcvr{
+	width:100%
+}
+.alcohal_hisryorderboxcvr1{
+	width:46%;
+}
+.alcohal_hisryorderboxcvr1:nth-child(2n+2) {
+    margin-right: 0;
+}
+.alcohal_hisryorderboxcvr1:nth-child(3n+3) {
+    margin-right: 19px;
+}
+.alcohalfooter_shopordershopbtn{
+	float:none;
+	display:inline-block;
+}
+.modal-footer.alcohal_orderhistoryfotter {
+    padding-right: 0;
+    width: 100%;
+	text-align: center;
+	 padding-left: 0;
+}
+.alcohal_orderhistory2fotter {
+    padding-bottom: 20px;
+    width: 56%;
+}
+ .productdetailcovermainbgimg.ng-scope {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.owldownpartcover img{
+	margin-left:0
+}
+ng-map{
+	float:left
 }
 }
 @media only screen and (width : 640px) {
@@ -3369,5 +3482,44 @@ margin-right:0;
 }
 .sharepurchasecover{
 	font-size:22px
+}
+ 
+ .alcohal_reapeatorederbtnsocvercvr {
+    margin: 0 auto;
+    padding:0 10px 20px;
+    width: 100%;
+}
+.alcohal_hisryorderboxcvr1.ng-scope {
+    margin-right: 0;
+}
+.alcohal_hisryorderboxcvr1{
+	width:100%
+}
+.prddetailtitle.ng-binding {
+    font-size: 22px;
+}
+.checkoutmiddlevlauediv {
+    display: inline-block;
+    float: none;
+    width: 70px;
+}
+.prdquantitybulkcoverbulk {
+    display: inline-block;
+    float: none;
+    width: 100%;
+}
+.alcohal_reapeatorenothnxtxt {
+    float: right;
+    margin-right: 7px;
+}
+.alcohal_orderhistorybodytxt{
+	width:100%
+}
+.alcohal_orderhistory2fotter {
+    width: 100%;
+    text-align: center;
+}
+.alcohalfooter_shopordershopbtn{
+	margin-bottom:0
 }
  }
