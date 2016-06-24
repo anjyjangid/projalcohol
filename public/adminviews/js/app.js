@@ -453,7 +453,14 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 					uisref:'userLayout.settings.pricing',
 					icon:'icon-wallet',					
 					links:['userLayout.settings.pricing']
+				},
+				{
+					label:'Loyalty points',
+					uisref:'userLayout.settings.loyalty',
+					icon:'icon-wallet',					
+					links:['userLayout.settings.loyalty']
 				}
+
 			]
 		},
 		{
@@ -1560,6 +1567,21 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				key:"pricing",
 				breadCrumb:[
 					{title:'Pricing Settings','uisref':'#'}					
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }            
+        })
+
+        .state("userLayout.settings.loyalty", {
+            url: "/loyalty",
+            templateUrl: "adminviews/views/settings/loyalty.html",
+            data:{
+				pageTitle:'Loyalty Settings',
+				key:"loyalty",
+				breadCrumb:[
+					{title:'Loyalty points Settings','uisref':'#'}					
 				]				
 			},
 			resolve: {                

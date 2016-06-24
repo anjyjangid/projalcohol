@@ -1,35 +1,45 @@
-<div class="modal-header alcohal_orderhistoryheader">   
+<md-dialog aria-label="Mango (Fruit)"  >
+  <form>
+    <md-toolbar >
+      <div class="md-toolbar-tools alcohal_addadress_header">
+        <div class="alcohal_addadress_headercurmain">
 	<div class="alcohalorderhisttitle">Shop from your previous order</div>
 </div>
-
-<div ng-if="!viewDetail">
-	<div class="modal-body alcohal_orderhistorybody">	
+ <span flex></span>  <md-button class="md-icon-button" ng-click="close()"> &times; </md-button></div>
+  </md-toolbar>
+  <md-dialog-content  ng-if="!viewDetail">
+      <div class="md-dialog-content alcohaladdadrebody">
+ <div class="alcohlinputextcvr">
 		<div ng-if="fetchingOrders" id="prevOrdersFetchLoading"></div>
 		<div ng-if="!fetchingOrders" class="alcohal_orderhistorytxtcvr">
 			<div class="alcohal_orderhistorybodytxt">Shopping from a past order provides a convenient way to quickly shop for the same products again. </div>	
 			<div class="alcohal_orderhistorybodytxtclick">Click on a given order and add the desired products to the basket. </div>
 			<div class="alcohal_hisryorderboxcvr">
-
+   
 				<div class="alcohal_hisryorderboxcvr1" ng-repeat="orderSummary in orders" ng-click="previousOrder(orderSummary.reference,$event)">
+             <div class="alchol-repeat-cover-3">
 					<div class="alcohal_hisryorderordertxt">Order: {{orderSummary.reference}}</div>
 					<div class="alcohal_hisryorderdelitext">Delivered on: Thu 10 Dec 2015</div>
 					<div class="alcohal_hisryorderitemtext">16 Items</div>
 				</div>
-
+				</div>
 			</div>
 		</div>
 	</div>
+    </div>
+    </md-dialog-content>
+       <md-dialog-actions layout="row" class="repaet-layout-height"  ng-if="!viewDetail">
 	<div class="modal-footer alcohal_orderhistoryfotter">
 		<button type="button" class="alcohalfooter_shopordershopbtn" ng-click="close()">Nah! let me order a fresh<span> 
 			<img src="images/alcholshoporderarrow.png" /></span>
 		</button>
 	</div>
-</div>
+  </md-dialog-actions>
 
 
-<div ng-if="viewDetail">
-
-	<div class="modal-body alcohal_orderhistory2body">
+  <md-dialog-content  ng-if="viewDetail">
+      <div class="md-dialog-content alcohaladdadrebody">
+       <div class="alcohlinputextcvr">
 
 		<div ng-if="fetchingOrder" id="prevOrderFetchLoading"></div>
 
@@ -41,6 +51,7 @@
 			<label for="b1"><span></span> Select all </label>
 		</div>
 		<div class="alcohal_ordehisty2selctblcvr">
+        <div class="table-responsive">
 			<table class="table">
 				<thead>
 					<tr>
@@ -102,10 +113,14 @@
 					
 				</tbody>
 			</table>
+            </div>
 		</div>
 		</div>
 
 	</div>
+     </div>
+    </md-dialog-content>
+     <md-dialog-actions layout="row" class="repaet-layout-height"  ng-if="viewDetail">
 	<div class="modal-footer  alcohal_orderhistory2fotter">
 		<div class="alcohal_orderhistory2fotter">
 			<img src="images/order_history2backpic.png" /> <span ng-click="viewHistory()">Back to orders history</span> 
@@ -114,4 +129,7 @@
 		<button ng-disabled="processAdding" type="button" class="alcohalfooter_shopordershopbtn" ng-click="addToBasket()">Add to basket <span> <img src="images/alcholshoporderarrow.png" /></span></button>
 
 	</div>
-</div>
+    </md-dialog-actions>
+
+</form>
+</md-dialog>

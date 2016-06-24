@@ -16,7 +16,7 @@
 } 
 @keyframes fadeIn { 
   0% {opacity: 0;} 
-  100% {opacity: 1;} 
+  100% {opacity: 1;}
 } 
 </style>
 
@@ -37,11 +37,22 @@
 			</li>
 		</ul>
 	</li>
+
 	<li ng-class="{'active':AppController.category=='packages'}" class="dropdown">
+
 		<a ng-click="AppController.showpackage = !AppController.showpackage" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Packages</a>
+
 		<ul class="nav navbar-nav party-cocktail-liset" ng-show="AppController.showpackage">
 			<li ng-class="{'active':AppController.subCategory=='party'}" class="dropdown"><a ui-sref="mainLayout.packages({type:'party'})">Party Packages</a></li>
 			<li ng-class="{'active':AppController.subCategory=='cocktail'}" class="dropdown"><a ui-sref="mainLayout.packages({type:'cocktail'})">Cocktail Packages</a></li>
 		</ul>
+
 	</li>
+
+	<li ng-class="{'active':AppController.category=='loyalty'}" class="dropdown">
+		<a ui-sref="mainLayout.loyaltystore">Loyalty Store</a>
+	</li>
+
+
+
 </ul>

@@ -2,7 +2,6 @@
 <div product-breadcrumb info="product"></div>
 
 <div class="productdetailcovermainbgimg">
-	<div class="row">
 			<div class="col-xs-12 col-sm-6 col-md-6" ng-class="{comboproductitems_outofstock:{{!product.quantity}}}">
 						<data-owl-carousel class="owl-carousel owluperpartcover" data-options="parentOwlOptions" ng-model="sync1">
 
@@ -17,7 +16,7 @@
 						</data-owl-carousel>            
 				</div>
 				
-				<div class="col-xs-12 col-sm-6 col-md-6" >
+				<div class="col-xs-12 col-sm-6 col-md-6 product-detail-right-set" >
 					<div class="prddetailtitle">{{product.name}} </div>
 						<div class="prddetailsubexttitle">{{product.shortDescription}}</div>
 						<div class="prddetailnormaltext">{{product.description}}</div>
@@ -82,5 +81,4 @@
 							</div>
 						</div>
 				</div>
-		</div>
 </div>
