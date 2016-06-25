@@ -560,3 +560,25 @@ md-toast.promo-notqualified-toast:before {
 button.alcohalfooter_shopordershopbtn:disabled {
 background-color: rgba(170, 0, 255, 0.5);
 }
+
+/* SIDE BAR CSS */
+.dropdown-menu{
+	-webkit-animation-duration: 1s; 
+  animation-duration: 1s; 
+  -webkit-animation-fill-mode: both; 
+  animation-fill-mode: both; 
+}
+.animate {
+	display: block;
+	-webkit-animation-name: fadeIn; 
+  	animation-name: fadeIn;     
+}
+@-webkit-keyframes fadeIn { 
+  0% {opacity: 0;} 
+  100% {opacity: 1;} 
+} 
+@keyframes fadeIn { 
+  0% {opacity: 0;} 
+  100% {opacity: 1;}
+}
+/* SIDE BAR CSS */
