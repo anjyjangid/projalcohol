@@ -895,11 +895,15 @@
 	width: 100%;
 	float: left;
 	overflow: hidden;
-	height: 252px;
+	min-height: 252px;
 	border-radius: 4px 4px 0 0;
-	position: relative;/*	transition:all ease .5s ;
+	/*position: relative;*//*	transition:all ease .5s ;
 */
 }
+.left-party-content.ng-scope {
+    position: relative;
+}
+.left-party-content.ng-scope:hover .part-content-btm-desc
 .xyz.ng-scope.ng-isolate-scope {
 	float: left;
 }
@@ -1345,7 +1349,7 @@ body.menu-slider.in #wrapper {
 }
 #page-content-wrapper {
 	width: 100%;
-	padding-top: 70px;
+	padding-top: 0;
 }
 #wrapper.toggled #page-content-wrapper {
 	position: absolute;
@@ -1370,7 +1374,7 @@ body.menu-slider.in #wrapper {
 	overflow: hidden;
 	opacity: 0
 }
-.party-topimgdiv:hover .party-hover-effect {
+.left-party-content:hover .party-hover-effect {
 	background-color: rgba(0,0,0,.3);
 	/*	transition:all  ease .5s;
 */	display: block;
@@ -1471,23 +1475,48 @@ body.menu-slider.in #wrapper {
 
 .dropdown.cart-icon-set {
     max-width: 47%;
-	padding-right: 7px;
+	padding-right: 2px;
+	position:relative
 }
 
 .dropdown.cart-icon-set span {
     float: left;
-    padding: 33px 5px;
+    padding: 32.5px 5px;
 }
 
 .navbar-shrink  .dropdown.cart-icon-set span, .navbar-shrink  .dropdown.cart-icon-set span:hover, .navbar-shrink  .dropdown.cart-icon-set span:focus{
-	padding:25px 5px;
-	transition: all 0.5s ease 0s;
-}
+	padding:24.5px 5px;
+/*	transition: all 0.5s ease 0s;
+*/}
 
 .credis-table-main{
 	width:100%;
 	float:left
 
+}
+.rightplcholder {
+    position: absolute;
+    right: 28px;
+    top: 13px;
+	color:#d9a600;
+	font-size:12px;
+	 z-index: 9999;
+	 margin-right:10px;
+	 
+}
+.searchtop.searchtop100 .search_icon{
+	margin-right:0
+}
+.addmore-count.ng-binding {
+    position: relative;
+    top: -1px !important;
+}
+.btn.btn-default.bootstrap-touchspin-down {
+    position: relative;
+    top: 0;
+}
+.btn.btn-default.bootstrap-touchspin-up {
+    margin-top: -2px;
 }
 
  @media (min-width : 1024px) and (max-width : 1200px) {
@@ -1684,6 +1713,58 @@ md-dialog {
  .productdetailcovermainbgimg.ng-scope {
     padding-left: 10px;
     padding-right: 10px;
+}
+ 
+ .productinner_leftslide.left-main-outerdiv {
+    width: 100%;
+}
+.left-main-outerdiv .productslide_heading.ng-binding {
+   font-size: 17px;
+    height: 47px;
+    line-height: 24px;
+    overflow: hidden;
+    padding: 0 5px;
+}
+.dropdown.productdropdownbtn {
+    margin-right: 15px;
+    margin-top: 12px;
+    width: auto;
+}
+.dropdown.productdropdownbtn  span1 {
+    float: left;
+    position: relative;
+    right: 20px;
+}
+.productslide_normaltext.ng-binding {
+    height: 33px;
+    overflow: hidden;
+	 padding: 0 5px;
+}
+.owl-wraaper-margin .owl-wrapper {
+    margin-bottom: 33px;
+} 
+.comboproductitems{
+	width:50%
+}
+.prod_desc.ng-binding {
+    height: 40px;
+    margin-bottom: 0;
+    overflow: hidden;
+}
+ .single_slider.single_slider_product.ng-scope {
+    padding-left: 13px;
+    padding-right: 13px;
+}
+.single_slider.ng-scope .owl-item {
+    width: 207px !important;
+}
+ .productdropdownbtn .dropdown-menu{
+	left:-96px
+}
+.single_slider_product .owl-controls{
+	width:100%;
+	text-align:center;
+	display:inline-block
 }
  }
  @media (min-width : 768px) and (max-width : 1023px) {
@@ -2134,6 +2215,53 @@ md-dialog {
 /*.comboproductitems_outofstock .owl-wrapper {
     width: 100% !important;
 }*/
+ .productinner_leftslide.left-main-outerdiv {
+    width: 100%;
+}
+.left-main-outerdiv .productslide_heading.ng-binding {
+   font-size: 17px;
+    height: 47px;
+    line-height: 24px;
+    overflow: hidden;
+    padding: 0 5px;
+}
+.dropdown.productdropdownbtn {
+    margin-right: 15px;
+    margin-top: 12px;
+    width: auto;
+}
+.dropdown.productdropdownbtn  span1 {
+    float: left;
+    position: relative;
+    right: 20px;
+}
+.productslide_normaltext.ng-binding {
+    height: 33px;
+    overflow: hidden;
+	 padding: 0 5px;
+}
+.owl-wraaper-margin .owl-wrapper {
+    margin-bottom: 33px;
+} 
+.comboproductitems{
+	width:50%
+}
+.prod_desc.ng-binding {
+    height: 40px;
+    margin-bottom: 0;
+    overflow: hidden;
+}
+ .productdropdownbtn .dropdown-menu{
+	left:-96px
+}
+.prdquanbulkboxone {
+    width: 60px;
+}
+.single_slider_product .owl-controls{
+	width:100%;
+	text-align:center;
+	display:inline-block
+}
 }
  @media only screen and (max-width : 767px) {
 .col-md-2.homecallus_cover {
@@ -2203,6 +2331,7 @@ md-dialog {
 .prod_desc.ng-binding {
 	height: 40px;
 	margin-bottom: 0;
+	overflow:hidden
 }
 .prod_addtocart {
 	margin-bottom: 5px;
@@ -2905,6 +3034,63 @@ md-datepicker{
 ng-map{
 	float:left
 }
+ .productinner_leftslide.left-main-outerdiv {
+    width: 100%;
+}
+.left-main-outerdiv .productslide_heading.ng-binding {
+   font-size: 17px;
+    height: 47px;
+    line-height: 24px;
+    overflow: hidden;
+    padding: 0 5px;
+}
+.dropdown.productdropdownbtn {
+    margin-right: 15px;
+    margin-top: 12px;
+    width: auto;
+}
+.dropdown.productdropdownbtn  span1 {
+    float: left;
+    position: relative;
+    right: 20px;
+}
+.productslide_normaltext.ng-binding {
+    height: 33px;
+    overflow: hidden;
+	 padding: 0 5px;
+}
+.owl-wraaper-margin .owl-wrapper {
+    margin-bottom: 33px;
+} 
+.comboproductitems{
+	width:50%
+}
+.productbeerfiltertopcover .row div{
+	width:25%
+}
+ .productdropdownbtn .dropdown-menu{
+	left:-82px
+}
+.alcohal_addadress_headertitle{
+	font-size:22px
+}
+.alcohalorderhisttitle{
+	font-size:22px
+}
+.alcohal_addadress_headercurcle{
+	margin-top:4px
+}
+.prod_chilled{
+	 padding: 0 20px 0 50px;
+}
+.prod_chilled{
+	width:148px
+}
+.single_slider_product .owl-controls{
+	width:100%;
+	text-align:center;
+	display:inline-block
+}
 }
 @media only screen and (width : 640px) {
 
@@ -3522,4 +3708,82 @@ margin-right:0;
 .alcohalfooter_shopordershopbtn{
 	margin-bottom:0
 }
- }
+ 
+ 
+ .productinner_leftslide.left-main-outerdiv {
+    width: 100%;
+}
+.btn.product_addcart.addcart-margin-responsive{
+	margin-top:0
+}
+.owl-wraaper-margin .owl-wrapper {
+    margin-bottom: 33px;
+} 
+.left-main-outerdiv .productslide_heading.ng-binding {
+    font-size: 22px;
+    line-height: 30px;
+	height:auto;
+	overflow:visible
+}
+.dropdown.productdropdownbtn {
+    margin-right: 15px;
+    margin-top: 12px;
+    width: auto;
+}
+.dropdown.productdropdownbtn  span1 {
+    float: left;
+    position: relative;
+    right: 20px;
+}
+.productslide_normaltext.ng-binding {
+    height: auto;
+    overflow: visible;
+}
+.comboproductitems{
+	width:100%
+}
+.productbeerfiltertopcover .row div{
+	width:100%
+}
+/*.md-dialog-content.alcohaladdadrebody {
+    padding: 54px 24px 24px;
+}*/
+.alcohal_addadress_headertitle span {
+    width: 80%;
+    display: inline-block;
+}
+.alcohal_addadress_headertitle{
+	font-size:18px
+}
+.alcohal_addadress_headercurcle {
+    margin-top: 12px;
+}
+.alcohalorderhisttitle{
+	font-size:18px
+}
+.currentorderpopuppinkboxleft{
+	width:126px
+}
+	.currentorderpopup::before{
+		top:-5px
+	}
+	.prdquanbulkboxone {
+    width: 54px;
+}
+.product-detail-right-set {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.prdquanbulkboxtwo{
+	width:64px
+}
+.alcohlinputextarea1{
+	width:100%
+}
+.adressunit{
+	width:44%
+}
+.adresfloortxtcvr{
+	width:44%
+}
+}

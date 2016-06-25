@@ -189,7 +189,7 @@ ui-sref {
 .signuplogin a, .signuplogin > a:hover, .signuplogin a:focus {
 	color: #2c2011;
 	text-decoration: none;
-	padding: 33px 15px;
+	padding: 32.5px 15px;
 	display: inline-block;
 	float: left;/*	-moz-transition:all 0.5s ease 0s;
 	-webkit-transition:all 0.5s ease 0s;  
@@ -279,15 +279,15 @@ ui-sref {
 	opacity: 0.60;
 }
 .cart_icon {
-	background: url(../images/sprite.png) no-repeat -340px 33px;
+	background: url(../images/sprite.png) no-repeat -338px 33px;
 	width: 23px;
 	height: 20px;
 	min-height: 85px;
-	min-width: 40px;
+	min-width: 41px;
 }
-.cart_icon:hover {
+/*.cart_icon:hover {
 	background: #e1b11f url(../images/sprite.png) no-repeat -340px 33px !important;
-}
+}*/
 .homecallus_cover {
 	/*	width:135px;
 */	padding-right: 0px;
@@ -1700,24 +1700,24 @@ ui-sref {
 	transition: all 0.5s ease 0s;
 }
 .navbar-shrink .signuplogin a, .navbar-shrink .signuplogin a:hover, .navbar-shrink .signuplogin a:focus {
-	padding: 25px 15px;
-	-moz-transition: all 0.5s ease 0s;
+	padding: 24.5px 15px;
+	/*-moz-transition: all 0.5s ease 0s;
 	-webkit-transition: all 0.5s ease 0s;
-	transition: all 0.5s ease 0s;
+	transition: all 0.5s ease 0s;*/
 }
 .navbar-shrink .cart_icon {
-	background-position: -340px 25px;
-	min-height: 70px;
-	-moz-transition: all 0.5s ease 0s;
+	background-position: -338px 25px !important;
+	min-height: 69px;
+	/*-moz-transition: all 0.5s ease 0s;
 	-webkit-transition: all 0.5s ease 0s;
-	transition: all 0.5s ease 0s;
+	transition: all 0.5s ease 0s;*/
 }
 .navbar-shrink .cart_icon:hover {
-	background-position: -340px 25px !important;
-	min-height: 70px;
-	-moz-transition: all 0.5s ease 0s;
+	background-position: -338px 25px !important;
+	min-height: 69px;
+	/*-moz-transition: all 0.5s ease 0s;
 	-webkit-transition: all 0.5s ease 0s;
-	transition: all 0.5s ease 0s;
+	transition: all 0.5s ease 0s;*/
 }
 .fullwidth.settop {
 	margin-top: 80px;
@@ -3661,6 +3661,8 @@ ui-sref {
 	text-align: center;
 	vertical-align: middle;
 	width: 27px;
+	float:left;
+	margin-top:6px
 }
 .alcohlinputextcvrmain {
 	float: left;
@@ -4692,9 +4694,10 @@ ui-sref {
 	text-align: right;
 	float: left;
 }
-.signuplogin .dropdown:hover .cart_icon {
-	background: #e1b11f url("../images/sprite.png") no-repeat scroll -340px 33px;
+.navbar.navbar-default.navbar-fixed-top .signuplogin .dropdown:hover .cart_icon {
+	background: #e1b11f url("../images/sprite.png") no-repeat scroll -338px 33px;
 }
+
 .additempopuppinkbox {
 	background: #aa00ff url("../images/imgpsh_fullsize.png") no-repeat right center;
 	border-radius: 5px 5px 0 0;
@@ -5047,7 +5050,7 @@ md-toolbar {
 }
 .layout-row {
 	box-shadow: none;
-	width:98%
+	width:98.5%
 }
 
 .btm10.ng-scope{
@@ -5071,6 +5074,21 @@ md-dialog .md-actions, md-dialog md-dialog-actions{
 ::-webkit-input-placeholder {
   color:#888888 !important
 }
+md-autocomplete-wrap ::-webkit-input-placeholder {
+  color:#d9a600 !important
+}
+md-autocomplete-wrap input::-moz-placeholder {
+      color: #d9a600;
+	  opacity: 1;
+    }
+    md-autocomplete-wrap input:-moz-placeholder {
+      color: #d9a600;
+	  opacity: 1;
+    }
+md-autocomplete-wrap :-ms-input-placeholder { /* IE 10+ */
+  color:#d9a600 !important
+}
+	
 input::-moz-placeholder {
       color: #888888;
 	  opacity: 1;
@@ -5079,6 +5097,7 @@ input::-moz-placeholder {
       color: #888888;
 	  opacity: 1;
     }
+	
 :-ms-input-placeholder { /* IE 10+ */
   color:#888888 !important
 }

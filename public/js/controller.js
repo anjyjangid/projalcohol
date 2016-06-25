@@ -2540,6 +2540,9 @@ AlcoholDelivery.controller('SearchController', [
 	    self.searchTextChange   = searchTextChange;
 	    self.submitQuery   = submitQuery;
 
+	    self.openSuggestions = function(){
+	    	console.log('working,,');
+	    }
 
     // ******************************
     // Internal methods
@@ -2586,6 +2589,8 @@ AlcoholDelivery.controller('SearchController', [
 			$(".logoss").addClass("leftminusopacity leftminus100").removeClass("again0left againopacity");
 			$(".homecallus_cover").addClass("leftminus2100").removeClass("again0left");
 			$(".signuplogin_cover").addClass("rightminus100").removeClass("again0right");
+			$(".rightplcholder").removeClass('hide');
+
 
 			if($.trim($(".searchtop input").val())=="")
 				$(".searchtop input").focus();
@@ -2595,6 +2600,7 @@ AlcoholDelivery.controller('SearchController', [
 			$(".logoss").removeClass("leftminusopacity leftminus100").addClass("again0left againopacity");
 			$(".homecallus_cover").removeClass("leftminus2100").addClass("again0left");
 			$(".signuplogin_cover").removeClass("rightminus100").addClass("again0right");
+			$(".rightplcholder").addClass('hide');
 		}
 	}
 
