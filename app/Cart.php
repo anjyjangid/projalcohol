@@ -239,7 +239,17 @@ class Cart extends Moloquent
 		$productsInCart = $productObj->getProducts(
 											array(
 												"id"=>$productsIdInCart,
-												"fields"=>["quantity","maxQuantity","outOfStockType","availabilityDays","availabilityTime","status"],
+												"fields"=>[
+															"quantity",
+															"maxQuantity",
+															"outOfStockType",
+															"availabilityDays",
+															"availabilityTime",
+															"status",
+															"price",
+															"loyalty",
+															"loyaltyType",
+														],
 												// "with"=>["discounts"]
 											)
 										);
@@ -247,6 +257,8 @@ class Cart extends Moloquent
 		foreach($productsInCart as $key=>$pic){
 
 			$productsInCart[$pic['_id']] = $pic;
+			$productsInCart[$pic['_id']]['count'] = $products[$pic['_id']];
+
 			unset($productsInCart[$key]);
 
 		}

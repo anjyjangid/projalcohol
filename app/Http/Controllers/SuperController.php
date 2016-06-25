@@ -124,7 +124,7 @@ class SuperController extends Controller
 	 */
 	public function getSettings(Request $request)
 	{        
-		$settings = DB::collection('settings')->whereIn("_id",['general','social'])->get();
+		$settings = DB::collection('settings')->whereIn("_id",['general','social','loyalty'])->get();
 		
 		$settingsData = array();
 

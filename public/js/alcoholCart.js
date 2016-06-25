@@ -398,6 +398,18 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			return build;
 		};
 
+		this.getLoyaltyProductById = function (productId){
+
+			var products = this.getCart().loyalty;
+			var build = false;
+
+			if(typeof products[productId] !== 'undefined'){
+				build = products[productId];
+			}
+			
+			return build;
+		};
+
 
 		this.getPackageByUniqueId = function(packageUniqueId){
 
