@@ -341,6 +341,7 @@ AlcoholDelivery.factory('Search', function($http) {
 
 
 AlcoholDelivery.factory('ScrollPagination', function($http) {
+
   var Search = function(keyword,filter,sortby) {
     this.items = [];
     this.busy = false;
@@ -359,14 +360,16 @@ AlcoholDelivery.factory('ScrollPagination', function($http) {
 
     $http.get('/site/searchlist',{
     	params : {
-    		keyword:this.keyword,
+    		loyalty:true,
 	    	skip:this.skip,
 	    	take:this.take,
 	    	filter:this.filter,
 	    	sortby:this.sortby
 	    }
     }).then(function(result){
+
 		var items = result.data.products;
+
 		this.totalResult = result.data.total;
 		for (var i = 0; i < items.length; i++) {
 			this.items.push(items[i]);
@@ -385,6 +388,75 @@ AlcoholDelivery.factory('ScrollPagination', function($http) {
   return Search;
 
 });
+
+// AlcoholDelivery.factory('ProductSerivce', ['$rootScope', '$log', function ($rootScope, $log){
+		
+// 		var product = function (productData) {
+// 			console.log(productData);
+// 			//this.setPrice(productData);
+			
+// 		};				
+		
+// 		product.prototype.setPrice = function(product){
+			
+// 			var originalPrice = parseFloat(product.price);
+
+// 			var unitPrice = originalPrice;		
+
+// 			var advancePricing = product.regular_express_delivery;
+			
+// 			if(advancePricing.type==1){
+
+// 				unitPrice +=  parseFloat(originalPrice * advancePricing.value/100);
+
+// 			}else{
+
+// 				unitPrice += parseFloat(advancePricing.value);
+				
+// 			}
+
+// 			price = unitPrice;
+// 			price = parseFloat(price.toFixed(2));
+
+// 			this.unitPrice = price;
+
+// 			var bulkArr = original.express_delivery_bulk.bulk;
+
+// 			for(i=0;i<bulkArr.length;i++){
+
+// 				var bulk = bulkArr[i];
+
+// 				if(quantity >= bulk.from_qty && quantity<=bulk.to_qty){
+
+// 					if(bulk.type==1){
+
+// 						price = quantity * (originalPrice + (originalPrice * bulk.value/100));
+
+// 					}else{
+
+// 						price = quantity * (originalPrice + bulk.value);
+
+// 					}
+					
+// 					price = parseFloat(price.toFixed(2));
+// 				}
+
+// 			}
+
+// 			this.discountedUnitPrice = price/quantity;
+			
+// 			return this.price = price;
+			
+// 		};
+
+// 		product.prototype.getPrice = function(){
+// 			return parseFloat(this.price);
+// 		};
+
+// 		return product;
+
+// 	}]);
+
 
 /* Setup Rounting For All Pages */
 AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
@@ -475,7 +547,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							"rightPanel" : {
 
 								templateUrl : "/templates/partials/rightBarRecentOrder.html",
-								controller : "RepeatOrderController"
+								controller : "RepeatOrderController",
 
 							},
 
@@ -691,9 +763,24 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('orderplaced', {
+
 						url: "/orderplaced/{order}",
 						templateUrl: "/templates/orderconfirmation.html",
-						controller:"OrderplacedController"
+						controller:"OrderplacedController",
+						resolve: {
+								deps: ['$ocLazyLoad', function($ocLazyLoad) {
+										return $ocLazyLoad.load({
+												name: 'AlcoholDelivery',
+												insertBefore: '#ng_load_plugins_before',
+												// debug: true,
+												serie: true,
+												files: [
+														'http://w.sharethis.com/button/buttons.js',														
+												]
+										});
+								}]
+						}
+						
 				})
 
 				.state('accountLayout', {
@@ -779,6 +866,13 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						controller: "ProductDetailController"
 				})
 
+				.state('mainLayout.productLoyalty', {
+						url: "/loyalty/product/{product}",
+						templateUrl: "/templates/product/detail.html",
+						params: {loyalty: true},
+						controller: "ProductDetailController"
+				})
+
 				.state('mainLayout.packages', {
 						url: "/packages/{type}",
 						templateUrl : function(stateParams){
@@ -819,9 +913,9 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						}
 				})
 
-				.state('mainLayout.loyaltystore', {
-						url: '/loyalty-store',
-						templateUrl : "/templates/search.html",
+				.state('mainLayout.loyaltystore', {						
+						url: '/loyalty-store?{filter}&{sort}',
+						templateUrl : "/templates/loyaltyStore.html",
 						params: {pageTitle: 'Loyalty Store'},
 						controller:"LoyaltyStoreController",
 						resolve: {
@@ -903,6 +997,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				$locationProvider.hashPrefix = '!';*/
 
 		}]);
+
 
 
 AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$location',

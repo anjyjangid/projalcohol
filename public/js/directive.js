@@ -496,7 +496,8 @@ AlcoholDelivery.directive('sideBar', function() {
 		scope:{
 			productInfo:'=info',
 			classes : '@',
-			promotion : '='
+			promotion : '=',
+			loyalty : '='
 		},
 		templateUrl: '/templates/product/product_tpl.html',
 
@@ -506,7 +507,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.alcoholCart = alcoholCart;
 
-			$scope._sPromotion = promotionsService;
+			$scope._sPromotion = promotionsService;			
 
 			var isInCart = alcoholCart.getProductById($scope.productInfo._id);
 
@@ -550,8 +551,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.setPrices = function(localpro){
 
-				if(typeof localpro.categories === "undefined"){return true;}
-			
+				if(typeof localpro.categories === "undefined"){return true;}			
 
 				var catIdIndex = localpro.categories.length - 1;			
 
@@ -571,6 +571,8 @@ AlcoholDelivery.directive('sideBar', function() {
 				angular.extend(localpro,dst);
 
 				localpro.price = parseFloat(localpro.price);
+
+				var costPrice = localpro.price;
 
 				var orderValue = localpro.regular_express_delivery;
 
@@ -592,8 +594,16 @@ AlcoholDelivery.directive('sideBar', function() {
 					bulk.price = bulk.price.toFixed(2);
 				}
 
-				localpro.price = localpro.price.toFixed(2);
-				
+				if(typeof $scope.loyalty!=="undefined"){
+
+					$scope.productInfo.isLoyaltyStoreProduct = true;
+
+					localpro.price = parseFloat(localpro.price) * (1/$rootScope.settings.loyalty.point_value);
+												
+				}
+
+				localpro.price = localpro.price.toFixed(2);							
+
 				return localpro;
 
 			}
@@ -614,7 +624,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			return '/templates/partials/addToCartBtn.html';
 		},
 		scope: {
-			product:'=',
+			product:'=',			
 		},
 
 		controller: function($scope,$rootScope,$element,$timeout,$http,alcoholCart,$mdToast){
@@ -626,7 +636,12 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.product.qChilled = 0;
 			$scope.product.qNChilled = 0;
 
-			var isInCart = alcoholCart.getProductById($scope.product._id);
+			$scope.product.isLoyaltyStoreProduct = false;
+			if($scope.product.isLoyaltyStoreProduct){
+				var isInCart = alcoholCart.getLoyaltyProductById($scope.product._id);
+			}else{
+				var isInCart = alcoholCart.getProductById($scope.product._id);
+			}
 
 			if(isInCart!==false){
 
@@ -688,8 +703,18 @@ AlcoholDelivery.directive('sideBar', function() {
 				$scope.proUpdateTimeOut = $timeout(function(){
 
 					var quantity = $scope.product.servechilled?$scope.product.qChilled:$scope.product.qNChilled;
-					
-					alcoholCart.addItem($scope.product._id,quantity,$scope.product.servechilled).then(
+
+					if($scope.product.isLoyaltyStoreProduct){
+
+						var addFunc = "addLoyaltyProduct";
+
+					}else{
+
+						var addFunc = "addItem";
+
+					}
+
+					alcoholCart[addFunc]($scope.product._id,quantity,$scope.product.servechilled).then(
 
 						function(successRes){
 
@@ -717,7 +742,7 @@ AlcoholDelivery.directive('sideBar', function() {
 												$scope.closeToast = function(){
 													$mdToast.hide();
 												}
-											},											
+											},
 											templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
 											parent : $element,											
 											position: 'top center',

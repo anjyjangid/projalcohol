@@ -2062,7 +2062,7 @@ AlcoholDelivery.controller('RepeatOrderController',['$scope','$rootScope','$http
 			function(response){
 				
 				$scope.lastorder = response.data.order;
-				$scope.fetching = false;	
+				$scope.fetching = false;
 			},
 			function(errorRes){
 
@@ -2540,6 +2540,9 @@ AlcoholDelivery.controller('SearchController', [
 	    self.searchTextChange   = searchTextChange;
 	    self.submitQuery   = submitQuery;
 
+	    self.openSuggestions = function(){
+	    	console.log('working,,');
+	    }
 
     // ******************************
     // Internal methods
@@ -2586,6 +2589,8 @@ AlcoholDelivery.controller('SearchController', [
 			$(".logoss").addClass("leftminusopacity leftminus100").removeClass("again0left againopacity");
 			$(".homecallus_cover").addClass("leftminus2100").removeClass("again0left");
 			$(".signuplogin_cover").addClass("rightminus100").removeClass("again0right");
+			$(".rightplcholder").removeClass('hide');
+
 
 			if($.trim($(".searchtop input").val())=="")
 				$(".searchtop input").focus();
@@ -2595,6 +2600,7 @@ AlcoholDelivery.controller('SearchController', [
 			$(".logoss").removeClass("leftminusopacity leftminus100").addClass("again0left againopacity");
 			$(".homecallus_cover").removeClass("leftminus2100").addClass("again0left");
 			$(".signuplogin_cover").removeClass("rightminus100").addClass("again0right");
+			$(".rightplcholder").addClass('hide');
 		}
 	}
 
@@ -2609,43 +2615,15 @@ AlcoholDelivery.controller('SearchController', [
 
 }]);
 
-AlcoholDelivery.controller('LoyaltyStoreController', [
-	'$q', '$http', '$scope', '$anchorScroll', 'LoyaltyStoreProducts',
-	function($q, $http, $scope, $anchorScroll, LoyaltyStoreProducts){
-		    	  
+AlcoholDelivery.controller('LoyaltyStoreController', ['$q', '$http', '$scope', 'ScrollPagination',"UserService","$stateParams", function($q, $http, $scope, ScrollPagination,userService,$stateParams){
+		
+		var user = userService.currentUser;
+		
+		$scope.keyword = $stateParams.keyword;
+		$scope.filter = $stateParams.filter;
+		$scope.sortby = $stateParams.sort;
 
-    	$scope.fetchMore = function() {
-
-		    if ($scope.fetching || this.limitreached) return;
-		    $scope.fetching = true;
-
-		    $http.get('/site/searchlist',{
-
-		    	params : {
-		    		keyword:$scope.keyword,
-			    	skip:$scope.skip,
-			    	take:$scope.take,
-			    	filter:$scope.filter,
-			    	sortby:$scope.sortby
-			    }
-			    
-		    }).then(function(result){
-
-				var items = result.data.products;
-				$scope.totalResult = result.data.total;
-				for (var i = 0; i < items.length; i++) {
-					$scope.items.push(items[i]);
-				}
-				$scope.fetching = false;
-				if(result.data.products.length < parseInt($scope.take)){
-					$scope.limitreached = true;
-				}else{
-					$scope.skip+= parseInt($scope.take);
-				}
-
-			});
-
-		};
+    	$scope.products = new ScrollPagination();
 
 }]);
 

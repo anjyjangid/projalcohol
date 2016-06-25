@@ -193,6 +193,8 @@ class ProductController extends Controller
 				$inputs['threshold'] = (int)$inputs['threshold'];
 				$inputs['maxQuantity'] = (int)$inputs['maxQuantity'];
 				$inputs['deliveryType'] = (int)$inputs['deliveryType'];
+				$inputs['isLoyalty'] = (int)$inputs['isLoyalty'];
+				
 				
 
 				if(isset($inputs['outOfStockType']))

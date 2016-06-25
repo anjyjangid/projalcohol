@@ -17,6 +17,10 @@ use DB;
 class OrderController extends Controller
 {
 
+	public function __construct()
+	{
+		$this->middleware('auth');
+	}
 
 	/**
 	 * Display the specified resource.
@@ -53,7 +57,11 @@ class OrderController extends Controller
 
 		$user = Auth::user('user');
 
-		$order = Orders::where("_id",'=',$id)->where("user",'=',new MongoId($user->_id))->first();
+		$order = Orders::where("_id",$id)->where("user",'=',new MongoId($user->_id))->first();
+
+		if(empty($order)){
+			return response(["message"=>"Order not found"],400);
+		}
 
 		$order->dop = strtotime($order->created_at);		
 		
