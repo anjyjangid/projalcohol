@@ -1,3 +1,9 @@
+
+a.core-block{
+	display: inline-block;
+	width: 100%;
+}
+
 button:disabled {
 	cursor: not-allowed;
 }

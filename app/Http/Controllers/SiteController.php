@@ -99,7 +99,7 @@ class SiteController extends Controller
         return response($products,200);
     }
 
-    public function getSearchlist(Request $request){        
+    public function getSearchlist(Request $request){
         
         $params = $request->all();
 
@@ -113,7 +113,12 @@ class SiteController extends Controller
             $products = $products->where('name','regexp', "/.*$keyword/i");
         }
 
+        if(isset($loyalty) && $loyalty){
+            $products = $products->where('isLoyalty',"1");
+        }
+
         if(isset($filter) && trim($filter)!=''){
+
             switch ($filter) {
                 case 'new':
                     $products = $products->where('created_at', '>', new DateTime('-1 months'));

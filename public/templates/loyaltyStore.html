@@ -1,14 +1,15 @@
 <div class="combo_slider combo_sliderProduct">
+
 	<div class="productbeerfiltertopcover">
-		<div class="productbeerfiltertoptitle text-capitalize">{{products.totalResult}} Products in {{keyword}}</div>        
+		<div class="productbeerfiltertoptitle text-capitalize">Loyalty Store</div>        
 	</div>
-    
+	    
  	<div class="tabbable"> <!-- Only required for left/right tabs -->
 		<div class="fullwidth">    
 			<ul class="nav nav-tabs productcomboul">
-				<li ng-class="{active:filter==null}"><a ui-sref="mainLayout.search({keyword:keyword,filter:null})" data-toggle="tab">All</a></li>
-				<li ng-class="{active:filter=='new'}"><a ui-sref="mainLayout.search({keyword:keyword,filter:'new'})" data-toggle="tab">New</a></li>
-				<li ng-class="{active:filter=='in-stock'}"><a ui-sref="mainLayout.search({keyword:keyword,filter:'in-stock'})" data-toggle="tab">In Stock</a></li>      
+				<li ng-class="{active:filter==null}"><a ui-sref="mainLayout.loyaltystore({keyword:keyword,filter:null})" data-toggle="tab">All</a></li>
+				<li ng-class="{active:filter=='new'}"><a ui-sref="mainLayout.loyaltystore({keyword:keyword,filter:'new'})" data-toggle="tab">New</a></li>
+				<li ng-class="{active:filter=='in-stock'}"><a ui-sref="mainLayout.loyaltystore({keyword:keyword,filter:'in-stock'})" data-toggle="tab">In Stock</a></li>      
 
 				<div class="dropdown productdropdownbtn" uib-dropdown>
 				  <button class="btn dropdown-toggle" type="button" id="dropdownMenu1" uib-dropdown-toggle aria-haspopup="true" aria-expanded="true">
@@ -16,22 +17,25 @@
 				    <span class="caret"></span>
 				  </button>
 
-				  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" uib-dropdown-menu>
-				    <li><a ui-sref="mainLayout.search({keyword:keyword,filter:filter,sort:'asc'})">Price Ascending</a></li>
-				    <li><a ui-sref="mainLayout.search({keyword:keyword,filter:filter,sort:'desc'})">Price Descending</a></li>            
-				  </ul>
+				  <!-- <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" uib-dropdown-menu>
+				    <li><a ui-sref="mainLayout.loyaltystore({keyword:keyword,filter:filter,sort:'asc'})">Price Ascending</a></li>
+				    <li><a ui-sref="mainLayout.loyaltystore({keyword:keyword,filter:filter,sort:'desc'})">Price Descending</a></li>            
+				  </ul> -->
 				</div>
 			</ul>
 
 		</div>
 		
-		<div infinite-scroll='fetchMore()' infinite-scroll-disabled='fetching' infinite-scroll-distance='3'>
-		    <div al-tpl-product classes="col-xs-12 col-sm-3 col-md-3 comboproductitems" info="product" ng-repeat="product in products"></div>
+		<div infinite-scroll='products.nextPage()' infinite-scroll-disabled='products.busy' infinite-scroll-distance='3'>
+				
+		    <div al-tpl-product classes="col-xs-12 col-sm-3 col-md-3 comboproductitems" info="product" loyalty="true" ng-repeat="product in products.items"></div>
 		</div>	
 	</div>
 	<div class="fullwidth">
-		<div ng-show='products.busy' align="center"><h4>Loading data...</h4></div>			
-		<div ng-show='products.limitreached' align="center"></div>
-		<div ng-show='products.items.length == 0 && !products.busy' align="center"><h4>No products found..</h4></div>
+		
+		<div ng-show='fetching' align="center"><h4>Loading data...</h4></div>
+		
+		<div ng-show='products.length == 0 && !fetching' align="center"><h4>No products found..</h4></div>
+
 	</div>
 </div>	

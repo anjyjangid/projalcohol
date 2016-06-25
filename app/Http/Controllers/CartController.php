@@ -12,6 +12,8 @@ use AlcoholDelivery\Setting as Setting;
 use AlcoholDelivery\Orders as Orders;
 use AlcoholDelivery\Promotion as Promotion;
 use AlcoholDelivery\Holiday as Holiday;
+use AlcoholDelivery\User as User;
+
 
 use MongoDate;
 use MongoId;
@@ -904,7 +906,10 @@ jprd($product);
     public function confirmorder(Request $request,$cartKey){
 
 		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
-		$cart = Cart::where("_id","=",$cartKey)->first();
+
+		$cartObj = new Cart;
+
+		$cart = $cartObj->where("_id","=",$cartKey)->first();
 
 		if(empty($cart)){
 
@@ -933,6 +938,31 @@ jprd($product);
 											)
 										);
 
+////// Loyalty point calculation 
+
+		$loyaltyPoints = 0;
+		$productsData = $cartObj->getAllProductsIncart($cartArr);
+
+		// return response($productsData,400);
+
+		foreach ($productsData as $key => $value) {
+
+			if((int)$value['loyaltyType']==0){
+
+				if(!isset($value['loyalty'])){$value['loyalty']=0;}
+
+				$loyaltyPoints+= $value['count'] * ($value['price'] * $value['loyalty']/100);
+
+			}else{
+
+				$loyaltyPoints+= $value['count'] * $value['loyalty'];
+
+			}
+
+		}
+
+//////
+				
 		foreach($productsInCart as $key=>$product){
 
 			$cartArr['products'][$product["_id"]]['_id'] = new MongoId($product["_id"]);
@@ -946,7 +976,7 @@ jprd($product);
 
 		$cartArr['packages'] = $cartArr['packages'];
 
-
+	
 		try {
 
 			$order = Orders::create($cartArr);
@@ -962,6 +992,22 @@ jprd($product);
 			$order->reference = $reference;
 
 			$order->save();
+
+
+			$isUpdated = User::where('_id', $user->_id)->increment('loyaltyPoints', $loyaltyPoints);
+			$isUpdated = User::where('_id', $user->_id)
+								->push('loyalty', 
+										[
+											"type"=>"credit",
+											"points"=>$loyaltyPoints,
+											"reason"=>[
+												"type"=>"order",
+												"key" => $reference,
+												"comment"=> "You have earned this points by making a purchase on our website"
+											],
+											"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+										]
+									);	
 
 
 			$request->session()->forget('deliverykey');
@@ -1065,8 +1111,6 @@ jprd($product);
 			$product = Products::where('_id', $productKey)->decrement('quantity', $productCount);
 
 		}
-
-
 
 
 		return response(["success"=>true,"message"=>"Cart freezed sucessfully"],200);
