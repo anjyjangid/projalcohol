@@ -1,10 +1,29 @@
-<div class="modal-body alcohal_reapeatorederbody">
+<md-dialog aria-label="Mango (Fruit)" >
+  <form>
+ <md-toolbar>
+      <div class="md-toolbar-tools ">
+   <div class="alcohal_addadress_headercurmain"> </div>
+<span flex></span> 
+        <md-button class="md-icon-button" ng-click="close()"> &times; </md-button>
+        <!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>--> 
+     
+      </div>
+      </md-toolbar>
+        <md-dialog-content>
+<div class=" md-dialog-content alcohaladdadrebody alcohal_reapeatorederbody">
 	<div class="alcohal_reapeatorederbodycvr">
 		<div class="alcohal_reapeatorederbodytitle">Repeat Last Order</div>
 		<div class="alcohal_repeatorderbodytxt">This will add all the items from last order <br />to your shopping cart. Choose “Yes, please!” button to continue. </div>
-		<div class="alcohal_reapeatorederbtnsocvercvr">
-			<div class="alcohal_reapeatorenothnxtxt" ng-click="close()">No, thanks!</div>
-			<button type="button" class="alcohalfooter_repeatorderbtn" ng-click="repeatOrderConfirmed()">YES PLEASE!</button>
-		</div>
+		
 	</div>
 </div>
+  </md-dialog-content>
+    <md-dialog-actions layout="row" class="repaet-layout-height">
+  <div class="alcohal_reapeatorederbtnsocvercvr">
+			
+			<button type="button" class="alcohalfooter_repeatorderbtn" ng-click="repeatOrderConfirmed()">YES PLEASE!</button>
+            <div class="alcohal_reapeatorenothnxtxt" ng-click="close()">No, thanks!</div>
+		</div>
+         </md-dialog-actions>
+    </form>
+</md-dialog>

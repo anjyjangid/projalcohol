@@ -1316,7 +1316,7 @@ ui-sref {
 	padding: 10px;
 	border-radius: 5px;
 	margin-bottom: 18px;
-	width: 257px;
+	width: 236px;
 	margin-right: 19px;
 	cursor: pointer;
 }
@@ -1347,9 +1347,9 @@ ui-sref {
 	box-shadow: 0 0 2px #8d00d4;
 	border: 1px solid #9d9d9d;
 }
-.alcohal_hisryorderboxcvr1:nth-child(2n+2) {
+/*.alcohal_hisryorderboxcvr1:nth-child(2n+2) {
 	margin-right: 0;
-}
+}*/
 .alcohalfooter_shopordershopbtn {
 	font-size: 12px;
 	color: #fff;
@@ -1367,7 +1367,7 @@ ui-sref {
 .modal-body.alcohal_reapeatorederbody {
 	float: left;
 	padding-bottom: 74px;
-	padding-top: 66px;
+	padding-top: 30px;
 	width: 100%;
 }
 .alcohal_reapeatorederbodycvr {
@@ -1394,8 +1394,9 @@ ui-sref {
 	font-weight: 500;
 }
 .alcohal_reapeatorederbtnsocvercvr {
-	width: 60%;
 	margin: 0 auto;
+    padding-bottom: 30px;
+    width: 50%;
 }
 .alcohal_reapeatorenothnxtxt {
 	font-size: 14px;
@@ -1412,7 +1413,7 @@ ui-sref {
 	line-height: 23px;
 	color: #666666;
 	margin-top: 19px;
-	margin-bottom: 68px;
+	margin-bottom: 30px;
 }
 .alcohal_orderhistory2fotter {
 	color: #666666;
@@ -5010,6 +5011,7 @@ md-dialog {
 md-toolbar {
 	background: transparent none repeat scroll 0 0 !important;
 	min-height: 70px;
+	
 }
 .col-sm-4.enter-locationdiv > div {
 	padding-top: 5px;
@@ -5093,4 +5095,14 @@ input::-moz-placeholder {
 	margin:59px auto 0;
 	width:1200px;
 	float:none
+}
+.fullwidth.modifyscroll md-checkbox .md-icon{
+	left:23px;
+	top:10px
+}
+.md-dialog-content.alcohaladdadrebody.alcohal_reapeatorederbody {
+    padding-top: 10px;
+}
+.alcohal_hisryorderboxcvr1:nth-child(3n+3) {
+    margin-right: 0;
 }

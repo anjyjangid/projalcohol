@@ -31,9 +31,33 @@ class GiftCategoryRequest extends Request
             'status' => 'required|integer'            
         ];    
 
-        /*if(!isset($input['coverImage']) || !empty($input['image']['thumb'])){
-            $rules['image.thumb'] = 'required|image|max:5102';
-        }*/
+        if(!isset($input['coverImage']) || !empty($input['image']['thumb'])){
+            $rules['image.thumb'] = '   image|max:5102';
+        }
+
+        if(!isset($input['iconImage']) || !empty($input['image']['iconthumb'])){
+            $rules['image.iconthumb'] = '   image|max:5102';
+        }
+
+        if(isset($input['type']) && $input['type']=='giftcard'){
+            $rules['subTitle'] = 'required';
+            $rules['description'] = 'required';
+            $rules['cards'] = 'required|array|min:1';
+
+            if (isset($input['cards']) && is_array($input['cards']))
+            {
+                foreach ($input['cards'] as $imageKey => $image)
+                {
+                    $ruleKey = 'cards.' . $imageKey;
+                    $rules[$ruleKey . '.value'] = 'required|integer';                    
+                }
+            }
+        }
+
+        if(isset($input['gift_packaging'])){
+            $rules['gift_packaging.value'] = 'required|numeric';
+            $rules['gift_packaging.type'] = 'required|numeric';
+        }
 
         return $rules;
     }

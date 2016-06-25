@@ -42,16 +42,20 @@
 									<input type="text" class="form-control form-filter input-sm" name="name">
 								</td>											
 								<td>
-									<select name="parent" class="form-control form-filter input-sm" ng-model="filtertype">	
-										<option value="">Select</option>
-										<option ng-repeat="cat in category.parentlist" value="{{cat._id}}">{{cat.title}}</option>
+									<select name="category" class="form-control form-filter input-sm" ng-model="filter.category">	
+										<option value="">All categories</option>
+										<option ng-repeat="cat in onlyParent(giftoption.category)" value="{{cat._id}}">{{cat.title}}</option>
+									</select>
+									<select name="subcategory" class="form-control form-filter input-sm">	
+										<option value="">All subcategories</option>
+										<option ng-repeat="cat in onlyChild(giftoption.category,filter.category)" value="{{cat._id}}">{{cat.title}}</option>
 									</select>
 								</td>
 								<td>
 									<select name="status" class="form-control form-filter input-sm">
 										<option value="">Select...</option>
-										<option value="1">Published</option>
-										<option value="0">Not Published</option>
+										<option value="0">Published</option>
+										<option value="1">Not Published</option>
 									</select>
 								</td>																
 								<td>
@@ -75,9 +79,7 @@
 <!-- BEGIN MAIN JS -->
 <script>
 	
-	var scope = angular.element("#list").scope();
-
-	var gcategory = scope.giftoption.category;
+	
 
 	var TableAjax = function () {
 
@@ -107,14 +109,20 @@
 		            },{
 		            	mData: null,
 		            	mRender: function(data, type, full) {	                        	                    	
-		            		//var gtypes = ['Greeting Card','Gift Wrapper','Bags & Basket'];
-		            		return gcategory[data.type];
+		            		var r = '';
+		            		if(data.categorydetail){
+		            			r +=  data.categorydetail.title;
+		            		}
+		            		if(data.subcategorydetail){
+		            			r += ' > '+data.subcategorydetail.title;
+		            		}
+		            		return r;
 	                    },
 		                orderable:false
 		            },{
 		            	mData: null,
 		            	mRender: function(data, type, full) {	                        
-	                    	if(data.status == 1){
+	                    	if(data.status == 0){
 	                    		return '<span class="label label-sm label-success">Published</span>'
 	                    	}else{
 	                    		return '<span class="label label-sm label-info">Not Published</span>'

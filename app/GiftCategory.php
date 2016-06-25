@@ -14,17 +14,28 @@ class GiftCategory extends Eloquent
 
     protected $fillable = [
 		'title',
+        'subTitle',
+        'description',
         'parent',
         'slug',
+        'iconImage',
         'coverImage',
+        'type',
+        'cards',
+        'gift_packaging',
         'status'        
     ];    
 
-    /*public function subcategories() {
-        return $this->hasOne('AlcoholDelivery\GiftCategory', 'parent');
-    }*/
-    
     public function ancestor() {
-        return null;
+        return $this->belongsTo('AlcoholDelivery\GiftCategory', 'parent');
     }
+
+    public function categoryproduct(){
+        return $this->hasMany('AlcoholDelivery\Gift','category');
+    }
+
+    public function subcategoryproduct(){
+        return $this->hasMany('AlcoholDelivery\Gift','subcategory');
+    }   
+    
 }

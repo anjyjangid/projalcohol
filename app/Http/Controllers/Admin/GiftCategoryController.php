@@ -45,6 +45,21 @@ class GiftCategoryController extends Controller
 
         $inputs['status'] = (int)$inputs['status'];
 
+        if(!isset($inputs['type']))
+            $inputs['type'] = 'category';
+
+        if(isset($inputs['cards'])){
+            foreach ($inputs['cards'] as $key => $value) {
+                unset($inputs['cards'][$key]['$$hashKey']);
+                $inputs['cards'][$key]['value'] = (int)$inputs['cards'][$key]['value'];
+            }
+        }
+
+        if(isset($inputs['gift_packaging'])){
+            $inputs['gift_packaging']['type'] = (int)$inputs['gift_packaging']['type'];
+            $inputs['gift_packaging']['value'] = (float)$inputs['gift_packaging']['value'];            
+        }
+
         $model = GiftCategory::create($inputs);
 
         if($model){
@@ -104,11 +119,26 @@ class GiftCategoryController extends Controller
 
         $inputs['status'] = (int)$inputs['status'];
 
-        /*if(isset($inputs['parent']) && $inputs['parent']!=''){
-            $inputs['parent'] = new MongoId($inputs['parent']);
-        }*/
+        if(!isset($inputs['type']))
+            $inputs['type'] = 'category';
+
+        if(isset($inputs['cards'])){
+            foreach ($inputs['cards'] as $key => $value) {
+                unset($inputs['cards'][$key]['$$hashKey']);
+                $inputs['cards'][$key]['value'] = (int)$inputs['cards'][$key]['value'];
+            }
+        }
+
+        
 
         $model = GiftCategory::find($id);
+
+        if(isset($inputs['gift_packaging'])){
+            $inputs['gift_packaging']['type'] = (int)$inputs['gift_packaging']['type'];
+            $inputs['gift_packaging']['value'] = (float)$inputs['gift_packaging']['value'];            
+        }else{
+            $model->unset('gift_packaging');
+        }
 
         if($model){
             $update = $model->update($inputs);
@@ -156,7 +186,13 @@ class GiftCategoryController extends Controller
             }
             $filename = $giftcategory->_id.'.'.$image->getClientOriginalExtension();
             $upload_success = $image->move($destinationPath, $filename);
+
+            $iconimage = @$file['iconthumb'];                        
+            $iconfilename = $giftcategory->_id.'_icon.'.$iconimage->getClientOriginalExtension();
+            $upload_success = $iconimage->move($destinationPath, $iconfilename);
+
             $giftcategory->coverImage = ['source'=>$filename];
+            $giftcategory->iconImage = ['source'=>$iconfilename];
             $giftcategory->save();
         }
     }
@@ -167,6 +203,8 @@ class GiftCategoryController extends Controller
         extract($params);
 
         $model = new GiftCategory;
+
+        $model = $model->where('type','=','category');
 
         if(isset($name) && trim($name)!=''){
             $sval = $name;
@@ -185,25 +223,34 @@ class GiftCategoryController extends Controller
 
         $columns = array('_id','title','parent','status');
 
-        $model = $model
+        $model = $model->with('ancestor')
         ->skip((int)$start)
         ->take((int)$length);
 
         $model = $model->get($columns);
 
-        foreach ($model as $key => $value) {
-            $model[$key]->ancestor = GiftCategory::find($value->parent);
-        }
-
         $response = [
             'recordsTotal' => $iTotalRecords,
             'recordsFiltered' => $iTotalRecords,
             'draw' => $draw,
-            'data' => $model
-            /*'length' => $length,
-            'aaData' => []*/
+            'data' => $model            
         ];
       
         return response($response,200);
+    }
+
+    public function getGiftcard(Request $request){        
+        $model = GiftCategory::where('type','=','giftcard')->first();
+        if($model)
+            return response($model,200);
+        else
+            return response(['No cards found'],404);
+    }
+
+    public function getCategorylist(Request $Request,$pid = null){
+
+        $list = GiftCategory::where('type','=','category')->get();
+        
+        return response($list,200);
     }
 }
