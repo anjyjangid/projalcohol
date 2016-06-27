@@ -998,6 +998,87 @@ AlcoholDelivery.controller('WishlistController',['$scope','$rootScope','$state',
 
 }]);
 
+AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$timeout',function($scope,$http,sweetAlert,$timeout){
+
+	$scope.pagination = {
+
+		start : 0,
+		limit : 1,
+
+	}
+
+	$scope.prev = function(){
+		
+		if($scope.pagination.start==0){
+			return;
+		}
+		$scope.pagination.start--;
+
+	}
+	$scope.next = function(){
+
+		$scope.pagination.start++;
+
+	}
+
+		
+
+	$scope.getLoyalty = function(){
+
+		$scope.process = {
+			fetching:true
+		};
+
+
+		$http.get("loyalty",{params: $scope.pagination}).then(
+
+			function(response){
+
+				$scope.loyalty = response.data;
+
+				$http.get("loyalty/statics").then(
+
+					function(statRes){
+
+						$scope.statics = statRes.data;
+
+					},
+					function(errStatRes){
+
+					}
+				);
+
+			},function(errRes){
+
+				console.log(errRes);
+
+			}
+
+		).finally(function(){
+
+			$timeout(function(){
+				
+				$scope.process.fetching = false;
+
+			},1000)
+			
+		});
+
+	}
+
+	$scope.$watch('pagination',
+		function(newValue, oldValue) {
+
+			$scope.getLoyalty();
+
+		},true
+	);
+
+}]);
+
+AlcoholDelivery.controller('CreditsController',['$scope','$http','sweetAlert',function($scope,$http,sweetAlert){}]);
+
+
 AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$timeout','UserService','sweetAlert','alcoholCart','store',function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $timeout, UserService, sweetAlert, alcoholCart,store){
 
 	$rootScope.storeInitUP = true;
@@ -2626,6 +2707,8 @@ AlcoholDelivery.controller('LoyaltyStoreController', ['$q', '$http', '$scope', '
     	$scope.products = new ScrollPagination();
 
 }]);
+
+
 
 
 AlcoholDelivery.controller('InviteController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll','sweetAlert', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll,sweetAlert){

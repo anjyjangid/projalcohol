@@ -828,6 +828,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						templateUrl: "/templates/account/password.html",
 						controller:"PasswordController"
 				})
+				.state('accountLayout.loyalty', {
+						url: "/loyalty",
+						templateUrl: "/templates/account/loyalty.html",
+						controller:"LoyaltyController"
+				})
 				.state('accountLayout.credits', {
 						url: "/credits",
 						templateUrl: "/templates/account/credits.html",
@@ -913,7 +918,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						}
 				})
 
-				.state('mainLayout.loyaltystore', {						
+				.state('mainLayout.loyaltystore', {
 						url: '/loyalty-store?{filter}&{sort}',
 						templateUrl : "/templates/loyaltyStore.html",
 						params: {pageTitle: 'Loyalty Store'},
