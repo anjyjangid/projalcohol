@@ -55,7 +55,7 @@
 		<link rel="shortcut icon" href="images/favicon.ico"/>		
 	</head>
 	<body ng-controller="AppController">
-
+		<div id="fb-root"></div>
 		
 
         <top-menu></top-menu>
@@ -168,7 +168,7 @@
 	</body>
 
 	<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
-
+	<script type="text/javascript" src="js/social.js"></script>
     <script type="text/javascript" src="{{ asset('bower_components/dropzone/dist/dropzone.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/angular/angular.min.js') }}"></script>

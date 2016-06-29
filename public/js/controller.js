@@ -2043,7 +2043,7 @@ AlcoholDelivery.controller('CartReviewController',['$scope','$rootScope','$http'
 			});
 }]);
 
-AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$stateParams',function($scope,$http,$stateParams){
+AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$stateParams','sweetAlert','SocialSharingService',function($scope,$http,$stateParams,sweetAlert,SocialSharingService){
 
 	$scope.order = $stateParams.order;
 
@@ -2109,7 +2109,44 @@ AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$statePara
 		$scope.aMpM = $scope.dopDate.getHours() > 12 ? 'PM' : 'AM';
 
 
-    });
+    });  
+
+
+    $scope.fbshare = function(){
+
+		SocialSharingService.shareFb({
+
+			key:$scope.orderNumber,
+			type:'order',
+
+		}).then(
+
+			function(resolveRes){
+
+				sweetAlert.swal({
+
+					title: "Sweet!",
+					text: "Here's a custom image.",
+					imageUrl: 'http://54.169.107.156/images/thumbimg.png'
+
+				});
+				
+			},
+			function(rejectRes){
+
+				sweetAlert.swal({
+
+					type:'error',
+					title: 'Oops...',
+					text:'Share not successfully',
+					timer: 2000
+
+				});
+
+			}
+		)
+
+    }
 
 }]);
 
