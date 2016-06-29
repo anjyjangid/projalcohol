@@ -1,4 +1,5 @@
 <nav tscroll class="navbar navbar-default navbar-fixed-top ">
+<div class="main-header-botm-cover">
   <div class="container">
     <div class=" btm10" ng-controller="SearchController as ctrl">
       <div class="searchtop"> 
@@ -29,18 +30,19 @@
         <a ng-click="searchbar(0); openSearch=!openSearch" class="search_close">&times;</a> 
       </div>
       <div class="col-md-2 homecallus_cover"> <a ui-sref="mainLayout.index">
-        <div class="callshape"><img class="" src="images/Shapecall2.png"></div>
+        <div class="callshape">
         <div class="homecallus">Call us now</div>
         <div class="homechilled">9-chilled</div>
         <div class="homechilled">9-2445533</div>
+        </div>
         </a> 
       </div>
       <div class="col-md-10 top-logo-sideacnt-cover text-center">
-        <div class="logoss"> <a ui-sref="mainLayout.index"> <img class="img-responsive logosmall" src="images/logo-small.png"> <img class="img-responsive logolarge" src="images/ad_logo.png"> </a> </div>
+        
         <div class="signuplogin_cover">
           <div class="signuplogin">
             <ul class="menuulpadding">
-              <li ng-hide="user.email"><a data-target="#login" data-toggle="modal" href="javascript:;">login</a></li>
+              <li ng-hide="user.email"><a data-target="#login" data-toggle="modal" href="javascript:;"><span>login</span></a></li>
               <!--<a ng-show="user.email" data-target="#" ng-click="logout()" data-toggle="modal" href="javascript:;" class="username">Hola, {{user.email}}</a>-->
               <li ng:class="{'hideOp':hideOp}" class="dropdown" ng-show="user.email" ng-mouseover="hideOp=false" ng-mouseleave="hideOp=true"> <a href="javascript:;" class="username dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" > Hola, {{user.email}} </a>
                 <ul ng-click="hideOp=true" class="dropdown-menu profil-dropdown">
@@ -48,7 +50,7 @@
                   <li><a href="#" ng-click="logout()">Logout</a></li>
                 </ul>
               </li>
-              <li ng-hide="user.email"><a data-target="#register" data-toggle="modal" href="javascript:;">Signup</a></li>              
+              <li ng-hide="user.email"><a data-target="#register" data-toggle="modal" href="javascript:;"><span>Signup</span></a></li>              
               <alcoholcart-summary></alcoholcart-summary>              
               <li>
                 <a class="search_icon" ng-click="searchbar(1); openSearch=!openSearch" ></a>
@@ -90,7 +92,17 @@
 
               
     </div>
+    <div class="logoss">
+    <div class="logos-inner-cover">
+     <a ui-sref="mainLayout.index">
+     <div class="logo-top-img-main">
+     
+      <img class="img-responsive logosmall" src="images/logo-small.png">
+      
+      
+      <img class="img-responsive logolarge" src="images/ad_logo.png"></div> </a> </div> 
   </div>
+
 </div> 
 <!-- <div id="google_translate_element"></div><script type="text/javascript">
 function googleTranslateElementInit() {

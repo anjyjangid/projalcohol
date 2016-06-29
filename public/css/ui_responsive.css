@@ -3,6 +3,9 @@
 	width: 100%;
 	margin-bottom: 10px;
 }
+.ttile-divcover.cocktail-title-float.ng-scope {
+    float: left;
+}
 .title-propertset {
 	color: #656565;
 	width: 100%;
@@ -894,8 +897,9 @@
 .party-topimgdiv {
 	width: 100%;
 	float: left;
-	overflow: hidden;
-	min-height: 252px;
+	 height: 100%;
+    overflow: hidden;
+    position: relative;
 	border-radius: 4px 4px 0 0;
 	/*position: relative;*//*	transition:all ease .5s ;
 */
@@ -1369,7 +1373,7 @@ body.menu-slider.in #wrapper {
 	background-color: rgba(0,0,0,.2);
 	transition: all .5s ease;
 	display: none;
-	height: 252px;
+	height: 100%;
 	width: 100%;
 	overflow: hidden;
 	opacity: 0
@@ -1480,14 +1484,16 @@ body.menu-slider.in #wrapper {
 }
 
 .dropdown.cart-icon-set span {
-    float: left;
-    padding: 32.5px 5px;
+ 
+    padding: 0 5px;
 }
 
 .navbar-shrink  .dropdown.cart-icon-set span, .navbar-shrink  .dropdown.cart-icon-set span:hover, .navbar-shrink  .dropdown.cart-icon-set span:focus{
-	padding:24.5px 5px;
+	padding:0 5px;
 /*	transition: all 0.5s ease 0s;
-*/}
+
+*/
+display:table-cell}
 
 .credis-table-main{
 	width:100%;
@@ -1598,7 +1604,7 @@ md-dialog {
     padding-right: 9px !important;
 }
 .logoss{
-	min-width:60%
+	/*min-width:60%*/
 }
 .signuplogin_cover{
 	max-width:39%
@@ -1766,6 +1772,53 @@ md-dialog {
 	text-align:center;
 	display:inline-block
 }
+ 
+ .saving-amount-cover {
+    float: left;
+    padding-left: 0;
+    padding-top: 3px;
+    width: 22%;
+}
+.package-amtcover {
+    float: left;
+    width: 28%;
+}
+ .amntrupee-clsdetail{
+	font-size:21px
+}
+.btmcontn-set > a {
+    width: 31%;
+}
+.package-desc.ng-binding {
+    width: 69%;
+}
+ 
+ 
+ .saving-titie-amnt {
+    float: right;
+    padding-left: 0;
+    width: 26%;
+}
+.saving-cocktail-cover span {
+    float: right;
+    padding-right: 13px;
+    text-transform: uppercase;
+    width: auto;
+}
+.cockatil-bodycover{
+	width:58%
+}
+.product-desccocktail.ng-binding {
+    max-width: 75%;
+}
+.moredetail-cocktailtext > a {
+ 
+    width: 25%;
+}
+.party-detail-btm-width{
+	width:33.33%;
+	float: left;
+}
  }
  @media (min-width : 768px) and (max-width : 1023px) {
 .col-md-2.homecallus_cover {
@@ -1780,17 +1833,17 @@ md-dialog {
 	display: inline-block;
 	float: none;
 }
-.menuulpadding > li:nth-child(2) {
+.navbar-fixed-top .signuplogin ul.menuulpadding > li:nth-child(2) {
 	display: none;
 }
-.menuulpadding > li:nth-child(1) {
+.navbar-fixed-top .signuplogin ul.menuulpadding > li:nth-child(1) {
 	display: none;
 }
-.menuulpadding > li:nth-child(3) {
+.navbar-fixed-top .signuplogin ul.menuulpadding > li:nth-child(3) {
 	display: none;
 }
-.menuulpadding > li:nth-child(4) {
-	display: block;
+.navbar-fixed-top .signuplogin ul.menuulpadding > li:nth-child(4) {
+	display: table;
 }
 .signuplogin_cover {
 	width: 19%
@@ -2262,6 +2315,55 @@ md-dialog {
 	text-align:center;
 	display:inline-block
 }
+.saving-amount-cover {
+    float: left;
+    padding-left: 0;
+    padding-top: 3px;
+    width: 20%;
+}
+.package-amtcover {
+    float: left;
+    width: 26%;
+}
+
+.btmcontn-set > a {
+    width: 31%;
+}
+.package-desc.ng-binding {
+    width: 69%;
+}
+.amntrupee-clsdetail{
+	font-size:21px
+}
+.cockatil-bodycover{
+	width:58%
+}
+.product-desccocktail.ng-binding {
+    max-width: 75%;
+}
+.moredetail-cocktailtext > a {
+ 
+    width: 25%;
+}
+.saving-cocktail-cover span {
+    float: right;
+    padding-right: 15px;
+    text-transform: uppercase;
+    width: auto;
+}
+.saving-titie-amnt {
+    float: right;
+    padding-left: 0;
+    width: 28%;
+}
+.cocktail-detail-width{
+	width:25%;
+	float:left
+}
+.party-detail-btm-width{
+	width:33.33%;
+	float: left;
+}
 }
  @media only screen and (max-width : 767px) {
 .col-md-2.homecallus_cover {
@@ -2272,17 +2374,17 @@ md-dialog {
 	width: 125px;
 }
 
-.menuulpadding > li:nth-child(2) {
+.navbar-fixed-top .signuplogin ul.menuulpadding > li:nth-child(2) {
 	display: none;
 }
-.menuulpadding > li:nth-child(1) {
+.navbar-fixed-top .signuplogin ul.menuulpadding > li:nth-child(1) {
 	display: none;
 }
-.menuulpadding > li:nth-child(3) {
+.navbar-fixed-top .signuplogin ul.menuulpadding > li:nth-child(3) {
 	display: none;
 }
-.menuulpadding > li:nth-child(4) {
-	display: block;
+.navbar-fixed-top .signuplogin ul.menuulpadding > li:nth-child(4) {
+	display: table;
 }
 /*.signuplogin_cover {
 	width: 19%
@@ -2604,7 +2706,7 @@ md-dialog {
     margin-left: 4px;
 }
 .img-responsive.logolarge{
-	top:12px
+	top:0
 }
 .navbar-fixed-top.navbar-shrink .text-center .logosmall {
 	left:inherit
@@ -3091,6 +3193,119 @@ ng-map{
 	text-align:center;
 	display:inline-block
 }
+.part-content-btm-desc{
+	padding-left:15px;
+	padding-right:15px;
+}
+.btmcontn-set a{
+	width:25%;
+font-size: 15px;
+    margin: -2px 0;
+}
+.package-desc{
+	width:71%
+}
+
+.customize-text-cover > span {
+    padding-left: 4px;
+}
+.title-propertset{
+	font-size:21px
+}
+.media-body.party-detail-contentcover {
+    padding-left: 0;
+}
+.party-detail-heading{
+	font-size:24px
+}
+.party-detail-btmtitl4 > h4 {
+    font-size: 16px;
+}
+.ttile-divcover.party-deatil-pading5.ng-scope {
+    padding-left: 4px;
+}
+.left-party-content{
+	width:48.8%
+}
+.media-body.cockatil-bodycover {
+    padding-left: 0;
+    width: 48%;
+}
+.media-left.cocktail-leftimgdiv{
+	width:50%;
+	height:100%
+}
+.moredetail-cocktailtext > a {
+    font-size: 15px;
+    margin: 2px 0;
+    width: 25%;
+}
+.product-desccocktail.ng-binding {
+    width: 71%;
+}
+/*.cocktail-cartbtn{
+	text-align:center
+}
+.btn.product_addcart.addcart-detail.cocktail-cart-margintop {
+    display: inline-block;
+    float: none;
+    margin-left: 0;
+    text-align: center;
+}*/
+.cocktail-amntdivcover {
+    float: left;
+    text-align: center;
+    width: 100%;
+}
+.saving-cocktail-cover span{
+	width:auto
+}
+.saving-titie-amnt{
+	width:auto
+}
+.title-propertset {
+    margin-top: 15px;
+}
+.cocktail-detail-width{
+	width:42%;
+	float:left
+}
+/*.product-cocktailtitle.ng-binding {
+    padding-left: 0;
+    width: 100%;
+}*/
+.add-cart-cover {
+    width: 100%;
+}
+.package-amtcover {
+    float: left;
+    width: 70%;
+}
+.saving-amount-cover{
+	width:30%;
+	padding-left:0
+}
+.btmcontn-set a {
+    font-size: 13px;
+    margin: 0px 0;
+    width:29%;
+}
+.amntrupee-clsdetail{
+	font-size:23px
+}
+.title-propertset.ng-binding {
+    font-size: 21px;
+    margin-top: 0;
+}
+.moredetail-cocktailtext > a {
+    font-size: 13px;
+    margin: 2px 0;
+    width: 29%;
+}
+.party-detail-btm-width{
+	width:33.33%;
+	float: left;
+}
 }
 @media only screen and (width : 640px) {
 
@@ -3107,17 +3322,17 @@ ng-map{
 	width: 115px;
 }
 
-.menuulpadding > li:nth-child(2) {
+ .signuplogin ul.menuulpadding  > li:nth-child(2) {
 	display: none;
 }
-.menuulpadding > li:nth-child(1) {
+ .signuplogin ul.menuulpadding > li:nth-child(1) {
 	display: none;
 }
-.menuulpadding > li:nth-child(3) {
+ .signuplogin ul.menuulpadding  > li:nth-child(3) {
 	display: none;
 }
-.menuulpadding > li:nth-child(4) {
-	display: block;
+ .signuplogin ul.menuulpadding  > li:nth-child(4) {
+	display: table;
 }
 .signuplogin_cover {
 	width: 28%
@@ -3507,7 +3722,7 @@ md-content.globalsearch md-autocomplete {
 	line-height:18px;
 }
 .img-responsive.logolarge{
-	top:14px
+	top:0
 }
  
  .profile_form .registeremailcvr{padding-right:0;
@@ -3786,4 +4001,114 @@ margin-right:0;
 .adresfloortxtcvr{
 	width:44%
 }
+.left-party-content{
+	width:100%
 }
+.part-content-btm-desc{
+	padding-left:15px;
+	padding-right:15px;
+}
+.btmcontn-set a{
+	width:25%;
+	margin:2px 0;
+	font-size:11px;
+}
+.package-desc{
+	width:75%
+}
+.saving-amount-cover {
+    float: left;
+    padding-left: 0;
+    padding-top: 3px;
+    width: 45%;
+}
+.package-amtcover {
+    float: left;
+    width: 55%;
+}
+.add-cart-cover {
+    float: left;
+    width: 100%;
+}
+.customize-text-cover > span {
+    padding-left: 4px;
+}
+.title-propertset{
+	font-size:21px;
+	 margin-top: 15px;
+}
+.media-body.party-detail-contentcover {
+    padding-left: 0;
+}
+.party-detail-heading{
+	font-size:24px
+}
+.party-detail-btmtitl4 > h4 {
+    font-size: 16px;
+}
+.ttile-divcover.party-deatil-pading5.ng-scope {
+    padding-left: 4px;
+}
+.media-body.cockatil-bodycover {
+    padding-left: 0;
+    width: 100%;
+}
+.moredetail-cocktailtext > a {
+    font-size: 11px;
+    margin: 2px 0;
+    width: 25%;
+}
+.product-desccocktail.ng-binding {
+    width: 75%;
+}
+/*.cocktail-cartbtn{
+	text-align:center
+}
+.btn.product_addcart.addcart-detail.cocktail-cart-margintop {
+    display: inline-block;
+    float: none;
+    margin-left: 0;
+    text-align: center;
+}*/
+.cocktail-amntdivcover {
+    float: left;
+    text-align: center;
+    width: 100%;
+}
+.saving-cocktail-cover span{
+	width:auto
+}
+.saving-titie-amnt{
+	width:auto
+}
+.cocktail-detail-width{
+	width:100%;
+	float:left;
+	padding: 0 10px;
+}
+md-tabs-canvas.md-paginated {
+    margin: 0 auto;
+    width: 133px;
+}
+.md-tab{
+	min-width:133px;
+	text-align: center;
+}
+.media-body.cockatil-bodycover {
+    padding-left: 0;
+    width: 100%;
+}
+.media-left.cocktail-leftimgdiv{
+	width:100%;
+	height:100%
+}
+.title-propertset.ng-binding{
+	margin-top:15px
+}
+.party-detail-btm-width{
+	width:100%
+}
+.navbar-shrink .dropdown.cart-icon-set span, .navbar-shrink .dropdown.cart-icon-set span:hover, .navbar-shrink .dropdown.cart-icon-set span:focus{
+	display:none
+}
+ }

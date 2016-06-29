@@ -17,7 +17,7 @@
 			      <img  err-src="asset/i/defaultImage.png" class="" ng-src="packages/i/{{packages.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
 			    </a>
 			  	</div>
-				<div class="media-body cocktail-detailcontent party-detail-contentcover">
+				<div class="media-body  party-detail-contentcover">
 					<h4 class="media-heading party-detail-heading">{{packages.title}}</h4>
 					<p class="party-detail-btm-title">{{packages.subTitle}}</p>
 					<p class="party-product-desc">{{packages.description}}</p>
@@ -55,7 +55,7 @@
 								</div></div>
 								<div class="row ">													
 									<div ng-repeat-start="(proKey, pcprod) in packageItem.products" ng:class="{'row':($index!=0 && $index%4==0)}"></div>
-									<div class="col-md-3" ng-click="customizeCocktail(pkgKey, proKey)"> 							
+									<div class="col-md-3 cocktail-detail-width" ng-click="customizeCocktail(pkgKey, proKey)"> 							
 										<div class="thumbnail thumbnailheightset marginset-detailpage" ng:class="{'selectedproductcart':pcprod.cartquantity > 0}">								
 											<div class="caption"> 
 												<h5 class="item-btmtitle">{{ pcprod.name }}</h5>									
@@ -74,7 +74,7 @@
 								<v-accordion id="accordionA" class="vAccordion--default" control="accordionA">        
 							        <v-pane id="{{$index}}" ng-repeat="rstep in packages.recipe">
 						                <v-pane-header id="{{$index}}-header"  aria-controls="{{ ::subpane.id }}-header" class="byz">
-						                <div class="ttile-divcover">
+						                <div class="ttile-divcover cocktail-title-float">
 						                  <h5  class="custmize-contntset recipie-titlediv">{{rstep.step}}</h5></div>
 						                </v-pane-header>
 						                <v-pane-content id="{{$index}}-content" class="btm-contetnrecipie" aria-labelledby="{{ ::subpane.id }}-content">
