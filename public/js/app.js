@@ -767,19 +767,19 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						url: "/orderplaced/{order}",
 						templateUrl: "/templates/orderconfirmation.html",
 						controller:"OrderplacedController",
-						resolve: {
-								deps: ['$ocLazyLoad', function($ocLazyLoad) {
-										return $ocLazyLoad.load({
-												name: 'AlcoholDelivery',
-												insertBefore: '#ng_load_plugins_before',
-												// debug: true,
-												serie: true,
-												files: [
-														'http://w.sharethis.com/button/buttons.js',														
-												]
-										});
-								}]
-						}
+						// resolve: {
+						// 		deps: ['$ocLazyLoad', function($ocLazyLoad) {
+						// 				return $ocLazyLoad.load({
+						// 						name: 'AlcoholDelivery',
+						// 						insertBefore: '#ng_load_plugins_before',
+						// 						// debug: true,
+						// 						serie: true,
+						// 						files: [
+						// 								'http://w.sharethis.com/button/buttons.js',														
+						// 						]
+						// 				});
+						// 		}]
+						// }
 						
 				})
 
@@ -803,6 +803,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 												// debug: true,
 												serie: true,
 												files: [
+												
 														'js/owl.carousel.min.js',
 														'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
 														'js/jquery.switchButton.js',
@@ -1042,8 +1043,11 @@ function ($q, $rootScope, $log, $location) {
             xhrResolutions++;
             updateStatus();
             if(rejection.status == 404){
-				
 				$location.url('/404').replace();
+			};
+
+			if(rejection.status == 401){
+				$location.url('/login').replace();
 			};
 
             return $q.reject(rejection);

@@ -2111,8 +2111,9 @@ AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$statePara
 
     });  
 
+angular.SocialSharing = SocialSharingService;
 
-    $scope.fbshare = function(){
+    $scope.fbShare = function(){
 
 		SocialSharingService.shareFb({
 
@@ -2125,8 +2126,8 @@ AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$statePara
 
 				sweetAlert.swal({
 
-					title: "Sweet!",
-					text: "Here's a custom image.",
+					title: "Awesome!",
+					text: "Share successfully! Loyalty points are credit to your account",
 					imageUrl: 'http://54.169.107.156/images/thumbimg.png'
 
 				});
@@ -2138,7 +2139,7 @@ AlcoholDelivery.controller('OrderplacedController',['$scope','$http','$statePara
 
 					type:'error',
 					title: 'Oops...',
-					text:'Share not successfully',
+					text:rejectRes.message,
 					timer: 2000
 
 				});

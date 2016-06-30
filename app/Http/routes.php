@@ -118,10 +118,10 @@ Route::put('deploycart/{cartKey}','CartController@deploycart');
 Route::put('confirmorder/{cartKey}','CartController@confirmorder');
 Route::get('freezcart','CartController@freezcart');
 
-Route::group(['prefix' => 'loyalty', 'middleware' => 'auth'], function () {
+Route::group(['middleware' => 'auth'], function () {
 
-	Route::resource('/', 'LoyaltyController');
-	Route::controller('/', 'LoyaltyController');
+	Route::resource('loyalty', 'LoyaltyController');
+	Route::controller('loyalty', 'LoyaltyController');
 
 });
 

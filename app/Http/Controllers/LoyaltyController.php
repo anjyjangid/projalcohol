@@ -104,9 +104,29 @@ class LoyaltyController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Request $request, $id)
+	public function update(Request $request, $type)
 	{
-		//
+		$params = $request->all();
+		$params['for'] = $type;
+		
+		switch($type){
+
+			case 'sharing':
+				
+				$isSet = $this->loyaltyModel->setUserLoyalty($this->user->_id,$params);
+
+				if($isSet->success){
+
+					return response(['message'=>"Loyalty points credit to account"],200);
+
+				}
+
+				return response(['message'=>$isSet->message],400);
+				
+			break;
+
+		}
+		
 	}
 
 	/**
