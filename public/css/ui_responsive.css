@@ -1819,6 +1819,14 @@ md-dialog {
 	width:33.33%;
 	float: left;
 }
+.edit_del_icondiv {
+    display: block;
+}
+ 
+ .homecallus_cover {
+    width: 19%;
+}
+ 
  }
  @media (min-width : 768px) and (max-width : 1023px) {
 .col-md-2.homecallus_cover {
@@ -1846,7 +1854,7 @@ md-dialog {
 	display: table;
 }
 .signuplogin_cover {
-	width: 19%
+	width: 20%
 }
 .side-menu-responsive {
 	left: 0;
@@ -2144,7 +2152,7 @@ md-dialog {
 	display: block
 }
 .dropdown.cart-icon-set span{
-	display:none
+	display:table-cell
 }
 .rgrhtdiv {
     margin-right: 10px;
@@ -2363,6 +2371,33 @@ md-dialog {
 .party-detail-btm-width{
 	width:33.33%;
 	float: left;
+}
+
+.navbar.navbar-default.navbar-fixed-top.navbar-shrink .signuplogin .dropdown:hover .cart_icon {
+    background: #e1b11f url("../images/sprite.png") no-repeat scroll -338px 25px;
+}
+.edit_del_icondiv {
+    display: block;
+}
+.navbar-fixed-top.navbar-shrink .hamburger{
+top:23px;
+}
+.col-md-10.top-logo-sideacnt-cover.text-center{
+	 width:100%
+ }
+ .hamburger{
+	 left:15px;
+	  top:40px;
+ }
+ .img-responsive.logolarge{
+	 position:relative;
+	 top:0
+ }
+ .img-responsive.logosmall {
+   
+    position: relative;
+    top: 0;
+	
 }
 }
  @media only screen and (max-width : 767px) {
@@ -2695,7 +2730,7 @@ md-dialog {
 	display: block
 }
 .dropdown.cart-icon-set span{
-	display:none
+	display:table-cell
 	
 }
 #wrapper > div{
@@ -3305,6 +3340,34 @@ font-size: 15px;
 .party-detail-btm-width{
 	width:33.33%;
 	float: left;
+}
+.edit_del_icondiv {
+    display: block;
+}
+.navbar-fixed-top.navbar-shrink .hamburger{
+top:23px;
+}
+.yelo_btn{
+	padding:6px 15px;
+}
+.col-md-10.top-logo-sideacnt-cover.text-center{
+	 width:100%
+ }
+ .hamburger{
+	 left:15px;
+	 top:40px;
+ }
+ .img-responsive.logolarge{
+	 position:relative
+ }
+ .navbar-fixed-top .logos-inner-cover{
+	 min-width:auto
+ }
+ .img-responsive.logosmall {
+    left: 0;
+    position: relative;
+    top: 0;
+	
 }
 }
 @media only screen and (width : 640px) {
@@ -4111,4 +4174,11 @@ md-tabs-canvas.md-paginated {
 .navbar-shrink .dropdown.cart-icon-set span, .navbar-shrink .dropdown.cart-icon-set span:hover, .navbar-shrink .dropdown.cart-icon-set span:focus{
 	display:none
 }
+.yelo_btn{
+	padding:6px 20px;
+}
+ 
+ 
+ 
+ 
  }

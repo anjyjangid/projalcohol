@@ -51,26 +51,26 @@
 						<div class="checkoutstep5right-middle ">
 							<div class="checkoutstep5right-middle-first">
 								<div class="checkoutstep5right-middle-title">Subtotal <span class=""></span></div>
-								<div class="checkboxtotaldiv-text">{{alcoholCart.getSubTotal() | currency:settings.general.currency:2}}</div>
+								<div class="checkboxtotaldiv-text-font-size">{{alcoholCart.getSubTotal() | currency:settings.general.currency:2}}</div>
 							</div>
 							<div class="checkoutstep5right-middle-first">
 								<div class="checkoutstep5right-middle-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
 								
-								<div class="checkboxtotaldiv-text" ng-if="!cart.delivery.charges">Free</div>
-		<div class="checkboxtotaldiv-text" ng-if="cart.delivery.charges>0">{{alcoholCart.getDeliveryCharges() | currency:settings.general.currency:2 }}</div>
+								<div class="checkboxtotaldiv-text-font-size" ng-if="!cart.delivery.charges">Free</div>
+		<div class="checkboxtotaldiv-text-font-size" ng-if="cart.delivery.charges>0">{{alcoholCart.getDeliveryCharges() | currency:settings.general.currency:2 }}</div>
 							</div>
 							<div class="checkoutstep5right-middle-first">
 								<div class="checkoutstep5right-middle-title">Service Charge <span class=""><img src="images/questionimg.png"></span></div>
-								<div class="checkboxtotaldiv-text">{{alcoholCart.getAllServicesCharges() | currency:settings.general.currency:2}}</div>
+								<div class="checkboxtotaldiv-text-font-size">{{alcoholCart.getAllServicesCharges() | currency:settings.general.currency:2}}</div>
 							</div>
 							<div class="checkoutstep5right-middle-first">
 								<div class="checkoutstep5right-middle-title" >Discount (Non-Chilled) <span class=""><img src="images/questionimg.png"></span></div>
-								<div class="checkboxtotaldiv-text" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount() | currency:settings.general.currency:2}}</div>
+								<div class="checkboxtotaldiv-text-font-size" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount() | currency:settings.general.currency:2}}</div>
 							</div>
 						</div>
 						<div class="checkoutstep5right-buttom">
 							<div class="checkoutstep5right-bottom-title">Total</div>
-							<div class="checkboxtotaldiv-text">{{alcoholCart.getCartTotal() | currency:settings.general.currency:2}}</div>
+							<div class="checkboxtotaldiv-text-botm-text">{{alcoholCart.getCartTotal() | currency:settings.general.currency:2}}</div>
 						</div>
 					</div>
 				</div>
