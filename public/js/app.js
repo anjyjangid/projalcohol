@@ -293,49 +293,44 @@ AlcoholDelivery.factory("UserService", ["$q", "$timeout", "$http", function($q, 
 }]);
 
 
-AlcoholDelivery.factory('Search', function($http) {
-  var Search = function(keyword,filter,sortby) {
+AlcoholDelivery.factory('ScrollPaging', function($http) {
+  var ScrollPaging = function(args,url) {
     this.items = [];
-    this.busy = false;
-    this.skip = 0;
-    this.keyword = keyword;
-    this.take = 2;
+    this.busy = false;    
     this.limitreached = false;
-    this.totalResult = 0;
-    this.filter = filter;
-    this.sortby = sortby;
+    this.totalResult = 0;    
+    this.url = url;    
+    this.params = args;    
+    this.params.skip = 0;
+    this.data = {};
+    //SET DEFAULT LIMIT IF NOT SPECIFIED
+    if(!this.params.take)
+    	this.params.take = 10;
   };
 
-  Search.prototype.nextPage = function() {
+  ScrollPaging.prototype.nextPage = function() {
     if (this.busy || this.limitreached) return;
     this.busy = true;
-
-    $http.get('/site/searchlist',{
-    	params : {
-    		keyword:this.keyword,
-	    	skip:this.skip,
-	    	take:this.take,
-	    	filter:this.filter,
-	    	sortby:this.sortby
-	    }
+    $http.get(this.url,{
+    	params : this.params
     }).then(function(result){
-		var items = result.data.products;
-		this.totalResult = result.data.total;
+		this.data = result.data;
+		var items = result.data.items;
+		this.totalResult = result.data.total;		
 		for (var i = 0; i < items.length; i++) {
 			this.items.push(items[i]);
 		}
 		this.busy = false;
-		if(result.data.products.length < parseInt(this.take)){
+		if(result.data.items.length < parseInt(this.params.take)){
 			this.limitreached = true;
 		}else{
-			this.skip+= parseInt(this.take);
+			this.params.skip+=parseInt(this.params.take);
 		}
 
 	}.bind(this));
-
   };
 
-  return Search;
+  return ScrollPaging;
 
 });
 
@@ -932,6 +927,37 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								}]
 						}
 				})
+
+				.state('mainLayout.giftcategory', {
+					url: "/gifts/{categorySlug}?/{type}",
+					templateUrl : '/templates/gifts/index.html',
+					controller: 'GiftCategoryController',
+					resolve: {
+						deps: ['$ocLazyLoad', function($ocLazyLoad) {
+							return $ocLazyLoad.load({
+								name: 'AlcoholDelivery',
+								insertBefore: '#ng_load_plugins_before',
+								// debug: true,
+								serie: true,
+								files: [
+									'bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
+								]
+							});
+						}]
+					}					
+				})
+
+				.state('mainLayout.gift', {
+					url: "/gifts/product/{giftid}",
+					templateUrl : '/templates/gifts/giftdetail.html',
+					controller: 'GiftController'										
+				})
+
+				.state('mainLayout.giftcards', {
+					url: "/giftcards/addgiftcard",
+					templateUrl : '/templates/gifts/giftcard.html',
+					controller: 'GiftCardController'										
+				})								
 
 				.state('mainLayout.category', {
 						abstract : true,

@@ -209,8 +209,8 @@ class GiftController extends Controller
         return response($response,200);
     }
 
-    public function test(Request $request){
+    /*public function test(Request $request){
         $model = Gift::with('categorydetail')->first();
         return dd($model);
-    }    
+    }*/    
 }

@@ -1,4 +1,6 @@
-AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", function($scope, $rootScope,$http,$mdToast,categoriesFac) {
+AlcoholDelivery.controller('AppController', 
+	['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog",
+	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog) {
 
 	$scope.AppController = {};
 	$scope.featuredProduct = [];
@@ -154,6 +156,34 @@ AlcoholDelivery.controller('AppController', ['$scope', '$rootScope','$http', "$m
 		// };
 
     // Toast Settings
+
+    $scope.giftPopup = function(ev) {
+	    $mdDialog.show(
+	    	{
+				controller: function($scope, $rootScope,$mdDialog, $http) {					
+					$scope.gift = {
+						types:[]
+					};
+					$scope.processinggift = true;
+
+					$http.get('/giftcategory').success(function(result){
+						$scope.gift.types = result;
+						$scope.processinggift = false;
+					}).error(function(){
+						$scope.processinggift = false;
+					});
+
+					$scope.hide = function() {
+						$mdDialog.hide();
+					};					
+				},
+				templateUrl: '/templates/partials/gift-packaging-popup.html',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: true
+			}
+		)
+	};	
 
 }]);
 
@@ -1017,22 +1047,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 		}
 	);
 
-	$scope.showAlert = function(ev) {
-	    $mdDialog.show(
-	    	{
-				controller: function($scope, $rootScope,$mdDialog, $http) {
-
-					$scope.hide = function() {
-						$mdDialog.hide();
-					};
-				},
-				templateUrl: '/templates/partials/gift-packaging-popup.html',
-				parent: angular.element(document.body),
-				targetEvent: ev,
-				clickOutsideToClose: true
-			}
-		)
-	};
+	
 
 	$scope.smoke = {
 
@@ -2517,8 +2532,8 @@ AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$
 }]);
 
 AlcoholDelivery.controller('SearchController', [
-	'$timeout', '$q', '$log', '$http', '$state', '$scope', '$rootScope', '$timeout', '$anchorScroll', '$stateParams', 'Search',
-	function($timeout, $q, $log, $http, $state, $scope, $rootScope, $timeout, $anchorScroll, $stateParams, Search){
+	'$timeout', '$q', '$log', '$http', '$state', '$scope', '$rootScope', '$timeout', '$anchorScroll', '$stateParams', 'ScrollPaging',
+	function($timeout, $q, $log, $http, $state, $scope, $rootScope, $timeout, $anchorScroll, $stateParams, ScrollPaging){
 
 		$scope.AppController.category = "";
 		$scope.AppController.subCategory = "";
@@ -2540,10 +2555,7 @@ AlcoholDelivery.controller('SearchController', [
 	    self.searchTextChange   = searchTextChange;
 	    self.submitQuery   = submitQuery;
 
-	    self.openSuggestions = function(){
-	    	console.log('working,,');
-	    }
-
+	    
     // ******************************
     // Internal methods
     // ******************************
@@ -2606,10 +2618,13 @@ AlcoholDelivery.controller('SearchController', [
 
 	if($stateParams.keyword){
     	if($stateParams.keyword!=''){
-    		$scope.keyword = $stateParams.keyword;
-    		$scope.filter = $stateParams.filter;
-    		$scope.sortby = $stateParams.sort;
-			$scope.products = new Search($stateParams.keyword,$stateParams.filter,$stateParams.sort);
+    		$scope.args = {
+    			keyword:$stateParams.keyword,
+    			filter:$stateParams.filter,
+    			sortby:$stateParams.sort    			
+    		}    		
+    		$scope.url = '/site/searchlist';
+			$scope.products = new ScrollPaging($scope.args,$scope.url);
     	}
     }
 
@@ -2654,3 +2669,68 @@ AlcoholDelivery.controller('InviteController', ['$scope', '$rootScope','$state',
 	}
 
 }]);
+
+AlcoholDelivery.controller('GiftCategoryController', [
+	'$q', '$http', '$scope', '$stateParams', 'ScrollPaging', 
+	function($q, $http, $scope, $stateParams,ScrollPaging){
+		
+
+		$scope.subCategory = '';
+
+		if($stateParams.type){
+			$scope.subCategory = $stateParams.type;
+		}
+
+		$scope.AppController.category = 'gifts';
+		$scope.AppController.subCategory = $scope.subCategory;
+		$scope.AppController.showpackage = false;		
+		
+		$scope.args = {
+			category:$stateParams.categorySlug,
+			subcategory:$stateParams.type			
+		}    		
+		$scope.url = '/giftcategory/listproducts';		
+		
+		$scope.giftproducts = new ScrollPaging($scope.args,$scope.url);			
+		
+}]);
+
+AlcoholDelivery.controller('GiftController', [
+	'$q', '$http', '$scope', '$stateParams', '$rootScope',
+	function($q, $http, $scope, $stateParams, $rootScope){
+		$rootScope.appSettings.layout.pageRightbarExist = false;
+
+		$scope.gift = {
+			
+		}
+
+		if($stateParams.giftid){
+
+			$http.get('/gift/'+$stateParams.giftid).success(function(result){
+				$scope.gift = result;
+			}).error(function(err){
+
+			});
+
+		}
+}]);
+
+AlcoholDelivery.controller('GiftCardController', [
+	'$q', '$http', '$scope', '$stateParams', '$rootScope',
+	function($q, $http, $scope, $stateParams, $rootScope){
+		
+		$rootScope.appSettings.layout.pageRightbarExist = false;
+
+		$scope.gift = {}	
+
+		$http.get('/giftcategory/giftcard').success(function(result){
+			
+			$scope.gift = result;			
+			$scope.gift.reciepient = {price:$scope.gift.cards[0].value,quantity:1};
+
+		}).error(function(err){
+
+		});
+
+		
+}]);		

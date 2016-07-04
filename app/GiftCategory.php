@@ -30,6 +30,10 @@ class GiftCategory extends Eloquent
         return $this->belongsTo('AlcoholDelivery\GiftCategory', 'parent');
     }
 
+    public function child() {
+        return $this->hasMany('AlcoholDelivery\GiftCategory', 'parent');
+    }
+
     public function categoryproduct(){
         return $this->hasMany('AlcoholDelivery\Gift','category');
     }

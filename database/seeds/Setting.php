@@ -214,7 +214,7 @@ class Setting extends Seeder
             ]
         ]);*/
 
-        AlcoholDelivery\Setting::create([
+        /*AlcoholDelivery\Setting::create([
             '_id' => 'pricing',            
             'settings' => [
                 'express_delivery_bulk' => [
@@ -284,5 +284,26 @@ class Setting extends Seeder
                 ]
             ],
         ]);
+        */
+        AlcoholDelivery\Setting::create([
+            '_id' => 'loyalty',
+            'settings' => [
+                'order_sharing' => [
+                    'title' => 'Order Sharing',
+                    'value' => '10.50'
+                ],
+                'site_sharing' => [
+                    'title' => 'General website sharing',
+                    'value' => '10'
+                ],
+                'point_value' => [
+                    'title' => 'Loyalty Points Value',
+                    'point' => 2,
+                    'value' => '0.5'
+                ]
+            ],
+        ]);
+
+
     }
 }
