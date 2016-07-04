@@ -171,7 +171,8 @@ AlcoholDelivery.directive('sideBar', function() {
 			};
 
 			$scope.openMenu = function(){
-				angular.element('#wrapper').toggleClass('toggled');
+				mymenu.toggle('slidebar-1');
+				//angular.element('#wrapper').toggleClass('toggled');
 			}			
 			//FACEBOOK LOGIN
 			$scope.loginToggle = function() {      
@@ -269,8 +270,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 .directive("tscroll", function ($window) {
     return function(scope, element, attrs) {
-        angular.element($window).bind("scroll", function() {
-
+        angular.element($window).bind("scroll", function() {        	
              if(element.hasClass('fixh')) return;
 
              if (this.pageYOffset >= 1) {
@@ -1087,4 +1087,59 @@ console.log(isChild);
             });
         }
     };
-});
+
+}).directive('twitterShareBtn',["SocialSharingService","sweetAlert",
+    function(SocialSharingService,sweetAlert) {
+        return {
+            link: function(scope, element, attr) {
+                setTimeout(function() {
+                        twttr.widgets.createHashtagButton(
+                            attr.url,
+                            element[0],
+                            function(el) {}, {
+                                count: 'none',
+                                text: "I have made a purchase on alcoholdelivery",
+                                url: "http://54.169.107.156",
+                                screen_name : "orderShare",
+                                via : "alcoholdelivery.com"
+                            }
+                        );
+
+						twttr.events.bind('tweet',function (event) {
+							SocialSharingService.shareTwitter({
+
+								key:'ADSG37171O1022',
+								type:'order',
+
+							}).then(
+
+								function(resolveRes){
+
+									sweetAlert.swal({
+
+										title: "Awesome!",
+										text: "Share successfully! Loyalty points are credit to your account",
+										imageUrl: 'http://54.169.107.156/images/thumbimg.png'
+
+									});
+									
+								},
+								function(rejectRes){
+
+									// sweetAlert.swal({
+
+									// 	type:'error',
+									// 	title: 'Oops...',
+									// 	text:rejectRes.message,
+									// 	timer: 2000
+
+									// });
+
+								}
+							)
+						});
+                });
+            }
+        }
+    }
+]);

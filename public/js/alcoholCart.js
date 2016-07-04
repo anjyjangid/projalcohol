@@ -1,6 +1,4 @@
 AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', '$mdToast', 'alcoholCartItem', 'alcoholCartPackage','promotionsService','alcoholCartPromotion', function ($rootScope, $window, $http, $q, $mdToast, alcoholCartItem, alcoholCartPackage, promotionsService, alcoholCartPromotion) {
-	
-	angular.cart = this;
 
 	this.init = function(){
 		

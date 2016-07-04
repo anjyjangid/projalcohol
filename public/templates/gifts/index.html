@@ -1,0 +1,35 @@
+<div class="combo_slider combo_sliderProduct">
+    <div class="productbeerfiltertopcover">
+        <div class="productbeerfiltertoptitle text-capitalize">{{giftproducts.data.categoryData.title}}</div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-3 col-md-3" ng-if="giftproducts.data.categoryData.child.length>0">
+                <a ui-sref="mainLayout.giftcategory({categorySlug:giftproducts.data.categoryData.slug,type:null})" ng-class="{'active':AppController.subCategory==''}">All Types</a>
+            </div>
+            <div class="col-xs-12 col-sm-3 col-md-3 text-capitalize" ng-repeat="childCat in giftproducts.data.categoryData.child">
+                <a ui-sref="mainLayout.giftcategory({categorySlug:giftproducts.data.categoryData.slug,type:childCat.slug})" ng-class="{'active':AppController.subCategory==childCat.slug}">{{childCat.title}}</a>
+            </div>
+        </div>
+    </div>            
+    <div class="tabbable"> <!-- Only required for left/right tabs -->
+        <div class="fullwidth">    
+            <ul class="nav nav-tabs productcomboul">                
+            </ul>                          
+        </div>
+        <div infinite-scroll='giftproducts.nextPage()' infinite-scroll-disabled='giftproducts.busy' infinite-scroll-distance='1'>        
+            <div  ng-repeat="gift in giftproducts.items" class="col-xs-12 col-sm-3 col-md-3 comboproductitems">    
+                <a ui-sref="mainLayout.gift({giftid:gift._id})" class="core-block">        
+                    <div class="prod_pic">              
+                        <img class="img-responsive" err-src="asset/i/defaultImage.png" ng-src="gifts/i/{{gift.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+                    </div>
+                    <div class="prod_desc">{{gift.title}}</div>            
+                    <div class="prodcombo_addtocartbutton">
+                        <img src="images/addtocart.png" class="img-responsive">
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="fullwidth">
+        <div class="order-fetching" ng-show='giftproducts.busy' align="center"></div>
+    </div>
+</div>

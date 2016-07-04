@@ -13,18 +13,17 @@
  */
 
 html, body, [canvas=container], [off-canvas] {
-	/*margin: 0;
-	padding: 0;*/
+	margin: 0;
+	padding: 0;
 	-webkit-box-sizing: border-box;
 	   -moz-box-sizing: border-box;
-	        box-sizing: border-box;
+	        box-sizing: border-box;	
 }
 
 html, body {
 	width: 100%;
 	height: 100%;
-	/*overflow: hidden;
-	overflow-y: auto;*/
+	overflow: hidden;
 }
 
 /**
@@ -40,7 +39,7 @@ html, body {
 	height: 100%;
 	overflow-y: auto;
 	position: relative;
-	 /* Basic background color, overwrite this in your own css. */
+	/*background-color: white;*/ /* Basic background color, overwrite this in your own css. */
 	-webkit-overflow-scrolling: touch; /* Enables momentum scrolling on iOS devices, may be removed by setting to 'auto' in your own CSS. */
 }
 
@@ -59,7 +58,7 @@ html, body {
 	position: fixed;
 	overflow: hidden;
 	overflow-y: auto;
-	background-color: black; /* Basic background color, overwrite this in your own css. */
+	background-color: #333; /* Basic background color, overwrite this in your own css. */
 	color: white; /* Basic colors, overwrite this in your own css. */
 	-webkit-overflow-scrolling: touch; /* Enables momentum scrolling on iOS devices, may be removed by setting to 'auto' in your own CSS. */
 }

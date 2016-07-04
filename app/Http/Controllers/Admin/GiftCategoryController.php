@@ -170,7 +170,7 @@ class GiftCategoryController extends Controller
      */
     public function getAllparent(Request $request){
 
-        $model = GiftCategory::whereNull('parent')->get();
+        $model = GiftCategory::where('type','=','category')->whereNull('parent')->get();
 
         return response($model,200);
 
@@ -178,23 +178,25 @@ class GiftCategoryController extends Controller
 
     public function saveImage($giftcategory,$file){        
 
-        if(isset($file['thumb'])){
-            $image = @$file['thumb'];
-            $destinationPath = storage_path('giftcategory');
-            if (!File::exists($destinationPath)){
-                File::MakeDirectory($destinationPath,0777, true);
-            }
+        
+        $destinationPath = storage_path('giftcategory');
+        if (!File::exists($destinationPath)){
+            File::MakeDirectory($destinationPath,0777, true);
+        }            
+        $image = @$file['thumb'];
+        if($image){
             $filename = $giftcategory->_id.'.'.$image->getClientOriginalExtension();
             $upload_success = $image->move($destinationPath, $filename);
-
-            $iconimage = @$file['iconthumb'];                        
+            $giftcategory->coverImage = ['source'=>$filename];
+        }            
+        $iconimage = @$file['iconthumb'];                        
+        if($iconimage){
             $iconfilename = $giftcategory->_id.'_icon.'.$iconimage->getClientOriginalExtension();
             $upload_success = $iconimage->move($destinationPath, $iconfilename);
-
-            $giftcategory->coverImage = ['source'=>$filename];
             $giftcategory->iconImage = ['source'=>$iconfilename];
-            $giftcategory->save();
-        }
+        }            
+        $giftcategory->save();
+        
     }
 
     public function postListcategories(Request $request){

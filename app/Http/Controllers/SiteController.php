@@ -145,7 +145,7 @@ class SiteController extends Controller
         $products = $products->skip($skip)->take($take)->get();        
 
         $response = [
-            'products' => $products,
+            'items' => $products,
             'total' => $totalItem,
         ];
 

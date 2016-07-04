@@ -1,0 +1,61 @@
+<div class="productdetailbrudcumcover">
+	<a ui-sref="/">Home</a>
+	<img src="images/productdetail2.png">
+	<a>Gift Packaging</a>
+	<img src="images/productdetail2.png">
+	<a>{{gift.title}}</a>	
+</div>
+<!-- <pre>{{packages|json}}</pre> -->
+<div class="productdetailbrudcumcover">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="media cocktaildetail-cover">
+				<div class="media-left">
+					<img err-src="asset/i/defaultImage.png" ng-src="giftcategory/i/{{gift.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+				</div>
+				<div class="media-body party-detail-contentcover">
+					<h4 class="media-heading party-detail-heading">{{gift.title}}</h4>
+					<!-- <p class="party-detail-btm-title">{{gift.subTitle}}</p> -->
+					<p class="party-product-desc">{{gift.description}}</p>    										
+					
+					<div>
+						Select an amount
+						<button ng:class="{'btn-success':gift.reciepient.price == slots.value}" class="btn default" ng-repeat="slots in gift.cards" ng-click="gift.reciepient.price = slots.value">
+							${{slots.value}}
+						</button>
+					</div>
+
+                	<div ng:class="{'has-error':errors.emails}">
+				      <label>To</label>
+				      <input type="text" placeholder="Reciepient's name" ng-model="gift.reciepient.name" class="alcohalrestertextbox form-control">
+				      <input type="text" placeholder="Reciepient's email" ng-model="gift.reciepient.email" class="alcohalrestertextbox form-control">
+				      <span class="help-block" ng-bind="carterror.emails"></span>        
+				    </div>
+			    	<div ng:class="{'has-error':errors.message}">
+				      <label>Message <span align="right">Max. characters : 200</span></label>
+				      <textarea ng-model="gift.reciepient.message" class="alcohalrestertextbox form-control"></textarea>        
+				      <span class="help-block" ng-bind="carterror.message"></span>        
+				    </div>
+				    <div>
+						<md-checkbox ng-true-value="1" ng-false-value="0" ng-model="gift.reciepient.sms" aria-label="Mobile SMS">
+						 	Mobile SMS
+						</md-checkbox>
+						<div ng-if="gift.reciepient.sms == 1">
+					      <input type="text" placeholder="Phone number" ng-model="gift.reciepient.mobile" class="alcohalrestertextbox form-control">					      
+					      <span class="help-block" ng-bind="carterror.emails"></span>        
+					    </div>
+				    </div>
+				    <p class="packtiti-rightset packag-amnt-divcolr">Price</p>
+			    	<h3 class="amntrupee-clsdetail">{{(gift.reciepient.price*gift.reciepient.quantity)  | currency}}</h3>
+			    	<div class="checkoutmiddlevlauediv party-checkout-detail">
+			    	<input type="text" value="gift.reciepient.quantity" ng-model="gift.reciepient.quantity" mquantity="10" min="1" ng-touch-spin>
+			    	</div>
+			    	<div class="quantiy-party-detail add-cart-btm">
+			    		<a class="btn product_addcart addcart-detail" ng-if="!processing" ng-click="addPackage()"><img src="images/cart-icon.png" />{{btnText}}</a>
+	    				<a class="btn product_addcart addcart-detail" ng-if="processing"><i class="fa fa-spinner fa-spin"></i> {{btnText}}</a>	
+			    	</div>
+				</div>
+			</div>			
+		</div>	
+	</div>
+</div>		
