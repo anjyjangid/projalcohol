@@ -6,9 +6,10 @@ use Illuminate\Http\Request;
 
 use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
-use AlcoholDelivery\Products;
-use DateTime;
-class SiteController extends Controller
+use AlcoholDelivery\GiftCategory;
+use AlcoholDelivery\Gift;
+
+class GiftCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +18,13 @@ class SiteController extends Controller
      */
     public function index()
     {
-        //
+        $model = new GiftCategory;
+        $list = $model->where(['status'=>0,'parent'=>null])->get();
+
+        if($list)
+            return response($list,200);
+        else
+            return response(['No record found.'],404);
     }
 
     /**
@@ -86,69 +93,55 @@ class SiteController extends Controller
         //
     }
 
-    public function getSearch(Request $request,$keyword){        
-        
-        $products = new Products;
-
-        if(isset($keyword) && trim($keyword)!=''){            
-            $products = $products->where('name','regexp', "/.*$keyword/i")->where('status',1);
-        }
-
-        $products = $products->skip(0)->take(10)->get();        
-
-        return response($products,200);
-    }
-
-    public function getSearchlist(Request $request){
+    public function getListproducts(Request $request){
         
         $params = $request->all();
 
-        extract($params);    
+        extract($params);
 
-        $products = new Products;
+        $model = new GiftCategory;
 
-        $products = $products->where('status',1);
+        $itemsModel = new Gift;
 
-        if(isset($keyword) && trim($keyword)!=''){            
-            $products = $products->where('name','regexp', "/.*$keyword/i");
+        $totalItem = 0;
+
+        $condition = ['status'=>0];
+
+        if(isset($category)){
+            $model = $model->with('child')->where(['slug'=>$category,'status'=>0,'type'=>'category','parent'=>null])->first();
+            
+            if($model)
+                $condition['category'] = $model->_id;
+        }  
+
+        if(isset($subcategory)){
+           $submodel = GiftCategory::where(['slug'=>$subcategory,'status'=>0,'type'=>'category','parent'=>$model->_id])->first(); 
+           if($submodel)
+                $condition['subcategory'] = $submodel->_id;
         }
 
-        if(isset($loyalty) && $loyalty){
-            $products = $products->where('isLoyalty',"1");
-        }
-
-        if(isset($filter) && trim($filter)!=''){
-
-            switch ($filter) {
-                case 'new':
-                    $products = $products->where('created_at', '>', new DateTime('-1 months'));
-                    break;
-                case 'in-stock':
-                    $products = $products->where('quantity','>',0);
-                    break;
-                default:
-                    # code...
-                    break;
-            }
-        }
-
-        if(isset($sortby) && trim($sortby)!=''){
-            $products = $products->orderBy('price', $sortby);
-        }else{
-            $products = $products->orderBy('created_at','desc');
-        }
-
-        $totalItem = $products->count();
-
-        
-
-        $products = $products->skip($skip)->take($take)->get();        
+        if($model->_id){
+            $itemsModel = $itemsModel->where($condition);
+            $totalItem = $itemsModel->count();
+            $itemsModel = $itemsModel->skip($skip)->take($take)->get(['_id','title','coverImage']);                
+        }     
 
         $response = [
-            'items' => $products,
+            'items' => $itemsModel,
+            'categoryData' => $model,
             'total' => $totalItem,
         ];
 
         return response($response,200);
+    }
+
+    public function getGiftcard(Request $request){
+
+        $data = $request->all();
+
+        $model = GiftCategory::where('type','!=','category')->first();
+
+        return response($model,200);         
+
     }
 }

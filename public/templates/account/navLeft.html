@@ -3,31 +3,47 @@
   <div class="pic_divinnertag"><img src="images/cartpicn.png"></div>
   <div class="pic_divinnertext">
     <div class="pic_divinnertextbold">Orders</div>
-    <div class="pic_divinnertextnormal"><a ui-sref="accountLayout.orders">Order History</a></div>
+    <div class="pic_divinnertextnormal"><a ng:class="{'active':$state.current.name == 'accountLayout.orders'}" ui-sref="accountLayout.orders">Order History</a></div>
   </div>
 </div>
 <div class="pic_divinnertitle">
   <div class="pic_divinnertag"><img src="images/ueripicn.png"></div>
   <div class="pic_divinnertext">
     <div class="pic_divinnertextbold">Settings</div>
-    <div class="pic_divinnertextnormal"><a ui-sref="accountLayout.profile">Profile Settings</a></div>
-    <div class="pic_divinnertextnormal"><a ui-sref="accountLayout.password">Change Password</a></div>
-    <div class="pic_divinnertextnormal"><a ui-sref="accountLayout.address">Address Book</a></div>
-    <div class="pic_divinnertextnormal"><a ui-sref="accountLayout.wishlist">Wish List</a></div>
+    <div class="pic_divinnertextnormal">
+      <a ng:class="{'active':$state.current.name == 'accountLayout.profile'}" ui-sref="accountLayout.profile">
+        Profile Settings
+      </a>
+    </div>
+    <div class="pic_divinnertextnormal"><a ng:class="{'active':$state.current.name == 'accountLayout.password'}" ui-sref="accountLayout.password">Change Password</a></div>
+    <div class="pic_divinnertextnormal">
+    <a ng:class="{'active':$state.current.name == 'accountLayout.address'}" ui-sref="accountLayout.address">
+    Address Book
+    </a>
+    </div>
+    <div class="pic_divinnertextnormal">
+    <a  ng:class="{'active':$state.current.name == 'accountLayout.wishlist'}" ui-sref="accountLayout.wishlist">
+    Wish List
+    </a>
+    </div>
   </div>
 </div>
 <div class="pic_divinnertitle">
   <div class="pic_divinnertag"><img src="images/cardpin.png"></div>
   <div class="pic_divinnertext">
     <div class="pic_divinnertextbold">Payments</div>
-    <div class="pic_divinnertextnormal"><a ui-sref="accountLayout.loyalty">Loyalty Points <span>150</span></a></div>
-    <div class="pic_divinnertextnormal"><a ui-sref="accountLayout.credits">Credits <span>150</span></a></div>
-    <div class="pic_divinnertextnormal"><a href="#">Saved Cards</a></div>
+    <div class="pic_divinnertextnormal">
+      <a ng:class="{'active':$state.current.name == 'accountLayout.loyalty'}" ui-sref="accountLayout.loyalty">Loyalty Points <span>150</span></a></div>
+    <div class="pic_divinnertextnormal">
+    <a ng:class="{'active':$state.current.name == 'accountLayout.credits'}" ui-sref="accountLayout.credits">Credits <span>150</span></a></div>
+    <div class="pic_divinnertextnormal">
+    <a ng:class="{'active':$state.current.name == '#'}" href="#">Saved Cards</a></div>
   </div>
 </div>
 <div class="pic_divinnertitle bordernoebtm">
   <div class="pic_divinnertag"><img src="images/flagepicn.png"></div>
   <div class="pic_divinnertext">
-    <div class="pic_divinnertextbold"><a ui-sref="accountLayout.invite">Invite a friend</a></div>
+    <div class="pic_divinnertextbold">
+    <a  ng:class="{'active':$state.current.name == 'accountLayout.invite'}" ui-sref="accountLayout.invite">Invite a friend</a></div>
   </div>
 </div>

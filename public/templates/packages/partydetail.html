@@ -52,7 +52,7 @@
 			                  	<div class="alert alert-danger" ng-show="errors[$index]" ng-bind="errors[$index]"></div>
 			                  	<div class="row">													
 									<div ng-repeat-start="pcprod in packageItem.products" ng:class="{'row':($index!=0 && $index%3==0)}"></div>
-									<div class="col-md-4"> 							
+									<div class="col-md-4 party-detail-btm-width"> 							
 										<div class="thumbnail thumbnailheightset" ng:class="{'selectedproductcart':pcprod.customizequantity > 0}">						
 											<div class="caption party-detail-caption">
 												<h5 class="item-btmtitle">{{ pcprod.name }}</h5>

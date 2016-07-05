@@ -171,7 +171,8 @@ AlcoholDelivery.directive('sideBar', function() {
 			};
 
 			$scope.openMenu = function(){
-				angular.element('#wrapper').toggleClass('toggled');
+				mymenu.toggle('slidebar-1');
+				//angular.element('#wrapper').toggleClass('toggled');
 			}			
 			//FACEBOOK LOGIN
 			$scope.loginToggle = function() {      
@@ -269,8 +270,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 .directive("tscroll", function ($window) {
     return function(scope, element, attrs) {
-        angular.element($window).bind("scroll", function() {
-
+        angular.element($window).bind("scroll", function() {        	
              if(element.hasClass('fixh')) return;
 
              if (this.pageYOffset >= 1) {

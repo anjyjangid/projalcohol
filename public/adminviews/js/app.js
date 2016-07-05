@@ -738,7 +738,10 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         
         /*REDIRECT USER AS PER CONDITION*/
         .state('blank',{
-        	url: "/",
+        	url: "/",        	
+        	resolve: {
+            	authenticate: authenticate
+            },
         	controller:function(AdminUserService, $state, $timeout) {	      		
 	      		if (AdminUserService.isLogged()) {
 	      			$s = 'userLayout.dashboard'	      			
