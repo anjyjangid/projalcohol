@@ -1,4 +1,4 @@
-/***
+	/***
 Metronic AngularJS App Main Script
 ***/
 
@@ -324,6 +324,43 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 
 	}
 
+	
+	
+}]);
+
+/***
+Layout Partials.
+By default the partials are loaded through AngularJS ng-include directive. In case they loaded in server side(e.g: PHP include function) then below partial 
+initialization can be disabled and Layout.init() should be called on page load complete as explained above.
+***/
+
+/* Setup Layout Part - Header */
+MetronicApp.controller('HeaderController', ['$scope','$http', '$rootScope','AdminUserService', function($scope,$http,$rootScope,AdminUserService) {
+	
+	$scope.$on('$includeContentLoaded', function() {
+		Layout.initHeader(); // init header
+	});
+
+	/*var data = AdminUserService.getUser();
+
+	if(data){
+		$scope.user = data;
+		$scope.user.name = data.first_name+' '+data.last_name;
+	}
+	$http.get('admin/profile').success(function(response) {
+		$rootScope.user = response;
+		$rootScope.user.name = response.first_name+' '+response.last_name;
+	});*/
+
+}]);
+
+/* Setup Layout Part - Sidebar */
+MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope,$filter) {
+
+	$scope.$on('$includeContentLoaded', function() {
+		Layout.initSidebar(); // init sidebar
+	});
+
 	var menuOptions = [
 		{
 			label:'Dashboard',
@@ -516,40 +553,7 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 	];
 
 	$scope.menuOptions = $filter('accessValidate')(menuOptions);
-	
-}]);
 
-/***
-Layout Partials.
-By default the partials are loaded through AngularJS ng-include directive. In case they loaded in server side(e.g: PHP include function) then below partial 
-initialization can be disabled and Layout.init() should be called on page load complete as explained above.
-***/
-
-/* Setup Layout Part - Header */
-MetronicApp.controller('HeaderController', ['$scope','$http', '$rootScope','AdminUserService', function($scope,$http,$rootScope,AdminUserService) {
-	
-	$scope.$on('$includeContentLoaded', function() {
-		Layout.initHeader(); // init header
-	});
-
-	/*var data = AdminUserService.getUser();
-
-	if(data){
-		$scope.user = data;
-		$scope.user.name = data.first_name+' '+data.last_name;
-	}
-	$http.get('admin/profile').success(function(response) {
-		$rootScope.user = response;
-		$rootScope.user.name = response.first_name+' '+response.last_name;
-	});*/
-
-}]);
-
-/* Setup Layout Part - Sidebar */
-MetronicApp.controller('SidebarController', ['$scope', function($scope) {
-	$scope.$on('$includeContentLoaded', function() {
-		Layout.initSidebar(); // init sidebar
-	});
 }]);
 
 /* Setup Layout Part - Quick Sidebar */
