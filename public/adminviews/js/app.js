@@ -214,7 +214,7 @@ MetronicApp.service('fileUpload', ['$http','$location','$q', function ($http,$lo
 
 
 /* Setup App Main Controller */
-MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAlert','$state', function($scope, $rootScope,$http,sweetAlert,$state) {
+MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAlert','$state','$filter', function($scope, $rootScope,$http,sweetAlert,$state,$filter) {
 
 	$scope.$on('$viewContentLoaded', function() {
 		Metronic.initComponents(); // init core components        
@@ -324,7 +324,7 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 
 	}
 
-	$scope.menuOptions = [
+	var menuOptions = [
 		{
 			label:'Dashboard',
 			uisref:'userLayout.dashboard',
@@ -346,13 +346,15 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 					label:'Dealers',
 					uisref:'userLayout.dealers.list',
 					icon:'icon-user-following',					
-					links:['userLayout.dealers.list','userLayout.dealers.add','userLayout.dealers.edit','userLayout.dealers.show','userLayout.dealers.orders']
+					links:['userLayout.dealers.list','userLayout.dealers.add','userLayout.dealers.edit','userLayout.dealers.show','userLayout.dealers.orders'],
+					access : ['admin']
 				},
 				{
 					label:'Sub Administrator',
 					uisref:'userLayout.subadmin.list',
 					icon:'icon-user-following',					
-					links:['userLayout.subadmin.list','userLayout.subadmin.add','userLayout.subadmin.edit']
+					links:['userLayout.subadmin.list','userLayout.subadmin.add','userLayout.subadmin.edit'],
+					access : ['admin']
 				}
 			]
 		},
@@ -361,24 +363,26 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 			uisref:'userLayout.orders.list',
 			icon:'icon-basket',
 			id:'sidebar_menu_link_orders',
-
 		},
 		{
 			label:'Categories',
 			uisref:'userLayout.categories.list',
 			icon:'icon-list',
-			id:'sidebar_menu_link_categories'
+			id:'sidebar_menu_link_categories',
+			access : ['admin']
 		},
 		{
 			label:'Products',
 			uisref:'userLayout.products.list',
 			icon:'icon-handbag',
-			id:'sidebar_menu_link_products'
+			id:'sidebar_menu_link_products',
+			access : ['admin']
 		},
 		{
 			label:'Packages',			
 			icon:'icon-social-dropbox',
 			id:'sidebar_packages',
+			access : ['admin'],
 			subItems:[
 				{
 					label:'Party Packages',
@@ -398,6 +402,7 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 			label:'Gifts',			
 			icon:'icon-present',
 			id:'sidebar_menu_link_gifts',
+			access : ['admin'],
 			subItems:[
 				{
 					label:'Gift Categories',
@@ -423,18 +428,21 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 			label:'Time Slots',
 			uisref:'userLayout.timeslots.list',
 			icon:'icon-clock',
-			id:'sidebar_menu_link_timeslots'
+			id:'sidebar_menu_link_timeslots',
+			access : ['admin']
 		},
 		{
 			label:'Public Holidays',
 			uisref:'userLayout.publicholidays',
 			icon:'icon-calendar',
-			id:'sidebar_menu_link_holidays'
+			id:'sidebar_menu_link_holidays',
+			access : ['admin']
 		},
 		{
-			label:'Global Settings',			
+			label:'Global Settings',
 			icon:'icon-settings',
 			id:'sidebar_menu_link_settings',
+			access : ['admin'],
 			subItems:[
 				{
 					label:'General',
@@ -464,36 +472,51 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 			]
 		},
 		{
-			label:'Email Templates',			
+			label:'Email Templates',
 			uisref:'userLayout.emailtemplates.list',
 			icon:'icon-envelope',
-			id:'sidebar_menu_link_emailtemplate',			
+			id:'sidebar_menu_link_emailtemplate',
+			access : ['admin'],
 		},
 		{
 			label:'CMS Pages',
 			uisref:'userLayout.cms.list',
 			icon:'icon-folder',
-			id:'sidebar_menu_link_cms'
+			id:'sidebar_menu_link_cms',
+			access : ['admin']
 		},
 		{
 			label:'Testimonials',
 			uisref:'userLayout.testimonial.list',
 			icon:'icon-speech',
-			id:'sidebar_menu_link_testimonial'
+			id:'sidebar_menu_link_testimonial',
+			access : ['admin']
 		},
 		{
 			label:'Brands',
 			uisref:'userLayout.brand.list',
 			icon:'icon-book-open',
-			id:'sidebar_menu_link_brand'
+			id:'sidebar_menu_link_brand',
+			access : ['admin']
 		},
 		{
 			label:'Promotions',
 			uisref:'userLayout.promotion.list',
 			icon:'icon-grid',
-			id:'sidebar_menu_link_promotion'
+			id:'sidebar_menu_link_promotion',
+			access : ['admin']
+		},
+		{
+			label:'Coupons',
+			uisref:'userLayout.coupon.list',
+			icon:'icon-grid',
+			id:'sidebar_menu_link_coupon',
+			access : ['admin']
 		}
-	];	
+	];
+
+	$scope.menuOptions = $filter('accessValidate')(menuOptions);
+	
 }]);
 
 /***
@@ -505,20 +528,21 @@ initialization can be disabled and Layout.init() should be called on page load c
 /* Setup Layout Part - Header */
 MetronicApp.controller('HeaderController', ['$scope','$http', '$rootScope','AdminUserService', function($scope,$http,$rootScope,AdminUserService) {
 	
-	$scope.$on('$includeContentLoaded', function() {		
+	$scope.$on('$includeContentLoaded', function() {
 		Layout.initHeader(); // init header
 	});
 
 	/*var data = AdminUserService.getUser();
-	
+
 	if(data){
 		$scope.user = data;
-		$scope.user.name = data.first_name+' '+data.last_name;		
-	}*/
-	/*$http.get('admin/profile').success(function(response) {
+		$scope.user.name = data.first_name+' '+data.last_name;
+	}
+	$http.get('admin/profile').success(function(response) {
 		$rootScope.user = response;
 		$rootScope.user.name = response.first_name+' '+response.last_name;
 	});*/
+
 }]);
 
 /* Setup Layout Part - Sidebar */
@@ -571,6 +595,13 @@ MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", "$r
 		}
 		return currentUser;
 	};
+
+	this.getRole = function(){
+
+		var currentUser = this.getUser();
+		return currentUser.role==2?'subadmin':'admin';
+
+	}
 
 	this.storeUser = function(data){								
 		var deferred = $q.defer();
@@ -1659,6 +1690,76 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             }
         })
 
+        .state('userLayout.coupon', {
+            abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+            controller: "CouponController",
+            resolve: {                
+                authenticate: authenticate,
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',                            
+
+                            'adminviews/js/models/couponModel.js',
+                            'adminviews/js/models/packageModel.js',
+                            'adminviews/js/controllers/CouponController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state("userLayout.coupon.list", {
+            url: "/coupon/list",
+            templateUrl: "adminviews/views/coupon/list.html",
+            data:{
+				pageTitle:'Coupons Listing',				
+				breadCrumb:[
+					{title:'Coupons','uisref':'#'}					
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }            
+        })
+
+        .state("userLayout.coupon.add", {
+            url: "/coupon/add",
+            templateUrl: "adminviews/views/coupon/add.html",
+            data:{
+				pageTitle:'Add coupons',				
+				breadCrumb:[
+					{title:'Coupons','uisref':'userLayout.coupon.list'},
+					{title:'Add','uisref':'#'}					
+				]				
+			},            
+            controller: "CouponAddController",
+            resolve: {                
+                authenticate: authenticate
+            }
+        })
+
+        .state("userLayout.coupon.edit",{
+            url: "/coupon/edit/{couponId}",
+            templateUrl: "adminviews/views/coupon/add.html",
+            data:{
+				pageTitle:'Edit coupons',				
+				breadCrumb:[
+					{title:'coupons','uisref':'userLayout.coupon.list'},
+					{title:'Edit','uisref':'#'}					
+				]				
+			},            
+            controller:"CouponAddController",            
+            resolve: {                
+                authenticate: authenticate
+            }
+        })
+
         .state('userLayout.emailtemplates', {
             abstract:true,
 			templateUrl:'adminviews/views/auth.html',
@@ -2041,6 +2142,47 @@ MetronicApp.filter('isEmpty', [function() {
 	return angular.equals({}, object);
   }
 }]);
+
+MetronicApp.filter('accessValidate', ['$filter','AdminUserService',function($filter,AdminUserService) {
+
+	var userRole = AdminUserService.getRole();
+	
+	return function(listArr) {
+
+  		var listArrCopy = angular.copy(listArr);
+  		var splicedCount = 0;
+
+		angular.forEach(listArrCopy, function(value, key) {
+			
+			if(typeof value.access!=='undefined'){			
+
+				var allowed = value.access.indexOf(userRole);
+				
+				if(parseInt(allowed)<0){
+					
+					key-=splicedCount;
+
+					listArr.splice(key,1);
+
+					splicedCount++;
+
+				}
+			}
+
+			if(typeof value.subItems!=='undefined'){
+
+				listArr[key].subItems = $filter('accessValidate')(value.subItems);
+
+			}			
+
+		});
+
+		return listArr;
+	}
+
+}]);
+
+
 
 /* Init global settings and run the app */
 MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "store", "$location", "AdminUserService", "$timeout", "$stateParams", function($rootScope, settings, $state, $cookieStore, $log, store, $location, AdminUserService, $timeout, $stateParams) {

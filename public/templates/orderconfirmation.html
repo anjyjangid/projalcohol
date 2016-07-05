@@ -58,9 +58,17 @@ We have received your order and shall be delivered as per schedule.</span></div>
 			
 			<img src="images/social-icon.png">
 			
-			<div ng-click="fbShare()">Facebook</div>
+			<div twitter-share-btn ng-click="twitterShare()"></div>
 
-			<div twitter-share-btn ng-click="twitterShare()"></div>		
+			<div ng-click="fbShare()">Facebook</div>		
+
+			<!-- Place this tag where you want the share button to render. -->
+			<div ng-click="googleShare()">
+
+				<div class="g-plus" data-action="share" data-annotation="none" data-href="http://54.169.107.156" data-onendinteraction="share_endinteraction"></div>
+
+
+			</div>
 
 		</div>
 		</div>
@@ -76,3 +84,30 @@ We have received your order and shall be delivered as per schedule.</span></div>
 	  </div>
 	</div>
   </div>
+
+  <!-- Place this tag in your head or just before your close body tag. -->
+<script src="https://apis.google.com/js/platform.js" async defer>
+  {parsetags: 'explicit'}
+</script>
+
+<!-- Place this render call where appropriate. -->
+
+<script type="text/javascript">
+window.___gcfg = {
+        lang: 'en-US',
+        parsetags: 'onload'
+      };
+
+
+$(document).ready(function(){
+	setTimeout(function() {
+	gapi.plus.go();
+}, 3000);
+})
+function share_endinteraction(jsonParam) {
+
+        alert("share_endinteraction " + jsonParam.type);
+    }
+
+
+</script>

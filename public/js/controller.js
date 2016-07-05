@@ -2149,6 +2149,43 @@ angular.SocialSharing = SocialSharingService;
 
     }
 
+    $scope.googleShare = function(){
+
+		SocialSharingService.shareGoogle({
+
+			key:$scope.orderNumber,
+			type:'order',
+
+		}).then(
+
+			function(resolveRes){
+
+				sweetAlert.swal({
+
+					title: "Awesome!",
+					text: "Share successfully! Loyalty points are credit to your account",
+					imageUrl: 'http://54.169.107.156/images/thumbimg.png'
+
+				});
+				
+			},
+			function(rejectRes){
+
+				sweetAlert.swal({
+
+					type:'error',
+					title: 'Oops...',
+					text:rejectRes.message,
+					timer: 2000
+
+				});
+
+			}
+		)
+
+    }
+    
+
 }]);
 
 AlcoholDelivery.controller('RepeatOrderController',['$scope','$rootScope','$http','$mdDialog','UserService','alcoholCart','sweetAlert',function($scope,$rootScope,$http,$mdDialog,UserService,alcoholCart,sweetAlert){

@@ -67,6 +67,9 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::resource('promotion', 'Admin\PromotionController',['only'=>['update','store','show']]);
 	Route::controller('promotion', 'Admin\PromotionController');
 
+	Route::resource('coupon', 'Admin\CouponController',['only'=>['update','store','show']]);
+	Route::controller('coupon', 'Admin\CouponController');
+
 	Route::resource('holiday', 'Admin\HolidayController',['only'=>['update','store','destroy']]);
 	Route::controller('holiday', 'Admin\HolidayController');
 

@@ -88,8 +88,37 @@ AlcoholDelivery.service('SocialSharingService', ['$rootScope', '$window', '$http
 
 		return defer.promise;
 	}
-
 	
+	this.shareGoogle = function(shareData){
+
+		var _self = this;
+		var defer = $q.defer();		
+
+		var retStatus = {
+			'sharing':false,
+			'points':false,
+			'message':'Something went wrong'
+		}
+
+		retStatus.sharing = true;
+
+		_self.provideLoyalty('order','google',shareData['key']).then(
+
+			function(){
+
+				retStatus.points = true;
+				defer.resolve(retStatus);
+
+			},
+			function(){
+
+				defer.reject(retStatus);
+
+			}
+		);
+
+		return defer.promise;
+	}
 
 	this.provideLoyalty = function(type,on,key){
 
