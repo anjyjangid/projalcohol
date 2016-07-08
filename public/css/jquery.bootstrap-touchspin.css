@@ -2,11 +2,11 @@
 .bootstrap-touchspin .input-group-btn-vertical {
   position: relative;
   white-space: nowrap;
-  width: 1%;
+  width: 1% !important;
   vertical-align: middle;
   display: table-cell;
+   float: none !important;
 }
-
 .bootstrap-touchspin .input-group-btn-vertical > .btn {
   display: block;
   float: none;

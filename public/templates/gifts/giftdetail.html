@@ -1,52 +1,42 @@
-<div class="productdetailbrudcumcover">
-	<a ui-sref="/">Home</a>
-	<img src="images/productdetail2.png">
-	<a>Gift Packaging</a>
-	<img src="images/productdetail2.png">
-	<a ui-sref="mainLayout.giftcategory({categorySlug:gift.categorydetail.slug,type:null})">{{gift.categorydetail.title}}</a>
-	<img src="images/productdetail2.png">
-	<a ui-sref="mainLayout.giftcategory({categorySlug:gift.categorydetail.slug,type:gift.subcategorydetail.slug})">	{{gift.subcategorydetail.title}}
-	</a>
-</div>
+<div class="productdetailbrudcumcover"> <a ui-sref="/">Home</a> <img src="images/productdetail2.png"> <a>Gift Packaging</a> <img src="images/productdetail2.png"> <a ui-sref="mainLayout.giftcategory({categorySlug:gift.categorydetail.slug,type:null})">{{gift.categorydetail.title}}</a> <img src="images/productdetail2.png"> <a ui-sref="mainLayout.giftcategory({categorySlug:gift.categorydetail.slug,type:gift.subcategorydetail.slug})"> {{gift.subcategorydetail.title}} </a> </div>
 <!-- <pre>{{packages|json}}</pre> -->
 <div class="productdetailbrudcumcover">
-	<div class="row">
-		<div class="col-md-12">
-			<div class="media cocktaildetail-cover">
-				<div class="media-left">
-					<img err-src="asset/i/defaultImage.png" ng-src="gifts/i/{{gift.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
-				</div>
-				<div class="media-body party-detail-contentcover">
-					<h4 class="media-heading party-detail-heading">{{gift.title}}</h4>
-					<!-- <p class="party-detail-btm-title">{{gift.subTitle}}</p> -->
-					<p class="party-product-desc">{{gift.description}}</p>    										
-					<p class="packtiti-rightset packag-amnt-divcolr">Price</p>
-			    	<h3 class="amntrupee-clsdetail">{{gift.price | currency}}</h3>
-                	<div ng:class="{'has-error':errors.emails}">
-				      <label>To</label>
-				      <input type="text" placeholder="Eg. sarah" ng-model="gift.reciepient.name" class="alcohalrestertextbox form-control">
-				      <span class="help-block" ng-bind="carterror.emails"></span>        
-				    </div>
-			    	<div ng:class="{'has-error':errors.message}">
-				      <label>Message <span align="right">Max. characters : 200</span></label>
-				      <textarea ng-model="gift.reciepient.message" class="alcohalrestertextbox form-control"></textarea>        
-				      <span class="help-block" ng-bind="carterror.message"></span>        
-				    </div>
-			    	<div class="quantiy-party-detail add-cart-btm">
-			    		<a class="btn product_addcart addcart-detail" ng-if="!processing" ng-click="addPackage()"><img src="images/cart-icon.png" />{{btnText}}</a>
-	    				<a class="btn product_addcart addcart-detail" ng-if="processing"><i class="fa fa-spinner fa-spin"></i> {{btnText}}</a>	
-			    	</div>
-				</div>
-			</div>			
-		</div>	
-	</div>
-</div>		
+<div class="row">
+  <div class="col-md-12">
+    <div class="media cocktaildetail-cover gift-card-mainouter">
+      <div class="media-left">
+        <div class="gift-card--inner"> <img err-src="asset/i/defaultImage.png" ng-src="gifts/i/{{gift.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/> </div>
+      </div>
+      <div class="media-body party-detail-contentcover gift-card-rightcover">
+        <h4 class="media-heading party-detail-heading">{{gift.title}}</h4>
+        <!-- <p class="party-detail-btm-title">{{gift.subTitle}}</p> -->
+        <p class="party-product-desc">{{gift.description}}</p>
+        <p class="packtiti-rightset packag-amnt-divcolr">Price</p>
+        <h3 class="amntrupee-clsdetail">{{gift.price | currency}}</h3>
+        <div ng:class="{'has-error':errors.emails}"  class="gift-to-divcover">
+          <div class="gift-card-innerform">
+            <label>To</label>
+            <input type="text" placeholder="Eg. sarah" ng-model="gift.reciepient.name" class="alcohalrestertextbox form-control">
+            <span class="help-block" ng-bind="carterror.emails"></span> </div>
+          <div ng:class="{'has-error':errors.message}"   class="gift-to-divcover">
+            <div class="gift-card-innerform">
+              <label>Message <span class="max-char-color" align="right">Max. characters : 200</span></label>
+              <textarea ng-model="gift.reciepient.message" class="alcohalrestertextbox form-control"></textarea>
+              <span class="help-block" ng-bind="carterror.message"></span> </div>
+            <div class="quantiy-party-detail add-cart-btm"> <a class="btn product_addcart addcart-detail" ng-if="!processing" ng-click="addPackage()"><img src="images/cart-icon.png" />{{btnText}}</a> <a class="btn product_addcart addcart-detail" ng-if="processing"><i class="fa fa-spinner fa-spin"></i> {{btnText}}</a> </div>
+            <div class="btm-text-giftnot">Note: This item is non-returnable.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
 <div class="productdetailbrudcumcover" ng-if="gift.type == 1">
-	<div class="row" >	
-		<div class="party-detail-btmtitl4">
-			<h4>Select product(s) to be packaged (Maximum {{gift.limit}} bottles)</h4>
-		</div>
-		<div class="col-md-8 party-alcholcover ">							
-		</div>
-	</div>
+  <div class="row" >
+    <div class="party-detail-btmtitl4">
+      <h4>Select product(s) to be packaged (Maximum {{gift.limit}} bottles)</h4>
+    </div>
+    <div class="col-md-8 party-alcholcover "> </div>
+  </div>
 </div>

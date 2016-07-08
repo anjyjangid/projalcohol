@@ -36,6 +36,7 @@
 		<link rel="stylesheet" type="text/css" href="css/owl.carousel.css">
 		<link rel="stylesheet" type="text/css" href="css/owl.theme.css">
 		<link rel="stylesheet" type="text/css" href="css/jquery.switchButton.css">
+        <link rel="stylesheet" type="text/css" href="css/simple-sidebar.css">
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
 
 		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.min.css')}}">
@@ -62,12 +63,38 @@
 	</head>
 
 	<body ng-controller="AppController">		    	
-    	
+    	 <div id="wrapper">
     	
     	<div canvas="container">    	
 
-	    	<top-menu></top-menu>
 	    	
+	    <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
+          <ul class="nav sidebar-nav">
+          
+            <li> <a href="#">Home</a> </li>
+            <li> <a href="#">About</a> </li>
+            <li> <a href="#">Events</a> </li>
+            <li> <a href="#">Team</a> </li>
+            <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown">Works <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li class="dropdown-header">Dropdown heading</li>
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>
+            <li> <a href="#">Services</a> </li>
+            <li> <a href="#">Contact</a> </li>
+            <li> <a href="https://twitter.com/maridlcrmn">Follow me</a> </li>
+          </ul>
+        </nav>
+             <div id="page-content-wrapper">
+             <top-menu></top-menu>          
+         <!-- <button ng-hide="openSearch" type="button" class="hamburger is-closed" data-toggle="offcanvas" id="offcanvas" ng-click="openMenu()"> <span class="hamb-top"></span> <span class="hamb-middle"></span> <span class="hamb-bottom"></span> </button>-->
+          
+        
 	    	<div ui-view class="ancontainer"></div>
 
 			<section class="fullwidth social_block">
@@ -165,19 +192,27 @@
 				</div>
 	        </div>
 			</section>		
-		
+		  </div>
 		</div>
 		
 		<!-- <div off-canvas="slidebar-1 left reveal">
 			<side-bar noInit="true"></side-bar>			
 		</div>	 -->		
-		
+		</div>
 	</body>
 
 	<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+   
+    
 	<script type="text/javascript" src="js/social.js"></script>
     <script type="text/javascript" src="{{ asset('bower_components/dropzone/dist/dropzone.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+     <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
     <script type="text/javascript" src="{{ asset('bower_components/angular/angular.min.js') }}"></script>
    
 
@@ -235,5 +270,6 @@
     		mymenu.init();    		    				    
     	});    			
     </script>
+    
 
 </html>

@@ -203,13 +203,14 @@ ui-sref {
 	background-color: #e1b11f;
 }
 .searchtop {
-	/*width:21px;
-	height:21px;*/
+	width:21px;
+	height:21px;
 	float: right;
 	/*padding:0 15px;*/
 	position: absolute;
 	top: 35px;
 	right: 27.5%;
+	
 	z-index: 9;
 	transition: all 0.3s ease 0s;
 }
@@ -434,7 +435,7 @@ ui-sref {
 /*------owl-carousel-----------*/
 
 .tabtitle {
-	width: 24%;
+	width: 20%;
 	float: left;
 	padding-right: 10px;
 	padding-left: 24px;
@@ -512,7 +513,7 @@ ui-sref {
 	margin:0 0px;
 	text-transform: capitalize;
 
-	font-size: 0.9em;
+	font-size: 1em;
 	border-bottom: solid 2px #ffffff;
 }
 /*.tabsright .owl-carousel .owl-wrapper-outer{
@@ -533,7 +534,7 @@ ui-sref {
 	margin-bottom: 0px;
 }
 .prod_chilled_icon {
-	float: right;
+	float: right !important;
 	background: url(../images/sprite.png) no-repeat -444px 0px;
 	min-width: 24px;
 	min-height: 24px;
@@ -1021,7 +1022,7 @@ ui-sref {
 	margin:20px auto 45px;
 	overflow: hidden;
 	background: url(../images/bg_grey.png) no-repeat center center / cover;
-	min-height: 335px;
+	/*min-height: 335px;*/
 }
 .slido_left {
 
@@ -1201,7 +1202,7 @@ ui-sref {
 	min-height: 50px;
 	padding: 10px;
 	width: 100%;
-	font-size: 16px;
+	font-size: 12px;
 	font-family: 'Work Sans', sans-serif;
 	color: #2c2011;
 }
@@ -2018,7 +2019,7 @@ ui-sref {
     margin-top: 0;
     min-height: 42px;
     width: 150px;
-	 box-shadow: 1px -1px 10px rgba(0, 0, 0, 0.3)
+	 box-shadow:0 5px 10px rgba(0, 0, 0, 0.3)
 }
 .dropdown.productdropdownbtn {
     background: rgba(0, 0, 0, 0) none repeat scroll 0 0 ;
@@ -2038,13 +2039,13 @@ ui-sref {
 	background: none;
 	text-align: left;
 	font-size: 14px;
-	color: #363535;
+	color: #5f5f5f;
 	font-weight: 400;
 	height: 19px;
 	position: relative;
 	outline: none !important;
 	box-shadow: none;
-	 top: 8px;
+	 top: 10px;
 	 padding-left:10px
 }
 .nav.nav-tabs.productcomboul {
@@ -2056,8 +2057,9 @@ ui-sref {
 	width: 10px;
 	height: 6px;
 	position: absolute;
-	right: 10px;
+	right: 15px;
 	top: 8px;
+	transform: rotate(-180deg);
 }
 .productbeerfiltertopcover {
 	float: left;
@@ -2066,6 +2068,7 @@ ui-sref {
 }
 .productbeerfiltertopcover a.active {
 	color: #aa00ff;
+	 font-weight: 500;
 }
 .productbeerfiltertoptitle {
 	width: 100%;
@@ -2764,12 +2767,13 @@ ui-sref {
 	border: 1px solid #cccccc;
 	border-radius: 3px 0 0 3px !important;
 	height: 38px;
-	width: 100%;
+	width: 100% !important;
 	display: inline-block;
 	text-align: center;
-	font-size: 20px;
+	font-size: 20px !important;
 	padding: 5px 10px;
 	color: #333;
+	float:none !important
 }
 .productdetailbrudcumcover {
 	width: 100%;
@@ -4765,7 +4769,7 @@ ui-sref {
 	float: left;
 }
 .navbar.navbar-default.navbar-fixed-top .signuplogin .dropdown:hover .cart_icon {
-	background: #e1b11f url("../images/sprite.png") no-repeat scroll -338px 33px;
+	background: #e1b11f url("../images/sprite.png") no-repeat scroll -338px 41px;
 }
 .navbar.navbar-default.navbar-fixed-top.navbar-shrink .signuplogin .dropdown:hover .cart_icon {
 	background: #e1b11f url("../images/sprite.png") no-repeat scroll -338px 25px;
@@ -5321,6 +5325,7 @@ input::-moz-placeholder {
     text-align: center;
     top: 0;
     transition: all 0.3s ease 0s;
+	
 }
 .logoss > a {
     display: table;
@@ -5381,6 +5386,7 @@ input::-moz-placeholder {
     margin: 0 auto;
     min-width: 170px;
     position: relative;
+	z-index:9999
 }
 .img-responsive.logosmall {
      display: inherit;
@@ -5482,10 +5488,10 @@ md-checkbox {
     top: 42px;
     width: 100%;
 	border: medium none;
-	box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.3);
+	box-shadow:0 5px 10px rgba(0, 0, 0, 0.3);
 }
 .combo_slider  .dropdown-menu > li > a{
-	padding:3px 5px
+	padding:3px 11px
 }
 .testimonial-item-outer{
 	display: inline-block;
@@ -5501,6 +5507,225 @@ md-checkbox {
     text-align: center;
     width: 100%;
 }
+.gift-card--inner{
+	display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    width: 100%;
+	height:100%
+}
+
+.gift-card-mainouter .media-left{
+	 display: table;
+	 text-align:center;
+	 background:#f2f2f2;
+	 padding-right:0
+}
+.enter-gift-detail{
+	color:#666;
+	float:left;
+	font-size:15px;
+	width:100%;
+	padding-bottom:20px
+	
+}
+
+.media-body.party-detail-contentcover.gift-card-rightcover span{
+	width:100%;
+	float:left;
+	
+	font-size:14px;
+	padding-bottom: 5px;
+	 color: #666;
+	
+	
+}
+.btn-success{
+	  background-color: #aa00ff !important;
+	  border-color:#d7d7d7;
+	  font-size:15px;
+	  color:#fff !important;
+	  border: 1px solid transparent !important;
+}
+.btn.default.btn-cls-gift.ng-binding.ng-scope{
+	border:1px solid #d7d7d7;
+	margin-right:5px;
+	background:#fff;
+	color:#222122;
+	font-size:15px;
+}
+.media-body.party-detail-contentcover.gift-card-rightcover > div {
+    padding-bottom: 20px;
+}
+
+.gift-to-divcover > label {
+    color: #666;
+    font-size: 14px;
+    font-weight: normal;
+}
+.gift-to-divcover {
+    float: left;
+    width: 100%;
+}
+.gift-card-innerform{
+	  float: left;
+    width: 240px;
+}
+.gift-card-innerform input{
+	height:34px;
+	min-height:inherit;
+	margin-bottom:8px;
+	box-shadow:none;
+	font-size:14px;
+	 padding-bottom: 0;
+    padding-top: 0;
+}
+
+.gift-card-innerform > label {
+    float: left;
+    width: 100%;
+	 font-weight: normal;
+	 font-size:14px
+}
+.gift-card-innerform span {
+    float: right !important;
+    width: auto !important;
+}
+.gift-to-divcover {
+    padding-bottom: 12px !important;
+}
+.gift-check-contact {
+    float: left;
+    padding-top: 12px;
+    width: 100%;
+}
+.mobile-sms-width.ng-scope {
+    min-width: 207px;
+	position: relative;
+    top: 3px;
+}
+.gift-check-contact .ng-valid.ng-touched.md-checked.ng-dirty.ng-valid-parse {
+    margin-bottom: 10px;
+}
+
+.addmore-count.ng-binding {
+    float: left !important;
+}
+.checkoutmiddlevlauediv.party-checkout-detail > label {
+    font-weight: normal;
+	color:#666666;
+	font-size:14px
+}
+.btm-text-giftnot{
+	width:100%;
+	color:#949494;
+	font-size:14px;
+	
+}
+.btm-text-giftnot {
+    float: left;
+    width: 100%;
+}
+
+md-checkbox.md-default-theme .md-icon, md-checkbox .md-icon{
+	border-color: rgba(215, 215, 215, 1);
+}
+
+md-checkbox.md-default-theme.md-checked .md-icon::after, md-checkbox.md-checked .md-icon::after {
+    border-color: rgba(255, 255, 255, 1);
+}
+.max-char-color{
+	color:#999 !important;
+	font-size:12px !important;
+}
+
+.gift-product-outer{
+	display:table
+}
+.prod-pic-midle-set{
+	display:table-cell;
+	vertical-align:middle
+	
+}
+	
+.gift-lstin-mainouter .prod_desc{
+	color:#37474f;
+	height:33px;
+	text-align: center;
+	
+}
+.gift-lstin-mainouter  .prodcombo_addtocartbutton{
+	text-align:center
+}
+.gift-lstin-mainouter  .prodcombo_addtocartbutton img{
+	display:inline-block
+}
+.top-tabmainouter .owl-prev {
+   left: -11px;
+    position: absolute;
+    top: 8px;
+}
+.top-tabmainouter .owl-next {
+   position: absolute;
+    right: -9px;
+    top: 8px;
+}
+.tabbable .owl-carousel{
+	width:100%
+}
+.tab-content.fullwidth .owl-item {
+   /* width: 180px !important;*/
+}
+.text-capitalize {
+    color: #5f5f5f;
+    font-size: 13px;
+    text-transform: capitalize;
+}
+.combo_slider .item{
+	 margin:9px 14px;
+}
+.top-tabmainouter .owl-item {
+	 float: left;
+    padding: 11px 7px;
+}
+.fullwidth.top-tabmainouter > .right-crousel{
+	 float: right;
+    margin-right: 16px;
+    width: 77%;
+	  margin-bottom: 0 !important;
+}
+.top-tabmainouter.item {
+    margin: 0 16px;
+}
+.top-tabmainouter .owl-wrapper-outer{
+	top:-5px
+}
+.top-tabmainouter  .item.ng-scope.active a, .top-tabmainouter  .item:hover  a, .top-tabmainouter  .item:focus  a, .top-tabmainouter  .item:active  a {
+	background-color: transparent;
+	border-radius: none;
+	border: 0px solid transparent;
+	border-bottom: 2px solid #aa00ff !important;
+	color: #aa00ff;
+	cursor: default;
+}
+.form-group.sortbydropdown-outer {
+    border: none;
+    float: right;
+    margin-bottom: 0;
+    padding-top: 4px;
+    width: 20%;
+}
+.dropdown.productdropdownbtn.open span{
+	transform: rotate(0deg);
+}
+
+ .combo_slider .nav .sortby-divmain li a:focus, .combo_slider .nav .sortby-divmain li a:hover, .combo_slider .nav .sortby-divmain lia:active{
+	color:#5f5f5f !important;
+	border-bottom:none !important
+}
+
+
+
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
 md-dialog{
 	margin:inherit;
