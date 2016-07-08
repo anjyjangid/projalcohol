@@ -15,6 +15,13 @@
 			<div class="media cocktaildetail-cover">
 				<div class="media-left">
 					<img err-src="asset/i/defaultImage.png" ng-src="gifts/i/{{gift.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+
+					<data-owl-carousel class="owl-carousel owldownpartcover" data-options="childOwlOptions">
+
+						<img err-pro-src="" ng-src="products/i/200/{{product._image}}" alt="" class="img-responsive img-responsive-h" owl-carousel-item="" ng-repeat="product in products | filter:{_inGift:'!0'}" class="item"/>
+
+					</data-owl-carousel>
+
 				</div>
 				<div class="media-body party-detail-contentcover">
 					<h4 class="media-heading party-detail-heading">{{gift.title}}</h4>
@@ -34,7 +41,7 @@
 				    </div>
 			    	<div class="quantiy-party-detail add-cart-btm">
 			    		<a class="btn product_addcart addcart-detail" ng-if="!processing" ng-click="addPackage()"><img src="images/cart-icon.png" />{{btnText}}</a>
-	    				<a class="btn product_addcart addcart-detail" ng-if="processing"><i class="fa fa-spinner fa-spin"></i> {{btnText}}</a>	
+	    				<a class="btn product_addcart addcart-detail" ng-if="processing"><i class="fa fa-spinner fa-spin"></i> {{btnText}}</a>
 			    	</div>
 				</div>
 			</div>			
@@ -46,7 +53,25 @@
 		<div class="party-detail-btmtitl4">
 			<h4>Select product(s) to be packaged (Maximum {{gift.limit}} bottles)</h4>
 		</div>
-		<div class="col-md-8 party-alcholcover ">							
-		</div>
+		
+		<div class="col-md-3 party-alcholcover" ng-repeat="product in products">
+								
+				<div class="prod_pic">					
+					<img err-pro-src="" ng-src="products/i/200/{{product._image}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive"/>
+				</div>
+
+				<a ui-sref="mainLayout.productLoyalty({product:product._slug})" class="core-block">
+					<div class="prod_desc">
+						{{product._title}}
+					</div>
+				</a>
+
+				<div>
+					<input type="text" value="product._inGift" ng-model="product._inGift" min="0" mquantity="product._maxQuantity" ng-touch-spin>
+					<!-- on-increment="attach(product._id)" -->
+				</div>
+
+			</div>
+	
 	</div>
 </div>

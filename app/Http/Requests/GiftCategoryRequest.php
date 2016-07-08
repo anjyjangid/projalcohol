@@ -27,9 +27,15 @@ class GiftCategoryRequest extends Request
         $input = Input::all();
 
         $rules = [            
-            'title' => 'required|unique:giftcategories,title,'.@$input['_id'].',_id,parent,'.@$input['parent'],
+            'title' => 'required|unique:giftcategories,title',
+            //'title' => 'required|unique:giftcategories,title,'.@$input['_id'].',_id,parent,'.@$input['parent'],
             'status' => 'required|integer'            
-        ];    
+        ];
+
+        if(isset($input['_id'])){
+
+            $rules['title']='required|unique:giftcategories,title,'.$input['_id'].',_id,parent,'.$input['parent'];
+        }
 
         if(!isset($input['coverImage']) || !empty($input['image']['thumb'])){
             $rules['image.thumb'] = '   image|max:5102';

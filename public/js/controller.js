@@ -2854,9 +2854,11 @@ AlcoholDelivery.controller('GiftCategoryController', [
 }]);
 
 AlcoholDelivery.controller('GiftController', [
-	'$q', '$http', '$scope', '$stateParams', '$rootScope',
-	function($q, $http, $scope, $stateParams, $rootScope){
+	'$q', '$http', '$scope', '$stateParams', '$rootScope','alcoholGifting',
+	function($q, $http, $scope, $stateParams, $rootScope, alcoholGifting){
 		$rootScope.appSettings.layout.pageRightbarExist = false;
+
+		$scope.btnText = 'add to cart';		
 
 		$scope.gift = {
 			
@@ -2865,12 +2867,56 @@ AlcoholDelivery.controller('GiftController', [
 		if($stateParams.giftid){
 
 			$http.get('/gift/'+$stateParams.giftid).success(function(result){
+				
 				$scope.gift = result;
+
+				angular.alcoholGifting = alcoholGifting;
+				$scope.alcoholGifting = alcoholGifting;
+
+				alcoholGifting.setCurrentGift(result);
+
+				$scope.products = alcoholGifting.getProducts();
+
+				angular.forEach($scope.products,function(value,key){
+					$scope.$watch('products[key][_inGift]',function(newValue, oldValue) {
+						$scope.totalAttached();
+					})
+				})
+
+				$scope.totalAttached = function(){
+
+					var total = 0;
+
+					angular.forEach($scope.products,function(value,key){
+						total+=parseInt(value._inGift);
+					});
+
+					angular.forEach($scope.products,function(value,key){
+
+						var maxQuantity = result.limit - total + value._inGift;
+						value._maxQuantity = value._quantity>maxQuantity?maxQuantity:value._quantity;
+					});
+				}
+
+				
+
 			}).error(function(err){
 
 			});
 
 		}
+
+		$scope.childOwlOptions = {
+
+			items 			  : 6,
+			itemsDesktop      : [1199,4],
+			itemsDesktopSmall : [979,4],
+			itemsTablet       : [768,4],
+			itemsMobile       : [479,4],
+			pagination 		  : false,
+			responsiveRefreshRate : 100,
+		}
+
 }]);
 
 AlcoholDelivery.controller('GiftCardController', [

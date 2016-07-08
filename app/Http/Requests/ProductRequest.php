@@ -28,7 +28,7 @@ class ProductRequest extends Request
         $input = Input::all();
 
         $rules = [            
-            'name' => 'requiredunique:products',
+            'name' => 'required|unique:products',
             'slug' => 'required|unique:products',
             'description' => 'required',
             'shortDescription' => 'required',
