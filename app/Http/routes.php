@@ -243,8 +243,8 @@ Route::put('/password', 'UserController@updatepassword');
 
 Route::controller('user', 'UserController');
 
-Route::resource('giftcategory', 'GiftCategoryController',['only'=>['index']]);
 Route::controller('giftcategory', 'GiftCategoryController');
+Route::resource('giftcategory', 'GiftCategoryController',['only'=>['index','show']]);
 
 Route::resource('gift', 'GiftController',['only'=>['show']]);
 

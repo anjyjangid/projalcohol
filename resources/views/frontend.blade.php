@@ -4,14 +4,14 @@
 	<head>
 		<!-- <base href="/"> -->
 		<style>
-		.modal-open .navbar-fixed-top{
+		/*.modal-open .navbar-fixed-top{
 			width:calc(100% - 17px);
 		}
 
 		.checkouter-td-right-text{
 			width:74%;
 			float:left;
-		}
+		}*/
 
 		</style>
 		<meta charset="utf-8">
@@ -56,15 +56,40 @@
 			<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
-		<link rel="stylesheet" media="screen and (max-device-width: 1000px)" type="text/css" href="css/slidebars.css">
-
+		<!-- <link rel="stylesheet" media="screen and (max-device-width: 1000px)" type="text/css" href="css/slidebars.css"> -->
+		<link rel="stylesheet" media="screen and (max-device-width:768px)" type="text/css" href="css/simple-sidebar.css">
 		<link rel="shortcut icon" href="images/favicon.ico"/>		
 	</head>
 
 	<body ng-controller="AppController">		    	
     	
     	
-    	<div canvas="container">    	
+    	<div id="wrapper">     	    		
+
+    		<nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
+	          <ul class="nav sidebar-nav">
+	          
+	            <li> <a href="#">Home</a> </li>
+	            <li> <a href="#">About</a> </li>
+	            <li> <a href="#">Events</a> </li>
+	            <li> <a href="#">Team</a> </li>
+	            <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown">Works <span class="caret"></span></a>
+	              <ul class="dropdown-menu" role="menu">
+	                <li class="dropdown-header">Dropdown heading</li>
+	                <li><a href="#">Action</a></li>
+	                <li><a href="#">Another action</a></li>
+	                <li><a href="#">Something else here</a></li>
+	                <li><a href="#">Separated link</a></li>
+	                <li><a href="#">One more separated link</a></li>
+	              </ul>
+	            </li>
+	            <li> <a href="#">Services</a> </li>
+	            <li> <a href="#">Contact</a> </li>
+	            <li> <a href="https://twitter.com/maridlcrmn">Follow me</a> </li>
+	          </ul>
+	        </nav>
+
+	        <div id="page-content-wrapper">
 
 	    	<top-menu></top-menu>
 	    	
@@ -165,12 +190,10 @@
 				</div>
 	        </div>
 			</section>		
-		
+			</div>
 		</div>
 		
-		<!-- <div off-canvas="slidebar-1 left reveal">
-			<side-bar noInit="true"></side-bar>			
-		</div>	 -->		
+		
 		
 	</body>
 
@@ -224,16 +247,5 @@
     <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
     <script type="text/javascript" src="js/directive.js"></script>
     <script src="{{ asset('bower_components/angular-fblogin/dist/angular-fblogin.js') }}"></script>   
-    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>       
-    
-    <script type="text/javascript" src="js/slidebars.js"></script>
-    
-    <script type="text/javascript">
-    	var mymenu;
-    	$(document).ready(function(){    		
-    		mymenu = new slidebars();    		    		
-    		mymenu.init();    		    				    
-    	});    			
-    </script>
-
+    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>           
 </html>

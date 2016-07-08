@@ -1,99 +1,8 @@
-<style> 
-
-
-
-.header-cover {
-    align-items: center;
-      display: -webkit-flex; /* Safari */
-    -webkit-align-items: center; /* Safari 7.0+ */
-    display: flex;
-    height: 100px;
-    width: 100%;
-	position:relative;
-	  background: rgba(0, 0, 0, 0) url("../../images/ad_logo.png") no-repeat scroll center center;
-}
-.header-innerdiv {
-  align-items: center;
-    display: flex;
-   
-    width: 100%;
-	
-	
-}
-.right-list-item {
-    padding: 0;
-    text-align: right;
-	float: right;
-	flex: 1 1 0;
-	  -webkit-flex: 1; /* Safari 6.1+ */;
-	
-}
-
-.header-logo {
-  float: none;
-    left: 0;
-    margin: 0 auto;
-    position: absolute;
-    text-align: center;
-    top: -8px;
-    width: 100%;
-}
-.navbar-shrink .header-cover{
-	height:70px
-}
-.img-responsive.large-logo {
-    display: inline-block;
-}
-.right-list-item li {
-    display: inline-block;
-    float: right;
-}
-.right-list-item a {
-    padding: 0 15px;
-}
-
-.left-contactdiv{
-/*	background: rgba(0, 0, 0, 0) url("../../images/Shapecall2.png") no-repeat scroll center center;
-*/  /*  height: 66px;*/
-position:relative;
-flex: 1 1 0;
-	  -webkit-flex: 1; /* Safari 6.1+ */;
-	
-}
-.left-contct-innre{
-	width:100%;
-	float:left;
-	padding:9px;
-	position:absolute;
-	    top: -6px;
-}
-.call-us-div{
-	width:100%;
-	float:left;
-	font-size:12px;
-	color:#999
-}
-.chilld-nymber-div{
-	width:100%;
-	float:left;
-	font-size:14px;
-	color:#222
-}
-.logodiv {
-    float: none;
-    margin: 0 auto;
-    padding: 0;
-}
-</style>
-
-
-
-
 <nav tscroll class="navbar navbar-default navbar-fixed-top ">
 <div class="main-header-botm-cover">
   <div class="container">
   <div class=" btm10" ng-controller="SearchController as ctrl">
-      <div class="searchtop"> 
+      <div class="searchtop again21"> 
         <a class="search_icon" ng-show="openSearch"></a>
         <div layout="column" ng-cloak>
           <md-content class="globalsearch">
@@ -119,6 +28,11 @@ flex: 1 1 0;
           </md-content>
         </div>
         <a ng-click="searchbar(0); openSearch=!openSearch" class="search_close">&times;</a> 
+      </div>
+      <div ng-click="openMenu()" class="menu-icon">
+          <span class="line"></span>
+          <span class="line"></span>
+          <span class="line"></span>
       </div>
       <div class="col-md-2 homecallus_cover"> <a ui-sref="mainLayout.index">
         <div class="callshape">
@@ -151,35 +65,7 @@ flex: 1 1 0;
         </div>
       </div>
       
-      <div id="wrapper">
-        <div class="overlay"></div>
-        <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
-          <ul class="nav sidebar-nav">
-            <li class="sidebar-brand"> <a href="#"> Brand </a> </li>
-            <li> <a href="#">Home</a> </li>
-            <li> <a href="#">About</a> </li>
-            <li> <a href="#">Events</a> </li>
-            <li> <a href="#">Team</a> </li>
-            <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown">Works <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li class="dropdown-header">Dropdown heading</li>
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>
-            <li> <a href="#">Services</a> </li>
-            <li> <a href="#">Contact</a> </li>
-            <li> <a href="https://twitter.com/maridlcrmn">Follow me</a> </li>
-          </ul>
-        </nav>
-        
-         <div id="page-content-wrapper">          
-          <button ng-hide="openSearch" type="button" class="hamburger is-closed" data-toggle="offcanvas" id="offcanvas" ng-click="openMenu()"> <span class="hamb-top"></span> <span class="hamb-middle"></span> <span class="hamb-bottom"></span> </button>
-        </div>
-      </div>
+      
 
               
     </div>

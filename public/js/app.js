@@ -934,10 +934,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						}
 				})
 
-				.state('mainLayout.giftcategory', {
+				
+				.state('mainLayout.giftcategory', {					
 					url: "/gifts/{categorySlug}?/{type}",
 					templateUrl : '/templates/gifts/index.html',
-					controller: 'GiftCategoryController',
+					controller: 'GiftProductController',
 					resolve: {
 						deps: ['$ocLazyLoad', function($ocLazyLoad) {
 							return $ocLazyLoad.load({
@@ -950,8 +951,8 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								]
 							});
 						}]
-					}					
-				})
+					}										
+				})				
 
 				.state('mainLayout.gift', {
 					url: "/gifts/product/{giftid}",
