@@ -42,9 +42,26 @@ AlcoholDelivery.filter('capitalize', function() {
 		}
 });
 
+AlcoholDelivery.filter('isActive', function() {
+		return function(obj, field, check) {
+
+			if(typeof check !== 'undefined'){
+				return obj[field]===check;
+			}
+			console.log(obj);
+			console.log(field);
+			return true;
+		}
+});
+
 
 AlcoholDelivery.filter('getProductThumb', function() {
 		return function(input) {
+
+			if(angular.isString(input)){
+				return input;
+			}
+
 			for(i=0;i<=input.length;i++){
 				if(input[i].coverimage==1){
 					return input[i].source;
@@ -1087,7 +1104,7 @@ function ($q, $rootScope, $log, $location) {
 AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "catPricing", "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll",
 			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll) {
 	
-	angular.UserService = UserService;
+	angular.alcoholCart = alcoholCart;
 
 	$rootScope.$state = $state; // state to be accessed from view
 	

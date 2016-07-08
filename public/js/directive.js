@@ -251,11 +251,9 @@ AlcoholDelivery.directive('sideBar', function() {
         link: function(scope, element) {
 
           	if(scope.$first && typeof $(element.parent()).data('owlCarousel') !== "undefined"){
-
           		
 				$(element.parent()).find(".owl-wrapper-outer").remove();//$(element.parent()).find(".owl-wrapper").remove();
           		$(element.parent()).data('owlCarousel').destroy();
-          		
 
           	}
 
@@ -948,8 +946,6 @@ AlcoholDelivery.directive('sideBar', function() {
 	};
 }])
 
-
-
 .directive("apFocusOut", ['$document','$parse', function( $document, $parse ){
     return {
         link: function( $scope, $element, $attributes ){
@@ -970,6 +966,7 @@ console.log(isChild);
         }
     }
 }])
+
 .directive('backImg', function(){
     return function(scope, element, attrs){
         var url = attrs.backImg;
@@ -978,7 +975,9 @@ console.log(isChild);
             'background-size' : 'cover'
         });
     };
-}).directive('errSrc', function() {
+})
+
+.directive('errSrc', function() {
   return {
     link: function(scope, element, attrs) {
       element.bind('error', function() {
@@ -988,7 +987,9 @@ console.log(isChild);
       });
     }
   }
-}).directive('outOfStock',[function(){
+})
+
+.directive('outOfStock',[function(){
 	return {
 		restrict : "E",
 		replace: true,
@@ -1049,7 +1050,9 @@ console.log(isChild);
 
 		}
 	}
-}]).directive('notAvailable',[function(){
+}])
+
+.directive('notAvailable',[function(){
 	return {
 		restrict : "E",
 		replace: true,
@@ -1072,7 +1075,9 @@ console.log(isChild);
 
 		}
 	}
-}]).directive('hoverClass', function () {
+}])
+
+.directive('hoverClass', function () {
     return {
         restrict: 'A',
         scope: {
@@ -1088,7 +1093,9 @@ console.log(isChild);
         }
     };
 
-}).directive('twitterShareBtn',["SocialSharingService","sweetAlert",
+})
+
+.directive('twitterShareBtn',["SocialSharingService","sweetAlert",
     function(SocialSharingService,sweetAlert) {
         return {
             link: function(scope, element, attr) {
@@ -1142,4 +1149,14 @@ console.log(isChild);
             }
         }
     }
-]);
+])
+
+.directive('giftingProducts',['alcoholCart',function(alcoholCart){
+	return {
+		restrict: 'A',
+		scope: {
+			giftItemKey : '@'
+		},
+		controller:''
+	};
+}]);

@@ -2164,6 +2164,43 @@ angular.SocialSharing = SocialSharingService;
 
     }
 
+    $scope.googleShare = function(){
+
+		SocialSharingService.shareGoogle({
+
+			key:$scope.orderNumber,
+			type:'order',
+
+		}).then(
+
+			function(resolveRes){
+
+				sweetAlert.swal({
+
+					title: "Awesome!",
+					text: "Share successfully! Loyalty points are credit to your account",
+					imageUrl: 'http://54.169.107.156/images/thumbimg.png'
+
+				});
+				
+			},
+			function(rejectRes){
+
+				sweetAlert.swal({
+
+					type:'error',
+					title: 'Oops...',
+					text:rejectRes.message,
+					timer: 2000
+
+				});
+
+			}
+		)
+
+    }
+    
+
 }]);
 
 AlcoholDelivery.controller('RepeatOrderController',['$scope','$rootScope','$http','$mdDialog','UserService','alcoholCart','sweetAlert',function($scope,$rootScope,$http,$mdDialog,UserService,alcoholCart,sweetAlert){
@@ -2817,9 +2854,11 @@ AlcoholDelivery.controller('GiftCategoryController', [
 }]);
 
 AlcoholDelivery.controller('GiftController', [
-	'$q', '$http', '$scope', '$stateParams', '$rootScope',
-	function($q, $http, $scope, $stateParams, $rootScope){
+	'$q', '$http', '$scope', '$stateParams', '$rootScope','alcoholGifting',
+	function($q, $http, $scope, $stateParams, $rootScope, alcoholGifting){
 		$rootScope.appSettings.layout.pageRightbarExist = false;
+
+		$scope.btnText = 'add to cart';		
 
 		$scope.gift = {
 			
@@ -2828,12 +2867,56 @@ AlcoholDelivery.controller('GiftController', [
 		if($stateParams.giftid){
 
 			$http.get('/gift/'+$stateParams.giftid).success(function(result){
+				
 				$scope.gift = result;
+
+				angular.alcoholGifting = alcoholGifting;
+				$scope.alcoholGifting = alcoholGifting;
+
+				alcoholGifting.setCurrentGift(result);
+
+				$scope.products = alcoholGifting.getProducts();
+
+				angular.forEach($scope.products,function(value,key){
+					$scope.$watch('products[key][_inGift]',function(newValue, oldValue) {
+						$scope.totalAttached();
+					})
+				})
+
+				$scope.totalAttached = function(){
+
+					var total = 0;
+
+					angular.forEach($scope.products,function(value,key){
+						total+=parseInt(value._inGift);
+					});
+
+					angular.forEach($scope.products,function(value,key){
+
+						var maxQuantity = result.limit - total + value._inGift;
+						value._maxQuantity = value._quantity>maxQuantity?maxQuantity:value._quantity;
+					});
+				}
+
+				
+
 			}).error(function(err){
 
 			});
 
 		}
+
+		$scope.childOwlOptions = {
+
+			items 			  : 6,
+			itemsDesktop      : [1199,4],
+			itemsDesktopSmall : [979,4],
+			itemsTablet       : [768,4],
+			itemsMobile       : [479,4],
+			pagination 		  : false,
+			responsiveRefreshRate : 100,
+		}
+
 }]);
 
 AlcoholDelivery.controller('GiftCardController', [

@@ -88,8 +88,37 @@ AlcoholDelivery.service('SocialSharingService', ['$rootScope', '$window', '$http
 
 		return defer.promise;
 	}
-
 	
+	this.shareGoogle = function(shareData){
+
+		var _self = this;
+		var defer = $q.defer();		
+
+		var retStatus = {
+			'sharing':false,
+			'points':false,
+			'message':'Something went wrong'
+		}
+
+		retStatus.sharing = true;
+
+		_self.provideLoyalty('order','google',shareData['key']).then(
+
+			function(){
+
+				retStatus.points = true;
+				defer.resolve(retStatus);
+
+			},
+			function(){
+
+				defer.reject(retStatus);
+
+			}
+		);
+
+		return defer.promise;
+	}
 
 	this.provideLoyalty = function(type,on,key){
 
@@ -118,5 +147,151 @@ AlcoholDelivery.service('SocialSharingService', ['$rootScope', '$window', '$http
 
 	}
 
+
+}]);
+
+AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$mdToast', 'alcoholCart', 'GiftingProduct', function ($rootScope, $q, $mdToast, alcoholCart, GiftingProduct) {
+
+	this.currentGift = null;
+	this.$products = [];
+
+	this.getProducts = function(){
+
+		var _self = this;			
+
+		var products = alcoholCart.getProducts();
+		var promotions = alcoholCart.getPromotions();
+
+		angular.forEach(products, function(product, key) {
+			
+			isProExist = _self.getProductById(product._id);
+
+			if(isProExist === false){
+				var newItem = new GiftingProduct(
+											product._id, 
+											product.quantity,
+											product.product.name,
+											product.product.imageFiles,
+											product.product.slug
+										);
+
+				_self.$products.push(newItem);
+			}
+
+		});
+
+		angular.forEach(promotions, function(promotion, key) {
+
+			isProExist = _self.getProductById(promotion.product._id);
+
+			if(isProExist === false){
+
+				var newItem = new GiftingProduct(
+													promotion.product._id,
+													1,
+													promotion.product._title,
+													promotion.product._image,
+													promotion.product._slug
+
+												);
+				
+				_self.$products.push(newItem);
+
+			}else{
+
+				isProExist._quantity++;
+
+			}
+
+		});
+
+
+		return this.$products;
+	}
+
+	this.getProductById = function (id){
+
+		var products = this.$products;
+		var build = false;
+
+		angular.forEach(products, function (product) {
+
+			if (product._id === id) {
+				build = product;
+			}
+
+		});
+		return build;
+
+	};
+
+	this.setCurrentGift = function(gift){
+		this.currentGift = gift;
+		this.currentGift.products = [];
+	};
+
+	this.getAttachedQuantity = function(){
+
+	}
+
+	// this.attach = function(proId,quantity){
+
+	// 	var retObj = {
+	// 		found : false,
+	// 		message : "Something webt wrong",
+	// 	};
+
+	// 	var product = this.getProductById(proId);
+		
+	// 	if(product===false){
+
+	// 		retObj.message = "Product not found in cart";
+
+	// 	}
+
+	// 	retObj.found = true;
+
+	// 	if(!this.isAttached(proId)){
+	// 		this.currentGift.products.push(product);
+	// 	}
+
+	// 	return retObj;
+
+	// }
+
+	// this.isAttached = function(proId){
+
+	// 	var products = this.currentGift.products;
+	// 	var isFound = false;
+	// 	angular.forEach(products, function(val,key){
+
+	// 		if(val._id==proId && !isFound){
+	// 			isFound = true;
+	// 		}
+			
+	// 	});
+		
+	// 	return isFound;
+	// }
+
+
+
+
+}]);
+
+AlcoholDelivery.factory('GiftingProduct',['$filter',function($filter){
+
+	var giftProduct = function(id,quantity,title,images,slug){
+
+		this._id = id;
+		this._quantity = parseInt(quantity);
+		this._maxQuantity = parseInt(quantity);
+		this._title = title;
+		this._image = $filter('getProductThumb')(images);
+		this._slug = slug;
+		this._inGift = 0;
+
+	}
+	return giftProduct;
 
 }]);

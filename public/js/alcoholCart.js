@@ -1463,7 +1463,8 @@ AlcoholDelivery.factory('alcoholCartPromotion',['$log','$filter',function($log,$
 			_title : product.name,
 			_description : product.description,
 			_shortDescription : product.shortDescription,
-			_image : $filter('getProductThumb')(product.imageFiles)
+			_image : $filter('getProductThumb')(product.imageFiles),
+			_slug : product.slug,
 
 		}
 		
@@ -1529,9 +1530,8 @@ AlcoholDelivery.service('store', ['$rootScope','$window','$http','alcoholCart','
 
 			orderPlaced : function(){
 
-				delete $rootScope.deliverykey
+				delete $rootScope.deliverykey;
 				localStorage.removeItem("deliverykey");
-
 				this.init();
 
 			},
