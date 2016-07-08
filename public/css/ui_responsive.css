@@ -1352,11 +1352,11 @@ body.menu-slider.in {
 .tabtitle {
 	padding-left: 15px
 }
-.christmas-mainouter .combo_slider .owl-carousel .owl-item {
-	width: 159px !important;
-}
+
 .christmas-mainouter .combo_slider .item {
-	margin: 24px 4px
+	margin: 0 4px;
+    position: relative;
+    top: 24px;
 }
 .single_slider {
 	background-size: cover
@@ -1535,14 +1535,13 @@ md-dialog {
 	padding: 0 5px;
 }
 .dropdown.productdropdownbtn {
-	margin-right: 15px;
-	margin-top: 12px;
-	width: auto;
+	margin-right: 0;
+	margin-top: 0;
 }
 .dropdown.productdropdownbtn span1 {
 	float: left;
 	position: relative;
-	right: 20px;
+	right: 0;
 }
 .productslide_normaltext.ng-binding {
 	height: 33px;
@@ -1568,7 +1567,7 @@ md-dialog {
 	width: 207px !important;
 }
 .productdropdownbtn .dropdown-menu {
-	left: -96px
+	left: 0
 }
 .single_slider_product .owl-controls {
 	width: 100%;
@@ -1624,6 +1623,42 @@ md-dialog {
 .homecallus_cover {
 	width: 19%;
 }
+.fullwidth.top-tabmainouter > .right-crousel {
+   float: left;
+    margin-bottom: 20px;
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 79%;
+	margin-right:0
+}
+.tab-content.fullwidth .owl-item{
+	width:159px !important;
+}
+.top-tabmainouter .owl-item{
+	width:inherit ;
+	position: relative;
+    top: -16px;
+}
+.top-tabmainouter .owl-prev{
+	left:-14px
+}
+.top-tabmainouter .owl-next{
+	right:-7px
+}
+.slido_left {
+    position: relative;
+}
+.slido_right{
+	min-height:inherit
+}
+.slido_right.ng-binding{
+	padding:10px 7px
+}
+.christmas-mainouter .combo_slider .tab-content .item{
+	top:0
+
+>>>>>>> c98587326c610e78b7b0f73c019f3b2028e812e1
+}
 }
  @media (min-width : 768px) and (max-width : 1023px) {
 .col-md-2.homecallus_cover {
@@ -1668,7 +1703,7 @@ md-dialog {
 	padding-top: 60px;
 }
 .tabtitle {
-	width: 100%
+	width: auto
 }
 #bs-example-navbar-collapse-1 {
 	display: none
@@ -2065,14 +2100,13 @@ md-dialog {
 	padding: 0 5px;
 }
 .dropdown.productdropdownbtn {
-	margin-right: 15px;
-	margin-top: 12px;
-	width: auto;
+	margin-right: 0;
+	margin-top: 0;
 }
 .dropdown.productdropdownbtn span1 {
 	float: left;
 	position: relative;
-	right: 20px;
+	right: 0;
 }
 .productslide_normaltext.ng-binding {
 	height: 33px;
@@ -2091,7 +2125,7 @@ md-dialog {
 	overflow: hidden;
 }
 .productdropdownbtn .dropdown-menu {
-	left: -96px
+	left: 0
 }
 .prdquanbulkboxone {
 	width: 60px;
@@ -2183,6 +2217,38 @@ md-dialog {
 }
 .innerpagemargintop {
 	margin-top: 110px;
+}
+.fullwidth.top-tabmainouter > .right-crousel {
+   float: left;
+    margin-bottom: 20px !important;
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 79%;
+	margin-right:0
+}
+.tab-content.fullwidth .owl-item{
+	width:inherit ;
+}
+.top-tabmainouter .owl-item{
+	width:inherit;
+	position: relative;
+    top: 8px;
+}
+.slido_left {
+    position: relative;
+}
+.tabtitle{
+	padding-top:12px
+}
+.slido_right{
+	min-height:inherit
+}
+.slido_right.ng-binding{
+	padding:10px 7px
+}
+.text-capitalize {
+	font-size:14px
+>>>>>>> c98587326c610e78b7b0f73c019f3b2028e812e1
 }
 }
  @media only screen and (max-width : 767px) {
@@ -2884,14 +2950,11 @@ ng-map {
 	padding: 0 5px;
 }
 .dropdown.productdropdownbtn {
-	margin-right: 15px;
-	margin-top: 12px;
-	width: auto;
+	margin-right: 0;
 }
 .dropdown.productdropdownbtn span1 {
 	float: left;
 	position: relative;
-	right: 20px;
 }
 .productslide_normaltext.ng-binding {
 	height: 33px;
@@ -2908,7 +2971,7 @@ ng-map {
 	width: 25%
 }
 .productdropdownbtn .dropdown-menu {
-	left: -82px
+	left: 0
 }
 .alcohal_addadress_headertitle {
 	font-size: 22px
@@ -3068,796 +3131,844 @@ ng-map {
 .tabsright {
 	width: 83%
 }
+.fullwidth.top-tabmainouter > .right-crousel {
+   float: left;
+    margin-bottom: 20px !important;
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 100%;
+	margin-right:0
 }
-@media only screen and (width : 640px) {
-.alcohal_addadress_headertitle {
-	font-size: 23px
+.tab-content.fullwidth .owl-item{
+	width:inherit
 }
-}
- @media only screen and (max-width : 479px) {
-.col-md-2.homecallus_cover {
-	display: none;
-}
-.logolarge {
-	left: inherit;
-	width: 115px;
-}
-.signuplogin ul.menuulpadding > li:nth-child(2) {
-	display: none;
-}
-.signuplogin ul.menuulpadding > li:nth-child(1) {
-	display: none;
-}
-.signuplogin ul.menuulpadding > li:nth-child(3) {
-	display: none;
-}
-.signuplogin ul.menuulpadding > li:nth-child(4) {
-	display: table;
-}
-.signuplogin_cover {
-	width: 28%
-}
-.side-menu-responsive {
-	left: 0;
-	position: absolute;
-	top: 0;
-	z-index: 9999;
-	display: none
-}
-/*.navbar-collapse.nopadd.collapse.in {
-    width: none;
-}*/
-.occassion_sale {
-	font-size: 70px;
-	float: left;
-	line-height: 0;
-	padding-bottom: 20px;
-	padding-top: 25px;
-}
-.tabtitle {
-	width: 100%
-}
-#bs-example-navbar-collapse-1 {
-	display: none
-}
-.item.ng-scope {
-	display: inline-block;
-	float: none;
-	margin: 0;
-	text-align: center;
-	width: 100%;
-}
-.item.ng-scope div {
-	display: inline-block;
-	float: none;
-	text-align: center;
-}
-.registernowbtn.ng-scope {
-	margin: 20px 0;
-}
-.prod_pic {
-	margin-bottom: 15px;
-}
-.prod_desc.ng-binding {
-	height: auto;/*margin-bottom: 0;*/
-}
-.prod_addtocart {
-	margin-bottom: 5px;
-}
-.prod_addtocart {
-	margin-bottom: 5px;
-}
-.offers {
-	width: 100%
-}
-.offrates {
-	width: 100%;
-	margin-bottom: 10px;
-}
-.happy_hours {
-	width: 100%
-}
-.fullwidth.ng-scope.header {
-	margin-bottom: 0;
-}
-.single_slider.ng-scope {
-	width: 100%;
-	padding: 20px 0px;
-	background-size: cover
-}
-.slido_right {
-	float: right;
-	font-size: 15px;
-	font-weight: 500;
-	margin-top: 10px;
-	padding: 0 20px;
-	width: 100%;
-}
-.single_slider.ng-scope .owl-carousel .owl-item {
-	width: 100%;
+.top-tabmainouter .owl-item{
+	width:inherit;
+	position: relative;
+    top: 8px;
 }
 .slido_left {
-	margin-top: 0;
-	width: 100%;
-}
-.slido_right {
-	font-size: 15px;
-	font-weight: 500;
-	margin-top: 10px;
-	padding: 0 20px;
-	width: 100%;
-}
-.orderbooz {
-	margin-top: 20px
-}
-.socio_btns {
-	margin-top: 30px
-}
-.fullwidth.social_block {
-	padding: 20px 0;
-}
-.socilblok_twtr {
-	margin-left: 0;
-	text-align: center;
-	width: 100%;
-	margin: 5px 0
-}
-.socilblok_fb {
-	margin-left: 0;
-	text-align: center;
-	width: 100%;
-}
-.socilblok_folowtxt {
-	margin-left: 0;
-	text-align: center;
-	width: 100%;
-}
-.socilblok_twtr img {
-	display: inline-block;
-	float: none;
-}
-.socilblok_twtr > a > span {
-	display: inline-block;
-	float: none;
-	padding-left: 0;
-}
-.socilblok_fb img {
-	display: inline-block;
-	float: none;
-}
-.socilblok_fb > a > span {
-	display: inline-block;
-	float: none;
-	padding-left: 0;
-}
-.footer1_pannel1cvr {
-	width: 100%
-}
-.footer1_sociallink {
-	margin: 20px 0;
-}
-.footer1_privcytext {
-	width: 42%
-}
-.footer1_pannel2cvr {
-	width: 100%
-}
-.footer1_pannel3cvr {
-	width: 100%
-}
-.footer1_pannel4cvr {
-	width: 100%
-}
-.footer2_btmcvr {
-	margin-top: 20px
-}
-.footer2_madetxt {
-	margin-top: 30px;
-}
-.footer2_copytxt {
-	margin-top: 30px;
-}
-.leftphone {
-	max-width: 100%
-}
-.onthego_block {
-	background-size: cover
-}
-
-.dropdown-menu a:focus .nav.sidebar-nav li a {
-	background: none !important
-}
-.dropdown-menu a:hover .nav.sidebar-nav li a {
-	background: none !important
-}
-.dropdown-menu a:active .nav.sidebar-nav li a {
-	background: none !important
-}
-/*.ancontainer{
-	z-index:2
-}*/
-.brands .owl-carousel .owl-item {
-	display: table-cell;
-	float: none;
-	max-width: 100%;
-	padding-bottom: 10px;
-	text-align: center;
-	vertical-align: middle;
-}
-.single_slider.ng-scope {
-	margin-bottom: 30px;
-}
-.searchtop100 {
-	right: 15px;
-	width: 88%;
-}
-.onthego {
-	font-size: 110px
-}
-.searchtop {
-	right: 26.5%;
-}
-.footer2_madetxt {
-	font-size: 30px;
-	margin-bottom: 0;
-}
-.footer2_copytxt {
-	margin-bottom: 40px;
-}
-.searchtop.searchtop100 {
-	float: left;
-	margin-top: 0;
-	right: inherit;
-	width: 100%;
-	top: 35px
-}
-.ancontainer {
-	z-index: 9999
-}
-.searchopen .hamburger {
-	display: none
-}
-.currentorderpopup {
-	left: -188px;
-	width: 236px
-}
-.currentorderpopup::before {
-	left: 83%
-}
-.modal-dialog.alcohal_registermain {
-	text-align: center;
-	width: 93%;
-	float: none;
-	margin: 10px auto;
-}
-.alcohal_regisemailcvr {
-	width: 100%
-}
-.modal-footer.alcohalfotter {
-	padding: 20px 15px
-}
-.alcohallogin_forgettxt {
-	padding-bottom: 15px;
-	padding-top: 0;
-	text-align: center;
-	width: 100%;
-}
-.alcohalfootersign.alcohal_fotrloginbox {
-	display: inline-block;
-	float: none;
-}
-.gift-packagecoverdiv {
-	width: 100%;
-	margin: 0;
-}
-.modal-dialog.alcohal_addadressmain {
-	margin-left: 0;
-	margin-right: 0;
-	width: 100%;
-	margin-top: 0;
-}
-md-dialog {
-	max-height: 90%;
-	max-width: 90%;
-	overflow-y: auto;
-	overflow-x: hidden;
-	opacity: 1;
-}
-.alcohlinputextcvr {
-	margin-bottom: 0
-}
-.alcohlinputext {
-	width: 100%;
-	margin-bottom: 10px;
-}
-.alcohlinputrighttext {
-	width: 100%;
-	margin-bottom: 10px;
-}
-.alcohal_adress2fotter {
-	width: 51%
-}
-.modal-body.gift-packgng-bodydiv {
-	padding-left: 0;
-	padding-right: 0;
-	text-align: center;
-}
-.gift-item-cover {
-	display: inline-block;
-	float: none;
-	margin: 0 5px 15px auto;
-}
-.gift-packagecoverdiv {
-	background-size: initial
-}
-.gift-item-cover:last-child {
-	margin: 0 5px 15px auto;
-}
-.md-toolbar-tools.alcohal_addadress_header {
-	float: left;
-	height: auto;
-	margin-bottom: 0;
-	max-height: none;
-}
-.layout-row {
-	padding: 0;
-	padding-bottom: 20px;
-	padding-top: 15px;
-}
-.alcohal_addadress_headertitle {
-	font-size: 23px
-}
-.pushy.pushy-left {
-	display: block
-}
-#container {
-	display: block
-}
-.dropdown.cart-icon-set span {
-	display: none
-}
-.search_close.search_close_opaque {
-	line-height: 18px;
-	top: 0;
-	margin-top: 0
-}
-.searchtop.searchtop100 .search_icon {
-	left: 7px;
-	top: 0;
-}
-.layout-row {
-	padding: 0;
-	height: 40px;
-}
-.search_icon {
-	margin-right: 0
-}
-.logolarge {
-	left: inherit;
-	width: 115px;
-}
-.navbar-fixed-top.navbar-shrink .text-center .logosmall {
-}
-md-content.globalsearch md-autocomplete {
-	margin: 0;
-	margin-left: 10px
-}
-.layout, .layout-column, .layout-row {
-/*width:92.3%*/
-}
-.layout-row {
-	width: 95%;
-}
-.top-logo-sideacnt-cover {
-	padding: 0
-}
-
-.hamburger.is-closed {
-	margin-left: 4px;
-}
-.search_close, .search_close:hover, .search_close:focus {
-	margin-top: 0;
-	line-height: 18px;
-}
-.img-responsive.logolarge {
-	top: 0
-}
-.profile_form .registeremailcvr {
-	padding-right: 0;
-	width: 100%
-}
-.change_form .registeremailcvr.paswrd-width-set5 {
-	float: left;
-	margin-right: 0;
-	width: 100%;
-}
-.addressbokk-trvaichacovr.ng-scope {
-	margin: 0 0 20px;
-	width: 100%;
-}
-.addressbokk-addnewadresscovr {
-	margin: 0;
-	width: 100%;
-}
-.addressbook-btmpannelcover {
-	margin-bottom: 10px
-}
-.balancedetailsdivinner {
-	margin-right: 38px;
-}
-.balancedetailsdiv {
-	margin-bottom: 30px
-}
-.orhistry2_td2proctext1 {
-	float: left;
-	width: 100%;
-}
-.checkouter-td-right-text {
-	float: none;
-	margin-right: 20px;
-	width: 73%;
-	display: inline-block
-}
-.checkboxtotaldiv-title {
-	width: 65%
-}
-.checkout-product .col-md-3.col-sm-3.col-xs-12.m-bottom-20 {
-	width: 100%
-}
-/*.steps_notify .step_grid a {
-    border-radius: 50%;
-    display: inline-block;
-    height: 60px;
-    position: absolute;
-    top: -18px;
-    white-space: normal;
-    width: 20px;
-    word-wrap: break-word;
-	float:none
-}
-.step1 {
-    left: 31px;
-}
-.step2 {
-    left: 88px;
-    top: -32px !important;
-}
-.steps_notify .step_grid a span
-{
-	width:auto
-}
-.step3 {
-    left: 146px;
-    top: -32px !important;
-}
-.step4 {
-    left: 206px;
-    top: -32px !important;
-}
-.step5 {
-   float: none !important;
-    right: 4px !important;
-    width: 22px !important;
-}
-.steps_notify {
-    float: left;
-    margin: 30px 0 45px;
-    min-height: 60px;
     position: relative;
-    width: 100%;
 }
-.steps_notify .step_grid {
-    position: absolute;
-}*/
-.div_addsboxs.ng-scope {
-	margin: 0 0 20px;
-	width: 100%;
-	margin-right: 0
-}
-.add_alltext {
-	width: 69%
-}
-.single-slot {
-	font-size: 11px
-}
-.slots-bunch-title .week-stamp {
-	font-size: 1em
-}
-.cover_cashdiv_left.paymenttype.active {
-	width: 100%;
-}
-.cover_creadetcard_right {
-	width: 100%
-}
-.checkoutstep5-left-first-left {
-	width: 88%
-}
-.checkouterwantbutton {
-	width: 100%;
-}
-button.checkoutergitpackage {
-	width: 100%
-}
-.steps_notify .step_grid a span {
-	top: 45px
-}
-.checkouterback {
-	margin-bottom: 10px;
-	text-align: center;
-	width: 100%;
-}
-.checkouterbackouter {
-	text-align: center
-}
-.add-newaddbox {
-	width: 100%;
-	margin-top: 10px;
-}
-.slots-bunch-title .date-stamp {
-	text-transform: uppercase;
-	text-align: center;
-	font-size: 0.9em;
-	word-wrap: break-word;
-	white-space: normal;
-	width: 40px;
-}
-.checkoutstepthree_showdate {
-	margin-bottom: 0;
-	font-size: 21px;
-}
-.checkoutcheckoutnowbutton2 {
-	min-width: 175px;
-}
-md-datepicker {
-	margin-right: 0
-}
-.md-button.md-icon-button {
-	margin-right: 0;
-	margin-left: 0;
-}
-.sharepurchasecover {
-	font-size: 22px
-}
-.alcohal_reapeatorederbtnsocvercvr {
-	margin: 0 auto;
-	padding: 0 10px 20px;
-	width: 100%;
-}
-.alcohal_hisryorderboxcvr1.ng-scope {
-	margin-right: 0;
-}
-.alcohal_hisryorderboxcvr1 {
-	width: 100%
-}
-.prddetailtitle.ng-binding {
-	font-size: 22px;
-}
-.checkoutmiddlevlauediv {
-	display: inline-block;
-	float: none;
-	width: 70px;
-}
-.prdquantitybulkcoverbulk {
-	display: inline-block;
-	float: none;
-	width: 100%;
-}
-.alcohal_reapeatorenothnxtxt {
-	float: right;
-	margin-right: 7px;
-}
-.alcohal_orderhistorybodytxt {
-	width: 100%
-}
-.alcohal_orderhistory2fotter {
-	width: 100%;
-	text-align: center;
-}
-.alcohalfooter_shopordershopbtn {
-	margin-bottom: 0
-}
-.productinner_leftslide.left-main-outerdiv {
-	width: 100%;
-}
-.btn.product_addcart.addcart-margin-responsive {
-	margin-top: 0
-}
-.owl-wraaper-margin .owl-wrapper {
-	margin-bottom: 33px;
-}
-.left-main-outerdiv .productslide_heading.ng-binding {
-	font-size: 22px;
-	line-height: 30px;
-	height: auto;
-	overflow: visible
-}
-.dropdown.productdropdownbtn {
-	margin-right: 15px;
-	margin-top: 12px;
-	width: auto;
-}
-.dropdown.productdropdownbtn span1 {
-	float: left;
-	position: relative;
-	right: 20px;
-}
-.productslide_normaltext.ng-binding {
-	height: auto;
-	overflow: visible;
-}
-.comboproductitems {
-	width: 100%
-}
-.productbeerfiltertopcover .row div {
-	width: 100%
-}
-/*.md-dialog-content.alcohaladdadrebody {
-    padding: 54px 24px 24px;
-}*/
-.alcohal_addadress_headertitle span {
-	width: 80%;
-	display: inline-block;
-}
-.alcohal_addadress_headertitle {
-	font-size: 18px
-}
-.alcohal_addadress_headercurcle {
-	margin-top: 12px;
-}
-.alcohalorderhisttitle {
-	font-size: 18px
-}
-.currentorderpopuppinkboxleft {
-	width: 126px
-}
-.currentorderpopup::before {
-	top: -5px
-}
-.prdquanbulkboxone {
-	width: 54px;
-}
-.product-detail-right-set {
-	padding-left: 10px;
-	padding-right: 10px;
-}
-.prdquanbulkboxtwo {
-	width: 64px
-}
-.alcohlinputextarea1 {
-	width: 100%
-}
-.adressunit {
-	width: 44%
-}
-.adresfloortxtcvr {
-	width: 44%
-}
-.left-party-content {
-	width: 100%
-}
-.part-content-btm-desc {
-	padding-left: 15px;
-	padding-right: 15px;
-}
-.btmcontn-set a {
-	width: 25%;
-	margin: 2px 0;
-	font-size: 11px;
-}
-.package-desc {
-	width: 75%
-}
-.saving-amount-cover {
-	float: left;
-	padding-left: 0;
-	padding-top: 3px;
-	width: 45%;
-}
-.package-amtcover {
-	float: left;
-	width: 55%;
-}
-.add-cart-cover {
-	float: left;
-	width: 100%;
-}
-.customize-text-cover > span {
-	padding-left: 4px;
-}
-.title-propertset {
-	font-size: 21px;
-	margin-top: 15px;
-}
-.media-body.party-detail-contentcover {
-	padding-left: 0;
-}
-.party-detail-heading {
-	font-size: 24px
-}
-.party-detail-btmtitl4 > h4 {
-	font-size: 16px;
-}
-.ttile-divcover.party-deatil-pading5.ng-scope {
-	padding-left: 4px;
-}
-.media-body.cockatil-bodycover {
-	padding-left: 0;
-	width: 100%;
-}
-.moredetail-cocktailtext > a {
-	font-size: 11px;
-	margin: 2px 0;
-	width: 25%;
-}
-.product-desccocktail.ng-binding {
-	width: 75%;
-}
-/*.cocktail-cartbtn{
-	text-align:center
-}
-.btn.product_addcart.addcart-detail.cocktail-cart-margintop {
-    display: inline-block;
-    float: none;
-    margin-left: 0;
-    text-align: center;
-}*/
-.cocktail-amntdivcover {
-	float: left;
-	text-align: center;
-	width: 100%;
-}
-.saving-cocktail-cover span {
-	width: auto
-}
-.saving-titie-amnt {
-	width: auto
-}
-.cocktail-detail-width {
-	width: 100%;
-	float: left;
-	padding: 0 10px;
-}
-md-tabs-canvas.md-paginated {
-	margin: 0 auto;
-	width: 133px;
-}
-.md-tab {
-	min-width: 133px;
-	text-align: center;
-}
-.media-body.cockatil-bodycover {
-	padding-left: 0;
-	width: 100%;
-}
-.media-left.cocktail-leftimgdiv {
-	width: 100%;
-	height: 100%
-}
-.title-propertset.ng-binding {
-	margin-top: 15px
-}
-.party-detail-btm-width {
-	width: 100%
-}
-.navbar-shrink .dropdown.cart-icon-set span, .navbar-shrink .dropdown.cart-icon-set span:hover, .navbar-shrink .dropdown.cart-icon-set span:focus {
-	display: none
-}
-.yelo_btn {
-	padding: 6px 20px;
-}
-.cocktaildetail-cover .media-left {
-	float: left;
-	height: 100%;
-	padding-right: 0;
-	width: 100%;
-}
-.gift-card-innerform {
-	width: 100%
-}
-.tabsright {
-	width: 74%
-}
-.tabtitle {
-	padding-bottom: 10px;
-}
+.top-tabmainouter .owl-next{
+	right:0
+}
+.top-tabmainouter .owl-prev{
+	left:0
+}
+.slido_right{
+	min-height:inherit
+}
+.slido_right.ng-binding{
+	padding:10px 7px
+}
+.text-capitalize {
+	font-size:14px
+}
+}
+@media only screen and (width : 640px) {
+	.alcohal_addadress_headertitle {
+		font-size: 23px
+	}
+}
+ @media only screen and (max-width : 479px) {
+	.col-md-2.homecallus_cover {
+		display: none;
+	}
+	.logolarge {
+		left: inherit;
+		width: 115px;
+	}
+	.signuplogin ul.menuulpadding > li:nth-child(2) {
+		display: none;
+	}
+	.signuplogin ul.menuulpadding > li:nth-child(1) {
+		display: none;
+	}
+	.signuplogin ul.menuulpadding > li:nth-child(3) {
+		display: none;
+	}
+	.signuplogin ul.menuulpadding > li:nth-child(4) {
+		display: table;
+	}
+	.signuplogin_cover {
+		width: 28%
+	}
+	.side-menu-responsive {
+		left: 0;
+		position: absolute;
+		top: 0;
+		z-index: 9999;
+		display: none
+	}
+	/*.navbar-collapse.nopadd.collapse.in {
+	    width: none;
+	}*/
+	.occassion_sale {
+		font-size: 70px;
+		float: left;
+		line-height: 0;
+		padding-bottom: 20px;
+		padding-top: 25px;
+	}
+	.tabtitle {
+		width: 100%
+	}
+	#bs-example-navbar-collapse-1 {
+		display: none
+	}
+	.item.ng-scope {
+		display: inline-block;
+		float: none;
+		margin: 0;
+		text-align: center;
+		width: 100%;
+	}
+	.item.ng-scope div {
+		display: inline-block;
+		float: none;
+		text-align: center;
+	}
+	.registernowbtn.ng-scope {
+		margin: 20px 0;
+	}
+	.prod_pic {
+		margin-bottom: 15px;
+	}
+	.prod_desc.ng-binding {
+		height: auto;/*margin-bottom: 0;*/
+	}
+	.prod_addtocart {
+		margin-bottom: 5px;
+	}
+	.prod_addtocart {
+		margin-bottom: 5px;
+	}
+	.offers {
+		width: 100%
+	}
+	.offrates {
+		width: 100%;
+		margin-bottom: 10px;
+	}
+	.happy_hours {
+		width: 100%
+	}
+	.fullwidth.ng-scope.header {
+		margin-bottom: 0;
+	}
+	.single_slider.ng-scope {
+		width: 100%;
+		padding: 20px 0px;
+		background-size: cover
+	}
+	.slido_right {
+		float: right;
+		font-size: 15px;
+		font-weight: 500;
+		margin-top: 10px;
+		padding: 0 20px;
+		width: 100%;
+	}
+	.single_slider.ng-scope .owl-carousel .owl-item {
+		width: 100%;
+	}
+	.slido_left {
+		margin-top: 0;
+		width: 100%;
+	}
+	.slido_right {
+		font-size: 15px;
+		font-weight: 500;
+		margin-top: 10px;
+		padding: 0 20px;
+		width: 100%;
+	}
+	.orderbooz {
+		margin-top: 20px
+	}
+	.socio_btns {
+		margin-top: 30px
+	}
+	.fullwidth.social_block {
+		padding: 20px 0;
+	}
+	.socilblok_twtr {
+		margin-left: 0;
+		text-align: center;
+		width: 100%;
+		margin: 5px 0
+	}
+	.socilblok_fb {
+		margin-left: 0;
+		text-align: center;
+		width: 100%;
+	}
+	.socilblok_folowtxt {
+		margin-left: 0;
+		text-align: center;
+		width: 100%;
+	}
+	.socilblok_twtr img {
+		display: inline-block;
+		float: none;
+	}
+	.socilblok_twtr > a > span {
+		display: inline-block;
+		float: none;
+		padding-left: 0;
+	}
+	.socilblok_fb img {
+		display: inline-block;
+		float: none;
+	}
+	.socilblok_fb > a > span {
+		display: inline-block;
+		float: none;
+		padding-left: 0;
+	}
+	.footer1_pannel1cvr {
+		width: 100%
+	}
+	.footer1_sociallink {
+		margin: 20px 0;
+	}
+	.footer1_privcytext {
+		width: 42%
+	}
+	.footer1_pannel2cvr {
+		width: 100%
+	}
+	.footer1_pannel3cvr {
+		width: 100%
+	}
+	.footer1_pannel4cvr {
+		width: 100%
+	}
+	.footer2_btmcvr {
+		margin-top: 20px
+	}
+	.footer2_madetxt {
+		margin-top: 30px;
+	}
+	.footer2_copytxt {
+		margin-top: 30px;
+	}
+	.leftphone {
+		max-width: 100%
+	}
+	.onthego_block {
+		background-size: cover
+	}
+
+	.dropdown-menu a:focus .nav.sidebar-nav li a {
+		background: none !important
+	}
+	.dropdown-menu a:hover .nav.sidebar-nav li a {
+		background: none !important
+	}
+	.dropdown-menu a:active .nav.sidebar-nav li a {
+		background: none !important
+	}
+	/*.ancontainer{
+		z-index:2
+	}*/
+	.brands .owl-carousel .owl-item {
+		display: table-cell;
+		float: none;
+		max-width: 100%;
+		padding-bottom: 10px;
+		text-align: center;
+		vertical-align: middle;
+	}
+	.single_slider.ng-scope {
+		margin-bottom: 30px;
+	}
+	.searchtop100 {
+		right: 15px;
+		width: 88%;
+	}
+	.onthego {
+		font-size: 110px
+	}
+	.searchtop {
+		right: 26.5%;
+	}
+	.footer2_madetxt {
+		font-size: 30px;
+		margin-bottom: 0;
+	}
+	.footer2_copytxt {
+		margin-bottom: 40px;
+	}
+	.searchtop.searchtop100 {
+		float: left;
+		margin-top: 0;
+		right: inherit;
+		width: 100%;
+		top: 35px
+	}
+	.ancontainer {
+		z-index: 9999
+	}
+	.searchopen .hamburger {
+		display: none
+	}
+	.currentorderpopup {
+		left: -188px;
+		width: 236px
+	}
+	.currentorderpopup::before {
+		left: 83%
+	}
+	.modal-dialog.alcohal_registermain {
+		text-align: center;
+		width: 93%;
+		float: none;
+		margin: 10px auto;
+	}
+	.alcohal_regisemailcvr {
+		width: 100%
+	}
+	.modal-footer.alcohalfotter {
+		padding: 20px 15px
+	}
+	.alcohallogin_forgettxt {
+		padding-bottom: 15px;
+		padding-top: 0;
+		text-align: center;
+		width: 100%;
+	}
+	.alcohalfootersign.alcohal_fotrloginbox {
+		display: inline-block;
+		float: none;
+	}
+	.gift-packagecoverdiv {
+		width: 100%;
+		margin: 0;
+	}
+	.modal-dialog.alcohal_addadressmain {
+		margin-left: 0;
+		margin-right: 0;
+		width: 100%;
+		margin-top: 0;
+	}
+	md-dialog {
+		max-height: 90%;
+		max-width: 90%;
+		overflow-y: auto;
+		overflow-x: hidden;
+		opacity: 1;
+	}
+	.alcohlinputextcvr {
+		margin-bottom: 0
+	}
+	.alcohlinputext {
+		width: 100%;
+		margin-bottom: 10px;
+	}
+	.alcohlinputrighttext {
+		width: 100%;
+		margin-bottom: 10px;
+	}
+	.alcohal_adress2fotter {
+		width: 51%
+	}
+	.modal-body.gift-packgng-bodydiv {
+		padding-left: 0;
+		padding-right: 0;
+		text-align: center;
+	}
+	.gift-item-cover {
+		display: inline-block;
+		float: none;
+		margin: 0 5px 15px auto;
+	}
+	.gift-packagecoverdiv {
+		background-size: initial
+	}
+	.gift-item-cover:last-child {
+		margin: 0 5px 15px auto;
+	}
+	.md-toolbar-tools.alcohal_addadress_header {
+		float: left;
+		height: auto;
+		margin-bottom: 0;
+		max-height: none;
+	}
+	.layout-row {
+		padding: 0;
+		padding-bottom: 20px;
+		padding-top: 15px;
+	}
+	.alcohal_addadress_headertitle {
+		font-size: 23px
+	}
+	.pushy.pushy-left {
+		display: block
+	}
+	#container {
+		display: block
+	}
+	.dropdown.cart-icon-set span {
+		display: none
+	}
+	.search_close.search_close_opaque {
+		line-height: 18px;
+		top: 0;
+		margin-top: 0
+	}
+	.searchtop.searchtop100 .search_icon {
+		left: 7px;
+		top: 0;
+	}
+	.layout-row {
+		padding: 0;
+		height: 40px;
+	}
+	.search_icon {
+		margin-right: 0
+	}
+	.logolarge {
+		left: inherit;
+		width: 115px;
+	}
+	.navbar-fixed-top.navbar-shrink .text-center .logosmall {
+	}
+	md-content.globalsearch md-autocomplete {
+		margin: 0;
+		margin-left: 10px
+	}
+	.layout, .layout-column, .layout-row {
+	/*width:92.3%*/
+	}
+	.layout-row {
+		width: 95%;
+	}
+	.top-logo-sideacnt-cover {
+		padding: 0
+	}
+
+	.hamburger.is-closed {
+		margin-left: 4px;
+	}
+	.search_close, .search_close:hover, .search_close:focus {
+		margin-top: 0;
+		line-height: 18px;
+	}
+	.img-responsive.logolarge {
+		top: 0
+	}
+	.profile_form .registeremailcvr {
+		padding-right: 0;
+		width: 100%
+	}
+	.change_form .registeremailcvr.paswrd-width-set5 {
+		float: left;
+		margin-right: 0;
+		width: 100%;
+	}
+	.addressbokk-trvaichacovr.ng-scope {
+		margin: 0 0 20px;
+		width: 100%;
+	}
+	.addressbokk-addnewadresscovr {
+		margin: 0;
+		width: 100%;
+	}
+	.addressbook-btmpannelcover {
+		margin-bottom: 10px
+	}
+	.balancedetailsdivinner {
+		margin-right: 38px;
+	}
+	.balancedetailsdiv {
+		margin-bottom: 30px
+	}
+	.orhistry2_td2proctext1 {
+		float: left;
+		width: 100%;
+	}
+	.checkouter-td-right-text {
+		float: none;
+		margin-right: 20px;
+		width: 73%;
+		display: inline-block
+	}
+	.checkboxtotaldiv-title {
+		width: 65%
+	}
+	.checkout-product .col-md-3.col-sm-3.col-xs-12.m-bottom-20 {
+		width: 100%
+	}
+	/*.steps_notify .step_grid a {
+	    border-radius: 50%;
+	    display: inline-block;
+	    height: 60px;
+	    position: absolute;
+	    top: -18px;
+	    white-space: normal;
+	    width: 20px;
+	    word-wrap: break-word;
+		float:none
+	}
+	.step1 {
+	    left: 31px;
+	}
+	.step2 {
+	    left: 88px;
+	    top: -32px !important;
+	}
+	.steps_notify .step_grid a span
+	{
+		width:auto
+	}
+	.step3 {
+	    left: 146px;
+	    top: -32px !important;
+	}
+	.step4 {
+	    left: 206px;
+	    top: -32px !important;
+	}
+	.step5 {
+	   float: none !important;
+	    right: 4px !important;
+	    width: 22px !important;
+	}
+	.steps_notify {
+	    float: left;
+	    margin: 30px 0 45px;
+	    min-height: 60px;
+	    position: relative;
+	    width: 100%;
+	}
+	.steps_notify .step_grid {
+	    position: absolute;
+	}*/
+	.div_addsboxs.ng-scope {
+		margin: 0 0 20px;
+		width: 100%;
+		margin-right: 0
+	}
+	.add_alltext {
+		width: 69%
+	}
+	.single-slot {
+		font-size: 11px
+	}
+	.slots-bunch-title .week-stamp {
+		font-size: 1em
+	}
+	.cover_cashdiv_left.paymenttype.active {
+		width: 100%;
+	}
+	.cover_creadetcard_right {
+		width: 100%
+	}
+	.checkoutstep5-left-first-left {
+		width: 88%
+	}
+	.checkouterwantbutton {
+		width: 100%;
+	}
+	button.checkoutergitpackage {
+		width: 100%
+	}
+	.steps_notify .step_grid a span {
+		top: 45px
+	}
+	.checkouterback {
+		margin-bottom: 10px;
+		text-align: center;
+		width: 100%;
+	}
+	.checkouterbackouter {
+		text-align: center
+	}
+	.add-newaddbox {
+		width: 100%;
+		margin-top: 10px;
+	}
+	.slots-bunch-title .date-stamp {
+		text-transform: uppercase;
+		text-align: center;
+		font-size: 0.9em;
+		word-wrap: break-word;
+		white-space: normal;
+		width: 40px;
+	}
+	.checkoutstepthree_showdate {
+		margin-bottom: 0;
+		font-size: 21px;
+	}
+	.checkoutcheckoutnowbutton2 {
+		min-width: 175px;
+	}
+	md-datepicker {
+		margin-right: 0
+	}
+	.md-button.md-icon-button {
+		margin-right: 0;
+		margin-left: 0;
+	}
+	.sharepurchasecover {
+		font-size: 22px
+	}
+	.alcohal_reapeatorederbtnsocvercvr {
+		margin: 0 auto;
+		padding: 0 10px 20px;
+		width: 100%;
+	}
+	.alcohal_hisryorderboxcvr1.ng-scope {
+		margin-right: 0;
+	}
+	.alcohal_hisryorderboxcvr1 {
+		width: 100%
+	}
+	.prddetailtitle.ng-binding {
+		font-size: 22px;
+	}
+	.checkoutmiddlevlauediv {
+		display: inline-block;
+		float: none;
+		width: 70px;
+	}
+	.prdquantitybulkcoverbulk {
+		display: inline-block;
+		float: none;
+		width: 100%;
+	}
+	.alcohal_reapeatorenothnxtxt {
+		float: right;
+		margin-right: 7px;
+	}
+	.alcohal_orderhistorybodytxt {
+		width: 100%
+	}
+	.alcohal_orderhistory2fotter {
+		width: 100%;
+		text-align: center;
+	}
+	.alcohalfooter_shopordershopbtn {
+		margin-bottom: 0
+	}
+	.productinner_leftslide.left-main-outerdiv {
+		width: 100%;
+	}
+	.btn.product_addcart.addcart-margin-responsive {
+		margin-top: 0
+	}
+	.owl-wraaper-margin .owl-wrapper {
+		margin-bottom: 33px;
+	}
+	.left-main-outerdiv .productslide_heading.ng-binding {
+		font-size: 22px;
+		line-height: 30px;
+		height: auto;
+		overflow: visible
+	}
+	.dropdown.productdropdownbtn {
+		margin-right: 15px;
+		margin-top: 12px;
+		width: auto;
+	}
+	.dropdown.productdropdownbtn span1 {
+		float: left;
+		position: relative;
+		right: 0;
+	}
+	.productslide_normaltext.ng-binding {
+		height: auto;
+		overflow: visible;
+	}
+	.comboproductitems {
+		width: 100%
+	}
+	.productbeerfiltertopcover .row div {
+		width: 100%
+	}
+	/*.md-dialog-content.alcohaladdadrebody {
+	    padding: 54px 24px 24px;
+	}*/
+	.alcohal_addadress_headertitle span {
+		width: 80%;
+		display: inline-block;
+	}
+	.alcohal_addadress_headertitle {
+		font-size: 18px
+	}
+	.alcohal_addadress_headercurcle {
+		margin-top: 12px;
+	}
+	.alcohalorderhisttitle {
+		font-size: 18px
+	}
+	.currentorderpopuppinkboxleft {
+		width: 126px
+	}
+	.currentorderpopup::before {
+		top: -5px
+	}
+	.prdquanbulkboxone {
+		width: 54px;
+	}
+	.product-detail-right-set {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+	.prdquanbulkboxtwo {
+		width: 64px
+	}
+	.alcohlinputextarea1 {
+		width: 100%
+	}
+	.adressunit {
+		width: 44%
+	}
+	.adresfloortxtcvr {
+		width: 44%
+	}
+	.left-party-content {
+		width: 100%
+	}
+	.part-content-btm-desc {
+		padding-left: 15px;
+		padding-right: 15px;
+	}
+	.btmcontn-set a {
+		width: 25%;
+		margin: 2px 0;
+		font-size: 11px;
+	}
+	.package-desc {
+		width: 75%
+	}
+	.saving-amount-cover {
+		float: left;
+		padding-left: 0;
+		padding-top: 3px;
+		width: 45%;
+	}
+	.package-amtcover {
+		float: left;
+		width: 55%;
+	}
+	.add-cart-cover {
+		float: left;
+		width: 100%;
+	}
+	.customize-text-cover > span {
+		padding-left: 4px;
+	}
+	.title-propertset {
+		font-size: 21px;
+		margin-top: 15px;
+	}
+	.media-body.party-detail-contentcover {
+		padding-left: 0;
+	}
+	.party-detail-heading {
+		font-size: 24px
+	}
+	.party-detail-btmtitl4 > h4 {
+		font-size: 16px;
+	}
+	.ttile-divcover.party-deatil-pading5.ng-scope {
+		padding-left: 4px;
+	}
+	.media-body.cockatil-bodycover {
+		padding-left: 0;
+		width: 100%;
+	}
+	.moredetail-cocktailtext > a {
+		font-size: 11px;
+		margin: 2px 0;
+		width: 25%;
+	}
+	.product-desccocktail.ng-binding {
+		width: 75%;
+	}
+	/*.cocktail-cartbtn{
+		text-align:center
+	}
+	.btn.product_addcart.addcart-detail.cocktail-cart-margintop {
+	    display: inline-block;
+	    float: none;
+	    margin-left: 0;
+	    text-align: center;
+	}*/
+	.cocktail-amntdivcover {
+		float: left;
+		text-align: center;
+		width: 100%;
+	}
+	.saving-cocktail-cover span {
+		width: auto
+	}
+	.saving-titie-amnt {
+		width: auto
+	}
+	.cocktail-detail-width {
+		width: 100%;
+		float: left;
+		padding: 0 10px;
+	}
+	md-tabs-canvas.md-paginated {
+		margin: 0 auto;
+		width: 133px;
+	}
+	.md-tab {
+		min-width: 133px;
+		text-align: center;
+	}
+	.media-body.cockatil-bodycover {
+		padding-left: 0;
+		width: 100%;
+	}
+	.media-left.cocktail-leftimgdiv {
+		width: 100%;
+		height: 100%
+	}
+	.title-propertset.ng-binding {
+		margin-top: 15px
+	}
+	.party-detail-btm-width {
+		width: 100%
+	}
+	.navbar-shrink .dropdown.cart-icon-set span, .navbar-shrink .dropdown.cart-icon-set span:hover, .navbar-shrink .dropdown.cart-icon-set span:focus {
+		display: none
+	}
+	.yelo_btn {
+		padding: 6px 20px;
+	}
+	.cocktaildetail-cover .media-left {
+		float: left;
+		height: 100%;
+		padding-right: 0;
+		width: 100%;
+
+	}
+	.gift-card-innerform {
+		width: 100%
+	}
+	.tabsright {
+		width: 74%
+	}
+	.tabtitle {
+		padding-bottom: 10px;
+	}
+	.dropdown.productdropdownbtn{
+		width:100%;
+		margin-right: 0;
+	    margin-top: 0;
+	}
+	.dropdown.productdropdownbtn.open {
+	    left: 0;
+	    right: 0;
+	    width: 100%;
+	}
+	.nav.nav-tabs.productcomboul {
+	    padding-left: 0;
+	}
 }
