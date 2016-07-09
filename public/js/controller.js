@@ -2858,8 +2858,8 @@ AlcoholDelivery.controller('GiftController', [
 	function($q, $http, $scope, $stateParams, $rootScope, alcoholGifting){
 		$rootScope.appSettings.layout.pageRightbarExist = false;
 
-		$scope.btnText = 'add to cart';		
-
+		$scope.btnText = 'add to cart';
+		$scope.processing = true;
 		$scope.gift = {
 			
 		}
@@ -2869,19 +2869,16 @@ AlcoholDelivery.controller('GiftController', [
 			$http.get('/gift/'+$stateParams.giftid).success(function(result){
 				
 				$scope.gift = result;
-
+				$scope.processing = false;
 				angular.alcoholGifting = alcoholGifting;
+
 				$scope.alcoholGifting = alcoholGifting;
 
 				alcoholGifting.setCurrentGift(result);
 
 				$scope.products = alcoholGifting.getProducts();
 
-				angular.forEach($scope.products,function(value,key){
-					$scope.$watch('products[key][_inGift]',function(newValue, oldValue) {
-						$scope.totalAttached();
-					})
-				})
+				$scope._inGift = [];			
 
 				$scope.totalAttached = function(){
 
@@ -2898,7 +2895,25 @@ AlcoholDelivery.controller('GiftController', [
 					});
 				}
 
-				
+				$scope.addGift = function(){
+
+					$scope.processing = true;
+					alcoholGifting.addUpdateGift().then(
+
+						function(successRes){
+
+						},
+						function(errorRes){
+							console.log(errorRes);
+						}
+
+					).finally(function(res){
+
+						$scope.processing = false;
+
+					});
+
+				}
 
 			}).error(function(err){
 
@@ -2920,17 +2935,46 @@ AlcoholDelivery.controller('GiftController', [
 }]);
 
 AlcoholDelivery.controller('GiftCardController', [
-	'$q', '$http', '$scope', '$stateParams', '$rootScope',
-	function($q, $http, $scope, $stateParams, $rootScope){
+	'$q', '$http', '$scope', '$stateParams', '$rootScope', 'alcoholGifting',
+	function($q, $http, $scope, $stateParams, $rootScope, alcoholGifting){
 		
 		$rootScope.appSettings.layout.pageRightbarExist = false;
 
-		$scope.gift = {}	
+		$scope.btnText = 'add to cart';
+
+		$scope.processing = true;
+
+		$scope.gift = {}
 
 		$http.get('/giftcategory/giftcard').success(function(result){
 			
 			$scope.gift = result;			
-			$scope.gift.reciepient = {price:$scope.gift.cards[0].value,quantity:1};
+			$scope.gift.recipient = {price:$scope.gift.cards[0].value,quantity:1};
+
+			$scope.processing = false;
+
+			$scope.addGift = function(){
+
+				$scope.processing = true;
+
+				alcoholGifting.addUpdateGiftCard($scope.gift).then(
+
+					function(successRes){
+											
+					},
+					function(errorRes){
+
+						console.log(errorRes);
+
+					}
+
+				).finally(function(res){
+
+					$scope.processing = false;
+
+				});
+
+			}
 
 		}).error(function(err){
 

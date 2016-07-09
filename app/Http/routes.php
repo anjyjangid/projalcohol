@@ -154,10 +154,13 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::delete('promotion/{key}','CartController@deletePromotion');
 
+	Route::post('gift','CartController@postGift');
+	Route::post('giftcard','CartController@postGiftcard');
 
 });
 
 Route::resource('cart', 'CartController');
+
 
 Route::resource('wishlist', 'WishlistController');
 

@@ -150,7 +150,7 @@ AlcoholDelivery.service('SocialSharingService', ['$rootScope', '$window', '$http
 
 }]);
 
-AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$mdToast', 'alcoholCart', 'GiftingProduct', function ($rootScope, $q, $mdToast, alcoholCart, GiftingProduct) {
+AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToast', 'alcoholCart', 'GiftingProduct', function ($rootScope, $q, $http, $mdToast, alcoholCart, GiftingProduct) {
 
 	this.currentGift = null;
 	this.$products = [];
@@ -227,55 +227,81 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$mdToast', 'alco
 
 	this.setCurrentGift = function(gift){
 		this.currentGift = gift;
-		this.currentGift.products = [];
 	};
 
-	this.getAttachedQuantity = function(){
+	this.getCurrentGift = function(){
+		return this.currentGift;
+	}
+
+	this.getGiftAttachedProduct = function(){
+
+		var products = this.getProducts();
+		var attachedPro = {};
+
+		angular.forEach(products,function(product,key){
+			if(product._inGift>0)
+			attachedPro[product._id] = parseInt(product._inGift);
+		})
+		return attachedPro;
+	}
+	this.validateGift = function(){
 
 	}
 
-	// this.attach = function(proId,quantity){
+	this.addUpdateGift = function(){
 
-	// 	var retObj = {
-	// 		found : false,
-	// 		message : "Something webt wrong",
-	// 	};
+		var defer = $q.defer();
 
-	// 	var product = this.getProductById(proId);
+		var gift = this.getCurrentGift();
 		
-	// 	if(product===false){
 
-	// 		retObj.message = "Product not found in cart";
-
-	// 	}
-
-	// 	retObj.found = true;
-
-	// 	if(!this.isAttached(proId)){
-	// 		this.currentGift.products.push(product);
-	// 	}
-
-	// 	return retObj;
-
-	// }
-
-	// this.isAttached = function(proId){
-
-	// 	var products = this.currentGift.products;
-	// 	var isFound = false;
-	// 	angular.forEach(products, function(val,key){
-
-	// 		if(val._id==proId && !isFound){
-	// 			isFound = true;
-	// 		}
+		$http.post("/cart/gift",{
 			
-	// 	});
-		
-	// 	return isFound;
-	// }
+			id:gift._id,
+			products:this.getGiftAttachedProduct()
 
+		}).then(
 
+			function(successRes){
+				
+				alcoholCart.addGiftCard(successRes.data);
 
+				defer.resolve(successRes);
+
+			},
+			function(errorRes){
+				defer.reject(errorRes);
+			}
+
+		)
+
+		return defer.promise;
+	}
+
+	this.addUpdateGiftCard = function(gift){
+
+		var defer = $q.defer();	
+
+		$http.post("/cart/giftcard",{
+			type: 'giftcard',
+			id:gift._id,
+			recipient : gift.recipient
+		}).then(
+
+			function(successRes){
+				defer.resolve(successRes);
+			},
+			function(errorRes){
+				defer.reject(errorRes);
+			}
+
+		)
+
+		return defer.promise;
+	}
+
+	
+	
 
 }]);
 

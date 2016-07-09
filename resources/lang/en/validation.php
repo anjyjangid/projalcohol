@@ -76,6 +76,8 @@ return [
     'unique'               => 'The :attribute has already been taken.',
     'url'                  => 'The :attribute format is invalid.',
 
+    'mobile' => 'The :attribute number is not valid.',
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines

@@ -39,9 +39,12 @@
 				      <textarea ng-model="gift.reciepient.message" class="alcohalrestertextbox form-control"></textarea>        
 				      <span class="help-block" ng-bind="carterror.message"></span>        
 				    </div>
+
 			    	<div class="quantiy-party-detail add-cart-btm">
-			    		<a class="btn product_addcart addcart-detail" ng-if="!processing" ng-click="addPackage()"><img src="images/cart-icon.png" />{{btnText}}</a>
-	    				<a class="btn product_addcart addcart-detail" ng-if="processing"><i class="fa fa-spinner fa-spin"></i> {{btnText}}</a>
+			    		<a class="btn product_addcart addcart-detail" ng-click="addGift()" ng-disabled="processing">
+							<i class="fa fa-spinner fa-spin" ng-if="processing"></i>
+							<img src="images/cart-icon.png" ng-if="!processing" />{{btnText}}
+			    		</a>
 			    	</div>
 				</div>
 			</div>			
@@ -67,8 +70,7 @@
 				</a>
 
 				<div>
-					<input type="text" value="product._inGift" ng-model="product._inGift" min="0" mquantity="product._maxQuantity" ng-touch-spin>
-					<!-- on-increment="attach(product._id)" -->
+					<input type="text" value="product._inGift" ng-model="product._inGift" min="0" mquantity="product._maxQuantity" ng-touch-spin on-increment="totalAttached()" on-decrement="totalAttached()">					
 				</div>
 
 			</div>

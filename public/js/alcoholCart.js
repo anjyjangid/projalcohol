@@ -964,7 +964,34 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 		}
 
+		this.addGiftCard = function(gift){
 
+			$rootScope.$broadcast('alcoholCart:updated',{msg:"Gift Card added to cart",quantity:Math.abs($scope.gift.recipient.quantity)});
+
+		};
+
+		this.getGiftCardByUid = function(uid){
+
+			var cards = this.getGiftCards();
+			var build = false;
+			
+			angular.forEach(cards, function (card) {
+
+				if  (card._uid === uid) {
+					build = card;
+				}
+
+			});
+
+			return build;
+		}
+
+		this.getGiftCards = function(){
+
+			var cards = this.getCart().giftcards || [];
+			
+			return cards;
+		}
 
 		this.getCartKey = function(){
 
