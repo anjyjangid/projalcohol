@@ -4,14 +4,14 @@
 	<head>
 		<!-- <base href="/"> -->
 		<style>
-		.modal-open .navbar-fixed-top{
+		/*.modal-open .navbar-fixed-top{
 			width:calc(100% - 17px);
 		}
 
 		.checkouter-td-right-text{
 			width:74%;
 			float:left;
-		}
+		}*/
 
 		</style>
 		<meta charset="utf-8">
@@ -36,7 +36,7 @@
 		<link rel="stylesheet" type="text/css" href="css/owl.carousel.css">
 		<link rel="stylesheet" type="text/css" href="css/owl.theme.css">
 		<link rel="stylesheet" type="text/css" href="css/jquery.switchButton.css">
-		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
 
 		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.min.css')}}">
 
@@ -56,125 +56,121 @@
 			<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
-		<link rel="stylesheet" media="screen and (max-device-width: 1000px)" type="text/css" href="css/slidebars.css">
-
+		<link rel="stylesheet" media="screen and (max-device-width:768px)" type="text/css" href="css/simple-sidebar.css">
 		<link rel="shortcut icon" href="images/favicon.ico"/>		
 	</head>
 
-	<body ng-controller="AppController">		    	
-    	
-    	
-    	<div canvas="container">    	
+	<body ng-controller="AppController">		    	    	 
+    	<div id="wrapper">     	    		    		
 
-	    	<top-menu></top-menu>
-	    	
-	    	<div ui-view class="ancontainer"></div>
+	        <div id="page-content-wrapper">    	
+	    
+             	<top-menu></top-menu>          
+        
+	    		<div ui-view class="ancontainer"></div>
 
-			<section class="fullwidth social_block">
-				<div class="container">
-					<div class="socilblok_folowtxt">
-						<div class="socilblok_folowtxt1">Follow and like us for latest deals and updates:
+				<section class="fullwidth social_block">
+					<div class="container">
+						<div class="socilblok_folowtxt">
+							<div class="socilblok_folowtxt1">Follow and like us for latest deals and updates:
+							</div>
+						</div>
+						<div class="socilblok_twtr">
+							<a target="_blank" href="@{{settings.social.twitter}}"><img class="img-responsive" src="images/socl_itwtr.png" />
+							<span>Twitter</span>
+							</a>
+						</div>
+						<div class="socilblok_fb">
+							<a target="_blank" href="@{{settings.social.facebook}}"><img class="img-responsive" src="images/social_fbicon.png" />
+							<span>Facebook</span>
+							</a>
 						</div>
 					</div>
-					<div class="socilblok_twtr">
-						<a target="_blank" href="@{{settings.social.twitter}}"><img class="img-responsive" src="images/socl_itwtr.png" />
-						<span>Twitter</span>
-						</a>
-					</div>
-					<div class="socilblok_fb">
-						<a target="_blank" href="@{{settings.social.facebook}}"><img class="img-responsive" src="images/social_fbicon.png" />
-						<span>Facebook</span>
-						</a>
-					</div>
-				</div>
-			</section>
+				</section>
 
-			<section class="fullwidth footer1">
-				<div class="container">
-					<div class="row">
-						<div class="col-xs-12 col-md-4 footer1_pannel1cvr">
-							<div class="footer_logo">
-								<img class="img-responsive" src="images/footerlogo.png" />
+				<section class="fullwidth footer1">
+					<div class="container">
+						<div class="row">
+							<div class="col-xs-12 col-md-4 footer1_pannel1cvr">
+								<div class="footer_logo">
+									<img class="img-responsive" src="images/footerlogo.png" />
+								</div>
+								<div class="footer1_custmertext">10,000 Customers <br /> Already Connected</div>
+								<div class="footer1_custmerbtmtxt">She was bouncing away, when a cry from the two women, who had turned towards the bed, caused her to look round.</div>
+								<div class="footer1_sociallink">
+									<a target="_blank" href="@{{settings.social.twitter}}"><img class="img-responsive" src="images/footer1_twitter.png" /></a>
+									<a target="_blank" href="@{{settings.social.facebook}}"><img class="img-responsive" src="images/footer1_fb.png" /></a>
+									<a target="_blank" href="@{{settings.social.googleplus}}"><img class="img-responsive" src="images/footergoogle.png" /></a>
+								</div>
+								<div class="footer1_privcvr">
+									<div class="footer1_privcytext"><a ui-sref="cmsLayout.privacy-policy">Privacy Policy</a></div>
+									<div class="footer1_termstxt"><a ui-sref="cmsLayout.terms-conditions">Terms and Conditions</a></div>
+								</div>
 							</div>
-							<div class="footer1_custmertext">10,000 Customers <br /> Already Connected</div>
-							<div class="footer1_custmerbtmtxt">She was bouncing away, when a cry from the two women, who had turned towards the bed, caused her to look round.</div>
-							<div class="footer1_sociallink">
-								<a target="_blank" href="@{{settings.social.twitter}}"><img class="img-responsive" src="images/footer1_twitter.png" /></a>
-								<a target="_blank" href="@{{settings.social.facebook}}"><img class="img-responsive" src="images/footer1_fb.png" /></a>
-								<a target="_blank" href="@{{settings.social.googleplus}}"><img class="img-responsive" src="images/footergoogle.png" /></a>
+							<div class="col-xs-12 col-md-3 footer1_pannel2cvr">
+								<div class="footer1_title">About</div>
+								<div class="footer1_subtitle">
+									<ul>
+										<li><a ui-sref="cmsLayout.about-us">About us</a></li>
+										<li><a href="#">How it Works</a></li>
+										<li><a href="#">Team</a></li>
+										<li><a href="#">Mobile App</a></li>
+										<li><a href="#">Desktop App</a></li>
+										<li><a href="#">Security</a></li>
+										<li><a href="#">Report Bug</a></li>
+										<li><a href="#">Fees & Charges</a></li>
+										<li><a href="#">Investor</a></li>
+										<li><a href="#">Quotes</a></li>
+									</ul>
+								</div>
 							</div>
-							<div class="footer1_privcvr">
-								<div class="footer1_privcytext"><a ui-sref="cmsLayout.privacy-policy">Privacy Policy</a></div>
-								<div class="footer1_termstxt"><a ui-sref="cmsLayout.terms-conditions">Terms and Conditions</a></div>
+							<div class="col-xs-12 col-md-3 footer1_pannel3cvr">
+								<div class="footer1_title">Press</div>
+								<div class="footer1_subtitle">
+									<ul>
+										<li><a href="#">In the News</a></li>
+										<li><a href="#">Press Releases</a></li>
+										<li><a href="#">Awards</a></li>
+										<li><a href="#">Testimonials</a></li>
+										<li><a href="#">Timeline</a></li>
+									</ul>
+								</div>
 							</div>
-						</div>
-						<div class="col-xs-12 col-md-3 footer1_pannel2cvr">
-							<div class="footer1_title">About</div>
-							<div class="footer1_subtitle">
-								<ul>
-									<li><a ui-sref="cmsLayout.about-us">About us</a></li>
-									<li><a href="#">How it Works</a></li>
-									<li><a href="#">Team</a></li>
-									<li><a href="#">Mobile App</a></li>
-									<li><a href="#">Desktop App</a></li>
-									<li><a href="#">Security</a></li>
-									<li><a href="#">Report Bug</a></li>
-									<li><a href="#">Fees & Charges</a></li>
-									<li><a href="#">Investor</a></li>
-									<li><a href="#">Quotes</a></li>
-								</ul>
-							</div>
-						</div>
-						<div class="col-xs-12 col-md-3 footer1_pannel3cvr">
-							<div class="footer1_title">Press</div>
-							<div class="footer1_subtitle">
-								<ul>
-									<li><a href="#">In the News</a></li>
-									<li><a href="#">Press Releases</a></li>
-									<li><a href="#">Awards</a></li>
-									<li><a href="#">Testimonials</a></li>
-									<li><a href="#">Timeline</a></li>
-								</ul>
-							</div>
-						</div>
-						<div class="col-xs-12 col-md-2 footer1_pannel4cvr">
-							<div class="footer1_title">Get in Touch</div>
-							<div class="footer1_subtitle">
-								<ul>
-									<li><a href="#">Get Support</a></li>
-									<li><a href="#">Advertise with Us</a></li>
-									<li><a href="#">Careers</a></li>
-									<li><a href="#">Community</a></li>
-									<li><a href="#">Affiliate Program</a></li>
-									<li><a href="#">Merchandise</a></li>
-									<li><a href="#">Contact Us</a></li>
-								</ul>
+							<div class="col-xs-12 col-md-2 footer1_pannel4cvr">
+								<div class="footer1_title">Get in Touch</div>
+								<div class="footer1_subtitle">
+									<ul>
+										<li><a href="#">Get Support</a></li>
+										<li><a href="#">Advertise with Us</a></li>
+										<li><a href="#">Careers</a></li>
+										<li><a href="#">Community</a></li>
+										<li><a href="#">Affiliate Program</a></li>
+										<li><a href="#">Merchandise</a></li>
+										<li><a href="#">Contact Us</a></li>
+									</ul>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-			</section>
+				</section>
 
-			<section class="fullwidth footer2">
-	        <div class="footer-container-borderset">
-				<div class="container ">
-					<div class="footer2_btmcvr">
-						<div class="footer2_madetxt">Made with <img class="img-responsive" src="images/footerhearicon.png" /> in SG</div>
-						<div class="footer2_copytxt">Copyright &copy; <?php echo date('Y');?> AlcoholDelivery.com</div>
+				<section class="fullwidth footer2">
+		        <div class="footer-container-borderset">
+					<div class="container ">
+						<div class="footer2_btmcvr">
+							<div class="footer2_madetxt">Made with <img class="img-responsive" src="images/footerhearicon.png" /> in SG</div>
+							<div class="footer2_copytxt">Copyright &copy; <?php echo date('Y');?> AlcoholDelivery.com</div>
+						</div>
 					</div>
-				</div>
-	        </div>
-			</section>		
-		
+		        </div>
+				</section>		
+			</div>
 		</div>
-		
-		<!-- <div off-canvas="slidebar-1 left reveal">
-			<side-bar noInit="true"></side-bar>			
-		</div>	 -->		
-		
 	</body>
 
 	<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+   
+    
 	<script type="text/javascript" src="js/social.js"></script>
     <script type="text/javascript" src="{{ asset('bower_components/dropzone/dist/dropzone.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
@@ -224,16 +220,5 @@
     <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
     <script type="text/javascript" src="js/directive.js"></script>
     <script src="{{ asset('bower_components/angular-fblogin/dist/angular-fblogin.js') }}"></script>   
-    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>       
-    
-    <script type="text/javascript" src="js/slidebars.js"></script>
-    
-    <script type="text/javascript">
-    	var mymenu;
-    	$(document).ready(function(){    		
-    		mymenu = new slidebars();    		    		
-    		mymenu.init();    		    				    
-    	});    			
-    </script>
-
+    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>           
 </html>

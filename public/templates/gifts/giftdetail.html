@@ -1,51 +1,45 @@
-<div class="productdetailbrudcumcover">
-	<a ui-sref="/">Home</a>
-	<img src="images/productdetail2.png">
-	<a>Gift Packaging</a>
-	<img src="images/productdetail2.png">
-	<a ui-sref="mainLayout.giftcategory({categorySlug:gift.categorydetail.slug,type:null})">{{gift.categorydetail.title}}</a>
-	<img src="images/productdetail2.png">
-	<a ui-sref="mainLayout.giftcategory({categorySlug:gift.categorydetail.slug,type:gift.subcategorydetail.slug})">	{{gift.subcategorydetail.title}}
-	</a>
-</div>
+<div class="productdetailbrudcumcover"> <a ui-sref="/">Home</a> <img src="images/productdetail2.png"> <a>Gift Packaging</a> <img src="images/productdetail2.png"> <a ui-sref="mainLayout.giftcategory({categorySlug:gift.categorydetail.slug,type:null})">{{gift.categorydetail.title}}</a> <img src="images/productdetail2.png"> <a ui-sref="mainLayout.giftcategory({categorySlug:gift.categorydetail.slug,type:gift.subcategorydetail.slug})"> {{gift.subcategorydetail.title}} </a> </div>
 <!-- <pre>{{packages|json}}</pre> -->
 <div class="productdetailbrudcumcover">
 	<div class="row">
 		<div class="col-md-12">
-			<div class="media cocktaildetail-cover">
+			<div class="media cocktaildetail-cover gift-card-mainouter">
 				<div class="media-left">
-					<img err-src="asset/i/defaultImage.png" ng-src="gifts/i/{{gift.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
-
+					<div class="gift-card--inner"> 
+						<img err-src="asset/i/defaultImage.png" ng-src="gifts/i/{{gift.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/> 
+					</div>
 					<data-owl-carousel class="owl-carousel owldownpartcover" data-options="childOwlOptions">
-
 						<img err-pro-src="" ng-src="products/i/200/{{product._image}}" alt="" class="img-responsive img-responsive-h" owl-carousel-item="" ng-repeat="product in products | filter:{_inGift:'!0'}" class="item"/>
-
 					</data-owl-carousel>
-
 				</div>
-				<div class="media-body party-detail-contentcover">
+				<div class="media-body party-detail-contentcover gift-card-rightcover">
 					<h4 class="media-heading party-detail-heading">{{gift.title}}</h4>
-					<!-- <p class="party-detail-btm-title">{{gift.subTitle}}</p> -->
 					<p class="party-product-desc">{{gift.description}}</p>    										
 					<p class="packtiti-rightset packag-amnt-divcolr">Price</p>
 			    	<h3 class="amntrupee-clsdetail">{{gift.price | currency}}</h3>
-                	<div ng:class="{'has-error':errors.emails}">
-				      <label>To</label>
-				      <input type="text" placeholder="Eg. sarah" ng-model="gift.reciepient.name" class="alcohalrestertextbox form-control">
-				      <span class="help-block" ng-bind="carterror.emails"></span>        
-				    </div>
-			    	<div ng:class="{'has-error':errors.message}">
-				      <label>Message <span align="right">Max. characters : 200</span></label>
-				      <textarea ng-model="gift.reciepient.message" class="alcohalrestertextbox form-control"></textarea>        
-				      <span class="help-block" ng-bind="carterror.message"></span>        
-				    </div>
 
+	            	<div ng:class="{'has-error':errors.emails}" class="gift-to-divcover">
+						<div class="gift-card-innerform">					      
+							<label>To</label>
+							<input type="text" placeholder="Eg. sarah" ng-model="gift.reciepient.name" class="alcohalrestertextbox form-control">
+							<span class="help-block" ng-bind="carterror.emails"></span>        
+						</div>
+			    	</div>
+			    	<div ng:class="{'has-error':errors.message}" class="gift-to-divcover">
+						<div class="gift-card-innerform">				      
+						<label>Message <span class="max-char-color" align="right">Max. characters : 200</span></label>
+				      	<textarea ng-model="gift.reciepient.message" class="alcohalrestertextbox form-control"></textarea>        
+				      	<span class="help-block" ng-bind="carterror.message"></span>        
+				      	</div>
+					</div>
 			    	<div class="quantiy-party-detail add-cart-btm">
 			    		<a class="btn product_addcart addcart-detail" ng-click="addGift()" ng-disabled="processing">
 							<i class="fa fa-spinner fa-spin" ng-if="processing"></i>
 							<img src="images/cart-icon.png" ng-if="!processing" />{{btnText}}
 			    		</a>
+
 			    	</div>
+					<div class="btm-text-giftnot">Note: This item is non-returnable.</div>
 				</div>
 			</div>			
 		</div>	

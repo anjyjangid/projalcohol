@@ -10,7 +10,7 @@ AlcoholDelivery.controller('AppController',
 	};
 
 	$scope.AppController.category = "";
-	$scope.AppController.subCategory = "";
+	$scope.AppController.subCategory = "";	
 
 	$http.get("/super/settings/").success(function(response){
     	$rootScope.settings = response;
@@ -161,13 +161,14 @@ AlcoholDelivery.controller('AppController',
 	    $mdDialog.show(
 	    	{
 				controller: function($scope, $rootScope,$mdDialog, $http) {					
-					$scope.gift = {
+					$scope.giftcategories = {
 						types:[]
 					};
 					$scope.processinggift = true;
 
 					$http.get('/giftcategory').success(function(result){
-						$scope.gift.types = result;
+						$scope.giftcategories.types = result;
+						
 						$scope.processinggift = false;
 					}).error(function(){
 						$scope.processinggift = false;
@@ -180,7 +181,7 @@ AlcoholDelivery.controller('AppController',
 				templateUrl: '/templates/partials/gift-packaging-popup.html',
 				parent: angular.element(document.body),
 				targetEvent: ev,
-				clickOutsideToClose: true
+				clickOutsideToClose: true		
 			}
 		)
 	};	
@@ -2553,7 +2554,9 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 
 }]);
 
-AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll','alcoholCart','sweetAlert', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll,alcoholCart,sweetAlert){
+AlcoholDelivery.controller('PackageDetailController', 
+	['$q','$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll','alcoholCart','sweetAlert', 
+	function($q, $scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll,alcoholCart,sweetAlert){
 
 	$scope.errors = [];
 
@@ -2586,36 +2589,34 @@ AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$
 			$anchorScroll(id);
 		});*/
 	};
-
+	$scope.hasErrors = false;
 	//PARTY PACKAGE CUSTOMISATION FUNCTION
 	$scope.collapseCallback = function (index, id) {
 
 		var totalseleted = 0;
 		var packageItems = angular.copy($scope.packages.packageItems[index]);
 		var maxQuantity = parseInt(packageItems.quantity);
-		var packageUpdate = true;
-		var hasErrors = [];
+		var packageUpdate = true;		
 
-		angular.forEach($scope.packages.packageItems, function(pkgItem, pkgKey) {
-
+		var outerloopPromises = angular.forEach($scope.packages.packageItems, function(pkgItem, pkgKey) {
+			
 			var totalseleted = 0;
-			var maxQuantity = parseInt(pkgItem.quantity);
+			var maxQuantity = parseInt(pkgItem.quantity);			
 
-			angular.forEach(pkgItem.products, function(value, key) {
-				totalseleted+=parseInt(value.customizequantity);
+			angular.forEach(pkgItem.products, function(value, key) {								
+				totalseleted+=parseInt(value.customizequantity);				
 			});
-
+				
 			if(totalseleted!=maxQuantity){
-				$scope.errors[pkgKey] = 'You must select total of '+maxQuantity+' items.';
-				hasErrors[pkgKey] = 1;
+				$scope.errors[pkgKey] = 'You must select total of '+maxQuantity+' items.';				
 			}else{
-				$scope.errors[pkgKey] = '';
-				hasErrors.splice(pkgKey,1);
+				delete $scope.errors[pkgKey];
 			}
 
 		});
 
-		if(hasErrors.length==0){
+		
+		if(typeof $scope.errors[index] == 'undefined'){
 			//ADD IN CARTQUATITY IF THERE IS NO ERROR
 			angular.forEach($scope.packages.packageItems[index].products, function(inPkgItem, inPkgKey) {
 
@@ -2623,9 +2624,10 @@ AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$
 
 			});
 			$scope.updatePackage();
-		}else{
+		}else{				
 			$scope.accordionA.toggle(index);
 		}
+		
 	};
 
 	$scope.customizeCocktail = function(pkgKey, proKey){
@@ -2641,7 +2643,7 @@ AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$
 	};
 
 	$scope.updatePackage = function(){
-
+		
 		var discountAmount = 0;
 		var originalAmount = 0;
 		angular.forEach($scope.packages.packageItems, function(pkgItem, pkgkey) {
@@ -2662,6 +2664,11 @@ AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$
 	}
 
 	$scope.addPackage = function(){
+		var c = Object.keys($scope.errors).length;
+		if(c!=0){
+			alert('Please verify your selection.');
+			return;
+		}
 
 		$scope.processing = true;
 
@@ -2684,6 +2691,41 @@ AlcoholDelivery.controller('PackageDetailController', ['$scope', '$rootScope','$
 
 
 	}
+
+	$scope.validateByIndex = function(index){
+		var totalseleted = 0;
+		var packageItems = angular.copy($scope.packages.packageItems[index]);
+		var maxQuantity = parseInt(packageItems.quantity);
+		var packageUpdate = true;
+		
+		var apromise = angular.forEach($scope.packages.packageItems, function(pkgItem, pkgKey) {
+
+			var totalseleted = 0;
+			var maxQuantity = parseInt(pkgItem.quantity);
+
+			angular.forEach(pkgItem.products, function(value, key) {
+				totalseleted+=parseInt(value.customizequantity);
+			});
+
+			if(totalseleted!=maxQuantity){
+				$scope.errors[pkgKey] = 'You must select total of '+maxQuantity+' items.';				
+			}else{
+				delete $scope.errors[pkgKey];				
+			}
+
+		});
+		
+		if(typeof $scope.errors[index] == 'undefined'){
+			//ADD IN CARTQUATITY IF THERE IS NO ERROR
+			
+			angular.forEach($scope.packages.packageItems[index].products, function(inPkgItem, inPkgKey) {
+
+				$scope.packages.packageItems[index].products[inPkgKey].cartquantity = parseInt(inPkgItem.customizequantity);
+
+			});
+			$scope.updatePackage();
+		}
+	}	
 
 }]);
 
@@ -2798,9 +2840,6 @@ AlcoholDelivery.controller('LoyaltyStoreController', ['$q', '$http', '$scope', '
 
 }]);
 
-
-
-
 AlcoholDelivery.controller('InviteController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll','sweetAlert', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll,sweetAlert){
 
 	$timeout(function() {
@@ -2828,11 +2867,11 @@ AlcoholDelivery.controller('InviteController', ['$scope', '$rootScope','$state',
 
 }]);
 
-AlcoholDelivery.controller('GiftCategoryController', [
-	'$q', '$http', '$scope', '$stateParams', 'ScrollPaging', 
-	function($q, $http, $scope, $stateParams,ScrollPaging){
+AlcoholDelivery.controller('GiftProductController', [
+	'$q', '$http', '$scope', '$stateParams', 'ScrollPaging', '$state',
+	function($q, $http, $scope, $stateParams,ScrollPaging,$state){
 		
-
+		
 		$scope.subCategory = '';
 
 		if($stateParams.type){
@@ -2847,10 +2886,11 @@ AlcoholDelivery.controller('GiftCategoryController', [
 			category:$stateParams.categorySlug,
 			subcategory:$stateParams.type			
 		}    		
-		$scope.url = '/giftcategory/listproducts';		
 		
-		$scope.giftproducts = new ScrollPaging($scope.args,$scope.url);			
-		
+		$scope.url = '/giftcategory/listproducts';
+
+		$scope.giftproducts = new ScrollPaging($scope.args,$scope.url);
+
 }]);
 
 AlcoholDelivery.controller('GiftController', [

@@ -11,7 +11,7 @@
 <div class="cocktail-packagecover">
 	<div class="media media-bodyheader" ng-repeat="package in packages">
 		<div class="media-left  cocktail-leftimgdiv">
-			<a href="#">
+			<a ui-sref="mainLayout.packagedetail({type:'cocktail',id:package._id})">
 			  <img err-src="asset/i/defaultImage.png" ng-src="packages/i/{{package.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
 			</a>
 		</div>

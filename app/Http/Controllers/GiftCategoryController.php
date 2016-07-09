@@ -94,7 +94,7 @@ class GiftCategoryController extends Controller
     }
 
     public function getListproducts(Request $request){
-        
+        //sleep(5);
         $params = $request->all();
 
         extract($params);
@@ -142,6 +142,16 @@ class GiftCategoryController extends Controller
         $model = GiftCategory::where('type','!=','category')->first();
 
         return response($model,200);         
+
+    }
+
+    public function getCategorydetail(Request $request){
+
+        $data = $request->all();
+
+        $model = GiftCategory::with('child')->where(['slug'=>$data['category'],'type'=>'category','parent'=>null])->first();
+
+        return response($model,200);            
 
     }
 }

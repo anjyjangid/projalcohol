@@ -9,36 +9,45 @@
 <div class="productdetailbrudcumcover">
 	<div class="row">
 		<div class="col-md-12">
-			<div class="media cocktaildetail-cover">
+			<div class="media cocktaildetail-cover gift-card-mainouter">
 				<div class="media-left">
+                <div class="gift-card--inner">
 					<img err-src="asset/i/defaultImage.png" ng-src="giftcategory/i/{{gift.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
-				</div>
-				<div class="media-body party-detail-contentcover">
+				</div></div>	
+				<div class="media-body party-detail-contentcover gift-card-rightcover">
 					<h4 class="media-heading party-detail-heading">{{gift.title}}</h4>
 					<!-- <p class="party-detail-btm-title">{{gift.subTitle}}</p> -->
-					<p class="party-product-desc">{{gift.description}}</p>    										
+					<p class="party-product-desc">{{gift.description}}</p>    	
+                    <div class="enter-gift-detail">Enter your gift card details</div>									
 					
 					<div>
-						Select an amount
-						<button ng:class="{'btn-success':gift.recipient.price == slots.value}" class="btn default" ng-repeat="slots in gift.cards" ng-click="gift.recipient.price = slots.value">
-							${{slots.value}}
+
+					   <span>Select an amount between $50 - $500</span>
+						<button ng:class="{'btn-success':gift.recipient.price == slots.value}" class="btn default btn-cls-gift" ng-repeat="slots in gift.cards" ng-click="gift.recipient.price = slots.value">
+
+							{{slots.value | pricingTxt}}
 						</button>
 					</div>
 
-                	<div ng:class="{'has-error':errors.emails}">
+                	<div ng:class="{'has-error':errors.emails}" class="gift-to-divcover">
+                    <div class="gift-card-innerform">
 				      <label>To</label>
 				      <input type="text" placeholder="recipient's name" ng-model="gift.recipient.name" class="alcohalrestertextbox form-control">
 				      <input type="text" placeholder="recipient's email" ng-model="gift.recipient.email" class="alcohalrestertextbox form-control">
 				      <span class="help-block" ng-bind="carterror.emails"></span>        
-				    </div>
-			    	<div ng:class="{'has-error':errors.message}">
-				      <label>Message <span align="right">Max. characters : 200</span></label>
+
+				    </div></div>
+			    	<div ng:class="{'has-error':errors.message}" class="gift-to-divcover">
+                      <div class="gift-card-innerform">
+				      <label>Message <span class="max-char-color" align="right">Max. characters : 200</span></label>
 				      <textarea ng-model="gift.recipient.message" class="alcohalrestertextbox form-control"></textarea>        
 				      <span class="help-block" ng-bind="carterror.message"></span>        
-				    </div>
-				    <div>
+				
+                
+				    <div class="gift-check-contact">
 						<md-checkbox ng-true-value="1" ng-false-value="0" ng-model="gift.recipient.sms" aria-label="Mobile SMS">
-						 	Mobile SMS
+						 <span class="mobile-sms-width">	Mobile SMS</span>
+
 						</md-checkbox>
 						<div ng-if="gift.recipient.sms == 1">
 					      <input type="text" placeholder="Phone number" ng-model="gift.recipient.mobile" class="alcohalrestertextbox form-control">					      
@@ -46,18 +55,21 @@
 					    </div>
 				    </div>
 				    <p class="packtiti-rightset packag-amnt-divcolr">Price</p>
+
 			    	<h3 class="amntrupee-clsdetail">{{(gift.recipient.price*gift.recipient.quantity)  | currency}}</h3>
-			    	<div class="checkoutmiddlevlauediv party-checkout-detail">
+			    	<div class="checkoutmiddlevlauediv party-checkout-detail quantity-inputsetspan">
+                     <label>Quantity</label>
 			    	<input type="text" value="gift.recipient.quantity" ng-model="gift.recipient.quantity" mquantity="10" min="1" ng-touch-spin>
 			    	</div>
 			    	<div class="quantiy-party-detail add-cart-btm">
-			    		<a class="btn product_addcart addcart-detail" ng-click="addGift()" ng-disabled="processing">
-							<i class="fa fa-spinner fa-spin" ng-if="processing"></i>
-							<img src="images/cart-icon.png" ng-if="!processing" />{{btnText}}
-			    		</a>
+                   
+			    		<a class="btn product_addcart addcart-detail" ng-if="!processing" ng-click="addPackage()"><img src="images/cart-icon.png" />{{btnText}}</a>
+	    				<a class="btn product_addcart addcart-detail" ng-if="processing"><i class="fa fa-spinner fa-spin"></i> {{btnText}}</a>	
+
 			    	</div>
-				</div>
-			</div>			
-		</div>	
+                    <div class="btm-text-giftnot">Note: This item is non-returnable.</div>
+				</div>    </div>
+					
+		</div>	    </div>
 	</div>
 </div>		

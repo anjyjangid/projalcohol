@@ -1,4 +1,24 @@
-<ul class="nav navbar-nav modify capitalize" ng-cloak>
+<ul class="nav navbar-nav modify capitalize mobilesidebar" ng-cloak>
+	<!-- SHOW IN MOBILE ONLY -->
+	<li ng-hide="user.email" class="mobilemenu hide">
+		<a data-target="#login" data-toggle="modal" href="javascript:;">
+			LOGIN
+		</a>
+	</li>
+	<li ng-hide="user.email" class="mobilemenu hide">
+    	<a data-target="#register" data-toggle="modal" href="javascript:;">
+    		SIGNUP
+    	</a>
+    </li>
+	<li ng:class="{'hideOp':hideOp}" class="dropdown mobilemenu hide" ng-show="user.email" ng-mouseover="hideOp=false" ng-mouseleave="hideOp=true" class="mobilemenu hide"> 
+		<a href="javascript:;" class="username dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" > Hola, {{user.email}} 
+		</a>
+        <ul ng-click="hideOp=true" class="dropdown-menu profil-dropdown">
+          <li><a ui-sref="accountLayout.profile">My Account</a></li>
+          <li><a href="#" ng-click="logout()">Logout</a></li>
+        </ul>
+    </li>                  
+    <!-- SHOW IN MOBILE ONLY -->
 	<li ng-class="{'active':$state.current.url=='/'}"><a href="#">On Sale! <span class="sr-only">(current)</span></a></li>	
 	<li ng-class="{'active':AppController.category==c.slug}" class="dropdown" ng-repeat="c in childOf(categories)" ng-mouseover="showPersonSubMenu=true" ng-mouseleave="showPersonSubMenu=false" hover-class="open">
 	<div class="hide">

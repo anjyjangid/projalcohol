@@ -12,7 +12,7 @@
   </md-toolbar>
   <md-dialog-content>        
     <div class="md-dialog-content gift-packgng-bodydiv">
-      <a ng-repeat="option in gift.types" ng-click="hide()" 
+      <a ng-repeat="option in giftcategories.types" ng-click="hide()" 
         ui-sref="{{ option.type== 'category' ? 'mainLayout.giftcategory({categorySlug:option.slug,type:null})' : 'mainLayout.giftcards()' }}">
         <div  class="col-md-3 col-sm-3 col-xs-12 gift-item-cover">
           <div class="gift-item-innercover">
