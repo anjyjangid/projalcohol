@@ -396,10 +396,23 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 			]
 		},
 		{
-			label:'Orders',
-			uisref:'userLayout.orders.list',
+			label:'Orders',			
 			icon:'icon-basket',
 			id:'sidebar_menu_link_orders',
+			subItems:[
+				{
+					label:'List',
+					uisref:'userLayout.orders.list',
+					icon:'icon-user-following',					
+					links:['userLayout.customer.list','userLayout.customer.add','userLayout.customer.edit']
+				},
+				{
+					label:'New Order',
+					uisref:'userLayout.orders.consumer.cart',
+					icon:'icon-user-following',					
+					links:['userLayout.dealers.list','userLayout.dealers.add','userLayout.dealers.edit','userLayout.dealers.show','userLayout.dealers.orders'],					
+				},
+			]
 		},
 		{
 			label:'Categories',
@@ -970,7 +983,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             }
         })
 
-        .state("userLayout.dealers.orders",{
+		.state("userLayout.dealers.orders",{
+
             url: "/dealers/orders/{dealerid}",
             templateUrl: "adminviews/views/dealers/orders.html",
             data:{
@@ -1096,6 +1110,37 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                 authenticate: authenticate
             }
 		})                    
+
+		.state("userLayout.orders.consumer",{
+			abstract: true,
+			templateUrl: "adminviews/views/orders/order/index.html",			
+			controller : "OrderCreateController",
+			resolve: {
+                authenticate: authenticate,
+                storeInit : function (alcoholStore){
+
+                	return alcoholStore.init();
+
+                }
+            }
+		})
+
+		.state("userLayout.orders.consumer.cart",{
+			url: "/orders/consumer/cart",
+			templateUrl : "adminviews/views/orders/order/cart.html",
+			controller:"OrderCartController",			
+			data:{
+				step:'cart',
+				pageTitle:'Create Order : Cart',
+				breadCrumb:[
+					{title:'Orders','uisref':'userLayout.orders.list'},
+					{title:'Create','uisref':'userLayout.orders.consumer.cart'},
+					{title:'Cart','uisref':'userLayout.orders.consumer.cart'}
+				]				
+			}			
+		})
+
+	
 
         .state('userLayout.categories', {
             abstract:true,            

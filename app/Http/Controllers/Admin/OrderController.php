@@ -9,12 +9,16 @@ use AlcoholDelivery\Http\Requests\DealerRequest;
 
 use AlcoholDelivery\Http\Controllers\Controller;
 
+use Illuminate\Support\Facades\Auth;
+
 use Storage;
 use Validator;
 use AlcoholDelivery\Products;
+use MongoId;
 use DB;
 
 use AlcoholDelivery\Orders as Orders;
+use AlcoholDelivery\CartAdmin as CartAdmin;
 use AlcoholDelivery\User as User;
 
 class OrderController extends Controller
@@ -35,7 +39,65 @@ class OrderController extends Controller
 	 */
 	public function index()
 	{
+		$user = Auth::user('admin');
+
+		$response = [
+			'isUnprocessed' => false,
+			'message'=> "",
+			'cart' => []
+		];
+
+		try{
+
+			$cartObj = new CartAdmin;
+			$cart = $cartObj->getLastUnProcessed(new MongoId($user->_id));
+
+			if(empty($cart)){
+
+				$response['cart'] = $cartObj->generate(new MongoId($user->_id));
+
+			}else{
+
+				$response['isUnprocessed'] = true;
+				$response['cart'] = $cart;
+
+			}			
+
+		}catch(Exception $e){
+
+			$response["message"] = $e->getMessage();
+
+			return response($response,400);
+
+		}
+
+		return response($response,200);
+
+	}
+
+	public function getNewcart(){
+
+		$user = Auth::user('admin');
+
+		$response = [
+			'cart' => []
+		];
 		
+		try{
+			
+			$cartObj = new CartAdmin;	
+			$response['cart'] = $cartObj->generate(new MongoId($user->_id));
+
+		}catch(Exception $e){
+
+			$response["message"] = $e->getMessage();
+
+			return response($response,400);
+
+		}
+
+		return response($response,200);
+
 	}
 
 	/**

@@ -1,0 +1,99 @@
+<div class="row">
+	<div class="col-md-12">
+		<div class="portlet box blue" id="form_wizard_1">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-gift"></i> Create Order
+				</div>
+				<div class="tools hidden-xs">
+					<a href="javascript:;" class="collapse">
+					</a>
+					<a href="#portlet-config" data-toggle="modal" class="config">
+					</a>
+					<a href="javascript:;" class="reload">
+					</a>
+					<a href="javascript:;" class="remove">
+					</a>
+				</div>
+			</div>
+			<div class="portlet-body form">
+				<form class="form-horizontal" id="submit_form" method="POST">
+					<div class="form-wizard">
+						<div class="form-body">
+							<ul class="nav nav-pills nav-justified steps">
+								<li ng-class="{active:step==1,done:step>1}" >
+									<a ui-sref="userLayout.orders.consumer.cart" data-toggle="tab" class="step">
+									<span class="number">1 </span>
+									<span class="desc">
+									<i class="fa fa-check"></i> Cart </span>
+									</a>
+								</li>
+								<li>
+									<a ui-sref="userLayout.orders.consumer.cart" data-toggle="tab" class="step">
+									<span class="number">
+									2 </span>
+									<span class="desc">
+									<i class="fa fa-check"></i> Address </span>
+									</a>
+								</li>
+								<li>
+									<a ui-sref="userLayout.orders.consumer.cart" data-toggle="tab" class="step active">
+									<span class="number">
+									3 </span>
+									<span class="desc">
+									<i class="fa fa-check"></i> Delivery </span>
+									</a>
+								</li>
+
+								<li>
+									<a ui-sref="userLayout.orders.consumer.cart" data-toggle="tab" class="step">
+									<span class="number">
+									4 </span>
+									<span class="desc">
+									<i class="fa fa-check"></i> Payment </span>
+									</a>
+								</li>
+								<li>
+									<a ui-sref="userLayout.orders.consumer.cart" data-toggle="tab" class="step active">
+									<span class="number">
+									5 </span>
+									<span class="desc">
+									<i class="fa fa-check"></i> Review &amp; confirm </span>
+									</a>
+								</li>
+							</ul>
+							<div id="bar" class="progress progress-striped" role="progressbar">						
+								<div class="progress-bar progress-bar-success" ng-style="{width:step+'%'}"></div>
+							</div>
+							<div class="tab-content">
+								<div class="alert alert-danger display-none">
+									<button class="close" data-dismiss="alert"></button>
+									You have some form errors. Please check below.
+								</div>
+								<div class="alert alert-success display-none">
+									<button class="close" data-dismiss="alert"></button>
+									Your form validation is successful!
+								</div>
+								<div ui-view=""></div>
+							</div>
+						</div>
+						<div class="form-actions">
+							<div class="row">
+								<div class="col-md-offset-3 col-md-9">
+									<a href="javascript:;" class="btn default button-previous">
+									<i class="m-icon-swapleft"></i> Back </a>
+									<a href="javascript:;" class="btn blue button-next">
+									Continue <i class="m-icon-swapright m-icon-white"></i>
+									</a>
+									<!-- <a href="javascript:;" class="btn green button-submit">
+									Submit <i class="m-icon-swapright m-icon-white"></i>
+									</a> -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
