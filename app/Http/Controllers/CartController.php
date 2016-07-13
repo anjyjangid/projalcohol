@@ -4,6 +4,9 @@ namespace AlcoholDelivery\Http\Controllers;
 
 use Illuminate\Http\Request;
 use AlcoholDelivery\Http\Requests;
+
+use AlcoholDelivery\Http\Requests\GiftCartRequest;
+
 use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Cart as Cart;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +16,8 @@ use AlcoholDelivery\Orders as Orders;
 use AlcoholDelivery\Promotion as Promotion;
 use AlcoholDelivery\Holiday as Holiday;
 use AlcoholDelivery\User as User;
+use AlcoholDelivery\Gift as Gift;
+
 
 
 use MongoDate;
@@ -131,6 +136,7 @@ class CartController extends Controller
 
 
 	}
+
 
 	/**
 	 * Display the specified resource.
@@ -1404,6 +1410,63 @@ jprd($product);
 		}
 		
 	}
+
+	public function postGift(Request $request){
+
+		$inputs = $request->all();
+
+		foreach ($inputs as $key => $value) {
+			
+		}
+	}
+
+	public function postGiftcard(GiftCartRequest $request){
+
+		$inputs = $request->all();
+
+		$cartKey = $request->session()->get('deliverykey');
+
+		$cart = Cart::find($cartKey);
+
+		$giftCards = $cart->giftCards;
+		
+		if(is_null($giftCards)){
+			$giftCards = [];
+		}
+
+		$giftCard = [
+
+			'_id'=>$inputs['id'],
+			'_uid'=>new MongoId(),
+			'recipient'=>[
+				'price' => (float)$inputs['recipient']['price'],
+                'quantity' => (int)$inputs['recipient']['quantity'],
+                'name' => $inputs['recipient']['name'],
+                'email' => $inputs['recipient']['email'],
+                'message' => $inputs['recipient']['message'],
+                'sms' => (int)$inputs['recipient']['sms'],
+                'mobile' => (int)$inputs['recipient']['mobile']
+			]
+		];
+		
+		array_push($giftCards, $giftCard);
+
+		try{
+
+			$cart->giftCards = $giftCards;				
+			$cart->save();
+
+			return response(["success"=>true,"message"=>"cart updated successfully","data"=>$giftCard],200);
+
+		}catch(\Exception $e){
+
+			return response(["success"=>false,"message"=>$e->getMessage()],400);
+
+		}
+
+	}
+
+
 
     public function missingMethod($parameters = array())
 	{

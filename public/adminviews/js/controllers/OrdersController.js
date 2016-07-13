@@ -65,3 +65,40 @@ MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout'
 	});   
 	  
 }]);
+
+
+MetronicApp.controller('OrderCreateController',['$scope','alcoholCart',function($scope){
+
+	$scope.step = 20;
+
+}]);
+
+MetronicApp.controller('OrderCartController',['$scope','$http','alcoholCart',function($scope,$http,alcoholCart){
+	
+	$scope.users = [];
+
+	$scope.$watch('mobile',function() {
+
+		var param = {mobile_number:$scope.mobile};
+		$scope.fetchUser(param);
+
+	});
+
+	$scope.fetchUser = function(searchParams){
+
+		$http.get("/adminapi/customer",{params: searchParams}).then(
+
+			function(successRes){
+
+				$scope.users = successRes.data;
+			},
+			function(errRes){
+				
+			}
+		)
+
+	}
+	
+
+}]);
+

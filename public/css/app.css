@@ -589,4 +589,13 @@ background-color: rgba(170, 0, 255, 0.5);
 }
 /* SIDE BAR CSS */
 
+
+
+
+.product_addcart[ng-disabled='processing'] i.fa {
+	font-size: 24px;
+	float: left;
+}
+
 button { outline: none; }
+

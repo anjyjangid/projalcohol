@@ -25,6 +25,7 @@ Route::group(['prefix' => 'adminapi'], function () {
 
 Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	
+	Route::resource('order', 'Admin\OrderController');
 	Route::controller('order', 'Admin\OrderController');
 	
 	Route::resource('product', 'Admin\ProductController',['only'=>['update','store']]);
@@ -32,6 +33,7 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 
 	Route::controller('admin', 'Admin\AdminController');
 	
+	Route::resource('customer', 'Admin\CustomerController');
 	Route::controller('customer', 'Admin\CustomerController');
 	
 	Route::group(['prefix' => 'global'], function () {		
@@ -154,10 +156,13 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::delete('promotion/{key}','CartController@deletePromotion');
 
+	Route::post('gift','CartController@postGift');
+	Route::post('giftcard','CartController@postGiftcard');
 
 });
 
 Route::resource('cart', 'CartController');
+
 
 Route::resource('wishlist', 'WishlistController');
 
@@ -165,6 +170,8 @@ Route::resource('wishlist', 'WishlistController');
 Route::get('/order/summary/{id}','OrderController@getSummary');
 Route::get('/order/orders','OrderController@getOrders');
 Route::get('/order/{order}','OrderController@show');
+
+
 
 
 

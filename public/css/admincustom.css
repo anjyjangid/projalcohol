@@ -58,3 +58,29 @@ tr.detail td.details-control {
 .mClass div{
     white-space:normal !important;
 }
+
+.form-wizard .steps > li.done > a.step .desc i {
+    margin-left: -15px;
+}
+
+.form-wizard .steps > li > a.step > .desc{
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.form-wizard .steps > li > a.step > .number{
+    margin-right: 0px;
+}
+
+
+ul.userlist{
+    padding: 0;
+list-style-type: none;
+max-height: 200px;
+overflow: auto;
+background: #ccc;
+}
+ul.userlist li{
+    padding: 10px;
+}

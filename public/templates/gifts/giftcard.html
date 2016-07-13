@@ -21,45 +21,51 @@
                     <div class="enter-gift-detail">Enter your gift card details</div>									
 					
 					<div>
+
 					   <span>Select an amount between $50 - $500</span>
-						<button ng:class="{'btn-success':gift.reciepient.price == slots.value}" class="btn default btn-cls-gift" ng-repeat="slots in gift.cards" ng-click="gift.reciepient.price = slots.value">
-							${{slots.value}}
+						<button ng:class="{'btn-success':gift.recipient.price == slots.value}" class="btn default btn-cls-gift" ng-repeat="slots in gift.cards" ng-click="gift.recipient.price = slots.value">
+
+							{{slots.value | pricingTxt}}
 						</button>
 					</div>
 
                 	<div ng:class="{'has-error':errors.emails}" class="gift-to-divcover">
                     <div class="gift-card-innerform">
 				      <label>To</label>
-				      <input type="text" placeholder="Reciepient's name" ng-model="gift.reciepient.name" class="alcohalrestertextbox form-control">
-				      <input type="text" placeholder="Reciepient's email" ng-model="gift.reciepient.email" class="alcohalrestertextbox form-control">
+				      <input type="text" placeholder="recipient's name" ng-model="gift.recipient.name" class="alcohalrestertextbox form-control">
+				      <input type="text" placeholder="recipient's email" ng-model="gift.recipient.email" class="alcohalrestertextbox form-control">
 				      <span class="help-block" ng-bind="carterror.emails"></span>        
+
 				    </div></div>
 			    	<div ng:class="{'has-error':errors.message}" class="gift-to-divcover">
                       <div class="gift-card-innerform">
 				      <label>Message <span class="max-char-color" align="right">Max. characters : 200</span></label>
-				      <textarea ng-model="gift.reciepient.message" class="alcohalrestertextbox form-control"></textarea>        
+				      <textarea ng-model="gift.recipient.message" class="alcohalrestertextbox form-control"></textarea>        
 				      <span class="help-block" ng-bind="carterror.message"></span>        
 				
                 
 				    <div class="gift-check-contact">
-						<md-checkbox ng-true-value="1" ng-false-value="0" ng-model="gift.reciepient.sms" aria-label="Mobile SMS">
+						<md-checkbox ng-true-value="1" ng-false-value="0" ng-model="gift.recipient.sms" aria-label="Mobile SMS">
 						 <span class="mobile-sms-width">	Mobile SMS</span>
+
 						</md-checkbox>
-						<div ng-if="gift.reciepient.sms == 1">
-					      <input type="text" placeholder="Phone number" ng-model="gift.reciepient.mobile" class="alcohalrestertextbox form-control">					      
+						<div ng-if="gift.recipient.sms == 1">
+					      <input type="text" placeholder="Phone number" ng-model="gift.recipient.mobile" class="alcohalrestertextbox form-control">					      
 					      <span class="help-block" ng-bind="carterror.emails"></span>        
 					    </div>
 				    </div>
 				    <p class="packtiti-rightset packag-amnt-divcolr">Price</p>
-			    	<h3 class="amntrupee-clsdetail">{{(gift.reciepient.price*gift.reciepient.quantity)  | currency}}</h3>
+
+			    	<h3 class="amntrupee-clsdetail">{{(gift.recipient.price*gift.recipient.quantity)  | currency}}</h3>
 			    	<div class="checkoutmiddlevlauediv party-checkout-detail quantity-inputsetspan">
                      <label>Quantity</label>
-			    	<input type="text" value="gift.reciepient.quantity" ng-model="gift.reciepient.quantity" mquantity="10" min="1" ng-touch-spin>
+			    	<input type="text" value="gift.recipient.quantity" ng-model="gift.recipient.quantity" mquantity="10" min="1" ng-touch-spin>
 			    	</div>
 			    	<div class="quantiy-party-detail add-cart-btm">
                    
 			    		<a class="btn product_addcart addcart-detail" ng-if="!processing" ng-click="addPackage()"><img src="images/cart-icon.png" />{{btnText}}</a>
 	    				<a class="btn product_addcart addcart-detail" ng-if="processing"><i class="fa fa-spinner fa-spin"></i> {{btnText}}</a>	
+
 			    	</div>
                     <div class="btm-text-giftnot">Note: This item is non-returnable.</div>
 				</div>    </div>

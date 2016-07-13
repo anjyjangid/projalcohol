@@ -27,7 +27,7 @@ class GiftRequest extends Request
         //return [];
         $input = Input::all();
 
-        $rules = [            
+        $rules = [
             'type' => 'required',
             'title' => 'required',
             'subTitle' => 'required',

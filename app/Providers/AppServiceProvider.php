@@ -5,6 +5,7 @@ namespace AlcoholDelivery\Providers;
 use Illuminate\Support\ServiceProvider;
 use Validator;
 use Input;
+use AlcoholDelivery\Http\Validator\CustomValidationRule;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,13 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend('lt', function($attribute, $value, $parameters) {
             return $value < Input::get($parameters[0]) ;
         });
+
+        Validator::extend('mobile', function($attribute, $value, $parameters) {
+            return preg_match("/^\+?\d[0-9-]{9,12}/", $value);
+        });
+
+        
+        
     }
 
     /**

@@ -17,6 +17,7 @@
 					<p class="party-product-desc">{{gift.description}}</p>    										
 					<p class="packtiti-rightset packag-amnt-divcolr">Price</p>
 			    	<h3 class="amntrupee-clsdetail">{{gift.price | currency}}</h3>
+
 	            	<div ng:class="{'has-error':errors.emails}" class="gift-to-divcover">
 						<div class="gift-card-innerform">					      
 							<label>To</label>
@@ -32,10 +33,11 @@
 				      	</div>
 					</div>
 			    	<div class="quantiy-party-detail add-cart-btm">
-			    		<a class="btn product_addcart addcart-detail" ng-if="!processing" ng-click="addPackage()">
-							<img src="images/cart-icon.png" />{{btnText}}
-						</a>
-	    				<a class="btn product_addcart addcart-detail" ng-if="processing"><i class="fa fa-spinner fa-spin"></i> {{btnText}}</a>
+			    		<a class="btn product_addcart addcart-detail" ng-click="addGift()" ng-disabled="processing">
+							<i class="fa fa-spinner fa-spin" ng-if="processing"></i>
+							<img src="images/cart-icon.png" ng-if="!processing" />{{btnText}}
+			    		</a>
+
 			    	</div>
 					<div class="btm-text-giftnot">Note: This item is non-returnable.</div>
 				</div>
@@ -62,8 +64,7 @@
 				</a>
 
 				<div>
-					<input type="text" value="product._inGift" ng-model="product._inGift" min="0" mquantity="product._maxQuantity" ng-touch-spin>
-					<!-- on-increment="attach(product._id)" -->
+					<input type="text" value="product._inGift" ng-model="product._inGift" min="0" mquantity="product._maxQuantity" ng-touch-spin on-increment="totalAttached()" on-decrement="totalAttached()">					
 				</div>
 
 			</div>
