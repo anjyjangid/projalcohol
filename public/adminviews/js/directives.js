@@ -347,3 +347,17 @@ MetronicApp.directive('pluginUniform', function() {
 		}
 	};
 });
+
+MetronicApp.directive('orderProductDetail', function() {
+	return {		
+		restrict : "E",
+		replace: true,
+		templateUrl: function(elem, attr){
+			return '/adminviews/views/orders/order/productdetail.html';
+		},
+		scope: {
+			product:'=',
+		},
+		controller: "OrderProductDetailController"
+	};
+});

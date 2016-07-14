@@ -1423,7 +1423,7 @@ jprd($product);
 	public function postGiftcard(GiftCartRequest $request){
 
 		$inputs = $request->all();
-
+		
 		$cartKey = $request->session()->get('deliverykey');
 
 		$cart = Cart::find($cartKey);

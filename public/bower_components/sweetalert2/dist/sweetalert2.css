@@ -54,7 +54,7 @@
     cursor: pointer; }
     .swal2-modal button.styled:focus {
       outline: none; }
-    .swal2-modal button.styled[disabled] {
+    .swal2-modal button.styled:not(.loading)[disabled] {
       opacity: .4;
       cursor: no-drop; }
     .swal2-modal button.styled.loading {
@@ -74,6 +74,18 @@
               animation: rotate-loading 1.5s linear 0s infinite normal; }
     .swal2-modal button.styled::-moz-focus-inner {
       border: 0; }
+  .swal2-modal button:not(.styled).loading:after {
+    display: inline-block;
+    content: "";
+    margin-left: 5px;
+    vertical-align: -1px;
+    height: 6px;
+    width: 6px;
+    border: 3px solid #999;
+    border-right-color: transparent;
+    border-radius: 50%;
+    -webkit-animation: rotate-loading 1.5s linear 0s infinite normal;
+            animation: rotate-loading 1.5s linear 0s infinite normal; }
   .swal2-modal .swal2-image {
     margin: 20px auto;
     max-width: 100%; }
@@ -90,6 +102,12 @@
     transition: all 0.1s ease; }
     .swal2-modal .swal2-close:hover {
       color: #d55; }
+  .swal2-modal > .swal2-input,
+  .swal2-modal > .swal2-textarea,
+  .swal2-modal > .swal2-select,
+  .swal2-modal > .swal2-radio,
+  .swal2-modal > .swal2-checkbox {
+    display: none; }
 
 .swal2-content {
   font-size: 18px;
@@ -227,12 +245,18 @@
         -webkit-transform: rotate(-45deg);
                 transform: rotate(-45deg); }
 
+.swal2-input,
+.swal2-textarea,
+.swal2-select,
+.swal2-radio,
+.swal2-checkbox {
+  margin: 20px auto; }
+
 .swal2-input:not([type="file"]), .swal2-textarea {
   width: 100%;
   box-sizing: border-box;
   border-radius: 3px;
   border: 1px solid #d7d7d7;
-  margin: 20px auto;
   font-size: 18px;
   box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.06);
   -webkit-transition: all 0.3s;
@@ -267,9 +291,7 @@
   padding: 0 12px; }
 
 .swal2-input[type="file"] {
-  font-size: 20px;
-  display: inline-block;
-  margin: 20px auto; }
+  font-size: 20px; }
 
 .swal2-textarea {
   height: 108px;
@@ -278,14 +300,12 @@
 .swal2-select {
   color: #555;
   font-size: inherit;
-  margin: 20px auto;
   padding: 5px 10px;
   min-width: 40%;
   max-width: 100%; }
 
 .swal2-radio {
-  border: 0;
-  margin: 20px auto; }
+  border: 0; }
   .swal2-radio label:not(:first-child) {
     margin-left: 20px; }
   .swal2-radio input, .swal2-radio span {
@@ -294,8 +314,7 @@
     margin: 0 3px 0 0; }
 
 .swal2-checkbox {
-  color: #555;
-  margin: 20px auto; }
+  color: #555; }
   .swal2-checkbox input, .swal2-checkbox span {
     vertical-align: middle; }
 

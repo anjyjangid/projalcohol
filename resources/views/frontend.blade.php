@@ -198,7 +198,11 @@
 
     <!-- SWEET ALERT STYLE -->
 	<script src="{{ asset('bower_components/sweetalert2/dist/sweetalert2.min.js') }}" type="text/javascript"></script>
+
 	<script src="{{ asset('bower_components/ngSweetAlert2/SweetAlert.js') }}" type="text/javascript"></script>
+
+	<script src="{{ asset('bower_components/es6-promise/promise.min.js') }}" type="text/javascript"></script>
+	
 
     <script type="text/javascript" src="{{ asset('bower_components/angular-animate/angular-animate.js') }}"></script>
 

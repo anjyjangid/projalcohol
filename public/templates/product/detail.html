@@ -34,11 +34,11 @@
 						<div class="prdquantitybulkcover text-noselect" ng-if="product.quantity || product.outOfStockType == 2">
 							<div class="checkoutmiddlevlauediv">
 									<div class="pardqantitytexthead">Quantity</div>
-									<div ng-if="product.servechilled">
+									<div ng-if="product.servechilled" ng-class="{added:product.qChilled>0}">
 										<input type="text" value="product.qChilled" ng-model="product.qChilled" min="0" mquantity="product.chilledMaxQuantity" ng-touch-spin>
 									</div>
 
-									<div ng-if="!product.servechilled">
+									<div ng-if="!product.servechilled" ng-class="{added:product.qNChilled>0}">
 										<input type="text" value="product.qNChilled" ng-model="product.qNChilled" min="0" mquantity	="product.nonChilledMaxQuantity" ng-touch-spin>
 									</div>
 
