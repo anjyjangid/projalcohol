@@ -126,7 +126,7 @@
     }*/
 }
 
-.side-menu-responsive{
+.side-menu-responsive, .laeftdivmain{
     display: block;
     width: 0px;
     opacity: 0;
@@ -143,10 +143,9 @@
     margin: 0;
 }
 
-#wrapper.toggled .side-menu-responsive{
+#wrapper.toggled .side-menu-responsive, #wrapper.toggled .laeftdivmain{
     width: 80%;
     opacity: 1;
-
 }
 
 #bs-example-navbar-collapse-1{
@@ -187,4 +186,12 @@
 
 .navbar-nav{
     margin: 0px 10px;
+}
+
+.laeftdivmain{
+    left: 0;    
+    top:0;
+    padding: 0px 10px;
+    width: auto;
+    background: transparent;
 }

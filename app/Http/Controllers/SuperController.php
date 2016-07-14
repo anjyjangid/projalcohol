@@ -136,7 +136,15 @@ class SuperController extends Controller
 				
 			}
 		}
-		
+
+		$today = strtotime(date('Y-m-d'))*1000;
+
+		$holidays = DB::collection('holidays')->where('timeStamp','>',$today)->orWhere('_id','weekdayoff')
+		->get(['_id','dow','timeStamp']);
+
+		$settingsData['holiDays'] = $holidays;
+		$settingsData['today'] = $today;
+
 		return response($settingsData);
 	}
 

@@ -1155,7 +1155,7 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 				//UserService.currentUser = result;
 			}
 		);
-
+		angular.element('#wrapper').removeClass('toggled');
 
 	})
 
