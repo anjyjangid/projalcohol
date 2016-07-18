@@ -198,7 +198,7 @@ var setParameters = function(params) {
 /*
  * Animations
  */
-var openModal = function(animation) {
+var openModal = function(animation, onComplete) {
   var modal = dom.getModal();
   if (animation) {
     dom.fadeIn(dom.getOverlay(), 10);
@@ -208,10 +208,11 @@ var openModal = function(animation) {
     dom.show(dom.getOverlay());
   }
   dom.show(modal);
-
   dom.states.previousActiveElement = document.activeElement;
-
   dom.addClass(modal, 'visible');
+  if (onComplete !== null && typeof onComplete === 'function') {
+    onComplete.call(this, modal);
+  }
 };
 
 /*
@@ -266,22 +267,19 @@ function modalDependant() {
   }
 
   setParameters(params);
-  fixVerticalPosition();
-  openModal(params.animation);
 
   // Modal interactions
   var modal = dom.getModal();
 
-  return new Promise(function(resolve) {
+  return new Promise(function(resolve, reject) {
     // Close on timer
     if (params.timer) {
       modal.timeout = setTimeout(function() {
-        sweetAlert.closeModal();
-        resolve(undefined);
+        sweetAlert.closeModal(params.onClose);
+        reject('timer');
       }, params.timer);
     }
 
-    // input/select autofocus
     var getInput = function() {
       switch (params.input) {
         case 'select':
@@ -328,16 +326,19 @@ function modalDependant() {
       if (params.preConfirm) {
         params.preConfirm(value, params.extraParams).then(
           function(preConfirmValue) {
+            sweetAlert.closeModal(params.onClose);
             resolve(preConfirmValue || value);
-            sweetAlert.closeModal();
           },
-          function() {
+          function(error) {
             sweetAlert.hideLoading();
+            if (error) {
+              sweetAlert.showValidationError(error);
+            }
           }
         );
       } else {
+        sweetAlert.closeModal(params.onClose);
         resolve(value);
-        sweetAlert.closeModal();
       }
     };
 
@@ -345,8 +346,8 @@ function modalDependant() {
     var onButtonEvent = function(event) {
       var e = event || window.event;
       var target = e.target || e.srcElement;
-      var targetedConfirm = dom.hasClass(target, swalClasses.confirm);
-      var targetedCancel  = dom.hasClass(target, swalClasses.cancel);
+      var targetedConfirm = dom.getConfirmButton() === target || dom.getConfirmButton().contains(target);
+      var targetedCancel = dom.getCancelButton() === target || dom.getCancelButton().contains(target);
       var modalIsVisible  = dom.hasClass(modal, 'visible');
 
       switch (e.type) {
@@ -395,7 +396,9 @@ function modalDependant() {
                   },
                   function(error) {
                     sweetAlert.enableInput();
-                    sweetAlert.showValidationError(error);
+                    if (error) {
+                      sweetAlert.showValidationError(error);
+                    }
                   }
                 );
               } else {
@@ -408,9 +411,8 @@ function modalDependant() {
 
           // Clicked 'cancel'
           } else if (targetedCancel && modalIsVisible) {
-
-            sweetAlert.closeModal();
-            resolve(false);
+            sweetAlert.closeModal(params.onClose);
+            reject('cancel');
           }
 
           break;
@@ -433,9 +435,12 @@ function modalDependant() {
       var e = event || window.event;
       var target = e.target || e.srcElement;
 
-      if (dom.hasClass(target, swalClasses.close) || (target === dom.getOverlay() && params.allowOutsideClick)) {
-        sweetAlert.closeModal();
-        resolve(undefined);
+      if (dom.hasClass(target, swalClasses.close)) {
+        sweetAlert.closeModal(params.onClose);
+        reject('close');
+      } else if (target === dom.getOverlay() && params.allowOutsideClick) {
+        sweetAlert.closeModal(params.onClose);
+        reject('overlay');
       }
     };
 
@@ -481,9 +486,6 @@ function modalDependant() {
       }
     }
 
-    // Focus the first element (input or button)
-    setFocus(-1, 1);
-
     function handleKeyDown(event) {
       var e = event || window.event;
       var keyCode = e.keyCode || e.which;
@@ -519,11 +521,11 @@ function modalDependant() {
         if (keyCode === 13 || keyCode === 32) {
           if (btnIndex === -1) {
             // ENTER/SPACE clicked outside of a button.
-            fireClick($confirmButton, e);
+            dom.fireClick($confirmButton, e);
           }
         } else if (keyCode === 27 && params.allowEscapeKey === true) {
-          sweetAlert.closeModal();
-          resolve(undefined);
+          sweetAlert.closeModal(params.onClose);
+          reject('esc');
         }
       }
     }
@@ -543,6 +545,7 @@ function modalDependant() {
     sweetAlert.showLoading = sweetAlert.enableLoading = function() {
       dom.addClass($confirmButton, 'loading');
       dom.addClass(modal, 'loading');
+      $confirmButton.disabled = true;
       $cancelButton.disabled = true;
     };
 
@@ -552,6 +555,7 @@ function modalDependant() {
     sweetAlert.hideLoading = sweetAlert.disableLoading = function() {
       dom.removeClass($confirmButton, 'loading');
       dom.removeClass(modal, 'loading');
+      $confirmButton.disabled = false;
       $cancelButton.disabled = false;
     };
 
@@ -745,6 +749,12 @@ function modalDependant() {
         console.error('Unexpected type of inputOptions! Expected object or Promise, got ' + params.inputOptions);
       }
     }
+
+    fixVerticalPosition();
+    openModal(params.animation, params.onOpen);
+
+    // Focus the first element (input or button)
+    setFocus(-1, 1);
   });
 }
 
@@ -773,12 +783,10 @@ sweetAlert.queue = function(steps) {
   return new Promise(function(resolve, reject) {
     (function step(i, callback) {
       if (i < steps.length) {
-        sweetAlert(steps[i]).then(function(isConfirm) {
-          if (isConfirm) {
-            step(i+1, callback);
-          } else {
-            reject();
-          }
+        sweetAlert(steps[i]).then(function() {
+          step(i+1, callback);
+        }, function(dismiss) {
+          reject(dismiss);
         });
       } else {
         resolve();
@@ -790,7 +798,7 @@ sweetAlert.queue = function(steps) {
 /*
  * Global function to close sweetAlert
  */
-sweetAlert.close = sweetAlert.closeModal = function() {
+sweetAlert.close = sweetAlert.closeModal = function(onComplete) {
   var modal = dom.getModal();
   dom.removeClass(modal, 'show-swal2');
   dom.addClass(modal, 'hide-swal2');
@@ -822,6 +830,9 @@ sweetAlert.close = sweetAlert.closeModal = function() {
   } else {
     dom._hide(modal);
     dom._hide(dom.getOverlay());
+  }
+  if (onComplete !== null && typeof onComplete === 'function') {
+    onComplete.call(this, modal);
   }
 };
 
@@ -885,6 +896,8 @@ sweetAlert.init = function() {
   $textarea.onchange = function() {
     sweetAlert.resetValidationError();
   };
+
+  window.addEventListener('resize', fixVerticalPosition, false);
 };
 
 /**
@@ -926,5 +939,14 @@ window.sweetAlert = window.swal = sweetAlert;
     }, false);
   }
 })();
+
+if (typeof Promise === 'function') {
+  Promise.prototype.done = function() {
+    return this.catch(function() {
+      // Catch promise rejections silently.
+      // https://github.com/limonte/sweetalert2/issues/177
+    });
+  };
+}
 
 export default sweetAlert;

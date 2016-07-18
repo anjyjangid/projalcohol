@@ -114,6 +114,8 @@ License: You must have a valid license purchased only from themeforest(the above
 	<script src="{{ asset('bower_components/sweetalert2/dist/sweetalert2.min.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('bower_components/ngSweetAlert2/SweetAlert.js') }}" type="text/javascript"></script>
 
+	<script src="{{ asset('bower_components/es6-promise/promise.min.js') }}" type="text/javascript"></script>
+	
 	<script src="{{ asset('js/angular-slugify.js') }}" type="text/javascript"></script>
 
 
