@@ -1,0 +1,102 @@
+<div class="modal-header">
+	<h3 class="modal-title">Gift Cards</h3>
+</div>
+<div class="modal-body">
+	<div class="productdetailbrudcumcover">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="media cocktaildetail-cover gift-card-mainouter">
+				<div class="media-left">
+                <div class="gift-card--inner">
+					<img err-src="asset/i/defaultImage.png" ng-src="giftcategory/i/{{gift.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+				</div></div>	
+				<div class="media-body party-detail-contentcover gift-card-rightcover">
+					<h4 class="media-heading party-detail-heading">{{gift.title}}</h4>
+					<!-- <p class="party-detail-btm-title">{{gift.subTitle}}</p> -->
+					<p class="party-product-desc">{{gift.description}}</p>    	
+                    <div class="enter-gift-detail">Enter your gift card details</div>									
+					
+					<div>
+
+					   <span>Select an amount between $50 - $500</span>
+						<button ng:class="{'btn-success':gift.recipient.price == slots.value}" class="btn default btn-cls-gift" ng-repeat="slots in gift.cards" ng-click="gift.recipient.price = slots.value">
+							{{slots.value | pricingTxt}}
+						</button>
+					</div>
+
+                	<div ng:class="{'has-error':errors.emails}" class="gift-to-divcover">
+						<div class="gift-card-innerform">
+
+							<label>To</label>
+
+							<div class="form-group" ng:class="{'has-error':errors['recipient.name'][0]}">
+								
+								<input type="text" placeholder="recipient's name" ng-model="gift.recipient.name" class="alcohalrestertextbox form-control" ng-change="errors['recipient.name'][0]=''">							
+
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors['recipient.email'][0]}">
+
+								<input type="text" placeholder="recipient's email" ng-model="gift.recipient.email" class="alcohalrestertextbox form-control" ng-change="errors['recipient.email'][0]=''">
+								<!-- <span class="help-block" ng-bind="errors['recipient.email'][0]"></span> -->
+
+							</div>
+
+						</div>
+				    </div>
+					<div ng:class="{'has-error':errors.message}" class="gift-to-divcover">
+						<div class="gift-card-innerform">
+
+							<div class="form-group" ng:class="{'has-error':errors['recipient.message'][0]}">
+
+								<label class="full-width">Message <span class="max-char-color pull-right" align="right"> Max. characters : 200</span></label>
+								<textarea maxlength="200" ng-model="gift.recipient.message" class="alcohalrestertextbox form-control" ng-change="errors['recipient.message'][0]=''"></textarea>
+								<span ng-class="max-char-color" ng-show="gift.recipient.message.length>0">
+									left : {{200 - gift.recipient.message.length}}
+								</span>
+
+							</div>													
+
+
+							<div class="gift-check-contact">
+								<md-checkbox ng-true-value="1" ng-false-value="0" ng-model="gift.recipient.sms" aria-label="Mobile SMS">
+								<span class="mobile-sms-width"> Mobile SMS</span>
+
+								</md-checkbox>
+
+
+								<div ng-if="gift.recipient.sms == 1" class="form-group" ng:class="{'has-error':errors['recipient.email'][0]}" >
+
+									<input type="text" placeholder="Phone number" ng-model="gift.recipient.mobile" class="alcohalrestertextbox form-control">
+									<span class="help-block" ng-bind="errors['recipient.mobile'][0]"></span>
+
+								</div>
+
+							</div>
+
+							<p class="packtiti-rightset packag-amnt-divcolr">Price</p>
+
+							<h3 class="amntrupee-clsdetail">{{(gift.recipient.price*gift.recipient.quantity)  | currency}}</h3>
+							
+							<div class="checkoutmiddlevlauediv party-checkout-detail quantity-inputsetspan">
+								<label>Quantity</label>
+								<input type="text" value="gift.recipient.quantity" ng-model="gift.recipient.quantity" mquantity="10" min="1" ng-touch-spin>
+							</div>
+
+							<div class="quantiy-party-detail add-cart-btm">
+
+								<a class="btn product_addcart addcart-detail" ng-if="!processing" ng-click="addCard()"><img src="images/cart-icon.png" />{{btnText}}</a>
+								<a class="btn product_addcart addcart-detail" ng-if="processing"><i class="fa fa-spinner fa-spin"></i> {{btnText}}</a>	
+
+							</div>
+							<div class="btm-text-giftnot">Note: This item is non-returnable.</div>
+						</div>
+					</div>
+					
+		</div>	    </div>
+	</div>
+</div>
+</div>
+<div class="modal-footer">	
+	<button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>

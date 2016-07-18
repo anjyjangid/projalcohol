@@ -9,6 +9,7 @@ var MetronicApp = angular.module("MetronicApp", [
 	"oc.lazyLoad",  
 	"ngSanitize",
 	"ngCookies",
+	"ngMaterial",
 	"19degrees.ngSweetAlert2",
 	"slugifier",
 	"angular-storage",
