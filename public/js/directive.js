@@ -1061,12 +1061,45 @@ console.log(isChild);
 		scope: {
 			product:'=',
 		},
-		controller: function($scope,$rootScope,$log){
+		controller: function($scope,$rootScope,$log,$filter){		
 
-			$scope.addDays = function(days,mins){
+			var holiDays = angular.copy($rootScope.settings.holiDays);
+
+			$scope.weekdayoff = $filter('filter')(holiDays,{_id:'weekdayoff'});		
+
+			if(typeof $scope.weekdayoff[0] !== 'undefined'){
+				$scope.weekdayoff = $scope.weekdayoff[0];				
+			}else{
+				$scope.weekdayoff = {dow:[]};
+			}
+
+			$scope.isHoliday = function(daystoadd){
+				var cDate = new Date();
+				cDate.setTime($rootScope.settings.today);
+				cDate.setDate(cDate.getDate() + daystoadd);				
+				var dayofdate = cDate.getDay();				
+				if($scope.weekdayoff.dow.indexOf(dayofdate) !== -1){
+					return true;
+				}				
+				var tsofdate = cDate.getTime();
+				var isPh = $filter('filter')(holiDays,{timeStamp:tsofdate});
+				if(typeof isPh[0] !== 'undefined'){
+					return true;
+				}else{
+					return false;
+				}
+			}
+
+			$scope.addDays = function(days,mins){				
+				var old = days;
+				//CHECK UNTILL THE DAY IS NOT HOLIDAY OR WEEKDAYOFF
+				while($scope.isHoliday(days)){
+					days+=1;
+				}
 				var curDate = new Date();
+				curDate.setTime($rootScope.settings.today);
 				curDate.setHours(0,0,0,0);
-				curDate.setDate(curDate.getDate() + days);
+				curDate.setDate(curDate.getDate() + days);				
 				return curDate.setMinutes(mins);
 			}
 

@@ -1,0 +1,156 @@
+<div class="row">
+	<div class="col-md-12">
+		<div class="portlet box blue" id="form_wizard_1">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-gift"></i> Create Order
+				</div>
+				<div class="tools hidden-xs">
+					<a href="javascript:;" class="collapse">
+					</a>
+					<a href="#portlet-config" data-toggle="modal" class="config">
+					</a>
+					<a href="javascript:;" class="reload">
+					</a>
+					<a href="javascript:;" class="remove">
+					</a>
+				</div>
+			</div>
+			<div class="portlet-body form">
+				<form role="form">
+					<div class="form-body">
+
+						<h3 class="block">New Order</h3>
+						<div class="row">
+
+						<div class="col-sm-6">
+
+							<div class="form-group has-warning">
+
+								<label class="control-label col-md-4">Input with warning</label>
+								<div class="col-md-8 input-group">
+								<div class="input-icon right">
+									<i class="fa fa-warning tooltips" data-original-title="please provide an email" data-container="body"></i>
+									<input type="text" class="form-control">
+								</div>
+								</div>
+
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-4">Phone number <span class="required">*</span></label>
+								<div class="col-md-8 input-group">
+
+									<input type="text" class="form-control" ng-class="{spinner:mobileFetch}" ng-model="mobile"/>
+									
+									<ul class="userlist">
+										<li ng-repeat="user in users">
+											{{user.mobile_number}}
+										</li>
+
+										
+									</ul>
+									
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-4">Name <span class="required">*</span></label>
+								<div class="col-md-8 input-group">
+									<input type="text" class="form-control" ng-model="name"/>
+
+									<ul class="userlist">
+										<li ng-repeat="user in users">
+											{{user.name}}
+										</li>
+									</ul>
+
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-4">Alternate contact number</label>
+								<div class="col-md-8 input-group">
+									<input type="text" class="form-control" ng-model="alternate_contact_number"/>
+
+									<ul class="userlist">
+										<li ng-repeat="user in users">
+											{{user.name}}
+										</li>
+									</ul>
+
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-4">E-mail <span class="required">*</span></label>
+
+								<div class="col-md-8 input-group">
+									<span class="input-group-addon">
+									<i class="fa fa-envelope"></i>
+									</span>
+									<input type="text" class="form-control" ng-model="email"/>
+									<ul class="userlist">
+										<li ng-repeat="user in users">
+											{{user.email}}
+										</li>
+									</ul>
+								</div>
+								
+							</div>
+						</div>
+
+						<div class="col-sm-6">
+
+							<div class="form-group" ng-class="{'has-warning':errors['cart.delivery.type'][0]}">
+
+								<label class="control-label col-md-4">Delivery Method <span class="required">*</span></label>
+								<div class="col-md-8 input-group">
+								<div class="input-icon right">
+									
+									<i class="fa fa-warning tooltips" data-original-title="{{errors['cart.delivery.type'][0]}}" data-container="body" ng-if="errors['cart.delivery.type'][0]"></i>
+
+									<select class="form-control" ng-model="cart.delivery.type">
+										
+										<option value="0">Advance</option>
+										<option value="1">Standard 1 hour delivery</option>
+
+									</select>								
+								</div>
+								</div>
+
+							</div>
+							
+							<div class="form-group" ng-show="cart.delivery.type == 1">
+								<label class="control-label col-md-4">Express 30 minute delivery <span class="required">*</span></label>
+								<div class="col-md-8 input-group">
+									<select class="form-control" ng-model="cart.service.express.status">
+										<option value="false">No</option>
+										<option value="true">Yes</option>
+									</select>
+									
+								</div>
+							</div>
+							
+							<ng-map style="width: 100%;height: 400px"></ng-map>
+						</div>
+
+						</div>
+
+						<hr />
+
+						<div class="row">
+							<div class="col-sm-12" ui-view="products"></div>
+						</div>
+
+					</div>
+
+					<div class="form-actions">
+						<button type="submit" class="btn blue">Submit</button>
+						<button type="button" class="btn default">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

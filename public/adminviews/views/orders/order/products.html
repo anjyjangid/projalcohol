@@ -1,13 +1,11 @@
-<div class="checkbox-gray-top">
-	<div class="checkbox-gray-top-first">
+<a href="javascript:void(0)" data-toggle="modal" data-target="#productModal" class="icon-btn">
+	<i class="fa fa-barcode"></i>
+	<div>Products</div>
+	<!-- <span class="badge badge-success">0</span> -->
+</a>
 
-		<md-switch aria-label="cart.nonchilled" ng-model="cart.nonchilled" ng-change="alcoholCart.setCartChilled(cart.nonchilled)"></md-switch>
 
-	</div>
-	<div class="checkbox-gray-toptext">SAVE {{cart.discount.nonchilled.exemption | pricingTxt}} by choosing to have your drinks delivered Non-Chilled.</div>
-</div>
-
-<div class="checkoutmiddletable">
+<div>
 	<div class="table-responsive">
 		<table class="table cart-table">
 			<tbody>
@@ -23,7 +21,7 @@
 						<div class="orhistry2_td2procdtcvr">
 						<span class="cursor-pointer">
 						<a ui-sref="mainLayout.product({product:cartproduct.product.slug})" title="View Product">
-						<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="img-responsive" />
+						<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="" width="40"/>
 						</a>
 						</span>
 
@@ -136,74 +134,83 @@
 </div>
 
 
-<div class="checkboxtotaldiv">
-	<div class="checkboxtotaldiv-top">
-		<div class="checkboxtotaldiv-title">Subtotal</div>
-		<div class="checkboxtotaldiv-text">{{alcoholCart.getSubTotal() | pricingTxt}}</div>
-	</div>
-	<div class="checkboxtotaldiv-middle">
-		<div class="checkboxtotaldiv-middle-first">
-			<div class="checkboxtotaldiv-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
 
-			<div class="checkboxtotaldiv-text" ng-if="!cart.delivery.charges">Free</div>
-			<div class="checkboxtotaldiv-text" ng-if="cart.delivery.charges>0">{{alcoholCart.getDeliveryCharges() | pricingTxt }}</div>
+<!-- Product Modal -->
+<div id="productModal" class="modal fade" role="dialog">
 
-		</div>
-		<div class="checkboxtotaldiv-middle-first">
-			<div class="checkboxtotaldiv-title">Service Charge <span class=""><img src="images/questionimg.png"></span></div>
-			<div class="checkboxtotaldiv-text">{{alcoholCart.getAllServicesCharges() | pricingTxt}}</div>
-		</div>
-		<div class="checkboxtotaldiv-middle-first">
-			
-			<div class="checkboxtotaldiv-title">Discount (Non-Chilled) <span class="">
-				<img src="images/questionimg.png"></span>
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Search Products</h4>
+      </div>
+      <div class="modal-body">
+        <div class="input-group">
+	    	<div class="input-group-btn">
+				<button type="button" class="btn green dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+					<span class="md-click-circle md-click-animate"></span>
+
+					{{catSelected.parent !== "" ? catSelected.parent.cat_title : "ALL"}} <i class="fa fa-angle-down"></i>
+				</button>
+				<ul class="dropdown-menu">
+
+					<li>
+						<a href="javascript:;" ng-click="catSelected.parent = ''">All</a>
+					</li>					
+					<li ng-repeat="category in categories">
+						<a href="javascript:;" ng-click="catSelected.parent = category">{{category.cat_title}}</a>
+					</li>
+				</ul>
 			</div>
 
-			<div class="checkboxtotaldiv-text" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount() | pricingTxt}}</div>
+			<div class="input-group-btn" ng-if="catSelected.parent.child" style="border-left:1px solid #fff ">
+				<button type="button" class="btn green dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+					<span class="md-click-circle md-click-animate"></span>
+
+					{{catSelected.sub !== "" ? catSelected.sub.cat_title : "ALL"}} <i class="fa fa-angle-down"></i>
+				</button>
+				<ul class="dropdown-menu">
+
+					<li>
+						<a href="javascript:;" ng-click="catSelected.sub = ''">All</a>
+					</li>					
+					<li ng-repeat="category in catSelected.parent.child">
+						<a href="javascript:;" ng-click="catSelected.sub = category">{{category.cat_title}}</a>
+					</li>
+				</ul>
+			</div>
+			
+			<input ng-model="productquery" type="search" ng:class="{'spinner':searching}" class="form-control" placeholder="Search products to add in cart">
+        </div>
+        <div id="searchContainer" class="row">
+        	<div class="col-sm-4">
+				<table class="table table-striped table-hover" id="orderlist">
+					<tbody>
+						<tr ng-repeat="p in checkItem()" ng-click="selected.product = p">
+							<td width="40" valign="middle">
+								<img class="img-responsive" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{p.imageFiles | getProductThumb}}">
+							</td>
+							<td valign="middle">									
+								{{p.name}}
+								<div><b>${{p.unitPrice}}</b></div>
+							</td>							
+						</tr>							
+					</tbody>
+				</table>
+			</div>
+			<div class="col-sm-8">
+				<div class="row product-detail" ng-if="selected.product">
+					<order-product-detail product='selected.product'></order-product-detail>
+				</div>
+			</div>
 		</div>
-	</div>
-	<div class="checkboxtotaldiv-buttom">
-		<div class="checkboxtotaldiv-title">Total</div>
-		<div class="checkboxtotaldiv-text">{{alcoholCart.getCartTotal() | pricingTxt}}</div>
-	</div>
-</div>
-
-<!-- Promotion view Starts-->
-<div ui-view="promotions"></div>
-<!-- Promotion view Ends-->
-
-<div class="checkouterwantbuttonouter">
-	<div class="checkouterwantfirst">
-
-		<button data-target="#Modal-dontmiss" data-toggle="modal" class="checkouterwantbutton" ng-class="{selected:cart.delivery.type==0}" ng-click="alcoholCart.setDeliveryType(0)">I want this order Now!</button>
-
-		<span>(Standard 1 hour delivery)</span>
-		<button class="checkoutergitpackage"  ng-click="giftPopup($event)" >Gift Packaging</button>
-	</div>
-
-	<div class="checkouterexprienceouter" ng-show="cart.delivery.type==0">
-
-		<div class="checkouterexpressdivleft checkbox-gray-top-first">
-			<md-switch aria-label="express" ng-model="cart.service.express.status" ng-change="alcoholCart.setExpressStatus(cart.service.express.status)"></md-switch>
-
-		</div>
-		<div class="checkouterexpressdiv">
-			<div class="checkouterexpresstitle">Express Delivery</div>
-			<div class="checkouterexpresstext">Gauranteed 30 mins delivery.</div>
-			<div class="checkouterexpresstext">{{cart.service.express.charges | pricingTxt}} surcharge applies. <a ui-sref="cmsLayout.terms-conditions">Terms &amp; Conditions</a> applies.</div>	
-		</div>
-	</div>
-</div>
-
-
-
-<div class="checkouterlastdiv">
-	<div class="checkouterwantfirst">
-		<button class="checkouterwantbutton" ng-class="{selected:cart.delivery.type==1}" ng-click="alcoholCart.setDeliveryType(1)">I want this order Later!</button>
-		<span>(Scheduled delivery)</span>
-	</div>
-	<div class="checkouterbackouter">
-		<a class="checkouterback" ui-sref="mainLayout.index"><span><img src="images/order_history2backpic.png"></span>back to shopping</a>
-		<button class="checkoutcheckoutnowbutton" ng-click="checkout()">Checkout Now</button>
-	</div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 </div>

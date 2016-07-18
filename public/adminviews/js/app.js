@@ -12,7 +12,8 @@ var MetronicApp = angular.module("MetronicApp", [
 	"19degrees.ngSweetAlert2",
 	"slugifier",
 	"angular-storage",
-	"ui.calendar"
+	"ui.calendar",
+	'ngMap',
 ]); 
 
 
@@ -83,7 +84,10 @@ MetronicApp.factory('settings', ['$rootScope', function($rootScope) {
             pageAutoScrollOnLoad: 1000 // auto scroll to top on page load
         },
         layoutImgPath: Metronic.getAssetsPath() + 'admin/layout/img/',
-        layoutCssPath: Metronic.getAssetsPath() + 'admin/layout/css/'
+        layoutCssPath: Metronic.getAssetsPath() + 'admin/layout/css/',
+        general : {
+        	currency : '$'
+        }
     };
 
     $rootScope.settings = settings;
@@ -276,6 +280,7 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 			});
 
 		}else{
+
 			sweetAlert.swal({
 				title: "Are you sure?",   
 				text: "Your will not be able to recover them!",   
@@ -396,10 +401,23 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 			]
 		},
 		{
-			label:'Orders',
-			uisref:'userLayout.orders.list',
+			label:'Orders',			
 			icon:'icon-basket',
 			id:'sidebar_menu_link_orders',
+			subItems:[
+				{
+					label:'List',
+					uisref:'userLayout.orders.list',
+					icon:'icon-user-following',					
+					links:['userLayout.customer.list','userLayout.customer.add','userLayout.customer.edit']
+				},
+				{
+					label:'New Order',
+					uisref:'userLayout.orders.consumer',
+					icon:'icon-user-following',					
+					links:['userLayout.dealers.list','userLayout.dealers.add','userLayout.dealers.edit','userLayout.dealers.show','userLayout.dealers.orders'],
+				},
+			]
 		},
 		{
 			label:'Categories',
@@ -970,7 +988,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             }
         })
 
-        .state("userLayout.dealers.orders",{
+		.state("userLayout.dealers.orders",{
+
             url: "/dealers/orders/{dealerid}",
             templateUrl: "adminviews/views/dealers/orders.html",
             data:{
@@ -1096,6 +1115,38 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                 authenticate: authenticate
             }
 		})                    
+
+		.state("userLayout.orders.consumer",{
+			url: "/orders/consumer",			
+			views : {
+
+				"" : {
+					templateUrl: "adminviews/views/orders/order/index.html",
+					controller : "OrderCreateController",
+				},
+				"products@userLayout.orders.consumer" : {					
+					templateUrl: "adminviews/views/orders/order/products.html",
+					controller : "OrderProductsController",
+				}
+			},			
+			data:{
+				step:'cart',
+				pageTitle:'Create Order : Cart',
+				breadCrumb:[
+					{title:'Orders','uisref':'userLayout.orders.list'},
+					{title:'Create','uisref':'userLayout.orders.consumer'},					
+				]
+			},
+			resolve: {
+				authenticate: authenticate,
+				storeInit : function (alcoholStore){
+
+					return alcoholStore.init();
+
+			    }
+				
+			}
+		})
 
         .state('userLayout.categories', {
             abstract:true,            
@@ -2189,7 +2240,45 @@ MetronicApp.filter('accessValidate', ['$filter','AdminUserService',function($fil
 
 }]);
 
+MetronicApp.filter('getProductThumb', function() {
+		return function(input) {
 
+			if(angular.isString(input)){
+				return input;
+			}
+
+			for(i=0;i<=input.length;i++){
+				if(input[i].coverimage==1){
+					return input[i].source;
+				}
+			}
+			return "product-default.jpg";
+		}
+});
+
+MetronicApp.filter('freeTxt', function() {
+		return function(input) {
+			input = parseFloat(input);
+			return input>0?input:'FREE';
+		}
+});
+
+MetronicApp.filter('pricingTxt', function(currencyFilter,$rootScope) {
+		return function(price,freeTxt) {
+			
+			if(price === null || isNaN(price)){
+				price = 0;
+			}
+
+			price = parseFloat(price);
+
+			if(typeof freeTxt==='undefined'){
+				freeTxt = false;
+			}					
+
+			return (price || freeTxt!==true)?currencyFilter(price,$rootScope.settings.general.currency,2):'free';
+		}
+});
 
 /* Init global settings and run the app */
 MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "store", "$location", "AdminUserService", "$timeout", "$stateParams", function($rootScope, settings, $state, $cookieStore, $log, store, $location, AdminUserService, $timeout, $stateParams) {

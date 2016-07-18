@@ -120,10 +120,13 @@ License: You must have a valid license purchased only from themeforest(the above
 
 
 	<!-- END CORE ANGULARJS PLUGINS -->
-	
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAO1xAu1wBu7NZOqNBn9aoYg-RVstm60jc&libraries=places"></script>
+    <script type="text/javascript" src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.js"></script>
+    
 	<!-- BEGIN APP LEVEL ANGULARJS SCRIPTS -->
 	<script src="{{ asset('adminviews/js/app.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('adminviews/js/directives.js') }}" type="text/javascript"></script>
+	<script src="{{ asset('adminviews/js/orderService.js') }}" type="text/javascript"></script>
 	<!-- END APP LEVEL ANGULARJS SCRIPTS -->
 
 	<!-- BEGIN APP LEVEL JQUERY SCRIPTS -->

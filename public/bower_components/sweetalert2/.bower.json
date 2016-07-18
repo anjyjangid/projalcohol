@@ -43,6 +43,7 @@
     "commit": "ec40414d3339a37c37cc28fd2a2da15266263f33"
   },
   "_source": "https://github.com/limonte/sweetalert2.git",
-  "_target": ">=0.1.9",
-  "_originalSource": "sweetalert2"
+  "_target": "^4.0.8",
+  "_originalSource": "sweetalert2",
+  "_direct": true
 }

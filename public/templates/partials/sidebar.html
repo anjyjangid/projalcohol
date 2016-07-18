@@ -1,32 +1,53 @@
-
 <ul class="nav navbar-nav modify capitalize mobilesidebar" ng-cloak>
-  <!-- SHOW IN MOBILE ONLY -->
-  <li ng-hide="user.email" class="mobilemenu hide"> <a data-target="#login" data-toggle="modal" href="javascript:;"> LOGIN </a> </li>
-  <li ng-hide="user.email" class="mobilemenu hide"> <a data-target="#register" data-toggle="modal" href="javascript:;"> SIGNUP </a> </li>
-  <li ng:class="{'hideOp':hideOp}" class="dropdown mobilemenu hide" ng-show="user.email" ng-mouseover="hideOp=false" ng-mouseleave="hideOp=true" class="mobilemenu hide">
-  <a href="javascript:;" ng-click="hideOp=!hideOp" class="username dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" > Hola, {{user.email}} </a>
-  <ul ng-click="hideOp=true" class="dropdown-menu profil-dropdown">
-    <li><a ui-sref="accountLayout.profile">My Account</a></li>
-    <li><a href="#" ng-click="logout()">Logout</a></li>
-  </ul>
-  </li>
-  <!-- SHOW IN MOBILE ONLY -->
-  <li ng-class="{'active':$state.current.url=='/'}"><a href="#">On Sale! <span class="sr-only">(current)</span></a></li>
-  <li ng-class="{'active':AppController.category==c.slug}" class="dropdown" ng-repeat="c in childOf(categories)" ng-mouseover="showPersonSubMenu=true" ng-mouseleave="showPersonSubMenu=false" hover-class="open">
-    <div class="hide"> {{childCategories = childOf(categories,c._id)}}
-      {{isChildExist = childCategories.length > 0}} </div>
-    <a ui-sref="mainLayout.category.products({categorySlug:c.slug})" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >{{c.cat_title}} <span class="caret" ng-show='isChildExist'></span></a>
-    <ul ng-click="hideMenu()" class="dropdown-menu" ng-class="{'animate':showPersonSubMenu}" ng-style="{'background-image':'url(/assets/resources/category/lthumb/400/{{c.cat_lthumb}})'}" ng-if='isChildExist'>
-      <li class="dm_title">{{c.cat_title}}</li>
-      <li ng-class="{'subactive':AppController.subCategory==cc.slug}" ng-repeat="cc in childCategories"> <a ui-sref="mainLayout.category.subCatProducts({categorySlug:c.slug,subcategorySlug:cc.slug})">{{cc.cat_title}}<span>{{cc.productCount}}</span></a> </li>
-    </ul>
-  </li>
-  <li ng-class="{'active':AppController.category=='packages'}" class="dropdown"> <a ng-click="AppController.showpackage = !AppController.showpackage" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Packages</a>
-    <ul class="nav navbar-nav party-cocktail-liset" ng-show="AppController.showpackage">
-      <li ng-class="{'active':AppController.subCategory=='party'}" class="dropdown"><a ui-sref="mainLayout.packages({type:'party'})">Party Packages</a></li>
-      <li ng-class="{'active':AppController.subCategory=='cocktail'}" class="dropdown"><a ui-sref="mainLayout.packages({type:'cocktail'})">Cocktail Packages</a></li>
-    </ul>
-  </li>
-  <li ng-class="{'active':AppController.category=='loyalty'}" class="dropdown"> <a ui-sref="mainLayout.loyaltystore">Loyalty Store</a> </li>
-  <li ng-class="{'active':AppController.category=='gifts'}" class="dropdown"> <a href="javascript:void(0)" ng-click="giftPopup($event)">Gift packaging</a> </li>
+	<!-- SHOW IN MOBILE ONLY -->
+	<li ng-hide="user.email" class="mobilemenu hide">
+		<a data-target="#login" data-toggle="modal">
+			LOGIN
+		</a>
+	</li>
+	<li ng-hide="user.email" class="mobilemenu hide">
+    	<a data-target="#register" data-toggle="modal">
+    		SIGNUP
+    	</a>
+    </li>
+	<li ng:class="{'hideOp':hideOp}" class="dropdown mobilemenu hide" ng-show="user.email" ng-mouseover="hideOp=false" ng-mouseleave="hideOp=true" class="mobilemenu hide"> 
+		<a class="username dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" > Hola, {{user.email}} 
+		</a>
+        <ul ng-click="hideOp=true" class="dropdown-menu profil-dropdown">
+          <li><a ui-sref="accountLayout.profile">My Account</a></li>
+          <li><a href="#" ng-click="logout()">Logout</a></li>
+        </ul>
+    </li>                  
+    <!-- SHOW IN MOBILE ONLY -->
+	<li ng-class="{'active':$state.current.url=='/'}"><a href="#">On Sale! <span class="sr-only">(current)</span></a></li>	
+	<li ng-class="{'active':AppController.category==c.slug}" class="dropdown" ng-repeat="c in childOf(categories)" ng-mouseover="showPersonSubMenu=true" ng-mouseleave="showPersonSubMenu=false" hover-class="open">
+	<div class="hide">
+		{{childCategories = childOf(categories,c._id)}}
+		{{isChildExist = childCategories.length > 0}}		
+	</div>
+		<a ui-sref="mainLayout.category.products({categorySlug:c.slug})" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >{{c.cat_title}} <span class="caret" ng-show='isChildExist'></span></a>
+
+		<ul ng-click="hideMenu()" class="dropdown-menu" ng-class="{'animate':showPersonSubMenu}" ng-style="{'background-image':'url(/assets/resources/category/lthumb/400/{{c.cat_lthumb}})'}" ng-if='isChildExist'>
+			<li class="dm_title">{{c.cat_title}}</li>			
+			<li ng-class="{'subactive':AppController.subCategory==cc.slug}" ng-repeat="cc in childCategories">
+				<a ui-sref="mainLayout.category.subCatProducts({categorySlug:c.slug,subcategorySlug:cc.slug})">{{cc.cat_title}}<span>{{cc.productCount}}</span></a>
+			</li>
+		</ul>
+	</li>
+	<li ng-class="{'active':AppController.category=='packages'}" class="dropdown">
+
+		<a ng-click="AppController.showpackage = !AppController.showpackage" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Packages</a>
+
+		<ul class="nav navbar-nav party-cocktail-liset" ng-show="AppController.showpackage">
+			<li ng-class="{'active':AppController.subCategory=='party'}" class="dropdown"><a ui-sref="mainLayout.packages({type:'party'})">Party Packages</a></li>
+			<li ng-class="{'active':AppController.subCategory=='cocktail'}" class="dropdown"><a ui-sref="mainLayout.packages({type:'cocktail'})">Cocktail Packages</a></li>
+		</ul>
+
+	</li>
+	<li ng-class="{'active':AppController.category=='loyalty'}" class="dropdown">
+		<a ui-sref="mainLayout.loyaltystore">Loyalty Store</a>
+	</li>
+	<li ng-class="{'active':AppController.category=='gifts'}" class="dropdown">
+		<a ng-click="giftPopup($event)">Gift packaging</a>
+	</li>
 </ul>

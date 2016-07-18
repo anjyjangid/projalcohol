@@ -9,12 +9,17 @@ use AlcoholDelivery\Http\Requests\DealerRequest;
 
 use AlcoholDelivery\Http\Controllers\Controller;
 
+use Illuminate\Support\Facades\Auth;
+
 use Storage;
 use Validator;
-use AlcoholDelivery\Products;
+use AlcoholDelivery\Products as Products;
+use MongoId;
 use DB;
 
+
 use AlcoholDelivery\Orders as Orders;
+use AlcoholDelivery\CartAdmin as CartAdmin;
 use AlcoholDelivery\User as User;
 
 class OrderController extends Controller
@@ -35,7 +40,97 @@ class OrderController extends Controller
 	 */
 	public function index()
 	{
+		$user = Auth::user('admin');
+
+		$response = [
+			'isUnprocessed' => false,
+			'message'=> "",
+			'cart' => []
+		];
+
+		try{
+
+			$cartObj = new CartAdmin;
+			$cart = $cartObj->getLastUnProcessed(new MongoId($user->_id));
+
+			if(empty($cart)){
+
+				$result = $cartObj->generate(new MongoId($user->_id));
+				$response['cart'] = $result->cart;
+
+			}else{
+
+				$response['isUnprocessed'] = true;
+
+				$cart = $cart->toArray();
+				
+				$productsIdInCart = array_keys((array)$cart['products']);
+
+
+				$productObj = new Products;
+
+				$productsInCart = $productObj->getProducts(
+											array(
+												"id"=>$productsIdInCart,
+												"with"=>array(
+													"discounts"
+												)
+											)
+										);
+
+				if(!empty($productsInCart)){
+
+					foreach($productsInCart as $product){
+
+						$cart['products'][$product['_id']]['product'] = $product;
+
+					}
+
+				}
+
+				$response['cart'] = $cart;
+
+
+
+			}			
+
+		}catch(Exception $e){
+
+			$response["message"] = $e->getMessage();
+
+			return response($response,400);
+
+		}
+
+		return response($response,200);
+
+	}
+
+	public function getNewcart(){
+
+		$user = Auth::user('admin');
+
+		$response = [
+			'cart' => []
+		];
 		
+		try{
+			
+			$cartObj = new CartAdmin;	
+			$result = $cartObj->generate(new MongoId($user->_id));
+
+			$response['cart'] = $result->cart;
+
+		}catch(Exception $e){
+
+			$response["message"] = $e->getMessage();
+
+			return response($response,400);
+
+		}
+
+		return response($response,200);
+
 	}
 
 	/**

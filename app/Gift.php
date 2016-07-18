@@ -31,5 +31,7 @@ class Gift extends Eloquent
 
     public function subcategorydetail(){
         return $this->belongsTo('AlcoholDelivery\GiftCategory','subcategory','_id');
-    }    
+    }
+
+    
 }
