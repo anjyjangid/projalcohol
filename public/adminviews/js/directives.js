@@ -41,6 +41,161 @@ MetronicApp.directive('ngSpinnerBar', ['$rootScope',
 	}
 ])
 
+
+MetronicApp.directive('ngTouchSpin', ['$timeout', '$interval', function($timeout, $interval) {
+	'use strict';
+
+	var setScopeValues = function (scope, attrs) {
+		scope.min = attrs.min || 0;
+		// scope.max = attrs.max || 100;
+		scope.step = attrs.step || 1;
+		scope.prefix = attrs.prefix || undefined;
+		scope.postfix = attrs.postfix || undefined;
+		scope.decimals = attrs.decimals || 0;
+		scope.stepInterval = attrs.stepInterval || 500;
+		scope.stepIntervalDelay = attrs.stepIntervalDelay || 500;
+		scope.initval = attrs.initval || '';
+		//scope.val = attrs.value || scope.initval;
+		scope.verticalButtons = attrs.vertical || false;
+	};
+
+	return {
+		restrict: 'EA',
+		require: '?ngModel',
+		scope: {
+			'myincrement': '&onIncrement',
+			'mydecrement': '&onDecrement',
+			'val': "=value",
+			'max': "=mquantity"
+		},
+		replace: true,
+		link: function (scope, element, attrs, ngModel) {
+
+			setScopeValues(scope, attrs);
+
+			var timeout, timer, helper = true, oldval = scope.val, clickStart;
+
+			ngModel.$setViewValue(scope.val);
+
+			scope.decrement = function () {
+				oldval = scope.val;
+				var value = parseFloat(parseFloat(Number(scope.val)) - parseFloat(scope.step)).toFixed(scope.decimals);
+
+				if (parseFloat(value) < parseFloat(scope.min)) {
+					value = parseFloat(scope.min).toFixed(scope.decimals);
+					scope.val = value;
+					ngModel.$setViewValue(value);
+					return;
+				}
+
+				scope.val = value;
+				ngModel.$setViewValue(value);
+				scope.mydecrement();
+			};
+
+			scope.increment = function () {
+				oldval = scope.val;
+				var value = parseFloat(parseFloat(Number(scope.val)) + parseFloat(scope.step)).toFixed(scope.decimals);
+
+				if (parseFloat(value) > parseFloat(scope.max)) return;
+
+				scope.val = value;
+
+				ngModel.$setViewValue(value);
+				scope.myincrement();
+			};
+
+			scope.startSpinUp = function () {
+
+				scope.checkValue();
+				scope.increment();
+
+				clickStart = Date.now();
+				scope.stopSpin();
+
+				// $timeout(function() {
+				// 	timer = $interval(function() {
+				// 		scope.increment();
+				// 	}, scope.stepInterval);
+				// }, scope.stepIntervalDelay);
+
+			};
+
+			scope.startSpinDown = function () {
+				scope.checkValue();
+				scope.decrement();
+
+				clickStart = Date.now();
+
+				// var timeout = $timeout(function() {
+				// 	timer = $interval(function() {
+				// 		scope.decrement();
+				// 	}, scope.stepInterval);
+				// }, scope.stepIntervalDelay);
+			};
+
+			scope.stopSpin = function () {
+				if (Date.now() - clickStart > scope.stepIntervalDelay) {
+					$timeout.cancel(timeout);
+					$interval.cancel(timer);
+				} else {
+					$timeout(function() {
+						$timeout.cancel(timeout);
+						$interval.cancel(timer);
+					}, scope.stepIntervalDelay);
+				}
+			};
+
+			scope.checkValue = function () {
+				var val;
+				scope.val = String(scope.val);
+				if (scope.val !== '' && !scope.val.match(/^-?(?:\d+|\d*\.\d+)$/i)) {
+					val = oldval !== '' ? parseFloat(oldval).toFixed(scope.decimals) : parseFloat(scope.min).toFixed(scope.decimals);
+					scope.val = val;
+					ngModel.$setViewValue(val);
+				}
+			};
+
+		},
+		template:
+		
+		'<div class="input-group">'+
+		'	<div class="spinner-buttons input-group-btn">'+
+		'		<button ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()" type="button" class="btn spinner-up blue"><span class="md-click-circle md-click-animate"></span>'+
+		'		<i class="fa fa-plus"></i>'+
+		'		</button>'+
+		'	</div>'+		
+		// '   <input type="text" class="spinner-input form-control" ng-bind="val" readonly="">'+
+		'	<span class="spinner-input form-control" ng-bind="val"></span>'+
+
+		'	<div class="spinner-buttons input-group-btn">'+
+		'		<button ng-mousedown="startSpinDown()" ng-mouseup="stopSpin()" type="button" class="btn spinner-down red"><span class="md-click-circle md-click-animate"></span>'+
+		'		<i class="fa fa-minus"></i>'+
+		'		</button>'+
+		'	</div>'+
+		'</div>'
+
+		// '<div class="input-group bootstrap-touchspin" ng-class={vertical:!verticalButtons}>' +
+		// '  <span class="input-group-btn" ng-show="verticalButtons">' +
+		// '    <button class="btn btn-default bootstrap-touchspin-down" ng-mousedown="startSpinDown()" ng-mouseup="stopSpin()">-</button>' +
+		// '  </span>' +
+		// '  <span class="input-group-addon bootstrap-touchspin-prefix" ng-show="prefix" ng-bind="prefix"></span>' +
+		// '  <span class="addmore-count" ng-bind="val"></span>'+
+		
+		// '  <span class="input-group-addon" ng-show="postfix" ng-bind="postfix"></span>' +
+		// '  <span class="input-group-btn" ng-if="verticalButtons">' +
+		// '    <button class="btn btn-default bootstrap-touchspin-up" ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()">+</button>' +
+		// '  </span>' +
+
+		// '  <span class="input-group-btn-vertical" ng-if="!verticalButtons">'+
+		// '		<button class="btn btn-default bootstrap-touchspin-up" ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()" type="button"><i class="glyphicon glyphicon-plus"></i></button>'+
+		// '		<button class="btn btn-default bootstrap-touchspin-down"  ng-mousedown="startSpinDown()" ng-mouseup="stopSpin()" type="button"><i class="glyphicon glyphicon-minus"></i></button>'+
+		// '	</span>'+
+		// '</div>'		
+	};
+
+}])
+
 // Handle global LINK click
 MetronicApp.directive('a', function() {
 

@@ -18,8 +18,6 @@ use AlcoholDelivery\Holiday as Holiday;
 use AlcoholDelivery\User as User;
 use AlcoholDelivery\Gift as Gift;
 
-
-
 use MongoDate;
 use MongoId;
 
@@ -1420,18 +1418,20 @@ jprd($product);
 		}
 	}
 
-	public function postGiftcard(GiftCartRequest $request){
+	public function postGiftcard(GiftCartRequest $request,$cartKey){
+
+		$user = Auth::user('user');
 
 		$inputs = $request->all();
 		
-		$cartKey = $request->session()->get('deliverykey');
-
 		$cart = Cart::find($cartKey);
 
 		$giftCards = $cart->giftCards;
-		
+
 		if(is_null($giftCards)){
+
 			$giftCards = [];
+
 		}
 
 		$giftCard = [
@@ -1444,8 +1444,8 @@ jprd($product);
                 'name' => $inputs['recipient']['name'],
                 'email' => $inputs['recipient']['email'],
                 'message' => $inputs['recipient']['message'],
-                'sms' => (int)$inputs['recipient']['sms'],
-                'mobile' => (int)$inputs['recipient']['mobile']
+                'sms' => isset($inputs['recipient']['sms'])?(int)$inputs['recipient']['sms']:NULL,
+                'mobile' => isset($inputs['recipient']['mobile'])?(int)$inputs['recipient']['mobile']:NULL
 			]
 		];
 		
@@ -1455,6 +1455,8 @@ jprd($product);
 
 			$cart->giftCards = $giftCards;				
 			$cart->save();
+
+			$giftCards['_uid'] = (string)$giftCards['_uid'];
 
 			return response(["success"=>true,"message"=>"cart updated successfully","data"=>$giftCard],200);
 
