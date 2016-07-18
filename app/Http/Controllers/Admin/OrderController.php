@@ -13,9 +13,10 @@ use Illuminate\Support\Facades\Auth;
 
 use Storage;
 use Validator;
-use AlcoholDelivery\Products;
+use AlcoholDelivery\Products as Products;
 use MongoId;
 use DB;
+
 
 use AlcoholDelivery\Orders as Orders;
 use AlcoholDelivery\CartAdmin as CartAdmin;
@@ -54,12 +55,42 @@ class OrderController extends Controller
 
 			if(empty($cart)){
 
-				$response['cart'] = $cartObj->generate(new MongoId($user->_id));
+				$result = $cartObj->generate(new MongoId($user->_id));
+				$response['cart'] = $result->cart;
 
 			}else{
 
 				$response['isUnprocessed'] = true;
+
+				$cart = $cart->toArray();
+				
+				$productsIdInCart = array_keys((array)$cart['products']);
+
+
+				$productObj = new Products;
+
+				$productsInCart = $productObj->getProducts(
+											array(
+												"id"=>$productsIdInCart,
+												"with"=>array(
+													"discounts"
+												)
+											)
+										);
+
+				if(!empty($productsInCart)){
+
+					foreach($productsInCart as $product){
+
+						$cart['products'][$product['_id']]['product'] = $product;
+
+					}
+
+				}
+
 				$response['cart'] = $cart;
+
+
 
 			}			
 
@@ -86,7 +117,9 @@ class OrderController extends Controller
 		try{
 			
 			$cartObj = new CartAdmin;	
-			$response['cart'] = $cartObj->generate(new MongoId($user->_id));
+			$result = $cartObj->generate(new MongoId($user->_id));
+
+			$response['cart'] = $result->cart;
 
 		}catch(Exception $e){
 

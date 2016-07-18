@@ -98,7 +98,6 @@ AlcoholDelivery.controller('AppController',
 			
 		}
 
-
 		for(i=0;i<localpro.express_delivery_bulk.bulk.length;i++){
 
 			var bulk = localpro.express_delivery_bulk.bulk[i];
@@ -685,7 +684,7 @@ AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','
 	$scope.showAddressViaMapModal = function(ev) {
 
 		$mdDialog.show({
-			controller: function($scope, $rootScope, $mdDialog, NgMap, $document) {
+		controller: function($scope, $rootScope, $mdDialog, NgMap, $document) {
 
 				$scope.address = {
 					step:1
@@ -2986,39 +2985,42 @@ AlcoholDelivery.controller('GiftCardController', [
 
 		$scope.gift = {}
 
-		$http.get('/giftcategory/giftcard').success(function(result){
-			
-			$scope.gift = result;			
-			$scope.gift.recipient = {price:$scope.gift.cards[0].value,quantity:1};
+		$http.get('/giftcategory/giftcard')
+			.success(function(result){
+				
+				$scope.gift = result;
 
-			$scope.processing = false;
+				$scope.gift.recipient = {price:$scope.gift.cards[0].value,quantity:1};
 
-			$scope.addGift = function(){
+				$scope.processing = false;
 
-				$scope.processing = true;
+				$scope.addCard = function(){
 
-				alcoholGifting.addUpdateGiftCard($scope.gift).then(
+					$scope.processing = true;
 
-					function(successRes){
-											
-					},
-					function(errorRes){
+					alcoholGifting.addUpdateGiftCard($scope.gift).then(
 
-						console.log(errorRes);
+						function(successRes){
+												
+						},
+						function(errorRes){
 
-					}
+							$scope.errors = errorRes.data;
+							
 
-				).finally(function(res){
+						}
 
-					$scope.processing = false;
+					).finally(function(res){
 
-				});
+						$scope.processing = false;
 
-			}
+					});
 
-		}).error(function(err){
+				}
 
-		});
+			})
+			.error(function(err){});
+
 
 		
 }]);		

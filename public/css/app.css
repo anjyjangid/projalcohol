@@ -1,4 +1,6 @@
-
+.full-width{
+	width: 100%;
+}
 a.core-block{
 	display: inline-block;
 	width: 100%;

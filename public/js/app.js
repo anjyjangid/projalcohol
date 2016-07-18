@@ -1110,12 +1110,14 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 	$rootScope.$state = $state; // state to be accessed from view
 	
 	UserService.GetUser().then(
+
 		function(result) {
 			UserService.currentUser = result;
 		},
 		function(errorRes){
 			UserService.currentUser = result;
 		}
+
 	);
 
 	categoriesFac.getCategories().then(

@@ -37,7 +37,7 @@ class GiftCartRequest extends Request
 				$rules = [
 					
 					'recipient.email'=> 'required',
-					'recipient.message'=> 'required',
+					'recipient.message'=> 'required|max:200',
 					
 					'recipient.name'=> 'required',
 					'recipient.price'=> 'required|numeric',
@@ -57,6 +57,7 @@ class GiftCartRequest extends Request
 
 		$messages = [
 			'required' => 'This field is required',
+			'recipient.message.max'=> 'message must be less than or equal to 200 characters',
 			'recipient.mobile.required_if'=> 'To send SMS please provide mobile number',
 			
 		];                

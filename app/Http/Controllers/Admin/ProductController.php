@@ -307,7 +307,7 @@ class ProductController extends Controller
 		}
 
 
-		public function postProductlist(Request $request){   
+		public function postProductlist(Request $request){
 
 				$params = $request->all();        
 
@@ -559,5 +559,33 @@ class ProductController extends Controller
 					return response('Error in updating inventory.', 422);
 				}
 		} 
+
+		public function getSearchproduct(Request $request){
+			
+			$params = $request->all();
+			$products = new Products;
+			
+			if(isset($params['parentCategory']) && trim($params['parentCategory'])!=''){          
+				
+				$products = $products->where('categories',$params['parentCategory']);
+
+				if(isset($params['subCategory']) && trim($params['subCategory'])!=''){
+
+					$products = $products->where('categories',$params['subCategory']);
+
+				}
+
+			}
+
+			if(isset($params['qry']) && trim($params['qry'])!=''){
+				$name = $params['qry'];
+				$products = $products->where('name','regexp', "/.*$name/i");
+			}
+
+			$products = $products->where('status',1)->orderBy('name','desc')->get();
+
+			return response($products,200);
+
+		}
 }
 		

@@ -34,7 +34,8 @@
     "angular-ladda": "^0.3.4",
     "ngInfiniteScroll": "^1.2.2",
     "v-accordion": "^1.6.0",
-    "angular-fblogin": "*"
+    "angular-fblogin": "*",
+    "sweetalert2": "^4.0.8"
   },
   "resolutions": {
     "angular": "~1.4.0"
