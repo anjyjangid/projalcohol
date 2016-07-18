@@ -2799,6 +2799,7 @@ AlcoholDelivery.controller('SearchController', [
 			$(".homecallus_cover").addClass("leftminus2100").removeClass("again0left");
 			$(".signuplogin_cover").addClass("rightminus100").removeClass("again0right");
 			$(".rightplcholder").removeClass('hide');
+			$("#headcontainer").addClass('searchopen');
 
 
 			if($.trim($(".searchtop input").val())=="")
@@ -2810,6 +2811,7 @@ AlcoholDelivery.controller('SearchController', [
 			$(".homecallus_cover").removeClass("leftminus2100").addClass("again0left");
 			$(".signuplogin_cover").removeClass("rightminus100").addClass("again0right");
 			$(".rightplcholder").addClass('hide');
+			$("#headcontainer").removeClass('searchopen');
 		}
 	}
 
