@@ -18,6 +18,7 @@ use AlcoholDelivery\Holiday as Holiday;
 use AlcoholDelivery\User as User;
 use AlcoholDelivery\Gift as Gift;
 
+use DB;
 use MongoDate;
 use MongoId;
 
@@ -29,6 +30,15 @@ class CartController extends Controller
 	 * 100 => Quantity requested is not available
 	 * 101 => Product is not available for sale	 
 	 */
+
+	public function __construct(Request $request)
+	{
+		$user = Auth::user('admin');
+		if(!empty($user)){
+			$this->deliverykey = $request->session()->get('deliverykeyAdmin');
+		}
+	}
+
 
 	/**
 	 * Display a listing of the resource.
@@ -870,6 +880,41 @@ jprd($product);
 
     }
 
+    public function deleteCard($cardUId,Request $request){
+
+    	$cartKey = $this->deliverykey;
+
+		$cart = Cart::find($cartKey);
+
+		if(empty($cart)){
+			return response(array("success"=>false,"message"=>"cart not found"),400);
+		}
+
+		$giftCards = $cart->giftCards;
+
+		if(empty($giftCards)){
+			return response(["success"=>false,"message"=>"no cards to remove"],400);
+		}
+		
+		try{
+
+			$isRemoved = DB::collection('cart')->where('_id', $cartKey)->pull('giftCards', ['_uid' => new MongoId($cardUId) ]);
+
+			$cart->__set("giftCards",$giftCards);
+			$cart->save();
+
+			return response(["success"=>true,"message"=>"promotion removed successfully"],200);
+
+		}catch(\Exception $e){
+
+			return (object)["success"=>false,"message"=>$e->getMessage()];
+
+		}
+
+    	return response(["success"=>false,"message"=>"Something went wrong"],400);
+
+    }
+
     public function deletePromotion($promoId,Request $request){
 
     	$cartKey = $request->session()->get('deliverykey');
@@ -1455,8 +1500,6 @@ jprd($product);
 
 			$cart->giftCards = $giftCards;				
 			$cart->save();
-
-			$giftCards['_uid'] = (string)$giftCards['_uid'];
 
 			return response(["success"=>true,"message"=>"cart updated successfully","data"=>$giftCard],200);
 

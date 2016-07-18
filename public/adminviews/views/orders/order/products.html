@@ -91,10 +91,11 @@
 						
 					</td>
 					<td>
-						<div>Price : <b>{{giftCard.recipient.price | pricingTxt}}</b></div>
+						<div>Price : <b>{{giftCard.recipient.price * giftCard.recipient.quantity | pricingTxt}}</b></div>
 					</td>
-					<td> 
-						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="package.original.packageQuantity=0;alcoholCart.removePackage(package._uniqueId,true)"><i class="glyphicon glyphicon-trash"></i></a>
+					<td>
+						{{giftCard.getUniqueId()}}
+						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removeCard(giftCard.getUniqueId(),true)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>
 

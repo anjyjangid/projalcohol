@@ -38,7 +38,7 @@ class OrderController extends Controller
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
 		$user = Auth::user('admin');
 
@@ -90,6 +90,7 @@ class OrderController extends Controller
 
 				$response['cart'] = $cart;
 
+				$request->session()->put('deliverykeyAdmin', $cart['_id']);
 
 
 			}			
@@ -120,6 +121,8 @@ class OrderController extends Controller
 			$result = $cartObj->generate(new MongoId($user->_id));
 
 			$response['cart'] = $result->cart;
+
+			$request->session()->put('deliverykeyAdmin', $result->cart['_id']);
 
 		}catch(Exception $e){
 
