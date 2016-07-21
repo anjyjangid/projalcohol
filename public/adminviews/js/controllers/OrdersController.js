@@ -345,6 +345,8 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', 'alcoholCart'
 
 						function(successRes){
 							
+							$mdDialog.cancel();
+
 						},
 						function(errorRes){
 

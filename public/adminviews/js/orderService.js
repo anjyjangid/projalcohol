@@ -112,9 +112,9 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 		var isFound = this.getGiftCardByUniqueId(giftData._uid);
 
 		if(isFound===false){
-
+		
 			var giftCard = new alcoholCartGiftCard(giftData);
-			this.$cart.giftCard.push(giftCard);
+			this.$cart.giftCards.push(giftCard);
 
 		}
 
@@ -166,6 +166,47 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 		
 	};
 
+	this.removeCard = function (id,fromServerSide) {
+
+			var locPackage;
+			var cart = this.getCart();
+			
+			var d = $q.defer();
+
+			angular.forEach(cart.giftCards, function (giftcard, index) {
+
+				if(giftcard.getUniqueId() === id) {				
+
+					if(typeof fromServerSide !== 'undefined' && fromServerSide){
+
+						$http.delete("cart/card/"+id).then(
+
+							function(successRes){
+								
+								var locCard = cart.giftCards.splice(index, 1)[0] || {};
+
+								// $rootScope.$broadcast('alcoholCart:cardRemoved', "GiftCard removed from cart");
+								
+								d.resolve(successRes);
+
+							},
+							function(errorRes){
+
+								d.reject(errorRes);
+
+							}
+
+						);
+					}
+
+				}	
+			});
+			
+			// $rootScope.$broadcast('alcoholCart:itemRemoved', locCard);
+			return d.promise;
+
+		};			
+
 	this.getCartKey = function(){
 
 		var deliverykey = this.getCart()._id;
@@ -197,9 +238,6 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 		return this.getCart().packages;
 	};
 
-	this.getPromotions = function(){
-		return this.getCart().promotions;
-	};
 
 	this.getTotalItems = function(){
 
@@ -577,7 +615,7 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 	}
 
 	giftCard.prototype.getUniqueId = function(){		
-		return this._uid;
+		return this._uid.$id;
 	}
 
 	giftCard.prototype.setUniqueId = function(uid){
@@ -613,8 +651,8 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 		}).then(
 
 			function(successRes){
-
-				alcoholCart.addGiftCard(successRes.data);
+				
+				alcoholCart.addGiftCard(successRes.data.data);
 
 				defer.resolve(successRes);
 

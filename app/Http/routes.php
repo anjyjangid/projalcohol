@@ -156,6 +156,8 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::delete('promotion/{key}','CartController@deletePromotion');
 
+	Route::delete('card/{key}','CartController@deleteCard');
+
 	Route::post('gift','CartController@postGift');
 	Route::post('giftcard/{cartKey}','CartController@postGiftcard');
 
