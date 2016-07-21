@@ -22,7 +22,7 @@
 					
 					<div>
 
-					   <span>Select an amount between $50 - $500</span>
+					   <span>Select an amount <!-- between $50 - $500 --></span>
 						<button ng:class="{'btn-success':gift.recipient.price == slots.value}" class="btn default btn-cls-gift" ng-repeat="slots in gift.cards" ng-click="gift.recipient.price = slots.value">
 							{{slots.value | pricingTxt}}
 						</button>
