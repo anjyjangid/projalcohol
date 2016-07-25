@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-md-12">
-		<div class="portlet box blue" id="form_wizard_1">
+		<div class="portlet box blue" id="adminorder">
 			<div class="portlet-title">
 				<div class="caption">
 					<i class="fa fa-gift"></i> Create Order
@@ -19,48 +19,39 @@
 			<div class="portlet-body form">
 				<form role="form">
 					<div class="form-body">
-
-						<h3 class="block">New Order</h3>
+						
 						<div class="row">
 
 						<div class="col-sm-6">
 
-							<div class="form-group has-warning">
+							<div class="form-group" ng-class="{'has-warning':errors.mobile[0]}" >
 
-								<label class="control-label col-md-4">Input with warning</label>
-								<div class="col-md-8 input-group">
-								<div class="input-icon right">
-									<i class="fa fa-warning tooltips" data-original-title="please provide an email" data-container="body"></i>
-									<input type="text" class="form-control">
-								</div>
-								</div>
-
-							</div>
-
-							<div class="form-group">
 								<label class="control-label col-md-4">Phone number <span class="required">*</span></label>
-								<div class="col-md-8 input-group">
+								<div class="col-md-8 input-group" ng-class="{'active':searchby=='mobile'}">
 
-									<input type="text" class="form-control" ng-class="{spinner:mobileFetch}" ng-model="mobile"/>
-									
+									<div class="input-icon right">
+										<i class="fa fa-warning tooltips" data-original-title="{errors.mobile[0]}" data-container="body" ng-if="errors.mobile[0]"></i>
+										<input type="text" class="form-control" ng-class="{spinner:mobileFetch}" ng-model="consumer.mobile" ng-blur="resetsearch()" ng-focus="searchby='mobile'"/>
+									</div>
+
 									<ul class="userlist">
-										<li ng-repeat="user in users">
+										<li ng-repeat="user in users" ng-click="selectuser(user)">
 											{{user.mobile_number}}
 										</li>
-
-										
 									</ul>
-									
+
 								</div>
+								
 							</div>
 
+							
 							<div class="form-group">
 								<label class="control-label col-md-4">Name <span class="required">*</span></label>
-								<div class="col-md-8 input-group">
-									<input type="text" class="form-control" ng-model="name"/>
+								<div class="col-md-8 input-group" ng-class="{'active':searchby=='name'}">
+									<input type="text" class="form-control" ng-model="consumer.name" ng-blur="resetsearch()" ng-focus="searchby='name'"/>
 
 									<ul class="userlist">
-										<li ng-repeat="user in users">
+										<li ng-repeat="user in users" ng-click="selectuser(user)">
 											{{user.name}}
 										</li>
 									</ul>
@@ -71,14 +62,7 @@
 							<div class="form-group">
 								<label class="control-label col-md-4">Alternate contact number</label>
 								<div class="col-md-8 input-group">
-									<input type="text" class="form-control" ng-model="alternate_contact_number"/>
-
-									<ul class="userlist">
-										<li ng-repeat="user in users">
-											{{user.name}}
-										</li>
-									</ul>
-
+									<input type="text" class="form-control" ng-model="consumer.alternate_contact_number"/>
 								</div>
 							</div>
 
@@ -89,15 +73,38 @@
 									<span class="input-group-addon">
 									<i class="fa fa-envelope"></i>
 									</span>
-									<input type="text" class="form-control" ng-model="email"/>
+									<input type="text" class="form-control" ng-model="consumer.email"/>
 									<ul class="userlist">
-										<li ng-repeat="user in users">
+										<li ng-repeat="user in users" ng-click="selectuser(user)">
 											{{user.email}}
 										</li>
 									</ul>
 								</div>
 								
 							</div>
+
+
+							<div class="form-group" ng-class="{'has-warning':errors.address[0]}" ng-if="consumer.addresses">
+
+								<label class="control-label col-md-4">Phone number <span class="required">*</span></label>
+								<div class="col-md-8 input-group" ng-class="{'active':searchby=='mobile'}">
+
+									<div class="input-icon right">
+										<i class="fa fa-warning tooltips" data-original-title="{errors.mobile[0]}" data-container="body" ng-if="errors.mobile[0]"></i>
+										<input type="text" class="form-control" ng-class="{spinner:mobileFetch}" ng-model="consumer.mobile" ng-blur="resetsearch()" ng-focus="searchby='mobile'"/>
+									</div>
+
+									<ul class="addresslist">
+										<li ng-repeat="address in consumer.addresses" ng-click="">
+											{{address}}
+										</li>
+										<li>Address Not found</li>
+									</ul>
+
+								</div>
+								
+							</div>
+
 						</div>
 
 						<div class="col-sm-6">
@@ -120,6 +127,8 @@
 								</div>
 
 							</div>
+
+
 							
 							<div class="form-group" ng-show="cart.delivery.type == 1">
 								<label class="control-label col-md-4">Express 30 minute delivery <span class="required">*</span></label>
@@ -143,6 +152,21 @@
 							<div class="col-sm-12" ui-view="products"></div>
 						</div>
 
+						<div class="row" ng-if="cart.delivery.type != 1">
+							<hr />
+							<div class="col-sm-12" ui-view="delivery"></div>
+						</div>
+
+						<div class="row">
+							<hr />
+							<div class="col-sm-12" ui-view="payment"></div>
+						</div>
+
+						<div class="row">
+							<hr />
+							<div class="col-sm-12" ui-view="review"></div>
+						</div>
+						
 					</div>
 
 					<div class="form-actions">

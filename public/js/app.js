@@ -522,7 +522,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						url: "/",						
 						"views" : {
 
-							"" : {
+							"" : {								
 								templateUrl : "/templates/index/home.html",
 								controller:function($scope,$http){
 										$scope.AppController.category = "";
@@ -591,7 +591,18 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						}
 				})
 
-				
+				.state('mainLayout.index.claim-gift-card', {
+
+						url: "claim/gift/card/{token}",
+						views: {
+							"giftClaim" :{
+								template : "",
+								controller:"ClaimGiftCardController"
+							}
+						}
+						
+						
+				})
 
 				.state('mainLayout.checkout', {
 						abstract: true,
@@ -657,10 +668,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 						url: "/login",
 						templateUrl: "/templates/index/home.html",
-						controller:function(){
+						controller:function(UserService){
+
 							setTimeout(function(){
-										$('#login').modal('show');
-								},1000)
+								$('#login').modal('show');
+							},1000)
 
 						}
 				})
@@ -972,7 +984,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})				
 
 				.state('mainLayout.gift', {
-					url: "/gifts/product/{giftid}",
+					url: "/gifts/product/{giftid}/:uid",
 					templateUrl : '/templates/gifts/giftdetail.html',
 					controller: 'GiftController'										
 				})
@@ -1192,7 +1204,32 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 
 	});
 
+
 	$rootScope.$on('alcoholCart:promotionRemoved', function(data,msg){
+
+		$mdToast.show(
+			$mdToast.simple()
+				.textContent(msg)
+				.highlightAction(false)
+				.position("top right fixed")
+				.hideDelay(4000)
+			);
+
+	});
+
+	$rootScope.$on('alcoholCart:notify', function(data,msg){
+
+		$mdToast.show(
+			$mdToast.simple()
+				.textContent(msg)
+				.highlightAction(false)
+				.position("top right fixed")
+				.hideDelay(4000)
+			);
+
+	});
+
+	$rootScope.$on('alcoholCart:giftRemoved', function(data,msg){
 
 		$mdToast.show(
 			$mdToast.simple()

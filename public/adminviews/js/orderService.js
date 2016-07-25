@@ -123,7 +123,7 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 
 	this.getGiftCardByUniqueId = function(cardUniqueId){
 
-		var giftCards = this.getCart().giftCards;
+		var giftCards = this.getGiftCards();
 		var build = false;
 		
 		angular.forEach(giftCards, function (giftCard) {
@@ -134,6 +134,14 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 		return build;
 
 	}
+
+	this.getGiftCards = function(){
+
+		var cards = this.getCart().giftcards || [];
+		
+		return cards;
+	}
+
 	this.removeItemById = function (id) {
 
 		var item;
@@ -205,7 +213,7 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 			// $rootScope.$broadcast('alcoholCart:itemRemoved', locCard);
 			return d.promise;
 
-		};			
+		};
 
 	this.getCartKey = function(){
 
@@ -256,6 +264,179 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 		return this.$cart;
 	};	
 
+
+	this.getTotalItems = function(){
+
+			var count = 0;
+			var items = this.getProducts();
+			angular.forEach(items, function (item) {
+				count += item.getQuantity();
+			});
+
+			return count;
+
+		};
+
+		this.resetTimeslot = function(){
+
+			this.$cart.timeslot = {
+						datekey:false,
+						slotkey:false,
+						slug:"",
+						slotslug:""
+					}
+		}
+
+		this.getTotalPackages = function () {
+			
+			return this.getCart().packages.length
+		};
+
+		this.getTotalUniqueItems = function () {
+			
+			if(typeof this.getCart() === "undefined"){
+				return 0;
+			}
+
+			var count = Object.keys(this.getCart().products).length;
+
+			count+= this.getCart().packages.length;
+
+			return count;
+		};
+
+		this.setSubTotal =function(){
+			
+			var total = 0;
+			var cart = this.getCart();
+
+			angular.forEach(cart.products, function (product) {
+				total += parseFloat(product.getTotal());
+			});
+
+			angular.forEach(cart.packages, function (package) {
+				total += parseFloat(package.getTotal());
+			});
+
+			return +parseFloat(total).toFixed(2);
+
+		}
+
+		this.getSubTotal = function(){
+			
+			return this.$cart.payment.subtotal = this.setSubTotal();
+
+		};
+
+		this.setCartTotal = function(){
+
+			var cartTotal = 0;
+			
+			cartTotal+= parseFloat(this.getSubTotal());
+
+			cartTotal+= parseFloat(this.getAllServicesCharges());
+
+			cartTotal+= parseFloat(this.getDeliveryCharges());
+
+			cartTotal-= parseFloat(this.getDiscount());
+						
+			
+			return +parseFloat(cartTotal).toFixed(2);
+
+		};
+
+		this.getCartTotal = function(){
+
+			var cartTotal = this.setCartTotal();
+			this.$cart.payment.total = cartTotal;
+			return cartTotal;			
+
+		};
+
+		this.setCartChilled = function(status){
+
+			if(typeof status !=="undefined"){
+
+				this.$cart.nonchilled = status;
+				this.$cart.discount.nonchilled.status = status;
+			}
+
+			this.deployCart();
+		
+		}
+
+		this.setDiscount = function(){
+
+			var discount = 0;
+
+			if(this.$cart.nonchilled){
+
+				discount += this.$cart.discount.nonchilled.exemption;
+
+			}
+
+			return +parseFloat(discount).toFixed(2);
+
+		}	
+
+		this.getDiscount = function(){
+			return this.setDiscount();
+		}
+
+		this.setAllServicesCharges = function(){		
+
+			var allServicesCharges = 0;
+
+			var service = this.$cart.service;
+
+			if(service.express.status){
+				allServicesCharges+= service.express.charges;
+			}
+			if(service.smoke.status){
+				allServicesCharges+= service.smoke.charges;				
+			}		
+			
+			service.total = allServicesCharges;
+
+			return +parseFloat(allServicesCharges).toFixed(2);
+		};
+
+		this.getAllServicesCharges = function(){
+			return this.setAllServicesCharges();
+		}
+
+		this.setDeliveryCharges =function(){
+			
+			var delivery = this.$cart.service.delivery;
+
+			var subTotal = parseFloat(this.getSubTotal());
+
+			if(subTotal>=parseFloat(delivery.mincart)){
+				
+				this.$cart.service.delivery.free = true;
+				this.$cart.delivery.charges = 0;
+
+			}else{
+
+				this.$cart.service.delivery.free = false;
+				this.$cart.delivery.charges = parseFloat(this.$cart.service.delivery.charges).toFixed(2);
+
+			}
+			
+			return this.$cart.delivery.charges;
+
+		}
+
+		this.getDeliveryCharges = function(){
+			
+			return this.setDeliveryCharges();
+
+		};
+
+		this.totalCost = function () {
+			return +parseFloat(this.getSubTotal() + this.getShipping() + this.getTax()).toFixed(2);
+		};
+
 	this.$restore = function(storedCart){
 		
 			var _self = this;
@@ -283,17 +464,24 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 					_self.$cart.giftCards.push(giftCard);
 					
 				});
+				delete storedCart.giftCards;
+			}
+
+			if(typeof storedCart.packages !== 'undefined'){
+				
+				angular.forEach(storedCart.packages, function (package,key) {
+
+					var newPackage = new alcoholCartPackage(package._id,package._unique,package);
+					_self.$cart.packages.push(newPackage);
+					
+				});
+				delete storedCart.packages;
 
 			}
 
-			// angular.forEach(packages, function (package,key) {
+			angular.extend(_self.$cart,storedCart);
 
-			// 	var newPackage = new alcoholCartPackage(package._id,package._unique,package);
-			// 	_self.$cart.packages.push(newPackage);
-				
-			// });
-
-			_self.$cart._id = storedCart._id;
+			// _self.$cart._id = storedCart._id;
 			
 		};
 
@@ -640,11 +828,9 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 	
 	this.addUpdateGiftCard = function(gift){
 
-		var defer = $q.defer();	
+		var defer = $q.defer();		
 
-		var deliveryKey = alcoholCart.getCartKey();
-
-		$http.post("/cart/giftcard/"+deliveryKey,{
+		$http.post("/cart/giftcard",{
 			type: 'giftcard',
 			id:gift._id,
 			recipient : gift.recipient
@@ -700,7 +886,7 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 						}).then(
 
 							function(isConfirm) {
-
+																
 								if (isConfirm) {
 
 									alcoholCart.$restore(response.cart);

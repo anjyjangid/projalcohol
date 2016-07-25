@@ -2,6 +2,7 @@
 <!-- <pre>{{packages|json}}</pre> -->
 <div class="productdetailbrudcumcover">
 	<div class="row">
+	
 		<div class="col-md-12">
 			<div class="media cocktaildetail-cover gift-card-mainouter">
 				<div class="media-left">
@@ -13,29 +14,37 @@
 					</data-owl-carousel>
 				</div>
 				<div class="media-body party-detail-contentcover gift-card-rightcover">
+
 					<h4 class="media-heading party-detail-heading">{{gift.title}}</h4>
 					<p class="party-product-desc">{{gift.description}}</p>    										
 					<p class="packtiti-rightset packag-amnt-divcolr">Price</p>
 			    	<h3 class="amntrupee-clsdetail">{{gift.price | currency}}</h3>
 
-	            	<div ng:class="{'has-error':errors.emails}" class="gift-to-divcover">
-						<div class="gift-card-innerform">					      
+	            	<div ng:class="{'has-error':errors['recipient.name'][0]}" class="gift-to-divcover">
+						<div class="gift-card-innerform">
 							<label>To</label>
-							<input type="text" placeholder="Eg. sarah" ng-model="gift.reciepient.name" class="alcohalrestertextbox form-control">
-							<span class="help-block" ng-bind="carterror.emails"></span>        
+							<input type="text" placeholder="Eg. sarah" ng-model="giftData.recipient.name" class="alcohalrestertextbox form-control" ng-change="errors['recipient.name'][0]=''">
+							<!-- <span ng-if="errors['recipient.name'][0]" ng-bind="errors['recipient.name'][0]"></span> -->
 						</div>
 			    	</div>
-			    	<div ng:class="{'has-error':errors.message}" class="gift-to-divcover">
-						<div class="gift-card-innerform">				      
-						<label>Message <span class="max-char-color" align="right">Max. characters : 200</span></label>
-				      	<textarea ng-model="gift.reciepient.message" class="alcohalrestertextbox form-control"></textarea>        
-				      	<span class="help-block" ng-bind="carterror.message"></span>        
-				      	</div>
+
+			    	<div class="form-group gift-to-divcover" ng:class="{'has-error':errors['recipient.message'][0]}">
+			    		<div class="gift-card-innerform">
+							<label class="full-width">Message <span class="max-char-color pull-right" align="right"> Max. characters : 200</span></label>
+							<textarea maxlength="200" ng-model="giftData.recipient.message" class="alcohalrestertextbox form-control" ng-change="errors['recipient.message'][0]=''"></textarea>
+							<span ng-class="max-char-color" ng-show="giftData.recipient.message.length>0">
+								left : {{200 - giftData.recipient.message.length}}
+							</span>
+						</div>
 					</div>
+
+			    	
 			    	<div class="quantiy-party-detail add-cart-btm">
+			    	
 			    		<a class="btn product_addcart addcart-detail" ng-click="addGift()" ng-disabled="processing">
-							<i class="fa fa-spinner fa-spin" ng-if="processing"></i>
-							<img src="images/cart-icon.png" ng-if="!processing" />{{btnText}}
+
+							<small ng-show="processing"><i class="fa fa-spinner fa-spin"></i></small>
+							<img src="images/cart-icon.png" ng-show="!processing" />{{btnText}}
 			    		</a>
 
 			    	</div>
@@ -50,10 +59,15 @@
 		<div class="party-detail-btmtitl4">
 			<h4>Select product(s) to be packaged (Maximum {{gift.limit}} bottles)</h4>
 		</div>
-		
-		<div class="col-md-3 party-alcholcover" ng-repeat="product in products">
-								
-				<div class="prod_pic">					
+
+		<div class="col-md-3" ng-repeat="product in products">
+			<div class="gift-products">
+
+				<div class="prod_chilled" ng-class="{notchilled:product._stateChilled}">
+					<div class="prod_chilled_icon"></div>
+				</div>
+
+				<div class="prod_pic">
 					<img err-pro-src="" ng-src="products/i/200/{{product._image}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive"/>
 				</div>
 
@@ -64,10 +78,10 @@
 				</a>
 
 				<div>
-					<input type="text" value="product._inGift" ng-model="product._inGift" min="0" mquantity="product._maxQuantity" ng-touch-spin on-increment="totalAttached()" on-decrement="totalAttached()">					
+					<input type="text" value="product._inGift" ng-model="product._inGift" min="0" mquantity="product._maxQuantity" ng-touch-spin on-increment="totalAttached()" on-decrement="totalAttached()">
 				</div>
-
-			</div>
+			</div>	
+		</div>
 	
 	</div>
 </div>

@@ -55,7 +55,7 @@ class SuperController extends Controller
 							'status' => 1
 						)
 					),
-					array(						
+					array(
 						'$group' => array(
 							'_id'=>'$categories',
 							'count' => array(

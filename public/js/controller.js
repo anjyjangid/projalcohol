@@ -1106,10 +1106,95 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 
 }]);
 
-AlcoholDelivery.controller('CreditsController',['$scope','$http','sweetAlert',function($scope,$http,sweetAlert){}]);
+AlcoholDelivery.controller('CreditsController',['$scope','$http','sweetAlert','$timeout',function($scope,$http,sweetAlert,$timeout){
+
+	$scope.pagination = {
+
+		start : 0,
+		limit : 1,
+		count : 0
+
+	}
+
+angular.pagination = $scope.pagination;
+
+	$scope.prev = function(){
+		
+		if($scope.pagination.start==0){
+			return;
+		}
+		$scope.pagination.start--;
+
+	}
+	$scope.next = function(){
+
+		if($scope.pagination.count<=(($scope.pagination.start+1) * $scope.pagination.limit)){
+			return false;
+		}
+
+		$scope.pagination.start++;
+
+	}
+
+	$scope.getCredits = function(){
+
+		$scope.process = {
+			fetching:true
+		};
 
 
-AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$timeout','UserService','sweetAlert','alcoholCart','store',function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $timeout, UserService, sweetAlert, alcoholCart,store){
+		$http.get("credits",{params: $scope.pagination}).then(
+
+			function(response){
+
+				$scope.pagination.count = response.data.count;
+
+				$scope.credits = response.data.credits;
+
+				$http.get("credits/statics").then(
+
+					function(statRes){
+
+						$scope.statics = statRes.data;
+
+					},
+					function(errStatRes){
+
+					}
+				);
+
+			},function(errRes){
+
+				console.log(errRes);
+
+			}
+
+		).finally(function(){
+
+			$timeout(function(){
+				
+				$scope.process.fetching = false;
+
+			},1000)
+			
+		});
+
+	}
+
+	$scope.$watch('pagination',
+		function(newValue, oldValue) {
+
+			$scope.getCredits();
+
+		},true
+	);
+
+}]);
+
+
+
+
+AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$timeout','UserService','sweetAlert','alcoholCart','alcoholGifting','store',function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $timeout, UserService, sweetAlert, alcoholCart, alcoholGifting, store){
 
 	$rootScope.storeInitUP = true;
 	
@@ -1118,6 +1203,8 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 		function(result) {
 
 			$scope.alcoholCart = alcoholCart;
+
+			$scope.alcoholGifting = alcoholGifting;
 
 			angular.alcoholCart = alcoholCart;
 
@@ -1252,6 +1339,13 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 		}
 
 	};
+
+	$scope.updateGiftCard = function(uid){
+
+		alcoholGifting.updateGiftCard(uid);
+		
+	}
+	
 
 
 }]);
@@ -2895,21 +2989,36 @@ AlcoholDelivery.controller('GiftProductController', [
 }]);
 
 AlcoholDelivery.controller('GiftController', [
-	'$q', '$http', '$scope', '$stateParams', '$rootScope','alcoholGifting',
-	function($q, $http, $scope, $stateParams, $rootScope, alcoholGifting){
+	'$q', '$http', '$scope', '$stateParams', '$rootScope', '$state', 'alcoholGifting', 'sweetAlert', '$anchorScroll',
+	function($q, $http, $scope, $stateParams, $rootScope, $state, alcoholGifting, sweetAlert, $anchorScroll){
 		$rootScope.appSettings.layout.pageRightbarExist = false;
 
-		$scope.btnText = 'add to cart';
+		
 		$scope.processing = true;
-		$scope.gift = {
-			
-		}
+		$scope.gift = {};
+
+		$scope.errors = {};
 
 		if($stateParams.giftid){
 
 			$http.get('/gift/'+$stateParams.giftid).success(function(result){
 				
 				$scope.gift = result;
+
+				$scope.giftData = {
+					_uid:$stateParams.uid
+				};
+
+				if($scope.giftData._uid==""){
+
+					$scope.btnText = 'add to cart';
+
+				}else{
+
+					$scope.btnText = 'update cart';
+
+				}
+
 				$scope.processing = false;
 				angular.alcoholGifting = alcoholGifting;
 
@@ -2919,7 +3028,7 @@ AlcoholDelivery.controller('GiftController', [
 
 				$scope.products = alcoholGifting.getProducts();
 
-				$scope._inGift = [];			
+				$scope._inGift = [];
 
 				$scope.totalAttached = function(){
 
@@ -2939,13 +3048,41 @@ AlcoholDelivery.controller('GiftController', [
 				$scope.addGift = function(){
 
 					$scope.processing = true;
-					alcoholGifting.addUpdateGift().then(
+
+					alcoholGifting.addUpdateGift($scope.giftData).then(
 
 						function(successRes){
 
+							$scope.giftData._uid = successRes._uid.$id;
+							$scope.btnText = 'update cart';
+
 						},
 						function(errorRes){
-							console.log(errorRes);
+							
+							if(errorRes.data.message){
+								
+								sweetAlert.swal({
+									
+									type:'error',
+									title: 'Oops...',
+									text:errorRes.data.message
+
+								}).then(
+
+									function(){
+
+										if(errorRes.data.reload){
+											$state.go($state.current, {}, {reload: true});
+										}
+										
+									}
+								);
+
+							}
+
+							$scope.errors = errorRes.data;
+							$anchorScroll();
+
 						}
 
 					).finally(function(res){
@@ -3000,10 +3137,10 @@ AlcoholDelivery.controller('GiftCardController', [
 
 					$scope.processing = true;
 
-					alcoholGifting.addUpdateGiftCard($scope.gift).then(
+					alcoholGifting.addGiftCard($scope.gift).then(
 
 						function(successRes){
-												
+							
 						},
 						function(errorRes){
 
@@ -3025,4 +3162,18 @@ AlcoholDelivery.controller('GiftCardController', [
 
 
 		
-}]);		
+}]);
+
+
+AlcoholDelivery.controller('ClaimGiftCardController', ['$scope', '$http', '$state', '$stateParams', 'ClaimGiftCard',function($scope, $http, $state, $stateParams, ClaimGiftCard){
+
+	ClaimGiftCard.init($stateParams.token).then(
+		function(successRes){
+
+		},
+		function(rejectRes){
+			$state.go('mainLayout.index');
+		}
+	);
+
+}]);

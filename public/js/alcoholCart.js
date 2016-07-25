@@ -1,4 +1,4 @@
-AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', '$mdToast', 'alcoholCartItem', 'alcoholCartPackage','promotionsService','alcoholCartPromotion', function ($rootScope, $window, $http, $q, $mdToast, alcoholCartItem, alcoholCartPackage, promotionsService, alcoholCartPromotion) {
+AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', '$mdToast', 'alcoholCartItem', 'alcoholCartPackage','promotionsService','alcoholCartPromotion', 'alcoholCartGiftCard', 'alcoholCartGift', function ($rootScope, $window, $http, $q, $mdToast, alcoholCartItem, alcoholCartPackage, promotionsService, alcoholCartPromotion, alcoholCartGiftCard, alcoholCartGift) {
 
 	this.init = function(){
 		
@@ -396,6 +396,20 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			return build;
 		};
 
+		this.getGiftCardByUid = function (uId){
+
+			var cards = this.getCart().giftCards;
+			var build = false;
+
+			angular.forEach(cards, function (card) {
+				
+				if (card.getUniqueId() == uId) {
+					build = card;
+				}
+			});
+			return build;
+		};	
+
 		this.getLoyaltyProductById = function (productId){
 
 			var products = this.getCart().loyalty;
@@ -545,9 +559,13 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 				return 0;
 			}
 
-			var count = Object.keys(this.getCart().products).length;
+			var cart = this.getCart();
 
-			count+= this.getCart().packages.length;
+			var count = Object.keys(cart.products).length;
+
+			count+= cart.packages.length;
+
+			count+= cart.giftCards.length;
 
 			return count;
 		};
@@ -564,6 +582,10 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			angular.forEach(cart.packages, function (package) {
 				total += parseFloat(package.getTotal());
 			});		
+
+			angular.forEach(cart.giftCards, function (giftCard) {
+				total += parseFloat(giftCard.getPrice());
+			});
 
 			promotionsService.setEligibility(total);
 			
@@ -964,33 +986,159 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 		}
 
-		this.addGiftCard = function(gift){
+		this.addGiftCard = function(giftData){
 
-			$rootScope.$broadcast('alcoholCart:updated',{msg:"Gift Card added to cart",quantity:Math.abs($scope.gift.recipient.quantity)});
+			var isFound = this.getGiftCardByUniqueId(giftData._uid);
+
+			if(isFound===false){
+			
+				var giftCard = new alcoholCartGiftCard(giftData);
+				this.$cart.giftCards.push(giftCard);
+
+			}
+
 
 		};
 
-		this.getGiftCardByUid = function(uid){
+		this.removeCard = function (id,fromServerSide) {
 
-			var cards = this.getGiftCards();
+			var locPackage;
+			var cart = this.getCart();
+			
+			var d = $q.defer();
+
+			angular.forEach(cart.giftCards, function (giftcard, index) {
+
+				if(giftcard.getUniqueId() === id) {				
+
+					if(typeof fromServerSide !== 'undefined' && fromServerSide){
+
+						$http.delete("cart/card/"+id).then(
+
+							function(successRes){
+								
+								var locCard = cart.giftCards.splice(index, 1)[0] || {};
+
+								// $rootScope.$broadcast('alcoholCart:cardRemoved', "GiftCard removed from cart");
+								
+								d.resolve(successRes);
+
+							},
+							function(errorRes){
+
+								d.reject(errorRes);
+
+							}
+
+						);
+					}
+
+				}	
+			});
+			
+			// $rootScope.$broadcast('alcoholCart:itemRemoved', locCard);
+			return d.promise;
+
+		};
+
+		this.removeGift = function (uid,fromServerSide) {
+
+			var cart = this.getCart();
+			
+			var d = $q.defer();
+
+			angular.forEach(cart.gifts, function (gift, index) {
+				
+				if(gift.getUniqueId() == uid) {
+
+					if(typeof fromServerSide !== 'undefined' && fromServerSide){
+
+						$http.delete("cart/gift/"+uid).then(
+
+							function(successRes){
+								
+								var locGift = cart.gifts.splice(index, 1)[0] || {};
+
+								$rootScope.$broadcast('alcoholCart:giftRemoved', "Gift removed from cart");
+								
+								d.resolve(successRes);
+
+							},
+							function(errorRes){
+
+								d.reject(errorRes);
+
+							}
+
+						);
+					}
+
+				}	
+			});
+			
+			// $rootScope.$broadcast('alcoholCart:itemRemoved', locCard);
+			return d.promise;
+
+		};
+
+		this.getGiftCardByUniqueId = function(uid){
+
+			var giftCards = this.getGiftCards();
 			var build = false;
 			
-			angular.forEach(cards, function (card) {
+			angular.forEach(giftCards, function (giftCard) {
 
-				if  (card._uid === uid) {
-					build = card;
+				if (giftCard.getUniqueId() === cardUniqueId) {
+					build = giftCard;
 				}
 
 			});
-
 			return build;
 		}
 
 		this.getGiftCards = function(){
 
-			var cards = this.getCart().giftcards || [];
+			var cards = this.getCart().giftCards || [];
 			
 			return cards;
+		}
+
+		this.addGift = function(giftData){
+
+			var isFound = this.getGiftByUniqueId(giftData._uid);
+
+			if(isFound===false){
+			
+				var gift = new alcoholCartGift(giftData);
+
+				this.$cart.gifts = this.$cart.gifts || [];
+				this.$cart.gifts.push(gift);
+
+			}
+
+
+		};
+
+		this.getGiftByUniqueId = function(uid){
+
+			var gifts = this.getGifts();
+			var build = false;
+			
+			angular.forEach(gifts, function (gift) {
+
+				if (gift.getUniqueId() === uid) {
+					build = gift;
+				}
+
+			});
+			return build;
+		}
+
+		this.getGifts = function(){
+
+			var gifts = this.getCart().gifts || [];
+			
+			return gifts;
 		}
 
 		this.getCartKey = function(){
@@ -1031,14 +1179,22 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			var products = {};
 			var packages = [];
 			var promotions = [];
+			var giftCards = [];
+			var gifts = [];
+
 
 			angular.copy(storedCart.products,products);
 			angular.copy(storedCart.packages,packages);
 			angular.copy(storedCart.promotions,promotions);
+			angular.copy(storedCart.giftCards,giftCards);
+			angular.copy(storedCart.gifts,gifts);
 
 			storedCart.products = {};
 			storedCart.packages = [];
 			storedCart.promotions = [];
+			storedCart.giftCards = [];
+			storedCart.gifts = [];
+
 
 			angular.merge(_self.$cart,storedCart);
 
@@ -1055,6 +1211,20 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 				var newPackage = new alcoholCartPackage(package._id,package._unique,package);
 				_self.$cart.packages.push(newPackage);
+				
+			});	
+
+			angular.forEach(giftCards, function (giftCard,key) {
+
+				var giftCard = new alcoholCartGiftCard(giftCard);
+				_self.$cart.giftCards.push(giftCard);
+				
+			});
+
+			angular.forEach(gifts, function (gift,key) {
+
+				var newGift = new alcoholCartGift(gift);
+				_self.$cart.gifts.push(newGift);
 				
 			});
 
@@ -1461,6 +1631,345 @@ AlcoholDelivery.factory('alcoholCartPackage', ['$rootScope', '$log', function ($
 		};
 
 		return package;
+
+	}]);
+
+AlcoholDelivery.factory('alcoholCartGiftCard',[function(){
+
+	var giftCard = function(cardData){
+
+		this.setUniqueId(cardData._uid);
+		this.setId(cardData._id);
+		this.setRecipient(cardData.recipient);
+
+	}
+
+	giftCard.prototype.getUniqueId = function(){		
+		return this._uid.$id;
+	}
+
+	giftCard.prototype.setUniqueId = function(uid){
+		this._uid = uid;
+		return this._uid;
+	}
+
+	giftCard.prototype.getId = function(){		
+		return this._id;
+	}
+
+	giftCard.prototype.setId = function(id){
+		this._id = id;
+		return this._id;
+	}
+
+	giftCard.prototype.getPrice = function(){
+
+		var giftPrice = parseInt(this.recipient.quantity) * parseFloat(this.recipient.price);
+		return giftPrice;
+
+	}
+
+	giftCard.prototype.setRecipient = function(recipient){
+		this.recipient = recipient;
+	}
+
+	giftCard.prototype.getRecipient = function(){
+		return this.recipient;
+	}
+
+	
+
+	giftCard.prototype.remove = function(){
+
+	}
+	
+	return giftCard;
+
+}]);
+
+AlcoholDelivery.factory('alcoholCartGift',["$log", "giftProduct",function($log, giftProduct){
+
+	var gift = function(giftData){
+
+		this.setUniqueId(giftData._uid);
+		this.setId(giftData._id);
+
+		this.gsTitle(giftData.title);
+		this.gsSubTitle(giftData.subTitle);		
+		this.gsDescription(giftData.description);
+		this.gsLimit(giftData.limit);
+		this.gsPrice(giftData.price);
+		this.setImageLink(giftData.image);
+		
+
+		this.setRecipient(giftData.recipient);
+
+		if(typeof giftData.products !== 'undefined'){
+			this.setProducts(giftData.products);
+		}
+
+	}
+
+	gift.prototype.getUniqueId = function(){		
+		return this._uid.$id;
+	}
+
+	gift.prototype.setUniqueId = function(uid){
+		this._uid = uid;
+		return this._uid;
+	}
+
+	gift.prototype.getId = function(){		
+		return this._id;
+	}
+
+	gift.prototype.setId = function(id){
+		this._id = id;
+		return this._id;
+	}
+
+	gift.prototype.gsTitle = function(title){
+		
+		if (title)  this.title = title;
+
+		if(this.title) {
+			return this.title;
+		}
+
+		$log.error('Title must be provided');
+	}
+
+	gift.prototype.gsSubTitle = function(subTitle){
+		
+		if (subTitle)  this.subTitle = subTitle;
+
+		if(this.subTitle) {
+			return this.subTitle;
+		}
+
+		$log.error('Sub Title must be provided');		
+		
+	}
+
+	gift.prototype.gsDescription = function(desc){
+		
+		if (desc)  this.desc = desc;
+
+		if(this.desc) {
+			return parseInt(this.desc);
+		}
+		
+		$log.error('Description must be provided');
+		
+	}
+
+	gift.prototype.gsLimit = function(limit){
+		
+		if (limit)  this.limit = limit;
+
+		if(this.limit) {
+			return parseInt(this.limit);
+		}
+		
+		$log.error('Limit must be provided');
+	}
+
+	gift.prototype.getProductAttachedCount = function(){
+
+		var products = this.getProducts();
+		var productQty = 0;
+
+		angular.forEach(products , function(product,key){
+			
+			productQty = productQty + parseInt(product.quantity);	
+
+		});
+
+		return productQty;
+	}
+
+	gift.prototype.gsPrice = function(price){
+
+		if(price) this.price = parseFloat(price);
+
+		if(this.price){
+			return parseFloat(this.price);
+		}
+
+		$log.error('Price must be provided');
+
+	}
+
+	gift.prototype.setRecipient = function(recipient){
+		this.recipient = recipient;
+	}
+
+	gift.prototype.setProducts = function(products){
+
+		this.products = [];
+
+		if (products){
+
+			this.products = products;
+
+			// angular.forEach(products, function(product,index){
+
+			// 	var product = new giftProduct(product);				
+			// 	this.push(product);
+
+			// },this.products)
+
+		}
+		else {
+			$log.error('Products must be provided');
+		}
+		
+	}
+
+	gift.prototype.getProducts = function(){
+
+		return this.products;
+
+	}
+
+	gift.prototype.setImageLink = function(image){
+
+		if(image){
+			this.imageLink = "gifts/i/"+image;
+		}else{
+			this.imageLink = "asset/i/defaultImage.png";			
+		}
+		
+		return this.imageLink;
+		
+	}
+
+	gift.prototype.remove = function(){
+
+	}
+
+	return gift;
+
+}]);
+
+AlcoholDelivery.factory('giftProduct', ['$rootScope', '$log', function ($rootScope, $log){
+		
+		var giftProductObj = function (giftProduct) {
+			
+			//this.setId(id);
+			
+			
+			
+			// this.setLastServedAs(data.lastServedChilled);
+			// this.setProduct(data);
+
+			// this.setRMaxQuantity(data.product);
+
+		};
+
+		giftProductObj.prototype.setId = function(id){
+			if (id)  this._id = id;
+			else {
+				$log.error('An ID must be provided');
+			}
+		};
+
+		giftProductObj.prototype.getId = function(){
+			return this._id;
+		};
+
+		giftProductObj.prototype.setLastServedAs = function(servedAs){
+			return this.servedAs = servedAs;
+		}
+
+		giftProductObj.prototype.getLastServedAs = function(){
+			return this.servedAs;
+		}
+
+		giftProductObj.prototype.setName = function(name){
+			if (name)  this._name = name;
+			else {
+				$log.error('A name must be provided');
+			}
+		};
+		giftProductObj.prototype.getName = function(){
+			return this._name;
+		};
+
+			
+		giftProductObj.prototype.setRQuantity = function(cQuantity,ncQuantity){
+			this.qChilled = cQuantity;
+			this.qNChilled = ncQuantity
+		}
+
+		giftProductObj.prototype.setRMaxQuantity = function(product){
+
+			if(product.quantity==0 && product.outOfStockType==2){
+				product.quantity = product.maxQuantity;
+			}
+			
+			this.qChilledMax = product.maxQuantity - this.qNChilled;
+			this.qNChilledMax = product.maxQuantity - this.qChilled;
+
+		}
+
+		giftProductObj.prototype.setRChilledStatus = function(cLastStatus,ncLastStatus){
+
+			var status = {
+					"chilled":true,
+					"nonchilled":false
+				}
+
+			this.qChilledStatus = status[cLastStatus];
+			this.qNChilledStatus = status[ncLastStatus];		
+
+		}
+
+		giftProductObj.prototype.getRQuantity = function(type){
+
+			if(type=='chilled'){
+				return this.qChilled;
+			}
+
+			return this.qNChilled;
+		}
+
+		giftProductObj.prototype.setTQuantity = function(quantity){
+
+			var quantityInt = parseInt(quantity);
+			return this.quantity = quantityInt;
+
+		};
+
+		giftProductObj.prototype.getQuantity = function(){
+			return this.quantity;
+		};
+
+		giftProductObj.prototype.setProduct = function(data){
+
+			this.onlyForAdvance = false;
+			if(data.product.quantity==0 && data.product.outOfStockType==2){
+
+				this.onlyForAdvance = true;
+			}		
+
+			if (data.product) this.product = data.product;
+		};
+
+		giftProductObj.prototype.setNonAvailability = function(status){
+			return this.isNotAvailable = Boolean(status);
+		}
+
+		giftProductObj.prototype.getData = function(){
+			if (this.product) return this.product;
+			else $log.info('This giftProductObj has no product detail');
+		};
+
+		giftProductObj.prototype.getTotal = function(){
+			return +parseFloat(this.getPrice()).toFixed(2);
+		};	
+
+		return giftProductObj;
 
 	}]);
 

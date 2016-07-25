@@ -34,7 +34,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			user:'='
 		},*/
 		templateUrl: '/templates/partials/topmenu.html',
-		controller: function($scope,$rootScope,$http,$state,sweetAlert,UserService,store,alcoholWishlist,$fblogin){
+		controller: function($scope,$rootScope,$http,$state,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard,$fblogin){
 
 			$scope.list = [];
 
@@ -208,6 +208,7 @@ AlcoholDelivery.directive('sideBar', function() {
                 	function(errorRes){}
                 );
                 alcoholWishlist.init();
+                ClaimGiftCard.claim();
 		    }
 		}
 	};
