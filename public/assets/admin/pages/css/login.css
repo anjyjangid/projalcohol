@@ -6,8 +6,9 @@
 Login page
 ***/
 /* bg color */
-.login {
+.login, html {
   background-color: #364150 !important;
+  height: auto;
 }
 
 .login .logo {

@@ -5,7 +5,7 @@
  */
 
 body {
-	overflow-x: hidden;
+	/*overflow-x: hidden;*/
 }
 /* Toggle Styles */
 
@@ -231,4 +231,7 @@ ul.mobilesidebar li.active:not(.open) ul{
     padding: 0px 10px;
     width: auto;
     background: transparent;
+}
+.modal {
+	z-index: 99999;
 }
