@@ -369,6 +369,15 @@ AlcoholDelivery.factory('ScrollPagination', function($http) {
   Search.prototype.nextPage = function() {
     if (this.busy || this.limitreached) return;
     this.busy = true;
+    var _self = this;
+
+console.log({
+    		loyalty:true,
+	    	skip:this.skip,
+	    	take:this.take,
+	    	filter:this.filter,
+	    	sortby:this.sortby
+	    });
 
     $http.get('/site/searchlist',{
     	params : {
@@ -380,20 +389,20 @@ AlcoholDelivery.factory('ScrollPagination', function($http) {
 	    }
     }).then(function(result){
 
-		var items = result.data.products;
+		var items = result.data.items;
 
-		this.totalResult = result.data.total;
+		_self.totalResult = result.data.total;
 		for (var i = 0; i < items.length; i++) {
-			this.items.push(items[i]);
+			_self.items.push(items[i]);
 		}
-		this.busy = false;
-		if(result.data.products.length < parseInt(this.take)){
-			this.limitreached = true;
+		_self.busy = false;
+		if(result.data.items.length < parseInt(_self.take)){
+			_self.limitreached = true;
 		}else{
-			this.skip+= parseInt(this.take);
+			_self.skip+= parseInt(_self.take);
 		}
 
-	}.bind(this));
+	}.bind(_self));
 
   };
 

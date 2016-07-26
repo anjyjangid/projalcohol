@@ -142,7 +142,8 @@ class SiteController extends Controller
 
         
 
-        $products = $products->skip($skip)->take($take)->get();        
+        $products = $products->skip($skip)->take($take)->get();
+        
 
         $response = [
             'items' => $products,
