@@ -712,6 +712,50 @@ jprd($product);
 
 	}
 
+	public function putGiftProductChilledStatus(Request $request,$giftUid){
+		
+		$productId = $request->input('id');
+		$state = $request->input('state');
+		
+		$cartKey = $this->deliverykey;
+
+		// $cart = Cart::where("_id",$cartKey)
+		// 					->where("gifts._uid",new mongoId($giftUid))
+		// 					->where("gifts.products._id",$productId)
+		// 					->where("gifts.products.state",$state)
+		// 					->get(['gifts']);
+							
+                       		// ->update(["gifts.products.$._id"=>false]);
+
+		$cart = Cart::where("_id",$cartKey)
+							->where("gifts._uid",new mongoId($giftUid))
+							->where("gifts.products._id",$productId)
+							->first(['gifts']);
+prd($cart);
+		
+
+		$product = $cart->products[$productId];
+
+		$product['chilled']['status'] = $chilled?'chilled':'nonchilled';
+		$product['nonchilled']['status'] = $nonchilled?'chilled':'nonchilled';
+
+		$products = array_merge($cart->products,[$productId=>$product]);
+
+		$cart->__set("products",$products);
+
+		try{
+
+			$cart->save();
+			return response(["success"=>true,"message"=>"status changed"],200);
+
+		}catch(\Exception $e){
+
+			return (object)["success"=>false,"message"=>$e->getMessage()];
+
+		}
+
+	}	
+
 	public function getDeliverykey(Request $request){
 
 		$arr = [];
@@ -1068,8 +1112,8 @@ jprd($product);
 			
 			$reference = "ADSG";
 
-			$reference.= ((int)date("ymd",strtotime($order->created_at)) - 123456);			
-			$reference.="O";			
+			$reference.= ((int)date("ymd",strtotime($order->created_at)) - 123456);
+			$reference.="O";
 			$reference.= (string)date("Hi",strtotime($order->created_at));
 
 			$order->reference = $reference;
@@ -1514,6 +1558,7 @@ jprd($product);
 
 			$proId = $giftProduct['_id'];
 			$state = $giftProduct['state'];
+			$giftProduct['chilled'] = $state=='chilled'?true:false;
 			$quantity = (int)$giftProduct['quantity'];
 
 			// Condition to check product is available in cart or not

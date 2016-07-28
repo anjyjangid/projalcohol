@@ -17,22 +17,22 @@
 					<td width="52%">
 
 						<span ng-if="cartproduct.isAvail()" class="cart-alert">!
-						<md-tooltip class="cart-alert-tooltip" md-direction="top">Sorry! This item is either out of stock, or unavailable for the quantity or delivery time selected.</md-tooltip>
+							<md-tooltip class="cart-alert-tooltip" md-direction="top">Sorry! This item is either out of stock, or unavailable for the quantity or delivery time selected.</md-tooltip>
 						</span>
 
 						<div class="orhistry2_td2procdtcvr">
 						<span class="cursor-pointer">
-						<a ui-sref="mainLayout.product({product:cartproduct.product.slug})" title="View Product">
-						<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="img-responsive" />
-						</a>
+							<a ui-sref="mainLayout.product({product:cartproduct.product.slug})" title="View Product">
+								<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="img-responsive" />
+							</a>
 						</span>
 
-						<div class="checkouter-td-right-text">
-						<div class="orhistry2_td2proctext1">{{cartproduct.product.name}}</div>
-						<div class="orhistry2_td2proctext2">{{cartproduct.product.shortDescription}}</div>
-						<div class="orhistry2_td2proctext1">{{cartproduct.unitPrice | pricingTxt}}</div>
-						<div class="orhistry2_td2proctext2">unit Price</div>
-						</div> 
+							<div class="checkouter-td-right-text">
+								<div class="orhistry2_td2proctext1">{{cartproduct.product.name}}</div>
+								<div class="orhistry2_td2proctext2">{{cartproduct.product.shortDescription}}</div>
+								<div class="orhistry2_td2proctext1">{{cartproduct.unitPrice | pricingTxt}}</div>
+								<div class="orhistry2_td2proctext2">unit Price</div>
+							</div> 
 
 						</div>
 
@@ -202,7 +202,7 @@
 					<tr ng-repeat="(key, giftPro) in gift.getProducts()">
 
 						<td width="52%" ng-init="giftPro.cartPro = alcoholCart.getProductById(giftPro._id)">
-
+							<!-- <pre>{{giftPro | json}}</pre> -->
 							<div class="orhistry2_td2procdtcvr">
 								<span class="cursor-pointer">
 									<a ui-sref="mainLayout.product({product:giftPro.cartPro.product.slug})" title="View Product">
@@ -224,11 +224,11 @@
 						<td width="131px">
 
 							<div class="prod_chilled" ng-class="{
-							notchilled:!giftPro.cartPro[type+'Status'],
+							notchilled:giftPro.ischilled,
 							invisible:!giftPro.cartPro.product.chilled || cart.nonchilled,
 
 							}"
-							ng-click="alcoholCart.updateChilledStatus(giftPro.cartPro._id,type)">
+							ng-click="giftPro.toggleChilledStatus()">
 							<span>Chilled</span>
 							<div class="prod_chilled_icon"></div>
 							</div>

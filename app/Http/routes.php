@@ -168,6 +168,8 @@ Route::group(['prefix' => 'cart'], function () {
 	Route::post('giftcard','CartController@postGiftcard');
 	Route::put('giftcard/{uid}','CartController@putGiftcard');
 
+	Route::put('gift/product/chilledtoggle/{giftUid}','CartController@putGiftProductChilledStatus');
+
 });
 
 Route::resource('cart', 'CartController');

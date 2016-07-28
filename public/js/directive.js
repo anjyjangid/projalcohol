@@ -294,6 +294,26 @@ AlcoholDelivery.directive('sideBar', function() {
   }
 })
 
+// .directive('myError', function() {
+//   return {
+//   	require: 'ngModel',
+//     link: function(scope, element, attrs, ctrl) {
+       
+//       element.on('blur', function() {
+      	
+//       	if(element.context.value==""){
+//       		ctrl.$setValidity("blank", false);
+//       	}else{
+//       		ctrl.$setValidity("blank", true);
+//       	}
+
+//       	scope.$apply();
+
+//       });
+//     }
+//   }
+// })
+
 .directive('onlyDigits', function () {
     return {
       require: 'ngModel',

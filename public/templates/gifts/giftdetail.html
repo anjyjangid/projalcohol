@@ -19,14 +19,16 @@
 					<p class="party-product-desc">{{gift.description}}</p>    										
 					<p class="packtiti-rightset packag-amnt-divcolr">Price</p>
 			    	<h3 class="amntrupee-clsdetail">{{gift.price | currency}}</h3>
-
+			    	
+			    	
 	            	<div ng:class="{'has-error':errors['recipient.name'][0]}" class="gift-to-divcover">
 						<div class="gift-card-innerform">
 							<label>To</label>
-							<input type="text" placeholder="Eg. sarah" ng-model="giftData.recipient.name" class="alcohalrestertextbox form-control" ng-change="errors['recipient.name'][0]=''">
+							<input name="rename" type="text" placeholder="Eg. sarah" ng-model="giftData.recipient.name" class="alcohalrestertextbox form-control" ng-change="errors['recipient.name'][0]=''">
 							<!-- <span ng-if="errors['recipient.name'][0]" ng-bind="errors['recipient.name'][0]"></span> -->
 						</div>
 			    	</div>
+			    	
 
 			    	<div class="form-group gift-to-divcover" ng:class="{'has-error':errors['recipient.message'][0]}">
 			    		<div class="gift-card-innerform">

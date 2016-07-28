@@ -1806,18 +1806,19 @@ AlcoholDelivery.factory('alcoholCartGift',["$log", "giftProduct",function($log, 
 
 	gift.prototype.setProducts = function(products){
 
-		this.products = [];
+		var _self = this;
+		_self.products = [];
 
 		if (products){
 
-			this.products = products;
+			// this.products = products;
 
-			// angular.forEach(products, function(product,index){
+			angular.forEach(products, function(product,index){
 
-			// 	var product = new giftProduct(product);				
-			// 	this.push(product);
+				var product = new giftProduct(product,_self.getUniqueId());
+				this.push(product);
 
-			// },this.products)
+			},this.products)
 
 		}
 		else {
@@ -1852,19 +1853,63 @@ AlcoholDelivery.factory('alcoholCartGift',["$log", "giftProduct",function($log, 
 
 }]);
 
-AlcoholDelivery.factory('giftProduct', ['$rootScope', '$log', function ($rootScope, $log){
+AlcoholDelivery.factory('giftProduct', ['$rootScope', '$q', '$http', '$log', function ($rootScope, $q, $http, $log){
 		
-		var giftProductObj = function (giftProduct) {
-			
-			//this.setId(id);
-			
-			
-			
-			// this.setLastServedAs(data.lastServedChilled);
-			// this.setProduct(data);
+		var giftProductObj = function (giftProduct,giftUid) {
 
-			// this.setRMaxQuantity(data.product);
+			this.setId(giftProduct._id);
+			this.setGiftUid(giftUid);
+			this.setState(giftProduct.state);
+			this.setQuantity(giftProduct.quantity);
+			this.setChilledState(giftProduct.chilled);
 
+		};
+
+		giftProductObj.prototype.toggleChilledStatus = function(){
+
+			var isChilled = this.getChilledState();
+			isChilled = !isChilled
+
+			var defer = $q.defer();
+
+			$http.put("/cart/gift/product/chilledtoggle/"+this.getGiftUid(), {
+					"id":this.getId(),
+					"state" : this.getState()
+				},{
+
+			}).error(function(data, status, headers) {
+
+			}).success(function(response) {
+
+			});
+
+			this.setChilledState(isChilled);
+
+			return defer.promise;
+
+		}
+
+		giftProductObj.prototype.setState = function(state){
+			if (state)  this.state = state;
+			else {
+				$log.error('Sate of product must be provided');
+			}
+		};
+
+		giftProductObj.prototype.getState = function(){
+			return this.state;
+		};
+
+		giftProductObj.prototype.setChilledState = function(chilledState){
+
+			if (typeof chilledState !== 'undefined')  this.ischilled = chilledState;
+			else {
+				$log.error('Chilled state of product must be provided');
+			}
+		};
+
+		giftProductObj.prototype.getChilledState = function(){
+			return this.ischilled;
 		};
 
 		giftProductObj.prototype.setId = function(id){
@@ -1877,6 +1922,25 @@ AlcoholDelivery.factory('giftProduct', ['$rootScope', '$log', function ($rootSco
 		giftProductObj.prototype.getId = function(){
 			return this._id;
 		};
+
+		giftProductObj.prototype.setGiftUid = function(uid){
+			if (uid)  this.giftUid = uid;
+			else {
+				$log.error('An ID must be provided');
+			}
+		};
+
+		giftProductObj.prototype.getGiftUid = function(){
+			return this.giftUid;
+		};
+
+		giftProductObj.prototype.setQuantity = function(quantity){
+			return this.quantity = parseInt(quantity);
+		}
+
+		giftProductObj.prototype.getQuantity = function(){
+			return parseInt(this.quantity);
+		}
 
 		giftProductObj.prototype.setLastServedAs = function(servedAs){
 			return this.servedAs = servedAs;
@@ -1892,58 +1956,10 @@ AlcoholDelivery.factory('giftProduct', ['$rootScope', '$log', function ($rootSco
 				$log.error('A name must be provided');
 			}
 		};
+
 		giftProductObj.prototype.getName = function(){
 			return this._name;
-		};
-
-			
-		giftProductObj.prototype.setRQuantity = function(cQuantity,ncQuantity){
-			this.qChilled = cQuantity;
-			this.qNChilled = ncQuantity
-		}
-
-		giftProductObj.prototype.setRMaxQuantity = function(product){
-
-			if(product.quantity==0 && product.outOfStockType==2){
-				product.quantity = product.maxQuantity;
-			}
-			
-			this.qChilledMax = product.maxQuantity - this.qNChilled;
-			this.qNChilledMax = product.maxQuantity - this.qChilled;
-
-		}
-
-		giftProductObj.prototype.setRChilledStatus = function(cLastStatus,ncLastStatus){
-
-			var status = {
-					"chilled":true,
-					"nonchilled":false
-				}
-
-			this.qChilledStatus = status[cLastStatus];
-			this.qNChilledStatus = status[ncLastStatus];		
-
-		}
-
-		giftProductObj.prototype.getRQuantity = function(type){
-
-			if(type=='chilled'){
-				return this.qChilled;
-			}
-
-			return this.qNChilled;
-		}
-
-		giftProductObj.prototype.setTQuantity = function(quantity){
-
-			var quantityInt = parseInt(quantity);
-			return this.quantity = quantityInt;
-
-		};
-
-		giftProductObj.prototype.getQuantity = function(){
-			return this.quantity;
-		};
+		};	
 
 		giftProductObj.prototype.setProduct = function(data){
 
@@ -1955,19 +1971,6 @@ AlcoholDelivery.factory('giftProduct', ['$rootScope', '$log', function ($rootSco
 
 			if (data.product) this.product = data.product;
 		};
-
-		giftProductObj.prototype.setNonAvailability = function(status){
-			return this.isNotAvailable = Boolean(status);
-		}
-
-		giftProductObj.prototype.getData = function(){
-			if (this.product) return this.product;
-			else $log.info('This giftProductObj has no product detail');
-		};
-
-		giftProductObj.prototype.getTotal = function(){
-			return +parseFloat(this.getPrice()).toFixed(2);
-		};	
 
 		return giftProductObj;
 
