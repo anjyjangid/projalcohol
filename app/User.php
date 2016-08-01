@@ -42,7 +42,8 @@ class User extends Eloquent implements AuthenticatableContract,
         'email_key',
         'status',
         'verified',
-        'productAddedNotification'
+        'productAddedNotification',
+        'savedCards'
     ];
 
     /**

@@ -182,7 +182,7 @@ class SiteController extends Controller
 
         if ($is_valid_response) {
               // proceed business flow
-              if ($response_array['response_code'] == ‘0’) {
+              if ($response_array['response_code'] == '0') {
                     //proceed to success creation
                }
                else {
@@ -231,6 +231,7 @@ class SiteController extends Controller
     }
 
     public function getPayment(Request $request){
+        
         $secret_key = 'jMAb6rYoBPF96dacwGe9tCLYpnhYglkFBKPH4LbT8mKQi2IhOyIhWSmZBvlFjlshAyFPi3NrYGTKV35sLVrDekX5y5FxWSv2XKkcFvbGaafuj93rFoRT69FRKKpaBner';        
         
         $request_transaction = array(

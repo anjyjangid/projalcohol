@@ -5433,9 +5433,9 @@ a.md-button.md-default-theme.md-focused:not([disabled]), a.md-button.md-focused:
 md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-icon {
 	background-color: rgba(170, 0, 255, 0.87) !important;
 }
-md-checkbox {
+/*md-checkbox {
 	width: 20px;
-}
+}*/
 .combo_slider .dropdown-menu {
 	min-width: 144px;
 	top: 42px;
@@ -5802,4 +5802,10 @@ md-checkbox.md-default-theme.md-checked .md-icon::after, md-checkbox.md-checked 
   md-dialog {
 	  margin: inherit;
   }
+}
+md-radio-button.md-default-theme.md-checked .md-off, md-radio-button.md-checked .md-off{
+	border-color: rgba(170, 0, 255, 0.87) !important;
+}
+md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
+	background-color: rgba(170, 0, 255, 0.87) !important;	
 }

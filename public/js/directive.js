@@ -1212,4 +1212,90 @@ console.log(isChild);
 		},
 		controller:''
 	};
-}]);
+}])
+
+.directive('userCards', function(){
+
+	return {
+		scope :{
+			paymentmode: '=paymentmode',
+			payment:'=payment'
+		},
+		restrict: 'A',		
+		templateUrl: '/templates/partials/addcard.html',
+		controller: function($scope,$rootScope,$http,$state,$payments,UserService,sweetAlert,alcoholCart){
+			
+			$scope.$on('addcardsubmit', function() {
+	            $scope.addnewcard();
+	        });
+
+			UserService.GetUser().then(
+			    function(result) {
+			    	$scope.userdata = result;
+			    }
+			);
+
+		    $scope.verified = function () {
+		    	return $payments.verified();
+		    }
+
+		    $scope.addnewcard = function(){		    			    	
+		    	if($scope.paymentmode){		    		
+		    		$scope.payment.creditCard.token = 1;
+		    	}
+		    	$scope.processingcard = true;
+		    	$scope.errors = [];
+				$http.post('/payment/addcard',$scope.payment.creditCard).success(function(rdata){					
+
+					if($scope.paymentmode){
+						$scope.payment.creditCard = rdata.card;
+
+						alcoholCart.deployCart().then(
+							function(result){
+								$state.go('mainLayout.checkout.review');
+							}
+						);
+
+					}else{
+						$scope.payment.card = '';					
+						$scope.userdata = rdata.user;
+						$scope.payment.creditCard = {};
+					}
+					
+					$scope.processingcard = false;
+				}).error(function(errors){
+					$scope.errors = errors;
+					$scope.processingcard = false;
+				});
+
+			}			
+
+			$scope.removeCard = function(card){				
+				sweetAlert.swal({
+				  title: 'Are you sure?',
+				  text: "You won't be able to revert this!",
+				  type: 'warning',
+				  showCancelButton: true,
+				  confirmButtonColor: '#3085d6',
+				  cancelButtonColor: '#d33',
+				  confirmButtonText: 'Yes, delete it!'
+				}).then(function() {				  
+					$http.post('/payment/removecard',card).success(function(rdata){
+						$scope.userdata = rdata.user;						
+						$scope.payment.card = '';
+					}).error(function(errors){						
+						sweetAlert.swal({
+							type:'error',
+							text:errors,							
+						});						
+					});
+				});				
+			}
+
+			$scope.changeCard = function(card){
+				$scope.payment.creditCard = card;
+			}
+		}
+	};
+})
+;

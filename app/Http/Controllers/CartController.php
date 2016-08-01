@@ -22,6 +22,8 @@ use DB;
 use MongoDate;
 use MongoId;
 
+use AlcoholDelivery\Payment;
+
 class CartController extends Controller
 {
 
@@ -33,14 +35,10 @@ class CartController extends Controller
 
 	public function __construct(Request $request)
 	{
-
 		$user = Auth::user('admin');
 		if(!empty($user)){
 			$this->deliverykey = $request->session()->get('deliverykeyAdmin');
-		}else{
-			$this->deliverykey = $request->session()->get('deliverykey');
 		}
-
 	}
 
 
@@ -709,89 +707,8 @@ jprd($product);
 
 		}
 
+
 	}
-
-	public function putGiftProductChilledStatus(Request $request,$giftUid){
-		
-		$productId = $request->input('id');
-		$state = $request->input('state');
-		
-		$cartKey = $this->deliverykey;
-
-		// $cart = Cart::where("_id",$cartKey)
-		//			->where("gifts._uid",new mongoId($giftUid))
-		//			->where("gifts.products._id",$productId)
-		//			->where("gifts.products.state",$state)
-		//			->get(['gifts']);
-
-		// ->update(["gifts.products.$._id"=>false]);
-
-		$cart = Cart::where("_id",$cartKey)
-						->where("gifts._uid",new mongoId($giftUid))
-						->where("gifts.products.quantity",3) //$productId
-						->where("gifts.products.state",$state)
-						->update(["gifts.0.products.$.chilled"=>"asdasdasasadads"]);
-
-
-		// $cart = DB::collection('cart')->raw(function($collection)
-		// 	{
-		// 			return $collection->update(array(
-		// 					array(
-		// 							'$project' => array(
-		// 									'name'=>'$name',
-		// 									'quantity'=>'$quantity',
-		// 									'maxQuantity'=>'$maxQuantity',
-		// 									'threshold'=>'$threshold',
-		// 									'sum' => array(
-		// 											'$subtract' => array(
-		// 												'$maxQuantity',
-		// 												'$quantity'
-		// 											)
-		// 									),                      
-		// 							),                  
-		// 					),
-		// 					array(
-		// 							'$sort' => array('sum'=>-1)
-		// 					),
-		// 					array(
-		// 							'$skip' => 0
-		// 					),
-		// 					array(
-		// 							'$limit' => 5
-		// 					)
-		// 					array(
-		// 							'$match' => array(
-		// 								'sum' => 70
-		// 							)
-		// 					)   
-		// 			));
-		// 	});
-
-		
-prd($cart);
-		
-
-		$product = $cart->products[$productId];
-
-		$product['chilled']['status'] = $chilled?'chilled':'nonchilled';
-		$product['nonchilled']['status'] = $nonchilled?'chilled':'nonchilled';
-
-		$products = array_merge($cart->products,[$productId=>$product]);
-
-		$cart->__set("products",$products);
-
-		try{
-
-			$cart->save();
-			return response(["success"=>true,"message"=>"status changed"],200);
-
-		}catch(\Exception $e){
-
-			return (object)["success"=>false,"message"=>$e->getMessage()];
-
-		}
-
-	}	
 
 	public function getDeliverykey(Request $request){
 
@@ -965,40 +882,6 @@ prd($cart);
 
     }
 
-    public function deleteGift($giftUId,Request $request){
-
-    	$cartKey = $this->deliverykey;
-
-		$cart = Cart::find($cartKey);
-
-		if(empty($cart)){
-
-			return response(array("success"=>false,"message"=>"cart not found"),400);
-
-		}
-
-		$gifts = $cart->gifts;
-
-		if(empty($gifts)){
-			return response(["success"=>false,"message"=>"no gift to remove"],400);
-		}
-		
-		try{
-
-			$isRemoved = DB::collection('cart')->where('_id', $cartKey)->pull('gifts', ['_uid' => new MongoId($giftUId) ]);
-			
-			return response(["success"=>true,"message"=>"gift removed successfully"],200);
-
-		}catch(\Exception $e){
-
-			return (object)["success"=>false,"message"=>$e->getMessage()];
-
-		}
-
-    	return response(["success"=>false,"message"=>"Something went wrong"],400);
-
-    }
-
     public function deleteCard($cardUId,Request $request){
 
     	$cartKey = $this->deliverykey;
@@ -1019,7 +902,10 @@ prd($cart);
 
 			$isRemoved = DB::collection('cart')->where('_id', $cartKey)->pull('giftCards', ['_uid' => new MongoId($cardUId) ]);
 
-			return response(["success"=>true,"message"=>"gift cards removed successfully"],200);
+			$cart->__set("giftCards",$giftCards);
+			$cart->save();
+
+			return response(["success"=>true,"message"=>"promotion removed successfully"],200);
 
 		}catch(\Exception $e){
 
@@ -1077,14 +963,21 @@ prd($cart);
 		$cart = $cartObj->where("_id","=",$cartKey)->first();
 
 		if(empty($cart)){
-
 			return response(["success"=>false,"message"=>"cart not found"],405); //405 => method not allowed
-
 		}
 
-		$cartArr = $cart->toArray();
+		$cartArr = $cart->toArray();	
 
 		$user = Auth::user('user');
+
+		//PREPARE PAYMENT FORM DATA
+		if($cartArr['payment']['method'] == 'CARD'){
+
+			$payment = new Payment();
+			$payment = $payment->prepareform($cartArr,$user);
+			return response($payment,200);
+
+		}
 
 		$cartArr['user'] = new MongoId($user->_id);
 
@@ -1092,16 +985,16 @@ prd($cart);
 
 		$productsIdInCart = array_keys((array)$cartArr['products']);
 
-		$productObj = new Products;
+				$productObj = new Products;
 
-		$productsInCart = $productObj->getProducts(
-									array(
-										"id"=>$productsIdInCart,
-										"with"=>array(
-											"discounts"
-										)
-									)
-								);
+				$productsInCart = $productObj->getProducts(
+											array(
+												"id"=>$productsIdInCart,
+												"with"=>array(
+													"discounts"
+												)
+											)
+										);
 
 ////// Loyalty point calculation 
 
@@ -1126,7 +1019,8 @@ prd($cart);
 
 		}
 
-//////		
+//////
+				
 		foreach($productsInCart as $key=>$product){
 
 			$cartArr['products'][$product["_id"]]['_id'] = new MongoId($product["_id"]);
@@ -1149,13 +1043,14 @@ prd($cart);
 			
 			$reference = "ADSG";
 
-			$reference.= ((int)date("ymd",strtotime($order->created_at)) - 123456);
-			$reference.="O";
+			$reference.= ((int)date("ymd",strtotime($order->created_at)) - 123456);			
+			$reference.="O";			
 			$reference.= (string)date("Hi",strtotime($order->created_at));
 
-			$order->reference = $reference;
+			//$order->reference = $reference;
 
 			$order->save();
+
 
 			$isUpdated = User::where('_id', $user->_id)->increment('loyaltyPoints', $loyaltyPoints);
 			$isUpdated = User::where('_id', $user->_id)
@@ -1170,7 +1065,8 @@ prd($cart);
 											],
 											"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
 										]
-									);
+									);	
+
 
 			$request->session()->forget('deliverykey');
 
@@ -1181,11 +1077,12 @@ prd($cart);
 			return response(array("success"=>false,"message"=>$e->getMessage()));
 
 		}
-    }    
+    }
 
     public function deploycart(Request $request,$cartKey){
 
-		$cart = Cart::find($cartKey);
+
+    	$cart = Cart::find($cartKey);
 
 		if(empty($cart)){
 			return response(array("success"=>false,"message"=>"something went wrong with cart"));
@@ -1219,6 +1116,9 @@ prd($cart);
 
     	}
 
+    	//SET CART REFERENCE FOR ORDER ID
+    	$cart->setReference();
+
     	try {
 
 			$cart->save();
@@ -1243,11 +1143,12 @@ prd($cart);
 
 		$cart = Cart::findUpdated($cartKey);
 
-		// if(isset($cart->freeze) && $cart->freeze===true){
+		if(isset($cart->freeze) && $cart->freeze===true){
 
-		// 	return response(["success"=>false,"message"=>"Cart is already freezed"],405); //405 => method not allowed
+			return response(["success"=>true,"message"=>"Cart is already freezed"],200);
+			return response(["success"=>false,"message"=>"Cart is already freezed"],405); //405 => method not allowed
 
-		// }
+		}
 
 		$cart->freeze = true;
 
@@ -1273,6 +1174,7 @@ prd($cart);
 			$product = Products::where('_id', $productKey)->decrement('quantity', $productCount);
 
 		}
+
 
 		return response(["success"=>true,"message"=>"Cart freezed sucessfully"],200);
 
@@ -1566,133 +1468,31 @@ prd($cart);
 		
 	}
 
-	public function postGift(GiftCartRequest $request){
-
-		$response = [
-			'message'=>'',
-			'reload' => false,
-		];
+	public function postGift(Request $request){
 
 		$inputs = $request->all();
 
-		// Get gift detail
-
-		$giftModel = new Gift;
-
-		$gift = $giftModel->getGift($inputs['id']);
-
-		// Fetch Cart
-		$cartKey = $this->deliverykey;
-		
-		$cart = Cart::find($cartKey);
-
-		$giftProducts = $inputs['products'];
-
-		$totalProducts = 0;		
-		$cartProducts = $cart->products;			
-
-		foreach ($giftProducts as &$giftProduct) {						
-
-			$proId = $giftProduct['_id'];
-			$state = $giftProduct['state'];
-			$giftProduct['chilled'] = $state=='chilled'?true:false;
-			$quantity = (int)$giftProduct['quantity'];
-
-			// Condition to check product is available in cart or not
-			// Condition to check state(chilled/non chilled) is available or not
-
-			if(isset($cartProducts[$proId]) && isset($cartProducts[$proId][$state]) && $cartProducts[$proId][$state]['quantity']>=$quantity){
-
-				// if(!isset($cartProducts[$proId][$state]['inGift'])){ // set inGift eky if not exist in product state
-
-				// 	$cartProducts[$proId][$state]['inGift'] = [];
-
-				// }
-
-				// $newInGift =  [ // gift data attached to product state
-				// 		'_id' => $gift['_id'],
-				// 		'quantity' => $quantity,
-				// 		'state' => $cartProducts[$proId][$state]['status']
-				// 	];
-
-				// To set state of product passed to add
-				// $giftProduct['state'] = $newInGift['state'];
-
-				// $cartProducts[$proId][$state]['inGift'] = array_merge($cartProducts[$proId][$state]['inGift'],[$newInGift]);
-
-				$totalProducts+=(int)$quantity;					
-				
-			}else{
-
-				$response['message'] = 'One or more products attached are not in cart';
-				$response['reload'] = true;
-				return response($response,422);
-
-			}
-
-		}			
-
-		if($totalProducts<=1){
-
-			$response['message'] = 'Please attached products';
-			return response($response,422);
-
-		}
-
-		if($totalProducts>$gift['limit']){
-
-			$response['message'] = 'Products count is more than limit';
-			return response($response,422);
-
-		}
-
-
-		$cart->products = $cartProducts;
-		
-		$gifts = empty($cart->gifts)?[]:$cart->gifts;
-
-		$newGift = [
-				"_id" => $gift['_id'],
-				'_uid'=> new MongoId(),
-				"products"=> $giftProducts,
-				"recipient" => $inputs['recipient'],
-				"price" => $gift['price'],
-				"title"=> $gift['title'],
-				"subTitle"=> $gift['subTitle'],
-				"description"=> $gift['description'],
-				"limit"=> $gift['limit'],
-				"image"=> $gift['coverImage']['source'],
-			];
-
-		$gifts = array_merge($gifts,[$newGift]);
-
-		try{
+		foreach ($inputs as $key => $value) {
 			
-			$cart->gifts = $gifts;
-
-			$cart->save();
-
-			return response(["success"=>true,"message"=>"cart updated successfully","gift"=>$newGift],200);
-
-		}catch(\Exception $e){
-
-			return response(["success"=>false,"message"=>$e->getMessage()],400);
-
 		}
-
-
 	}
 
-	public function postGiftcard(GiftCartRequest $request){
+	public function postGiftcard(GiftCartRequest $request,$cartKey){
 
 		$user = Auth::user('user');
 
 		$inputs = $request->all();
 		
-		$cartKey = $this->deliverykey;
-		
 		$cart = Cart::find($cartKey);
-				
+
+		$giftCards = $cart->giftCards;
+
+		if(is_null($giftCards)){
+
+			$giftCards = [];
+
+		}
+
 		$giftCard = [
 
 			'_id'=>$inputs['id'],
@@ -1706,11 +1506,14 @@ prd($cart);
                 'sms' => isset($inputs['recipient']['sms'])?(int)$inputs['recipient']['sms']:NULL,
                 'mobile' => isset($inputs['recipient']['mobile'])?(int)$inputs['recipient']['mobile']:NULL
 			]
-		];			
+		];
+		
+		array_push($giftCards, $giftCard);
 
-		try{		
+		try{
 
-			$isInserted = DB::collection('cart')->where('_id', $cartKey)->push('giftCards', $giftCard);
+			$cart->giftCards = $giftCards;				
+			$cart->save();
 
 			return response(["success"=>true,"message"=>"cart updated successfully","data"=>$giftCard],200);
 
@@ -1722,50 +1525,7 @@ prd($cart);
 
 	}
 
-	public function putGiftcard($giftUid,GiftCartRequest $request){
-		
-		$inputs = $request->all();
-		
-		$cartKey = $this->deliverykey;
-		
-		$cart = Cart::find($cartKey);
-				
-		$giftCardRecipient = [
-					'price' => (float)$inputs['recipient']['price'],
-					'quantity' => (int)$inputs['recipient']['quantity'],
-					'name' => $inputs['recipient']['name'],
-					'email' => $inputs['recipient']['email'],
-					'message' => $inputs['recipient']['message'],
-					'sms' => isset($inputs['recipient']['sms'])?(int)$inputs['recipient']['sms']:NULL,
-					'mobile' => isset($inputs['recipient']['mobile'])?(int)$inputs['recipient']['mobile']:NULL
-				];
 
-		$giftCards = $cart->giftCards;
-
-		foreach($giftCards as &$card){
-
-			if((string)$card['_uid']===$giftUid){
-				$card['recipient'] = $giftCardRecipient;
-				break;
-			}
-
-		}
-
-		try{			
-
-			$cart->giftCards = $giftCards;
-
-			$cart->save();
-
-			return response(["success"=>true,"message"=>"Gift updated successfully"],200);
-
-		}catch(\Exception $e){
-
-			return response(["success"=>false,"message"=>$e->getMessage()],400);
-
-		}
-
-	}
 
     public function missingMethod($parameters = array())
 	{
