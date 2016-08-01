@@ -69,7 +69,7 @@
 								</md-checkbox>
 
 
-								<div ng-if="gift.recipient.sms == 1" class="form-group" ng:class="{'has-error':errors['recipient.email'][0]}" >
+								<div ng-if="gift.recipient.sms == 1" class="form-group" ng:class="{'has-error':errors['recipient.mobile'][0]}" >
 
 									<input type="text" placeholder="Phone number" ng-model="gift.recipient.mobile" class="alcohalrestertextbox form-control">
 									<span class="help-block" ng-bind="errors['recipient.mobile'][0]"></span>

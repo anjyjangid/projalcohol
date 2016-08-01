@@ -5,6 +5,8 @@ namespace AlcoholDelivery;
 use Moloquent;
 use MongoId;
 use AlcoholDelivery\Products as Products;
+use AlcoholDelivery\User as Users;
+use AlcoholDelivery\Email as Email;
 
 class Orders extends Moloquent
 {
@@ -23,7 +25,20 @@ class Orders extends Moloquent
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['timeslot', 'status' , 'service', 'delivery' , 'nonchilled','products','packages','user','total','payment','discount'];
+	protected $fillable = [
+							'timeslot', 
+							'status' , 
+							'service', 
+							'delivery' , 
+							'nonchilled',
+							'products',
+							'packages', 
+							'giftCards',
+							'user',
+							'total',
+							'payment',
+							'discount'
+						];
 
 	public function getOrders($where = [], $extra = []){
 
@@ -152,6 +167,53 @@ class Orders extends Moloquent
 		$orders = $this::where("user",new MongoId($userId))->orderBy('created_at', 'desc')->get($fields);
 		return $orders;
 		
+	}
+
+	public function completed($orderId){
+		
+		$response = [
+			'success'=>false,
+			'message'=>"",
+		];
+
+		$order = $this->find($orderId);
+
+		$order->user = Users::find($order->user);
+
+		if(isset($order->giftCards)){
+			
+			return $this->processGiftCards($order);	
+		}
+
+		$response['success'] = true;
+		$response['message'] = "status changed successfully";
+
+		return response($response,200);
+
+	}
+
+	public function processGiftCards($order){
+
+		foreach ($order->giftCards as $key => $card){
+
+			$email = new Email('giftcard');
+
+			$data['sender'] = $order->user;
+			$data['key'] = $card['_uid'];
+			$data['beneficiary'] = $card['recipient'];
+			
+			$emailSent = $email->sendEmail($data);
+
+			if(isset($card['recipient']['sms']) && $card['recipient']['sms'] && isset($card['recipient']['mobile']) && $card['recipient']['mobile']){
+
+				$smsSent = Email::sendSms($data['beneficiary']['mobile'],$data['beneficiary']['message']);
+
+			}
+
+		}
+
+		return ['success'=>true];
+
 	}
 
 

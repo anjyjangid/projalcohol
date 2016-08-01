@@ -45,7 +45,47 @@ MetronicApp.factory('orderModel', ['$http', '$cookies','$location', function($ht
 	            });
 	        });*/
 
-        }       
+        },
+
+        setStatus: function(orderId,state){
+
+	        return $http.put("/adminapi/order/status/"+orderId+"/"+state, {} , {
+
+			}).error(function(data, status, headers) {
+
+	            Metronic.alert({
+	                type: 'danger',
+	                icon: 'warning',
+	                message: 'There is some issue in updation',
+	                container: '.portlet-body',
+	                place: 'prepend',
+	                closeInSeconds: 3
+	            });
+	        })
+	        .success(function(response) {	            
+	            
+	            Metronic.alert({
+	                type: 'success',
+	                icon: 'check',
+	                message: response.message,
+	                container: '#info-message',
+	                place: 'prepend',
+	                closeInSeconds: 3
+	            });
+	            $location.path("orders/list");
+
+	        })
+	        /*.error(function(data, status, headers) {            
+	            Metronic.alert({
+	                type: 'danger',
+	                icon: 'warning',
+	                message: data,
+	                container: '.portlet-body',
+	                place: 'prepend'
+	            });
+	        });*/
+
+        }
 
     };
 }])

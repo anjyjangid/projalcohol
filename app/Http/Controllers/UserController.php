@@ -10,7 +10,8 @@ use AlcoholDelivery\Email;
 use AlcoholDelivery\User as User;
 use AlcoholDelivery\Orders as Orders;
 use mongoId;
-
+use MongoDate;
+use DB;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -380,4 +381,100 @@ class UserController extends Controller
 
 	}
 
+	/**
+	 * authorized gift card claim
+	 *
+	 * @param  string $cardKey
+	 * @return array $response
+	 */
+	public function postGiftcard($cardKey){
+	
+		$response = [
+			"message"=>""
+		];
+
+		$this->user = Auth::user('user');
+
+		$userId = $this->user->_id;
+
+		$orderObj = Orders::where('giftCards._uid',new mongoId($cardKey))->where("giftCards.claimed",null)->first(['user','giftCards']);
+
+		if(empty($orderObj)) {
+
+			$response['message'] = "invalid request";
+			return response($response,422);
+		}
+
+		$orderDetail = $orderObj->toArray();
+
+		
+		$giftCards = $orderDetail['giftCards'];
+
+		foreach($giftCards as $key=>&$giftCard){
+
+			if($cardKey===(string)$giftCard['_uid']){
+
+				$currGiftCard = $giftCard;
+				$giftCard['claimed'] = [
+					'_id' => $this->user->_id,
+					'email' => $this->user->email,
+					'name' => $this->user->name
+				];
+				break;
+
+			}
+		}
+
+		$sender = User::where("_id",$orderDetail['user'])->first(["email","name"]);
+		
+		$creditDetail = [
+							"type" => "credit",
+							"unitprice" => (float)$currGiftCard['recipient']['price'],
+							"quantity" => $currGiftCard['recipient']['quantity'],
+							"price" => (float)((int)$currGiftCard['recipient']['quantity'] * (float)$currGiftCard['recipient']['price']),
+
+							"reason" => [
+								"type" => "giftcard",								
+								"sender" => [
+									"_id" => new mongoId($sender['_id']),
+									"email" => $sender['email'],
+									"name" => $sender['name']
+								],
+								"comment" => "You have earned this points as gift"
+							],
+							
+							"recipient" => $currGiftCard['recipient'],
+							"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+
+						];
+
+		try{
+
+			$isUpdated = User::where('_id', $userId)->increment('credits', (float)$creditDetail['price']);
+			$isUpdated = User::where('_id', $userId)->push('creditsSummary', $creditDetail);
+
+			$orderObj->giftCards = $giftCards;
+			$orderObj->save();
+
+			$response['message'] = "Credits add to account";
+			return response($response,200);
+
+		}catch(\Exception $e){
+
+			$response['message'] = $e->getMessage();
+			return response($response,400);
+
+		}
+		
+	}
+
+
+	/**
+	 * Get user credits
+	 *
+	 * @return array $credits
+	 */
+	public function getCredits(){
+
+	}
 }

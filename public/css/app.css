@@ -682,3 +682,21 @@ body.loadingpayment .loader{
 	background-position: center 40%;
 	background-repeat: no-repeat;
 } 
+.gift-products{
+
+	margin-top: 15px;	
+
+	padding: 15px 20px;
+
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	-webkit-transition: border .2s ease-in-out;
+	-o-transition: border .2s ease-in-out;
+	transition: border .2s ease-in-out;
+}
+
+.gift-products .input-group.bootstrap-touchspin{
+	width: 80px;
+	margin: auto;
+}

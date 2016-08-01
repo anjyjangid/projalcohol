@@ -177,8 +177,6 @@ class OrderController extends Controller
 
 			$order = $order->toArray();
 
-
-
 			$order['user'] = user::where('_id',"=",$order['user'])->first(['name','email','mobile_number','status','created_at','address']);
 			$order['user'] = $order['user']->toArray();
 
@@ -272,65 +270,13 @@ class OrderController extends Controller
 	public function postOrders(Request $request)
 	{
 		
-		//return response('NOT ',401);
-		
 		$params = $request->all();
 
 		$orders = new Orders;
 
-			//$columns = array('_id',"created_at",'contacts','address','title','status');
-		
-		/* Individual column filtering */
-
-		// foreach($columns as $fieldKey=>$fieldTitle)
-		// {
-
-		//     if ( isset($params[$fieldTitle]) && $params[$fieldTitle]!="" )
-		//     {   
-		//         if($fieldTitle=="status"){
-					
-		//             $dealers = $dealers->where($fieldTitle, "=",(int)$params[$fieldTitle]);
-
-		//         }else{
-
-		//             $dealers = $dealers->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
-
-		//         }
-
-		//     }
-		// }
-					  
-
-					  
-		/*
-		 * Ordering
-		 */
-		
-			// if ( isset( $params['order'] ) )
-			// {
-
-			//     foreach($params['order'] as $orderKey=>$orderField){
-
-			//         if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
-						
-			//             $dealers = $dealers->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
-						
-			//         }
-			//     }
-
-			// }
-		
 		/* Data set length after filtering */        
 
 		$iFilteredTotal = $orders->count();
-
-		/*
-		 * Paging
-		 */
-			// if ( isset( $params['start'] ) && $params['length'] != '-1' )
-			// {
-			//     $dealers = $dealers->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
-			// }
 
 		$iTotal = $orders->count();
 
@@ -449,6 +395,31 @@ class OrderController extends Controller
 		}
 		
 		return response($records, 201);
+		
+	}
+
+
+	public function putStatus($orderId,$status){
+
+		$result = [];
+
+		$orderModel = new Orders;
+
+		switch($status){
+
+			case 'success':
+
+				$result = $orderModel->completed($orderId);
+			
+			break;
+
+		}
+
+		if($result['success']){
+			return response($result,200);
+		}
+		
+		return response($result,400);
 		
 	}
 

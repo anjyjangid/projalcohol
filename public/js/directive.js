@@ -34,7 +34,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			user:'='
 		},*/
 		templateUrl: '/templates/partials/topmenu.html',
-		controller: function($scope,$rootScope,$http,$state,sweetAlert,UserService,store,alcoholWishlist,$fblogin){
+		controller: function($scope,$rootScope,$http,$state,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard,$fblogin){
 
 			$scope.list = [];
 
@@ -208,6 +208,7 @@ AlcoholDelivery.directive('sideBar', function() {
                 	function(errorRes){}
                 );
                 alcoholWishlist.init();
+                ClaimGiftCard.claim();
 		    }
 		}
 	};
@@ -292,6 +293,26 @@ AlcoholDelivery.directive('sideBar', function() {
     }
   }
 })
+
+// .directive('myError', function() {
+//   return {
+//   	require: 'ngModel',
+//     link: function(scope, element, attrs, ctrl) {
+       
+//       element.on('blur', function() {
+      	
+//       	if(element.context.value==""){
+//       		ctrl.$setValidity("blank", false);
+//       	}else{
+//       		ctrl.$setValidity("blank", true);
+//       	}
+
+//       	scope.$apply();
+
+//       });
+//     }
+//   }
+// })
 
 .directive('onlyDigits', function () {
     return {

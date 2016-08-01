@@ -167,15 +167,37 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 			isProExist = _self.getProductById(product._id);
 
 			if(isProExist === false){
-				var newItem = new GiftingProduct(
-											product._id, 
-											product.quantity,
-											product.product.name,
-											product.product.imageFiles,
-											product.product.slug
-										);
 
-				_self.$products.push(newItem);
+				if(parseInt(product.qChilled)>0){
+
+					var newItem = new GiftingProduct(
+												product._id,
+												product.qChilled,
+												product.product.name,											
+												product.product.imageFiles,
+												product.product.slug,
+												true
+											);
+
+					_self.$products.push(newItem);
+
+				}
+
+				if(parseInt(product.qNChilled)>0){
+
+					var newItem = new GiftingProduct(
+												product._id, 
+												product.qNChilled,
+												product.product.name,											
+												product.product.imageFiles,
+												product.product.slug,
+												false
+											);
+
+					_self.$products.push(newItem);
+
+				}
+				
 			}
 
 		});
@@ -191,8 +213,8 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 													1,
 													promotion.product._title,
 													promotion.product._image,
-													promotion.product._slug
-
+													promotion.product._slug,
+													false
 												);
 				
 				_self.$products.push(newItem);
@@ -236,37 +258,50 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 	this.getGiftAttachedProduct = function(){
 
 		var products = this.getProducts();
-		var attachedPro = {};
+		var attachedPro = [];
 
 		angular.forEach(products,function(product,key){
-			if(product._inGift>0)
-			attachedPro[product._id] = parseInt(product._inGift);
+
+			if(product._inGift>0){
+
+				//attachedPro = attachedPro[product._id] || {};
+				var state = 'chilled';
+				if(!product._stateChilled){
+					state = 'nonchilled'
+				}
+
+				attachedPro.push({
+
+					_id : product._id,
+					state: state,
+					quantity:parseInt(product._inGift)
+
+				});
+			}
+
 		})
 		return attachedPro;
 	}
+	
 	this.validateGift = function(){
 
 	}
 
-	this.addUpdateGift = function(){
+	this.addUpdateGift = function(giftData){
 
 		var defer = $q.defer();
 
-		var gift = this.getCurrentGift();
-		
+		giftData['id'] = this.getCurrentGift()._id;
+		giftData['type'] = 'giftpackaging';
+		giftData['products'] = this.getGiftAttachedProduct();
 
-		$http.post("/cart/gift",{
-			
-			id:gift._id,
-			products:this.getGiftAttachedProduct()
-
-		}).then(
+		$http.post("/cart/gift",giftData).then(
 
 			function(successRes){
 				
-				alcoholCart.addGiftCard(successRes.data);
+				alcoholCart.addGift(successRes.data.gift);
 
-				defer.resolve(successRes);
+				defer.resolve(successRes.data.gift);
 
 			},
 			function(errorRes){
@@ -278,7 +313,7 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 		return defer.promise;
 	}
 
-	this.addUpdateGiftCard = function(gift){
+	this.addGiftCard = function(gift){
 
 		var defer = $q.defer();	
 
@@ -289,7 +324,11 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 		}).then(
 
 			function(successRes){
+				
+				alcoholCart.addGiftCard(successRes.data.data);
+
 				defer.resolve(successRes);
+
 			},
 			function(errorRes){
 				defer.reject(errorRes);
@@ -300,14 +339,151 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 		return defer.promise;
 	}
 
-	
-	
+	this.updateGiftCard = function(uid){
+
+		var giftObj = alcoholCart.getGiftCardByUid(uid);
+
+		if(giftObj===false){
+
+			$rootScope.$broadcast('alcoholCart:notify', "Gift card not found !");
+			return false;
+
+		}
+		
+		recipient = giftObj.getRecipient();
+
+		var defer = $q.defer();	
+
+		$http.put("/cart/giftcard/"+uid,{
+			type: 'giftcard',
+			recipient : recipient
+		}).then(
+
+			function(successRes){							
+
+				$rootScope.$broadcast('alcoholCart:updated',{msg:"Gift Card Updated"});
+				defer.resolve(successRes);
+
+			},
+			function(errorRes){
+				defer.reject(errorRes);
+			}
+
+		)
+
+		return defer.promise;
+	}
 
 }]);
 
+AlcoholDelivery.service("ClaimGiftCard",['$http', '$q', 'UserService', '$mdToast', function ($http, $q, UserService, $mdToast) {
+
+	return {
+
+		init : function (token){
+
+			var _self = this;
+			_self.store(token);
+
+			return $q(function(resolve,reject){
+
+				UserService.GetUser().then(
+
+					function(resolveRes){
+						
+						if(typeof resolveRes.auth !== 'undefined' && resolveRes.auth=== false){
+
+							$mdToast.show(
+
+								$mdToast.simple()
+									.textContent("Please login or signup to claim gift card")
+									.highlightAction(false)
+									.position("top right fixed")
+									.hideDelay(4000)
+							);
+							
+							reject();
+
+						}
+
+						_self.claim().then(
+							function(successRes){
+								resolve(successRes);
+							},
+							function(rejectRes){
+								reject(rejectRes);
+							}
+						);
+						
+					},
+					function(rejectRes){
+						reject(rejectRes);
+					}
+
+				);		
+
+			})
+
+		},
+
+		store : function (token) {
+
+			localStorage.setItem("gifttoken",token);
+		},
+
+		claim : function () {
+
+			var response = {
+				"token":false
+			};
+
+			return $q(function(resolve,reject){
+
+				var token = localStorage.getItem("gifttoken",token);
+
+				if(!token){
+					reject(response);
+				}
+
+				response.token = token;
+
+				$http.post("user/giftcard/"+response.token,{}).then(
+
+					function(successRes){
+
+						$mdToast.simple()
+									.textContent("Hurry! credits added to your account")
+									.highlightAction(false)
+									.position("top right fixed")
+									.hideDelay(4000)
+
+						resolve(successRes.data);
+					},
+					function(rejectRes){
+						setTimeout(function() {
+							$mdToast.simple()
+									.textContent("rejectRes.message")
+									.highlightAction(false)
+									.position("top right fixed")
+									.hideDelay(4000)	
+						}, 1000);
+						
+						reject(rejectRes);
+					}
+
+				);
+
+			});
+
+		}
+
+	}
+}]);
+
+
 AlcoholDelivery.factory('GiftingProduct',['$filter',function($filter){
 
-	var giftProduct = function(id,quantity,title,images,slug){
+	var giftProduct = function(id, quantity, title, images, slug, state){
 
 		this._id = id;
 		this._quantity = parseInt(quantity);
@@ -316,6 +492,8 @@ AlcoholDelivery.factory('GiftingProduct',['$filter',function($filter){
 		this._image = $filter('getProductThumb')(images);
 		this._slug = slug;
 		this._inGift = 0;
+		this._stateChilled = state;
+
 
 	}
 	return giftProduct;

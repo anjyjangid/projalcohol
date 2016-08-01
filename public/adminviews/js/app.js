@@ -1128,6 +1128,18 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				"products@userLayout.orders.consumer" : {					
 					templateUrl: "adminviews/views/orders/order/products.html",
 					controller : "OrderProductsController",
+				},
+				"delivery@userLayout.orders.consumer" : {
+					templateUrl: "adminviews/views/orders/order/delivery.html",
+					controller : "OrderDeliveryController",
+				},
+				"payment@userLayout.orders.consumer" : {
+					templateUrl: "adminviews/views/orders/order/payment.html",
+					controller : "OrderPaymentController",
+				},
+				"review@userLayout.orders.consumer" : {
+					templateUrl: "adminviews/views/orders/order/review.html",
+					controller : "OrderReviewController",
 				}
 			},			
 			data:{

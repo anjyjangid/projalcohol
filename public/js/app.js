@@ -370,6 +370,15 @@ AlcoholDelivery.factory('ScrollPagination', function($http) {
   Search.prototype.nextPage = function() {
     if (this.busy || this.limitreached) return;
     this.busy = true;
+    var _self = this;
+
+console.log({
+    		loyalty:true,
+	    	skip:this.skip,
+	    	take:this.take,
+	    	filter:this.filter,
+	    	sortby:this.sortby
+	    });
 
     $http.get('/site/searchlist',{
     	params : {
@@ -381,20 +390,20 @@ AlcoholDelivery.factory('ScrollPagination', function($http) {
 	    }
     }).then(function(result){
 
-		var items = result.data.products;
+		var items = result.data.items;
 
-		this.totalResult = result.data.total;
+		_self.totalResult = result.data.total;
 		for (var i = 0; i < items.length; i++) {
-			this.items.push(items[i]);
+			_self.items.push(items[i]);
 		}
-		this.busy = false;
-		if(result.data.products.length < parseInt(this.take)){
-			this.limitreached = true;
+		_self.busy = false;
+		if(result.data.items.length < parseInt(_self.take)){
+			_self.limitreached = true;
 		}else{
-			this.skip+= parseInt(this.take);
+			_self.skip+= parseInt(_self.take);
 		}
 
-	}.bind(this));
+	}.bind(_self));
 
   };
 
@@ -523,7 +532,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						url: "/",						
 						"views" : {
 
-							"" : {
+							"" : {								
 								templateUrl : "/templates/index/home.html",
 								controller:function($scope,$http){
 										$scope.AppController.category = "";
@@ -592,7 +601,18 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						}
 				})
 
-				
+				.state('mainLayout.index.claim-gift-card', {
+
+						url: "claim/gift/card/{token}",
+						views: {
+							"giftClaim" :{
+								template : "",
+								controller:"ClaimGiftCardController"
+							}
+						}
+						
+						
+				})
 
 				.state('mainLayout.checkout', {
 						abstract: true,
@@ -658,10 +678,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 						url: "/login",
 						templateUrl: "/templates/index/home.html",
-						controller:function(){
+						controller:function(UserService){
+
 							setTimeout(function(){
-										$('#login').modal('show');
-								},1000)
+								$('#login').modal('show');
+							},1000)
 
 						}
 				})
@@ -978,7 +999,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})				
 
 				.state('mainLayout.gift', {
-					url: "/gifts/product/{giftid}",
+					url: "/gifts/product/{giftid}/:uid",
 					templateUrl : '/templates/gifts/giftdetail.html',
 					controller: 'GiftController'										
 				})
@@ -1198,7 +1219,32 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 
 	});
 
+
 	$rootScope.$on('alcoholCart:promotionRemoved', function(data,msg){
+
+		$mdToast.show(
+			$mdToast.simple()
+				.textContent(msg)
+				.highlightAction(false)
+				.position("top right fixed")
+				.hideDelay(4000)
+			);
+
+	});
+
+	$rootScope.$on('alcoholCart:notify', function(data,msg){
+
+		$mdToast.show(
+			$mdToast.simple()
+				.textContent(msg)
+				.highlightAction(false)
+				.position("top right fixed")
+				.hideDelay(4000)
+			);
+
+	});
+
+	$rootScope.$on('alcoholCart:giftRemoved', function(data,msg){
 
 		$mdToast.show(
 			$mdToast.simple()

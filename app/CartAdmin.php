@@ -114,12 +114,13 @@ class CartAdmin extends Moloquent
 
 		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value'])->first();
 
+
 		$services = $services['settings'];
 
 		$cart["service"]["express"]["charges"] = $services['express_delivery']['value'];
-		$cart["smoke"]["charges"] = $services['cigratte_services']['value'];
+		$cart["service"]["smoke"]["charges"] = $services['cigratte_services']['value'];
 
-		$cart["delivery"] = [
+		$cart["service"]["delivery"] = [
 								"free" => false,
 								"charges" => $services['non_free_delivery']['value'],
 								"mincart" => $services['minimum_cart_value']['value'],

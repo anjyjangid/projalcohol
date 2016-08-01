@@ -196,6 +196,20 @@ class Email extends Moloquent
 				
 			break ;
 
+			case 'giftcard':/* begin : Gift card send Email { */
+								
+				$this->recipient_info["receiver"]['email'] = $data['beneficiary']['email'];
+
+				$this->recipient_info["replace"]["{giftcard_link}"] = url()."/#/getgift/".$data['key'];
+				$this->recipient_info["replace"]["{sender_name}"] = $data['sender']['name'];
+				$this->recipient_info["replace"]["{sender_message}"] = $data['beneficiary']['message'];
+				$this->recipient_info["replace"]["{beneficiary_title}"] = $data['beneficiary']['name'];
+				
+				$this->recipient_info["message"] = str_ireplace(array_keys($this->recipient_info["replace"]),array_values($this->recipient_info["replace"]),$this->recipient_info["message"]);
+				
+			break ;
+
+
 			case 'deliverynotification':/* begin : Invitation Email { */
 								
 				$this->recipient_info["receiver"]['email'] = $data['email'];			
@@ -220,7 +234,7 @@ class Email extends Moloquent
 				/*LAYOUT BASED MAIL*/
 
 				$data = ['content' => $this->recipient_info['message']];
-
+$this->recipient_info["receiver"]['email'] = 'anuragcgt@gmail.com';
 				Mail::send('emails.mail', $data, function ($message) {
 					$message->setTo(array($this->recipient_info["receiver"]['email']=>$this->recipient_info["receiver"]['name']));
 					$message->setSubject($this->recipient_info['subject']);

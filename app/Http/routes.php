@@ -125,8 +125,11 @@ Route::get('freezcart','CartController@freezcart');
 
 Route::group(['middleware' => 'auth'], function () {
 
-	Route::resource('loyalty', 'LoyaltyController');
 	Route::controller('loyalty', 'LoyaltyController');
+	Route::resource('loyalty', 'LoyaltyController');
+
+	Route::controller('credits', 'CreditsController');
+	Route::resource('credits', 'CreditsController');
 
 });
 
@@ -158,8 +161,14 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::delete('card/{key}','CartController@deleteCard');
 
+	Route::delete('gift/{key}','CartController@deleteGift');
+
 	Route::post('gift','CartController@postGift');
-	Route::post('giftcard/{cartKey}','CartController@postGiftcard');
+	
+	Route::post('giftcard','CartController@postGiftcard');
+	Route::put('giftcard/{uid}','CartController@putGiftcard');
+
+	Route::put('gift/product/chilledtoggle/{giftUid}','CartController@putGiftProductChilledStatus');
 
 });
 

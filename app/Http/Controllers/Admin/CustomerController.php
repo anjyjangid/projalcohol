@@ -36,19 +36,23 @@ class CustomerController extends Controller
 		$params = $request->all();
 		$users = new User;
 
+		$columns = ['name','email','status','_id','mobile_number','address'];
+
 		if(isset($params['name']) && trim($params['name'])!=''){
 		  $pname = $params['name'];
 		  $users = $users->where('name','regexp', "/.*$pname/i");
+		  $users = $users->orderBy('name','asc')->get();
 		}
 
 		if(isset($params['mobile_number']) && trim($params['mobile_number'])!=''){
 			$pmobile_number = $params['mobile_number'];
 			$users = $users->where('mobile_number','regexp',"/.*$pmobile_number/i");
+			$users = $users->orderBy('mobile_number','desc')->get();
 		}
 
-		$columns = ['name','email','status','_id','mobile_number'];
 		
-		$users = $users->orderBy('name','desc')->get();
+		
+		
 
 		return response($users);
 	}

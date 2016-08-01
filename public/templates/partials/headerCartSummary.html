@@ -1,3 +1,4 @@
+
 <li ng-class="{'hideOp':hideOpcart.hide}" class="dropdown cart-icon-set" id="cart-summary-icon" ng-mouseover="hideOpcart.hide=false" ng-mouseleave="hideOpcart.hide=true">
 
 <a href="javascript:void(0)" class="cart_icon"></a><span ng-if="alcoholCart.getTotalUniqueItems()">{{alcoholCart.getCartTotal() | pricingTxt}}</span>
@@ -32,6 +33,22 @@
 					<div class="currentorderpopupulright">{{package._price | freeTxt}}</div>
 				</li>
 
+				<li ng-repeat="(key,giftCard) in alcoholCart.getGiftCards()">
+					<div class="currentorderpopupulleft">Gift Card ({{giftCard.recipient.price | pricingTxt}})</div>
+					<div class="currentorderpopupulcenter">{{giftCard.recipient.quantity}}</div>
+					<div class="currentorderpopupulright">{{giftCard.getPrice() | pricingTxt}}</div>
+				</li>
+
+				<li ng-repeat="(key,gift) in alcoholCart.getGifts()">
+					<div class="currentorderpopupulleft">
+						Gift : {{gift.gsTitle()}} <br />
+						product: {{gift.getProductAttachedCount()}}/{{gift.gsLimit()}}
+					</div>
+					<div class="currentorderpopupulcenter">1</div>
+					<div class="currentorderpopupulright">{{gift.gsPrice() | pricingTxt}}</div>
+
+				</li>
+
 			</ul>
 		</div>
 	</div>
@@ -40,10 +57,6 @@
 			There is nothing in cart
 		</div>
 	</div>
-
-
-
-	<!--Current order End-->
 
 </div>
 </li>

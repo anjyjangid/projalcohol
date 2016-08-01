@@ -23,11 +23,13 @@ class GiftCartRequest extends Request
 	 * @return array
 	 */
 	public function rules()
-	{        
+	{
 		$input = Input::all();
 
 		$rulesCommon = [
 					'type' => 'required|in:"giftcard","giftpackaging"',
+					'recipient.message'=> 'required|max:200',					
+					'recipient.name'=> 'required',
 				];
 
 		switch($input['type']){
@@ -36,31 +38,53 @@ class GiftCartRequest extends Request
 
 				$rules = [
 					
-					'recipient.email'=> 'required',
-					'recipient.message'=> 'required|max:200',
-					
-					'recipient.name'=> 'required',
+					'recipient.email'=> 'required|email',					
 					'recipient.price'=> 'required|numeric',
 					'recipient.quantity'=> 'required|integer|min:1',
 					'recipient.sms'=> 'in:0,1',
 					'recipient.mobile'=> 'required_if:recipient.sms,1',
-
+				];
+			break;
+			default :
+				$rules = [
+					// "products"
 				];
 			break;
 		}
 		
+
+		$rules = array_merge($rulesCommon,$rules);
 				
 		return $rules;
 	}
 
 	public function messages(){
 
-		$messages = [
-			'required' => 'This field is required',
-			'recipient.message.max'=> 'message must be less than or equal to 200 characters',
-			'recipient.mobile.required_if'=> 'To send SMS please provide mobile number',
-			
-		];                
+		$input = Input::all();
+		
+		$messagesCommon = [
+					'required' => 'This field is required',
+					'recipient.message.max'=> 'message must be less than or equal to 200 characters',
+				];
+
+		switch($input['type']){
+
+			case 'giftcard':
+
+				$messages = [										
+					'recipient.mobile.required_if'=> 'To send SMS please provide mobile number',
+				];
+
+			break;
+			default :
+				$messages = [
+					
+				];
+			break;
+		}
+
+		$messages = array_merge($messagesCommon,$messages);
+
 		return $messages;
 	}
 
