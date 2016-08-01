@@ -709,7 +709,6 @@ jprd($product);
 
 		}
 
-
 	}
 
 	public function putGiftProductChilledStatus(Request $request,$giftUid){
@@ -720,17 +719,55 @@ jprd($product);
 		$cartKey = $this->deliverykey;
 
 		// $cart = Cart::where("_id",$cartKey)
-		// 					->where("gifts._uid",new mongoId($giftUid))
-		// 					->where("gifts.products._id",$productId)
-		// 					->where("gifts.products.state",$state)
-		// 					->get(['gifts']);
-							
-                       		// ->update(["gifts.products.$._id"=>false]);
+		//			->where("gifts._uid",new mongoId($giftUid))
+		//			->where("gifts.products._id",$productId)
+		//			->where("gifts.products.state",$state)
+		//			->get(['gifts']);
+
+		// ->update(["gifts.products.$._id"=>false]);
 
 		$cart = Cart::where("_id",$cartKey)
-							->where("gifts._uid",new mongoId($giftUid))
-							->where("gifts.products._id",$productId)
-							->first(['gifts']);
+						->where("gifts._uid",new mongoId($giftUid))
+						->where("gifts.products.quantity",3) //$productId
+						->where("gifts.products.state",$state)
+						->update(["gifts.0.products.$.chilled"=>"asdasdasasadads"]);
+
+
+		// $cart = DB::collection('cart')->raw(function($collection)
+		// 	{
+		// 			return $collection->update(array(
+		// 					array(
+		// 							'$project' => array(
+		// 									'name'=>'$name',
+		// 									'quantity'=>'$quantity',
+		// 									'maxQuantity'=>'$maxQuantity',
+		// 									'threshold'=>'$threshold',
+		// 									'sum' => array(
+		// 											'$subtract' => array(
+		// 												'$maxQuantity',
+		// 												'$quantity'
+		// 											)
+		// 									),                      
+		// 							),                  
+		// 					),
+		// 					array(
+		// 							'$sort' => array('sum'=>-1)
+		// 					),
+		// 					array(
+		// 							'$skip' => 0
+		// 					),
+		// 					array(
+		// 							'$limit' => 5
+		// 					)
+		// 					array(
+		// 							'$match' => array(
+		// 								'sum' => 70
+		// 							)
+		// 					)   
+		// 			));
+		// 	});
+
+		
 prd($cart);
 		
 
