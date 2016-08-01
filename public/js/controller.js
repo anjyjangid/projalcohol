@@ -183,7 +183,13 @@ AlcoholDelivery.controller('AppController',
 				clickOutsideToClose: true		
 			}
 		)
-	};	
+	};
+
+	$scope.loadingmsg = false;
+
+	$scope.$on('redirecting', function(event, data) {
+		$scope.loadingmsg = data;
+	});	
 
 }]);
 
@@ -1950,11 +1956,66 @@ AlcoholDelivery.controller('CartDeliveryController',['$scope','$rootScope','$sta
 
 }]);
 
-AlcoholDelivery.controller('CartPaymentController',['$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','sweetAlert',function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, sweetAlert){
+AlcoholDelivery.controller('CartPaymentController',
+	['$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','sweetAlert', '$interval', 'alcoholCart', '$state',
+	function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, sweetAlert, $interval, alcoholCart, $state){
+
+		var timer = $interval(function() {
+
+				if(!$rootScope.storeInitUP){
+					$interval.cancel(timer);
+				}
+			$scope.payment = alcoholCart.$cart.payment;
+
+		});
+
+		$scope.proceedReview = function(){
+
+			$deployCart = false;
+
+			if($scope.payment.method == 'COD'){				
+				$deployCart = true;
+				//REMOVE CARD ATTR IN CASE OF COD
+				delete $scope.payment.card;
+				delete $scope.payment.creditCard;
+				delete $scope.payment.savecard;
+			}else{
+
+				if(typeof $scope.payment.card == 'undefined' || $scope.payment.card == "" || $scope.payment.card == null){
+					sweetAlert.swal({
+						type:'error',
+						text:"Please select card for payment.",						
+					});	
+				}else{
+					if($scope.payment.card == 'newcard'){
+						$scope.$broadcast('addcardsubmit');						
+					}else{
+						$deployCart = true;
+					}
+				}
+
+			}
+
+			if($deployCart){
+				alcoholCart.deployCart().then(
+					function(result){
+						$state.go('mainLayout.checkout.review');
+					}
+				);				
+			}
+
+		}	
 
 }]);
 
-AlcoholDelivery.controller('CartReviewController',['$scope','$rootScope','$http','$q','$state', '$mdDialog', '$mdMedia', '$interval', 'alcoholCart','store','sweetAlert',function($scope, $rootScope, $http, $q, $state, $mdDialog, $mdMedia, $interval, alcoholCart, store, sweetAlert){
+AlcoholDelivery.controller('CartReviewController',[
+	'$scope','$rootScope','$http','$q','$state', '$mdDialog', '$mdMedia', '$interval', 'alcoholCart','store','sweetAlert','$sce',
+	function($scope, $rootScope, $http, $q, $state, $mdDialog, $mdMedia, $interval, alcoholCart, store, sweetAlert,$sce){
+
+	$scope.card = {
+		formAction:'',
+		formData:{}
+	}
 
 	var timer = $interval(function() {
 
@@ -2004,6 +2065,9 @@ AlcoholDelivery.controller('CartReviewController',['$scope','$rootScope','$http'
 
 
 				$scope.orderConfirm = function(){
+					
+				    /*$scope.pay();
+				    return;*/
 
 					alcoholCart.freezCart().then(
 
@@ -2025,6 +2089,16 @@ AlcoholDelivery.controller('CartReviewController',['$scope','$rootScope','$http'
 					        })
 					        .success(function(response) {
 
+					        	if($scope.cart.payment.method == 'CARD'){					        						        		
+					        		var payurl = $sce.trustAsResourceUrl(response.formAction);
+						            $rootScope.$broadcast('gateway.redirect', {
+						                url: payurl,
+						                method: 'POST',
+						                params: response.formData
+						            });					        		
+					        		return;
+					        	}
+					            
 					            if(!response.success){
 
 					            	sweetAlert.swal({

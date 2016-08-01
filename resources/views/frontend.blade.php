@@ -60,7 +60,8 @@
 		<link rel="shortcut icon" href="images/favicon.ico"/>		
 	</head>
 
-	<body ng-controller="AppController">		    	    	 
+	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}">		    	    	 
+    	<div class="loader" ng-bind="loadingmsg"></div>
     	<div id="wrapper">     	    		    		
 
 	        <div id="page-content-wrapper">    	

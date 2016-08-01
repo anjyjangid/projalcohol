@@ -22,6 +22,8 @@ use DB;
 use MongoDate;
 use MongoId;
 
+use AlcoholDelivery\Payment;
+
 class CartController extends Controller
 {
 
@@ -961,14 +963,21 @@ jprd($product);
 		$cart = $cartObj->where("_id","=",$cartKey)->first();
 
 		if(empty($cart)){
-
 			return response(["success"=>false,"message"=>"cart not found"],405); //405 => method not allowed
-
 		}
 
 		$cartArr = $cart->toArray();	
 
 		$user = Auth::user('user');
+
+		//PREPARE PAYMENT FORM DATA
+		if($cartArr['payment']['method'] == 'CARD'){
+
+			$payment = new Payment();
+			$payment = $payment->prepareform($cartArr,$user);
+			return response($payment,200);
+
+		}
 
 		$cartArr['user'] = new MongoId($user->_id);
 
@@ -1038,7 +1047,7 @@ jprd($product);
 			$reference.="O";			
 			$reference.= (string)date("Hi",strtotime($order->created_at));
 
-			$order->reference = $reference;
+			//$order->reference = $reference;
 
 			$order->save();
 
@@ -1072,7 +1081,8 @@ jprd($product);
 
     public function deploycart(Request $request,$cartKey){
 
-		$cart = Cart::find($cartKey);
+
+    	$cart = Cart::find($cartKey);
 
 		if(empty($cart)){
 			return response(array("success"=>false,"message"=>"something went wrong with cart"));
@@ -1106,6 +1116,9 @@ jprd($product);
 
     	}
 
+    	//SET CART REFERENCE FOR ORDER ID
+    	$cart->setReference();
+
     	try {
 
 			$cart->save();
@@ -1130,11 +1143,12 @@ jprd($product);
 
 		$cart = Cart::findUpdated($cartKey);
 
-		// if(isset($cart->freeze) && $cart->freeze===true){
+		if(isset($cart->freeze) && $cart->freeze===true){
 
-		// 	return response(["success"=>false,"message"=>"Cart is already freezed"],405); //405 => method not allowed
+			return response(["success"=>true,"message"=>"Cart is already freezed"],200);
+			return response(["success"=>false,"message"=>"Cart is already freezed"],405); //405 => method not allowed
 
-		// }
+		}
 
 		$cart->freeze = true;
 

@@ -260,6 +260,8 @@ Route::resource('giftcategory', 'GiftCategoryController',['only'=>['index','show
 
 Route::resource('gift', 'GiftController',['only'=>['show']]);
 
+Route::controller('payment', 'PaymentController');
+
 //TO WORK FOR ANGULAR DIRECT URL
 
 

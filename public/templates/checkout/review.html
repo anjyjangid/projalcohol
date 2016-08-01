@@ -23,7 +23,19 @@
 				 <div class="checkoutstep5-left-first">
 					 <div class="checkoutstep5-left-first-left">
 						 <div class="checkoutstep5-left-first-lefttext">Payment</div>
-						 <div class="checkoutstep5-left-first-lefttitle">Cash on Delivery</div>
+						 <div class="checkoutstep5-left-first-lefttitle">
+							{{(cart.payment.method == 'COD')?'Cash on delivery':''}}
+						 </div>
+
+						 <div ng-if="cart.payment.method == 'CARD'" class="orhistry2_td2procdtcvr">
+	                        {{selectedcard = cart.payment.creditCard;''}}
+	                        <span ng:class="selectedcard.type" class="cardicons"></span>
+	                        <div class="checkouter-td-right-text">
+	                            <div class="orhistry2_td2proctext1">{{selectedcard.token_id | creditcard}}</div>
+	                            <div class="orhistry2_td2proctext2">{{selectedcard.type}}</div>
+	                        </div>  
+	                    </div>
+
 					 </div>
 					 <a class="checkoutstep5-left-edit" ui-sref="mainLayout.checkout.payment"><img src="images/checkoutstep5-editimg.png"></a>
 				 </div>
@@ -200,4 +212,4 @@
 				<button class="checkoutstep5-mid-button" ng-click="orderConfirm()">Confirm Order <i class="glyphicon glyphicon-menu-right"></i></button>
 				
 				</div>
-		
+<payment-form></payment-form>		

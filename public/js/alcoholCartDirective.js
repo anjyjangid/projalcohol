@@ -128,4 +128,26 @@ angular.module('alcoholCart.directives',[])
 				}
 			}
 		};
+	}])
+
+	.directive('paymentForm', ['$rootScope','$timeout',function($rootScope,$timeout){
+		return {			
+			restrict: 'E',
+            replace: true,
+            template: 
+                '<form action="{{ formData.url }}" method="{{ formData.method }}">' +
+                '   <div ng-repeat="(key,val) in formData.params">' +
+                '       <input type="hidden" name="{{ key }}" value="{{ val }}" />' +
+                '   </div>' +
+                '</form>',
+            link: function($scope, $element, $attrs) {
+                $scope.$on('gateway.redirect', function(event, data) {
+                    $scope.formData = data;
+                    $timeout(function() {
+                        $rootScope.$broadcast('redirecting','Wait while we redirect you to the payment gateway..');
+                        $element.submit();
+                    });
+                })
+            }
+		};
 	}]);

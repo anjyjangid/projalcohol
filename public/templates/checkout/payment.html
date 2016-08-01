@@ -1,22 +1,24 @@
-
-	<div class="div_pleas_chose_time_text">Please choose a payment method from below</div>
-		<div class="cover_creadetcard_cashdiv">
-			<div class="cover_cashdiv_left paymenttype" ng-class="{active:payment.type=='cod'}">
-				<div class="pic_divcash">
-					<div class="verticetnter2"><img src="images/cash_okpic.png"></div>
-				</div>
-				<div class="divcash_text">Cash on Delivery</div>
-			</div>
-			<div class="cover_creadetcard_right paymenttype" ng-class="{active:payment.type=='credit'}">
-				<div class="pic_creadetcard">
-					<div class="verticetnter"><img src="images/creaditcard_pic.png"></div>
-				</div>
-				<div class="creadetcard_text">Credit Card</div>
-			</div>
+<div class="div_pleas_chose_time_text">Please choose a payment method from below</div>
+<div class="cover_creadetcard_cashdiv">
+	<div class="cover_cashdiv_left paymenttype" ng-click="payment.method='COD'" ng-class="{active:payment.method=='COD'}">
+		<div class="pic_divcash">
+			<div class="verticetnter2"><img src="images/cash_okpic.png"></div>
 		</div>
-
-<div class="checkouterlastdiv">
-	<div class="checkouterbackouter2"> <a class="checkouterback2" ui-sref="mainLayout.checkout.delivery"><span><img src="images/order_history2backpic.png"></span>back</a>
-		<button class="checkoutcheckoutnowbutton2" ui-sref="mainLayout.checkout.review">Next<span><img src="images/leftarrowpic.png"></span></button>
+		<div class="divcash_text">Cash on Delivery</div>
+	</div>
+	<div class="cover_creadetcard_right paymenttype" ng-click="payment.method='CARD'" ng-class="{active:payment.method=='CARD'}">
+		<div class="pic_creadetcard">
+			<div class="verticetnter"><img src="images/creaditcard_pic.png"></div>
+		</div>
+		<div class="creadetcard_text">Credit Card</div>
 	</div>
 </div>
+<div class="availablecards">
+	<div paymentmode="true" payment="payment" creditCard="payment.creditCard" ng-show="payment.method=='CARD'" user-cards></div>
+</div>
+<div class="checkouterlastdiv">
+<div class="checkouterbackouter2"> <a class="checkouterback2" ui-sref="mainLayout.checkout.delivery"><span><img src="images/order_history2backpic.png"></span>back</a>
+<button class="checkoutcheckoutnowbutton2" ng-click="proceedReview()">Next<span><img src="images/leftarrowpic.png"></span></button>
+</div>
+</div>
+<!-- <pre>{{payment|json}}</pre> -->

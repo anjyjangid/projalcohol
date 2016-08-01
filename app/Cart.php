@@ -12,7 +12,6 @@ class Cart extends Moloquent
 	protected $primaryKey = "_id";
 	protected $collection = 'cart';
 	public static $key;
-
 	/**
 	 * Indicates if the model should be timestamped.
 	 *
@@ -25,7 +24,7 @@ class Cart extends Moloquent
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['_id', 'products', 'packages', 'giftCards', 'nonchilled', 'delivery','service','discount','timeslot','payment','status','user'];
+	protected $fillable = ['_id', 'products', 'packages', 'giftCards', 'nonchilled', 'delivery','service','discount','timeslot','payment','status','user','reference'];
 
 	public function setKey($keyVal){
 		$this->key = $keyVal;
@@ -264,6 +263,20 @@ class Cart extends Moloquent
 		}
 
 		return $productsInCart->toArray();
+
+	}
+
+	public function setReference(){
+
+		$reference = "ADSG";
+		$reference.= ((int)date("ymd",strtotime($this->updated_at)) - 123456);			
+		$reference.="O";			
+		$reference.= (string)date("Hi",strtotime($this->updated_at));
+
+		$this->reference = $reference;
+	}
+
+	public function confirmOrder($cartArr){		
 
 	}
 

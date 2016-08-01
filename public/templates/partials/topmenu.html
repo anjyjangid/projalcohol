@@ -93,9 +93,11 @@ new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'e
             <div class="registeremailcvr" ng-class="{'has-error':signup.errors.terms[0]}"> 
               <!--  <input type="checkbox" class="" ng-model="signup.terms" name="regis" id="regis">-->
               
-              <md-checkbox ng-model="signup.terms" aria-label="leaveatdoor-checkbox" name="regis" id="regis"></md-checkbox>
-              <label for="regis"><span></span></label>
+              <md-checkbox ng-model="signup.terms" aria-label="leaveatdoor-checkbox" name="regis" id="regis" class="md-warn md-align-top-left">
               <div class="register_checktext"> By submitting this form, I confirm that I have read and agree to Alcohol Delivery’s <a target="_blank" ui-sref="cmsLayout.terms-conditions">Terms of Use</a> and <a target="_blank" ui-sref="cmsLayout.privacy-policy">Privacy Policy</a> <span class="help-block" ng-bind="signup.errors.terms[0]"></span></div>
+              </md-checkbox>
+              <label for="regis"><span></span></label>
+              
             </div>
           </div>
         </div>
