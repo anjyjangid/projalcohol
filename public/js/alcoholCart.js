@@ -1108,18 +1108,17 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			var isFound = this.getGiftByUniqueId(giftData._uid);
 
 			if(isFound===false){
-				
+
 				if(typeof giftData !== 'object'){
 					return false;
 				}
-				
+
 				var gift = new alcoholCartGift(giftData);
 
 				this.$cart.gifts = this.$cart.gifts || [];
 				this.$cart.gifts.push(gift);
 
 			}
-
 
 		};
 

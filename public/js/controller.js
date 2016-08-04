@@ -2381,8 +2381,7 @@ AlcoholDelivery.controller('RepeatOrderController',['$scope','$rootScope','$http
 		function(newValue, oldValue) {
 			
 			if(UserService.currentUser === null || typeof UserService.currentUser._id === 'undefined'){
-
-				console.log("Repeat order cannot initialized");
+				
 				return false;
 
 			}

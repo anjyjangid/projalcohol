@@ -36,6 +36,11 @@ class Products extends Eloquent
 			'loyalty',
 			'isLoyalty',
             'loyaltyType',
+
+            'loyaltyValueType',
+            'loyaltyValuePoint',
+            'loyaltyValuePrice',
+
 			'threshold',
 			'maxQuantity',
 			'dealers',

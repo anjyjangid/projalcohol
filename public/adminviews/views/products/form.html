@@ -237,7 +237,55 @@
 								</div>
 							</div>
 
-							<div class="form-group" ng:class="{'has-error':errors.loyalty[0]}" ng-show="product.isLoyalty==1">
+
+							<div class="form-group" ng:class="{'has-error':errors.loyaltyValueType[0]}" ng-show="product.isLoyalty==1">
+
+								<label class="col-md-2 control-label">Loyalty Points Type:<span class="required">*</span>
+								</label>
+								<div class="col-md-10">
+									<div class="row">
+																		
+									<div class="col-sm-10">
+										<div class="row">
+											<div class="col-sm-8">
+											<select class="form-control" ng-model="product.loyaltyValueType">
+												<option value="">----Select Type----</option>
+												<option value="0">fixed Points</option>
+												<option value="1">Partial (point + $)</option>
+											</select>
+											</div>
+										</div>
+
+										<div class="row" ng-show="product.loyaltyValueType">
+										<br>
+											<div class="col-sm-4" ng:class="{'has-error':errors.loyaltyValuePoint[0]}">
+												<span class="help-block">Points</span>
+												<input type="number" min="0" class="form-control" ng-model="product.loyaltyValuePoint" placeholder="loyalty points">
+												<span class="help-block" ng-bind="errors.loyalty[0]"></span>
+											</div>
+										
+											<div class="col-sm-4" ng-show="product.loyaltyValueType == 1">
+											<span id="loyaltyValuePriceAdd">+</span>
+												<span class="help-block">price</span>
+												<input type="number" min="0" class="form-control" ng-model="product.loyaltyValuePrice" placeholder="amount">
+											</div>
+
+										</div>
+									</div>
+
+									</div>
+									<div class="row">
+									<div class="col-sm-12">
+										<span class="help-block">Loyalty points or price or both required to purhcase product</span>	
+										<span class="help-block" ng-bind="errors.loyaltyValueType[0]"></span>									
+									</div>
+									</div>
+									
+								</div>
+							</div>
+							
+
+							<div class="form-group" ng:class="{'has-error':errors.loyalty[0]}">
 
 								<label class="col-md-2 control-label">Loyalty Value:<span class="required">*</span>
 								</label>
