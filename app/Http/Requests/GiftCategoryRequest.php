@@ -34,7 +34,7 @@ class GiftCategoryRequest extends Request
 
         if(isset($input['_id'])){
 
-            $rules['title']='required|unique:giftcategories,title,'.$input['_id'].',_id,parent,'.$input['parent'];
+            $rules['title']='required|unique:giftcategories,title,'.$input['_id'].',_id,parent,'.@$input['parent'];
         }
 
         if(!isset($input['coverImage']) || !empty($input['image']['thumb'])){
@@ -46,6 +46,7 @@ class GiftCategoryRequest extends Request
         }
 
         if(isset($input['type']) && $input['type']=='giftcard'){
+
             $rules['subTitle'] = 'required';
             $rules['description'] = 'required';
             $rules['cards'] = 'required|array|min:1';
@@ -58,6 +59,16 @@ class GiftCategoryRequest extends Request
                     $rules[$ruleKey . '.value'] = 'required|integer';                    
                 }
             }
+
+            if (isset($input['loyalty']) && is_array($input['loyalty']))
+            {
+                foreach ($input['loyalty'] as $key => $image)
+                {
+                    $ruleKey = 'cards.' . $key;
+                    $rules[$ruleKey . '.value'] = 'required|integer';                    
+                }
+            }
+
         }
 
         if(isset($input['gift_packaging'])){

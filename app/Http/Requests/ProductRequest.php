@@ -44,8 +44,13 @@ class ProductRequest extends Request
             'isFeatured' => 'required|integer',
             'imageFiles' => 'required|array|min:1',            
             'isLoyalty' => 'required|integer|in:0,1',
-            'loyalty' => 'required_if:isLoyalty,1|numeric',
-            'loyaltyType' => 'required_if:isLoyalty,1|integer|in:0,1',
+
+            'loyalty' => 'required|numeric',
+            'loyaltyType' => 'required|integer|in:0,1',
+
+            'loyaltyValueType' => 'required_if:isLoyalty,1|integer|in:0,1',
+            'loyaltyValuePoint' => 'required_with:loyaltyValueType|numeric|max:100000|min:1',
+            'loyaltyValuePrice' => 'required_if:loyaltyValueType,1|numeric|lt:price',
             
 
             'threshold' => 'required|numeric|lt:maxQuantity',
@@ -126,7 +131,9 @@ class ProductRequest extends Request
             'imageFiles.required' => 'Please add atleast one image.',
             'maxQuantity.gte' => 'The value should be greater than or equals to the quantity.',
             'threshold.lt' => 'The value should be less than maximum quantity.',
-            'dealers.required' => 'Please select atleast one dealer.'            
+            'dealers.required' => 'Please select atleast one dealer.',
+
+            'loyaltyValuePrice.lt' => "Loyalty price should be less than product cost"
         ]; 
 
         $images = Request::input('imageFiles');

@@ -1108,14 +1108,17 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			var isFound = this.getGiftByUniqueId(giftData._uid);
 
 			if(isFound===false){
-			
+
+				if(typeof giftData !== 'object'){
+					return false;
+				}
+
 				var gift = new alcoholCartGift(giftData);
 
 				this.$cart.gifts = this.$cart.gifts || [];
 				this.$cart.gifts.push(gift);
 
 			}
-
 
 		};
 
@@ -1201,6 +1204,10 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			_self.setCartKey(storedCart._id);
 
 			angular.forEach(products, function (item,key) {
+
+				if(typeof item !== 'object'){
+					return false;
+				}
 
 				var newItem = new alcoholCartItem(key, item);
 				_self.$cart.products[key] = newItem;
@@ -1351,6 +1358,7 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 		var item = function (id, data) {		
 
 			this.setId(id);
+
 			this.setRQuantity(data.chilled.quantity,data.nonchilled.quantity);			
 
 			this.setRChilledStatus(data.chilled.status,data.nonchilled.status);

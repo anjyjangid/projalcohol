@@ -46,15 +46,25 @@
 							<span ng-if="$index == 0">Card value: <span class="required"> * </span></span>
 						</label>
 						<div class="col-md-3">
-							<div class="input-group input-medium">
-							<input type="number" step="1" min="1" class="form-control" ng-model="cards.value" placeholder="">
-							<span class="input-group-btn">
-								<a title="Add More" ng-if="$index == 0" ng-click="giftcategory.cards.push({})" class="btn default"><i class="fa fa-plus"></i></a>
-								<a title="Remove" ng-if="$index != 0" ng-click="giftcategory.cards.splice(k,1)" class="btn default"><i class="fa fa-trash"></i></a>
-								
-							</span>
+							<div class="input-group input-medium">															
+								<input type="number" step="1" min="1" class="form-control" ng-model="cards.value">
 							</div>
 							<span class="help-block" ng-bind="errors['cards.'+$index+'.value'][0]"></span>			
+						</div>
+						<div class="col-md-3">
+							<div class="input-group input-medium" ng-init="cards.loyalty==0?cards.loyalty='':''">
+
+								<input type="number" step="1" min="1" class="form-control" ng-model="cards.loyalty" placeholder="loyalty value to exchange">
+
+								<span class="input-group-btn">
+
+									<a title="Add More" ng-if="$index == 0" ng-click="giftcategory.cards.push({})" class="btn default"><i class="fa fa-plus"></i></a>
+									<a title="Remove" ng-if="$index != 0" ng-click="giftcategory.cards.splice(k,1)" class="btn default"><i class="fa fa-trash"></i></a>
+
+								</span>
+
+							</div>
+							<span class="help-block" ng-bind="errors['cards.'+$index+'.loyalty'][0]"></span>
 						</div>
 					</div>
 					

@@ -53,6 +53,10 @@ class GiftCategoryController extends Controller
                 unset($inputs['cards'][$key]['$$hashKey']);
                 $inputs['cards'][$key]['value'] = (int)$inputs['cards'][$key]['value'];
             }
+            foreach ($inputs['loyalty'] as $key => $value) {
+                unset($inputs['cards'][$key]['$$hashKey']);
+                $inputs['cards'][$key]['value'] = (int)$inputs['cards'][$key]['value'];
+            }
         }
 
         if(isset($inputs['gift_packaging'])){
@@ -123,12 +127,16 @@ class GiftCategoryController extends Controller
             $inputs['type'] = 'category';
 
         if(isset($inputs['cards'])){
+
             foreach ($inputs['cards'] as $key => $value) {
                 unset($inputs['cards'][$key]['$$hashKey']);
-                $inputs['cards'][$key]['value'] = (int)$inputs['cards'][$key]['value'];
+                $inputs['cards'][$key]['value'] = (float)$inputs['cards'][$key]['value'];
+            }
+
+            foreach ($inputs['cards'] as $key => $value) {
+                $inputs['cards'][$key]['loyalty'] = isset($inputs['cards'][$key]['loyalty'])?(int)$inputs['cards'][$key]['loyalty']:0;
             }
         }
-
         
 
         $model = GiftCategory::find($id);

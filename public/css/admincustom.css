@@ -499,3 +499,13 @@ position: relative;
 }
 
 /* Front delivery slots css end*/
+
+
+
+#loyaltyValuePriceAdd{
+	position: absolute;
+	left: -7px;
+	top: 0px;
+	font-size: 22px;
+	font-weight: bold;
+}
