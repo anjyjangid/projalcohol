@@ -1105,7 +1105,10 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 		this.addGift = function(giftData){
 
-			var isFound = this.getGiftByUniqueId(giftData._uid);
+			var isFound = false;
+			if(typeof giftData._uid === 'undefined'){
+				var isFound = this.getGiftByUniqueId(giftData._uid);
+			}
 
 			if(isFound===false){
 

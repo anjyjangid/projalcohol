@@ -626,8 +626,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			}
 
-			$scope.setPrices($scope.productInfo);
-			
+			$scope.setPrices($scope.productInfo);			
 
 		}]
 	}

@@ -2988,8 +2988,8 @@ AlcoholDelivery.controller('SearchController', [
     			keyword:$stateParams.keyword,
     			filter:$stateParams.filter,
     			sortby:$stateParams.sort    			
-    		}    		
-    		$scope.url = '/site/searchlist';
+			}
+			$scope.url = '/site/searchlist';
 			$scope.products = new ScrollPaging($scope.args,$scope.url);
     	}
     }
@@ -2999,7 +2999,7 @@ AlcoholDelivery.controller('SearchController', [
 AlcoholDelivery.controller('LoyaltyStoreController', ['$q', '$http', '$scope', 'ScrollPagination',"UserService","$stateParams", function($q, $http, $scope, ScrollPagination,userService,$stateParams){
 		
 		var user = userService.currentUser;
-		
+
 		$scope.keyword = $stateParams.keyword;
 		$scope.filter = $stateParams.filter;
 		$scope.sortby = $stateParams.sort;
@@ -3115,6 +3115,7 @@ AlcoholDelivery.controller('GiftController', [
 
 						var maxQuantity = result.limit - total + value._inGift;
 						value._maxQuantity = value._quantity>maxQuantity?maxQuantity:value._quantity;
+
 					});
 				}
 
