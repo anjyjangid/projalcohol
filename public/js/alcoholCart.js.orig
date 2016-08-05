@@ -1120,7 +1120,6 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 			}
 
-
 		};
 
 		this.getGiftByUniqueId = function(uid){

@@ -154,7 +154,7 @@ return [
         AlcoholDelivery\Providers\RouteServiceProvider::class,        
         
         'Intervention\Image\ImageServiceProvider',
-        'Nutsweb\LaravelPrerender\LaravelPrerenderServiceProvider',
+
     ],
 
     /*
