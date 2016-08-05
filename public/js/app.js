@@ -17,7 +17,9 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'alcoholCart.directives',
 	'angularFblogin',
 	'ngPayments'
-]);
+])/*.config(['$locationProvider', function($location) {
+  $location.hashPrefix('!');
+}])*/;
 
 
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
