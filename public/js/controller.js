@@ -2160,59 +2160,54 @@ AlcoholDelivery.controller('CartReviewController',[
 
 				$scope.orderConfirm = function(){
 					
-				    /*$scope.pay();
-				    return;*/
-
-					alcoholCart.freezCart().then(
-
+				    alcoholCart.freezCart().then(
 						function(result){												
 
 							var cartKey = alcoholCart.getCartKey();
 
-						$http.put("confirmorder/"+cartKey, {} ,{
+							$http.put("confirmorder/"+cartKey, {} ,{
 
-						}).error(function(response, status, headers) {
+							}).error(function(response, status, headers) {
 
-								sweetAlert.swal({
-									type:'error',
-									title: 'Oops...',
-									text:response.message,
-									timer: 2000
-								});
-
-					        })
-					        .success(function(response) {
-
-					        	if($scope.cart.payment.method == 'CARD'){					        						        		
-					        		var payurl = $sce.trustAsResourceUrl(response.formAction);
-						            $rootScope.$broadcast('gateway.redirect', {
-						                url: payurl,
-						                method: 'POST',
-						                params: response.formData
-						            });					        		
-					        		return;
-					        	}
-					            
-					            if(!response.success){
-
-					            	sweetAlert.swal({
+									sweetAlert.swal({
 										type:'error',
 										title: 'Oops...',
 										text:response.message,
 										timer: 2000
 									});
 
-					            }
+					        }).success(function(response) {
 
-					            sweetAlert.swal({
-									type:'success',
-									title: response.message,
-									timer: 1000
-								});
+						        	if($scope.cart.payment.method == 'CARD'){					        						        		
+						        		var payurl = $sce.trustAsResourceUrl(response.formAction);
+							            $rootScope.$broadcast('gateway.redirect', {
+							                url: payurl,
+							                method: 'POST',
+							                params: response.formData
+							            });					        		
+						        		return;
+						        	}
+					            
+						            if(!response.success){
 
-					            store.orderPlaced();
+						            	sweetAlert.swal({
+											type:'error',
+											title: 'Oops...',
+											text:response.message,
+											timer: 2000
+										});
 
-					            $state.go('orderplaced',{order:response.order},{reload: false, location: 'replace'});
+						            }
+
+						            sweetAlert.swal({
+										type:'success',
+										title: response.message,
+										timer: 1000
+									});
+
+						            store.orderPlaced();
+
+					            	$state.go('orderplaced',{order:response.order},{reload: false, location: 'replace'});
 
 					        })
 						},

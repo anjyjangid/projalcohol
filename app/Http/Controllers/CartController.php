@@ -963,7 +963,7 @@ jprd($product);
 		$cart = $cartObj->where("_id","=",$cartKey)->first();
 
 		if(empty($cart)){
-			return response(["success"=>false,"message"=>"cart not found"],405); //405 => method not allowed
+			return response(["success"=>false,"message"=>"Cart not found"],405); //405 => method not allowed
 		}
 
 		$cartArr = $cart->toArray();	

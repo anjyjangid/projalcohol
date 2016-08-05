@@ -3,6 +3,7 @@
 namespace AlcoholDelivery\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
@@ -242,7 +243,7 @@ class SiteController extends Controller
             "currency_code" => "SGD",
             "transaction_type" => "Sale",
             "key" => "r5f3ZLs8FRbhMnv7AaeQwvgkmHoDw9pKFAriTEFh",
-            "token_id"=> "8417241649611117",            
+            "token_id"=> "9537315390546786",            
             "return_url" => "http://192.168.1.174:8080/site/payres",            
         );
 
@@ -261,6 +262,9 @@ class SiteController extends Controller
 
         $request_transaction['signature'] = md5($requestsString);
         
+        
+        //return redirect('http://test.reddotpayment.com/merchant/cgi-bin')->withInput($request_transaction);
+
         dd($request_transaction);                
         
     }
@@ -299,5 +303,6 @@ class SiteController extends Controller
         
         return dd($response->all());
 
-    }
+    }    
+
 }
