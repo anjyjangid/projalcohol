@@ -334,6 +334,12 @@ AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$
 
 	$scope.ProductDetailController = {};
 
+	if(typeof $stateParams.loyalty === 'undefined'){
+		$scope.viaLoyaltyStore = false;
+	}else{
+		$scope.viaLoyaltyStore = true;
+	}
+
 	
 
   	$scope.syncPosition = function(el){
@@ -3000,6 +3006,21 @@ AlcoholDelivery.controller('LoyaltyStoreController', ['$q', '$http', '$scope', '
 		$scope.sortby = $stateParams.sort;
 
     	$scope.products = new ScrollPagination();
+
+    	$scope.credits = {};
+
+    	$http.get('loyaltystore/credits').then(
+
+    		function(response){
+
+				$scope.credits = response.data;
+				
+    		},
+    		function(errorRes){
+
+    		}
+
+    	);
 
 }]);
 

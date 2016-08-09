@@ -374,7 +374,7 @@ AlcoholDelivery.factory('ScrollPagination', function($http) {
     this.busy = true;
     var _self = this;
 
-	$http.get('/site/searchlist',{
+	$http.get('loyaltystore',{
 		
 		params : {
 			loyalty:true,
@@ -903,8 +903,21 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 				.state('mainLayout.product', {
 						url: "/product/{product}",
-						templateUrl: "/templates/product/detail.html",
-						controller: "ProductDetailController"
+
+						views : {
+
+							'' : {
+								templateUrl: "/templates/product/detail.html",
+								controller: "ProductDetailController"
+							},
+							'alsoboughtthis@mainLayout.product' : {
+								templateUrl: "/templates/product/alsoBoughtThis.html",
+								controller: function(){}
+							},
+
+
+						}
+						
 				})
 
 				.state('mainLayout.productLoyalty', {
@@ -972,8 +985,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 										});
 								}]
 						}
-				})
-
+				})				
 				
 				.state('mainLayout.giftcategory', {					
 					url: "/gifts/{categorySlug}?/{type}",

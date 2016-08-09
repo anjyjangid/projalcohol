@@ -183,6 +183,14 @@
 								<div class="orhistry2_td2proctext2">{{gift.description}}</div>
 							</div>
 						</div>
+
+						<ul class="list-inline gift-pack-products">
+							<li ng-repeat="(key, giftPro) in gift.getProducts()">
+								<a ui-sref="mainLayout.product({product:giftPro.cartPro.product.slug})" title="View :: {{giftPro.cartPro.product.name}}" ng-init="giftPro.cartPro = alcoholCart.getProductById(giftPro._id)">
+									<img err-pro-src="" ng-src="products/i/200/{{giftPro.cartPro.product.imageFiles | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
+								</a>
+							</li>
+						</ul>
 					</td>
 					<td></td>
 					<td>
@@ -196,13 +204,13 @@
 						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removeGift(gift.getUniqueId(),true)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>
-
+				
 
 				<!-- gift package products start -->
-					<tr ng-repeat="(key, giftPro) in gift.getProducts()">
+					<!-- <tr ng-repeat="(key, giftPro) in gift.getProducts()">
 
 						<td width="52%" ng-init="giftPro.cartPro = alcoholCart.getProductById(giftPro._id)">
-							<!-- <pre>{{giftPro | json}}</pre> -->
+							
 							<div class="orhistry2_td2procdtcvr">
 								<span class="cursor-pointer">
 									<a ui-sref="mainLayout.product({product:giftPro.cartPro.product.slug})" title="View Product">
@@ -247,8 +255,7 @@
 						<td> 
 							<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="remove(key,type)"><i class="glyphicon glyphicon-trash"></i></a>
 						</td>
-					</tr>
-					
+					</tr> -->
 				<!-- gift package products end -->
 
 				<tr ng-repeat-end></tr>

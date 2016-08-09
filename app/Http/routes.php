@@ -207,6 +207,9 @@ Route::controller('package', 'PackageController');
 Route::resource('site', 'SiteController',['only'=>['*']]);
 Route::controller('site', 'SiteController');
 
+Route::resource('loyaltystore', 'LoyaltyStoreController',['only'=>['index']]);
+Route::controller('loyaltystore', 'LoyaltyStoreController');
+
 
 /*PRODUCT IMAGE ROUTUING*/
 Route::get('products/i/{folder}/{filename}', function ($folder,$filename)

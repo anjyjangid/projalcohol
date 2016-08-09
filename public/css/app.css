@@ -718,3 +718,20 @@ body.loadingpayment .loader{
 	width: 80px;
 	margin: auto;
 }
+
+.gift-pack-products li{
+	width: 60px;
+	height: 60px;
+	border: 1px solid #ccc;
+	padding: 10px;
+	text-align: center;
+	margin: 0 5px;
+}
+
+.credit_cash_pic {
+	padding: 50px 10px;
+	background: #A0F;
+	color: #fff;
+	font-size: 2.5em;
+	text-align: center;
+}

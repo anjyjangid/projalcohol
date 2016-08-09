@@ -29,8 +29,6 @@ class AppServiceProvider extends ServiceProvider
             return preg_match("/^\+?\d[0-9-]{9,12}/", $value);
         });
 
-        
-        
     }
 
     /**
@@ -40,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+
         require base_path().'/app/Helpers/globalFunction.php';
     }
 }
