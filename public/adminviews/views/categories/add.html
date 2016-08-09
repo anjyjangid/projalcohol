@@ -1,258 +1,320 @@
 <div class="row">
 	<div class="col-md-12">
-		<div class="portlet light">
-			<div class="portlet-title tabbable-line">
-				<div class="caption caption-md">
-					<i class="icon-globe theme-font hide"></i>
-					<span class="caption-subject font-blue-madison bold uppercase">{{$state.$current.data.pageTitle}}</span>
-				</div>				
-			</div>
-			<div class="portlet-body">
+		<form name='categoryForm' ng-submit="submitCategory()" data-ng-init="categoryFormInit()">
+			<div class="portlet light">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa fa-shopping-cart"></i>{{$state.$current.data.pageTitle}}
+					</div>
+					<div class="actions btn-set">
+						<a class="btn default" ui-sref="userLayout.products.list"><i class="fa fa-angle-left"></i> Back</a>
+						<button ng-disabled="loading" class="btn green" type="submit"><i class="fa fa-check"></i> {{category._id?'Update':'Save'}}</button>					
+					</div>
+				</div>
+				<!-- <div class="portlet-title tabbable-line">
+					<div class="caption caption-md">
+						<i class="icon-globe theme-font hide"></i>
+						<span class="caption-subject font-blue-madison bold uppercase"></span>
+					</div>				
+				</div> -->				
+				<div class="portlet-body">
+					<tabset active="active">
+						<tab>
+							<tab-heading>General</tab-heading>
+							<div class="form-horizontal">
+								<div class="form-group" ng-if="!edit">
+									<label class="control-label col-md-2">Parent Category</label>
 
-				<form name='categoryForm' ng-submit="submitCategory()" data-ng-init="categoryFormInit()">
+									<div class="col-md-10" ng-repeat="subcategory in categories">
+										<select
+											name="ptitle"
+											class="form-control" 
+											ng-model="subcategory.selectedPtitle"
+											ng-options="option.cat_title for option in subcategory.categoryList"
+											>
 
-					<div class="form-group" ng-if="!edit">
-						<label class="control-label">Parent Category</label>
+											<option value="">---- Select Category ----</option>
+										</select>
+									</div>
 
-						<div class="margin-top-10" ng-repeat="subcategory in categories">
-							<select
-								name="ptitle"
-								class="form-control" 
-								ng-model="subcategory.selectedPtitle"
-								ng-options="option.cat_title for option in subcategory.categoryList"
-								ng-change="setParentSubCategory($index)">
+								</div>					
 
-								<option value="">---- Select Category ----</option>
-							</select>
-						</div>
+								<div class="form-group" ng-class="{'has-error':(categoryForm.title.$touched && categoryForm.title.$invalid) || errors.title[0]}">
+									
+									<label class="control-label col-md-2">Title</label>
+									<div class="col-md-10">
+										<input type="text" name="title" placeholder="Title" class="form-control" ng-model="category.title"/>
+										<span class="help-block" ng-show="(categoryForm.title.$touched && categoryForm.title.$invalid) || errors.title[0]">Title is required.</span>
+									</div>
+								</div>
 
-					</div>					
+								<div class="form-group" ng-class="{'has-error':errors.slug[0]}">
+									<slug from="category.title" to="category.slug"></slug>
+									<label class="control-label col-md-2">Slug</label>
+									<div class="col-md-10">
+										<input type="text" placeholder="Slug" class="form-control" ng-model="category.slug" disabled="true"/>
+										<span class="help-block" ng-show="errors.slug[0]" ng-bind="errors.slug[0]"></span>						
+									</div>
+								</div>
 
-					<div class="form-group" ng-class="{'has-error':(categoryForm.title.$touched && categoryForm.title.$invalid) || errors.title[0]}">
+								<div class="form-group" ng-class="{'has-error':errors.isMenu[0]}">
+									<label class="control-label col-md-2">Is added to main menu</label>
+									<div class="col-md-2">
+										<select ng-model="category.isMenu" class="form-control">
+											<option value="1">Yes</option>
+											<option value="0">No</option>
+										</select>
+										<span class="help-block" ng-show="errors.isMenu[0]" ng-bind="errors.isMenu[0]"></span>
+									</div>
+								</div>
+
+							</div>
+						</tab>		
 						
-						<label class="control-label">Title</label>
-						<input type="text" name="title" placeholder="Title" class="form-control" ng-model="category.title"/>
-						<span class="help-block" ng-show="(categoryForm.title.$touched && categoryForm.title.$invalid) || errors.title[0]">Title is required.</span>
-					</div>
+						<tab>
+							<tab-heading>Pricing</tab-heading>	
+							<div class="form-horizontal">
+								<!-- Pricing Block -->
+								<table class="table table-bordered">
+							        <thead>				            
+							            <tr role="row" class="heading">                        						                
+							                <th width="14%">
+							                     Name
+							                </th>
+							                <th width="14%">
+							                     Markup Type
+							                </th>                                   
+							                <th width="14%">
+							                     Value
+							                </th>
+							                <th width="14%">
+							                     From Qty
+							                </th>
+							                <th width="14%">
+							                     To Qty
+							                     <br><small>Use 99999 for last range</small>
+							                </th>
+							                
+							                <th width="14%">
+							                	Action
+							                </th>
+							            </tr>
+							        </thead>
+							        <tbody>					            
+							            <tr><td colspan="7"><h4>Single Purchase</h4></td></tr>
+							            <tr ng-if="price.category == 'pricing' && kp!='gift_packaging'" ng-repeat="(kp, price) in pricing.settings">						                
+							                <td class="control-label"> 
+							                	<label class="control-label">
+							                		{{price.label}}: <span class="required"> * </span>
+							                	</label>
+							                </td>
+							                <td>
 
-					<div class="form-group" ng-class="{'has-error':errors.slug[0]}">
-						<slug from="category.title" to="category.slug"></slug>
-						<label class="control-label">Slug</label>
-						<input type="text" placeholder="Slug" class="form-control" ng-model="category.slug" disabled="true"/>
-						<span class="help-block" ng-show="errors.slug[0]" ng-bind="errors.slug[0]"></span>						
-					</div>
+							                	<label ng-if="category[kp] | isEmpty" class="control-label">
+							                		Default
+							                	</label>						                	
+							                	<select ng-if="!(category[kp] | isEmpty)" class="form-control" ng-model="category[kp].type">            
+							                        <option value="0">Fix Amount</option>
+							                        <option value="1">% of Amount</option>
+							                    </select>							                
+							                </td>
+							                <td>
+							                	<label ng-if="category[kp] | isEmpty" class="control-label">
+							                		Default
+							                	</label>
+							                    <div ng-if="!(category[kp] | isEmpty)" ng:class="{'has-error':errors[kp+'.value'][0]}">
+							                    	<input  type="number" step="any" class="form-control" ng-model="category[kp].value" placeholder="">						                    
+							                    	<span class="help-block" ng-bind="errors[kp+'.value'][0]"></span>
+							                    </div>
+							                </td>						                
+							                <td colspan="2" align="center">
+							                	<label class="control-label">N/A</label>
+							                </td>
+							                
+							                <td> 
+							                	<a class="btn btn-xs default" ng-if="category[kp] | isEmpty" href="javascript:void();" ng-click="edittier(kp,price,1)">Custom</a>
+							                	<a class="btn btn-xs default" ng-if="!(category[kp] | isEmpty)" href="javascript:void();" ng-click="edittier(kp,price,0)">Default</a>
+							                </td>
+							            </tr>
+							            <tr>
+							            	<td colspan="7"><h4>Bulk Purchase</h4>	</td>
+								        </tr>							        
+							            <tr ng-if="price.category == 'bulk_pricing'" ng-repeat-start="(kp, price) in pricing.settings"></tr>
+							           	
+							            <tr ng-if="(category[kp] | isEmpty)" ng-hide="category.bulkDisable == 1" ng-repeat="(bk, slots) in price.bulk">                            
+							                <td class="control-label" rowspan="{{price.bulk.length}}" ng-if="$index == 0">
+							                	<label class="control-label">{{price.label}}: <span class="required"> * </span></label>
+							                </td>
+							                <td>
+							                	<label class="control-label">
+							                		Default
+							                	</label>						                	
+							                </td>
+							                <td>
+							                    <label class="control-label">
+							                		Default
+							                	</label>						                    
+							                </td>
+							                <td>
+							                    <label class="control-label">
+							                		Default
+							                	</label>						                    
+							                </td>
+							                <td>
+							                    <label class="control-label">
+							                		Default
+							                	</label>						                    
+							                </td>
+							                
+							                <td>
+							                	<a class="btn btn-xs default" ng-if="$index == 0" href="javascript:void();" ng-click="edittier(kp,price,1)">Custom</a>						                	
+							                </td>
+							            </tr>						            						            
+							            
+							            <tr ng-if="!(category[kp] | isEmpty)" ng-hide="category.bulkDisable == 1" ng-repeat="(bk, slots) in category[kp].bulk">                            
+							                <td class="control-label" rowspan="{{category[kp].bulk.length}}" ng-if="$index == 0">
+							                	<label class="control-label">{{category[kp].label}}: <span class="required"> * </span></label>
+							                </td>
+							                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.type'][0]}">						                							                	
+							                	<select empty="false" class="form-control" ng-model="slots.type">            
+							                        <option value="0">Fix Amount</option>
+							                        <option value="1">% of Amount</option>
+							                    </select>
+							                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.type'][0]"></span>
+							                </td>
+							                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.value'][0]}">						                    
+							                    <input type="number" step="any" class="form-control" ng-model="slots.value" placeholder="">
+							                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.value'][0]"></span>
+							                </td>
+							                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.from_qty'][0]}">						                    
+							                    <input type="number" class="form-control" ng-model="slots.from_qty" placeholder="From Qty">						                    
+							                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.from_qty'][0]"></span>
+							                </td>
+							                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.to_qty'][0]}">						                   
+							                    <input type="number" class="form-control" ng-model="slots.to_qty" placeholder="To Qty" max="99999">						                    
+							                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.to_qty'][0]"></span>
+							                </td>
+							                
+							                <td>						                	
+							                	<a class="btn btn-xs default" ng-if="$index == 0" href="javascript:void();" ng-click="edittier(kp,price,0)">Default</a>
+							                	<a class="btn btn-xs default" ng-if="category[kp].bulk.length < 4 && $index == 0" href="javascript:void();" ng-click="category[kp].bulk.push({type:0,value:null,from_qty:null,to_qty:null})">+</a>
+							                	<a class="btn btn-xs default" ng-if="$index > 0" href="javascript:void();" ng-click="category[kp].bulk.splice($index,1)">Remove</a>
+							                </td>
+							            </tr>
+							            
+							            <tr ng-repeat-end ng-if="price.category == 'bulk_pricing'"></tr>
 
-					<div class="form-group" ng-class="{'has-error':errors.isMenu[0]}">
-						<label class="control-label">Is added to main menu</label>
-						<select ng-model="category.isMenu" class="form-control">
-							<option value="1">Yes</option>
-							<option value="0">No</option>
-						</select>
-						<span class="help-block" ng-show="errors.isMenu[0]" ng-bind="errors.isMenu[0]"></span>
-					</div>
+							        </tbody>
+							    </table>
+								<!-- Pricing Block -->
+							</div>
+						</tab>
 
-					<div class="clearfix margin-top-10">
-						<span class="label label-danger">NOTE!</span> <span> Attached image thumbnail is supported in Latest Firefox, Chrome, Opera, Safari and Internet Explorer 10 only </span>
-					</div>
-					<br>
+						<tab>
+							<tab-heading>Meta</tab-heading>
 
-					<div class="row">
-						<div class="col-sm-6" ng-class="{'has-error':errors.thumb[0]}">
-							<label class="control-label">Thumbnail</label>
-							<div class="form-group">
-								<div class="fileinput fileinput-new" data-provides="fileinput">
-									<div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-										<img ng-if="!category.thumb" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Thumbnail" alt=""/>
-										<img ng-if="category.thumb" ng-src="/assets/resources/category/thumb/200/{{category.thumb}}" err-src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Thumbnail" class="img-responsive" alt="">
-									</div>
-									<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
-									</div>
-									<div>
-										<span class="btn default btn-file">
-										<span class="fileinput-new">
-										Select thumb </span>
-										<span class="fileinput-exists">
-										Change </span>
-										<!-- ng-required="!category.thumb" -->
-										<input type="file" accept="image/*" name="thumb" placeholder="thumbnail" class="form-control" file-model="category.thumb"/>
-										</span>
-										<a href="#" class="btn default fileinput-exists" data-dismiss="fileinput">
-										Remove </a>
-									</div>
-								</div>															
-							</div>	
-							<span class="help-block" ng-show="errors.thumb[0]">Thumbnail is required and must be in jpg or png format</span>					
-						</div>						
-
-						<div class="col-sm-6" ng-if="!category.ancestors" ng-class="{'has-error':errors.lthumb[0]}">
-							<label class="control-label">listing Thumbnail</label>
-							<div class="form-group" >
-								
-								<div class="fileinput fileinput-new" data-provides="fileinput">
-									<div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-										<img ng-if="!category.lthumb" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=listing+thumb" alt=""/>
-										<img ng-if="category.lthumb" ng-src="/assets/resources/category/lthumb/400/{{category.lthumb}}" err-src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=listing+thumb" class="img-responsive" alt="">
-									</div>
-									<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
-									</div>
-									<div>
-										<span class="btn default btn-file">
-										<span class="fileinput-new">Select thumb</span>
-										<span class="fileinput-exists">Change</span>
-										<input type="file" accept="image/*" name="lthumb" placeholder="thumbnail" class="form-control" file-model="category.lthumb"/>
-										</span>
-										<a href="#" class="btn default fileinput-exists" data-dismiss="fileinput">
-										Remove </a>
-									</div>
-								</div>															
-
-							</div>	
-							<span class="help-block" ng-show="errors.lthumb[0]">Listing thumbnail is required and must be in jpg or png format</span>					
-						</div>
-					</div>
+							<div class="form-horizontal">
 					
-					<!-- Pricing Block -->
-					<table class="table table-bordered">
-				        <thead>				            
-				            <tr role="row" class="heading">                        						                
-				                <th width="14%">
-				                     Name
-				                </th>
-				                <th width="14%">
-				                     Markup Type
-				                </th>                                   
-				                <th width="14%">
-				                     Value
-				                </th>
-				                <th width="14%">
-				                     From Qty
-				                </th>
-				                <th width="14%">
-				                     To Qty
-				                     <br><small>Use 99999 for last range</small>
-				                </th>
-				                
-				                <th width="14%">
-				                	Action
-				                </th>
-				            </tr>
-				        </thead>
-				        <tbody>					            
-				            <tr><td colspan="7"><h4>Single Purchase</h4></td></tr>
-				            <tr ng-if="price.category == 'pricing' && kp!='gift_packaging'" ng-repeat="(kp, price) in pricing.settings">						                
-				                <td class="control-label"> 
-				                	<label class="control-label">
-				                		{{price.label}}: <span class="required"> * </span>
-				                	</label>
-				                </td>
-				                <td>
+								<div class="form-group" ng:class="{'has-error':errors.metaTitle[0]}">
+									<label class="col-md-2 control-label">Meta Title:</label>
+									<div class="col-md-10">
+										<input type="text" class="form-control maxlength-handler" ng-model="category.metaTitle" maxlength="100" placeholder="">
+										<span class="help-block">
+										max 100 chars </span>
+										<span class="help-block" ng-bind="errors.metaTitle[0]"></span>
+									</div>
+								</div>
+								<div class="form-group" ng:class="{'has-error':errors.metaKeywords[0]}">
+									<label class="col-md-2 control-label">Meta Keywords:</label>
+									<div class="col-md-10">
+										<textarea class="form-control maxlength-handler" rows="5" ng-model="category.metaKeywords" maxlength="150"></textarea>
+										<span class="help-block">
+										max 150 chars </span>
+										<span class="help-block" ng-bind="errors.metaKeywords[0]"></span>
+									</div>
+								</div>
+								<div class="form-group" ng:class="{'has-error':errors.metaDescription[0]}">
+									<label class="col-md-2 control-label">Meta Description:</label>
+									<div class="col-md-10">
+										<textarea class="form-control maxlength-handler" rows="5" ng-model="category.metaDescription" maxlength="150"></textarea>
+										<span class="help-block">
+										max 150 chars </span>
+										<span class="help-block" ng-bind="errors.metaDescription[0]"></span>
+									</div>
+								</div>
+							</div>
+						</tab>	
 
-				                	<label ng-if="category[kp] | isEmpty" class="control-label">
-				                		Default
-				                	</label>						                	
-				                	<select ng-if="!(category[kp] | isEmpty)" class="form-control" ng-model="category[kp].type">            
-				                        <option value="0">Fix Amount</option>
-				                        <option value="1">% of Amount</option>
-				                    </select>							                
-				                </td>
-				                <td>
-				                	<label ng-if="category[kp] | isEmpty" class="control-label">
-				                		Default
-				                	</label>
-				                    <div ng-if="!(category[kp] | isEmpty)" ng:class="{'has-error':errors[kp+'.value'][0]}">
-				                    	<input  type="number" step="any" class="form-control" ng-model="category[kp].value" placeholder="">						                    
-				                    	<span class="help-block" ng-bind="errors[kp+'.value'][0]"></span>
-				                    </div>
-				                </td>						                
-				                <td colspan="2" align="center">
-				                	<label class="control-label">N/A</label>
-				                </td>
-				                
-				                <td> 
-				                	<a class="btn btn-xs default" ng-if="category[kp] | isEmpty" href="javascript:void();" ng-click="edittier(kp,price,1)">Custom</a>
-				                	<a class="btn btn-xs default" ng-if="!(category[kp] | isEmpty)" href="javascript:void();" ng-click="edittier(kp,price,0)">Default</a>
-				                </td>
-				            </tr>
-				            <tr>
-				            	<td colspan="7"><h4>Bulk Purchase</h4>	</td>
-					        </tr>							        
-				            <tr ng-if="price.category == 'bulk_pricing'" ng-repeat-start="(kp, price) in pricing.settings"></tr>
-				           	
-				            <tr ng-if="(category[kp] | isEmpty)" ng-hide="category.bulkDisable == 1" ng-repeat="(bk, slots) in price.bulk">                            
-				                <td class="control-label" rowspan="{{price.bulk.length}}" ng-if="$index == 0">
-				                	<label class="control-label">{{price.label}}: <span class="required"> * </span></label>
-				                </td>
-				                <td>
-				                	<label class="control-label">
-				                		Default
-				                	</label>						                	
-				                </td>
-				                <td>
-				                    <label class="control-label">
-				                		Default
-				                	</label>						                    
-				                </td>
-				                <td>
-				                    <label class="control-label">
-				                		Default
-				                	</label>						                    
-				                </td>
-				                <td>
-				                    <label class="control-label">
-				                		Default
-				                	</label>						                    
-				                </td>
-				                
-				                <td>
-				                	<a class="btn btn-xs default" ng-if="$index == 0" href="javascript:void();" ng-click="edittier(kp,price,1)">Custom</a>						                	
-				                </td>
-				            </tr>						            						            
-				            
-				            <tr ng-if="!(category[kp] | isEmpty)" ng-hide="category.bulkDisable == 1" ng-repeat="(bk, slots) in category[kp].bulk">                            
-				                <td class="control-label" rowspan="{{category[kp].bulk.length}}" ng-if="$index == 0">
-				                	<label class="control-label">{{category[kp].label}}: <span class="required"> * </span></label>
-				                </td>
-				                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.type'][0]}">						                							                	
-				                	<select empty="false" class="form-control" ng-model="slots.type">            
-				                        <option value="0">Fix Amount</option>
-				                        <option value="1">% of Amount</option>
-				                    </select>
-				                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.type'][0]"></span>
-				                </td>
-				                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.value'][0]}">						                    
-				                    <input type="number" step="any" class="form-control" ng-model="slots.value" placeholder="">
-				                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.value'][0]"></span>
-				                </td>
-				                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.from_qty'][0]}">						                    
-				                    <input type="number" class="form-control" ng-model="slots.from_qty" placeholder="From Qty">						                    
-				                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.from_qty'][0]"></span>
-				                </td>
-				                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.to_qty'][0]}">						                   
-				                    <input type="number" class="form-control" ng-model="slots.to_qty" placeholder="To Qty" max="99999">						                    
-				                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.to_qty'][0]"></span>
-				                </td>
-				                
-				                <td>						                	
-				                	<a class="btn btn-xs default" ng-if="$index == 0" href="javascript:void();" ng-click="edittier(kp,price,0)">Default</a>
-				                	<a class="btn btn-xs default" ng-if="category[kp].bulk.length < 4 && $index == 0" href="javascript:void();" ng-click="category[kp].bulk.push({type:0,value:null,from_qty:null,to_qty:null})">+</a>
-				                	<a class="btn btn-xs default" ng-if="$index > 0" href="javascript:void();" ng-click="category[kp].bulk.splice($index,1)">Remove</a>
-				                </td>
-				            </tr>
-				            
-				            <tr ng-repeat-end ng-if="price.category == 'bulk_pricing'"></tr>
+						<tab>
+							<tab-heading>Image</tab-heading>							
+							<div class="form-horizontal">
+								<div class="form-group" ng-class="{'has-error':errors.thumb[0]}">
+									<label class="control-label col-md-2">Images</label>
+									<div class="col-md-3">
+										<div class="fileinput fileinput-new" data-provides="fileinput">
+											<div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+												<img ng-if="!category.thumb" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Thumbnail" alt=""/>
+												<img ng-if="category.thumb" ng-src="/assets/resources/category/thumb/200/{{category.thumb}}" err-src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Thumbnail" class="img-responsive" alt="">
+											</div>
+											<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
+											</div>
+											<div>
+												<span class="btn default btn-file">
+												<span class="fileinput-new">
+												Select</span>
+												<span class="fileinput-exists">
+												Change </span>
+												<!-- ng-required="!category.thumb" -->
+												<input type="file" accept="image/*" name="thumb" placeholder="thumbnail" class="form-control" file-model="category.thumb"/>
+												</span>
+												<a href="#" class="btn default fileinput-exists" data-dismiss="fileinput">
+												Remove </a>
+											</div>
+										</div>															
+										<span class="help-block" ng-show="errors.thumb[0]">Thumbnail is required and must be in jpg or png format</span>					
+									</div>											
+									<div class="col-sm-3" ng-if="!category.ancestors" ng-class="{'has-error':errors.lthumb[0]}">
+										<!-- <label class="control-label">listing Thumbnail</label> -->
+										<div class="form-group">												
+											<div class="fileinput fileinput-new" data-provides="fileinput">
+												<div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+													<img ng-if="!category.lthumb" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Listing" alt=""/>
+													<img ng-if="category.lthumb" ng-src="/assets/resources/category/lthumb/400/{{category.lthumb}}" err-src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Listing" class="img-responsive" alt="">
+												</div>
+												<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
+												</div>
+												<div>
+													<span class="btn default btn-file">
+													<span class="fileinput-new">Select</span>
+													<span class="fileinput-exists">Change</span>
+													<input type="file" accept="image/*" name="lthumb" placeholder="thumbnail" class="form-control" file-model="category.lthumb"/>
+													</span>
+													<a href="#" class="btn default fileinput-exists" data-dismiss="fileinput">
+													Remove </a>
+												</div>
+											</div>
+											<span class="help-block" ng-show="errors.lthumb[0]">Listing thumbnail is required and must be in jpg or png format</span>					
+										</div>	
+									</div>
+								</div>								
+							</div>						
+							<div class="form-horizontal">
+								<div class="form-group" ng-class="{'has-error':errors.thumb[0]}">
+									<label class="control-label col-md-2"></label>
+									<div class="col-sm-10">
+										<span class="label label-danger">NOTE!</span> <span> Attached image thumbnail is supported in Latest Firefox, Chrome, Opera, Safari and Internet Explorer 10 only </span>		
+									</div>
+								</div>	
+							</div>	
+						</tab>
 
-				        </tbody>
-				    </table>
-					<!-- Pricing Block -->
-
-					<div class="margin-top-10">
-						<input ng-disabled="loading" type="submit" name="save" value="Save" class="btn green-haze">						
-						<a ui-sref="userLayout.categories.list" class="btn default">Cancel </a>
-					</div>
-
-				</form>
-
+						<!-- <div class="margin-top-10">
+							<input ng-disabled="loading" type="submit" name="save" value="Save" class="btn green-haze">						
+							<a ui-sref="userLayout.categories.list" class="btn default">Cancel </a>
+						</div> -->
+					</tabset>
+				</div>			
 			</div>
-		</div>
+		</form>
 	</div>
 </div>

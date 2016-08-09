@@ -286,6 +286,40 @@ class Setting extends Seeder
         ]);
         */
         AlcoholDelivery\Setting::create([
+            "_id" => "general",
+            "settings" => [
+                "site_name" => [
+                    "title" => "Site Name",
+                    "value" => "Alcohol Delivery"
+                ],
+                "site_title" => [
+                    "title" => "Site Title",
+                    "value" => "Alcoholdelivery - Online Alcohol Delivery - Buy Beer, Wine & Champagne in Singapore"
+                ],
+                "currency" => [
+                    "title" => "Site Currency",
+                    "value" => "$"
+                ],
+                "language" => [
+                    "title" => "Default Language",
+                    "value" => "eng"
+                ],
+                "meta_desc" => [
+                    "title" => "Meta Description",
+                    "value" => "Alcohol delivery online - Buy Alcohol, Liquor, Spirits, Whiskey, Scotch, Brandy, Beer, Wine Tequila, Gin & Rum online. Get free 1 hour delivery in Singapore."
+                ],
+                "meta_keyword" => [
+                    "title" => "Meta Keyword",
+                    "value" => "Alcohol delivery, alcohol delivery Singapore, buy spirits, alcohol   online, buy vodka, beer online, spirits online, buy beer, buy alcohol"
+                ],
+                "mode" => [
+                    "title" => "Site Mode",
+                    "value" => "test"
+                ]
+            ]   
+        ]);
+
+        /*AlcoholDelivery\Setting::create([
             '_id' => 'loyalty',
             'settings' => [
                 'order_sharing' => [
@@ -302,7 +336,7 @@ class Setting extends Seeder
                     'value' => '0.5'
                 ]
             ],
-        ]);
+        ]);*/
 
 
     }

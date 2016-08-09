@@ -1,5 +1,15 @@
 <form ng-submit="update()" ng-controller="SettingFormController">
 <div class="form-horizontal"  id="info-message">
+    <div class="form-group" ng:class="{'has-error':errors['site_name.value'][0]}">
+        <label class="col-md-2 control-label">{{settings.site_name.title}}: <span class="required">
+        * </span>
+        </label>
+        <div class="col-md-10">
+            <input type="text" class="form-control" ng-model="settings.site_name.value" placeholder="">
+            <span class="help-block" ng-bind="errors['site_name.value'][0]"></span>
+        </div>
+    </div>
+
     <div class="form-group" ng:class="{'has-error':errors['site_title.value'][0]}">
         <label class="col-md-2 control-label">{{settings.site_title.title}}: <span class="required">
         * </span>
@@ -8,7 +18,6 @@
             <input type="text" class="form-control" ng-model="settings.site_title.value" placeholder="">
             <span class="help-block" ng-bind="errors['site_title.value'][0]"></span>
         </div>
-
     </div>
 
     <div class="form-group" ng:class="{'has-error':errors['meta_keyword.value'][0]}">

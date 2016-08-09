@@ -29,7 +29,9 @@ class SettingRequest extends Request
 
             case 'general':
                 $rules = [
-                                
+                               
+                    'site_name.value' => 'required|string|max:255',
+
                     'site_title.value' => 'required|string|max:255',
 
                     'meta_keyword.value' => 'required|max:255',

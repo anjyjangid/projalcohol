@@ -112,14 +112,18 @@ License: You must have a valid license purchased only from themeforest(the above
 	<script src="{{ asset('assets/global/plugins/angularjs/angular-touch.min.js') }}" type="text/javascript"></script>	
 	<script src="{{ asset('assets/global/plugins/angularjs/plugins/angular-ui-router.min.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/global/plugins/angularjs/plugins/ocLazyLoad.min.js') }}" type="text/javascript"></script>
-	<script src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') }}" type="text/javascript"></script>
+	
+	<script src="{{ asset('assets/global/plugins/angularjs/plugins/ui-bootstrap-tpls.min.js') }}" type="text/javascript"></script>
+	
+	<!-- ISSUE IN TABS -->
+	<!-- <script src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') }}" type="text/javascript"></script> -->
+	<!-- ISSUE IN TABS -->
 
 	<script type="text/javascript" src="{{ asset('bower_components/angular-animate/angular-animate.js') }}"></script>
 
-		<script type="text/javascript" src="{{ asset('bower_components/angular-aria/angular-aria.min.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('bower_components/angular-messages/angular-messages.min.js') }}"></script>
-	
-	<script type="text/javascript" src="{{ asset('bower_components/angular-material/angular-material.min.js') }}"></script>	
+	<script type="text/javascript" src="{{ asset('bower_components/angular-aria/angular-aria.min.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bower_components/angular-messages/angular-messages.min.js') }}"></script>	
+	<script type="text/javascript" src="{{ asset('bower_components/angular-material/angular-material.min.js') }}"></script>		
 		
 	<!-- SWEET ALERT SCRIPT -->
 	<script src="{{ asset('bower_components/sweetalert2/dist/sweetalert2.min.js') }}" type="text/javascript"></script>

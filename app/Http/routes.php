@@ -95,8 +95,7 @@ Route::group(['prefix' => 'admin'], function () {
 
 //post('upload-image', 'GalleryController@uploadImage');
 //Route::resource('gallery', 'GalleryController');
-
-Route::get('/', function () {
+Route::get('/', function () {	    
     return view('frontend');
 });
 

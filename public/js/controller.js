@@ -1,6 +1,15 @@
 AlcoholDelivery.controller('AppController', 
-	['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog",
-	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog) {
+	['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter", 
+	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter) {
+
+	$rootScope.setMeta = function(meta){
+		var title = $filter('ucwords')(meta.title)+ ' | '+$rootScope.settings.general.site_name;
+		$rootScope.meta = {
+        	title:title,
+        	description:meta.description,
+        	keyword:meta.keyword,
+        }
+	};	
 
 	$scope.AppController = {};
 	$scope.featuredProduct = [];
@@ -13,7 +22,7 @@ AlcoholDelivery.controller('AppController',
 	$scope.AppController.subCategory = "";	
 
 	$http.get("/super/settings/").success(function(response){
-    	$rootScope.settings = response;
+    	$rootScope.settings = response;    	
     });   
 
     $http.get("/super/category/",{params: {withCount:true}}).success(function(response){
@@ -193,7 +202,9 @@ AlcoholDelivery.controller('AppController',
 
 }]);
 
-AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
+AlcoholDelivery.controller('ProductsController', [
+	'$scope', '$rootScope','$state','$http','$stateParams', '$filter',
+	function($scope, $rootScope,$state,$http,$stateParams,$filter){
 
 	$scope.ProductsController = {};
 
@@ -225,20 +236,43 @@ AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$state
 		headers : {'Accept' : 'application/json'}
 	};
 
-
 	if($state.previous.param.categorySlug!==$stateParams.categorySlug){
-
 		$http.get("/super/category",{params: {category:$stateParams.categorySlug,withChild:true}}).success(function(response){
-
 			$scope.categoriesList = response;
 			$rootScope.categoriesList = response;
-
-		})
-
+		});
 	}else{
-
 		$scope.categoriesList = $rootScope.categoriesList;
 	}
+
+	
+
+	$scope.$watch('categoriesList',function(newValue,oldValue){	
+		
+		if(newValue){
+			var mdata = {
+				title:newValue[0].metaTitle,
+				description:newValue[0].metaDescription,
+				keyword:newValue[0].metaKeywords
+			};
+
+			if(typeof $stateParams.subcategorySlug!=='undefined'){
+				var child = $filter('filter')(newValue[0].children,{slug:$stateParams.subcategorySlug});
+				if(typeof child[0] !== 'undefined'){
+					mdata = {
+						title:child[0].metaTitle,
+						description:child[0].metaDescription,
+						keyword:child[0].metaKeywords
+					};					
+				}
+			}
+
+			$rootScope.setMeta(mdata);		
+		}
+
+	});
+
+		
 
 	$scope.fetchproducts = function(){
 		$http.get("/search", config).then(function(response) {
@@ -489,6 +523,14 @@ AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$
 			alcoholCart.addItem($scope.product._id,$scope.product.qNChilled,false);
 			$scope.isInCart = true;
 		};
+
+		var mdata = {
+    		title:$scope.product.metaTitle,
+    		description:$scope.product.metaDescription,
+    		keyword:$scope.product.metaKeywords
+    	};
+
+    	$rootScope.setMeta(mdata);
 
 
 	 }, function(response) {
@@ -2708,6 +2750,15 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 	$scope.validateSelection = function (index, id) {
 
 	};
+
+	var title = ($stateParams.type == 'party')?'Party Packages':'Cocktail Packages';
+
+	var mdata = {
+		title:title,
+		description:$rootScope.settings.general.meta_desc,
+		keyword:$rootScope.settings.general.meta_keyword
+	};
+	$rootScope.setMeta(mdata);
 
 	  /*$scope.$on('accordionA:onReady', function () {
 	    console.log('accordionA is ready!');

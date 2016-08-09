@@ -19,15 +19,18 @@
 		<meta name="fragment" content="!">
 
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		
+		<meta name="title" content="@{{meta.title}}">
 
-		<!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+		<meta name="description" content="@{{meta.description}}">
 
-		<!-- <meta name="viewport" content="initial-scale=1, maximum-scale=1" /> -->
+		<meta name="keywords" content="@{{meta.keyword}}">
+
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-		<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"> -->
+		
 		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-		<title class="hide" ng-bind="settings.general.site_title"></title>
+		<title class="hide" ng-bind="meta.title"></title>
 
 		<!-- Bootstrap -->
 		<link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,700,800,500' rel='stylesheet' type='text/css'>

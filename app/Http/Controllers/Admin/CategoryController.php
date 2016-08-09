@@ -69,6 +69,9 @@ class CategoryController extends Controller
 			'slug'  => 'required',
 			'isMenu'=> 'required|integer|in:0,1',
 			'thumb' => 'required|mimes:jpeg,jpg,png|max:8000',
+			'metaTitle' => 'max:100',
+            'metaKeywords' => 'max:150',
+            'metaDescription' => 'max:150',
 		];
 
 		if(!isset($inputs['ptitle']) || $inputs['ptitle']==""){
@@ -155,6 +158,11 @@ class CategoryController extends Controller
 		$category->cat_status = 0;
 		$category->cat_thumb = $fileUpload->original['thumb'];
 		$category->cat_lthumb = isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:'';
+
+		$category->metaTitle = @$inputs['metaTitle'];
+		$category->metaKeywords = @$inputs['metaKeywords'];
+		$category->metaDescription = @$inputs['metaDescription'];
+
 
 		if (isset($inputs['bulkDiscount']) && is_array($inputs['bulkDiscount']))
 		{
@@ -281,7 +289,10 @@ class CategoryController extends Controller
 		$rules = [
 			'title' => 'required',
 			'slug'  => 'required',
-			'isMenu'=> 'required|integer|in:0,1',			
+			'isMenu'=> 'required|integer|in:0,1',	
+			'metaTitle' => 'max:100',
+            'metaKeywords' => 'max:150',
+            'metaDescription' => 'max:150',		
 		];
 			
 
@@ -372,6 +383,10 @@ class CategoryController extends Controller
 		
 		$category->cat_thumb = isset($fileUpload->original['thumb'])?$fileUpload->original['thumb']:$inputs['thumb'];
 		$category->cat_lthumb = isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:$inputs['lthumb'];
+
+		$category->metaTitle = @$inputs['metaTitle'];
+		$category->metaKeywords = @$inputs['metaKeywords'];
+		$category->metaDescription = @$inputs['metaDescription'];
 
 		try {
 
