@@ -1,7 +1,15 @@
-<div class="combo_slider combo_sliderProduct">
+<div class="combo_slider combo_sliderProduct" ng-init="productView='alcohol'">
 
 	<div class="productbeerfiltertopcover">
-		<div class="productbeerfiltertoptitle text-capitalize">Loyalty Store</div>        
+		<div class="productbeerfiltertoptitle text-capitalize">Loyalty Store</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-3 col-md-3"> 
+					<a href="javascript:void(0)" ng-class="{active:productView=='alcohol'}" ng-click="productView='alcohol'">Alcohol</a> 
+				</div>
+				<div class="col-xs-12 col-sm-3 col-md-3"> 
+					<a href="javascript:void(0)" ng-class="{active:productView=='credits'}" ng-click="productView='credits'">Credits</a> 
+				</div>
+			</div>
 	</div>
 	    
  	<div class="tabbable"> <!-- Only required for left/right tabs -->
@@ -9,9 +17,9 @@
 			<ul class="nav nav-tabs productcomboul">
 				<li ng-class="{active:filter==null}"><a ui-sref="mainLayout.loyaltystore({keyword:keyword,filter:null})" data-toggle="tab">All</a></li>
 				<li ng-class="{active:filter=='new'}"><a ui-sref="mainLayout.loyaltystore({keyword:keyword,filter:'new'})" data-toggle="tab">New</a></li>
-				<li ng-class="{active:filter=='in-stock'}"><a ui-sref="mainLayout.loyaltystore({keyword:keyword,filter:'in-stock'})" data-toggle="tab">In Stock</a></li>      
+				<li ng-class="{active:filter=='in-stock'}"><a ui-sref="mainLayout.loyaltystore({keyword:keyword,filter:'in-stock'})" data-toggle="tab">In Stock</a></li>
 
-				<!-- <div class="dropdown productdropdownbtn" uib-dropdown>
+			<!-- <div class="dropdown productdropdownbtn" uib-dropdown>
 				  <button class="btn dropdown-toggle" type="button" id="dropdownMenu1" uib-dropdown-toggle aria-haspopup="true" aria-expanded="true">
 				    Sort by
 				    <span class="caret"></span>
@@ -27,10 +35,33 @@
 
 		</div>
 		
-		<div infinite-scroll='products.nextPage()' infinite-scroll-disabled='products.busy' infinite-scroll-distance='3'>
-				
+		<div ng-show="productView!='credits'" infinite-scroll='products.nextPage()' infinite-scroll-disabled='products.busy' infinite-scroll-distance='3'>
+
 		    <div al-tpl-product classes="col-xs-12 col-sm-3 col-md-3 comboproductitems" info="product" loyalty="true" ng-repeat="product in products.items"></div>
-		</div>	
+
+		</div>
+
+		<div id="loyalty-credits" ng-show="productView=='credits'">
+
+			<div class="col-xs-12 col-sm-3 comboproductitems" ng-repeat="credit in credits">
+								
+				<div class="prod_pic">
+					<div class="credit_cash_pic"> {{credit.value}} </div>
+				</div>
+				<div class="prod_desc"> 
+					convert {{credit.loyalty}} loyalty to {{credit.value | pricingTxt}} credit
+				</div>
+				<div class="prod_addtocart">
+
+					<div class="cartbtn">
+						<div class="addcart" role="button" tabindex="0"><span></span>add to cart</div>
+					</div>
+				
+				</div>
+			</div>
+
+		</div>
+
 	</div>
 	<div class="fullwidth">
 		

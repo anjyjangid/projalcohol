@@ -114,7 +114,7 @@ class SiteController extends Controller
         }
 
         if(isset($loyalty) && $loyalty){
-            $products = $products->where('isLoyalty',"1");
+            $products = $products->where('isLoyalty',1);
         }
 
         if(isset($filter) && trim($filter)!=''){
@@ -139,12 +139,12 @@ class SiteController extends Controller
         }
 
         $totalItem = $products->count();
-
         
+        $fields = ['availabilityDays','availabilityTime','categories','chilled','deliveryType','description','express_delivery_bulk.bulk','imageFiles','isLoyalty','loyalty','loyaltyType','metaDescription','metaKeywords','metaTitle','name','outOfStockType','price','quantity','regular_express_delivery','shortDescription','slug'];
 
-        $products = $products->skip($skip)->take($take)->get();
+
+        $products = $products->skip($skip)->take($take)->get($fields);
         
-
         $response = [
             'items' => $products,
             'total' => $totalItem,

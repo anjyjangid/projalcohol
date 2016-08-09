@@ -473,7 +473,7 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 					links:['userLayout.gifts.list']
 				},
 				{
-					label:'Gift Cards',
+					label:'Gift Certificates',
 					uisref:'userLayout.gifts.cards',
 					icon:'icon-credit-card',
 					links:['userLayout.gifts.cards']
@@ -1546,9 +1546,9 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             templateUrl: "adminviews/views/gifts/giftcards.html",		            
             controller:"GiftCardController",
             data:{
-				pageTitle:'Gift Cards',
+				pageTitle:'Gift Certificates',
 				breadCrumb:[
-					{title:'Gift Cards','uisref':'#'}									
+					{title:'Gift Certificates','uisref':'#'}									
 				]				
 			},
 			resolve: {                
@@ -1556,7 +1556,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             }           
         })
 
-        .state('userLayout.timeslots', {            
+        .state('userLayout.timeslots', {
             abstract:true,            
 			controller:"TimeslotController",					            
             templateUrl:'adminviews/views/auth.html',

@@ -362,7 +362,7 @@ AlcoholDelivery.factory('ScrollPagination', function($http) {
     this.busy = false;
     this.skip = 0;
     this.keyword = keyword;
-    this.take = 2;
+    this.take = 10;
     this.limitreached = false;
     this.totalResult = 0;
     this.filter = filter;
@@ -374,22 +374,16 @@ AlcoholDelivery.factory('ScrollPagination', function($http) {
     this.busy = true;
     var _self = this;
 
-console.log({
-    		loyalty:true,
-	    	skip:this.skip,
-	    	take:this.take,
-	    	filter:this.filter,
-	    	sortby:this.sortby
-	    });
+	$http.get('loyaltystore',{
+		
+		params : {
+			loyalty:true,
+			skip:this.skip,
+			take:this.take,
+			filter:this.filter,
+			sortby:this.sortby
+		}
 
-    $http.get('/site/searchlist',{
-    	params : {
-    		loyalty:true,
-	    	skip:this.skip,
-	    	take:this.take,
-	    	filter:this.filter,
-	    	sortby:this.sortby
-	    }
     }).then(function(result){
 
 		var items = result.data.items;
@@ -909,8 +903,21 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 				.state('mainLayout.product', {
 						url: "/product/{product}",
-						templateUrl: "/templates/product/detail.html",
-						controller: "ProductDetailController"
+
+						views : {
+
+							'' : {
+								templateUrl: "/templates/product/detail.html",
+								controller: "ProductDetailController"
+							},
+							'alsoboughtthis@mainLayout.product' : {
+								templateUrl: "/templates/product/alsoBoughtThis.html",
+								controller: function(){}
+							},
+
+
+						}
+						
 				})
 
 				.state('mainLayout.productLoyalty', {
@@ -973,13 +980,12 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 												// debug: true,
 												serie: true,
 												files: [
-														'bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
+														'bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',														
 												]
 										});
 								}]
 						}
-				})
-
+				})				
 				
 				.state('mainLayout.giftcategory', {					
 					url: "/gifts/{categorySlug}?/{type}",

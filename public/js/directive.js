@@ -519,7 +519,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		},
 		templateUrl: '/templates/product/product_tpl.html',
 
-		controller: ['$rootScope','$scope','sweetAlert','alcoholCart','alcoholWishlist','promotionsService',"$mdToast",function($rootScope,$scope,sweetAlert,alcoholCart,alcoholWishlist,promotionsService,$mdToast){
+		controller: ['$rootScope','$scope','$state','sweetAlert','alcoholCart','alcoholWishlist','promotionsService',"$mdToast",function($rootScope,$scope,$state,sweetAlert,alcoholCart,alcoholWishlist,promotionsService,$mdToast){
 			
 			$scope.settings = $rootScope.settings;
 
@@ -614,10 +614,24 @@ AlcoholDelivery.directive('sideBar', function() {
 
 				if(typeof $scope.loyalty!=="undefined"){
 
-					$scope.productInfo.isLoyaltyStoreProduct = true;
+					localpro.href = "mainLayout.productLoyalty({product:"+localpro.slug+"})";
+					// $scope.productInfo.isLoyaltyStoreProduct = true;
 
-					localpro.price = parseFloat(localpro.price) * (1/$rootScope.settings.loyalty.point_value);
+					// if($scope.productInfo.loyaltyValueType===0){
+					// 	localpro.price = parseFloat($scope.productInfo.loyaltyValuePoint)
+					// }else{
+					// 	localpro.price = parseFloat($scope.productInfo.loyaltyValuePoint + $scope.productInfo.loyaltyValuePrice);
+					// }
+					// localpro.price = parseFloat(localpro.price) * (1/$rootScope.settings.loyalty.point_value);
 												
+				}
+
+				localpro.href = function(){
+					if(typeof $scope.loyalty!=="undefined"){
+						$state.go("mainLayout.productLoyalty",{product:localpro.slug});
+					}else{
+						$state.go("mainLayout.product",{product:localpro.slug});
+					}
 				}
 
 				localpro.price = localpro.price.toFixed(2);							
@@ -626,8 +640,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			}
 
-			$scope.setPrices($scope.productInfo);
-			
+			$scope.setPrices($scope.productInfo);			
 
 		}]
 	}
@@ -897,7 +910,9 @@ AlcoholDelivery.directive('sideBar', function() {
 		restrict: 'EA',
 		transclude: true,
 		scope: {
-			productInfo: "=info"
+			productInfo : "=info",
+			viaLoyaltyStore : "="
+
 		},
 		replace: true,
 		controller: function ($scope) {
@@ -912,6 +927,16 @@ AlcoholDelivery.directive('sideBar', function() {
 						return $scope.categoryBread;
 					}
 
+					if(typeof $scope.viaLoyaltyStore === "undefined"){
+						return $scope.categoryBread.push({
+
+									_id:0,
+									title:'loyalty-store',
+									slug:'loyalty-store'
+
+								});
+					}
+
 					angular.forEach($scope.productInfo.categories, function (catId, index) {
 
 						for(i=0;i<categoriesFac.categories.length;i++){
@@ -924,6 +949,7 @@ AlcoholDelivery.directive('sideBar', function() {
 									_id:catId,
 									title:cat.cat_title,
 									slug:cat.slug
+									
 								})
 								
 							}

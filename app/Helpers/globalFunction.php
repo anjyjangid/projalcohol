@@ -8,14 +8,14 @@
 	}
 
 	function jprd($arr){
-		
+
 		pr(json_encode($arr));
 		die;
 
 	}
 
 	function jpr($arr){
-		
+
 		pr(json_encode($arr));
 
 	}

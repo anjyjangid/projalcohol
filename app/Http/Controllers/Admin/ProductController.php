@@ -76,9 +76,19 @@ class ProductController extends Controller
 
 				$inputs['deliveryType'] = (int)$inputs['deliveryType'];
 				$inputs['isLoyalty'] = (int)$inputs['isLoyalty'];
-				$inputs['loyaltyValueType'] = (int)$inputs['loyaltyValueType'];
-				$inputs['loyaltyValuePoint'] = (float)$inputs['loyaltyValuePoint'];
-				$inputs['loyaltyValuePrice'] = (float)$inputs['loyaltyValuePrice'];
+
+				if(isset($inputs['loyaltyValueType'])){
+					$inputs['loyaltyValueType'] = (int)$inputs['loyaltyValueType'];
+				}
+
+				if(isset($inputs['loyaltyValuePoint'])){
+					$inputs['loyaltyValuePoint'] = (float)$inputs['loyaltyValuePoint'];
+				}
+
+				if(isset($inputs['loyaltyValuePrice'])){
+					$inputs['loyaltyValuePrice'] = (float)$inputs['loyaltyValuePrice'];
+				}
+										
 				
 				if(isset($inputs['outOfStockType']))
 					$inputs['outOfStockType'] = (int)$inputs['outOfStockType'];
@@ -201,7 +211,9 @@ class ProductController extends Controller
 				$inputs['deliveryType'] = (int)$inputs['deliveryType'];
 				$inputs['isLoyalty'] = (int)$inputs['isLoyalty'];
 				
-				$inputs['loyaltyValueType'] = (int)$inputs['loyaltyValueType'];
+				if(isset($inputs['loyaltyValueType'])){
+					$inputs['loyaltyValueType'] = (int)$inputs['loyaltyValueType'];
+				}
 
 				if(isset($inputs['loyaltyValuePoint'])){
 					$inputs['loyaltyValuePoint'] = (float)$inputs['loyaltyValuePoint'];
@@ -211,7 +223,7 @@ class ProductController extends Controller
 					$inputs['loyaltyValuePrice'] = (float)$inputs['loyaltyValuePrice'];
 				}
 				
-
+//return response($inputs,400);
 				if(isset($inputs['outOfStockType']))
 					$inputs['outOfStockType'] = (int)$inputs['outOfStockType'];
 
