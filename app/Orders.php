@@ -37,7 +37,9 @@ class Orders extends Moloquent
 							'user',
 							'total',
 							'payment',
-							'discount'
+							'discount',
+							'reference',
+							'productsLog'
 						];
 
 	public function getOrders($where = [], $extra = []){

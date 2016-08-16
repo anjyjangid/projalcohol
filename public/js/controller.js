@@ -545,6 +545,19 @@ AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$
 
 }]);
 
+AlcoholDelivery.controller('AlsoBoughtThisController',['$scope','$http','$stateParams',function($scope,$http,$stateParams){
+
+	$http.get("/product/alsobought/"+$stateParams.product).then(
+
+		function(response){
+			
+		},
+		function(errResponse){}
+
+	);
+
+}]);
+
 AlcoholDelivery.controller('ProfileController',['$scope','$rootScope','$state','$http','sweetAlert',function($scope,$rootScope,$state,$http,sweetAlert){
 
 	$scope.user;
@@ -1269,8 +1282,6 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 		}
 	);
 
-	
-
 	$scope.smoke = {
 
 		status:false,
@@ -1278,12 +1289,15 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 	}
 
 	$scope.payment = {
+
 		type:"cod",
+
 	}
 
 	$scope.step = 1;
 
-	$scope.checkout = function() {
+	$scope.checkout = function(ev) {
+
 
 		isCartValid = alcoholCart.validate($scope.step);
 
@@ -1297,10 +1311,42 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 				}else{
 
-					alcoholCart.deployCart();
+					$mdDialog.show({
 
-					$scope.step = 2;
-					$state.go("mainLayout.checkout.address");
+						controller: function($scope, $rootScope, $document) {
+
+							$scope.address = {
+								step:1
+							}
+
+							$scope.hide = function() {
+								$mdDialog.hide();
+							};
+							$scope.cancel = function() {
+								$mdDialog.cancel();
+							};
+							$scope.answer = function(answer) {
+								$mdDialog.hide(answer);
+							};
+
+							$scope.products = [{"_id":"57025cc9c31d53b2218b45ab","chilled":0,"categories":["5702597cc31d53b2218b45a8"],"name":"Chivas Regal 18yrs 75cl","description":"Chivas Regal 18yrs 75cl","shortDescription":"Chivas Regal 18yrs 75cl","sku":"WHSB005","price":148,"quantity":94,"imageFiles":[{"source":"57025cc9c31d53b2218b45ab_0.jpg","label":"Chivas Regal 18yrs 75cl","order":"1","coverimage":1}],"maxQuantity":100,"outOfStockType":2,"availabilityDays":2,"availabilityTime":960,"slug":"chivas-regal-18yrs-75cl"},{"_id":"57025d68c31d53b2218b45ac","chilled":0,"categories":["5702597cc31d53b2218b45a8"],"name":"Chivas Regal 25yrs 75cl","description":"Chivas Regal 25yrs 75cl","shortDescription":"Chivas Regal 25yrs 75cl","sku":"WHSB006","price":538,"quantity":91,"imageFiles":[{"source":"57025d68c31d53b2218b45ac_0.jpg","label":"Chivas Regal 25yrs 75cl","order":"1","coverimage":1}],"maxQuantity":100,"outOfStockType":2,"availabilityDays":2,"availabilityTime":960,"slug":"chivas-regal-25yrs-75cl"},{"_id":"570261bbc31d53b2218b45b1","chilled":0,"categories":["57026038c31d53b2218b45b0"],"name":"Auchentoshan 12yrs 70cl","description":"Auchentoshan 12yrs 70cl","shortDescription":"Auchentoshan 12yrs 70cl","sku":"WHSSM016","price":125,"quantity":100,"imageFiles":[{"source":"570261bbc31d53b2218b45b1_0.jpg","label":"Auchentoshan 12yrs 70cl","order":"1","coverimage":1}],"maxQuantity":100,"outOfStockType":2,"availabilityDays":2,"availabilityTime":960,"slug":"auchentoshan-12yrs-70cl"},{"_id":"57026239c31d53b2218b45b2","chilled":0,"categories":["57026038c31d53b2218b45b0"],"name":"Balvenie 12yrs Doublewood 75cl","description":"Balvenie 12yrs Doublewood 75cl","shortDescription":"Balvenie 12yrs Doublewood 75cl","sku":"WHSSM011","price":135,"quantity":100,"imageFiles":[{"source":"57026239c31d53b2218b45b2_0.jpg","label":"Balvenie 12yrs Doublewood 75cl","order":"1","coverimage":1}],"maxQuantity":100,"outOfStockType":2,"availabilityDays":2,"availabilityTime":960,"slug":"balvenie-12yrs-doublewood-75cl"}];
+
+						},
+						templateUrl: '/templates/checkout/dont-miss.html',
+						parent: angular.element(document.body),
+						targetEvent: ev,
+						clickOutsideToClose:true
+					})
+					.then(function(answer) {
+
+					}, function() {
+
+					});
+
+					// alcoholCart.deployCart();
+
+					// $scope.step = 2;
+					// $state.go("mainLayout.checkout.address");
 
 				}
 
@@ -1397,7 +1443,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 	$scope.updateGiftCard = function(uid){
 
 		alcoholGifting.updateGiftCard(uid);
-		
+
 	}
 	
 
@@ -2721,7 +2767,7 @@ AlcoholDelivery.controller('CmsController',['$scope','$http','$stateParams',func
 }]);
 
 
-AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll){
+AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll','alcoholCart', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll,alcoholCart){
 
 	$rootScope.appSettings.layout.pageRightbarExist = false;
 
@@ -2738,7 +2784,7 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 	$scope.packages = [];
 
 	$http.get('/package/packages/'+$stateParams.type).success(function(response){
-		$scope.packages = response;
+		$scope.packages = response;		
 	});
 
 	$scope.expandCallback = function (index, id) {
@@ -2766,9 +2812,44 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 	};
 	$rootScope.setMeta(mdata);
 
-	  /*$scope.$on('accordionA:onReady', function () {
-	    console.log('accordionA is ready!');
-	  });*/
+	$scope.addPackage = function(packageId){
+
+		var currPackage = "";
+		angular.forEach($scope.packages,function(package,key){
+			if(package._id == packageId){
+				currPackage = package;
+			}
+		})
+
+		if(currPackage === ""){
+			return false;
+		}
+		
+
+		$scope.processing = true;
+
+		alcoholCart.addPackage(packageId,currPackage).then(
+
+			function(response) {
+
+				if(response.success){
+
+					$scope.packages.unique = response.key;
+					$scope.processing = false;
+					$scope.btnText = "UPDATE CART";
+
+				}
+
+			}, 
+			function(error) {
+
+				console.error(error);
+				$scope.processing = false;
+
+			});
+
+
+	}
 
 }]);
 

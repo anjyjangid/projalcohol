@@ -4,9 +4,11 @@ namespace AlcoholDelivery\Http\Controllers;
 
 use AlcoholDelivery\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use DateTime;
 use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Products as Products;
+
+use DateTime;
+use mongoId;
 
 
 class ProductController extends Controller
@@ -91,9 +93,6 @@ class ProductController extends Controller
 
 	}
 
-
-
-
 	public function getproductdetail(Request $request){
 		
 		$params = $request->all();
@@ -108,5 +107,80 @@ class ProductController extends Controller
 
 	}
 
+	public function getAlsobought(Request $request, $productSlug){		
+
+		$product = Products::where("slug","=",$productSlug)->first(['alsoBought']);
+
+$product->alsoBought = "asd";
+prd(empty($product->alsoBought));
+
+		if(!empty($product->alsoBought) && is_array($product->alsoBought)){
+			
+		}
+
+		if(!empty($product)){
+			return response($product,200);
+		}
+
+		$products = DB::collection('giftcategories')->raw(function($collection){
+
+			return $collection->aggregate(array(
+				
+				[
+					'$match' => [
+						'products._id' => $product->_id
+					]
+				],
+				[
+					'$unwind' => '$products'
+				],
+				[
+					'$match' => [
+						'products._id' => [
+							'$nin' => [
+								$product->_id,
+								['array fetch from cart']
+							]							
+						]
+					]
+				],
+				[
+					'$group' => [
+						'_id' => '$products._id'
+					]
+				],
+				[
+					'$limit' => 5
+				],
+				[
+					'$project' => [
+						'_id' => 1
+					]
+				]
+			));
+		});
+
+		// db.test.aggregate([
+
+		// 	{ $match : { "products._id":ObjectId("57038728c31d53b2218b45d4") } },
+		// 	{ $unwind : "$products" },
+		// 	{ $match : { products : { 
+
+		// 			$nin: [
+		// 					ObjectId("57034c8dc31d53b2218b45c2"),
+		// 					ObjectId("57038728c31d53b2218b45d4")
+		// 				]
+
+		// 	}  } },
+		// 	{ $group: { _id: "$products._id" } },
+		// 	{ $limit : 5 },
+		// 	{ $project: { _id: 1 } }
+
+		// ]).pretty()
+
+		prd($products);
+
+		return response(['message'=>'Product not found'],404);
+	}
 
 }

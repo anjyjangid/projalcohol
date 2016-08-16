@@ -201,6 +201,8 @@ class ProductController extends Controller
 		{
 				$inputs = $request->all();              
 
+				return response($inputs,400);
+
 				$inputs['quantity'] = (int)$inputs['quantity'];
 				$inputs['price'] = (float)$inputs['price'];        
 				$inputs['chilled'] = (int)$inputs['chilled'];

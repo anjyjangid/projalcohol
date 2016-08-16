@@ -11,6 +11,8 @@ use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Cart as Cart;
 use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Products as Products;
+use AlcoholDelivery\Packages as Packages;
+
 use AlcoholDelivery\Setting as Setting;
 use AlcoholDelivery\Orders as Orders;
 use AlcoholDelivery\Promotion as Promotion;
@@ -160,7 +162,7 @@ class CartController extends Controller
 	 */
 	public function show(Request $request,$id)
 	{
-		$cart = Cart::findUpdated($id);
+		$cart = Cart::findUpdated($id);		
 
 		if(empty($cart)){
 
@@ -216,8 +218,34 @@ class CartController extends Controller
 		}
 
 		$cart['products'] = (object)$cart['products'];
-		$cart['packages'] = (object)$cart['packages'];
+		
 
+		// package validate and manage start
+		$packagesInCart = [];
+		foreach($cart['packages'] as $package){
+
+			array_push($packagesInCart, $package['_id']);
+
+		}
+
+		$packages = new Packages;
+		$packages = $packages->whereIn("_id",$packagesInCart)->where('status',1)->get(['title','subTitle','description','coverImage','packageItems']);
+
+		foreach($cart['packages'] as &$package){
+
+			foreach($packages as $oPackage){
+
+				if((string)$package['_id'] === $oPackage->_id){
+
+					$package = array_merge($oPackage->toArray(),$package);
+					$package['packagePrice'] =  100; // due:: this should be calculated from server
+
+				}
+			}
+
+		}		
+
+		// package validate and manage end
 
 		$request->session()->put('deliverykey', $cart['_id']);
 
@@ -458,9 +486,10 @@ class CartController extends Controller
 
 		}
 
-		$packageDetail['_unique'] = sha1(time());
+		$packageDetail['_unique'] = new mongoId();
 
 		if(isset($packageDetail['unique'])){
+
 			foreach ($packages as $key => $package) {
 
 				if(!isset($package["_unique"])){
@@ -476,26 +505,24 @@ class CartController extends Controller
 			}
 		}
 
-		if($packageDetail['packageQuantity']>0){
-			array_unshift($packages, $packageDetail);
+		if(!isset($packageDetail['packageQuantity'])){
+			$packageDetail['packageQuantity'] = 1;
 		}
-
-		$cart->packages = $packages;
-
+		
+		$packageDetail['products'] = (array)$packageDetail['products'];
+		$packageDetail['_id'] = new mongoId($packageId);
 
 		try {
 
-			$cart->save();
-
-			return response(array("success"=>true,"message"=>"cart updated successfully","key"=>$packageDetail['_unique']));
+			$result = Cart::where('_id', $cartKey)->push('packages',[$packageDetail]);
+			return response(["success"=>true,"message"=>"cart updated successfully","key"=>$packageDetail['_unique']]);
 
 		} catch(\Exception $e){
 
-			return response(array("success"=>false,"message"=>"Something went worng"));
-			return response(array("success"=>false,"message"=>$e->getMessage()));
+			return response(["success"=>false,"message"=>"Something went worng"]);
+			return response(["success"=>false,"message"=>$e->getMessage()]);
 
 		}
-
 
 	}
 
@@ -509,34 +536,34 @@ class CartController extends Controller
 
 		if(empty($cart)){
 
-        	return response(array("success"=>false,"message"=>"cart not found"),400);
+			return response(array("success"=>false,"message"=>"cart not found"),400);
 
-        }
+		}
 
-        $cartPromotion = $cart->__get("promotions");
+		$cartPromotion = $cart->__get("promotions");
 
-        if(!is_array($cartPromotion)){
-        	$cartPromotion = [];
-        }
+		if(!is_array($cartPromotion)){
+			$cartPromotion = [];
+		}
 
-        $promotion = Promotion::find($promoId);
+		$promotion = Promotion::find($promoId);
 
-        if(empty($promotion)){
-        	return response(array("success"=>false,"message"=>"promotion not found"),400);
-        }
+		if(empty($promotion)){
+			return response(array("success"=>false,"message"=>"promotion not found"),400);
+		}
 
-        $isInPromotion = false;
-        foreach($promotion['items'] as $product){
+		$isInPromotion = false;
+		foreach($promotion['items'] as $product){
 
-        	if((string)$product["_id"] == $productId){
-        		$isInPromotion = true;
-        	}
+			if((string)$product["_id"] == $productId){
+				$isInPromotion = true;
+			}
 
-        }
+		}
 
-        if($isInPromotion===false){
-        	return response(array("success"=>false,"message"=>"product not in promotion"),400);
-        }
+		if($isInPromotion===false){
+			return response(array("success"=>false,"message"=>"product not in promotion"),400);
+		}
 
 		$isPromotionInCart = false;
 
@@ -577,43 +604,43 @@ class CartController extends Controller
 
 		$user = Auth::user('user');
 
-        $cart = "";
+		$cart = "";
 
-        if(isset($user->_id)){
+		if(isset($user->_id)){
 
-            $userCart = Cart::where("user","=",new MongoId($user->_id))->where("_id","!=",new MongoId($cartkey))->first();
+			$userCart = Cart::where("user","=",new MongoId($user->_id))->where("_id","!=",new MongoId($cartkey))->first();
 
-            $sessionCart = Cart::find($cartkey);
+			$sessionCart = Cart::find($cartkey);
 
-            if(!empty($userCart)){
+			if(!empty($userCart)){
 
-            	$sessionCart->products = array_merge($sessionCart->products,$userCart->products);
+				$sessionCart->products = array_merge($sessionCart->products,$userCart->products);
 
-            }
+			}
 
-            $sessionCart->user = new MongoId($user->_id);
+			$sessionCart->user = new MongoId($user->_id);
 
-            try{
+			try{
 
-            	$sessionCart->save();
+				$sessionCart->save();
 
-            	if(!empty($userCart)){
+				if(!empty($userCart)){
 
-            		$userCart->delete();
+					$userCart->delete();
 
-            	}
-            	return (object)["success"=>true,"message"=>"cart merge successfully","cart"=>$sessionCart->toArray()];
+				}
+				return (object)["success"=>true,"message"=>"cart merge successfully","cart"=>$sessionCart->toArray()];
 
-            }catch(\Exception $e){
-            	return (object)["success"=>false,"message"=>$e->getMessage()];
-            }
+			}catch(\Exception $e){
+				return (object)["success"=>false,"message"=>$e->getMessage()];
+			}
 
 
-        }else{
-        	return (object)["success"=>false,"message"=>"login required to merge"];
-        }
+		}else{
+			return (object)["success"=>false,"message"=>"login required to merge"];
+		}
 
-        return (object)["success"=>false,"message"=>"something went wrong"];
+		return (object)["success"=>false,"message"=>"something went wrong"];
 
 	}
 
@@ -807,45 +834,45 @@ prd($cart);
 
 		$user = Auth::user('user');
 
-        $cart = "";
+		$cart = "";
 
-        if(isset($user->_id)){
+		if(isset($user->_id)){
 
-            $cart = Cart::where("user","=",$user->_id);
+			$cart = Cart::where("user","=",$user->_id);
 
-        }
+		}
 
-        if(!isset($cart->_id)){
+		if(!isset($cart->_id)){
 
-        	$cart = new Cart;
+			$cart = new Cart;
 			$cart->products = [];
 
 			try {
 
-	            $cart->save();
-	            $arr['deliverykey'] = $cart->_id;
+				$cart->save();
+				$arr['deliverykey'] = $cart->_id;
 
-	        } catch(\Exception $e){
+			} catch(\Exception $e){
 
-	            return response(array("success"=>false,"message"=>$e->getMessage()));
+				return response(array("success"=>false,"message"=>$e->getMessage()));
 
-	        }
+			}
 
-        }
+		}
 
-        $arr['deliverykey'] = $cart->_id;
+		$arr['deliverykey'] = $cart->_id;
 
-        $request->session()->put('deliverykey', $arr['deliverykey']);
+		$request->session()->put('deliverykey', $arr['deliverykey']);
 
-        return response($arr,200);
+		return response($arr,200);
 
-    }
+	}
 
-    public function getServices(){
+	public function getServices(){
 
-    	$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value'])->first();
+		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value'])->first();
 
-    	$services = $services['settings'];
+		$services = $services['settings'];
 
 		$serviceRes = [
 			"express"=>$services['express_delivery']['value'],
@@ -856,17 +883,17 @@ prd($cart);
 
 		];
 
-    	return response($serviceRes,200);
+		return response($serviceRes,200);
 
-    }
+	}
 
-    public function getTimeslots($date){
+	public function getTimeslots($date){
 
-    	$timeSlots = Setting::where("_id","=","timeslot")->get(['settings'])->first();
-    	$timeSlots = $timeSlots['settings'];    
+		$timeSlots = Setting::where("_id","=","timeslot")->get(['settings'])->first();
+		$timeSlots = $timeSlots['settings'];    
 
-    	$tomorrowTimeStr = strtotime('tomorrow');
-    	$passedTimeStr = strtotime($date);
+		$tomorrowTimeStr = strtotime('tomorrow');
+		$passedTimeStr = strtotime($date);
 	
 		if($passedTimeStr < $tomorrowTimeStr){
 			return response(["message"=>"In-valid date passed, Time slot is not available for previous date"],400);
@@ -877,16 +904,16 @@ prd($cart);
 
 		$currDate = date("Y-m-d", $tomorrowTimeStr);
 
-    	$passedDate = date("Y-m-d",$passedTimeStr);
+		$passedDate = date("Y-m-d",$passedTimeStr);
 
-    	$weeknumber = date("N",strtotime($passedDate));//pass "3" for 2016-06-08(wednesday)
+		$weeknumber = date("N",strtotime($passedDate));//pass "3" for 2016-06-08(wednesday)
 
-    	$weekDaysOff = [];
-    	foreach($holidays as $holiday){
-    		if($holiday['_id']==="weekdayoff"){
-    			$weekDaysOff = $holiday['dow'];
-    		}
-    	}
+		$weekDaysOff = [];
+		foreach($holidays as $holiday){
+			if($holiday['_id']==="weekdayoff"){
+				$weekDaysOff = $holiday['dow'];
+			}
+		}
 
 		$weekKeys = array(
 
@@ -922,12 +949,12 @@ prd($cart);
 
 		}
 
-    	return response($slotArr,200);
-    }
+		return response($slotArr,200);
+	}
 
-    public function removeproduct($proId,$type,Request $request){
+	public function removeproduct($proId,$type,Request $request){
 
-    	$cartKey = $request->session()->get('deliverykey');
+		$cartKey = $request->session()->get('deliverykey');
 
 		$cart = Cart::find($cartKey);
 
@@ -965,11 +992,11 @@ prd($cart);
 
 		return response(array("success"=>false,"message"=>"Something went wrong"));
 
-    }
+	}
 
-    public function deleteGift($giftUId,Request $request){
+	public function deleteGift($giftUId,Request $request){
 
-    	$cartKey = $this->deliverykey;
+		$cartKey = $this->deliverykey;
 
 		$cart = Cart::find($cartKey);
 
@@ -997,13 +1024,13 @@ prd($cart);
 
 		}
 
-    	return response(["success"=>false,"message"=>"Something went wrong"],400);
+		return response(["success"=>false,"message"=>"Something went wrong"],400);
 
-    }
+	}
 
-    public function deleteCard($cardUId,Request $request){
+	public function deleteCard($cardUId,Request $request){
 
-    	$cartKey = $this->deliverykey;
+		$cartKey = $this->deliverykey;
 
 		$cart = Cart::find($cartKey);
 
@@ -1029,16 +1056,16 @@ prd($cart);
 
 		}
 
-    	return response(["success"=>false,"message"=>"Something went wrong"],400);
+		return response(["success"=>false,"message"=>"Something went wrong"],400);
 
-    }
+	}
 
-    public function deletePromotion($promoId,Request $request){
+	public function deletePromotion($promoId,Request $request){
 
-    	$cartKey = $request->session()->get('deliverykey');
-    	$cart = Cart::find($cartKey);
+		$cartKey = $request->session()->get('deliverykey');
+		$cart = Cart::find($cartKey);
 
-    	if(empty($cart)){
+		if(empty($cart)){
 			return response(array("success"=>false,"message"=>"cart not found"),400);
 		}
 
@@ -1067,10 +1094,10 @@ prd($cart);
 
 		}
 
-    	return response(["success"=>false,"message"=>"Something went wrong"],400);
-    }
+		return response(["success"=>false,"message"=>"Something went wrong"],400);
+	}
 
-    public function confirmorder(Request $request,$cartKey){
+	public function confirmorder(Request $request,$cartKey){
 
 		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
 
@@ -1083,6 +1110,8 @@ prd($cart);
 		}
 
 		$cartArr = $cart->toArray();
+
+		$this->setCartProductsList($cartArr);
 
 		$user = Auth::user('user');
 
@@ -1135,7 +1164,7 @@ prd($cart);
 
 		}
 
-//////		
+//////
 		foreach($productsInCart as $key=>$product){
 
 			$cartArr['products'][$product["_id"]]['_id'] = new MongoId($product["_id"]);
@@ -1190,49 +1219,102 @@ prd($cart);
 			return response(array("success"=>false,"message"=>$e->getMessage()));
 
 		}
-    }    
+	}
 
-    public function deploycart(Request $request,$cartKey){
+	private function setCartProductsList(&$cart){
+
+		$products = isset($cart['products'])?$cart['products']:[];
+		$packages = isset($cart['packages'])?$cart['packages']:[];
+		$promotions = isset($cart['promotions'])?$cart['promotions']:[];
+		//jprd($promotions);
+		$proArr = [];
+		foreach($products as $proKey=>$pro){
+			$proArr[$proKey] = $pro["quantity"];
+		}
+
+		foreach($packages as $package){
+
+			foreach($package['products'] as $product){
+
+				if(isset($proArr[$product['_id']])){
+
+					$proArr[$product['_id']] += $product['quantity'];
+
+				}else{
+
+					$proArr[$product['_id']] = $product['quantity'];
+
+				}
+
+			}
+
+		}
+
+		foreach($promotions as $promotion){
+
+			if(isset($proArr[$promotion['productId']])){
+
+				$proArr[$promotion['productId']] += 1;
+
+			}else{
+
+				$proArr[$promotion['productId']] = 1;
+
+			}
+			
+
+		}
+
+		$oPro = [];
+		foreach($proArr as $proKey=>$quantity){
+			$oPro[] = ["_id"=>new mongoId($proKey),"quantity"=>$quantity];
+		}
+
+		$cart['productsLog'] = $oPro;
+
+	}
+
+	public function deploycart(Request $request,$cartKey){
 
 
-    	$cart = Cart::find($cartKey);
+		$cart = Cart::find($cartKey);
 
 		if(empty($cart)){
 			return response(array("success"=>false,"message"=>"something went wrong with cart"));
 		}
 
-    	$params = $request->all();
+		$params = $request->all();
 
-    	if(isset($params['nonchilled'])){
-    		$cart->nonchilled = $params['nonchilled'];
-    	}
+		if(isset($params['nonchilled'])){
+			$cart->nonchilled = $params['nonchilled'];
+		}
 
-    	if(isset($params['delivery'])){
-    		$cart->delivery = $params['delivery'];
-    	}
+		if(isset($params['delivery'])){
+			$cart->delivery = $params['delivery'];
+		}
 
-    	if(isset($params['service'])){
-    		$cart->service = $params['service'];
-    	}
+		if(isset($params['service'])){
+			$cart->service = $params['service'];
+		}
 
-    	if(isset($params['payment'])){
-    		$cart->payment = $params['payment'];
-    	}
+		if(isset($params['payment'])){
+			$cart->payment = $params['payment'];
+		}
 
-    	if(isset($params['discount'])){
-    		$cart->discount = $params['discount'];
-    	}
+		if(isset($params['discount'])){
+			$cart->discount = $params['discount'];
+		}
 
-    	if(isset($params['timeslot'])){
+		if(isset($params['timeslot'])){
 
-    		$cart->timeslot = $params['timeslot'];
+			$cart->timeslot = $params['timeslot'];
 
-    	}
+		}
 
-    	//SET CART REFERENCE FOR ORDER ID
-    	$cart->setReference();
+		//SET CART REFERENCE FOR ORDER ID
+		$cart->setReference();
 
-    	try {
+		try {
 
 			$cart->save();
 
@@ -1246,7 +1328,7 @@ prd($cart);
 
 		return response(array("success"=>false,"message"=>"Something went worng"));
 
-    }
+	}
 
 	public function freezcart(Request $request){
 
@@ -1256,12 +1338,12 @@ prd($cart);
 
 		$cart = Cart::findUpdated($cartKey);
 
-		if(isset($cart->freeze) && $cart->freeze===true){
+		// if(isset($cart->freeze) && $cart->freeze===true){
 
-			return response(["success"=>true,"message"=>"Cart is already freezed"],200);
-			return response(["success"=>false,"message"=>"Cart is already freezed"],405); //405 => method not allowed
+		// 	return response(["success"=>true,"message"=>"Cart is already freezed"],200);
+		// 	return response(["success"=>false,"message"=>"Cart is already freezed"],405); //405 => method not allowed
 
-		}
+		// }
 
 		$cart->freeze = true;
 
@@ -1319,15 +1401,13 @@ prd($cart);
 		}
 
 		if(isset($cartData['packages'])){
-			foreach($cartData['packages'] as $key=>&$package){
-				
-				foreach($package['packageItems'] as $packageItem){
+			foreach($cartData['packages'] as $key=>&$package){							
 
-					foreach($packageItem['products'] as $product){
+					foreach($package['products'] as $product){
 
-						if($product['cartquantity']>0){					
+						if($product['quantity']>0){
 
-							$quantity = (int)$package['packageQuantity'] * (int)$product['cartquantity'];				
+							$quantity = (int)$package['packageQuantity'] * (int)$product['quantity'];				
 							
 							$productsData[$product['_id']]['quantity']-= $quantity;
 
@@ -1339,8 +1419,6 @@ prd($cart);
 						}
 
 					}			
-
-				}
 
 			}
 		}
@@ -1355,14 +1433,14 @@ prd($cart);
 					$isNotAvailable = true;
 				}
 			}
-	    }
+		}
 
 		$response['cartData'] = $cartData;
 
 		if($isNotAvailable !== true){
-			$response['valid'] = true;			
+			$response['valid'] = true;
 		}
-		
+		$response['valid'] = true;
 
 		return $response;
 
@@ -1372,7 +1450,9 @@ prd($cart);
 		
 		$params = $request->all();
 		$cartKey = $request->session()->get('deliverykey');
+
 		$cart = Cart::find($cartKey);
+
 		$cartProducts = $cart->products;
 
 		if(isset($params['products']) && is_array($params['products'])){
@@ -1713,12 +1793,12 @@ prd($cart);
 			'_uid'=>new MongoId(),
 			'recipient'=>[
 				'price' => (float)$inputs['recipient']['price'],
-                'quantity' => (int)$inputs['recipient']['quantity'],
-                'name' => $inputs['recipient']['name'],
-                'email' => $inputs['recipient']['email'],
-                'message' => $inputs['recipient']['message'],
-                'sms' => isset($inputs['recipient']['sms'])?(int)$inputs['recipient']['sms']:NULL,
-                'mobile' => isset($inputs['recipient']['mobile'])?(int)$inputs['recipient']['mobile']:NULL
+				'quantity' => (int)$inputs['recipient']['quantity'],
+				'name' => $inputs['recipient']['name'],
+				'email' => $inputs['recipient']['email'],
+				'message' => $inputs['recipient']['message'],
+				'sms' => isset($inputs['recipient']['sms'])?(int)$inputs['recipient']['sms']:NULL,
+				'mobile' => isset($inputs['recipient']['mobile'])?(int)$inputs['recipient']['mobile']:NULL
 			]
 		];			
 
@@ -1781,8 +1861,8 @@ prd($cart);
 
 	}
 
-    public function missingMethod($parameters = array())
+	public function missingMethod($parameters = array())
 	{
-	    jprd("Missing");
+		jprd("Missing");
 	}
 }

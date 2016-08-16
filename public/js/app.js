@@ -45,6 +45,18 @@ AlcoholDelivery.filter('capitalize', function() {
 		}
 });
 
+
+AlcoholDelivery.filter("ucwords", function () {
+	return function (input){
+		if(input) { //when input is defined the apply filter
+		   input = input.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+			  return letter.toUpperCase();
+		   });
+		}
+		return input; 
+	}    
+});
+
 AlcoholDelivery.filter('isActive', function() {
 		return function(obj, field, check) {
 
@@ -164,7 +176,7 @@ AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
     var appSettings = {
         layout: {
             pageRightbarExist: true, // sidebar menu state
-        },        
+        }
     };
 
     $rootScope.appSettings = appSettings;
@@ -902,8 +914,8 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('mainLayout.product', {
-						url: "/product/{product}",
 
+						url: "/product/{product}",
 						views : {
 
 							'' : {
@@ -911,8 +923,10 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								controller: "ProductDetailController"
 							},
 							'alsoboughtthis@mainLayout.product' : {
+
 								templateUrl: "/templates/product/alsoBoughtThis.html",
-								controller: function(){}
+								controller: "AlsoBoughtThisController",
+
 							},
 
 
@@ -1198,14 +1212,6 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 	   
 	   $state.previous = {state:from, param:fromParams}
 	   $rootScope.appSettings.layout.pageRightbarExist = true;
-
-	   //SETTING HOME META DATA FOR EVERY ROUTE
-	   var mdata = {
-    		title:$rootScope.settings.general.site_title,
-    		description:$rootScope.settings.general.meta_desc,
-    		keyword:$rootScope.settings.general.meta_keyword
-    	};
-    	$rootScope.setMeta(mdata);
 
 	});
 
@@ -1614,14 +1620,3 @@ AlcoholDelivery.filter('creditcard', function() {
 		return 'XXXX XXXX XXXX '+r;		
 	}
 });
-
-AlcoholDelivery.filter("ucwords", function () {
-    return function (input){
-        if(input) { //when input is defined the apply filter
-           input = input.toLowerCase().replace(/\b[a-z]/g, function(letter) {
-              return letter.toUpperCase();
-           });
-        }
-        return input; 
-    }    
-})

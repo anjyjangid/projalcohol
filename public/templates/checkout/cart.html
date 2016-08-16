@@ -304,7 +304,7 @@
 <div class="checkouterwantbuttonouter">
 	<div class="checkouterwantfirst">
 
-		<button data-target="#Modal-dontmiss" data-toggle="modal" class="checkouterwantbutton" ng-class="{selected:cart.delivery.type==0}" ng-click="alcoholCart.setDeliveryType(0)">I want this order Now!</button>
+		<button class="checkouterwantbutton" ng-class="{selected:cart.delivery.type==0}" ng-click="alcoholCart.setDeliveryType(0)">I want this order Now!</button>
 
 		<span>(Standard 1 hour delivery)</span>
 		<button class="checkoutergitpackage"  ng-click="giftPopup($event)" >Gift Packaging</button>
@@ -333,6 +333,6 @@
 	</div>
 	<div class="checkouterbackouter">
 		<a class="checkouterback" ui-sref="mainLayout.index"><span><img src="images/order_history2backpic.png"></span>back to shopping</a>
-		<button class="checkoutcheckoutnowbutton" ng-click="checkout()">Checkout Now</button>
+		<button class="checkoutcheckoutnowbutton" ng-click="checkout($event)">Checkout Now</button>
 	</div>
 </div>

@@ -14,7 +14,7 @@ body {
 	font-weight: 400;
 	font-size: 14px;
 	background-color: #ebeef0 !important;
-	outline: none;
+	outline: none;	
 }
 body *, body *:hover, body *:focus {
 	outline: none;
@@ -4636,7 +4636,7 @@ ui-sref {
 	position: absolute;
 	top: 95%;
 	width: 290px;
-	z-index: 9;
+	z-index: 9000;
 	padding: 0;
 	-webkit-box-shadow: 0px 29px 60px 0px rgba(86,111,140,0.6);
 	-moz-box-shadow: 0px 29px 60px 0px rgba(86,111,140,0.6);
@@ -5105,7 +5105,8 @@ md-toolbar {
 }
 .layout-row {
 	box-shadow: none;
-	width: 98.5%
+	width: 98.5%;
+	margin: auto;
 }
 .btm10.ng-scope {
 	width: 100%;
@@ -5664,6 +5665,14 @@ md-checkbox.md-default-theme.md-checked .md-icon::after, md-checkbox.md-checked 
 	box-shadow: 0 0 10px 5px #d6dce0;
 	transition: all 0.5s ease 0s;
 }
+
+.proHoverEffect:hover {
+	-webkit-box-shadow: 0 0 10px 5px #d6dce0;
+	-moz-box-shadow: 0 0 10px 5px #d6dce0;
+	box-shadow: 0 0 10px 5px #d6dce0;
+	transition: all 0.5s ease 0s;
+}
+
 .product-listcover2.ng-scope {
 	float: left;
 	padding: 0 15px;

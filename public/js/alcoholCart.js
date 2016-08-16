@@ -216,12 +216,25 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		var _self = this;
 		var deliveryKey = _self.getCartKey();		
 		
-
 		var d = $q.defer();
+
+		var products = [];
+		angular.forEach(detail.packageItems,function(item,key){
+			angular.forEach(item.products,function(product,key){
+				if(product.cartquantity > 0){
+
+					var tempPro = {
+						_id:product._id,
+						quantity : product.cartquantity
+					};
+					products.push(tempPro);
+				}
+			})
+		});		
 
 		$http.post("/cart/package/"+deliveryKey, {
 				"id":id,
-				"package":detail,					
+				"package":{products:products},
 				"type":"package",
 			},{
 
@@ -1212,7 +1225,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 				if(typeof item !== 'object'){
 					return false;
 				}
-
+				
 				var newItem = new alcoholCartItem(key, item);
 				_self.$cart.products[key] = newItem;
 				

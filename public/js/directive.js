@@ -646,6 +646,7 @@ AlcoholDelivery.directive('sideBar', function() {
 	}
 }])
 
+
 .directive('addToCartBtn',[function(){
 	return {
 		restrict : "E",
