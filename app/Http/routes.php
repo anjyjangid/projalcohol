@@ -179,8 +179,10 @@ Route::group(['prefix' => 'cart'], function () {
 
 });
 
-Route::resource('cart', 'CartController');
 
+Route::controller('suggestion', 'SuggestionController');
+
+Route::resource('cart', 'CartController');
 
 Route::resource('wishlist', 'WishlistController');
 

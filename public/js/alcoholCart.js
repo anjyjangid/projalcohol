@@ -57,6 +57,8 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		var _self = this;
 		var deliveryKey = _self.getCartKey();
 
+		if(typeof id.$id !== 'undefined'){ id = id.$id}
+
 		$http.put("/cart/"+deliveryKey, {
 				"id":id,
 				"quantity":quantity,

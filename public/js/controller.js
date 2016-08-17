@@ -1329,7 +1329,20 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 								$mdDialog.hide(answer);
 							};
 
-							$scope.products = [{"_id":"57025cc9c31d53b2218b45ab","chilled":0,"categories":["5702597cc31d53b2218b45a8"],"name":"Chivas Regal 18yrs 75cl","description":"Chivas Regal 18yrs 75cl","shortDescription":"Chivas Regal 18yrs 75cl","sku":"WHSB005","price":148,"quantity":94,"imageFiles":[{"source":"57025cc9c31d53b2218b45ab_0.jpg","label":"Chivas Regal 18yrs 75cl","order":"1","coverimage":1}],"maxQuantity":100,"outOfStockType":2,"availabilityDays":2,"availabilityTime":960,"slug":"chivas-regal-18yrs-75cl"},{"_id":"57025d68c31d53b2218b45ac","chilled":0,"categories":["5702597cc31d53b2218b45a8"],"name":"Chivas Regal 25yrs 75cl","description":"Chivas Regal 25yrs 75cl","shortDescription":"Chivas Regal 25yrs 75cl","sku":"WHSB006","price":538,"quantity":91,"imageFiles":[{"source":"57025d68c31d53b2218b45ac_0.jpg","label":"Chivas Regal 25yrs 75cl","order":"1","coverimage":1}],"maxQuantity":100,"outOfStockType":2,"availabilityDays":2,"availabilityTime":960,"slug":"chivas-regal-25yrs-75cl"},{"_id":"570261bbc31d53b2218b45b1","chilled":0,"categories":["57026038c31d53b2218b45b0"],"name":"Auchentoshan 12yrs 70cl","description":"Auchentoshan 12yrs 70cl","shortDescription":"Auchentoshan 12yrs 70cl","sku":"WHSSM016","price":125,"quantity":100,"imageFiles":[{"source":"570261bbc31d53b2218b45b1_0.jpg","label":"Auchentoshan 12yrs 70cl","order":"1","coverimage":1}],"maxQuantity":100,"outOfStockType":2,"availabilityDays":2,"availabilityTime":960,"slug":"auchentoshan-12yrs-70cl"},{"_id":"57026239c31d53b2218b45b2","chilled":0,"categories":["57026038c31d53b2218b45b0"],"name":"Balvenie 12yrs Doublewood 75cl","description":"Balvenie 12yrs Doublewood 75cl","shortDescription":"Balvenie 12yrs Doublewood 75cl","sku":"WHSSM011","price":135,"quantity":100,"imageFiles":[{"source":"57026239c31d53b2218b45b2_0.jpg","label":"Balvenie 12yrs Doublewood 75cl","order":"1","coverimage":1}],"maxQuantity":100,"outOfStockType":2,"availabilityDays":2,"availabilityTime":960,"slug":"balvenie-12yrs-doublewood-75cl"}];
+							$http.get("suggestion/dontmiss").then(
+
+								function(response){
+
+									$scope.products = response.data.dontMiss;
+
+								},
+								function(errorRes){
+
+
+
+								}
+							)
+							
 
 						},
 						templateUrl: '/templates/checkout/dont-miss.html',

@@ -1,19 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="AlcoholDelivery">
-
 	<head>
 		<!-- <base href="/"> -->
-		<style>
-		/*.modal-open .navbar-fixed-top{
-			width:calc(100% - 17px);
-		}
-
-		.checkouter-td-right-text{
-			width:74%;
-			float:left;
-		}*/
-
-		</style>
 		<meta charset="utf-8">
 
 		<meta name="fragment" content="!">

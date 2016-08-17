@@ -1,26 +1,25 @@
 <md-dialog id="dont-miss-popup">
-    <md-toolbar>
-      <div class="md-toolbar-tools alcohal_addadress_header">
-        <div class="alcohal_addadress_headercurmain">          
-          <div class="alcohal_addadress_headertitle">Dont, Miss Out On These!</div>
-        </div>
-        <span flex></span>  <md-button class="md-icon-button" ng-click="hide()"> &times; </md-button></div>
-    </md-toolbar>
+	<md-toolbar>
+		<div class="md-toolbar-tools alcohal_addadress_header">
+			<div class="alcohal_addadress_headercurmain">          
+				<div class="alcohal_addadress_headertitle">Dont, Miss Out On These!</div>
+			</div>
+			<span flex></span>  <md-button class="md-icon-button" ng-click="hide()"> &times; </md-button>
+		</div>
+	</md-toolbar>
 
 	<md-dialog-content layout="row">
-	
-		
+
 		<div al-tpl-product classes="col-xs-12 col-sm-3 comboproductitems proHoverEffect" ng-repeat="product in products" info="product"></div>
-		
-		
+
 	</md-dialog-content>
 
-    <md-dialog-actions layout="row">
-      <div class="modal-footer alcohal_addadressfooter">
-        
-        <div class="alcohalosavebntcvr">
-          <button class="adresssvaebtn" ng-click="saveAddress()" type="button">Continue to checkout <span> <img src="images/alcholshoporderarrow.png"></span></button>
-        </div>
-      </div>
-    </md-dialog-actions>
+		<md-dialog-actions layout="row">
+			<div class="modal-footer alcohal_addadressfooter">
+				
+				<div class="alcohalosavebntcvr">
+					<button class="adresssvaebtn" ng-click="saveAddress()" type="button">Continue to checkout <span> <img src="images/alcholshoporderarrow.png"></span></button>
+				</div>
+			</div>
+		</md-dialog-actions>
 </md-dialog>

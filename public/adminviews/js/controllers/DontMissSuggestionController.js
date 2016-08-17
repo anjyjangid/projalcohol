@@ -28,7 +28,11 @@ MetronicApp.controller('DontMissSuggestionController',['$rootScope','$scope','$h
 			quantity:response.quantity
 		};
 
-		$scope.products = response.products
+		angular.forEach(response.dontMiss, function(product){
+			product._id = product._id.$id;
+			$scope.products.push(product);
+		});
+		 
 
 	}).error(function(data, status, headers){
 					

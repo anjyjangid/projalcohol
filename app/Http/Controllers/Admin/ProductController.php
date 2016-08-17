@@ -199,9 +199,7 @@ class ProductController extends Controller
 		 */
 		public function postUpdate(ProductRequest $request, $id)
 		{
-				$inputs = $request->all();              
-
-				return response($inputs,400);
+				$inputs = $request->all();				
 
 				$inputs['quantity'] = (int)$inputs['quantity'];
 				$inputs['price'] = (float)$inputs['price'];        

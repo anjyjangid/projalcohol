@@ -11,6 +11,7 @@ use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Dontmiss;
 
 use MongoId;
+use DB;
 
 class DontMissController extends Controller
 {
@@ -30,11 +31,61 @@ class DontMissController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index()
-	{
+	{		
 
-		$result = Dontmiss::first(['quantity','products']);
+		$result = DB::collection('dontmiss')->raw(function($collection)
+			{
+					return $collection->aggregate([
+							[
+								'$unwind' => '$products'
+							],
+							[
+								'$lookup' => [
 
-		return response($result, 200);
+									'from'=>'products',
+									'localField'=>'products',
+									'foreignField'=>'_id',
+									'as'=>'dontMiss'
+
+								]
+							],
+							[
+								'$unwind' => '$dontMiss'
+							],
+							[
+								'$group' => [
+									'_id' => '$_id',
+									'quantity'=> [ '$first' => '$quantity' ],
+									'dontMiss' => [
+										'$push' => '$dontMiss'
+									]
+								]
+							],
+							[
+								'$project' => [	
+									'quantity' => 1,
+									'dontMiss._id' => 1,
+									'dontMiss.name' => 1,
+									'dontMiss.imageFiles' => 1,
+									'dontMiss.status' => 1,
+								]
+							],
+							// [
+							// 	'$match' => [
+							// 		'dontMiss' => [
+							// 			'$ne' => []
+							// 		]
+							// 	]
+							// ]
+					]);
+			});		
+
+		if($result['ok']==1){
+			$result = array_pop($result['result']);
+			return response($result, 200);
+		}else{
+			return response($result, 400);
+		}
 		
 	}
 
@@ -42,7 +93,7 @@ class DontMissController extends Controller
 	 * Show the form for creating a new resource.
 	 *
 	 * @return \Illuminate\Http\Response
-	 */
+	 
 	public function create()
 	{
 		//
@@ -58,14 +109,17 @@ class DontMissController extends Controller
 	{
 
 		$inputs = $request->all();
-		
 
 		$dontmiss = Dontmiss::first();
 
-		if(is_array($dontmiss)){
+		if(is_object($dontmiss)){
 
 			$dontmiss->delete();
 
+		}
+
+		foreach($inputs['products'] as &$productKey){
+			$productKey = new MongoId($productKey);
 		}
 
 		try {

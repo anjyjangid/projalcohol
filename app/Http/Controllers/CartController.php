@@ -185,8 +185,9 @@ class CartController extends Controller
 			$cart = $cart->toArray();
 
 		}
-
+		
 		$isMerged = $this->mergecarts($cart['_id']);
+		
 
 		if($isMerged->success){
 
@@ -1362,7 +1363,7 @@ prd($cart);
 			return response(["success"=>false,"valid"=>false,"message"=>"Cart is not valid"],405); //405 => method not allowed
 		}
 
-		$productWithCount = $cartObj->getProductIncartCount($cartArr);
+		$productWithCount = $cartObj->getProductIncartCount();
 
 		foreach($productWithCount as $productKey=>$productCount){
 
