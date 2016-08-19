@@ -6,7 +6,8 @@ use AlcoholDelivery\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Products as Products;
-
+use AlcoholDelivery\Cart;
+use DB;
 use DateTime;
 use mongoId;
 
@@ -108,79 +109,178 @@ class ProductController extends Controller
 	}
 
 	public function getAlsobought(Request $request, $productSlug){		
+		
+		$response = [
+			'message'=>'',			
+		];
 
-		$product = Products::where("slug","=",$productSlug)->first(['alsoBought']);
+		$cartKey = $request->session()->get('deliverykey');
+		
+		$cart = Cart::findUpdated($cartKey);
+		$productWithCount = $cart->getProductIncartCount();
+		$proInCartIds = array_keys($productWithCount);
 
-$product->alsoBought = "asd";
-prd(empty($product->alsoBought));
-
-		if(!empty($product->alsoBought) && is_array($product->alsoBought)){
-			
+		foreach ($proInCartIds as $key => &$value) {
+			$value = new mongoId($value);
 		}
 
-		if(!empty($product)){
-			return response($product,200);
-		}
+		$product = Products::where("slug",'=',$productSlug)->first();
 
-		$products = DB::collection('giftcategories')->raw(function($collection){
+		$suggestions = DB::collection("products")->raw(function($collection) use($productSlug,$proInCartIds){
+
+			return $collection->aggregate([
+					[
+						'$match' => [
+							"slug" => $productSlug
+						]
+					],
+					[
+						'$project' => [
+							'suggestions'=>1
+						]
+					],
+					[
+						'$unwind' => '$suggestions'
+					],
+					[
+						'$match' => [
+							'suggestions' => [
+								'$nin' => $proInCartIds
+							]
+						]
+					],
+					[
+						'$sample' => [
+							'size' => 5
+						] 
+					],
+					[
+						'$lookup' => [
+
+							'from'=>'products',
+							'localField'=>'suggestions',
+							'foreignField'=>'_id',
+							'as'=>'product'
+
+						]
+					],
+					[
+						'$project' => [
+							"product" => [ 
+								'$arrayElemAt' => [ '$product', 0 ] 
+							]
+						]
+					],
+					[
+						'$group' => [
+							'_id' => '$_id',
+							'products' => [
+								'$push' => '$product'
+							],
+							'productIds' => [
+								'$push' => '$product._id'
+							]
+						]
+					]
+
+				]);
+		});
+
+		$suggestionPros = [];
+		$suggestionProsIds = [];
+		$suggestionsLength = 0;
+		
+		if(!empty($suggestions['result'])){
+			$suggestionPros = $suggestions['result'][0]['products'];
+			$suggestionProsIds = $suggestions['result'][0]['productIds'];
+			$suggestionsLength = count($suggestionPros);
+		}
+		
+		// if($suggestionsLength>4){
+		// 	$response['products'] = $suggestionPros;
+		// 	return response($response,200);
+		// }
+
+		
+		// further process if required quantity is not fullfilled
+
+		array_push($proInCartIds, new mongoId($product->_id));
+		$proInCartIds = array_merge($proInCartIds,$suggestionProsIds);
+
+		$requiredLimit = 6 - $suggestionsLength;
+
+		$products = DB::collection('orders')->raw(function($collection) use($product,$proInCartIds,$requiredLimit){
 
 			return $collection->aggregate(array(
-				
 				[
 					'$match' => [
-						'products._id' => $product->_id
+						'productsLog._id' => new mongoId($product->_id)
 					]
 				],
 				[
-					'$unwind' => '$products'
+					'$project' => [
+						'productsLog._id' => 1
+					]
+				],
+				[
+					'$unwind' => '$productsLog'
 				],
 				[
 					'$match' => [
-						'products._id' => [
-							'$nin' => [
-								$product->_id,
-								['array fetch from cart']
-							]							
+						'productsLog._id' => [
+							'$nin' => $proInCartIds
 						]
 					]
 				],
 				[
-					'$group' => [
-						'_id' => '$products._id'
+					'$sample' => [
+						'size' => 5
 					]
 				],
 				[
-					'$limit' => 5
+					'$limit' => abs($requiredLimit)
 				],
+				[
+					'$lookup' => [
+
+						'from'=>'products',
+						'localField'=>'productsLog._id',
+						'foreignField'=>'_id',
+						'as'=>'product'
+
+					]
+				],				
 				[
 					'$project' => [
-						'_id' => 1
+						"product" => [ 
+							'$arrayElemAt' => [ '$product', 0 ] 
+						]
 					]
-				]
+				],
+				
+				[
+					'$group' => [
+						'_id' => '$_id',
+						'products' => [
+							'$push' => '$product'
+						]
+					]
+				],
+				
 			));
 		});
 
-		// db.test.aggregate([
+		if(!empty($products['result'])){
 
-		// 	{ $match : { "products._id":ObjectId("57038728c31d53b2218b45d4") } },
-		// 	{ $unwind : "$products" },
-		// 	{ $match : { products : { 
+			$products = $products['result'][0]['products'];
+			$suggestionPros = array_merge($suggestionPros,$products);
 
-		// 			$nin: [
-		// 					ObjectId("57034c8dc31d53b2218b45c2"),
-		// 					ObjectId("57038728c31d53b2218b45d4")
-		// 				]
+		}
+		
 
-		// 	}  } },
-		// 	{ $group: { _id: "$products._id" } },
-		// 	{ $limit : 5 },
-		// 	{ $project: { _id: 1 } }
-
-		// ]).pretty()
-
-		prd($products);
-
-		return response(['message'=>'Product not found'],404);
+		$response['products'] = $suggestionPros;
+		return response($response,200);
+				
 	}
 
 }

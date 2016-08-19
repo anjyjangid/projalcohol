@@ -48,7 +48,8 @@ class Products extends Eloquent
 			'outOfStockType',
 			'availabilityDays',
 			'availabilityTime',
-			'deliveryType'
+			'deliveryType',
+			'suggestions'
 
 			
 	];

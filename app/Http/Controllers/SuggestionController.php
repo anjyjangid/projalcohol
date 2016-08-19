@@ -9,6 +9,7 @@ use AlcoholDelivery\Http\Controllers\Controller;
 
 use AlcoholDelivery\Dontmiss;
 use AlcoholDelivery\Cart;
+use mongoId;
 use DB;
 
 class SuggestionController extends Controller
@@ -25,7 +26,11 @@ class SuggestionController extends Controller
 		
 		$cart = Cart::findUpdated($cartKey);
 		$productWithCount = $cart->getProductIncartCount();
-		$proInCartIds = array_keys($productWithCount);		
+		$proInCartIds = array_keys($productWithCount);
+
+		foreach ($proInCartIds as $key => &$value) {
+			$value = new mongoId($value);
+		}
 
 		$quantity = Dontmiss::first(['quantity']);
 		$quantity = $quantity->quantity;
@@ -38,44 +43,44 @@ class SuggestionController extends Controller
 							],
 							[
 								'$match' => [
-									'products.$id' => [
+									'products' => [
 										'$nin' => $proInCartIds
 									]
 								]
 							],
-							// [
-							// 	'$lookup' => [
+							[
+								'$lookup' => [
 
-							// 		'from'=>'products',
-							// 		'localField'=>'products',
-							// 		'foreignField'=>'_id',
-							// 		'as'=>'dontMiss'
+									'from'=>'products',
+									'localField'=>'products',
+									'foreignField'=>'_id',
+									'as'=>'dontMiss'
 
-							// 	]
-							// ],
-							// [
-							// 	'$unwind' => '$dontMiss'
-							// ],
+								]
+							],
+							[
+								'$unwind' => '$dontMiss'
+							],
 
-							// [
-							// 	'$match' => [
-							// 		'dontMiss.status' => 1									
-							// 	]
-							// ],
-							// [
-							// 	'$sample' => [
-							// 		'size' => $quantity
-							// 	] 
-							// ],
+							[
+								'$match' => [
+									'dontMiss.status' => 1									
+								]
+							],
+							[
+								'$sample' => [
+									'size' => $quantity
+								] 
+							],
 
-							// [
-							// 	'$group' => [
-							// 		'_id' => '$_id',									
-							// 		'dontMiss' => [
-							// 			'$push' => '$dontMiss'
-							// 		]
-							// 	]
-							// ],
+							[
+								'$group' => [
+									'_id' => '$_id',									
+									'dontMiss' => [
+										'$push' => '$dontMiss'
+									]
+								]
+							],
 							// [
 							// 	'$project' => [	
 									
@@ -89,7 +94,7 @@ class SuggestionController extends Controller
 			});
 
 		if($result['ok']==1){
-			//$result = array_pop($result['result']);
+			$result = array_pop($result['result']);
 			return response($result, 200);
 		}else{
 			return response($result, 400);

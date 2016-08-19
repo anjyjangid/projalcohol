@@ -211,6 +211,12 @@ class ProductController extends Controller
 				$inputs['deliveryType'] = (int)$inputs['deliveryType'];
 				$inputs['isLoyalty'] = (int)$inputs['isLoyalty'];
 				
+				$suggestions = [];
+				foreach($inputs['suggestions'] as $product){
+					array_push($suggestions, new MongoId($product['_id']));
+				}
+				$inputs['suggestions'] = $suggestions;
+
 				if(isset($inputs['loyaltyValueType'])){
 					$inputs['loyaltyValueType'] = (int)$inputs['loyaltyValueType'];
 				}
@@ -223,7 +229,6 @@ class ProductController extends Controller
 					$inputs['loyaltyValuePrice'] = (float)$inputs['loyaltyValuePrice'];
 				}
 				
-//return response($inputs,400);
 				if(isset($inputs['outOfStockType']))
 					$inputs['outOfStockType'] = (int)$inputs['outOfStockType'];
 

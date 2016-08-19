@@ -928,7 +928,7 @@ AlcoholDelivery.directive('sideBar', function() {
 						return $scope.categoryBread;
 					}
 
-					if(typeof $scope.viaLoyaltyStore === "undefined"){
+					if(typeof $scope.viaLoyaltyStore !== "undefined"){
 						return $scope.categoryBread.push({
 
 									_id:0,

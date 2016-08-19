@@ -550,7 +550,7 @@ AlcoholDelivery.controller('AlsoBoughtThisController',['$scope','$http','$stateP
 	$http.get("/product/alsobought/"+$stateParams.product).then(
 
 		function(response){
-			
+			$scope.suggestions = response.data.products;
 		},
 		function(errResponse){}
 
@@ -1338,7 +1338,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 								},
 								function(errorRes){
 
-
+									
 
 								}
 							)
