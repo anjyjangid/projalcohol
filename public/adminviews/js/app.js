@@ -500,12 +500,12 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 			id:'sidebar_menu_link_settings',
 			access : ['admin'],
 			subItems:[
-				/*{
+				{
 					label:'Stores',
 					uisref:'userLayout.settings.stores',
 					icon:'icon-home',					
 					links:['userLayout.settings.stores']
-				},*/
+				},
 				{
 					label:'General',
 					uisref:'userLayout.settings.general',
