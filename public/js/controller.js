@@ -554,6 +554,19 @@ AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$
 
 }]);
 
+AlcoholDelivery.controller('AlsoBoughtThisController',['$scope','$http','$stateParams',function($scope,$http,$stateParams){
+
+	$http.get("/product/alsobought/"+$stateParams.product).then(
+
+		function(response){
+			$scope.suggestions = response.data.products;
+		},
+		function(errResponse){}
+
+	);
+
+}]);
+
 AlcoholDelivery.controller('ProfileController',['$scope','$rootScope','$state','$http','sweetAlert',function($scope,$rootScope,$state,$http,sweetAlert){
 
 	$scope.user;
@@ -1278,8 +1291,6 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 		}
 	);
 
-	
-
 	$scope.smoke = {
 
 		status:false,
@@ -1287,12 +1298,15 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 	}
 
 	$scope.payment = {
+
 		type:"cod",
+
 	}
 
 	$scope.step = 1;
 
-	$scope.checkout = function() {
+	$scope.checkout = function(ev) {
+
 
 		isCartValid = alcoholCart.validate($scope.step);
 
@@ -1306,10 +1320,55 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 				}else{
 
-					alcoholCart.deployCart();
+					$mdDialog.show({
 
-					$scope.step = 2;
-					$state.go("mainLayout.checkout.address");
+						controller: function($scope, $rootScope, $document) {
+
+							$scope.address = {
+								step:1
+							}
+
+							$scope.hide = function() {
+								$mdDialog.hide();
+							};
+							$scope.cancel = function() {
+								$mdDialog.cancel();
+							};
+							$scope.answer = function(answer) {
+								$mdDialog.hide(answer);
+							};
+
+							$http.get("suggestion/dontmiss").then(
+
+								function(response){
+
+									$scope.products = response.data.dontMiss;
+
+								},
+								function(errorRes){
+
+									
+
+								}
+							)
+							
+
+						},
+						templateUrl: '/templates/checkout/dont-miss.html',
+						parent: angular.element(document.body),
+						targetEvent: ev,
+						clickOutsideToClose:true
+					})
+					.then(function(answer) {
+
+					}, function() {
+
+					});
+
+					// alcoholCart.deployCart();
+
+					// $scope.step = 2;
+					// $state.go("mainLayout.checkout.address");
 
 				}
 
@@ -1406,7 +1465,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 	$scope.updateGiftCard = function(uid){
 
 		alcoholGifting.updateGiftCard(uid);
-		
+
 	}
 	
 
@@ -2766,7 +2825,7 @@ AlcoholDelivery.controller('CmsController',[
 }]);
 
 
-AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll){
+AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll','alcoholCart', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll,alcoholCart){
 
 	$rootScope.appSettings.layout.pageRightbarExist = false;
 
@@ -2783,7 +2842,7 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 	$scope.packages = [];
 
 	$http.get('/package/packages/'+$stateParams.type).success(function(response){
-		$scope.packages = response;
+		$scope.packages = response;		
 	});
 
 	$scope.expandCallback = function (index, id) {
@@ -2811,9 +2870,44 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 	};
 	$rootScope.setMeta(mdata);
 
-	  /*$scope.$on('accordionA:onReady', function () {
-	    console.log('accordionA is ready!');
-	  });*/
+	$scope.addPackage = function(packageId){
+
+		var currPackage = "";
+		angular.forEach($scope.packages,function(package,key){
+			if(package._id == packageId){
+				currPackage = package;
+			}
+		})
+
+		if(currPackage === ""){
+			return false;
+		}
+		
+
+		$scope.processing = true;
+
+		alcoholCart.addPackage(packageId,currPackage).then(
+
+			function(response) {
+
+				if(response.success){
+
+					$scope.packages.unique = response.key;
+					$scope.processing = false;
+					$scope.btnText = "UPDATE CART";
+
+				}
+
+			}, 
+			function(error) {
+
+				console.error(error);
+				$scope.processing = false;
+
+			});
+
+
+	}
 
 }]);
 

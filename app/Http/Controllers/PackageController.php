@@ -129,6 +129,7 @@ class PackageController extends Controller
                         if(isset($value['regular_express_delivery']) && !empty($value['regular_express_delivery'])){
                             $tier = $value['regular_express_delivery'];
                         }else{
+
                             $categories = Categories::whereIn('_id',$value['categories'])->get();
                             if($categories){
                               foreach ($categories as $ckey => $cvalue) {
@@ -137,6 +138,7 @@ class PackageController extends Controller
                                 }
                               }
                             }
+
                         }
                         $sprice = $this->calculatePrice($value['price'],$tier);
 

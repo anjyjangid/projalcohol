@@ -4,9 +4,12 @@ namespace AlcoholDelivery\Http\Controllers;
 
 use AlcoholDelivery\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use DateTime;
 use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Products as Products;
+use AlcoholDelivery\Cart;
+use DB;
+use DateTime;
+use mongoId;
 
 
 class ProductController extends Controller
@@ -91,9 +94,6 @@ class ProductController extends Controller
 
 	}
 
-
-
-
 	public function getproductdetail(Request $request){
 		
 		$params = $request->all();
@@ -108,5 +108,179 @@ class ProductController extends Controller
 
 	}
 
+	public function getAlsobought(Request $request, $productSlug){		
+		
+		$response = [
+			'message'=>'',			
+		];
+
+		$cartKey = $request->session()->get('deliverykey');
+		
+		$cart = Cart::findUpdated($cartKey);
+		$productWithCount = $cart->getProductIncartCount();
+		$proInCartIds = array_keys($productWithCount);
+
+		foreach ($proInCartIds as $key => &$value) {
+			$value = new mongoId($value);
+		}
+
+		$product = Products::where("slug",'=',$productSlug)->first();
+
+		$suggestions = DB::collection("products")->raw(function($collection) use($productSlug,$proInCartIds){
+
+			return $collection->aggregate([
+					[
+						'$match' => [
+							"slug" => $productSlug
+						]
+					],
+					[
+						'$project' => [
+							'suggestions'=>1
+						]
+					],
+					[
+						'$unwind' => '$suggestions'
+					],
+					[
+						'$match' => [
+							'suggestions' => [
+								'$nin' => $proInCartIds
+							]
+						]
+					],
+					[
+						'$sample' => [
+							'size' => 5
+						] 
+					],
+					[
+						'$lookup' => [
+
+							'from'=>'products',
+							'localField'=>'suggestions',
+							'foreignField'=>'_id',
+							'as'=>'product'
+
+						]
+					],
+					[
+						'$project' => [
+							"product" => [ 
+								'$arrayElemAt' => [ '$product', 0 ] 
+							]
+						]
+					],
+					[
+						'$group' => [
+							'_id' => '$_id',
+							'products' => [
+								'$push' => '$product'
+							],
+							'productIds' => [
+								'$push' => '$product._id'
+							]
+						]
+					]
+
+				]);
+		});
+
+		$suggestionPros = [];
+		$suggestionProsIds = [];
+		$suggestionsLength = 0;
+		
+		if(!empty($suggestions['result'])){
+			$suggestionPros = $suggestions['result'][0]['products'];
+			$suggestionProsIds = $suggestions['result'][0]['productIds'];
+			$suggestionsLength = count($suggestionPros);
+		}
+		
+		// if($suggestionsLength>4){
+		// 	$response['products'] = $suggestionPros;
+		// 	return response($response,200);
+		// }
+
+		
+		// further process if required quantity is not fullfilled
+
+		array_push($proInCartIds, new mongoId($product->_id));
+		$proInCartIds = array_merge($proInCartIds,$suggestionProsIds);
+
+		$requiredLimit = 6 - $suggestionsLength;
+
+		$products = DB::collection('orders')->raw(function($collection) use($product,$proInCartIds,$requiredLimit){
+
+			return $collection->aggregate(array(
+				[
+					'$match' => [
+						'productsLog._id' => new mongoId($product->_id)
+					]
+				],
+				[
+					'$project' => [
+						'productsLog._id' => 1
+					]
+				],
+				[
+					'$unwind' => '$productsLog'
+				],
+				[
+					'$match' => [
+						'productsLog._id' => [
+							'$nin' => $proInCartIds
+						]
+					]
+				],
+				[
+					'$sample' => [
+						'size' => 5
+					]
+				],
+				[
+					'$limit' => abs($requiredLimit)
+				],
+				[
+					'$lookup' => [
+
+						'from'=>'products',
+						'localField'=>'productsLog._id',
+						'foreignField'=>'_id',
+						'as'=>'product'
+
+					]
+				],				
+				[
+					'$project' => [
+						"product" => [ 
+							'$arrayElemAt' => [ '$product', 0 ] 
+						]
+					]
+				],
+				
+				[
+					'$group' => [
+						'_id' => '$_id',
+						'products' => [
+							'$push' => '$product'
+						]
+					]
+				],
+				
+			));
+		});
+
+		if(!empty($products['result'])){
+
+			$products = $products['result'][0]['products'];
+			$suggestionPros = array_merge($suggestionPros,$products);
+
+		}
+		
+
+		$response['products'] = $suggestionPros;
+		return response($response,200);
+				
+	}
 
 }

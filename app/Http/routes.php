@@ -79,11 +79,14 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::resource('gift', 'Admin\GiftController',['only'=>['store','show','index']]);
 	Route::controller('gift', 'Admin\GiftController');
 
+	Route::resource('dontmiss', 'Admin\DontMissController');
+	
 	Route::resource('giftcategory', 'Admin\GiftCategoryController',['only'=>['store','edit','index']]);
 	Route::controller('giftcategory','Admin\GiftCategoryController');
 
 	Route::resource('sale', 'Admin\SaleController',['only'=>['store','show','update']]);
 	Route::controller('sale', 'Admin\SaleController');
+
 });
 
 Route::group(['prefix' => 'admin'], function () {					
@@ -111,6 +114,11 @@ Route::get('/getproduct', 'ProductController@getproduct');
 Route::get('/search', 'ProductController@getproduct');
 
 Route::get('/getproductdetail', 'ProductController@getproductdetail');
+
+Route::get('/product/alsobought/{productSlug}', 'ProductController@getAlsobought');
+
+
+
 
 Route::controller('/password', 'Auth\PasswordController');
  
@@ -172,6 +180,9 @@ Route::group(['prefix' => 'cart'], function () {
 	Route::put('gift/product/chilledtoggle/{giftUid}','CartController@putGiftProductChilledStatus');
 
 });
+
+
+Route::controller('suggestion', 'SuggestionController');
 
 Route::resource('cart', 'CartController');
 

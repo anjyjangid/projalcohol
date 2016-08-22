@@ -735,3 +735,10 @@ body.loadingpayment .loader{
 	font-size: 2.5em;
 	text-align: center;
 }
+
+
+md-dialog#dont-miss-popup{
+	max-width: 702px;
+	width: 100%;
+}
+

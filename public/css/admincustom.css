@@ -509,3 +509,9 @@ position: relative;
 	font-size: 22px;
 	font-weight: bold;
 }
+
+.img-cover {
+    width: 100%;
+    text-align: center;
+    height: 100px;
+}

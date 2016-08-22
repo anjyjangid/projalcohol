@@ -586,6 +586,13 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 			icon:'icon-book-open',
 			id:'sidebar_menu_link_brand',
 			access : ['admin']
+		},
+		{
+			label:'Dont miss',
+			uisref:'userLayout.dontmiss',
+			icon:'icon-magnet',
+			id:'sidebar_menu_link_dontmiss',
+			access : ['admin']
 		}
 		
 	];
@@ -1883,6 +1890,31 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             controller:"CouponAddController",            
             resolve: {                
                 authenticate: authenticate
+            }
+        })
+
+        .state('userLayout.dontmiss', {
+        	url: "/dontmiss",
+			templateUrl:'adminviews/views/dontmiss/index.html',
+            controller: "DontMissSuggestionController",
+            data:{
+				pageTitle:"Don't miss suggestions",
+				breadCrumb:[
+					{title:"Don't miss suggestions",'uisref':'#'}					
+				]				
+			},
+            resolve: {                
+                authenticate: authenticate,
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'adminviews/js/models/dontmissModel.js',
+                            'adminviews/js/controllers/DontMissSuggestionController.js'
+                        ]
+                    });
+                }]
             }
         })
 

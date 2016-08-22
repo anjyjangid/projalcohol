@@ -167,7 +167,9 @@ class Cart extends Moloquent
 
 	}
 
-	public function getProductIncartCount($data){
+	public function getProductIncartCount(){
+		
+		$data = $this;
 		
 		$products = [];
 
@@ -180,32 +182,24 @@ class Cart extends Moloquent
 		}
 
 		if(isset($data['packages'])){
-		foreach($data['packages'] as $key=>$package){
-			
-			foreach($package['packageItems'] as $packageItem){
+			foreach($data['packages'] as $key=>$package){
+				
+				foreach($package['products'] as $product){
 
-				foreach($packageItem['products'] as $product){
+					if(isset($products[$product['_id']])){
 
-					if($product['cartquantity']>0){
+						$products[$product['_id']] = (int)$products[$product['_id']] + ((int)$package['packageQuantity'] * (int)$product['quantity']);
 
-						if(isset($products[$product['_id']])){
+					}else{
 
-							$products[$product['_id']] = (int)$products[$product['_id']] + ($package['packageQuantity'] * (int)$product['cartquantity']);
-
-						}else{
-
-							$products[$product['_id']] = (int)$package['packageQuantity'] * (int)$product['cartquantity'];
-
-						}
-						
+						$products[$product['_id']] = (int)$package['packageQuantity'] * (int)$product['quantity'];
 
 					}
 
-				}			
+				}
+			
 
 			}
-
-		}
 		}
 
 		if(isset($data['promotions'])){
@@ -274,6 +268,7 @@ class Cart extends Moloquent
 		$reference.= (string)date("Hi",strtotime($this->updated_at));
 
 		$this->reference = $reference;
+		
 	}
 
 	public function confirmOrder($cartArr){		

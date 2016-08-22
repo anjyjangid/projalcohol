@@ -1,55 +1,7 @@
-<div class="combo_slider combo_sliderProduct">
+<div class="combo_slider combo_sliderProduct" ng-show="suggestions.length>0">
+
 	<div class="productdetailtitle">Customers Who Bought This Item Also Bought</div>
-	
-		<div class="comboproductdetailitems">
-			<div class="prod_chilled notchilled"> <span>Chilled</span>
-			<div class="prod_chilled_icon"></div>
-		</div>
-		<div class="prod_pic"><img src="images/product.png" class="img-responsive" /></div>
-		<div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-		<div class="prod_price">28.00 SGD</div>
-		<div class="prod_discout_price">24.00 SGD</div>
-		<div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive" /></div>
-		</div>
-		<div class="comboproductdetailitems">
-			<div class="prod_chilled notchilled"> <span>Chilled</span>
-			<div class="prod_chilled_icon"></div>
-		</div>
-		<div class="prod_pic"><img src="images/product.png" class="img-responsive" /></div>
-		<div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-		<div class="prod_price">28.00 SGD</div>
-		<div class="prod_discout_price">24.00 SGD</div>
-		<div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive" /></div>
-		</div>
-		<div class="comboproductdetailitems">
-			<div class="prod_chilled notchilled"> <span>Chilled</span>
-			<div class="prod_chilled_icon"></div>
-		</div>
-		<div class="prod_pic"><img src="images/product.png" class="img-responsive" /></div>
-		<div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-		<div class="prod_price">28.00 SGD</div>
-		<div class="prod_discout_price">24.00 SGD</div>
-		<div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive" /></div>
-		</div>
-		<div class="comboproductdetailitems">
-			<div class="prod_chilled notchilled"> <span>Chilled</span>
-			<div class="prod_chilled_icon"></div>
-		</div>
-		<div class="prod_pic"><img src="images/product.png" class="img-responsive" /></div>
-		<div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-		<div class="prod_price">28.00 SGD</div>
-		<div class="prod_discout_price">24.00 SGD</div>
-		<div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive" /></div>
-		</div>
-		<div class="comboproductdetailitems">
-			<div class="prod_chilled notchilled"> <span>Chilled</span>
-			<div class="prod_chilled_icon"></div>
-		</div>
-		<div class="prod_pic"><img src="images/product.png" class="img-responsive" /></div>
-		<div class="prod_desc">CP Crispy Chicken with Korean Hot and Spicy Sauce</div>
-		<div class="prod_price">28.00 SGD</div>
-		<div class="prod_discout_price">24.00 SGD</div>
-		<div class="prodcombo_addtocartbutton"><img src="images/addtocart.png" class="img-responsive" /></div>
-		</div>
+
+	<div al-tpl-product classes="col-xs-12 col-sm-2 comboproductdetailitems proHoverEffect" ng-repeat="product in suggestions" info="product"></div>
 		
 </div>

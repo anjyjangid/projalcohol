@@ -31,14 +31,14 @@
 	            		<div class="party-leftposion">
 							<div class="package-amtcover">
 								<p class="packtiti-rightset packag-amnt-divcolr">Package Amount</p>
-								<h3 class="amntrupee-clsdetail">${{package.packagePrice}}</h3>
+								<h3 class="amntrupee-clsdetail">{{package.packagePrice | pricingTxt}}</h3>
 							</div>            
 							<div class="saving-amount-cover">
 								<p class="packtiti-rightset">Savings</p>
-								<p class="packtiti-rightset ">${{package.packageSavings}}</p>
+								<p class="packtiti-rightset ">{{package.packageSavings | pricingTxt}}</p>
 							</div>            
 							<div class="add-cart-cover">   
-								<a class="btn product_addcart addcart-detail party-cart-margintop" ui-sref="mainLayout.packagedetail({type:'party',id:package._id})"><img src="images/cart-icon.png"> Add to Cart</a>
+								<button class="btn product_addcart addcart-detail party-cart-margintop" ng-click="addPackage(package._id)"><img src="images/cart-icon.png"> Add to Cart</button>
 							</div>
 						</div>
 						<div class="package-contain-cover">
