@@ -34,7 +34,10 @@ class PackageRequest extends Request
             'description' => 'required',            
             //'products' => 'required|array|min:1',                                    
             'status' => 'required|integer',
-            'packageItems' => 'required|array|min:1'
+            'packageItems' => 'required|array|min:1',
+            'metaTitle' => 'max:100',
+            'metaKeywords' => 'max:150',
+            'metaDescription' => 'max:150',            
         ];
         
         //VALIDATION FOR COCKTAIL TYPE

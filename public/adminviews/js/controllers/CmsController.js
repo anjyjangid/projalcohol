@@ -11,7 +11,12 @@ MetronicApp.controller('CmsController',['$rootScope', '$scope', '$timeout','$htt
     $rootScope.settings.layout.pageBodySolid = false;
     $rootScope.settings.layout.pageSidebarClosed = false;  
 
-
+    $scope.pagesection = [
+    	{name:'Customer Service',value:'services'},
+    	{name:'About AlcoholDelivery',value:'about'},
+    	{name:'Corporate',value:'corporate'}    	
+    ];
+    
 }]); 
 
 MetronicApp.controller('CmsAddController',['$scope','$http','cmsModel', function($scope,$http,cmsModel) {

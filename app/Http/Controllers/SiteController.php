@@ -5,9 +5,11 @@ namespace AlcoholDelivery\Http\Controllers;
 use Illuminate\Http\Request;
 
 use AlcoholDelivery\Http\Requests;
+use AlcoholDelivery\Http\Requests\QueryRequest;
 use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Products;
 use DateTime;
+use Mail;
 class SiteController extends Controller
 {
     /**
@@ -298,6 +300,64 @@ class SiteController extends Controller
         }
         
         return dd($response->all());
+
+    }
+
+    public function postQuery(QueryRequest $request){
+
+        $postData = $request->all();
+
+        $content = '<div style="font-size: 14px; padding: 10px 15px; background-image: initial; background-attachment: initial;background-color: #1CAF9A; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">
+        <div style="width:63%;display:inline-block;font-size: 19px;color: #FFF;">Hello Admin</div>
+        </div>
+        <div style="font-size: 14px; padding: 15px 10px; line-height: 20px; color: rgb(66, 65, 67); background-image: initial; background-attachment: initial; background-color: rgb(255, 255, 255); background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">';
+
+        switch ($postData['type']) {
+            case 'contact-us':
+                $subject = 'Query from '.$postData['name'].':'.$postData['subject'];
+                $content .= '<p>Below is a query from '.$postData['name'].'</p>';
+                break;
+            case 'sell-on-alcoholdelivery':
+                $subject = 'Sell on website request from '.$postData['contactName'];
+                $content .= '<p>Below is a request from '.$postData['contactName'].'</p>';
+                break;
+            case 'event-planner':
+                $subject = 'Event planing request from '.$postData['contactName'];
+                $content .= '<p>Below is a request from '.$postData['contactName'].'</p>';
+                break;
+            case 'book-a-bartender':
+                $subject = 'Book a bartender request from '.$postData['contactName'];
+                $content .= '<p>Below is a request from '.$postData['contactName'].'</p>';
+                break;
+            case 'become-a-partner':
+                $subject = 'Become a partner request from '.$postData['contactName'];
+                $content .= '<p>Below is a request from '.$postData['contactName'].'</p>';
+                break;                        
+            default:
+                $subject = 'No subject';
+                break;
+        }
+
+        $req = $postData;
+
+        unset($req['type']);
+
+        $content .= '<p></p>';
+
+        foreach ($req as $fieldLabel => $fieldValue) {
+            $fieldLabel = preg_replace(array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/'), ' $0', $fieldLabel);
+            $fieldLabel = ucwords($fieldLabel);  
+
+            $content .= '<p><b>'.$fieldLabel.'</b> : '.$fieldValue.'</p>';
+            $content .= '<p></p>';
+        }        
+
+        $content .= '</div>';       
+
+        Mail::send('emails.mail', ['content'=>$content], function ($message) use ($subject) {
+            $message->setTo(['abhay@cgt.co.in'=>'Testing']);
+            $message->setSubject($subject);
+        });
 
     }
 }

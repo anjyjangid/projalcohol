@@ -142,32 +142,38 @@ class SuperController extends Controller
 		$holidays = DB::collection('holidays')->where('timeStamp','>',$today)->orWhere('_id','weekdayoff')
 		->get(['_id','dow','timeStamp']);
 
+		$pages = DB::collection('pages')->where('status',1)
+		->get(['linkTitle','section','slug']);
+
 		$settingsData['holiDays'] = $holidays;
 		$settingsData['today'] = $today;
+		$settingsData['pages'] = $pages;
 
 		return response($settingsData);
 	}
 
 
-	public function getCmsdata(Request $request)
+	public function getCmsdata(Request $request,$slug)
 	{
 		$params = $request->all();
 
 		$cms = new Cms;
 
-		if(isset($params['cmsid']) && $params['cmsid']!=""){
+		/*if(isset($params['cmsid']) && $params['cmsid']!=""){
 			$cms = $cms->where('_id', "=", $params['cmsid']);
-		}
+		}*/
 
-		$cms = $cms->get()->first();
+		$cms = $cms->where('slug',$slug)->where('status',1)->first();
 		
-		if(!empty($cms))
+		return response($cms,200);
+
+		/*if(!empty($cms))
 		{
 			$cms->title = ucwords($cms->title);
 			return response($cms);
 		}
 		else 
-			return response(array());
+			return response(array());*/
 	}
 
 

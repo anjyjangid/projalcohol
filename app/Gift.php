@@ -24,6 +24,9 @@ class Gift extends Eloquent
 		'limit',     
 		'costprice',
 		'gift_packaging',     
+		'metaTitle',
+        'metaKeywords',
+        'metaDescription',
 		'status'        
 	];
 

@@ -29,7 +29,10 @@ class GiftCategoryRequest extends Request
         $rules = [            
             'title' => 'required|unique:giftcategories,title',
             //'title' => 'required|unique:giftcategories,title,'.@$input['_id'].',_id,parent,'.@$input['parent'],
-            'status' => 'required|integer'            
+            'status' => 'required|integer',
+            'metaTitle' => 'max:100',
+            'metaKeywords' => 'max:150',
+            'metaDescription' => 'max:150',                        
         ];
 
         if(isset($input['_id'])){

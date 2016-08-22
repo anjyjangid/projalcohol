@@ -1740,7 +1740,7 @@ ui-sref {
 	padding: 5px 10px;
 }
 .cartbtn {
-	width: 142px;
+	/*width: 142px;*/
 	height: 32px;
 	border: none;
 	border-radius: 5px;

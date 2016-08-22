@@ -38,9 +38,9 @@ class CartController extends Controller
 
 		$user = Auth::user('admin');
 		if(!empty($user)){
-			$this->deliverykey = $request->session()->get('deliverykeyAdmin');
+			$this->deliverykey = session()->get('deliverykeyAdmin');
 		}else{
-			$this->deliverykey = $request->session()->get('deliverykey');
+			$this->deliverykey = session()->get('deliverykey');
 		}
 
 	}

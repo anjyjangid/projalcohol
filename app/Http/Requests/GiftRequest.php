@@ -36,6 +36,9 @@ class GiftRequest extends Request
             'subcategory' => 'required',
             'limit' => 'required_if:type,1',
             'costprice' => 'required|numeric',
+            'metaTitle' => 'max:100',
+            'metaKeywords' => 'max:150',
+            'metaDescription' => 'max:150',
             'status' => 'required|integer'            
         ];
         

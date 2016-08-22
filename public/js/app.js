@@ -17,9 +17,13 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'alcoholCart.directives',
 	'angularFblogin',
 	'ngPayments'
-])/*.config(['$locationProvider', function($location) {
-  $location.hashPrefix('!');
-}])*/;
+]).config(['$locationProvider', function($location) {
+	/*$location.html5Mode({
+		enabled: true,
+		requireBase: false
+	});*/		  
+  	//$location.hashPrefix('!');
+}]);
 
 
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
@@ -714,83 +718,15 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				// CMS Page YKB //
 
 				.state('cmsLayout', {
-						templateUrl: "/templates/cmsLayout.html",
-						controller:function(){
-
-								setTimeout(function(){
-										initScripts({
-												disableScrollHeader:true
-										});
-								},100)
-						},
-						resolve: {
-								deps: ['$ocLazyLoad', function($ocLazyLoad) {
-										return $ocLazyLoad.load({
-												name: 'AlcoholDelivery',
-												insertBefore: '#ng_load_plugins_before',
-												debug: true,
-												serie: true,
-												files: [
-														//'js/controller/ProductsController.js',
-														'js/owl.carousel.min.js',
-														'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
-														'js/jquery.switchButton.js',
-														'js/jquery.mCustomScrollbar.concat.min.js',
-														'js/jquery.bootstrap-touchspin.min.js',
-														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js',
-														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js',
-														'js/all_animations.js',
-														'js/js_init_scripts.js'
-												]
-										});
-								}]
-						}
+					abstract: true,
+					templateUrl:"/templates/cmsLayout.html",					
 				})
 
-				.state('cmsLayout.about-us', {
-						url: "/about-us",
-						templateUrl: "/templates/cms/cms.html",
-						params: {pageTitle: 'About Us', cmsId:'56efc34e209a568c2067284d'},
-						controller:function($scope,$http){
-
-								setTimeout(function(){
-										initScripts({
-												disableScrollHeader:true
-										});
-										$("html, body").animate({ scrollTop: 0 }, 200);
-								},100)
-						},
-				})
-
-				.state('cmsLayout.privacy-policy', {
-						url: "/privacy-policy",
-						templateUrl: "/templates/cms/cms.html",
-						params: {pageTitle: 'Privacy Policy', cmsId:'572d960763e8fe24e06a0f97'},
-						controller:function($scope,$http){
-								
-								setTimeout(function(){
-										initScripts({
-												disableScrollHeader:true
-										});
-										$("html, body").animate({ scrollTop: 0 }, 200);
-								},100)
-						},
-				})
-
-				.state('cmsLayout.terms-conditions', {
-						url: "/terms-conditions",
-						templateUrl: "/templates/cms/cms.html",
-						params: {pageTitle: 'Terms and Conditions', cmsId:'572d976063e8fe24e06a0f98'},
-						controller:function($scope,$http){
-
-								setTimeout(function(){
-										initScripts({
-												disableScrollHeader:true
-										});
-										$("html, body").animate({ scrollTop: 0 }, 200);
-								},100)
-						},
-				})
+				.state('cmsLayout.pages', {
+					url: "/site/{slug}",
+					templateUrl:"/templates/cms/cms.html",
+					controller:'CmsController'						
+				})				
 
 				.state('orderplaced', {
 

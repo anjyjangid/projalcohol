@@ -591,4 +591,38 @@ class CategoryController extends Controller
 
 	}
 
+	public function getSearchcategory(Request $request){
+
+	  $params = $request->all();
+
+      $categories = new Categories;
+
+      extract($params);      
+
+      if(isset($qry) && trim($qry)!=''){        
+        $categories = $categories->where('cat_title','regexp', "/.*$qry/i");
+      }     
+
+      $iTotalRecords = $categories->count();      
+      
+      $columns = ['cat_title','_id','ancestors','cat_thumb'];
+
+      $categories = $categories
+      ->skip(0)
+      ->take((int)$length);
+      
+      $categories = $categories->orderBy('cat_title','desc');      
+
+      $categories = $categories->get($columns);      
+
+      foreach ($categories as $key => $value) {
+      	$categories[$key]['name'] = $value->cat_title;
+      	if(isset($value->ancestors)){
+      		$categories[$key]['name'] = $value->ancestors[0]['title'].' > '.$value->cat_title;
+      	}
+      }
+      
+      return response($categories,200);
+    }
+
 }

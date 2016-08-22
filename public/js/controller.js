@@ -3,9 +3,12 @@ AlcoholDelivery.controller('AppController',
 	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter) {
 
 	$rootScope.setMeta = function(meta){
-		var title = $filter('ucwords')(meta.title)+ ' | '+$rootScope.settings.general.site_name;
+		
+		if(typeof meta.title == 'undefined') return;
+
+		var title = $filter('ucwords')(meta.title)+ ' - '+$rootScope.settings.general.site_name;
 		$rootScope.meta = {
-        	title:title,
+        	title:title,        	
         	description:meta.description,
         	keyword:meta.keyword,
         }
@@ -199,6 +202,12 @@ AlcoholDelivery.controller('AppController',
 	$scope.$on('redirecting', function(event, data) {
 		$scope.loadingmsg = data;
 	});	
+
+	$scope.getLinks = function(section,pdata){		
+		if(typeof pdata == 'undefined') return [];
+
+		return $filter('filter')($rootScope.settings.pages,{section:section});
+	}
 
 }]);
 
@@ -2707,16 +2716,52 @@ AlcoholDelivery.controller('ShopFromPreviousController',['$scope','$rootScope','
 
 }]);
 
-AlcoholDelivery.controller('CmsController',['$scope','$http','$stateParams',function($scope,$http,$stateParams){
+AlcoholDelivery.controller('CmsController',[
+	'$scope','$http','$stateParams','$rootScope','$state',
+	function($scope,$http,$stateParams,$rootScope,$state){
+	$scope.querySent = false;	
+	$http.get("/super/cmsdata/"+$stateParams.slug).success(function(response){
 
-	$scope.cmsId = $stateParams.cmsId;
-	$scope.cmsData = "";
-	$scope.cmsTitle = "";
+    	if(response.length == 0){
+    		$state.go('mainLayout.notfound');
+    	}
 
-	$http.get("/super/cmsdata?cmsid="+$scope.cmsId).success(function(response){
-    	$scope.cmsData = response.content;
-    	$scope.cmsTitle = response.title;
+    	$scope.cmsData = response;    
+
+    	$scope.checkForm = function(){
+    		return (
+    			$scope.cmsData.formType == 'contact-us' ||
+    			$scope.cmsData.formType == 'event-planner' ||
+    			$scope.cmsData.formType == 'book-a-bartender' ||
+    			$scope.cmsData.formType == 'become-a-partner' ||
+    			$scope.cmsData.formType == 'sell-on-alcoholdelivery'
+    		);
+    	}
+    	
+    	$scope.cmsData.hasForm = $scope.checkForm();
+
+    	$scope.query = {type:$scope.cmsData.formType};
+
+    	var mdata = {
+			title:response.metaTitle,
+			description:response.metaDescription,
+			keyword:response.metaKeywords
+		};
+
+		$rootScope.setMeta(mdata);
+
+		
     });
+
+    $scope.submitQuery = function(){
+		$scope.querySubmit = true;
+    	$http.post('/site/query',$scope.query).success(function(res){
+    		$scope.querySent = true;
+		}).error(function(data, status, headers){
+			$scope.errors = data;
+			$scope.querySubmit = false;
+		});
+	}
 
 }]);
 
@@ -2800,6 +2845,13 @@ AlcoholDelivery.controller('PackageDetailController',
 		delete response.productlist;
 
 		$scope.packages = response;
+
+		var mdata = {
+			title:$scope.packages.metaTitle,
+			description:$scope.packages.metaDescription,
+			keyword:$scope.packages.metaKeywords
+		};
+		$rootScope.setMeta(mdata);
 	});
 
 	$scope.expandCallback = function (index, id) {
@@ -2944,6 +2996,8 @@ AlcoholDelivery.controller('PackageDetailController',
 			$scope.updatePackage();
 		}
 	}	
+
+	
 
 }]);
 
@@ -3103,8 +3157,8 @@ AlcoholDelivery.controller('InviteController', ['$scope', '$rootScope','$state',
 }]);
 
 AlcoholDelivery.controller('GiftProductController', [
-	'$q', '$http', '$scope', '$stateParams', 'ScrollPaging', '$state',
-	function($q, $http, $scope, $stateParams,ScrollPaging,$state){
+	'$q', '$http', '$scope', '$stateParams', 'ScrollPaging', '$state', '$rootScope', '$filter',
+	function($q, $http, $scope, $stateParams,ScrollPaging,$state,$rootScope,$filter){
 		
 		
 		$scope.subCategory = '';
@@ -3126,6 +3180,32 @@ AlcoholDelivery.controller('GiftProductController', [
 
 		$scope.giftproducts = new ScrollPaging($scope.args,$scope.url);
 
+		$scope.$watch('giftproducts.data.categoryData',function(newValue,oldValue){
+			if(newValue){
+				
+				var mdata = {
+					title:newValue.metaTitle,
+					description:newValue.metaDescription,
+					keyword:newValue.metaKeywords
+				};
+
+				if($stateParams.type){
+					var child = $filter('filter')(newValue.child,{slug:$stateParams.type});
+
+					if(typeof child[0] !== 'undefined'){
+						mdata = {
+							title:child[0].metaTitle,
+							description:child[0].metaDescription,
+							keyword:child[0].metaKeywords
+						};					
+					}
+				}
+
+				$rootScope.setMeta(mdata);
+
+			}
+		});
+
 }]);
 
 AlcoholDelivery.controller('GiftController', [
@@ -3144,6 +3224,14 @@ AlcoholDelivery.controller('GiftController', [
 			$http.get('/gift/'+$stateParams.giftid).success(function(result){
 				
 				$scope.gift = result;
+
+				var mdata = {
+					title:$scope.gift.metaTitle,
+					description:$scope.gift.metaDescription,
+					keyword:$scope.gift.metaKeywords
+				};
+
+				$rootScope.setMeta(mdata);
 
 				$scope.giftData = {
 					_uid:$stateParams.uid
@@ -3269,6 +3357,14 @@ AlcoholDelivery.controller('GiftCardController', [
 			.success(function(result){
 				
 				$scope.gift = result;
+
+				var mdata = {
+					title:$scope.gift.metaTitle,
+					description:$scope.gift.metaDescription,
+					keyword:$scope.gift.metaKeywords
+				};
+
+				$rootScope.setMeta(mdata);
 
 				$scope.gift.recipient = {price:$scope.gift.cards[0].value,quantity:1};
 

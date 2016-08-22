@@ -21,7 +21,7 @@ class Cms extends Moloquent
      *
      * @var array
      */
-    protected $fillable = ['title','description','content','status'];
+    protected $fillable = ['section','title','linkTitle','slug','description','content','status','metaTitle','metaKeywords','metaDescription'];
     
     public function getpages($params = array()){
 

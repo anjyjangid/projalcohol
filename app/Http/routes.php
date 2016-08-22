@@ -23,6 +23,7 @@ Route::group(['prefix' => 'adminapi'], function () {
 
 });
 
+
 Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	
 	Route::resource('order', 'Admin\OrderController');
@@ -46,7 +47,7 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::resource('dealer', 'Admin\DealerController',['only'=>['store','update']]);
 	Route::controller('dealer', 'Admin\DealerController');
 
-	Route::resource('category', 'Admin\CategoryController');
+	Route::resource('category', 'Admin\CategoryController',['only'=>['store','update']]);
 	Route::controller('category', 'Admin\CategoryController');	
 
 	Route::resource('setting', 'Admin\SettingController',['only'=>'update']);
@@ -81,6 +82,8 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::resource('giftcategory', 'Admin\GiftCategoryController',['only'=>['store','edit','index']]);
 	Route::controller('giftcategory','Admin\GiftCategoryController');
 
+	Route::resource('sale', 'Admin\SaleController',['only'=>['store','show','update']]);
+	Route::controller('sale', 'Admin\SaleController');
 });
 
 Route::group(['prefix' => 'admin'], function () {					
@@ -93,8 +96,6 @@ Route::group(['prefix' => 'admin'], function () {
 	});	
 });
 
-//post('upload-image', 'GalleryController@uploadImage');
-//Route::resource('gallery', 'GalleryController');
 Route::get('/', function () {	    
     return view('frontend');
 });
@@ -105,7 +106,6 @@ Route::controller('/super', 'SuperController');
 
 Route::controller('/category', 'CategoryController');
 
-
 Route::get('/getproduct', 'ProductController@getproduct');
 
 Route::get('/search', 'ProductController@getproduct');
@@ -115,11 +115,13 @@ Route::get('/getproductdetail', 'ProductController@getproductdetail');
 Route::controller('/password', 'Auth\PasswordController');
  
 Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
+
 Route::get('reset/{key}', 'Auth\PasswordController@reset');
 
 Route::put('deploycart/{cartKey}','CartController@deploycart');
 
 Route::put('confirmorder/{cartKey}','CartController@confirmorder');
+
 Route::get('freezcart','CartController@freezcart');
 
 Route::group(['middleware' => 'auth'], function () {
@@ -173,30 +175,11 @@ Route::group(['prefix' => 'cart'], function () {
 
 Route::resource('cart', 'CartController');
 
-
 Route::resource('wishlist', 'WishlistController');
-
 
 Route::get('/order/summary/{id}','OrderController@getSummary');
 Route::get('/order/orders','OrderController@getOrders');
 Route::get('/order/{order}','OrderController@show');
-
-
-
-
-
-
-
-
-
-//ADMIN ROUTES
-
-/*Route::get('/admin/profile', ['uses' => 'Admin\AdminController@profile']);
-Route::post('/admin/profile/update', ['uses' => 'Admin\AdminController@update']);
-Route::post('/admin/profile/updatepassword', ['uses' => 'Admin\AdminController@updatepassword']);
-Route::get('/admin', ['uses' => 'Admin\AdminController@index']);
-Route::get('/admin/dashboard', ['uses' => 'Admin\AdminController@dashboard']);*/
-
 
 Route::resource('address', 'AddressController');
 
@@ -208,7 +191,6 @@ Route::controller('site', 'SiteController');
 
 Route::resource('loyaltystore', 'LoyaltyStoreController',['only'=>['index']]);
 Route::controller('loyaltystore', 'LoyaltyStoreController');
-
 
 /*PRODUCT IMAGE ROUTUING*/
 Route::get('products/i/{folder}/{filename}', function ($folder,$filename)
@@ -249,21 +231,11 @@ Route::get('asset/i/{filename}', function ($filename)
     return Image::make(public_path('img') . '/' . $filename)->response();
 });
 
-/*Route::controller('/admin/password', 'Auth\AdminPasswordController');
-
-Route::controller('/admin', 'Auth\AdminAuthController');*/
-
 Route::get('/check', 'UserController@check');
-
 Route::post('/auth', 'UserController@checkAuth');
-
-
-
 Route::get('/loggedUser', 'UserController@loggedUser');
-
 Route::put('/profile', 'UserController@update');
 Route::put('/password', 'UserController@updatepassword');
-
 Route::controller('user', 'UserController');
 
 Route::controller('giftcategory', 'GiftCategoryController');
@@ -272,11 +244,3 @@ Route::resource('giftcategory', 'GiftCategoryController',['only'=>['index','show
 Route::resource('gift', 'GiftController',['only'=>['show']]);
 
 Route::controller('payment', 'PaymentController');
-
-//TO WORK FOR ANGULAR DIRECT URL
-
-
-/*Route::any('{path?}', function()
-{
-    return view('frontend');
-});*/

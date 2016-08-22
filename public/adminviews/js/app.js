@@ -500,6 +500,12 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 			id:'sidebar_menu_link_settings',
 			access : ['admin'],
 			subItems:[
+				/*{
+					label:'Stores',
+					uisref:'userLayout.settings.stores',
+					icon:'icon-home',					
+					links:['userLayout.settings.stores']
+				},*/
 				{
 					label:'General',
 					uisref:'userLayout.settings.general',
@@ -525,6 +531,32 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 					links:['userLayout.settings.loyalty']
 				}
 
+			]
+		},
+		{
+			label:'Discounts',
+			icon:'icon-settings',
+			id:'sidebar_menu_link_discounts',
+			access : ['admin'],
+			subItems:[
+				{
+					label:'Sale & tags',
+					uisref:'userLayout.sale.list',
+					icon:'icon-tag',					
+					links:['userLayout.sale.list']
+				},
+				{
+					label:'Promotions',
+					uisref:'userLayout.promotion.list',
+					icon:'icon-grid',					
+					links:['userLayout.promotion.list']
+				},
+				{
+					label:'Coupons',
+					uisref:'userLayout.coupon.list',
+					icon:'icon-grid',										
+					links:['userLayout.coupon.list']
+				}
 			]
 		},
 		{
@@ -554,21 +586,8 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 			icon:'icon-book-open',
 			id:'sidebar_menu_link_brand',
 			access : ['admin']
-		},
-		{
-			label:'Promotions',
-			uisref:'userLayout.promotion.list',
-			icon:'icon-grid',
-			id:'sidebar_menu_link_promotion',
-			access : ['admin']
-		},
-		{
-			label:'Coupons',
-			uisref:'userLayout.coupon.list',
-			icon:'icon-grid',
-			id:'sidebar_menu_link_coupon',
-			access : ['admin']
 		}
+		
 	];
 
 	$scope.menuOptions = $filter('accessValidate')(menuOptions);
@@ -1612,6 +1631,40 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             }           
         })
 
+        
+        .state('userLayout.stores', {
+            abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+            controller: "StoresController",
+            resolve: {                
+                authenticate: authenticate,
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [                                                        
+                            'adminviews/js/models/storeModel.js',
+                            'adminviews/js/controllers/StoresController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state("userLayout.stores.list", {
+            url: "/store/list",
+            templateUrl: "adminviews/views/stores/list.html",
+            data:{
+				pageTitle:'Stores',								
+				breadCrumb:[
+					{title:'Stores','uisref':'#'}					
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }            
+        })
+
         .state('userLayout.settings', {
             abstract:true,
 			templateUrl:'adminviews/views/auth.html',
@@ -1630,6 +1683,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                 }]
             }
         })
+
+        
 
         .state("userLayout.settings.general", {
             url: "/settings/general",
@@ -2097,6 +2152,77 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                 authenticate: authenticate
             }           
         })
+
+        //SALE FEATURE
+
+        .state('userLayout.sale', {
+            abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+            controller: "SaleController",
+            resolve: {
+                authenticate: authenticate,
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+                            'adminviews/js/models/saleModel.js',
+                            'adminviews/js/controllers/SaleController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state("userLayout.sale.list", {
+            url: "/sale/list",
+            templateUrl: "adminviews/views/sale/list.html",
+            data:{
+				pageTitle:'Sale & tags',				
+				breadCrumb:[
+					{title:'Sale & tags','uisref':'#'}					
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }            
+        })
+
+        .state("userLayout.sale.add", {
+            url: "/sale/add",
+            templateUrl: "adminviews/views/sale/add.html",
+            data:{
+				pageTitle:'Add sale & tags',				
+				breadCrumb:[
+					{title:'Sale & tags','uisref':'userLayout.sale.list'},
+					{title:'Add','uisref':'#'}					
+				]				
+			},            
+            controller: "SaleFormController",
+            resolve: {                
+                authenticate: authenticate
+            }
+        })
+
+        .state("userLayout.sale.edit",{
+            url: "/sale/edit/{saleId}",
+            templateUrl: "adminviews/views/sale/add.html",
+            data:{
+				pageTitle:'Edit sale & tags',				
+				breadCrumb:[
+					{title:'Sale & tags','uisref':'userLayout.sale.list'},
+					{title:'Edit','uisref':'#'}					
+				]				
+			},            
+            controller:"SaleFormController",            
+            resolve: {                
+                authenticate: authenticate
+            }
+        })
+
+        //SALE FEATURE
 
         .state("login", {
             url: "/login",

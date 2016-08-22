@@ -23,6 +23,9 @@ class GiftCategory extends Eloquent
         'type',
         'cards',
         'gift_packaging',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
         'status'        
     ];    
 

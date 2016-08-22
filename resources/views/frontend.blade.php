@@ -93,12 +93,12 @@
 							</a>
 						</div>
 					</div>
-				</section>
-
+				</section>				
 				<section class="fullwidth footer1">
 					<div class="container">
 						<div class="row">
-							<div class="col-xs-12 col-md-4 footer1_pannel1cvr">
+						<!--  -->
+							<!-- <div class="col-xs-12 col-md-4 ">
 								<div class="footer_logo">
 									<img class="img-responsive" src="images/footerlogo.png" />
 								</div>
@@ -113,8 +113,62 @@
 									<div class="footer1_privcytext"><a ui-sref="cmsLayout.privacy-policy">Privacy Policy</a></div>
 									<div class="footer1_termstxt"><a ui-sref="cmsLayout.terms-conditions">Terms and Conditions</a></div>
 								</div>
+							</div> -->
+							<div class="col-xs-12 col-md-4 ">
+								<div class="footer1_title">Need help?</div>
+								<div class="footer1_subtitle">
+									<ul>
+										<li>
+										<a>Call us daily from 12:00pm – 10:30pm <br/> at 9-2445533 (9-CHILLED) or email sales@alcoholdelivery.com.sg</a>
+										</li>										
+									</ul>
+								</div>
+								<div class="footer1_sociallink">
+									<a target="_blank" href="@{{settings.social.twitter}}"><img class="img-responsive" src="images/footer1_twitter.png" /></a>
+									<a target="_blank" href="@{{settings.social.facebook}}"><img class="img-responsive" src="images/footer1_fb.png" /></a>
+									<a target="_blank" href="@{{settings.social.googleplus}}"><img class="img-responsive" src="images/footergoogle.png" /></a>
+								</div>
 							</div>
-							<div class="col-xs-12 col-md-3 footer1_pannel2cvr">
+							<div class="col-xs-12 col-md-2">
+								<div class="footer1_title">Customer Service</div>
+								<div class="footer1_subtitle">
+									<ul>
+										<li ng-repeat="links in getLinks('services',settings.pages)">
+											<a target="_blank" ui-sref="cmsLayout.pages({slug:links.slug})">@{{links.linkTitle}}</a>
+										</li>										
+									</ul>
+								</div>
+							</div>
+							<div class="col-xs-12 col-md-2 ">
+								<div class="footer1_title">About AlcoholDelivery</div>
+								<div class="footer1_subtitle">
+									<ul>
+										<li ng-repeat="links in getLinks('about',settings.pages)">
+											<a target="_blank" ui-sref="cmsLayout.pages({slug:links.slug})">@{{links.linkTitle}}</a>
+										</li>										
+									</ul>
+								</div>
+							</div>
+							<div class="col-xs-12 col-md-2 ">
+								<div class="footer1_title">Corporate</div>
+								<div class="footer1_subtitle">
+									<ul>										
+										<li ng-repeat="links in getLinks('corporate',settings.pages)">
+											<a target="_blank" ui-sref="cmsLayout.pages({slug:links.slug})">@{{links.linkTitle}}</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="col-xs-12 col-md-2 ">
+								<div class="footer1_title">Connect with us</div>
+								<div class="footer1_subtitle">
+									<ul>										
+										<li><a>Facebook</a></li>
+										<li><a>Mobile Apps</a></li>
+									</ul>
+								</div>
+							</div>
+							<!-- <div class="col-xs-12 col-md-3 footer1_pannel2cvr">
 								<div class="footer1_title">About</div>
 								<div class="footer1_subtitle">
 									<ul>
@@ -156,7 +210,7 @@
 										<li><a href="#">Contact Us</a></li>
 									</ul>
 								</div>
-							</div>
+							</div> -->
 						</div>
 					</div>
 				</section>
