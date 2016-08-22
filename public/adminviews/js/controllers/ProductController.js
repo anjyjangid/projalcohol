@@ -188,8 +188,6 @@ MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$locatio
 		$scope.selectCategory();
 	});*/
 
-	
-
 	if($stateParams.productid){
 		
 		productModel.getProduct($stateParams.productid).success(function(data){

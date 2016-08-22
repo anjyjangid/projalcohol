@@ -8,6 +8,8 @@ use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 
 use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Setting as Setting;
+use DB;
+use mongoId;
 
 class Products extends Eloquent
 {
@@ -66,7 +68,92 @@ class Products extends Eloquent
 
 	public function getSingleProduct($id)
 	{
-		return Products::where('_id', $id)->first();
+
+		return Products::where('_id', $id)->first();		
+
+		// DUE : Code to get suggestion (22-AUG-2016)
+		// $product = DB::collection("products")->raw(function($collection) use($id){
+
+		// 				return $collection->aggregate([
+		// 					[
+		// 						'$match' => [
+		// 							'_id' => new mongoId($id)
+		// 						]
+		// 					],
+		// 					[
+		// 						'$unwind' => [
+		// 							'path' =>  '$suggestions',
+		// 							"preserveNullAndEmptyArrays" => true
+
+		// 						]
+		// 					],
+		// 					[
+		// 						'$lookup' => [
+		// 							'from'=>'products',
+		// 							'localField'=>'suggestions',
+		// 							'foreignField'=>'_id',
+		// 							'as'=>'suggestions'
+		// 						]
+		// 					],							
+		// 					[
+		// 						'$group' => [
+		// 							'_id' => '$_id',
+		// 							'suggestions' => [
+		// 								'$push' => '$suggestions'
+		// 							],
+									
+		// 							'name' => [ '$first' => '$name'],
+		// 							'slug' => [ '$first' => '$slug'],
+		// 							'description' => [ '$first' => '$description'],
+		// 							'shortDescription' => [ '$first' => '$shortDescription'],
+		// 							'categories' => [ '$first' => '$categories'],
+		// 							'sku' => [ '$first' => '$sku'],
+		// 							'quantity' => [ '$first' => '$quantity'],
+		// 							'price' => [ '$first' => '$price'],            
+		// 							'chilled' => [ '$first' => '$chilled'],
+		// 							'status' => [ '$first' => '$status'],
+		// 							'metaTitle' => [ '$first' => '$metaTitle'],
+		// 							'metaKeywords' => [ '$first' => '$metaKeywords'],
+		// 							'metaDescription' => [ '$first' => '$metaDescription'],
+		// 							'images' => [ '$first' => '$images'],
+		// 							'isFeatured' => [ '$first' => '$isFeatured'],
+		// 							'bulkDisable' => [ '$first' => '$bulkDisable'],			
+		// 							'regular_express_delivery' => [ '$first' => '$regular_express_delivery'],			
+		// 							'express_delivery_bulk' => [ '$first' => '$express_delivery_bulk'],
+		// 							'loyalty' => [ '$first' => '$loyalty'],
+		// 							'isLoyalty' => [ '$first' => '$isLoyalty'],
+		// 							'loyaltyType' => [ '$first' => '$loyaltyType'],
+
+		// 							'loyaltyValueType' => [ '$first' => '$loyaltyValueType'],
+		// 							'loyaltyValuePoint' => [ '$first' => '$loyaltyValuePoint'],
+		// 							'loyaltyValuePrice' => [ '$first' => '$loyaltyValuePrice'],
+
+		// 							'threshold' => [ '$first' => '$threshold'],
+		// 							'maxQuantity' => [ '$first' => '$maxQuantity'],
+		// 							'dealers' => [ '$first' => '$dealers'],
+		// 							'packages' => [ '$first' => '$packages'],
+		// 							'outOfStockType' => [ '$first' => '$outOfStockType'],
+		// 							'availabilityDays' => [ '$first' => '$availabilityDays'],
+		// 							'availabilityTime' => [ '$first' => '$availabilityTime'],
+		// 							'deliveryType' => [ '$first' => '$deliveryType'],
+		// 							'quantity'=> [ '$first' => '$quantity' ],
+
+									
+		// 						]
+		// 					],
+		// 					// [
+		// 					// 	'$project' => [
+		// 					// 		"suggestions" => [ 
+		// 					// 			'$arrayElemAt' => [ '$suggestions', 0 ] 
+		// 					// 		]
+		// 					// 	]
+		// 					// ],
+		// 				]);
+
+		// 			});
+
+		// jprd($product);
+
 	}
 
 	public function getProducts($params){

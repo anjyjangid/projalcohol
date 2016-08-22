@@ -211,11 +211,15 @@ class ProductController extends Controller
 				$inputs['deliveryType'] = (int)$inputs['deliveryType'];
 				$inputs['isLoyalty'] = (int)$inputs['isLoyalty'];
 				
-				$suggestions = [];
-				foreach($inputs['suggestions'] as $product){
-					array_push($suggestions, new MongoId($product['_id']));
+				if(isset($inputs['suggestions'])){
+					
+					$suggestions = [];
+					foreach($inputs['suggestions'] as $product){
+						array_push($suggestions, new MongoId($product['_id']));
+					}
+					$inputs['suggestions'] = $suggestions;
+
 				}
-				$inputs['suggestions'] = $suggestions;
 
 				if(isset($inputs['loyaltyValueType'])){
 					$inputs['loyaltyValueType'] = (int)$inputs['loyaltyValueType'];

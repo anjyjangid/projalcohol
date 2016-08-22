@@ -20,8 +20,6 @@ MetronicApp.controller('DontMissSuggestionController',['$rootScope','$scope','$h
 
 	$scope.dontmiss = {};
 
-	
-
 	dontmissModel.get().success(function(response){									
 		
 		$scope.dontmiss = {
