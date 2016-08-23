@@ -8,6 +8,7 @@ use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Requests\SaleRequest;
 use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Sale;
+use MongoId;
 
 class SaleController extends Controller
 {
@@ -41,6 +42,25 @@ class SaleController extends Controller
     {
         $inputs = $request->all();
 
+        //CONVERT TO OBJECT ID FOR LOOKUP
+        if(isset($inputs['saleProductId']) && !empty($inputs['saleProductId'])){
+            foreach ($inputs['saleProductId'] as $key => $value) {
+                $inputs['saleProductId'][$key] = new MongoId($value);
+            }
+        }
+
+        if(isset($inputs['saleCategoryId']) && !empty($inputs['saleCategoryId'])){
+            foreach ($inputs['saleCategoryId'] as $key => $value) {
+                $inputs['saleCategoryId'][$key] = new MongoId($value);
+            }
+        }
+
+        if(isset($inputs['actionProductId']) && !empty($inputs['actionProductId'])){
+            foreach ($inputs['actionProductId'] as $key => $value) {
+                $inputs['actionProductId'][$key] = new MongoId($value);
+            }
+        }   
+
         $sale = Sale::create($inputs);
         
         if($sale){
@@ -69,7 +89,7 @@ class SaleController extends Controller
      */
     public function edit($id)
     {
-        //
+        
     }
 
     /**

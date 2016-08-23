@@ -8,9 +8,9 @@
 					<i class="icon-handbag"></i>{{$state.$current.data.pageTitle}}
 				</div>
 				<div class="actions">
-					<a ui-sref="userLayout.products.add" class="btn default yellow-stripe">
+					<a ui-sref="userLayout.stores.add" class="btn default yellow-stripe">
 						<i class="fa fa-plus"></i>
-						<span class="hidden-480">+ Add New </span>
+						<span class="hidden-480">Add New</span>
 					</a>					
 				</div>
 			</div>
@@ -19,34 +19,25 @@
 
 				<div class="table-container">
 					
-					<table class="table table-striped table-bordered table-hover" id="productlist">
+					<table class="table table-striped table-bordered table-hover" id="storelist">
 						<thead>
 							<tr role="row" class="heading">
 								<!-- <th width="1%">
 									<input type="checkbox" class="group-checkable">
 								</th> -->
-								<th width="10%">
+								<th>
 									Sr.
 								</th>
-								<th width="15%">
+								<th>
 									Store Name
 								</th>
-								<th width="15%">
-									Store Owner
-								</th>
-								<th width="10%">
-									Price
-								</th>
-								<th width="10%">
-									Status
-								</th>
-								<th width="10%">
-									Featured
-								</th>
-								<th width="10%">
-									Quantity
-								</th>
-								<th width="10%">
+								<th>
+									Contact Email
+								</th>								
+								<th>
+									Telephone
+								</th>								
+								<th>
 									Action
 								</th>
 							</tr>
@@ -55,32 +46,12 @@
 								<td></td>
 								<td>
 									<input type="text" class="form-control form-filter input-sm" name="name">
+								</td>								
+								<td>
+									<input type="text" class="form-control form-filter input-sm" name="email">
 								</td>
 								<td>
-									<select name="categories" class="form-control form-filter input-sm" >
-									<option value="">Select..</option>
-									<option ng-repeat="option in categories" value="{{option._id}}">{{option.cat_title}}</option>
-									</select>
-								</td>					
-								<td>
-									
-								</td>
-								<td>
-									<select name="status" class="form-control form-filter input-sm">
-										<option value="">Select...</option>
-										<option value="1">Published</option>
-										<option value="0">Not Published</option>
-									</select>
-								</td>
-								<td>
-									<select name="isFeatured" class="form-control form-filter input-sm">
-										<option value="">Select...</option>
-										<option value="1">Yes</option>
-										<option value="0">No</option>
-									</select>
-								</td>
-								<td>
-									
+									<input type="text" class="form-control form-filter input-sm" name="telephone">
 								</td>
 								<td>
 									<div class="margin-bottom-5">
@@ -112,7 +83,7 @@
         var grid = new Datatable();
 
         grid.init({
-            src: $("#productlist"),
+            src: $("#storelist"),
             onSuccess: function (grid) {
                 // execute some code after table records loaded
             },
@@ -135,38 +106,15 @@
 	                	data : "name",
 		                orderable:true
 		            },{	 
-	                	data : "category",
-		                orderable:false
-		            },{	 
-	                	data : "price",
-		                orderable:true
-		            },{
-		            	mData: null,
-		            	mRender: function(data, type, full) {	                        
-	                    	if(data.status == 1){
-	                    		return '<span class="label label-sm label-success">Published</span>'
-	                    	}else{
-	                    		return '<span class="label label-sm label-info">Not Published</span>'
-	                    	}	                    	
-	                    },
-		                orderable:true
-		            },{
-		            	mData: null,
-		            	mRender: function(data, type, full) {	                        
-	                    	if(data.isFeatured == 1){
-	                    		return '<span class="label label-sm label-success">Yes</span>'
-	                    	}else{
-	                    		return '<span class="label label-sm label-info">No</span>'
-	                    	}	                    	
-	                    },
+	                	data : "email",
 		                orderable:true
 		            },{	 
-	                	data : "quantity",
+	                	data : "telephone",
 		                orderable:true
 		            },{
 		            	mData: null,
 		            	mRender: function(data, type, full) {		            		
-		            		return '<a ui-sref=userLayout.products.edit({productid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+		            		return '<a ui-sref=userLayout.stores.edit({storeId:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
 		            		
 	                    },
 		                orderable:false
@@ -179,7 +127,7 @@
                 ],
                 "pageLength": 10, // default record count per page
 				"ajax": {
-                    "url": "../adminapi/product/productlist", // ajax source                    
+                    "url": "../adminapi/stores/storelist", // ajax source                    
                 },                   
                 "order": [],
                 "fnDrawCallback": function (oSettings) {

@@ -502,9 +502,9 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 			subItems:[
 				{
 					label:'Stores',
-					uisref:'userLayout.settings.stores',
+					uisref:'userLayout.stores.list',
 					icon:'icon-home',					
-					links:['userLayout.settings.stores']
+					links:['userLayout.stores.list']
 				},
 				{
 					label:'General',
@@ -1670,6 +1670,38 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 			resolve: {                
                 authenticate: authenticate
             }            
+        })
+
+        .state("userLayout.stores.add", {
+            url: "/store/add",
+            templateUrl: "adminviews/views/stores/form.html",
+            data:{
+				pageTitle:'Add Store',								
+				breadCrumb:[
+					{title:'Stores','uisref':'userLayout.stores.list'},
+					{title:'Add','uisref':'#'}					
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            },
+            controller: "StoreFormController",            
+        })
+
+        .state("userLayout.stores.edit", {
+            url: "/store/edit/{storeId}",
+            templateUrl: "adminviews/views/stores/form.html",
+            data:{
+				pageTitle:'Edit Store',								
+				breadCrumb:[
+					{title:'Stores','uisref':'userLayout.stores.list'},
+					{title:'Edit','uisref':'#'}					
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            },
+            controller: "StoreFormController",            
         })
 
         .state('userLayout.settings', {

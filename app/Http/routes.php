@@ -87,6 +87,9 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::resource('sale', 'Admin\SaleController',['only'=>['store','show','update']]);
 	Route::controller('sale', 'Admin\SaleController');
 
+	Route::resource('stores', 'Admin\StoreController',['only'=>['store','edit','update']]);
+	Route::controller('stores', 'Admin\StoreController');
+
 });
 
 Route::group(['prefix' => 'admin'], function () {					

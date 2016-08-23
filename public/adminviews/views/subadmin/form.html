@@ -38,7 +38,18 @@
 							<input type="text" class="form-control" ng-model="subadmin.email" placeholder="Email">
 							<span class="help-block" ng-bind="errors.email[0]"></span>
 						</div>
-					</div>							
+					</div>	
+					<div class="form-group" ng:class="{'has-error':errors.storeId[0]}">
+						<label class="col-md-2 control-label">Assign Store: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<select ng-options="store._id as store.name for store in storeList" class="table-group-action-input form-control input-medium" ng-model="subadmin.storeId">
+								<option value="">Select</option>								
+							</select>
+							<span class="help-block" ng-bind="errors.storeId[0]"></span>
+						</div>
+					</div>						
 					<div ng-hide="subadmin._id" class="form-group" ng:class="{'has-error':errors.password[0]}">
 						<label class="col-md-2 control-label">Password: <span class="required">
 						* </span>
@@ -74,5 +85,5 @@
 			</div>			
 		</div>
 		</form>
-	</div>	
+	</div>		
 </div>
