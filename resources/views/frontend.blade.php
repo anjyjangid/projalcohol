@@ -122,7 +122,7 @@
 								<div class="footer1_subtitle">
 									<ul>
 										<li ng-repeat="links in getLinks('services',settings.pages)">
-											<a target="_blank" ui-sref="cmsLayout.pages({slug:links.slug})">@{{links.linkTitle}}</a>
+											<a target="_blank" ui-sref="cmsLayout.pages({slug:links.slug})" ng-bind="::links.linkTitle"></a>
 										</li>										
 									</ul>
 								</div>
@@ -132,7 +132,7 @@
 								<div class="footer1_subtitle">
 									<ul>
 										<li ng-repeat="links in getLinks('about',settings.pages)">
-											<a target="_blank" ui-sref="cmsLayout.pages({slug:links.slug})">@{{links.linkTitle}}</a>
+											<a target="_blank" ui-sref="cmsLayout.pages({slug:links.slug})" ng-bind="::links.linkTitle"></a>
 										</li>										
 									</ul>
 								</div>
@@ -142,7 +142,7 @@
 								<div class="footer1_subtitle">
 									<ul>										
 										<li ng-repeat="links in getLinks('corporate',settings.pages)">
-											<a target="_blank" ui-sref="cmsLayout.pages({slug:links.slug})">@{{links.linkTitle}}</a>
+											<a target="_blank" ui-sref="cmsLayout.pages({slug:links.slug})" ng-bind="::links.linkTitle"></a>
 										</li>
 									</ul>
 								</div>

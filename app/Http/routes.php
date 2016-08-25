@@ -111,6 +111,8 @@ Route::controller('/category', 'CategoryController');
 
 Route::get('/getproduct', 'ProductController@getproduct');
 
+Route::get('/fetchProduct', 'ProductController@fetchProduct');
+
 Route::get('/search', 'ProductController@getproduct');
 
 Route::get('/getproductdetail', 'ProductController@getproductdetail');

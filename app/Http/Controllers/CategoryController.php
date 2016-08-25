@@ -54,7 +54,9 @@ class CategoryController extends Controller
 				}
 
 			}else{
+
 				$category = array_merge($globalPricing,$category);
+
 			}
 		}
 

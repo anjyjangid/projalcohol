@@ -392,47 +392,47 @@ class CartController extends Controller
 		// }
 
 
-		if($updateProData['quantity']>(int)$updateProData['maxQuantity']){
+		// if($updateProData['quantity']>(int)$updateProData['maxQuantity']){
 
-			// Handel if product quantity is greater than available quantity
-			$response['code'] = 100;
-			$response['message'] = "Requested quantity is not available, max available is added to cart";
+		// 	// Handel if product quantity is greater than available quantity
+		// 	$response['code'] = 100;
+		// 	$response['message'] = "Requested quantity is not available, max available is added to cart";
 
-			$extraQuantity = $updateProData['quantity'] - $updateProData['maxQuantity'];
-			$product['change'] = $updateProData['maxQuantity'] - $oldQuantity;
+		// 	$extraQuantity = $updateProData['quantity'] - $updateProData['maxQuantity'];
+		// 	$product['change'] = $updateProData['maxQuantity'] - $oldQuantity;
 			
-			if($extraQuantity>0){
+		// 	if($extraQuantity>0){
 
-				if($extraQuantity > $updateProData['chilled']['quantity']){
+		// 		if($extraQuantity > $updateProData['chilled']['quantity']){
 
-					$extraQuantity-= $updateProData['chilled']['quantity'];
-					$updateProData['chilled']['quantity'] = 0;
+		// 			$extraQuantity-= $updateProData['chilled']['quantity'];
+		// 			$updateProData['chilled']['quantity'] = 0;
 
-				}else{
+		// 		}else{
 					
 
-					$updateProData['chilled']['quantity']-=$extraQuantity;
-					$extraQuantity = 0;
+		// 			$updateProData['chilled']['quantity']-=$extraQuantity;
+		// 			$extraQuantity = 0;
 
-				}
+		// 		}
 
-				if($extraQuantity > $updateProData['nonchilled']['quantity']){
+		// 		if($extraQuantity > $updateProData['nonchilled']['quantity']){
 
-					$extraQuantity-= $updateProData['nonchilled']['quantity'];
-					$updateProData['nonchilled']['quantity'] = 0;
+		// 			$extraQuantity-= $updateProData['nonchilled']['quantity'];
+		// 			$updateProData['nonchilled']['quantity'] = 0;
 
-				}else{
+		// 		}else{
 
-					$updateProData['nonchilled']['quantity']-=$extraQuantity;
-					$extraQuantity = 0;
+		// 			$updateProData['nonchilled']['quantity']-=$extraQuantity;
+		// 			$extraQuantity = 0;
 
-				}
-			}
+		// 		}
+		// 	}
 
-			$updateProData['quantity'] = (int)$updateProData['chilled']['quantity'] + (int)$updateProData['nonchilled']['quantity'];
+		// 	$updateProData['quantity'] = (int)$updateProData['chilled']['quantity'] + (int)$updateProData['nonchilled']['quantity'];
 			
 			
-		}
+		// }
 
 		try {
 

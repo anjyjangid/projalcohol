@@ -524,7 +524,7 @@ ui-sref {
 	float: left;
 	margin-bottom: 15px;
 	cursor: pointer;
-	overflow: hidden;
+	overflow: hidden;	
 }
 .cart-table .prod_chilled {
 	margin-bottom: 0px;

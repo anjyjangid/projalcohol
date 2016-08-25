@@ -210,6 +210,12 @@ class ProductController extends Controller
 				$inputs['maxQuantity'] = (int)$inputs['maxQuantity'];
 				$inputs['deliveryType'] = (int)$inputs['deliveryType'];
 				$inputs['isLoyalty'] = (int)$inputs['isLoyalty'];
+
+				$inputs['categoriesObj'] = [];
+
+				foreach($inputs['categories'] as $cat){
+					$inputs['categoriesObj'][] = new MongoId($cat);
+				}
 				
 				if(isset($inputs['suggestions'])){
 					

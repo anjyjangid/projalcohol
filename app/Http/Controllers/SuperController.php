@@ -36,7 +36,7 @@ class SuperController extends Controller
 		if(isset($params['withChild']) && $params['withChild']){
 
 			foreach($categories as &$category){
-				$category['children'] = array(); 
+				$category['children'] = array();
 				$category['children'] = Categories::where('cat_status',1)->where('ancestors.0._id','=',$category['_id'])->get(array('_id','slug','cat_title','metaTitle','metaDescription','metaKeywords'));
 			}
 

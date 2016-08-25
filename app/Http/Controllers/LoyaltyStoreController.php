@@ -72,16 +72,27 @@ class LoyaltyStoreController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index(Request $request)
-	{
+	{		
 		$params = $request->all();
 
-		extract($params);    
+		$productObj = new Products;
+
+		$result = $productObj->fetchProducts($params);
+		
+		if($result['success']===true){
+			return response($result['products'],200);
+		}
+
+		return response($result,422);
+
+
+		
 
 		$products = new Products;
 
 		$products = $products->where('status',1);
 
-		if(isset($keyword) && trim($keyword)!=''){            
+		if(isset($keyword) && trim($keyword)!=''){
 			$products = $products->where('name','regexp', "/.*$keyword/i");
 		}
 
@@ -119,7 +130,6 @@ class LoyaltyStoreController extends Controller
 					'metaDescription','metaKeywords','metaTitle','name',
 					'outOfStockType','price','quantity','shortDescription','slug'
 				];
-
 
 		$products = $products->skip($skip)->take($take)->get($fields);
 		

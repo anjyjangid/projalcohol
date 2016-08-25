@@ -218,6 +218,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
     return {
         restrict: 'E',
+        priority: 100,
         transclude: false,
 
         link: function (scope) {
@@ -245,8 +246,10 @@ AlcoholDelivery.directive('sideBar', function() {
 })
 
 .directive('owlCarouselItem', [function() {
+	
     return {
         restrict: 'A',
+        priority: 99,
         transclude: false,
         link: function(scope, element) {
 
@@ -258,9 +261,7 @@ AlcoholDelivery.directive('sideBar', function() {
           	}
 
             if(scope.$last) {
-
-                scope.initCarousel(element.parent(),element.parent().attr("ng-model"));
-
+            	scope.initCarousel(element.parent(),element.parent().attr("ng-model"));
             }
         }
     };
@@ -520,25 +521,17 @@ AlcoholDelivery.directive('sideBar', function() {
 		templateUrl: '/templates/product/product_tpl.html',
 
 		controller: ['$rootScope','$scope','$state','sweetAlert','alcoholCart','alcoholWishlist','promotionsService',"$mdToast",function($rootScope,$scope,$state,sweetAlert,alcoholCart,alcoholWishlist,promotionsService,$mdToast){
-			
+			console.log($scope.productInfo);
 			$scope.settings = $rootScope.settings;
 
 			$scope.alcoholCart = alcoholCart;
 
 			$scope._sPromotion = promotionsService;			
 
-			var isInCart = alcoholCart.getProductById($scope.productInfo._id);
+			// var isInCart = alcoholCart.getProductById($scope.productInfo._id);
 
 			$scope.isInwishList = alcoholWishlist.getProductById($scope.productInfo._id);
-
-			$scope.productInfo.servechilled=$scope.productInfo.chilled;
-
-			if(isInCart!==false){
-
-				$scope.productInfo.servechilled = isInCart.getLastServedAs();
-
-			}
-
+			
 			$scope.addToWishlist = function(){
 
 				alcoholWishlist.add($scope.productInfo._id).then(function(response) {
@@ -569,7 +562,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.setPrices = function(localpro){
 
-				if(typeof localpro.categories === "undefined"){return true;}			
+				if(typeof localpro.categories === "undefined"){return true;}
 
 				var catIdIndex = localpro.categories.length - 1;			
 
@@ -640,7 +633,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			}
 
-			$scope.setPrices($scope.productInfo);			
+			//$scope.setPrices($scope.productInfo);			
 
 		}]
 	}
