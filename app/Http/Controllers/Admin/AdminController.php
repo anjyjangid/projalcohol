@@ -16,6 +16,7 @@ use GuzzleHttp\Client;
 use AlcoholDelivery\Products;
 use AlcoholDelivery\Orders;
 use AlcoholDelivery\Email;
+use MongoId;
 
 class AdminController extends Controller
 {
@@ -124,6 +125,7 @@ class AdminController extends Controller
             'first_name' => 'required|min:3',
             'last_name' => 'required|min:3',
             'email' => 'required|email|max:255|unique:admin,email,'.Auth::user('admin')->id.',_id',
+            'storeId' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -179,6 +181,7 @@ class AdminController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',            
             'email' => 'required|email|max:255|unique:admin,email,'.@$id.',_id',            
+            'storeId' => 'required',
             'password' => 'required|between:8,32',
             'confirmPassword' => 'required|same:password',
             'status'=> 'required|integer|in:0,1',            
@@ -187,7 +190,7 @@ class AdminController extends Controller
         if($id!=null){
             unset($rules['password']);
             unset($rules['confirmPassword']);
-        }        
+        }       
 
         $validator = Validator::make($data, $rules, [
             'required' => 'This field is required'
@@ -197,13 +200,20 @@ class AdminController extends Controller
             return response($validator->errors(), 422);
         }
 
+        $data['storeId'] = new MongoId($data['storeId']);
+
         $inputs = [
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
             'email' => $data['email'],            
+            'storeId' => $data['storeId'],
             'status' => (int)$data['status'],
-            'role' => 2
+            //'role' => 1
         ];
+
+        if($id==null){
+            $inputs['role'] = 2;
+        }
 
         $saved = false;
         
@@ -239,7 +249,7 @@ class AdminController extends Controller
             $subadmin = $subadmin->where('first_name','like', '%'.$name.'%')->orWhere('last_name','like', '%'.$name.'%');            
         }
 
-        $subadmin = $subadmin->where('role',2);
+        //$subadmin = $subadmin->where('role',2);
 
         $iTotalRecords = $subadmin->count();
 
@@ -268,7 +278,9 @@ class AdminController extends Controller
 
     public function getSubadminuser(Request $request,$id){
 
-        $subadmin = Admin::where('_id',$id)->where('role',2)->first();
+        $subadmin = Admin::where('_id',$id)
+        //->where('role',2)
+        ->first();
 
         if($subadmin){
             return response($subadmin,200);
@@ -321,6 +333,40 @@ class AdminController extends Controller
             return response(['message'=>'Invalid order. Please try again'],400);
         }
         
+    }
+
+    public function getUserlist(Request $request){
+
+        $users = DB::collection('products')->raw(function($collection) use($id){
+            return $collection->aggregate(array(                
+                array(
+                    '$project' => array(                        
+                        'name'=>'$name',
+                        'quantity'=>'$quantity',
+                        'maxQuantity'=>'$maxQuantity',
+                        'threshold'=>'$threshold',
+                        'dealers'=>'$dealers',
+                        'sku'=>'$sku',
+                        'sum' => array(
+                            '$subtract' => array(                                
+                                array('$divide' => array('$quantity','$maxQuantity')),
+                                array('$divide' => array('$threshold','$maxQuantity'))                               
+                            )                            
+                        ),
+                    ),
+                ),
+                array(
+                    '$sort' => array('sum'=>1)
+                ),                
+                array(
+                    '$match' => array(
+                        'dealers' => array('$elemMatch'=>array('$in'=>[$id])),
+                        //'sum' => array('$lt'=>0)
+                    )
+                )   
+            ));
+        });
+
     }
 
 }

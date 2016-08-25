@@ -1087,6 +1087,14 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 	   $state.previous = {state:from, param:fromParams}
 	   $rootScope.appSettings.layout.pageRightbarExist = true;
 
+		//SETTING HOME META DATA FOR EVERY ROUTE
+		var mdata = {
+			title:$rootScope.settings.general.site_title,
+			description:$rootScope.settings.general.meta_desc,
+			keyword:$rootScope.settings.general.meta_keyword
+		};
+		$rootScope.setMeta(mdata);
+
 	});
 
 
@@ -1187,6 +1195,7 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 	store.init();
 	alcoholWishlist.init();
 
+	
 }]);
 
 /*AngularJS Credit Card Payment Service*/
