@@ -97,6 +97,7 @@ AlcoholDelivery.filter('freeTxt', function() {
 });
 
 AlcoholDelivery.filter('pricingTxt', function(currencyFilter,$rootScope) {
+
 		return function(price,freeTxt) {
 			
 			if(price === null || isNaN(price)){
@@ -107,7 +108,7 @@ AlcoholDelivery.filter('pricingTxt', function(currencyFilter,$rootScope) {
 
 			if(typeof freeTxt==='undefined'){
 				freeTxt = false;
-			}					
+			}
 
 			return (price || freeTxt!==true)?currencyFilter(price,$rootScope.settings.general.currency,2):'free';
 		}
@@ -325,6 +326,7 @@ AlcoholDelivery.factory("UserService", ["$q", "$timeout", "$http", function($q, 
         currentUser: null,
         currentUserAddress: null
 	};
+	
 }]);
 
 
@@ -389,17 +391,17 @@ AlcoholDelivery.factory('ScrollPagination', function($http,ProductService) {
     this.busy = true;
     var _self = this;
 
-	$http.get('loyaltystore',{
+	// $http.get('loyaltystore',{
 		
-		params : {
-			type : 1,
-			skip:this.skip,
-			limit:this.take,
-			filter:this.filter,
-			sortby:this.sortby
-		}
+	// 	params : {
+	// 		type : 1,
+	// 		skip:this.skip,
+	// 		limit:this.take,
+	// 		filter:this.filter,
+	// 		sortby:this.sortby
+	// 	}
 
-    })
+ //    })
 
     ProductService.getProducts({
 
@@ -803,8 +805,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 							},
 
-
-						}
+						}						
 						
 				})
 
@@ -1029,6 +1030,7 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll) {
 	
 	angular.alcoholCart = alcoholCart;
+	angular.userservice = UserService;
 
 	$rootScope.$state = $state; // state to be accessed from view
 	

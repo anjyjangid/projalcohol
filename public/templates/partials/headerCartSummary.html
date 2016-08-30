@@ -21,6 +21,15 @@
 					<div class="currentorderpopupulright">{{product.getPrice() | pricingTxt}}</div>
 				</li>
 
+				<li ng-repeat="(id,product) in alcoholCart.getLoyaltyProducts()">
+					<div class="currentorderpopupulleft">{{product.product.name}}</div>
+					<div class="currentorderpopupulcenter">{{product.quantity}}</div>
+					<div class="currentorderpopupulright">
+						<i>LP {{product.loyaltyValue.point}}</i>
+						<i ng-if='product.loyaltyValue.price>0'> + {{product.loyaltyValue.price | pricingTxt}}</i>
+					</div>
+				</li>
+
 				<li ng-repeat="(key,package) in alcoholCart.getPackages()">
 					<div class="currentorderpopupulleft">{{package._name}}</div>
 					<div class="currentorderpopupulcenter">{{package._quantity}}</div>

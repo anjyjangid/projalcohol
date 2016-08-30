@@ -748,3 +748,17 @@ md-dialog#dont-miss-popup{
 	width: 100%;
 }
 
+.prod_addtocart.disabled .cartbtn {
+    background: #cdcdcd;
+    width: 100%;
+    font-size: 12px;
+    font-weight: 500;
+    color: #8f8f8f;
+    height: 32px;
+    text-align: center;
+    text-transform: uppercase;
+    border: 1px solid #ccc;
+}
+.prod_addtocart.disabled .cartbtn .addcart{
+    cursor: not-allowed;
+}

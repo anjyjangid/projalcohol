@@ -99,7 +99,7 @@ class CartController extends Controller
 
 				$userCart = $userCart->toArray();
 
-				$productsIdInCart = array_keys((array)$userCart['products']);
+				$productsIdInCart = array_merge(array_keys((array)$userCart['products']),array_keys((array)$userCart['loyalty']));
 
 				$productObj = new Products;
 
@@ -116,7 +116,13 @@ class CartController extends Controller
 
 					foreach($productsInCart as $product){
 
-						$userCart['products'][$product['_id']]['product'] = $product;
+						if(isset($userCart['products'][$product['_id']])){
+							$userCart['products'][$product['_id']]['product'] = $product;
+						}
+
+						if(isset($userCart['products'][$product['_id']])){
+							$userCart['loyalty'][$product['_id']]['product'] = $product;
+						}
 
 					}
 
@@ -195,7 +201,11 @@ class CartController extends Controller
 
 		}
 
-		$productsIdInCart = array_keys((array)$cart['products']);
+		if(!isset($cart['loyalty'])){
+			$cart['loyalty'] = [];
+		}
+
+		$productsIdInCart = array_merge(array_keys((array)$cart['products']),array_keys((array)$cart['loyalty']));
 
 		$productObj = new Products;
 
@@ -212,7 +222,13 @@ class CartController extends Controller
 
 			foreach($productsInCart as $product){
 
-				$cart['products'][$product['_id']]['product'] = $product;
+				if(isset($cart['products'][$product['_id']])){
+					$cart['products'][$product['_id']]['product'] = $product;
+				}
+
+				if(isset($cart['loyalty'][$product['_id']])){
+					$cart['loyalty'][$product['_id']]['product'] = $product;
+				}
 
 			}
 
@@ -462,6 +478,211 @@ class CartController extends Controller
 		}
 
 		return response(["success"=>false,"message"=>"Something went worng"]);
+
+	}
+
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function putLoyalty(Request $request, $id)
+	{
+
+		$user = Auth::user('user');
+
+		if($user===null){
+			return response(["message"=>"login required","code"=>"401"],401);
+		}		
+		
+
+		$inputs = $request->all();
+
+		$cart = Cart::find($id);
+
+		// $pointsUsed = $this->getLoyaltyUsed();
+
+		// return response([$pointsUsed],400);
+
+		$proIdToUpdate = $inputs['id'];
+
+		$response = [
+			"success"=>false,
+			"message"=>"Something went worng",
+			"code" => 000,
+		];
+
+		if(empty($cart)){
+
+			$response['message'] = "Not a valid request";
+			return response($response,400);
+
+		}
+
+		if(!isset($cart->loyalty)){
+			$cart->loyalty = [];
+		}
+
+		$productInCart = isset($cart->loyalty[$proIdToUpdate])?$cart->loyalty[$proIdToUpdate]:false;		
+
+		$data = [
+					"loyalty" => [
+
+						"chilled" => 1,
+						"_id" => new mongoId("57025683c31d53b2218b45a4"),
+						"quantity" => 1
+
+					]
+				];
+
+		$product = Products::where("_id",$proIdToUpdate)
+					->where("status",1)
+					->where("isLoyalty",1)					
+					->where(function($query){
+						$query->where("quantity",'>',0)
+							  ->orWhere("outOfStockType",2);
+					})
+					->first([
+						'chilled',
+						'description',
+						
+						'loyaltyValueType',
+						'loyaltyValuePoint',
+						'loyaltyValuePrice',
+
+						'imageFiles',
+						'name',
+						'slug',
+						'shortDescription',
+						'sku',
+						'quantity',
+						'deliveryType',
+						'outOfStockType',
+						'availabilityDays',
+						'availabilityTime'
+					]);
+		
+		if(is_null($product)){
+
+			return response(["message"=>"Product not found","reload"=>true],400);
+
+		}
+
+		$loyaltyAvailable = $this->getLoyaltyAvailable($cart);
+		
+
+		// if($user->loyaltyPoints > ){
+		// 	return response(["message"=>"login required","code"=>"401"],401);
+		// }
+
+		$updateProData = array(
+
+				"_id" => new mongoId($proIdToUpdate),
+				"chilled"=>array(
+					"quantity"=>$productInCart!==false?$productInCart['chilled']['quantity']:0,
+					"status"=>"chilled",
+				),
+				"nonchilled"=>array(
+					"quantity"=>$productInCart!==false?$productInCart['nonchilled']['quantity']:0,
+					"status"=>"nonchilled",
+				),
+				"quantity"=>0,
+				"lastServedChilled" => (bool)$inputs['chilled'],
+				"points"=>$product['loyaltyValuePoint']
+			);
+		
+		if((bool)$inputs['chilled']){
+
+			$updateProData['chilled']['quantity'] = (int)$inputs['quantity'];
+
+		}else{
+
+			$updateProData['nonchilled']['quantity'] = (int)$inputs['quantity'];
+
+		}
+
+		//$cart->loyalty = array_merge($cart->loyalty,[$proIdToUpdate=>$updateProData]);
+		//Code to update total quantity
+		//$updateProData = $cart->loyalty[$proIdToUpdate];
+
+		$updateProData['quantity'] = (int)$updateProData['chilled']['quantity'] + (int)$updateProData['nonchilled']['quantity'];		
+		$oldQuantity = $productInCart!==false?(int)$productInCart['quantity']:0;
+		$changeInQty = $updateProData['quantity'] - $oldQuantity;//Track change in quantity
+		
+		$loyaltyRequired = (float)($product['loyaltyValuePoint'] * $changeInQty);
+
+		if($changeInQty>0){
+
+			if($loyaltyAvailable < $loyaltyRequired){
+				return response([
+						"message"=>"not sufficient loyalty points",
+						"quantity"=>[
+							"chilled"=>$productInCart!==false?$productInCart['chilled']['quantity']:0,
+							"nonchilled"=>$productInCart!==false?$productInCart['nonchilled']['quantity']:0
+						]
+					],400);
+			}
+
+		}
+		
+		
+
+
+		try {			
+
+
+			if($updateProData['quantity']>0){
+
+				$cart->loyalty = array_merge($cart->loyalty,array($proIdToUpdate=>$updateProData));
+				$cart->save();
+
+			}else{
+
+				$cart->unset('loyalty.'.$proIdToUpdate);
+
+			}
+
+			$updateProData['product'] = $product;
+			$response['success'] = true;
+			$response['message'] = "loyalty product updated successfully";
+
+			
+			$response['change'] = $changeInQty;
+			$response['product'] = $updateProData;
+
+			return response($response,200);
+
+		} catch(\Exception $e){
+
+			//return response(["success"=>false,"message"=>"Something went worng"]);
+			return response(["success"=>false,"message"=>$e->getMessage()]);
+
+		}
+
+		return response(["success"=>false,"message"=>"Something went worng"]);
+
+	}
+
+	private function getLoyaltyAvailable($cart){
+
+		if(is_object($cart)){
+
+			$user = Auth::user('user');
+			$userLoyaltyPoints = $user['loyaltyPoints'];
+			
+			$loyaltyPros = $cart->loyalty;
+			$pointsUsed = 0;
+			foreach($loyaltyPros as $loyaltyPro){
+				$pointsUsed += ($loyaltyPro['points'] * $loyaltyPro['quantity']);
+			}
+
+			return $userLoyaltyPoints - $pointsUsed;
+
+		}
+
+		return false;
 
 	}
 

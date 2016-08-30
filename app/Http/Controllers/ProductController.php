@@ -175,7 +175,7 @@ class ProductController extends Controller
 	 * @return \Illuminate\Http\Response
 	***************************************/
 
-	public function fetchProduct(Request $request){
+	public function fetchProducts(Request $request){
 
 		$params = $request->all();
 

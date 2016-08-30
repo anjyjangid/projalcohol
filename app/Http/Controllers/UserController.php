@@ -238,6 +238,7 @@ class UserController extends Controller
 		$userLogged = Auth::user('user');
 
 		if(!empty($userLogged)){
+			
 			$userLogged = User::find($userLogged->_id);
 			
 			$userLogged['loginfb'] = false;
@@ -245,7 +246,7 @@ class UserController extends Controller
 				$userLogged['loginfb'] = true;
 		}
 		else{
-			$userLogged = array("auth"=>false);
+			$userLogged = ["auth"=>false];
 		}
 
 		return response($userLogged, 200);
