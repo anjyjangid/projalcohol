@@ -484,6 +484,48 @@ AlcoholDelivery.service('alcoholCart', [
 			return build;
 		};
 
+		this.getProductInCartById = function(productId){
+
+			var products = this.getProducts();
+			var promotions = this.getPromotions();
+			var loyalty = this.getLoyaltyProducts();
+
+			var build = false;
+			
+			if(typeof products[productId] !== 'undefined'){
+				build = products[productId];
+			}
+
+			if(build!==false){return build;}
+
+			angular.forEach(promotions, function(promotion, key) {
+				
+				if(promotion.product._id == productId){
+					var product = {
+						imageFiles : [
+							{
+								coverimage:1,
+								source:promotion.product._image
+							}
+						],
+						slug : promotion.product._slug,
+						name: promotion.product._title
+					}
+					build = {product:product};
+				}
+
+			});
+
+			if(build!==false){return build;}
+			
+			if(typeof loyalty[productId] !== 'undefined'){
+				build = products[productId];
+			}
+
+			if(build!==false){return build;}
+
+		}
+
 		this.getGiftCardByUid = function (uId){
 
 			var cards = this.getCart().giftCards;
@@ -1344,21 +1386,7 @@ AlcoholDelivery.service('alcoholCart', [
 				var newPackage = new alcoholCartPackage(package._id,package._unique,package);
 				_self.$cart.packages.push(newPackage);
 				
-			});	
-
-			angular.forEach(giftCards, function (giftCard,key) {
-
-				var giftCard = new alcoholCartGiftCard(giftCard);
-				_self.$cart.giftCards.push(giftCard);
-				
-			});
-
-			angular.forEach(gifts, function (gift,key) {
-
-				var newGift = new alcoholCartGift(gift);
-				_self.$cart.gifts.push(newGift);
-				
-			});
+			});				
 
 			angular.forEach(promotions, function (promotion,key) {
 
@@ -1397,6 +1425,20 @@ AlcoholDelivery.service('alcoholCart', [
 					_self.$cart.promotions.push(oPromotion);
 
 				}			
+				
+			});
+
+			angular.forEach(giftCards, function (giftCard,key) {
+
+				var giftCard = new alcoholCartGiftCard(giftCard);
+				_self.$cart.giftCards.push(giftCard);
+				
+			});
+
+			angular.forEach(gifts, function (gift,key) {
+
+				var newGift = new alcoholCartGift(gift);
+				_self.$cart.gifts.push(newGift);
 				
 			});
 
@@ -2090,8 +2132,8 @@ AlcoholDelivery.factory('alcoholCartGift',["$log", "giftProduct",function($log, 
 
 			angular.forEach(products, function(product,index){
 
-				var product = new giftProduct(product,_self.getUniqueId());
-				this.push(product);
+				var productObj = new giftProduct(product,_self.getUniqueId());				
+				this.push(productObj);
 
 			},this.products)
 
@@ -2134,58 +2176,9 @@ AlcoholDelivery.factory('giftProduct', ['$rootScope', '$q', '$http', '$log', fun
 
 			this.setId(giftProduct._id);
 			this.setGiftUid(giftUid);
-			this.setState(giftProduct.state);
 			this.setQuantity(giftProduct.quantity);
-			this.setChilledState(giftProduct.chilled);
 
-		};
-
-		giftProductObj.prototype.toggleChilledStatus = function(){
-
-			var isChilled = this.getChilledState();
-			isChilled = !isChilled
-
-			var defer = $q.defer();
-
-			$http.put("/cart/gift/product/chilledtoggle/"+this.getGiftUid(), {
-					"id":this.getId(),
-					"state" : this.getState()
-				},{
-
-			}).error(function(data, status, headers) {
-
-			}).success(function(response) {
-
-			});
-
-			this.setChilledState(isChilled);
-
-			return defer.promise;
-
-		}
-
-		giftProductObj.prototype.setState = function(state){
-			if (state)  this.state = state;
-			else {
-				$log.error('Sate of product must be provided');
-			}
-		};
-
-		giftProductObj.prototype.getState = function(){
-			return this.state;
-		};
-
-		giftProductObj.prototype.setChilledState = function(chilledState){
-
-			if (typeof chilledState !== 'undefined')  this.ischilled = chilledState;
-			else {
-				$log.error('Chilled state of product must be provided');
-			}
-		};
-
-		giftProductObj.prototype.getChilledState = function(){
-			return this.ischilled;
-		};
+		};				
 
 		giftProductObj.prototype.setId = function(id){
 			if (id)  this._id = id;
@@ -2215,15 +2208,7 @@ AlcoholDelivery.factory('giftProduct', ['$rootScope', '$q', '$http', '$log', fun
 
 		giftProductObj.prototype.getQuantity = function(){
 			return parseInt(this.quantity);
-		}
-
-		giftProductObj.prototype.setLastServedAs = function(servedAs){
-			return this.servedAs = servedAs;
-		}
-
-		giftProductObj.prototype.getLastServedAs = function(){
-			return this.servedAs;
-		}
+		}		
 
 		giftProductObj.prototype.setName = function(name){
 			if (name)  this._name = name;

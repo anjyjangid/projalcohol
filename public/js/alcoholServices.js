@@ -169,35 +169,16 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 
 			if(isProExist === false){
 
-				if(parseInt(product.qChilled)>0){
-
-					var newItem = new GiftingProduct(
+				var newItem = new GiftingProduct(
 												product._id,
-												product.qChilled,
-												product.product.name,											
+												product.quantity,
+												product.product.name,
 												product.product.imageFiles,
 												product.product.slug,
 												true
 											);
 
-					_self.$products.push(newItem);
-
-				}
-
-				if(parseInt(product.qNChilled)>0){
-
-					var newItem = new GiftingProduct(
-												product._id, 
-												product.qNChilled,
-												product.product.name,											
-												product.product.imageFiles,
-												product.product.slug,
-												false
-											);
-
-					_self.$products.push(newItem);
-
-				}
+				_self.$products.push(newItem);
 				
 			}
 
@@ -223,6 +204,31 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 			}else{
 
 				isProExist._quantity++;
+
+			}
+
+		});
+
+		angular.forEach(loyalty, function(product, key) {
+
+			isProExist = _self.getProductById(product._id);
+
+			if(isProExist === false){
+
+				var newItem = new GiftingProduct(
+													product._id,
+													product.quantity,
+													product.product.name,
+													product.product.imageFiles,
+													product.product.slug,
+													true
+												);
+				
+				_self.$products.push(newItem);
+
+			}else{
+
+				isProExist._quantity+=product.quantity;
 
 			}
 
@@ -263,18 +269,11 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 
 		angular.forEach(products,function(product,key){
 
-			if(product._inGift>0){
-
-				//attachedPro = attachedPro[product._id] || {};
-				var state = 'chilled';
-				if(!product._stateChilled){
-					state = 'nonchilled'
-				}
-
+			if(product._inGift>0){				
+				
 				attachedPro.push({
 
-					_id : product._id,
-					state: state,
+					_id : product._id,					
 					quantity:parseInt(product._inGift)
 
 				});
@@ -493,7 +492,6 @@ AlcoholDelivery.factory('GiftingProduct',['$filter',function($filter){
 		this._slug = slug;
 		this._inGift = 0;
 		this._stateChilled = state;
-
 
 	}
 	return giftProduct;

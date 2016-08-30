@@ -1905,7 +1905,38 @@ prd($cart);
 		$giftProducts = $inputs['products'];
 
 		$totalProducts = 0;		
-		$cartProducts = $cart->products;			
+		$cartProducts = $cart->products;
+
+		foreach($cart->loyalty as $key=>$loyalty){
+
+			if(isset($cartProducts[$key])){
+
+				$cartProducts[$key]['quantity']+= (int)$loyalty['quantity'];
+
+			}else{
+
+				$cartProducts[$key] = [
+					'quantity'=>(int)$loyalty['quantity']
+				];
+
+			}
+		}
+
+		foreach($cart->promotions as $promotion){
+			$key = $promotion['productId'];
+			if(isset($cartProducts[$key])){
+
+				$cartProducts[$key]['quantity']++;
+
+			}else{
+
+				$cartProducts[$key] = [
+					'quantity'=>1
+				];
+
+			}
+		}
+
 
 		foreach ($giftProducts as &$giftProduct) {						
 
@@ -1917,7 +1948,7 @@ prd($cart);
 			// Condition to check product is available in cart or not
 			// Condition to check state(chilled/non chilled) is available or not
 
-			if(isset($cartProducts[$proId]) && isset($cartProducts[$proId][$state]) && $cartProducts[$proId][$state]['quantity']>=$quantity){
+			if(isset($cartProducts[$proId]) && $cartProducts[$proId]['quantity']>=$quantity){
 
 				// if(!isset($cartProducts[$proId][$state]['inGift'])){ // set inGift eky if not exist in product state
 
@@ -1947,7 +1978,7 @@ prd($cart);
 			}
 
 		}			
-
+		
 		if($totalProducts<=1){
 
 			$response['message'] = 'Please attached products';
