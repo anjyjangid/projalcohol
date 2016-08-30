@@ -36,6 +36,9 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	
 	Route::resource('customer', 'Admin\CustomerController');
 	Route::controller('customer', 'Admin\CustomerController');
+
+	Route::resource('business', 'Admin\BusinessController');
+	Route::controller('business', 'Admin\BusinessController');	
 	
 	Route::group(['prefix' => 'global'], function () {		
 		Route::get('status/{id}/{table}/{status}','Admin\GlobalController@setstatus');
