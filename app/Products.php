@@ -10,6 +10,8 @@ use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Setting as Setting;
 use DB;
 use mongoId;
+use Illuminate\Support\Facades\Auth;
+use AlcoholDelivery\Stocks;
 
 class Products extends Eloquent
 {
@@ -17,43 +19,59 @@ class Products extends Eloquent
 	protected $collection = 'products';
 
 	protected $fillable = [
-			'name',
-			'slug',
-			'description',
-			'shortDescription',
-			'categories',
-			'sku',
-			'quantity',
-			'price',            
-			'chilled',
-			'status',
-			'metaTitle',
-			'metaKeywords',
-			'metaDescription',
-			'images',
-			'isFeatured',
-			'bulkDisable',			
-			'regular_express_delivery',			
-			'express_delivery_bulk',
-			'loyalty',
-			'isLoyalty',
-            'loyaltyType',
+		'name',
+		'slug',
+		'description',
+		'shortDescription',
+		'categories',
+		'chilled',
+		'isFeatured',
+		'isLoyalty',
+        'loyaltyValueType',
+        'loyaltyValuePoint',
+        'loyaltyValuePrice',
+        'loyalty',
+        'loyaltyType',
+		'status',
+		
+		'sku',
+		
+		'quantity',
+		
+		'deliveryType',
+		'outOfStockType',
+		'availabilityDays',
+		'availabilityTime',
+		
+		'dealerData',
+		
+		'price',            		
+		'regular_express_delivery',			
+		'express_delivery_bulk',
+		'bulkDisable',			
+		
+		'metaTitle',
+		'metaKeywords',
+		'metaDescription',
+		
+		'images',
 
-            'loyaltyValueType',
-            'loyaltyValuePoint',
-            'loyaltyValuePrice',
+		'packages',		
+		'dealerId',
+		'dealerObjectId',
+		'suggestionId',
+		'suggestionObjectId',
+		'suggestedId',
+		'suggestedObjectId'
+	];
 
-			'threshold',
-			'maxQuantity',
-			'dealers',
-			'packages',
-			'outOfStockType',
-			'availabilityDays',
-			'availabilityTime',
-			'deliveryType',
-			'suggestions'
-
-			
+	protected $hidden = [
+		'dealerId',
+		'dealerObjectId',
+		'suggestionId',
+		'suggestionObjectId',
+		'suggestedId',
+		'suggestedObjectId'
 	];
 
 	public function pcategories()
@@ -63,7 +81,7 @@ class Products extends Eloquent
 
 	public function supplier()
 	{        
-		return $this->belongsToMany('AlcoholDelivery\Dealer', null, 'products', 'dealers');
+		return $this->belongsToMany('AlcoholDelivery\Dealer', null, 'productId', 'dealerId');
 	}
 
 	public function getSingleProduct($id)
@@ -266,4 +284,87 @@ class Products extends Eloquent
 	{
 		return $this->belongsToMany('AlcoholDelivery\Packages', null, 'products', 'packages');
 	}
+
+
+    public function stocks(){
+        return $this->hasMany('AlcoholDelivery\Stocks', 'productId', '_id');
+    }
+
+    public function store(){        
+
+    	$userStoreId = Auth::user('admin')->storeId;
+
+        return $this->hasOne('AlcoholDelivery\Stocks', 'productId', '_id')->where('storeId',$userStoreId);
+    }
+
+    /*public function mystore(){            	
+
+        return $this->embedsMany('AlcoholDelivery\Stocks');
+    }*/    
+
+    public function getFields(){
+        $fields = $this->fillable;
+        $ret = [];
+        foreach ($fields as $key => $value) {
+            $ret[$value] = '$'.$value;
+        }
+
+        return $ret;
+    }
+
+    public function getFirstfield(){
+        $fields = $this->fillable;
+        $ret = [];
+        foreach ($fields as $key => $value) {
+        	//'name' => [ '$first' => '$name'],
+            $ret[$value] = ['$first' => '$'.$value];
+        }
+
+        return $ret;
+    }
+
+    public function updateStocks($data,$id){
+
+    	//CURRENT STORE ID
+    	$userStoreId = Auth::user('admin')->storeId;    	
+
+    	$fields = [
+    		'quantity' => (int)$data['store']['quantity'],
+    		'threshold' => (int)$data['store']['threshold'],
+    		'maxQuantity' => (int)$data['store']['maxQuantity'],
+    		'storeId' => $userStoreId,
+    		'storeObjId' => new MongoId($userStoreId),
+    		'defaultDealerId' => $data['store']['defaultDealerId'],
+    		'defaultDealerObjId' => new MongoId($data['store']['defaultDealerId']),
+    		'productId' => $id,
+    		'productObjId' => new MongoId($id),
+    	];
+
+    	if(isset($data['store']['defaultDealerId'])){
+    		$fields['defaultDealerId'] = $data['store']['defaultDealerId'];
+    		$fields['defaultDealerObjId'] = new MongoId($data['store']['defaultDealerId']);
+    	}
+
+    	DB::collection('stocks')
+    	->where('productId', $id)
+    	->where('storeId', $userStoreId)
+        ->update($fields, ['upsert' => true]);
+
+        //update total quantity for the product available @ all stores
+
+        $productWithStocks = Products::where('_id',$id)->with('stocks')->first();
+
+        $quantity = 0;
+        foreach ($productWithStocks->stocks as $key => $value) {
+        	$quantity += $value->quantity;
+        }
+        $productWithStocks->quantity = $quantity;
+
+		$productWithStocks->save();        
+
+    }
+
+    public function suggestions(){
+    	return $this->belongsToMany('AlcoholDelivery\Products', null, 'suggestedId', 'suggestionId');
+    }
 }

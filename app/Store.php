@@ -17,11 +17,11 @@ class Store extends Eloquent
         'address',
         'latitude',
         'longitude',
-        'location',        
+        'location',
         'metaTitle',
         'metaKeywords',
         'metaDescription',
         'email',
-        'telephone',        
+        'telephone',
     ];
 }

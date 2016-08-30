@@ -189,10 +189,20 @@
 	                    	}	                    	
 	                    },
 		                orderable:true
-		            },{	 
+		            },{
+		            	mData: null,
+		            	mRender: function(data, type, full) {	                        
+	                    	if(data.store != null){
+	                    		return data.store.quantity;
+	                    	}else{
+	                    		return 0;
+	                    	}	                    	
+	                    },
+		                orderable:true
+		            }/*,{	 
 	                	data : "quantity",
 		                orderable:true
-		            },{
+		            }*/,{
 		            	mData: null,
 		            	mRender: function(data, type, full) {		            		
 		            		return '<a ui-sref=userLayout.products.edit({productid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';

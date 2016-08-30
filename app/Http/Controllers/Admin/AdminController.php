@@ -16,6 +16,7 @@ use GuzzleHttp\Client;
 use AlcoholDelivery\Products;
 use AlcoholDelivery\Orders;
 use AlcoholDelivery\Email;
+use AlcoholDelivery\Book;
 use MongoId;
 
 class AdminController extends Controller
@@ -200,7 +201,8 @@ class AdminController extends Controller
             return response($validator->errors(), 422);
         }
 
-        $data['storeId'] = new MongoId($data['storeId']);
+        $data['storeId'] = $data['storeId'];
+        $data['storeObjId'] = new MongoId($data['storeId']);
 
         $inputs = [
             'first_name' => $data['first_name'],
@@ -208,6 +210,7 @@ class AdminController extends Controller
             'email' => $data['email'],            
             'storeId' => $data['storeId'],
             'status' => (int)$data['status'],
+            'storeObjId' => $data['storeObjId'],
             //'role' => 1
         ];
 
@@ -280,6 +283,7 @@ class AdminController extends Controller
 
         $subadmin = Admin::where('_id',$id)
         //->where('role',2)
+        //->with('userstore')
         ->first();
 
         if($subadmin){
@@ -367,6 +371,78 @@ class AdminController extends Controller
             ));
         });
 
+    }
+
+    public function getTest(Request $request){
+
+        /*$user = User::first();        
+
+        $book = new Book(['title' => 'Harry potter','author' => 'abhay@cgt.co.in']);     
+
+        $book = $user->books()->save($book);*/
+
+        $us = new User;
+
+        $fillable = $us->getFields();       
+
+               
+
+        /*$fillable['books'] = '$books';
+
+        $fillable['bookTitle'] = '$books.title';
+
+        $fillable['bookAuthor'] = '$books.author';
+        
+        $model = User::raw()->aggregate(
+            [   
+                [
+                    '$match'=>['_id' => new MongoId('57bea0dcb190ecb40c8b4569')]                    
+                ],
+                [
+                    '$unwind' => [
+                        'path' => '$books',
+                        'preserveNullAndEmptyArrays' => true,                            
+                    ]
+                ],                
+                [
+                    '$project'=>$fillable                        
+                ],
+                [
+                    '$match'=>['bookAuthor' => 'abhay@cgt.co.in']                    
+                ],
+            ]
+        );*/
+
+        $fillable['mybook'] = [
+            '$filter'=>[
+                'input' => '$books',
+                'as' => 'book',
+                'cond' => ['$eq'=>['$$book.title','Harry']]
+            ]
+        ];
+
+        $model = User::raw()->aggregate(
+            [   
+                [
+                    '$match'=>['_id' => new MongoId('57bea0dcb190ecb40c8b4569')]                    
+                ],                                
+                [
+                    '$project'=>$fillable                        
+                ],
+                [
+                    '$unwind' => [
+                        'path' => '$mybook',
+                        'preserveNullAndEmptyArrays' => true,                            
+                    ]
+                ]
+            ]
+        );
+
+        echo '<pre>';
+        print_r($model);
+        echo '</pre>';
+        exit;        
+        return response($users['result'],200);  
     }
 
 }

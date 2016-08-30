@@ -34,7 +34,7 @@ class ProductRequest extends Request
             'shortDescription' => 'required',
             'categories' => 'required',
             'sku' => 'required|unique:products',
-            'quantity' => 'required|numeric',
+            'store.quantity' => 'required|numeric',
             'price' => 'required|numeric',
             'chilled' => 'required|integer',
             'status' => 'required|integer',
@@ -53,9 +53,10 @@ class ProductRequest extends Request
             'loyaltyValuePrice' => 'required_if:loyaltyValueType,1|numeric|lt:price',
             
 
-            'threshold' => 'required|numeric|lt:maxQuantity',
-            'maxQuantity' => 'required|numeric|gte:quantity',
-            'dealers' => 'required|array|min:1',
+            'store.threshold' => 'required|numeric|lt:store.maxQuantity',
+            'store.maxQuantity' => 'required|numeric|gte:store.quantity',
+            'store.defaultDealerId' => 'required',
+            'dealerData' => 'required|array|min:1',
             'outOfStockType' => 'required|integer',
             'deliveryType' => 'required|integer|in:0,1,2',
 
@@ -80,6 +81,22 @@ class ProductRequest extends Request
                 $rules[$ruleKey . '.thumb'] = 'required|image|max:5102';
                 $rules[$ruleKey . '.label'] = 'required|max:100';
                 $rules[$ruleKey . '.order'] = 'required|integer';
+            }
+        }
+
+        if (isset($input['dealerData']) && is_array($input['dealerData']))
+        {
+            $dIds = [];
+            foreach ($input['dealerData'] as $key => $value)
+            {
+                if(isset($value['dealerId']) && in_array($value['dealerId'], $dIds)){
+                    $rules['repeated'] = 'required';                    
+                }
+                $dIds[] = @$value['dealerId'];
+                $ruleKey = 'dealerData.' . $key;                
+                $rules[$ruleKey . '.dealerId'] = 'required';
+                $rules[$ruleKey . '.tradeQuantity'] = 'integer';
+                $rules[$ruleKey . '.tradeValue'] = 'integer';
             }
         }        
 
@@ -126,14 +143,18 @@ class ProductRequest extends Request
         $messages = [
             'required' => 'This field is required',
             'required_if' => 'This field is required',
+            'required_with' => 'This field is required',
             //'categories.required' => 'Please select a category.',
             //'status.required' => 'Please select :attribute.',
             'imageFiles.required' => 'Please add atleast one image.',
-            'maxQuantity.gte' => 'The value should be greater than or equals to the quantity.',
-            'threshold.lt' => 'The value should be less than maximum quantity.',
+            'dealerData.required' => 'Please add atleast one dealer.',
+            'store.maxQuantity.gte' => 'The value must be greater than or equals to the quantity.',
+            'store.threshold.lt' => 'The value must be less than maximum quantity.',
             'dealers.required' => 'Please select atleast one dealer.',
 
-            'loyaltyValuePrice.lt' => "Loyalty price should be less than product cost"
+            'loyaltyValuePrice.lt' => "Loyalty price should be less than product cost",
+            'store.defaultDealerId.required' => 'Please select default dealer.',
+            'repeated.required' => 'You must select unique dealers'
         ]; 
 
         $images = Request::input('imageFiles');

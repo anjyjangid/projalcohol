@@ -21,7 +21,15 @@ class Dealer extends Moloquent
      *
      * @var array
      */
-    protected $fillable = ['title', 'description', 'contacts', 'address','status','products'];
+    protected $fillable = [
+        'title',
+        'description',
+        'contacts',
+        'address',
+        'status',
+        'productId',
+        'productObjectId'
+    ];
 
     
     public function getDealers($params = array()){
@@ -42,7 +50,7 @@ class Dealer extends Moloquent
 
     public function productlist()
     {        
-        return $this->belongsToMany('AlcoholDelivery\Products', null, 'dealers', 'products');
+        return $this->belongsToMany('AlcoholDelivery\Products', null, 'dealerId', 'productId');
     }
 
 
