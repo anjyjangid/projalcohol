@@ -144,7 +144,7 @@ class ProductController extends Controller
 		public function postUpdate(ProductRequest $request, $id)
 		{
 			$inputs = $request->all();				
-
+			
 			$this->castVariables($inputs);
 
 			$product = Products::find($id);

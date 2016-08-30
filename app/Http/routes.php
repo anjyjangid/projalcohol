@@ -36,6 +36,9 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	
 	Route::resource('customer', 'Admin\CustomerController');
 	Route::controller('customer', 'Admin\CustomerController');
+
+	Route::resource('business', 'Admin\BusinessController');
+	Route::controller('business', 'Admin\BusinessController');	
 	
 	Route::group(['prefix' => 'global'], function () {		
 		Route::get('status/{id}/{table}/{status}','Admin\GlobalController@setstatus');
@@ -114,6 +117,8 @@ Route::controller('/category', 'CategoryController');
 
 Route::get('/getproduct', 'ProductController@getproduct');
 
+Route::get('/fetchProducts', 'ProductController@fetchProducts');
+
 Route::get('/search', 'ProductController@getproduct');
 
 Route::get('/getproductdetail', 'ProductController@getproductdetail');
@@ -181,6 +186,9 @@ Route::group(['prefix' => 'cart'], function () {
 	Route::put('giftcard/{uid}','CartController@putGiftcard');
 
 	Route::put('gift/product/chilledtoggle/{giftUid}','CartController@putGiftProductChilledStatus');
+
+	Route::put('loyalty/{key}','CartController@putLoyalty');
+	
 
 });
 

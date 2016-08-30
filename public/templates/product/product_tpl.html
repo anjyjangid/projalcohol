@@ -2,7 +2,7 @@
 
 	<div ng-if="productInfo.quantity<1 && productInfo.outOfStockType == 1" class="productsoldoutbkbtn">Sold Out</div>
 
-	<div class="prod_chilled" ng-class="{notchilled:!productInfo.servechilled,invisible:{{!productInfo.chilled}}}"  ng-click="productInfo.servechilled=!productInfo.servechilled"> <span>Chilled</span>
+	<div class="prod_chilled us-txt" ng-class="{notchilled:!productInfo.servechilled,invisible:{{!productInfo.chilled}}}"  ng-click="productInfo.servechilled=!productInfo.servechilled"> <span>Chilled</span>
 		<div class="prod_chilled_icon"></div>
 	</div>
 
@@ -12,15 +12,18 @@
 
 				<div class="add-bulk-iner-widthset">
 					<div class="add-icon-main"> 
-						<div class="add-wishlist-icondiv"><img src="images/add-wish-icon.png" /> </div>  
+
+						<div class="add-wishlist-icondiv"><img src="images/add-wish-icon.png" /></div>
+
 						<div class="wishlist_discount">
 							<div class="wishlist" ng-if="!isInwishList" ng-click="addToWishlist()">Add to Wishlist</div>
 							<div class="wishlist" ui-sref="accountLayout.wishlist" ng-if="isInwishList">Added to Wishlist</div>
 						</div>
+
 					</div>
 				</div>
 
-				<div class="add-bulk-iner-widthset">
+				<div class="add-bulk-iner-widthset" ng-if="productInfo.type!='2'">
 					<div class="bulk-icon-maincover"> 
 						<div class="bulk-dis-icon"><img src="images/bulk-dis-icon.png" /></div>
 						<div class="wishlist_discount_bulk">
@@ -31,30 +34,25 @@
 			</div>
 		</div>
 
-	<!--<div class="wishlist_discount">
+	
 
-	<div class="wishlist" ng-if="!isInwishList" ng-click="addToWishlist()">Add to Wishlist</div>
-	<div class="wishlist" ui-sref="accountLayout.wishlist" ng-if="isInwishList">Added to Wishlist</div>
-
-	<div class="discount" ui-sref="mainLayout.product({product:productInfo.slug})">Click here to view Bulk Discounts</div>
-	</div>--> 
-
-		<img err-pro-src="" ng-src="products/i/200/{{productInfo.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive"/> 
+		<img err-pro-src="" ng-src="products/i/200/{{productInfo.imageFiles | getProductThumb}}" alt="" class="img-responsive"/> 
 	</div>
 
-	<!-- <a ui-sref="mainLayout.product({product:productInfo.slug})" class="core-block"> -->
-	<a ng-click="productInfo.href()" class="core-block">
+	<a ui-sref="mainLayout.product({product:productInfo.slug})" class="core-block">
+	<!-- <a ng-click="productInfo.href" class="core-block"> -->
 
 		<div class="prod_desc"> {{productInfo.name}}
 			<not-available product="productInfo"></not-available>
 		</div>
 
 		<div ng-if="!productInfo.promo || promotion.inCart">
+
 			<div class="prod_discout_price" ng-if="!loyalty">{{productInfo.price | pricingTxt}}</div>
 			<div class="prod_discout_price" ng-if="loyalty">
 
-				<span ng-if="productInfo.loyaltyValueType==0">LP {{productInfo.loyaltyValuePoint}}</span>
-				<span ng-if="productInfo.loyaltyValueType==1">LP {{productInfo.loyaltyValuePoint}} + {{productInfo.loyaltyValuePrice | pricingTxt}}</span>
+				<span ng-if="productInfo.loyaltyValue.type==0">LP {{productInfo.loyaltyValue.point}}</span>
+				<span ng-if="productInfo.loyaltyValue.type==1">LP {{productInfo.loyaltyValue.point}} + {{productInfo.loyaltyValue.price | pricingTxt}}</span>
 
 			</div>
 		</div>
@@ -64,14 +62,25 @@
 		</div>
 	</a>
 
-	<div class="prod_addtocart">
+	<div class="prod_addtocart" ng-if="productInfo.addBtnAllowed">
 		
 		<button class="checkoutproductbutton" ng-if="productInfo.promo && !promotion.inCart" ng-click="alcoholCart.addPromo(promotion._id,productInfo._id,$event)">Add Promo</button>
 
-		<add-to-cart-btn product="productInfo" ng-if="promotion.inCart || !productInfo.promo && (productInfo.quantity || productInfo.outOfStockType == 2)"></add-to-cart-btn>
+		<add-to-cart-btn 
+				ng-class="{'disabled': productInfo.notSufficient}" 
+				product="productInfo" 
+				ng-if="promotion.inCart || !productInfo.promo && (productInfo.quantity || productInfo.outOfStockType == 2)"
+		>
+		</add-to-cart-btn>
 
-		<out-of-stock product="productInfo" ng-if="productInfo.quantity<1 && productInfo.outOfStockType == 1"></out-of-stock>
 
 	</div>
+
+	<div class="prod_addtocart" ng-if="!productInfo.addBtnAllowed">
+		<out-of-stock product="productInfo"></out-of-stock>
+	</div>
+
+
+
 
 </div>

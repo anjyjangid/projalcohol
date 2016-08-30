@@ -65,6 +65,7 @@ class Products extends Eloquent
 		'suggestedObjectId'
 	];
 
+
 	protected $hidden = [
 		'dealerId',
 		'dealerObjectId',
@@ -278,6 +279,176 @@ class Products extends Eloquent
 			$product = array_merge($tempCat,$product);
 		}
 				
+	}
+
+
+	public function fetchProducts($params){
+
+		$match = [
+					'$match' => [
+						// "categoriesObj" => [ '$exists' => true ],
+						"status" => 1
+					]
+				];
+		
+		$sortParam = [
+			'$sort' => [ 'created_at' => 1 ]
+		];
+
+		$skip = [
+			'$skip' => 0
+		];
+		$limit = [
+			'$limit' => 100
+		];
+
+		if(isset($params['type'])){
+
+			if($params['type']==1){
+				$match['$match']['isLoyalty'] = 1;
+			}
+			
+		}
+
+		if(isset($params['filter'])){
+
+			if($params['filter']=="featured"){
+				$match['$match']['isFeatured'] = 1;
+			}
+
+			if($params['filter']=="new"){
+				$match['$match']['created_at'] = ['$gt'=> new DateTime('-1 months')];
+			}
+
+			if($params['filter']=="in-stock"){
+				$match['$match']['quantity'] = ['$gt'=>0];
+			}
+
+		}
+
+		if(isset($params['parent']) && !empty($params['parent'])){
+			
+			$category = Categories::raw()->findOne(['slug' => $params['parent']]);
+
+			if(empty($category)){
+				return response(['message'=>'Category not found'],404);
+			}
+
+			$catKey = (string)$category['_id'];
+
+			$match['$match']['categories'] = $catKey;
+
+		}
+
+		if(isset($params['sort']) && !empty($params['sort'])){
+
+			$sortParam = [
+				'$sort' => []
+			];
+
+			$sortArr = explode("_", $params['sort']);                    
+			$sort = array_pop($sortArr);
+			$sortDir = $sort=='asc'?-1:1;
+			$sort = array_pop($sortArr);
+
+			$sortParam['$sort'][$sort] = (int)$sortDir;
+			
+		}
+
+
+		if(isset($params['limit']) && !empty($params['limit'])){
+
+			if(isset($params['skip']) && !empty($params['skip'])){
+				$skip['$skip'] = (int)$params['skip'];
+			}
+
+			$limit['$limit'] = (int)$params['limit'];
+			
+		}
+
+		$fields = [
+			'$project' => [
+							'chilled' => 1,
+							'description' =>  1,
+							'price' => [
+								'$multiply' => [ '$price', 2.2 ]
+							],
+							'categories' => 1,							
+							// 'discountPrice' => 1,
+							'imageFiles' => 1,
+							'name' => 1,
+							'slug' => 1,
+							'shortDescription' => 1,
+							'sku' => 1,
+							'quantity' => 1,
+							'regular_express_delivery' => 1,
+							'express_delivery' => 1,
+							'express_delivery_bulk' => 1,
+							'outOfStockType' => 1,
+							// 'maxQuantity' => 1,
+							'availabilityDays' => 1,
+							'availabilityTime' => 1
+						]
+		];
+
+		if(isset($params['type'])){
+
+			if($params['type']==1){
+
+				$fields = [
+						'$project' => [
+								'chilled' => 1,
+								'description' =>  1,
+								'loyaltyValueType' => 1,
+								'loyaltyValuePoint' => 1,
+								'loyaltyValuePrice' => 1,
+								
+								'imageFiles' => 1,
+								'name' => 1,
+								'slug' => 1,
+								'shortDescription' => 1,
+								'sku' => 1,
+								'quantity' => 1,
+								'deliveryType' => 1,
+								'outOfStockType' => 1,
+								'availabilityDays' => 1,
+								'availabilityTime' => 1
+							]
+					];
+
+			}
+
+		}
+
+		try {
+			
+			// $count = $this::where($match['$match'])->count();
+
+			$products = DB::collection("products")->raw(function($collection) use($match,$skip,$sortParam,$limit,$fields){
+
+				return $collection->aggregate([
+							$match,
+							$sortParam,
+							$skip,
+							$limit,
+							$fields
+						]);
+			});
+
+		} catch(\Exception $e){
+
+			return ['success'=>false,"message"=>$e->getMessage()];
+
+        }
+
+        return ['success'=>true,'products'=>$products['result']];
+
+	}
+
+	public function fetchProduct($params){
+
+		
+		
 	}
 
 	public function packagelist()

@@ -50,7 +50,7 @@ class ProductController extends Controller
 		$products = $products->where('status', 1);
 
 		if(isset($params['category']) && !empty($params['category'])){
-			
+
 			$category = Categories::raw()->findOne(['slug' => $params['category']]);
 
 			if(empty($category)){
@@ -60,7 +60,7 @@ class ProductController extends Controller
 			$catKey = (string)$category['_id'];
 
 			$products = $products->where('categories', 'all', [$catKey]);
-			
+
 		}
 
 
@@ -91,6 +91,103 @@ class ProductController extends Controller
 		$products = $products->get($columns);
 
 		return response($products,200);
+
+	}
+
+
+	// public function fetchProduct(Request $request){
+
+	// 	$params = $request->all();
+		
+	// 	$products = new Products;
+
+	// 	$columns = array("categories","chilled","description","discountPrice","imageFiles","name","slug","price","shortDescription","sku","quantity","regular_express_delivery","express_delivery","express_delivery_bulk","outOfStockType","availabilityDays","availabilityTime");
+
+	// 	$products = $products->where('status', 1);
+
+	// 	if(isset($params['filter'])){
+
+	// 		if($params['filter']=="featured"){
+	// 			$products = $products->where('isFeatured', 1);
+	// 		}
+
+	// 		if($params['filter']=="new"){
+	// 			$products = $products->where('created_at', '>', new DateTime('-1 months'));
+	// 		}
+
+	// 		if($params['filter']=="in-stock"){
+	// 			$products = $products->where('quantity', '>', 0);
+	// 		}
+
+	// 	}
+
+
+	// 	$products = $products->where('status', 1);
+
+	// 	if(isset($params['parent']) && !empty($params['parent'])){
+
+	// 		$category = Categories::raw()->findOne(['slug' => $params['parent']]);
+
+	// 		if(empty($category)){
+	// 			return response(['message'=>'Category not found'],404);
+	// 		}
+
+	// 		$catKey = (string)$category['_id'];
+
+	// 		$products = $products->where('categories', 'all', [$catKey]);
+
+	// 	}
+
+
+	// 	if(isset($params['sort']) && !empty($params['sort'])){
+
+
+	// 		$sortArr = explode("_", $params['sort']);                    
+	// 		$sort = array_pop($sortArr);
+	// 		$sortDir = $sort=='asc'?$sort:'desc';
+	// 		$sort = array_pop($sortArr);
+
+	// 		if($sort=='price'){
+	// 			$products = $products->orderBy($sort, $sortDir);
+	// 		}
+	// 	}
+
+
+	// 	if(isset($params['limit']) && !empty($params['limit'])){
+
+	// 		if(isset($params['skip']) && !empty($params['skip'])){
+	// 			$products = $products->skip($params['skip']);
+	// 		}
+
+	// 		$products = $products->take($params['limit']);
+
+	// 	}
+
+	// 	$products = $products->get($columns);
+
+	// 	return response($products,200);
+
+	// }
+
+	/***************************************
+	 * Display a listing of the resource.
+	 * 
+	 * @return \Illuminate\Http\Response
+	***************************************/
+
+	public function fetchProducts(Request $request){
+
+		$params = $request->all();
+
+		$product = new Products;
+
+		$result = $product->fetchProducts($params);
+
+		if($result['success']===true){
+			return response($result['products'],200);
+		}
+
+		return response(["message"=>$result->message],422);
 
 	}
 

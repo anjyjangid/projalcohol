@@ -17,15 +17,17 @@
 				  </button>
 
 				  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" uib-dropdown-menu>
+
 				    <li><a ui-sref="mainLayout.search({keyword:args.keyword,filter:args.filter,sort:'asc'})">Price Ascending</a></li>
-				    <li><a ui-sref="mainLayout.search({keyword:args.keyword,filter:args.filter,sort:'desc'})">Price Descending</a></li>            
+				    <li><a ui-sref="mainLayout.search({keyword:args.keyword,filter:args.filter,sort:'desc'})">Price Descending</a></li>
+
 				  </ul>
 				</div>
 			</ul>
 
 		</div>
 		
-		<div infinite-scroll='products.nextPage()' infinite-scroll-disabled='products.busy' infinite-scroll-distance='1'>	    
+		<div infinite-scroll='products.nextPage()' infinite-scroll-disabled='products.busy' infinite-scroll-distance='1'>
 		    <div al-tpl-product classes="col-xs-12 col-sm-3 col-md-3 comboproductitems" info="product" ng-repeat="product in products.items"></div>
 		</div>	
 	</div>

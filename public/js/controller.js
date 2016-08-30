@@ -1,6 +1,6 @@
 AlcoholDelivery.controller('AppController', 
-	['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter", 
-	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter) {
+	['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 
+	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter, ProductService) {
 
 	$rootScope.setMeta = function(meta){
 		
@@ -28,7 +28,7 @@ AlcoholDelivery.controller('AppController',
     	$rootScope.settings = response;    	
     });   
 
-    $http.get("/super/category/",{params: {withCount:true}}).success(function(response){
+$http.get("/super/category/",{params: {withCount:true}}).success(function(response){
 
 		$scope.categories = response;
 		$scope.AppController.categories = response;
@@ -37,136 +37,108 @@ AlcoholDelivery.controller('AppController',
 		$scope.parentChildcategory = {}
 
 		for(key in $scope.categories){
+
 			if(!$scope.categories[key].ancestors){
+
 				$scope.parentCategories.push($scope.categories[key])
+
 			}
+
 		}
 
-	});   
+	});
 
-    $scope.featuredProducts = function(){
+	$scope.featuredProducts = function(){
 
-		$http({
+		// $http({
 
-			url: "/getproduct/",
-			method: "GET",
-			params: {
-				type:"featured",
-			}
+		// 	url: "/getproduct/",
+		// 	method: "GET",
+		// 	params: {
+		// 		type:"featured",
+		// 	}
 
-		}).success(function(response){
+		// })
 
-			for(key in $scope.parentCategories){
+		ProductService.getProducts({
+						
+			filter : 'featured',			
 
-				$scope.parentCategories[key]['featured'] = [];
+		}).then(
+			function(response){
 
-				for(proKey in response){
+				for(key in $scope.parentCategories){
 
-					if(!$.inArray( $scope.parentCategories[key]._id, response[proKey].categories )){
+					$scope.parentCategories[key]['featured'] = [];
 
-						if(!$scope.parentCategories[key]['featured']){
-							$scope.parentCategories[key]['featured']=[]
+					for(proKey in response){
+
+						if(!$.inArray( $scope.parentCategories[key]._id, response[proKey].categories )){
+
+							if(!$scope.parentCategories[key]['featured']){
+								$scope.parentCategories[key]['featured']=[]
+							}
+							$scope.parentCategories[key]['featured'].push(response[proKey]);
 						}
-						$scope.parentCategories[key]['featured'].push(response[proKey]);
 					}
+
+					if($scope.parentCategories[key]['featured']!=="undefined" && $scope.parentCategories[key]['featured'].length>0 && typeof $scope.AppController.feTabActive=="undefined"){
+						$scope.AppController.feTabActive = key;
+					}
+
 				}
 
-				if($scope.parentCategories[key]['featured']!=="undefined" && $scope.parentCategories[key]['featured'].length>0 && typeof $scope.AppController.feTabActive=="undefined"){
-					$scope.AppController.feTabActive = key;
-				}
-
-			}
-
-		});
+			});
 
 	}
 
-	$scope.setPrices = function(localpro){
+	// $scope.setPrices = function(localpro){
 
-		if(typeof localpro.categories === "undefined"){return true;}
+	// 	if(typeof localpro.categories === "undefined"){return true;}
 
-		var catIdIndex = localpro.categories.length - 1;
-		var catPriceObj = $rootScope.catPricing[localpro.categories[catIdIndex]];
+	// 	var catIdIndex = localpro.categories.length - 1;
+	// 	var catPriceObj = $rootScope.catPricing[localpro.categories[catIdIndex]];
 
-		if(typeof catPriceObj === "undefined"){
+	// 	if(typeof catPriceObj === "undefined"){
 
-			console.log("Something wrong with this product : "+localpro._id);
-			localpro.quantity = 0;
-			return localpro;
-		}
+	// 		console.log("Something wrong with this product : "+localpro._id);
+	// 		localpro.quantity = 0;
+	// 		return localpro;
+	// 	}
 
-		localpro = $.extend(catPriceObj, localpro);
-		localpro.price = parseFloat(localpro.price);
-		localpro.unitprice = localpro.price;
-		var orderValue = localpro.regular_express_delivery;
+	// 	localpro = $.extend(catPriceObj, localpro);
+	// 	localpro.price = parseFloat(localpro.price);
+	// 	localpro.unitprice = localpro.price;
+	// 	var orderValue = localpro.regular_express_delivery;
 
-		if(orderValue.type==1){
+	// 	if(orderValue.type==1){
 
-			localpro.price +=  parseFloat(localpro.price * orderValue.value/100);
+	// 		localpro.price +=  parseFloat(localpro.price * orderValue.value/100);
 
-		}else{
+	// 	}else{
 
-			localpro.price += parseFloat(orderValue.value);
+	// 		localpro.price += parseFloat(orderValue.value);
 			
-		}
+	// 	}
 
-		for(i=0;i<localpro.express_delivery_bulk.bulk.length;i++){
+	// 	for(i=0;i<localpro.express_delivery_bulk.bulk.length;i++){
 
-			var bulk = localpro.express_delivery_bulk.bulk[i];
+	// 		var bulk = localpro.express_delivery_bulk.bulk[i];
 
-			if(bulk.type==1){
-				bulk.price = localpro.unitprice + (localpro.unitprice * bulk.value/100);
-			}else{
-				bulk.price = localpro.unitprice + bulk.value;
-			}
+	// 		if(bulk.type==1){
+	// 			bulk.price = localpro.unitprice + (localpro.unitprice * bulk.value/100);
+	// 		}else{
+	// 			bulk.price = localpro.unitprice + bulk.value;
+	// 		}
 
-			bulk.price = bulk.price.toFixed(2);
-		}
+	// 		bulk.price = bulk.price.toFixed(2);
+	// 	}
 
-		localpro.price = localpro.price.toFixed(2);
+	// 	localpro.price = localpro.price.toFixed(2);
 
-		return localpro;
+	// 	return localpro;
 
-	}
-    // Toast settings
-
-		// var last = {
-		// 	bottom: false,
-		// 	top: true,
-		// 	left: false,
-		// 	right: true
-		// };
-
-		// $scope.toastPosition = angular.extend({},last);
-
-		// $scope.getToastPosition = function() {
-
-		// 	sanitizePosition();
-		// 	return Object.keys($scope.toastPosition)
-		// 		.filter(function(pos) { return $scope.toastPosition[pos]; })
-		// 		.join(' ');
-
-		// };
-
-		// function sanitizePosition() {
-		// 	var current = $scope.toastPosition;
-		// 	if ( current.bottom && last.top ) current.top = false;
-		// 	if ( current.top && last.bottom ) current.bottom = false;
-		// 	if ( current.right && last.left ) current.left = false;
-		// 	if ( current.left && last.right ) current.right = false;
-		// 	last = angular.extend({},current);
-		// }
-
-		// $rootScope.showSimpleToast = function(msg) {
-		// 	$mdToast.show(
-		// 	$mdToast.simple()
-		// 		.textContent(msg)
-		// 		.position($scope.getToastPosition())
-		// 		.hideDelay(300000)
-		// 	);
-		// };
-
-    // Toast Settings
+	// }
 
     $scope.giftPopup = function(ev) {
 	    $mdDialog.show(
@@ -212,8 +184,8 @@ AlcoholDelivery.controller('AppController',
 }]);
 
 AlcoholDelivery.controller('ProductsController', [
-	'$scope', '$rootScope','$state','$http','$stateParams', '$filter',
-	function($scope, $rootScope,$state,$http,$stateParams,$filter){
+	'$scope', '$rootScope','$state','$http','$stateParams', '$filter', 'ProductService',
+	function($scope, $rootScope,$state,$http,$stateParams, $filter, ProductService){
 
 	$scope.ProductsController = {};
 
@@ -283,10 +255,19 @@ AlcoholDelivery.controller('ProductsController', [
 
 		
 
-	$scope.fetchproducts = function(){
-		$http.get("/search", config).then(function(response) {
+	$scope.fetchproducts = function(){		
+
+		// $http.get("/search", config)
+		
+		ProductService.getProducts({
+			
+			parent:$category,
+			filter : $stateParams.toggle,
+			sort: $stateParams.sort,
+
+		}).then(function(response) {
 		   
-		   $scope.products = response.data;
+		   $scope.products = response;
 		   
 		 }, function(response) {
 
@@ -371,7 +352,9 @@ AlcoholDelivery.controller('ProductsFeaturedController', ['$scope', '$rootScope'
 
 }]);
 
-AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$state','$http','$stateParams','alcoholCart', function($scope, $rootScope,$state,$http,$stateParams,alcoholCart){
+AlcoholDelivery.controller('ProductDetailController', [
+			'$scope', '$rootScope','$state','$http','$stateParams','alcoholCart','ProductService', 
+	function($scope, $rootScope,$state,$http,$stateParams,alcoholCart,ProductService){
 
 	$rootScope.appSettings.layout.pageRightbarExist = false;
 
@@ -468,89 +451,102 @@ AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$
 		headers : {'Accept' : 'application/json'}
 	};
 
-	$http.get("/getproductdetail", config).then(function(response) {
-
-		$scope.product = $scope.setPrices(response.data);
-
-		var isInCart = alcoholCart.getProductById($scope.product._id);
-
-		$scope.product.qChilled = 0;
-		$scope.product.qNChilled = 0;
-
-		$scope.product.servechilled=$scope.product.chilled;
-
-		if(isInCart!==false){
-
-			$scope.isInCart = true;
-			$scope.product.qChilled = isInCart.getRQuantity('chilled');
-			$scope.product.qNChilled = isInCart.getRQuantity('nonchilled');
-			$scope.product.servechilled = isInCart.getLastServedAs();
-
-		}else{
-		
-			if($scope.product.chilled){
-				$scope.product.qChilled = 1;
-			}else{
-				$scope.product.qNChilled = 1;
-			}
+	ProductService.getProduct({product:$stateParams.product}).then(
+		function(response){
 			
+			$scope.product = response;
 
-		}
-
-		$scope.maxQuantity = $scope.product.quantity;
-
-		var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
-
-		if(available<0){
-
-			$scope.overQunatity = true;
-			$scope.product.qNChilled = $scope.product.qNChilled + available;
-
-		}
-
-		var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
-
-		if(available<0){
-
-			$scope.product.qChilled = $scope.product.qChilled + available;
-
-		}
-
-		$scope.$watchGroup(['product.qNChilled','product.qChilled','maxQuantity'],
-					function(newValue, oldValue) {
-
-						$scope.updateQuantity();
-
-					},true
-				);
-
-		$scope.updateQuantity = function(){
-
-			$scope.product.chilledMaxQuantity = $scope.maxQuantity - $scope.product.qNChilled;
-			$scope.product.nonChilledMaxQuantity = $scope.maxQuantity - $scope.product.qChilled;
 			$scope.tquantity = parseInt($scope.product.qNChilled)+parseInt($scope.product.qChilled);
 
+		},
+		function(errRes){
+			$scope.product = false;
 		}
+	);
 
-		$scope.addtocart = function(){
+	// $http.get("/getproductdetail", config).then(function(response) {
 
-			alcoholCart.addItem($scope.product._id,$scope.product.qChilled,true);
-			alcoholCart.addItem($scope.product._id,$scope.product.qNChilled,false);
-			$scope.isInCart = true;
-		};
+	// 	$scope.product = $scope.setPrices(response.data);
 
-		var mdata = {
-    		title:$scope.product.metaTitle,
-    		description:$scope.product.metaDescription,
-    		keyword:$scope.product.metaKeywords
-    	};
+	// 	var isInCart = alcoholCart.getProductById($scope.product._id);
 
-    	$rootScope.setMeta(mdata);
+	// 	$scope.product.qChilled = 0;
+	// 	$scope.product.qNChilled = 0;
+
+	// 	$scope.product.servechilled=$scope.product.chilled;
+
+	// 	if(isInCart!==false){
+
+	// 		$scope.isInCart = true;
+	// 		$scope.product.qChilled = isInCart.getRQuantity('chilled');
+	// 		$scope.product.qNChilled = isInCart.getRQuantity('nonchilled');
+	// 		$scope.product.servechilled = isInCart.getLastServedAs();
+
+	// 	}else{
+		
+	// 		if($scope.product.chilled){
+	// 			$scope.product.qChilled = 1;
+	// 		}else{
+	// 			$scope.product.qNChilled = 1;
+	// 		}
+			
+
+	// 	}
+
+	// 	$scope.maxQuantity = $scope.product.quantity;
+
+	// 	var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
+
+	// 	if(available<0){
+
+	// 		$scope.overQunatity = true;
+	// 		$scope.product.qNChilled = $scope.product.qNChilled + available;
+
+	// 	}
+
+	// 	var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
+
+	// 	if(available<0){
+
+	// 		$scope.product.qChilled = $scope.product.qChilled + available;
+
+	// 	}
+
+	// 	$scope.$watchGroup(['product.qNChilled','product.qChilled','maxQuantity'],
+	// 				function(newValue, oldValue) {
+
+	// 					$scope.updateQuantity();
+
+	// 				},true
+	// 			);
+
+	// 	$scope.updateQuantity = function(){
+
+	// 		$scope.product.chilledMaxQuantity = $scope.maxQuantity - $scope.product.qNChilled;
+	// 		$scope.product.nonChilledMaxQuantity = $scope.maxQuantity - $scope.product.qChilled;
+	// 		$scope.tquantity = parseInt($scope.product.qNChilled)+parseInt($scope.product.qChilled);
+
+	// 	}
+
+	// 	$scope.addtocart = function(){
+
+	// 		alcoholCart.addItem($scope.product._id,$scope.product.qChilled,true);
+	// 		alcoholCart.addItem($scope.product._id,$scope.product.qNChilled,false);
+	// 		$scope.isInCart = true;
+	// 	};
+
+	// 	var mdata = {
+ //    		title:$scope.product.metaTitle,
+ //    		description:$scope.product.metaDescription,
+ //    		keyword:$scope.product.metaKeywords
+ //    	};
+
+ //    	$rootScope.setMeta(mdata);
 
 
-	 }, function(response) {
-	 	$scope.product = false;
-	});
+	//  }, function(response) {
+	//  	$scope.product = false;
+	// });
 
 }]);
 
@@ -1127,7 +1123,6 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 
 	}
 
-		
 
 	$scope.getLoyalty = function(){
 
@@ -2486,6 +2481,7 @@ AlcoholDelivery.controller('RepeatOrderController',['$scope','$rootScope','$http
 
 	$scope.user = UserService.currentUser;	
 	$scope.lastorder = {};
+	$scope.error = true;
 
 	$scope.$watch('user',
 
@@ -2512,8 +2508,11 @@ AlcoholDelivery.controller('RepeatOrderController',['$scope','$rootScope','$http
 				
 				$scope.lastorder = response.data.order;
 				$scope.fetching = false;
+				$scope.error = false;
+
 			},
 			function(errorRes){
+
 
 			}
 		)
@@ -3196,7 +3195,9 @@ AlcoholDelivery.controller('SearchController', [
 
 }]);
 
-AlcoholDelivery.controller('LoyaltyStoreController', ['$q', '$http', '$scope', 'ScrollPagination',"UserService","$stateParams", function($q, $http, $scope, ScrollPagination,userService,$stateParams){
+AlcoholDelivery.controller('LoyaltyStoreController', [
+			'$q', '$http', '$scope', 'ScrollPagination',"UserService","$stateParams","alcoholCart","$timeout", 
+	function($q, $http, $scope, ScrollPagination,userService,$stateParams,alcoholCart,$timeout){
 		
 		var user = userService.currentUser;
 
@@ -3206,7 +3207,18 @@ AlcoholDelivery.controller('LoyaltyStoreController', ['$q', '$http', '$scope', '
 
     	$scope.products = new ScrollPagination();
 
-    	$scope.credits = {};
+    	$scope.credits = {};    	
+
+		$scope.$watch(function(){return alcoholCart.getLoyaltyPointsInCart();},function(newValue,oldValue){
+
+			angular.forEach($scope.products.items, function(product,key){
+
+				product.setAddBtnState();
+
+			});
+
+		});    	
+
 
     	$http.get('loyaltystore/credits').then(
 

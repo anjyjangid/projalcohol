@@ -398,7 +398,14 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 					icon:'icon-user-following',					
 					links:['userLayout.subadmin.list','userLayout.subadmin.add','userLayout.subadmin.edit'],
 					access : ['admin']
-				}
+				},
+				{
+					label:'Businesses',
+					uisref:'userLayout.business.list',
+					icon:'icon-user-following',					
+					links:['userLayout.business.list','userLayout.business.add','userLayout.business.edit'],
+					access : ['admin']
+				}				
 			]
 		},
 		{
@@ -930,6 +937,72 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                 authenticate: authenticate
             }  
         })    
+
+        .state('userLayout.business', {
+            abstract:true,            
+            templateUrl:'adminviews/views/auth.html',                        
+            controller: "BusinessController",
+            resolve: {
+                authenticate: authenticate,
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'adminviews/js/models/businessModel.js',
+                            'adminviews/js/controllers/BusinessController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state("userLayout.business.list", {
+            url: "/business/list",
+            templateUrl: "adminviews/views/business/list.html",
+            data:{
+				pageTitle:'Businesses',
+				breadCrumb:[
+					{title:'Businesses','uisref':'#'}					
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }
+        })
+
+        .state("userLayout.business.add", {
+            url: "/business/add",
+            templateUrl: "adminviews/views/business/add.html",
+            data:{
+				pageTitle:'Add New Business',
+				breadCrumb:[
+					{title:'Businesses','uisref':'userLayout.business.list'},
+					{title:'Add','uisref':'#'}
+				]				
+			},            
+            controller:"BusinessAddController",
+			resolve: {                
+                authenticate: authenticate
+            }
+
+        })  
+
+        .state("userLayout.business.edit",{
+            url: "/business/edit/{businessid}",
+            templateUrl: "adminviews/views/business/edit.html",           
+            data:{
+				pageTitle:'Edit Business',
+				breadCrumb:[
+					{title:'Businesses','uisref':'userLayout.business.list'},
+					{title:'Edit','uisref':'#'}
+				]				
+			},            
+            controller:"BusinessUpdateController",
+			resolve: {                
+                authenticate: authenticate
+            }  
+        })                      
 
         .state('userLayout.dealers', {
             abstract:true,            

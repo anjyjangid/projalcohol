@@ -67,8 +67,7 @@ AlcoholDelivery.filter('isActive', function() {
 			if(typeof check !== 'undefined'){
 				return obj[field]===check;
 			}
-			console.log(obj);
-			console.log(field);
+			
 			return true;
 		}
 });
@@ -98,6 +97,7 @@ AlcoholDelivery.filter('freeTxt', function() {
 });
 
 AlcoholDelivery.filter('pricingTxt', function(currencyFilter,$rootScope) {
+
 		return function(price,freeTxt) {
 			
 			if(price === null || isNaN(price)){
@@ -108,7 +108,7 @@ AlcoholDelivery.filter('pricingTxt', function(currencyFilter,$rootScope) {
 
 			if(typeof freeTxt==='undefined'){
 				freeTxt = false;
-			}					
+			}
 
 			return (price || freeTxt!==true)?currencyFilter(price,$rootScope.settings.general.currency,2):'free';
 		}
@@ -317,7 +317,7 @@ AlcoholDelivery.factory("UserService", ["$q", "$timeout", "$http", function($q, 
 	};
 
 	function LogoutReset(){
-		console.log(this);
+		
 	};
 
 	return {
@@ -326,6 +326,7 @@ AlcoholDelivery.factory("UserService", ["$q", "$timeout", "$http", function($q, 
         currentUser: null,
         currentUserAddress: null
 	};
+	
 }]);
 
 
@@ -334,7 +335,7 @@ AlcoholDelivery.factory('ScrollPaging', function($http) {
     this.items = [];
     this.busy = false;    
     this.limitreached = false;
-    this.totalResult = 0;    
+    // this.totalResult = 0;    
     this.url = url;    
     this.params = args;    
     this.params.skip = 0;
@@ -371,7 +372,7 @@ AlcoholDelivery.factory('ScrollPaging', function($http) {
 });
 
 
-AlcoholDelivery.factory('ScrollPagination', function($http) {
+AlcoholDelivery.factory('ScrollPagination', function($http,ProductService) {
 
   var Search = function(keyword,filter,sortby) {
     this.items = [];
@@ -390,26 +391,34 @@ AlcoholDelivery.factory('ScrollPagination', function($http) {
     this.busy = true;
     var _self = this;
 
-	$http.get('loyaltystore',{
+	// $http.get('loyaltystore',{
 		
-		params : {
-			loyalty:true,
-			skip:this.skip,
-			take:this.take,
-			filter:this.filter,
-			sortby:this.sortby
-		}
+	// 	params : {
+	// 		type : 1,
+	// 		skip:this.skip,
+	// 		limit:this.take,
+	// 		filter:this.filter,
+	// 		sortby:this.sortby
+	// 	}
 
-    }).then(function(result){
+ //    })
 
-		var items = result.data.items;
+    ProductService.getProducts({
 
-		_self.totalResult = result.data.total;
+		type : 1, // [1 for loyalty store]
+		skip:this.skip,
+		limit:this.take,
+		filter:this.filter,
+		sort:this.sortby
+
+	}).then(function(items){
+
+		// _self.totalResult = result.data.total;
 		for (var i = 0; i < items.length; i++) {
 			_self.items.push(items[i]);
 		}
 		_self.busy = false;
-		if(result.data.items.length < parseInt(_self.take)){
+		if(items.length < parseInt(_self.take)){
 			_self.limitreached = true;
 		}else{
 			_self.skip+= parseInt(_self.take);
@@ -422,75 +431,6 @@ AlcoholDelivery.factory('ScrollPagination', function($http) {
   return Search;
 
 });
-
-// AlcoholDelivery.factory('ProductSerivce', ['$rootScope', '$log', function ($rootScope, $log){
-		
-// 		var product = function (productData) {
-// 			console.log(productData);
-// 			//this.setPrice(productData);
-			
-// 		};				
-		
-// 		product.prototype.setPrice = function(product){
-			
-// 			var originalPrice = parseFloat(product.price);
-
-// 			var unitPrice = originalPrice;		
-
-// 			var advancePricing = product.regular_express_delivery;
-			
-// 			if(advancePricing.type==1){
-
-// 				unitPrice +=  parseFloat(originalPrice * advancePricing.value/100);
-
-// 			}else{
-
-// 				unitPrice += parseFloat(advancePricing.value);
-				
-// 			}
-
-// 			price = unitPrice;
-// 			price = parseFloat(price.toFixed(2));
-
-// 			this.unitPrice = price;
-
-// 			var bulkArr = original.express_delivery_bulk.bulk;
-
-// 			for(i=0;i<bulkArr.length;i++){
-
-// 				var bulk = bulkArr[i];
-
-// 				if(quantity >= bulk.from_qty && quantity<=bulk.to_qty){
-
-// 					if(bulk.type==1){
-
-// 						price = quantity * (originalPrice + (originalPrice * bulk.value/100));
-
-// 					}else{
-
-// 						price = quantity * (originalPrice + bulk.value);
-
-// 					}
-					
-// 					price = parseFloat(price.toFixed(2));
-// 				}
-
-// 			}
-
-// 			this.discountedUnitPrice = price/quantity;
-			
-// 			return this.price = price;
-			
-// 		};
-
-// 		product.prototype.getPrice = function(){
-// 			return parseFloat(this.price);
-// 		};
-
-// 		return product;
-
-// 	}]);
-
 
 /* Setup Rounting For All Pages */
 AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
@@ -598,15 +538,15 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 												// debug: true,
 												serie: true,
 												files: [
-														'js/owl.carousel.min.js',
-														'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
-														'js/jquery.switchButton.js',
-														'js/jquery.mCustomScrollbar.concat.min.js',
-														'assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js',
-														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js',
-														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js',
-														'js/all_animations.js',
-														'js/js_init_scripts.js'
+													'js/owl.carousel.min.js',
+													'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
+													'js/jquery.switchButton.js',
+													'js/jquery.mCustomScrollbar.concat.min.js',
+													'assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js',
+													'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js',
+													'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js',
+													'js/all_animations.js',
+													'js/js_init_scripts.js'
 												]
 										});
 								}]
@@ -865,8 +805,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 							},
 
-
-						}
+						}						
 						
 				})
 
@@ -1091,6 +1030,7 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll) {
 	
 	angular.alcoholCart = alcoholCart;
+	angular.userservice = UserService;
 
 	$rootScope.$state = $state; // state to be accessed from view
 	
