@@ -46,11 +46,12 @@
 				</div>
 					<div class="prdquantitybulkcoverbulk" ng-if="!viaLoyaltyStore">
 						<div class="pardqantitytexthead">Bulk Quantity Discounts Chart (Piece)</div>
+						
 							<div class="prdquantitybulkcoverbulkbox">
 								<div class="prdquanbulkboxone">Qty<br />Amount</div>
 
-																					
-									<div class="prdquanbulkboxtwo" ng-repeat="bulkBlock in product.express_delivery_bulk.bulk" ng-class="{'prdquanbulkActive':tquantity>=bulkBlock.from_qty && tquantity<=bulkBlock.to_qty}">
+														
+									<div class="prdquanbulkboxtwo" ng-repeat="bulkBlock in product.bulkPricing" ng-class="{'prdquanbulkActive':tquantity>=bulkBlock.from_qty && tquantity<=bulkBlock.to_qty}">
 										
 										{{bulkBlock.from_qty}}<span ng-if="bulkBlock.to_qty!=99999">-{{bulkBlock.to_qty}}</span><span ng-if="bulkBlock.to_qty==99999">+</span>
 										<br />${{bulkBlock.price}}
@@ -95,5 +96,5 @@
 			</div>
 	</div>
 </div>
-
+<pre>{{product | json}}</pre>
 <div ui-view="alsoboughtthis"></div>

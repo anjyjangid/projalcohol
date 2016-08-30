@@ -380,7 +380,7 @@ class Products extends Eloquent
 				$fields = [
 						'$project' => [
 								'chilled' => 1,
-								'description' =>  1,								
+								'description' =>  1,
 								'loyaltyValueType' => 1,
 								'loyaltyValuePoint' => 1,
 								'loyaltyValuePrice' => 1,
@@ -390,9 +390,9 @@ class Products extends Eloquent
 								'slug' => 1,
 								'shortDescription' => 1,
 								'sku' => 1,
-								'quantity' => 1,									
+								'quantity' => 1,
 								'deliveryType' => 1,
-								'outOfStockType' => 1,									
+								'outOfStockType' => 1,
 								'availabilityDays' => 1,
 								'availabilityTime' => 1
 							]
@@ -425,6 +425,12 @@ class Products extends Eloquent
 
         return ['success'=>true,'products'=>$products['result']];
 
+	}
+
+	public function fetchProduct($params){
+
+		
+		
 	}
 
 	public function packagelist()

@@ -352,7 +352,9 @@ AlcoholDelivery.controller('ProductsFeaturedController', ['$scope', '$rootScope'
 
 }]);
 
-AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$state','$http','$stateParams','alcoholCart', function($scope, $rootScope,$state,$http,$stateParams,alcoholCart){
+AlcoholDelivery.controller('ProductDetailController', [
+			'$scope', '$rootScope','$state','$http','$stateParams','alcoholCart','ProductService', 
+	function($scope, $rootScope,$state,$http,$stateParams,alcoholCart,ProductService){
 
 	$rootScope.appSettings.layout.pageRightbarExist = false;
 
@@ -449,89 +451,102 @@ AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$
 		headers : {'Accept' : 'application/json'}
 	};
 
-	$http.get("/getproductdetail", config).then(function(response) {
-
-		$scope.product = $scope.setPrices(response.data);
-
-		var isInCart = alcoholCart.getProductById($scope.product._id);
-
-		$scope.product.qChilled = 0;
-		$scope.product.qNChilled = 0;
-
-		$scope.product.servechilled=$scope.product.chilled;
-
-		if(isInCart!==false){
-
-			$scope.isInCart = true;
-			$scope.product.qChilled = isInCart.getRQuantity('chilled');
-			$scope.product.qNChilled = isInCart.getRQuantity('nonchilled');
-			$scope.product.servechilled = isInCart.getLastServedAs();
-
-		}else{
-		
-			if($scope.product.chilled){
-				$scope.product.qChilled = 1;
-			}else{
-				$scope.product.qNChilled = 1;
-			}
+	ProductService.getProduct({product:$stateParams.product}).then(
+		function(response){
 			
+			$scope.product = response;
 
-		}
-
-		$scope.maxQuantity = $scope.product.quantity;
-
-		var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
-
-		if(available<0){
-
-			$scope.overQunatity = true;
-			$scope.product.qNChilled = $scope.product.qNChilled + available;
-
-		}
-
-		var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
-
-		if(available<0){
-
-			$scope.product.qChilled = $scope.product.qChilled + available;
-
-		}
-
-		$scope.$watchGroup(['product.qNChilled','product.qChilled','maxQuantity'],
-					function(newValue, oldValue) {
-
-						$scope.updateQuantity();
-
-					},true
-				);
-
-		$scope.updateQuantity = function(){
-
-			$scope.product.chilledMaxQuantity = $scope.maxQuantity - $scope.product.qNChilled;
-			$scope.product.nonChilledMaxQuantity = $scope.maxQuantity - $scope.product.qChilled;
 			$scope.tquantity = parseInt($scope.product.qNChilled)+parseInt($scope.product.qChilled);
 
+		},
+		function(errRes){
+			$scope.product = false;
 		}
+	);
 
-		$scope.addtocart = function(){
+	// $http.get("/getproductdetail", config).then(function(response) {
 
-			alcoholCart.addItem($scope.product._id,$scope.product.qChilled,true);
-			alcoholCart.addItem($scope.product._id,$scope.product.qNChilled,false);
-			$scope.isInCart = true;
-		};
+	// 	$scope.product = $scope.setPrices(response.data);
 
-		var mdata = {
-    		title:$scope.product.metaTitle,
-    		description:$scope.product.metaDescription,
-    		keyword:$scope.product.metaKeywords
-    	};
+	// 	var isInCart = alcoholCart.getProductById($scope.product._id);
 
-    	$rootScope.setMeta(mdata);
+	// 	$scope.product.qChilled = 0;
+	// 	$scope.product.qNChilled = 0;
+
+	// 	$scope.product.servechilled=$scope.product.chilled;
+
+	// 	if(isInCart!==false){
+
+	// 		$scope.isInCart = true;
+	// 		$scope.product.qChilled = isInCart.getRQuantity('chilled');
+	// 		$scope.product.qNChilled = isInCart.getRQuantity('nonchilled');
+	// 		$scope.product.servechilled = isInCart.getLastServedAs();
+
+	// 	}else{
+		
+	// 		if($scope.product.chilled){
+	// 			$scope.product.qChilled = 1;
+	// 		}else{
+	// 			$scope.product.qNChilled = 1;
+	// 		}
+			
+
+	// 	}
+
+	// 	$scope.maxQuantity = $scope.product.quantity;
+
+	// 	var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
+
+	// 	if(available<0){
+
+	// 		$scope.overQunatity = true;
+	// 		$scope.product.qNChilled = $scope.product.qNChilled + available;
+
+	// 	}
+
+	// 	var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
+
+	// 	if(available<0){
+
+	// 		$scope.product.qChilled = $scope.product.qChilled + available;
+
+	// 	}
+
+	// 	$scope.$watchGroup(['product.qNChilled','product.qChilled','maxQuantity'],
+	// 				function(newValue, oldValue) {
+
+	// 					$scope.updateQuantity();
+
+	// 				},true
+	// 			);
+
+	// 	$scope.updateQuantity = function(){
+
+	// 		$scope.product.chilledMaxQuantity = $scope.maxQuantity - $scope.product.qNChilled;
+	// 		$scope.product.nonChilledMaxQuantity = $scope.maxQuantity - $scope.product.qChilled;
+	// 		$scope.tquantity = parseInt($scope.product.qNChilled)+parseInt($scope.product.qChilled);
+
+	// 	}
+
+	// 	$scope.addtocart = function(){
+
+	// 		alcoholCart.addItem($scope.product._id,$scope.product.qChilled,true);
+	// 		alcoholCart.addItem($scope.product._id,$scope.product.qNChilled,false);
+	// 		$scope.isInCart = true;
+	// 	};
+
+	// 	var mdata = {
+ //    		title:$scope.product.metaTitle,
+ //    		description:$scope.product.metaDescription,
+ //    		keyword:$scope.product.metaKeywords
+ //    	};
+
+ //    	$rootScope.setMeta(mdata);
 
 
-	 }, function(response) {
-	 	$scope.product = false;
-	});
+	//  }, function(response) {
+	//  	$scope.product = false;
+	// });
 
 }]);
 
@@ -3180,7 +3195,9 @@ AlcoholDelivery.controller('SearchController', [
 
 }]);
 
-AlcoholDelivery.controller('LoyaltyStoreController', ['$q', '$http', '$scope', 'ScrollPagination',"UserService","$stateParams", function($q, $http, $scope, ScrollPagination,userService,$stateParams){
+AlcoholDelivery.controller('LoyaltyStoreController', [
+			'$q', '$http', '$scope', 'ScrollPagination',"UserService","$stateParams","alcoholCart","$timeout", 
+	function($q, $http, $scope, ScrollPagination,userService,$stateParams,alcoholCart,$timeout){
 		
 		var user = userService.currentUser;
 
@@ -3190,7 +3207,18 @@ AlcoholDelivery.controller('LoyaltyStoreController', ['$q', '$http', '$scope', '
 
     	$scope.products = new ScrollPagination();
 
-    	$scope.credits = {};
+    	$scope.credits = {};    	
+
+		$scope.$watch(function(){return alcoholCart.getLoyaltyPointsInCart();},function(newValue,oldValue){
+
+			angular.forEach($scope.products.items, function(product,key){
+
+				product.setAddBtnState();
+
+			});
+
+		});    	
+
 
     	$http.get('loyaltystore/credits').then(
 

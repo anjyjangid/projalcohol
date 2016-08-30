@@ -117,7 +117,7 @@ Route::controller('/category', 'CategoryController');
 
 Route::get('/getproduct', 'ProductController@getproduct');
 
-Route::get('/fetchProduct', 'ProductController@fetchProduct');
+Route::get('/fetchProducts', 'ProductController@fetchProducts');
 
 Route::get('/search', 'ProductController@getproduct');
 
@@ -186,6 +186,9 @@ Route::group(['prefix' => 'cart'], function () {
 	Route::put('giftcard/{uid}','CartController@putGiftcard');
 
 	Route::put('gift/product/chilledtoggle/{giftUid}','CartController@putGiftProductChilledStatus');
+
+	Route::put('loyalty/{key}','CartController@putLoyalty');
+	
 
 });
 

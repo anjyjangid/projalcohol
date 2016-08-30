@@ -24,7 +24,23 @@ class Cart extends Moloquent
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['_id', 'products', 'packages', 'giftCards', 'nonchilled', 'delivery','service','discount','timeslot','payment','status','user','reference'];
+	protected $fillable = [
+
+						'_id',
+						'products',
+						'loyalty',
+						'packages',
+						'giftCards',
+						'nonchilled',
+						'delivery',
+	 					'service',
+						'discount',
+						'timeslot',
+						'payment',
+						'status',
+						'user',
+						'reference'
+					];
 
 	public function setKey($keyVal){
 		$this->key = $keyVal;
