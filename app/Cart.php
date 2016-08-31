@@ -199,6 +199,24 @@ class Cart extends Moloquent
 			}
 		}
 
+		if(isset($data['loyalty'])){
+			foreach($data['loyalty'] as $key=>$product){
+				
+				$lPQty = (int)$product['chilled']['quantity'] +  (int)$product['nonchilled']['quantity'];
+
+				if(isset($products[$key])){
+
+					$products[$key]+= $lPQty;
+
+				}else{
+
+					$products[$key] = $lPQty;
+
+				}				
+
+			}
+		}
+
 		if(isset($data['packages'])){
 			foreach($data['packages'] as $key=>$package){
 				
