@@ -5630,6 +5630,7 @@ md-checkbox.md-default-theme.md-checked .md-icon::after, md-checkbox.md-checked 
 	margin-right: 16px;
 	width: 77%;
 	margin-bottom: 0 !important;
+	min-height: 10px;
 }
 .top-tabmainouter.item {
 	margin: 0 16px;

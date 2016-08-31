@@ -527,7 +527,7 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct',function
 					this.push(newProduct);
 
 				},products);
-				console.log(products);
+				
 				defer.resolve(products);
 
 			},
