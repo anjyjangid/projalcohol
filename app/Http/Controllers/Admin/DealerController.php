@@ -15,6 +15,7 @@ use AlcoholDelivery\Products;
 use DB;
 
 use AlcoholDelivery\Dealer as Dealer;
+use Illuminate\Support\Facades\Auth;
 
 class DealerController extends Controller
 {
@@ -278,4 +279,85 @@ class DealerController extends Controller
         return response($dealers,201);
     }
 
+    public function getDealerproduct(Request $request,$id){
+        
+        $dealerObj = new Dealer;
+
+        $dealer = $dealerObj->getDealers(array(
+                        "key"=>$id,
+                        "multiple"=>false
+                    ));
+
+        if($dealer && isset($dealer['address']['country'])){
+            $country = DB::collection('countries')->where('_id', $dealer['address']['country'])->first();
+        }
+
+        $query = [];
+
+        $userStoreId = Auth::user('admin')->storeId;
+
+        $project = [
+            'name'=>'$name',            
+            'dealerId'=>'$dealers',
+            'sku'=>'$sku'
+        ];
+
+        $project['store'] = [
+            '$filter'=>[
+                'input' => '$store',
+                'as' => 'store',
+                'cond' => ['$eq'=>['$$store.storeId',$userStoreId]]
+            ]    
+        ];
+
+        $query[]['$match'] = [
+            'dealerId' => ['$elemMatch'=>['$in'=>[$id]]]
+        ];
+
+        $query[]['$lookup'] = [
+            'from'=>'stocks',
+            'localField'=>'_id',
+            'foreignField'=>'productObjId',
+            'as'=>'store'
+        ];          
+
+        $query[]['$project'] = $project;
+
+        $query[]['$unwind'] = ['path' => '$store','preserveNullAndEmptyArrays' => true];
+
+        $project['store'] = '$store';
+
+        $project['quantity'] = ['$cond'=>['$store','$store.quantity',0]];
+
+        $project['maxQuantity'] = ['$cond'=>['$store','$store.maxQuantity',0]];
+
+        $project['threshold'] = ['$cond'=>['$store','$store.threshold',0]];
+
+        $project['sum'] = [
+            '$cond' => [
+                '$store',
+                [
+                    '$subtract' => [
+                        ['$divide'=>['$store.quantity','$store.maxQuantity']],
+                        ['$divide'=>['$store.threshold','$store.maxQuantity']]
+                    ]
+                ],
+                -1,
+            ]               
+        ];
+
+        $query[]['$project'] = $project;        
+
+        $query[]['$sort'] = ['sum'=>1];                
+        
+        $products = Products::raw()->aggregate($query);             
+        
+        $res = [
+            'dealer' => $dealer,
+            'products' => $products['result'],
+            'country' => $country
+        ];    
+
+        return response($res,200);
+    }
 }

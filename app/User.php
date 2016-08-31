@@ -46,17 +46,22 @@ class User extends Eloquent implements AuthenticatableContract,
         'savedCards'
     ];
 
+    public function getFields(){
+        $fields = $this->fillable;
+        $ret = [];
+        foreach ($fields as $key => $value) {
+            $ret[$value] = '$'.$value;
+        }
+
+        return $ret;
+    }
+
     /**
      * The attributes excluded from the model's JSON form.
      *
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
-
-    public function galleries()
-    {
-        return $this->hasMany('AlcoholDelivery\Gallery');
-    }
 
     // ykb 28-apr-2016 //
     public function getCustomers($params = array()){
@@ -71,6 +76,6 @@ class User extends Eloquent implements AuthenticatableContract,
         
         return $customer;
 
-    }
+    }    
     
 }

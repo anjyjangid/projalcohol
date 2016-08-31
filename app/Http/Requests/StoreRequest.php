@@ -23,8 +23,8 @@ class StoreRequest extends Request
      */
     public function rules()
     {
-        return [
-            
+        
+        return [            
             'name' => 'required|max:100',
             'address' => 'required',
             'latitude' => 'required|numeric',

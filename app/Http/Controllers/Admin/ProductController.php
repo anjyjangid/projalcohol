@@ -21,6 +21,10 @@ use Input;
 use DB;
 use AlcoholDelivery\Setting;
 use AlcoholDelivery\Email;
+use AlcoholDelivery\Inventory;
+use AlcoholDelivery\Stocks;
+use Illuminate\Support\Facades\Auth;
+
 
 class ProductController extends Controller
 {
@@ -62,103 +66,43 @@ class ProductController extends Controller
 		public function store(ProductRequest $request)
 		{    
 				
-				$inputs = $request->all();
+			$inputs = $request->all();
+			
+			$this->castVariables($inputs);
 
-				//prd($inputs);
+			$product = Products::create($inputs);            
 
-				$inputs['quantity'] = (int)$inputs['quantity'];
-				$inputs['price'] = (float)$inputs['price'];        
-				$inputs['chilled'] = (int)$inputs['chilled'];
-				$inputs['status'] = (int)$inputs['status'];
-				$inputs['isFeatured'] = (int)$inputs['isFeatured'];
-				$inputs['threshold'] = (int)$inputs['threshold'];
-				$inputs['maxQuantity'] = (int)$inputs['maxQuantity'];	
-
-				$inputs['deliveryType'] = (int)$inputs['deliveryType'];
-				$inputs['isLoyalty'] = (int)$inputs['isLoyalty'];
-
-				if(isset($inputs['loyaltyValueType'])){
-					$inputs['loyaltyValueType'] = (int)$inputs['loyaltyValueType'];
-				}
-
-				if(isset($inputs['loyaltyValuePoint'])){
-					$inputs['loyaltyValuePoint'] = (float)$inputs['loyaltyValuePoint'];
-				}
-
-				if(isset($inputs['loyaltyValuePrice'])){
-					$inputs['loyaltyValuePrice'] = (float)$inputs['loyaltyValuePrice'];
-				}
-										
+			if($product){
 				
-				if(isset($inputs['outOfStockType']))
-					$inputs['outOfStockType'] = (int)$inputs['outOfStockType'];
+				//UPDATE STOCKS FOR THE LOGGEDIN STORE
+				$product->updateStocks($inputs,$product->_id);
 
-				if(isset($inputs['availabilityDays']))
-					$inputs['availabilityDays'] = (int)$inputs['availabilityDays'];
-				
-				if(isset($inputs['availabilityTime']))
-					$inputs['availabilityTime'] = (int)$inputs['availabilityTime'];       
-
-				if (isset($inputs['advance_order_bulk']['bulk']) && !empty($inputs['advance_order_bulk']['bulk']))
-				{
-						foreach ($inputs['advance_order_bulk']['bulk'] as $dKey => $discount)
-						{
-								unset($inputs['advance_order_bulk']['bulk'][$dKey]['$$hashKey']);
-								$inputs['advance_order_bulk']['bulk'][$dKey] = [
-									'from_qty' => (int)$discount['from_qty'],
-									'to_qty' => (int)$discount['to_qty'],
-									'type' => (int)$discount['type'],
-									'value' => (float)$discount['value'],
-								];                                
-						}
+				$dealers = Dealer::whereIn('_id',$inputs['dealerId'])->get();
+				//ADD PRODUCT IDS IN DEALERS TABLE
+				foreach ($dealers as $dkey => $dvalue) {
+					$dvalue->push('productId',$product->_id,true);
+					$dvalue->push('productObjectId',new MongoId($product->_id),true);
 				}
 
-				if (isset($inputs['express_delivery_bulk']['bulk']) && !empty($inputs['express_delivery_bulk']['bulk']))
-				{
-						foreach ($inputs['express_delivery_bulk']['bulk'] as $dKey => $discount)
-						{
-								unset($inputs['express_delivery_bulk']['bulk'][$dKey]['$$hashKey']);
-								$inputs['express_delivery_bulk']['bulk'][$dKey] = [
-									'from_qty' => (int)$discount['from_qty'],
-									'to_qty' => (int)$discount['to_qty'],
-									'type' => (int)$discount['type'],
-									'value' => (float)$discount['value'],
-								];                                
-						}
-				}
-
-				$inputs['bulkDisable'] = (int)($inputs['bulkDisable']);
-
-				$inputs['loyalty'] = (int)($inputs['loyalty']);
-
-				if (isset($inputs['advance_order']['value']) && !empty($inputs['advance_order']['value'])){
-							$inputs['advance_order']['value'] = (float)$inputs['advance_order']['value'];
-				}
-
-				if (isset($inputs['regular_express_delivery']['value']) && !empty($inputs['regular_express_delivery']['value'])){
-							$inputs['regular_express_delivery']['value'] = (float)$inputs['regular_express_delivery']['value'];
-				}
-
-				$product = Products::create($inputs);            
-
-				if($product){
-					
-					$dealers = Dealer::whereIn('_id',$product->dealers)->get();
-
-					//ADD PRODUCT IDS IN DEALERS TABLE
-					foreach ($dealers as $dkey => $dvalue) {
-						$dvalue->push('products',$product->_id,true);
+				//ADD REFRENCE TO SUGGESTION PRODUCTS
+				if(!empty($inputs['suggestionId'])){
+					$suggested = Products::whereIn('_id',$inputs['suggestionId'])->get();
+					foreach ($suggested as $key => $value) {
+						$value->push('suggestedId',$product->_id,true);
+						$value->push('suggestedObjectId',new MongoId($product->_id),true);
 					}
+				}	
 
-					$files = $inputs['imageFiles'];
-					
-					$this->saveImages($product,$files);
-					
-					return $product;
+				//STORE THE PRODUCT IMAGES
+				$files = $inputs['imageFiles'];				
 
-				}else{          
-					return response('Unable to add product',422);
-				}               
+				$this->saveImages($product,$files);
+
+				return response($product,201);
+
+			}else{          
+				return response('Unable to add product',422);
+			}               
 		}
 
 		/**
@@ -181,13 +125,13 @@ class ProductController extends Controller
 		public function edit($id)
 		{
 				$galleryObj = new Products;
-				return $galleryObj->getSingleProduct($id);
+				return $galleryObj->getSingleProduct($id);								
 		}
 
 		public function getDetail($id)
-		{
-				$galleryObj = new Products;
-				return $galleryObj->getSingleProduct($id);
+		{				
+			$model = Products::where('_id',$id)->with('store')->with('suggestions')->first();			
+			return response($model,200);
 		}
 
 		/**
@@ -199,142 +143,72 @@ class ProductController extends Controller
 		 */
 		public function postUpdate(ProductRequest $request, $id)
 		{
-				$inputs = $request->all();				
+			$inputs = $request->all();				
+			
+			$this->castVariables($inputs);
 
-				$inputs['quantity'] = (int)$inputs['quantity'];
-				$inputs['price'] = (float)$inputs['price'];        
-				$inputs['chilled'] = (int)$inputs['chilled'];
-				$inputs['status'] = (int)$inputs['status'];
-				$inputs['isFeatured'] = (int)$inputs['isFeatured'];    
-				$inputs['threshold'] = (int)$inputs['threshold'];
-				$inputs['maxQuantity'] = (int)$inputs['maxQuantity'];
-				$inputs['deliveryType'] = (int)$inputs['deliveryType'];
-				$inputs['isLoyalty'] = (int)$inputs['isLoyalty'];
+			$product = Products::find($id);
+			
+			if($product){          
 
-				$inputs['categoriesObj'] = [];
+				//UPDATE STOCKS FOR THE LOGGEDIN STORE
+				$product->updateStocks($inputs,$product->_id);
 
-				foreach($inputs['categories'] as $cat){
-					$inputs['categoriesObj'][] = new MongoId($cat);
+				$dealers = Dealer::whereIn('_id',$inputs['dealerId'])->get();
+				//ADD PRODUCT IDS IN DEALERS TABLE
+				foreach ($dealers as $dkey => $dvalue) {
+					$dvalue->push('productId',$product->_id,true);
+					$dvalue->push('productObjectId',new MongoId($product->_id),true);
 				}
-				
-				if(isset($inputs['suggestions'])){
-					
-					$suggestions = [];
-					foreach($inputs['suggestions'] as $product){
-						array_push($suggestions, new MongoId($product['_id']));
+				//UPDATE FOR REMOVED DEALERS
+				$removedDealers = array_diff($product->dealerId, $inputs['dealerId']);
+				if($removedDealers){
+					$rdealers = Dealer::whereIn('_id',$removedDealers)->get();
+					foreach ($rdealers as $rdkey => $rdvalue) {
+						$rdvalue->pull('productId',$product->_id);
+						$rdvalue->pull('productObjectId',new MongoId($product->_id));
 					}
-					$inputs['suggestions'] = $suggestions;
-
-				}
-
-				if(isset($inputs['loyaltyValueType'])){
-					$inputs['loyaltyValueType'] = (int)$inputs['loyaltyValueType'];
-				}
-
-				if(isset($inputs['loyaltyValuePoint'])){
-					$inputs['loyaltyValuePoint'] = (float)$inputs['loyaltyValuePoint'];
-				}
-
-				if(isset($inputs['loyaltyValuePrice'])){
-					$inputs['loyaltyValuePrice'] = (float)$inputs['loyaltyValuePrice'];
 				}
 				
-				if(isset($inputs['outOfStockType']))
-					$inputs['outOfStockType'] = (int)$inputs['outOfStockType'];
-
-				if(isset($inputs['availabilityDays']))
-					$inputs['availabilityDays'] = (int)$inputs['availabilityDays'];
-				
-				if(isset($inputs['availabilityTime']))
-					$inputs['availabilityTime'] = (int)$inputs['availabilityTime'];
-
-				$unset = [];
-
-				if (isset($inputs['advance_order_bulk']['bulk']) && !empty($inputs['advance_order_bulk']['bulk']))
-				{
-						foreach ($inputs['advance_order_bulk']['bulk'] as $dKey => $discount)
-						{
-								unset($inputs['advance_order_bulk']['bulk'][$dKey]['$$hashKey']);
-								$inputs['advance_order_bulk']['bulk'][$dKey] = [
-									'from_qty' => (int)$discount['from_qty'],
-									'to_qty' => (int)$discount['to_qty'],
-									'type' => (int)$discount['type'],
-									'value' => (float)$discount['value'],
-								];                                
-						}
-				}else{
-						$unset[] = 'advance_order_bulk';
-				}
-
-				if (isset($inputs['express_delivery_bulk']['bulk']) && !empty($inputs['express_delivery_bulk']['bulk']))
-				{
-						foreach ($inputs['express_delivery_bulk']['bulk'] as $dKey => $discount)
-						{
-								unset($inputs['express_delivery_bulk']['bulk'][$dKey]['$$hashKey']);
-								$inputs['express_delivery_bulk']['bulk'][$dKey] = [
-									'from_qty' => (int)$discount['from_qty'],
-									'to_qty' => (int)$discount['to_qty'],
-									'type' => (int)$discount['type'],
-									'value' => (float)$discount['value'],
-								];                                
-						}
-				}else{
-						$unset[] = 'express_delivery_bulk';
-				}
-
-				$bd = (isset($inputs['bulkDisable']))?$inputs['bulkDisable']:0;
-				$inputs['bulkDisable'] = (int)($bd);
-
-				$inputs['loyalty'] = (int)($inputs['loyalty']);
-
-				if (isset($inputs['advance_order']['value']) && !empty($inputs['advance_order']['value'])){
-							$inputs['advance_order']['value'] = (float)$inputs['advance_order']['value'];
-				}else{
-						$unset[] = 'advance_order';
-				}
-
-				if (isset($inputs['regular_express_delivery']['value']) && !empty($inputs['regular_express_delivery']['value'])){
-							$inputs['regular_express_delivery']['value'] = (float)$inputs['regular_express_delivery']['value'];
-				}else{
-						$unset[] = 'regular_express_delivery';
-				}
-
-				$product = Products::find($id);
-
-				if($product){          
-										
-					$files = $inputs['imageFiles'];
-
-					$existingdealer = (!empty($product->dealers))?$product->dealers:[];
-
-					//CHECK IF DEALER IS REMOVED
-					$removed = array_diff($existingdealer, $inputs['dealers']);
-					if($removed){
-						$rdealers = Dealer::whereIn('_id',$removed)->get();
-						foreach ($rdealers as $rdkey => $rdvalue) {
-							$rdvalue->pull('products',$product->_id);
-						}
+				//ADD REFRENCE TO SUGGESTION PRODUCTS
+				if(!empty($inputs['suggestionId'])){
+					$suggested = Products::whereIn('_id',$inputs['suggestionId'])->get();
+					foreach ($suggested as $key => $value) {
+						$value->push('suggestedId',$product->_id,true);
+						$value->push('suggestedObjectId',new MongoId($product->_id),true);
 					}
+				}
 
-					//UPDATE PRODUCT          
-					$update = $product->update($inputs);
+				//UPDATE FOR REMOVED SUGGESTION
+				$removedSuggestion = array_diff($product->suggestionId, $inputs['suggestionId']);
+				if($removedSuggestion){
+					$rsuggestions = Products::whereIn('_id',$removedSuggestion)->get();
+					foreach ($rsuggestions as $rdkey => $rdvalue) {
+						$rdvalue->pull('suggestedId',$product->_id);
+						$rdvalue->pull('suggestedObjectId',new MongoId($product->_id));
+					}
+				}
 
-					$dealers = Dealer::whereIn('_id',$product->dealers)->get();
-
-					//ADD PRODUCT IDS IN DEALERS TABLE
-					foreach ($dealers as $dkey => $dvalue) {
-						$dvalue->push('products',$product->_id,true);
-					}          
-
-					//UNSET THE PRICING IF EXISTS AND NOT SET
-					foreach ($unset as $key => $value) {
+				//UNSET THE PRICING IF EXISTS AND NOT SET
+				if(isset($inputs['unsetFields']) && !empty($inputs['unsetFields'])){
+					foreach ($inputs['unsetFields'] as $key => $value) {
 						$product->unset($value);
-					}   
-
-					$this->saveImages($product,$files);
+					}	
 				}
+
+				//STORE THE PRODUCT IMAGES
+				$files = $inputs['imageFiles'];
+				$this->saveImages($product,$files);
+
+				//UPDATE PRODUCT
+				$product->update($inputs);
+
+				return response($product,201);
+
+			}else{
+				return response('Product not found.',422);
+			}				
 				
-				return response($product,200);
 		}
 
 		/**
@@ -357,56 +231,122 @@ class ProductController extends Controller
 
 				$products = new Products;
 
+				$query = [];
+
 				if(isset($name) && trim($name)!=''){
-						$products = $products->where('name','regexp', "/.*$name/i");            
+					$products = $products->where('name','regexp', "/.*$name/i");
+					$s = "/".$name."/i";
+					$query[]['$match']['name'] = ['$regex'=>new \MongoRegex($s)];
 				}
 
 				if(isset($params['categories']) && trim($params['categories'])!=''){          
 					$products = $products->where('categories',$params['categories']);
+					$query[]['$match']['categories'] = $params['categories'];					
 				}
 
 				if(isset($params['status']) && trim($params['status'])!=''){
-					$products = $products->where('status',(int)$params['status']);
+					$products = $products->where('status',(int)$params['status']);					
+					$query[]['$match']['status'] = (int)$params['status'];
 				}
 
 				if(isset($params['isFeatured']) && trim($params['isFeatured'])!=''){
-					$products = $products->where('isFeatured',(int)$params['isFeatured']);
+					$products = $products->where('isFeatured',(int)$params['isFeatured']);					
+					$query[]['$match']['isFeatured'] = (int)$params['isFeatured'];
 				}        
 
 				$iTotalRecords = $products->count();        
 
-				$columns = array('_id','name','categories','price','status','isFeatured','quantity');        
+				$columns = array('_id','name','categories','price','status','isFeatured','quantity','store','updated_at');
+
+				/*$sortField = 'created_at';
+				$sortBy = -1;*/        
+
+				$sort = ['updated_at'=>-1];
 
 				if(isset($params['order']) && !empty($params['order'])){
 
 					$field = $columns[$params['order'][0]['column']];
 					$direction = $params['order'][0]['dir'];
-					$products = $products->orderBy($field,$direction);  
+					
+					if($field == 'quantity'){
+						$field = 'store.quantity';
+					}
+
+					$sortField = $field;
+					$sortBy = ($params['order'][0]['dir'] == 'desc')?-1:1;
+
+					$sort = [$sortField=>$sortBy];
+
+					//$products = $products->orderBy($field,$direction);  
 
 				}else{
-					$products = $products->orderBy('created_at','desc');  
+					//$products = $products->orderBy('created_at','desc');  
 				}
 
-				$products = $products
+				/*$products = $products
+				->with('store')
 				->skip((int)$start)
 				->take((int)$length);
 
-				$products = $products->get($columns);
+				$products = $products->get($columns);*/
+
+				$userStoreId = Auth::user('admin')->storeId; 
+
+				$query[]['$lookup'] = [
+					'from'=>'stocks',
+					'localField'=>'_id',
+					'foreignField'=>'productObjId',
+					'as'=>'store'
+            	];
+
+				$project = [];                	
+
+		        foreach ($columns as $key => $value) {
+					$project[$value] = '$'.$value;
+				}	        
+				
+	        	$project['store'] = [
+	        		'$filter'=>[
+		                'input' => '$store',
+		                'as' => 'store',
+		                'cond' => ['$eq'=>['$$store.storeId',$userStoreId]]
+		            ]
+	        	];
+
+	        	$query[]['$project'] = $project;
+
+				$query[]['$unwind'] = [
+				                        'path' => '$store',	                        
+				                        'preserveNullAndEmptyArrays' => true,                            
+				                    ];				                	
+				$query[]['$sort'] = $sort;                    
+
+	        	$query[]['$skip'] = (int)$start;
+	        	$query[]['$limit'] = (int)$length;	
+
+	        	//dd($query);
+
+		    	$products = Products::raw()->aggregate($query);
+
+		    	//dd($products);
+
+		    	$products = $products['result'];
 
 				foreach($products as $i => $product) {
-						$categories = Categories::whereIn('_id', $product->categories)->get();
-						$cname = [];
-						foreach ($categories as $key => $value) {                
-							$cname[] = $value->cat_title;                
-						}  
-						$products[$i]->category = implode(', ', $cname);
+					$products[$i]['_id'] = (string)$product['_id'];
+					$categories = Categories::whereIn('_id', $product['categories'])->get();
+					$cname = [];
+					foreach ($categories as $key => $value) {                
+						$cname[] = $value['cat_title'];                
+					}  
+					$products[$i]['category'] = implode(', ', $cname);
 				}
 
 				$response = [
-						'recordsTotal' => $iTotalRecords,
-						'recordsFiltered' => $iTotalRecords,
-						'draw' => $draw,
-						'data' => $products            
+					'recordsTotal' => $iTotalRecords,
+					'recordsFiltered' => $iTotalRecords,
+					'draw' => $draw,
+					'data' => $products            
 				];
 
 				return response($response,200);
@@ -468,43 +408,6 @@ class ProductController extends Controller
 
 			$params = $request->all();
 
-			/*$r = DB::collection('products')->raw(function($collection)
-			{
-					return $collection->aggregate(array(
-							array(
-									'$project' => array(
-											'name'=>'$name',
-											'quantity'=>'$quantity',
-											'maxQuantity'=>'$maxQuantity',
-											'threshold'=>'$threshold',
-											'sum' => array(
-													'$subtract' => array(
-														'$maxQuantity',
-														'$quantity'
-													)
-											),                      
-									),                  
-							),
-							array(
-									'$sort' => array('sum'=>-1)
-							),
-							array(
-									'$skip' => 0
-							),
-							array(
-									'$limit' => 5
-							)
-							array(
-									'$match' => array(
-										'sum' => 70
-									)
-							)   
-					));
-			});     
-
-			return response($r);*/
-
-
 			$products = new Products;
 
 			extract($params);      
@@ -528,18 +431,16 @@ class ProductController extends Controller
 									$products = $products->orderBy($columns[$orderField['column']],$orderField['dir']);                    
 							}
 					}
+			}else{
+				$products = $products->orderBy('updated_at','desc');
 			}
 
-			$products = $products
+			$products = $products			
 			->skip((int)$start)
 			->take((int)$length);
 
-			$products = $products->with('supplier');
-
-			if($notordered){
-				$products = $products->orderBy('quantity','asc')->orderBy('threshold','asc')->orderBy('maxQuantity','asc');
-			}
-
+			$products = $products->with('store')->with('supplier');
+			
 			$products = $products->get($columns);
 			
 			$response = [
@@ -572,7 +473,10 @@ class ProductController extends Controller
 						return response($validator->errors(), 422);
 				}
 
-				$product = Products::find($id);    
+				$product = Products::find($id);
+
+				//$product->upda
+
 				$product->quantity = $inputs['quantity'];
 				$product->threshold = $inputs['threshold'];
 				$product->maxQuantity = $inputs['maxQuantity'];
@@ -629,5 +533,435 @@ class ProductController extends Controller
 			return response($products,200);
 
 		}
+
+		public function getTest(){
+
+			$query = [];
+			$userStoreId = Auth::user('admin')->storeId;
+			//$userStoreId .= '12';	
+			$tableFields = [
+				'name'=>'$name',
+                //'quantity'=>'$quantity',                
+                'dealerId'=>'$dealers',
+                'sku'=>'$sku'
+			];
+
+			$project = $tableFields;
+
+			$project['store'] = [
+				'$filter'=>[
+	                'input' => '$store',
+	                'as' => 'store',
+	                'cond' => ['$eq'=>['$$store.storeId',$userStoreId]]
+	            ]    
+	        ];        
+
+			$query[]['$match'] = [
+				'dealerId' => ['$elemMatch'=>['$in'=>['57c43653b190ec306f8b4569']]]
+			];
+
+			$query[]['$lookup'] = [
+				'from'=>'stocks',
+				'localField'=>'_id',
+				'foreignField'=>'productObjId',
+				'as'=>'store'
+			];			
+
+			$query[]['$project'] = $project;
+
+			$query[]['$unwind'] = ['path' => '$store','preserveNullAndEmptyArrays' => true];
+
+			$project['store'] = '$store';
+
+			$project['quantity'] = ['$cond'=>['$store','$store.quantity',0]];
+
+			$project['maxQuantity'] = ['$cond'=>['$store','$store.maxQuantity',0]];
+
+			$project['threshold'] = ['$cond'=>['$store','$store.threshold',0]];
+
+			$project['sum'] = [
+				'$cond' => [
+					'$store',
+					[
+						'$subtract' => [
+							['$divide'=>['$store.quantity','$store.maxQuantity']],
+							['$divide'=>['$store.threshold','$store.maxQuantity']]
+						]
+					],
+					-1,
+				]				
+			];
+
+			$query[]['$project'] = $project;
+
+			//$query[]['$unwind'] = ['path' => '$store','preserveNullAndEmptyArrays' => true];
+			
+			$model = Products::raw()->aggregate($query);
+			
+			dd($model);
+			
+
+			$productWithStocks = Products::where('_id','57c54d89b190ec430d8b4570')->with('stocks')->first();	
+
+			return response($productWithStocks);
+
+			//$product = Products::create(['name'=>'beer']);
+
+			//dd($product);
+
+			$userStoreId = Auth::user('admin')->storeId;
+			$query = [];
+
+			$project = [
+				'_id' => 1,
+				'name' => 1,				
+			];
+
+			$project['mystore'] = [
+				'$filter'=>[
+	                'input' => '$mystore',
+	                'as' => 'mystore',
+	                'cond' => ['$eq'=>['$$mystore.storeId',$userStoreId]]
+	            ]    
+	        ];
+
+			$query[]['$project'] = $project;	        
+
+	        $query[]['$sort'] = ['mystore.quantity'=>-1];
+
+
+
+			$model = Products::raw()->aggregate($query);
+	        
+	        dd($model);
+
+	        echo '<pre>';
+	        print_r($model);
+	        echo '</pre>';
+	        exit;       
+
+
+			$product = Products::find('57c51cb1b190ec430d8b4567');			
+
+			$store = $product->mystore()->get();//->where('storeId',$userStoreId)->first();
+
+			$mystore = $store->where('storeId',$userStoreId)->first();
+
+			/*$store->quantity = 150;
+
+			$store->save();	*/
+
+			//dd($store->first());
+
+
+			return response(['store'=>$store,'mystore'=>$mystore],200);
+
+	        /*$stock = new Stocks(
+	        	[
+	        		'quantity' => 50,
+	        		'threshold' => 10,
+	        		'maxQuantity' => 100,
+	        		'storeId' => '57bef1bfb190ec7c0c8b4567',
+	        		'storeObjId' => new MongoId('57bef1bfb190ec7c0c8b4567'),
+	        		'defaultDealerId' => '57c43653b190ec306f8b4569',
+	        		'defaultDealerObjId' => new MongoId('57c43653b190ec306f8b4569'),
+	        		'productObjId' => new MongoId('57c51cb1b190ec430d8b4567'),
+	        	]
+	        );     
+
+	        $stock = $product->mystore()->save($stock);*/
+
+	        return response($stock,200);
+
+	        
+
+
+
+	        /*$p = Products::where(['_id'=>'57035084c31d53b2218b45c8']);
+
+	        $p = $p->with('store')->first();
+
+	        
+
+	        return response($p,200);*/
+
+	        $userStoreId = Auth::user('admin')->storeId; 
+
+	        $us = new Products;
+
+        	$fillable = $us->getFields();        	
+
+        	$fillable['store'] = [
+        		'$filter'=>[
+	                'input' => '$store',
+	                'as' => 'store',
+	                'cond' => ['$eq'=>['$$store.storeId',$userStoreId]]
+	            ]
+        	];
+
+        	$firstFillable = $us->getFirstfield();
+
+        	$firstFillable['_id'] = '$_id';
+
+        	$firstFillable['stocks'] = ['$push' => '$stocks'];
+        	
+        	$firstFillable['suggestions'] = ['$push' => '$suggestions'];
+
+			//$project = $fillable;
+
+			//$project['stocks'] = ['$arrayElemAt' => [ '$stocks', 0 ]];
+
+			$project['stocks'] = '$stocks';
+
+			/*$project['stocks'] = [
+        		'$filter'=>[
+	                'input' => '$stocks',
+	                'as' => 'stock',
+	                'cond' => ['$eq'=>['$$stock.storeId',$userStoreId]]
+	            ]
+        	];*/
+
+			$project['suggestions'] = '$suggestions';
+
+        	$model = Products::raw()->aggregate(
+	            [   
+	                [
+	                    '$match'=>['_id' => new MongoId('57035084c31d53b2218b45c8')]                    
+	                ],
+	                [
+	                	'$lookup' => [
+							'from'=>'stocks',
+							'localField'=>'_id',
+							'foreignField'=>'productObjId',
+							'as'=>'store'
+	                	]
+	                ],
+	                [
+	                	'$project' => $fillable
+	                ],
+	                [
+	                	'$unwind' => [
+	                        'path' => '$store',	                        
+	                        'preserveNullAndEmptyArrays' => true,                            
+	                    ]
+	                ],	    
+	                /*[
+	                	'$sort' => ['store.quantity' => -1]
+	                ],
+	                [
+	                	'$limit' => 5
+	                ]   */         
+	                /*[
+	                	'$unwind' => [
+	                        'path' => '$stocks',	                        
+	                        'preserveNullAndEmptyArrays' => true,                            
+	                    ]
+	                ],
+	                [
+						'$group' => $firstFillable	
+					],*/	                
+	                /*[
+						'$unwind' => [
+							'path' =>  '$suggestionObjectId',
+							"preserveNullAndEmptyArrays" => true
+
+						]
+					],
+	                [
+						'$lookup' => [
+							'from'=>'products',
+							'localField'=>'suggestionObjectId',
+							'foreignField'=>'_id',
+							'as'=>'suggestions'
+						]
+					],*/
+					
+					/*[
+						'$unwind' => [
+							'path' =>  '$suggestions',
+							"preserveNullAndEmptyArrays" => true
+
+						]
+					],
+					[
+						'$group' => $firstFillable	
+					],
+					[
+						'$project' => $project
+					],
+					[
+						'$unwind' => [
+							'path' =>  '$stocks',
+							"preserveNullAndEmptyArrays" => true
+
+						]
+					],*/
+					/*[
+						'$unwind' => [
+							'path' => '$stocks',	                        
+	                        'preserveNullAndEmptyArrays' => true,                            
+						]
+					]*/		                
+	            ]
+	        );       
+
+        	dd($model);
+
+        	echo '<pre>';
+	        print_r($model);
+	        echo '</pre>';
+	        exit;
+
+        	//$fillable['stocks'] = '$stocks';
+
+        	/*$fillable['store'] = [
+        		'$filter'=>[
+	                'input' => '$stocks',
+	                'as' => 'stock',
+	                'cond' => ['$eq'=>['$$stock.storeId',new MongoId('57badb6db190ecd2108b456b')]]
+	            ]
+        	];*/
+	        
+	        //$fillable['storeQuantity'] = '$store.quantity';        					        
+
+	        $model = Products::raw()->aggregate(
+	            [   
+	                [
+	                    '$match'=>['_id' => new MongoId('57035084c31d53b2218b45c8')]                    
+	                ],                                
+	                [
+	                    '$unwind' => [
+	                        'path' => '$stocks',
+	                        'preserveNullAndEmptyArrays' => true,                            
+	                    ]
+	                ],
+	                [
+	                    '$project'=>$fillable                        
+	                ],
+	                [
+	                    '$match'=>['storeOId' => new MongoId('57bef1bfb190ec7c0c8b4567')]                    
+	                ],
+	                [
+	                	'$lookup' => [
+							'from'=>'dealers',
+							'localField'=>'store.defaultDealer',
+							'foreignField'=>'_id',
+							'as'=>'dealerInfo'
+	                	]
+	                ],
+	                [
+	                    '$unwind' => [
+	                        'path' => '$dealerInfo',
+	                        'preserveNullAndEmptyArrays' => true,                            
+	                    ]
+	                ]
+	            ]
+	        );
+
+	        //dd($model);
+
+	        echo '<pre>';
+	        print_r($model);
+	        echo '</pre>';
+	        exit;
+
+	        return response($model,200);
+
+		}
+
+	private function castVariables(&$inputs){
+
+		$inputs['price'] = (float)$inputs['price'];        
+		$inputs['chilled'] = (int)$inputs['chilled'];
+		$inputs['status'] = (int)$inputs['status'];
+		$inputs['isFeatured'] = (int)$inputs['isFeatured'];
+		$inputs['deliveryType'] = (int)$inputs['deliveryType'];
+		$inputs['isLoyalty'] = (int)$inputs['isLoyalty'];		
+
+		if(isset($inputs['loyaltyValueType'])){
+			$inputs['loyaltyValueType'] = (int)$inputs['loyaltyValueType'];
+		}
+
+		if(isset($inputs['loyaltyValuePoint'])){
+			$inputs['loyaltyValuePoint'] = (float)$inputs['loyaltyValuePoint'];
+		}
+
+		if(isset($inputs['loyaltyValuePrice'])){
+			$inputs['loyaltyValuePrice'] = (float)$inputs['loyaltyValuePrice'];
+		}
+								
+		
+		if(isset($inputs['outOfStockType']))
+			$inputs['outOfStockType'] = (int)$inputs['outOfStockType'];
+
+		if(isset($inputs['availabilityDays']))
+			$inputs['availabilityDays'] = (int)$inputs['availabilityDays'];
+		
+		if(isset($inputs['availabilityTime']))
+			$inputs['availabilityTime'] = (int)$inputs['availabilityTime'];       
+
+		$inputs['unsetFields'] = [];
+		if (isset($inputs['express_delivery_bulk']['bulk']) && !empty($inputs['express_delivery_bulk']['bulk']))
+		{
+			foreach ($inputs['express_delivery_bulk']['bulk'] as $dKey => $discount)
+			{
+				unset($inputs['express_delivery_bulk']['bulk'][$dKey]['$$hashKey']);
+				$inputs['express_delivery_bulk']['bulk'][$dKey] = [
+					'from_qty' => (int)$discount['from_qty'],
+					'to_qty' => (int)$discount['to_qty'],
+					'type' => (int)$discount['type'],
+					'value' => (float)$discount['value'],
+				];                                
+			}
+		}else{
+			$inputs['unsetFields'][] = 'express_delivery_bulk';
+		}
+
+		$inputs['bulkDisable'] = (int)($inputs['bulkDisable']);
+
+		$inputs['loyalty'] = (int)($inputs['loyalty']);		
+
+		if (isset($inputs['regular_express_delivery']['value']) && !empty($inputs['regular_express_delivery']['value'])){
+			$inputs['regular_express_delivery']['value'] = (float)$inputs['regular_express_delivery']['value'];
+		}else{
+			$inputs['unsetFields'][] = 'regular_express_delivery';
+		}
+
+		//DEALERS WITH TRADE DEALS
+		$dealerId = [];
+		$dealerObjectId = [];				
+		foreach ($inputs['dealerData'] as $key => $value) {
+			unset($inputs['dealerData'][$key]['$$hashKey']);
+			
+			array_push($dealerObjectId, new MongoId($value['dealerId']));
+			array_push($dealerId, (string)$value['dealerId']);
+			//$inputs['dealers'][] = $value['dealerId'];
+			if(isset($value['tradeQuantity']))
+				$inputs['dealerData'][$key]['tradeQuantity'] = (int)$value['tradeQuantity'];
+			if(isset($value['tradeValue']))
+				$inputs['dealerData'][$key]['tradeValue'] = (int)$value['tradeValue'];
+		}			
+
+		$inputs['dealerId'] = $dealerId;
+		$inputs['dealerObjectId'] = $dealerObjectId;
+
+		//DEALERS WITH TRADE DEALS
+
+		//SUGGESTIONS 
+		$suggestionId = [];
+		$suggestionObjectId = [];
+		if(isset($inputs['suggestions']) && !empty($inputs['suggestions'])){
+			foreach($inputs['suggestions'] as $product){
+				array_push($suggestionObjectId, new MongoId($product['_id']));
+				array_push($suggestionId, (string)$product['_id']);
+			}
+			$inputs['suggestionId'] = $suggestionId;
+			$inputs['suggestionObjectId'] = $suggestionObjectId;
+		}else{
+			$inputs['suggestionId'] = [];
+			$inputs['suggestionObjectId'] = [];
+		}
+		//SUGGESTIONS	
+	}	
 }
 		

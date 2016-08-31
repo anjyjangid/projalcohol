@@ -28,9 +28,9 @@
 
 							</div>
 
-							<div class="form-group" ng:class="{'has-error':errors.slug[0]}">
+							<div class="form-group hide" ng:class="{'has-error':errors.slug[0]}">
 								
-								<label class="col-md-2 control-label">slug: <span class="required">*</span></label>
+								<label class="col-md-2 control-label">Slug: <span class="required">*</span></label>
 								<div class="col-md-10">
 									<slug from="product.name" to="product.slug"></slug>
 									<input type="text" class="form-control" ng-model="product.slug" placeholder="Slug" disabled="true">
@@ -77,102 +77,16 @@
 									<span class="help-block" ng-bind="errors.categories[0]"></span>
 								</div>
 							</div>							
-							<div class="form-group" ng:class="{'has-error':errors.sku[0]}">
-								<label class="col-md-2 control-label">SKU: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<input type="text" class="form-control" ng-model="product.sku" placeholder="">
-									<span class="help-block" ng-bind="errors.sku[0]"></span>
-								</div>
-							</div>
 							
 							
-							<div class="form-group" ng:class="{'has-error':errors.quantity[0]}">
-								<label class="col-md-2 control-label">Quantity: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<input type="number" min="0" class="form-control" ng-model="product.quantity" placeholder="">									
-									<span class="help-block">(in stock)</span>
-									<span class="help-block" ng-bind="errors.quantity[0]"></span>
-								</div>
-							</div>
+							
+							
 
-							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
-								<label class="col-md-2 control-label">Avail for order : <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<select class="table-group-action-input form-control input-medium" ng-model="product.deliveryType">
-										<option value="0">Both</option>
-										<option value="1">Express</option>
-										<option value="2">Advanced</option>
-									</select>
-									<span class="help-block" ng-bind="errors.status[0]"></span>
-								</div>
-							</div>
+							
+							
 
-							<div class="form-group" ng:class="{'has-error':errors.outOfStockType[0]}">
-								<label class="col-md-2 control-label">Out of Stock Status: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<select ng-options="data.id as data.label for data in outOfStockType" class="form-control" ng-model="product.outOfStockType">
-									</select>									
-									<span class="help-block">(status shown when a product is out of stock)</span>
-									<span class="help-block" ng-bind="errors.outOfStockType[0]"></span>
-								</div>
-							</div>
 
-							<div ng-show="product.outOfStockType==2" class="form-group" >
-								<label class="col-md-2 control-label">Set Availability: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-2" ng:class="{'has-error':errors.availabilityDays[0]}">
-									<input type="number" min="1" class="form-control" ng-model="product.availabilityDays" placeholder="Days">
-									<span class="help-block">Days</span>
-									<span class="help-block" ng-bind="errors.availabilityDays[0]"></span>
-								</div>
-								<div class="col-md-2">
-									<select ng-options="fop.opVal as fop.opTag for fop in getTimeOptions()" class="form-control" ng-model="product.availabilityTime">
-									</select>	
-									<span class="help-block">Time</span>
-									<span class="help-block" ng-bind="errors.availabilityTime[0]"></span>
-								</div>
-							</div>
-							<div class="form-group" ng:class="{'has-error':errors.threshold[0]}">
-								<label class="col-md-2 control-label">Re-order threshold: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<input type="number" min="1" class="form-control" ng-model="product.threshold" placeholder="">									
-									<span class="help-block" ng-bind="errors.threshold[0]"></span>
-								</div>
-							</div>
-
-							<div class="form-group" ng:class="{'has-error':errors.maxQuantity[0]}">
-								<label class="col-md-2 control-label">Maximum Quantity: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<input type="number" min="1" class="form-control" ng-model="product.maxQuantity" placeholder="">									
-									<span class="help-block">(in stock)</span>
-									<span class="help-block" ng-bind="errors.maxQuantity[0]"></span>
-								</div>
-							</div>
-
-							<div class="form-group" ng:class="{'has-error':errors.dealers[0]}">
-								<label class="col-md-2 control-label">Select Dealer: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<select ng-options="d._id as d.title for d in dealerlist" class="form-control" ng-model="product.dealers" multiple="">
-									</select>							
-									<span class="help-block">(in stock)</span>
-									<span class="help-block" ng-bind="errors.dealers[0]"></span>
-								</div>
-							</div>							
+														
 
 							
 
@@ -208,19 +122,7 @@
 
 							
 
-							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
-								<label class="col-md-2 control-label">Status: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<select class="table-group-action-input form-control input-medium" ng-model="product.status">
-										<option value="">Select...</option>
-										<option value="1">Published</option>
-										<option value="0">Not Published</option>
-									</select>
-									<span class="help-block" ng-bind="errors.status[0]"></span>
-								</div>
-							</div>
+							
 
 							<div class="form-group">
 								<label class="control-label col-md-2">Is Loyalty Product<span class="required" aria-required="true">
@@ -249,25 +151,26 @@
 										<div class="row">
 											<div class="col-sm-8">
 											<select class="form-control" ng-model="product.loyaltyValueType">
-												<option value="">----Select Type----</option>
-												<option value="0">fixed Points</option>
+												<option value="-1">----Select Type----</option>
+												<option value="0">Fixed Points</option>
 												<option value="1">Partial (point + $)</option>
 											</select>
 											</div>
 										</div>
 
-										<div class="row" ng-show="product.loyaltyValueType">
-										<br>
+										<div class="row" ng-show="product.loyaltyValueType == 0  || product.loyaltyValueType == 1">
+											<br>
 											<div class="col-sm-4" ng:class="{'has-error':errors.loyaltyValuePoint[0]}">
 												<span class="help-block">Points</span>
 												<input type="number" min="0" class="form-control" ng-model="product.loyaltyValuePoint" placeholder="loyalty points">
-												<span class="help-block" ng-bind="errors.loyalty[0]"></span>
+												<span class="help-block" ng-bind="errors.loyaltyValuePoint[0]"></span>
 											</div>
 										
-											<div class="col-sm-4" ng-show="product.loyaltyValueType == 1">
-											<span id="loyaltyValuePriceAdd">+</span>
+											<div class="col-sm-4" ng-show="product.loyaltyValueType == 1" ng:class="{'has-error':errors.loyaltyValuePrice[0]}">
+												<span id="loyaltyValuePriceAdd">+</span>
 												<span class="help-block">price</span>
 												<input type="number" min="0" class="form-control" ng-model="product.loyaltyValuePrice" placeholder="amount">
+												<span class="help-block" ng-bind="errors.loyaltyValuePrice[0]"></span>
 											</div>
 
 										</div>
@@ -314,9 +217,204 @@
 									
 								</div>
 							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
+								<label class="col-md-2 control-label">Status: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<select class="table-group-action-input form-control input-medium" ng-model="product.status">
+										<option value="">Select...</option>
+										<option value="1">Published</option>
+										<option value="0">Not Published</option>
+									</select>
+									<span class="help-block" ng-bind="errors.status[0]"></span>
+								</div>
+							</div>
 						</div>
 
 					</tab>
+					<tab>
+					<tab-heading>Stock</tab-heading>
+						<div class="form-horizontal">
+							
+							<div class="form-group" ng:class="{'has-error':errors.sku[0]}">
+								<label class="col-md-2 control-label">SKU: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control  input-medium" ng-model="product.sku" placeholder="">
+									<span class="help-block" ng-bind="errors.sku[0]"></span>
+								</div>
+							</div>					
+
+							<div class="form-group" ng:class="{'has-error':errors['store.quantity'][0]}">
+								<label class="col-md-2 control-label">Quantity: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="number" min="0" class="form-control input-medium" ng-model="product.store.quantity" placeholder="">									
+									<span class="help-block">(in stock)</span>
+									<span class="help-block" ng-bind="errors['store.quantity'][0]"></span>
+								</div>
+							</div>
+
+							
+
+							<div class="form-group" ng:class="{'has-error':errors['store.threshold'][0]}">
+								<label class="col-md-2 control-label">Re-order threshold: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="number" min="1" class="form-control input-medium" ng-model="product.store.threshold" placeholder="">									
+									<span class="help-block" ng-bind="errors['store.threshold'][0]"></span>
+								</div>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors['store.maxQuantity'][0]}">
+								<label class="col-md-2 control-label">Maximum Quantity: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="number" min="1" class="form-control input-medium" ng-model="product.store.maxQuantity" placeholder="">									
+									<span class="help-block" ng-bind="errors['store.maxQuantity'][0]"></span>
+								</div>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
+								<label class="col-md-2 control-label">Available for order : <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<select class="table-group-action-input form-control input-medium" ng-model="product.deliveryType">
+										<option value="0">Both</option>
+										<option value="1">Express</option>
+										<option value="2">Advanced</option>
+									</select>
+									<span class="help-block" ng-bind="errors.status[0]"></span>
+								</div>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.outOfStockType[0]}">
+								<label class="col-md-2 control-label">Out of Stock Status: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-4">
+									<select ng-options="data.id as data.label for data in outOfStockType" class="form-control" ng-model="product.outOfStockType">
+									</select>									
+									<span class="help-block">(status shown when a product is out of stock)</span>
+									<span class="help-block" ng-bind="errors.outOfStockType[0]"></span>
+								</div>
+							</div>
+
+							<div ng-show="product.outOfStockType==2" class="form-group" >
+								<label class="col-md-2 control-label">Set Availability: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-2" ng:class="{'has-error':errors.availabilityDays[0]}">
+									<input type="number" min="1" class="form-control" ng-model="product.availabilityDays" placeholder="Days">
+									<span class="help-block">Days</span>
+									<span class="help-block" ng-bind="errors.availabilityDays[0]"></span>
+								</div>
+								<div class="col-md-2">
+									<select ng-options="fop.opVal as fop.opTag for fop in getTimeOptions()" class="form-control" ng-model="product.availabilityTime">
+									</select>	
+									<span class="help-block">Time</span>
+									<span class="help-block" ng-bind="errors.availabilityTime[0]"></span>
+								</div>
+							</div>
+							
+						</div>		
+					</tab>	
+					<tab>
+						<tab-heading>Dealers</tab-heading>
+						
+						<div class="text-align-reverse margin-bottom-10">
+							<a ng-click="product.dealerData.push({})" class="btn yellow">
+								<i class="fa fa-plus"></i> Add Dealer 
+							</a>							
+						</div>
+						<div ng-show="errors.dealerData[0]" class="alert alert-danger fade in">
+							<i class="fa-lg fa fa-warning"></i>
+							{{ errors.dealerData[0] }}
+						</div>
+						<div ng-show="errors['store.defaultDealerId'][0]" class="alert alert-danger fade in">
+							<i class="fa-lg fa fa-warning"></i>
+							{{ errors['store.defaultDealerId'][0] }}
+						</div>
+						<div ng-show="errors.repeated[0]" class="alert alert-danger fade in">
+							<i class="fa-lg fa fa-warning"></i>
+							{{ errors.repeated[0] }}
+						</div>						
+						<table class="table table-bordered table-hover">
+							<thead>
+								<tr role="row" class="heading">
+									<th width="5%">
+										 Sr.
+									</th>
+									<th width="20%">
+										 Dealer
+									</th>	
+									<th width="20%">
+										Trade deal(optional)
+									</th>
+									<th width="10%">
+										Default
+									</th>																	
+									<th width="10%">
+										Action
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="d in product.dealerData">
+									<td>{{$index+1}}</td>
+									<td ng:class="{'has-error':errors['dealerData.'+$index+'.dealerId'][0] || errors.repeated[0]}">										
+										<select ng-options="d._id as d.title for d in dealerlist" class="form-control" ng-model="d.dealerId">
+										</select>										
+										<span class="help-block" ng-bind="errors['dealerData.'+$index+'.dealerId'][0]"></span>
+									</td>
+									<td>
+										<div class="col-md-12">
+											<div class="input-group" ng:class="{'has-error':errors['dealerData.'+$index+'.tradeQuantity'][0] || errors['dealerData.'+$index+'.tradeValue'][0]}">												
+												<input type="number" step="1" class="form-control" ng-model="d.tradeQuantity">																									
+												<span class="input-group-addon">
+												<i class="fa fa-plus"></i>
+												</span>												
+												<input type="number" step="1" class="form-control" ng-model="d.tradeValue">																																					
+											</div>											
+											<span class="help-block">Purchase Qty + Free Qty</span>
+											<span class="help-block" ng-bind="errors['dealerData.'+$index+'.tradeQuantity'][0]"></span>
+											<span class="help-block" ng-bind="errors['dealerData.'+$index+'.tradeValue'][0]"></span>
+										</div>										
+									</td>
+									<td>
+										<a ng-class="(d.dealerId && product.store.defaultDealerId == d.dealerId)?'btn-success':''" class="btn btn-sm" ng-click="setDefault(d.dealerId)">
+											Default
+										</a>
+									</td>
+									<td>
+										<a href="#" class="btn default btn-sm" ng-click="removeDealer($index,d.dealerId)">
+										<i class="fa fa-times"></i> Remove </a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<!-- <div class="form-horizontal">
+							<div class="form-group" ng:class="{'has-error':errors.dealers[0]}">
+								<label class="col-md-2 control-label">Select Dealer: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<select ng-options="d._id as d.title for d in dealerlist" class="form-control" ng-model="product.dealers" multiple="">
+									</select>							
+									<span class="help-block">(in stock)</span>
+									<span class="help-block" ng-bind="errors.dealers[0]"></span>
+								</div>
+							</div>
+						</div> -->
+					</tab>	
 					<tab>
 						<tab-heading>Pricing</tab-heading>
 						<div class="form-horizontal">
@@ -597,7 +695,7 @@
 									</td>
 									<td>
 										<label>
-											<input plugin-uniform type="radio" ng-model="f.coverimage" value="1" name="coverimage">
+											<input plugin-uniform type="radio" ng-model="f.coverimage" value="1" name="coverimage" ng-click="setCover($index)">
 										</label>
 									</td>									
 									<td>
@@ -612,10 +710,8 @@
 					<tab>
 						<tab-heading>Suggestion</tab-heading>
 						
-						<div class="form-group row" ng:class="{'has-error':errors.status[0]}">
-							<label class="col-md-2 control-label">Products: <span class="required">
-							* </span>
-							</label>
+						<div class="form-group row">
+							<label class="col-md-2 control-label">Products:</label>
 							<div class="col-md-10">
 								<a class="btn green" ng-click="clearSearch()" data-target='#static' data-toggle="modal"><i class="fa fa-lg fa-plus"></i>
 									Add Product
@@ -635,15 +731,14 @@
 								</div>										
 							</div>
 						</div>
-						
-
 					</tab>
-
 				</tabset>				
 			</div>			
 		</div>
 		</form>
 	</div>
+	<!-- <pre>{{cd|json}}</pre> -->
+	<!-- <pre>{{product|json}}</pre> -->
 </div>
 
 <div data-replace="true" tabindex="-1" class="modal fade modal-scroll" id="static" >
@@ -682,4 +777,5 @@
 			</div>
 		</div>
 	</div>
+	
 </div>

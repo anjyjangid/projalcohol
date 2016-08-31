@@ -15,10 +15,10 @@ MetronicApp.controller('ProductController',['$rootScope', '$scope', '$timeout','
 			categories:[],
 			isFeatured:'0',
 			bulkDisable:0,
-			imageFiles:[{coverimage:1}],
-			advance_order:{},
+			imageFiles:[{coverimage:'1'}],
+			//advance_order:{},
 			regular_express_delivery:{},
-			advance_order_bulk:{},
+			//advance_order_bulk:{},
 			express_delivery_bulk:{},	
 			price:null,
 			outOfStockType:2,
@@ -27,7 +27,9 @@ MetronicApp.controller('ProductController',['$rootScope', '$scope', '$timeout','
 			deliveryType:0,
 			isLoyalty:0,
 			loyaltyType : 0,
-			suggestions : []
+			suggestions : [],
+			dealerData:[{}],
+			store:{}
 		};
 		
 
@@ -195,9 +197,10 @@ MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$locatio
 			angular.extend($scope.product,data);
 
 			var unique = $scope.product.categories.join('|');
+			// console.log(unique);
 			var k = $scope.getKey($scope.cd,unique);			
-
-			if(k)
+			//console.log(k);
+			if(k!=null)
 				$scope.product.categories = $scope.cd[k].id;
 			else
 				$scope.product.categories = [];
@@ -296,7 +299,33 @@ MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$locatio
 		{id:2,label:'Available after'},
 	];
 
-	
+	$scope.removeDealer = function(index,dealerId){
+
+		if($scope.product.store.defaultDealerId == dealerId){
+			$scope.product.store.defaultDealerId = '';
+		}
+
+		$scope.product.dealerData.splice(index,1);
+
+	}
+
+	$scope.setDefault = function(dId){
+		if(dId){
+			$scope.product.store.defaultDealerId = dId;
+		}
+	}
+
+	$scope.setCover = function(index){
+
+		angular.forEach($scope.product.imageFiles,function(val,key){
+
+			if(key!=index){
+				delete val.coverimage;
+			}
+
+		});
+
+	}
 
 }]);
 

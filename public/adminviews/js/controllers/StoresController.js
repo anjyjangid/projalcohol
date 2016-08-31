@@ -20,6 +20,8 @@ MetronicApp.controller('StoreFormController',[
 	
 	$scope.errors = {};	
 
+	$scope.storeInfo = {};
+
 	if($stateParams.storeId){
 
 		$scope.isupdate = true;
