@@ -1319,26 +1319,33 @@ prd($cart);
 		return response(["success"=>false,"message"=>"Something went wrong"],400);
 	}
 
-	public function confirmorder(Request $request,$cartKey){
+	public function confirmorder(Request $request,$cartKey = null){
 
 		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
+
+		if($cartKey == null){			
+			$cartKey = $request->get('merchant_data1');
+		}		
 
 		$cartObj = new Cart;
 
 		$cart = $cartObj->where("_id","=",$cartKey)->first();
 
 		if(empty($cart)){
-			return response(["success"=>false,"message"=>"cart not found"],405); //405 => method not allowed
+			if($request->isMethod('get'))
+				return redirect('/');	
+			else	
+				return response(["success"=>false,"message"=>"cart not found"],405); //405 => method not allowed
 		}
 
 		$cartArr = $cart->toArray();
 
 		$this->setCartProductsList($cartArr);
 
-		$user = Auth::user('user');
+		$user = Auth::user('user');		
 
 		//PREPARE PAYMENT FORM DATA
-		if($cartArr['payment']['method'] == 'CARD'){
+		if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD'){
 
 			$payment = new Payment();
 			$payment = $payment->prepareform($cartArr,$user);
@@ -1434,6 +1441,10 @@ prd($cart);
 									);
 
 			$request->session()->forget('deliverykey');
+
+			if($request->isMethod('get')){
+				return redirect('/#/orderplaced/'.$order['_id']);
+			}
 
 			return response(array("success"=>true,"message"=>"order placed successfully","order"=>$order['_id']));
 
