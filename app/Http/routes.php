@@ -138,6 +138,8 @@ Route::put('deploycart/{cartKey}','CartController@deploycart');
 
 Route::put('confirmorder/{cartKey}','CartController@confirmorder');
 
+Route::get('confirmorder','CartController@confirmorder');
+
 Route::get('freezcart','CartController@freezcart');
 
 Route::group(['middleware' => 'auth'], function () {
