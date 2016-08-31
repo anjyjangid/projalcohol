@@ -2360,6 +2360,7 @@ AlcoholDelivery.service('store', ['$rootScope','$window','$http','alcoholCart','
 		}
 	}]);
 
+
 AlcoholDelivery.service("promotionsService",["$http","$log","$q",function($http,$log,$q){
 
 	this.init = function(){
@@ -2367,13 +2368,14 @@ AlcoholDelivery.service("promotionsService",["$http","$log","$q",function($http,
 		var _self = this;
 		var defer = $q.defer();
 
+		//ProductService.getPromotions()
 		$http.get("super/promotions").then(
 
 			function(succRes){
 				
 				_self.$promotions = succRes.data;
 
-				defer.resolve(this.$promotions);
+				defer.resolve(_self.$promotions);
 			},
 			function(errRes){
 

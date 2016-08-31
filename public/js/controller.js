@@ -1317,7 +1317,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 					$mdDialog.show({
 
-						controller: function($scope, $rootScope, $document) {
+						controller: function($scope, $rootScope, $document, ProductService) {
 
 							$scope.address = {
 								step:1
@@ -1331,17 +1331,35 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 							};
 							
 
-							$http.get("suggestion/dontmiss").then(
+							$scope.loading = true;
+							//$http.get("suggestion/dontmiss")
+
+							ProductService.getDontMiss().then(
 
 								function(response){
 
-									$scope.products = response.data.dontMiss;
+									if(response.length==0){
+
+										$scope.notAvailable = true;
+										$timeout(function(){
+
+											$scope.continue();
+
+											
+										},1500)
+
+									}else{
+
+										$scope.products = response;
+
+									}
+
+									$scope.loading = false;
 
 								},
 								function(errorRes){
 
 									
-
 								}
 							)
 							
@@ -1355,8 +1373,6 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 								$scope.hide();
 
 								$state.go("mainLayout.checkout.address");
-
-
 
 							}
 
@@ -1478,7 +1494,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 }]);
 
-AlcoholDelivery.controller('PromotionsController',['$scope', '$rootScope', '$http', '$interval', 'alcoholCart', 'promotionsService',function($scope, $rootScope, $http, $interval, alcoholCart, promotionsService){
+AlcoholDelivery.controller('PromotionsController',['$scope', '$rootScope', '$http', '$interval', 'alcoholCart', 'promotionsService', 'AlcoholProduct',function($scope, $rootScope, $http, $interval, alcoholCart, promotionsService, AlcoholProduct){
 
 var timer = $interval(function() {
 
@@ -1488,6 +1504,16 @@ var timer = $interval(function() {
 
 				$scope.alcoholCart = alcoholCart;
 				$scope._promo = promotionsService;
+				
+				// angular.forEach($scope._promo.$promotions, function(promotion,key){
+
+				// 	angular.forEach(promotion.products, function(product,prokey){
+
+				// 		$scope._promo.$promotions[key].products[proKey] = new AlcoholProduct(2,product);
+						
+				// 	})
+
+				// })
 
 
 			}, 500);
