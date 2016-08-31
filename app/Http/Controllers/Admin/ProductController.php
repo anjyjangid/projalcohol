@@ -25,6 +25,8 @@ use AlcoholDelivery\Inventory;
 use AlcoholDelivery\Stocks;
 use Illuminate\Support\Facades\Auth;
 
+use Faker;
+
 
 class ProductController extends Controller
 {
@@ -535,6 +537,17 @@ class ProductController extends Controller
 		}
 
 		public function getTest(){
+
+			$faker = Faker\Factory::create();
+
+		    $limit = 100;
+
+		    for ($i = 0; $i < $limit; $i++) {
+		        echo $faker->word(10).'<br/>';
+		        echo $faker->unique()->name . ', Email Address: ' . $faker->unique()->email . ', Contact No' . $faker->unique()->phoneNumber . '<br>';
+		    }
+
+		    exit;
 
 			$query = [];
 			$userStoreId = Auth::user('admin')->storeId;

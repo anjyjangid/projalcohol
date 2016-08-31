@@ -15,7 +15,7 @@ MetronicApp.factory('userModel', ['$http', '$cookies', '$rootScope', function($h
             headers: {
                 'Content-Type': 'application/json'
             },
-            url: 'adminapi/admin/update',
+            url: 'adminapi/admin/updateprofile',
             method: "POST",
             data: {
                 first_name: postedData.first_name,
