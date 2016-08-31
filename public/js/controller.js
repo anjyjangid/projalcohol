@@ -1329,9 +1329,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 							$scope.cancel = function() {
 								$mdDialog.cancel();
 							};
-							$scope.answer = function(answer) {
-								$mdDialog.hide(answer);
-							};
+							
 
 							$http.get("suggestion/dontmiss").then(
 
@@ -1347,6 +1345,22 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 								}
 							)
 							
+							$scope.continue = function(){
+
+
+								alcoholCart.deployCart();
+
+								$scope.step = 2;
+
+								$scope.hide();
+
+								$state.go("mainLayout.checkout.address");
+
+
+
+							}
+
+							
 
 						},
 						templateUrl: '/templates/checkout/dont-miss.html',
@@ -1360,10 +1374,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 					});
 
-					// alcoholCart.deployCart();
-
-					// $scope.step = 2;
-					// $state.go("mainLayout.checkout.address");
+					
 
 				}
 

@@ -762,3 +762,18 @@ md-dialog#dont-miss-popup{
 .prod_addtocart.disabled .cartbtn .addcart{
     cursor: not-allowed;
 }
+
+
+.featured-pro-tabs{
+	padding: 0 10px;
+}
+
+.featured-pro-tabs .owl-item > div {
+    margin: 0px !important;
+}
+
+.featured-pro-tabs .owl-item .proHoverEffect {
+	padding: 10px 5px;
+	display: inline-block;
+	margin: 10px 5px;
+}

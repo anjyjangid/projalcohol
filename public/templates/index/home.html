@@ -11,7 +11,7 @@
 		<!-- Only required for left/right tabs -->
 		<div class="fullwidth top-tabmainouter">
 			<div class="tabtitle">Featured Items</div>
-            <!-- <ul class="nav nav-tabs tabsright">	  -->
+            
             <div class="right-crousel">
 
 	            <data-owl-carousel class="owl-carousel owl-theme" data-options="{
@@ -27,18 +27,16 @@
 							itemsMobile : [479,1]
 
 				    		}">
-				      
-	                  <!-- <li owl-carousel-item="" ng-repeat="cat in parentCategories" ng-if="cat.featured!='undefined' && cat.featured.length>0" ng-class="{'active':AppController.feTabActive==$index}" class="item"> -->	                  
+
 						<div style="color:#CCC;" owl-carousel-item="" ng-repeat="cat in parentCategories | filterParentCat" ng-class="{'active':AppController.feTabActive==$index}" class="item">
 							<a href="javascript:void(0)" class="text-capitalize" ng-click="setFeatured($index);AppController.feTabActive=$index">{{cat.cat_title}}</a>
-						</div>
-					<!-- </li> -->
+						</div>					
 	                  
 				</data-owl-carousel>								
 			</div>
-			<!-- </ul> -->
+			
 		</div>
-		<div class="tab-content fullwidth">
+		<div class="tab-content fullwidth featured-pro-tabs">
 			<div class="tab-pane" id="tab$index" 
 					ng-repeat="pCat in parentCategories"
 					ng-class="{'active':AppController.feTabActive==$index}"
@@ -59,7 +57,7 @@
 			    		}">
 			      <div owl-carousel-item="" ng-repeat="fproduct in pCat['featured']" class="item">
 			        	
-			        	<div al-tpl-product info="fproduct"></div>			        	
+			        	<div al-tpl-product info="fproduct" classes="proHoverEffect"></div>			        	
 			        	
 			      </div>
 			    </data-owl-carousel>							

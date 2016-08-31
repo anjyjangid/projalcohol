@@ -263,9 +263,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
           	}
 
-            if(scope.$last) {
-            	console.log(element);
-            	console.log("last reached");
+            if(scope.$last) {            	
             	scope.initCarousel(element.parent(),element.parent().attr("ng-model"));
             }
         }
