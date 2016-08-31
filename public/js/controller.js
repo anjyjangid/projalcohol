@@ -456,7 +456,35 @@ AlcoholDelivery.controller('ProductDetailController', [
 			
 			$scope.product = response;
 
-			$scope.tquantity = parseInt($scope.product.qNChilled)+parseInt($scope.product.qChilled);
+			$scope.$watchGroup(['product.qNChilled','product.qChilled','maxQuantity'],
+				function(newValue, oldValue) {
+
+					$scope.updateQuantity();
+
+				},true
+			);
+
+			$scope.updateQuantity = function(){
+								
+				$scope.tquantity = parseInt($scope.product.qNChilled)+parseInt($scope.product.qChilled);
+
+			}
+
+			$scope.addtocart = function(){
+
+				alcoholCart.addItem($scope.product._id,$scope.product.qChilled,true);
+				alcoholCart.addItem($scope.product._id,$scope.product.qNChilled,false);
+				$scope.isInCart = true;
+				
+			};
+
+			var mdata = {
+	    		title:$scope.product.metaTitle,
+	    		description:$scope.product.metaDescription,
+	    		keyword:$scope.product.metaKeywords
+	    	};
+
+	    	$rootScope.setMeta(mdata);
 
 		},
 		function(errRes){
@@ -550,12 +578,15 @@ AlcoholDelivery.controller('ProductDetailController', [
 
 }]);
 
-AlcoholDelivery.controller('AlsoBoughtThisController',['$scope','$http','$stateParams',function($scope,$http,$stateParams){
+AlcoholDelivery.controller('AlsoBoughtThisController',[
+			'$scope', '$http', '$stateParams', 'ProductService',
+	function($scope, $http, $stateParams, ProductService){
 
-	$http.get("/product/alsobought/"+$stateParams.product).then(
+	//$http.get("/product/alsobought/"+$stateParams.product)
+	ProductService.getAlsoBought($stateParams.product).then(
 
-		function(response){
-			$scope.suggestions = response.data.products;
+		function(products){
+			$scope.suggestions = products;
 		},
 		function(errResponse){}
 
