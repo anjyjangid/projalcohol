@@ -9,7 +9,7 @@ MetronicApp.factory('packageModel', ['$http', '$cookies', '$rootScope', function
 	        });
 	    },   
 	    searchItem: function(qry){	       	
-	        return $http.get("/adminapi/package/searchproduct",{length:10,qry:qry});
+	        return $http.get("/adminapi/package/searchproduct",{params:{length:10,qry:qry}});
 	    },
 	    getPackage: function(packageid,type){
             return $http.get("/adminapi/package/detail/"+packageid+"/"+type);

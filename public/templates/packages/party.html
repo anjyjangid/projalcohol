@@ -12,7 +12,16 @@
         	<div ng-repeat-start="package in packages" ng:class="{'row':($index%2==0)}"></div>
 	        	<div class="left-party-content"  ng:class="{'right-party-content':$odd}">                	
 	          		<div class="party-topimgdiv">  
-	          			<img class="img-responsive" ng-src="packages/i/{{package.coverImage.source}}" err-src="http://placehold.it/455x303/{{($index+1)*100}}/?text=No+Image"/>
+	          			<img class="img-responsive" ng-src="packages/i/{{package.coverImage.source}}" err-src="http://placehold.it/455x252/{{($index+1)*100}}/?text=No+Image"/ >
+                        <div class="party-hover-effect">
+	                        <div class="customizebtn">
+		                        <div class="customize-inner">
+			                        <a class="btn btn-default" ui-sref="mainLayout.packagedetail({type:'party',id:package._id})" role="button">
+			                        	<img src="images/customize-icon.png" ><span>Customize</span>
+			                        </a>
+		                        </div>
+	                        </div>
+                        </div>
 	          		</div>
 	          		<div class="part-content-btm-desc">
 						<div class="title-propertset"> {{package.title}}</div>
@@ -21,19 +30,29 @@
 						<div class="package-desc"> {{package.description}}</div><a ui-sref="mainLayout.packagedetail({type:'party',id:package._id})">More Detail</a></div>
 	            		<div class="party-leftposion">
 							<div class="package-amtcover">
-								<p class="packtiti-rightset">Package Amount</p>
-								<h3 class="amntrupee-clsdetail">${{package.packagePrice}}</h3>
+								<p class="packtiti-rightset packag-amnt-divcolr">Package Amount</p>
+								<h3 class="amntrupee-clsdetail">{{package.packagePrice | pricingTxt}}</h3>
 							</div>            
 							<div class="saving-amount-cover">
 								<p class="packtiti-rightset">Savings</p>
-								<p class="packtiti-rightset ">${{package.packageSavings}}</p>
+								<p class="packtiti-rightset ">{{package.packageSavings | pricingTxt}}</p>
 							</div>            
 							<div class="add-cart-cover">   
-								<a class="btn product_addcart" ui-sref="mainLayout.packagedetail({type:'party',id:package._id})">Add to Cart</a>
+								<button class="btn product_addcart addcart-detail party-cart-margintop" ng-click="addPackage(package._id)"><img src="images/cart-icon.png"> Add to Cart</button>
 							</div>
 						</div>
 						<div class="package-contain-cover">
-	            			<div class="package-contain-titl">Package contain</div>
+	            			<div class="package-contain-titl">
+	            				<span>Package contain</span>
+	                            <div class="customize-text-cover">
+	                            	<a ui-sref="mainLayout.packagedetail({type:'party',id:package._id})"><img src="images/customize-icon1.png" ></a>
+	                            	<span>
+	                            		<a ui-sref="mainLayout.packagedetail({type:'party',id:package._id})">
+	                            			Customize
+	                            		</a>
+	                            	</span>	                            	
+	                            </div>
+                            </div>
 	            			<div class="package-inner-cover5">
 	        					<div class="ttile-divcover-main ng-scope" ng-repeat="packageItem in package.packageItems">
 	     							<h5 class="custmize-contntset">{{packageItem.title}}</h5>

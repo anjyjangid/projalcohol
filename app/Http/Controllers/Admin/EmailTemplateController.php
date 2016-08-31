@@ -235,8 +235,10 @@ class EmailTemplateController extends Controller
 
             $row[] = $value['subject'];
 
-            $row[] = '<a title="View : '.$value['title'].'" ui-sref=userLayout.emailtemplates.show({templateid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
-                     '<a title="Edit : '.$value['title'].'" ui-sref=userLayout.emailtemplates.edit({templateid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
+            /*$row[] = '<a title="View : '.$value['title'].'" ui-sref=userLayout.emailtemplates.show({templateid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
+                     '<a title="Edit : '.$value['title'].'" ui-sref=userLayout.emailtemplates.edit({templateid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';*/
+
+            $row[] = '<a title="Edit : '.$value['title'].'" ui-sref=userLayout.emailtemplates.edit({templateid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';                     
             
             $records['data'][] = $row;
         }

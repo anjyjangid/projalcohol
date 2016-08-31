@@ -62,7 +62,7 @@ class AdminPasswordController extends Controller
         $data = $user->toArray();
         $data['isAdmin'] = true;
 
-        $res = $email->sendEmail($data);       
+        $res = $email->sendEmail($data);
 
         if($res){
             return response(['status'=>'Check your email for a link to reset your password.'],200);

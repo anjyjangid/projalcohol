@@ -17,6 +17,10 @@ use DB;
 class OrderController extends Controller
 {
 
+	public function __construct()
+	{
+		$this->middleware('auth');
+	}
 
 	/**
 	 * Display the specified resource.
@@ -24,6 +28,7 @@ class OrderController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
+
 	public function show($id)
 	{
 		
@@ -52,13 +57,16 @@ class OrderController extends Controller
 
 		$user = Auth::user('user');
 
-		$order = Orders::where("_id",'=',$id)->where("user",'=',new MongoId($user->_id))->first();
+		$order = Orders::where("_id",$id)->where("user",'=',new MongoId($user->_id))->first();
 
-		$order->dop = strtotime($order->created_at);
+		if(empty($order)){
+			return response(["message"=>"Order not found"],400);
+		}
+
+		$order->dop = strtotime($order->created_at);		
 		
 		return response($order,200);
 	}
-
 
 	public function getOrders(){
 
@@ -98,4 +106,10 @@ class OrderController extends Controller
 
 		return response($orders['result'],200);
 	}
+
+	public function getTorepeat($id){
+
+	}
+
+
 }

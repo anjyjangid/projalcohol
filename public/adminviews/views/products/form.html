@@ -27,6 +27,18 @@
 								</div>
 
 							</div>
+
+							<div class="form-group hide" ng:class="{'has-error':errors.slug[0]}">
+								
+								<label class="col-md-2 control-label">Slug: <span class="required">*</span></label>
+								<div class="col-md-10">
+									<slug from="product.name" to="product.slug"></slug>
+									<input type="text" class="form-control" ng-model="product.slug" placeholder="Slug" disabled="true">
+									<span class="help-block" ng-bind="errors.slug[0]"></span>
+								</div>
+
+							</div>
+
 							<div class="form-group" ng:class="{'has-error':errors.description[0]}">
 								<label class="col-md-2 control-label">Description: <span class="required">
 								* </span>
@@ -65,25 +77,221 @@
 									<span class="help-block" ng-bind="errors.categories[0]"></span>
 								</div>
 							</div>							
+							
+							
+							
+							
+
+							
+							
+
+
+														
+
+							
+
+							<div class="form-group">
+								<label class="control-label col-md-2">Chilled/Non-chilled <span class="required" aria-required="true">
+								* </span></label>
+								<div class="col-md-4">
+								
+								<div class="radio-list">
+									<label class="radio-inline">
+									<input plugin-uniform ng-model="product.chilled" type="radio" value="1" name="chilled"> Yes </label>
+									<label class="radio-inline">
+									<input plugin-uniform ng-model="product.chilled" type="radio" value="0" name="chilled"> No </label>
+								</div>
+
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="control-label col-md-2">Is Featured<span class="required" aria-required="true">
+								* </span></label>
+								<div class="col-md-4">
+								
+									<div class="radio-list">
+										<label class="radio-inline">
+										<input plugin-uniform ng-model="product.isFeatured" type="radio" value="1" name="isFeatured"> Yes </label>
+										<label class="radio-inline">
+										<input plugin-uniform ng-model="product.isFeatured" type="radio" value="0" name="isFeatured"> No </label>
+									</div>
+
+								</div>
+							</div>
+
+							
+
+							
+
+							<div class="form-group">
+								<label class="control-label col-md-2">Is Loyalty Product<span class="required" aria-required="true">
+								* </span></label>
+								<div class="col-md-4">
+								
+									<div class="radio-list">
+										<label class="radio-inline">
+										<input plugin-uniform ng-model="product.isLoyalty" type="radio" value="1"> Yes </label>
+										<label class="radio-inline">
+										<input plugin-uniform ng-model="product.isLoyalty" type="radio" value="0"> No </label>
+									</div>
+
+								</div>
+							</div>
+
+
+							<div class="form-group" ng:class="{'has-error':errors.loyaltyValueType[0]}" ng-show="product.isLoyalty==1">
+
+								<label class="col-md-2 control-label">Loyalty Points Type:<span class="required">*</span>
+								</label>
+								<div class="col-md-10">
+									<div class="row">
+																		
+									<div class="col-sm-10">
+										<div class="row">
+											<div class="col-sm-8">
+											<select class="form-control" ng-model="product.loyaltyValueType">
+												<option value="-1">----Select Type----</option>
+												<option value="0">Fixed Points</option>
+												<option value="1">Partial (point + $)</option>
+											</select>
+											</div>
+										</div>
+
+										<div class="row" ng-show="product.loyaltyValueType == 0  || product.loyaltyValueType == 1">
+											<br>
+											<div class="col-sm-4" ng:class="{'has-error':errors.loyaltyValuePoint[0]}">
+												<span class="help-block">Points</span>
+												<input type="number" min="0" class="form-control" ng-model="product.loyaltyValuePoint" placeholder="loyalty points">
+												<span class="help-block" ng-bind="errors.loyaltyValuePoint[0]"></span>
+											</div>
+										
+											<div class="col-sm-4" ng-show="product.loyaltyValueType == 1" ng:class="{'has-error':errors.loyaltyValuePrice[0]}">
+												<span id="loyaltyValuePriceAdd">+</span>
+												<span class="help-block">price</span>
+												<input type="number" min="0" class="form-control" ng-model="product.loyaltyValuePrice" placeholder="amount">
+												<span class="help-block" ng-bind="errors.loyaltyValuePrice[0]"></span>
+											</div>
+
+										</div>
+									</div>
+
+									</div>
+									<div class="row">
+									<div class="col-sm-12">
+										<span class="help-block">Loyalty points or price or both required to purhcase product</span>	
+										<span class="help-block" ng-bind="errors.loyaltyValueType[0]"></span>									
+									</div>
+									</div>
+									
+								</div>
+							</div>
+							
+
+							<div class="form-group" ng:class="{'has-error':errors.loyalty[0]}">
+
+								<label class="col-md-2 control-label">Loyalty Value:<span class="required">*</span>
+								</label>
+								<div class="col-md-10">
+									<div class="row">
+									<div class="col-sm-2">
+										<input type="number" min="0" class="form-control" ng-model="product.loyalty" placeholder="loyalty points">
+									</div>
+									
+									<div class="col-sm-2">
+									<div class="row">
+										<select class="form-control" ng-model="product.loyaltyType">
+											<option value="0">% of price</option>
+											<option value="1">Points</option>
+										</select>
+									</div>
+									</div>
+
+									</div>
+									<div class="row">
+									<div class="col-sm-12">
+										<span class="help-block">Loyalty points to be given on product purhcase</span>
+										<span class="help-block" ng-bind="errors.loyalty[0]"></span>
+									</div>
+									</div>
+									
+								</div>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
+								<label class="col-md-2 control-label">Status: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<select class="table-group-action-input form-control input-medium" ng-model="product.status">
+										<option value="">Select...</option>
+										<option value="1">Published</option>
+										<option value="0">Not Published</option>
+									</select>
+									<span class="help-block" ng-bind="errors.status[0]"></span>
+								</div>
+							</div>
+						</div>
+
+					</tab>
+					<tab>
+					<tab-heading>Stock</tab-heading>
+						<div class="form-horizontal">
+							
 							<div class="form-group" ng:class="{'has-error':errors.sku[0]}">
 								<label class="col-md-2 control-label">SKU: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<input type="text" class="form-control" ng-model="product.sku" placeholder="">
+									<input type="text" class="form-control  input-medium" ng-model="product.sku" placeholder="">
 									<span class="help-block" ng-bind="errors.sku[0]"></span>
 								</div>
-							</div>
-							
-							
-							<div class="form-group" ng:class="{'has-error':errors.quantity[0]}">
+							</div>					
+
+							<div class="form-group" ng:class="{'has-error':errors['store.quantity'][0]}">
 								<label class="col-md-2 control-label">Quantity: <span class="required">
 								* </span>
 								</label>
 								<div class="col-md-10">
-									<input type="number" min="0" class="form-control" ng-model="product.quantity" placeholder="">									
+									<input type="number" min="0" class="form-control input-medium" ng-model="product.store.quantity" placeholder="">									
 									<span class="help-block">(in stock)</span>
-									<span class="help-block" ng-bind="errors.quantity[0]"></span>
+									<span class="help-block" ng-bind="errors['store.quantity'][0]"></span>
+								</div>
+							</div>
+
+							
+
+							<div class="form-group" ng:class="{'has-error':errors['store.threshold'][0]}">
+								<label class="col-md-2 control-label">Re-order threshold: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="number" min="1" class="form-control input-medium" ng-model="product.store.threshold" placeholder="">									
+									<span class="help-block" ng-bind="errors['store.threshold'][0]"></span>
+								</div>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors['store.maxQuantity'][0]}">
+								<label class="col-md-2 control-label">Maximum Quantity: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="number" min="1" class="form-control input-medium" ng-model="product.store.maxQuantity" placeholder="">									
+									<span class="help-block" ng-bind="errors['store.maxQuantity'][0]"></span>
+								</div>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
+								<label class="col-md-2 control-label">Available for order : <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<select class="table-group-action-input form-control input-medium" ng-model="product.deliveryType">
+										<option value="0">Both</option>
+										<option value="1">Express</option>
+										<option value="2">Advanced</option>
+									</select>
+									<span class="help-block" ng-bind="errors.status[0]"></span>
 								</div>
 							</div>
 
@@ -91,14 +299,13 @@
 								<label class="col-md-2 control-label">Out of Stock Status: <span class="required">
 								* </span>
 								</label>
-								<div class="col-md-10">
+								<div class="col-md-4">
 									<select ng-options="data.id as data.label for data in outOfStockType" class="form-control" ng-model="product.outOfStockType">
 									</select>									
 									<span class="help-block">(status shown when a product is out of stock)</span>
 									<span class="help-block" ng-bind="errors.outOfStockType[0]"></span>
 								</div>
 							</div>
-
 
 							<div ng-show="product.outOfStockType==2" class="form-group" >
 								<label class="col-md-2 control-label">Set Availability: <span class="required">
@@ -116,27 +323,85 @@
 									<span class="help-block" ng-bind="errors.availabilityTime[0]"></span>
 								</div>
 							</div>
-							<div class="form-group" ng:class="{'has-error':errors.threshold[0]}">
-								<label class="col-md-2 control-label">Re-order threshold: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<input type="number" min="1" class="form-control" ng-model="product.threshold" placeholder="">									
-									<span class="help-block" ng-bind="errors.threshold[0]"></span>
-								</div>
-							</div>
+							
+						</div>		
+					</tab>	
+					<tab>
+						<tab-heading>Dealers</tab-heading>
+						
+						<div class="text-align-reverse margin-bottom-10">
+							<a ng-click="product.dealerData.push({})" class="btn yellow">
+								<i class="fa fa-plus"></i> Add Dealer 
+							</a>							
+						</div>
+						<div ng-show="errors.dealerData[0]" class="alert alert-danger fade in">
+							<i class="fa-lg fa fa-warning"></i>
+							{{ errors.dealerData[0] }}
+						</div>
+						<div ng-show="errors['store.defaultDealerId'][0]" class="alert alert-danger fade in">
+							<i class="fa-lg fa fa-warning"></i>
+							{{ errors['store.defaultDealerId'][0] }}
+						</div>
+						<div ng-show="errors.repeated[0]" class="alert alert-danger fade in">
+							<i class="fa-lg fa fa-warning"></i>
+							{{ errors.repeated[0] }}
+						</div>						
+						<table class="table table-bordered table-hover">
+							<thead>
+								<tr role="row" class="heading">
+									<th width="5%">
+										 Sr.
+									</th>
+									<th width="20%">
+										 Dealer
+									</th>	
+									<th width="20%">
+										Trade deal(optional)
+									</th>
+									<th width="10%">
+										Default
+									</th>																	
+									<th width="10%">
+										Action
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="d in product.dealerData">
+									<td>{{$index+1}}</td>
+									<td ng:class="{'has-error':errors['dealerData.'+$index+'.dealerId'][0] || errors.repeated[0]}">										
+										<select ng-options="d._id as d.title for d in dealerlist" class="form-control" ng-model="d.dealerId">
+										</select>										
+										<span class="help-block" ng-bind="errors['dealerData.'+$index+'.dealerId'][0]"></span>
+									</td>
+									<td>
+										<div class="col-md-12">
+											<div class="input-group" ng:class="{'has-error':errors['dealerData.'+$index+'.tradeQuantity'][0] || errors['dealerData.'+$index+'.tradeValue'][0]}">												
+												<input type="number" step="1" class="form-control" ng-model="d.tradeQuantity">																									
+												<span class="input-group-addon">
+												<i class="fa fa-plus"></i>
+												</span>												
+												<input type="number" step="1" class="form-control" ng-model="d.tradeValue">																																					
+											</div>											
+											<span class="help-block">Purchase Qty + Free Qty</span>
+											<span class="help-block" ng-bind="errors['dealerData.'+$index+'.tradeQuantity'][0]"></span>
+											<span class="help-block" ng-bind="errors['dealerData.'+$index+'.tradeValue'][0]"></span>
+										</div>										
+									</td>
+									<td>
+										<a ng-class="(d.dealerId && product.store.defaultDealerId == d.dealerId)?'btn-success':''" class="btn btn-sm" ng-click="setDefault(d.dealerId)">
+											Default
+										</a>
+									</td>
+									<td>
+										<a href="#" class="btn default btn-sm" ng-click="removeDealer($index,d.dealerId)">
+										<i class="fa fa-times"></i> Remove </a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 
-							<div class="form-group" ng:class="{'has-error':errors.maxQuantity[0]}">
-								<label class="col-md-2 control-label">Maximum Quantity: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<input type="number" min="1" class="form-control" ng-model="product.maxQuantity" placeholder="">									
-									<span class="help-block">(in stock)</span>
-									<span class="help-block" ng-bind="errors.maxQuantity[0]"></span>
-								</div>
-							</div>
-
+						<!-- <div class="form-horizontal">
 							<div class="form-group" ng:class="{'has-error':errors.dealers[0]}">
 								<label class="col-md-2 control-label">Select Dealer: <span class="required">
 								* </span>
@@ -147,62 +412,9 @@
 									<span class="help-block">(in stock)</span>
 									<span class="help-block" ng-bind="errors.dealers[0]"></span>
 								</div>
-							</div>							
-
-							<div class="form-group" ng:class="{'has-error':errors.loyalty[0]}">
-								<label class="col-md-2 control-label">Loyalty Value: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<input type="number" min="0" class="form-control" ng-model="product.loyalty" placeholder="">																		
-									<span class="help-block">Loyalty points to be given on product purhcase</span>
-									<span class="help-block" ng-bind="errors.loyalty[0]"></span>
-								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-md-2">Chilled/Non-chilled <span class="required" aria-required="true">
-								* </span></label>
-								<div class="col-md-4">
-								
-								<div class="radio-list">
-									<label class="radio-inline">
-									<input plugin-uniform ng-model="product.chilled" type="radio" value="1" name="chilled"> Yes </label>
-									<label class="radio-inline">
-									<input plugin-uniform ng-model="product.chilled" type="radio" value="0" name="chilled"> No </label>
-								</div>
-
-								</div>
-							</div>
-							<div class="form-group">
-								<label class="control-label col-md-2">Is Featured<span class="required" aria-required="true">
-								* </span></label>
-								<div class="col-md-4">
-								
-									<div class="radio-list">
-										<label class="radio-inline">
-										<input plugin-uniform ng-model="product.isFeatured" type="radio" value="1" name="isFeatured"> Yes </label>
-										<label class="radio-inline">
-										<input plugin-uniform ng-model="product.isFeatured" type="radio" value="0" name="isFeatured"> No </label>
-									</div>
-
-								</div>
-							</div>														
-							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
-								<label class="col-md-2 control-label">Status: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<select class="table-group-action-input form-control input-medium" ng-model="product.status">
-										<option value="">Select...</option>
-										<option value="1">Published</option>
-										<option value="0">Not Published</option>
-									</select>
-									<span class="help-block" ng-bind="errors.status[0]"></span>
-								</div>
-							</div>
-						</div>
-
-					</tab>
+						</div> -->
+					</tab>	
 					<tab>
 						<tab-heading>Pricing</tab-heading>
 						<div class="form-horizontal">
@@ -252,7 +464,7 @@
 						        </thead>
 						        <tbody>					            
 						            <tr><td colspan="7"><h4>Single Purchase</h4></td></tr>
-						            <tr ng-if="price.category == 'pricing'" ng-repeat="(kp, price) in pricing.settings">						                
+						            <tr ng-if="price.category == 'pricing' && kp!='gift_packaging'" ng-repeat="(kp, price) in pricing.settings">						                
 						                <td class="control-label"> 
 						                	<label class="control-label">
 						                		{{price.label}}: <span class="required"> * </span>
@@ -397,18 +609,18 @@
 							<div class="form-group" ng:class="{'has-error':errors.metaKeywords[0]}">
 								<label class="col-md-2 control-label">Meta Keywords:</label>
 								<div class="col-md-10">
-									<textarea class="form-control maxlength-handler" rows="8" ng-model="product.metaKeywords" maxlength="1000"></textarea>
+									<textarea class="form-control maxlength-handler" rows="5" ng-model="product.metaKeywords" maxlength="150"></textarea>
 									<span class="help-block">
-									max 1000 chars </span>
+									max 150 chars </span>
 									<span class="help-block" ng-bind="errors.metaKeywords[0]"></span>
 								</div>
 							</div>
 							<div class="form-group" ng:class="{'has-error':errors.metaDescription[0]}">
 								<label class="col-md-2 control-label">Meta Description:</label>
 								<div class="col-md-10">
-									<textarea class="form-control maxlength-handler" rows="8" ng-model="product.metaDescription" maxlength="255"></textarea>
+									<textarea class="form-control maxlength-handler" rows="5" ng-model="product.metaDescription" maxlength="150"></textarea>
 									<span class="help-block">
-									max 255 chars </span>
+									max 150 chars </span>
 									<span class="help-block" ng-bind="errors.metaDescription[0]"></span>
 								</div>
 							</div>
@@ -453,6 +665,7 @@
 							<tbody>
 								<tr ng-repeat="f in product.imageFiles">
 									<td ng:class="{'has-error':errors['imageFiles.'+$index+'.thumb'][0]}">
+
 										<div class="fileinput fileinput-new" data-provides="fileinput">
 											<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
 												<img err-src="asset/i/defaultImage.png" 
@@ -470,6 +683,7 @@
 											</div>
 										</div>
 										<span class="help-block" ng-bind="errors['imageFiles.'+$index+'.thumb'][0]"></span>
+										
 									</td>
 									<td ng:class="{'has-error':errors['imageFiles.'+$index+'.label'][0]}">
 										<input type="text" class="form-control" ng-model="f.label">
@@ -481,7 +695,7 @@
 									</td>
 									<td>
 										<label>
-											<input plugin-uniform type="radio" ng-model="f.coverimage" value="1" name="coverimage">
+											<input plugin-uniform type="radio" ng-model="f.coverimage" value="1" name="coverimage" ng-click="setCover($index)">
 										</label>
 									</td>									
 									<td>
@@ -492,27 +706,76 @@
 							</tbody>
 						</table>
 					</tab>
+
+					<tab>
+						<tab-heading>Suggestion</tab-heading>
+						
+						<div class="form-group row">
+							<label class="col-md-2 control-label">Products:</label>
+							<div class="col-md-10">
+								<a class="btn green" ng-click="clearSearch()" data-target='#static' data-toggle="modal"><i class="fa fa-lg fa-plus"></i>
+									Add Product
+								</a>								
+							</div>
+						</div>
+
+					
+						<div class="row">
+							<div class="col-md-2" ng-repeat="pro in product.suggestions">
+								<div class="thumbnail">
+									<img width="100" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{pro.imageFiles[0].source}}">	
+									<div class="caption">
+										<h5 ng-bind="pro.name"></h5>
+										<a class="btn btn-default" ng-click="removeProduct($index)"><i class="fa fa-trash"></i> Remove</a>
+									</div>
+								</div>										
+							</div>
+						</div>
+					</tab>
 				</tabset>				
 			</div>			
 		</div>
 		</form>
 	</div>
+	<!-- <pre>{{cd|json}}</pre> -->
+	<!-- <pre>{{product|json}}</pre> -->
 </div>
 
-<!-- <script type="text/ng-template" id="categoryLiTree">
-	<li ng-repeat="c in childOf	(categories, parent)">
-		<label><input type="checkbox" ng-model="c.selected" my-change="{{c._id}}">{{c.cat_title}}</label>
-		<ul class="list-unstyled" ng-init="parent=c._id" ng-include="'categoryLiTree'"></ul>
-	</li>	
-</script> -->
-
-
-
-<!-- <pre>{{ product|json }}</pre> -->
-<!-- <pre>{{ cd|json }}</pre> -->
-
-<!-- <pre>{{ pricing|json }}</pre>
-
-<pre>{{ globalPricing|json }}</pre>
- -->
-
+<div data-replace="true" tabindex="-1" class="modal fade modal-scroll" id="static" >
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button aria-hidden="true" data-dismiss="modal" class="close" type="button"></button>
+				<h4 class="modal-title">Select Package Items</h4>
+			</div>
+			<div class="modal-body">
+				<div class="table-responsive">
+					
+					<input ng-model="searchbox" type="search" ng:class="{'spinner':searching}" ng-keyup="searchItem($event)" class="form-control" placeholder="Search items to add in package">						
+					
+					<table class="table table-striped table-hover" id="orderlist">
+						<tbody>
+							<tr ng-repeat="p in checkItem()">
+								<td width="100" valign="middle">
+									<img width="100" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{p.imageFiles[0].source}}">
+								</td>
+								<td valign="middle">									
+									{{p.name}}
+									<div><b>${{p.sprice}}</b></div>
+								</td>
+								<td valign="middle">
+									<a ng-if="!p.added" ng-click="addItem(p)" class="pull-right btn btn-default btn-xs green-stripe additem"><i class="fa fa-plus"></i> Add</a>
+									<span ng-if="p.added" class="pull-right"><i class="fa fa-check"></i> Added</span>
+								</td>
+							</tr>							
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer">				
+				<button class="btn green" data-dismiss="modal" type="button">Done</button>
+			</div>
+		</div>
+	</div>
+	
+</div>

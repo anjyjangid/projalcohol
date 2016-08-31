@@ -1,195 +1,363 @@
 <div class="checkbox-gray-top">
-<div class="checkbox-gray-top-first">
+	<div class="checkbox-gray-top-first">
 
-	<md-switch aria-label="cart.nonchilled" ng-model="cart.nonchilled" ng-change="alcoholCart.setCartChilled(cart.nonchilled)"></md-switch>
+		<md-switch aria-label="cart.nonchilled" ng-model="cart.nonchilled" ng-change="alcoholCart.setCartChilled(cart.nonchilled)"></md-switch>
 
+	</div>
+	<div class="checkbox-gray-toptext">SAVE {{cart.discount.nonchilled.exemption | pricingTxt}} by choosing to have your drinks delivered Non-Chilled.</div>
 </div>
-<div class="checkbox-gray-toptext">SAVE {{cart.discount.nonchilled.exemption | pricingTxt}} by choosing to have your drinks delivered Non-Chilled.</div>
-</div>
+
 <div class="checkoutmiddletable">
+	<div class="table-responsive">
+		<table class="table cart-table">
+			<tbody>
+				<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getProducts()"></tr>
+				<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0">
 
-<table class="table cart-table">          
-	<tbody>
-		<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getProducts()"></tr>
-		<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0">
-			
-			<td width="52%">
+					<td width="52%">
 
-				<span ng-if="(cartproduct.onlyForAdvance && cart.delivery.type==0) || cartproduct.isNotAvailable" class="cart-alert">!
-				<md-tooltip class="cart-alert-tooltip" md-direction="top" >Sorry! This item is either out of stock, or unavailable for the quantity or delivery time selected.</md-tooltip>
-	  	</span>
+						<span ng-if="cartproduct.isAvail()" class="cart-alert">!
+							<md-tooltip class="cart-alert-tooltip" md-direction="top">Sorry! This item is either out of stock, or unavailable for the quantity or delivery time selected.</md-tooltip>
+						</span>
 
-				<div class="orhistry2_td2procdtcvr">
-					<span class="cursor-pointer">
-						<a ui-sref="mainLayout.product({product:cartproduct.product._id})" title="View Product">
-							<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="img-responsive" />
-						</a>
-					</span>
+						<div class="orhistry2_td2procdtcvr">
+						<span class="cursor-pointer">
+							<a ui-sref="mainLayout.product({product:cartproduct.product.slug})" title="View Product">
+								<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="img-responsive" />
+							</a>
+						</span>
 
-					<div class="checkouter-td-right-text">
-						<div class="orhistry2_td2proctext1">{{cartproduct.product.name}}</div>
-						<div class="orhistry2_td2proctext2">{{cartproduct.product.shortDescription}}</div>
-						<div class="orhistry2_td2proctext1">{{cartproduct.unitPrice | pricingTxt}}</div>
-						<div class="orhistry2_td2proctext2">unit Price</div>
-				 	</div> 
+							<div class="checkouter-td-right-text">
+								<div class="orhistry2_td2proctext1">{{cartproduct.product.name}}</div>
+								<div class="orhistry2_td2proctext2">{{cartproduct.product.shortDescription}}</div>
+								<div class="orhistry2_td2proctext1">{{cartproduct.unitPrice | pricingTxt}}</div>
+								<div class="orhistry2_td2proctext2">unit Price</div>
+							</div> 
 
-				</div>
+						</div>
 
-			</td>
-			<td width="131px">
-			
-				<div class="prod_chilled" ng-class="{
-														notchilled:!cartproduct[type+'Status'],
-														invisible:!cartproduct.product.chilled || cart.nonchilled,
-														
-													}"
-													ng-click="alcoholCart.updateChilledStatus(cartproduct._id,type)">
-					<span>Chilled</span>
-					<div class="prod_chilled_icon"></div>
-				</div>
+					</td>
+					<td width="131px">
+
+						<div class="prod_chilled" ng-class="{
+						notchilled:!cartproduct[type+'Status'],
+						invisible:!cartproduct.product.chilled || cart.nonchilled,
+
+						}"
+						ng-click="alcoholCart.updateChilledStatus(cartproduct._id,type)">
+						<span>Chilled</span>
+						<div class="prod_chilled_icon"></div>
+						</div>
+
+					</td>
+					<td>
+						<div class="checkoutmiddlevlauediv">
+
+							<input type="text" ng-model="cartproduct[type]" value="cartproduct[type]" min="0" mquantity="cartproduct[type+'Max']" ng-touch-spin on-increment="addtocart(cartproduct.product._id,type)" on-decrement="addtocart(cartproduct.product._id,type)">
+
+						</div>
+					</td>
+					<td>
+						<div class="orderhistry2price">{{cartproduct.discountedUnitPrice * cartproduct[type] | pricingTxt}}</div>
+					</td>
+					<td> 
+						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="remove(key,type)"><i class="glyphicon glyphicon-trash"></i></a>
+					</td>
+				</tr>
+				<tr ng-repeat-end></tr>
+
+				<tr ng-repeat="(key, package) in alcoholCart.getPackages()">
+
+					<td width="52%">
+
+						<div class="orhistry2_td2procdtcvr">
+							<span>
+								<a ui-sref="mainLayout.packages({type:package.original.type==2?'cocktail':'party'})">
+									<img err-pro-src="" ng-src="packages/i/{{package.original.coverImage.source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" />
+								</a>
+							</span>
+
+							<div class="checkouter-td-right-text">
+								<div class="orhistry2_td2proctext1">{{package._name}}</div>
+								<div class="orhistry2_td2proctext2">{{package.original.description}}</div>
+								<div class="orhistry2_td2proctext1">{{package.original.packagePrice | pricingTxt}}</div>
+								<div class="orhistry2_td2proctext2">unit Price</div>
+							</div> 
+						</div>
+					</td>
+					<td></td>
+					<td>
+
+						<div class="checkoutmiddlevlauediv">
+
+							<input type="text" ng-model="package.original.packageQuantity" value="package._quantity" min="0" mquantity="package._maxquantity" ng-touch-spin on-increment="alcoholCart.addPackage(package._uniqueId,package.original)" on-decrement="alcoholCart.addPackage(package._uniqueId,package.original)">
+
+						</div>
+					</td>
+					<td>
+						<div class="orderhistry2price">{{package._price | pricingTxt}}</div>
+					</td>
+					<td> 
+						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="package.original.packageQuantity=0;alcoholCart.removePackage(package._uniqueId,true)"><i class="glyphicon glyphicon-trash"></i></a>
+					</td>
+				</tr>
+
+				<tr ng-repeat="(key, giftCard) in alcoholCart.getGiftCards()">
+
+					<td width="52%">
+
+						<div class="orhistry2_td2procdtcvr">
+							<span>
+								{{giftCard.recipient.price | pricingTxt}}
+							</span>
+
+							<div class="checkouter-td-right-text">
+								<div class="orhistry2_td2proctext1">{{giftCard.recipient.name}}</div>
+								<div class="orhistry2_td2proctext2">{{giftCard.recipient.message}}</div>
+								<div class="orhistry2_td2proctext1">{{giftCard.recipient.price | pricingTxt}}</div>
+								<div class="orhistry2_td2proctext2">unit Price</div>
+							</div> 
+						</div>
+					</td>
+					<td></td>
+					<td>
+
+						<div class="checkoutmiddlevlauediv">
+
+							<input type="text" ng-model="giftCard.recipient.quantity" value="giftCard.recipient.quantity" min="0" mquantity="100" ng-touch-spin on-increment="updateGiftCard(giftCard.getUniqueId())" on-decrement="updateGiftCard(giftCard.getUniqueId())">
+
+						</div>
+					</td>
+					<td>
+						<div class="orderhistry2price">{{giftCard.getPrice() | pricingTxt}}</div>
+					</td>
+					<td> 
+						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="package.original.packageQuantity=0;alcoholCart.removeCard(giftCard._uniqueId,true)"><i class="glyphicon glyphicon-trash"></i></a>
+					</td>
+				</tr>				
+
+				<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getLoyaltyProducts()"></tr>
+				<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0">
+
+					<td width="52%">
+
+						<span ng-if="cartproduct.isAvail()" class="cart-alert">!
+							<md-tooltip class="cart-alert-tooltip" md-direction="top">Sorry! This item is either out of stock, or unavailable for the quantity or delivery time selected.</md-tooltip>
+						</span>
+
+						<div class="orhistry2_td2procdtcvr">
+						<span class="cursor-pointer">
+							<a ui-sref="mainLayout.product({product:cartproduct.product.slug})" title="View Product">
+								<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="img-responsive" />
+							</a>
+						</span>
+
+							<div class="checkouter-td-right-text">
+								<div class="orhistry2_td2proctext1">{{cartproduct.product.name}}</div>
+								<div class="orhistry2_td2proctext2">{{cartproduct.product.shortDescription}}</div>
+								<div class="orhistry2_td2proctext1">
+									<i>LP {{cartproduct.loyaltyValue.point}}</i>
+									<i ng-if='cartproduct.loyaltyValue.price>0'> + {{cartproduct.loyaltyValue.price | pricingTxt}}</i>
+								</div>
+								<div class="orhistry2_td2proctext2">unit Price</div>
+							</div> 
+
+						</div>
+
+					</td>
+					<td width="131px">
+
+						<div class="prod_chilled" ng-class="{
+						notchilled:!cartproduct[type+'Status'],
+						invisible:!cartproduct.product.chilled || cart.nonchilled,
+
+						}"
+						ng-click="alcoholCart.updateChilledStatus(cartproduct._id,type)">
+						<span>Chilled</span>
+						<div class="prod_chilled_icon"></div>
+						</div>
+
+					</td>
+					<td>
+						<div class="checkoutmiddlevlauediv">
+
+							<input type="text" ng-model="cartproduct[type]" value="cartproduct[type]" min="0" mquantity="cartproduct[type+'Max']" ng-touch-spin on-increment="addtocart(cartproduct.product._id,type)" on-decrement="addtocart(cartproduct.product._id,type)">
+
+						</div>
+					</td>
+					<td>
+						<div class="orderhistry2price">
+							<i>LP {{cartproduct.loyaltyValue.point * cartproduct[type]}}</i>
+							<i ng-if='cartproduct.loyaltyValue.price>0'> + {{cartproduct.loyaltyValue.price * cartproduct[type] | pricingTxt}}</i>
+							
+						</div>
+					</td>
+					<td> 
+						<!-- <a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="remove(key,type)"><i class="glyphicon glyphicon-trash"></i></a> -->
+					</td>
+				</tr>
+				<tr ng-repeat-end></tr>
 				
-			</td>
-			<td>
-				<div class="checkoutmiddlevlauediv">
+
+				<tr ng-repeat="(key, promotion) in alcoholCart.getPromotions()">
+
+					<td width="52%">
+
+						<div class="orhistry2_td2procdtcvr">
+							<span>
+								<a ui-sref="mainLayout.product({product:promotion.product.slug})">
+									<img err-pro-src="" ng-src="products/i/200/{{promotion.product._image}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" />
+								</a>
+							</span>
+
+							<div class="checkouter-td-right-text">
+								<div class="orhistry2_td2proctext1">{{promotion.product._title}}</div>
+								<div class="orhistry2_td2proctext2">{{promotion.product.description}}</div>						
+								<div class="orhistry2_td2proctext2">({{promotion._title}})</div>
+							</div> 
+						</div>
+					</td>
+					<td></td>
+					<td></td>
+					<td>
+						<div class="orderhistry2price">{{promotion.product._price | pricingTxt:true}}</div>
+
+					</td>
+					<td> 
+						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removePromotion(promotion._id)"><i class="glyphicon glyphicon-trash"></i></a>
+					</td>
+				</tr>
+
+
+				<tr ng-repeat-start="(key, gift) in alcoholCart.getGifts()"></tr>
+				<tr>
+					<td width="52%">
+
+						<div class="orhistry2_td2procdtcvr">
+							<span>
+								<a>
+									<img err-pro-src="" ng-src="{{gift.imageLink}}" alt="gift-pic" class="img-responsive" />
+								</a>
+							</span>
+
+							<div class="checkouter-td-right-text">
+								<div class="orhistry2_td2proctext1">{{gift.title}}</div>
+								<div class="orhistry2_td2proctext2">({{gift.subTitle}})</div>
+								<div class="orhistry2_td2proctext2">{{gift.description}}</div>
+							</div>
+						</div>
+
+						<ul class="list-inline gift-pack-products">
+							<li ng-repeat="(key, giftPro) in gift.getProducts()">
+								<a ui-sref="mainLayout.product({product:giftPro.cartPro.product.slug})" title="View :: {{giftPro.cartPro.product.name}}" ng-init="giftPro.cartPro = alcoholCart.getProductInCartById(giftPro._id)">
+								      	
+									<img err-pro-src="" ng-src="products/i/200/{{giftPro.cartPro.product.imageFiles | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
+								</a>
+							</li>
+						</ul>
+					</td>
+					<td></td>
+					<td>
+						{{gift.getProductAttachedCount()}}/{{gift.gsLimit()}}
+					</td>
+					<td>
+						<div class="orderhistry2price">{{gift.gsPrice() | pricingTxt}}</div>
+
+					</td>
+					<td> 
+						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removeGift(gift.getUniqueId(),true)"><i class="glyphicon glyphicon-trash"></i></a>
+					</td>
+				</tr>
 				
-					<input type="text" ng-model="cartproduct[type]" value="cartproduct[type]" min="1" mquantity="cartproduct[type+'Max']" ng-touch-spin on-increment="addtocart(cartproduct.product._id,type)" on-decrement="addtocart(cartproduct.product._id,type)">
-					
-				</div>
-			</td>
-			<td>
-				<div class="orderhistry2price">{{cartproduct.discountedUnitPrice * cartproduct[type] | pricingTxt}}</div>
-			</td>
-			<td> 
-				<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="remove(key,type)"><i class="glyphicon glyphicon-trash"></i></a>
-			</td>
-		</tr>
-		<tr ng-repeat-end></tr>
 
-		<tr ng-repeat="(key, package) in alcoholCart.getPackages()">
-		
-			<td width="52%">
-			
-				<div class="orhistry2_td2procdtcvr">
-					<span>
-						<a ui-sref="mainLayout.packages({type:package.original.type==2?'cocktail':'party'})">
-							<img err-pro-src="" ng-src="packages/i/{{package.original.coverImage.source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" />
-						</a>
-					
-					</span>
+				<!-- gift package products start -->
+					<!-- <tr ng-repeat="(key, giftPro) in gift.getProducts()">
 
+						<td width="52%" ng-init="giftPro.cartPro = alcoholCart.getProductById(giftPro._id)">
+							
+							<div class="orhistry2_td2procdtcvr">
+								<span class="cursor-pointer">
+									<a ui-sref="mainLayout.product({product:giftPro.cartPro.product.slug})" title="View Product">
+										<img err-pro-src="" ng-src="products/i/200/{{giftPro.cartPro.product.imageFiles | getProductThumb}}" alt="" class="img-responsive" />
+									</a>
+								</span>
 
-					<div class="checkouter-td-right-text">
-						<div class="orhistry2_td2proctext1">{{package._name}}</div>
-						<div class="orhistry2_td2proctext2">{{package.original.description}}</div>
-						<div class="orhistry2_td2proctext1">{{package.original.packagePrice | pricingTxt}}</div>
-						<div class="orhistry2_td2proctext2">unit Price</div>
-				 	</div> 
-				</div>
-			</td>
-			<td>					
-			</td>
-			<td>
+								<div class="checkouter-td-right-text">
+									<div class="orhistry2_td2proctext1">{{giftPro.cartPro.product.name}}</div>
+									<div class="orhistry2_td2proctext2">{{giftPro.cartPro.product.shortDescription}}</div>
+									<div class="orhistry2_td2proctext1">{{giftPro.cartPro.unitPrice | pricingTxt}}</div>
+									<div class="orhistry2_td2proctext2">unit Price</div>
+								</div> 
 
-				<div class="checkoutmiddlevlauediv">
+							</div>
 
-					<input type="text" ng-model="package.original.packageQuantity" value="package._quantity" min="1" mquantity="package._maxquantity" ng-touch-spin on-increment="alcoholCart.addPackage(package._uniqueId,package.original)" on-decrement="alcoholCart.addPackage(package._uniqueId,package.original)">
-					
-				</div>
-			</td>
-			<td>
-				<div class="orderhistry2price">{{package._price | pricingTxt}}</div>
-			</td>
-			<td> 
-				<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="package.original.packageQuantity=0;alcoholCart.removePackage(package._uniqueId,true)"><i class="glyphicon glyphicon-trash"></i></a>
-			</td>
-		</tr>
+						</td>
+						
+						<td width="131px">
 
-		<tr ng-repeat="(key, promotion) in alcoholCart.getPromotions()">
+							<div class="prod_chilled" ng-class="{
+							notchilled:giftPro.ischilled,
+							invisible:!giftPro.cartPro.product.chilled || cart.nonchilled,
 
-			<td width="52%">
+							}"
+							ng-click="giftPro.toggleChilledStatus()">
+							<span>Chilled</span>
+							<div class="prod_chilled_icon"></div>
+							</div>
 
-				<div class="orhistry2_td2procdtcvr">
-					<span>
-						<a ui-sref="mainLayout.product({product:promotion.product._id})">
-							<img err-pro-src="" ng-src="products/i/200/{{promotion.product._image}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" />
-						</a>
-					</span>
+						</td>
+						<td>
+							<div class="checkoutmiddlevlauediv">
 
-					<div class="checkouter-td-right-text">
-						<div class="orhistry2_td2proctext1">{{promotion.product._title}}</div>
-						<div class="orhistry2_td2proctext2">{{promotion.product.description}}</div>						
-						<div class="orhistry2_td2proctext2">({{promotion._title}})</div>
-				 	</div> 
-				</div>
-			</td>
-			<td></td>
-			<td></td>
-			<td>
-				<div class="orderhistry2price">{{promotion.product._price | pricingTxt:true}}</div>
-				
-			</td>
-			<td> 
-				<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removePromotion(promotion._id)"><i class="glyphicon glyphicon-trash"></i></a>
-			</td>
-		</tr>
-		
-		
-	</tbody>
-</table>
+								<input type="text" ng-model="giftPro.quantity" value="giftPro.quantity" min="0" mquantity="giftPro.cartPro['qNChilled']" ng-touch-spin on-increment="addtocart()" on-decrement="addtocart()">
+
+							</div>
+						</td>
+						<td>
+							<div class="orderhistry2price">{{giftPro.cartPro.discountedUnitPrice | pricingTxt}}</div>
+						</td>
+						<td> 
+							<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="remove(key,type)"><i class="glyphicon glyphicon-trash"></i></a>
+						</td>
+					</tr> -->
+				<!-- gift package products end -->
+
+				<tr ng-repeat-end></tr>
+
+			</tbody>
+		</table>
+	</div>
 </div>
+
 <div class="checkboxtotaldiv">
- <div class="checkboxtotaldiv-top">
-	<div class="checkboxtotaldiv-title">Subtotal</div>
-	<div class="checkboxtotaldiv-text">{{alcoholCart.getSubTotal() | pricingTxt}}</div>
- </div>
- <div class="checkboxtotaldiv-middle">
-	<div class="checkboxtotaldiv-middle-first">
-		<div class="checkboxtotaldiv-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
+	<div class="checkboxtotaldiv-top">
+		<div class="checkboxtotaldiv-title">Subtotal</div>
+		<div class="checkboxtotaldiv-text">{{alcoholCart.getSubTotal() | pricingTxt}}</div>
+	</div>
+	<div class="checkboxtotaldiv-middle">
+		<div class="checkboxtotaldiv-middle-first">
+			<div class="checkboxtotaldiv-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
 
-		<div class="checkboxtotaldiv-text" ng-if="!cart.delivery.charges">Free</div>
-		<div class="checkboxtotaldiv-text" ng-if="cart.delivery.charges>0">{{alcoholCart.getDeliveryCharges() | pricingTxt }}</div>
-		
-	</div>
-	<div class="checkboxtotaldiv-middle-first">
-	<div class="checkboxtotaldiv-title">Service Charge <span class=""><img src="images/questionimg.png"></span></div>
-	<div class="checkboxtotaldiv-text">{{alcoholCart.getAllServicesCharges() | pricingTxt}}</div>
-	</div>
-	<div class="checkboxtotaldiv-middle-first">
-	<div class="checkboxtotaldiv-title">Discount (Non-Chilled) <span class=""><img src="images/questionimg.png"></span></div>
-	<div class="checkboxtotaldiv-text" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount() | pricingTxt}}</div>
-	</div>
- </div>
- <div class="checkboxtotaldiv-buttom">
-	<div class="checkboxtotaldiv-title">Total</div>
-	<div class="checkboxtotaldiv-text">{{alcoholCart.getCartTotal() | pricingTxt}}
-		<!-- <div class="congratulationpopup">
-			<div class="congratulationpopupimg"><img src="images/thumbimg.png"></div>
-			<div class="congratulationpopuptext">
-			 <div class="congratulationpopuptext-title">Congratulations!</div>
-			 <div class="congratulationpopuptext-text">Advance ordering discounts have been applied!</div>
+			<div class="checkboxtotaldiv-text" ng-if="!cart.delivery.charges">Free</div>
+			<div class="checkboxtotaldiv-text" ng-if="cart.delivery.charges>0">{{alcoholCart.getDeliveryCharges() | pricingTxt }}</div>
+
+		</div>
+		<div class="checkboxtotaldiv-middle-first">
+			<div class="checkboxtotaldiv-title">Service Charge <span class=""><img src="images/questionimg.png"></span></div>
+			<div class="checkboxtotaldiv-text">{{alcoholCart.getAllServicesCharges() | pricingTxt}}</div>
+		</div>
+		<div class="checkboxtotaldiv-middle-first">
+			
+			<div class="checkboxtotaldiv-title">Discount (Non-Chilled) <span class="">
+				<img src="images/questionimg.png"></span>
 			</div>
-		</div> -->
-	</div>
- </div>
-</div>
-<div class="checkouterwantbuttonouter">
-	<div class="checkouterwantfirst">
-	<button data-target="#Modal-dontmiss" data-toggle="modal" class="checkouterwantbutton" ng-class="{selected:cart.delivery.type==0}" ng-click="alcoholCart.setDeliveryType(0)">I want this order Now!</button>
-	<span>(Standard 1 hour delivery)</span>
-	<button class="checkoutergitpackage"  ng-click="showAlert($event)" >Gift Packaging</button>
-</div>
 
-	<div class="checkouterexprienceouter" ng-show="cart.delivery.type==0">
-
-	 <div class="checkouterexpressdivleft checkbox-gray-top-first">
-	 <md-switch aria-label="express" ng-model="cart.service.express.status" ng-change="alcoholCart.setExpressStatus(cart.service.express.status)"></md-switch>
-	
+			<div class="checkboxtotaldiv-text" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount() | pricingTxt}}</div>
+		</div>
 	</div>
-	 <div class="checkouterexpressdiv">
-		 <div class="checkouterexpresstitle">Express Delivery</div>
-		 <div class="checkouterexpresstext">Gauranteed 30 mins delivery.</div>
-		 <div class="checkouterexpresstext">{{cart.service.express.charges | pricingTxt}} surcharge applies. <a href="javascript:void(0)">Terms &amp; Conditions</a> applies.</div>
-	 </div>
+	<div class="checkboxtotaldiv-buttom">
+		<div class="checkboxtotaldiv-title">Total</div>
+		<div class="checkboxtotaldiv-text">{{alcoholCart.getCartTotal() | pricingTxt}}</div>
 	</div>
 </div>
 
@@ -197,13 +365,38 @@
 <div ui-view="promotions"></div>
 <!-- Promotion view Ends-->
 
+<div class="checkouterwantbuttonouter">
+	<div class="checkouterwantfirst">
+
+		<button class="checkouterwantbutton" ng-class="{selected:cart.delivery.type==0}" ng-click="alcoholCart.setDeliveryType(0)">I want this order Now!</button>
+
+		<span>(Standard 1 hour delivery)</span>
+		<button class="checkoutergitpackage"  ng-click="giftPopup($event)" >Gift Packaging</button>
+	</div>
+
+	<div class="checkouterexprienceouter" ng-show="cart.delivery.type==0">
+
+		<div class="checkouterexpressdivleft checkbox-gray-top-first">
+			<md-switch aria-label="express" ng-model="cart.service.express.status" ng-change="alcoholCart.setExpressStatus(cart.service.express.status)"></md-switch>
+
+		</div>
+		<div class="checkouterexpressdiv">
+			<div class="checkouterexpresstitle">Express Delivery</div>
+			<div class="checkouterexpresstext">Gauranteed 30 mins delivery.</div>
+			<div class="checkouterexpresstext">{{cart.service.express.charges | pricingTxt}} surcharge applies. <a ui-sref="cmsLayout.terms-conditions">Terms &amp; Conditions</a> applies.</div>	
+		</div>
+	</div>
+</div>
+
+
+
 <div class="checkouterlastdiv">
- <div class="checkouterwantfirst">
-	<button class="checkouterwantbutton" ng-class="{selected:cart.delivery.type==1}" ng-click="alcoholCart.setDeliveryType(1)">I want this order Later!</button>
-	<span>(Scheduled delivery)</span>
-</div>
-<div class="checkouterbackouter">
- <a class="checkouterback" ui-sref="mainLayout.index"><span><img src="images/order_history2backpic.png"></span>back to shopping</a>
- <button class="checkoutcheckoutnowbutton" ng-click="checkout()">Checkout Now</button>
-</div>
+	<div class="checkouterwantfirst">
+		<button class="checkouterwantbutton" ng-class="{selected:cart.delivery.type==1}" ng-click="alcoholCart.setDeliveryType(1)">I want this order Later!</button>
+		<span>(Scheduled delivery)</span>
+	</div>
+	<div class="checkouterbackouter">
+		<a class="checkouterback" ui-sref="mainLayout.index"><span><img src="images/order_history2backpic.png"></span>back to shopping</a>
+		<button class="checkoutcheckoutnowbutton" ng-click="checkout($event)">Checkout Now</button>
+	</div>
 </div>

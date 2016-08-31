@@ -9,12 +9,17 @@ use AlcoholDelivery\Http\Requests\DealerRequest;
 
 use AlcoholDelivery\Http\Controllers\Controller;
 
+use Illuminate\Support\Facades\Auth;
+
 use Storage;
 use Validator;
-use AlcoholDelivery\Products;
+use AlcoholDelivery\Products as Products;
+use MongoId;
 use DB;
 
+
 use AlcoholDelivery\Orders as Orders;
+use AlcoholDelivery\CartAdmin as CartAdmin;
 use AlcoholDelivery\User as User;
 
 class OrderController extends Controller
@@ -33,9 +38,102 @@ class OrderController extends Controller
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
+		$user = Auth::user('admin');
+
+		$response = [
+			'isUnprocessed' => false,
+			'message'=> "",
+			'cart' => []
+		];
+
+		try{
+
+			$cartObj = new CartAdmin;
+			$cart = $cartObj->getLastUnProcessed(new MongoId($user->_id));
+
+			if(empty($cart)){
+
+				$result = $cartObj->generate(new MongoId($user->_id));
+				$response['cart'] = $result->cart;
+
+			}else{
+
+				$response['isUnprocessed'] = true;
+
+				$cart = $cart->toArray();
+				
+				$productsIdInCart = array_keys((array)$cart['products']);
+
+
+				$productObj = new Products;
+
+				$productsInCart = $productObj->getProducts(
+											array(
+												"id"=>$productsIdInCart,
+												"with"=>array(
+													"discounts"
+												)
+											)
+										);
+
+				if(!empty($productsInCart)){
+
+					foreach($productsInCart as $product){
+
+						$cart['products'][$product['_id']]['product'] = $product;
+
+					}
+
+				}
+
+				$response['cart'] = $cart;
+
+				$request->session()->put('deliverykeyAdmin', $cart['_id']);
+
+
+			}			
+
+		}catch(Exception $e){
+
+			$response["message"] = $e->getMessage();
+
+			return response($response,400);
+
+		}
+
+		return response($response,200);
+
+	}
+
+	public function getNewcart(){
+
+		$user = Auth::user('admin');
+
+		$response = [
+			'cart' => []
+		];
 		
+		try{
+			
+			$cartObj = new CartAdmin;	
+			$result = $cartObj->generate(new MongoId($user->_id));
+
+			$response['cart'] = $result->cart;
+
+			$request->session()->put('deliverykeyAdmin', $result->cart['_id']);
+
+		}catch(Exception $e){
+
+			$response["message"] = $e->getMessage();
+
+			return response($response,400);
+
+		}
+
+		return response($response,200);
+
 	}
 
 	/**
@@ -78,8 +176,6 @@ class OrderController extends Controller
 		if(!empty($order)){
 
 			$order = $order->toArray();
-
-
 
 			$order['user'] = user::where('_id',"=",$order['user'])->first(['name','email','mobile_number','status','created_at','address']);
 			$order['user'] = $order['user']->toArray();
@@ -174,65 +270,13 @@ class OrderController extends Controller
 	public function postOrders(Request $request)
 	{
 		
-		//return response('NOT ',401);
-		
 		$params = $request->all();
 
 		$orders = new Orders;
 
-			//$columns = array('_id',"created_at",'contacts','address','title','status');
-		
-		/* Individual column filtering */
-
-		// foreach($columns as $fieldKey=>$fieldTitle)
-		// {
-
-		//     if ( isset($params[$fieldTitle]) && $params[$fieldTitle]!="" )
-		//     {   
-		//         if($fieldTitle=="status"){
-					
-		//             $dealers = $dealers->where($fieldTitle, "=",(int)$params[$fieldTitle]);
-
-		//         }else{
-
-		//             $dealers = $dealers->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
-
-		//         }
-
-		//     }
-		// }
-					  
-
-					  
-		/*
-		 * Ordering
-		 */
-		
-			// if ( isset( $params['order'] ) )
-			// {
-
-			//     foreach($params['order'] as $orderKey=>$orderField){
-
-			//         if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
-						
-			//             $dealers = $dealers->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
-						
-			//         }
-			//     }
-
-			// }
-		
 		/* Data set length after filtering */        
 
 		$iFilteredTotal = $orders->count();
-
-		/*
-		 * Paging
-		 */
-			// if ( isset( $params['start'] ) && $params['length'] != '-1' )
-			// {
-			//     $dealers = $dealers->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
-			// }
 
 		$iTotal = $orders->count();
 
@@ -279,7 +323,7 @@ class OrderController extends Controller
 		
 		
 
-		$users = User::whereIn('_id', $users)->get(["email","name"]);
+		$users = User::whereIn('_id', $users)->get(["email","name","mobile_number"]);
 		$users = $users->toArray();
 		foreach($users as $key=>$user){
 			$users[$user['_id']] = $user;
@@ -294,18 +338,18 @@ class OrderController extends Controller
 
 		$status_list = array(            
 			array("warning" => "Under Process"),
-			array("notice" => "Dispatch"),
+			array("danger" => "Dispatch"),
 			array("success" => "Delivered")
 		);
 
 		$deliveryType = array(			
-			array("notice" => "Express"),
+			array("danger" => "Express"),
 			array("success" => "Advance")
 		);
 
 
 		$srStart = intval( $params['start'] );
-        if($params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
+        if(isset($params['order']) && $params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
             $srStart = intval($iTotal);
         }
 
@@ -315,7 +359,7 @@ class OrderController extends Controller
 
 			$row=array();
 
-			if($params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
+			if(isset($params['order']) && $params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
 				$row[] = $srStart--;//$row1[$aColumns[0]];
 			}else{
 				$row[] = ++$srStart;//$row1[$aColumns[0]];
@@ -337,12 +381,45 @@ class OrderController extends Controller
 
 			// $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$order['_id'].'\')" id="'.$order['_id'].'" data-table="dealer" data-status="0" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
 
-			$row[] = '<a title="" ui-sref=userLayout.orders.show({order:"'.$order['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a>';
+			$row[] = '<a title="" ui-sref=userLayout.orders.show({order:"'.$order['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+
+			$mnum = $users[(string)$order['user']]['mobile_number'];
+			if($mnum==''){
+				$mnum = 0;
+			}
+
+			$row[] = '<a title="Notify user" ng-click=addInventry("'.$order['_id'].'",$mnum) class="btn btn-xs default"><i class="glyphicon glyphicon-comment"></i> Notify user</a>';
+			
 			
 			$records['data'][] = $row;
 		}
 		
 		return response($records, 201);
+		
+	}
+
+
+	public function putStatus($orderId,$status){
+
+		$result = [];
+
+		$orderModel = new Orders;
+
+		switch($status){
+
+			case 'success':
+
+				$result = $orderModel->completed($orderId);
+			
+			break;
+
+		}
+
+		if($result['success']){
+			return response($result,200);
+		}
+		
+		return response($result,400);
 		
 	}
 

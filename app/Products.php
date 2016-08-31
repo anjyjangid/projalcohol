@@ -8,6 +8,10 @@ use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 
 use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Setting as Setting;
+use DB;
+use mongoId;
+use Illuminate\Support\Facades\Auth;
+use AlcoholDelivery\Stocks;
 
 class Products extends Eloquent
 {
@@ -15,31 +19,60 @@ class Products extends Eloquent
 	protected $collection = 'products';
 
 	protected $fillable = [
-			'name',
-			'description',
-			'shortDescription',
-			'categories',
-			'sku',
-			'quantity',
-			'price',            
-			'chilled',
-			'status',
-			'metaTitle',
-			'metaKeywords',
-			'metaDescription',
-			'images',
-			'isFeatured',
-			'bulkDisable',			
-			'regular_express_delivery',			
-			'express_delivery_bulk',
-			'loyalty',
-			'threshold',
-			'maxQuantity',
-			'dealers',
-			'packages',
-			'outOfStockType',
-			'availabilityDays',
-			'availabilityTime'
+		'name',
+		'slug',
+		'description',
+		'shortDescription',
+		'categories',
+		'chilled',
+		'isFeatured',
+		'isLoyalty',
+        'loyaltyValueType',
+        'loyaltyValuePoint',
+        'loyaltyValuePrice',
+        'loyalty',
+        'loyaltyType',
+		'status',
+		
+		'sku',
+		
+		'quantity',
+		
+		'deliveryType',
+		'outOfStockType',
+		'availabilityDays',
+		'availabilityTime',
+		
+		'dealerData',
+		
+		'price',            		
+		'regular_express_delivery',			
+		'express_delivery_bulk',
+		'bulkDisable',			
+		
+		'metaTitle',
+		'metaKeywords',
+		'metaDescription',
+		
+		'images',
+
+		'packages',		
+		'dealerId',
+		'dealerObjectId',
+		'suggestionId',
+		'suggestionObjectId',
+		'suggestedId',
+		'suggestedObjectId'
+	];
+
+
+	protected $hidden = [
+		'dealerId',
+		'dealerObjectId',
+		'suggestionId',
+		'suggestionObjectId',
+		'suggestedId',
+		'suggestedObjectId'
 	];
 
 	public function pcategories()
@@ -49,12 +82,97 @@ class Products extends Eloquent
 
 	public function supplier()
 	{        
-		return $this->belongsToMany('AlcoholDelivery\Dealer', null, 'products', 'dealers');
+		return $this->belongsToMany('AlcoholDelivery\Dealer', null, 'productId', 'dealerId');
 	}
 
 	public function getSingleProduct($id)
 	{
-		return Products::where('_id', $id)->first();
+
+		return Products::where('_id', $id)->first();		
+
+		// DUE : Code to get suggestion (22-AUG-2016)
+		// $product = DB::collection("products")->raw(function($collection) use($id){
+
+		// 				return $collection->aggregate([
+		// 					[
+		// 						'$match' => [
+		// 							'_id' => new mongoId($id)
+		// 						]
+		// 					],
+		// 					[
+		// 						'$unwind' => [
+		// 							'path' =>  '$suggestions',
+		// 							"preserveNullAndEmptyArrays" => true
+
+		// 						]
+		// 					],
+		// 					[
+		// 						'$lookup' => [
+		// 							'from'=>'products',
+		// 							'localField'=>'suggestions',
+		// 							'foreignField'=>'_id',
+		// 							'as'=>'suggestions'
+		// 						]
+		// 					],							
+		// 					[
+		// 						'$group' => [
+		// 							'_id' => '$_id',
+		// 							'suggestions' => [
+		// 								'$push' => '$suggestions'
+		// 							],
+									
+		// 							'name' => [ '$first' => '$name'],
+		// 							'slug' => [ '$first' => '$slug'],
+		// 							'description' => [ '$first' => '$description'],
+		// 							'shortDescription' => [ '$first' => '$shortDescription'],
+		// 							'categories' => [ '$first' => '$categories'],
+		// 							'sku' => [ '$first' => '$sku'],
+		// 							'quantity' => [ '$first' => '$quantity'],
+		// 							'price' => [ '$first' => '$price'],            
+		// 							'chilled' => [ '$first' => '$chilled'],
+		// 							'status' => [ '$first' => '$status'],
+		// 							'metaTitle' => [ '$first' => '$metaTitle'],
+		// 							'metaKeywords' => [ '$first' => '$metaKeywords'],
+		// 							'metaDescription' => [ '$first' => '$metaDescription'],
+		// 							'images' => [ '$first' => '$images'],
+		// 							'isFeatured' => [ '$first' => '$isFeatured'],
+		// 							'bulkDisable' => [ '$first' => '$bulkDisable'],			
+		// 							'regular_express_delivery' => [ '$first' => '$regular_express_delivery'],			
+		// 							'express_delivery_bulk' => [ '$first' => '$express_delivery_bulk'],
+		// 							'loyalty' => [ '$first' => '$loyalty'],
+		// 							'isLoyalty' => [ '$first' => '$isLoyalty'],
+		// 							'loyaltyType' => [ '$first' => '$loyaltyType'],
+
+		// 							'loyaltyValueType' => [ '$first' => '$loyaltyValueType'],
+		// 							'loyaltyValuePoint' => [ '$first' => '$loyaltyValuePoint'],
+		// 							'loyaltyValuePrice' => [ '$first' => '$loyaltyValuePrice'],
+
+		// 							'threshold' => [ '$first' => '$threshold'],
+		// 							'maxQuantity' => [ '$first' => '$maxQuantity'],
+		// 							'dealers' => [ '$first' => '$dealers'],
+		// 							'packages' => [ '$first' => '$packages'],
+		// 							'outOfStockType' => [ '$first' => '$outOfStockType'],
+		// 							'availabilityDays' => [ '$first' => '$availabilityDays'],
+		// 							'availabilityTime' => [ '$first' => '$availabilityTime'],
+		// 							'deliveryType' => [ '$first' => '$deliveryType'],
+		// 							'quantity'=> [ '$first' => '$quantity' ],
+
+									
+		// 						]
+		// 					],
+		// 					// [
+		// 					// 	'$project' => [
+		// 					// 		"suggestions" => [ 
+		// 					// 			'$arrayElemAt' => [ '$suggestions', 0 ] 
+		// 					// 		]
+		// 					// 	]
+		// 					// ],
+		// 				]);
+
+		// 			});
+
+		// jprd($product);
+
 	}
 
 	public function getProducts($params){
@@ -163,8 +281,261 @@ class Products extends Eloquent
 				
 	}
 
+
+	public function fetchProducts($params){
+
+		$match = [
+					'$match' => [
+						// "categoriesObj" => [ '$exists' => true ],
+						"status" => 1
+					]
+				];
+		
+		$sortParam = [
+			'$sort' => [ 'created_at' => 1 ]
+		];
+
+		$skip = [
+			'$skip' => 0
+		];
+		$limit = [
+			'$limit' => 100
+		];
+
+		if(isset($params['type'])){
+
+			if($params['type']==1){
+				$match['$match']['isLoyalty'] = 1;
+			}
+			
+		}
+
+		if(isset($params['filter'])){
+
+			if($params['filter']=="featured"){
+				$match['$match']['isFeatured'] = 1;
+			}
+
+			if($params['filter']=="new"){
+				$match['$match']['created_at'] = ['$gt'=> new DateTime('-1 months')];
+			}
+
+			if($params['filter']=="in-stock"){
+				$match['$match']['quantity'] = ['$gt'=>0];
+			}
+
+		}
+
+		if(isset($params['parent']) && !empty($params['parent'])){
+			
+			$category = Categories::raw()->findOne(['slug' => $params['parent']]);
+
+			if(empty($category)){
+				return response(['message'=>'Category not found'],404);
+			}
+
+			$catKey = (string)$category['_id'];
+
+			$match['$match']['categories'] = $catKey;
+
+		}
+
+		if(isset($params['sort']) && !empty($params['sort'])){
+
+			$sortParam = [
+				'$sort' => []
+			];
+
+			$sortArr = explode("_", $params['sort']);                    
+			$sort = array_pop($sortArr);
+			$sortDir = $sort=='asc'?-1:1;
+			$sort = array_pop($sortArr);
+
+			$sortParam['$sort'][$sort] = (int)$sortDir;
+			
+		}
+
+
+		if(isset($params['limit']) && !empty($params['limit'])){
+
+			if(isset($params['skip']) && !empty($params['skip'])){
+				$skip['$skip'] = (int)$params['skip'];
+			}
+
+			$limit['$limit'] = (int)$params['limit'];
+			
+		}
+
+		$fields = [
+			'$project' => [
+							'chilled' => 1,
+							'description' =>  1,
+							'price' => [
+								'$multiply' => [ '$price', 1 ]
+							],
+							'categories' => 1,							
+							// 'discountPrice' => 1,
+							'imageFiles' => 1,
+							'name' => 1,
+							'slug' => 1,
+							'shortDescription' => 1,
+							'sku' => 1,
+							'quantity' => 1,
+							'regular_express_delivery' => 1,
+							'express_delivery' => 1,
+							'express_delivery_bulk' => 1,
+							'outOfStockType' => 1,
+							// 'maxQuantity' => 1,
+							'availabilityDays' => 1,
+							'availabilityTime' => 1
+						]
+		];
+
+		if(isset($params['type'])){
+
+			if($params['type']==1){
+
+				$fields = [
+						'$project' => [
+								'chilled' => 1,
+								'description' =>  1,
+								'loyaltyValueType' => 1,
+								'loyaltyValuePoint' => 1,
+								'loyaltyValuePrice' => 1,
+								
+								'imageFiles' => 1,
+								'name' => 1,
+								'slug' => 1,
+								'shortDescription' => 1,
+								'sku' => 1,
+								'quantity' => 1,
+								'deliveryType' => 1,
+								'outOfStockType' => 1,
+								'availabilityDays' => 1,
+								'availabilityTime' => 1
+							]
+					];
+
+			}
+
+		}
+
+		try {
+			
+			// $count = $this::where($match['$match'])->count();
+
+			$products = DB::collection("products")->raw(function($collection) use($match,$skip,$sortParam,$limit,$fields){
+
+				return $collection->aggregate([
+							$match,
+							$sortParam,
+							$skip,
+							$limit,
+							$fields
+						]);
+			});
+
+		} catch(\Exception $e){
+
+			return ['success'=>false,"message"=>$e->getMessage()];
+
+        }
+
+        return ['success'=>true,'products'=>$products['result']];
+
+	}
+
+	public function fetchProduct($params){
+
+		
+		
+	}
+
 	public function packagelist()
 	{
 		return $this->belongsToMany('AlcoholDelivery\Packages', null, 'products', 'packages');
 	}
+
+
+    public function stocks(){
+        return $this->hasMany('AlcoholDelivery\Stocks', 'productId', '_id');
+    }
+
+    public function store(){        
+
+    	$userStoreId = Auth::user('admin')->storeId;
+
+        return $this->hasOne('AlcoholDelivery\Stocks', 'productId', '_id')->where('storeId',$userStoreId);
+    }
+
+    /*public function mystore(){            	
+
+        return $this->embedsMany('AlcoholDelivery\Stocks');
+    }*/    
+
+    public function getFields(){
+        $fields = $this->fillable;
+        $ret = [];
+        foreach ($fields as $key => $value) {
+            $ret[$value] = '$'.$value;
+        }
+
+        return $ret;
+    }
+
+    public function getFirstfield(){
+        $fields = $this->fillable;
+        $ret = [];
+        foreach ($fields as $key => $value) {
+        	//'name' => [ '$first' => '$name'],
+            $ret[$value] = ['$first' => '$'.$value];
+        }
+
+        return $ret;
+    }
+
+    public function updateStocks($data,$id){
+
+    	//CURRENT STORE ID
+    	$userStoreId = Auth::user('admin')->storeId;    	
+
+    	$fields = [
+    		'quantity' => (int)$data['store']['quantity'],
+    		'threshold' => (int)$data['store']['threshold'],
+    		'maxQuantity' => (int)$data['store']['maxQuantity'],
+    		'storeId' => $userStoreId,
+    		'storeObjId' => new MongoId($userStoreId),
+    		'defaultDealerId' => $data['store']['defaultDealerId'],
+    		'defaultDealerObjId' => new MongoId($data['store']['defaultDealerId']),
+    		'productId' => $id,
+    		'productObjId' => new MongoId($id),
+    	];
+
+    	if(isset($data['store']['defaultDealerId'])){
+    		$fields['defaultDealerId'] = $data['store']['defaultDealerId'];
+    		$fields['defaultDealerObjId'] = new MongoId($data['store']['defaultDealerId']);
+    	}
+
+    	DB::collection('stocks')
+    	->where('productId', $id)
+    	->where('storeId', $userStoreId)
+        ->update($fields, ['upsert' => true]);
+
+        //update total quantity for the product available @ all stores
+
+        $productWithStocks = Products::where('_id',$id)->with('stocks')->first();
+
+        $quantity = 0;
+        foreach ($productWithStocks->stocks as $key => $value) {
+        	$quantity += $value->quantity;
+        }
+        $productWithStocks->quantity = $quantity;
+
+		$productWithStocks->save();        
+
+    }
+
+    public function suggestions(){
+    	return $this->belongsToMany('AlcoholDelivery\Products', null, 'suggestedId', 'suggestionId');
+    }
 }

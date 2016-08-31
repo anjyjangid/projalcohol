@@ -2,16 +2,18 @@
 
 angular.module('alcoholCart.directives',[])
 
-	.controller('CartTopController',['$scope', 'alcoholCart', function($scope, alcoholCart) {
+	.controller('CartTopController',['$scope', 'alcoholCart',"$timeout", function($scope, alcoholCart) {
 		
-		$scope.alcoholCart = alcoholCart;
+		$scope.alcoholCart = alcoholCart;	
 
 		$scope.scrollconfig = {
 				autoHideScrollbar: false,
 				theme: 'light',
 				setHeight: 200,
-				scrollInertia: 0
-			}
+				scrollInertia: 0,
+			}	
+
+		angular.scrollconfig = $scope.scrollconfig;
 
 	}])
 
@@ -125,5 +127,27 @@ angular.module('alcoholCart.directives',[])
 					return attrs.templateUrl;
 				}
 			}
+		};
+	}])
+
+	.directive('paymentForm', ['$rootScope','$timeout',function($rootScope,$timeout){
+		return {			
+			restrict: 'E',
+            replace: true,
+            template: 
+                '<form action="{{ formData.url }}" method="{{ formData.method }}">' +
+                '   <div ng-repeat="(key,val) in formData.params">' +
+                '       <input type="hidden" name="{{ key }}" value="{{ val }}" />' +
+                '   </div>' +
+                '</form>',
+            link: function($scope, $element, $attrs) {
+                $scope.$on('gateway.redirect', function(event, data) {
+                    $scope.formData = data;
+                    $timeout(function() {
+                        $rootScope.$broadcast('redirecting','Wait while we redirect you to the payment gateway..');
+                        $element.submit();
+                    });
+                })
+            }
 		};
 	}]);

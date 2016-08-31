@@ -17,211 +17,233 @@ use AlcoholDelivery\Email as Email;
 
 class CustomerController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        
-    }
+	/**
+	* Create a new controller instance.
+	*
+	* @return void
+	*/
+	public function __construct()
+	{
+		
+	}
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function index(Request $request)
+	{
+		$params = $request->all();
+		$users = new User;
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+		$columns = ['name','email','status','_id','mobile_number','address'];
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function postStore(CustomerRequest $request)
-    {
-        $inputs = $request->all();
+		if(isset($params['name']) && trim($params['name'])!=''){
+		  $pname = $params['name'];
+		  $users = $users->where('name','regexp', "/.*$pname/i");
+		  $users = $users->orderBy('name','asc')->get();
+		}
 
-        try {
+		if(isset($params['mobile_number']) && trim($params['mobile_number'])!=''){
+			$pmobile_number = $params['mobile_number'];
+			$users = $users->where('mobile_number','regexp',"/.*$pmobile_number/i");
+			$users = $users->orderBy('mobile_number','desc')->get();
+		}
 
-            $user = User::create([
+		
+		
+		
 
-                'name' => $inputs['name'],
-                'mobile_number' => $inputs['mobile_number'],
-                'email' => $inputs['email'],
-                'password' => bcrypt($inputs['password']),
-                'status' => 1,
-                'verified' => 1,
+		return response($users);
+	}
 
-            ]);
-        
-        } catch(\Exception $e){
-            
-            return response(array("success"=>false,"message"=>$e->getMessage()));
-                
-        }
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function create()
+	{
+		//
+	}
 
-        $email = new Email('login');
-        $email->sendEmail($inputs);
-        
-        return response(array("success"=>true,"message"=>"Customer created successfully"));
-    }
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return \Illuminate\Http\Response
+	 */
+	public function postStore(CustomerRequest $request)
+	{
+		$inputs = $request->all();
 
+		try {
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+			$user = User::create([
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+				'name' => $inputs['name'],
+				'mobile_number' => $inputs['mobile_number'],
+				'email' => $inputs['email'],
+				'password' => bcrypt($inputs['password']),
+				'status' => 1,
+				'verified' => 1,
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-    **/
-    public function postUpdate(CustomerRequest $request, $id)
-    {
-        $inputs = $request->all();
+			]);
+		
+		} catch(\Exception $e){
+			
+			return response(array("success"=>false,"message"=>$e->getMessage()));
+				
+		}
 
-        $customer = user::find($id);
-        
-        $customer->name = $inputs['name'];
-        $customer->email = $inputs['email'];
-        //$customer->password = bcrypt($inputs['password']);
-        $customer->status = (int)$inputs['status'];    
-        $customer->mobile_number = $inputs['mobile_number'];
-        
-        if($customer->save()){
-            return response(array("success"=>true,"message"=>"Customer updated successfully"));
-        }
-        
-        return response(array("success"=>false,"message"=>"Something went worng"));
-        
-    }
+		$email = new Email('login');
+		$email->sendEmail($inputs);
+		
+		return response(array("success"=>true,"message"=>"Customer created successfully"));
+	}
 
 
-    public function getDetail($customerId)
-    {
-        $customerObj = new User;
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function show($id)
+	{
+		//
+	}
 
-        $result = $customerObj->getCustomers(array(
-                        "key"=>$customerId,
-                        "multiple"=>false
-                    ));
-        
-        return response($result, 201);
-    }
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function edit($id)
+	{
+		//
+	}
+
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	**/
+	public function postUpdate(CustomerRequest $request, $id)
+	{
+		$inputs = $request->all();
+
+		$customer = user::find($id);
+		
+		$customer->name = $inputs['name'];
+		$customer->email = $inputs['email'];
+		//$customer->password = bcrypt($inputs['password']);
+		$customer->status = (int)$inputs['status'];    
+		$customer->mobile_number = $inputs['mobile_number'];
+		
+		if($customer->save()){
+			return response(array("success"=>true,"message"=>"Customer updated successfully"));
+		}
+		
+		return response(array("success"=>false,"message"=>"Something went worng"));
+		
+	}
 
 
-    public function postList(Request $request)
-    {
-        $params = $request->all();
-        $users = new User;
+	public function getDetail($customerId)
+	{
+		$customerObj = new User;
 
-        if(isset($params['name']) && trim($params['name'])!=''){
-          $pname = $params['name'];
-          $users = $users->where('name','regexp', "/.*$pname/i");
-        }
-
-        if(isset($params['email']) && trim($params['email'])!=''){
-            $pemail = $params['email'];
-            $users = $users->where('email','regexp',"/.*$pemail/i");
-        }
-
-        if(isset($params['status']) && trim($params['status'])!=''){
-          $users = $users->where('status',(int)$params['status']);
-        }
+		$result = $customerObj->getCustomers(array(
+						"key"=>$customerId,
+						"multiple"=>false
+					));
+		
+		return response($result, 201);
+	}
 
 
-        $iTotalRecords = $users->count();
-        $iDisplayLength = intval($_REQUEST['length']);
-        $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength; 
-        $iDisplayStart = intval($_REQUEST['start']);
-        $sEcho = intval($_REQUEST['draw']);
-        
-        $records = array();
-        $records["data"] = array(); 
+	public function postList(Request $request)
+	{
+		$params = $request->all();
+		$users = new User;
 
-        $end = $iDisplayStart + $iDisplayLength;
-        $end = $end > $iTotalRecords ? $iTotalRecords : $end;
+		if(isset($params['name']) && trim($params['name'])!=''){
+		  $pname = $params['name'];
+		  $users = $users->where('name','regexp', "/.*$pname/i");
+		}
 
-        $fstatus = [['danger'=>'Disabled'],['success'=>'Enabled']];
+		if(isset($params['email']) && trim($params['email'])!=''){
+			$pemail = $params['email'];
+			$users = $users->where('email','regexp',"/.*$pemail/i");
+		}
 
-        $notordered = true;
+		if(isset($params['status']) && trim($params['status'])!=''){
+		  $users = $users->where('status',(int)$params['status']);
+		}
 
 
-        $columns = ['name','email','status','_id'];
+		$iTotalRecords = $users->count();
+		$iDisplayLength = intval($_REQUEST['length']);
+		$iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength; 
+		$iDisplayStart = intval($_REQUEST['start']);
+		$sEcho = intval($_REQUEST['draw']);
+		
+		$records = array();
+		$records["data"] = array(); 
 
-        //prd($params);
-        if ( isset( $params['order'] ) ){
-            foreach($params['order'] as $orderKey=>$orderField){
-                if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
-                    $notordered = false;                    
-                    $users = $users->orderBy($columns[$orderField['column']],$orderField['dir']);                    
-                }
-            }
-        }
+		$end = $iDisplayStart + $iDisplayLength;
+		$end = $end > $iTotalRecords ? $iTotalRecords : $end;
 
-        //prd($users);
-        
-        if($notordered){
-          $users = $users->orderBy('_id','desc');
-        }
+		$fstatus = [['danger'=>'Disabled'],['success'=>'Enabled']];
 
-        $users = $users->skip($iDisplayStart)        
-        ->take($iDisplayLength)->get();
+		$notordered = true;
 
-        $ids = $iDisplayStart;
-        
-        /*foreach($users as $i => $user) 
-        {
-            $records["data"][] = array(
-              "name" => $user->name,
-              "email" => $user->email,
-              "status" => $user->status,
-              "_id" => $user->_id,
-            );
-        }*/
 
-        $records["data"] = $users;
+		$columns = ['name','email','status','_id'];
 
-        $records["draw"] = $sEcho;
-        $records["recordsTotal"] = $iTotalRecords;
-        $records["recordsFiltered"] = $iTotalRecords; 
+		//prd($params);
+		if ( isset( $params['order'] ) ){
+			foreach($params['order'] as $orderKey=>$orderField){
+				if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
+					$notordered = false;                    
+					$users = $users->orderBy($columns[$orderField['column']],$orderField['dir']);                    
+				}
+			}
+		}
 
-        return response($records);
-    }
+		//prd($users);
+		
+		if($notordered){
+		  $users = $users->orderBy('_id','desc');
+		}
+
+		$users = $users->skip($iDisplayStart)        
+		->take($iDisplayLength)->get();
+
+		$ids = $iDisplayStart;
+		
+		/*foreach($users as $i => $user) 
+		{
+			$records["data"][] = array(
+			  "name" => $user->name,
+			  "email" => $user->email,
+			  "status" => $user->status,
+			  "_id" => $user->_id,
+			);
+		}*/
+
+		$records["data"] = $users;
+
+		$records["draw"] = $sEcho;
+		$records["recordsTotal"] = $iTotalRecords;
+		$records["recordsFiltered"] = $iTotalRecords; 
+
+		return response($records);
+	}
+	
 
 }

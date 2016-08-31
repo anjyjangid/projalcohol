@@ -29,7 +29,9 @@ class SettingRequest extends Request
 
             case 'general':
                 $rules = [
-                                
+                               
+                    'site_name.value' => 'required|string|max:255',
+
                     'site_title.value' => 'required|string|max:255',
 
                     'meta_keyword.value' => 'required|max:255',
@@ -66,8 +68,22 @@ class SettingRequest extends Request
                     'regular_express_delivery.type' => 'required|numeric',
                     'minimum_cart_value.value' => 'required|numeric',
                     'non_free_delivery.value' => 'required|numeric',
+
+                    'non_chilled_delivery.type' => 'required|numeric',
+                    'non_chilled_delivery.value' => 'required|numeric',
+
                 ];
                 break;
+
+            case 'loyalty':
+                $rules = [
+
+                    'order_sharing.value' => 'required|numeric',
+                    'site_sharing.value' => 'required|numeric',                    
+
+                ];
+                break;
+
             default:
                 # code...
                 break;

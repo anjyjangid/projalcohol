@@ -9,6 +9,7 @@
 <div class="wishlist-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</div>
 
 <div class="checkoutmiddletable">
+<div class="table-responsive">
 	<table class="table wislistborbtm" ng-if="alcoholWishlist.getTotalProducts()>0">
 		<tbody>
 			<tr ng-repeat="(key, product) in alcoholWishlist.getList()" ng-init="product.cart = alcoholCart.getProductById(product._id)">
@@ -56,6 +57,8 @@
 			
 		</tbody>
 	</table>
+    </div>
+
 
 	<div ng-if="alcoholWishlist.getTotalProducts()<1" class="no-data-msg">
 		Your Wishlist Is Empty

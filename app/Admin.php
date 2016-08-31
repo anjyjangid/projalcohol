@@ -36,7 +36,7 @@ class Admin extends Eloquent implements AuthenticatableContract,
      *
      * @var array
      */
-    protected $fillable = ['first_name', 'last_name', 'email', 'password','role', 'status'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'storeId', 'storeObjId', 'password','role', 'status'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -44,7 +44,9 @@ class Admin extends Eloquent implements AuthenticatableContract,
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
-}
-{
-    //
+
+    public function userstore()
+    {
+        return $this->belongsTo('AlcoholDelivery\Store','storeId');
+    }
 }

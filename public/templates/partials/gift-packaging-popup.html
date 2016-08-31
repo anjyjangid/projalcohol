@@ -1,47 +1,29 @@
-<div class="modal-dialog gift-packagecoverdiv" role="document">
-    <div class="gift-topcrosicondiv" >
-         <button type="button" class="close" ng-click="hide()" aria-label="Close"><span aria-hidden="true"> <img src="images/cross-icon.png" /></span></button>
-       
+<md-dialog>    
+  <md-toolbar>
+    <div class="md-toolbar-tools gift-packagecoverdiv">
+      <div class="gift-topcrosicondiv" >
+        <button type="button" class="close" ng-click="hide()" aria-label="Close">
+          <span aria-hidden="true"> <img src="images/cross-icon.png" /></span>
+        </button>
       </div>
-       
-      <div class="modal-body gift-packgng-bodydiv">
-      <div class="col-md-3 col-sm-3 col-xs-12 gift-item-cover">
-      <div class="gift-item-innercover">
-      <div class="gift-itemimg"><img src="images/gift-card.png" /></div>
-      <div class="gift-item-title">Gift Card</div>
-      
-      </div>
-      
-      </div>
-      
-   <div class="col-md-3 col-sm-3 col-xs-12 gift-item-cover">
-      <div class="gift-item-innercover">
-      <div class="gift-itemimg"><img src="images/gift-card1.png" /></div>
-      <div class="gift-item-title">Gift Wrapper</div>
-      
-      </div>
-      
-      </div>
-      
-      <div class="col-md-3 col-sm-3 col-xs-12 gift-item-cover">
-      <div class="gift-item-innercover">
-      <div class="gift-itemimg"><img src="images/gift-card2.png" /></div>
-      <div class="gift-item-title">Greeting Card</div>
-      
-      </div>
-      
-      </div>
-      
-      <div class="col-md-3 col-sm-3 col-xs-12 gift-item-cover">
-      <div class="gift-item-innercover">
-      <div class="gift-itemimg"><img src="images/gift-card3.png" /></div>
-      <div class="gift-item-title">Bags & Basket</div>
-      
-      </div>
-      
-      </div>
-      </div>
-      
-      
+      <span flex></span>      
     </div>
-  </div>
+    <div class="order-fetching" ng-if="processinggift"></div>
+  </md-toolbar>
+  <md-dialog-content>        
+    <div class="md-dialog-content gift-packgng-bodydiv">
+      <a ng-repeat="option in giftcategories.types" ng-click="hide()" 
+        ui-sref="{{ option.type== 'category' ? 'mainLayout.giftcategory({categorySlug:option.slug,type:null})' : 'mainLayout.giftcards()' }}">
+        <div  class="col-md-3 col-sm-3 col-xs-12 gift-item-cover">
+          <div class="gift-item-innercover">
+            <div class="gift-itemimg">
+              <img ng-if="option.type == 'category'" ng-src="giftcategory/i/{{option.coverImage.source}}" alt="?" />
+              <img ng-if="option.type != 'category'" ng-src="giftcategory/i/{{option.iconImage.source}}" alt="?" />
+            </div>
+          </div>
+          <div class="gift-item-title">{{option.title}}</div>
+        </div>    
+      </a>
+    </div>
+  </md-dialog-content>
+</md-dialog>

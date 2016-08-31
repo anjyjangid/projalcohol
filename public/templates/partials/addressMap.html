@@ -1,105 +1,83 @@
-<div class="modal-dialog alcohal_addadressmain" role="document">
-	<div class="modal-content alcohal_addadressmaincvr">
-		<div ng-if="address.step==1">
-			<div class="modal-header alcohal_addadress_header">
-				<div class="alcohal_addadress_headercurmain">
-					<div class="alcohal_addadress_headercurclecvr">
-						<div class="alcohal_addadress_headercurcle">1</div>
+<md-dialog aria-label="Mango (Fruit)"  >
+	<form>
+		<md-toolbar ng-if="address.step==1">
+			<div class="md-toolbar-tools alcohal_addadress_header">
+				<div class="alcohal_addadress_headercurmain">            
+					<div class="alcohal_addadress_headertitle"><span>Add a New Delivery Address</span>
+					 <div class="alcohal_addadress_headercurcle">1</div>
 					</div>
-					<div class="alcohal_addadress_headertitle">Add a New Delivery Address</div>
+				</div>
+				<span flex></span>
+				<md-button class="md-icon-button" ng-click="hide()"> &times; </md-button>
+			</div>
+		</md-toolbar>
+		<md-dialog-content ng-if="address.step==1">
+			<div class="md-dialog-content alcohaladdadrebody">
+				<div class="row">
+					<div class="col-sm-4 enter-locationdiv"> Enter your postal code or location name
+						<div>
+							<input places-auto-complete class="alcohalpopuptext" ng-model="address.typed" zoom="{{zoom}}"  component-restrictions="{{restrictions}}" types="{{types}}" on-place-changed="placeChanged()" />
+							<div ng-click="showAddressViaManuallyModal()">Can't find your address?</div>
+						</div>
+					</div>
+					<div class="col-sm-8">
+						<ng-map style="width: 100%;height: 400px"></ng-map>
+					</div>
 				</div>
 			</div>
-
-			<div class="modal-body alcohaladdadremapbody ">
-			  <div class="row">
-				  <div class="col-sm-4">
-					  Enter your postal code or location name
-					<div>
-							
-					<input places-auto-complete class="alcohalpopuptext" ng-model="address.typed" zoom="{{zoom}}"  component-restrictions="{{restrictions}}" types="{{types}}" on-place-changed="placeChanged()" />
-						
-
-					<div ng-click="showAddressViaManuallyModal()">Can't find your address?</div>
-					</div>
-				  </div>
-				  <div class="col-sm-8">				  
-					  <ng-map style="width: 100%;height: 400px"></ng-map>
-				  </div>
-			  </div>
-			</div>
-
-			<div class="modal-footer alcohal_addadressfooter">        
+		</md-dialog-content>
+		<md-dialog-actions layout="row" ng-if="address.step==1">
+			<div class="modal-footer alcohal_addadressfooter">
 				<div class="alcohalosavebntcvr">
 					<button class="adresssvaebtn" type="button" ng-click="setMapAddress()">SELECT THIS ADDRESS<span> <img src="images/alcholshoporderarrow.png"></span></button>
 				</div>
 			</div>
-		</div>
-
-		<div ng-if="address.step==2">
-			<div class="modal-header alcohal_addadress_header"> 			
-			<div class="alcohal_addadress_headercurmain">
-			  <div class="alcohal_addadress_headercurclecvr">
-			    <div class="alcohal_addadress_headercurcle">2</div>
-			  </div>
-			  <div class="alcohal_addadress_headertitle">Just a bit more</div>
-			</div>
-			</div>
-			<div class="modal-body alcohaladdadrebody">
-			<div class="alchoaladdnewadressbodytitile">We need your name to be able to address you for the delivery.</div>
-			<div class="alcohlinputextcvr">
-			  
-			<div class="alcohlinputext" ng:class="{'has-error':errors.firstname[0]}">
-
-				<label>First Name: <span>*</span></label>
-
-				<input type="text" class="alcohalpopuptext" ng-model="address.firstname" placeholder="">
-				<span class="help-block" ng-bind="errors.firstname[0]"></span>
-
-			</div>
-
-			<div class="alcohlinputrighttext" ng:class="{'has-error':errors.lastname[0]}">
-
-				<label>Last Name: <span>*</span></label>
-
-				<input type="text" class="alcohalpopuptext" ng-model="address.lastname" placeholder="">
-				<span class="help-block" ng-bind="errors.lastname[0]"></span>
-
-			</div>
-			  
-			</div>
-			<div class="alcohlinputextcvr">
-
-				<div class="alcohlinputext" ng:class="{'has-error':errors.company[0]}">
-
-					<label>Company Name (optional)</label>
-
-					<input type="text" class="alcohalpopuptext" ng-model="address.company" placeholder="">
-					<span class="help-block" ng-bind="errors.company[0]"></span>
-
+		</md-dialog-actions>
+		<md-toolbar ng-if="address.step==2">
+			<div class="md-toolbar-tools alcohal_addadress_header">
+				<div class="alcohal_addadress_headercurmain">
+					<div class="alcohal_addadress_headercurclecvr">
+						<div class="alcohal_addadress_headercurcle">2</div>
+					</div>
+					<div class="alcohal_addadress_headertitle">Just a bit more</div>
 				</div>
-
-			  
+				<span flex></span>
+				 <md-button class="md-icon-button" ng-click="hide()"> &times; </md-button> </div>
+		</md-toolbar>
+		<md-dialog-content ng-if="address.step==2">
+			<div class="md-dialog-content alcohaladdadrebody">
+				<div class="alchoaladdnewadressbodytitile">We need your name to be able to address you for the delivery.</div>
+				<div class="alcohlinputextcvr">
+					<div class="alcohlinputext" ng:class="{'has-error':errors.firstname[0]}">
+						<label>First Name: <span>*</span></label>
+						<input type="text" class="alcohalpopuptext" ng-model="address.firstname" placeholder="">
+						<span class="help-block" ng-bind="errors.firstname[0]"></span> </div>
+					<div class="alcohlinputrighttext" ng:class="{'has-error':errors.lastname[0]}">
+						<label>Last Name: <span>*</span></label>
+						<input type="text" class="alcohalpopuptext" ng-model="address.lastname" placeholder="">
+						<span class="help-block" ng-bind="errors.lastname[0]"></span> </div>
+				</div>
+				<div class="alcohlinputextcvr">
+					<div class="alcohlinputext" ng:class="{'has-error':errors.company[0]}">
+						<label>Company Name (optional)</label>
+						<input type="text" class="alcohalpopuptext" ng-model="address.company" placeholder="">
+						<span class="help-block" ng-bind="errors.company[0]"></span> </div>
+				</div>
+				<div class="alcohlinputextcvr">
+					<div class="alcohlinputext" ng:class="{'has-error':errors.instruction[0]}">
+						<label>Address Specific Instructions (optional) </label>
+						<textarea class="alcohlinputextareaa" placeholder="E.g. Please call my contact number instead of pressing the doorbell when you have arrived at my address." ng-model="address.instruction"></textarea>
+						<span class="help-block" ng-bind="errors.instruction[0]"></span> </div>
+				</div>
 			</div>
-			<div class="alcohlinputextcvr">
-
-				<div class="alcohlinputext" ng:class="{'has-error':errors.instruction[0]}">
-
-					<label>Address Specific Instructions (optional) </label>
-
-					<textarea class="alcohlinputextareaa" placeholder="E.g. Please call my contact number instead of pressing the doorbell when you have arrived at my address." ng-model="address.instruction"></textarea>
-					<span class="help-block" ng-bind="errors.instruction[0]"></span>
-
-				</div>			 
-
-			</div>
-			</div>
+		</md-dialog-content>
+		<md-dialog-actions layout="row" ng-if="address.step==2">
 			<div class="modal-footer alcohal_addadressfooter">
-			<div class="alcohal_adress2fotter" ng-click="changeAddress()"> <img src="images/order_history2backpic.png"> <span>Change address</span> </div>
-			<div class="alcohalosavebntcvr">
-			    <button class="adresssvaebtn" ng-click="saveAddress()" type="button">SAVE <span> <img src="images/alcholshoporderarrow.png"></span></button>
+				<div class="alcohal_adress2fotter" ng-click="changeAddress()"> <img src="images/order_history2backpic.png"> <span>Change address</span> </div>
+				<div class="alcohalosavebntcvr">
+					<button class="adresssvaebtn" ng-click="saveAddress()" type="button">SAVE <span> <img src="images/alcholshoporderarrow.png"></span></button>
+				</div>
 			</div>
-			</div>
-		</div>
-
-	</div>  
-  </div>
+		</md-dialog-actions>
+	</form>
+</md-dialog>

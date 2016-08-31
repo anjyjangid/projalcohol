@@ -33,12 +33,52 @@ class SuperController extends Controller
 
 		$categories = $categories->get();
 
-
 		if(isset($params['withChild']) && $params['withChild']){
 
 			foreach($categories as &$category){
-				$category['children'] = array(); 
-				$category['children'] = Categories::where('cat_status',1)->where('ancestors.0._id','=',$category['_id'])->get(array('_id','slug','cat_title'));
+				$category['children'] = array();
+				$category['children'] = Categories::where('cat_status',1)->where('ancestors.0._id','=',$category['_id'])->get(array('_id','slug','cat_title','metaTitle','metaDescription','metaKeywords'));
+			}
+
+		}	
+		
+		
+		if(isset($params['withCount']) && $params['withCount']){
+
+			// db.products.aggregate([{$group:{_id:"$categories",count:{$sum:1}}}])
+
+			$products = DB::collection('products')->raw(function($collection){
+
+				return $collection->aggregate(array(
+					array(
+						'$match' => array(
+							'status' => 1
+						)
+					),
+					array(
+						'$group' => array(
+							'_id'=>'$categories',
+							'count' => array(
+								'$sum' => 1
+							)
+						)
+					)
+				));
+			});
+
+			$processedPro = [];
+			foreach($products['result'] as $product){
+
+				$cat = array_pop($product['_id']);
+
+				$processedPro[$cat] = $product['count'];
+
+			}
+
+			foreach($categories as &$category){
+
+				$category['productCount'] = isset($processedPro[$category['_id']])?$processedPro[$category['_id']]:0;
+
 			}
 
 		}
@@ -84,7 +124,7 @@ class SuperController extends Controller
 	 */
 	public function getSettings(Request $request)
 	{        
-		$settings = DB::collection('settings')->whereIn("_id",['general','social'])->get();
+		$settings = DB::collection('settings')->whereIn("_id",['general','social','loyalty'])->get();
 		
 		$settingsData = array();
 
@@ -96,30 +136,44 @@ class SuperController extends Controller
 				
 			}
 		}
-		
+
+		$today = strtotime(date('Y-m-d'))*1000;
+
+		$holidays = DB::collection('holidays')->where('timeStamp','>',$today)->orWhere('_id','weekdayoff')
+		->get(['_id','dow','timeStamp']);
+
+		$pages = DB::collection('pages')->where('status',1)
+		->get(['linkTitle','section','slug']);
+
+		$settingsData['holiDays'] = $holidays;
+		$settingsData['today'] = $today;
+		$settingsData['pages'] = $pages;
+
 		return response($settingsData);
 	}
 
 
-	public function getCmsdata(Request $request)
+	public function getCmsdata(Request $request,$slug)
 	{
 		$params = $request->all();
 
 		$cms = new Cms;
 
-		if(isset($params['cmsid']) && $params['cmsid']!=""){
+		/*if(isset($params['cmsid']) && $params['cmsid']!=""){
 			$cms = $cms->where('_id', "=", $params['cmsid']);
-		}
+		}*/
 
-		$cms = $cms->get()->first();
+		$cms = $cms->where('slug',$slug)->where('status',1)->first();
 		
-		if(!empty($cms))
+		return response($cms,200);
+
+		/*if(!empty($cms))
 		{
 			$cms->title = ucwords($cms->title);
 			return response($cms);
 		}
 		else 
-			return response(array());
+			return response(array());*/
 	}
 
 

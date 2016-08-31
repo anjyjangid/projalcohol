@@ -8,14 +8,14 @@
 	}
 
 	function jprd($arr){
-		
+
 		pr(json_encode($arr));
 		die;
 
 	}
 
 	function jpr($arr){
-		
+
 		pr(json_encode($arr));
 
 	}
@@ -39,6 +39,18 @@
 			return $user['email'];
 			
 		}
+
+	}
+
+	function valueToKey($array,$key){
+
+		$newArray = [];
+		foreach($array as $value){
+			
+			$newArray[(string)$value[$key]] = $value;
+		}
+
+		return $newArray;
 
 	}
 

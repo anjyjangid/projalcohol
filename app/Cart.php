@@ -12,7 +12,6 @@ class Cart extends Moloquent
 	protected $primaryKey = "_id";
 	protected $collection = 'cart';
 	public static $key;
-
 	/**
 	 * Indicates if the model should be timestamped.
 	 *
@@ -25,7 +24,23 @@ class Cart extends Moloquent
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['_id', 'products','packages','nonchilled','delivery','service','discount','timeslot','payment','status','user'];
+	protected $fillable = [
+
+						'_id',
+						'products',
+						'loyalty',
+						'packages',
+						'giftCards',
+						'nonchilled',
+						'delivery',
+	 					'service',
+						'discount',
+						'timeslot',
+						'payment',
+						'status',
+						'user',
+						'reference'
+					];
 
 	public function setKey($keyVal){
 		$this->key = $keyVal;
@@ -168,7 +183,11 @@ class Cart extends Moloquent
 
 	}
 
-	public function getProductIncartCount($data){
+	public function getProductIncartCount($data = ''){
+		
+		if($data === ''){
+			$data = $this;
+		}
 		
 		$products = [];
 
@@ -181,32 +200,24 @@ class Cart extends Moloquent
 		}
 
 		if(isset($data['packages'])){
-		foreach($data['packages'] as $key=>$package){
-			
-			foreach($package['packageItems'] as $packageItem){
+			foreach($data['packages'] as $key=>$package){
+				
+				foreach($package['products'] as $product){
 
-				foreach($packageItem['products'] as $product){
+					if(isset($products[$product['_id']])){
 
-					if($product['cartquantity']>0){
+						$products[$product['_id']] = (int)$products[$product['_id']] + ((int)$package['packageQuantity'] * (int)$product['quantity']);
 
-						if(isset($products[$product['_id']])){
+					}else{
 
-							$products[$product['_id']] = (int)$products[$product['_id']] + ($package['packageQuantity'] * (int)$product['cartquantity']);
-
-						}else{
-
-							$products[$product['_id']] = (int)$package['packageQuantity'] * (int)$product['cartquantity'];
-
-						}
-						
+						$products[$product['_id']] = (int)$package['packageQuantity'] * (int)$product['quantity'];
 
 					}
 
-				}			
+				}
+			
 
 			}
-
-		}
 		}
 
 		if(isset($data['promotions'])){
@@ -239,7 +250,17 @@ class Cart extends Moloquent
 		$productsInCart = $productObj->getProducts(
 											array(
 												"id"=>$productsIdInCart,
-												"fields"=>["quantity","maxQuantity","outOfStockType","availabilityDays","availabilityTime","status"],
+												"fields"=>[
+															"quantity",
+															"maxQuantity",
+															"outOfStockType",
+															"availabilityDays",
+															"availabilityTime",
+															"status",
+															"price",
+															"loyalty",
+															"loyaltyType",
+														],
 												// "with"=>["discounts"]
 											)
 										);
@@ -247,11 +268,28 @@ class Cart extends Moloquent
 		foreach($productsInCart as $key=>$pic){
 
 			$productsInCart[$pic['_id']] = $pic;
+			$productsInCart[$pic['_id']]['count'] = $products[$pic['_id']];
+
 			unset($productsInCart[$key]);
 
 		}
 
 		return $productsInCart->toArray();
+
+	}
+
+	public function setReference(){
+
+		$reference = "ADSG";
+		$reference.= ((int)date("ymd",strtotime($this->updated_at)) - 123456);			
+		$reference.="O";			
+		$reference.= (string)date("Hi",strtotime($this->updated_at));
+
+		$this->reference = $reference;
+		
+	}
+
+	public function confirmOrder($cartArr){		
 
 	}
 

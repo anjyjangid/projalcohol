@@ -13,7 +13,8 @@
 					<i class="fa fa-angle-right"></i>
 				</li>
 				<li ng-repeat="crumbs in $state.$current.data.breadCrumb">
-					<a ui-sref="{{crumbs.uisref}}">{{crumbs.title}}</a>					
+					<a ng-if="crumbs.uisref!='#'" ui-sref="{{crumbs.uisref}}">{{crumbs.title}}</a>
+					<a ng-if="crumbs.uisref=='#'">{{crumbs.title}}</a>					
 					<i ng-if="!$last" class="fa fa-angle-right"></i>
 				</li>				
 			</ul>			

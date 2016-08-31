@@ -27,7 +27,7 @@ class TestimonialRequest extends Request
         $rules = [
             
             'name' => 'required|string|max:255',            
-            'content' => 'required|max:1000',
+            'content' => 'required|max:300',
             'status'=> 'integer|in:0,1',            
             
         ];

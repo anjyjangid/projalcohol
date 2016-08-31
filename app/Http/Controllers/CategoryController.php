@@ -25,9 +25,10 @@ class CategoryController extends Controller
 		//Fetch Global Pricing
 		$globalPricing = Setting::where("_id",'=',"pricing")
 									->first([
-										'settings.express_delivery_bulk',										
-										'settings.regular_express_delivery',										
+										'settings.express_delivery_bulk',
+										'settings.regular_express_delivery',
 									]);
+
 		$globalPricing = $globalPricing->settings;
 
 		///////////////////////
@@ -53,7 +54,9 @@ class CategoryController extends Controller
 				}
 
 			}else{
+
 				$category = array_merge($globalPricing,$category);
+
 			}
 		}
 

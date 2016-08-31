@@ -15,17 +15,24 @@ MetronicApp.controller('ProductController',['$rootScope', '$scope', '$timeout','
 			categories:[],
 			isFeatured:'0',
 			bulkDisable:0,
-			imageFiles:[{coverimage:1}],
-			advance_order:{},
+			imageFiles:[{coverimage:'1'}],
+			//advance_order:{},
 			regular_express_delivery:{},
-			advance_order_bulk:{},
+			//advance_order_bulk:{},
 			express_delivery_bulk:{},	
 			price:null,
 			outOfStockType:2,
 			availabilityDays:2,
-			availabilityTime:990
+			availabilityTime:990,
+			deliveryType:0,
+			isLoyalty:0,
+			loyaltyType : 0,
+			suggestions : [],
+			dealerData:[{}],
+			store:{}
 		};
 		
+
 
 
 	});
@@ -117,6 +124,63 @@ MetronicApp.controller('ProductController',['$rootScope', '$scope', '$timeout','
 
 
 
+	// Suggestion Product Start
+
+	$scope.addItem = function(p){
+
+		delete $scope.errors.products;
+
+		p.added = true;
+		p.quantity = 1;			
+
+		$scope.product.suggestions.push(angular.copy(p));			
+
+	};
+
+	$scope.searchItem = function($event){
+
+		var qry = $event.currentTarget.value;
+		if(qry.length>=3){
+			$scope.searching = true;
+			productModel.searchItem(qry).success(function(response){
+				$scope.itemlist = response;
+				$scope.searching = false;
+			});
+		}else{
+			$scope.itemlist = [];
+		}
+	};
+	
+	$scope.removeProduct = function(index){
+		$scope.product.suggestions.splice(index,1);
+	}
+
+	$scope.checkItem = function(){
+
+		if(!$scope.itemlist) return [];	
+
+		return $scope.itemlist.filter(function(item){
+
+			angular.forEach($scope.product.suggestions, function (pro) {
+				if  (pro._id === item._id) {
+					item.added = true;
+				}
+			});
+
+			return item;
+
+		});
+
+	}
+
+	$scope.clearSearch = function(cg){
+		$scope.currentGroup = cg;
+		$scope.searchbox = '';
+		$scope.itemlist = [];
+	}
+
+	// Suggestion Product End
+
 }]);
 
 MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$location','$stateParams','$timeout','fileUpload','productModel', function($rootScope, $scope,$location,$stateParams,$timeout,fileUpload,productModel) {
@@ -126,18 +190,17 @@ MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$locatio
 		$scope.selectCategory();
 	});*/
 
-
-
 	if($stateParams.productid){
 		
 		productModel.getProduct($stateParams.productid).success(function(data){
 			
-			$scope.product = data;	
+			angular.extend($scope.product,data);
 
 			var unique = $scope.product.categories.join('|');
+			// console.log(unique);
 			var k = $scope.getKey($scope.cd,unique);			
-
-			if(k)
+			//console.log(k);
+			if(k!=null)
 				$scope.product.categories = $scope.cd[k].id;
 			else
 				$scope.product.categories = [];
@@ -152,9 +215,10 @@ MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$locatio
 		});	
 	}	
 
-	$scope.store = function(){	
+	$scope.store = function(){
 
 		if($stateParams.productid){
+
 			productModel.updateProduct($scope.product,$stateParams.productid).success(function(response){						
 				$location.path("products/list");
 			}).error(function(data, status, headers){			
@@ -171,18 +235,18 @@ MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$locatio
 		
 	};	
 
-	$scope.imageRemove = function(i){		
+	$scope.imageRemove = function(i){
 		$scope.product.imageFiles.splice(i, 1);
 	};
 
-	$scope.coverUpdate = function(s){		
+	$scope.coverUpdate = function(s){
 		for(var ci in $scope.product.imageFiles){
 			$scope.product.imageFiles[ci].coverimage = 0;
 		}
 		$scope.product.imageFiles[s].coverimage = 1;
 	};
 
-	$scope.edittier = function(val,price,t){		
+	$scope.edittier = function(val,price,t){
 		if(t == 1){
 			$scope.product[val] = angular.copy(price);
 		}else{
@@ -226,10 +290,7 @@ MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$locatio
 		});
 	}
 
-
-	
-
-	$scope.getTimeOptions = function(){		
+	$scope.getTimeOptions = function(){
 		return $rootScope.timerange;
 	};
 
@@ -238,14 +299,43 @@ MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$locatio
 		{id:2,label:'Available after'},
 	];
 
+	$scope.removeDealer = function(index,dealerId){
+
+		if($scope.product.store.defaultDealerId == dealerId){
+			$scope.product.store.defaultDealerId = '';
+		}
+
+		$scope.product.dealerData.splice(index,1);
+
+	}
+
+	$scope.setDefault = function(dId){
+		if(dId){
+			$scope.product.store.defaultDealerId = dId;
+		}
+	}
+
+	$scope.setCover = function(index){
+
+		angular.forEach($scope.product.imageFiles,function(val,key){
+
+			if(key!=index){
+				delete val.coverimage;
+			}
+
+		});
+
+	}
+
 }]);
 
 MetronicApp.directive('myChange', function() {
-  return function(scope, element, attributes) {
-    
-    element.bind('change', function() {            
-      
-      var checked = $(element).prop("checked"),
+
+	return function(scope, element, attributes) {
+	
+	element.bind('change', function() {
+
+	  var checked = $(element).prop("checked"),
       container = $(element).closest("li"),
       siblings = container.siblings();
       /*container.find('input[type="checkbox"]').prop({         
@@ -277,17 +367,17 @@ MetronicApp.directive('myChange', function() {
 	      }	      
 	  }
 
-	  checkSiblings(container);
+		checkSiblings(container);
 
-	  var selectcaty = [];
+		var selectcaty = [];
 
-	  $('#checkable input:checked').each(function(){	  			  	
-	  		selectcaty.push($(this).attr('my-change'));
-	  });  
-	  
-	  scope.$apply(function(){
-           scope.product.categories = selectcaty;
-      });
+		$('#checkable input:checked').each(function(){	  			  	
+			selectcaty.push($(this).attr('my-change'));
+		});  
+		  
+		scope.$apply(function(){
+			scope.product.categories = selectcaty;
+		});
 
     });
   };

@@ -34,6 +34,9 @@ class Categories extends Moloquent
                         'regular_express_delivery',
                         'advance_order_bulk',
                         'express_delivery_bulk',
+                        'metaTitle',
+                        'metaKeywords',
+                        'metaDescription'
                     ];
 
     public function getCategory($params = array()){

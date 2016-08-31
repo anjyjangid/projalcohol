@@ -17,10 +17,13 @@ class Packages extends Eloquent
         'subTitle',
         'description',
         'coverImage',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
         'products',
         'video',
         'recipe',
-        'packageItems',
+        'packageItems',        
         'status'        
     ];
 

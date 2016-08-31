@@ -26,12 +26,15 @@ class CmsRequest extends Request
 
         $rules = [
             
-            'title' => 'required|string|max:255',            
-            'description' => 'required|max:500',
+            'section' => 'required',
+            'title' => 'required|string|max:255',  
+            'linkTitle' => 'required|string|max:100',                        
+            //'description' => 'required|max:500',
             'content' => 'required',
+            'metaTitle' => 'max:100',
+            'metaKeywords' => 'max:150',
+            'metaDescription' => 'max:150',            
             'status'=> 'integer|in:0,1',
-            
-
         ];
                 
         return $rules;

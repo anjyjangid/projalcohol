@@ -18,6 +18,10 @@ MetronicApp.controller('SubadminFormController',['$rootScope', '$scope', '$timeo
 
     $scope.subadmin = {};	
 
+    $http.get('/adminapi/stores/storelist').success(function(response){
+        $scope.storeList = response;
+    });
+
     if($stateParams.id){
         $http.get("/adminapi/admin/subadminuser/"+$stateParams.id).success(function(response){           
             $scope.subadmin = response;

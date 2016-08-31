@@ -1,0 +1,18 @@
+<div class="tabbable"> <!-- Only required for left/right tabs -->
+    <div class="fullwidth">    
+        <ul class="nav nav-tabs productcomboul">                
+        </ul>                          
+    </div>
+    <div infinite-scroll='giftproducts.nextPage()' infinite-scroll-disabled='giftproducts.busy' infinite-scroll-distance='1'>        
+        <div ng-repeat="gift in giftproducts.items" class="col-xs-12 col-sm-3 col-md-3 comboproductitems">            
+            <div class="prod_pic gift-product-outer">    
+            <div class="prod-pic-midle-set">          
+                <img class="img-responsive" err-src="asset/i/defaultImage.png" ng-src="gifts/i/{{gift.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+            </div></div>
+            <div class="prod_desc">{{gift.title}}</div>            
+            <div class="prodcombo_addtocartbutton">
+                <img src="images/addtocart.png" class="img-responsive">
+            </div>
+        </div>
+    </div>
+</div>

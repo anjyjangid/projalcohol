@@ -23,8 +23,10 @@ Route::group(['prefix' => 'adminapi'], function () {
 
 });
 
+
 Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	
+	Route::resource('order', 'Admin\OrderController');
 	Route::controller('order', 'Admin\OrderController');
 	
 	Route::resource('product', 'Admin\ProductController',['only'=>['update','store']]);
@@ -32,7 +34,11 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 
 	Route::controller('admin', 'Admin\AdminController');
 	
+	Route::resource('customer', 'Admin\CustomerController');
 	Route::controller('customer', 'Admin\CustomerController');
+
+	Route::resource('business', 'Admin\BusinessController');
+	Route::controller('business', 'Admin\BusinessController');	
 	
 	Route::group(['prefix' => 'global'], function () {		
 		Route::get('status/{id}/{table}/{status}','Admin\GlobalController@setstatus');
@@ -41,9 +47,10 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 		Route::post('uploadgraphics','Admin\GlobalController@uploadgraphics');
 	});
 
-	Route::resource('dealer', 'Admin\DealerController',['only'=>'store','update']);	
+	Route::resource('dealer', 'Admin\DealerController',['only'=>['store','update']]);
 	Route::controller('dealer', 'Admin\DealerController');
 
+	Route::resource('category', 'Admin\CategoryController',['only'=>['store','update']]);
 	Route::controller('category', 'Admin\CategoryController');	
 
 	Route::resource('setting', 'Admin\SettingController',['only'=>'update']);
@@ -66,8 +73,25 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::resource('promotion', 'Admin\PromotionController',['only'=>['update','store','show']]);
 	Route::controller('promotion', 'Admin\PromotionController');
 
+	Route::resource('coupon', 'Admin\CouponController',['only'=>['update','store','show']]);
+	Route::controller('coupon', 'Admin\CouponController');
+
 	Route::resource('holiday', 'Admin\HolidayController',['only'=>['update','store','destroy']]);
 	Route::controller('holiday', 'Admin\HolidayController');
+
+	Route::resource('gift', 'Admin\GiftController',['only'=>['store','show','index']]);
+	Route::controller('gift', 'Admin\GiftController');
+
+	Route::resource('dontmiss', 'Admin\DontMissController');
+	
+	Route::resource('giftcategory', 'Admin\GiftCategoryController',['only'=>['store','edit','index']]);
+	Route::controller('giftcategory','Admin\GiftCategoryController');
+
+	Route::resource('sale', 'Admin\SaleController',['only'=>['store','show','update']]);
+	Route::controller('sale', 'Admin\SaleController');
+
+	Route::resource('stores', 'Admin\StoreController',['only'=>['store','edit','update']]);
+	Route::controller('stores', 'Admin\StoreController');
 
 });
 
@@ -81,10 +105,7 @@ Route::group(['prefix' => 'admin'], function () {
 	});	
 });
 
-//post('upload-image', 'GalleryController@uploadImage');
-//Route::resource('gallery', 'GalleryController');
-
-Route::get('/', function () {
+Route::get('/', function () {	    
     return view('frontend');
 });
 
@@ -94,21 +115,42 @@ Route::controller('/super', 'SuperController');
 
 Route::controller('/category', 'CategoryController');
 
-
 Route::get('/getproduct', 'ProductController@getproduct');
+
+Route::get('/fetchProducts', 'ProductController@fetchProducts');
 
 Route::get('/search', 'ProductController@getproduct');
 
 Route::get('/getproductdetail', 'ProductController@getproductdetail');
 
+Route::get('/product/alsobought/{productSlug}', 'ProductController@getAlsobought');
+
+
+
+
 Route::controller('/password', 'Auth\PasswordController');
  
 Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
+
 Route::get('reset/{key}', 'Auth\PasswordController@reset');
 
 Route::put('deploycart/{cartKey}','CartController@deploycart');
+
 Route::put('confirmorder/{cartKey}','CartController@confirmorder');
+
+Route::get('confirmorder','CartController@confirmorder');
+
 Route::get('freezcart','CartController@freezcart');
+
+Route::group(['middleware' => 'auth'], function () {
+
+	Route::controller('loyalty', 'LoyaltyController');
+	Route::resource('loyalty', 'LoyaltyController');
+
+	Route::controller('credits', 'CreditsController');
+	Route::resource('credits', 'CreditsController');
+
+});
 
 Route::group(['prefix' => 'cart'], function () {
 
@@ -126,39 +168,42 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::post('package/{cartkey}','CartController@createpackage');
 	
-	Route::put('promotion/{cartkey}','CartController@putPromotion');	
-		
+	Route::put('promotion/{cartkey}','CartController@putPromotion');
+
+	Route::put('bulk','CartController@putBulk');
+
+	Route::post('repeatlast','CartController@postRepeatlast');
+
 	Route::delete('product/{key}/{type}','CartController@removeproduct');
 
 	Route::delete('promotion/{key}','CartController@deletePromotion');
 
+	Route::delete('card/{key}','CartController@deleteCard');
+
+	Route::delete('gift/{key}','CartController@deleteGift');
+
+	Route::post('gift','CartController@postGift');
+	
+	Route::post('giftcard','CartController@postGiftcard');
+	Route::put('giftcard/{uid}','CartController@putGiftcard');
+
+	Route::put('gift/product/chilledtoggle/{giftUid}','CartController@putGiftProductChilledStatus');
+
+	Route::put('loyalty/{key}','CartController@putLoyalty');
 	
 
 });
+
+
+Route::controller('suggestion', 'SuggestionController');
 
 Route::resource('cart', 'CartController');
 
 Route::resource('wishlist', 'WishlistController');
 
-
 Route::get('/order/summary/{id}','OrderController@getSummary');
 Route::get('/order/orders','OrderController@getOrders');
 Route::get('/order/{order}','OrderController@show');
-
-
-
-
-Route::resource('category', 'Admin\CategoryController');
-
-
-//ADMIN ROUTES
-
-/*Route::get('/admin/profile', ['uses' => 'Admin\AdminController@profile']);
-Route::post('/admin/profile/update', ['uses' => 'Admin\AdminController@update']);
-Route::post('/admin/profile/updatepassword', ['uses' => 'Admin\AdminController@updatepassword']);
-Route::get('/admin', ['uses' => 'Admin\AdminController@index']);
-Route::get('/admin/dashboard', ['uses' => 'Admin\AdminController@dashboard']);*/
-
 
 Route::resource('address', 'AddressController');
 
@@ -168,6 +213,8 @@ Route::controller('package', 'PackageController');
 Route::resource('site', 'SiteController',['only'=>['*']]);
 Route::controller('site', 'SiteController');
 
+Route::resource('loyaltystore', 'LoyaltyStoreController',['only'=>['index']]);
+Route::controller('loyaltystore', 'LoyaltyStoreController');
 
 /*PRODUCT IMAGE ROUTUING*/
 Route::get('products/i/{folder}/{filename}', function ($folder,$filename)
@@ -193,34 +240,31 @@ Route::get('packages/i/{filename}', function ($filename)
     return Image::make(storage_path('packages') . '/' . $filename)->response();
 });
 
+Route::get('gifts/i/{filename}', function ($filename)
+{
+    return Image::make(storage_path('gifts') . '/' . $filename)->response();
+});
+
+Route::get('giftcategory/i/{filename}', function ($filename)
+{
+    return Image::make(storage_path('giftcategory') . '/' . $filename)->response();
+});
+
 Route::get('asset/i/{filename}', function ($filename)
 {
     return Image::make(public_path('img') . '/' . $filename)->response();
 });
 
-/*Route::controller('/admin/password', 'Auth\AdminPasswordController');
-
-Route::controller('/admin', 'Auth\AdminAuthController');*/
-
 Route::get('/check', 'UserController@check');
-
 Route::post('/auth', 'UserController@checkAuth');
-
-
-
 Route::get('/loggedUser', 'UserController@loggedUser');
-
 Route::put('/profile', 'UserController@update');
 Route::put('/password', 'UserController@updatepassword');
-
 Route::controller('user', 'UserController');
 
+Route::controller('giftcategory', 'GiftCategoryController');
+Route::resource('giftcategory', 'GiftCategoryController',['only'=>['index','show']]);
 
+Route::resource('gift', 'GiftController',['only'=>['show']]);
 
-//TO WORK FOR ANGULAR DIRECT URL
-
-
-/*Route::any('{path?}', function()
-{
-    return view('frontend');
-});*/
+Route::controller('payment', 'PaymentController');

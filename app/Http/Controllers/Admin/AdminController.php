@@ -11,6 +11,13 @@ use AlcoholDelivery\User as User;
 use Illuminate\Support\Facades\Validator;
 use AlcoholDelivery\Admin;
 use AlcoholDelivery\Http\Requests\SubadminRequest;
+use Hoiio\HoiioService;
+use GuzzleHttp\Client;
+use AlcoholDelivery\Products;
+use AlcoholDelivery\Orders;
+use AlcoholDelivery\Email;
+use AlcoholDelivery\Book;
+use MongoId;
 
 class AdminController extends Controller
 {
@@ -119,6 +126,7 @@ class AdminController extends Controller
             'first_name' => 'required|min:3',
             'last_name' => 'required|min:3',
             'email' => 'required|email|max:255|unique:admin,email,'.Auth::user('admin')->id.',_id',
+            'storeId' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -174,6 +182,7 @@ class AdminController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',            
             'email' => 'required|email|max:255|unique:admin,email,'.@$id.',_id',            
+            'storeId' => 'required',
             'password' => 'required|between:8,32',
             'confirmPassword' => 'required|same:password',
             'status'=> 'required|integer|in:0,1',            
@@ -182,7 +191,7 @@ class AdminController extends Controller
         if($id!=null){
             unset($rules['password']);
             unset($rules['confirmPassword']);
-        }        
+        }       
 
         $validator = Validator::make($data, $rules, [
             'required' => 'This field is required'
@@ -192,13 +201,22 @@ class AdminController extends Controller
             return response($validator->errors(), 422);
         }
 
+        $data['storeId'] = $data['storeId'];
+        $data['storeObjId'] = new MongoId($data['storeId']);
+
         $inputs = [
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
             'email' => $data['email'],            
+            'storeId' => $data['storeId'],
+            'storeObjId' => $data['storeObjId'],
             'status' => (int)$data['status'],
-            'role' => 2
+            //'role' => 1
         ];
+
+        if($id==null){
+            $inputs['role'] = 2;
+        }
 
         $saved = false;
         
@@ -234,7 +252,7 @@ class AdminController extends Controller
             $subadmin = $subadmin->where('first_name','like', '%'.$name.'%')->orWhere('last_name','like', '%'.$name.'%');            
         }
 
-        $subadmin = $subadmin->where('role',2);
+        //$subadmin = $subadmin->where('role',2);
 
         $iTotalRecords = $subadmin->count();
 
@@ -263,12 +281,194 @@ class AdminController extends Controller
 
     public function getSubadminuser(Request $request,$id){
 
-        $subadmin = Admin::where('_id',$id)->where('role',2)->first();
+        $subadmin = Admin::where('_id',$id)
+        //->where('role',2)
+        //->with('userstore')
+        ->first();
 
         if($subadmin){
             return response($subadmin,200);
         }else{
             return response(['message'=>'Invalid user.'],404);
         }
+    }    
+
+    public function getStats(Request $request){        
+        $totalProducts = Products::count();
+        $totalOrder = Orders::count();   
+        $avgOrders = Orders::avg('payment.total');
+
+        $res = ['totalProducts'=>$totalProducts,'totalOrder'=>$totalOrder,'avgOrders'=>$avgOrders];
+
+        return response($res,200);
     }
+
+    public function postNotify(Request $request){
+        
+        $data = $request->all();  
+
+        if($data['sms']==0 && $data['mail']==0){
+            return response(['message'=>'Please select atleast 1 sending option.'],400);
+        }
+
+        $order = Orders::find($data['oid']);
+
+        $mailsent = $smssent = false;
+        
+        if($order){
+            $user = User::find((string)$order['user'])->toArray();
+            
+            if($data['mail'] == 1){
+                $mail = new Email('deliverynotification');
+                $user['order_number'] = $order['reference'];
+                $user['time_of_delivery'] = $data['time'];
+                $mailsent = $mail->sendEmail($user);
+            }
+            
+            if(isset($user['mobile_number']) && $data['sms'] == 1){
+                $msgtxt = 'Your designated {site_title} dispatch personnel will be delivering order #{order_number} within {time_of_delivery} minutes! Need help? Call us @ 9-2445533 (9-CHILLED). Thank you!';
+
+                $msgtxt = str_ireplace(['{site_title}','{order_number}','{time_of_delivery}'],[config('app.appName'),$order->reference,$data['time']],$msgtxt);
+
+                $smssent = Email::sendSms($user['mobile_number'],$msgtxt);
+            }
+            return response(['message'=>'Notification sent successfully.','mailsent'=>$mailsent,'smssent'=>$smssent],200);
+        }else{
+            return response(['message'=>'Invalid order. Please try again'],400);
+        }
+        
+    }
+
+    public function getUserlist(Request $request){
+
+        $users = DB::collection('products')->raw(function($collection) use($id){
+            return $collection->aggregate(array(                
+                array(
+                    '$project' => array(                        
+                        'name'=>'$name',
+                        'quantity'=>'$quantity',
+                        'maxQuantity'=>'$maxQuantity',
+                        'threshold'=>'$threshold',
+                        'dealers'=>'$dealers',
+                        'sku'=>'$sku',
+                        'sum' => array(
+                            '$subtract' => array(                                
+                                array('$divide' => array('$quantity','$maxQuantity')),
+                                array('$divide' => array('$threshold','$maxQuantity'))                               
+                            )                            
+                        ),
+                    ),
+                ),
+                array(
+                    '$sort' => array('sum'=>1)
+                ),                
+                array(
+                    '$match' => array(
+                        'dealers' => array('$elemMatch'=>array('$in'=>[$id])),
+                        //'sum' => array('$lt'=>0)
+                    )
+                )   
+            ));
+        });
+
+    }
+
+    public function getTest(Request $request){
+
+        /*$user = User::first();        
+
+        $book = new Book(['title' => 'Harry potter','author' => 'abhay@cgt.co.in']);     
+
+        $book = $user->books()->save($book);*/
+
+        $us = new User;
+
+        $fillable = $us->getFields();       
+
+               
+
+        /*$fillable['books'] = '$books';
+
+        $fillable['bookTitle'] = '$books.title';
+
+        $fillable['bookAuthor'] = '$books.author';
+        
+        $model = User::raw()->aggregate(
+            [   
+                [
+                    '$match'=>['_id' => new MongoId('57bea0dcb190ecb40c8b4569')]                    
+                ],
+                [
+                    '$unwind' => [
+                        'path' => '$books',
+                        'preserveNullAndEmptyArrays' => true,                            
+                    ]
+                ],                
+                [
+                    '$project'=>$fillable                        
+                ],
+                [
+                    '$match'=>['bookAuthor' => 'abhay@cgt.co.in']                    
+                ],
+            ]
+        );*/
+
+        $fillable['mybook'] = [
+            '$filter'=>[
+                'input' => '$books',
+                'as' => 'book',
+                'cond' => ['$eq'=>['$$book.title','Harry']]
+            ]
+        ];
+
+        $model = User::raw()->aggregate(
+            [   
+                [
+                    '$match'=>['_id' => new MongoId('57bea0dcb190ecb40c8b4569')]                    
+                ],                                
+                [
+                    '$project'=>$fillable                        
+                ],
+                [
+                    '$unwind' => [
+                        'path' => '$mybook',
+                        'preserveNullAndEmptyArrays' => true,                            
+                    ]
+                ]
+            ]
+        );
+
+        echo '<pre>';
+        print_r($model);
+        echo '</pre>';
+        exit;        
+        return response($users['result'],200);  
+    }
+
+    public function postUpdateprofile(Request $request)
+    {
+        $data = $request->all();
+        if(isset($data['email'])){
+            $data['email'] = strtolower($data['email']);
+        }
+
+        $validator = Validator::make($data, [
+            'first_name' => 'required|min:3',
+            'last_name' => 'required|min:3',
+            'email' => 'required|email|max:255|unique:admin,email,'.Auth::user('admin')->id.',_id',            
+        ]);
+
+        if ($validator->fails()) {
+            return response($validator->errors(), 422);
+        }
+
+        $admin = Admin::where('_id', Auth::user('admin')->id)->first();
+        
+        $admin->first_name = $data['first_name'];
+        $admin->last_name = $data['last_name'];
+        $admin->email = $data['email'];
+        $admin->save();
+        return response($admin, 200);
+    }
+
 }

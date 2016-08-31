@@ -10,14 +10,14 @@
 <div style="clear: both;"></div>
 <div class="cocktail-packagecover">
 	<div class="media media-bodyheader" ng-repeat="package in packages">
-		<div class="media-left cocktail-leftimgdiv">
-			<a href="#">
+		<div class="media-left  cocktail-leftimgdiv">
+			<a ui-sref="mainLayout.packagedetail({type:'cocktail',id:package._id})">
 			  <img err-src="asset/i/defaultImage.png" ng-src="packages/i/{{package.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
 			</a>
 		</div>
 		<div class="media-body cockatil-bodycover">
-			<h4 class="media-heading cocktail-heading">{{package.title}}</h4>
-			<p class="cocktail-subtitlbtm">{{package.subTitle}}</p>
+			<div class="media-heading title-propertset cktail-titl-line">{{package.title}}</div>
+			<div class="subtitl-propertset cocktail-btm-padingrmv">{{package.subTitle}}</div>
 			<div class=" moredetail-cocktailtext">
 				<div class="product-desccocktail">{{package.description}}</div>
 				<a ui-sref="mainLayout.packagedetail({type:'cocktail',id:package._id})">More Detail</a>
@@ -35,8 +35,11 @@
 			</data-owl-carousel>    
 			<div ng-if="(package.productlist.length) < 6">&nbsp;</div>
 			<div class="cocktail-cartbtn">
-				<a class="btn product_addcart" ui-sref="mainLayout.packagedetail({type:'cocktail',id:package._id})">Add to Cart</a>
-				<div class="cocktail-amntdivcover"><div class="amntrupee"> $56.5</div><span>Amount :</span></div>
+				<a class="btn product_addcart addcart-detail cocktail-cart-margintop" ui-sref="mainLayout.packagedetail({type:'cocktail',id:package._id})"><img src="images/cart-icon.png">  Add to Cart</a>
+				<div class="cocktail-amntdivcover"><div class="amntrupee"> $56.5</div><span>Amount :</span>
+            <div class="saving-cocktail-cover"> <div class="saving-titie-amnt"> $2</div><span>saving :</span></div></div>
+                
+                
 			</div>
 		</div>
 	</div>

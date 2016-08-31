@@ -23,7 +23,19 @@
 				 <div class="checkoutstep5-left-first">
 					 <div class="checkoutstep5-left-first-left">
 						 <div class="checkoutstep5-left-first-lefttext">Payment</div>
-						 <div class="checkoutstep5-left-first-lefttitle">Cash on Delivery</div>
+						 <div class="checkoutstep5-left-first-lefttitle">
+							{{(cart.payment.method == 'COD')?'Cash on delivery':''}}
+						 </div>
+
+						 <div ng-if="cart.payment.method == 'CARD'" class="orhistry2_td2procdtcvr">
+	                        {{selectedcard = cart.payment.creditCard;''}}
+	                        <span ng:class="selectedcard.type" class="cardicons"></span>
+	                        <div class="checkouter-td-right-text">
+	                            <div class="orhistry2_td2proctext1">{{selectedcard.token_id | creditcard}}</div>
+	                            <div class="orhistry2_td2proctext2">{{selectedcard.type}}</div>
+	                        </div>  
+	                    </div>
+
 					 </div>
 					 <a class="checkoutstep5-left-edit" ui-sref="mainLayout.checkout.payment"><img src="images/checkoutstep5-editimg.png"></a>
 				 </div>
@@ -51,33 +63,35 @@
 						<div class="checkoutstep5right-middle ">
 							<div class="checkoutstep5right-middle-first">
 								<div class="checkoutstep5right-middle-title">Subtotal <span class=""></span></div>
-								<div class="checkboxtotaldiv-text">{{alcoholCart.getSubTotal() | currency:settings.general.currency:2}}</div>
+								<div class="checkboxtotaldiv-text-font-size">{{alcoholCart.getSubTotal() | currency:settings.general.currency:2}}</div>
 							</div>
 							<div class="checkoutstep5right-middle-first">
 								<div class="checkoutstep5right-middle-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
 								
-								<div class="checkboxtotaldiv-text" ng-if="!cart.delivery.charges">Free</div>
-		<div class="checkboxtotaldiv-text" ng-if="cart.delivery.charges>0">{{alcoholCart.getDeliveryCharges() | currency:settings.general.currency:2 }}</div>
+								<div class="checkboxtotaldiv-text-font-size" ng-if="!cart.delivery.charges">Free</div>
+		<div class="checkboxtotaldiv-text-font-size" ng-if="cart.delivery.charges>0">{{alcoholCart.getDeliveryCharges() | currency:settings.general.currency:2 }}</div>
 							</div>
 							<div class="checkoutstep5right-middle-first">
 								<div class="checkoutstep5right-middle-title">Service Charge <span class=""><img src="images/questionimg.png"></span></div>
-								<div class="checkboxtotaldiv-text">{{alcoholCart.getAllServicesCharges() | currency:settings.general.currency:2}}</div>
+								<div class="checkboxtotaldiv-text-font-size">{{alcoholCart.getAllServicesCharges() | currency:settings.general.currency:2}}</div>
 							</div>
 							<div class="checkoutstep5right-middle-first">
 								<div class="checkoutstep5right-middle-title" >Discount (Non-Chilled) <span class=""><img src="images/questionimg.png"></span></div>
-								<div class="checkboxtotaldiv-text" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount() | currency:settings.general.currency:2}}</div>
+								<div class="checkboxtotaldiv-text-font-size" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount() | currency:settings.general.currency:2}}</div>
 							</div>
 						</div>
 						<div class="checkoutstep5right-buttom">
 							<div class="checkoutstep5right-bottom-title">Total</div>
-							<div class="checkboxtotaldiv-text">{{alcoholCart.getCartTotal() | currency:settings.general.currency:2}}</div>
+							<div class="checkboxtotaldiv-text-botm-text">{{alcoholCart.getCartTotal() | currency:settings.general.currency:2}}</div>
 						</div>
 					</div>
 				</div>
 			</div> 
 		 </div>
 				<div class="checkoutmiddletable"> 
-				<div class="chekoutstep5-table-title">Items to be Delivered</div>          
+				<div class="chekoutstep5-table-title">Items to be Delivered</div>  
+                <div class="reviewtable-cover">      
+                <div class="table-responsive">  
 				<table class="table cart-table">          
 					<tbody>
 						<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getProducts()"></tr>
@@ -161,6 +175,37 @@
 							</td>
 						</tr>
 						
+						<tr ng-repeat="(key, giftCard) in alcoholCart.getGiftCards()">
+
+							<td width="52%">
+
+								<div class="orhistry2_td2procdtcvr">
+									<span>
+										{{giftCard.recipient.price | pricingTxt}}
+									</span>
+
+									<div class="checkouter-td-right-text">
+										<div class="orhistry2_td2proctext1">{{giftCard.recipient.name}}</div>
+										<div class="orhistry2_td2proctext2">{{giftCard.recipient.message}}</div>
+										<div class="orhistry2_td2proctext1">{{giftCard.recipient.price | pricingTxt}}</div>
+										<div class="orhistry2_td2proctext2">unit Price</div>
+									</div> 
+								</div>
+							</td>
+							<td></td>
+							<td>
+
+								<div class="checkoutmiddlevlauediv">
+
+									<input type="text" ng-model="giftCard.recipient.quantity" value="giftCard.recipient.quantity" min="0" mquantity="100" ng-touch-spin on-increment="updateGiftCard(giftCard.getUniqueId())" on-decrement="updateGiftCard(giftCard.getUniqueId())">
+
+								</div>
+							</td>
+							<td>
+								<div class="orderhistry2price">{{giftCard.getPrice() | pricingTxt}}</div>
+							</td>
+						</tr>
+
 						<tr ng-repeat="(key, promotion) in alcoholCart.getPromotions()">
 						
 							<td width="52%">
@@ -182,18 +227,22 @@
 							</td>
 							
 						</tr>
+
+
 						
 					</tbody>
 				</table>
+                </div>
+                </div>
 				</div>  
 
 
 
 				<div class="checkoutstep5-mid-button-outer">
 				
-				<a class="checkouterback2" ui-sref="mainLayout.checkout.payment"><span><img src="images/order_history2backpic.png"></span>back</a>				
+				<a class="checkouterback2" ui-sref="mainLayout.checkout.payment"><span><img src="images/order_history2backpic.png"></span>BACK</a>				
 				
 				<button class="checkoutstep5-mid-button" ng-click="orderConfirm()">Confirm Order <i class="glyphicon glyphicon-menu-right"></i></button>
 				
 				</div>
-		
+<payment-form></payment-form>		

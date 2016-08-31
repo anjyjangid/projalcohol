@@ -1,23 +1,26 @@
-AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', '$mdToast', 'alcoholCartItem', 'alcoholCartPackage','promotionsService','alcoholCartPromotion', function ($rootScope, $window, $http, $q, $mdToast, alcoholCartItem, alcoholCartPackage, promotionsService, alcoholCartPromotion) {
-	
-	angular.cart = this;
+AlcoholDelivery.service('alcoholCart', [
+			'$rootScope', '$window', '$http', '$q', '$mdToast', 'alcoholCartItem', 'alcoholCartLoyaltyItem', 'alcoholCartPackage','promotionsService','alcoholCartPromotion', 'alcoholCartGiftCard', 'alcoholCartGift', 
+	function ($rootScope, $window, $http, $q, $mdToast, alcoholCartItem, alcoholCartLoyaltyItem, alcoholCartPackage, promotionsService, alcoholCartPromotion, alcoholCartGiftCard, alcoholCartGift) {
 
 	this.init = function(){
 		
 		this.$cart = {
 			
 			products : {},
+			loyalty : {},
 			packages : [],
 			promotions :[],
 			nonchilled : false,
 			delivery : {
-				type : 1,
+
+				type : null,
 				charges : null,
 				address : null,
 				contact : null,
 				instruction : null,
 				leaveatdoor : false,
 				instructions : null,
+
 			},
 			service : {
 				express : {
@@ -56,6 +59,8 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		var inCart = this.getProductById(id);
 		var _self = this;
 		var deliveryKey = _self.getCartKey();
+
+		if(typeof id.$id !== 'undefined'){ id = id.$id}
 
 		$http.put("/cart/"+deliveryKey, {
 				"id":id,
@@ -114,17 +119,197 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		return defer.promise
 	};
 
+	this.addLoyaltyProduct = function (id, quantity, serveAs) {
+
+		var defer = $q.defer();
+
+		var inCart = this.getLoyaltyProductById(id);
+		var _self = this;
+		var deliveryKey = _self.getCartKey();
+
+		if(typeof id.$id !== 'undefined'){ id = id.$id}
+
+		$http.put("/cart/loyalty/"+deliveryKey, {
+				"id":id,
+				"quantity":quantity,
+				"chilled":serveAs
+			},{
+
+		}).error(function(data, status, headers) {
+
+			defer.reject(data);
+
+		}).success(function(response) {
+
+			if(response.success){
+
+				var resProduct = response.product;
+
+				if(inCart){				
+
+					if(resProduct.quantity==0){
+
+						//_self.removeItemById(id);
+
+					}else{
+					
+						inCart.setTQuantity(resProduct.quantity);
+						inCart.setPrice(resProduct);
+
+					}									
+
+				}else{
+					
+		    		var newItem = new alcoholCartLoyaltyItem(id,resProduct);
+					_self.$cart.loyalty[id] = newItem;
+
+				}
+
+
+
+				if(response.change!==0){
+
+					if(response.change>0){
+
+						$rootScope.$broadcast('alcoholCart:updated',{msg:"Loyalty product added to cart",quantity:Math.abs(response.change)});
+
+					}else{
+
+						$rootScope.$broadcast('alcoholCart:updated',{msg:"Loyalty product removed from cart",quantity:Math.abs(response.change)});
+
+					}
+				}
+
+			}
+
+			defer.resolve(response);
+
+		});
+
+		return defer.promise
+	};
+
+	this.addBulk = function(products){
+
+		var defer = $q.defer();
+		var _self = this;
+		$http.put('cart/bulk',products)
+				.success(function(response){
+
+					if(response.success){					
+
+						angular.forEach(response.data.products, function (product, index) {
+							
+							var id = product.product._id;
+							var inCart = _self.getProductById(id);
+
+							if(inCart){
+
+								inCart.setRQuantity(product.chilled.quantity,product.nonchilled.quantity);
+								inCart.setTQuantity(product.quantity);
+								inCart.setPrice(product);
+
+								inCart.setRMaxQuantity(product);
+
+							}else{				
+								
+					    		var newItem = new alcoholCartItem(id, product);
+								_self.$cart.products[id] = newItem;
+								
+							}
+
+						});
+
+						defer.resolve("added success fully");
+
+					}
+
+					defer.reject("something went wrong");
+
+				})
+				.error(function(data, status, headers){
+
+					defer.reject("something went wrong");
+
+				})
+
+		return defer.promise;
+		
+	};
+
+	this.repeatLastOrder = function(){
+
+		var defer = $q.defer();
+		var _self = this;
+
+		$http.post('cart/repeatlast')
+				.success(function(response){
+
+					if(response.success){					
+
+						angular.forEach(response.data.products, function (product, index) {
+							
+							var id = product.product._id;
+							var inCart = _self.getProductById(id);
+
+							if(inCart){
+
+								inCart.setRQuantity(product.chilled.quantity,product.nonchilled.quantity);
+								inCart.setTQuantity(product.quantity);
+								inCart.setPrice(product);
+
+								inCart.setRMaxQuantity(product);
+
+							}else{				
+								
+					    		var newItem = new alcoholCartItem(id, product);
+								_self.$cart.products[id] = newItem;
+								
+							}
+
+						});
+
+						defer.resolve("added success fully");
+
+					}
+
+					defer.reject("something went wrong");
+
+				})
+				.error(function(data, status, headers){
+
+					defer.reject("something went wrong");
+
+				})
+
+		return defer.promise;
+		
+	};
+
 	this.addPackage = function (id,detail) {
 
 		var _self = this;
 		var deliveryKey = _self.getCartKey();		
 		
-
 		var d = $q.defer();
+
+		var products = [];
+		angular.forEach(detail.packageItems,function(item,key){
+			angular.forEach(item.products,function(product,key){
+				if(product.cartquantity > 0){
+
+					var tempPro = {
+						_id:product._id,
+						quantity : product.cartquantity
+					};
+					products.push(tempPro);
+				}
+			})
+		});		
 
 		$http.post("/cart/package/"+deliveryKey, {
 				"id":id,
-				"package":detail,					
+				"package":{products:products},
 				"type":"package",
 			},{
 
@@ -157,9 +342,9 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		    	_self.$cart.packages.push(newPackage);
 
 		    	if(inCart){
-		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Promotion updated"});
+		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Package updated"});
 		    	}else{
-		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Promotion added to cart"});
+		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Package added to cart"});
 		    	}
 
 				d.resolve(response);
@@ -171,13 +356,28 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 	};
 
-	this.addPromo = function(promoId,productId){
+	this.addPromo = function(promoId,productId,$event){
 
-		var _self = this;
+		var _self = this;	
 
 		var deliveryKey = _self.getCartKey();
 		
 		var d = $q.defer();
+
+		if(!this.isEligibleForPromotion(promoId)){
+
+			$mdToast.show({
+				controller:function($scope){
+
+				},
+				templateUrl: '/templates/toast-tpl/notify-promo-nq.html',
+				parent : $event.currentTarget.parentElement,
+				position: 'top center',
+				hideDelay:2000
+			});
+			
+			return false;
+		}
 
 		$http.put("/cart/promotion/"+deliveryKey, {
 				"promoId":promoId,
@@ -235,6 +435,15 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 	};
 
+	this.isEligibleForPromotion = function(promoId){
+
+		var cartSubTotal = this.getSubTotal();
+		var isEligible = promotionsService.isEligible(promoId,cartSubTotal);
+
+		return isEligible;
+
+	}
+
 	this.setPromotionsInCart = function(){
 
 		_oCart = this;
@@ -266,6 +475,74 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		this.getProductById = function (productId){
 
 			var products = this.getCart().products;
+			var build = false;
+
+			if(typeof products[productId] !== 'undefined'){
+				build = products[productId];
+			}
+			
+			return build;
+		};
+
+		this.getProductInCartById = function(productId){
+
+			var products = this.getProducts();
+			var promotions = this.getPromotions();
+			var loyalty = this.getLoyaltyProducts();
+
+			var build = false;
+			
+			if(typeof products[productId] !== 'undefined'){
+				build = products[productId];
+			}
+
+			if(build!==false){return build;}
+
+			angular.forEach(promotions, function(promotion, key) {
+				
+				if(promotion.product._id == productId){
+					var product = {
+						imageFiles : [
+							{
+								coverimage:1,
+								source:promotion.product._image
+							}
+						],
+						slug : promotion.product._slug,
+						name: promotion.product._title
+					}
+					build = {product:product};
+				}
+
+			});
+
+			if(build!==false){return build;}
+			
+			if(typeof loyalty[productId] !== 'undefined'){
+				build = products[productId];
+			}
+
+			if(build!==false){return build;}
+
+		}
+
+		this.getGiftCardByUid = function (uId){
+
+			var cards = this.getCart().giftCards;
+			var build = false;
+
+			angular.forEach(cards, function (card) {
+				
+				if (card.getUniqueId() == uId) {
+					build = card;
+				}
+			});
+			return build;
+		};	
+
+		this.getLoyaltyProductById = function (productId){
+
+			var products = this.getCart().loyalty;
 			var build = false;
 
 			if(typeof products[productId] !== 'undefined'){
@@ -342,6 +619,8 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 				allServicesCharges+= service.smoke.charges;				
 			}		
 			
+			service.total = allServicesCharges;
+
 			return +parseFloat(allServicesCharges).toFixed(2);
 		};
 
@@ -368,6 +647,22 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 		this.getProducts = function(){
 			return this.getCart().products;
 		};
+
+		this.getLoyaltyProducts = function(){
+			return this.getCart().loyalty;
+		};
+
+		this.getLoyaltyPointsInCart = function(){
+
+			var lp = this.getLoyaltyProducts();
+			var points = 0;
+			angular.forEach(lp, function(product,key){
+				points = points + parseInt(product.loyaltyValue.point);
+			});
+
+			return points;
+
+		}		
 
 		this.getPackages = function(){
 			return this.getCart().packages;
@@ -410,9 +705,15 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 				return 0;
 			}
 
-			var count = Object.keys(this.getCart().products).length;
+			var cart = this.getCart();
 
-			count+= this.getCart().packages.length;
+			var count = Object.keys(cart.products).length;
+
+			count+= Object.keys(cart.loyalty).length;
+
+			count+= cart.packages.length;
+
+			count+= cart.giftCards.length;
 
 			return count;
 		};
@@ -429,6 +730,10 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			angular.forEach(cart.packages, function (package) {
 				total += parseFloat(package.getTotal());
 			});		
+
+			angular.forEach(cart.giftCards, function (giftCard) {
+				total += parseFloat(giftCard.getPrice());
+			});
 
 			promotionsService.setEligibility(total);
 			
@@ -528,7 +833,6 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			
 		};
 
-
 		this.removePackage = function (id,fromServerSide) {
 
 			var locPackage;
@@ -539,7 +843,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 				if(package.getUniqueId() === id) {
 
 					var locPackage = cart.packages.splice(index, 1)[0] || {};
-														
+
 				}	
 			});
 			
@@ -763,10 +1067,38 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 	        	d.resolve(response);
 
-	        });	
+	        });
 
 			return d.promise;
 
+		}
+
+		this.setProductsAvailability = function(){
+
+			var products = this.getProducts();
+			var packages = this.getPackages();
+			var promotions = this.getPromotions();
+
+			angular.forEach(products, function (item,key) {
+
+
+
+			});
+
+			// angular.forEach(packages, function (package,key) {
+				
+			// 	(cartproduct.onlyForAdvance && cart.delivery.type==0) || cartproduct.isNotAvailable
+
+			// });
+
+			// angular.forEach(promotions, function (promotion,key) {
+
+			// 	(cartproduct.onlyForAdvance && cart.delivery.type==0) || cartproduct.isNotAvailable			
+				
+			// });
+
+			
+			
 		}
 
 		this.setExpressStatus = function(status){
@@ -802,9 +1134,166 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 		}
 
+		this.addGiftCard = function(giftData){
 
-		this.getDeliveryCharge = function(){
+			var isFound = this.getGiftCardByUniqueId(giftData._uid);
 
+			if(isFound===false){
+			
+				var giftCard = new alcoholCartGiftCard(giftData);
+				this.$cart.giftCards.push(giftCard);
+
+			}
+
+
+		};
+
+		this.removeCard = function (id,fromServerSide) {
+
+			var locPackage;
+			var cart = this.getCart();
+			
+			var d = $q.defer();
+
+			angular.forEach(cart.giftCards, function (giftcard, index) {
+
+				if(giftcard.getUniqueId() === id) {				
+
+					if(typeof fromServerSide !== 'undefined' && fromServerSide){
+
+						$http.delete("cart/card/"+id).then(
+
+							function(successRes){
+								
+								var locCard = cart.giftCards.splice(index, 1)[0] || {};
+
+								// $rootScope.$broadcast('alcoholCart:cardRemoved', "GiftCard removed from cart");
+								
+								d.resolve(successRes);
+
+							},
+							function(errorRes){
+
+								d.reject(errorRes);
+
+							}
+
+						);
+					}
+
+				}	
+			});
+			
+			// $rootScope.$broadcast('alcoholCart:itemRemoved', locCard);
+			return d.promise;
+
+		};
+
+		this.removeGift = function (uid,fromServerSide) {
+
+			var cart = this.getCart();
+			
+			var d = $q.defer();
+
+			angular.forEach(cart.gifts, function (gift, index) {
+				
+				if(gift.getUniqueId() == uid) {
+
+					if(typeof fromServerSide !== 'undefined' && fromServerSide){
+
+						$http.delete("cart/gift/"+uid).then(
+
+							function(successRes){
+								
+								var locGift = cart.gifts.splice(index, 1)[0] || {};
+
+								$rootScope.$broadcast('alcoholCart:giftRemoved', "Gift removed from cart");
+								
+								d.resolve(successRes);
+
+							},
+							function(errorRes){
+
+								d.reject(errorRes);
+
+							}
+
+						);
+					}
+
+				}	
+			});
+			
+			// $rootScope.$broadcast('alcoholCart:itemRemoved', locCard);
+			return d.promise;
+
+		};
+
+		this.getGiftCardByUniqueId = function(uid){
+
+			var giftCards = this.getGiftCards();
+			var build = false;
+			
+			angular.forEach(giftCards, function (giftCard) {
+
+				if (giftCard.getUniqueId() === cardUniqueId) {
+					build = giftCard;
+				}
+
+			});
+			return build;
+		}
+
+		this.getGiftCards = function(){
+
+			var cards = this.getCart().giftCards || [];
+			
+			return cards;
+		}
+
+		this.addGift = function(giftData){
+
+			var isFound = false;
+			if(typeof giftData._uid === 'undefined'){
+				var isFound = this.getGiftByUniqueId(giftData._uid);
+			}
+
+			if(isFound===false){
+
+				if(typeof giftData !== 'object'){
+					return false;
+				}
+
+				var gift = new alcoholCartGift(giftData);
+
+				this.$cart.gifts = this.$cart.gifts || [];
+				this.$cart.gifts.push(gift);
+
+			}
+
+
+		};
+
+		this.getGiftByUniqueId = function(uid){
+
+			var gifts = this.getGifts();
+			var build = false;
+			
+			angular.forEach(gifts, function (gift) {
+
+				if (gift.getUniqueId() === uid) {
+					build = gift;
+				}
+
+			});
+			return build;
+		}
+
+		this.getGifts = function(){
+
+			var gifts = this.getCart().gifts || [];
+			
+			return gifts;
 		}
 
 		this.getCartKey = function(){
@@ -843,16 +1332,28 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 			_self.init();
 
 			var products = {};
+			var loyalty = {};
 			var packages = [];
 			var promotions = [];
+			var giftCards = [];
+			var gifts = [];
+
+
 
 			angular.copy(storedCart.products,products);
 			angular.copy(storedCart.packages,packages);
 			angular.copy(storedCart.promotions,promotions);
+			angular.copy(storedCart.giftCards,giftCards);
+			angular.copy(storedCart.gifts,gifts);
+			angular.copy(storedCart.loyalty,loyalty);
 
 			storedCart.products = {};
+			storedCart.loyalty = {};
 			storedCart.packages = [];
 			storedCart.promotions = [];
+			storedCart.giftCards = [];
+			storedCart.gifts = [];
+
 
 			angular.merge(_self.$cart,storedCart);
 
@@ -860,8 +1361,23 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 			angular.forEach(products, function (item,key) {
 
+				if(typeof item !== 'object'){
+					return false;
+				}
+				
 				var newItem = new alcoholCartItem(key, item);
 				_self.$cart.products[key] = newItem;
+				
+			});
+
+			angular.forEach(loyalty, function (item,key) {
+
+				if(typeof item !== 'object'){
+					return false;
+				}
+				
+				var newItem = new alcoholCartLoyaltyItem(key,item);
+				_self.$cart.loyalty[key] = newItem;
 				
 			});
 
@@ -870,7 +1386,7 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 				var newPackage = new alcoholCartPackage(package._id,package._unique,package);
 				_self.$cart.packages.push(newPackage);
 				
-			});
+			});				
 
 			angular.forEach(promotions, function (promotion,key) {
 
@@ -909,6 +1425,20 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 					_self.$cart.promotions.push(oPromotion);
 
 				}			
+				
+			});
+
+			angular.forEach(giftCards, function (giftCard,key) {
+
+				var giftCard = new alcoholCartGiftCard(giftCard);
+				_self.$cart.giftCards.push(giftCard);
+				
+			});
+
+			angular.forEach(gifts, function (gift,key) {
+
+				var newGift = new alcoholCartGift(gift);
+				_self.$cart.gifts.push(newGift);
 				
 			});
 
@@ -983,13 +1513,19 @@ AlcoholDelivery.service('alcoholCart', ['$rootScope', '$window', '$http', '$q', 
 
 		}
 
+		this.validate = function(step){
+			return false;
+		}
+
 	}]);
+
 
 AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($rootScope, $log){
 		
 		var item = function (id, data) {		
 
 			this.setId(id);
+
 			this.setRQuantity(data.chilled.quantity,data.nonchilled.quantity);			
 
 			this.setRChilledStatus(data.chilled.status,data.nonchilled.status);
@@ -1178,6 +1714,148 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 
 	}]);
 
+AlcoholDelivery.factory('alcoholCartLoyaltyItem', ['$log', function ($log){
+		
+		var lProduct = function (id, proObj) {
+
+			this.setId(id);
+
+			this.setRQuantity(proObj.chilled.quantity,proObj.nonchilled.quantity);
+
+			this.setRChilledStatus(proObj.chilled.status,proObj.nonchilled.status);
+			this.setTQuantity(proObj.quantity);
+			this.setPrice(proObj.product);
+			this.setLastServedAs(proObj.lastServedChilled);
+			this.setProduct(proObj);
+
+			this.setRMaxQuantity(proObj.product);
+
+		};
+
+		lProduct.prototype.setId = function(id){
+			if (id)  this._id = id;
+			else {
+				$log.error('An ID must be provided');
+			}
+		};
+
+		lProduct.prototype.getId = function(){
+			return this._id;
+		};
+
+		lProduct.prototype.setLastServedAs = function(servedAs){
+			return this.servedAs = servedAs;
+		}
+
+		lProduct.prototype.getLastServedAs = function(){
+			return this.servedAs;
+		}
+
+		lProduct.prototype.setName = function(name){
+			if (name)  this._name = name;
+			else {
+				$log.error('A name must be provided');
+			}
+		};
+		lProduct.prototype.getName = function(){
+			return this._name;
+		};
+
+		lProduct.prototype.setPrice = function(p){
+
+			var qty = this.getQuantity();
+
+			this.loyaltyValue = {
+				type : parseInt(p.loyaltyValueType),
+				point : p.loyaltyValuePoint || 0,
+				price : p.loyaltyValuePrice || 0,
+			};
+
+			this.loyaltyValue.point*= parseInt(qty);
+			this.loyaltyValue.price*= parseFloat(qty);
+
+		};
+
+		lProduct.prototype.getPrice = function(){			
+			return this.loyaltyValue;
+		};
+
+		lProduct.prototype.setRQuantity = function(cQuantity,ncQuantity){
+			this.qChilled = cQuantity;
+			this.qNChilled = ncQuantity
+		}
+
+		lProduct.prototype.setRMaxQuantity = function(product){
+
+			if(product.quantity==0 && product.outOfStockType==2){
+				product.quantity = product.maxQuantity;
+			}
+			
+			this.qChilledMax = product.maxQuantity - this.qNChilled;
+			this.qNChilledMax = product.maxQuantity - this.qChilled;
+
+		}
+
+		lProduct.prototype.setRChilledStatus = function(cLastStatus,ncLastStatus){
+
+			var status = {
+					"chilled":true,
+					"nonchilled":false
+				}
+
+			this.qChilledStatus = status[cLastStatus];
+			this.qNChilledStatus = status[ncLastStatus];		
+
+		}
+
+		lProduct.prototype.getRQuantity = function(type){
+
+			if(type=='chilled'){
+				return this.qChilled;
+			}
+
+			return this.qNChilled;
+		}
+
+		lProduct.prototype.setTQuantity = function(quantity){
+
+			var quantityInt = parseInt(quantity);
+			return this.quantity = quantityInt;
+
+		};
+
+		lProduct.prototype.getQuantity = function(){
+			return this.quantity;
+		};
+
+		lProduct.prototype.setProduct = function(data){
+
+			this.onlyForAdvance = false;
+			if(data.product.quantity==0 && data.product.outOfStockType==2){
+
+				this.onlyForAdvance = true;
+			}		
+
+			if (data.product) this.product = data.product;
+		};
+
+		lProduct.prototype.setNonAvailability = function(status){
+			return this.isNotAvailable = Boolean(status);
+		}
+
+		lProduct.prototype.getData = function(){
+			if (this.product) return this.product;
+			else $log.info('This lProduct has no product detail');
+		};
+
+		lProduct.prototype.getTotal = function(){
+			return +parseFloat(this.getPrice()).toFixed(2);
+		};
+		
+		return lProduct;
+
+	}]);
+
 AlcoholDelivery.factory('alcoholCartPackage', ['$rootScope', '$log', function ($rootScope, $log){
 
 		var package = function (id, uniqueId, data) {
@@ -1273,6 +1951,291 @@ AlcoholDelivery.factory('alcoholCartPackage', ['$rootScope', '$log', function ($
 
 	}]);
 
+AlcoholDelivery.factory('alcoholCartGiftCard',[function(){
+
+	var giftCard = function(cardData){
+
+		this.setUniqueId(cardData._uid);
+		this.setId(cardData._id);
+		this.setRecipient(cardData.recipient);
+
+	}
+
+	giftCard.prototype.getUniqueId = function(){		
+		return this._uid.$id;
+	}
+
+	giftCard.prototype.setUniqueId = function(uid){
+		this._uid = uid;
+		return this._uid;
+	}
+
+	giftCard.prototype.getId = function(){		
+		return this._id;
+	}
+
+	giftCard.prototype.setId = function(id){
+		this._id = id;
+		return this._id;
+	}
+
+	giftCard.prototype.getPrice = function(){
+
+		var giftPrice = parseInt(this.recipient.quantity) * parseFloat(this.recipient.price);
+		return giftPrice;
+
+	}
+
+	giftCard.prototype.setRecipient = function(recipient){
+		this.recipient = recipient;
+	}
+
+	giftCard.prototype.getRecipient = function(){
+		return this.recipient;
+	}
+
+	
+
+	giftCard.prototype.remove = function(){
+
+	}
+	
+	return giftCard;
+
+}]);
+
+AlcoholDelivery.factory('alcoholCartGift',["$log", "giftProduct",function($log, giftProduct){
+
+	var gift = function(giftData){
+
+		this.setUniqueId(giftData._uid);
+		this.setId(giftData._id);
+
+		this.gsTitle(giftData.title);
+		this.gsSubTitle(giftData.subTitle);		
+		this.gsDescription(giftData.description);
+		this.gsLimit(giftData.limit);
+		this.gsPrice(giftData.price);
+		this.setImageLink(giftData.image);
+		
+
+		this.setRecipient(giftData.recipient);
+
+		if(typeof giftData.products !== 'undefined'){
+			this.setProducts(giftData.products);
+		}
+
+	}
+
+	gift.prototype.getUniqueId = function(){		
+		return this._uid.$id;
+	}
+
+	gift.prototype.setUniqueId = function(uid){
+		this._uid = uid;
+		return this._uid;
+	}
+
+	gift.prototype.getId = function(){		
+		return this._id;
+	}
+
+	gift.prototype.setId = function(id){
+		this._id = id;
+		return this._id;
+	}
+
+	gift.prototype.gsTitle = function(title){
+		
+		if (title)  this.title = title;
+
+		if(this.title) {
+			return this.title;
+		}
+
+		$log.error('Title must be provided');
+	}
+
+	gift.prototype.gsSubTitle = function(subTitle){
+		
+		if (subTitle)  this.subTitle = subTitle;
+
+		if(this.subTitle) {
+			return this.subTitle;
+		}
+
+		$log.error('Sub Title must be provided');		
+		
+	}
+
+	gift.prototype.gsDescription = function(desc){
+		
+		if (desc)  this.desc = desc;
+
+		if(this.desc) {
+			return parseInt(this.desc);
+		}
+		
+		$log.error('Description must be provided');
+		
+	}
+
+	gift.prototype.gsLimit = function(limit){
+		
+		if (limit)  this.limit = limit;
+
+		if(this.limit) {
+			return parseInt(this.limit);
+		}
+		
+		$log.error('Limit must be provided');
+	}
+
+	gift.prototype.getProductAttachedCount = function(){
+
+		var products = this.getProducts();
+		var productQty = 0;
+
+		angular.forEach(products , function(product,key){
+			
+			productQty = productQty + parseInt(product.quantity);	
+
+		});
+
+		return productQty;
+	}
+
+	gift.prototype.gsPrice = function(price){
+
+		if(price) this.price = parseFloat(price);
+
+		if(this.price){
+			return parseFloat(this.price);
+		}
+
+		$log.error('Price must be provided');
+
+	}
+
+	gift.prototype.setRecipient = function(recipient){
+		this.recipient = recipient;
+	}
+
+	gift.prototype.setProducts = function(products){
+
+		var _self = this;
+		_self.products = [];
+
+		if (products){
+
+			// this.products = products;
+
+			angular.forEach(products, function(product,index){
+
+				var productObj = new giftProduct(product,_self.getUniqueId());				
+				this.push(productObj);
+
+			},this.products)
+
+		}
+		else {
+			$log.error('Products must be provided');
+		}
+		
+	}
+
+	gift.prototype.getProducts = function(){
+
+		return this.products;
+
+	}
+
+	gift.prototype.setImageLink = function(image){
+
+		if(image){
+			this.imageLink = "gifts/i/"+image;
+		}else{
+			this.imageLink = "asset/i/defaultImage.png";			
+		}
+		
+		return this.imageLink;
+		
+	}
+
+	gift.prototype.remove = function(){
+
+	}
+
+	return gift;
+
+}]);
+
+AlcoholDelivery.factory('giftProduct', ['$rootScope', '$q', '$http', '$log', function ($rootScope, $q, $http, $log){
+		
+		var giftProductObj = function (giftProduct,giftUid) {
+
+			this.setId(giftProduct._id);
+			this.setGiftUid(giftUid);
+			this.setQuantity(giftProduct.quantity);
+
+		};				
+
+		giftProductObj.prototype.setId = function(id){
+			if (id)  this._id = id;
+			else {
+				$log.error('An ID must be provided');
+			}
+		};
+
+		giftProductObj.prototype.getId = function(){
+			return this._id;
+		};
+
+		giftProductObj.prototype.setGiftUid = function(uid){
+			if (uid)  this.giftUid = uid;
+			else {
+				$log.error('An ID must be provided');
+			}
+		};
+
+		giftProductObj.prototype.getGiftUid = function(){
+			return this.giftUid;
+		};
+
+		giftProductObj.prototype.setQuantity = function(quantity){
+			return this.quantity = parseInt(quantity);
+		}
+
+		giftProductObj.prototype.getQuantity = function(){
+			return parseInt(this.quantity);
+		}		
+
+		giftProductObj.prototype.setName = function(name){
+			if (name)  this._name = name;
+			else {
+				$log.error('A name must be provided');
+			}
+		};
+
+		giftProductObj.prototype.getName = function(){
+			return this._name;
+		};	
+
+		giftProductObj.prototype.setProduct = function(data){
+
+			this.onlyForAdvance = false;
+			if(data.product.quantity==0 && data.product.outOfStockType==2){
+
+				this.onlyForAdvance = true;
+			}		
+
+			if (data.product) this.product = data.product;
+		};
+
+		return giftProductObj;
+
+	}]);
+
 AlcoholDelivery.factory('alcoholCartPromotion',['$log','$filter',function($log,$filter){
 
 	var oPromotion = function(promotion,product){
@@ -1299,7 +2262,8 @@ AlcoholDelivery.factory('alcoholCartPromotion',['$log','$filter',function($log,$
 			_title : product.name,
 			_description : product.description,
 			_shortDescription : product.shortDescription,
-			_image : $filter('getProductThumb')(product.imageFiles)
+			_image : $filter('getProductThumb')(product.imageFiles),
+			_slug : product.slug,
 
 		}
 		
@@ -1365,9 +2329,8 @@ AlcoholDelivery.service('store', ['$rootScope','$window','$http','alcoholCart','
 
 			orderPlaced : function(){
 
-				delete $rootScope.deliverykey
+				delete $rootScope.deliverykey;
 				localStorage.removeItem("deliverykey");
-
 				this.init();
 
 			},
@@ -1397,6 +2360,7 @@ AlcoholDelivery.service('store', ['$rootScope','$window','$http','alcoholCart','
 		}
 	}]);
 
+
 AlcoholDelivery.service("promotionsService",["$http","$log","$q",function($http,$log,$q){
 
 	this.init = function(){
@@ -1404,13 +2368,14 @@ AlcoholDelivery.service("promotionsService",["$http","$log","$q",function($http,
 		var _self = this;
 		var defer = $q.defer();
 
+		//ProductService.getPromotions()
 		$http.get("super/promotions").then(
 
 			function(succRes){
 				
 				_self.$promotions = succRes.data;
 
-				defer.resolve(this.$promotions);
+				defer.resolve(_self.$promotions);
 			},
 			function(errRes){
 

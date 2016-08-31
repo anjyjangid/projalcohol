@@ -1,0 +1,58 @@
+<style type="text/css">
+
+	.allInline * {
+		display: inline;
+		width: 64px;
+		margin-right: 7px;
+	}
+
+</style>
+
+<form ng-submit="update()" ng-controller="SettingFormController">
+<div class="form-horizontal"  id="info-message">
+	<div class="form-group" ng:class="{'has-error':errors['order_sharing.value'][0]}">
+		<label class="col-md-2 control-label">{{settings.order_sharing.title}}: <span class="required">
+		* </span>
+		</label>
+		<div class="col-md-10">
+			<input type="text" class="form-control" ng-model="settings.order_sharing.value" placeholder="">
+			<span class="help-block" ng-bind="errors['order_sharing.value'][0]"></span>
+		</div>
+	</div>
+
+	<div class="form-group" ng:class="{'has-error':errors['site_sharing.value'][0]}">
+		<label class="col-md-2 control-label">{{settings.site_sharing.title}}: <span class="required">
+		* </span>
+		</label>
+		<div class="col-md-10">
+			<input type="text" class="form-control" ng-model="settings.site_sharing.value" placeholder="">
+			<span class="help-block" ng-bind="errors['site_sharing.value'][0]"></span>
+		</div>
+	</div>
+
+	<div class="form-group" ng:class="{'has-error':errors['point_value.value'][0]}">
+		<label class="col-md-2 control-label">{{settings.point_value.title}}: <span class="required">
+		* </span>
+		</label>
+		<div class="col-md-10 allInline">
+
+			<!-- <input type="number" class="form-control" ng-model="settings.point_value.point" placeholder="">Point = <input type="number" class="form-control" ng-model="settings.point_value.value" placeholder="">$ -->
+
+			<input type="text" class="form-control" ng-model="settings.point_value.value" placeholder=""><label class="control-label">$ Is equal to 1 point</label>
+			
+			<span class="help-block" ng-bind="errors['point_value.value'][0]"></span>
+
+		</div>
+	</div>
+
+	<hr>
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="margiv-top-10 pull-right">
+				<button type="submit" ng-disabled="loading" class="btn green-haze" ><i class="fa fa-check"></i> Update</button>
+				<input type="button" ng-click="reset()" name="reset" value="Reset" class="btn default">
+			</div>
+		</div>
+	</div>
+</div>
+</form>

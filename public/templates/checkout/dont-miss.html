@@ -1,0 +1,52 @@
+<md-dialog id="dont-miss-popup">
+	<md-toolbar>
+		<div class="md-toolbar-tools alcohal_addadress_header">
+			<div class="alcohal_addadress_headercurmain">          
+				<div class="alcohal_addadress_headertitle">Dont, Miss Out On These!</div>
+			</div>
+			<span flex></span>  <md-button class="md-icon-button" ng-click="hide()"> &times; </md-button>
+		</div>
+	</md-toolbar>
+
+	<md-dialog-content layout="row" class="prod-in-slider">
+
+		<data-owl-carousel class="owl-carousel owl-theme" data-options="{
+
+				navigation : false,
+				navigationText :	['<','>'],
+				pagination : false,
+				items : 4,
+				itemsDesktop : [1199,4],
+				itemsDesktopSmall : [979,4],
+				itemsTablet : [768,3],
+				itemsTabletSmall : [767,2],
+				itemsMobile : [479,1]
+				}"
+		>
+
+			<div owl-carousel-item="" ng-repeat="product in products" class="item">
+
+				<div al-tpl-product info="product" classes="proHoverEffect"></div>
+			
+
+			</div>
+		</data-owl-carousel>
+
+		<div ng-if="notAvailable" class="ng-scope" style="
+	    width: 100%;
+	    text-align: center;
+	    font-size: 24px;
+	    vertical-align: middle;
+	">Nothing To Show</div>
+
+	</md-dialog-content>
+
+		<md-dialog-actions layout="row">
+			<div class="modal-footer alcohal_addadressfooter">
+				
+				<div class="alcohalosavebntcvr">
+					<button class="adresssvaebtn" ng-click="continue()" type="button">Continue to checkout <span> <img src="images/alcholshoporderarrow.png"></span></button>
+				</div>
+			</div>
+		</md-dialog-actions>
+</md-dialog>

@@ -370,7 +370,7 @@ class PackageController extends Controller
             }
           }
         }
-        $products[$key]['sprice'] = $this->calculatePrice($value->price,$tier);                
+        $products[$key]['sprice'] = $this->calculatePrice($value->price,$tier);                        
       }
       
       return response($products,200);

@@ -8,6 +8,14 @@
 					| {{order.dateslug}} </span>
 				</div>
 				<div class="actions">
+					<button class="btn default yellow-stripe" ng-click="setStatus('success')">
+					<i class="fa fa-angle-left"></i>
+					<span class="hidden-480">
+					Placed </span>
+					</button>
+					
+				</div>
+				<div class="actions">
 					<a ui-sref="userLayout.orders.list" class="btn default yellow-stripe">
 					<i class="fa fa-angle-left"></i>
 					<span class="hidden-480">
@@ -100,6 +108,7 @@
 										</div>
 									</div>
 								</div>
+
 								<div class="col-md-6 col-sm-12">
 									<div class="portlet blue-hoki box">
 										<div class="portlet-title">
@@ -137,7 +146,7 @@
 
 										</div>
 									</div>
-								</div>
+								</div>	
 							</div>
 							<div class="row">								
 								<div class="col-md-6 col-sm-12">

@@ -15,6 +15,7 @@ use AlcoholDelivery\Products;
 use DB;
 
 use AlcoholDelivery\Dealer as Dealer;
+use Illuminate\Support\Facades\Auth;
 
 class DealerController extends Controller
 {
@@ -291,35 +292,65 @@ class DealerController extends Controller
             $country = DB::collection('countries')->where('_id', $dealer['address']['country'])->first();
         }
 
-        $products = DB::collection('products')->raw(function($collection) use($id){
-            return $collection->aggregate(array(                
-                array(
-                    '$project' => array(                        
-                        'name'=>'$name',
-                        'quantity'=>'$quantity',
-                        'maxQuantity'=>'$maxQuantity',
-                        'threshold'=>'$threshold',
-                        'dealers'=>'$dealers',
-                        'sku'=>'$sku',
-                        'sum' => array(
-                            '$subtract' => array(                                
-                                array('$divide' => array('$quantity','$maxQuantity')),
-                                array('$divide' => array('$threshold','$maxQuantity'))                               
-                            )                            
-                        ),
-                    ),
-                ),
-                array(
-                    '$sort' => array('sum'=>1)
-                ),                
-                array(
-                    '$match' => array(
-                        'dealers' => array('$elemMatch'=>array('$in'=>[$id])),
-                        //'sum' => array('$lt'=>0)
-                    )
-                )   
-            ));
-        });     
+        $query = [];
+
+        $userStoreId = Auth::user('admin')->storeId;
+
+        $project = [
+            'name'=>'$name',            
+            'dealerId'=>'$dealers',
+            'sku'=>'$sku'
+        ];
+
+        $project['store'] = [
+            '$filter'=>[
+                'input' => '$store',
+                'as' => 'store',
+                'cond' => ['$eq'=>['$$store.storeId',$userStoreId]]
+            ]    
+        ];
+
+        $query[]['$match'] = [
+            'dealerId' => ['$elemMatch'=>['$in'=>[$id]]]
+        ];
+
+        $query[]['$lookup'] = [
+            'from'=>'stocks',
+            'localField'=>'_id',
+            'foreignField'=>'productObjId',
+            'as'=>'store'
+        ];          
+
+        $query[]['$project'] = $project;
+
+        $query[]['$unwind'] = ['path' => '$store','preserveNullAndEmptyArrays' => true];
+
+        $project['store'] = '$store';
+
+        $project['quantity'] = ['$cond'=>['$store','$store.quantity',0]];
+
+        $project['maxQuantity'] = ['$cond'=>['$store','$store.maxQuantity',0]];
+
+        $project['threshold'] = ['$cond'=>['$store','$store.threshold',0]];
+
+        $project['sum'] = [
+            '$cond' => [
+                '$store',
+                [
+                    '$subtract' => [
+                        ['$divide'=>['$store.quantity','$store.maxQuantity']],
+                        ['$divide'=>['$store.threshold','$store.maxQuantity']]
+                    ]
+                ],
+                -1,
+            ]               
+        ];
+
+        $query[]['$project'] = $project;        
+
+        $query[]['$sort'] = ['sum'=>1];                
+        
+        $products = Products::raw()->aggregate($query);             
         
         $res = [
             'dealer' => $dealer,
@@ -329,5 +360,4 @@ class DealerController extends Controller
 
         return response($res,200);
     }
-
 }

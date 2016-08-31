@@ -93,12 +93,18 @@ class CmsController extends Controller
     {
         $inputs = $request->all();
         
-        $page = Cms::find($id);
-        
+        $page = Cms::find($id);        
+        //$page = new Cms; //TO ADD NEW CMS UNCOMMENT THIS LINE
+        $page->section = $inputs['section'];
         $page->title = $inputs['title'];
-        $page->description = $inputs['description'];
+        $page->linkTitle = $inputs['linkTitle'];
+        //$page->description = $inputs['description'];
         $page->content = $inputs['content'];
-        $page->status = $inputs['status'];    
+        $page->status = $inputs['status'];
+        $page->slug = $inputs['slug'];
+        $page->metaTitle = @$inputs['metaTitle'];
+        $page->metaKeywords = @$inputs['metaKeywords'];
+        $page->metaDescription = @$inputs['metaDescription'];    
         
         
         if($page->save()){
@@ -128,7 +134,7 @@ class CmsController extends Controller
                         "key"=>$pageId,
                         "multiple"=>false
                     ));
-        
+
         return response($result, 201);
 
     }
