@@ -1,0 +1,105 @@
+<div class="row">
+	<div class="col-md-12">
+		<form role="form" name='giftForm' ng-submit="storecategory()" required="false">
+		<div class="portlet light">			
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-gift"></i>{{giftcategory._id?'Edit Category':'Add New Category'}}
+				</div>
+				<div class="actions btn-set">
+					<a class="btn default" ui-sref="userLayout.gifts.categorylist"><i class="fa fa-angle-left"></i> Back</a>
+					<button ng-disabled="loading" class="btn green" type="submit"><i class="fa fa-check"></i> {{giftcategory._id?'Update':'Save'}}</button>
+				</div>
+			</div>	
+			<div class="portlet-body mbody">
+				<div class="form-horizontal">										
+					<div class="form-group" ng:class="{'has-error':errors.title[0]}">
+						<label class="col-md-2 control-label">Title: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<input type="text" class="form-control input-medium" ng-model="giftcategory.title" placeholder="">
+							<span class="help-block" ng-bind="errors.title[0]"></span>
+						</div>
+					</div>
+					<slug from="giftcategory.title" to="giftcategory.slug"></slug>
+					<div ng-if="!giftcategory._id" class="form-group" ng:class="{'has-error':errors.type[0]}">
+						<label class="col-md-2 control-label">Parent: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<select ng-options="cat._id as cat.title for cat in category.parentlist" class="table-group-action-input form-control input-medium" ng-model="giftcategory.parent">	
+								<option value="">Self</option>
+							</select>														
+							<span class="help-block" ng-bind="errors.parent[0]"></span>
+						</div>
+					</div>
+					<div class="form-group" ng:class="{'has-error':errors['coverImage.thumb'][0]}" ng-hide="giftcategory.parent">
+						<label class="col-md-2 control-label">Icon Image: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<div class="fileinput fileinput-new" data-provides="fileinput">
+								<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
+									<img err-src="asset/i/defaultImage.png" 
+										ng-src="giftcategory/i/{{giftcategory.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+
+								</div>
+								<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
+								</div>
+								<div>
+									<span class="btn default btn-file">
+										<span class="fileinput-new">{{ giftcategory.coverImage ? 'Change':'Select' }}</span>
+										<span class="fileinput-exists">Change</span>
+										<input type="file" placeholder="thumbnail" class="form-control" file-model="giftcategory.image.thumb"/>
+									</span>	
+								</div>
+							</div>
+							<span class="help-block" ng-bind="errors['coverImage.thumb'][0]"></span>
+						</div>
+					</div>							
+					<div class="form-group" ng:class="{'has-error':errors['gift_packaging.value'][0]}">
+						<label class="col-md-2 control-label">
+							{{pricing.setting.label}} <span class="required">
+						* </span>
+						</label>											
+	                	<div class="col-md-4 row">
+		                	<div class="col-md-6">
+			                	<span class="help-block">Markup type</span>
+			                	<span ng-if="!giftcategory.gift_packaging" class="form-control-static">{{ pricing.setting.type==0 ? 'Fix Amount':'% of Amount' }}</span>
+			                	<select ng-if="giftcategory.gift_packaging" class="form-control" ng-model="giftcategory.gift_packaging.type">            
+			                        <option value="0">Fix Amount</option>
+			                        <option value="1">% of Amount</option>
+			                    </select>			                    			                    
+			                </div>
+			                <div class="col-md-6">
+		                    	<span class="help-block">Markup value</span>
+		                    	<span ng-if="!giftcategory.gift_packaging" class="form-control-static">{{ pricing.setting.value }}</span>
+		                    	<input ng-if="giftcategory.gift_packaging" type="number" step="any" class="form-control" ng-model="giftcategory.gift_packaging.value" placeholder="">
+								
+								<span class="help-block" ng-bind="errors['gift_packaging.value'][0]"></span>
+		                    </div>		                    
+	                    </div>
+	                    <div class="col-md-4">
+	                    	<span class="help-block">Action</span>
+	                    	<a class="btn btn-xs default" ng-if="!giftcategory.gift_packaging" href="javascript:void();" ng-click="editPricing(1)">Custom</a>
+					        <a class="btn btn-xs default" ng-if="giftcategory.gift_packaging" href="javascript:void();" ng-click="editPricing(0)">Default</a>
+	                    </div>
+					</div>																				
+					<div class="form-group" ng:class="{'has-error':errors.status[0]}">
+						<label class="col-md-2 control-label">Status: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<select ng-options="['Published','Not Published'].indexOf(statusItem) as statusItem for statusItem in ['Published','Not Published']" class="table-group-action-input form-control input-medium" ng-model="giftcategory.status">
+								<option value="">Select</option>								
+							</select>
+							<span class="help-block" ng-bind="errors.status[0]"></span>
+						</div>
+					</div>					
+				</div>																					
+			</div>			
+		</div>
+		</form>
+	</div>
+</div>
