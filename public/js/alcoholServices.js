@@ -604,6 +604,39 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct',function
 
 		return defer.promise;
 	}
+
+	this.getAlsoBought = function(product){
+
+		var defer = $q.defer();
+
+		$http.get("product/alsobought/"+product).then(
+
+			function(response){
+
+				var products = [];
+
+				angular.forEach(response.data.products,function(product,key){
+
+					var newProduct = new AlcoholProduct(0,product);
+					this.push(newProduct);
+
+				},products);
+				
+				defer.resolve(products);
+
+			},
+			function(errorRes){
+
+				defer.reject(errorRes.data);
+
+			}
+
+		)
+
+		return defer.promise;
+	}
+
+	
 	
 
 }]);
@@ -614,7 +647,7 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 	var product = function(type,product){
 
-		this._id = product._id.$id;
+		this._id = product._id.$id || product._id;
 
 		this.type = type;
 
@@ -673,6 +706,12 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 		}
 
+		this.tquantity = this.qChilled + this.qNChilled;
+
+	}
+
+	product.prototype.getTotalQty = function(){
+		return parseInt(this.qChilled) + parseInt(this.qNChilled);
 	}
 
 	product.prototype.setAddBtnState = function(p){
