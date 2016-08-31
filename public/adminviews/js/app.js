@@ -380,10 +380,11 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 			id:'sidebar_menu_link_user',
 			subItems:[
 				{
-					label:'Customers',
-					uisref:'userLayout.customer.list',
+					label:'Administrators',
+					uisref:'userLayout.subadmin.list',
 					icon:'icon-user-following',					
-					links:['userLayout.customer.list','userLayout.customer.add','userLayout.customer.edit']
+					links:['userLayout.subadmin.list','userLayout.subadmin.add','userLayout.subadmin.edit'],
+					access : ['admin']
 				},
 				{
 					label:'Dealers',
@@ -393,11 +394,10 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 					access : ['admin']
 				},
 				{
-					label:'Sub Administrator',
-					uisref:'userLayout.subadmin.list',
+					label:'Customers',
+					uisref:'userLayout.customer.list',
 					icon:'icon-user-following',					
-					links:['userLayout.subadmin.list','userLayout.subadmin.add','userLayout.subadmin.edit'],
-					access : ['admin']
+					links:['userLayout.customer.list','userLayout.customer.add','userLayout.customer.edit']
 				},
 				{
 					label:'Businesses',
@@ -1127,9 +1127,9 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 			url: '/subadmin/list',
 			templateUrl:'adminviews/views/subadmin/list.html',		
 			data:{
-				pageTitle:'Sub Administrators',
+				pageTitle:'Administrators',
 				breadCrumb:[
-					{title:'Sub Administrators','uisref':'#'}					
+					{title:'Administrators','uisref':'#'}					
 				]				
 			},
 			resolve: {                
@@ -1141,9 +1141,9 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 			url: '/subadmin/add',
 			templateUrl:'adminviews/views/subadmin/form.html',		
 			data:{
-				pageTitle:'Add Sub Administrator',
+				pageTitle:'Add Administrator',
 				breadCrumb:[
-					{title:'Sub Administrators','uisref':'userLayout.subadmin.list'},
+					{title:'Administrators','uisref':'userLayout.subadmin.list'},
 					{title:'Add','uisref':'#'}
 				]				
 			},
@@ -1156,9 +1156,9 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 			url: '/subadmin/edit/{id}',
 			templateUrl:'adminviews/views/subadmin/form.html',		
 			data:{
-				pageTitle:'Edit Sub Administrator',
+				pageTitle:'Edit Administrator',
 				breadCrumb:[
-					{title:'Sub Administrators','uisref':'userLayout.subadmin.list'},
+					{title:'Administrators','uisref':'userLayout.subadmin.list'},
 					{title:'Edit','uisref':'#'}
 				]				
 			},

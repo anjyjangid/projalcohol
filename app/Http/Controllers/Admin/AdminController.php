@@ -209,8 +209,8 @@ class AdminController extends Controller
             'last_name' => $data['last_name'],
             'email' => $data['email'],            
             'storeId' => $data['storeId'],
-            'status' => (int)$data['status'],
             'storeObjId' => $data['storeObjId'],
+            'status' => (int)$data['status'],
             //'role' => 1
         ];
 
@@ -443,6 +443,32 @@ class AdminController extends Controller
         echo '</pre>';
         exit;        
         return response($users['result'],200);  
+    }
+
+    public function postUpdateprofile(Request $request)
+    {
+        $data = $request->all();
+        if(isset($data['email'])){
+            $data['email'] = strtolower($data['email']);
+        }
+
+        $validator = Validator::make($data, [
+            'first_name' => 'required|min:3',
+            'last_name' => 'required|min:3',
+            'email' => 'required|email|max:255|unique:admin,email,'.Auth::user('admin')->id.',_id',            
+        ]);
+
+        if ($validator->fails()) {
+            return response($validator->errors(), 422);
+        }
+
+        $admin = Admin::where('_id', Auth::user('admin')->id)->first();
+        
+        $admin->first_name = $data['first_name'];
+        $admin->last_name = $data['last_name'];
+        $admin->email = $data['email'];
+        $admin->save();
+        return response($admin, 200);
     }
 
 }

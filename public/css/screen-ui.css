@@ -5624,6 +5624,8 @@ md-checkbox.md-default-theme.md-checked .md-icon::after, md-checkbox.md-checked 
 .top-tabmainouter .owl-item {
 	float: left;
 	padding: 11px 7px;
+	white-space: nowrap;
+	text-align: left;
 }
 .fullwidth.top-tabmainouter > .right-crousel {
 	float: right;

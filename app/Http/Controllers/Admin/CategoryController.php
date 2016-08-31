@@ -69,9 +69,9 @@ class CategoryController extends Controller
 			'slug'  => 'required',
 			'isMenu'=> 'required|integer|in:0,1',
 			'thumb' => 'required|mimes:jpeg,jpg,png|max:8000',
-			'metaTitle' => 'max:100',
-            'metaKeywords' => 'max:150',
-            'metaDescription' => 'max:150',
+			'metaTitle' => 'required|max:100',
+            'metaKeywords' => 'required|max:150',
+            'metaDescription' => 'required|max:150',
 		];
 
 		if(!isset($inputs['ptitle']) || $inputs['ptitle']==""){

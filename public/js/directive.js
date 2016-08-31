@@ -227,7 +227,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
             scope.initCarousel = function(element,ngModel) {
               // provide any default options you want
-
+              	console.log($(element).attr('class'));
                 var defaultOptions = {
                 };
                 var customOptions = scope.$eval($(element).attr('data-options'));
