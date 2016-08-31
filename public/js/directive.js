@@ -231,6 +231,7 @@ AlcoholDelivery.directive('sideBar', function() {
                 var defaultOptions = {
                 };
                 var customOptions = scope.$eval($(element).attr('data-options'));
+
                 // combine the two options objects
                 for(var key in customOptions) {
                     defaultOptions[key] = customOptions[key];
@@ -262,7 +263,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
           	}
 
-            if(scope.$last) {
+            if(scope.$last) {            	
             	scope.initCarousel(element.parent(),element.parent().attr("ng-model"));
             }
         }

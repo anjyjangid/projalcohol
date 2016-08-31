@@ -1366,6 +1366,7 @@ prd($cart);
 ////// Loyalty point calculation 
 
 		$loyaltyPoints = 0;
+		
 		$productsData = $cartObj->getAllProductsIncart($cartArr);
 
 		// return response($productsData,400);
@@ -1572,7 +1573,8 @@ prd($cart);
 
 		$cartArr = $cart->toArray();
 
-		$isValid = $this->validateCart($cartArr);
+		//$isValid = $this->validateCart($cartArr);
+		$isValid['valid'] = true;
 
 		if($isValid['valid']==false){
 
@@ -1583,13 +1585,13 @@ prd($cart);
 			return response(["success"=>false,"valid"=>false,"message"=>"Cart is not valid"],405); //405 => method not allowed
 		}
 
-		$productWithCount = $cartObj->getProductIncartCount();
+		// $productWithCount = $cartObj->getProductIncartCount();
 
-		foreach($productWithCount as $productKey=>$productCount){
+		// foreach($productWithCount as $productKey=>$productCount){
 
-			$product = Products::where('_id', $productKey)->decrement('quantity', $productCount);
+		// 	$product = Products::where('_id', $productKey)->decrement('quantity', $productCount);
 
-		}
+		// }
 
 		return response(["success"=>true,"message"=>"Cart freezed sucessfully"],200);
 

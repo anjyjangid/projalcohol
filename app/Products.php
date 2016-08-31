@@ -371,7 +371,7 @@ class Products extends Eloquent
 							'chilled' => 1,
 							'description' =>  1,
 							'price' => [
-								'$multiply' => [ '$price', 2.2 ]
+								'$multiply' => [ '$price', 1 ]
 							],
 							'categories' => 1,							
 							// 'discountPrice' => 1,

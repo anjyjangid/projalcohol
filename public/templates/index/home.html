@@ -11,41 +11,40 @@
 		<!-- Only required for left/right tabs -->
 		<div class="fullwidth top-tabmainouter">
 			<div class="tabtitle">Featured Items</div>
-            <!-- <ul class="nav nav-tabs tabsright">	  -->
+            
             <div class="right-crousel">
-            <data-owl-carousel class="owl-carousel owl-theme" data-options="{
-			    		
-			    		navigation : true,
-						navigationText :	['<','>'],
-						pagination : false,
-						items : 5,
-						itemsDesktop : [1199,4],
-						itemsDesktopSmall : [979,4],
-						itemsTablet : [768,3],
-						itemsTabletSmall : [767,2],
-						itemsMobile : [479,1]
 
-			    		}">
-			      
-                  <!-- <li owl-carousel-item="" ng-repeat="cat in parentCategories" ng-if="cat.featured!='undefined' && cat.featured.length>0" ng-class="{'active':AppController.feTabActive==$index}" class="item"> -->
-					<div style="color:#CCC;" owl-carousel-item="" ng-repeat="cat in parentCategories" ng-if="cat.featured!='undefined' && cat.featured.length>0" ng-class="{'active':AppController.feTabActive==$index}" class="item">
-						<a href="javascript:void(0)" class="text-capitalize" ng-click="setFeatured($index);AppController.feTabActive=$index">{{cat.cat_title}}</a>
-					</div>
-				<!-- </li> -->
-                  
-			    </data-owl-carousel>								
+	            <data-owl-carousel class="owl-carousel owl-theme" data-options="{
+				    		
+				    		navigation : true,
+							navigationText :	['<','>'],
+							pagination : false,
+							items : 5,
+							itemsDesktop : [1199,4],
+							itemsDesktopSmall : [979,4],
+							itemsTablet : [768,3],
+							itemsTabletSmall : [767,2],
+							itemsMobile : [479,1]
+
+				    		}">
+
+						<div style="color:#CCC;" owl-carousel-item="" ng-repeat="cat in parentCategories | filterParentCat" ng-class="{'active':AppController.feTabActive==$index}" class="item">
+							<a href="javascript:void(0)" class="text-capitalize" ng-click="setFeatured($index);AppController.feTabActive=$index">{{cat.cat_title}}</a>
+						</div>					
+	                  
+				</data-owl-carousel>								
 			</div>
-			<!-- </ul> -->
+			
 		</div>
-		<div class="tab-content fullwidth">
+		<div class="tab-content fullwidth prod-in-slider">
 			<div class="tab-pane" id="tab$index" 
 					ng-repeat="pCat in parentCategories"
 					ng-class="{'active':AppController.feTabActive==$index}"
 
 					>
-			    <data-owl-carousel class="owl-carousel owl-theme" data-options="{
+				<data-owl-carousel class="owl-carousel owl-theme" data-options="{
 			    		
-			    		navigation : true,
+						navigation : true,
 						navigationText :	['<','>'],
 						pagination : false,
 						items : 4,
@@ -58,7 +57,7 @@
 			    		}">
 			      <div owl-carousel-item="" ng-repeat="fproduct in pCat['featured']" class="item">
 			        	
-			        	<div al-tpl-product info="fproduct"></div>			        	
+			        	<div al-tpl-product info="fproduct" classes="proHoverEffect"></div>			        	
 			        	
 			      </div>
 			    </data-owl-carousel>							

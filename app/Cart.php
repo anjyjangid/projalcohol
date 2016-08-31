@@ -183,9 +183,11 @@ class Cart extends Moloquent
 
 	}
 
-	public function getProductIncartCount(){
+	public function getProductIncartCount($data = ''){
 		
-		$data = $this;
+		if($data === ''){
+			$data = $this;
+		}
 		
 		$products = [];
 

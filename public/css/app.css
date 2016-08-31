@@ -762,3 +762,22 @@ md-dialog#dont-miss-popup{
 .prod_addtocart.disabled .cartbtn .addcart{
     cursor: not-allowed;
 }
+
+
+.prod-in-slider{
+	padding: 0 10px;
+}
+
+.prod-in-slider .owl-item > div {
+    margin: 0px !important;
+}
+
+.prod-in-slider .owl-item .proHoverEffect {
+	padding: 10px 5px;
+	display: inline-block;
+	margin: 10px 5px;
+}
+
+#dialogContent_dont-miss-popup {
+    min-height: 400px;
+}

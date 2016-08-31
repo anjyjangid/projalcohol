@@ -1505,3 +1505,22 @@ AlcoholDelivery.filter('creditcard', function() {
 		return 'XXXX XXXX XXXX '+r;		
 	}
 });
+
+AlcoholDelivery.filter('filterParentCat', function(){
+
+	return function(pCategories){
+
+		var inputArray = [];
+		
+		for(var key in pCategories) {
+			
+			if(typeof pCategories[key].featured!=='undefined' && pCategories[key].featured.length>0){
+				inputArray.push(pCategories[key]);
+			}
+
+		}
+
+		return inputArray;
+	}
+
+})
