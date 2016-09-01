@@ -383,7 +383,10 @@ class OrderController extends Controller
 
 			$row[] = '<a title="" ui-sref=userLayout.orders.show({order:"'.$order['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
 
-			$mnum = $users[(string)$order['user']]['mobile_number'];
+			$mnum = '';
+			if(isset($users[(string)$order['user']]['mobile_number']))
+				$mnum = $users[(string)$order['user']]['mobile_number'];
+			
 			if($mnum==''){
 				$mnum = 0;
 			}
