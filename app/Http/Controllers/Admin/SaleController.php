@@ -45,19 +45,22 @@ class SaleController extends Controller
         //CONVERT TO OBJECT ID FOR LOOKUP
         if(isset($inputs['saleProductId']) && !empty($inputs['saleProductId'])){
             foreach ($inputs['saleProductId'] as $key => $value) {
-                $inputs['saleProductId'][$key] = new MongoId($value);
+                $inputs['saleProductId'][$key] = $value;
+                $inputs['saleProducObjecttId'][$key] = new MongoId($value);
             }
         }
 
         if(isset($inputs['saleCategoryId']) && !empty($inputs['saleCategoryId'])){
             foreach ($inputs['saleCategoryId'] as $key => $value) {
-                $inputs['saleCategoryId'][$key] = new MongoId($value);
+                $inputs['saleCategoryId'][$key] = $value;
+                $inputs['saleCategoryObjectId'][$key] = new MongoId($value);
             }
         }
 
         if(isset($inputs['actionProductId']) && !empty($inputs['actionProductId'])){
             foreach ($inputs['actionProductId'] as $key => $value) {
-                $inputs['actionProductId'][$key] = new MongoId($value);
+                $inputs['actionProductId'][$key] = $value;
+                $inputs['actionProductObjectId'][$key] = new MongoId($value);
             }
         }   
 

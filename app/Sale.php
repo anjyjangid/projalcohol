@@ -18,12 +18,15 @@ class Sale extends Eloquent
         'detailTitle',
         'status',        
         'saleProductId',
+        'saleProducObjecttId',
         'saleCategoryId',
+        'saleCategoryObjectId',
         'conditionQuantity',
         'actionType',
         'giftQuantity',
         'discountValue',
         'discountType',
         'actionProductId',
+        'actionProductObjectId'
     ];
 }
