@@ -46,7 +46,7 @@ class SaleController extends Controller
         if(isset($inputs['saleProductId']) && !empty($inputs['saleProductId'])){
             foreach ($inputs['saleProductId'] as $key => $value) {
                 $inputs['saleProductId'][$key] = $value;
-                $inputs['saleProducObjecttId'][$key] = new MongoId($value);
+                $inputs['saleProductObjectId'][$key] = new MongoId($value);
             }
         }
 

@@ -18,7 +18,7 @@ class Sale extends Eloquent
         'detailTitle',
         'status',        
         'saleProductId',
-        'saleProducObjecttId',
+        'saleProductObjectId',
         'saleCategoryId',
         'saleCategoryObjectId',
         'conditionQuantity',
