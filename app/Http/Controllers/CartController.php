@@ -1776,7 +1776,7 @@ prd($cart);
 
 				$cart->products = $cartProducts;
 
-				//$cart->save();
+				$cart->save();
 
 				return response(["success"=>true,"message"=>"cart updated successfully","data"=>$updatedData],200);
 

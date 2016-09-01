@@ -1536,15 +1536,17 @@ var timer = $interval(function() {
 				$scope.alcoholCart = alcoholCart;
 				$scope._promo = promotionsService;
 				
-				// angular.forEach($scope._promo.$promotions, function(promotion,key){
+				angular.forEach($scope._promo.$promotions, function(promotion,key){
 
-				// 	angular.forEach(promotion.products, function(product,prokey){
+					angular.forEach(promotion.products, function(product,prokey){
 
-				// 		$scope._promo.$promotions[key].products[proKey] = new AlcoholProduct(2,product);
+						product.addBtnAllowed = true;
+
+						// $scope._promo.$promotions[key].products[proKey] = new AlcoholProduct(2,product);
 						
-				// 	})
+					})
 
-				// })
+				})
 
 
 			}, 500);
