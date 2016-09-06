@@ -56,9 +56,9 @@
 									Status
 								</th>
                                 
-								<!-- <th width="10%">
+								<th width="10%">
 									Actions
-								</th> -->
+								</th>
 
 							</tr>
 							
@@ -106,11 +106,14 @@
                     },
                     orderable:false                     
                 },{  
-                    data : "listingTitle",
-                    orderable:true
+                    mData : null,
+                    orderable:false,
+                    mRender:function(data,type,full){
+                        return '<span class="label label-danger">'+data.listingTitle+'</span>';
+                    },
                 },{  
                     data : "detailTitle",
-                    orderable:true
+                    orderable:false
                 },{
                     mData: null,
                     mRender: function(data, type, full) {                           
@@ -120,20 +123,26 @@
                             return 'Sale tag';
                         }                           
                     },
-                    orderable:true
+                    orderable:false
                 },{
                     mData: null,
                     mRender: function(data, type, full) {                           
                         if(data.status == 1){
-                            return '<span class="label label-sm label-success">Enabled</span>'
+                            return '<span class="label label-sm label-success">Enabled</span>';
                         }else{
-                            return '<span class="label label-sm label-info">Disabled</span>'
+                            return '<span class="label label-sm label-info">Disabled</span>';
                         }                           
                     },
-                    orderable:true
+                    orderable:false
+                },{
+                    mData: null,
+                    mRender: function(data, type, full) {                                                   
+                        return '<a ui-sref=userLayout.sale.edit({saleId:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+                        
+                    },
+                    orderable:false
                 }],
                 "lengthMenu": [
-
                     [10, 20, 50, 100, 150, -1],
                     [10, 20, 50, 100, 150, "All"] // change per page values here
                 ],

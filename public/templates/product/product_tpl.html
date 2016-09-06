@@ -16,8 +16,8 @@
 						<div class="add-wishlist-icondiv"><img src="images/add-wish-icon.png" /></div>
 
 						<div class="wishlist_discount">
-							<div class="wishlist" ng-if="!isInwishList" ng-click="addToWishlist()">Add to Wishlist</div>
-							<div class="wishlist" ui-sref="accountLayout.wishlist" ng-if="isInwishList">Added to Wishlist</div>
+							<div class="wishlist" ng-if="!isInwishList" ng-click="addToWishlist(0)">Add to Wishlist</div>
+							<div class="wishlist" ui-sref="accountLayout.wishlist" ng-if="isInwishList">Added to Wishlist</div>							
 						</div>
 
 					</div>
@@ -30,7 +30,7 @@
 							<div class="discount" ui-sref="mainLayout.product({product:productInfo.slug})">View Bulk Discount</div>
 						</div>
 					</div>
-				</div>
+				</div>				
 			</div>
 		</div>
 
@@ -80,7 +80,17 @@
 		<out-of-stock product="productInfo"></out-of-stock>
 	</div>
 
+	<!-- TELL ME WHEN ITS ON SALE -->
 
+	<div class="salediv">
+		<md-checkbox ng-checked="saleExists()" ng-click="addToWishlist(1)" class="salecheck" aria-label="leaveatdoor-checkbox">
+	    	Tell me when it's on sale
+	    </md-checkbox>
+		<md-tooltip md-direction="bottom">
+        	Add this item to my Wish List and we will notify you when it goes on sale
+        </md-tooltip>
+    </div>
 
+	<!-- TELL ME WHEN ITS ON SALE -->
 
 </div>

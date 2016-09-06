@@ -227,7 +227,6 @@ AlcoholDelivery.directive('sideBar', function() {
 
             scope.initCarousel = function(element,ngModel) {
               // provide any default options you want
-              	console.log($(element).attr('class'));
                 var defaultOptions = {
                 };
                 var customOptions = scope.$eval($(element).attr('data-options'));
@@ -523,8 +522,11 @@ AlcoholDelivery.directive('sideBar', function() {
 		},
 		templateUrl: '/templates/product/product_tpl.html',
 
-		controller: ['$rootScope','$scope','$state','sweetAlert','alcoholCart','alcoholWishlist','promotionsService',"$mdToast",function($rootScope,$scope,$state,sweetAlert,alcoholCart,alcoholWishlist,promotionsService,$mdToast){
+		controller: ['$rootScope','$scope','$state','sweetAlert','alcoholCart','alcoholWishlist','promotionsService',"$mdToast",'UserService',
+		function($rootScope,$scope,$state,sweetAlert,alcoholCart,alcoholWishlist,promotionsService,$mdToast,UserService){
 			
+			angular.alcoholWishlist = alcoholWishlist;
+
 			$scope.settings = $rootScope.settings;
 
 			$scope.alcoholCart = alcoholCart;
@@ -535,9 +537,11 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.isInwishList = alcoholWishlist.getProductById($scope.productInfo._id);
 			
-			$scope.addToWishlist = function(){
+			
 
-				alcoholWishlist.add($scope.productInfo._id).then(function(response) {
+			$scope.addToWishlist = function(addInSale){
+
+				alcoholWishlist.add($scope.productInfo._id,addInSale).then(function(response) {
 
 						if(response.success){
 
@@ -562,6 +566,10 @@ AlcoholDelivery.directive('sideBar', function() {
 
 					});
 			}			
+
+			$scope.saleExists = function () {
+				return alcoholWishlist.isNotified($scope.productInfo._id);				
+			};						
 
 		}]
 	}

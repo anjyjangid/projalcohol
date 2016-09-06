@@ -23,6 +23,7 @@ use AlcoholDelivery\Setting;
 use AlcoholDelivery\Email;
 use AlcoholDelivery\Inventory;
 use AlcoholDelivery\Stocks;
+use AlcoholDelivery\Sale;
 use Illuminate\Support\Facades\Auth;
 
 use Faker;
@@ -536,7 +537,60 @@ class ProductController extends Controller
 
 		}
 
-		public function getTest(){
+		public function getTest(){		
+			
+			$query = [];
+
+			$query[]['$match'] = ['_id' => new MongoId('57c422d611f6a1450b8b456c')];
+
+			$query[]['$project'] = [
+				//'email' => 1,
+				//'wishlist' => 1,
+				'mywish' => [
+					'$cond' => [
+						'$wishlist',
+						[
+							'$filter'=>[
+		                		'input' => '$wishlist',
+		                		'as' => 'wishlist',
+		                		'cond' => ['$eq'=>['$$wishlist._id',new MongoId('57c69fadb190ecc02e8b456e')]]
+	            			]
+	            		],
+	            		null	            		
+					]
+				]
+			];	
+
+			$query[]['$unwind'] = ['path' => '$mywish','preserveNullAndEmptyArrays' => true];       
+
+			$model = DB::collection('test')->raw()->aggregate($query);
+
+			dd($model);	
+
+			$u = DB::collection('test')->raw()->update(
+				['_id' => new MongoId('57c422d611f6a1450b8b456c'),'wishlist._id'=>new MongoId('57c69fadb190ecc02e8b456e')],
+				[
+					'$set' => [						
+						'wishlist.$.notify' => 1
+					]
+				]	
+			);
+
+			dd($u);
+				
+			/*$model = Products::raw()->aggregate([
+				['$match' => ['_id'=>new MongoId('57c53011b190ec430d8b456e')]],
+				[
+					'$lookup' => [
+						'from'=>'user',
+						'localField' => '_id',
+						'foreignField' => 'wishlist._id',
+						'as' => 'nUser'
+					]
+				]
+			]);
+
+			dd($model);*/
 
 			$faker = Faker\Factory::create();
 
@@ -975,6 +1029,54 @@ class ProductController extends Controller
 			$inputs['suggestionObjectId'] = [];
 		}
 		//SUGGESTIONS	
+		
+		//ADDING CATEGORY ID AS OBJECT
+		$categoriesObject = [];
+		if(isset($inputs['categories']) && !empty($inputs['categories'])){
+			foreach($inputs['categories'] as $categories){
+				$categoriesObject[] = new MongoId($categories);
+			}
+			$inputs['categoriesObject'] = $categoriesObject;
+		}
+	}
+
+	public function getUpdatep(Request $request){
+
+		$query = [];
+		$query[]['$match'] = [
+			'_id' => new MongoId('57c6b38eb190ecc02e8b4577')
+		];
+
+		$query[]['$unwind'] = [
+			'path' => 'categoriesObject',
+			'preserveNullAndEmptyArrays' => true
+		];
+
+		$query[]['$lookup'] = [
+			'from'=>'categories',
+			'localField'=>'categoriesObject',
+			'foreignField'=>'_id',
+			'as'=>'productCategories'
+		];
+
+		$p = Products::raw()->aggregate($query);
+
+		dd($p);
+
+		$products = Products::all();	
+
+		foreach ($products as $key => $product) {			
+			
+			$categoriesObject = [];
+			foreach($product->categories as $categories){
+				$categoriesObject[] = new MongoId($categories);
+			}
+			$product->categoriesObject = $categoriesObject;
+			$product->save();			
+		}
+
+		dd('done');
+
 	}	
 }
 		

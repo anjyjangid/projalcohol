@@ -13,18 +13,22 @@
 	<table class="table wislistborbtm" ng-if="alcoholWishlist.getTotalProducts()>0">
 		<tbody>
 			<tr ng-repeat="(key, product) in alcoholWishlist.getList()" ng-init="product.cart = alcoholCart.getProductById(product._id)">
-				<td>
-					
-					<div class="orhistry2_td2procdtcvr">
-						
+				
+				<td>					
+					<div class="orhistry2_td2procdtcvr">																		
 						<span><img err-pro-src="" ng-src="products/i/200/{{product._original.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" /></span>
-
 						<div class="checkouter-td-right-text">
 							<div class="orhistry2_td2proctext1">{{product._name}}</div>
 							<div class="orhistry2_td2proctext2">{{product._original.shortDescription}}</div> 
 							<div class="orhistry2_td2proctext1 wishgaptop">{{settings.general.currency}} {{product._price}}</div>
+							<div>
+								<md-checkbox class="salelist" ng-model="product._notify" ng-true-value="1" ng-false-value="0" aria-label="Notify" ng-change="alcoholWishlist.add(product._id,1)">						
+									Tell me when it's on sale
+								</md-checkbox>								
+					        </div>
 						</div>  
 					</div>
+					
 				</td>
 
 				<td>

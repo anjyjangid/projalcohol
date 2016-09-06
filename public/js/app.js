@@ -1183,20 +1183,44 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 
 	$rootScope.$on('alcoholWishlist:itemRemoved', function(product){
 
-		$mdToast.show(
+		$mdToast.show({
+			controller:function($scope){							
+				
+				$scope.message = 'Removed from wishlist !';
+			},						
+			templateUrl: '/templates/toast-tpl/wishlist-notify.html',						
+			parent : $document[0].querySelector('#cart-summary-icon'),
+			position: 'top center',
+			hideDelay:3000
+		});
+		/*$mdToast.show(
 			$mdToast.simple()
 				.textContent("Removed from wishlist !")				
 				.highlightAction(false)
 				.position("top right fixed")
 				.hideDelay(4000)
-			);
+			);*/
 		
+
+	});
+
+	$rootScope.$on('alcoholWishlist:change', function(object,params){
+
+		$mdToast.show({
+			controller:function($scope){							
+				
+				$scope.message = params.message;
+			},						
+			templateUrl: '/templates/toast-tpl/wishlist-notify.html',						
+			parent : $document[0].querySelector('#cart-summary-icon'),
+			position: 'top center',
+			hideDelay:3000
+		});
 
 	});
 
 	store.init();
 	alcoholWishlist.init();
-
 	
 }]);
 
