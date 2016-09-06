@@ -58,7 +58,7 @@ AlcoholDelivery.filter("ucwords", function () {
 		   });
 		}
 		return input; 
-	}    
+	}
 });
 
 AlcoholDelivery.filter('isActive', function() {

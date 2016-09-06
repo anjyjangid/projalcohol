@@ -222,26 +222,27 @@ AlcoholDelivery.directive('sideBar', function() {
         restrict: 'E',
         priority: 100,
         transclude: false,
-
+        replace: true,
         link: function (scope) {
 
             scope.initCarousel = function(element,ngModel) {
-              // provide any default options you want
+
+                // provide any default options you want
                 var defaultOptions = {
                 };
                 var customOptions = scope.$eval($(element).attr('data-options'));
 
                 // combine the two options objects
-                for(var key in customOptions) {
-                    defaultOptions[key] = customOptions[key];
-                }
+				for(var key in customOptions) {
+					defaultOptions[key] = customOptions[key];
+				}
 
             	// init carousel
-            	if(typeof $(element).data('owlCarousel') === "undefined"){
+				if(typeof $(element).data('owlCarousel') === "undefined"){
 
-                	scope[ngModel] = $(element).owlCarousel(defaultOptions);
+					scope[ngModel] = $(element).owlCarousel(defaultOptions);
 
-            	}
+				}
             };
         }
     };
@@ -253,6 +254,7 @@ AlcoholDelivery.directive('sideBar', function() {
         restrict: 'A',
         priority: 99,
         transclude: false,
+        replace: true,
         link: function(scope, element) {
 
           	if(scope.$first && typeof $(element.parent()).data('owlCarousel') !== "undefined"){
