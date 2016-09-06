@@ -165,7 +165,7 @@ class SaleController extends Controller
     {
         $inputs = $request->all();
 
-        $this->validateItems($inputs,$id);                   
+        $this->validateItems($inputs);                   
 
         $sale = Sale::find($id);
         
@@ -187,7 +187,18 @@ class SaleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        
+        $sale = Sale::find($id);
+
+        if($sale){
+            $delete = $sale->delete();
+            if($delete)
+                return response(['message'=>'Deleted successfully!'],200);
+            else
+                return response(['message'=>'Could not delete sale, Please try again'],400);
+        }
+
+        return response(['message'=>'Invalid sale'],400);
     }
 
 
@@ -201,7 +212,7 @@ class SaleController extends Controller
 
         $iTotalRecords = $sale->count();        
 
-        $columns = array('_id','title','status','type');
+        $columns = array('_id','title','type');
 
         $sale = $sale
         ->skip((int)$start)
@@ -219,7 +230,7 @@ class SaleController extends Controller
         return response($response,200);
     }
 
-    public function validateItems(&$inputs, $id){
+    public function validateItems(&$inputs){
 
         //CONVERT TO OBJECT ID FOR LOOKUP
         $id = [];
@@ -242,9 +253,7 @@ class SaleController extends Controller
             }
         }
         $inputs['saleCategoryId'] = $id;
-        $inputs['saleCategoryObjectId'] = $Objid;
-
-        
+        $inputs['saleCategoryObjectId'] = $Objid;       
 
         $id = [];
         $Objid = [];

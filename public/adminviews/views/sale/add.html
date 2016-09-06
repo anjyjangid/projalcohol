@@ -46,17 +46,7 @@
 									<input type="text" class="form-control" ng-model="sale.detailTitle" placeholder="Detail Title">
 									<span class="help-block" ng-bind="errors.detailTitle[0]"></span>
 								</div>
-							</div>				
-
-							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
-								<label class="col-md-2 control-label">Status: <span class="required"> * </span>
-								</label>
-								<div class="col-md-10">
-									<select class="form-control" ng-model="sale.status" ng-options="op.key as op.value for op in statusOptions">										
-									</select>
-									<span class="help-block" ng-bind="errors.status[0]"></span>
-								</div>
-							</div>
+							</div>											
 
 						</div>
 					</tab>

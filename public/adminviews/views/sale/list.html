@@ -50,11 +50,7 @@
 
                                 <!-- <th width="">
                                     Image
-                                </th> -->
-
-								<th width="10%">
-									Status
-								</th>
+                                </th> -->							
                                 
 								<th width="10%">
 									Actions
@@ -126,18 +122,8 @@
                     orderable:false
                 },{
                     mData: null,
-                    mRender: function(data, type, full) {                           
-                        if(data.status == 1){
-                            return '<span class="label label-sm label-success">Enabled</span>';
-                        }else{
-                            return '<span class="label label-sm label-info">Disabled</span>';
-                        }                           
-                    },
-                    orderable:false
-                },{
-                    mData: null,
                     mRender: function(data, type, full) {                                                   
-                        return '<a ui-sref=userLayout.sale.edit({saleId:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+                        return '<a ui-sref=userLayout.sale.edit({saleId:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a><button ng-click=removeSale("'+data._id+'") class="btn btn-xs default btn-editable"><i class="fa fa-trash"></i> Remove</a>';
                         
                     },
                     orderable:false

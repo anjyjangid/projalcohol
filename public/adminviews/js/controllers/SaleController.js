@@ -1,6 +1,8 @@
 'use strict';
 
-MetronicApp.controller('SaleController',['$rootScope', '$scope', '$timeout','$http', function($rootScope, $scope, $timeout,$http) {
+MetronicApp.controller('SaleController',[
+	'$rootScope', '$scope', '$timeout','$http', 'sweetAlert',
+	function($rootScope, $scope, $timeout,$http, sweetAlert) {
 
     $scope.$on('$viewContentLoaded', function() {   
         Metronic.initAjax(); // initialize core components
@@ -12,7 +14,28 @@ MetronicApp.controller('SaleController',['$rootScope', '$scope', '$timeout','$ht
     $rootScope.settings.layout.pageSidebarClosed = false;  
 
     $scope.removeSale = function(sId){
-    	alert(sId);
+    	
+		sweetAlert.swal({
+			title: "Are you sure?",   
+			text: "Your will not be able to recover it!",   
+			type: "warning",   
+			showCancelButton: true,   
+			confirmButtonColor: "#DD6B55",   
+			confirmButtonText: "Yes, remove !",
+			closeOnConfirm: false,
+			closeOnCancel: false
+
+		}).then(function(isConfirm) {
+			if (isConfirm) {
+				$http.delete('adminapi/sale/'+sId).success(function(res){
+					sweetAlert.swal("Deleted!", res.message, "success");
+					grid.getDataTable().ajax.reload();
+				}).error(function(res){
+					sweetAlert.swal("Failed!", res.message, "error");
+				});
+			}
+		});
+
     };
 
 }]); 

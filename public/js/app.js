@@ -1186,21 +1186,13 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 		$mdToast.show({
 			controller:function($scope){							
 				
-				$scope.message = 'Removed from wishlist !';
+				$scope.message = 'Item removed from wishlist';
 			},						
 			templateUrl: '/templates/toast-tpl/wishlist-notify.html',						
 			parent : $document[0].querySelector('#cart-summary-icon'),
 			position: 'top center',
 			hideDelay:3000
-		});
-		/*$mdToast.show(
-			$mdToast.simple()
-				.textContent("Removed from wishlist !")				
-				.highlightAction(false)
-				.position("top right fixed")
-				.hideDelay(4000)
-			);*/
-		
+		});		
 
 	});
 

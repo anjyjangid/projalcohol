@@ -87,7 +87,7 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::resource('giftcategory', 'Admin\GiftCategoryController',['only'=>['store','edit','index']]);
 	Route::controller('giftcategory','Admin\GiftCategoryController');
 
-	Route::resource('sale', 'Admin\SaleController',['only'=>['store','show','update']]);
+	Route::resource('sale', 'Admin\SaleController',['only'=>['store','show','update','destroy']]);
 	Route::controller('sale', 'Admin\SaleController');
 
 	Route::resource('stores', 'Admin\StoreController',['only'=>['store','edit','update']]);
