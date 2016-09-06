@@ -566,7 +566,7 @@ class ProductController extends Controller
 	                'input' => '$store',
 	                'as' => 'store',
 	                'cond' => ['$eq'=>['$$store.storeId',$userStoreId]]
-	            ]    
+	            ]
 	        ];        
 
 			$query[]['$match'] = [
