@@ -1,0 +1,210 @@
+<!-- BEGIN MAIN CONTENT -->
+<div class="row">
+	<div class="col-md-12">		
+		<!-- Begin: life time stats -->
+		<div class="portlet light">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="icon-handbag"></i>{{$state.$current.data.pageTitle}}
+				</div>
+				<div class="actions">										
+				</div>
+			</div>
+
+			<div class="portlet-body">
+
+				<div class="table-container">
+					
+					<!-- <table class="table table-striped table-bordered table-hover" id="productlist">
+						<thead>
+							<tr role="row" class="heading">								
+								<th width="10%">
+									Sr.
+								</th>
+								<th width="15%">
+									Product Name
+								</th>								
+								<th width="10%">
+									Quantity
+								</th>
+								<th width="10%">
+									Action
+								</th>
+							</tr>
+							<tr role="row" class="filter">
+								<td></td>
+								<td>
+									<input type="text" class="form-control form-filter input-sm" name="name">
+								</td>								
+								<td>									
+								</td>
+								<td>
+									<div class="margin-bottom-5">
+										<button class="btn btn-sm yellow filter-submit margin-bottom"><i class="fa fa-search"></i> Search</button>
+									</div>
+									<button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> Reset</button>
+								</td>
+							</tr>
+						</thead>
+						<tbody id="tBody">
+						</tbody>
+					</table> -->
+					<table class="table table-striped table-bordered table-hover" id="example" class="display" width="100%"></table>
+				</div>
+			</div>
+		</div>
+		<!-- End: life time stats -->
+	</div>
+</div>
+<!-- END MAIN CONTENT -->
+<!-- BEGIN MAIN JS -->
+<script>
+	
+	var ProductsTableAjax = function () {
+
+    
+
+    var handleRecords = function () {
+
+        var grid = new Datatable();
+
+        grid.init({
+            src: $("#productlist"),
+            onSuccess: function (grid) {
+                // execute some code after table records loaded
+            },
+            onError: function (grid) {
+                // execute some code on network or other general error  
+            },
+            loadingMessage: 'Loading...',
+            dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
+
+                // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+                // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
+                // So when dropdowns used the scrollable div should be removed. 
+                //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
+                "columns": [
+                	{		                
+	                	mRender: function(data, type, full, meta) {
+	                		return (meta.row)+1;		                	
+		                },
+		                orderable:false		                
+		            },{	 
+	                	data : "name",
+		                orderable:true
+		            },{
+		            	mData: null,
+		            	mRender: function(data, type, full) {	                        
+	                    	if(data.store != null){
+	                    		return data.store.quantity;
+	                    	}else{
+	                    		return 0;
+	                    	}	                    	
+	                    },
+		                orderable:true
+		            }/*,{	 
+	                	data : "quantity",
+		                orderable:true
+		            }*/,{
+		            	mData: null,
+		            	mRender: function(data, type, full) {		            		
+		            		return '<a ui-sref=userLayout.products.edit({productid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+		            		
+	                    },
+		                orderable:false
+		            }
+		        ],
+
+                "lengthMenu": [
+                    [10, 20, 50, 100, 150, -1],
+                    [10, 20, 50, 100, 150, "All"] // change per page values here
+                ],
+                "pageLength": 10, // default record count per page
+				"ajax": {
+                    "url": "../adminapi/product/productlist", // ajax source                    
+                },                   
+                "order": [],
+                "fnDrawCallback": function (oSettings) {
+				    var content = $('#tBody');
+				    angular.element(document).injector().invoke(function($compile) {
+				        var scope = angular.element(content).scope();
+				        $compile(content)(scope);
+				    });
+					Metronic.initAjax();
+				},
+            }
+        });
+
+        // handle group actionsubmit button click
+        grid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
+            e.preventDefault();
+            var action = $(".table-group-action-input", grid.getTableWrapper());
+            if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
+                grid.setAjaxParam("customActionType", "group_action");
+                grid.setAjaxParam("customActionName", action.val());
+                grid.setAjaxParam("id", grid.getSelectedRows());
+                grid.getDataTable().ajax.reload();
+                grid.clearAjaxParams();
+            } else if (action.val() == "") {
+                Metronic.alert({
+                    type: 'danger',
+                    icon: 'warning',
+                    message: 'Please select an action',
+                    container: grid.getTableWrapper(),
+                    place: 'prepend'
+                });
+            } else if (grid.getSelectedRowsCount() === 0) {
+                Metronic.alert({
+                    type: 'danger',
+                    icon: 'warning',
+                    message: 'No record selected',
+                    container: grid.getTableWrapper(),
+                    place: 'prepend'
+                });
+            }
+        });
+    }
+
+    return {
+
+        //main function to initiate the module
+        init: function () {           
+            handleRecords();
+        }
+
+    };
+
+}();
+
+	//ProductsTableAjax.init();
+
+
+	$(document).ready(function() {
+  
+	  //callback function that configures and initializes DataTables
+	  function renderTable(xhrdata) {
+	    
+
+	    var table = $('#example').DataTable({
+	      //pageLength:5,	
+	      columns: xhrdata,
+	      processing: true,
+          serverSide: true,
+      	  ajax: {
+          	url:'/adminapi/product/store',
+          	type:'POST'
+          },
+	    });
+
+	    //table.rows.add(xhrdata.data).draw();
+	  }
+
+	  //xhr call to retrieve data
+	  var xhrcall = $.ajax({url:'/adminapi/product/store','type':'POST',data:{storeOnly:1}});
+
+	  //promise syntax to render after xhr completes
+	  xhrcall.done(renderTable);
+	});
+
+</script>
+<!-- END MAIN JS

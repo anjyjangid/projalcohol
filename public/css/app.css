@@ -800,3 +800,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 .proHoverEffect:hover md-checkbox.salecheck,.comboproductitems:hover md-checkbox.salecheck{
 	opacity: 1;
 }
+
+.suggestionlist .proHoverEffect{	
+	padding: 10px;
+}

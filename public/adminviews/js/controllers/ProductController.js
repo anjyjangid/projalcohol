@@ -382,3 +382,10 @@ MetronicApp.directive('myChange', function() {
     });
   };
 });
+
+MetronicApp.controller('SharedInventoryController',[
+	'$rootScope', '$scope', '$timeout','$http','fileUpload','productModel', 
+	function($rootScope, $scope, $timeout,$http,fileUpload,productModel) {
+	
+
+}]);
