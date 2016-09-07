@@ -181,6 +181,8 @@ $http.get("/super/category/",{params: {withCount:true}}).success(function(respon
 		return $filter('filter')($rootScope.settings.pages,{section:section});
 	}
 
+	
+
 }]);
 
 AlcoholDelivery.controller('ProductsController', [

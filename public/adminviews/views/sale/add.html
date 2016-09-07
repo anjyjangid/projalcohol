@@ -7,7 +7,7 @@
 					<i class="fa fa-shopping-cart"></i>{{sale._id?'Edit ':'Add New '}}Sale
 				</div>
 				<div class="actions btn-set">
-					<a class="btn default" ui-sref="userLayout.products.list"><i class="fa fa-angle-left"></i> Back</a>
+					<a class="btn default" ui-sref="userLayout.sale.list"><i class="fa fa-angle-left"></i> Back</a>
 					<button ng-disabled="loading" class="btn green" type="submit"><i class="fa fa-check"></i> {{sale._id?'Update':'Save'}}</button>					
 				</div>
 			</div>		
@@ -46,17 +46,7 @@
 									<input type="text" class="form-control" ng-model="sale.detailTitle" placeholder="Detail Title">
 									<span class="help-block" ng-bind="errors.detailTitle[0]"></span>
 								</div>
-							</div>				
-
-							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
-								<label class="col-md-2 control-label">Status: <span class="required"> * </span>
-								</label>
-								<div class="col-md-10">
-									<select class="form-control" ng-model="sale.status" ng-options="op.key as op.value for op in statusOptions">										
-									</select>
-									<span class="help-block" ng-bind="errors.status[0]"></span>
-								</div>
-							</div>
+							</div>											
 
 						</div>
 					</tab>
@@ -92,19 +82,20 @@
 											</a>											
 										</div>
 									</div>
-									<div class="portlet-body">										
+									<div class="portlet-body" ng-hide="sale.saleProductDetail.length == 0">										
 										<div class="clearfix">
 											<p></p>
 											<ul class="media-list">
 												<li class="media" ng-repeat="pcprod in sale.saleProductDetail">
 													<a class="pull-left">
 														<img class="media-object" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{pcprod.imageFiles[0].source}}" style="width: 64px; height: 64px;">
-													</a>
-													<div class="media-body">
+													</a>													
+													<div class="media-body" ng:class="{'has-error':errors['productExists.'+$index][0]}">
 														<h4 class="media-heading">{{ pcprod.name }}</h4>
 														<!-- <p>Price : <b>{{pcprod.sprice|currency}}</b></p> -->														
 														<p><button type="button" ng-click="removeItem($index,sale.saleProductId,sale.saleProductDetail)" class="btn btn-default btn-xs">Remove</button></p>
-													</div>
+														<span class="help-block" ng-bind="errors['productExists.'+$index][0]"></span>
+													</div>													
 												</li>																								
 											</ul>
 											<div align="center" ng-if="sale.saleProductDetail.length == 0">No product(s) selected</div>
@@ -126,17 +117,18 @@
 											</a>											
 										</div>
 									</div>
-									<div class="portlet-body">										
+									<div class="portlet-body" ng-hide="sale.saleCategoryDetail.length == 0">										
 										<div class="clearfix">
 											<p></p>	
 											<ul class="media-list">
 												<li class="media" ng-repeat="category in sale.saleCategoryDetail">
-													<!-- <a class="pull-left">														
-														<img class="media-object" ng-src="/assets/resources/category/thumb/200/{{pcprod.thumb}}" err-src="asset/i/defaultImage.png" alt="{{pcprod.cat_title}}" style="width: 64px; height: 64px;">
+													<!-- <a class="pull-left">										
+														<img class="media-object" title="{{category.cat_title|firstAlpha}}" alt="{{category.cat_title|firstAlpha}}" style="width: 64px; height: 64px;text-align: center;font-size: 42px;">
 													</a> -->
-													<div class="media-body">														
+													<div class="media-body" ng:class="{'has-error':errors['categoryExists.'+$index][0]}">														
 														<h4 class="media-heading">{{ category.name }}</h4>
 														<p><button type="button" ng-click="removeItem($index,sale.saleCategoryId,sale.saleCategoryDetail)" class="btn btn-default btn-xs">Remove</button></p>
+														<span class="help-block" ng-bind="errors['categoryExists.'+$index][0]"></span>
 													</div>
 												</li>																								
 											</ul>
@@ -199,7 +191,7 @@
 										</div>
 									</div>
 									
-									<div class="portlet-body">										
+									<div class="portlet-body" ng-hide="sale.actionProductDetail.length == 0">										
 										<div class="clearfix">
 											<p></p>
 											<ul class="media-list">
@@ -209,12 +201,14 @@
 													</a>
 													<div class="media-body">
 														<h4 class="media-heading">{{ pcprod.name }}</h4>
-														<!-- <p>Price : <b>{{pcprod.sprice|currency}}</b></p> -->														
+														<!-- <p>Price : <b>{{pcprod.sprice|currency}}</b></p> -->
 														<p><button type="button" ng-click="removeItem($index,sale.actionProductId,sale.actionProductDetail)" class="btn btn-default btn-xs">Remove</button></p>
 													</div>
 												</li>																								
 											</ul>
-											<div align="center" ng-if="sale.actionProductDetail.length == 0">No item selected</div>
+											<div align="center" ng-if="sale.actionProductDetail.length == 0">
+												No item selected													
+											</div>
 											<div align="center" ng:class="{'has-error':errors.actionProductId[0]}">
 												<span class="help-block" ng-bind="errors.actionProductId[0]"></span>
 											</div>
@@ -239,7 +233,7 @@
 					<h4 class="modal-title">Search {{popTitle}}</h4>
 				</div>
 				<div class="modal-body">
-					<div class="table-responsive">
+					<div class="table-responsive">	
 						
 						<input ng-model="searchbox" type="search" ng:class="{'spinner':searching}" ng-keyup="searchItem($event,searchType)" class="form-control" placeholder="Search">						
 						
@@ -250,11 +244,13 @@
 										<img width="100" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{p.imageFiles[0].source}}">										
 									</td>
 									<td valign="middle">									
-										{{p.name}}										
+										{{p.name}} <span ng-if="p.sale.listingTitle" class="label label-danger">{{p.sale.listingTitle}}</span>
+										<div ng-if="searchType != 'category'"><b>${{p.sprice}}</b></div>										
 									</td>
 									<td valign="middle">
-										<a ng-if="!p.added" ng-click="addItem(p,currentIdObj,currentDetailObj)" class="pull-right btn btn-default btn-xs green-stripe additem"><i class="fa fa-plus"></i> Add</a>
+										<a ng-if="checkAdd(p)" ng-click="addItem(p,currentIdObj,currentDetailObj)" class="pull-right btn btn-default btn-xs green-stripe additem"><i class="fa fa-plus"></i> Add</a>
 										<span ng-if="p.added" class="pull-right"><i class="fa fa-check"></i> Added</span>
+										<span ng-if="!checkAdd(p) && inSale(p)" class="pull-right"><i class="fa fa-check"></i> In sale</span>
 									</td>
 								</tr>							
 							</tbody>
@@ -268,6 +264,5 @@
 		</div>
 	</div>
 </div>
-
-<!-- <pre>{{errors|json}}</pre>	
-<pre>{{sale|json}}</pre>	 -->
+<!-- <pre>{{errors|json}}</pre>	 -->
+<!-- <pre>{{sale|json}}</pre> -->	

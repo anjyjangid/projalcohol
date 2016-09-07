@@ -24,6 +24,7 @@ class Products extends Eloquent
 		'description',
 		'shortDescription',
 		'categories',
+		'categoriesObject',
 		'chilled',
 		'isFeatured',
 		'isLoyalty',
@@ -72,7 +73,8 @@ class Products extends Eloquent
 		'suggestionId',
 		'suggestionObjectId',
 		'suggestedId',
-		'suggestedObjectId'
+		'suggestedObjectId',
+		'categoriesObject'
 	];
 
 	public function pcategories()

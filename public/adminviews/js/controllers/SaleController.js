@@ -1,6 +1,8 @@
 'use strict';
 
-MetronicApp.controller('SaleController',['$rootScope', '$scope', '$timeout','$http', function($rootScope, $scope, $timeout,$http) {
+MetronicApp.controller('SaleController',[
+	'$rootScope', '$scope', '$timeout','$http', 'sweetAlert',
+	function($rootScope, $scope, $timeout,$http, sweetAlert) {
 
     $scope.$on('$viewContentLoaded', function() {   
         Metronic.initAjax(); // initialize core components
@@ -11,6 +13,30 @@ MetronicApp.controller('SaleController',['$rootScope', '$scope', '$timeout','$ht
     $rootScope.settings.layout.pageBodySolid = false;
     $rootScope.settings.layout.pageSidebarClosed = false;  
 
+    $scope.removeSale = function(sId){
+    	
+		sweetAlert.swal({
+			title: "Are you sure?",   
+			text: "Your will not be able to recover it!",   
+			type: "warning",   
+			showCancelButton: true,   
+			confirmButtonColor: "#DD6B55",   
+			confirmButtonText: "Yes, remove !",
+			closeOnConfirm: false,
+			closeOnCancel: false
+
+		}).then(function(isConfirm) {
+			if (isConfirm) {
+				$http.delete('adminapi/sale/'+sId).success(function(res){
+					sweetAlert.swal("Deleted!", res.message, "success");
+					grid.getDataTable().ajax.reload();
+				}).error(function(res){
+					sweetAlert.swal("Failed!", res.message, "error");
+				});
+			}
+		});
+
+    };
 
 }]); 
 
@@ -46,15 +72,15 @@ MetronicApp.controller('SaleFormController',[
 
 	$scope.discountOptions = [{key:1,value:'Fix Amount'},{key:2,value:'% of Amount'}];
 
-	angular.promotion = $scope.promotion;
+	// angular.promotion = $scope.promotion;
 	
-	if($stateParams.promotionId){
+	if($stateParams.saleId){
 
 		$scope.isupdate = true;
 
-		saleModel.getPromotion($stateParams.promotionId).success(function(response){									
+		saleModel.getSale($stateParams.saleId).success(function(response){									
 			
-			$scope.promotion = response;
+			$scope.sale = response;
 
 		}).error(function(data, status, headers){
 						
@@ -179,8 +205,38 @@ MetronicApp.controller('SaleFormController',[
     $scope.selectedItems = ['Red wine','b','c'];
     $scope.availableItems = [1,2,3];
 
+    $scope.checkAdd = function(p){
 
+    	var flg = false;
+
+    	if($scope.sale.type == 0 && !p.added){
+			flg = true;    		
+    	}
+
+    	if($scope.searchType != 'offerproduct' && p.sale==null && !p.added){
+    		flg = true;
+    	}
+
+    	if($scope.searchType == 'offerproduct' && !p.added){
+    		flg = true;
+    	}
+
+    	return flg;    	
+    };
+
+    $scope.inSale = function(p){
+
+    	var sid = '';
+
+    	if(p.sale!=null){
+    		sid = p.sale._id['$id'];
+    	}
+
+    	return $scope.sale.type == 1 && $scope.searchType != 'offerproduct' && sid!=$stateParams.saleId && $scope.type ==1;
+
+    };
+
+    
 
 
 }]);
-

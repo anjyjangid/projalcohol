@@ -16,7 +16,7 @@ class Sale extends Eloquent
         'type',
         'listingTitle',
         'detailTitle',
-        'status',        
+        //'status',        
         'saleProductId',
         'saleProductObjectId',
         'saleCategoryId',
@@ -29,4 +29,28 @@ class Sale extends Eloquent
         'actionProductId',
         'actionProductObjectId'
     ];
+
+    protected $hidden = [
+        'saleProductObjectId'
+    ];
+
+    public function project(){
+        $fields = $this->fillable;
+        $ret = [];
+        foreach ($fields as $key => $value) {
+            $ret[$value] = '$'.$value;
+        }
+
+        return $ret;
+    }
+
+    public function group(){
+        $fields = $this->fillable;
+        $ret = [];
+        foreach ($fields as $key => $value) {            
+            $ret[$value] = ['$first' => '$'.$value];
+        }
+
+        return $ret;
+    }
 }

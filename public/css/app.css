@@ -781,3 +781,22 @@ md-dialog#dont-miss-popup{
 #dialogContent_dont-miss-popup {
     min-height: 400px;
 }
+
+md-checkbox.salecheck{
+	opacity: 0;
+	margin: 5px 0px;
+}
+
+md-checkbox.salecheck .md-icon, md-checkbox.salelist .md-icon{   
+  transform: scale(0.8);  
+}
+
+md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{   
+  font-size: 11px;  
+  margin-left: 21px;
+  color: #333;
+}
+
+.proHoverEffect:hover md-checkbox.salecheck,.comboproductitems:hover md-checkbox.salecheck{
+	opacity: 1;
+}
