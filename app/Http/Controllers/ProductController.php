@@ -233,7 +233,7 @@ class ProductController extends Controller
 					],
 					[
 						'$project' => [
-							'suggestions'=>1
+							'suggestions'=> '$suggestionObjectId'
 						]
 					],
 					[
