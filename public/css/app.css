@@ -7,6 +7,10 @@
 	-ms-user-select: none; /* IE10+ */
 }
 
+.pos-realtive{
+	position: relative;
+}
+
 a.core-block{
 	display: inline-block;
 	width: 100%;
@@ -799,6 +803,25 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 
 .proHoverEffect:hover md-checkbox.salecheck,.comboproductitems:hover md-checkbox.salecheck{
 	opacity: 1;
+}
+
+
+.saletags-list{
+	position: absolute;
+	bottom: 0px;
+	margin: 0px;
+
+	font-size: 0.8em;
+	text-transform: uppercase;
+    font-weight: 500;
+}
+
+.saletags-list li{
+	background: #b119ff;
+    padding: 1px 6px;
+    color: #fff;
+    border-radius: 2px;
+    margin: 0;
 }
 
 .suggestionlist .proHoverEffect{	

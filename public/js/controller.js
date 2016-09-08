@@ -3191,13 +3191,13 @@ AlcoholDelivery.controller('SearchController', [
 	    self.submitQuery   = submitQuery;
 
 	    
-    // ******************************
-    // Internal methods
-    // ******************************
-    /**
-     * Search for states... use $timeout to simulate
-     * remote dataservice call.
-     */
+	// ******************************
+	// Internal methods
+	// ******************************
+	/**
+	 * Search for states... use $timeout to simulate
+	 * remote dataservice call.
+	 */
     function querySearch (query) {
 		return $http.get('/site/search/' + query).then(function(result){
 		    return result.data;
