@@ -27,8 +27,6 @@ class SaleRequest extends Request
     public function rules()
     {
         $input = Input::all();
-        
-
 
         $rules = [
             'type' => 'required',
@@ -38,6 +36,10 @@ class SaleRequest extends Request
 
         if(empty($input['saleProductId']) && empty($input['saleCategoryId'])){
             $rules['saleItem'] = 'required';
+        }
+
+        if(!isset($input['coverImage']) || !empty($input['image']['thumb'])){
+            $rules['image.thumb'] = 'image|max:5102';
         }
 
         //SALE TYPE TAG
