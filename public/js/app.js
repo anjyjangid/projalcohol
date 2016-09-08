@@ -1183,16 +1183,16 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 
 	$rootScope.$on('alcoholWishlist:itemRemoved', function(product){
 
-		$mdToast.show({
+		/*$mdToast.show({
 			controller:function($scope){							
 				
 				$scope.message = 'Item removed from wishlist';
 			},						
 			templateUrl: '/templates/toast-tpl/wishlist-notify.html',						
-			parent : $document[0].querySelector('#cart-summary-icon'),
+			parent : $document[0].querySelector('#usermenuli'),
 			position: 'top center',
 			hideDelay:3000
-		});		
+		});*/		
 
 	});
 
@@ -1204,7 +1204,7 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 				$scope.message = params.message;
 			},						
 			templateUrl: '/templates/toast-tpl/wishlist-notify.html',						
-			parent : $document[0].querySelector('#cart-summary-icon'),
+			parent : $document[0].querySelector('#usermenuli'),
 			position: 'top center',
 			hideDelay:3000
 		});

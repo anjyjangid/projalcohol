@@ -16,6 +16,7 @@ use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Products;
 use AlcoholDelivery\User;
 use AlcoholDelivery\Dealer;
+use AlcoholDelivery\Store;
 use MongoId;
 use Input;
 use DB;
@@ -1078,5 +1079,117 @@ class ProductController extends Controller
 		dd('done');
 
 	}	
+
+	public function postStore(Request $request){
+
+		$req = $request->all();
+		
+		extract($req);	
+
+		$stores = Store::all()->toArray();		
+
+		$query = [];
+
+		$query[]['$lookup'] = [
+			'from' => 'stocks',
+			'localField' => '_id',
+			'foreignField' => 'productObjId',
+			'as' => 'storeproduct'
+		];		
+
+		$storeFields = [];
+		$unwinds = [];
+		$columns[] = ['title'=>'Product Name','data'=>'name'];		
+		$pro = [];
+		$storeQtyKeys = [];
+		$pro2 = [];
+		$sortCol[] = 'name';
+		foreach ($stores as $key => $value) {
+			$qkey = 'store'.$key;
+			$storeQtyKeys[] = '$'.$qkey;
+			$columns[] = ['title'=>$value['name'],'data'=>$qkey];
+			$unwinds[]['$unwind'] = [
+                'path' => '$'.$value['_id'],
+                'preserveNullAndEmptyArrays' => true,                            
+            ];
+			$storeFields[$value['_id']] = [
+				'$filter'=>[
+	                'input' => '$storeproduct',
+	                'as' => 'storeproduct',
+	                'cond' => ['$eq'=>['$$storeproduct.storeId',$value['_id']]]
+            	]
+            ];
+
+            $pro[$qkey] = [
+            	'$cond'=>['$'.$value['_id'],'$'.$value['_id'].'.quantity',0]
+            ];
+
+            $pro2[$qkey] = '$'.$qkey;
+            $sortCol[] = $qkey;
+		}
+
+		$columns[] = ['title'=>'Total Qty','data'=>'totalQty'];
+		$sortCol[] = 'totalQty';
+		//RETURN IN CASE ONLY COLOUMNS HAS TO DRAWN
+		if(isset($req['storeOnly']) && $req['storeOnly'] == 1){
+			return response($columns,200);
+		}
+
+		$storeFields['name'] = '$name';
+		
+		$query[]['$project'] = $storeFields;
+
+		$query = array_merge($query,$unwinds);		
+
+		$pro['name'] = '$name';
+
+		$query[]['$project'] = $pro;		
+
+		$pro['totalQty'] = ['$sum'=>$storeQtyKeys];				
+
+		$pro = array_merge($pro,$pro2);
+
+		$query[]['$project'] = $pro;
+
+		if(isset($order[0]['column']) && $order[0]['column']!=''){
+
+			$ordCol = $sortCol[$order[0]['column']];
+			$ordDir = ($order[0]['dir'] == 'desc')?-1:1;
+
+			$query[]['$sort'] = [$ordCol=>$ordDir];
+
+		}
+
+		$query[]['$skip'] = (int)$start;
+
+		$query[]['$limit'] = (int)$length;
+
+		$products = new Products;
+
+		if(isset($search['value']) && trim($search['value'])!=''){
+			$name = $search['value'];
+			$products = $products->where('name','regexp', "/.*$name/i");
+			$s = "/".$name."/i";
+			$query[]['$match']['name'] = ['$regex'=>new \MongoRegex($s)];
+		}
+
+
+
+		$model = Products::raw()->aggregate($query);	
+
+		//return response($query);
+
+		$iTotalRecords = $products->count();
+
+		$data = [
+			'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+			'data' => $model['result']			
+		];
+
+		return response($data);
+
+	}
 }
 		

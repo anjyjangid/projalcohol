@@ -1,7 +1,9 @@
-<div class="combo_slider combo_sliderProduct" ng-show="suggestions.length>0">
+<div class="combo_slider combo_sliderProduct suggestionlist " ng-show="suggestions.length>0">
 
 	<div class="productdetailtitle">Customers Who Bought This Item Also Bought</div>
 
-	<div al-tpl-product classes="col-xs-12 col-sm-2 comboproductdetailitems proHoverEffect" ng-repeat="product in suggestions" info="product"></div>
+	<div class="product-listcover2 ng-scope">
+		<div al-tpl-product classes="col-xs-12 col-sm-2 comboproductdetailitems proHoverEffect" ng-repeat="product in suggestions" info="product"></div>
+	</div>
 		
 </div>

@@ -436,10 +436,28 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 		},
 		{
 			label:'Products',
-			uisref:'userLayout.products.list',
 			icon:'icon-handbag',
+			//uisref:'userLayout.products.list',
 			id:'sidebar_menu_link_products',
-			access : ['admin']
+			access : ['admin'],
+			subItems:[
+				{
+					label:'Product List',
+					icon:'icon-handbag',
+					uisref:'userLayout.products.list',
+					id:'sidebar_menu_link_product_list',
+					access : ['admin'],
+					links:['userLayout.products.list','userLayout.products.add','userLayout.products.edit']	
+				},
+				{
+					label:'Shared Inventory',
+					icon:'icon-share',
+					uisref:'userLayout.products.shared',
+					id:'sidebar_menu_link_shared',
+					access : ['admin'],	
+					links:['userLayout.products.shared']	
+				}
+			]
 		},
 		{
 			label:'Packages',			
@@ -1402,6 +1420,21 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				breadCrumb:[
 					{title:'Products','uisref':'userLayout.products.list'},
 					{title:'Edit','uisref':'#'}					
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }            
+        })
+
+        .state("userLayout.products.shared", {
+            url: "/products/sharedinventory",
+            templateUrl: "adminviews/views/products/shared.html",
+            controller: "SharedInventoryController",
+            data:{
+				pageTitle:'Shared Inventory',
+				breadCrumb:[					
+					{title:'Shared Inventory','uisref':'#'}					
 				]				
 			},
 			resolve: {                

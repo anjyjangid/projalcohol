@@ -823,3 +823,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
     border-radius: 2px;
     margin: 0;
 }
+
+.suggestionlist .proHoverEffect{	
+	padding: 10px;
+}
