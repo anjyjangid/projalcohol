@@ -454,23 +454,23 @@ class Products extends Eloquent
 		];
 
 
-		$finalProject = [
+		$saleProject = [
 			'$project' =>[
 				'nameSales' => [
 					'$filter' => [
 						'input' => [
-							'$setUnion'  => ['$pCatSale','$catSale','$productSale']
+							'$setUnion'  => ['$productSale','$catSale','$pCatSale']
 						],
 						'as' => 'sale',
 						'cond' => [
-							'$eq' => [ '$$sale.type', 0 ]
+							'$eq' => [ '$$sale.type', 0 ]							
 						]
 					]
 				],
 				'proSales' => [
 					'$filter' => [
 						'input' => [
-							'$setUnion' => ['$pCatSale','$catSale','$productSale']
+							'$setUnion' => ['$productSale','$catSale','$pCatSale']
 						],
 						'as' => 'sale',
 						'cond' => [
@@ -481,7 +481,19 @@ class Products extends Eloquent
 			]
 		];
 
-		$finalProject['$project'] = array_merge($fields['$project'],$finalProject['$project']);
+		$saleProject['$project'] = array_merge($fields['$project'],$saleProject['$project']);
+
+		$firstProSaleProject = [
+			'$project' => [
+				'nameSales' => 1,
+				'proSales' => [
+					'$arrayElemAt'=> [ '$proSales', -1 ]
+				]
+			]
+		];
+
+		$firstProSaleProject['$project'] = array_merge($fields['$project'],$firstProSaleProject['$project']);
+
 		
 
 		$fields['$project']['catParent'] = ['$arrayElemAt'=> [ '$categoriesObject', 0 ]];
@@ -532,9 +544,9 @@ class Products extends Eloquent
 			if(isset($params['type'])){
 
 				if($params['type']==0){
-					//$query = array_merge($query,[$lookupParentCatSale,$lookupCatSale,$lookupProSale,$finalProject,$unwind,$unwindAction,$lookupSaleProduct]);
-					$query = array_merge($query,[$lookupParentCatSale,$lookupCatSale,$lookupProSale,$finalProject,$unwind,$unwindAction,$lookupSaleProduct]);
-
+					//$query = array_merge($query,[$lookupParentCatSale,$lookupCatSale,$lookupProSale,$saleProject,$unwind,$unwindAction,$lookupSaleProduct]);
+					$query = array_merge($query,[$lookupParentCatSale,$lookupCatSale,$lookupProSale,$saleProject,$firstProSaleProject,$unwind,$unwindAction,$lookupSaleProduct]);
+					//jprd($query);
 				}
 
 			}
