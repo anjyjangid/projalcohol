@@ -292,6 +292,13 @@ class Products extends Eloquent
 						"status" => 1
 					]
 				];
+
+
+		if(isset($params['product'])){
+			
+			$match['$match']['slug'] = $params['product'];
+			
+		}
 		
 		$sortParam = [
 			'$sort' => [ 'created_at' => 1 ]
@@ -373,7 +380,7 @@ class Products extends Eloquent
 			'$lookup' => [
 				'from' => 'sale',
 				'localField' => 'catParent', 
-				'foreignField' => 'saleCategoryId', 
+				'foreignField' => 'saleCategoryObjectId', 
 				'as' => 'pCatSale'
 			]
 		];
@@ -382,7 +389,7 @@ class Products extends Eloquent
 			'$lookup' => [
 				'from' => 'sale',
 				'localField' => 'catSubParent',
-				'foreignField' => 'saleCategoryId',
+				'foreignField' => 'saleCategoryObjectId',
 				'as' => 'catSale'
 			]
 		];
@@ -418,7 +425,6 @@ class Products extends Eloquent
 				'as' => 'saleProduct'
 			]
 		];
-
 
 
 		$fields = [
@@ -457,14 +463,7 @@ class Products extends Eloquent
 						],
 						'as' => 'sale',
 						'cond' => [
-							'$and' => [
-								[
-									'$eq' => [ '$$sale.type', 0 ]
-								],
-								[
-									'$eq' => [ '$$sale.status', 1 ]
-								]
-							]
+							'$eq' => [ '$$sale.type', 0 ]
 						]
 					]
 				],
@@ -475,14 +474,7 @@ class Products extends Eloquent
 						],
 						'as' => 'sale',
 						'cond' => [
-							'$and' => [
-								[
-									'$eq' => [ '$$sale.type', 1 ]
-								],
-								[
-									'$eq' => [ '$$sale.status', 1 ]
-								]
-							]
+							'$eq' => [ '$$sale.type', 1 ]
 						]
 					]
 				]
@@ -540,7 +532,7 @@ class Products extends Eloquent
 			if(isset($params['type'])){
 
 				if($params['type']==0){
-
+					//$query = array_merge($query,[$lookupParentCatSale,$lookupCatSale,$lookupProSale,$finalProject,$unwind,$unwindAction,$lookupSaleProduct]);
 					$query = array_merge($query,[$lookupParentCatSale,$lookupCatSale,$lookupProSale,$finalProject,$unwind,$unwindAction,$lookupSaleProduct]);
 
 				}
@@ -570,11 +562,7 @@ class Products extends Eloquent
 
 	}
 
-	public function fetchProduct($params){
-
-		
-		
-	}
+	public function fetchProduct($slug){}
 
 	public function packagelist()
 	{

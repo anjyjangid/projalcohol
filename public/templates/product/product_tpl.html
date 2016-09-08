@@ -6,7 +6,7 @@
 		<div class="prod_chilled_icon"></div>
 	</div>
 
-	<div class="prod_pic">
+	<div class="prod_pic pos-realtive">
 		<div class="wishlist-main-outer bulk-outer-hover">
 			<div class="add-bulk-wishlist-icon">
 
@@ -37,12 +37,18 @@
 	
 
 		<img err-pro-src="" ng-src="products/i/200/{{productInfo.imageFiles | getProductThumb}}" alt="" class="img-responsive"/> 
+		<ul class="list-inline saletags-list ">
+			<li ng-if="productInfo.nameSale">{{productInfo.nameSale}}</li>
+			<li ng-if="productInfo.sale">{{productInfo.sale.title}}</li>
+		</ul>
 	</div>
 
 	<a ui-sref="mainLayout.product({product:productInfo.slug})" class="core-block">
 	<!-- <a ng-click="productInfo.href" class="core-block"> -->
 
-		<div class="prod_desc"> {{productInfo.name}}
+		<div class="prod_desc"> 
+		
+		{{productInfo.name}}
 			<not-available product="productInfo"></not-available>
 		</div>
 
