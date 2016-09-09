@@ -1142,7 +1142,7 @@ class ProductController extends Controller
 
 	public function getUpdatep(Request $request){
 
-		$query = [];
+		/*$query = [];
 		$query[]['$match'] = [
 			'_id' => new MongoId('57c6b38eb190ecc02e8b4577')
 		];
@@ -1161,7 +1161,7 @@ class ProductController extends Controller
 
 		$p = Products::raw()->aggregate($query);
 
-		dd($p);
+		dd($p);*/
 
 		$products = Products::all();	
 
