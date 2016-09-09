@@ -1162,7 +1162,8 @@ class ProductController extends Controller
 
 		$query[]['$skip'] = (int)$start;
 
-		$query[]['$limit'] = (int)$length;
+		if(isset($length) && $length>0)
+			$query[]['$limit'] = (int)$length;
 
 		$products = new Products;
 

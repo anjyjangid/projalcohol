@@ -7,9 +7,12 @@ MetronicApp.factory('saleModel', ['$http', '$cookies','$location', function($htt
         },       
 
         store: function(fields){
-        	   	      
-	        return $http.post("/adminapi/sale", fields, {	        
-	            
+        	
+        	var fd = objectToFormData(fields); 
+
+	        return $http.post("/adminapi/sale", fd, {
+	            transformRequest: angular.identity,	            	            
+	            headers: {'Content-Type': undefined}
 	        }).error(function(data, status, headers) {            
 
 	            Metronic.alert({
@@ -39,9 +42,11 @@ MetronicApp.factory('saleModel', ['$http', '$cookies','$location', function($htt
 
         update: function(fields,id){
 
+        	var fd = objectToFormData(fields);
 	       	//put is used to updated data, Laravel router automatically redirect to update function 
-	        return $http.put("/adminapi/sale/"+id, fields, {
-
+	        return $http.post("/adminapi/sale/update/"+id, fd, {
+	            transformRequest: angular.identity,	            	            
+	            headers: {'Content-Type': undefined}
 	        }).error(function(data, status, headers) {
 	        
 	            Metronic.alert({

@@ -46,6 +46,30 @@
 									<input type="text" class="form-control" ng-model="sale.detailTitle" placeholder="Detail Title">
 									<span class="help-block" ng-bind="errors.detailTitle[0]"></span>
 								</div>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors['coverImage.thumb'][0]}">
+								<label class="col-md-2 control-label">Detail Tag Image (optional): 
+								</label>
+								<div class="col-md-10">
+									<div class="fileinput fileinput-new" data-provides="fileinput">
+										<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
+											<img err-src="asset/i/defaultImage.png" 
+												ng-src="sale/i/{{sale.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+
+										</div>
+										<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
+										</div>
+										<div>
+											<span class="btn default btn-file">
+												<span class="fileinput-new">{{ sale.coverImage ? 'Change':'Select' }}</span>
+												<span class="fileinput-exists">Change</span>
+												<input type="file" placeholder="thumbnail" class="form-control" file-model="sale.image.thumb"/>
+											</span>	
+										</div>
+									</div>
+									<span class="help-block" ng-bind="errors['coverImage.thumb'][0]"></span>
+								</div>
 							</div>											
 
 						</div>

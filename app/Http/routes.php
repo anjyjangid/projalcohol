@@ -240,6 +240,11 @@ Route::get('packages/i/{filename}', function ($filename)
     return Image::make(storage_path('packages') . '/' . $filename)->response();
 });
 
+Route::get('sale/i/{filename}', function ($filename)
+{
+    return Image::make(storage_path('sale') . '/' . $filename)->response();
+});
+
 Route::get('gifts/i/{filename}', function ($filename)
 {
     return Image::make(storage_path('gifts') . '/' . $filename)->response();

@@ -9,6 +9,10 @@ use AlcoholDelivery\Http\Requests\SaleRequest;
 use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Sale;
 use MongoId;
+use File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Facades\Image;
 
 class SaleController extends Controller
 {
@@ -47,6 +51,10 @@ class SaleController extends Controller
         $sale = Sale::create($inputs);
         
         if($sale){
+            
+            if(isset($inputs['image']) && !empty($inputs['image']))
+                $this->saveImage($sale,$inputs['image']);
+
             return response($sale,201);
         }
 
@@ -161,7 +169,7 @@ class SaleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(SaleRequest $request, $id)
+    public function postUpdate(SaleRequest $request, $id)
     {
         $inputs = $request->all();
 
@@ -172,6 +180,9 @@ class SaleController extends Controller
         if($sale){
 
             $sale->update($inputs);
+
+            if(isset($inputs['image']) && !empty($inputs['image']))
+                $this->saveImage($sale,$inputs['image']);
 
             return response($sale,201);
         }
@@ -266,6 +277,35 @@ class SaleController extends Controller
         $inputs['actionProductId'] = $id;
         $inputs['actionProductObjectId'] = $Objid;    
 
+        $inputs['type'] = (int)$inputs['type'];
+        
+        if(isset($inputs['conditionQuantity']) && !empty($inputs['conditionQuantity']))
+            $inputs['conditionQuantity'] = (int)$inputs['conditionQuantity'];
+
+        if(isset($inputs['giftQuantity']) && !empty($inputs['giftQuantity']))
+            $inputs['giftQuantity'] = (int)$inputs['giftQuantity'];
+
+        if(isset($inputs['discountValue']) && !empty($inputs['discountValue']))
+            $inputs['discountValue'] = (int)$inputs['discountValue'];
+
+        if(isset($inputs['discountType']) && !empty($inputs['discountType']))
+            $inputs['discountType'] = (int)$inputs['discountType'];
+
+    }
+
+    public function saveImage($sale,$file){        
+
+        if(isset($file['thumb'])){
+            $image = @$file['thumb'];
+            $destinationPath = storage_path('sale');
+            if (!File::exists($destinationPath)){
+                File::MakeDirectory($destinationPath,0777, true);
+            }
+            $filename = $sale->_id.'.'.$image->getClientOriginalExtension();
+            $upload_success = $image->move($destinationPath, $filename);
+            $sale->coverImage = ['source'=>$filename];
+            $sale->save();
+        }
     }
 
 }
