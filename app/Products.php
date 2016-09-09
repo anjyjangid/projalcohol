@@ -24,6 +24,7 @@ class Products extends Eloquent
 		'description',
 		'shortDescription',
 		'categories',
+		'categoriesObject',
 		'chilled',
 		'isFeatured',
 		'isLoyalty',
@@ -72,7 +73,8 @@ class Products extends Eloquent
 		'suggestionId',
 		'suggestionObjectId',
 		'suggestedId',
-		'suggestedObjectId'
+		'suggestedObjectId',
+		'categoriesObject'
 	];
 
 	public function pcategories()
@@ -286,10 +288,17 @@ class Products extends Eloquent
 
 		$match = [
 					'$match' => [
-						// "categoriesObj" => [ '$exists' => true ],
+						"categoriesObject" => [ '$exists' => true ],
 						"status" => 1
 					]
 				];
+
+
+		if(isset($params['product'])){
+			
+			$match['$match']['slug'] = $params['product'];
+			
+		}
 		
 		$sortParam = [
 			'$sort' => [ 'created_at' => 1 ]
@@ -366,6 +375,58 @@ class Products extends Eloquent
 			
 		}
 
+
+		$lookupParentCatSale = [
+			'$lookup' => [
+				'from' => 'sale',
+				'localField' => 'catParent', 
+				'foreignField' => 'saleCategoryObjectId', 
+				'as' => 'pCatSale'
+			]
+		];
+
+		$lookupCatSale = [
+			'$lookup' => [
+				'from' => 'sale',
+				'localField' => 'catSubParent',
+				'foreignField' => 'saleCategoryObjectId',
+				'as' => 'catSale'
+			]
+		];
+
+		$lookupProSale = [
+			'$lookup' => [
+				'from' => 'sale',
+				'localField' => '_id',
+				'foreignField' => 'saleProductObjectId', 
+				'as' => 'productSale'
+			]
+		];
+
+		$unwind = [
+			'$unwind' => [
+				'path' => '$proSales',
+				'preserveNullAndEmptyArrays' => true
+			]
+		];
+
+		$unwindAction = [
+			'$unwind' => [
+				'path' => '$proSales.actionProductObjectId',
+				'preserveNullAndEmptyArrays' => true
+			]
+		];	
+
+		$lookupSaleProduct = [
+			'$lookup' => [
+				'from' => 'products',
+				'localField' => 'proSales.actionProductObjectId',
+				'foreignField' => '_id', 
+				'as' => 'saleProduct'
+			]
+		];
+
+
 		$fields = [
 			'$project' => [
 							'chilled' => 1,
@@ -373,7 +434,8 @@ class Products extends Eloquent
 							'price' => [
 								'$multiply' => [ '$price', 1 ]
 							],
-							'categories' => 1,							
+							'categories' => 1,
+							'categoriesObject'=>1,
 							// 'discountPrice' => 1,
 							'imageFiles' => 1,
 							'name' => 1,
@@ -390,6 +452,52 @@ class Products extends Eloquent
 							'availabilityTime' => 1
 						]
 		];
+
+
+		$saleProject = [
+			'$project' =>[
+				'nameSales' => [
+					'$filter' => [
+						'input' => [
+							'$setUnion'  => ['$productSale','$catSale','$pCatSale']
+						],
+						'as' => 'sale',
+						'cond' => [
+							'$eq' => [ '$$sale.type', 0 ]							
+						]
+					]
+				],
+				'proSales' => [
+					'$filter' => [
+						'input' => [
+							'$setUnion' => ['$productSale','$catSale','$pCatSale']
+						],
+						'as' => 'sale',
+						'cond' => [
+							'$eq' => [ '$$sale.type', 1 ]
+						]
+					]
+				]
+			]
+		];
+
+		$saleProject['$project'] = array_merge($fields['$project'],$saleProject['$project']);
+
+		$firstProSaleProject = [
+			'$project' => [
+				'nameSales' => 1,
+				'proSales' => [
+					'$arrayElemAt'=> [ '$proSales', -1 ]
+				]
+			]
+		];
+
+		$firstProSaleProject['$project'] = array_merge($fields['$project'],$firstProSaleProject['$project']);
+
+		
+
+		$fields['$project']['catParent'] = ['$arrayElemAt'=> [ '$categoriesObject', 0 ]];
+		$fields['$project']['catSubParent'] = ['$arrayElemAt'=> [ '$categoriesObject', -1 ]];
 
 		if(isset($params['type'])){
 
@@ -420,36 +528,53 @@ class Products extends Eloquent
 
 		}
 
+
 		try {
 			
 			// $count = $this::where($match['$match'])->count();
 
-			$products = DB::collection("products")->raw(function($collection) use($match,$skip,$sortParam,$limit,$fields){
+			$query = [
+						$match,
+						$sortParam,
+						$skip,
+						$limit,
+						$fields
+					];
 
-				return $collection->aggregate([
-							$match,
-							$sortParam,
-							$skip,
-							$limit,
-							$fields
-						]);
-			});
+			if(isset($params['type'])){
+
+				if($params['type']==0){
+					//$query = array_merge($query,[$lookupParentCatSale,$lookupCatSale,$lookupProSale,$saleProject,$unwind,$unwindAction,$lookupSaleProduct]);
+					$query = array_merge($query,[$lookupParentCatSale,$lookupCatSale,$lookupProSale,$saleProject,$firstProSaleProject,$unwind,$unwindAction,$lookupSaleProduct]);
+					//jprd($query);
+				}
+
+			}
+
+			$products = Products::raw()->aggregate($query);
+
+			// $products = DB::collection("products")->raw(function($collection) use($match,$skip,$sortParam,$limit,$fields){
+
+			// 	return $collection->aggregate([
+			// 				$match,
+			// 				$sortParam,
+			// 				$skip,
+			// 				$limit,
+			// 				$fields
+			// 			]);
+			// });
 
 		} catch(\Exception $e){
 
 			return ['success'=>false,"message"=>$e->getMessage()];
 
-        }
+		}
 
-        return ['success'=>true,'products'=>$products['result']];
+		return ['success'=>true,'products'=>$products['result']];
 
 	}
 
-	public function fetchProduct($params){
-
-		
-		
-	}
+	public function fetchProduct($slug){}
 
 	public function packagelist()
 	{
@@ -457,7 +582,7 @@ class Products extends Eloquent
 	}
 
 
-    public function stocks(){
+	public function stocks(){
         return $this->hasMany('AlcoholDelivery\Stocks', 'productId', '_id');
     }
 

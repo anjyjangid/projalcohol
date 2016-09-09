@@ -16,14 +16,42 @@ class Sale extends Eloquent
         'type',
         'listingTitle',
         'detailTitle',
-        'status',        
+        'coverImage',
+        //'status',        
         'saleProductId',
+        'saleProductObjectId',
         'saleCategoryId',
+        'saleCategoryObjectId',
         'conditionQuantity',
         'actionType',
         'giftQuantity',
         'discountValue',
         'discountType',
         'actionProductId',
+        'actionProductObjectId'
     ];
+
+    protected $hidden = [
+        'saleProductObjectId'
+    ];
+
+    public function project(){
+        $fields = $this->fillable;
+        $ret = [];
+        foreach ($fields as $key => $value) {
+            $ret[$value] = '$'.$value;
+        }
+
+        return $ret;
+    }
+
+    public function group(){
+        $fields = $this->fillable;
+        $ret = [];
+        foreach ($fields as $key => $value) {            
+            $ret[$value] = ['$first' => '$'.$value];
+        }
+
+        return $ret;
+    }
 }

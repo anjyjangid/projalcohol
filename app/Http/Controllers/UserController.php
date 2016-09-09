@@ -240,7 +240,7 @@ class UserController extends Controller
 		if(!empty($userLogged)){
 			
 			$userLogged = User::find($userLogged->_id);
-			
+			$userLogged["auth"] = true;
 			$userLogged['loginfb'] = false;
 			if($userLogged['password']=="")
 				$userLogged['loginfb'] = true;

@@ -12,6 +12,7 @@ use Validator;
 use Image;
 
 use AlcoholDelivery\Categories as Categories;
+use AlcoholDelivery\Sale;
 
 class CategoryController extends Controller
 {
@@ -620,6 +621,7 @@ class CategoryController extends Controller
       	if(isset($value->ancestors)){
       		$categories[$key]['name'] = $value->ancestors[0]['title'].' > '.$value->cat_title;
       	}
+      	$categories[$key]['sale'] = Sale::raw()->findOne(['type'=>1,'saleCategoryId'=>['$eq'=>$value->_id]]);
       }
       
       return response($categories,200);

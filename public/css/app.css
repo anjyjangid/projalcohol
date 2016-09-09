@@ -7,6 +7,10 @@
 	-ms-user-select: none; /* IE10+ */
 }
 
+.pos-realtive{
+	position: relative;
+}
+
 a.core-block{
 	display: inline-block;
 	width: 100%;
@@ -780,4 +784,49 @@ md-dialog#dont-miss-popup{
 
 #dialogContent_dont-miss-popup {
     min-height: 400px;
+}
+
+md-checkbox.salecheck{
+	opacity: 0;
+	margin: 5px 0px;
+}
+
+md-checkbox.salecheck .md-icon, md-checkbox.salelist .md-icon{   
+  transform: scale(0.8);  
+}
+
+md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{   
+  font-size: 11px;  
+  margin-left: 21px;
+  color: #333;
+}
+
+.proHoverEffect:hover md-checkbox.salecheck,.comboproductitems:hover md-checkbox.salecheck{
+	opacity: 1;
+}
+
+
+.saletags-list{
+	position: absolute;
+	bottom: 0px;
+	margin: 0px;
+
+	font-size: 0.8em;
+	text-transform: uppercase;
+    font-weight: 500;
+}
+
+.saletags-list li{
+	background: #b119ff;
+    padding: 1px 6px;
+    color: #fff;
+    border-radius: 2px;
+    margin: 0;
+}
+
+.suggestionlist .proHoverEffect{	
+	padding: 10px;
+}
+.pointer {
+    cursor: pointer !important;
 }

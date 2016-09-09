@@ -61,7 +61,7 @@ class ProductRequest extends Request
             'deliveryType' => 'required|integer|in:0,1,2',
 
             'availabilityDays' => 'required_if:outOfStockType,2',
-            'availabilityTime' => 'required_if:outOfStockType,2',
+            'availabilityTime' => 'required_if:outOfStockType,2'            
         ];
 
         if(isset($input['_id'])){

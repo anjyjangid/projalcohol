@@ -195,10 +195,14 @@ class ProductController extends Controller
 		
 		$params = $request->all();
 
-		$product = Products::where("slug","=",$params['product'])->first();
+		$productObj = new Products;
 
-		if(!empty($product)){
-			return response($product,200);
+		$product = $productObj->fetchProducts($params);
+
+		// $product = Products::where("slug","=",$params['product'])->first();
+
+		if(!empty($product['products'])){
+			return response($product['products'][0],200);
 		}
 
 		return response(['message'=>'Product not found'],404);
@@ -233,7 +237,7 @@ class ProductController extends Controller
 					],
 					[
 						'$project' => [
-							'suggestions'=>1
+							'suggestions'=> '$suggestionObjectId'
 						]
 					],
 					[
@@ -298,7 +302,7 @@ class ProductController extends Controller
 		// 	return response($response,200);
 		// }
 
-		
+
 		// further process if required quantity is not fullfilled
 
 		array_push($proInCartIds, new mongoId($product->_id));

@@ -636,9 +636,6 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct',function
 		return defer.promise;
 	}
 
-	
-	
-
 }]);
 
 AlcoholDelivery.factory('AlcoholProduct',[
@@ -658,6 +655,15 @@ AlcoholDelivery.factory('AlcoholProduct',[
 				product.express_delivery_bulk,
 				product.regular_express_delivery
 			);
+
+			if(angular.isDefined(product.nameSales) && angular.isArray(product.nameSales) && product.nameSales.length){
+				this.setNameSale(product);
+			}
+
+			if(angular.isDefined(product.proSales) && angular.isObject(product.proSales)){
+
+				this.setSale(product);
+			}
 
 		}
 
@@ -707,6 +713,57 @@ AlcoholDelivery.factory('AlcoholProduct',[
 		}
 
 		this.tquantity = this.qChilled + this.qNChilled;
+
+	}
+
+	product.prototype.setNameSale = function(p){
+
+		var nameSale = p.nameSales.pop();
+
+		this.nameSale = nameSale.listingTitle;
+
+	}
+
+	product.prototype.setSale = function(p){
+		
+		var pSale = p.proSales;
+
+
+		this.sale = {
+			quantity : pSale.conditionQuantity,
+			type : pSale.actionType,
+			title : pSale.listingTitle
+		};
+
+		if(pSale.actionType==2){
+			this.sale.discount = {
+				value : pSale.discountValue,
+				type : pSale.discountValue
+			}
+		}
+
+		if(pSale.actionType==1){
+			this.sale.discount = {
+				quantity : pSale.giftQuantity				
+			}
+		}
+
+		var saleProduct = "";
+		
+
+		if(angular.isDefined(pSale.saleProduct) && pSale.saleProduct.length){
+			saleProduct = pSale.saleProduct.pop();
+		}else{
+			saleProduct = p;
+		}
+
+		this.sale.discount.product = {
+			name : saleProduct.name,
+			imageFiles : saleProduct.imageFiles,
+			slug : saleProduct.slug
+		}
+
+
 
 	}
 

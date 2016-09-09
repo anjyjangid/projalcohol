@@ -2,14 +2,17 @@ MetronicApp.factory('saleModel', ['$http', '$cookies','$location', function($htt
 
     return {
         
-        getPromotion: function(id){
+        getSale: function(id){
             return $http.get("/adminapi/sale/"+id);
         },       
 
         store: function(fields){
-        	   	      
-	        return $http.post("/adminapi/sale", fields, {	        
-	            
+        	
+        	var fd = objectToFormData(fields); 
+
+	        return $http.post("/adminapi/sale", fd, {
+	            transformRequest: angular.identity,	            	            
+	            headers: {'Content-Type': undefined}
 	        }).error(function(data, status, headers) {            
 
 	            Metronic.alert({
@@ -26,7 +29,7 @@ MetronicApp.factory('saleModel', ['$http', '$cookies','$location', function($htt
 	            Metronic.alert({
 	                type: 'success',
 	                icon: 'check',
-	                message: response.message,
+	                message: 'Sale added successfully',
 	                container: '#info-message',
 	                place: 'prepend',
 	                closeInSeconds: 3
@@ -39,48 +42,33 @@ MetronicApp.factory('saleModel', ['$http', '$cookies','$location', function($htt
 
         update: function(fields,id){
 
+        	var fd = objectToFormData(fields);
 	       	//put is used to updated data, Laravel router automatically redirect to update function 
-	        return $http.put("/adminapi/promotion/"+id, fields, {
-
+	        return $http.post("/adminapi/sale/update/"+id, fd, {
+	            transformRequest: angular.identity,	            	            
+	            headers: {'Content-Type': undefined}
 	        }).error(function(data, status, headers) {
 	        
 	            Metronic.alert({
 	                type: 'danger',
 	                icon: 'warning',
 	                message: 'Please enter all required fields.',
-	                container: '.portlet-body',
-	                place: 'prepend',
-	                closeInSeconds: 3
+	                container: '.mcontainer',
+	                place: 'prepend'	                
 	            });
 
 	        })
 	        .success(function(response) {	            
 
-	            if(response.success){
-
-		            Metronic.alert({
-		                type: 'success',
-		                icon: 'check',
-		                message: response.message,
-		                container: '#info-message',
-		                place: 'prepend',
-		                closeInSeconds: 3
-		            });
-		            $location.path("promotion/list");
-
-	        	}else{
-
-	        		Metronic.alert({
-		                type: 'danger',
-		                icon: 'warning',
-		                message: response.message,
-		                container: '.portlet-body',
-		                place: 'prepend',
-		                closeInSeconds: 10
-		            });
-
-	        	}
-	            
+	            Metronic.alert({
+	                type: 'success',
+	                icon: 'check',
+	                message: 'Sale updated successfully',
+	                container: '#info-message',
+	                place: 'prepend',
+	                closeInSeconds: 3
+	            });
+	            $location.path("sale/list");	            
 
 	        });
 	        

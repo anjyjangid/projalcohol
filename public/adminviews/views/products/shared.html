@@ -1,0 +1,74 @@
+<!-- BEGIN MAIN CONTENT -->
+<div class="row">
+	<div class="col-md-12">		
+		<!-- Begin: life time stats -->
+		<div class="portlet light">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="icon-share"></i>{{$state.$current.data.pageTitle}}
+				</div>
+				<div class="actions">										
+				</div>
+			</div>
+
+			<div class="portlet-body">
+
+				<div class="table-container">					
+					<table class="table table-striped table-bordered table-hover" id="example"></table>
+				</div>
+			</div>
+		</div>
+		<!-- End: life time stats -->
+	</div>
+</div>
+<!-- END MAIN CONTENT -->
+<!-- BEGIN MAIN JS -->
+<script>
+
+	$(document).ready(function() {
+  
+	  //callback function that configures and initializes DataTables
+	  function renderTable(xhrdata) {	    
+
+	  	var grid = new Datatable();
+
+	  	grid.init({
+            src: $("#example"),            
+            loadingMessage: 'Loading...',
+            dataTable: { 
+            	"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'f<'table-group-actions pull-right'>>r><'table-scrollable't><'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>", // datatable layout
+            	"columns": xhrdata,
+                "lengthMenu": [
+                    [10, 20, 50, 100, 150, -1],
+                    [10, 20, 50, 100, 150, "All"] // change per page values here
+                ],
+                "pageLength": 10, // default record count per page
+				"ajax": {
+                    "url": "../adminapi/product/store", // ajax source                    
+                },
+                "columnDefs": [{ 
+                    'orderable': true,
+                    'targets': [0]
+                }],
+
+                "fnDrawCallback": function (oSettings) {
+				    /*var content = $('#tBody');
+				    angular.element(document).injector().invoke(function($compile) {
+				        var scope = angular.element(content).scope();
+				        $compile(content)(scope);
+				    });*/
+					Metronic.initAjax();
+				},
+            }
+        });	    
+	  }
+
+	  //xhr call to retrieve data
+	  var xhrcall = $.ajax({url:'/adminapi/product/store','type':'POST',data:{storeOnly:1}});
+
+	  //promise syntax to render after xhr completes
+	  xhrcall.done(renderTable);
+	});
+
+</script>
+<!-- END MAIN JS

@@ -216,44 +216,45 @@ AlcoholDelivery.directive('sideBar', function() {
 	};
 })
 
-.directive("owlCarousel", function(){
+.directive("owlCarousel", ['$timeout',function($timeout){
 
     return {
         restrict: 'E',
         priority: 100,
         transclude: false,
-
+        replace: true,
         link: function (scope) {
 
             scope.initCarousel = function(element,ngModel) {
-              // provide any default options you want
-              	console.log($(element).attr('class'));
+
+                // provide any default options you want
                 var defaultOptions = {
                 };
                 var customOptions = scope.$eval($(element).attr('data-options'));
 
                 // combine the two options objects
-                for(var key in customOptions) {
-                    defaultOptions[key] = customOptions[key];
-                }
+				for(var key in customOptions) {
+					defaultOptions[key] = customOptions[key];
+				}
 
             	// init carousel
-            	if(typeof $(element).data('owlCarousel') === "undefined"){
-
-                	scope[ngModel] = $(element).owlCarousel(defaultOptions);
-
-            	}
+				if(typeof $(element).data('owlCarousel') === "undefined"){
+					$timeout(function(){
+						scope[ngModel] = $(element).owlCarousel(defaultOptions);
+					});
+				}
             };
         }
     };
-})
+}])
 
-.directive('owlCarouselItem', [function() {
+.directive('owlCarouselItem', ['$timeout',function($timeout) {
 	
     return {
         restrict: 'A',
         priority: 99,
         transclude: false,
+        replace: true,
         link: function(scope, element) {
 
           	if(scope.$first && typeof $(element.parent()).data('owlCarousel') !== "undefined"){
@@ -264,7 +265,9 @@ AlcoholDelivery.directive('sideBar', function() {
           	}
 
             if(scope.$last) {            	
-            	scope.initCarousel(element.parent(),element.parent().attr("ng-model"));
+            	$timeout(function(){
+            		scope.initCarousel(element.parent(),element.parent().attr("ng-model"));
+            	});
             }
         }
     };
@@ -523,8 +526,11 @@ AlcoholDelivery.directive('sideBar', function() {
 		},
 		templateUrl: '/templates/product/product_tpl.html',
 
-		controller: ['$rootScope','$scope','$state','sweetAlert','alcoholCart','alcoholWishlist','promotionsService',"$mdToast",function($rootScope,$scope,$state,sweetAlert,alcoholCart,alcoholWishlist,promotionsService,$mdToast){
+		controller: ['$rootScope','$scope','$state','sweetAlert','alcoholCart','alcoholWishlist','promotionsService',"$mdToast",'UserService',
+		function($rootScope,$scope,$state,sweetAlert,alcoholCart,alcoholWishlist,promotionsService,$mdToast,UserService){
 			
+			angular.alcoholWishlist = alcoholWishlist;
+
 			$scope.settings = $rootScope.settings;
 
 			$scope.alcoholCart = alcoholCart;
@@ -535,9 +541,11 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.isInwishList = alcoholWishlist.getProductById($scope.productInfo._id);
 			
-			$scope.addToWishlist = function(){
+			
 
-				alcoholWishlist.add($scope.productInfo._id).then(function(response) {
+			$scope.addToWishlist = function(addInSale){
+
+				alcoholWishlist.add($scope.productInfo._id,addInSale).then(function(response) {
 
 						if(response.success){
 
@@ -562,6 +570,10 @@ AlcoholDelivery.directive('sideBar', function() {
 
 					});
 			}			
+
+			$scope.saleExists = function () {
+				return alcoholWishlist.isNotified($scope.productInfo._id);				
+			};						
 
 		}]
 	}

@@ -6,7 +6,7 @@
 		<div class="prod_chilled_icon"></div>
 	</div>
 
-	<div class="prod_pic">
+	<div class="prod_pic pos-realtive">
 		<div class="wishlist-main-outer bulk-outer-hover">
 			<div class="add-bulk-wishlist-icon">
 
@@ -16,8 +16,8 @@
 						<div class="add-wishlist-icondiv"><img src="images/add-wish-icon.png" /></div>
 
 						<div class="wishlist_discount">
-							<div class="wishlist" ng-if="!isInwishList" ng-click="addToWishlist()">Add to Wishlist</div>
-							<div class="wishlist" ui-sref="accountLayout.wishlist" ng-if="isInwishList">Added to Wishlist</div>
+							<div class="wishlist" ng-if="!isInwishList" ng-click="addToWishlist(0)">Add to Wishlist</div>
+							<div class="wishlist" ui-sref="accountLayout.wishlist" ng-if="isInwishList">Added to Wishlist</div>							
 						</div>
 
 					</div>
@@ -30,19 +30,25 @@
 							<div class="discount" ui-sref="mainLayout.product({product:productInfo.slug})">View Bulk Discount</div>
 						</div>
 					</div>
-				</div>
+				</div>				
 			</div>
 		</div>
 
 	
 
 		<img err-pro-src="" ng-src="products/i/200/{{productInfo.imageFiles | getProductThumb}}" alt="" class="img-responsive"/> 
+		<ul class="list-inline saletags-list ">
+			<li ng-if="productInfo.nameSale">{{productInfo.nameSale}}</li>
+			<li ng-if="productInfo.sale">{{productInfo.sale.title}}</li>
+		</ul>
 	</div>
 
 	<a ui-sref="mainLayout.product({product:productInfo.slug})" class="core-block">
 	<!-- <a ng-click="productInfo.href" class="core-block"> -->
 
-		<div class="prod_desc"> {{productInfo.name}}
+		<div class="prod_desc"> 
+		
+		{{productInfo.name}}
 			<not-available product="productInfo"></not-available>
 		</div>
 
@@ -80,7 +86,17 @@
 		<out-of-stock product="productInfo"></out-of-stock>
 	</div>
 
+	<!-- TELL ME WHEN ITS ON SALE -->
 
+	<div class="salediv">
+		<md-checkbox ng-checked="saleExists()" ng-click="addToWishlist(1)" class="salecheck" aria-label="leaveatdoor-checkbox">
+	    	Tell me when it's on sale
+	    </md-checkbox>
+		<md-tooltip md-direction="bottom">
+        	Add this item to my Wish List and we will notify you when it goes on sale
+        </md-tooltip>
+    </div>
 
+	<!-- TELL ME WHEN ITS ON SALE -->
 
 </div>

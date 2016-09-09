@@ -16,6 +16,7 @@ use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Products;
 use AlcoholDelivery\User;
 use AlcoholDelivery\Dealer;
+use AlcoholDelivery\Store;
 use MongoId;
 use Input;
 use DB;
@@ -23,6 +24,7 @@ use AlcoholDelivery\Setting;
 use AlcoholDelivery\Email;
 use AlcoholDelivery\Inventory;
 use AlcoholDelivery\Stocks;
+use AlcoholDelivery\Sale;
 use Illuminate\Support\Facades\Auth;
 
 use Faker;
@@ -536,7 +538,159 @@ class ProductController extends Controller
 
 		}
 
-		public function getTest(){
+		public function getTest(){	
+
+			//57c6b29cb190ecc02e8b4575
+
+			$productObjectId = [new MongoId('57c6b29cb190ecc02e8b4575'),new MongoId('57c694bab190ecc02e8b456a')];
+
+			$productObjectId2 = [new MongoId('57c6b29cb190ecc02e8b4575'),new MongoId('57c433e7b190ec306f8b4567')];
+
+			//return response((array_merge($productObjectId,$productObjectId2)));
+
+			$res = $this->compareData($productObjectId,$productObjectId2);		
+
+			return response($res);
+
+			$u = User::raw()->aggregate(
+				[
+					'$match' => [
+						'wishlist._id' => [
+							'$in' => $productObjectId
+						]
+					]
+				],
+				[
+					'$project' => [
+						'_id' => 1,
+						'email' => 1,
+						'matchingWish' => [
+							'$filter' => [
+								'input' => '$wishlist',
+		                		'as' => 'wish',
+		                		'cond' => [
+		                			'$eq'=>['$$wish.notify',1]		                			
+		                		]
+							]
+						],						
+					]
+				],
+				[
+					'$unwind' => [
+						'path' => '$matchingWish',
+						'preserveNullAndEmptyArrays' => true
+					]
+				],
+				[
+					'$match' => [
+						'matchingWish._id' => ['$in' => $productObjectId]
+					]
+				],
+				[
+					'$lookup' => [
+						'from' => 'products',
+						'localField' => 'matchingWish._id',
+						'foreignField' => '_id',
+						'as' => 'nProducts'
+					]
+				]/*,
+				[
+					'$group' => [
+						'_id' => '$_id',
+						'matchingWish' => ['$addToSet'=>'$matchingWish'],
+						'email' => ['$first'=>'$email']
+					]
+				]*/				
+			);
+			
+			//$r = DB::collection('test')->insert($u['result'], ['upsert' => true]);
+
+			dd($u);
+
+			$OId = [new MongoId('57c551bcb190ec430d8b457a'),new MongoId('57c433e7b190ec306f8b4567')];
+
+
+			$model = Products::raw()->aggregate(
+				[
+					
+					'$match' => [
+						'categoriesObject' => [
+							'$elemMatch'=>[
+								'$in'=>$OId/*[
+									'57c551bcb190ec430d8b457a','57c433e7b190ec306f8b4567'
+								]*/
+							]
+						]
+					],					
+					
+
+				],
+				[
+					'$group' => [
+						'_id' => null,						
+						'categoryProduct' => [
+							'$addToSet'=>'$_id'	
+						],											
+					],
+				]
+			);
+
+			
+
+			dd($model);
+
+			$query = [];
+
+			$query[]['$match'] = ['_id' => new MongoId('57c422d611f6a1450b8b456c')];
+
+			$query[]['$project'] = [
+				//'email' => 1,
+				//'wishlist' => 1,
+				'mywish' => [
+					'$cond' => [
+						'$wishlist',
+						[
+							'$filter'=>[
+		                		'input' => '$wishlist',
+		                		'as' => 'wishlist',
+		                		'cond' => ['$eq'=>['$$wishlist._id',new MongoId('57c69fadb190ecc02e8b456e')]]
+	            			]
+	            		],
+	            		null	            		
+					]
+				]
+			];	
+
+			$query[]['$unwind'] = ['path' => '$mywish','preserveNullAndEmptyArrays' => true];       
+
+			$model = DB::collection('test')->raw()->aggregate($query);
+
+			dd($model);	
+
+			$u = DB::collection('test')->raw()->update(
+				['_id' => new MongoId('57c422d611f6a1450b8b456c'),'wishlist._id'=>new MongoId('57c69fadb190ecc02e8b456e')],
+				[
+					'$set' => [						
+						'wishlist.$.notify' => 1
+					]
+				]	
+			);
+
+			dd($u);
+				
+			/*$model = Products::raw()->aggregate([
+				['$match' => ['_id'=>new MongoId('57c53011b190ec430d8b456e')]],
+				[
+					'$lookup' => [
+						'from'=>'user',
+						'localField' => '_id',
+						'foreignField' => 'wishlist._id',
+						'as' => 'nUser'
+					]
+				]
+			]);
+
+			dd($model);*/
 
 			$faker = Faker\Factory::create();
 
@@ -566,7 +720,7 @@ class ProductController extends Controller
 	                'input' => '$store',
 	                'as' => 'store',
 	                'cond' => ['$eq'=>['$$store.storeId',$userStoreId]]
-	            ]    
+	            ]
 	        ];        
 
 			$query[]['$match'] = [
@@ -975,6 +1129,171 @@ class ProductController extends Controller
 			$inputs['suggestionObjectId'] = [];
 		}
 		//SUGGESTIONS	
+		
+		//ADDING CATEGORY ID AS OBJECT
+		$categoriesObject = [];
+		if(isset($inputs['categories']) && !empty($inputs['categories'])){
+			foreach($inputs['categories'] as $categories){
+				$categoriesObject[] = new MongoId($categories);
+			}
+			$inputs['categoriesObject'] = $categoriesObject;
+		}
+	}
+
+	public function getUpdatep(Request $request){
+
+		$query = [];
+		$query[]['$match'] = [
+			'_id' => new MongoId('57c6b38eb190ecc02e8b4577')
+		];
+
+		$query[]['$unwind'] = [
+			'path' => 'categoriesObject',
+			'preserveNullAndEmptyArrays' => true
+		];
+
+		$query[]['$lookup'] = [
+			'from'=>'categories',
+			'localField'=>'categoriesObject',
+			'foreignField'=>'_id',
+			'as'=>'productCategories'
+		];
+
+		$p = Products::raw()->aggregate($query);
+
+		dd($p);
+
+		$products = Products::all();	
+
+		foreach ($products as $key => $product) {			
+			
+			$categoriesObject = [];
+			foreach($product->categories as $categories){
+				$categoriesObject[] = new MongoId($categories);
+			}
+			$product->categoriesObject = $categoriesObject;
+			$product->save();			
+		}
+
+		dd('done');
+
 	}	
+
+	public function postStore(Request $request){
+
+		$req = $request->all();
+		
+		extract($req);	
+
+		$stores = Store::all()->toArray();		
+
+		$query = [];
+
+		$query[]['$lookup'] = [
+			'from' => 'stocks',
+			'localField' => '_id',
+			'foreignField' => 'productObjId',
+			'as' => 'storeproduct'
+		];		
+
+		$storeFields = [];
+		$unwinds = [];
+		$columns[] = ['title'=>'Product Name','data'=>'name'];		
+		$pro = [];
+		$storeQtyKeys = [];
+		$pro2 = [];
+		$sortCol[] = 'name';
+		foreach ($stores as $key => $value) {
+			$qkey = 'store'.$key;
+			$storeQtyKeys[] = '$'.$qkey;
+			$columns[] = ['title'=>$value['name'],'data'=>$qkey];
+			$unwinds[]['$unwind'] = [
+                'path' => '$'.$value['_id'],
+                'preserveNullAndEmptyArrays' => true,                            
+            ];
+			$storeFields[$value['_id']] = [
+				'$filter'=>[
+	                'input' => '$storeproduct',
+	                'as' => 'storeproduct',
+	                'cond' => ['$eq'=>['$$storeproduct.storeId',$value['_id']]]
+            	]
+            ];
+
+            $pro[$qkey] = [
+            	'$cond'=>['$'.$value['_id'],'$'.$value['_id'].'.quantity',0]
+            ];
+
+            $pro2[$qkey] = '$'.$qkey;
+            $sortCol[] = $qkey;
+		}
+
+		$columns[] = ['title'=>'Total Qty','data'=>'totalQty'];
+		$sortCol[] = 'totalQty';
+		//RETURN IN CASE ONLY COLOUMNS HAS TO DRAWN
+		if(isset($req['storeOnly']) && $req['storeOnly'] == 1){
+			return response($columns,200);
+		}
+
+		$storeFields['name'] = '$name';
+		
+		$query[]['$project'] = $storeFields;
+
+		$query = array_merge($query,$unwinds);		
+
+		$pro['name'] = '$name';
+
+		$query[]['$project'] = $pro;		
+
+		$pro['totalQty'] = ['$sum'=>$storeQtyKeys];				
+
+		$pro = array_merge($pro,$pro2);
+
+		$query[]['$project'] = $pro;
+
+		if(isset($order[0]['column']) && $order[0]['column']!=''){
+
+			$ordCol = $sortCol[$order[0]['column']];
+			$ordDir = ($order[0]['dir'] == 'desc')?-1:1;
+
+			$query[]['$sort'] = [$ordCol=>$ordDir];
+
+		}
+
+		$query[]['$skip'] = (int)$start;
+
+		if(isset($length) && $length>0)
+			$query[]['$limit'] = (int)$length;
+
+		$products = new Products;
+
+		if(isset($search['value']) && trim($search['value'])!=''){
+			$name = $search['value'];
+			$products = $products->where('name','regexp', "/.*$name/i");
+			$s = "/".$name."/i";
+			$query[]['$match']['name'] = ['$regex'=>new \MongoRegex($s)];
+		}
+
+
+
+		$model = Products::raw()->aggregate($query);	
+
+		//return response($query);
+
+		$iTotalRecords = $products->count();
+
+		$data = [
+			'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+			'data' => $model['result']			
+		];
+
+		return response($data);
+
+	}
+
+	public function compareData($old,$new){
+        return array_values(array_diff(array_merge($old,$new),$old));
+    }
 }
 		

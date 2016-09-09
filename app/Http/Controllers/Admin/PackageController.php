@@ -19,6 +19,7 @@ use AlcoholDelivery\Packages;
 use AlcoholDelivery\Products;
 use AlcoholDelivery\Setting;
 use AlcoholDelivery\Categories;
+use AlcoholDelivery\Sale;
 
 class PackageController extends Controller
 {
@@ -370,6 +371,7 @@ class PackageController extends Controller
             }
           }
         }
+        $products[$key]['sale'] = Sale::raw()->findOne(['type'=>1,'saleProductId'=>['$eq'=>$value->_id]]);
         $products[$key]['sprice'] = $this->calculatePrice($value->price,$tier);                        
       }
       

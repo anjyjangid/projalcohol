@@ -32,7 +32,7 @@ class WishlistController extends Controller
 		if(!$loggeduser){
 
 			$response['message'] = "Login Required";			
-			return response($response,401);
+			return response($response,200);
 
 		}
 
@@ -50,9 +50,11 @@ class WishlistController extends Controller
 
 
 		$productIds = [];
+		$wishData = [];
 
 		foreach ($user->wishlist as $key => $value) {
 			$productIds[(string)$value["_id"]] = $value['added_at'];
+			$wishData[(string)$value["_id"]] = $value;
 		}
 		
 
@@ -62,7 +64,6 @@ class WishlistController extends Controller
 										"with"=>array(
 											"discounts"
 										)
-										
 									)
 								);	
 
@@ -75,7 +76,9 @@ class WishlistController extends Controller
 
 		foreach ($products as $key => &$value) {
 			$value['wishlist'] = [
+				'_id'=>$value['_id'],
 				'added_at'=>$productIds[$value['_id']],
+				'notify'=>$wishData[$value['_id']]['notify'],
 				'added_slug'=>date("F d, Y",strtotime($productIds[$value['_id']]))
 			];
 		}
@@ -107,41 +110,19 @@ class WishlistController extends Controller
 	{
 		$params = $request->all();
 		$id = $params['id'];
-				
 		$response = ['success'=>false,"message"=>"","auth"=>false];
-
 
 		$loggeduser = Auth::user('user');
 		
 		if(!$loggeduser){
-
 			$response['message'] = "Login Required";			
 			return response($response,400);
-
-		}
-
-		$user = User::find($loggeduser->_id);
+		}				
 
 		$response['auth'] = true;
 
-		if(empty($user->wishlist) || !is_array($user->wishlist)){
-			
-			$user->wishlist = [];
-
-		}else{
-
-			$isAlreadyAdded = in_array(new MongoId($id), array_column($user->wishlist, '_id'));
-
-			if($isAlreadyAdded){
-
-				$response['message'] = "Already added to wishlist";
-				return response($response,400);
-
-			}
-		}
-
+		//CHECK FOR THE PRODUCT
 		$productObj = new Products;
-
 		$product = $productObj->getProducts(
 									array(
 										"id"=>$id,
@@ -152,41 +133,79 @@ class WishlistController extends Controller
 								);
 
 		if(empty($product)){
-
 			$response['message'] = "Product not found";
 			return response($response,400);
-
 		}
 
-		$response['product'] = array_pop($product);			
+		$response['product'] = array_pop($product);							
 
-		$wishlist = $user->wishlist;
-			
-		$newWish = [
-						"_id"=>new MongoId($id),
-						"added_at"=> date("Y-m-d H:i:s")
-					];
+		$query = [];
+		$query[]['$match'] = ['_id' => new MongoId($loggeduser->_id)];
+		$query[]['$project'] = [
+			'mywish' => [
+				'$cond' => [
+					'$wishlist',
+					[
+						'$filter'=>[
+	                		'input' => '$wishlist',
+	                		'as' => 'wishlist',
+	                		'cond' => ['$eq'=>['$$wishlist._id',new MongoId($id)]]
+            			]
+            		],
+            		null	            		
+				]
+			]
+		];	
+		$query[]['$unwind'] = ['path' => '$mywish','preserveNullAndEmptyArrays' => true];       
+		$model = DB::collection('user')->raw()->aggregate($query);
 
-		$user->wishlist = array_merge($wishlist, [$newWish]);
+		if(isset($model['result']) && !empty($model['result'])){
+			$exist = $model['result'][0];
+			$wish = [];
+			//WISH EXIST AND TOGGLE THE NOTIFICATION FIELD
+			if(isset($exist['mywish']) && $exist['mywish']!=null){
+				$wish = $exist['mywish'];				
+				$notify = ($wish['notify']==1)?0:1;
+				$wish['notify'] = $notify;
+				$update = DB::collection('user')->raw()->update(
+					[
+						'_id' => new MongoId($loggeduser->_id),
+						'wishlist._id'=>new MongoId($id)
+					],
+					[
+						'$set' => [						
+							'wishlist.$.notify' => $notify
+						]
+					]	
+				);
+				
+				$response['message'] = ($notify==1)?"On sale notification enabled":"On sale notification disabled";
 
-		$response['product']['wishlist'] = [
-				'added_at'=>$newWish["added_at"],
-				'added_slug'=>date("F d, Y",strtotime($newWish["added_at"]))
-			];
+			}else{
+				$notify = 0;
+				$response['message'] = "Added to wishlist";
+				if(isset($params['addInSale']) && $params['addInSale']==1){
+					$notify = 1;
+					$response['message'] .= ' & notification enabled';
+				}
+				$date = date('Y-m-d H:i:s');
+				$wish = [				
+					'_id' => new MongoId($id),
+					'added_at' => $date,					
+					'notify' => $notify,				
+				];
+				$update = DB::collection('user')
+				->where('_id', $loggeduser->_id)
+				->push('wishlist',$wish,true);
+			}
 
+			$wish['added_slug'] = date("F d, Y",strtotime($wish['added_at']));
 
-		try {
-
-			$user->save();
-
+			$response['product']['wishlist'] = $wish;
 			$response['success'] = true;
-			$response['message'] = "Added to wishlist";
-
+			
 			return response($response,200);
-						
-		} catch(\Exception $e){
-			$return['message'] = $e->getMessage();//$e->getMessage();
-		}
+		}		
 		
 		return response($response,400);
 

@@ -58,7 +58,7 @@ AlcoholDelivery.filter("ucwords", function () {
 		   });
 		}
 		return input; 
-	}    
+	}
 });
 
 AlcoholDelivery.filter('isActive', function() {
@@ -240,7 +240,6 @@ AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
 
 }]);
 
-
 AlcoholDelivery.factory('catPricing', ["$q", "$timeout", "$rootScope", "$http", function($q, $timeout, $rootScope, $http){
 
 	var catPricing = {};
@@ -265,7 +264,6 @@ AlcoholDelivery.factory('catPricing', ["$q", "$timeout", "$rootScope", "$http", 
 	};
 
 }]);
-
 
 AlcoholDelivery.factory('categoriesFac', ["$q", "$http", function($q, $http){
 
@@ -328,7 +326,6 @@ AlcoholDelivery.factory("UserService", ["$q", "$timeout", "$http", function($q, 
 	};
 	
 }]);
-
 
 AlcoholDelivery.factory('ScrollPaging', function($http) {
   var ScrollPaging = function(args,url) {
@@ -469,7 +466,14 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 												]
 										});
-								}]
+								}],
+								storeInit : function (store){
+									return store.init();
+								},
+								wishlistInit : function(alcoholWishlist){
+									return alcoholWishlist.init();
+								}
+								
 						}
 				})
 				.state('mainLayout.notfound', {
@@ -972,8 +976,6 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 		}]);
 
-
-
 AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$location',
 function ($q, $rootScope, $log, $location) {
     'use strict';
@@ -1183,20 +1185,36 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 
 	$rootScope.$on('alcoholWishlist:itemRemoved', function(product){
 
-		$mdToast.show(
-			$mdToast.simple()
-				.textContent("Removed from wishlist !")				
-				.highlightAction(false)
-				.position("top right fixed")
-				.hideDelay(4000)
-			);
-		
+		/*$mdToast.show({
+			controller:function($scope){							
+				
+				$scope.message = 'Item removed from wishlist';
+			},						
+			templateUrl: '/templates/toast-tpl/wishlist-notify.html',						
+			parent : $document[0].querySelector('#usermenuli'),
+			position: 'top center',
+			hideDelay:3000
+		});*/		
 
 	});
 
-	store.init();
-	alcoholWishlist.init();
+	$rootScope.$on('alcoholWishlist:change', function(object,params){
 
+		$mdToast.show({
+			controller:function($scope){							
+				
+				$scope.message = params.message;
+			},						
+			templateUrl: '/templates/toast-tpl/wishlist-notify.html',						
+			parent : $document[0].querySelector('#usermenuli'),
+			position: 'top center',
+			hideDelay:3000
+		});
+
+	});
+
+	// store.init();
+	// alcoholWishlist.init();
 	
 }]);
 
