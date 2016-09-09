@@ -8,11 +8,14 @@ use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Requests\SaleRequest;
 use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Sale;
+use AlcoholDelivery\Products;
+use AlcoholDelivery\User;
 use MongoId;
 use File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
+use DB;
 
 class SaleController extends Controller
 {
@@ -55,6 +58,8 @@ class SaleController extends Controller
             if(isset($inputs['image']) && !empty($inputs['image']))
                 $this->saveImage($sale,$inputs['image']);
 
+            $this->notifySale($inputs);
+
             return response($sale,201);
         }
 
@@ -69,7 +74,13 @@ class SaleController extends Controller
      */
     public function show($id)
     {
-        //$model = Sale::find($id);
+        $model = new Sale();
+        $project = $model->project();
+        $group = $model->group(); 
+
+        $project['_id'] = '$_id';
+        $group['_id'] = '$_id';
+
         $query = [];
 
         $query[]['$match'] = ['_id'=> new MongoId($id)];
@@ -86,6 +97,12 @@ class SaleController extends Controller
             'as'=>'saleProductDetail'
         ];
 
+        $project['saleProductDetail'] = ['$arrayElemAt' => [ '$saleProductDetail', 0 ]];        
+        $group['saleProductDetail'] = ['$push'=>'$saleProductDetail'];
+
+        $query[]['$project'] = $project;
+        $query[]['$group'] = $group;                
+
         $query[]['$unwind'] = [
             'path' => '$saleCategoryObjectId',
             'preserveNullAndEmptyArrays' => true
@@ -97,6 +114,16 @@ class SaleController extends Controller
             'foreignField'=>'_id',
             'as'=>'saleCategoryDetail'
         ];
+
+        $project['saleProductDetail'] = '$saleProductDetail';        
+        $group['saleProductDetail'] = ['$first'=>'$saleProductDetail'];
+
+        $project['saleCategoryDetail'] = ['$arrayElemAt' => [ '$saleCategoryDetail', 0 ]];        
+        $group['saleCategoryDetail'] = ['$push'=>'$saleCategoryDetail'];
+
+        $query[]['$project'] = $project;
+        $query[]['$group'] = $group;               
+        
 
         $query[]['$unwind'] = [
             'path' => '$actionProductObjectId',
@@ -110,25 +137,17 @@ class SaleController extends Controller
             'as'=>'actionProductDetail'
         ];   
 
-        $model = new Sale();
+        $project['saleProductDetail'] = '$saleProductDetail';        
+        $group['saleProductDetail'] = ['$first'=>'$saleProductDetail'];
 
-        $project = $model->project();
+        $project['saleCategoryDetail'] = '$saleCategoryDetail';        
+        $group['saleCategoryDetail'] = ['$first'=>'$saleCategoryDetail'];
 
-        $group = $model->group();        
-
-        $project['_id'] = '$_id';
-        $project['saleProductDetail'] = ['$arrayElemAt' => [ '$saleProductDetail', 0 ]];
-        $project['saleCategoryDetail'] = ['$arrayElemAt' => [ '$saleCategoryDetail', 0 ]];
-        $project['actionProductDetail'] = ['$arrayElemAt' => [ '$actionProductDetail', 0 ]];
-
-        $group['_id'] = '$_id';
-        $group['saleProductDetail'] = ['$push'=>'$saleProductDetail'];
-        $group['saleCategoryDetail'] = ['$push'=>'$saleCategoryDetail'];
+        $project['actionProductDetail'] = ['$arrayElemAt' => [ '$actionProductDetail', 0 ]];        
         $group['actionProductDetail'] = ['$push'=>'$actionProductDetail'];
 
         $query[]['$project'] = $project;
-
-        $query[]['$group'] = $group;        
+        $query[]['$group'] = $group;               
 
         $model = Sale::raw()->aggregate($query);                
 
@@ -173,9 +192,9 @@ class SaleController extends Controller
     {
         $inputs = $request->all();
 
-        $this->validateItems($inputs);                   
-
         $sale = Sale::find($id);
+
+        $this->validateItems($inputs,$sale);                   
         
         if($sale){
 
@@ -183,6 +202,8 @@ class SaleController extends Controller
 
             if(isset($inputs['image']) && !empty($inputs['image']))
                 $this->saveImage($sale,$inputs['image']);
+
+            $this->notifySale($inputs);
 
             return response($sale,201);
         }
@@ -241,7 +262,7 @@ class SaleController extends Controller
         return response($response,200);
     }
 
-    public function validateItems(&$inputs){
+    public function validateItems(&$inputs,$oldData = null){
 
         //CONVERT TO OBJECT ID FOR LOOKUP
         $id = [];
@@ -291,6 +312,16 @@ class SaleController extends Controller
         if(isset($inputs['discountType']) && !empty($inputs['discountType']))
             $inputs['discountType'] = (int)$inputs['discountType'];
 
+        $inputs['saleProducts'] = $inputs['saleProductObjectId'];
+        $inputs['saleCategories'] = $inputs['saleCategoryObjectId'];
+
+        //CHECK IN CASE OF UPDATE FOR NEW CATEGORY AND PRODUCTS ADDED IN SALE FOR NOTIFICATION
+        if($oldData){
+            $inputs['saleProducts'] = $this->compareData($oldData->saleProductObjectId,$inputs['saleProductObjectId']);
+            $inputs['saleCategories'] = $this->compareData($oldData->saleCategoryObjectId,$inputs['saleCategoryObjectId']);
+        }
+        
+        //GET ALL PRODUCTS IN CATEGORY
     }
 
     public function saveImage($sale,$file){        
@@ -306,6 +337,96 @@ class SaleController extends Controller
             $sale->coverImage = ['source'=>$filename];
             $sale->save();
         }
+    }
+
+    public function compareData($old,$new){
+        return array_values(array_diff(array_merge($old,$new),$old));
+    }
+
+    public function notifySale($inputs){
+
+        //GET ALL PRODUCTS IN CATEGORY
+        if(!empty($inputs['saleCategories'])){
+
+            $model = Products::raw()->aggregate(
+                [
+                    
+                    '$match' => [
+                        'categoriesObject' => [
+                            '$elemMatch'=>[
+                                '$in'=>$inputs['saleCategories']
+                            ]
+                        ]
+                    ],                  
+                    
+
+                ],
+                [
+                    '$group' => [
+                        '_id' => null,                      
+                        'categoryProduct' => [
+                            '$addToSet'=>'$_id' 
+                        ],                                          
+                    ],
+                ]
+            );
+
+            //MERGE CATEGORY PRODUCT AND PRODUCT IN SALE
+            if(isset($model['result'][0]) && !empty($model['result'][0])){
+                $inputs['saleProducts'] = array_unique(array_merge($inputs['saleProducts'],$model['result'][0]['categoryProduct']));
+            }
+        }
+        
+        //GET ALL USERS WHO HAVE SALE NOTIFICATION ENABLED FOR THE MATCHING SALE PRODUCT 
+        if(!empty($inputs['saleProducts'])){
+
+            $productObjectId = $inputs['saleProducts'];
+
+            $usersWithSaleProduct = User::raw()->aggregate(
+                [
+                    '$match' => [
+                        'wishlist._id' => [
+                            '$in' => $productObjectId
+                        ]
+                    ]
+                ],
+                [
+                    '$project' => [
+                        '_id' => 1,
+                        'email' => 1,
+                        'matchingWish' => [
+                            '$filter' => [
+                                'input' => '$wishlist',
+                                'as' => 'wish',
+                                'cond' => [
+                                    '$eq'=>['$$wish.notify',1]                                  
+                                ]
+                            ]
+                        ],                      
+                    ]
+                ],
+                [
+                    '$unwind' => [
+                        'path' => '$matchingWish',
+                        'preserveNullAndEmptyArrays' => true
+                    ]
+                ],
+                [
+                    '$match' => [
+                        'matchingWish._id' => ['$in' => $productObjectId]
+                    ]
+                ],
+                [
+                    '$group' => [
+                        '_id' => '$_id',
+                        'matchingWish' => ['$addToSet'=>'$matchingWish'],
+                        'email' => ['$first'=>'$email']
+                    ]
+                ]               
+            );        
+            //$r = DB::collection('test')->insert($usersWithSaleProduct['result'], ['upsert' => true]);
+        }
+
     }
 
 }

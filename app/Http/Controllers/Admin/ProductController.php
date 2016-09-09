@@ -538,8 +538,107 @@ class ProductController extends Controller
 
 		}
 
-		public function getTest(){		
+		public function getTest(){	
+
+			//57c6b29cb190ecc02e8b4575
+
+			$productObjectId = [new MongoId('57c6b29cb190ecc02e8b4575'),new MongoId('57c694bab190ecc02e8b456a')];
+
+			$productObjectId2 = [new MongoId('57c6b29cb190ecc02e8b4575'),new MongoId('57c433e7b190ec306f8b4567')];
+
+			//return response((array_merge($productObjectId,$productObjectId2)));
+
+			$res = $this->compareData($productObjectId,$productObjectId2);		
+
+			return response($res);
+
+			$u = User::raw()->aggregate(
+				[
+					'$match' => [
+						'wishlist._id' => [
+							'$in' => $productObjectId
+						]
+					]
+				],
+				[
+					'$project' => [
+						'_id' => 1,
+						'email' => 1,
+						'matchingWish' => [
+							'$filter' => [
+								'input' => '$wishlist',
+		                		'as' => 'wish',
+		                		'cond' => [
+		                			'$eq'=>['$$wish.notify',1]		                			
+		                		]
+							]
+						],						
+					]
+				],
+				[
+					'$unwind' => [
+						'path' => '$matchingWish',
+						'preserveNullAndEmptyArrays' => true
+					]
+				],
+				[
+					'$match' => [
+						'matchingWish._id' => ['$in' => $productObjectId]
+					]
+				],
+				[
+					'$lookup' => [
+						'from' => 'products',
+						'localField' => 'matchingWish._id',
+						'foreignField' => '_id',
+						'as' => 'nProducts'
+					]
+				]/*,
+				[
+					'$group' => [
+						'_id' => '$_id',
+						'matchingWish' => ['$addToSet'=>'$matchingWish'],
+						'email' => ['$first'=>'$email']
+					]
+				]*/				
+			);
 			
+			//$r = DB::collection('test')->insert($u['result'], ['upsert' => true]);
+
+			dd($u);
+
+			$OId = [new MongoId('57c551bcb190ec430d8b457a'),new MongoId('57c433e7b190ec306f8b4567')];
+
+
+			$model = Products::raw()->aggregate(
+				[
+					
+					'$match' => [
+						'categoriesObject' => [
+							'$elemMatch'=>[
+								'$in'=>$OId/*[
+									'57c551bcb190ec430d8b457a','57c433e7b190ec306f8b4567'
+								]*/
+							]
+						]
+					],					
+					
+
+				],
+				[
+					'$group' => [
+						'_id' => null,						
+						'categoryProduct' => [
+							'$addToSet'=>'$_id'	
+						],											
+					],
+				]
+			);
+
+			
+
+			dd($model);
+
 			$query = [];
 
 			$query[]['$match'] = ['_id' => new MongoId('57c422d611f6a1450b8b456c')];
@@ -1192,5 +1291,9 @@ class ProductController extends Controller
 		return response($data);
 
 	}
+
+	public function compareData($old,$new){
+        return array_values(array_diff(array_merge($old,$new),$old));
+    }
 }
 		
