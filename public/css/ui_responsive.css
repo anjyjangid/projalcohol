@@ -858,8 +858,8 @@
 }
 
 .gift-itemimg img{
-	max-width: 100%;
-	max-height: 100%;
+	max-width: 75%;
+	/*max-height: 75%;*/
 }
 
 
@@ -1961,6 +1961,11 @@ body.menu-slider.in {
   }
   .gift-itemimg {
 	  padding-top: 5px
+  }
+
+  .gift-itemimg img{
+	max-width: 75%;
+	/*max-height: 75%;*/
   }
   .modal-dialog.alcohal_addadressmain {
 	  width: 100%;
