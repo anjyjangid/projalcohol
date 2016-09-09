@@ -2,6 +2,8 @@ AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$
 
 		this.init = function(){
 
+			var d = $q.defer();
+
 			var _self = this;
 			this.$wishlist = [];
 			
@@ -13,12 +15,16 @@ AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$
 
 			}).error(function(data, status, headers) {
 
+				d.resolve(data);
+
 			}).success(function(response) {
 
 				_self.$restore(response.list);
+				d.resolve(response.list);
 
 			})
 
+			return d.promise;
 		};
 
 		this.add = function (id,addInSale) {

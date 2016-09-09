@@ -64,7 +64,6 @@ class WishlistController extends Controller
 										"with"=>array(
 											"discounts"
 										)
-										
 									)
 								);	
 
