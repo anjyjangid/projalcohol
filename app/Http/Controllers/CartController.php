@@ -32,7 +32,7 @@ class CartController extends Controller
 	/**
 	 * ErrorCode
 	 * 100 => Quantity requested is not available
-	 * 101 => Product is not available for sale	 
+	 * 101 => Product is not available for sale
 	 */
 
 	public function __construct(Request $request)
@@ -54,6 +54,7 @@ class CartController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index(Request $request){
+
 		$user = Auth::user('user');
 
 		if(empty($user)){
