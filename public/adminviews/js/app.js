@@ -2456,7 +2456,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
         function authenticate($q, AdminUserService, $state, $timeout, $location) {
 
-	      if (AdminUserService.isLogged()) {	      	
+	      if (AdminUserService.isLogged()) {
 	        // Resolve the promise successfully
 	        return $q.when()
 	      } else {

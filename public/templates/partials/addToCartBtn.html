@@ -11,7 +11,7 @@
 		</div>
 		<div class="addmanual" ng-if="addMoreCustom">
 				<div class="relat">
-					<input ng-model="product.qChilled" type="text" only-digits />
+					<input ng-model="product.qChilled" type="text" only-digits ng-blur="focusout()"/>
 					<div class="addbuttton" ng-click="addCustom()">add</div>
 				</div>
 			</div>
@@ -30,7 +30,7 @@
 
 		<div class="addmanual" ng-if="addMoreCustom">
 				<div class="relat">
-					<input ng-model="product.qNChilled" type="text" only-digits/>
+					<input ng-model="product.qNChilled" type="text" only-digits ng-blur="focusout()"/>
 					<div class="addbuttton" ng-click="addCustom()">add</div>
 				</div>
 			</div>

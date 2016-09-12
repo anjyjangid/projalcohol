@@ -66,7 +66,7 @@ AlcoholDelivery.service('alcoholCart', [
 				"id":id,
 				"quantity":quantity,
 				"chilled":serveAs,
-				"type":"product",
+				"type":"product"
 			},{
 
 		}).error(function(data, status, headers) {
@@ -79,7 +79,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 				var resProduct = response.product;
 
-				if(inCart){				
+				if(inCart){
 
 					if(resProduct.quantity==0){
 

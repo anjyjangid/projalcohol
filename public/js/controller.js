@@ -363,12 +363,14 @@ AlcoholDelivery.controller('ProductDetailController', [
 	$scope.ProductDetailController = {};
 
 	if(typeof $stateParams.loyalty === 'undefined'){
+		
 		$scope.viaLoyaltyStore = false;
-	}else{
-		$scope.viaLoyaltyStore = true;
-	}
 
-	
+	}else{
+
+		$scope.viaLoyaltyStore = true;
+
+	}
 
   	$scope.syncPosition = function(el){
 
@@ -385,13 +387,13 @@ AlcoholDelivery.controller('ProductDetailController', [
 		}
 	}
 
-  $scope.syncClick = function(number){
+	$scope.syncClick = function(number){
 
 		$scope.sync1.trigger("owl.goTo",number);
 
   }
 
-  $scope.center = function(number){
+	$scope.center = function(number){
 
 		var sync2visible = $scope.sync2.data("owlCarousel").owl.visibleItems;
 		var num = number;
@@ -421,29 +423,29 @@ AlcoholDelivery.controller('ProductDetailController', [
 
 	$scope.parentOwlOptions = {
 
-    singleItem 						: true,
-    slideSpeed 						: 1000,
-    navigation 						: false,
-    pagination 						: false,
-    afterAction 					: $scope.syncPosition,
-  	responsiveRefreshRate : 200,
+		singleItem 						: true,
+		slideSpeed 						: 1000,
+		navigation 						: false,
+		pagination 						: false,
+		afterAction 					: $scope.syncPosition,
+		responsiveRefreshRate : 200,
 
-  }
+	}
 
-  $scope.childOwlOptions = {
+	$scope.childOwlOptions = {
 
-    items 						: 6,
-    itemsDesktop      : [1199,4],
-    itemsDesktopSmall : [979,4],
-    itemsTablet       : [768,4],
-    itemsMobile       : [479,4],
-    pagination 				: false,
-    responsiveRefreshRate : 100,
+		items 						: 6,
+		itemsDesktop      : [1199,4],
+		itemsDesktopSmall : [979,4],
+		itemsTablet       : [768,4],
+		itemsMobile       : [479,4],
+		pagination 				: false,
+		responsiveRefreshRate : 100,
 		afterInit : function(el){
-		  el.find(".owl-item").eq(0).addClass("synced");
+			el.find(".owl-item").eq(0).addClass("synced");
 		}
 
-  }
+	}
 	var data = {
 		product:$stateParams.product
 	}
@@ -454,6 +456,7 @@ AlcoholDelivery.controller('ProductDetailController', [
 	};
 
 	ProductService.getProduct({product:$stateParams.product}).then(
+
 		function(response){
 			
 			$scope.product = response;
@@ -474,9 +477,17 @@ AlcoholDelivery.controller('ProductDetailController', [
 
 			$scope.addtocart = function(){
 
-				alcoholCart.addItem($scope.product._id,$scope.product.qChilled,true);
-				alcoholCart.addItem($scope.product._id,$scope.product.qNChilled,false);
-				$scope.isInCart = true;
+				var quantity = {
+					chilled : parseInt($scope.product.qChilled),
+					nonChilled : parseInt($scope.product.qNChilled)
+				}
+				alcoholCart.addItem($scope.product._id,quantity,$scope.product.servechilled).then(
+					function(response){
+						$scope.isInCart = true;
+					}
+				);
+				//alcoholCart.addItem($scope.product._id,$scope.product.qNChilled,false);
+				
 				
 			};
 

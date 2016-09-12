@@ -29,11 +29,13 @@ use AlcoholDelivery\Payment;
 class CartController extends Controller
 {
 
-	/**
-	 * ErrorCode
-	 * 100 => Quantity requested is not available
-	 * 101 => Product is not available for sale
-	 */
+	/*********************************************
+	
+	** ErrorCode
+	** 100 => Quantity requested is not available
+	** 101 => Product is not available for sale
+	
+	*********************************************/
 
 	public function __construct(Request $request)
 	{
@@ -46,7 +48,6 @@ class CartController extends Controller
 		}
 
 	}
-
 
 	/**
 	 * Display a listing of the resource.
@@ -290,8 +291,7 @@ class CartController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 	public function update(Request $request, $id)
-	{
-
+	{		
 		$inputs = $request->all();
 
 		$proIdToUpdate = $inputs['id'];
@@ -312,39 +312,44 @@ class CartController extends Controller
 		}	
 
 		$productInCart = isset($cart->products[$proIdToUpdate])?$cart->products[$proIdToUpdate]:false;
+		
+		// Set current quantity and sates
+		$chilledQty = (int)$inputs['quantity']['nonChilled'];
+		$nonChilledQty = (int)$inputs['quantity']['chilled'];
+		$totalQty = $chilledQty + $nonChilledQty;
 
-		$productObj = new Products;
+		
+		// Check if zero quantity adding request is arise.
+		if($productInCart===false && $totalQty==0){
 
-		$product = $productObj->getProducts(
-									array(
-										"id"=>$proIdToUpdate,
-										"with"=>array(
-											"discounts"
-										)
-									)
-								);
+			$response['message'] = "Not a valid request";
+			return response($response,400);
 
-		$product = $product[0];
+		}
 
-		if((int)$product['quantity']>0){
-			
-			$maxAvailQuantity = (int)$product['quantity'];
+		$productObj = new Products;		
+		$product = $productObj->fetchProduct([
+						"id"=>$proIdToUpdate,
+					]);
 
-		}elseif($product['outOfStockType']==2){
-			
-			$maxAvailQuantity = (int)$product['maxQuantity'];
+		// If Produt is not found.
+		if($product['success']===false){
 
-		}else{
+			$response['message'] = "Product not found";
+			return response($response,400);
 
-			// Handel if product goes dis-continue in middle of processing
-			$response['success'] = true;
+		}
+
+		$product = $product['product'];
+
+		// Handel if product goes dis-continue in middle of processing
+		if($product['quantity']<1 && $product['outOfStockType']==1){
+
 			$response['code'] = 101;
 			$response['message'] = "Product is no longer available";
 
 			$product['change'] = -$productInCart['quantity'];
 			$response['product']['quantity'] = 0;
-
-			$response['product']['product'] = $product;
 
 			try {
 				
@@ -367,96 +372,41 @@ class CartController extends Controller
 
 		$updateProData = array(
 
-				"maxQuantity"=>$maxAvailQuantity,
-				"chilled"=>array(
-					"quantity"=>$productInCart!==false?$productInCart['chilled']['quantity']:0,
-					"status"=>"chilled",
-				),
-				"nonchilled"=>array(
-					"quantity"=>$productInCart!==false?$productInCart['nonchilled']['quantity']:0,
-					"status"=>"nonchilled",
-				),
-				"quantity"=>0,
-				"lastServedChilled" => (bool)$inputs['chilled']
-			);
+			"chilled"=>array(
+				"quantity"=>$chilledQty,
+				"status"=>"chilled",
+			),
+			"nonchilled"=>array(
+				"quantity"=>$nonChilledQty,
+				"status"=>"nonchilled",
+			),
+			"quantity"=>$totalQty,
+			"lastServedChilled" => (bool)$inputs['chilled']
 
-		if((bool)$inputs['chilled']){
+		);
 
-			$updateProData['chilled']['quantity'] = (int)$inputs['quantity'];
+		$oldQuantity = 0;
 
-		}else{
+		if($productInCart!==false){
 
-			$updateProData['nonchilled']['quantity'] = (int)$inputs['quantity'];
+			$oldQuantity = (int)$productInCart['quantity'];
+			$updateProData['chilled']['status'] = $productInCart['chilled']['status'];
+			$updateProData['nonchilled']['status'] = $productInCart['nonchilled']['status'];
 
-		}
-
-		$oldQuantity = $productInCart!==false?(int)$productInCart['quantity']:0;
-
-		$cart->products = array_merge($cart->products,[$proIdToUpdate=>$updateProData]);
-
-		// Code to update total quantity
-		$updateProData = $cart->products[$proIdToUpdate];
-
-		$updateProData['quantity'] = (int)$updateProData['chilled']['quantity'] + (int)$updateProData['nonchilled']['quantity'];
+		}		
 		
 		$product['change'] = $updateProData['quantity'] - $oldQuantity;//Track change in quantity
-
-		// Condition to check quantity is not more than available quantity
-		// if($product['quantity']==0 && $product['outOfStockType']==2){
-
-		// 	$product['quantity'] = $product['maxQuantity'];
-
-		// }
-
-
-		// if($updateProData['quantity']>(int)$updateProData['maxQuantity']){
-
-		// 	// Handel if product quantity is greater than available quantity
-		// 	$response['code'] = 100;
-		// 	$response['message'] = "Requested quantity is not available, max available is added to cart";
-
-		// 	$extraQuantity = $updateProData['quantity'] - $updateProData['maxQuantity'];
-		// 	$product['change'] = $updateProData['maxQuantity'] - $oldQuantity;
-			
-		// 	if($extraQuantity>0){
-
-		// 		if($extraQuantity > $updateProData['chilled']['quantity']){
-
-		// 			$extraQuantity-= $updateProData['chilled']['quantity'];
-		// 			$updateProData['chilled']['quantity'] = 0;
-
-		// 		}else{
-					
-
-		// 			$updateProData['chilled']['quantity']-=$extraQuantity;
-		// 			$extraQuantity = 0;
-
-		// 		}
-
-		// 		if($extraQuantity > $updateProData['nonchilled']['quantity']){
-
-		// 			$extraQuantity-= $updateProData['nonchilled']['quantity'];
-		// 			$updateProData['nonchilled']['quantity'] = 0;
-
-		// 		}else{
-
-		// 			$updateProData['nonchilled']['quantity']-=$extraQuantity;
-		// 			$extraQuantity = 0;
-
-		// 		}
-		// 	}
-
-		// 	$updateProData['quantity'] = (int)$updateProData['chilled']['quantity'] + (int)$updateProData['nonchilled']['quantity'];
-			
-			
-		// }
 
 		try {
 
 			if($updateProData['quantity']>0){
 
-				$cart->products = array_merge($cart->products,array($proIdToUpdate=>$updateProData));
-				$cart->save();
+				$result = DB::collection('cart')->where('_id', new MongoId($id))
+										->update(["products.".$proIdToUpdate=>$updateProData], ['upsert' => true]);
+
+				if($result!==1){
+					throw new Exception('Product not updated');
+				}
 
 			}else{
 
