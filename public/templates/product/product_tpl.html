@@ -1,10 +1,13 @@
 <div class="{{classes}}" ng-class="{comboproductitems_outofstock:{{!productInfo.quantity && productInfo.outOfStockType == 1}}}">
 
+
 	<div ng-if="productInfo.quantity<1 && productInfo.outOfStockType == 1" class="productsoldoutbkbtn">Sold Out</div>
 
 	<div class="prod_chilled us-txt" ng-class="{notchilled:!productInfo.servechilled,invisible:{{!productInfo.chilled}}}"  ng-click="productInfo.servechilled=!productInfo.servechilled"> <span>Chilled</span>
 		<div class="prod_chilled_icon"></div>
 	</div>
+
+	<div ng-click="itemClick(productInfo.slug)">
 
 	<div class="prod_pic pos-realtive">
 		<div class="wishlist-main-outer bulk-outer-hover">
@@ -16,8 +19,8 @@
 						<div class="add-wishlist-icondiv"><img src="images/add-wish-icon.png" /></div>
 
 						<div class="wishlist_discount">
-							<div class="wishlist" ng-if="!isInwishList" ng-click="addToWishlist(0)">Add to Wishlist</div>
-							<div class="wishlist" ui-sref="accountLayout.wishlist" ng-if="isInwishList">Added to Wishlist</div>							
+							<div class="wishlist" ng-if="!isInwishList" ng-click="addToWishlist(0); $event.stopPropagation();">Add to Wishlist</div>
+							<div class="wishlist" ng-click="myWish(); $event.stopPropagation();" ng-if="isInwishList">Added to Wishlist</div>							
 						</div>
 
 					</div>
@@ -27,7 +30,7 @@
 					<div class="bulk-icon-maincover"> 
 						<div class="bulk-dis-icon"><img src="images/bulk-dis-icon.png" /></div>
 						<div class="wishlist_discount_bulk">
-							<div class="discount" ui-sref="mainLayout.product({product:productInfo.slug})">View Bulk Discount</div>
+							<div class="discount" ng-click="itemClick(productInfo.slug)">View Bulk Discount</div>
 						</div>
 					</div>
 				</div>				
@@ -44,7 +47,6 @@
 	</div>
 
 	<a ui-sref="mainLayout.product({product:productInfo.slug})" class="core-block">
-	<!-- <a ng-click="productInfo.href" class="core-block"> -->
 
 		<div class="prod_desc"> 
 		
@@ -67,7 +69,7 @@
 			<div class="prod_discout_price">{{productInfo.promo.price | pricingTxt:true }}</div>
 		</div>
 	</a>
-
+	</div>
 	<div class="prod_addtocart" ng-if="productInfo.addBtnAllowed">
 		
 		<button class="checkoutproductbutton" ng-if="productInfo.promo && !promotion.inCart" ng-click="alcoholCart.addPromo(promotion._id,productInfo._id,$event)">Add Promo</button>

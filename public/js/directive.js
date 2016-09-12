@@ -216,7 +216,7 @@ AlcoholDelivery.directive('sideBar', function() {
 	};
 })
 
-.directive("owlCarousel", function(){
+.directive("owlCarousel", ['$timeout',function($timeout){
 
     return {
         restrict: 'E',
@@ -239,16 +239,16 @@ AlcoholDelivery.directive('sideBar', function() {
 
             	// init carousel
 				if(typeof $(element).data('owlCarousel') === "undefined"){
-
-					scope[ngModel] = $(element).owlCarousel(defaultOptions);
-
+					$timeout(function(){
+						scope[ngModel] = $(element).owlCarousel(defaultOptions);
+					});
 				}
             };
         }
     };
-})
+}])
 
-.directive('owlCarouselItem', [function() {
+.directive('owlCarouselItem', ['$timeout',function($timeout) {
 	
     return {
         restrict: 'A',
@@ -265,7 +265,9 @@ AlcoholDelivery.directive('sideBar', function() {
           	}
 
             if(scope.$last) {            	
-            	scope.initCarousel(element.parent(),element.parent().attr("ng-model"));
+            	$timeout(function(){
+            		scope.initCarousel(element.parent(),element.parent().attr("ng-model"));
+            	});
             }
         }
     };
@@ -571,7 +573,15 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.saleExists = function () {
 				return alcoholWishlist.isNotified($scope.productInfo._id);				
-			};						
+			};	
+
+			$scope.itemClick = function(slug){
+			  $state.go('mainLayout.product', {'product': slug});
+			}; 		
+
+			$scope.myWish = function(){
+				$state.go('accountLayout.wishlist');	
+			}			
 
 		}]
 	}

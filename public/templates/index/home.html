@@ -14,8 +14,7 @@
             
             <div class="right-crousel">
 
-	            <data-owl-carousel class="owl-carousel owl-theme" data-options="{
-				    		
+	            <data-owl-carousel class="owl-carousel owl-theme" data-options="{				    		
 				    		navigation : true,
 							navigationText :	['<','>'],
 							pagination : false,
@@ -24,13 +23,11 @@
 							itemsDesktopSmall : [979,4],
 							itemsTablet : [768,3],
 							itemsTabletSmall : [767,2],
-							itemsMobile : [479,1],
-							autoWidth:true,							
-
+							itemsMobile : [479,1]
 				    		}">
 
 						<div style="color:#CCC;" owl-carousel-item="" ng-repeat="cat in parentCategories | filterParentCat" ng-class="{'active':AppController.feTabActive==$index}" class="item">
-							<a href="javascript:void(0)" class="text-capitalize" ng-click="setFeatured($index);AppController.feTabActive=$index">{{cat.cat_title}}</a>
+							<a href="javascript:void(0)" class="text-capitalize pointer" ng-click="setFeatured($index);AppController.feTabActive=$index">{{cat.cat_title}}</a>
 						</div>					
 	                  
 				</data-owl-carousel>								
@@ -56,10 +53,8 @@
 						itemsMobile : [479,1]
 
 			    		}">
-			      <div owl-carousel-item="" ng-repeat="fproduct in pCat['featured']" class="item">
-			        	
-			        	<div al-tpl-product info="fproduct" classes="proHoverEffect"></div>			        	
-			        	
+			      <div owl-carousel-item="" ng-repeat="fproduct in pCat['featured']" class="item">		        	
+			        	<div al-tpl-product info="fproduct" classes="proHoverEffect"></div>		
 			      </div>
 			    </data-owl-carousel>							
 			</div>
