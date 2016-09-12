@@ -573,7 +573,15 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.saleExists = function () {
 				return alcoholWishlist.isNotified($scope.productInfo._id);				
-			};						
+			};	
+
+			$scope.itemClick = function(slug){
+			  $state.go('mainLayout.product', {'product': slug});
+			}; 		
+
+			$scope.myWish = function(){
+				$state.go('accountLayout.wishlist');	
+			}			
 
 		}]
 	}
