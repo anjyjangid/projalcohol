@@ -1536,6 +1536,7 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 
 			this.setRMaxQuantity(data.product);
 
+
 		};
 
 		item.prototype.setId = function(id){
