@@ -29,7 +29,6 @@ use Illuminate\Support\Facades\Auth;
 
 use Faker;
 
-
 class ProductController extends Controller
 {
 		/**
@@ -540,6 +539,70 @@ class ProductController extends Controller
 
 		public function getTest(){	
 
+			$data = DB::collection('notifications')->raw()->aggregate(
+				[
+					'$lookup' => [
+						'from' => 'user',
+						'localField' => 'userId',
+						'foreignField' => '_id',
+						'as' => 'consumer'
+					]
+				],
+				[
+					'$unwind' => [
+						'path' => '$consumer',
+						'preserveNullAndEmptyArrays' => true
+					]
+				],
+				[
+					'$lookup' => [
+						'from' => 'sale',
+						'localField' => 'saleID',
+						'foreignField' => '_id',
+						'as' => 'saleDetail'
+					]
+				],
+				[
+					'$unwind' => [
+						'path' => '$saleDetail',
+						'preserveNullAndEmptyArrays' => true
+					]
+				],
+				[
+					'$unwind' => [
+						'path' => '$matchingWish',
+						'preserveNullAndEmptyArrays' => true
+					]
+				],
+	        	[
+					'$lookup' => [
+						'from' => 'products',
+						'localField' => 'matchingWish._id',
+						'foreignField' => '_id',
+						'as' => 'products'
+					]
+				],
+				[
+					'$project' => [
+						'_id' => '$_id',
+						'consumer' => '$consumer',						
+						'saleDetail' => '$saleDetail',						
+						'matchingWish' => '$matchingWish',
+						'products' => ['$arrayElemAt' => [ '$products', 0 ]]
+					]
+				],
+				[
+					'$group' => [
+						'_id' => '$_id',
+						'consumer' => ['$first'=>'$consumer'],
+						'saleDetail' => ['$first'=>'$saleDetail'],
+						'products' => ['$addToSet'=>'$products']
+					]
+				]
+	        );
+
+	        dd($data);
+
 			//57c6b29cb190ecc02e8b4575
 
 			$productObjectId = [new MongoId('57c6b29cb190ecc02e8b4575'),new MongoId('57c694bab190ecc02e8b456a')];
@@ -548,9 +611,9 @@ class ProductController extends Controller
 
 			//return response((array_merge($productObjectId,$productObjectId2)));
 
-			$res = $this->compareData($productObjectId,$productObjectId2);		
+			/*$res = $this->compareData($productObjectId,$productObjectId2);		
 
-			return response($res);
+			return response($res);*/
 
 			$u = User::raw()->aggregate(
 				[
@@ -563,7 +626,6 @@ class ProductController extends Controller
 				[
 					'$project' => [
 						'_id' => 1,
-						'email' => 1,
 						'matchingWish' => [
 							'$filter' => [
 								'input' => '$wishlist',
@@ -586,21 +648,37 @@ class ProductController extends Controller
 						'matchingWish._id' => ['$in' => $productObjectId]
 					]
 				],
-				[
+				/*[
 					'$lookup' => [
 						'from' => 'products',
 						'localField' => 'matchingWish._id',
 						'foreignField' => '_id',
 						'as' => 'nProducts'
 					]
-				]/*,
+				],*/
+				[
+					'$project' => [
+						'_id' => '$_id',
+						'matchingWish' => '$matchingWish',
+						//'nProducts' => ['$arrayElemAt' => [ '$nProducts', 0 ]]
+					]
+				],
 				[
 					'$group' => [
 						'_id' => '$_id',
+						'userId' => ['$first'=>'$_id'],
 						'matchingWish' => ['$addToSet'=>'$matchingWish'],
-						'email' => ['$first'=>'$email']
+						// 'email' => ['$first'=>'$email'],
+						//'nProducts' => ['$addToSet'=>'$nProducts']
 					]
-				]*/				
+				],
+				[
+					'$project' => [
+						'_id' => 0,
+						'userId' => 1,
+						'matchingWish' => 1
+					]
+				]				
 			);
 			
 			//$r = DB::collection('test')->insert($u['result'], ['upsert' => true]);
@@ -703,336 +781,7 @@ class ProductController extends Controller
 
 		    exit;
 
-			$query = [];
-			$userStoreId = Auth::user('admin')->storeId;
-			//$userStoreId .= '12';	
-			$tableFields = [
-				'name'=>'$name',
-                //'quantity'=>'$quantity',                
-                'dealerId'=>'$dealers',
-                'sku'=>'$sku'
-			];
-
-			$project = $tableFields;
-
-			$project['store'] = [
-				'$filter'=>[
-	                'input' => '$store',
-	                'as' => 'store',
-	                'cond' => ['$eq'=>['$$store.storeId',$userStoreId]]
-	            ]
-	        ];        
-
-			$query[]['$match'] = [
-				'dealerId' => ['$elemMatch'=>['$in'=>['57c43653b190ec306f8b4569']]]
-			];
-
-			$query[]['$lookup'] = [
-				'from'=>'stocks',
-				'localField'=>'_id',
-				'foreignField'=>'productObjId',
-				'as'=>'store'
-			];			
-
-			$query[]['$project'] = $project;
-
-			$query[]['$unwind'] = ['path' => '$store','preserveNullAndEmptyArrays' => true];
-
-			$project['store'] = '$store';
-
-			$project['quantity'] = ['$cond'=>['$store','$store.quantity',0]];
-
-			$project['maxQuantity'] = ['$cond'=>['$store','$store.maxQuantity',0]];
-
-			$project['threshold'] = ['$cond'=>['$store','$store.threshold',0]];
-
-			$project['sum'] = [
-				'$cond' => [
-					'$store',
-					[
-						'$subtract' => [
-							['$divide'=>['$store.quantity','$store.maxQuantity']],
-							['$divide'=>['$store.threshold','$store.maxQuantity']]
-						]
-					],
-					-1,
-				]				
-			];
-
-			$query[]['$project'] = $project;
-
-			//$query[]['$unwind'] = ['path' => '$store','preserveNullAndEmptyArrays' => true];
 			
-			$model = Products::raw()->aggregate($query);
-			
-			dd($model);
-			
-
-			$productWithStocks = Products::where('_id','57c54d89b190ec430d8b4570')->with('stocks')->first();	
-
-			return response($productWithStocks);
-
-			//$product = Products::create(['name'=>'beer']);
-
-			//dd($product);
-
-			$userStoreId = Auth::user('admin')->storeId;
-			$query = [];
-
-			$project = [
-				'_id' => 1,
-				'name' => 1,				
-			];
-
-			$project['mystore'] = [
-				'$filter'=>[
-	                'input' => '$mystore',
-	                'as' => 'mystore',
-	                'cond' => ['$eq'=>['$$mystore.storeId',$userStoreId]]
-	            ]    
-	        ];
-
-			$query[]['$project'] = $project;	        
-
-	        $query[]['$sort'] = ['mystore.quantity'=>-1];
-
-
-
-			$model = Products::raw()->aggregate($query);
-	        
-	        dd($model);
-
-	        echo '<pre>';
-	        print_r($model);
-	        echo '</pre>';
-	        exit;       
-
-
-			$product = Products::find('57c51cb1b190ec430d8b4567');			
-
-			$store = $product->mystore()->get();//->where('storeId',$userStoreId)->first();
-
-			$mystore = $store->where('storeId',$userStoreId)->first();
-
-			/*$store->quantity = 150;
-
-			$store->save();	*/
-
-			//dd($store->first());
-
-
-			return response(['store'=>$store,'mystore'=>$mystore],200);
-
-	        /*$stock = new Stocks(
-	        	[
-	        		'quantity' => 50,
-	        		'threshold' => 10,
-	        		'maxQuantity' => 100,
-	        		'storeId' => '57bef1bfb190ec7c0c8b4567',
-	        		'storeObjId' => new MongoId('57bef1bfb190ec7c0c8b4567'),
-	        		'defaultDealerId' => '57c43653b190ec306f8b4569',
-	        		'defaultDealerObjId' => new MongoId('57c43653b190ec306f8b4569'),
-	        		'productObjId' => new MongoId('57c51cb1b190ec430d8b4567'),
-	        	]
-	        );     
-
-	        $stock = $product->mystore()->save($stock);*/
-
-	        return response($stock,200);
-
-	        
-
-
-
-	        /*$p = Products::where(['_id'=>'57035084c31d53b2218b45c8']);
-
-	        $p = $p->with('store')->first();
-
-	        
-
-	        return response($p,200);*/
-
-	        $userStoreId = Auth::user('admin')->storeId; 
-
-	        $us = new Products;
-
-        	$fillable = $us->getFields();        	
-
-        	$fillable['store'] = [
-        		'$filter'=>[
-	                'input' => '$store',
-	                'as' => 'store',
-	                'cond' => ['$eq'=>['$$store.storeId',$userStoreId]]
-	            ]
-        	];
-
-        	$firstFillable = $us->getFirstfield();
-
-        	$firstFillable['_id'] = '$_id';
-
-        	$firstFillable['stocks'] = ['$push' => '$stocks'];
-        	
-        	$firstFillable['suggestions'] = ['$push' => '$suggestions'];
-
-			//$project = $fillable;
-
-			//$project['stocks'] = ['$arrayElemAt' => [ '$stocks', 0 ]];
-
-			$project['stocks'] = '$stocks';
-
-			/*$project['stocks'] = [
-        		'$filter'=>[
-	                'input' => '$stocks',
-	                'as' => 'stock',
-	                'cond' => ['$eq'=>['$$stock.storeId',$userStoreId]]
-	            ]
-        	];*/
-
-			$project['suggestions'] = '$suggestions';
-
-        	$model = Products::raw()->aggregate(
-	            [   
-	                [
-	                    '$match'=>['_id' => new MongoId('57035084c31d53b2218b45c8')]                    
-	                ],
-	                [
-	                	'$lookup' => [
-							'from'=>'stocks',
-							'localField'=>'_id',
-							'foreignField'=>'productObjId',
-							'as'=>'store'
-	                	]
-	                ],
-	                [
-	                	'$project' => $fillable
-	                ],
-	                [
-	                	'$unwind' => [
-	                        'path' => '$store',	                        
-	                        'preserveNullAndEmptyArrays' => true,                            
-	                    ]
-	                ],	    
-	                /*[
-	                	'$sort' => ['store.quantity' => -1]
-	                ],
-	                [
-	                	'$limit' => 5
-	                ]   */         
-	                /*[
-	                	'$unwind' => [
-	                        'path' => '$stocks',	                        
-	                        'preserveNullAndEmptyArrays' => true,                            
-	                    ]
-	                ],
-	                [
-						'$group' => $firstFillable	
-					],*/	                
-	                /*[
-						'$unwind' => [
-							'path' =>  '$suggestionObjectId',
-							"preserveNullAndEmptyArrays" => true
-
-						]
-					],
-	                [
-						'$lookup' => [
-							'from'=>'products',
-							'localField'=>'suggestionObjectId',
-							'foreignField'=>'_id',
-							'as'=>'suggestions'
-						]
-					],*/
-					
-					/*[
-						'$unwind' => [
-							'path' =>  '$suggestions',
-							"preserveNullAndEmptyArrays" => true
-
-						]
-					],
-					[
-						'$group' => $firstFillable	
-					],
-					[
-						'$project' => $project
-					],
-					[
-						'$unwind' => [
-							'path' =>  '$stocks',
-							"preserveNullAndEmptyArrays" => true
-
-						]
-					],*/
-					/*[
-						'$unwind' => [
-							'path' => '$stocks',	                        
-	                        'preserveNullAndEmptyArrays' => true,                            
-						]
-					]*/		                
-	            ]
-	        );       
-
-        	dd($model);
-
-        	echo '<pre>';
-	        print_r($model);
-	        echo '</pre>';
-	        exit;
-
-        	//$fillable['stocks'] = '$stocks';
-
-        	/*$fillable['store'] = [
-        		'$filter'=>[
-	                'input' => '$stocks',
-	                'as' => 'stock',
-	                'cond' => ['$eq'=>['$$stock.storeId',new MongoId('57badb6db190ecd2108b456b')]]
-	            ]
-        	];*/
-	        
-	        //$fillable['storeQuantity'] = '$store.quantity';        					        
-
-	        $model = Products::raw()->aggregate(
-	            [   
-	                [
-	                    '$match'=>['_id' => new MongoId('57035084c31d53b2218b45c8')]                    
-	                ],                                
-	                [
-	                    '$unwind' => [
-	                        'path' => '$stocks',
-	                        'preserveNullAndEmptyArrays' => true,                            
-	                    ]
-	                ],
-	                [
-	                    '$project'=>$fillable                        
-	                ],
-	                [
-	                    '$match'=>['storeOId' => new MongoId('57bef1bfb190ec7c0c8b4567')]                    
-	                ],
-	                [
-	                	'$lookup' => [
-							'from'=>'dealers',
-							'localField'=>'store.defaultDealer',
-							'foreignField'=>'_id',
-							'as'=>'dealerInfo'
-	                	]
-	                ],
-	                [
-	                    '$unwind' => [
-	                        'path' => '$dealerInfo',
-	                        'preserveNullAndEmptyArrays' => true,                            
-	                    ]
-	                ]
-	            ]
-	        );
-
-	        //dd($model);
-
-	        echo '<pre>';
-	        print_r($model);
-	        echo '</pre>';
-	        exit;
-
-	        return response($model,200);
 
 		}
 
