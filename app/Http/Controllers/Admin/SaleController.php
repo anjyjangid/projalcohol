@@ -58,7 +58,8 @@ class SaleController extends Controller
             if(isset($inputs['image']) && !empty($inputs['image']))
                 $this->saveImage($sale,$inputs['image']);
 
-            $this->notifySale($inputs);
+            if($inputs['type'] == 1)
+                $this->notifySale($inputs,$sale->_id);
 
             return response($sale,201);
         }
@@ -149,7 +150,9 @@ class SaleController extends Controller
         $query[]['$project'] = $project;
         $query[]['$group'] = $group;               
 
-        $model = Sale::raw()->aggregate($query);                
+        $model = Sale::raw()->aggregate($query);
+
+        // dd($model);                
 
         if($model['ok'] == 1 && isset($model['result'][0])){
             
@@ -202,8 +205,9 @@ class SaleController extends Controller
 
             if(isset($inputs['image']) && !empty($inputs['image']))
                 $this->saveImage($sale,$inputs['image']);
-
-            $this->notifySale($inputs);
+            
+            if($inputs['type'] == 1)
+                $this->notifySale($inputs,$id);
 
             return response($sale,201);
         }
@@ -312,6 +316,9 @@ class SaleController extends Controller
         if(isset($inputs['discountType']) && !empty($inputs['discountType']))
             $inputs['discountType'] = (int)$inputs['discountType'];
 
+        if(isset($inputs['actionType']) && !empty($inputs['actionType']))
+            $inputs['actionType'] = (int)$inputs['actionType'];
+
         $inputs['saleProducts'] = $inputs['saleProductObjectId'];
         $inputs['saleCategories'] = $inputs['saleCategoryObjectId'];
 
@@ -343,7 +350,7 @@ class SaleController extends Controller
         return array_values(array_diff(array_merge($old,$new),$old));
     }
 
-    public function notifySale($inputs){
+    public function notifySale($inputs,$id){
 
         //GET ALL PRODUCTS IN CATEGORY
         if(!empty($inputs['saleCategories'])){
@@ -393,7 +400,6 @@ class SaleController extends Controller
                 [
                     '$project' => [
                         '_id' => 1,
-                        'email' => 1,
                         'matchingWish' => [
                             '$filter' => [
                                 'input' => '$wishlist',
@@ -417,14 +423,32 @@ class SaleController extends Controller
                     ]
                 ],
                 [
+                    '$project' => [
+                        '_id' => '$_id',
+                        'matchingWish' => '$matchingWish',
+                    ]
+                ],
+                [
                     '$group' => [
                         '_id' => '$_id',
+                        'userId' => ['$first'=>'$_id'],
                         'matchingWish' => ['$addToSet'=>'$matchingWish'],
-                        'email' => ['$first'=>'$email']
+                    ]
+                ],
+                [
+                    '$project' => [
+                        '_id' => 0, //REMOVE ID TO INSERT NEW ID IN NOTIFICATION TABLE
+                        'userId' => 1,
+                        'matchingWish' => 1
                     ]
                 ]               
-            );        
-            //$r = DB::collection('test')->insert($usersWithSaleProduct['result'], ['upsert' => true]);
+            );
+
+            foreach ($usersWithSaleProduct['result'] as $key => $value) {
+                $usersWithSaleProduct['result'][$key]['saleID'] = new MongoId($id);
+            }
+
+            $r = DB::collection('notifications')->insert($usersWithSaleProduct['result'], ['upsert' => true]);
         }
 
     }

@@ -197,9 +197,9 @@ MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$locatio
 			angular.extend($scope.product,data);
 
 			var unique = $scope.product.categories.join('|');
-			// console.log(unique);
+			
 			var k = $scope.getKey($scope.cd,unique);			
-			//console.log(k);
+			
 			if(k!=null)
 				$scope.product.categories = $scope.cd[k].id;
 			else

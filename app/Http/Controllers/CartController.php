@@ -454,7 +454,7 @@ class CartController extends Controller
 		try {
 
 			if($updateProData['quantity']>0){
-
+				
 				$cart->products = array_merge($cart->products,array($proIdToUpdate=>$updateProData));
 				$cart->save();
 

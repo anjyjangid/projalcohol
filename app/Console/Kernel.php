@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         \AlcoholDelivery\Console\Commands\Inspire::class,
         \AlcoholDelivery\Console\Commands\DatabaseBackup::class,
+        \AlcoholDelivery\Console\Commands\Notification::class,
     ];
 
     /**
