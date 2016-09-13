@@ -21,8 +21,8 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	/*$location.html5Mode({
 		enabled: true,
 		requireBase: false
-	});*/		  
-  	//$location.hashPrefix('!');
+	});*/
+	//$location.hashPrefix('!');
 }]);
 
 

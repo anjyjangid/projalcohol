@@ -974,8 +974,11 @@ AlcoholDelivery.factory('AlcoholProduct',[
 		}
 
 		_product.proUpdateTimeOut = $timeout(function(){
-
-			var quantity = _product.servechilled?_product.qChilled:_product.qNChilled;
+			
+			var quantity = {
+					chilled : parseInt(_product.qChilled),
+					nonChilled : parseInt(_product.qNChilled)
+				}
 
 			if(_product.isLoyaltyStoreProduct){
 
@@ -1054,7 +1057,7 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 					function(successRes){
 
-						if(successRes.success){							
+						if(successRes.success){
 
 							switch(successRes.code){
 								case 100:
@@ -1106,14 +1109,11 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 					},
 					function(errorRes){
-
+						//
 					}
 
-				);				
-
+				);
 			}
-			
-			
 			
 			if(_product.quantitycustom==0){
 				$scope.isInCart = false;

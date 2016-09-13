@@ -587,7 +587,6 @@ AlcoholDelivery.directive('sideBar', function() {
 	}
 }])
 
-
 .directive('addToCartBtn',[function(){
 	return {
 		restrict : "E",
@@ -772,6 +771,12 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			// };
 
+			$scope.focusout = function(){
+
+				$scope.addMoreCustom = false;
+
+			};
+
 			$scope.addtocart = function(){
 
 				$scope.product.addToCart().then(
@@ -865,7 +870,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.activeAddToCartCustom = function(){
 
 				$scope.addMoreCustom = true;
-
+				
 				$timeout(function(){
 					$element.find(".addmanual input").animate({ width: "70%"},250).focus();
 		  			$element.find(".addmanual .addbuttton").animate({ width: "30%"},250);
@@ -968,20 +973,21 @@ AlcoholDelivery.directive('sideBar', function() {
 .directive("apFocusOut", ['$document','$parse', function( $document, $parse ){
     return {
         link: function( $scope, $element, $attributes ){
-            var scopeExpression = $attributes.apFocusOut,
-                onDocumentClick = function(event){
-                    var isChild = $element.find(event.target).length > 0;
+            // var scopeExpression = $attributes.apFocusOut,
+            console.log("asdasd");
+            //     onDocumentClick = function(event){
+            //         var isChild = $element.find(event.target).length > 0;
 
-                    if(!isChild) {
-                        $scope.$apply(scopeExpression);
-                    }
-                };
+            //         if(!isChild) {
+            //             $scope.$apply(scopeExpression);
+            //         }
+            //     };
 
-            $document.on("click", onDocumentClick);
+            // $document.on("click", onDocumentClick);
 
-            $element.on('$destroy', function() {
-                $document.off("click", onDocumentClick);
-            });
+            // $element.on('$destroy', function() {
+            //     $document.off("click", onDocumentClick);
+            // });
         }
     }
 }])
