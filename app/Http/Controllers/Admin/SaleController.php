@@ -9,6 +9,7 @@ use AlcoholDelivery\Http\Requests\SaleRequest;
 use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Sale;
 use AlcoholDelivery\Products;
+use AlcoholDelivery\Categories;
 use AlcoholDelivery\User;
 use MongoId;
 use File;
@@ -59,7 +60,7 @@ class SaleController extends Controller
                 $this->saveImage($sale,$inputs['image']);
 
             if($inputs['type'] == 1)
-                $this->notifySale($inputs,$sale->_id);
+                $this->notifySale($inputs,(string)$sale->_id);
 
             return response($sale,201);
         }
@@ -353,30 +354,64 @@ class SaleController extends Controller
     public function notifySale($inputs,$id){
 
         //GET ALL PRODUCTS IN CATEGORY
-        if(!empty($inputs['saleCategories'])){
+        if(!empty($inputs['saleCategories'])){            
 
-            $model = Products::raw()->aggregate(
+            $allCategories = Categories::raw()->aggregate(
                 [
-                    
                     '$match' => [
-                        'categoriesObject' => [
-                            '$elemMatch'=>[
-                                '$in'=>$inputs['saleCategories']
-                            ]
-                        ]
-                    ],                  
-                    
-
+                        '_id' => ['$in' => $inputs['saleCategories']]
+                    ]
                 ],
                 [
                     '$group' => [
-                        '_id' => null,                      
-                        'categoryProduct' => [
-                            '$addToSet'=>'$_id' 
-                        ],                                          
-                    ],
-                ]
+                        '_id' => null,
+                        'allchild' => [
+                            '$push' => [
+                                '$cond' => [
+                                    '$ancestors',
+                                    '$_id',
+                                    null
+                                ]
+                            ]
+                        ],
+                        'allparent' => [
+                            '$push' => [
+                                '$cond' => [
+                                    '$ancestors',
+                                    null,
+                                    '$_id',
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                //REMOVING ALL THE NULL VALUES
+                [
+                    '$project' => [
+                        'allchild' => [
+                            '$setDifference' => ['$allchild',[null]]
+                        ],
+                        'allparent' => [
+                            '$setDifference' => ['$allparent',[null]]
+                        ]
+                    ]
+                ]   
             );
+
+            if(isset($allCategories['result'][0]) && !empty($allCategories['result'][0])){
+
+                $allChild = $allCategories['result'][0]['allchild'];
+                $allparent = $allCategories['result'][0]['allparent'];
+
+                $productsFromChild = $this->checkProductSaleByCategories($allChild);
+                $productsFromParent = $this->checkProductSaleByCategories($allparent,1);
+
+                $productfromcategories = array_unique(array_merge($productsFromChild,$productsFromParent));
+
+                if($productfromcategories){
+                    $inputs['saleProducts'] = array_unique(array_merge($inputs['saleProducts'],$productfromcategories));
+                }
+            }
 
             //MERGE CATEGORY PRODUCT AND PRODUCT IN SALE
             if(isset($model['result'][0]) && !empty($model['result'][0])){
@@ -447,10 +482,80 @@ class SaleController extends Controller
             foreach ($usersWithSaleProduct['result'] as $key => $value) {
                 $usersWithSaleProduct['result'][$key]['saleID'] = new MongoId($id);
             }
-
+            //UPDATE NOTIFICATION TABLE TO SEND NOTIFICATION BY CONSOLE COMMANDS
             $r = DB::collection('notifications')->insert($usersWithSaleProduct['result'], ['upsert' => true]);
         }
 
+    }
+
+    public function checkProductSaleByCategories($categories,$isparentcategories = false){
+
+        $query = [];
+
+        $query[]['$match'] = [
+            'categoriesObject' => [
+                '$elemMatch'=>[
+                    '$in'=>$categories
+                ]
+            ]
+        ];
+
+        $query[]['$lookup'] = [
+            'from' => 'sale',
+            'localField' => '_id',
+            'foreignField'=>'saleProductObjectId',
+            'as'=>'productSale'
+        ];
+
+        $query[]['$project'] = [
+            '_id' => 1,
+            'name' => 1,
+            'categoriesObject' => 1,
+            'childCategory' => ['$arrayElemAt'=> [ '$categoriesObject', 1 ]],
+            'productSale' => [
+                '$filter' => [
+                    'input' => '$productSale',
+                    'as' => 'sale',
+                    'cond' => ['$eq'=>['$$sale.type',1]]
+                ]
+            ]
+        ];
+
+        $query[]['$match'] = [
+            'productSale' => ['$eq'=>[]]
+        ];
+
+        //CHECK SALE IF APPLIED ON SUBCATEGORY IN CASE CATEGORIES ARE PARENT ELSE CHECK SALE FOR INDIVIDUAL PRODUCT
+        if($isparentcategories){
+            
+            $query[]['$lookup'] = [
+                'from' => 'sale',
+                'localField' => 'childCategory',
+                'foreignField' => 'saleCategoryObjectId',
+                'as' => 'subCatSale'
+            ];
+
+            $query[]['$match'] = [
+                'subCatSale' => ['$eq'=>[]]
+            ];
+        }
+
+        $query[]['$group'] = [
+            '_id' => null,                      
+            'categoryProduct' => [
+                '$addToSet'=>'$_id' 
+            ],
+        ];
+
+        $model = Products::raw()->aggregate($query);
+
+        $productArr = [];
+
+        if(isset($model['result'][0]) && !empty($model['result'][0])){
+             $productArr = $model['result'][0]['categoryProduct'];   
+        }
+
+        return $productArr;
     }
 
 }

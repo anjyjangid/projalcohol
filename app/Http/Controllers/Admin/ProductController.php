@@ -540,6 +540,188 @@ class ProductController extends Controller
 		public function getTest(){	
 
 			$data = DB::collection('notifications')->raw()->aggregate(
+	            [
+	                '$limit' => 10
+	            ],
+	            [
+	                '$lookup' => [
+	                    'from' => 'user',
+	                    'localField' => 'userId',
+	                    'foreignField' => '_id',
+	                    'as' => 'consumer'
+	                ]
+	            ],
+	            [
+	                '$unwind' => [
+	                    'path' => '$consumer',
+	                    'preserveNullAndEmptyArrays' => true
+	                ]
+	            ],
+	            [
+	                '$lookup' => [
+	                    'from' => 'sale',
+	                    'localField' => 'saleID',
+	                    'foreignField' => '_id',
+	                    'as' => 'saleDetail'
+	                ]
+	            ],[
+	            	'$match' => [
+	            		'saleDetail' => ['$not'=>['$eq'=>[]]]
+	            	]
+	            ],
+	            [
+	                '$unwind' => [
+	                    'path' => '$saleDetail',
+	                    'preserveNullAndEmptyArrays' => true
+	                ]
+	            ],
+	            [
+	                '$unwind' => [
+	                    'path' => '$matchingWish',
+	                    'preserveNullAndEmptyArrays' => true
+	                ]
+	            ],
+	            [
+	                '$lookup' => [
+	                    'from' => 'products',
+	                    'localField' => 'matchingWish._id',
+	                    'foreignField' => '_id',
+	                    'as' => 'products'
+	                ]
+	            ],
+	            [
+	                '$project' => [
+	                    '_id' => '$_id',
+	                    'consumer' => '$consumer',                      
+	                    'saleDetail' => '$saleDetail',                      
+	                    'matchingWish' => '$matchingWish',
+	                    'products' => ['$arrayElemAt' => [ '$products', 0 ]]
+	                ]
+	            ]/*,
+	            [
+	                '$group' => [
+	                    '_id' => '$_id',
+	                    'consumer' => ['$first'=>'$consumer'],
+	                    'saleDetail' => ['$first'=>'$saleDetail'],
+	                    'products' => ['$addToSet'=>'$products']
+	                ]
+	            ]*/
+	        );
+
+			dd($data);
+
+			$allCategories = [new MongoId('57c543a5b190ec430d8b456f')];
+
+			$cat = Categories::raw()->aggregate(
+				[
+					'$match' => [
+						'_id' => ['$in' => $allCategories]
+					]
+				],
+				[
+					'$group' => [
+						'_id' => null,
+						'allchild' => [
+							'$push' => [
+								'$cond' => [
+									'$ancestors',
+									'$_id',
+									null
+								]
+							]
+						],
+						'allparent' => [
+							'$push' => [
+								'$cond' => [
+									'$ancestors',
+									null,
+									'$_id',
+								]
+							]
+						]
+					]
+				],
+				//REMOVING ALL THE NULL VALUES
+				[
+					'$project' => [
+						'allchild' => [
+							'$setDifference' => ['$allchild',[null]]
+						],
+						'allparent' => [
+							'$setDifference' => ['$allparent',[null]]
+						]
+					]
+				]	
+			);			
+
+			dd($cat);
+
+			$model = Products::raw()->aggregate(
+                [   
+                    '$match' => [
+                        'categoriesObject' => [
+                            '$elemMatch'=>[
+                                '$in'=>[new MongoId('57c543a5b190ec430d8b456f')]
+                            ]
+                        ]
+                    ],
+                ],   
+                [
+                	'$lookup' => [
+                		'from' => 'sale',
+                		'localField' => '_id',
+                		'foreignField'=>'saleProductObjectId',
+                		'as'=>'productSale'
+                	]
+                ],
+                [
+                	'$project' => [
+                		'_id' => 1,
+                		'name' => 1,
+                		'categoriesObject' => 1,
+                		'parentCategory'=>['$arrayElemAt'=> [ '$categoriesObject', 0 ]],
+                		'childCategory' => ['$arrayElemAt'=> [ '$categoriesObject', 1 ]],
+                		'productSale' => [
+                			'$filter' => [
+                				'input' => '$productSale',
+		                		'as' => 'sale',
+		                		'cond' => ['$eq'=>['$$sale.type',1]]
+                			]
+                		]
+                	]
+                ],                
+                [
+                	'$match' => [
+                		'productSale' => ['$eq'=>[]]
+                	]
+                ]/*,
+                [
+                	'$lookup' => [
+                		'from' => 'sale',
+                		'localField' => 'childCategory',
+                		'foreignField' => 'saleCategoryObjectId',
+                		'as' => 'subCatSale'
+                	]
+                ],                
+                [
+                	'$match' => [
+                		'subCatSale' => ['$eq'=>[]]
+                	]
+                ]*/
+                ,
+                [
+                    '$group' => [
+                        '_id' => null,                      
+                        'categoryProduct' => [
+                            '$addToSet'=>'$_id' 
+                        ],                                          
+                    ],
+                ]
+            );
+
+            dd($model);
+
+			$data = DB::collection('notifications')->raw()->aggregate(
 				[
 					'$lookup' => [
 						'from' => 'user',
