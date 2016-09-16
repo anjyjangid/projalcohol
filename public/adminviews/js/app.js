@@ -330,7 +330,93 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 
 	}
 
-	
+	$scope.notifyUser = function(id,mnum){    	
+        $scope.notify = {
+            time:30,
+            sms:1,
+            mail:1,
+            numDisable:false,
+            loading:false,            
+            oid:id
+        };
+
+        $scope.notify.oid = id;
+
+        if(mnum == 0){
+            $scope.notify.sms = 0;
+            $scope.notify.numDisable = true;
+        }
+
+        $('#notify').find('.alert').remove();
+
+        $('#notify').modal('show');
+    };
+
+    $scope.sendNotification = function(){
+        $scope.notify.loading = true;        
+        $http.post('/adminapi/admin/notify',$scope.notify).then(function(res){
+            $scope.notify.loading = false;            
+            
+            var st = '';
+
+            if($scope.notify.mail){
+                if(!res.data.mailsent){
+                    Metronic.alert({
+                        type: 'danger',
+                        icon: 'warning',
+                        message: 'Could not send mail, please try again.',
+                        container: '#notify .portlet-body',
+                        place: 'prepend',
+                        reset: false,
+                        closeInSeconds:5                
+                    });
+                }else{
+                    Metronic.alert({
+                        type: 'success',
+                        icon: 'check',
+                        message: 'Mail has been sent successfully.',
+                        container: '#notify .portlet-body',
+                        place: 'prepend',
+                        reset: false,
+                        closeInSeconds:5
+                    });
+                }
+            }
+
+            if($scope.notify.sms){
+                if(!res.data.smssent){
+                    Metronic.alert({
+                        type: 'danger',
+                        icon: 'warning',
+                        message: 'Could not send SMS, please try again.',
+                        container: '#notify .portlet-body',
+                        place: 'prepend',
+                        reset: false,
+                        closeInSeconds:5
+                    });
+                }else{
+                    Metronic.alert({
+                        type: 'success',
+                        icon: 'check',
+                        message: 'SMS has been sent successfully.',
+                        container: '#notify .portlet-body',
+                        place: 'prepend',
+                        reset: false,
+                        closeInSeconds:5                
+                    });
+                }
+            }            
+        },function(erres){            
+            $scope.notify.loading = false;
+            Metronic.alert({
+                type: 'danger',
+                icon: 'warning',
+                message: erres.data.message,
+                container: '#notify .portlet-body',
+                place: 'prepend'
+            });
+        });
+    };	
 	
 }]);
 

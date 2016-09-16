@@ -483,7 +483,7 @@ class SaleController extends Controller
                 $usersWithSaleProduct['result'][$key]['saleID'] = new MongoId($id);
             }
             //UPDATE NOTIFICATION TABLE TO SEND NOTIFICATION BY CONSOLE COMMANDS
-            $r = DB::collection('notifications')->insert($usersWithSaleProduct['result'], ['upsert' => true]);
+            $r = DB::collection('notifications')->insert($usersWithSaleProduct['result']);
         }
 
     }

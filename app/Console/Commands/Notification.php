@@ -127,35 +127,41 @@ class Notification extends Command
 
             foreach ($userWiseSaleProduct as $useremail => $value) {                
                 $user_name = (isset($value['consumer']['name']))?$value['consumer']['name']:$useremail;
-                $productList = '<table border="0" cellpadding="5" width="100%">';
+                $productList = '<table border="0" cellpadding="10" cellspacing="0" width="100%">';
+                $i = 0;
                 foreach ($value['productsWithSale'] as $pkey => $pvalue) {
-                    if($pkey==0)
+                    $i += 1;
+                    if($i%3==1)
                         $productList .= '<tr>';                        
-                        $productList .= '<td style="border:1px solid #ccc; width:33%;">
+                        
+                        $productList .= '
+                        <td style="border:0px solid #ccc; width:33%;">
                             <a href="'.url().'/#/product/'.$pvalue['slug'].'" style="text-decoration:none;color:#37474f;font-size:12px;">
-                                <div align="center">
-                                    <img alt="'.$pvalue['name'].'" border="0" src="'.url().'/products/i/200/'.$pvalue['pImg'].'">
+                                <div align="center" style="min-height:153px;">
+                                    <img style="max-width:100%;max-height:153px;" alt="'.$pvalue['name'].'" border="0" src="'.url().'/products/i/200/'.$pvalue['pImg'].'">
                                 </div>
-                                <div style="float:left;width:100%;"><div style="background:#b119ff;color:#FFF;font-size:0.9em;border-radius:2px;padding:1px 6px;float:left;">'.$pvalue['saleDetail']['listingTitle'].'</div></div>
+                                <div style="float:left;width:100%;margin-bottom:5px;">
+                                    <div style="background:#b119ff;color:#FFF;font-size:0.9em;border-radius:2px;padding:1px 6px;float:left;">'.$pvalue['saleDetail']['listingTitle'].'</div>
+                                </div>
                                 <div>'.$pvalue['name'].'</div>
                             </a>
                         </td>';
                     
                     if(count($value['productsWithSale'])==1){
-                        $productList .= '<td style="width:33%;"></td><td style="width:33%;"></td>';
+                        $productList .= '<td style="width:33%;"></td><td style="width:33%;"></td></tr>';
                     }
 
                     if(count($value['productsWithSale'])==2 && $pkey==1){
-                        $productList .= '<td style="width:33%;"></td>';
+                        $productList .= '<td style="width:33%;"></td></tr>';
                     }    
                         
-                    if($pkey!=0 && $pkey%3==0)
-                        $productList .= '</tr><tr>';        
+                    if($i%3==0)
+                        $productList .= '</tr>';        
                 }
                 $productList .= '</table>';
                 
                 $mailData = [
-                    'email' => 'sharmasabhay@gmail.com',//strtolower($useremail),
+                    'email' => strtolower($useremail),
                     'user_name' => $user_name,
                     'product_list' => $productList
                 ];

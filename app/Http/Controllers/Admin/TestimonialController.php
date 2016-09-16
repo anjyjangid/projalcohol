@@ -247,6 +247,52 @@ class TestimonialController extends Controller
 
     public function postListing(Request $request,$id = false)
     {
+
+        $params = $request->all();
+
+        extract($params);
+
+        $columns = ['_id','_id','image','smallTitle','content','status'];
+
+        $project = ['image'=>1,'name'=>1,'content'=>1,'status'=>1];
+
+        $project['smallTitle'] = ['$toLower' => '$name'];
+
+        $query = [];
+        
+        $query[]['$project'] = $project;
+
+        $sort = ['updated_at'=>-1];
+
+        if(isset($params['order']) && !empty($params['order'])){
+            
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
+        }
+
+        $query[]['$sort'] = $sort;
+
+        $model = Testimonial::raw()->aggregate($query);
+
+        $iTotalRecords = count($model['result']);
+
+        $query[]['$skip'] = (int)$start;
+
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = Testimonial::raw()->aggregate($query);
+        }            
+
+        $response = [
+            'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+            'data' => $model['result']            
+        ];
+
+        return response($response,200);
+
         $params = $request->all();
 
         $testimonials = new Testimonial;        

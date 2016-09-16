@@ -8,14 +8,14 @@
 				</div>				
 			</div>
 			<div class="portlet-body">
-				<form role="form" name='brandForm'>
+				<form role="form" name='brandForm' ng-submit="store()">
 
-					<div class="form-group" ng-class="{'has-error':(brandForm.title.$touched && brandForm.title.$invalid) || errors.title[0]}">
-						
+					<div class="form-group" ng-class="{'has-error':errors.title[0]}">
+
 						<label class="col-md-2 control-label">Name</label>
 						<div class="col-md-10">
 						<input type="text" name="title" placeholder="Title" class="form-control" ng-model="brand.title"/>
-						<span class="help-block" ng-show="brandForm.title.$touched && brandForm.title.$invalid">Title is required.</span>
+						
 						<span class="help-block" ng-show="errors.title[0]">{{errors.title[0]}}</span>
 						
 						</div>
@@ -24,12 +24,11 @@
 						<br>
 					</div>					 			
 
-					<div class="form-group" ng-class="{'has-error':(brandForm.link.$touched && brandForm.link.$invalid) || errors.link[0]}">
+					<div class="form-group" ng-class="{'has-error':errors.link[0]}">
 						
 						<label class="col-md-2 control-label">Url</label>
 						<div class="col-md-10">
-						<input type="url" name="link" placeholder="Link" class="form-control" ng-model="brand.link"/>
-						<span class="help-block" ng-show="brandForm.link.$touched && brandForm.link.$invalid">Enter a valid url</span>
+						<input type="text" name="link" placeholder="Link" class="form-control" ng-model="brand.link"/>
 						<span class="help-block" ng-show="errors.link[0]">{{errors.link[0]}}</span>
 						</div>
 
@@ -70,9 +69,7 @@
 								<span class="fileinput-exists">
 								Change </span>
 								<input type="file" name="image" placeholder="thumbnail" class="form-control" file-model="brand.image"/>
-								</span>
-								<a href="#" class="btn default fileinput-exists" data-dismiss="fileinput">
-								Remove </a>
+								</span>								
 							</div>
 							<span class="help-block" ng-bind="errors.image[0]"></span>
 						</div>
@@ -84,9 +81,9 @@
 						<div class="col-sm-12">
 							<hr>
 							<div class="margin-top-10 pull-right">
-								<button ng-disabled="loading" class="btn green" ng-click="store()"><i class="fa fa-check"></i> {{ brand._id ? 'Update':'Save' }}</button>
+								<button ng-disabled="loading" class="btn green" type="submit"><i class="fa fa-check"></i> {{ brand._id ? 'Update':'Save' }}</button>
 								
-								<a href="#" class="btn default">Cancel </a>
+								<a ui-sref="userLayout.brand.list" class="btn default">Cancel </a>
 							</div>
 						</div>
 					</div>
