@@ -1300,6 +1300,37 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.changeCard = function(card){
 				$scope.payment.creditCard = card;
 			}
+
+			/*$scope.testCard = [
+		        {
+		          token_id:"2992471298821111",
+		          type: 'maestro',		          
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'dinersclub',		          
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'laser',		          
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'jcb',		          
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'unionpay',		          
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'discover',		          
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'mastercard',		          
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'amex',		          
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'visa',		          
+		        }
+		      ];*/
 		}
 	};
 })

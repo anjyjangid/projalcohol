@@ -830,3 +830,41 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 .pointer {
     cursor: pointer !important;
 }
+
+.newcardicons{
+	width: 64px;
+	height: 38px !important;
+	margin-top: 0px !important;
+	background-image: url('../images/credit_64px.jpg');
+	background-repeat: no-repeat;
+	background-position: center;
+	position: relative;
+}
+
+.newcardicons.maestro{
+	background-position: -5px -450px;
+}
+.newcardicons.dinersclub{
+	background-position: -526px -192px;
+}
+.newcardicons.laser{
+	background-position: -526px -364px;
+}
+.newcardicons.jcb{
+	background-position: -440px -364px;
+}
+.newcardicons.unionpay{
+	background-position: -178px -192px;
+}
+.newcardicons.discover{
+	background-position: -5px -277px;
+}
+.newcardicons.mastercard{
+	background-position: -91px -450px;
+}
+.newcardicons.amex{
+	background-position: -265px -20px;
+}
+.newcardicons.visa{
+	background-position: -91px -622px;
+}

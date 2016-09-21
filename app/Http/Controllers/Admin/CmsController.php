@@ -141,114 +141,51 @@ class CmsController extends Controller
 
     public function postList(Request $request)
     {        
+        
         $params = $request->all();
 
-        $cms = new Cms;
+        extract($params);
 
-        $columns = array('_id',"title",'description','content','updated_at');
+        $columns = ['_id','smallTitle','description'];
+
+        $project = ['title'=>1,'description'=>1];
+
+        $project['smallTitle'] = ['$toLower' => '$title'];
+
+        $query = [];
         
-        /* Individual column filtering */
-    
-        foreach($columns as $fieldKey=>$fieldTitle)
-        {
+        $query[]['$project'] = $project;
 
-            if ( isset($params[$fieldTitle]) && $params[$fieldTitle]!="" )
-            {
+        $sort = ['updated_at'=>-1];
 
-                $cms = $cms->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
-
-            }
-        }
-
-
-        //prd($cms->toSql());
-
+        if(isset($params['order']) && !empty($params['order'])){
             
-        /*
-         * Ordering
-         */
-        
-        if ( isset( $params['order'] ) )
-        {
-
-            foreach($params['order'] as $orderKey=>$orderField){
-
-                if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
-                    
-                    $cms = $cms->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
-                    
-                }
-            }
-
-        }
-        
-        /* Data set length after filtering */        
-
-        $iFilteredTotal = $cms->count();
-
-        /*
-         * Paging
-         */
-        if ( isset( $params['start'] ) && $params['length'] != '-1' )
-        {
-            $cms = $cms->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
         }
 
-        $iTotal = $cms->count();
+        $query[]['$sort'] = $sort;
 
-        $cms = $cms->get($columns);
+        $model = Cms::raw()->aggregate($query);
 
-        $cms = $cms->toArray();
-                
-        /*
-         * Output
-         */
-         
-        
-        $records = array(
-            "iTotalRecords" => $iTotal,
-            "iTotalDisplayRecords" => $iFilteredTotal,
-            "data" => array()
-        );
+        $iTotalRecords = count($model['result']);
 
-             
-        
-        $status_list = array(            
-            array("warning" => "in-Active"),
-            array("success" => "Active")
-          );
+        $query[]['$skip'] = (int)$start;
 
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = Cms::raw()->aggregate($query);
+        }            
 
+        $response = [
+            'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+            'data' => $model['result']            
+        ];
 
-        $srStart = intval( $params['start'] );
-        if($params['order'][0]['column']==0 && $params['order'][0]['dir']=='asc'){
-            $srStart = intval($iTotal);
-        }
-
-        $i = 1;
-        foreach($cms as $key=>$value) {
-
-            $row=array();
-
-            if($params['order'][0]['column']==0 && $params['order'][0]['dir']=='asc'){
-                $row[] = $srStart--;//$row1[$aColumns[0]];
-            }else{
-                $row[] = ++$srStart;//$row1[$aColumns[0]];
-            }
-
-            //$status = $status_list[(int)$value['status']];
-            
-                    
-            $row[] = ucfirst($value['title']);
-            $row[] = $value['description'];
-
-            //$row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="pages" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
-            $row[] = '<a title="Edit : '.$value['title'].'" ui-sref=userLayout.cms.edit({pageid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
-            
-            $records['data'][] = $row;
-        }
-        
-        return response($records, 201);
+        return response($response,200);        
         
     }
     

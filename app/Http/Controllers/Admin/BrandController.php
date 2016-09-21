@@ -252,126 +252,48 @@ class BrandController extends Controller
 
         $params = $request->all();
 
-        $brands = new Brand;        
+        extract($params);
+
+        $columns = ['_id','_id','image','smallTitle','link','status'];
+
+        $project = ['image'=>1,'title'=>1,'link'=>1,'status'=>1];
+
+        $project['smallTitle'] = ['$toLower' => '$title'];
+
+        $query = [];
         
+        $query[]['$project'] = $project;
 
-        $columns = array('_id','updated_at','image',"title","link",'status');
-        $indexColumn = '_id';      
-        $table = 'brands';
-               
+        $sort = ['updated_at'=>-1];
 
+        if(isset($params['order']) && !empty($params['order'])){
             
-        /* Individual column filtering */    
-
-        foreach($columns as $fieldKey=>$fieldTitle)
-        {              
-
-            if ( isset($params[$fieldTitle]) && $params[$fieldTitle]!="" )
-            {
-                            
-                if($fieldTitle=="status"){
-
-                    $brands = $brands->where($fieldTitle, '=', (int)$params[$fieldTitle]);
-                }
-                else{
-                    $brands = $brands->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
-                }
-                            
-            }
-        }
-    
-        /*
-         * Ordering
-         */        
-
-        if ( isset( $params['order'] ) )
-        {
-
-            foreach($params['order'] as $orderKey=>$orderField){
-
-                if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
-                    
-                    $brands = $brands->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
-                    
-                }
-            }
-
-        }
-        
-        /* Data set length after filtering */        
-
-        $iFilteredTotal = $brands->count();
-
-        /*
-         * Paging
-         */
-        if ( isset( $params['start'] ) && $params['length'] != '-1' )
-        {
-            $brands = $brands->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
         }
 
-        $iTotal = $brands->count();
+        $query[]['$sort'] = $sort;
 
-        $brands = $brands->get($columns);
+        $model = Brand::raw()->aggregate($query);
 
-        $brands = $brands->toArray();
-                
-        /*
-         * Output
-         */
-         
-        
-        $records = array(
-            "iTotalRecords" => $iTotal,
-            "iTotalDisplayRecords" => $iFilteredTotal,
-            "data" => array()
-        );
+        $iTotalRecords = count($model['result']);
 
-             
-        
-        $status_list = array(            
-            array("warning" => "in-Active"),
-            array("success" => "Active")
-          );
+        $query[]['$skip'] = (int)$start;
 
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = Brand::raw()->aggregate($query);
+        }            
 
+        $response = [
+            'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+            'data' => $model['result']            
+        ];
 
-        $srStart = intval( $params['start'] );
-        if($params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
-            $srStart = intval($iTotal);
-        }
-
-        $i = 1;
-
-        foreach($brands as $key=>$value) {
-
-            $row=array();
-
-            $row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';
-
-            if($params['order'][0]['column']==0 && $params['order'][0]['dir']=='asc'){
-                $row[] = $srStart--;//$row1[$aColumns[0]];
-            }else{
-                $row[] = ++$srStart;//$row1[$aColumns[0]];
-            }
-
-
-
-            $status = $status_list[(int)$value['status']];
-            
-            $row[] = "<img src='".asset('assets/resources/brand/200/'.$value['image'])."' width='100'>";
-
-            $row[] = ucfirst($value['title']);
-
-            $row[] = $value['link'];
-            
-            $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="brands" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
-            $row[] = '<a title="Edit : '.$value['title'].'" ui-sref=userLayout.brand.edit({brandid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
-            
-            $records['data'][] = $row;
-        }
-        
-        return response($records, 201);
+        return response($response,200);       
         
     }
 

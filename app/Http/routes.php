@@ -26,7 +26,7 @@ Route::group(['prefix' => 'adminapi'], function () {
 
 Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	
-	Route::resource('order', 'Admin\OrderController');
+	Route::resource('order', 'Admin\OrderController',['except'=>'show']);
 	Route::controller('order', 'Admin\OrderController');
 	
 	Route::resource('product', 'Admin\ProductController',['only'=>['update','store']]);
@@ -70,7 +70,7 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::resource('brand', 'Admin\BrandController',['only'=>['update','store','show','destroy']]);
 	Route::controller('brand', 'Admin\BrandController');
 
-	Route::resource('promotion', 'Admin\PromotionController',['only'=>['update','store','show']]);
+	Route::resource('promotion', 'Admin\PromotionController',['only'=>['update','store','show','destroy']]);
 	Route::controller('promotion', 'Admin\PromotionController');
 
 	Route::resource('coupon', 'Admin\CouponController',['only'=>['update','store','show']]);

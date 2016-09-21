@@ -267,138 +267,94 @@ class OrderController extends Controller
 
 	}
 
-	public function postOrders(Request $request)
-	{
+	public function postOrders(Request $request){
 		
 		$params = $request->all();
 
-		$orders = new Orders;
+		extract($params);
 
-		/* Data set length after filtering */        
+		$query = [];
 
-		$iFilteredTotal = $orders->count();
+		if(isset($reference) && trim($reference)!=''){			
+			$s = "/".$reference."/i";
+			$query[]['$match']['reference'] = ['$regex'=>new \MongoRegex($s)];
+		}	
 
-		$iTotal = $orders->count();
-
-		$orders = DB::collection('orders')->raw(function($collection) use($params){
-			return $collection->aggregate(array(      
-				array(
-					'$limit' => intval( $params['length'] )
-				),          
-				array(
-					'$skip' => intval( $params['start'] )
-				),
-				array(
-					'$project' => array(
-						'_id'=>1,
-						'service'=>1,
-						'reference'=>1,
-						'delivery.type'=>1,
-						'nonchilled'=>1,
-						'total'=>1,
-						// 'quantity' => array(
-						// 	'$size' => '$products'
-						// ),
-						'created_at'=>1,
-						'timeslot'=>1,
-						'user'=>1
-					),
-				),				
-				array(
-					'$sort' => array('created_at'=> -1) 
-				)
-			));
-		});
-
-		
-		/*
-		 * Output
-		 */
-		
-		
-		$users = [];
-		foreach($orders['result'] as $key=>$order) {
-			$users[] = (string)$order['user'];
-		}
-		
-		
-
-		$users = User::whereIn('_id', $users)->get(["email","name","mobile_number"]);
-		$users = $users->toArray();
-		foreach($users as $key=>$user){
-			$users[$user['_id']] = $user;
-			unset($users[$key]);
+		if(isset($deliveryType) && trim($deliveryType)!=''){						
+			$query[]['$match']['delivery.type'] = (int)$deliveryType;
 		}
 
-		$records = array(
-			"iTotalRecords" => $iTotal,
-			"iTotalDisplayRecords" => $iFilteredTotal,
-			"data" => array()
-		);
-
-		$status_list = array(            
-			array("warning" => "Under Process"),
-			array("danger" => "Dispatch"),
-			array("success" => "Delivered")
-		);
-
-		$deliveryType = array(			
-			array("danger" => "Express"),
-			array("success" => "Advance")
-		);
-
-
-		$srStart = intval( $params['start'] );
-        if(isset($params['order']) && $params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
-            $srStart = intval($iTotal);
-        }
-
-		$i = 1;
-		
-		foreach($orders['result'] as $key=>$order) {
-
-			$row=array();
-
-			if(isset($params['order']) && $params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
-				$row[] = $srStart--;//$row1[$aColumns[0]];
-			}else{
-				$row[] = ++$srStart;//$row1[$aColumns[0]];
-			}
-
-			$status = $status_list[0];
-			
-			$row[] = $order['reference'];
-
-			$row[] = ucfirst(getUserName($users[(string)$order['user']]));
-			
-			$row[] = rand(3,10); //"$order['quantity']";
-
-			
-			$delivery = $deliveryType[(int)$order['delivery']['type']];			
-			$row[] = '<span class="label label-sm label-'.(key($delivery)).'">'.(current($delivery)).'</span>';
-
-			$row[] = '<span class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span>';
-
-			// $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$order['_id'].'\')" id="'.$order['_id'].'" data-table="dealer" data-status="0" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
-
-			$row[] = '<a title="" ui-sref=userLayout.orders.show({order:"'.$order['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
-
-			$mnum = '';
-			if(isset($users[(string)$order['user']]['mobile_number']))
-				$mnum = $users[(string)$order['user']]['mobile_number'];
-			
-			if($mnum==''){
-				$mnum = 0;
-			}
-
-			$row[] = '<a title="Notify user" ng-click=addInventry("'.$order['_id'].'",$mnum) class="btn btn-xs default"><i class="glyphicon glyphicon-comment"></i> Notify user</a>';
-			
-			
-			$records['data'][] = $row;
+		if(isset($status) && trim($status)!=''){						
+			$query[]['$match']['status'] = (int)$status;
 		}
-		
-		return response($records, 201);
-		
+
+		$query[]['$lookup'] = [
+			'from' => 'user',
+			'localField'=>'user',
+			'foreignField'=>'_id',
+			'as'=>'consumer'
+		];
+
+		$query[]['$unwind'] = [
+			'path' => '$consumer',
+			'preserveNullAndEmptyArrays' => true,
+		];
+
+		if(isset($consumerName) && trim($consumerName)!=''){			
+			$s = "/".$consumerName."/i";
+			$query[]['$match']['consumer.name'] = ['$regex'=>new \MongoRegex($s)];
+		}
+
+		$project = ['reference'=>1,'delivery'=>1,'status'=>1,'_id'=>1,'created_at'=>1,'payment'=>1];
+
+		$project['orderDate'] = ['$dateToString'=>['format' => '%Y-%m-%d','date'=>'$created_at']];
+
+		$project['consumer'] = '$consumer';
+
+		$project['noOfProducts'] = [
+			'$sum' =>[
+				['$size'=>'$products'],
+				['$size'=>'$packages'],
+			]
+		];
+
+		$query[]['$project'] = $project;
+
+		$columns = ['reference','consumer.name','noOfProducts','payment.total','created_at','delivery.type','status'];
+
+		$sort = ['created_at' => 1]; 
+
+		if(isset($params['order']) && !empty($params['order'])){
+			$field = $columns[$params['order'][0]['column']];			
+			$sortBy = ($params['order'][0]['dir'] == 'desc')?-1:1;
+			$sort = [$field=>$sortBy];
+		}
+
+		if(isset($created_at) && trim($created_at)!=''){						
+			$query[]['$match']['orderDate'] = $created_at;
+		}
+
+		$query[]['$sort'] = $sort;
+
+		$model = Orders::raw()->aggregate($query);
+
+		$iTotalRecords = count($model['result']);
+
+		$query[]['$skip'] = (int)$start;
+        	
+    	if($length > 0){
+    		$query[]['$limit'] = (int)$length;
+			$model = Orders::raw()->aggregate($query);
+		}
+
+		$response = [
+			'recordsTotal' => $iTotalRecords,
+			'recordsFiltered' => $iTotalRecords,
+			'draw' => $draw,
+			'data' => $model['result']            
+		];
+
+		return response($response,200);		
 	}
 
 
@@ -430,5 +386,6 @@ class OrderController extends Controller
 	{
 	    prd('Method Missing');
 	}
+
 
 }

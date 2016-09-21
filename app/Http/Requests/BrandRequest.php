@@ -27,22 +27,21 @@ class BrandRequest extends Request
         $rules = [
             
             'title' => 'required|string|max:255',            
-            'link' => 'required|max:1000',            
-            'status'=> 'required|integer|in:0,1',
-            
+            'link' => 'required|url',            
+            'status'=> 'required|integer|in:0,1'
         ];
 
         if(isset($this->one)){
 
             if($this->hasFile('image')){
 
-                $rules['image'] = 'mimes:jpeg,bmp,png|max:5000';
+                $rules['image'] = 'required|image|max:5102';
 
             }
 
         }else{
 
-            $rules['image'] = 'required|mimes:jpeg,bmp,png|max:5000';
+            $rules['image'] = 'required|image|max:5102';
 
         }
         

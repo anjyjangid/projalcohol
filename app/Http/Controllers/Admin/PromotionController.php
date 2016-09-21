@@ -183,7 +183,7 @@ class PromotionController extends Controller
 	/**
 	 * Remove the specified resource from storage.
 	 *
-	 * @param  int  $id
+	 * @param  int  $ids
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy($ids)
@@ -203,127 +203,62 @@ class PromotionController extends Controller
 		return response(array($promotions,"success"=>true,"message"=>"Record(s) Removed Successfully"));
 	}
 
-	public function postListing(Request $request,$id = false)
+	/**
+	 * List all the resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request	 
+	 * @return \Illuminate\Http\Response
+	 */
+
+	public function postListing(Request $request)
 	{
+		
 		$params = $request->all();
 
-		$promotions = new Promotion;                
+        extract($params);
 
-		$columns = array('_id','title',"price","status",'count');
-		$indexColumn = '_id';
-		$table = 'promotions';
+        $columns = ['_id','_id','smallTitle','price','noOfProducts','status'];
 
-		/* Individual column filtering */    
+        $project = ['title'=>1,'price'=>1,'status'=>1];
 
-		foreach($columns as $fieldKey=>$fieldTitle)
-		{              
+        $project['smallTitle'] = ['$toLower' => '$title'];
 
-			if ( isset($params[$fieldTitle]) && $params[$fieldTitle]!="" )
-			{
-							
-				if($fieldTitle=="status"){
+        $project['noOfProducts'] = ['$size'=>'$items'];
 
-					$promotions = $promotions->where($fieldTitle, '=', (int)$params[$fieldTitle]);
-				}
-				else{
+        $query = [];
+        
+        $query[]['$project'] = $project;
 
-					$promotions = $promotions->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
+        $sort = ['updated_at'=>-1];
 
-				}
-							
-			}
-		}
-	
-		/*
-		 * Ordering
-		 */        
+        if(isset($params['order']) && !empty($params['order'])){
+            
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
+        }
 
-		if ( isset( $params['order'] ) )
-		{
+        $query[]['$sort'] = $sort;
 
-			foreach($params['order'] as $orderKey=>$orderField){
+        $model = Promotion::raw()->aggregate($query);
 
-				if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
-					
-					$promotions = $promotions->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
-					
-				}
-			}
+        $iTotalRecords = count($model['result']);
 
-		}
-		
-		/* Data set length after filtering */        
+        $query[]['$skip'] = (int)$start;
 
-		$iFilteredTotal = $promotions->count();
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = Promotion::raw()->aggregate($query);
+        }            
 
-		/*
-		 * Paging
-		 */
-		if ( isset( $params['start'] ) && $params['length'] != '-1' )
-		{
-			$promotions = $promotions->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
-		}
+        $response = [
+            'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+            'data' => $model['result']            
+        ];
 
-		$iTotal = $promotions->count();
-
-		$promotions = $promotions->get($columns);
-
-		$promotions = $promotions->toArray();
-				
-		/*
-		 * Output
-		 */
-		 
-		
-		$records = array(
-			"iTotalRecords" => $iTotal,
-			"iTotalDisplayRecords" => $iFilteredTotal,
-			"data" => array()
-		);
-
-			 
-		
-		$status_list = array(            
-			array("warning" => "in-Active"),
-			array("success" => "Active")
-		  );
-
-
-
-		$srStart = intval( $params['start'] );
-		if($params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
-			$srStart = intval($iTotal);
-		}
-
-		$i = 1;
-
-		foreach($promotions as $key=>$value) {
-
-			$row=array();
-
-			$row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';
-
-			if($params['order'][0]['column']==0 && $params['order'][0]['dir']=='asc'){
-				$row[] = $srStart--;//$row1[$aColumns[0]];
-			}else{
-				$row[] = ++$srStart;//$row1[$aColumns[0]];
-			}
-
-			$status = $status_list[(int)$value['status']];
-
-			$row[] = ucfirst($value['title']);
-
-			$row[] = $value['price'];
-
-			$row[] = (int)$value['count'];
-			
-			$row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="promotions" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
-			$row[] = '<a title="Edit : '.$value['title'].'" href="#/promotion/edit/'.$value['_id'].'" href="#/promotion/show/'.$value['_id'].'" class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
-			
-			$records['data'][] = $row;
-		}
-		
-		return response($records, 201);
+        return response($response,200);		
 		
 	}
 
