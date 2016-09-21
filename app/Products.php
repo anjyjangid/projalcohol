@@ -298,7 +298,7 @@ class Products extends Eloquent
 			
 			$match['$match']['slug'] = $params['product'];
 			
-		}
+		}				
 		
 		$sortParam = [
 			'$sort' => [ 'created_at' => 1 ]
@@ -575,12 +575,30 @@ class Products extends Eloquent
 		$redGlobal = $globalPricing->settings['regular_express_delivery'];
 		$edbGlobal = $globalPricing->settings['express_delivery_bulk'];
 
+		$isSingle = true;
+		if(!is_array($params['id'])){
+
+			$match = new mongoId($params['id']);
+
+		}else{
+
+			$isSingle = false;
+			$params['id'] = (array)$params['id'];
+			foreach($params['id'] as &$proId){
+				$proId = new MongoId($proId);
+			}
+
+			$match = [ '$in' => $params['id'] ];
+		}
+
+
+
 		try {
 
 			$query = [
 						[
 							'$match' => [
-								"_id" => new mongoId($params['id']),
+								"_id" => $match,
 								"categoriesObject" => [ '$exists' => true ],
 								"status" => 1
 							]
@@ -686,23 +704,118 @@ class Products extends Eloquent
 									]
 								]
 							]
+						],
+						[ // lookup for Parent Category Sale
+							'$lookup' => [
+								'from' => 'sale',
+								'localField' => 'catParent', 
+								'foreignField' => 'saleCategoryObjectId', 
+								'as' => 'pCatSale'
+							]
+						],
+						[ // lookup for Sub Category Sale
+							'$lookup' => [
+								'from' => 'sale',
+								'localField' => 'catSubParent',
+								'foreignField' => 'saleCategoryObjectId',
+								'as' => 'catSale'
+							]
+						],
+						[ // lookup for Product Category Sale
+							'$lookup' => [
+								'from' => 'sale',
+								'localField' => '_id',
+								'foreignField' => 'saleProductObjectId', 
+								'as' => 'productSale'
+							]
+						],
+						[
+							'$project' =>[			
+
+								'proSales' => [
+									'$filter' => [
+										'input' => [
+											'$setUnion' => ['$productSale','$catSale','$pCatSale']
+										],
+										'as' => 'sale',
+										'cond' => [
+											'$eq' => [ '$$sale.type', 1 ]
+										]
+									]
+								],
+								'chilled' => 1,
+								'description' =>  1,
+								'price' => 1,
+								'categories' => 1,
+								'categoriesObject'=>1,
+								'imageFiles' => 1,
+								'name' => 1,
+								'slug' => 1,
+								'shortDescription' => 1,
+								'sku' => 1,
+								'quantity' => 1,
+								'regular_express_delivery' => 1,
+								'express_delivery' => 1,
+								'express_delivery_bulk' => 1,
+								'outOfStockType' => 1,
+								'availabilityDays' => 1,
+								'availabilityTime' => 1,
+								'regular_express_delivery' => 1,
+								'express_delivery_bulk' => 1,
+							]
+						],
+						[
+							'$project' =>[
+
+								'proSales' => [
+									'$arrayElemAt'=> [ '$proSales', -1 ]
+								],
+								'chilled' => 1,
+								'description' =>  1,
+								'price' => 1,
+								'categories' => 1,
+								'categoriesObject'=>1,
+								'imageFiles' => 1,
+								'name' => 1,
+								'slug' => 1,
+								'shortDescription' => 1,
+								'sku' => 1,
+								'quantity' => 1,
+								'regular_express_delivery' => 1,
+								'express_delivery' => 1,
+								'express_delivery_bulk' => 1,
+								'outOfStockType' => 1,
+								'availabilityDays' => 1,
+								'availabilityTime' => 1,
+								'regular_express_delivery' => 1,
+								'express_delivery_bulk' => 1,
+							]
 						]
 
 					];
 			
 			$product = Products::raw()->aggregate($query);
 
+
 			if(isset($product['result'][0])){
 
+				foreach ($product['result'] as $key => &$tempPro) {
+						
+					if(is_null($tempPro['regular_express_delivery'])){
+						$tempPro['regular_express_delivery'] = $redGlobal;
+					}
+					if(is_null($tempPro['express_delivery_bulk'])){
+						$tempPro['express_delivery_bulk'] = $edbGlobal;
+					}
+
+				}
+
+			}
+
+			if($isSingle){
 				$product = $product['result'][0];
-
-				if(is_null($product['regular_express_delivery'])){
-					$product['regular_express_delivery'] = $redGlobal;
-				}
-				if(is_null($product['express_delivery_bulk'])){
-					$product['express_delivery_bulk'] = $edbGlobal;
-				}
-
+			}else{
+				$product = $product['result'];
 			}
 
 			return ['success'=>true,"product"=>$product];
@@ -715,6 +828,7 @@ class Products extends Eloquent
 		}
 
 	}
+	
 
 	public function packagelist()
 	{
