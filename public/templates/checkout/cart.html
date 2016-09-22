@@ -11,6 +11,54 @@
 	<div class="table-responsive">
 		<table class="table cart-table">
 			<tbody>
+
+				<tr ng-repeat="(key, sale) in alcoholCart.getSales()">
+
+					<td width="52%">
+						
+						<ul class="orhistry2_td2procdtcvr list-inline sale-pro-list">
+
+							<div ng-repeat-start="sPro in sale.products" ng-init="b = [] ; b[sPro.quantity-1] = null" ng-hide="true"></div>
+								<li class="cursor-pointer" ng-repeat="a in b">
+									<a ui-sref="mainLayout.product({product:sPro.product.slug})" title="View Product">
+										<img err-pro-src="" ng-src="products/i/200/{{sPro.product.image}}" alt="" class="img-responsive img-responsive-h" />
+									</a>
+								</li>
+							<div ng-repeat-end ng-hide="true"></div>
+
+							<div ng-repeat-start="sPro in sale.action" ng-init="b = [] ; b[sPro.quantity-1] = null" ng-hide="true"></div>
+								<li class="cursor-pointer" ng-repeat="a in b">
+									<a ui-sref="mainLayout.product({product:sPro.product.slug})" title="View Product">
+										<img err-pro-src="" ng-src="products/i/200/{{sPro.product.image}}" alt="" class="img-responsive img-responsive-h" />
+									</a>
+								</li>
+							<div ng-repeat-end ng-hide="true"></div>
+
+						</ul>
+
+						<div class="sale-tag-txt -cart">{{sale.title.long}}</div><span>{{sale.strikePrice}}</span>
+
+					</td>
+					<td>
+						<div class="prod_chilled" ng-class="{notchilled:sale.chilled}" ng-click="sale.updateChilledStatus()">
+						<span>Chilled</span>
+						<div class="prod_chilled_icon"></div>
+						</div>
+					</td>
+
+					<td>
+
+						
+					</td>
+					<td>
+						<div class="orderhistry2price">{{sale.price | pricingTxt}}</div>
+					</td>
+					<td> 
+						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="sale.remove()"><i class="glyphicon glyphicon-trash"></i></a>
+					</td>
+
+				</tr>
+
 				<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getProducts()"></tr>
 				<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0">
 
