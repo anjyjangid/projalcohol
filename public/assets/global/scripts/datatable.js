@@ -150,7 +150,11 @@ var Datatable = function() {
                         if (tableOptions.onDataLoad) {
                             tableOptions.onDataLoad.call(undefined, the);
                         }
-                    }
+                    },
+                    "lengthMenu": [
+                        [10, 25, 50, 100, -1],
+                        [10, 25, 50, 100, "All"] // change per page values here
+                    ],
                 }
             }, options);
 
@@ -198,6 +202,16 @@ var Datatable = function() {
 
             // handle row's checkbox click
             table.on('change', 'tbody > tr > td:nth-child(1) input[type="checkbox"]', function() {
+                var selected = $('tbody > tr > td:nth-child(1) input[type="checkbox"]:checked', table).size();
+                var total = $('tbody > tr > td:nth-child(1) input[type="checkbox"]', table).size();
+                var grpChk = $('.group-checkable', table);
+                if(selected < total){
+                    grpChk.attr("checked", false);
+                }else{
+                    grpChk.attr("checked", true);
+                }
+                $.uniform.update(grpChk);
+                
                 countSelectedRecords();
             });
 

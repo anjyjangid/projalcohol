@@ -1411,8 +1411,13 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 							}
 
-							
-
+							$scope.loadMore = function(dir){
+								var owl = $('.dontmissowl').data('owlCarousel');
+								if(dir)
+									owl.prev();
+								else
+									owl.next();				
+							}	
 						},
 						templateUrl: '/templates/checkout/dont-miss.html',
 						parent: angular.element(document.body),
@@ -2952,8 +2957,8 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 }]);
 
 AlcoholDelivery.controller('PackageDetailController', 
-	['$q','$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll','alcoholCart','sweetAlert', 
-	function($q, $scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll,alcoholCart,sweetAlert){
+	['$q','$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll','alcoholCart','sweetAlert', '$sce', 
+	function($q, $scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll,alcoholCart,sweetAlert,$sce){
 
 	$scope.errors = [];
 
@@ -3131,6 +3136,9 @@ AlcoholDelivery.controller('PackageDetailController',
 		}
 	}	
 
+	$scope.toTrustedHTML = function( html ){
+	    return $sce.trustAsHtml( html );
+	}
 	
 
 }]);

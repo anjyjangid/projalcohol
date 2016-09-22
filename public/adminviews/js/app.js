@@ -542,6 +542,14 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 					id:'sidebar_menu_link_shared',
 					access : ['admin'],	
 					links:['userLayout.products.shared']	
+				},
+				{
+					label:'Stock order list',
+					icon:'icon-layers',
+					uisref:'userLayout.products.stocks',
+					id:'sidebar_menu_link_stocks',
+					access : ['admin'],	
+					links:['userLayout.products.stocks']	
 				}
 			]
 		},
@@ -1528,6 +1536,21 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             }            
         })
 
+        .state("userLayout.products.stocks", {
+            url: "/products/stocks",
+            templateUrl: "adminviews/views/stocks/list.html",
+            controller: "StockController",
+            data:{
+				pageTitle:'Stock Order List',
+				breadCrumb:[					
+					{title:'Stock Order List','uisref':'#'}					
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }            
+        })
+
         .state('userLayout.packages', {
             abstract:true,            
             templateUrl:'adminviews/views/auth.html',            
@@ -2107,7 +2130,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             data:{
 				pageTitle:'Edit coupons',				
 				breadCrumb:[
-					{title:'coupons','uisref':'userLayout.coupon.list'},
+					{title:'Coupons','uisref':'userLayout.coupon.list'},
 					{title:'Edit','uisref':'#'}					
 				]				
 			},            

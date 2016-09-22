@@ -24,6 +24,8 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 				advance_order_bulk:{},
 				express_delivery_bulk:{},
 				isMenu:"1",
+				thumb:'',
+				selectedCat:null
 			};
 			$scope.categories = [];
 			$scope.lthumb = true;
@@ -83,7 +85,7 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 
 			var data = $scope.category;
 
-			if($scope.categories[0].categoryList.length>0){
+			/*if($scope.categories[0].categoryList.length>0){
 				
 				var catLength = $scope.categories.length;
 
@@ -105,7 +107,12 @@ MetronicApp.controller('CategoryController',['$rootScope', '$scope', '$timeout',
 
 				}
 
-			}
+			}*/
+
+			if($scope.category.selectedCat!=null)
+				data.ptitle = $scope.category.selectedCat._id;
+			else
+				data.ptitle = '';
 
 			var files = {
 				"thumb":$scope.category.thumb,
@@ -169,6 +176,7 @@ MetronicApp.controller('CategoryUpdateController',['$rootScope', '$scope', '$tim
 			$scope.category = {
 				ptitle:'',
 				isMenu:"1",
+				selectedCat:null
 			};
 
 			$scope.categories = [];
@@ -186,6 +194,9 @@ MetronicApp.controller('CategoryUpdateController',['$rootScope', '$scope', '$tim
 				response.renameProperty('cat_lthumb','lthumb');
 				
 				angular.extend($scope.category,response);
+
+				if(response.ancestors)
+					$scope.category.selectedCat = response.ancestors[0];
 
 				if(!$scope.category.advance_order)
 					$scope.category.advance_order = {};

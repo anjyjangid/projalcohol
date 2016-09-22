@@ -152,125 +152,56 @@ class DealerController extends Controller
 
     public function postDealers(Request $request)
     {
+        
         $params = $request->all();
 
-        $dealers = new Dealer;
+        extract($params);
 
-        $columns = array('_id',"updated_at",'contacts','address','title','status');
-        
-        /* Individual column filtering */
-    
+        $columns = ['_id','smallTitle','status'];
 
-        foreach($columns as $fieldKey=>$fieldTitle)
-        {
+        $project = ['title'=>1,'status'=>1,'contacts'=>1];
 
-            if ( isset($params[$fieldTitle]) && $params[$fieldTitle]!="" )
-            {   
-                if($fieldTitle=="status"){
-                    
-                    $dealers = $dealers->where($fieldTitle, "=",(int)$params[$fieldTitle]);
+        $project['smallTitle'] = ['$toLower' => '$title'];
 
-                }else{
+        $query = [];
 
-                    $dealers = $dealers->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
-
-                }
-
-            }
-        }
-                      
-
-                      
-        /*
-         * Ordering
-         */
-        
-        if ( isset( $params['order'] ) )
-        {
-
-            foreach($params['order'] as $orderKey=>$orderField){
-
-                if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
-                    
-                    $dealers = $dealers->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
-                    
-                }
-            }
-
+        if(isset($name) && trim($name)!=''){
+            $s = "/".$name."/i";
+            $query[]['$match']['title'] = ['$regex'=>new \MongoRegex($s)];
         }
         
-        /* Data set length after filtering */        
+        $query[]['$project'] = $project;
 
-        $iFilteredTotal = $dealers->count();
+        $sort = ['updated_at'=>-1];
 
-        /*
-         * Paging
-         */
-        if ( isset( $params['start'] ) && $params['length'] != '-1' )
-        {
-            $dealers = $dealers->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
-        }
-
-        $iTotal = $dealers->count();
-
-        $dealers = $dealers->get($columns);
-
-        $dealers = $dealers->toArray();
-                
-        /*
-         * Output
-         */
-         
-        
-        $records = array(
-            "iTotalRecords" => $iTotal,
-            "iTotalDisplayRecords" => $iFilteredTotal,
-            "data" => array()
-        );
-
-             
-        
-        $status_list = array(            
-            array("warning" => "in-Active"),
-            array("success" => "Active")
-          );
-
-
-
-        $srStart = intval( $params['start'] );
-        if($params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
-            $srStart = intval($iTotal);
-        }
-
-        $i = 1;
-        
-        foreach($dealers as $key=>$value) {
-
-            $row=array();
-
-            //$row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';
-
-            if($params['order'][0]['column']==1 && $params['order'][0]['dir']=='desc'){
-                $row[] = $srStart--;//$row1[$aColumns[0]];
-            }else{
-                $row[] = ++$srStart;//$row1[$aColumns[0]];
-            }
-
-            $status = $status_list[(int)$value['status']];
+        if(isset($params['order']) && !empty($params['order'])){
             
-                    
-            $row[] = ucfirst($value['title']);
-            $row[] = count($value['contacts']);
-
-            $row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="dealer" data-status="'.((int)$value['status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
-            $row[] = '<a title="View : '.$value['title'].'" ui-sref=userLayout.dealers.show({dealerid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
-                     '<a title="Edit : '.$value['title'].'" ui-sref=userLayout.dealers.edit({dealerid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>
-                     <a title="View Order" ui-sref=userLayout.dealers.orders({dealerid:"'.$value['_id'].'"}) class="btn btn-xs default">View Orders</a>';
-            
-            $records['data'][] = $row;
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
         }
-        
-        return response($records, 201);
+
+        $query[]['$sort'] = $sort;
+
+        $model = Dealer::raw()->aggregate($query);
+
+        $iTotalRecords = count($model['result']);
+
+        $query[]['$skip'] = (int)$start;
+
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = Dealer::raw()->aggregate($query);
+        }            
+
+        $response = [
+            'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+            'data' => $model['result']            
+        ];
+
+        return response($response,200);        
         
     }    
     

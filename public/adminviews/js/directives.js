@@ -229,8 +229,8 @@ MetronicApp.directive('formFilter', function ($timeout) {
 
 			if(event.which === 13) {			
 
-				$(".filter-submit").click();
-				event.preventDefault();
+				$(".filter-submit").trigger('click');
+				//event.preventDefault();
 
 			}
 
@@ -238,7 +238,7 @@ MetronicApp.directive('formFilter', function ($timeout) {
 
 		element.bind("change", function(event) {
 		
-			$(".filter-submit").click();
+			$(".filter-submit").trigger('click');
 	
 		});
 

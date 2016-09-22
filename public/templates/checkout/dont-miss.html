@@ -4,13 +4,17 @@
 			<div class="alcohal_addadress_headercurmain">          
 				<div class="alcohal_addadress_headertitle">Dont, Miss Out On These!</div>
 			</div>
+			<span class="glyphicon glyphicon-chevron-left dontmissbut" ng-click="loadMore(1);"></span>
+			<span class="glyphicon glyphicon-chevron-right dontmissbut" ng-click="loadMore(0);"></span>
+			
 			<span flex></span>  <md-button class="md-icon-button" ng-click="hide()"> &times; </md-button>
 		</div>
 	</md-toolbar>
 
-	<md-dialog-content layout="row" class="prod-in-slider">
+	<md-dialog-content layout="row" class="prod-in-slider dontmiss" flex="100%">
 
-		<data-owl-carousel class="owl-carousel owl-theme" data-options="{
+		
+		<data-owl-carousel class="owl-carousel owl-theme dontmissowl" data-options="{
 
 				navigation : false,
 				navigationText :	['<','>'],
@@ -30,8 +34,8 @@
 			
 
 			</div>
-		</data-owl-carousel>
-
+				</data-owl-carousel>
+		
 		<div ng-if="notAvailable" class="ng-scope" style="
 	    width: 100%;
 	    text-align: center;

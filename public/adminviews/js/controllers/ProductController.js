@@ -336,6 +336,10 @@ MetronicApp.controller('ProductAddController',[
 
 	}
 
+	$scope.showError = function(tab){
+		return '';
+	}
+
 }]);
 
 MetronicApp.directive('myChange', function() {

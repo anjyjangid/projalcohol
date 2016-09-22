@@ -9,6 +9,7 @@ use AlcoholDelivery\Http\Requests\HolidayRequest;
 use AlcoholDelivery\Http\Controllers\Controller;
 
 use AlcoholDelivery\Holiday;
+use MongoDate;
 
 class HolidayController extends Controller
 {
@@ -51,6 +52,8 @@ class HolidayController extends Controller
     {
         $inputs = $request->all();
         
+        $inputs['timeStamp'] = (int)$inputs['timeStamp'];
+
         $holiday = Holiday::create($inputs);    
 
         if($holiday)
@@ -94,8 +97,15 @@ class HolidayController extends Controller
         $inputs = $request->all();
         $holiday = Holiday::find($id);
 
+        $update = false;
+
+        if(isset($inputs['timeStamp']) && !empty($inputs['timeStamp']))
+            $inputs['timeStamp'] = (int)$inputs['timeStamp'];
+
         if($holiday)
             $update = $holiday->update($inputs);
+        else if($id=='weekdayoff')
+            $update = Holiday::raw()->insert($inputs);            
         
 
         if($update)
@@ -124,7 +134,9 @@ class HolidayController extends Controller
     public function postList(Request $request){
 
         $param = $request->all();
-        $holidays = Holiday::whereBetween('timeStamp', [$param['start'], $param['end']])->orWhere('_id','weekdayoff')->get();
+        $start = (int)$param['start'];
+        $end = (int)$param['end'];
+        $holidays = Holiday::whereBetween('timeStamp', [$start, $end])->orWhere('_id','weekdayoff')->get();
         return response($holidays,200);
 
     }

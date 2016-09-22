@@ -74,9 +74,7 @@
 <!-- BEGIN MAIN JS -->
 <script>
 	
-	var ProductsTableAjax = function () {
-
-    
+	var ProductsTableAjax = function () {    
 
     var handleRecords = function () {
 
@@ -99,7 +97,7 @@
                 //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
                 "columns": [{		                
 	                	mRender: function(data, type, full, meta) {
-	                		return (meta.row)+1;		                	
+	                		return meta.row + meta.settings._iDisplayStart + 1;
 		                },
 		                orderable:false		                
 		            },{	 
@@ -120,12 +118,6 @@
 		                orderable:false
 		            }
 		        ],
-
-                "lengthMenu": [
-                    [10, 20, 50, 100, 150, -1],
-                    [10, 20, 50, 100, 150, "All"] // change per page values here
-                ],
-                "pageLength": 10, // default record count per page
 				"ajax": {
                     "url": "../adminapi/stores/storelist", // ajax source                    
                 },                   

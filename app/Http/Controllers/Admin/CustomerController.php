@@ -169,80 +169,69 @@ class CustomerController extends Controller
 	public function postList(Request $request)
 	{
 		$params = $request->all();
-		$users = new User;
 
-		if(isset($params['name']) && trim($params['name'])!=''){
-		  $pname = $params['name'];
-		  $users = $users->where('name','regexp', "/.*$pname/i");
-		}
+        extract($params);
 
-		if(isset($params['email']) && trim($params['email'])!=''){
-			$pemail = $params['email'];
-			$users = $users->where('email','regexp',"/.*$pemail/i");
-		}
+        $columns = ['_id','smallTitle','email','status'];
 
-		if(isset($params['status']) && trim($params['status'])!=''){
-		  $users = $users->where('status',(int)$params['status']);
-		}
+        $project = ['title'=>1,'status'=>1,'email'=>1,'name'=>1,'mobile_number'=>1];
 
+        $query = [];        
+        
+        $project['smallTitle'] = ['$toLower' => '$name'];
+        
+        $query[]['$project'] = $project;
 
-		$iTotalRecords = $users->count();
-		$iDisplayLength = intval($_REQUEST['length']);
-		$iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength; 
-		$iDisplayStart = intval($_REQUEST['start']);
-		$sEcho = intval($_REQUEST['draw']);
-		
-		$records = array();
-		$records["data"] = array(); 
+        if(isset($name) && trim($name)!=''){
+            $s = "/".$name."/i";
+            $query[]['$match']['name'] = ['$regex'=>new \MongoRegex($s)];
+        }
 
-		$end = $iDisplayStart + $iDisplayLength;
-		$end = $end > $iTotalRecords ? $iTotalRecords : $end;
+        if(isset($email) && trim($email)!=''){
+            $s = "/".$email."/i";
+            $query[]['$match']['email'] = ['$regex'=>new \MongoRegex($s)];
+        }
 
-		$fstatus = [['danger'=>'Disabled'],['success'=>'Enabled']];
+        if(isset($status) && trim($status)!=''){            
+            $query[]['$match']['status'] = (int)$status;
+        }
 
-		$notordered = true;
+        if(isset($mobile_number) && trim($mobile_number)!=''){            
+            $s = "/".$mobile_number."/i";
+            $query[]['$match']['mobile_number'] = ['$regex'=>new \MongoRegex($s)];
+        }
 
+        $sort = ['updated_at'=>-1];
 
-		$columns = ['name','email','status','_id'];
+        if(isset($params['order']) && !empty($params['order'])){
+            
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
+        }
 
-		//prd($params);
-		if ( isset( $params['order'] ) ){
-			foreach($params['order'] as $orderKey=>$orderField){
-				if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
-					$notordered = false;                    
-					$users = $users->orderBy($columns[$orderField['column']],$orderField['dir']);                    
-				}
-			}
-		}
+        $query[]['$sort'] = $sort;
 
-		//prd($users);
-		
-		if($notordered){
-		  $users = $users->orderBy('_id','desc');
-		}
+        $model = User::raw()->aggregate($query);
 
-		$users = $users->skip($iDisplayStart)        
-		->take($iDisplayLength)->get();
+        $iTotalRecords = count($model['result']);
 
-		$ids = $iDisplayStart;
-		
-		/*foreach($users as $i => $user) 
-		{
-			$records["data"][] = array(
-			  "name" => $user->name,
-			  "email" => $user->email,
-			  "status" => $user->status,
-			  "_id" => $user->_id,
-			);
-		}*/
+        $query[]['$skip'] = (int)$start;
 
-		$records["data"] = $users;
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = User::raw()->aggregate($query);
+        }            
 
-		$records["draw"] = $sEcho;
-		$records["recordsTotal"] = $iTotalRecords;
-		$records["recordsFiltered"] = $iTotalRecords; 
+        $response = [
+            'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+            'data' => $model['result']            
+        ];
 
-		return response($records);
+        return response($response,200);
+
 	}
 	
 

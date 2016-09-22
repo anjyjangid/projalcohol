@@ -13,6 +13,7 @@ use Image;
 
 use AlcoholDelivery\Categories as Categories;
 use AlcoholDelivery\Sale;
+use AlcoholDelivery\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -51,41 +52,9 @@ class CategoryController extends Controller
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(Request $request)
+	public function store(CategoryRequest $request)
 	{
 		$inputs = $request->all();
-		
-		
-		if(isset($inputs['thumb']) && $inputs['thumb']=="undefined"){
-			unset($inputs['thumb']);
-		}
-		if(isset($inputs['lthumb']) && $inputs['lthumb']=="undefined"){
-			unset($inputs['lthumb']);
-		}
-
-		// validation rules
-
-		$rules = [
-			'title' => 'required',
-			'slug'  => 'required',
-			'isMenu'=> 'required|integer|in:0,1',
-			'thumb' => 'required|mimes:jpeg,jpg,png|max:8000',
-			'metaTitle' => 'required|max:100',
-            'metaKeywords' => 'required|max:150',
-            'metaDescription' => 'required|max:150',
-		];
-
-		if(!isset($inputs['ptitle']) || $inputs['ptitle']==""){
-			$rules['lthumb'] = 'required|mimes:jpeg,jpg,png|max:8000';
-		}
-
-		$validator = Validator::make($inputs, $rules);
-
-		// if validation fails
-		if ($validator->fails()) {
-			
-			return response($validator->errors(), 422);
-		}
 		
 		$category = new Categories;
 
@@ -158,7 +127,7 @@ class CategoryController extends Controller
 		$category->isMenu = (int)$inputs['isMenu'];
 		$category->cat_status = 0;
 		$category->cat_thumb = $fileUpload->original['thumb'];
-		$category->cat_lthumb = isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:'';
+		// $category->cat_lthumb = isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:'';
 
 		$category->metaTitle = @$inputs['metaTitle'];
 		$category->metaKeywords = @$inputs['metaKeywords'];
@@ -190,7 +159,7 @@ class CategoryController extends Controller
 
 	}
 
-	public function uploadthumb(Request $request){
+	public function uploadthumb($request){
 		
 		$files = array();
 
@@ -283,45 +252,10 @@ class CategoryController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function postUpdate(Request $request, $id)
+	public function postUpdate(CategoryRequest $request, $id)
 	{
 		$inputs = $request->all();
 
-		$rules = [
-			'title' => 'required',
-			'slug'  => 'required',
-			'isMenu'=> 'required|integer|in:0,1',	
-			'metaTitle' => 'max:100',
-            'metaKeywords' => 'max:150',
-            'metaDescription' => 'max:150',		
-		];
-			
-
-		if ($request->hasFile('thumb')){
-			$rules['thumb'] = 'mimes:jpeg,jpg,png|max:8000';
-		}
-		if ($inputs['thumb']=='undefined'){
-			$rules['thumb'] = 'required|mimes:jpeg,jpg,png|max:8000';
-		}
-
-		if ($request->hasFile('lthumb')){
-			$rules['lthumb'] = 'mimes:jpeg,jpg,png|max:8000';
-		}
-		if ($inputs['lthumb']=='undefined'){
-			$rules['lthumb'] = 'required|mimes:jpeg,jpg,png|max:8000';
-		}
-
-
-		$validator = Validator::make($inputs, $rules);
-
-		// if validation fails
-		if ($validator->fails()) {
-			
-			return response($validator->errors(), 422);
-		}
-		
-
-		
 		$category = Categories::find($id);
 
 		// Pricing section checks start
@@ -380,10 +314,9 @@ class CategoryController extends Controller
 
 		$category->cat_title = $inputs['title'];
 		$category->slug = $inputs['slug'];
-		$category->isMenu = (int)$inputs['isMenu'];
-		
+		$category->isMenu = (int)$inputs['isMenu'];		
 		$category->cat_thumb = isset($fileUpload->original['thumb'])?$fileUpload->original['thumb']:$inputs['thumb'];
-		$category->cat_lthumb = isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:$inputs['lthumb'];
+		// $category->cat_lthumb = isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:$inputs['lthumb'];
 
 		$category->metaTitle = @$inputs['metaTitle'];
 		$category->metaKeywords = @$inputs['metaKeywords'];
@@ -449,133 +382,89 @@ class CategoryController extends Controller
 
 	public function postCategorylist(Request $request,$id = false)
 	{        
+		
 		$params = $request->all();
 
-		$categories = new Categories;        
-		
+        extract($params);
 
-		//$columns = array('_id',"cat_title",'cat_title','ancestors','updated_at','cat_status');
-		$columns = array("cat_title",'cat_title','ancestors','updated_at','cat_status');
-		$indexColumn = '_id';      
-		$table = 'categoies';
-			   
+        $columns = ['_id','smallTitle','smallParentTitle','cat_status'];
 
+        $project = ['cat_title'=>1,'cat_status'=>1];
+
+        $project['smallTitle'] = ['$toLower' => '$cat_title'];
+        $project['ancestor'] = '$ancestor';
+        //
+
+        $query = [];
+
+        $query[]['$unwind'] = [
+        	'path' => '$ancestors',
+        	'preserveNullAndEmptyArrays' => true
+        ];
+        
+        $query[]['$lookup'] = [
+        	'from' => 'categories',
+        	'localField' => 'ancestors._id',
+        	'foreignField' => '_id',
+        	'as' => 'ancestor'
+        ];
+
+        $query[]['$project'] = $project;
+
+        $query[]['$unwind'] = [
+        	'path' => '$ancestor',
+        	'preserveNullAndEmptyArrays' => true
+        ];
+
+        $project['smallParentTitle'] = ['$toLower' => '$ancestor.cat_title'];
+
+        $query[]['$project'] = $project;
+
+		if(isset($cat_title) && trim($cat_title)!=''){
+			$s = "/".$cat_title."/i";
+			$query[]['$match']['cat_title'] = ['$regex'=>new \MongoRegex($s)];
+		}
+
+		if(isset($ancestors) && trim($ancestors)!=''){
+			$s = "/".$ancestors."/i";
+			$query[]['$match']['ancestor.cat_title'] = ['$regex'=>new \MongoRegex($s)];
+		}
+
+		if(isset($cat_status) && trim($cat_status)!=''){
 			
-		/* Individual column filtering */
-
-		if($id){
-			$categories = $categories->where('ancestors._id', '=', $id);
+			$query[]['$match']['cat_status'] = (int)$cat_status;
 		}
 
-		foreach($columns as $fieldKey=>$fieldTitle)
-		{              
+        $sort = ['updated_at'=>-1];
 
-			if ( isset($params[$fieldTitle]) && $params[$fieldTitle]!="" )
-			{
-							
-				if($fieldTitle=='ancestors'){
-					$categories = $categories->where($fieldTitle.".0.title", 'regex', "/.*$params[$fieldTitle]/i");
+        if(isset($params['order']) && !empty($params['order'])){
+            
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
+        }
 
-				}elseif($fieldTitle=="cat_status"){
+        $query[]['$sort'] = $sort;
 
-					$categories = $categories->where($fieldTitle, '=', (int)$params[$fieldTitle]);
-				}
-				else{
-					$categories = $categories->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
-				}
-							
-			}
-		}
-	
-			
-		/*
-		 * Ordering
-		 */        
+        $model = Categories::raw()->aggregate($query);
 
-		if ( isset( $params['order'] ) )
-		{
+        $iTotalRecords = count($model['result']);
 
-			foreach($params['order'] as $orderKey=>$orderField){
+        $query[]['$skip'] = (int)$start;
 
-				if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
-					
-					$categories = $categories->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
-					
-				}
-			}
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = Categories::raw()->aggregate($query);
+        }            
 
-		}
-		
-		/* Data set length after filtering */        
+        $response = [
+            'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+            'data' => $model['result']            
+        ];
 
-		$iFilteredTotal = $categories->count();
-
-		/*
-		 * Paging
-		 */
-		if ( isset( $params['start'] ) && $params['length'] != '-1' )
-		{
-			$categories = $categories->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
-		}
-
-		$iTotal = $categories->count();
-
-		$categories = $categories->get($columns);
-
-		$categories = $categories->toArray();
-				
-		/*
-		 * Output
-		 */
-		 
-		
-		$records = array(
-			"iTotalRecords" => $iTotal,
-			"iTotalDisplayRecords" => $iFilteredTotal,
-			"data" => array()
-		);
-
-			 
-		
-		$status_list = array(            
-			array("warning" => "in-Active"),
-			array("success" => "Active")
-		  );
-
-
-
-		$srStart = intval( $params['start'] );
-		if($params['order'][0]['column']==0 && $params['order'][0]['dir']=='asc'){
-			$srStart = intval($iTotal);
-		}
-
-		$i = 1;
-		foreach($categories as $key=>$value) {
-
-			$row=array();
-
-			if($params['order'][0]['column']==0 && $params['order'][0]['dir']=='asc'){
-				$row[] = $srStart--;//$row1[$aColumns[0]];
-			}else{
-				$row[] = ++$srStart;//$row1[$aColumns[0]];
-			}
-
-			$status = $status_list[(int)$value['cat_status']];
-			
-			//$row[] = '<input type="checkbox" name="id[]" value="'.$value['_id'].'">';
-					
-			$row[] = ucfirst($value['cat_title']);
-			$row[] = isset($value['ancestors'][0]['title'])?ucfirst($value['ancestors'][0]['title']):'';
-			$row[] = '<a href="javascript:void(0)"><span ng-click="changeStatus(\''.$value['_id'].'\')" id="'.$value['_id'].'" data-table="category" data-status="'.((int)$value['cat_status']?0:1).'" class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span></a>';
-			/*$row[] = '<a title="View : '.$value['cat_title'].'" ui-sref=userLayout.categories.show({categoryid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
-					 '<a title="Edit : '.$value['cat_title'].'" ui-sref=userLayout.categories.edit({categoryid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';*/
-
-			$row[] = '<a title="Edit : '.$value['cat_title'].'" ui-sref=userLayout.categories.edit({categoryid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';		 
-			
-			$records['data'][] = $row;
-		}
-		
-		return response($records, 201);
+        return response($response,200);		
 		
 	}
 

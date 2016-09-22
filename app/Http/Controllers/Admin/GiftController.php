@@ -9,6 +9,7 @@ use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Http\Requests\GiftRequest;
 use AlcoholDelivery\Gift;
 use File;
+use MongoId;
 
 class GiftController extends Controller
 {
@@ -52,6 +53,14 @@ class GiftController extends Controller
         if(isset($inputs['gift_packaging'])){
             $inputs['gift_packaging']['type'] = (int)$inputs['gift_packaging']['type'];
             $inputs['gift_packaging']['value'] = (float)$inputs['gift_packaging']['value'];            
+        }
+
+        if(isset($inputs['category']) && !empty($inputs['category'])){
+            $inputs['categoryObject'] = new MongoId($inputs['category']);
+        }
+
+        if(isset($inputs['subcategory']) && !empty($inputs['subcategory'])){
+            $inputs['subcategoryObject'] = new MongoId($inputs['subcategory']);
         }
 
         $gift = Gift::create($inputs);
@@ -123,6 +132,14 @@ class GiftController extends Controller
             $model->unset('gift_packaging');
         }       
 
+        if(isset($inputs['category']) && !empty($inputs['category'])){
+            $inputs['categoryObject'] = new MongoId($inputs['category']);
+        }
+
+        if(isset($inputs['subcategory']) && !empty($inputs['subcategory'])){
+            $inputs['subcategoryObject'] = new MongoId($inputs['subcategory']);
+        }
+
         if($model){
             $update = $model->update($inputs);
             if(isset($inputs['image']) && !empty($inputs['image']))            
@@ -162,51 +179,90 @@ class GiftController extends Controller
 
     public function postList(Request $request){
         
-        $params = $request->all();        
+        $params = $request->all();
 
         extract($params);
 
-        $model = new Gift;
+        $columns = ['_id','smallTitle','category','status'];
 
-        $model = $model->with('categorydetail','subcategorydetail');
+        $project = ['title'=>1,'categorydetail'=>1,'subcategorydetail'=>1,'status'=>1,'categoryObject'=>1,'subcategoryObject'=>1];
+
+        $project['smallTitle'] = ['$toLower' => '$title'];
+
+        $query = [];
         
+        $query[]['$lookup'] = [
+            'from' => 'giftcategories',
+            'localField'=>'categoryObject',
+            'foreignField'=>'_id',
+            'as'=>'categorydetail'
+        ];
+
+        $query[]['$unwind'] = [
+            'path' => '$categorydetail',
+            'preserveNullAndEmptyArrays' => true
+        ];
+
+        $query[]['$lookup'] = [
+            'from' => 'giftcategories',
+            'localField'=>'subcategoryObject',
+            'foreignField'=>'_id',
+            'as'=>'subcategorydetail'
+        ];
+
+        $query[]['$unwind'] = [
+            'path' => '$subcategorydetail',
+            'preserveNullAndEmptyArrays' => true
+        ];
+
+        $query[]['$project'] = $project;
+
         if(isset($name) && trim($name)!=''){
-            $sval = $name;
-            $model = $model->where('title','regexp', "/.*$sval/i");
+            $s = '/'.$name.'/i';
+            $query[]['$match']['title'] = ['$regex'=>new \MongoRegex($s)];
         }
 
-        if(isset($status) && trim($status)!=''){            
-            $model = $model->where('status',(int)$status);
+        if(isset($status) && trim($status)!=''){       
+            $query[]['$match']['status'] = (int)$status;            
         }
 
         if(isset($category) && trim($category)!=''){            
-            $model = $model->where('category',$category);
+            $query[]['$match']['categoryObject'] = new MongoId($category);            
         }
 
         if(isset($subcategory) && trim($subcategory)!=''){            
-            $model = $model->where('subcategory',$subcategory);
+            $query[]['$match']['subcategoryObject'] = new MongoId($subcategory);            
+        }        
+
+        $sort = ['updated_at'=>-1];
+
+        if(isset($params['order']) && !empty($params['order'])){            
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
         }
 
-        $iTotalRecords = $model->count();        
+        $query[]['$sort'] = $sort;
 
-        $columns = array('_id','title','status','type');
+        $model = Gift::raw()->aggregate($query);
 
-        $model = $model
-        ->skip((int)$start)
-        ->take((int)$length);
+        $iTotalRecords = count($model['result']);
 
-        $model = $model->get();
+        $query[]['$skip'] = (int)$start;
+
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = Gift::raw()->aggregate($query);
+        }            
 
         $response = [
             'recordsTotal' => $iTotalRecords,
             'recordsFiltered' => $iTotalRecords,
             'draw' => $draw,
-            'data' => $model
-            /*'length' => $length,
-            'aaData' => []*/
+            'data' => $model['result']            
         ];
-      
-        return response($response,200);
+
+        return response($response,200);        
     }
 
     /*public function test(Request $request){

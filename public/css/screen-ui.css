@@ -632,7 +632,7 @@ ui-sref {
 	text-align: left;
 	line-height: 18px;
 	margin-bottom: 20px;
-	height: 54px;
+	height: 34px;
 	overflow: hidden;
 }
 .prod_price {
@@ -644,6 +644,7 @@ ui-sref {
 	text-transform: uppercase;
 	text-align: left;
 	margin-bottom: 5px;
+	min-height: 20px;
 }
 .prod_discout_price {
 	width: 100%;
@@ -857,7 +858,7 @@ ui-sref {
 }
 .footer1_sociallink img {
 	display: inline;
-	margin-right: 16px;
+	/*margin-right: 16px;*/
 }
 .footer1_privcvr {
 	float: left;
@@ -5839,4 +5840,7 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
 	background: url("../images/add-wish-icon.png") no-repeat center center;
 	width: 50px;
 	height: 50px;
+}
+.footer1_sociallink a {	
+	margin-right: 16px;
 }

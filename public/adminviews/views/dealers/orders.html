@@ -69,8 +69,7 @@
 							 Designation
 						</th>
 						<th>
-							 Contact #
-							 <small>(in stock)</small>
+							 Contact #							 
 						</th>						
 					</tr>
 					</thead>
@@ -81,6 +80,7 @@
 							<td>{{contact.des}}</td>
 							<td>{{contact.number}}</td>							
 						</tr>
+						<tr ng-show="dealer.contacts.length == 0"><td colspan="4" align="center">No record found</td></tr>
 					</tbody>
 					</table>
 				</div>				
@@ -217,7 +217,6 @@
 	            },
 	            loadingMessage: 'Loading...',
 	            dataTable: {	                
-	                //"bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 	                "columns": [{		                
 		                mRender: function(data, type, full, meta) {
 		                	return (meta.row)+1;		                	
@@ -247,12 +246,7 @@
 	                    },
 		                orderable:false
 		            }],
-	                "lengthMenu": [
-	                    [10, 20, 50, 100, 150, -1],
-	                    [10, 20, 50, 100, 150, "All"] // change per page values here
-	                ],
-	                "pageLength": 10, // default record count per page
-					"ajax": {
+	                "ajax": {
 	                    "url": "../admin/package/listpackage/"+ptype, // ajax source
 	                    //"data":{ptype:ptype}
 	                },

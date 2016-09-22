@@ -20,63 +20,39 @@
 						<thead>
 							<tr role="row" class="heading">
                                 <th width="15%">
-                                    Order #
+                                    Sr.
                                 </th>
 								<th width="15%">
-									User
+									Name of product
 								</th>								
 								<th width="10%">
-                                    No. of items
+                                    Supplier
                                 </th>
                                 <th width="10%">
-									Total Amount
+									Qty(1hr)
 								</th>
                                 <th width="10%">
-                                    Order date
+                                    Qty(Advanced)
                                 </th>        								
 								<th width="10%">
-									Order type
+									Total Qty
 								</th>
 								<th width="10%">
-									Status
+									PO
 								</th>
 								<th width="10%">
-									Actions
+									Priority
 								</th>
 							</tr>
 							<tr role="row" class="filter">								
-                                <td>
-                                    <input type="text" class="form-control form-filter input-sm" name="reference">
-                                </td>
-								<td>
-                                    <input type="text" class="form-control form-filter input-sm" name="consumerName">
-                                </td>
+                                <td></td>
+                                <td></td>
+								<td></td>
 								<td></td>
                                 <td></td>
-                                <td>
-                                    <input type="text" class="form-control form-filter input-sm date-filter" name="created_at" data-date-format="yyyy-mm-dd">                                        
-                                </td>
-								<td>
-                                    <select name="deliveryType" class="form-control form-filter input-sm">
-                                        <option value="">All</option>
-                                        <option value="1">Advance</option>                                       
-                                        <option value="0">Express</option>
-                                    </select>                        
-                                </td>								
-								<td>
-									<select name="status" class="form-control form-filter input-sm">
-										<option value="">All</option>
-										<option value="0">Under Process</option>										
-										<option value="1">Dispatch</option>
-                                        <option value="2">Delivered</option>
-									</select>
-								</td>
-								<td>
-									<div class="margin-bottom-5">
-										<button class="btn btn-xs yellow filter-submit margin-bottom" title="Search"><i class="fa fa-search"></i></button>
-                                        <button class="btn btn-xs red filter-cancel" title="Reset"><i class="fa fa-times"></i></button>
-									</div>									
-								</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>                                
 							</tr>
 						</thead>
 						<tbody id="tabBody">
@@ -151,12 +127,7 @@
 	
 	var orderGrid = new Datatable();
 
-	var OrdersTableAjax = function () {
-
-    var initPickers = function () {
-        //init date pickers
-        $('.date-filter').datepicker();
-    }
+	var OrdersTableAjax = function () {    
 
     var handleRecords = function () {
 
@@ -170,90 +141,12 @@
             },
             loadingMessage: 'Loading...',
             dataTable: {                                 
-                "columns": [                                       
-                    {    
-                        mData: null,
-                        sClass: "center",
-                        mRender: function(data, type, full) {
-                            return '<b>'+data.reference+'</b>';
-                            
-                        },                  
-                        orderable:true
-                    },
-                    {
-                        mData: null,
-                        sClass: "center",
-                        mRender: function(data, type, full) {
-                            var consumer = data.consumer;                               
-                            if(typeof consumer.name != 'undefined'){
-                                return consumer.name;
-                            }else{
-                                return consumer.email;
-                            }
-                            
-                        },                  
-                        orderable:true
-                    },
-                    {    
-                        data : "noOfProducts",
-                        orderable:true
-                    },
-                    {
-                        mData: null,
-                        sClass: "center",
-                        mRender: function(data, type, full) {
-                            return '$'+data.payment.total;                      
-                        },                  
-                        orderable:true
-                    },
-                    {    
-                        data : "orderDate",
-                        orderable:true
-                    },
-                    {
-                        mData: null,
-                        sClass: "center",
-                        mRender: function(data, type, full) {
-                            var delivery = data.delivery; 
-                            if(delivery.type == 0){
-                                return '<span class="label label-sm label-danger">Express</span>';
-                            }else{
-                                return '<span class="label label-sm label-success">Advance</span>';
-                            }                       
-                        },                  
-                        orderable:true
-                    },
-                    {
-                        mData: null,
-                        sClass: "center",
-                        mRender: function(data, type, full) {
-                            var status = data.status; 
-                            if(status == 0){
-                                return '<span class="label label-sm label-warning">Under Process</span>';
-                            }else if(status == 1){
-                                return '<span class="label label-sm label-danger">Dispatch</span>';
-                            }else if(status == 2){
-                                return '<span class="label label-sm label-success">Delivered</span>';
-                            }                       
-                        },                  
-                        orderable:true
-                    },
-                    {
-                        mData: null,
-                        sClass: "center",
-                        mRender: function(data, type, full) {
-                            var OId = data._id.$id;
-                            var consumerContact = (typeof data.consumer.mobile_number != 'undefined')?data.consumer.mobile_number:0;
-                            return '<a title="View Detail" ui-sref=userLayout.orders.show({order:"'+OId+'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a> <a title="Notify user" ng-click=notifyUser("'+OId+'",'+consumerContact+') class="btn btn-xs default"><i class="glyphicon glyphicon-comment"></i></a>';
-                        },                  
-                        orderable:false                     
-                    }
-                ],
+                "columns": [],
                 "ajax": {
-                    "url": "../adminapi/order/orders", // ajax source                    
+                    "url": "../adminapi/order/orders",
                     "type": "POST"
                 },
-                "order": [], // set first column as a default sort by asc
+                "order": [],
                 "fnDrawCallback": function (oSettings) {               						
 				    var content = $('#tabBody');
 				    angular.element(document).injector().invoke(function($compile) {
@@ -299,8 +192,6 @@
 
         //main function to initiate the module
         init: function () {
-
-            initPickers();
             handleRecords();
         }
 

@@ -244,6 +244,8 @@ AlcoholDelivery.directive('sideBar', function() {
 					});
 				}
             };
+
+            
         }
     };
 }])
