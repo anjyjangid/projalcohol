@@ -3,10 +3,11 @@
 
 <div class="productdetailcovermainbgimg">
 	<div class="col-xs-12 col-sm-6 col-md-6" ng-class="{comboproductitems_outofstock:{{!product.quantity}}}">
+
 		<data-owl-carousel class="owl-carousel owluperpartcover" data-options="parentOwlOptions" ng-model="sync1">
 
 				<img err-pro-src="" ng-src="products/i/400/{{image.source}}" alt="" class="img-responsive img-responsive-h"  owl-carousel-item="" ng-repeat="image in product.imageFiles" class="item"/>
-											
+															
 		</data-owl-carousel >
 
 		<data-owl-carousel class="owl-carousel owldownpartcover" data-options="childOwlOptions" ng-model="sync2">
@@ -18,8 +19,10 @@
 				
 	<div class="col-xs-12 col-sm-6 col-md-6 product-detail-right-set" >
 		<div class="prddetailtitle">{{product.name}} </div>
+
 			<div class="prddetailsubexttitle">{{product.shortDescription}}</div>
 			<div class="prddetailnormaltext">{{product.description}}</div>
+			<div class="prddetailnormaltext nametag" ng-show="product.nameDetailSale">{{product.nameDetailSale}}</div>
 			<div class="prddetailchilledcover text-noselect" ng-if="product.chilled && (product.quantity || product.outOfStockType == 2)" >
 				<div class="prodchilled-btn" ng-class="{'active':product.servechilled}" ng-click="product.servechilled=1">
 					<span>Chilled</span>
@@ -61,13 +64,14 @@
 							</div>
 					</div>
 			</div>
-			<div class="prddetailtotalamount">Total Cost</div>
+			<div class="prddetailtotalamount">Unit Price</div>
 
 			<div class="prddetailpricedicnt" ng-if="!viaLoyaltyStore">
-
-				{{product.price | pricingTxt}}						
-
+				{{product.salePrice | pricingTxt}}
+				<span ng-if="product.price != product.salePrice">{{product.price | pricingTxt}}</span>
+				<div class="salediscount" ng-show="product.sale">{{product.sale.detailTitle}}</div>				
 			</div>
+			
 
 			<div class="prddetailpricedicnt" ng-if="viaLoyaltyStore">
 

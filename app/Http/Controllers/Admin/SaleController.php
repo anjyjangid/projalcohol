@@ -241,29 +241,49 @@ class SaleController extends Controller
 
     public function postList(Request $request){
         
-        $params = $request->all();        
+        $params = $request->all();
 
         extract($params);
+
+        $columns = ['_id','smallListingTitle','smallDetailTitle','type'];
+
+        $project = ['image'=>1,'listingTitle'=>1,'detailTitle'=>1,'type'=>1];
+
+        $project['smallListingTitle'] = ['$toLower' => '$listingTitle'];
+        $project['smallDetailTitle'] = ['$toLower' => '$detailTitle'];
+
+        $query = [];
         
-        $sale = new Sale;
+        $query[]['$project'] = $project;
 
-        $iTotalRecords = $sale->count();        
+        $sort = ['updated_at'=>-1];
 
-        $columns = array('_id','title','type');
+        if(isset($params['order']) && !empty($params['order'])){
+            
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
+        }
 
-        $sale = $sale
-        ->skip((int)$start)
-        ->take((int)$length);
+        $query[]['$sort'] = $sort;
 
-        $sale = $sale->get();
+        $model = Sale::raw()->aggregate($query);
+
+        $iTotalRecords = count($model['result']);
+
+        $query[]['$skip'] = (int)$start;
+
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = Sale::raw()->aggregate($query);
+        }            
 
         $response = [
             'recordsTotal' => $iTotalRecords,
             'recordsFiltered' => $iTotalRecords,
             'draw' => $draw,
-            'data' => $sale            
+            'data' => $model['result']            
         ];
-
         return response($response,200);
     }
 

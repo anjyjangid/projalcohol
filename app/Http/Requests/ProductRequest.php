@@ -95,8 +95,8 @@ class ProductRequest extends Request
                 $dIds[] = @$value['dealerId'];
                 $ruleKey = 'dealerData.' . $key;                
                 $rules[$ruleKey . '.dealerId'] = 'required';
-                $rules[$ruleKey . '.tradeQuantity'] = 'integer';
-                $rules[$ruleKey . '.tradeValue'] = 'integer';
+                $rules[$ruleKey . '.tradeQuantity'] = 'integer|min:1';
+                $rules[$ruleKey . '.tradeValue'] = 'integer|min:1';
             }
         }        
 

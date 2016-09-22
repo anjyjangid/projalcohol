@@ -55,8 +55,8 @@
 		</div>
 
 		<div ng-if="!productInfo.promo || promotion.inCart">
-
-			<div class="prod_discout_price" ng-if="!loyalty">{{productInfo.price | pricingTxt}}</div>
+			<div class="prod_price"><span ng-if="productInfo.price != productInfo.salePrice">{{productInfo.price | pricingTxt}}</span></div>
+			<div class="prod_discout_price" ng-if="!loyalty">{{productInfo.salePrice | pricingTxt}}</div>
 			<div class="prod_discout_price" ng-if="loyalty">
 
 				<span ng-if="productInfo.loyaltyValue.type==0">LP {{productInfo.loyaltyValue.point}}</span>

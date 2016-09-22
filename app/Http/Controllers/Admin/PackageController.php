@@ -272,6 +272,64 @@ class PackageController extends Controller
 
     public function postListpackage(Request $request,$type){
         
+        $params = $request->all();
+
+        extract($params);
+
+        $columns = ['_id','smallTitle','status'];
+
+        $project = ['title'=>1,'status'=>1,'type'=>1];
+
+        $project['smallTitle'] = ['$toLower' => '$title'];
+
+        $query = [];
+        
+        $query[]['$project'] = $project;
+        
+        $query[]['$match']['type'] = (int)$type;        
+
+        if(isset($name) && trim($name)!=''){
+            $s = '/'.$name.'/i';
+            $query[]['$match']['title'] = ['$regex'=>new \MongoRegex($s)];
+        }
+
+        if(isset($status) && trim($status)!=''){            
+            $query[]['$match']['status'] = (int)$status;
+        }        
+
+        $sort = ['updated_at'=>-1];
+
+        if(isset($params['order']) && !empty($params['order'])){
+            
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
+        }
+
+        $query[]['$sort'] = $sort;
+
+        $model = Packages::raw()->aggregate($query);
+
+        $iTotalRecords = count($model['result']);
+
+        $query[]['$skip'] = (int)$start;
+
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = Packages::raw()->aggregate($query);
+        }            
+
+        $response = [
+            'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+            'data' => $model['result']            
+        ];
+
+        return response($response,200);
+
+
+
         $params = $request->all();        
 
         extract($params);

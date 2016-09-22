@@ -228,133 +228,127 @@ class ProductController extends Controller
 
 	public function postProductlist(Request $request){
 
-			$params = $request->all();        
+		$params = $request->all();        
 
-			extract($params);
+		extract($params);
 
-			$products = new Products;
+		$query = [];
 
-			$query = [];
+		if(isset($name) && trim($name)!=''){
+			$s = "/".$name."/i";
+			$query[]['$match']['name'] = ['$regex'=>new \MongoRegex($s)];
+		}
 
-			if(isset($name) && trim($name)!=''){
-				$products = $products->where('name','regexp', "/.*$name/i");
-				$s = "/".$name."/i";
-				$query[]['$match']['name'] = ['$regex'=>new \MongoRegex($s)];
-			}
+		if(isset($params['categories']) && trim($params['categories'])!=''){          
+			$query[]['$match']['categories'] = $params['categories'];					
+		}
 
-			if(isset($params['categories']) && trim($params['categories'])!=''){          
-				$products = $products->where('categories',$params['categories']);
-				$query[]['$match']['categories'] = $params['categories'];					
-			}
+		if(isset($params['status']) && trim($params['status'])!=''){
+			$query[]['$match']['status'] = (int)$params['status'];
+		}
 
-			if(isset($params['status']) && trim($params['status'])!=''){
-				$products = $products->where('status',(int)$params['status']);					
-				$query[]['$match']['status'] = (int)$params['status'];
-			}
+		if(isset($params['isFeatured']) && trim($params['isFeatured'])!=''){
+			$query[]['$match']['isFeatured'] = (int)$params['isFeatured'];
+		}
 
-			if(isset($params['isFeatured']) && trim($params['isFeatured'])!=''){
-				$products = $products->where('isFeatured',(int)$params['isFeatured']);					
-				$query[]['$match']['isFeatured'] = (int)$params['isFeatured'];
-			}        
+		$columns = array('_id','smallTitle','categories','price','status','isFeatured','quantity','store','updated_at');
 
-			$iTotalRecords = $products->count();        
+		$project = ['name'=>1,'categoriesObject'=>1,'price'=>1,'status'=>1,'isFeatured'=>1,'updated_at'=>1];
+		
+		$project['smallTitle'] = ['$toLower' => '$name'];
 
-			$columns = array('_id','name','categories','price','status','isFeatured','quantity','store','updated_at');
+		$project['category'] = ['$arrayElemAt'=> [ '$categoriesObject', 0 ]];
 
-			/*$sortField = 'created_at';
-			$sortBy = -1;*/        
+		$project['subcategory'] = ['$arrayElemAt'=> [ '$categoriesObject', 1 ]];			
 
-			$sort = ['updated_at'=>-1];
+		//GET CURRENT USER STOCK FOR THE PRODUCT
+		$userStoreId = Auth::user('admin')->storeId; 
 
-			if(isset($params['order']) && !empty($params['order'])){
+    	$query[]['$lookup'] = [
+			'from'=>'stocks',
+			'localField'=>'_id',
+			'foreignField'=>'productObjId',
+			'as'=>'store'
+    	];
 
-				$field = $columns[$params['order'][0]['column']];
-				$direction = $params['order'][0]['dir'];
-				
-				if($field == 'quantity'){
-					$field = 'store.quantity';
-				}
+    	//FILTER A PARTICULAR STOCK BY USER ID
+    	$project['store'] = [
+    		'$filter'=>[
+                'input' => '$store',
+                'as' => 'store',
+                'cond' => ['$eq'=>['$$store.storeId',$userStoreId]]
+            ]
+    	];	    	
 
-				$sortField = $field;
-				$sortBy = ($params['order'][0]['dir'] == 'desc')?-1:1;
+		$query[]['$project'] = $project;
+		
+		//GET PARENT CATEGORY DETAIL
+		$query[]['$lookup'] = [
+			'from'=>'categories',
+			'localField'=>'category',
+			'foreignField'=>'_id',
+			'as'=>'categoryDetail'
+    	];
 
-				$sort = [$sortField=>$sortBy];
+    	//GET SUB CATEGORY DETAIL
+		$query[]['$lookup'] = [
+			'from'=>'categories',
+			'localField'=>'subcategory',
+			'foreignField'=>'_id',
+			'as'=>'subcategoryDetail'
+    	];
 
-				//$products = $products->orderBy($field,$direction);  
+		//Get 0th element from all the lookup field
+		$query[]['$unwind'] = [
+			'path' => '$store',
+			'preserveNullAndEmptyArrays' => true
+		];
+		$query[]['$unwind'] = [
+			'path' => '$categoryDetail',
+			'preserveNullAndEmptyArrays' => true
+		];
+		$query[]['$unwind'] = [
+			'path' => '$subcategoryDetail',
+			'preserveNullAndEmptyArrays' => true
+		];    	
 
-			}else{
-				//$products = $products->orderBy('created_at','desc');  
-			}
+		$project['store'] = '$store';
+		$project['quantity'] = ['$cond'=>['$store','$store.quantity',0]];			
+		$project['categoryDetail'] = '$categoryDetail';
+		$project['subcategoryDetail'] = '$subcategoryDetail';
 
-			/*$products = $products
-			->with('store')
-			->skip((int)$start)
-			->take((int)$length);
+		$query[]['$project'] = $project;
 
-			$products = $products->get($columns);*/
+		$sort = ['updated_at'=>-1];
 
-			$userStoreId = Auth::user('admin')->storeId; 
+		if(isset($params['order']) && !empty($params['order'])){
+        
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
+        }
+        
+        $query[]['$sort'] = $sort;
 
-			$query[]['$lookup'] = [
-				'from'=>'stocks',
-				'localField'=>'_id',
-				'foreignField'=>'productObjId',
-				'as'=>'store'
-        	];
+		$model = Products::raw()->aggregate($query);
 
-			$project = [];                	
+        $iTotalRecords = count($model['result']);
 
-	        foreach ($columns as $key => $value) {
-				$project[$value] = '$'.$value;
-			}	        
-			
-        	$project['store'] = [
-        		'$filter'=>[
-	                'input' => '$store',
-	                'as' => 'store',
-	                'cond' => ['$eq'=>['$$store.storeId',$userStoreId]]
-	            ]
-        	];
+        $query[]['$skip'] = (int)$start;
 
-        	$query[]['$project'] = $project;
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = Products::raw()->aggregate($query);
+        }            
 
-			$query[]['$unwind'] = [
-			                        'path' => '$store',	                        
-			                        'preserveNullAndEmptyArrays' => true,                            
-			                    ];				                	
-			$query[]['$sort'] = $sort;                    
+        $response = [
+            'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+            'data' => $model['result']            
+        ];
 
-        	$query[]['$skip'] = (int)$start;
-        	
-        	if($length > 0)
-        		$query[]['$limit'] = (int)$length;	
-
-        	//dd($query);
-
-	    	$products = Products::raw()->aggregate($query);
-
-	    	//dd($products);
-
-	    	$products = $products['result'];
-
-			foreach($products as $i => $product) {
-				$products[$i]['_id'] = (string)$product['_id'];
-				$categories = Categories::whereIn('_id', $product['categories'])->get();
-				$cname = [];
-				foreach ($categories as $key => $value) {                
-					$cname[] = $value['cat_title'];                
-				}  
-				$products[$i]['category'] = implode(' > ', $cname);
-			}
-
-			$response = [
-				'recordsTotal' => $iTotalRecords,
-				'recordsFiltered' => $iTotalRecords,
-				'draw' => $draw,
-				'data' => $products            
-			];
-
-			return response($response,200);
+        return response($response,200);				
 
 	}
 
@@ -597,7 +591,11 @@ class ProductController extends Controller
 
 	}
 
-	public function getTest(){}
+	public function getTest(Request $request){
+
+		
+
+	}
 
 	private function castVariables(&$inputs){
 
@@ -726,6 +724,31 @@ class ProductController extends Controller
 
 		dd($p);*/
 
+		$giftcategory = \AlcoholDelivery\GiftCategory::all();
+
+		foreach ($giftcategory as $key => $value) {
+			if(isset($value->parent)){
+				$value->parentObject = new MongoId($value->parent);
+				$value->save();
+			}
+		}
+
+		//dd($giftcategory);
+
+		$gift = \AlcoholDelivery\Gift::all();
+
+		foreach ($gift as $key => $value) {
+			if(isset($value->category)){
+				$value->categoryObject = new MongoId($value->category);
+			}
+			if(isset($value->subcategory)){
+				$value->subcategoryObject = new MongoId($value->subcategory);
+			}
+			$value->save();
+		}
+		
+		dd($gift);
+
 		$products = Products::all();	
 
 		foreach ($products as $key => $product) {			
@@ -742,7 +765,7 @@ class ProductController extends Controller
 
 	}	
 
-	public function postStore(Request $request){
+	public function postStores(Request $request){
 
 		$req = $request->all();
 		
@@ -760,7 +783,8 @@ class ProductController extends Controller
 		];		
 
 		$storeFields = [];
-		$unwinds = [];
+		$unwinds = [];		
+		$sortCol[] = '';
 		$columns[] = ['title'=>'Product Name','data'=>'name'];		
 		$pro = [];
 		$storeQtyKeys = [];
@@ -790,6 +814,7 @@ class ProductController extends Controller
             $sortCol[] = $qkey;
 		}
 
+		
 		$columns[] = ['title'=>'Total Qty','data'=>'totalQty'];
 		$sortCol[] = 'totalQty';
 		//RETURN IN CASE ONLY COLOUMNS HAS TO DRAWN

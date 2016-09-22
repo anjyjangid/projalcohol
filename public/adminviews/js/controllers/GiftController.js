@@ -189,7 +189,8 @@ MetronicApp.controller('GiftCategoryFormController',
 	                icon: 'info',
 	                message: 'Details has been saved successfully.',
 	                container: '.portlet-body',
-	                place: 'prepend',		                
+	                place: 'prepend',
+	                closeInSeconds: 3		                
 	            });
 			}
 

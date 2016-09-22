@@ -97,10 +97,9 @@
 	            },
 	            loadingMessage: 'Loading...',
 	            dataTable: {	                
-	                //"bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 	                "columns": [{		                
 		                mRender: function(data, type, full, meta) {
-		                	return (meta.row)+1;		                	
+		                	return meta.row + meta.settings._iDisplayStart + 1;
 		                },
 		                orderable:false		                
 		            },{	 
@@ -133,17 +132,12 @@
 		            	mData: null,
 		            	mRender: function(data, type, full) {
 		            		
-		            		return '<a ui-sref=userLayout.gifts.edit({giftid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+		            		return '<a ui-sref=userLayout.gifts.edit({giftid:"'+data._id.$id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
 		            		
 	                    },
 		                orderable:false
 		            }],
-	                "lengthMenu": [
-	                    [10, 20, 50, 100, 150, -1],
-	                    [10, 20, 50, 100, 150, "All"] // change per page values here
-	                ],
-	                "pageLength": 10, // default record count per page
-					"ajax": {
+	                "ajax": {
 	                    "url": "../adminapi/gift/list/", // ajax source
 	                    //"data":{ptype:ptype}
 	                },

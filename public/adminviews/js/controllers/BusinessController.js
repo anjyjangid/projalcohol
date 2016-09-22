@@ -56,6 +56,12 @@ MetronicApp.controller('BusinessUpdateController',['$rootScope', '$scope', '$tim
 
 	businessModel.getBusiness($stateParams.businessid).success(function(data){
 		$scope.business = data;
+		if(typeof data.billing_address == 'undefined'){
+			$scope.business.billing_address = [{}];
+		}
+		if(typeof data.delivery_address == 'undefined'){
+			$scope.business.delivery_address = [{}];
+		}
 		$scope.hideBasicInfo = true; 
 	});
 

@@ -64,6 +64,10 @@ class GiftCategoryController extends Controller
             $inputs['gift_packaging']['value'] = (float)$inputs['gift_packaging']['value'];            
         }
 
+        if(isset($inputs['parent']) && !empty($inputs['parent'])){
+            $inputs['parentObject'] = new MongoId($inputs['parent']);
+        }
+
         $model = GiftCategory::create($inputs);
 
         if($model){
@@ -148,6 +152,10 @@ class GiftCategoryController extends Controller
             $model->unset('gift_packaging');
         }
 
+        if(isset($inputs['parent']) && !empty($inputs['parent'])){
+            $inputs['parentObject'] = new MongoId($inputs['parent']);
+        }
+
         if($model){
             $update = $model->update($inputs);
             
@@ -208,45 +216,79 @@ class GiftCategoryController extends Controller
     }
 
     public function postListcategories(Request $request){
-        $params = $request->all();        
+        
+        $params = $request->all();
 
         extract($params);
 
-        $model = new GiftCategory;
+        $columns = ['_id','smallTitle','parent','status'];
 
-        $model = $model->where('type','=','category');
+        $project = ['title'=>1,'ancestor'=>1,'status'=>1,'parentObject'=>1];
 
+        $project['smallTitle'] = ['$toLower' => '$title'];
+
+        $query = [];
+
+        $query[]['$match']['type'] = 'category';
+
+        $query[]['$lookup'] = [
+            'from' => 'giftcategories',
+            'localField'=>'parentObject',
+            'foreignField'=>'_id',
+            'as'=>'ancestor'
+        ];
+
+        $query[]['$unwind'] = [
+            'path' => '$ancestor',
+            'preserveNullAndEmptyArrays' => true
+        ];
+        
+        $query[]['$project'] = $project;
+
+        
         if(isset($name) && trim($name)!=''){
-            $sval = $name;
-            $model = $model->where('title','regexp', "/.*$sval/i");
+            $s = '/'.$name.'/i';
+            $query[]['$match']['title'] = ['$regex'=>new \MongoRegex($s)];
         }
 
-        if(isset($status) && trim($status)!=''){            
-            $model = $model->where('status',(int)$status);
+        if(isset($status) && trim($status)!=''){       
+            $query[]['$match']['status'] = (int)$status;            
         }
 
         if(isset($parent) && trim($parent)!=''){            
-            $model = $model->where('parent','=',$parent);
+            $query[]['$match']['parentObject'] = new MongoId($parent);            
         }
 
-        $iTotalRecords = $model->count();        
+        $sort = ['updated_at'=>-1];
 
-        $columns = array('_id','title','parent','status');
+        if(isset($params['order']) && !empty($params['order'])){            
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
+        }
 
-        $model = $model->with('ancestor')
-        ->skip((int)$start)
-        ->take((int)$length);
+        $query[]['$sort'] = $sort;
 
-        $model = $model->get($columns);
+        $model = GiftCategory::raw()->aggregate($query);
+
+        $iTotalRecords = count($model['result']);
+
+        $query[]['$skip'] = (int)$start;
+
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = GiftCategory::raw()->aggregate($query);
+        }            
 
         $response = [
             'recordsTotal' => $iTotalRecords,
             'recordsFiltered' => $iTotalRecords,
             'draw' => $draw,
-            'data' => $model            
+            'data' => $model['result']            
         ];
-      
-        return response($response,200);
+
+        return response($response,200);       
+        
     }
 
     public function getGiftcard(Request $request){        

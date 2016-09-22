@@ -170,6 +170,9 @@ class CartController extends Controller
 	 */
 	public function show(Request $request,$id)
 	{
+		
+		// $id = new MongoId('57e22f5c11f6a1530b8b456a');
+
 		$cart = Cart::findUpdated($id);		
 
 		if(empty($cart)){

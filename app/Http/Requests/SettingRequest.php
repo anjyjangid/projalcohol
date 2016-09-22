@@ -61,6 +61,7 @@ class SettingRequest extends Request
             case 'pricing':
                 $rules = [                    
                     'cigratte_services.value' => 'required|numeric',
+                    'gift_packaging.value' => 'required|numeric',
                     'express_delivery.value' => 'required|numeric',                    
                     'regular_express_delivery.value' => 'required|numeric',                    
                     'cigratte_services.type' => 'required|numeric',

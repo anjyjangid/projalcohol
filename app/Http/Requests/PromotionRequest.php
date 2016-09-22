@@ -28,7 +28,7 @@ class PromotionRequest extends Request
         $rules = [
 
             'title' => 'required|string|max:255',            
-            'price' => 'required|numeric|max:1000000|unique:promotions',
+            'price' => 'required|numeric|max:1000000|min:1|unique:promotions',
             'status'=> 'required|integer|in:0,1',
             'products'=> 'required|array'
 

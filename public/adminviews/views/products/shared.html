@@ -32,25 +32,28 @@
 
 	  	var grid = new Datatable();
 
+	  	var cols = [{
+	  		title:'Sr',
+	  		mRender: function(data, type, full, meta) {
+        		return meta.row + meta.settings._iDisplayStart + 1;
+            },
+            orderable:false
+	  	}];
+
+	  	for(sCol in xhrdata){	  		
+	  		cols.push(xhrdata[sCol]);
+	  	}	  	  	
+
 	  	grid.init({
             src: $("#example"),            
             loadingMessage: 'Loading...',
             dataTable: { 
             	"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'f<'table-group-actions pull-right'>>r><'table-scrollable't><'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>", // datatable layout
-            	"columns": xhrdata,
-                "lengthMenu": [
-                    [10, 20, 50, 100, 150, -1],
-                    [10, 20, 50, 100, 150, "All"] // change per page values here
-                ],
-                "pageLength": 10, // default record count per page
-				"ajax": {
-                    "url": "../adminapi/product/store", // ajax source                    
+            	"columns": cols,
+                "ajax": {
+                    "url": "../adminapi/product/stores", // ajax source                    
                 },
-                "columnDefs": [{ 
-                    'orderable': true,
-                    'targets': [0]
-                }],
-
+                order:[],
                 "fnDrawCallback": function (oSettings) {
 				    /*var content = $('#tBody');
 				    angular.element(document).injector().invoke(function($compile) {
@@ -64,7 +67,7 @@
 	  }
 
 	  //xhr call to retrieve data
-	  var xhrcall = $.ajax({url:'/adminapi/product/store','type':'POST',data:{storeOnly:1}});
+	  var xhrcall = $.ajax({url:'/adminapi/product/stores','type':'POST',data:{storeOnly:1}});
 
 	  //promise syntax to render after xhr completes
 	  xhrcall.done(renderTable);

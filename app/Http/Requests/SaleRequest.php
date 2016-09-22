@@ -45,11 +45,12 @@ class SaleRequest extends Request
         //SALE TYPE TAG
         if($input['type'] == 1){
             
-            // $rules['actionProductId'] = 'required|array|min:1';
+            // 
             $rules['conditionQuantity'] = 'required|numeric';
 
             if($input['actionType'] == 1){
                 $rules['giftQuantity'] = 'required|numeric';                
+                $rules['actionProductId'] = 'required|array|min:1';
             }
 
             if($input['actionType'] == 2){
