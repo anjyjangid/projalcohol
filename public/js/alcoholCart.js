@@ -1523,7 +1523,7 @@ AlcoholDelivery.service('alcoholCart', [
 AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($rootScope, $log){
 		
 		var item = function (id, data) {
-			console.log(data);
+			
 			this.setId(id);
 
 			this.setRQuantity(data.chilled.quantity,data.nonchilled.quantity);			

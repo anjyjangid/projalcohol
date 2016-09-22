@@ -322,6 +322,7 @@ class Cart extends Moloquent
 	public function setSaleAdd($proId,$updateParams){
 
 		$remainingQty = $updateParams['quantity'];		
+
 		$products = $this->products;
 		$sales = isset($this->sales)?$this->sales:[];
 		
@@ -331,13 +332,10 @@ class Cart extends Moloquent
 		// Check any product is required newly added product to create a sale.
 
 		foreach($products as $productId=>$product){
-
-			if(isset($product['sale'])){
-
-				$isAble = false;
-
-				if($product['remainingQty'])
-				$isAble = $this->canCreateSale($productId,$proId,$qty,$updateParams['sale']);			
+			
+			if(isset($product['sale']) && $product['remainingQty']>0){				
+				
+				$isAble = $this->canCreateSale($productId,$proId,$qty,$updateParams['sale']);
 
 				if($isAble===false){
 					continue;
@@ -367,6 +365,22 @@ class Cart extends Moloquent
 
 						}
 						break;
+						case 'action': {							
+
+							foreach($saleProQty as $actionProKey=>$actionProQty){
+
+								$qty-=$actionProQty;
+								$saleObj['action'][] = [
+
+									'_id' => $actionProKey,
+									'quantity' => $actionProQty
+
+								];
+
+							}							
+
+						}
+						break;
 						default : {
 
 							$products[$key]['remainingQty']-=$saleProQty;							
@@ -388,7 +402,6 @@ class Cart extends Moloquent
 			}
 
 		}
-		
 
 		// Check after fullfilling all products requirement is still newly add product able to create a sale.		
 
@@ -401,6 +414,7 @@ class Cart extends Moloquent
 		}else{
 			
 			$products[$proId] = $updateParams;
+			$products[$proId]['remainingQty'] = 0;
 
 		}
 
@@ -408,8 +422,8 @@ class Cart extends Moloquent
 			prd("quantity never less than zero");
 		}
 
-		$products[$proId]['remainingQty'] = $qty;
-		
+		$products[$proId]['remainingQty']+= $qty;
+				
 		$this->__set("products",$products);
 
 		$this->__set("sales",$sales);
@@ -419,27 +433,27 @@ class Cart extends Moloquent
 	private function canCreateSale($cartProId,$newProId,$newProQty,$newProSale){
 
 		$products = $this->products;
-		$product = $products[$cartProId];
+		$product = $products[$cartProId];		
 
 		$sale = $product['sale'];
 
 		$productToCreateSale = $this->getProductToCreateSale($products,$sale['_id'],$sale['conditionQuantity']);
-		
+
 		$totalAvail = 0;
 		foreach ($productToCreateSale as $saleProkey => $qty) {
 			$totalAvail+= $qty;
 		}
 
 		$furtherRequired = 0;
+
 		if($totalAvail<$sale['conditionQuantity']){
 
 			$furtherRequired = $sale['conditionQuantity'] - $totalAvail;
 
 		}
 
-
 		if($furtherRequired>0){
-
+						
 			if((string)$sale['_id'] !== (string)$newProSale['_id'] || $furtherRequired>$newProQty){
 				return false;
 			}
@@ -449,9 +463,68 @@ class Cart extends Moloquent
 
 		}
 
+		// check action product dependency
 		if(count($sale['actionProductId'])==1){
 
-			prd($sale['actionProductId'][0]);
+			$productToCreateSale['action'] = [];
+
+			$actionQty = 1;
+			if($sale['actionType']==1){
+				$actionQty = $sale['giftQuantity'];
+			}
+
+			$conditionProductId = $sale['actionProductId'][0];
+
+			// check action product exist in cart or not
+			if(isset($products[$conditionProductId])){
+
+				$actionPro = $products[$conditionProductId];
+
+				if($actionPro['remainingQty']>$actionQty){
+
+					$actionPro['remainingQty']-=$actionQty;
+					$productToCreateSale['action'][$newProId] = $actionQty;
+					$actionQty = 0;
+
+				}else{
+
+					$productToCreateSale['action'][$newProId] = $actionPro['remainingQty'];
+					$actionQty-= $actionPro['remainingQty'];
+					$actionPro['remainingQty']=0;
+
+				}
+
+			}
+
+			// if action product is not full fill and new product is also action product then get it from them
+			if($actionQty>0 && $conditionProductId == $newProId){
+
+				if(!isset($productToCreateSale['action'][$newProId])){
+					$productToCreateSale['action'][$newProId] = 0;
+				}
+
+				while($newProQty>0 && $actionQty>0){
+
+					$newProQty--;
+					$actionQty--;
+					$productToCreateSale['action'][$newProId]++;
+
+				}
+
+			}
+
+			if($actionQty>0){
+				return false;
+			}
+			// if($actionQty>0 && $sale['actionType']==1) {
+
+
+			// }else{
+
+			// 	return false;
+
+			// }
+
 
 		}	
 

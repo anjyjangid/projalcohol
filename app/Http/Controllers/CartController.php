@@ -294,8 +294,8 @@ class CartController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Request $request, $id)
-	{
+	public function update(Request $request, $id){
+
 		$inputs = $request->all();		
 				
 		$cart = Cart::find($id);
@@ -324,7 +324,6 @@ class CartController extends Controller
 		$nonChilledQty = (int)$inputs['quantity']['nonChilled'];
 		$totalQty = $chilledQty + $nonChilledQty;
 
-		
 		// Check if product remove request is arise and product not available in cart.
 		if($productInCart===false && $totalQty==0){
 
@@ -415,14 +414,15 @@ class CartController extends Controller
 
 		}
 		
-		//$cart->createAllPossibleSales();		
+		//return response(["Products"=>$cart->products,"Sales"=>$cart->sales],400);
+		//$cart->createAllPossibleSales();
 
 		try {
 				
 				// $result = DB::collection('cart')->where('_id', new MongoId($id))
 				// 						->update(["products.".$proIdToUpdate=>$updateProData], ['upsert' => true]);
 
-				$cart->save();
+			$cart->save();
 
 			//$cart->unset('products.'.$proIdToUpdate);
 			unset($product['proSales']);
