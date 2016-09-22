@@ -54,6 +54,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 	this.addItem = function (id, quantity, serveAs) {
 
+
 		var defer = $q.defer();
 
 		var inCart = this.getProductById(id);
@@ -74,8 +75,7 @@ AlcoholDelivery.service('alcoholCart', [
 			defer.reject(data);
 
 		}).success(function(response) {
-
-			if(response.success){
+					
 
 				var resProduct = response.product;
 
@@ -103,14 +103,14 @@ AlcoholDelivery.service('alcoholCart', [
 				}
 
 				if(resProduct.product.change!==0){
+
 					if(resProduct.product.change>0){
 						$rootScope.$broadcast('alcoholCart:updated',{msg:"Items added to cart",quantity:Math.abs(resProduct.product.change)});
 					}else{
 						$rootScope.$broadcast('alcoholCart:updated',{msg:"Items removed from cart",quantity:Math.abs(resProduct.product.change)});
 					}
+					
 				}
-
-			}
 
 			defer.resolve(response);
 
@@ -1522,8 +1522,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($rootScope, $log){
 		
-		var item = function (id, data) {		
-
+		var item = function (id, data) {
+			console.log(data);
 			this.setId(id);
 
 			this.setRQuantity(data.chilled.quantity,data.nonchilled.quantity);			
@@ -1535,7 +1535,6 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 			this.setProduct(data);
 
 			this.setRMaxQuantity(data.product);
-
 
 		};
 

@@ -212,27 +212,31 @@ class CartController extends Controller
 
 		$productsIdInCart = array_merge(array_keys((array)$cart['products']),array_keys((array)$cart['loyalty']));
 
+
 		$productObj = new Products;
 
-		$productsInCart = $productObj->getProducts(
+		$productsInCart = $productObj->fetchProduct(
 									array(
-										"id"=>$productsIdInCart,
-										"with"=>array(
-											"discounts"
-										)
+										"id"=>$productsIdInCart
 									)
 								);
 
-		if(!empty($productsInCart)){
+		if(!empty($productsInCart['product'])){
 
-			foreach($productsInCart as $product){
+			foreach($productsInCart['product'] as $product){
+				
+				$key = (string)$product['_id'];
 
-				if(isset($cart['products'][$product['_id']])){
-					$cart['products'][$product['_id']]['product'] = $product;
+				if(isset($cart['products'][$key])){
+
+					$cart['products'][$key]['sale'] = $product['proSales'];
+					unset($product['proSales']);
+					$cart['products'][$key]['product'] = $product;
+
 				}
 
-				if(isset($cart['loyalty'][$product['_id']])){
-					$cart['loyalty'][$product['_id']]['product'] = $product;
+				if(isset($cart['loyalty'][$key])){
+					$cart['loyalty'][$key]['product'] = $product;
 				}
 
 			}
@@ -294,43 +298,47 @@ class CartController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 	public function update(Request $request, $id)
-	{		
-		$inputs = $request->all();
-
-		$proIdToUpdate = $inputs['id'];
-
+	{
+		$inputs = $request->all();		
+				
 		$cart = Cart::find($id);
 
-		$response = [
-			"success"=>false,
-			"message"=>"Something went worng",
-			"code" => 000,
+		$response = [			
+			"message"=>"Something went wrong",
+			"code" => 100,
+			"action" => ""
 		];
-		
+
+		// Check if requested cart id exist or not
 		if(empty($cart)){
+			
+			$response['message'] = "Cart Not Found";
+			$response['action'] = "refresh";
 
-			$response['message'] = "Not a valid request";
-			return response($response,400);
-
-		}	
-
-		$productInCart = isset($cart->products[$proIdToUpdate])?$cart->products[$proIdToUpdate]:false;
-		
-		// Set current quantity and sates
-		$chilledQty = (int)$inputs['quantity']['nonChilled'];
-		$nonChilledQty = (int)$inputs['quantity']['chilled'];
-		$totalQty = $chilledQty + $nonChilledQty;
-
-		
-		// Check if zero quantity adding request is arise.
-		if($productInCart===false && $totalQty==0){
-
-			$response['message'] = "Not a valid request";
 			return response($response,400);
 
 		}
 
-		$productObj = new Products;		
+		$proIdToUpdate = $inputs['id'];
+		$productInCart = isset($cart->products[$proIdToUpdate])?$cart->products[$proIdToUpdate]:false;
+		
+		// Set current quantity and sates
+		$chilledQty = (int)$inputs['quantity']['chilled'];
+		$nonChilledQty = (int)$inputs['quantity']['nonChilled'];
+		$totalQty = $chilledQty + $nonChilledQty;
+
+		
+		// Check if product remove request is arise and product not available in cart.
+		if($productInCart===false && $totalQty==0){
+
+			$response['message'] = "Product is not available in cart which you want to remove";
+			$response['action'] = "refresh";
+
+			return response($response,400);
+
+		}
+
+		$productObj = new Products;
 		$product = $productObj->fetchProduct([
 						"id"=>$proIdToUpdate,
 					]);
@@ -339,10 +347,12 @@ class CartController extends Controller
 		if($product['success']===false){
 
 			$response['message'] = "Product not found";
+			$response['action'] = "refresh";
 			return response($response,400);
 
 		}
 
+		
 		$product = $product['product'];
 
 		// Handel if product goes dis-continue in middle of processing
@@ -371,7 +381,6 @@ class CartController extends Controller
 			}
 
 		}
-		
 
 		$updateProData = array(
 
@@ -384,54 +393,56 @@ class CartController extends Controller
 				"status"=>"nonchilled",
 			),
 			"quantity"=>$totalQty,
-			"lastServedChilled" => (bool)$inputs['chilled']
-
+			"lastServedChilled" => (bool)$inputs['chilled'],
+			"sale"=>$product['proSales']
 		);
 
 		$oldQuantity = 0;
+		$product['change'] = $updateProData['quantity'] - $oldQuantity;//Track change in quantity
 
 		if($productInCart!==false){
 
 			$oldQuantity = (int)$productInCart['quantity'];
+
+			$updateProData['chilled']['quantity']-= $productInCart['chilled']['quantity'];
+			$updateProData['nonchilled']['quantity']-= $productInCart['nonchilled']['quantity'];
+
 			$updateProData['chilled']['status'] = $productInCart['chilled']['status'];
 			$updateProData['nonchilled']['status'] = $productInCart['nonchilled']['status'];
 
-		}		
+		}
+
+		if($product['change']>0){
+
+			$saleRes = $cart->setSaleAdd($proIdToUpdate,$updateProData);
+
+		}
 		
-		$product['change'] = $updateProData['quantity'] - $oldQuantity;//Track change in quantity
+		//$cart->createAllPossibleSales();		
 
 		try {
+				
+				// $result = DB::collection('cart')->where('_id', new MongoId($id))
+				// 						->update(["products.".$proIdToUpdate=>$updateProData], ['upsert' => true]);
 
-			if($updateProData['quantity']>0){
+				$cart->save();
 
-				$result = DB::collection('cart')->where('_id', new MongoId($id))
-										->update(["products.".$proIdToUpdate=>$updateProData], ['upsert' => true]);
-
-				if($result!==1){
-					throw new Exception('Product not updated');
-				}
-
-			}else{
-
-				$cart->unset('products.'.$proIdToUpdate);
-
-			}
-
+			//$cart->unset('products.'.$proIdToUpdate);
+			unset($product['proSales']);
 			$updateProData['product'] = $product;
-			$response['success'] = true;
 			$response['message'] = "cart updated successfully";
 			$response['product'] = $updateProData;
 
-			return response($response);
+			return response($response,200);
 
 		} catch(\Exception $e){
 
-			return response(["success"=>false,"message"=>"Something went worng"]);
-			return response(["success"=>false,"message"=>$e->getMessage()]);
+			return response(["message"=>$e->getMessage()],400);
+			return response(["message"=>"Something went worng"],400);
 
 		}
 
-		return response(["success"=>false,"message"=>"Something went worng"]);
+		return response(["message"=>"Something went worng"],400);
 
 	}
 

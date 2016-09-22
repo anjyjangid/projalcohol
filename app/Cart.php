@@ -7,6 +7,9 @@ use Moloquent;
 use AlcoholDelivery\Setting as Setting;
 use AlcoholDelivery\Products as Products;
 
+use MongoId;
+use MongoDate;
+
 class Cart extends Moloquent
 {
 	protected $primaryKey = "_id";
@@ -71,9 +74,10 @@ class Cart extends Moloquent
 
 		$cart = [
 
-			"products" => [],
+			"products" => (object)[],
 			"packages" => [],
-			"promotions" => [],
+			"promotions" => (object)[],
+			"sales" => [],
 			"delivery" => [
 				"type" => 1,
 				"charges" => null,
@@ -307,8 +311,258 @@ class Cart extends Moloquent
 		
 	}
 
-	public function confirmOrder($cartArr){		
+	private function getProductById($id){
+
+		if(isset($this->products[$id]))
+			return $this->products[$id];
+
+		return false;
+	}
+
+	public function setSaleAdd($proId,$updateParams){
+
+		$remainingQty = $updateParams['quantity'];		
+		$products = $this->products;
+		$sales = isset($this->sales)?$this->sales:[];
+		
+		$currProduct = $this->getProductById($proId);
+		$qty = $updateParams['chilled']['quantity'] + $updateParams['nonchilled']['quantity'];
+
+		// Check any product is required newly added product to create a sale.
+
+		foreach($products as $productId=>$product){
+
+			if(isset($product['sale'])){
+
+				$isAble = false;
+
+				if($product['remainingQty'])
+				$isAble = $this->canCreateSale($productId,$proId,$qty,$updateParams['sale']);			
+
+				if($isAble===false){
+					continue;
+				}
+
+				$saleObj = [
+					'_id' => new MongoId(),
+					'products'=>[],
+					'sale' => $product['sale']['_id'],
+					'created_at' => new MongoDate()
+				];
+
+				foreach($isAble as $key=>$saleProQty){
+
+					switch($key){
+
+						case 'new': {
+
+							$qty-=$saleProQty;							
+
+							$saleObj['products'][] = [
+
+								'_id' => $proId,
+								'quantity' => $saleProQty
+
+							];
+
+						}
+						break;
+						default : {
+
+							$products[$key]['remainingQty']-=$saleProQty;							
+
+							$saleObj['products'][] = [
+
+								'_id' => $key,
+								'quantity' => $saleProQty
+
+							];
+						}
+
+					}
+
+				}
+				
+				$sales[] = $saleObj;
+
+			}
+
+		}
+		
+
+		// Check after fullfilling all products requirement is still newly add product able to create a sale.		
+
+		if($currProduct!==false){
+
+			$products[$proId]['chilled']['quantity']+= $updateParams['chilled']['quantity'];
+			$products[$proId]['nonchilled']['quantity']+= $currProduct['nonchilled']['quantity'];
+			
+
+		}else{
+			
+			$products[$proId] = $updateParams;
+
+		}
+
+		if($qty<0){
+			prd("quantity never less than zero");
+		}
+
+		$products[$proId]['remainingQty'] = $qty;
+		
+		$this->__set("products",$products);
+
+		$this->__set("sales",$sales);
 
 	}
+
+	private function canCreateSale($cartProId,$newProId,$newProQty,$newProSale){
+
+		$products = $this->products;
+		$product = $products[$cartProId];
+
+		$sale = $product['sale'];
+
+		$productToCreateSale = $this->getProductToCreateSale($products,$sale['_id'],$sale['conditionQuantity']);
+		
+		$totalAvail = 0;
+		foreach ($productToCreateSale as $saleProkey => $qty) {
+			$totalAvail+= $qty;
+		}
+
+		$furtherRequired = 0;
+		if($totalAvail<$sale['conditionQuantity']){
+
+			$furtherRequired = $sale['conditionQuantity'] - $totalAvail;
+
+		}
+
+
+		if($furtherRequired>0){
+
+			if((string)$sale['_id'] !== (string)$newProSale['_id'] || $furtherRequired>$newProQty){
+				return false;
+			}
+			
+			$newProQty-=$furtherRequired;
+			$productToCreateSale['new'] = $furtherRequired;
+
+		}
+
+		if(count($sale['actionProductId'])==1){
+
+			prd($sale['actionProductId'][0]);
+
+		}	
+
+		return $productToCreateSale;
+
+	}	
+
+	//	Is cart products fullfill quantity condition.
+	private function getProductToCreateSale(&$products,$saleId,$quantity){
+
+		$salePro = [];
+
+		foreach($products as $key=>&$product){
+
+			$proSale = $product['sale'];
+
+			if((string)$proSale['_id'] === (string)$saleId && $product['remainingQty']>0){
+				
+				if($product['remainingQty']>=$quantity){
+
+					$salePro[$key] = $quantity;
+
+				}else{
+
+					$quantity-=$product['remainingQty'];
+					$salePro[$key] = $product['remainingQty'];
+
+				}
+
+				$product['remainingQty']-= $salePro[$key];
+
+			}
+
+			if($quantity===0){
+				break;
+			}
+
+		}
+
+		if(count($salePro))
+		return $salePro;
+		return false;
+	}
+
+	private function addSale($sale,$salePro,$actionPro){
+
+		$sale = [
+			"sale" => $sale,
+			"salePro" => $salePro,
+			"actionPro" => $actionPro
+		];
+		
+		$this->sale[] = $sale;
+
+	}
+
+	private function createAllPossibleSales(){
+
+		$products = $this->products;
+
+		foreach ($products as $key => $product) {
+
+			$sale = $product->sale;
+
+			if($sale['conditionQuantity']){
+
+
+
+			}
+
+		}
+
+		while($updateParams['sale']['conditionQuantity']<=$remainingQty){
+
+			if(is_array($updateParams['sale']['actionProductId']) && count($updateParams['sale']['actionProductId'])>0){
+
+				//case select itself in action product
+
+			}else{
+
+				$salePro = $actionPro = [];
+
+				for($i=$updateParams['sale']['conditionQuantity'];$i>0;$i--){
+
+					$salePro[] = ['_id'=>$proId];
+
+				}
+
+				if($updateParams['sale']['actionType']==2){
+
+
+
+				}else{
+
+					// for($i=$updateParams['sale']['conditionQuantity'],$i>0,$i--){
+
+					// 	$salePro[] = ['_id'=>$proId];
+
+					// }
+
+				}				
+
+				$this->addSale($updateParams['sale'],$salePro,$actionPro);
+
+			}
+
+		}
+	}
+
+	public function confirmOrder($cartArr){		
+
+	}	
 
 }

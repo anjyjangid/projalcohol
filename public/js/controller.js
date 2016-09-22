@@ -1500,15 +1500,12 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 		$scope.proUpdateTimeOut = $timeout(function(){
 
-			if(type=='qChilled'){
+			
 
-				alcoholCart.addItem(key,$scope.cart.products[key].qChilled,true);
-
-			}else{
-
+				alcoholCart.addItem(key,$scope.cart.products[key].qChilled,true);			
 				alcoholCart.addItem(key,$scope.cart.products[key].qNChilled,false);
 
-			}		
+					
 
 		},1500)
 
