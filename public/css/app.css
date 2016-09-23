@@ -964,10 +964,6 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	max-height: 100px;
 }
 
-.strikeout{
-	text-decoration: line-through;
-}
-
 .saletag, .saletag:hover{	
 	color: #fff;
     padding: 1px;
@@ -983,4 +979,12 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
     border-top: 9px solid transparent;
     border-bottom: 8px solid transparent;
     border-right: 7px solid #aa00ff;
+}
+.strike-txt{
+    text-decoration: line-through;
+}
+
+.cart-table .strike-txt{
+	padding: 0 10px;
+	font-weight: bold;
 }

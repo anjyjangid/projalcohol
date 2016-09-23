@@ -325,6 +325,7 @@ class CartController extends Controller
 		// Set current quantity and sates
 		$chilledQty = (int)$inputs['quantity']['chilled'];
 		$nonChilledQty = (int)$inputs['quantity']['nonChilled'];
+
 		$totalQty = $chilledQty + $nonChilledQty;
 
 		// Check if product remove request is arise and product not available in cart.
@@ -397,8 +398,7 @@ class CartController extends Controller
 		);
 
 		$oldQuantity = 0;
-		$product['change'] = $updateProData['quantity'] - $oldQuantity;//Track change in quantity
-
+		
 		if($productInCart!==false){
 
 			$oldQuantity = (int)$productInCart['quantity'];
@@ -411,14 +411,15 @@ class CartController extends Controller
 
 		}
 
+		$product['change'] = $updateProData['quantity'] - $oldQuantity;//Track change in quantity
+
 		if($product['change']>0){
 
 			$saleRes = $cart->setSaleAdd($proIdToUpdate,$updateProData);
 
 		}
 		
-		//return response(["Products"=>$cart->products,"Sales"=>$cart->sales],400);
-		//$cart->createAllPossibleSales();
+		$cart->createAllPossibleSales();		
 
 		try {
 				
