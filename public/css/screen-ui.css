@@ -5218,6 +5218,9 @@ md-autocomplete-wrap input:-ms-input-placeholder { /* IE 10+ */
 	padding: 40px 15px;
 	text-decoration: none;
 	vertical-align: middle;
+	transition: all 0.5s ease 0s;
+	-moz-transition: all 0.5s ease 0s;
+	-web-transition: all 0.5s ease 0s;
 }
 .navbar-fixed-top .signuplogin ul li {
 	align-items: center;

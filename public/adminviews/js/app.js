@@ -626,6 +626,12 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 					links:['userLayout.stores.list']
 				},
 				{
+					label:'Company Information',
+					uisref:'userLayout.company.list',
+					icon:'icon-info',					
+					links:['userLayout.company.list']
+				},
+				{
 					label:'General',
 					uisref:'userLayout.settings.general',
 					icon:'icon-settings',					
@@ -1539,28 +1545,24 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         .state('userLayout.stocks', {
             abstract:true,            
             templateUrl:'adminviews/views/auth.html',
-            //controller: "ProductController",
+            controller: "StocksController",
             resolve: {                
                 authenticate: authenticate,
-                /*deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         name: 'MetronicApp',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
                         files: [
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',                            
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                            'adminviews/js/models/productModel.js',
-                            'adminviews/js/controllers/ProductController.js'
+                            'adminviews/js/controllers/StocksController.js'
                         ]
                     });
-                }]*/
+                }]
             }
         })
 
         .state("userLayout.stocks.list", {
             url: "/products/stocks",
             templateUrl: "adminviews/views/stocks/list.html",
-            //controller: "StockController",
             data:{
 				pageTitle:'Stock Order List',
 				breadCrumb:[					
@@ -1886,6 +1888,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                         name: 'MetronicApp',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
                         files: [                                                        
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
                             'adminviews/js/models/storeModel.js',
                             'adminviews/js/controllers/StoresController.js'
                         ]
@@ -1938,6 +1942,56 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                 authenticate: authenticate
             },
             controller: "StoreFormController",            
+        })
+
+        .state('userLayout.company', {
+            abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+            controller: "CompanyController",
+            resolve: {                
+                authenticate: authenticate,
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [                                                        
+                            'assets/global/plugins/ckeditor/ckeditor.js',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+                            'adminviews/js/controllers/CompanyController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('userLayout.company.list', {
+            url:'/company/list',
+			templateUrl:'adminviews/views/company/list.html',
+            data:{
+				pageTitle:'Company Information',				
+				breadCrumb:[
+					{title:'Company Information','uisref':'#'}					
+				]				
+			},
+            resolve: {                
+                authenticate: authenticate                
+            }
+        })
+
+        .state('userLayout.company.form', {
+            url:'/company/edit',
+			templateUrl:'adminviews/views/company/form.html',
+            controller:'CompanyFormController',
+            data:{
+				pageTitle:'Company Edit',				
+				breadCrumb:[
+					{title:'Company Edit','uisref':'#'}					
+				]				
+			},
+            resolve: {                
+                authenticate: authenticate                
+            }
         })
 
         .state('userLayout.settings', {
