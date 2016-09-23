@@ -955,9 +955,14 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	margin-left: 10px;
 }
 
+.availablecards table{
+	margin-top: 20px;
+}
+
 .sale-pro-list li{
 	max-width: 100px;
 	max-height: 100px;
+
 }
 .strike-txt{
     text-decoration: line-through;

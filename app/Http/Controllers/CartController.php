@@ -1407,10 +1407,18 @@ prd($cart);
 									);
 
 			$request->session()->forget('deliverykey');
+			
+			//SAVE CARD IF USER CHECKED SAVE CARD FOR FUTURE PAYMENTS
+			if($cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['card'] == 'newcard' && $cartArr['payment']['savecard']){
+				$cardInfo = $cartArr['payment']['creditCard'];
+		        $user = User::find($userId);
+		        $user->push('savedCards',$cardInfo,true);
+			}
 
 			if($request->isMethod('get')){
 				return redirect('/#/orderplaced/'.$order['_id']);
 			}
+
 
 			return response(array("success"=>true,"message"=>"order placed successfully","order"=>$order['_id']));
 

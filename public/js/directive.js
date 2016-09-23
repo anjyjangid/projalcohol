@@ -1336,4 +1336,18 @@ AlcoholDelivery.directive('sideBar', function() {
 		}
 	};
 })
-;
+.directive('navLeft', function(){
+
+	return {		
+		restrict: 'A',		
+		templateUrl: '/templates/account/navLeft.html',
+		controller: function($scope,UserService){
+			UserService.GetUser().then(
+			    function(result) {
+			    	$scope.user = result;
+			    	$scope.user.userCredits = 0;
+			    }
+			);
+		}
+	};
+});
