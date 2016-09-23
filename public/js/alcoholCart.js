@@ -103,6 +103,10 @@ AlcoholDelivery.service('alcoholCart', [
 					
 				}
 
+				_self.setAllProductsRemainingQty(resProduct.proRemaining);
+				_self.setAllSales(resProduct.sales);
+
+
 				if(resProduct.product.change!==0){
 
 					if(resProduct.product.change>0){
@@ -119,6 +123,24 @@ AlcoholDelivery.service('alcoholCart', [
 
 		return defer.promise
 	};
+
+	this.setAllProductsRemainingQty = function(data){
+		_self = this;
+		angular.forEach(data, function (value,key) {
+			var p = _self.getProductById(key);
+			p.setRemainingQty(value);
+		})
+	}
+
+	this.setAllSales = function (sales) {
+
+		angular.forEach(sales, function (sale,index) {
+			sale._id.$id
+		});
+
+	}
+
+	this.getSale
 
 	this.addLoyaltyProduct = function (id, quantity, serveAs) {
 

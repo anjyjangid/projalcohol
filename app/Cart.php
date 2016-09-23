@@ -593,109 +593,121 @@ class Cart extends Moloquent
 
 		foreach ($products as $key => $product) {
 
+			if($product['remainingQty'] < 1) {
+				continue;
+			}
+
 			$sale = $product['sale'];
+			$isAble = true;
 
-			$unManipulatedProducts = $products;
+			while($isAble && $product['remainingQty']>0){
 
-			$productToCreateSale = $this->getProductToCreateSale($products,$sale['_id'],$sale['conditionQuantity']);
+				$unManipulatedProducts = $products;
 
-			if($productToCreateSale === false){
-				$products = $unManipulatedProducts;
-				continue;
-			}
+				$productToCreateSale = $this->getProductToCreateSale($products,$sale['_id'],$sale['conditionQuantity']);
 
-			$totalAvail = 0;
-			foreach ($productToCreateSale as $saleProkey => $qty) {
-				$totalAvail+= $qty;
-			}
-
-			if($totalAvail<$sale['conditionQuantity']){
-				$products = $unManipulatedProducts;
-				continue;
-			}
-
-			// check action product dependency
-			if(count($sale['actionProductId'])==1){
-
-				$productToCreateSale['action'] = [];
-
-				$actionQty = 1;
-
-				if($sale['actionType']==1){
-					$actionQty = $sale['giftQuantity'];
+				if($productToCreateSale === false){
+					$isAble = false;
+					$products = $unManipulatedProducts;
+					continue;
 				}
 
-				$conditionProductId = $sale['actionProductId'][0];
+				$totalAvail = 0;
+				foreach ($productToCreateSale as $saleProkey => $qty) {
+					$totalAvail+= $qty;
+				}
 
-				// check action product exist in cart or not
-				if(isset($products[$conditionProductId])){
+				if($totalAvail<$sale['conditionQuantity']){
+					$isAble = false;
+					$products = $unManipulatedProducts;
+					continue;
+				}
 
-					$actionPro = $products[$conditionProductId];
+				// check action product dependency
+				if(count($sale['actionProductId'])==1){
 
-					if($actionPro['remainingQty']>=$actionQty){
+					$productToCreateSale['action'] = [];
 
-						$actionPro['remainingQty']-=$actionQty;
-						$productToCreateSale['action'][$conditionProductId] = $actionQty;
-						$actionQty = 0;
+					$actionQty = 1;
 
+					if($sale['actionType']==1){
+						$actionQty = $sale['giftQuantity'];
 					}
 
-				}				
+					$conditionProductId = $sale['actionProductId'][0];
 
-				if($actionQty>0){
-					continue;
-				}				
+					// check action product exist in cart or not
+					if(isset($products[$conditionProductId])){
+
+						$actionPro = $products[$conditionProductId];
+
+						if($actionPro['remainingQty']>=$actionQty){
+
+							$actionPro['remainingQty']-=$actionQty;
+							$productToCreateSale['action'][$conditionProductId] = $actionQty;
+							$actionQty = 0;
+
+						}
+
+					}				
+
+					if($actionQty>0){
+						$isAble = false;
+						$products = $unManipulatedProducts;
+						continue;
+					}				
+					
+				}
 				
-			}
-			
-			$saleObj = [
-				'_id' => new MongoId(),
-				'products'=>[],
-				'sale' => $sale['_id'],
-				'created_at' => new MongoDate()
-			];
+				$saleObj = [
+					'_id' => new MongoId(),
+					'products'=>[],
+					'sale' => $sale['_id'],
+					'created_at' => new MongoDate()
+				];
 
-			foreach($productToCreateSale as $key=>$saleProQty){
+				foreach($productToCreateSale as $key=>$saleProQty){
 
-				switch($key){
+					switch($key){
 
-					case 'action': {							
+						case 'action': {							
 
-						foreach($saleProQty as $actionProKey=>$actionProQty){
-							
-							$saleObj['action'][] = [
+							foreach($saleProQty as $actionProKey=>$actionProQty){
+								
+								$saleObj['action'][] = [
 
-								'_id' => $actionProKey,
-								'quantity' => $actionProQty
+									'_id' => $actionProKey,
+									'quantity' => $actionProQty
+
+								];
+
+							}							
+
+						}
+						break;
+						default : {						
+
+							$saleObj['products'][] = [
+
+								'_id' => $key,
+								'quantity' => $saleProQty
 
 							];
+						}
 
-						}							
-
-					}
-					break;
-					default : {						
-
-						$saleObj['products'][] = [
-
-							'_id' => $key,
-							'quantity' => $saleProQty
-
-						];
 					}
 
 				}
-
+				
+				$sales[] = $saleObj;
 			}
-			
-			$sales[] = $saleObj;
 
 		}		
 				
 		$this->__set("products",$products);
 
-		$this->__set("sales",$sales);
-		
+		$this->__set("sales",$sales);		
+
 	}
 
 	public function confirmOrder($cartArr){		

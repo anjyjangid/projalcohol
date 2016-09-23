@@ -411,28 +411,39 @@ class CartController extends Controller
 
 		}
 
-		$product['change'] = $updateProData['quantity'] - $oldQuantity;//Track change in quantity
+		$change = $updateProData['quantity'] - $oldQuantity;//Track change in quantity
 
-		if($product['change']>0){
+		if($change>0){
 
 			$saleRes = $cart->setSaleAdd($proIdToUpdate,$updateProData);
 
 		}
 		
-		$cart->createAllPossibleSales();		
+		$cart->createAllPossibleSales();
+		
+		
 
+		$proRemaining = [];
+		foreach($cart->products as $key=>$product){
+			$proRemaining[$key] = $product['remainingQty'];
+		}
+
+		$product['change'] = $change;
 		try {
 				
 				// $result = DB::collection('cart')->where('_id', new MongoId($id))
 				// 						->update(["products.".$proIdToUpdate=>$updateProData], ['upsert' => true]);
 
-			$cart->save();
+			//$cart->save();
 
 			//$cart->unset('products.'.$proIdToUpdate);
+
 			unset($product['proSales']);
 			$updateProData['product'] = $product;
 			$response['message'] = "cart updated successfully";
 			$response['product'] = $updateProData;
+			$response['proRemaining'] = $proRemaining;
+			$response['sales'] = $cart->sales;
 
 			return response($response,200);
 
@@ -652,67 +663,67 @@ class CartController extends Controller
 
 	}
 
-	public function createpackage(Request $request, $cartKey){
-
-		$inputs = $request->all();
-		$packageId = $inputs['id'];
-		$packageDetail = $inputs['package'];
-
-		$cart = Cart::find($cartKey);
-
-		if(empty($cart)){
-
-			return response(array("success"=>false,"message"=>"Not a valid request"),400);
-
-		}
-
-		$packages = $cart->packages;
-
-		if(empty($packages)){
-
-			$packages = [];
-
-		}
-
-		$packageDetail['_unique'] = new mongoId();
-
-		if(isset($packageDetail['unique'])){
-
-			foreach ($packages as $key => $package) {
-
-				if(!isset($package["_unique"])){
-					unset($packages[$key]);
-					continue;
-				}
-				if($package["_unique"]==$packageDetail['unique']){
-					unset($packages[$key]);
-					$packageDetail['_unique'] = $package["_unique"];
-					break;
-				}
-
+	public function createpackage(Request $request, $cartKey){{
+	
+			$inputs = $request->all();
+			$packageId = $inputs['id'];
+			$packageDetail = $inputs['package'];
+	
+			$cart = Cart::find($cartKey);
+	
+			if(empty($cart)){
+	
+				return response(array("success"=>false,"message"=>"Not a valid request"),400);
+	
 			}
-		}
-
-		if(!isset($packageDetail['packageQuantity'])){
-			$packageDetail['packageQuantity'] = 1;
-		}
-		
-		$packageDetail['products'] = (array)$packageDetail['products'];
-		$packageDetail['_id'] = new mongoId($packageId);
-
-		try {
-
-			$result = Cart::where('_id', $cartKey)->push('packages',[$packageDetail]);
-			return response(["success"=>true,"message"=>"cart updated successfully","key"=>$packageDetail['_unique']]);
-
-		} catch(\Exception $e){
-
-			return response(["success"=>false,"message"=>"Something went worng"]);
-			return response(["success"=>false,"message"=>$e->getMessage()]);
-
-		}
-
-	}
+	
+			$packages = $cart->packages;
+	
+			if(empty($packages)){
+	
+				$packages = [];
+	
+			}
+	
+			$packageDetail['_unique'] = new mongoId();
+	
+			if(isset($packageDetail['unique'])){
+	
+				foreach ($packages as $key => $package) {
+	
+					if(!isset($package["_unique"])){
+						unset($packages[$key]);
+						continue;
+					}
+					if($package["_unique"]==$packageDetail['unique']){
+						unset($packages[$key]);
+						$packageDetail['_unique'] = $package["_unique"];
+						break;
+					}
+	
+				}
+			}
+	
+			if(!isset($packageDetail['packageQuantity'])){
+				$packageDetail['packageQuantity'] = 1;
+			}
+			
+			$packageDetail['products'] = (array)$packageDetail['products'];
+			$packageDetail['_id'] = new mongoId($packageId);
+	
+			try {
+	
+				$result = Cart::where('_id', $cartKey)->push('packages',[$packageDetail]);
+				return response(["success"=>true,"message"=>"cart updated successfully","key"=>$packageDetail['_unique']]);
+	
+			} catch(\Exception $e){
+	
+				return response(["success"=>false,"message"=>"Something went worng"]);
+				return response(["success"=>false,"message"=>$e->getMessage()]);
+	
+			}
+	
+		}}
 
 	public function putPromotion(Request $request, $cartKey){
 
