@@ -33,9 +33,9 @@
   <div class="pic_divinnertext">
     <div class="pic_divinnertextbold">Payments</div>
     <div class="pic_divinnertextnormal">
-      <a ng:class="{'active':$state.current.name == 'accountLayout.loyalty'}" ui-sref="accountLayout.loyalty">Loyalty Points <span>150</span></a></div>
+      <a ng:class="{'active':$state.current.name == 'accountLayout.loyalty'}" ui-sref="accountLayout.loyalty">Loyalty Points <span ng-bind="user.loyaltyPoints">0</span></a></div>
     <div class="pic_divinnertextnormal">
-    <a ng:class="{'active':$state.current.name == 'accountLayout.credits'}" ui-sref="accountLayout.credits">Credits <span>150</span></a></div>
+    <a ng:class="{'active':$state.current.name == 'accountLayout.credits'}" ui-sref="accountLayout.credits">Credits <span ng-bind="user.userCredits">0</span></a></div>
     <div class="pic_divinnertextnormal">
     <a ng:class="{'active':$state.current.name == 'accountLayout.cards'}" ui-sref="accountLayout.cards">Saved Cards</a></div>
   </div>

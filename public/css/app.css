@@ -947,3 +947,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	color: #564111;
 	margin-left: 10px;
 }
+
+.availablecards table{
+	margin-top: 20px;
+}

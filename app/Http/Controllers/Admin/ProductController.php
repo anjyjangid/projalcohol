@@ -593,7 +593,26 @@ class ProductController extends Controller
 
 	public function getTest(Request $request){
 
-		
+		/*$create = DB::collection('mytest')->insert(
+			[
+				'name' => 'test',
+				'inventory' => [
+					[
+						'storeId' => new MongoId(),
+						'productId' => new MongoId(),
+						'quantity' => 5
+					]
+				]
+			]
+		);*/
+
+
+
+		/*$u = DB::collection('mytest')->raw()->update(
+			['inventory.storeId' => new MongoId('57e3dd31b190ec1b0d8b456a')],
+			['$set' => ['inventory.$.quantity' => 9]]
+		);
+		dd($u);*/
 
 	}
 

@@ -10,7 +10,7 @@
 		<div class="portlet">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="fa fa-users"></i>Orders Listing
+					<i class="fa fa-order"></i>Stock Orders Listing
 				</div>
 				
 			</div>
@@ -19,7 +19,7 @@
 					<table class="table table-striped table-bordered table-hover" id="orderslisttab">
 						<thead>
 							<tr role="row" class="heading">
-                                <th width="15%">
+                                <th width="5%">
                                     Sr.
                                 </th>
 								<th width="15%">
@@ -44,7 +44,7 @@
 									Priority
 								</th>
 							</tr>
-							<tr role="row" class="filter">								
+							<!-- <tr role="row" class="filter">								
                                 <td></td>
                                 <td></td>
 								<td></td>
@@ -53,7 +53,7 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>                                
-							</tr>
+							</tr> -->
 						</thead>
 						<tbody id="tabBody">
 						</tbody>
@@ -141,9 +141,52 @@
             },
             loadingMessage: 'Loading...',
             dataTable: {                                 
-                "columns": [],
+                "columns": [
+                    {
+                        mRender: function(data, type, full, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        },
+                        orderable:false
+                    },
+                    {
+                        data:'name',
+                        orderable:true
+                    },
+                    {
+                        data:'supplierName',
+                        orderable:true
+                    },
+                    {
+                        data:'qtyOneHour',
+                        orderable:true
+                    },
+                    {
+                        data:'qtyAdvance',
+                        orderable:true
+                    },
+                    {
+                        data:'totalQty',
+                        orderable:true
+                    },
+                    {
+                        data:'purchaseOrder',
+                        orderable:true
+                    },
+                    {
+                        mData: null,
+                        mRender: function(data, type, full) {                           
+                            if(data.priority!=null){
+                                return (data.priority).toFixed(0)+'%';                                
+                            }
+                            else{
+                                return '';
+                            }
+                        },
+                        orderable:true
+                    }
+                ],
                 "ajax": {
-                    "url": "../adminapi/order/orders",
+                    "url": "../adminapi/stocks/list",
                     "type": "POST"
                 },
                 "order": [],
@@ -154,7 +197,12 @@
 				        $compile(content)(scope);
 				    });
 					Metronic.initAjax()
-				}
+				},
+                "createdRow": function ( row, data, index ) {
+                    if ( data.priority == null ) {
+                        $(row).addClass('danger').attr('title','Update stocks attributes for this product');
+                    }
+                }
             }
         });
 

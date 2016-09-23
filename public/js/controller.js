@@ -1330,7 +1330,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 	$scope.payment = {
 
 		type:"cod",
-
+		savecard:true
 	}
 
 	$scope.step = 1;

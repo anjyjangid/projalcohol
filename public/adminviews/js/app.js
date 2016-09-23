@@ -546,10 +546,10 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 				{
 					label:'Stock order list',
 					icon:'icon-layers',
-					uisref:'userLayout.products.stocks',
+					uisref:'userLayout.stocks.list',
 					id:'sidebar_menu_link_stocks',
 					access : ['admin'],	
-					links:['userLayout.products.stocks']	
+					links:['userLayout.stocks.list']	
 				}
 			]
 		},
@@ -1536,10 +1536,31 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             }            
         })
 
-        .state("userLayout.products.stocks", {
+        .state('userLayout.stocks', {
+            abstract:true,            
+            templateUrl:'adminviews/views/auth.html',
+            //controller: "ProductController",
+            resolve: {                
+                authenticate: authenticate,
+                /*deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',                            
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+                            'adminviews/js/models/productModel.js',
+                            'adminviews/js/controllers/ProductController.js'
+                        ]
+                    });
+                }]*/
+            }
+        })
+
+        .state("userLayout.stocks.list", {
             url: "/products/stocks",
             templateUrl: "adminviews/views/stocks/list.html",
-            controller: "StockController",
+            //controller: "StockController",
             data:{
 				pageTitle:'Stock Order List',
 				breadCrumb:[					

@@ -88,8 +88,12 @@ class StocksController extends Controller
         //
     }
 
-    public function getList(Request $request)
+    public function postList(Request $request)
     {
+        
+        $params = $request->all();
+
+        extract($params);
         
         $model = new Products;
         $project = ['name' => 1];
@@ -129,7 +133,7 @@ class StocksController extends Controller
                 'as' => 'order',
                 'cond' => [
                     '$and'=>[
-                        ['$eq'=>['$$order.delivery.type',0]],
+                        ['$eq'=>['$$order.delivery.type',1]],
                         ['$eq'=>['$$order.status',0]],
                     ]
                 ]
@@ -156,12 +160,14 @@ class StocksController extends Controller
         $project['supplier'] = '$supplier';
         $project['store'] = '$store';
         $project['advanceOrder'] = '$advanceOrder';
-        $project['qtyOneHour'] = ['$cond'=>['$store','$store.quantity',0]];
+        $project['storeQty'] = ['$cond'=>['$store','$store.quantity',0]];
         $project['storeMaxQty'] = ['$cond'=>['$store','$store.maxQuantity',0]];
         $project['storeThreshold'] = ['$cond'=>['$store','$store.threshold',0]];
 
         //PROJECT ALL FIELDS
         $query[]['$project'] = $project;
+
+
 
         //UNWIND THE SUPPLIER TO GET SINGLE SUPPLIER
         $query[]['$unwind'] = [
@@ -174,8 +180,11 @@ class StocksController extends Controller
             'preserveNullAndEmptyArrays' => true
         ]; 
 
-        $project['advanceOrder'] = '$advanceOrder.productsLog';
+        
+        $project['qtyOneHour'] = ['$subtract'=>['$storeMaxQty','$storeQty']];
 
+        $project['advanceOrder'] = '$advanceOrder.productsLog';
+        
         $query[]['$project'] = $project;
 
         $project['advanceOrder'] = '$advanceOrder';
@@ -187,6 +196,8 @@ class StocksController extends Controller
                 'cond' => ['$eq'=>['$$advanceOrder._id','$_id']]                
             ]
         ];
+
+        $project['qtyOneHour'] = '$qtyOneHour';
 
         $query[]['$project'] = $project;        
 
@@ -201,6 +212,7 @@ class StocksController extends Controller
             'store'=>['$first'=>'$store'],
             'supplier'=>['$first'=>'$supplier'],
             'qtyOneHour' => ['$first'=>'$qtyOneHour'],
+            'storeQty' => ['$first'=>'$storeQty'],
             'storeMaxQty' => ['$first'=>'$storeMaxQty'],
             'storeThreshold' => ['$first'=>'$storeThreshold'],
             //'advanceOrder' => ['$push'=>'$advanceOrder'],
@@ -209,36 +221,73 @@ class StocksController extends Controller
 
         $query[]['$group'] = $group;
 
-        $query[]['$match'] = [
+        /*$query[]['$match'] = [
             'qtyAdvance' => ['$gt'=>0]
-        ];
-
-        /*$project['priority'] = [
-
         ];*/
 
-        $model = $model->raw()->aggregate($query);
 
-        dd($model);
 
-        $params = $request->all();
+        /*
+        * PRIORITY FORMULA 
+        * (CQ - AO) / MQ - RT/MQ
+        */
+        $project['qtyAdvance'] = '$qtyAdvance';
 
-        extract($params);
+        //SET ALL ATTR 0 IF maxQty of store is zero
 
-        $columns = ['_id','sTitle','sSupplier','qtyOneHour','qtyAdvance','totalQty','purchaseOrder','priority'];
+        $project['priority'] = [
+            '$cond' => [
+                ['$gt'=>['$storeMaxQty',0]],
+                [
+                    '$subtract' => [
+                                    [
+                                        '$multiply' => [
+                                            [
+                                                '$divide' => [
+                                                    [
+                                                        '$subtract' => [
+                                                            '$storeQty','$qtyAdvance'
+                                                        ]
+                                                    ],
+                                                    '$storeMaxQty'
+                                                ]
+                                            ],
+                                            100
+                                        ]
+                                    ],
+                                    [   
+                                        '$multiply' => [
+                                            [
+                                                '$divide' => [
+                                                    '$storeThreshold','$storeMaxQty'
+                                                ]
+                                            ],
+                                            100
+                                        ]
+                                    ]
+                                ]
+                ],
+                null
+            ]
+        ];
 
-        $project = ['title'=>1,'link'=>1,'status'=>1];
+        $project['totalQty'] = ['$add' => ['$qtyOneHour','$qtyAdvance']];
 
-        $project['smallTitle'] = ['$toLower' => '$title'];
+        $project['purchaseOrder'] = ['$add'=>[0,0]];
 
-        $query = [];
-        
+        $project['sTitle'] = ['$toLower' => '$name'];
+
+        $project['sSupplier'] = ['$toLower' => '$supplier.title'];
+        $project['supplierName'] = ['$cond'=>['$supplier','$supplier.title','No Supplier']];            
+
         $query[]['$project'] = $project;
 
-        $sort = ['updated_at'=>-1];
+        //DEFAULT SORT BY PRIORITY
+        $sort = ['priority'=>1];
 
-        if(isset($params['order']) && !empty($params['order'])){
-            
+        //COL ARRAY FOR SORTING
+        $columns = ['_id','sTitle','sSupplier','qtyOneHour','qtyAdvance','totalQty','purchaseOrder','priority'];
+        if(isset($params['order']) && !empty($params['order'])){            
             $field = $columns[$params['order'][0]['column']];
             $direction = ($params['order'][0]['dir']=='asc')?1:-1;
             $sort = [$field=>$direction];            
@@ -246,7 +295,7 @@ class StocksController extends Controller
 
         $query[]['$sort'] = $sort;
 
-        $model = Products::raw()->aggregate($query);
+        $model = $model->raw()->aggregate($query);
 
         $iTotalRecords = count($model['result']);
 
@@ -264,6 +313,6 @@ class StocksController extends Controller
             'data' => $model['result']            
         ];
 
-        return response($response,200);          
+        return response($response,200);
     }    
 }
