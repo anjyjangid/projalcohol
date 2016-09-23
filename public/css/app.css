@@ -888,6 +888,13 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
     border-radius: 0px 2px 2px 0px;     
 }
 
+.sale-tag-txt.-cart{
+	color: #8e02d4;
+    font-size: 1em;
+    font-weight: 500;
+    display: inline-block;
+}
+
 .salediscount:before{
 	content: "";
     position: absolute;
@@ -950,4 +957,9 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 
 .availablecards table{
 	margin-top: 20px;
+}
+
+.sale-pro-list li{
+	max-width: 100px;
+	max-height: 100px;
 }
