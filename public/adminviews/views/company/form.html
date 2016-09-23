@@ -1,0 +1,179 @@
+<div class="row">
+	<div class="col-md-12">
+		<form role="form" name='productForm' ng-submit="store()" required="false">
+		<div class="portlet light">			
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-shopping-cart"></i>{{sale._id?'Edit ':'Add New '}}Company
+				</div>
+				<div class="actions btn-set">
+					<a class="btn default" ui-sref="userLayout.sale.list"><i class="fa fa-angle-left"></i> Back</a>
+					<button ng-disabled="loading" class="btn green" type="submit"><i class="fa fa-check"></i> {{sale._id?'Update':'Save'}}</button>					
+				</div>
+			</div>		
+			<div class="portlet-body mcontainer">
+				<tabset active="active">
+					<tab>
+						<tab-heading>General</tab-heading>
+
+						<div class="form-horizontal">								
+							<div class="form-group" ng:class="{'has-error':errors['coverImage.thumb'][0]}">
+								<label class="col-md-2 control-label">Company Logo: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<div class="fileinput fileinput-new" data-provides="fileinput">
+										<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
+											<img err-src="asset/i/defaultImage.png" 
+												ng-src="sale/i/{{sale.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+
+										</div>
+										<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
+										</div>
+										<div>
+											<span class="btn default btn-file">
+												<span class="fileinput-new">{{ sale.coverImage ? 'Change':'Select' }}</span>
+												<span class="fileinput-exists">Change</span>
+												<input type="file" placeholder="thumbnail" class="form-control" file-model="sale.image.thumb"/>
+											</span>	
+										</div>
+									</div>
+									<span class="help-block" ng-bind="errors['coverImage.thumb'][0]"></span>
+								</div>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.listingTitle[0]}">
+								<label class="col-md-2 control-label">Company Title: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="sale.listingTitle" placeholder="Company Title">
+									<span class="help-block" ng-bind="errors.listingTitle[0]"></span>
+								</div>
+
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors['address.street'][0]}">
+								<label class="col-md-2 control-label">Street: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="dealer.address.street" placeholder="Street">
+									<span class="help-block" ng-bind="errors['address.street'][0]"></span>
+								</div>
+
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors['address.city'][0]}">
+								<label class="col-md-2 control-label">City: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="dealer.address.city" placeholder="City">
+									<span class="help-block" ng-bind="errors['address.city'][0]"></span>
+								</div>
+
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors['address.state'][0]}">
+								<label class="col-md-2 control-label">State: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="dealer.address.state" placeholder="State">
+									<span class="help-block" ng-bind="errors['address.state'][0]"></span>
+								</div>
+
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors['address.country'][0]}">
+								<label class="col-md-2 control-label">Country: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+
+									<select class="form-control" 
+										ng-model="dealer.address.country" 
+										ng-options="option.name for option in countries"
+										>
+										<option value="">---- Select Country ----</option>
+									</select>
+									
+									<span class="help-block" ng-bind="errors['address.country'][0]"></span>
+								</div>
+
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
+								<label class="col-md-2 control-label">Status: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<select class="form-control" ng-model="dealer.status">
+										<option value="1">Active</option>
+										<option value="0">In-Active</option>
+									</select>
+									<span class="help-block" ng-bind="errors.status[0]"></span>
+								</div>
+							</div>
+						</div>
+					</tab>					
+					<tab>
+						<tab-heading>Invoice Template</tab-heading>
+						
+							<div class="form-group" ng:class="{'has-error':errors.content[0]}">
+								<label class="control-label">Template</label>
+								<textarea name="page_content" ckeditor="editorOptions" class="form-control" required ng-model="page.content" rows="6"  cols="80">
+									
+								</textarea>								
+								<span class="help-block" ng-bind="errors.content[0]"></span>								
+							</div>
+						
+					</tab>
+				</tabset>
+
+			</div>
+		</div>
+		</form>
+	</div>
+
+	<div data-replace="true" tabindex="-1" class="modal fade modal-scroll" id="static" style="display: none;">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button aria-hidden="true" data-dismiss="modal" class="close" type="button"></button>
+					<h4 class="modal-title">Search {{popTitle}}</h4>
+				</div>
+				<div class="modal-body">
+					<div class="table-responsive">	
+						
+						<input ng-model="searchbox" type="search" ng:class="{'spinner':searching}" ng-keyup="searchItem($event,searchType)" class="form-control" placeholder="Search">						
+						
+						<table class="table table-striped table-hover" id="orderlist">
+							<tbody>
+								<tr ng-repeat="p in checkItem(currentIdObj)">
+									<td width="100" valign="middle" ng-if="searchType != 'category'">
+										<img width="100" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{p.imageFiles[0].source}}">										
+									</td>
+									<td valign="middle">									
+										{{p.name}} <span ng-if="p.sale.listingTitle" class="label label-danger">{{p.sale.listingTitle}}</span>
+										<div ng-if="searchType != 'category'"><b>${{p.sprice}}</b></div>										
+									</td>
+									<td valign="middle">
+										<a ng-if="checkAdd(p)" ng-click="addItem(p,currentIdObj,currentDetailObj)" class="pull-right btn btn-default btn-xs green-stripe additem"><i class="fa fa-plus"></i> Add</a>
+										<span ng-if="p.added" class="pull-right"><i class="fa fa-check"></i> Added</span>
+										<span ng-if="!checkAdd(p) && inSale(p)" class="pull-right"><i class="fa fa-check"></i> In sale</span>
+									</td>
+								</tr>							
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">				
+					<button class="btn green" data-dismiss="modal" type="button">Done</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- <pre>{{errors|json}}</pre>	 -->
+<!-- <pre>{{sale|json}}</pre> -->	

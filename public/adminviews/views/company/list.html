@@ -1,0 +1,177 @@
+<!-- BEGIN MAIN CONTENT -->
+<div class="row">
+	<div class="col-md-12">		
+		<div class="portlet">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-info"></i>{{$state.$current.data.pageTitle}} 
+				</div>				
+			</div>
+			<div class="portlet-body">
+				<div class="table-container">					
+					<table class="table table-striped table-bordered table-hover" id="orderslisttab">
+						<thead>
+							<tr role="row" class="heading">
+                                <th width="5%">
+                                    Sr.
+                                </th>
+								<th width="15%">
+									Name
+								</th>								
+								<th width="10%">
+                                    Interface type
+                                </th>
+                                <th width="10%">
+									Action
+								</th>
+							</tr>
+							<!-- <tr role="row" class="filter">								
+                                <td></td>
+                                <td></td>
+								<td></td>
+								<td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>                                
+							</tr> -->
+						</thead>
+						<tbody id="tabBody">
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- End: life time stats -->
+	</div>
+</div>
+<!-- END MAIN CONTENT -->
+<!-- BEGIN MAIN JS -->
+
+<script>
+	
+	var orderGrid = new Datatable();
+
+    	var OrdersTableAjax = function () {    
+
+        var handleRecords = function () {
+
+            orderGrid.init({
+                src: $("#orderslisttab"),
+                onSuccess: function (orderGrid) {
+                    // execute some code after table records loaded
+                },
+                onError: function (orderGrid) {
+                    // execute some code on network or other general error  
+                },
+                loadingMessage: 'Loading...',
+                dataTable: {                                 
+                    "columns": [
+                        {
+                            mRender: function(data, type, full, meta) {
+                                return meta.row + meta.settings._iDisplayStart + 1;
+                            },
+                            orderable:false
+                        },
+                        {
+                            data:'name',
+                            orderable:true
+                        },
+                        {
+                            data:'supplierName',
+                            orderable:true
+                        },
+                        {
+                            data:'qtyOneHour',
+                            orderable:true
+                        },
+                        {
+                            data:'qtyAdvance',
+                            orderable:true
+                        },
+                        {
+                            data:'totalQty',
+                            orderable:true
+                        },
+                        {
+                            data:'purchaseOrder',
+                            orderable:true
+                        },
+                        {
+                            mData: null,
+                            mRender: function(data, type, full) {                           
+                                if(data.priority!=null){
+                                    return (data.priority).toFixed(0)+'%';                                
+                                }
+                                else{
+                                    return '';
+                                }
+                            },
+                            orderable:true
+                        }
+                    ],
+                    "ajax": {
+                        "url": "../adminapi/stocks/list",
+                        "type": "POST"
+                    },
+                    "order": [],
+                    "fnDrawCallback": function (oSettings) {               						
+    				    var content = $('#tabBody');
+    				    angular.element(document).injector().invoke(function($compile) {
+    				        var scope = angular.element(content).scope();
+    				        $compile(content)(scope);
+    				    });
+    					Metronic.initAjax()
+    				},
+                    "createdRow": function ( row, data, index ) {
+                        if ( data.priority == null ) {
+                            $(row).addClass('danger').attr('title','Update stocks attributes for this product');
+                        }
+                    }
+                }
+            });
+
+            // handle group actionsubmit button click
+            orderGrid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
+                e.preventDefault();
+                var action = $(".table-group-action-input", orderGrid.getTableWrapper());
+                if (action.val() != "" && orderGrid.getSelectedRowsCount() > 0) {
+                    orderGrid.setAjaxParam("customActionType", "group_action");
+                    orderGrid.setAjaxParam("customActionName", action.val());
+                    orderGrid.setAjaxParam("id", orderGrid.getSelectedRows());
+                    orderGrid.getDataTable().ajax.reload();
+                    orderGrid.clearAjaxParams();
+                } else if (action.val() == "") {
+                    Metronic.alert({
+                        type: 'danger',
+                        icon: 'warning',
+                        message: 'Please select an action',
+                        container: orderGrid.getTableWrapper(),
+                        place: 'prepend'
+                    });
+                } else if (orderGrid.getSelectedRowsCount() === 0) {
+                    Metronic.alert({
+                        type: 'danger',
+                        icon: 'warning',
+                        message: 'No record selected',
+                        container: orderGrid.getTableWrapper(),
+                        place: 'prepend'
+                    });
+                }
+            });
+        }
+
+        return {
+            //main function to initiate the module
+            init: function () {
+                handleRecords();
+            }
+
+        };
+
+    }();
+
+	//OrdersTableAjax.init();
+
+</script>
+<!-- END MAIN JS
