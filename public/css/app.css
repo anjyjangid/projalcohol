@@ -959,3 +959,11 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	max-width: 100px;
 	max-height: 100px;
 }
+.strike-txt{
+    text-decoration: line-through;
+}
+
+.cart-table .strike-txt{
+	padding: 0 10px;
+	font-weight: bold;
+}

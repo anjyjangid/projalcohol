@@ -36,11 +36,11 @@
 
 						</ul>
 
-						<div class="sale-tag-txt -cart">{{sale.title.long}}</div><span>{{sale.strikePrice}}</span>
+						<div class="sale-tag-txt -cart">{{sale.title.long}}</div><span class="strike-txt">{{sale.strikePrice}}</span>
 
 					</td>
 					<td>
-						<div class="prod_chilled" ng-class="{notchilled:sale.chilled}" ng-click="sale.updateChilledStatus()">
+						<div class="prod_chilled" ng-class="{notchilled:sale.chilled,invisible:cart.nonchilled}" ng-click="sale.updateChilledStatus()">
 						<span>Chilled</span>
 						<div class="prod_chilled_icon"></div>
 						</div>

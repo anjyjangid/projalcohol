@@ -1382,7 +1382,7 @@ AlcoholDelivery.service('alcoholCart', [
 				angular.forEach(sale.products, function(sPro){
 
 					var temp = _self.getProductById(sPro._id);
-
+					
 					sPro.product = {
 						slug : temp.product.slug,
 						chilled : temp.product.chilled,
@@ -1600,12 +1600,12 @@ AlcoholDelivery.factory('alcoholCartSale', ['$log', function ($log){
 		var actionProPrice = 0;
 
 		angular.forEach(this.products, function (pro) {
-			price+= parseFloat(pro.product.price);
+			price = price + (parseFloat(pro.product.price) * pro.quantity);
 		});
 
 		angular.forEach(this.action, function (pro) {
 
-			var tempP = parseFloat(pro.product.price);
+			var tempP = parseFloat(pro.product.price) * pro.quantity;
 			actionProPrice+= tempP;
 			price+= tempP
 
@@ -1667,11 +1667,11 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 			
 			this.setId(id);
 
-			this.setRQuantity(data.chilled.quantity,data.nonchilled.quantity);			
+			this.setRQuantity(data.chilled.quantity,data.nonchilled.quantity);
 
 			this.setRChilledStatus(data.chilled.status,data.nonchilled.status);
 			this.setTQuantity(data.quantity);
-			this.setPrice(data);			
+			this.setPrice(data);
 			this.setLastServedAs(data.lastServedChilled);
 			this.setProduct(data);
 			this.setSale(data.sale);
