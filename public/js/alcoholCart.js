@@ -92,6 +92,7 @@ AlcoholDelivery.service('alcoholCart', [
 						inCart.setPrice(resProduct);
 
 						inCart.setRMaxQuantity(resProduct);
+						inCart.setRemainingQty(resProduct.remainingQty);						
 
 					}									
 
@@ -1384,6 +1385,7 @@ AlcoholDelivery.service('alcoholCart', [
 					var temp = _self.getProductById(sPro._id);
 
 					sPro.product = {
+						name : temp.product.name,
 						slug : temp.product.slug,
 						chilled : temp.product.chilled,
 						price : temp.unitPrice,
@@ -1398,6 +1400,7 @@ AlcoholDelivery.service('alcoholCart', [
 					var temp = _self.getProductById(sPro._id);
 
 					sPro.product = {
+						name : temp.product.name,
 						slug : temp.product.slug,
 						chilled : temp.product.chilled,
 						price : temp.unitPrice,
@@ -1677,6 +1680,7 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 			this.setSale(data.sale);
 
 			this.setRMaxQuantity(data.product);
+			this.setRemainingQty(data.remainingQty);
 
 		};
 
@@ -1854,6 +1858,10 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 				data: this.getData(),
 				total: this.getTotal()
 			}
+		};
+
+		item.prototype.setRemainingQty = function(rQty){
+			this.remainingQty = rQty;
 		};
 
 		return item;

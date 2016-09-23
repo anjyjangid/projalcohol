@@ -5221,7 +5221,7 @@ md-autocomplete-wrap input:-ms-input-placeholder { /* IE 10+ */
 }
 .navbar-fixed-top .signuplogin ul li {
 	align-items: center;
-	display: flex;
+	display: table;
 	float: right;
 	vertical-align: middle;
 }

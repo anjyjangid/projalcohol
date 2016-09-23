@@ -963,3 +963,24 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	max-width: 100px;
 	max-height: 100px;
 }
+
+.strikeout{
+	text-decoration: line-through;
+}
+
+.saletag, .saletag:hover{	
+	color: #fff;
+    padding: 1px;
+    background: #aa00ff !important;
+    border-radius: 2px;    
+}
+
+.saletag:before{
+	content: "";
+    position: absolute;
+    left: 14px;
+    top: 92;
+    border-top: 9px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 7px solid #aa00ff;
+}

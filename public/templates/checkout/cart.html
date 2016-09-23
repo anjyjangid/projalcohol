@@ -60,7 +60,7 @@
 				</tr>
 
 				<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getProducts()"></tr>
-				<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0">
+				<tr ng-hide="cartproduct.remainingQty == 0" ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0">
 
 					<td width="52%">
 

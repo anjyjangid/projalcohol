@@ -4,7 +4,7 @@ angular.module('alcoholCart.directives',[])
 
 	.controller('CartTopController',['$scope', 'alcoholCart',"$timeout", function($scope, alcoholCart) {
 		
-		$scope.alcoholCart = alcoholCart;	
+		$scope.alcoholCart = alcoholCart;			
 
 		$scope.scrollconfig = {
 				autoHideScrollbar: false,
@@ -13,7 +13,7 @@ angular.module('alcoholCart.directives',[])
 				scrollInertia: 0,
 			}	
 
-		angular.scrollconfig = $scope.scrollconfig;
+		angular.scrollconfig = $scope.scrollconfig;		
 
 	}])
 
