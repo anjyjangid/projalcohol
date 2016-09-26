@@ -343,6 +343,7 @@ class CartController extends Controller
 						"id"=>$proIdToUpdate,
 					]);
 
+
 		// If Produt is not found.
 		if($product['success']===false){
 
@@ -417,18 +418,29 @@ class CartController extends Controller
 
 			$saleRes = $cart->setSaleAdd($proIdToUpdate,$updateProData);
 
+		}else{
+
+			if($change<0){
+				$saleRes = $cart->setSaleRemove($proIdToUpdate,$updateProData);
+			}
+
+			$products = $this->products;
+			$products[$proIdToUpdate]['chilled']['quantity']+= $updateProData['chilled']['quantity']
+			$products[$proIdToUpdate]['nonchilled']['quantity']+= $updateProData['nonchilled']['quantity']
+
+			$cart->__set("products",$products);
+
 		}
-		
+
 		$cart->createAllPossibleSales();
-		
-		
 
 		$proRemaining = [];
-		foreach($cart->products as $key=>$product){
-			$proRemaining[$key] = $product['remainingQty'];
+		foreach($cart->products as $key=>$cProduct){
+			$proRemaining[$key] = $cProduct['remainingQty'];
 		}
 
 		$product['change'] = $change;
+
 		try {
 				
 				// $result = DB::collection('cart')->where('_id', new MongoId($id))

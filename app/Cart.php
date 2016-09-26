@@ -319,6 +319,134 @@ class Cart extends Moloquent
 		return false;
 	}
 
+	public function setSaleRemove($proId,$updateParams){
+		
+		$response = [
+			'success' => false,
+			'message' => '',			
+		];
+
+		$cartSales = $this->sales;
+		$currProduct = $this->getProductById($proId);
+
+		$qtyToReduce = abs($updateParams['chilled']['quantity']) + abs($updateParams['nonchilled']['quantity']);
+
+		if($currProduct['remainingQty']<$qtyToReduce){
+
+			$difference = $qtyToReduce - $currProduct['remainingQty'];
+
+			for($i=count($cartSales)-1;$i>=0;$i--) {
+				
+				$sale = $cartSales[$i];
+
+				$foundInSale = [
+					'status' => false,
+					'qty' => 0
+				];
+				foreach ($sale['products'] as $salePro) {
+					
+					if($salePro['_id']===$proId){
+
+						$foundInSale['status'] = true;
+						$foundInSale['qty']+= (int)$salePro['quantity'];
+
+					}
+
+				}
+
+				if(isset($sale['action'])){
+					foreach ($sale['action'] as $salePro) {
+						
+						if($salePro['_id']===$proId){
+
+							$foundInSale['status'] = true;
+							$foundInSale['qty']+= (int)$salePro['quantity'];
+
+						}
+
+					}
+				}
+				
+				if($foundInSale['status']===true){
+
+					$difference-=$foundInSale['qty'];
+					array_splice($cartSales,$i,1);					
+
+				}
+
+				if($difference<0){
+					break;
+				}
+
+			}
+
+		}
+
+		$this->__set("sales",$cartSales);
+		
+		$this->setRemainingQty();
+
+		return $response;
+
+	}
+
+
+	private function setRemainingQty(){
+
+		$saleProducts = [];
+
+		foreach ($this->sales as $sale) {
+
+			foreach ($sale['products'] as $salePro) {
+				
+				if(isset($saleProducts[$salePro['_id']])){
+
+					$saleProducts[$salePro['_id']]+= (int)$salePro['quantity'];
+
+				}else{
+
+					$saleProducts[$salePro['_id']] = (int)$salePro['quantity'];
+
+				}
+
+			}
+
+			if(isset($sale['action'])){
+				foreach ($sale['action'] as $salePro) {
+					
+					if(isset($saleProducts[$salePro['_id']])){
+
+						$saleProducts[$salePro['_id']]+= (int)$salePro['quantity'];
+
+					}else{
+
+						$saleProducts[$salePro['_id']] = (int)$salePro['quantity'];
+
+					}
+
+				}
+			}
+
+		}
+
+		$cartProducts = $this->products;
+
+		foreach ($cartProducts as $key => &$cPro) {
+
+			if(isset($saleProducts[$key])){
+
+				$totalQty = $cPro['chilled']['quantity'] + $cPro['nonchilled']['quantity'];
+				$totalQty-=$saleProducts[$key];
+				$cPro['remainingQty'] = $totalQty;
+
+			}
+
+		}
+
+		$this->__set('products',$cartProducts);
+
+	}
+
 	public function setSaleAdd($proId,$updateParams){
 
 		$remainingQty = $updateParams['quantity'];		
@@ -708,7 +836,7 @@ class Cart extends Moloquent
 
 		$this->__set("sales",$sales);		
 
-	}
+	}	
 
 	public function confirmOrder($cartArr){		
 

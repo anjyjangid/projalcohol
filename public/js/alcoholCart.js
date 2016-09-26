@@ -78,6 +78,8 @@ AlcoholDelivery.service('alcoholCart', [
 					
 
 				var resProduct = response.product;
+				var sales = response.sales;
+				var proRemaining = response.proRemaining;
 
 				if(inCart){
 
@@ -103,8 +105,8 @@ AlcoholDelivery.service('alcoholCart', [
 					
 				}
 
-				_self.setAllProductsRemainingQty(resProduct.proRemaining);
-				_self.setAllSales(resProduct.sales);
+				_self.setAllProductsRemainingQty(proRemaining);
+				_self.setAllSales(sales);
 
 
 				if(resProduct.product.change!==0){
@@ -134,13 +136,58 @@ AlcoholDelivery.service('alcoholCart', [
 
 	this.setAllSales = function (sales) {
 
+		var _self = this;
+
 		angular.forEach(sales, function (sale,index) {
-			sale._id.$id
+
+			var id = sale._id.$id;
+
+			var isExist = _self.getSaleById(id);
+
+			if(isExist === false){
+
+				var saleDetail = "";
+
+				angular.forEach(sale.products, function(sPro){
+
+					var temp = _self.getProductById(sPro._id);
+					
+					sPro.product = {
+						name : temp.product.name,
+						slug : temp.product.slug,
+						chilled : temp.product.chilled,
+						price : temp.unitPrice,
+						image : $filter('getProductThumb')(temp.product.imageFiles)
+					}
+
+					saleDetail = temp.sale;
+				});
+				
+				angular.forEach(sale.action, function(sPro){
+
+					var temp = _self.getProductById(sPro._id);
+
+					sPro.product = {
+						name : temp.product.name,
+						slug : temp.product.slug,
+						chilled : temp.product.chilled,
+						price : temp.unitPrice,
+						image : $filter('getProductThumb')(temp.product.imageFiles)
+					}
+
+				});	
+
+				var newSale = new alcoholCartSale(sale,saleDetail);
+				_self.$cart.sales.push(newSale);
+
+			}
+
+
 		});
 
 	}
 
-	this.getSale
+
 
 	this.addLoyaltyProduct = function (id, quantity, serveAs) {
 
@@ -506,6 +553,20 @@ AlcoholDelivery.service('alcoholCart', [
 			
 			return build;
 		};
+
+		this.getSaleById = function(saleId){
+			
+			var sales = this.getCart().sales;
+			var build = false;
+
+			angular.forEach(sales, function (sale) {
+				if  (sale._id.$id === saleId) {
+					build = sale;
+				}
+			});
+			return build;
+
+		}
 
 		this.getProductInCartById = function(productId){
 
