@@ -129,15 +129,20 @@ AlcoholDelivery.service('alcoholCart', [
 	this.setAllProductsRemainingQty = function(data){
 		_self = this;
 		angular.forEach(data, function (value,key) {
+
 			var p = _self.getProductById(key);
-			p.setRemainingQty(value);
+
+			if(p!==false){
+				p.setRemainingQty(value);
+			}
+
 		})
 	}
 
 	this.setAllSales = function (sales) {
 
 		var _self = this;
-
+		_self.$cart.sales = [];
 		angular.forEach(sales, function (sale,index) {
 
 			var id = sale._id.$id;
@@ -179,6 +184,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 				var newSale = new alcoholCartSale(sale,saleDetail);
 				_self.$cart.sales.push(newSale);
+
+			}else{
 
 			}
 
@@ -939,6 +946,37 @@ AlcoholDelivery.service('alcoholCart', [
 			
 		};
 
+		this.removeSale = function (id) {
+
+			var defer = $q.defer();
+			var locSale;			
+			var cart = this.getCart();
+			var deliveryKey = this.getCartKey();
+			var _self = this;
+			$http.delete("cart/sale/"+deliveryKey+'/'+id).then(
+
+				function(response){
+					response = response.data;
+					_self.setAllProductsRemainingQty(response.proRemaining);
+					_self.setAllSales(response.sales);
+					
+					$rootScope.$broadcast('alcoholCart:saleRemoved', locSale);
+
+					defer.resolve(response);
+
+				},
+				function(errorRes){	
+
+					defer.reject(errorRes);
+
+				}
+			);	
+
+
+			return defer.promise;		
+			
+		};
+
 		this.removePromotion = function (id) {
 
 			var locPromotion;
@@ -1212,6 +1250,30 @@ AlcoholDelivery.service('alcoholCart', [
 					"id":id,
 					"chilled":product.qChilledStatus,
 					"nonchilled":product.qNChilledStatus
+				},{
+
+			}).error(function(data, status, headers) {
+
+			}).success(function(response) {
+
+			});
+
+		}
+
+
+		this.saleChilled = function(saleObj){
+			
+			var saleId = saleObj.getId();
+			saleId = saleId.$id;
+
+			saleObj.chilled = !saleObj.chilled;
+
+			var chilled = saleObj.chilled;
+			var deliveryKey = this.getCartKey();
+
+			$http.put("cart/sale/chilled/"+deliveryKey, {
+					"id":saleId,
+					"chilled":chilled,					
 				},{
 
 			}).error(function(data, status, headers) {
@@ -1735,7 +1797,7 @@ AlcoholDelivery.factory('alcoholCartSale', ['$log', function ($log){
 
 		this.price = currPrice.toFixed(2);
 
-	};
+	};	
 
 	saleObj.prototype.getId = function(){
 		return this._id;
@@ -1756,14 +1818,15 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 			this.setRQuantity(data.chilled.quantity,data.nonchilled.quantity);
 
 			this.setRChilledStatus(data.chilled.status,data.nonchilled.status);
-			this.setTQuantity(data.quantity);
+			this.setRemainingQty(data.remainingQty);
+			this.setTQuantity(data.remainingQty);
 			this.setPrice(data);
 			this.setLastServedAs(data.lastServedChilled);
 			this.setProduct(data);
 			this.setSale(data.sale);
 
 			this.setRMaxQuantity(data.product);
-			this.setRemainingQty(data.remainingQty);
+			
 
 		};
 
@@ -1944,8 +2007,38 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 		};
 
 		item.prototype.setRemainingQty = function(rQty){
+
 			this.remainingQty = rQty;
-		};
+			this.setStateRemainQty();
+
+		};		
+
+		item.prototype.setStateRemainQty = function(){
+
+			var remainqChilled = 0;
+			var remainqNChilled = 0;
+			var rQty = this.remainingQty;
+
+			if(rQty>this.qNChilled){
+				
+				remainqNChilled = this.qNChilled;				
+
+			}else{
+
+				remainqNChilled = rQty;
+
+			}
+
+			var stillRemain = rQty - this.qNChilled;
+			if(stillRemain>0){
+				remainqChilled = stillRemain;
+			}
+			
+			this.remainqChilled = remainqChilled;			
+			this.remainqNChilled = remainqNChilled;;
+			
+
+		}
 
 		return item;
 

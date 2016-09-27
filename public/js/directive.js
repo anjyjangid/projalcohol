@@ -369,7 +369,8 @@ AlcoholDelivery.directive('sideBar', function() {
 			'myincrement': '&onIncrement',
 			'mydecrement': '&onDecrement',
 			'val': "=value",
-			'max': "=mquantity"
+			'max': "=mquantity",
+			'remainQty' : "=remain"
 		},
 		replace: true,
 		link: function (scope, element, attrs, ngModel) {
@@ -381,6 +382,8 @@ AlcoholDelivery.directive('sideBar', function() {
 			ngModel.$setViewValue(scope.val);
 
 			scope.decrement = function () {
+
+				scope.remainQty--;
 				oldval = scope.val;
 				var value = parseFloat(parseFloat(Number(scope.val)) - parseFloat(scope.step)).toFixed(scope.decimals);
 
@@ -397,6 +400,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			};
 
 			scope.increment = function () {
+				scope.remainQty++;
 				oldval = scope.val;
 				var value = parseFloat(parseFloat(Number(scope.val)) + parseFloat(scope.step)).toFixed(scope.decimals);
 
@@ -484,7 +488,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		'    <button class="btn btn-default bootstrap-touchspin-down" ng-mousedown="startSpinDown()" ng-mouseup="stopSpin()">-</button>' +
 		'  </span>' +
 		'  <span class="input-group-addon bootstrap-touchspin-prefix" ng-show="prefix" ng-bind="prefix"></span>' +
-		'  <span class="addmore-count" ng-bind="val"></span>'+
+		'  <span class="addmore-count" ng-bind="remainQty || val"></span>'+
 		// '  <input type="text" ng-model="val" class="form-control addmore-count" ng-blur="checkValue()" disabled>' +
 		'  <span class="input-group-addon" ng-show="postfix" ng-bind="postfix"></span>' +
 		'  <span class="input-group-btn" ng-if="verticalButtons">' +

@@ -420,15 +420,16 @@ class CartController extends Controller
 
 		}else{
 
+			$products = $cart->products;
+			$products[$proIdToUpdate]['chilled']['quantity']+= $updateProData['chilled']['quantity'];
+			$products[$proIdToUpdate]['nonchilled']['quantity']+= $updateProData['nonchilled']['quantity'];
+			$products[$proIdToUpdate]['quantity'] = $products[$proIdToUpdate]['chilled']['quantity'] + $products[$proIdToUpdate]['nonchilled']['quantity'];
+
+			$cart->__set("products",$products);
+
 			if($change<0){
 				$saleRes = $cart->setSaleRemove($proIdToUpdate,$updateProData);
 			}
-
-			$products = $this->products;
-			$products[$proIdToUpdate]['chilled']['quantity']+= $updateProData['chilled']['quantity']
-			$products[$proIdToUpdate]['nonchilled']['quantity']+= $updateProData['nonchilled']['quantity']
-
-			$cart->__set("products",$products);
 
 		}
 
@@ -440,13 +441,16 @@ class CartController extends Controller
 		}
 
 		$product['change'] = $change;
+		
+		$updateProData = $cart->products[$proIdToUpdate];
+
 
 		try {
 				
 				// $result = DB::collection('cart')->where('_id', new MongoId($id))
 				// 						->update(["products.".$proIdToUpdate=>$updateProData], ['upsert' => true]);
 
-			//$cart->save();
+			$cart->save();
 
 			//$cart->unset('products.'.$proIdToUpdate);
 
@@ -1008,7 +1012,7 @@ jprd($product);
 		// 	});
 
 		
-prd($cart);
+
 		
 
 		$product = $cart->products[$productId];
@@ -1031,7 +1035,28 @@ prd($cart);
 
 		}
 
-	}	
+	}
+
+	public function putSaleChilledStatus($cartKey,Request $request){
+				
+		$saleId = $request->input('id');
+		$chilled = $request->input('chilled');				
+
+		try{
+
+			$cart = Cart::where("_id",$cartKey)
+					->where("sales._id",new mongoId($saleId))										
+					->update(["sales.$.chilled"=>$chilled]);
+			
+			return response(["message"=>"status changed"],200);
+
+		}catch(\Exception $e){
+
+			return response(["message"=>$e->getMessage()],400);
+
+		}
+
+	}
 
 	public function getDeliverykey(Request $request){
 
@@ -1202,6 +1227,55 @@ prd($cart);
 			}
 
 		return response(array("success"=>false,"message"=>"Something went wrong"));
+
+	}
+	
+	public function deleteSale($cartKey,$saleId,Request $request){
+		
+		$cart = Cart::find($cartKey);
+
+		if(empty($cart)){
+
+			return response(array("success"=>false,"message"=>"cart not found"),400);
+
+		}
+
+		$sales = $cart->sales;
+
+		if(empty($sales)){
+			return response(["success"=>false,"message"=>"no sale to remove"],400);
+		}
+		
+		try{
+
+			$result = $cart->removeSaleById($saleId);
+
+			$cart->createAllPossibleSales();
+			
+
+			//$cart->save();
+
+			$response = [
+				"success"=>true,
+				"message"=>"sale removed successfully",
+				'proRemaining' => [],
+				'sales' => []
+			];
+
+			foreach($cart->products as $key=>$cProduct){
+				$response['proRemaining'][$key] = $cProduct['remainingQty'];
+			}
+			$response['sales'] = $cart->sales;
+
+			return response($response,200);
+
+		}catch(\Exception $e){
+
+			return response(["success"=>false,"message"=>$e->getMessage()],400);
+
+		}
+
+		return response(["success"=>false,"message"=>"Something went wrong"],400);
 
 	}
 

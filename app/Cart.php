@@ -433,13 +433,15 @@ class Cart extends Moloquent
 
 		foreach ($cartProducts as $key => &$cPro) {
 
+			$totalQty = $cPro['chilled']['quantity'] + $cPro['nonchilled']['quantity'];
+
 			if(isset($saleProducts[$key])){
 
-				$totalQty = $cPro['chilled']['quantity'] + $cPro['nonchilled']['quantity'];
 				$totalQty-=$saleProducts[$key];
-				$cPro['remainingQty'] = $totalQty;
 
 			}
+
+			$cPro['remainingQty'] = $totalQty;
 
 		}
 
@@ -455,13 +457,14 @@ class Cart extends Moloquent
 		$sales = isset($this->sales)?$this->sales:[];
 		
 		$currProduct = $this->getProductById($proId);
+
 		$qty = $updateParams['chilled']['quantity'] + $updateParams['nonchilled']['quantity'];
 
 		// Check any product is required newly added product to create a sale.
 
 		foreach($products as $productId=>$product){
 			
-			if(isset($product['sale']) && $product['remainingQty']>0){				
+			if(isset($product['sale']) && $product['remainingQty']>0){
 				
 				$isAble = $this->canCreateSale($productId,$proId,$qty,$updateParams['sale']);
 
@@ -482,7 +485,7 @@ class Cart extends Moloquent
 
 						case 'new': {
 
-							$qty-=$saleProQty;							
+							// $qty-=$saleProQty;
 
 							$saleObj['products'][] = [
 
@@ -497,7 +500,7 @@ class Cart extends Moloquent
 
 							foreach($saleProQty as $actionProKey=>$actionProQty){
 
-								$qty-=$actionProQty;
+								// $qty-=$actionProQty;
 								$saleObj['action'][] = [
 
 									'_id' => $actionProKey,
@@ -558,7 +561,7 @@ class Cart extends Moloquent
 
 	}
 
-	private function canCreateSale($cartProId,$newProId,$newProQty,$newProSale){
+	private function canCreateSale($cartProId,$newProId,&$newProQty,$newProSale){
 
 		$products = $this->products;
 		$product = $products[$cartProId];		
@@ -567,7 +570,7 @@ class Cart extends Moloquent
 
 		$unManipulatedProducts = $products;
 		$productToCreateSale = $this->getProductToCreateSale($products,$sale['_id'],$sale['conditionQuantity']);
-
+		
 		$totalAvail = 0;
 		foreach ($productToCreateSale as $saleProkey => $qty) {
 			$totalAvail+= $qty;
@@ -599,6 +602,7 @@ class Cart extends Moloquent
 			$productToCreateSale['action'] = [];
 
 			$actionQty = 1;
+
 			if($sale['actionType']==1){
 				$actionQty = $sale['giftQuantity'];
 			}
@@ -608,21 +612,22 @@ class Cart extends Moloquent
 			// check action product exist in cart or not
 			if(isset($products[$conditionProductId])){
 
-				$actionPro = $products[$conditionProductId];
+				$actionPro = $products[$conditionProductId];				
 
 				if($actionPro['remainingQty']>$actionQty){
 
 					$actionPro['remainingQty']-=$actionQty;
-					$productToCreateSale['action'][$newProId] = $actionQty;
+					$productToCreateSale['action'][$conditionProductId] = $actionQty;
 					$actionQty = 0;
 
 				}else{
 
-					$productToCreateSale['action'][$newProId] = $actionPro['remainingQty'];
+					$productToCreateSale['action'][$conditionProductId] = $actionPro['remainingQty'];
 					$actionQty-= $actionPro['remainingQty'];
 					$actionPro['remainingQty']=0;
 
 				}
+
 
 			}
 
@@ -648,6 +653,7 @@ class Cart extends Moloquent
 				return false;
 			}
 
+
 			// condition due for free product automatically add process :)
 			// if($actionQty>0 && $sale['actionType']==1) {
 
@@ -672,7 +678,7 @@ class Cart extends Moloquent
 
 		foreach($products as $key=>&$product){
 
-			$proSale = $product['sale'];
+			$proSale = $product['sale'];					
 
 			if((string)$proSale['_id'] === (string)$saleId && $product['remainingQty']>0){
 				
@@ -826,6 +832,7 @@ class Cart extends Moloquent
 					}
 
 				}
+
 				
 				$sales[] = $saleObj;
 			}
@@ -834,9 +841,35 @@ class Cart extends Moloquent
 				
 		$this->__set("products",$products);
 
-		$this->__set("sales",$sales);		
+		$this->__set("sales",$sales);
+
+		$this->setRemainingQty();		
 
 	}	
+
+	public function removeSaleById($id){
+
+		$sales = $this->sales;
+		$removed = false;
+		foreach ($sales as $index => $sale) {
+			
+			if((string)$sale['_id'] == $id){
+
+				$removed = true;
+				array_splice($sales,$index,1);
+				break;
+
+			}
+
+		}
+
+		if($removed){
+			$this->setRemainingQty();
+		}
+
+		$this->__set('sales',$sales);
+
+	}
 
 	public function confirmOrder($cartArr){		
 

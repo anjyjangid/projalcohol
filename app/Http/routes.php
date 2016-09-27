@@ -183,11 +183,16 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::delete('card/{key}','CartController@deleteCard');
 
+	Route::delete('sale/{cartKey}/{saleId}','CartController@deleteSale');
+
+	Route::put('sale/chilled/{cartKey}','CartController@putSaleChilledStatus');
+
 	Route::delete('gift/{key}','CartController@deleteGift');
 
 	Route::post('gift','CartController@postGift');
 	
 	Route::post('giftcard','CartController@postGiftcard');
+
 	Route::put('giftcard/{uid}','CartController@putGiftcard');
 
 	Route::put('gift/product/chilledtoggle/{giftUid}','CartController@putGiftProductChilledStatus');
