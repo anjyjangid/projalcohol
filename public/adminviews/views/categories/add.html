@@ -31,6 +31,7 @@
 											class="form-control" 
 											ng-model="subcategory.selectedPtitle"
 											ng-options="option.cat_title for option in subcategory.categoryList"
+											ng-change="category.selectedCat = subcategory.selectedPtitle"
 											>
 
 											<option value="">---- Select Category ----</option>
@@ -245,7 +246,7 @@
 							</div>
 						</tab>	
 
-						<tab>
+						<tab ng-show="category.selectedCat == null">
 							<tab-heading>Image</tab-heading>							
 							<div class="form-horizontal">
 								<div class="form-group" ng-class="{'has-error':errors.thumb[0]}">
@@ -267,14 +268,13 @@
 												<!-- ng-required="!category.thumb" -->
 												<input type="file" accept="image/*" name="thumb" placeholder="thumbnail" class="form-control" file-model="category.thumb"/>
 												</span>
-												<a href="#" class="btn default fileinput-exists" data-dismiss="fileinput">
-												Remove </a>
+												
 											</div>
 										</div>															
 										<span class="help-block" ng-show="errors.thumb[0]">Thumbnail is required and must be in jpg or png format</span>					
 									</div>											
-									<div class="col-sm-3" ng-if="!category.ancestors" ng-class="{'has-error':errors.lthumb[0]}">
-										<!-- <label class="control-label">listing Thumbnail</label> -->
+									<!-- <div class="col-sm-3" ng-if="!category.ancestors" ng-class="{'has-error':errors.lthumb[0]}">
+										<label class="control-label">listing Thumbnail</label>
 										<div class="form-group">												
 											<div class="fileinput fileinput-new" data-provides="fileinput">
 												<div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
@@ -295,7 +295,7 @@
 											</div>
 											<span class="help-block" ng-show="errors.lthumb[0]">Listing thumbnail is required and must be in jpg or png format</span>					
 										</div>	
-									</div>
+									</div> -->
 								</div>								
 							</div>						
 							<div class="form-horizontal">

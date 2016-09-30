@@ -17,10 +17,12 @@
           <div class="alcohlinputext" ng:class="{'has-error':errors.firstname[0]}">
             <label>First Name: <span>*</span></label>
             <input type="text" class="alcohalpopuptext" ng-model="address.firstname" placeholder="">
-            <span class="help-block" ng-bind="errors.firstname[0]"></span> </div>
-          <div class="alcohlinputrighttext">
+            <span class="help-block" ng-bind="errors.firstname[0]"></span>
+          </div>
+          <div class="alcohlinputrighttext" ng:class="{'has-error':errors.lastname[0]}">
             <label>Last Name <span>*</span></label>
             <input type="text" class="alcohalpopuptext" ng-model="address.lastname"/>
+            <span class="help-block" ng-bind="errors.lastname[0]"></span>
           </div>
         </div>
         <div class="alcohlinputextcvr">
@@ -30,18 +32,18 @@
           </div>
           <div class="alcohlinputrighttext">
             <label>Building Name (optional)</label>
-            <input type="text" class="alcohalpopuptext" ng-model="address.building"/>
+            <input type="text" class="alcohalpopuptext" ng-model="address.BLDG_NAME"/>
           </div>
         </div>
         <div class="alcohlinputextcvr addrestopmar">
-          <div class="alcohlinputext" ng:class="{'has-error':errors.street[0]}">
+          <div class="alcohlinputext" ng:class="{'has-error':errors.HBRN[0]}">
             <label>Street <span>*</span></label>
-            <input type="text" class="alcohalpopuptext" ng-model="address.street"/>
-            <span class="help-block" ng-bind="errors.street[0]"></span> </div>
-          <div class="alcohlinputrighttext" ng:class="{'has-error':errors.postal[0]}">
+            <input type="text" class="alcohalpopuptext" ng-model="address.HBRN"/>
+            <span class="help-block" ng-bind="errors.HBRN[0]"></span> </div>
+          <div class="alcohlinputrighttext" ng:class="{'has-error':errors.PostalCode[0]}">
             <label>Postal Code <span>*</span></label>
-            <input type="text" class="alcohalpopuptext" ng-model="address.postal" placeholder="">
-            <span class="help-block" ng-bind="errors.postal[0]"></span> </div>
+            <input type="text" class="alcohalpopuptext" ng-model="address.PostalCode" placeholder="">
+            <span class="help-block" ng-bind="errors.PostalCode[0]"></span> </div>
         </div>
         <div class="alcohlinputextcvr">
           <div class="alcohlinputext" ng:class="{'has-error':errors.house[0]}">
@@ -50,13 +52,13 @@
             <span class="help-block" ng-bind="errors.house[0]" ng-focus="errors.house[0]=''"></span> </div>
           <div class="alcohlinputrighttext">
             <div class="adresfloortxtcvr">
-              <label>Floor</label>
-              <input type="text" class="addadressflortext" ng-model="address.floor"/>
+              <label>Floor (optional)</label>
+              <input type="text" class="addadressflortext" ng-model="address.FLOOR"/>
             </div>
             <div class="adresfloortxtcvrspce"> - </div>
             <div class="adressunit">
-              <label>Unit</label>
-              <input type="text" class="addadressflortext" ng-model="address.unit"/>
+              <label>Unit (optional)</label>
+              <input type="text" class="addadressflortext" ng-model="address.UNIT"/>
             </div>
           </div>
         </div>
@@ -72,7 +74,7 @@
       <div class="modal-footer alcohal_addadressfooter">
         <div ng-if="!update" class="alcohal_adress2fotter" ng-click="hide()"> <img src="images/order_history2backpic.png"> <span>Cancel</span> </div>
         <div class="alcohalosavebntcvr">
-          <button class="adresssvaebtn" ng-click="saveAddress()" type="button">SAVE <span> <img src="images/alcholshoporderarrow.png"></span></button>
+          <button class="adresssvaebtn" ng-click="saveManualAddress()" type="button">SAVE <span> <img src="images/alcholshoporderarrow.png"></span></button>
         </div>
       </div>
     </md-dialog-actions>

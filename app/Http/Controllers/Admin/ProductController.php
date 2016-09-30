@@ -29,1012 +29,592 @@ use Illuminate\Support\Facades\Auth;
 
 use Faker;
 
-
 class ProductController extends Controller
 {
-		/**
-		 * Create a new controller instance.
-		 *
-		 * @return void
-		 */
-		public function __construct()
-		{
-				
-		}
-		/**
-		 * Display a listing of the resource.
-		 *
-		 * @return \Illuminate\Http\Response
-		 */
-		public function index()
-		{
-				
+	/**
+	 * Create a new controller instance.
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
+			
+	}
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function index()
+	{
+			
+	}
+
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function create()
+	{
+			//
+	}
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return \Illuminate\Http\Response
+	 */
+	public function store(ProductRequest $request)
+	{    
+			
+		$inputs = $request->all();
+		
+		$this->castVariables($inputs);
+
+		$product = Products::create($inputs);            
+
+		if($product){
+			
+			//UPDATE STOCKS FOR THE LOGGEDIN STORE
+			$product->updateStocks($inputs,$product->_id);
+
+			$dealers = Dealer::whereIn('_id',$inputs['dealerId'])->get();
+			//ADD PRODUCT IDS IN DEALERS TABLE
+			foreach ($dealers as $dkey => $dvalue) {
+				$dvalue->push('productId',$product->_id,true);
+				$dvalue->push('productObjectId',new MongoId($product->_id),true);
+			}
+
+			//ADD REFRENCE TO SUGGESTION PRODUCTS
+			if(!empty($inputs['suggestionId'])){
+				$suggested = Products::whereIn('_id',$inputs['suggestionId'])->get();
+				foreach ($suggested as $key => $value) {
+					$value->push('suggestedId',$product->_id,true);
+					$value->push('suggestedObjectId',new MongoId($product->_id),true);
+				}
+			}	
+
+			//STORE THE PRODUCT IMAGES
+			$files = $inputs['imageFiles'];				
+
+			$this->saveImages($product,$files);
+
+			return response($product,201);
+
+		}else{          
+			return response('Unable to add product',422);
+		}               
+	}
+
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function show($id)
+	{
+			//
+	}
+
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function edit($id)
+	{
+			$galleryObj = new Products;
+			return $galleryObj->getSingleProduct($id);								
+	}
+
+	public function getDetail($id)
+	{				
+		$model = Products::where('_id',$id)->with('store')->with('suggestions')->first();			
+		return response($model,200);
+	}
+
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function postUpdate(ProductRequest $request, $id)
+	{
+		$inputs = $request->all();				
+		
+		$this->castVariables($inputs);
+
+		$product = Products::find($id);
+		
+		if($product){          
+
+			//UPDATE STOCKS FOR THE LOGGEDIN STORE
+			$product->updateStocks($inputs,$product->_id);
+
+			$dealers = Dealer::whereIn('_id',$inputs['dealerId'])->get();
+			//ADD PRODUCT IDS IN DEALERS TABLE
+			foreach ($dealers as $dkey => $dvalue) {
+				$dvalue->push('productId',$product->_id,true);
+				$dvalue->push('productObjectId',new MongoId($product->_id),true);
+			}
+			//UPDATE FOR REMOVED DEALERS
+			$removedDealers = array_diff($product->dealerId, $inputs['dealerId']);
+			if($removedDealers){
+				$rdealers = Dealer::whereIn('_id',$removedDealers)->get();
+				foreach ($rdealers as $rdkey => $rdvalue) {
+					$rdvalue->pull('productId',$product->_id);
+					$rdvalue->pull('productObjectId',new MongoId($product->_id));
+				}
+			}
+			
+			//ADD REFRENCE TO SUGGESTION PRODUCTS
+			if(!empty($inputs['suggestionId'])){
+				$suggested = Products::whereIn('_id',$inputs['suggestionId'])->get();
+				foreach ($suggested as $key => $value) {
+					$value->push('suggestedId',$product->_id,true);
+					$value->push('suggestedObjectId',new MongoId($product->_id),true);
+				}
+			}
+
+			//UPDATE FOR REMOVED SUGGESTION
+			$removedSuggestion = array_diff($product->suggestionId, $inputs['suggestionId']);
+			if($removedSuggestion){
+				$rsuggestions = Products::whereIn('_id',$removedSuggestion)->get();
+				foreach ($rsuggestions as $rdkey => $rdvalue) {
+					$rdvalue->pull('suggestedId',$product->_id);
+					$rdvalue->pull('suggestedObjectId',new MongoId($product->_id));
+				}
+			}
+
+			//UNSET THE PRICING IF EXISTS AND NOT SET
+			if(isset($inputs['unsetFields']) && !empty($inputs['unsetFields'])){
+				foreach ($inputs['unsetFields'] as $key => $value) {
+					$product->unset($value);
+				}	
+			}
+
+			//STORE THE PRODUCT IMAGES
+			$files = $inputs['imageFiles'];
+			$this->saveImages($product,$files);
+
+			//UPDATE PRODUCT
+			$product->update($inputs);
+
+			return response($product,201);
+
+		}else{
+			return response('Product not found.',422);
+		}				
+			
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function destroy($id)
+	{
+			//
+	}
+
+
+	public function postProductlist(Request $request){
+
+		$params = $request->all();        
+
+		extract($params);
+
+		$query = [];
+
+		if(isset($name) && trim($name)!=''){
+			$s = "/".$name."/i";
+			$query[]['$match']['name'] = ['$regex'=>new \MongoRegex($s)];
 		}
 
-		/**
-		 * Show the form for creating a new resource.
-		 *
-		 * @return \Illuminate\Http\Response
-		 */
-		public function create()
-		{
-				//
+		if(isset($params['categories']) && trim($params['categories'])!=''){          
+			$query[]['$match']['categories'] = $params['categories'];					
 		}
 
-		/**
-		 * Store a newly created resource in storage.
-		 *
-		 * @param  \Illuminate\Http\Request  $request
-		 * @return \Illuminate\Http\Response
-		 */
-		public function store(ProductRequest $request)
-		{    
-				
+		if(isset($params['status']) && trim($params['status'])!=''){
+			$query[]['$match']['status'] = (int)$params['status'];
+		}
+
+		if(isset($params['isFeatured']) && trim($params['isFeatured'])!=''){
+			$query[]['$match']['isFeatured'] = (int)$params['isFeatured'];
+		}
+
+		$columns = array('_id','smallTitle','categories','price','status','isFeatured','quantity','store','updated_at');
+
+		$project = ['name'=>1,'categoriesObject'=>1,'price'=>1,'status'=>1,'isFeatured'=>1,'updated_at'=>1];
+		
+		$project['smallTitle'] = ['$toLower' => '$name'];
+
+		$project['category'] = ['$arrayElemAt'=> [ '$categoriesObject', 0 ]];
+
+		$project['subcategory'] = ['$arrayElemAt'=> [ '$categoriesObject', 1 ]];			
+
+		//GET CURRENT USER STOCK FOR THE PRODUCT
+		$userStoreId = Auth::user('admin')->storeId; 
+
+    	$query[]['$lookup'] = [
+			'from'=>'stocks',
+			'localField'=>'_id',
+			'foreignField'=>'productObjId',
+			'as'=>'store'
+    	];
+
+    	//FILTER A PARTICULAR STOCK BY USER ID
+    	$project['store'] = [
+    		'$filter'=>[
+                'input' => '$store',
+                'as' => 'store',
+                'cond' => ['$eq'=>['$$store.storeId',$userStoreId]]
+            ]
+    	];	    	
+
+		$query[]['$project'] = $project;
+		
+		//GET PARENT CATEGORY DETAIL
+		$query[]['$lookup'] = [
+			'from'=>'categories',
+			'localField'=>'category',
+			'foreignField'=>'_id',
+			'as'=>'categoryDetail'
+    	];
+
+    	//GET SUB CATEGORY DETAIL
+		$query[]['$lookup'] = [
+			'from'=>'categories',
+			'localField'=>'subcategory',
+			'foreignField'=>'_id',
+			'as'=>'subcategoryDetail'
+    	];
+
+		//Get 0th element from all the lookup field
+		$query[]['$unwind'] = [
+			'path' => '$store',
+			'preserveNullAndEmptyArrays' => true
+		];
+		$query[]['$unwind'] = [
+			'path' => '$categoryDetail',
+			'preserveNullAndEmptyArrays' => true
+		];
+		$query[]['$unwind'] = [
+			'path' => '$subcategoryDetail',
+			'preserveNullAndEmptyArrays' => true
+		];    	
+
+		$project['store'] = '$store';
+		$project['quantity'] = ['$cond'=>['$store','$store.quantity',0]];			
+		$project['categoryDetail'] = '$categoryDetail';
+		$project['subcategoryDetail'] = '$subcategoryDetail';
+
+		$query[]['$project'] = $project;
+
+		$sort = ['updated_at'=>-1];
+
+		if(isset($params['order']) && !empty($params['order'])){
+        
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
+        }
+        
+        $query[]['$sort'] = $sort;
+
+		$model = Products::raw()->aggregate($query);
+
+        $iTotalRecords = count($model['result']);
+
+        $query[]['$skip'] = (int)$start;
+
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = Products::raw()->aggregate($query);
+        }            
+
+        $response = [
+            'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+            'data' => $model['result']            
+        ];
+
+        return response($response,200);				
+
+	}
+
+	protected function saveImages($product,$files){
+
+		if($product){
+					$filearr = [];
+					foreach ($files as $key => $file) {
+							$image = @$file['thumb']; 
+
+							if($image){
+
+									$destinationPath = storage_path('products');
+									$filename = $product->_id.'_'.$key.'.'.$image->getClientOriginalExtension();
+									
+									if (!File::exists($destinationPath.'/200')){
+											File::MakeDirectory($destinationPath.'/200',0777, true);
+									}
+									if (!File::exists($destinationPath.'/400')){
+											File::MakeDirectory($destinationPath.'/400/',0777, true);
+									}
+
+									Image::make($image)->resize(400, null, function ($constraint) {
+											$constraint->aspectRatio();
+									})->save($destinationPath.'/400/'.$filename);
+
+									Image::make($image)->resize(200, null, function ($constraint) {
+											$constraint->aspectRatio();
+									})->save($destinationPath.'/200/'.$filename);
+
+									$upload_success = $image->move($destinationPath, $filename);  
+
+							}else{
+								$filename = @$file['source'];
+							}
+
+							$cover = (int)@$file['coverimage'];
+
+							$filearr[] = [
+									'source' => $filename,
+									'label' => @$file['label'],
+									'order' => @$file['order'],
+									'coverimage' => $cover,
+							];
+					}
+
+					if(!empty($filearr)){
+							$product->imageFiles = $filearr;
+							$product->save();
+					}
+			}
+
+	}
+
+	public function postOrderproduct(Request $request){
+
+		$params = $request->all();
+
+		$products = new Products;
+
+		extract($params);      
+
+		$query = [];
+
+		if(isset($params['search']['value']) && trim($params['search']['value'])!=''){
+			$sval = $params['search']['value'];
+			$products = $products->where('name','regexp', "/.*$sval/i");
+			
+			$query[]['$match']['name'] = ['$regex'=>new \MongoRegex("/".$sval."/i")];
+		}
+
+		$query[]['$lookup'] = [
+			'from'=>'stocks',
+			'localField'=>'_id',
+			'foreignField'=>'productObjId',
+			'as'=>'store'
+    	];
+		
+		$project = ['_id'=>1,'name'=>1];
+		
+		$userStoreId = Auth::user('admin')->storeId; 
+
+		$project['store'] = [
+    		'$filter'=>[
+                'input' => '$store',
+                'as' => 'store',
+                'cond' => ['$eq'=>['$$store.storeId',$userStoreId]]
+            ]
+    	];
+
+    	$query[]['$project'] = $project;
+
+		$query[]['$unwind'] = [
+			'path' => '$store',
+			'preserveNullAndEmptyArrays' => true
+		];    	
+
+		$project['store'] = '$store';
+		$project['quantity'] = ['$cond'=>['$store','$store.quantity',0]];
+		$project['maxQuantity'] = ['$cond'=>['$store','$store.maxQuantity',0]];
+		$project['threshold'] = ['$cond'=>['$store','$store.threshold',0]];		
+
+
+		$query[]['$project'] = $project;
+
+		$project['reqFactor'] = [
+			'$subtract' => [
+                ['$divide'=>['$quantity','$maxQuantity']],
+                ['$divide'=>['$threshold','$maxQuantity']]
+            ]
+		];
+
+		$project['quantity'] = '$quantity';
+		$project['maxQuantity'] = '$maxQuantity';
+		$project['threshold'] = '$threshold';
+
+		$query[]['$project'] = $project;
+
+		$query[]['$lookup'] = [
+			'from'=>'dealers',
+			'localField'=>'_id',
+			'foreignField'=>'productObjectId',
+			'as'=>'supplier'
+    	];
+
+
+    	$columns = ['name','quantity'];
+
+    	$sort = ['reqFactor'=>1];
+
+		if(isset($params['order']) && !empty($params['order'])){
+			$field = $columns[$params['order'][0]['column']];
+			$direction = $params['order'][0]['dir'];
+			$sortField = $field;
+			$sortBy = ($params['order'][0]['dir'] == 'desc')?-1:1;
+			$sort = [$sortField=>$sortBy];			
+		}
+
+		$query[]['$sort'] = $sort;
+
+		$model = Products::raw()->aggregate($query);
+
+		$iTotalRecords = count($model['result']);
+
+		$query[]['$skip'] = (int)$start;
+        	
+    	if($length > 0)
+    		$query[]['$limit'] = (int)$length;	
+
+		$model = Products::raw()->aggregate($query);
+
+		$response = [
+			'recordsTotal' => $iTotalRecords,
+			'recordsFiltered' => $iTotalRecords,
+			'draw' => $draw,
+			'length' => $length,
+			'data' => $model['result']
+		];
+
+		return response($response,200);				
+	}
+	 
+	public function postUpdateinventory(Request $request){
+
 			$inputs = $request->all();
 			
-			$this->castVariables($inputs);
-
-			$product = Products::create($inputs);            
-
-			if($product){
-				
-				//UPDATE STOCKS FOR THE LOGGEDIN STORE
-				$product->updateStocks($inputs,$product->_id);
-
-				$dealers = Dealer::whereIn('_id',$inputs['dealerId'])->get();
-				//ADD PRODUCT IDS IN DEALERS TABLE
-				foreach ($dealers as $dkey => $dvalue) {
-					$dvalue->push('productId',$product->_id,true);
-					$dvalue->push('productObjectId',new MongoId($product->_id),true);
-				}
-
-				//ADD REFRENCE TO SUGGESTION PRODUCTS
-				if(!empty($inputs['suggestionId'])){
-					$suggested = Products::whereIn('_id',$inputs['suggestionId'])->get();
-					foreach ($suggested as $key => $value) {
-						$value->push('suggestedId',$product->_id,true);
-						$value->push('suggestedObjectId',new MongoId($product->_id),true);
-					}
-				}	
-
-				//STORE THE PRODUCT IMAGES
-				$files = $inputs['imageFiles'];				
-
-				$this->saveImages($product,$files);
-
-				return response($product,201);
-
-			}else{          
-				return response('Unable to add product',422);
-			}               
-		}
-
-		/**
-		 * Display the specified resource.
-		 *
-		 * @param  int  $id
-		 * @return \Illuminate\Http\Response
-		 */
-		public function show($id)
-		{
-				//
-		}
-
-		/**
-		 * Show the form for editing the specified resource.
-		 *
-		 * @param  int  $id
-		 * @return \Illuminate\Http\Response
-		 */
-		public function edit($id)
-		{
-				$galleryObj = new Products;
-				return $galleryObj->getSingleProduct($id);								
-		}
-
-		public function getDetail($id)
-		{				
-			$model = Products::where('_id',$id)->with('store')->with('suggestions')->first();			
-			return response($model,200);
-		}
-
-		/**
-		 * Update the specified resource in storage.
-		 *
-		 * @param  \Illuminate\Http\Request  $request
-		 * @param  int  $id
-		 * @return \Illuminate\Http\Response
-		 */
-		public function postUpdate(ProductRequest $request, $id)
-		{
-			$inputs = $request->all();				
-			
-			$this->castVariables($inputs);
-
-			$product = Products::find($id);
-			
-			if($product){          
-
-				//UPDATE STOCKS FOR THE LOGGEDIN STORE
-				$product->updateStocks($inputs,$product->_id);
-
-				$dealers = Dealer::whereIn('_id',$inputs['dealerId'])->get();
-				//ADD PRODUCT IDS IN DEALERS TABLE
-				foreach ($dealers as $dkey => $dvalue) {
-					$dvalue->push('productId',$product->_id,true);
-					$dvalue->push('productObjectId',new MongoId($product->_id),true);
-				}
-				//UPDATE FOR REMOVED DEALERS
-				$removedDealers = array_diff($product->dealerId, $inputs['dealerId']);
-				if($removedDealers){
-					$rdealers = Dealer::whereIn('_id',$removedDealers)->get();
-					foreach ($rdealers as $rdkey => $rdvalue) {
-						$rdvalue->pull('productId',$product->_id);
-						$rdvalue->pull('productObjectId',new MongoId($product->_id));
-					}
-				}
-				
-				//ADD REFRENCE TO SUGGESTION PRODUCTS
-				if(!empty($inputs['suggestionId'])){
-					$suggested = Products::whereIn('_id',$inputs['suggestionId'])->get();
-					foreach ($suggested as $key => $value) {
-						$value->push('suggestedId',$product->_id,true);
-						$value->push('suggestedObjectId',new MongoId($product->_id),true);
-					}
-				}
-
-				//UPDATE FOR REMOVED SUGGESTION
-				$removedSuggestion = array_diff($product->suggestionId, $inputs['suggestionId']);
-				if($removedSuggestion){
-					$rsuggestions = Products::whereIn('_id',$removedSuggestion)->get();
-					foreach ($rsuggestions as $rdkey => $rdvalue) {
-						$rdvalue->pull('suggestedId',$product->_id);
-						$rdvalue->pull('suggestedObjectId',new MongoId($product->_id));
-					}
-				}
-
-				//UNSET THE PRICING IF EXISTS AND NOT SET
-				if(isset($inputs['unsetFields']) && !empty($inputs['unsetFields'])){
-					foreach ($inputs['unsetFields'] as $key => $value) {
-						$product->unset($value);
-					}	
-				}
-
-				//STORE THE PRODUCT IMAGES
-				$files = $inputs['imageFiles'];
-				$this->saveImages($product,$files);
-
-				//UPDATE PRODUCT
-				$product->update($inputs);
-
-				return response($product,201);
-
-			}else{
-				return response('Product not found.',422);
-			}				
-				
-		}
-
-		/**
-		 * Remove the specified resource from storage.
-		 *
-		 * @param  int  $id
-		 * @return \Illuminate\Http\Response
-		 */
-		public function destroy($id)
-		{
-				//
-		}
-
-
-		public function postProductlist(Request $request){
-
-				$params = $request->all();        
-
-				extract($params);
-
-				$products = new Products;
-
-				$query = [];
-
-				if(isset($name) && trim($name)!=''){
-					$products = $products->where('name','regexp', "/.*$name/i");
-					$s = "/".$name."/i";
-					$query[]['$match']['name'] = ['$regex'=>new \MongoRegex($s)];
-				}
-
-				if(isset($params['categories']) && trim($params['categories'])!=''){          
-					$products = $products->where('categories',$params['categories']);
-					$query[]['$match']['categories'] = $params['categories'];					
-				}
-
-				if(isset($params['status']) && trim($params['status'])!=''){
-					$products = $products->where('status',(int)$params['status']);					
-					$query[]['$match']['status'] = (int)$params['status'];
-				}
-
-				if(isset($params['isFeatured']) && trim($params['isFeatured'])!=''){
-					$products = $products->where('isFeatured',(int)$params['isFeatured']);					
-					$query[]['$match']['isFeatured'] = (int)$params['isFeatured'];
-				}        
-
-				$iTotalRecords = $products->count();        
-
-				$columns = array('_id','name','categories','price','status','isFeatured','quantity','store','updated_at');
-
-				/*$sortField = 'created_at';
-				$sortBy = -1;*/        
-
-				$sort = ['updated_at'=>-1];
-
-				if(isset($params['order']) && !empty($params['order'])){
-
-					$field = $columns[$params['order'][0]['column']];
-					$direction = $params['order'][0]['dir'];
-					
-					if($field == 'quantity'){
-						$field = 'store.quantity';
-					}
-
-					$sortField = $field;
-					$sortBy = ($params['order'][0]['dir'] == 'desc')?-1:1;
-
-					$sort = [$sortField=>$sortBy];
-
-					//$products = $products->orderBy($field,$direction);  
-
-				}else{
-					//$products = $products->orderBy('created_at','desc');  
-				}
-
-				/*$products = $products
-				->with('store')
-				->skip((int)$start)
-				->take((int)$length);
-
-				$products = $products->get($columns);*/
-
-				$userStoreId = Auth::user('admin')->storeId; 
-
-				$query[]['$lookup'] = [
-					'from'=>'stocks',
-					'localField'=>'_id',
-					'foreignField'=>'productObjId',
-					'as'=>'store'
-            	];
-
-				$project = [];                	
-
-		        foreach ($columns as $key => $value) {
-					$project[$value] = '$'.$value;
-				}	        
-				
-	        	$project['store'] = [
-	        		'$filter'=>[
-		                'input' => '$store',
-		                'as' => 'store',
-		                'cond' => ['$eq'=>['$$store.storeId',$userStoreId]]
-		            ]
-	        	];
-
-	        	$query[]['$project'] = $project;
-
-				$query[]['$unwind'] = [
-				                        'path' => '$store',	                        
-				                        'preserveNullAndEmptyArrays' => true,                            
-				                    ];				                	
-				$query[]['$sort'] = $sort;                    
-
-	        	$query[]['$skip'] = (int)$start;
-	        	$query[]['$limit'] = (int)$length;	
-
-	        	//dd($query);
-
-		    	$products = Products::raw()->aggregate($query);
-
-		    	//dd($products);
-
-		    	$products = $products['result'];
-
-				foreach($products as $i => $product) {
-					$products[$i]['_id'] = (string)$product['_id'];
-					$categories = Categories::whereIn('_id', $product['categories'])->get();
-					$cname = [];
-					foreach ($categories as $key => $value) {                
-						$cname[] = $value['cat_title'];                
-					}  
-					$products[$i]['category'] = implode(', ', $cname);
-				}
-
-				$response = [
-					'recordsTotal' => $iTotalRecords,
-					'recordsFiltered' => $iTotalRecords,
-					'draw' => $draw,
-					'data' => $products            
-				];
-
-				return response($response,200);
-
-		}
-
-		protected function saveImages($product,$files){
-
-			if($product){
-						$filearr = [];
-						foreach ($files as $key => $file) {
-								$image = @$file['thumb']; 
-
-								if($image){
-
-										$destinationPath = storage_path('products');
-										$filename = $product->_id.'_'.$key.'.'.$image->getClientOriginalExtension();
-										
-										if (!File::exists($destinationPath.'/200')){
-												File::MakeDirectory($destinationPath.'/200',0777, true);
-										}
-										if (!File::exists($destinationPath.'/400')){
-												File::MakeDirectory($destinationPath.'/400/',0777, true);
-										}
-
-										Image::make($image)->resize(400, null, function ($constraint) {
-												$constraint->aspectRatio();
-										})->save($destinationPath.'/400/'.$filename);
-
-										Image::make($image)->resize(200, null, function ($constraint) {
-												$constraint->aspectRatio();
-										})->save($destinationPath.'/200/'.$filename);
-
-										$upload_success = $image->move($destinationPath, $filename);  
-
-								}else{
-									$filename = @$file['source'];
-								}
-
-								$cover = (int)@$file['coverimage'];
-
-								$filearr[] = [
-										'source' => $filename,
-										'label' => @$file['label'],
-										'order' => @$file['order'],
-										'coverimage' => $cover,
-								];
-						}
-
-						if(!empty($filearr)){
-								$product->imageFiles = $filearr;
-								$product->save();
-						}
-				}
-
-		}
-
-		public function postOrderproduct(Request $request){
-
-			$params = $request->all();
-
-			$products = new Products;
-
-			extract($params);      
-
-			if(isset($params['search']['value']) && trim($params['search']['value'])!=''){
-				$sval = $params['search']['value'];
-				$products = $products->where('name','regexp', "/.*$sval/i");
-			}
-
-			//$products = $products->where('dealers','all',['56ed55ecc31d53b2218b4568']);
-
-			$iTotalRecords = $products->count();      
-			
-			$columns = ['name','quantity','maxQuantity','threshold','_id'];
-
-			$notordered = true;
-			if ( isset( $params['order'] ) ){
-					foreach($params['order'] as $orderKey=>$orderField){
-							if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
-									$notordered = false;                    
-									$products = $products->orderBy($columns[$orderField['column']],$orderField['dir']);                    
-							}
-					}
-			}else{
-				$products = $products->orderBy('updated_at','desc');
-			}
-
-			$products = $products			
-			->skip((int)$start)
-			->take((int)$length);
-
-			$products = $products->with('store')->with('supplier');
-			
-			$products = $products->get($columns);
-			
-			$response = [
-				'recordsTotal' => $iTotalRecords,
-				'recordsFiltered' => $iTotalRecords,
-				'draw' => $draw,
-				'length' => $length,
-				'aaData' => $products
-			];
-			
-			return response($response,200);
-		}
-		 
-		public function postUpdateinventory(Request $request){
-
-				$inputs = $request->all();
-				
-				$id = $inputs['_id'];
-
-				$validator = Validator::make($inputs, [
-						'quantity' => 'required|numeric',
-						'threshold' => 'required|numeric|lt:maxQuantity',
-						'maxQuantity' => 'required|numeric|gte:quantity',
-				],[
-					'maxQuantity.gte' => 'The value should be greater than or equals to the quantity.',
-					'threshold.lt' => 'The value should be less than maximum quantity.',
-				]);
-
-				if ($validator->fails()){
-						return response($validator->errors(), 422);
-				}
-
-				$product = Products::find($id);
-
-				//$product->upda
-
-				$product->quantity = $inputs['quantity'];
-				$product->threshold = $inputs['threshold'];
-				$product->maxQuantity = $inputs['maxQuantity'];
-
-				//NOTIFY USER FOR AVAILABILITY
-				if($product->quantity > 0){
-					$userlist = User::where('productAddedNotification','all',[$id]);
-					foreach ($userlist as $key => $value) {
-						$username = (isset($value->name))?$value->name:$value->email;
-						$data = [
-							'email' => $value->email,
-							'p_id' => $id,
-							'username' => $username,
-							'product_name' => $product->name
-						];
-
-						$email = new Email('notifyuseronproductadd');
-						$email->sendEmail($data);
-
-					}
-				}
-
-				if($product->save()){
-					return response($product, 200);
-				}else{
-					return response('Error in updating inventory.', 422);
-				}
-		} 
-
-		public function getSearchproduct(Request $request){
-			
-			$params = $request->all();
-			$products = new Products;
-			
-			if(isset($params['parentCategory']) && trim($params['parentCategory'])!=''){          
-				
-				$products = $products->where('categories',$params['parentCategory']);
-
-				if(isset($params['subCategory']) && trim($params['subCategory'])!=''){
-
-					$products = $products->where('categories',$params['subCategory']);
-
-				}
-
-			}
-
-			if(isset($params['qry']) && trim($params['qry'])!=''){
-				$name = $params['qry'];
-				$products = $products->where('name','regexp', "/.*$name/i");
-			}
-
-			$products = $products->where('status',1)->orderBy('name','desc')->get();
-
-			return response($products,200);
-
-		}
-
-		public function getTest(){	
-
-			//57c6b29cb190ecc02e8b4575
-
-			$productObjectId = [new MongoId('57c6b29cb190ecc02e8b4575'),new MongoId('57c694bab190ecc02e8b456a')];
-
-			$productObjectId2 = [new MongoId('57c6b29cb190ecc02e8b4575'),new MongoId('57c433e7b190ec306f8b4567')];
-
-			//return response((array_merge($productObjectId,$productObjectId2)));
-
-			$res = $this->compareData($productObjectId,$productObjectId2);		
-
-			return response($res);
-
-			$u = User::raw()->aggregate(
-				[
-					'$match' => [
-						'wishlist._id' => [
-							'$in' => $productObjectId
-						]
-					]
-				],
-				[
-					'$project' => [
-						'_id' => 1,
-						'email' => 1,
-						'matchingWish' => [
-							'$filter' => [
-								'input' => '$wishlist',
-		                		'as' => 'wish',
-		                		'cond' => [
-		                			'$eq'=>['$$wish.notify',1]		                			
-		                		]
-							]
-						],						
-					]
-				],
-				[
-					'$unwind' => [
-						'path' => '$matchingWish',
-						'preserveNullAndEmptyArrays' => true
-					]
-				],
-				[
-					'$match' => [
-						'matchingWish._id' => ['$in' => $productObjectId]
-					]
-				],
-				[
-					'$lookup' => [
-						'from' => 'products',
-						'localField' => 'matchingWish._id',
-						'foreignField' => '_id',
-						'as' => 'nProducts'
-					]
-				]/*,
-				[
-					'$group' => [
-						'_id' => '$_id',
-						'matchingWish' => ['$addToSet'=>'$matchingWish'],
-						'email' => ['$first'=>'$email']
-					]
-				]*/				
-			);
-			
-			//$r = DB::collection('test')->insert($u['result'], ['upsert' => true]);
-
-			dd($u);
-
-			$OId = [new MongoId('57c551bcb190ec430d8b457a'),new MongoId('57c433e7b190ec306f8b4567')];
-
-
-			$model = Products::raw()->aggregate(
-				[
-					
-					'$match' => [
-						'categoriesObject' => [
-							'$elemMatch'=>[
-								'$in'=>$OId/*[
-									'57c551bcb190ec430d8b457a','57c433e7b190ec306f8b4567'
-								]*/
-							]
-						]
-					],					
-					
-
-				],
-				[
-					'$group' => [
-						'_id' => null,						
-						'categoryProduct' => [
-							'$addToSet'=>'$_id'	
-						],											
-					],
-				]
-			);
-
-			
-
-			dd($model);
-
-			$query = [];
-
-			$query[]['$match'] = ['_id' => new MongoId('57c422d611f6a1450b8b456c')];
-
-			$query[]['$project'] = [
-				//'email' => 1,
-				//'wishlist' => 1,
-				'mywish' => [
-					'$cond' => [
-						'$wishlist',
-						[
-							'$filter'=>[
-		                		'input' => '$wishlist',
-		                		'as' => 'wishlist',
-		                		'cond' => ['$eq'=>['$$wishlist._id',new MongoId('57c69fadb190ecc02e8b456e')]]
-	            			]
-	            		],
-	            		null	            		
-					]
-				]
-			];	
-
-			$query[]['$unwind'] = ['path' => '$mywish','preserveNullAndEmptyArrays' => true];       
-
-			$model = DB::collection('test')->raw()->aggregate($query);
-
-			dd($model);	
-
-			$u = DB::collection('test')->raw()->update(
-				['_id' => new MongoId('57c422d611f6a1450b8b456c'),'wishlist._id'=>new MongoId('57c69fadb190ecc02e8b456e')],
-				[
-					'$set' => [						
-						'wishlist.$.notify' => 1
-					]
-				]	
-			);
-
-			dd($u);
-				
-			/*$model = Products::raw()->aggregate([
-				['$match' => ['_id'=>new MongoId('57c53011b190ec430d8b456e')]],
-				[
-					'$lookup' => [
-						'from'=>'user',
-						'localField' => '_id',
-						'foreignField' => 'wishlist._id',
-						'as' => 'nUser'
-					]
-				]
+			$id = $inputs['_id'];
+
+			$validator = Validator::make($inputs, [
+					'quantity' => 'required|numeric',
+					'threshold' => 'required|numeric|lt:maxQuantity',
+					'maxQuantity' => 'required|numeric|gte:quantity',
+			],[
+				'maxQuantity.gte' => 'The value should be greater than or equals to the quantity.',
+				'threshold.lt' => 'The value should be less than maximum quantity.',
 			]);
 
-			dd($model);*/
+			if ($validator->fails()){
+					return response($validator->errors(), 422);
+			}
 
-			$faker = Faker\Factory::create();
+			$product = Products::find($id);
 
-		    $limit = 100;
+			//$product->upda
 
-		    for ($i = 0; $i < $limit; $i++) {
-		        echo $faker->word(10).'<br/>';
-		        echo $faker->unique()->name . ', Email Address: ' . $faker->unique()->email . ', Contact No' . $faker->unique()->phoneNumber . '<br>';
-		    }
+			$product->quantity = $inputs['quantity'];
+			$product->threshold = $inputs['threshold'];
+			$product->maxQuantity = $inputs['maxQuantity'];
 
-		    exit;
+			//NOTIFY USER FOR AVAILABILITY
+			if($product->quantity > 0){
+				$userlist = User::where('productAddedNotification','all',[$id]);
+				foreach ($userlist as $key => $value) {
+					$username = (isset($value->name))?$value->name:$value->email;
+					$data = [
+						'email' => $value->email,
+						'p_id' => $id,
+						'username' => $username,
+						'product_name' => $product->name
+					];
 
-			$query = [];
-			$userStoreId = Auth::user('admin')->storeId;
-			//$userStoreId .= '12';	
-			$tableFields = [
-				'name'=>'$name',
-                //'quantity'=>'$quantity',                
-                'dealerId'=>'$dealers',
-                'sku'=>'$sku'
-			];
+					$email = new Email('notifyuseronproductadd');
+					$email->sendEmail($data);
 
-			$project = $tableFields;
+				}
+			}
 
-			$project['store'] = [
-				'$filter'=>[
-	                'input' => '$store',
-	                'as' => 'store',
-	                'cond' => ['$eq'=>['$$store.storeId',$userStoreId]]
-	            ]
-	        ];        
+			if($product->save()){
+				return response($product, 200);
+			}else{
+				return response('Error in updating inventory.', 422);
+			}
+	} 
 
-			$query[]['$match'] = [
-				'dealerId' => ['$elemMatch'=>['$in'=>['57c43653b190ec306f8b4569']]]
-			];
-
-			$query[]['$lookup'] = [
-				'from'=>'stocks',
-				'localField'=>'_id',
-				'foreignField'=>'productObjId',
-				'as'=>'store'
-			];			
-
-			$query[]['$project'] = $project;
-
-			$query[]['$unwind'] = ['path' => '$store','preserveNullAndEmptyArrays' => true];
-
-			$project['store'] = '$store';
-
-			$project['quantity'] = ['$cond'=>['$store','$store.quantity',0]];
-
-			$project['maxQuantity'] = ['$cond'=>['$store','$store.maxQuantity',0]];
-
-			$project['threshold'] = ['$cond'=>['$store','$store.threshold',0]];
-
-			$project['sum'] = [
-				'$cond' => [
-					'$store',
-					[
-						'$subtract' => [
-							['$divide'=>['$store.quantity','$store.maxQuantity']],
-							['$divide'=>['$store.threshold','$store.maxQuantity']]
-						]
-					],
-					-1,
-				]				
-			];
-
-			$query[]['$project'] = $project;
-
-			//$query[]['$unwind'] = ['path' => '$store','preserveNullAndEmptyArrays' => true];
+	public function getSearchproduct(Request $request){
+		
+		$params = $request->all();
+		$products = new Products;
+		
+		if(isset($params['parentCategory']) && trim($params['parentCategory'])!=''){          
 			
-			$model = Products::raw()->aggregate($query);
-			
-			dd($model);
-			
+			$products = $products->where('categories',$params['parentCategory']);
 
-			$productWithStocks = Products::where('_id','57c54d89b190ec430d8b4570')->with('stocks')->first();	
+			if(isset($params['subCategory']) && trim($params['subCategory'])!=''){
 
-			return response($productWithStocks);
+				$products = $products->where('categories',$params['subCategory']);
 
-			//$product = Products::create(['name'=>'beer']);
-
-			//dd($product);
-
-			$userStoreId = Auth::user('admin')->storeId;
-			$query = [];
-
-			$project = [
-				'_id' => 1,
-				'name' => 1,				
-			];
-
-			$project['mystore'] = [
-				'$filter'=>[
-	                'input' => '$mystore',
-	                'as' => 'mystore',
-	                'cond' => ['$eq'=>['$$mystore.storeId',$userStoreId]]
-	            ]    
-	        ];
-
-			$query[]['$project'] = $project;	        
-
-	        $query[]['$sort'] = ['mystore.quantity'=>-1];
-
-
-
-			$model = Products::raw()->aggregate($query);
-	        
-	        dd($model);
-
-	        echo '<pre>';
-	        print_r($model);
-	        echo '</pre>';
-	        exit;       
-
-
-			$product = Products::find('57c51cb1b190ec430d8b4567');			
-
-			$store = $product->mystore()->get();//->where('storeId',$userStoreId)->first();
-
-			$mystore = $store->where('storeId',$userStoreId)->first();
-
-			/*$store->quantity = 150;
-
-			$store->save();	*/
-
-			//dd($store->first());
-
-
-			return response(['store'=>$store,'mystore'=>$mystore],200);
-
-	        /*$stock = new Stocks(
-	        	[
-	        		'quantity' => 50,
-	        		'threshold' => 10,
-	        		'maxQuantity' => 100,
-	        		'storeId' => '57bef1bfb190ec7c0c8b4567',
-	        		'storeObjId' => new MongoId('57bef1bfb190ec7c0c8b4567'),
-	        		'defaultDealerId' => '57c43653b190ec306f8b4569',
-	        		'defaultDealerObjId' => new MongoId('57c43653b190ec306f8b4569'),
-	        		'productObjId' => new MongoId('57c51cb1b190ec430d8b4567'),
-	        	]
-	        );     
-
-	        $stock = $product->mystore()->save($stock);*/
-
-	        return response($stock,200);
-
-	        
-
-
-
-	        /*$p = Products::where(['_id'=>'57035084c31d53b2218b45c8']);
-
-	        $p = $p->with('store')->first();
-
-	        
-
-	        return response($p,200);*/
-
-	        $userStoreId = Auth::user('admin')->storeId; 
-
-	        $us = new Products;
-
-        	$fillable = $us->getFields();        	
-
-        	$fillable['store'] = [
-        		'$filter'=>[
-	                'input' => '$store',
-	                'as' => 'store',
-	                'cond' => ['$eq'=>['$$store.storeId',$userStoreId]]
-	            ]
-        	];
-
-        	$firstFillable = $us->getFirstfield();
-
-        	$firstFillable['_id'] = '$_id';
-
-        	$firstFillable['stocks'] = ['$push' => '$stocks'];
-        	
-        	$firstFillable['suggestions'] = ['$push' => '$suggestions'];
-
-			//$project = $fillable;
-
-			//$project['stocks'] = ['$arrayElemAt' => [ '$stocks', 0 ]];
-
-			$project['stocks'] = '$stocks';
-
-			/*$project['stocks'] = [
-        		'$filter'=>[
-	                'input' => '$stocks',
-	                'as' => 'stock',
-	                'cond' => ['$eq'=>['$$stock.storeId',$userStoreId]]
-	            ]
-        	];*/
-
-			$project['suggestions'] = '$suggestions';
-
-        	$model = Products::raw()->aggregate(
-	            [   
-	                [
-	                    '$match'=>['_id' => new MongoId('57035084c31d53b2218b45c8')]                    
-	                ],
-	                [
-	                	'$lookup' => [
-							'from'=>'stocks',
-							'localField'=>'_id',
-							'foreignField'=>'productObjId',
-							'as'=>'store'
-	                	]
-	                ],
-	                [
-	                	'$project' => $fillable
-	                ],
-	                [
-	                	'$unwind' => [
-	                        'path' => '$store',	                        
-	                        'preserveNullAndEmptyArrays' => true,                            
-	                    ]
-	                ],	    
-	                /*[
-	                	'$sort' => ['store.quantity' => -1]
-	                ],
-	                [
-	                	'$limit' => 5
-	                ]   */         
-	                /*[
-	                	'$unwind' => [
-	                        'path' => '$stocks',	                        
-	                        'preserveNullAndEmptyArrays' => true,                            
-	                    ]
-	                ],
-	                [
-						'$group' => $firstFillable	
-					],*/	                
-	                /*[
-						'$unwind' => [
-							'path' =>  '$suggestionObjectId',
-							"preserveNullAndEmptyArrays" => true
-
-						]
-					],
-	                [
-						'$lookup' => [
-							'from'=>'products',
-							'localField'=>'suggestionObjectId',
-							'foreignField'=>'_id',
-							'as'=>'suggestions'
-						]
-					],*/
-					
-					/*[
-						'$unwind' => [
-							'path' =>  '$suggestions',
-							"preserveNullAndEmptyArrays" => true
-
-						]
-					],
-					[
-						'$group' => $firstFillable	
-					],
-					[
-						'$project' => $project
-					],
-					[
-						'$unwind' => [
-							'path' =>  '$stocks',
-							"preserveNullAndEmptyArrays" => true
-
-						]
-					],*/
-					/*[
-						'$unwind' => [
-							'path' => '$stocks',	                        
-	                        'preserveNullAndEmptyArrays' => true,                            
-						]
-					]*/		                
-	            ]
-	        );       
-
-        	dd($model);
-
-        	echo '<pre>';
-	        print_r($model);
-	        echo '</pre>';
-	        exit;
-
-        	//$fillable['stocks'] = '$stocks';
-
-        	/*$fillable['store'] = [
-        		'$filter'=>[
-	                'input' => '$stocks',
-	                'as' => 'stock',
-	                'cond' => ['$eq'=>['$$stock.storeId',new MongoId('57badb6db190ecd2108b456b')]]
-	            ]
-        	];*/
-	        
-	        //$fillable['storeQuantity'] = '$store.quantity';        					        
-
-	        $model = Products::raw()->aggregate(
-	            [   
-	                [
-	                    '$match'=>['_id' => new MongoId('57035084c31d53b2218b45c8')]                    
-	                ],                                
-	                [
-	                    '$unwind' => [
-	                        'path' => '$stocks',
-	                        'preserveNullAndEmptyArrays' => true,                            
-	                    ]
-	                ],
-	                [
-	                    '$project'=>$fillable                        
-	                ],
-	                [
-	                    '$match'=>['storeOId' => new MongoId('57bef1bfb190ec7c0c8b4567')]                    
-	                ],
-	                [
-	                	'$lookup' => [
-							'from'=>'dealers',
-							'localField'=>'store.defaultDealer',
-							'foreignField'=>'_id',
-							'as'=>'dealerInfo'
-	                	]
-	                ],
-	                [
-	                    '$unwind' => [
-	                        'path' => '$dealerInfo',
-	                        'preserveNullAndEmptyArrays' => true,                            
-	                    ]
-	                ]
-	            ]
-	        );
-
-	        //dd($model);
-
-	        echo '<pre>';
-	        print_r($model);
-	        echo '</pre>';
-	        exit;
-
-	        return response($model,200);
+			}
 
 		}
+
+		if(isset($params['qry']) && trim($params['qry'])!=''){
+			$name = $params['qry'];
+			$products = $products->where('name','regexp', "/.*$name/i");
+		}
+
+		$products = $products->where('status',1)->orderBy('name','desc')->get();
+
+		return response($products,200);
+
+	}
+
+	public function getTest(Request $request){
+
+		/*$create = DB::collection('mytest')->insert(
+			[
+				'name' => 'test',
+				'inventory' => [
+					[
+						'storeId' => new MongoId(),
+						'productId' => new MongoId(),
+						'quantity' => 5
+					]
+				]
+			]
+		);*/
+
+
+
+		/*$u = DB::collection('mytest')->raw()->update(
+			['inventory.storeId' => new MongoId('57e3dd31b190ec1b0d8b456a')],
+			['$set' => ['inventory.$.quantity' => 9]]
+		);
+		dd($u);*/
+
+	}
 
 	private function castVariables(&$inputs){
 
@@ -1163,6 +743,31 @@ class ProductController extends Controller
 
 		dd($p);*/
 
+		$giftcategory = \AlcoholDelivery\GiftCategory::all();
+
+		foreach ($giftcategory as $key => $value) {
+			if(isset($value->parent)){
+				$value->parentObject = new MongoId($value->parent);
+				$value->save();
+			}
+		}
+
+		//dd($giftcategory);
+
+		$gift = \AlcoholDelivery\Gift::all();
+
+		foreach ($gift as $key => $value) {
+			if(isset($value->category)){
+				$value->categoryObject = new MongoId($value->category);
+			}
+			if(isset($value->subcategory)){
+				$value->subcategoryObject = new MongoId($value->subcategory);
+			}
+			$value->save();
+		}
+		
+		dd($gift);
+
 		$products = Products::all();	
 
 		foreach ($products as $key => $product) {			
@@ -1179,7 +784,7 @@ class ProductController extends Controller
 
 	}	
 
-	public function postStore(Request $request){
+	public function postStores(Request $request){
 
 		$req = $request->all();
 		
@@ -1197,7 +802,8 @@ class ProductController extends Controller
 		];		
 
 		$storeFields = [];
-		$unwinds = [];
+		$unwinds = [];		
+		$sortCol[] = '';
 		$columns[] = ['title'=>'Product Name','data'=>'name'];		
 		$pro = [];
 		$storeQtyKeys = [];
@@ -1227,6 +833,7 @@ class ProductController extends Controller
             $sortCol[] = $qkey;
 		}
 
+		
 		$columns[] = ['title'=>'Total Qty','data'=>'totalQty'];
 		$sortCol[] = 'totalQty';
 		//RETURN IN CASE ONLY COLOUMNS HAS TO DRAWN

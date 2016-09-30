@@ -26,7 +26,7 @@ Route::group(['prefix' => 'adminapi'], function () {
 
 Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	
-	Route::resource('order', 'Admin\OrderController');
+	Route::resource('order', 'Admin\OrderController',['except'=>'show']);
 	Route::controller('order', 'Admin\OrderController');
 	
 	Route::resource('product', 'Admin\ProductController',['only'=>['update','store']]);
@@ -70,10 +70,10 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::resource('brand', 'Admin\BrandController',['only'=>['update','store','show','destroy']]);
 	Route::controller('brand', 'Admin\BrandController');
 
-	Route::resource('promotion', 'Admin\PromotionController',['only'=>['update','store','show']]);
+	Route::resource('promotion', 'Admin\PromotionController',['only'=>['update','store','show','destroy']]);
 	Route::controller('promotion', 'Admin\PromotionController');
 
-	Route::resource('coupon', 'Admin\CouponController',['only'=>['update','store','show']]);
+	Route::resource('coupon', 'Admin\CouponController',['only'=>['update','store','show','destroy']]);
 	Route::controller('coupon', 'Admin\CouponController');
 
 	Route::resource('holiday', 'Admin\HolidayController',['only'=>['update','store','destroy']]);
@@ -92,6 +92,15 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 
 	Route::resource('stores', 'Admin\StoreController',['only'=>['store','edit','update']]);
 	Route::controller('stores', 'Admin\StoreController');
+
+	Route::resource('stocks', 'Admin\StocksController',['only'=>['store']]);
+	Route::controller('stocks', 'Admin\StocksController');
+
+	Route::resource('company', 'Admin\CompanyController',['only'=>['show']]);
+	Route::controller('company', 'Admin\CompanyController');
+
+	Route::resource('purchaseorder', 'Admin\PurchaseOrderController');
+	Route::controller('purchaseorder', 'Admin\PurchaseOrderController');
 
 });
 
@@ -180,11 +189,16 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::delete('card/{key}','CartController@deleteCard');
 
+	Route::delete('sale/{cartKey}/{saleId}','CartController@deleteSale');
+
+	Route::put('sale/chilled/{cartKey}','CartController@putSaleChilledStatus');
+
 	Route::delete('gift/{key}','CartController@deleteGift');
 
 	Route::post('gift','CartController@postGift');
 	
 	Route::post('giftcard','CartController@postGiftcard');
+
 	Route::put('giftcard/{uid}','CartController@putGiftcard');
 
 	Route::put('gift/product/chilledtoggle/{giftUid}','CartController@putGiftProductChilledStatus');
@@ -226,35 +240,29 @@ Route::get('products/i/{folder}/{filename}', function ($folder,$filename)
     return Image::make(storage_path('products/') .$folder. '/' . $filename)->response();
 
 });
-Route::get('products/i/{filename}', function ($filename)
+
+//COMMON IMAGE ROUTES 
+Route::get('{storageFolder}/i/{filename}', function ($storageFolder,$filename)
 {
-	if(!file_exists(storage_path('products') . '/' . $filename)){
+	/*
+	* $storageFolder possible values
+	* 
+	* products
+	* packages
+	* sale	
+	* gifts
+	* giftcategory
+	* company
+	*
+	*/
+
+	if(!file_exists(storage_path($storageFolder) . '/' . $filename)){
 		$filename = "product-default.jpg";
 	}
-    return Image::make(storage_path('products') . '/' . $filename)->response();
-});
-/*PRODUCT IMAGE ROUTUING*/
-
-Route::get('packages/i/{filename}', function ($filename)
-{
-    return Image::make(storage_path('packages') . '/' . $filename)->response();
+    return Image::make(storage_path($storageFolder) . '/' . $filename)->response();
 });
 
-Route::get('sale/i/{filename}', function ($filename)
-{
-    return Image::make(storage_path('sale') . '/' . $filename)->response();
-});
-
-Route::get('gifts/i/{filename}', function ($filename)
-{
-    return Image::make(storage_path('gifts') . '/' . $filename)->response();
-});
-
-Route::get('giftcategory/i/{filename}', function ($filename)
-{
-    return Image::make(storage_path('giftcategory') . '/' . $filename)->response();
-});
-
+//ASSET IMAGE ROUTES
 Route::get('asset/i/{filename}', function ($filename)
 {
     return Image::make(public_path('img') . '/' . $filename)->response();

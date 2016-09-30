@@ -1,0 +1,143 @@
+<div class="row">
+	<div class="col-md-12">
+		<form role="form" name='productForm' ng-submit="store()" required="false">
+		<div class="portlet light">			
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-shopping-cart"></i>{{sale._id?'Edit ':'Add New '}}Company
+				</div>
+				<div class="actions btn-set">
+					<a class="btn default" ui-sref="userLayout.sale.list"><i class="fa fa-angle-left"></i> Back</a>
+					<button ng-disabled="loading" class="btn green" type="submit"><i class="fa fa-check"></i> {{sale._id?'Update':'Save'}}</button>					
+				</div>
+			</div>		
+			<div class="portlet-body mcontainer">
+				<tabset active="active">
+					<tab>
+						<tab-heading>General</tab-heading>
+
+						<div class="form-horizontal">
+							<div class="form-group" ng:class="{'has-error':errors.logo[0]}">
+								<label class="col-md-2 control-label">Company Logo:<span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<div class="fileinput fileinput-new" data-provides="fileinput">
+										<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
+											<img err-src="asset/i/defaultImage.png" 
+												ng-src="company/i/{{company.logoImage}}" src="asset/i/defaultImage.png" alt=""/>
+
+										</div>
+										<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
+										</div>
+										<div>
+											<span class="btn default btn-file">
+												<span class="fileinput-new">{{ company.logo ? 'Change':'Select' }}</span>
+												<span class="fileinput-exists">Change</span>
+												<input type="file" placeholder="thumbnail" class="form-control" file-model="company.logo"/>
+											</span>	
+										</div>
+									</div>
+									<span class="help-block" ng-bind="errors.logo[0]"></span>
+								</div>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.title[0]}">
+								<label class="col-md-2 control-label">Company Title: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="company.title" placeholder="Company Title">
+									<span class="help-block" ng-bind="errors.title[0]"></span>
+								</div>
+
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.address[0]}">
+								<label class="col-md-2 control-label">Address: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="company.address" placeholder="Address">
+									<span class="help-block" ng-bind="errors.address[0]"></span>
+								</div>
+
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.city[0]}">
+								<label class="col-md-2 control-label">City: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="company.city" placeholder="City">
+									<span class="help-block" ng-bind="errors.city[0]"></span>
+								</div>
+
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.state[0]}">
+								<label class="col-md-2 control-label">State: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="company.state" placeholder="State">
+									<span class="help-block" ng-bind="errors.state[0]"></span>
+								</div>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.zip[0]}">
+								<label class="col-md-2 control-label">Zip: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="company.zip" placeholder="Zip">
+									<span class="help-block" ng-bind="errors.zip[0]"></span>
+								</div>
+							</div>							
+
+							<div class="form-group" ng:class="{'has-error':errors.country[0]}">
+								<label class="col-md-2 control-label">Country: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+
+									<select class="form-control" 
+										ng-model="company.country" 
+										ng-options="option._id.$id as option.name for option in countries"
+										>
+										<option value="">---- Select Country ----</option>
+									</select>
+									
+									<span class="help-block" ng-bind="errors.country[0]"></span>
+								</div>
+
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
+								<label class="col-md-2 control-label">Status: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<select class="form-control" ng-model="company.status">
+										<option value="1">Active</option>
+										<option value="0">In-Active</option>
+									</select>
+									<span class="help-block" ng-bind="errors.status[0]"></span>
+								</div>
+							</div>
+						</div>
+					</tab>					
+					<tab>
+						<tab-heading>Invoice Template</tab-heading>						
+						<div class="form-group" ng:class="{'has-error':errors.invoiceTemplate[0]}">
+							<label class="control-label">Template</label>
+							<textarea name="page_content" ckeditor="editorOptions" class="form-control" required ng-model="company.invoiceTemplate" rows="6"  cols="80"></textarea>								
+							<span class="help-block" ng-bind="errors.invoiceTemplate[0]"></span>								
+						</div>
+					</tab>
+				</tabset>
+
+			</div>
+		</div>
+		</form>
+	</div>	
+</div>

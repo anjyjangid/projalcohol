@@ -748,7 +748,7 @@ body.loadingpayment .loader{
 
 
 md-dialog#dont-miss-popup{
-	max-width: 702px;
+	max-width: 730px;
 	width: 100%;
 }
 
@@ -770,6 +770,10 @@ md-dialog#dont-miss-popup{
 
 .prod-in-slider{
 	padding: 0 10px;
+}
+
+.prod-in-slider.dontmiss{
+	padding: 0;
 }
 
 .prod-in-slider .owl-item > div {
@@ -829,4 +833,158 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 }
 .pointer {
     cursor: pointer !important;
+}
+
+.newcardicons{
+	width: 64px;
+	height: 38px !important;
+	margin-top: 0px !important;
+	background-image: url('../images/credit_64px.jpg');
+	background-repeat: no-repeat;
+	background-position: center;
+	position: relative;
+}
+
+.newcardicons.maestro{
+	background-position: -5px -450px;
+}
+.newcardicons.dinersclub{
+	background-position: -526px -192px;
+}
+.newcardicons.laser{
+	background-position: -526px -364px;
+}
+.newcardicons.jcb{
+	background-position: -440px -364px;
+}
+.newcardicons.unionpay{
+	background-position: -178px -192px;
+}
+.newcardicons.discover{
+	background-position: -5px -277px;
+}
+.newcardicons.mastercard{
+	background-position: -91px -450px;
+}
+.newcardicons.amex{
+	background-position: -265px -20px;
+}
+.newcardicons.visa{
+	background-position: -91px -622px;
+}
+
+.salediscount{
+	float: right;
+    position: relative;
+    text-transform: uppercase;
+    /*font-weight: normal;*/
+    color: #fff;
+    font-size: .5em;    
+    padding: 5px 12px 5px 15px;
+    background: #aa00ff;
+    height: 34px;
+    z-index: 2;
+    line-height: 24px;
+    border-radius: 0px 2px 2px 0px;     
+}
+
+.sale-tag-txt.-cart{
+	color: #8e02d4;
+    font-size: 0.9em;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.salediscount:before{
+	content: "";
+    position: absolute;
+    left: -13px;
+    top: 0;
+    border-top: 17px solid transparent;
+    border-bottom: 17px solid transparent;
+    border-right: 13px solid #aa00ff;
+}
+
+.salediscount:after{
+	content: "";
+    position: absolute;
+    left: 0;
+    top: 14px;
+    padding: 3px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.nametag{
+	/*float: left;*/
+	width: auto;
+    position: relative;
+    text-transform: uppercase;    
+    color: #564111;
+    padding: 5px 8px 5px 12px;
+    background: #ffc412;    
+    z-index: 2;    
+    border-radius: 0 2px 2px 0;
+    margin-left: 13px;     
+}
+
+.nametag:before{
+	content: "";
+    position: absolute;
+    left: -13px;
+    top: 0;
+    border-top: 14px solid transparent;
+    border-bottom: 14px solid transparent;
+    border-right: 13px solid #ffc412;
+}
+
+.nametag:after{
+	content: "";
+    position: absolute;
+    left: 0;
+    top: 11px;
+    padding: 3px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.dontmissbut{
+	color: #564111;
+	margin-left: 10px;
+}
+
+.availablecards table{
+	margin-top: 20px;
+}
+
+.sale-pro-list li{
+	max-width: 100px;
+	max-height: 100px;
+}
+
+.saletag, .saletag:hover{	
+	color: #fff;
+    padding: 1px;
+    background: #aa00ff !important;
+    border-radius: 2px;    
+}
+
+.saletag:before{
+	content: "";
+    position: absolute;
+    left: 14px;
+    top: 92;
+    border-top: 9px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 7px solid #aa00ff;
+}
+.strike-txt{
+    text-decoration: line-through;
+}
+
+.cart-table .strike-txt{
+	padding: 0 10px;
+	font-weight: bold;
 }

@@ -98,18 +98,18 @@
             dataTable: {
                 "columns": [{                       
                     mRender: function(data, type, full, meta) {
-                        return (meta.row)+1;                            
+                        return meta.row + meta.settings._iDisplayStart + 1;
                     },
                     orderable:false                     
                 },{  
                     mData : null,
-                    orderable:false,
+                    orderable:true,
                     mRender:function(data,type,full){
                         return '<span class="label label-danger">'+data.listingTitle+'</span>';
                     },
                 },{  
                     data : "detailTitle",
-                    orderable:false
+                    orderable:true
                 },{
                     mData: null,
                     mRender: function(data, type, full) {                           
@@ -119,20 +119,15 @@
                             return 'Sale tag';
                         }                           
                     },
-                    orderable:false
+                    orderable:true
                 },{
                     mData: null,
                     mRender: function(data, type, full) {                                                   
-                        return '<a ui-sref=userLayout.sale.edit({saleId:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a><button ng-click=removeSale("'+data._id+'") class="btn btn-xs default btn-editable"><i class="fa fa-trash"></i> Remove</a>';
+                        return '<a ui-sref=userLayout.sale.edit({saleId:"'+data._id.$id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a><button ng-click=removeSale("'+data._id.$id+'") class="btn btn-xs default btn-editable"><i class="fa fa-trash"></i> Remove</a>';
                         
                     },
                     orderable:false
                 }],
-                "lengthMenu": [
-                    [10, 20, 50, 100, 150, -1],
-                    [10, 20, 50, 100, 150, "All"] // change per page values here
-                ],
-                "pageLength": 10, // default record count per page                
                 "ajax": {
                     "url": "../adminapi/sale/list", // ajax source                    
                     "type": "POST"
@@ -146,10 +141,7 @@
                         $compile(content)(scope);
                     });                    
                     Metronic.initAjax();
-				},
-				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-										
-			    }
+				},				
             }
         });
 

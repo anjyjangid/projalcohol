@@ -20,7 +20,7 @@
 					<table class="table table-striped table-bordered table-hover" id="packagelist">
 						<thead>
 							<tr role="row" class="heading">								
-								<th width="10%">
+								<th width="5%">
 									Sr.
 								</th>
 								<th width="15%">
@@ -87,10 +87,9 @@
 	            },
 	            loadingMessage: 'Loading...',
 	            dataTable: {	                
-	                //"bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 	                "columns": [{		                
 		                mRender: function(data, type, full, meta) {
-		                	return (meta.row)+1;		                	
+		                	return meta.row + meta.settings._iDisplayStart + 1;
 		                },
 		                orderable:false		                
 		            },{	 
@@ -105,24 +104,19 @@
 	                    		return '<span class="label label-sm label-info">Not Published</span>'
 	                    	}	                    	
 	                    },
-		                orderable:false
+		                orderable:true
 		            },{
 		            	mData: null,
 		            	mRender: function(data, type, full) {
 		            		if(data.type == 2){
-		            			return '<a ui-sref=userLayout.packages.editcocktail({packageid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+		            			return '<a ui-sref=userLayout.packages.editcocktail({packageid:"'+data._id.$id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
 		            		}else{
-		            			return '<a ui-sref=userLayout.packages.editparty({packageid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+		            			return '<a ui-sref=userLayout.packages.editparty({packageid:"'+data._id.$id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
 		            		}
 	                    },
 		                orderable:false
 		            }],
-	                "lengthMenu": [
-	                    [10, 20, 50, 100, 150, -1],
-	                    [10, 20, 50, 100, 150, "All"] // change per page values here
-	                ],
-	                "pageLength": 10, // default record count per page
-					"ajax": {
+	                "ajax": {
 	                    "url": "../adminapi/package/listpackage/"+ptype, // ajax source
 	                    //"data":{ptype:ptype}
 	                },

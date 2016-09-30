@@ -9,6 +9,7 @@ use AlcoholDelivery\Http\Requests\SaleRequest;
 use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Sale;
 use AlcoholDelivery\Products;
+use AlcoholDelivery\Categories;
 use AlcoholDelivery\User;
 use MongoId;
 use File;
@@ -58,7 +59,8 @@ class SaleController extends Controller
             if(isset($inputs['image']) && !empty($inputs['image']))
                 $this->saveImage($sale,$inputs['image']);
 
-            $this->notifySale($inputs);
+            if($inputs['type'] == 1)
+                $this->notifySale($inputs,(string)$sale->_id);
 
             return response($sale,201);
         }
@@ -149,7 +151,9 @@ class SaleController extends Controller
         $query[]['$project'] = $project;
         $query[]['$group'] = $group;               
 
-        $model = Sale::raw()->aggregate($query);                
+        $model = Sale::raw()->aggregate($query);
+
+        // dd($model);                
 
         if($model['ok'] == 1 && isset($model['result'][0])){
             
@@ -202,8 +206,9 @@ class SaleController extends Controller
 
             if(isset($inputs['image']) && !empty($inputs['image']))
                 $this->saveImage($sale,$inputs['image']);
-
-            $this->notifySale($inputs);
+            
+            if($inputs['type'] == 1)
+                $this->notifySale($inputs,$id);
 
             return response($sale,201);
         }
@@ -236,29 +241,49 @@ class SaleController extends Controller
 
     public function postList(Request $request){
         
-        $params = $request->all();        
+        $params = $request->all();
 
         extract($params);
+
+        $columns = ['_id','smallListingTitle','smallDetailTitle','type'];
+
+        $project = ['image'=>1,'listingTitle'=>1,'detailTitle'=>1,'type'=>1];
+
+        $project['smallListingTitle'] = ['$toLower' => '$listingTitle'];
+        $project['smallDetailTitle'] = ['$toLower' => '$detailTitle'];
+
+        $query = [];
         
-        $sale = new Sale;
+        $query[]['$project'] = $project;
 
-        $iTotalRecords = $sale->count();        
+        $sort = ['updated_at'=>-1];
 
-        $columns = array('_id','title','type');
+        if(isset($params['order']) && !empty($params['order'])){
+            
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
+        }
 
-        $sale = $sale
-        ->skip((int)$start)
-        ->take((int)$length);
+        $query[]['$sort'] = $sort;
 
-        $sale = $sale->get();
+        $model = Sale::raw()->aggregate($query);
+
+        $iTotalRecords = count($model['result']);
+
+        $query[]['$skip'] = (int)$start;
+
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = Sale::raw()->aggregate($query);
+        }            
 
         $response = [
             'recordsTotal' => $iTotalRecords,
             'recordsFiltered' => $iTotalRecords,
             'draw' => $draw,
-            'data' => $sale            
+            'data' => $model['result']            
         ];
-
         return response($response,200);
     }
 
@@ -312,6 +337,9 @@ class SaleController extends Controller
         if(isset($inputs['discountType']) && !empty($inputs['discountType']))
             $inputs['discountType'] = (int)$inputs['discountType'];
 
+        if(isset($inputs['actionType']) && !empty($inputs['actionType']))
+            $inputs['actionType'] = (int)$inputs['actionType'];
+
         $inputs['saleProducts'] = $inputs['saleProductObjectId'];
         $inputs['saleCategories'] = $inputs['saleCategoryObjectId'];
 
@@ -343,33 +371,67 @@ class SaleController extends Controller
         return array_values(array_diff(array_merge($old,$new),$old));
     }
 
-    public function notifySale($inputs){
+    public function notifySale($inputs,$id){
 
         //GET ALL PRODUCTS IN CATEGORY
-        if(!empty($inputs['saleCategories'])){
+        if(!empty($inputs['saleCategories'])){            
 
-            $model = Products::raw()->aggregate(
+            $allCategories = Categories::raw()->aggregate(
                 [
-                    
                     '$match' => [
-                        'categoriesObject' => [
-                            '$elemMatch'=>[
-                                '$in'=>$inputs['saleCategories']
-                            ]
-                        ]
-                    ],                  
-                    
-
+                        '_id' => ['$in' => $inputs['saleCategories']]
+                    ]
                 ],
                 [
                     '$group' => [
-                        '_id' => null,                      
-                        'categoryProduct' => [
-                            '$addToSet'=>'$_id' 
-                        ],                                          
-                    ],
-                ]
+                        '_id' => null,
+                        'allchild' => [
+                            '$push' => [
+                                '$cond' => [
+                                    '$ancestors',
+                                    '$_id',
+                                    null
+                                ]
+                            ]
+                        ],
+                        'allparent' => [
+                            '$push' => [
+                                '$cond' => [
+                                    '$ancestors',
+                                    null,
+                                    '$_id',
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                //REMOVING ALL THE NULL VALUES
+                [
+                    '$project' => [
+                        'allchild' => [
+                            '$setDifference' => ['$allchild',[null]]
+                        ],
+                        'allparent' => [
+                            '$setDifference' => ['$allparent',[null]]
+                        ]
+                    ]
+                ]   
             );
+
+            if(isset($allCategories['result'][0]) && !empty($allCategories['result'][0])){
+
+                $allChild = $allCategories['result'][0]['allchild'];
+                $allparent = $allCategories['result'][0]['allparent'];
+
+                $productsFromChild = $this->checkProductSaleByCategories($allChild);
+                $productsFromParent = $this->checkProductSaleByCategories($allparent,1);
+
+                $productfromcategories = array_unique(array_merge($productsFromChild,$productsFromParent));
+
+                if($productfromcategories){
+                    $inputs['saleProducts'] = array_unique(array_merge($inputs['saleProducts'],$productfromcategories));
+                }
+            }
 
             //MERGE CATEGORY PRODUCT AND PRODUCT IN SALE
             if(isset($model['result'][0]) && !empty($model['result'][0])){
@@ -393,7 +455,6 @@ class SaleController extends Controller
                 [
                     '$project' => [
                         '_id' => 1,
-                        'email' => 1,
                         'matchingWish' => [
                             '$filter' => [
                                 'input' => '$wishlist',
@@ -417,16 +478,104 @@ class SaleController extends Controller
                     ]
                 ],
                 [
+                    '$project' => [
+                        '_id' => '$_id',
+                        'matchingWish' => '$matchingWish',
+                    ]
+                ],
+                [
                     '$group' => [
                         '_id' => '$_id',
+                        'userId' => ['$first'=>'$_id'],
                         'matchingWish' => ['$addToSet'=>'$matchingWish'],
-                        'email' => ['$first'=>'$email']
+                    ]
+                ],
+                [
+                    '$project' => [
+                        '_id' => 0, //REMOVE ID TO INSERT NEW ID IN NOTIFICATION TABLE
+                        'userId' => 1,
+                        'matchingWish' => 1
                     ]
                 ]               
-            );        
-            //$r = DB::collection('test')->insert($usersWithSaleProduct['result'], ['upsert' => true]);
+            );
+
+            foreach ($usersWithSaleProduct['result'] as $key => $value) {
+                $usersWithSaleProduct['result'][$key]['saleID'] = new MongoId($id);
+            }
+            //UPDATE NOTIFICATION TABLE TO SEND NOTIFICATION BY CONSOLE COMMANDS
+            $r = DB::collection('notifications')->insert($usersWithSaleProduct['result']);
         }
 
+    }
+
+    public function checkProductSaleByCategories($categories,$isparentcategories = false){
+
+        $query = [];
+
+        $query[]['$match'] = [
+            'categoriesObject' => [
+                '$elemMatch'=>[
+                    '$in'=>$categories
+                ]
+            ]
+        ];
+
+        $query[]['$lookup'] = [
+            'from' => 'sale',
+            'localField' => '_id',
+            'foreignField'=>'saleProductObjectId',
+            'as'=>'productSale'
+        ];
+
+        $query[]['$project'] = [
+            '_id' => 1,
+            'name' => 1,
+            'categoriesObject' => 1,
+            'childCategory' => ['$arrayElemAt'=> [ '$categoriesObject', 1 ]],
+            'productSale' => [
+                '$filter' => [
+                    'input' => '$productSale',
+                    'as' => 'sale',
+                    'cond' => ['$eq'=>['$$sale.type',1]]
+                ]
+            ]
+        ];
+
+        $query[]['$match'] = [
+            'productSale' => ['$eq'=>[]]
+        ];
+
+        //CHECK SALE IF APPLIED ON SUBCATEGORY IN CASE CATEGORIES ARE PARENT ELSE CHECK SALE FOR INDIVIDUAL PRODUCT
+        if($isparentcategories){
+            
+            $query[]['$lookup'] = [
+                'from' => 'sale',
+                'localField' => 'childCategory',
+                'foreignField' => 'saleCategoryObjectId',
+                'as' => 'subCatSale'
+            ];
+
+            $query[]['$match'] = [
+                'subCatSale' => ['$eq'=>[]]
+            ];
+        }
+
+        $query[]['$group'] = [
+            '_id' => null,                      
+            'categoryProduct' => [
+                '$addToSet'=>'$_id' 
+            ],
+        ];
+
+        $model = Products::raw()->aggregate($query);
+
+        $productArr = [];
+
+        if(isset($model['result'][0]) && !empty($model['result'][0])){
+             $productArr = $model['result'][0]['categoryProduct'];   
+        }
+
+        return $productArr;
     }
 
 }

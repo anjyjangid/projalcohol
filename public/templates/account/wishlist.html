@@ -12,7 +12,7 @@
 <div class="table-responsive">
 	<table class="table wislistborbtm" ng-if="alcoholWishlist.getTotalProducts()>0">
 		<tbody>
-			<tr ng-repeat="(key, product) in alcoholWishlist.getList()" ng-init="product.cart = alcoholCart.getProductById(product._id)">
+			<tr ng-repeat="(key, product) in alcoholWishlist.getList(page,10)" ng-init="product.cart = alcoholCart.getProductById(product._id)">
 				
 				<td>					
 					<div class="orhistry2_td2procdtcvr">																		
@@ -68,9 +68,9 @@
 		Your Wishlist Is Empty
 	</div>
 
-	<div class="wish-nextprvicvr" ng-if="alcoholWishlist.getTotalProducts()>0">
-		<button type="button" class="wishprev"><span class="glyphicon glyphicon-menu-left"></span> Previous </button>
-		<button type="button" class="wishnext">Next <span class="glyphicon glyphicon-menu-right"></span></button>
+	<div class="wish-nextprvicvr" ng-show="alcoholWishlist.getTotalProducts()>0">
+		<button type="button" class="wishprev" ng-click="page=page-1" ng-disabled="page<1"><span class="glyphicon glyphicon-menu-left"></span> Previous </button>
+		<button type="button" class="wishnext" ng-click="page=page+1" ng-disabled="alcoholWishlist.getTotalProducts()<=(page+1)*10">Next <span class="glyphicon glyphicon-menu-right"></span></button>
 	</div>
 
 </div>

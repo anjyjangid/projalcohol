@@ -113,7 +113,7 @@ MetronicApp.controller('ProductController',['$rootScope', '$scope', '$timeout','
 	}
 
 	$scope.getKey = function(categories,val){		
-		var r = null;
+		var r = false;
 		angular.forEach(categories, function(value, key) {
 			if(val == value.unique){
 				r = key;
@@ -183,7 +183,9 @@ MetronicApp.controller('ProductController',['$rootScope', '$scope', '$timeout','
 
 }]);
 
-MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$location','$stateParams','$timeout','fileUpload','productModel', function($rootScope, $scope,$location,$stateParams,$timeout,fileUpload,productModel) {
+MetronicApp.controller('ProductAddController',[
+	'$rootScope', '$scope', '$location','$stateParams','$timeout','fileUpload','productModel',
+	function($rootScope, $scope,$location,$stateParams,$timeout,fileUpload,productModel) {
 
 	
 	/*$scope.$on('$viewContentLoaded', function() {
@@ -197,10 +199,10 @@ MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$locatio
 			angular.extend($scope.product,data);
 
 			var unique = $scope.product.categories.join('|');
-			// console.log(unique);
+			
 			var k = $scope.getKey($scope.cd,unique);			
-			//console.log(k);
-			if(k!=null)
+			
+			if(k)
 				$scope.product.categories = $scope.cd[k].id;
 			else
 				$scope.product.categories = [];
@@ -211,7 +213,10 @@ MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$locatio
 			if(!$scope.product.express_delivery_bulk)
 				$scope.product.express_delivery_bulk = {};		
 			
-			$scope.selectCategory();
+			$timeout(function(){
+				$scope.selectCategory();
+			});
+
 		});	
 	}	
 
@@ -265,22 +270,26 @@ MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$locatio
 		
 		var k = $scope.getKey($scope.cd,unique);		
 
-		var selected = angular.copy($scope.cd[k]);
-		
-		for(var o in tiers){
-			var kname = tiers[o];
-			//var exist = angular.copy(selected[kname]);
-			$scope.pricing.settings[kname] = angular.copy($scope.globalPricing.settings[kname]);			
-			if(selected){
-				var ctids = selected['id'];
-				for(var ctid in ctids){
-					var t = $scope.customTier(ctids[ctid]);								
-					var exist = angular.copy(t[0][kname]);
-					if(exist){								
-						$scope.pricing.settings[kname] = exist;
-					}
-				}			
+		if(k){
+
+			var selected = angular.copy($scope.cd[k]);
+			
+			for(var o in tiers){
+				var kname = tiers[o];
+				//var exist = angular.copy(selected[kname]);
+				$scope.pricing.settings[kname] = angular.copy($scope.globalPricing.settings[kname]);			
+				if(selected){
+					var ctids = selected['id'];
+					for(var ctid in ctids){
+						var t = $scope.customTier(ctids[ctid]);								
+						var exist = angular.copy(t[0][kname]);
+						if(exist){								
+							$scope.pricing.settings[kname] = exist;
+						}
+					}			
+				}
 			}
+			
 		}
 	}
 
@@ -325,6 +334,10 @@ MetronicApp.controller('ProductAddController',['$rootScope', '$scope', '$locatio
 
 		});
 
+	}
+
+	$scope.showError = function(tab){
+		return '';
 	}
 
 }]);

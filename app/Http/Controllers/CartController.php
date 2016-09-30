@@ -29,11 +29,13 @@ use AlcoholDelivery\Payment;
 class CartController extends Controller
 {
 
-	/**
-	 * ErrorCode
-	 * 100 => Quantity requested is not available
-	 * 101 => Product is not available for sale
-	 */
+	/*********************************************
+	
+	** ErrorCode
+	** 100 => Quantity requested is not available
+	** 101 => Product is not available for sale
+	
+	*********************************************/
 
 	public function __construct(Request $request)
 	{
@@ -46,7 +48,6 @@ class CartController extends Controller
 		}
 
 	}
-
 
 	/**
 	 * Display a listing of the resource.
@@ -169,6 +170,9 @@ class CartController extends Controller
 	 */
 	public function show(Request $request,$id)
 	{
+		
+		// $id = new MongoId('57e911eb8a976f4e728b457a');
+
 		$cart = Cart::findUpdated($id);		
 
 		if(empty($cart)){
@@ -208,27 +212,31 @@ class CartController extends Controller
 
 		$productsIdInCart = array_merge(array_keys((array)$cart['products']),array_keys((array)$cart['loyalty']));
 
+
 		$productObj = new Products;
 
-		$productsInCart = $productObj->getProducts(
+		$productsInCart = $productObj->fetchProduct(
 									array(
-										"id"=>$productsIdInCart,
-										"with"=>array(
-											"discounts"
-										)
+										"id"=>$productsIdInCart
 									)
 								);
 
-		if(!empty($productsInCart)){
+		if(!empty($productsInCart['product'])){
 
-			foreach($productsInCart as $product){
+			foreach($productsInCart['product'] as $product){
+				
+				$key = (string)$product['_id'];
 
-				if(isset($cart['products'][$product['_id']])){
-					$cart['products'][$product['_id']]['product'] = $product;
+				if(isset($cart['products'][$key])){
+
+					$cart['products'][$key]['sale'] = @$product['proSales'];
+					unset($product['proSales']);
+					$cart['products'][$key]['product'] = $product;
+
 				}
 
-				if(isset($cart['loyalty'][$product['_id']])){
-					$cart['loyalty'][$product['_id']]['product'] = $product;
+				if(isset($cart['loyalty'][$key])){
+					$cart['loyalty'][$key]['product'] = $product;
 				}
 
 			}
@@ -289,62 +297,73 @@ class CartController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Request $request, $id)
-	{
+	public function update(Request $request, $id){
 
-		$inputs = $request->all();
-
-		$proIdToUpdate = $inputs['id'];
-
+		$inputs = $request->all();		
+				
 		$cart = Cart::find($id);
 
-		$response = [
-			"success"=>false,
-			"message"=>"Something went worng",
-			"code" => 000,
+		$response = [			
+			"message"=>"Something went wrong",
+			"code" => 100,
+			"action" => ""
 		];
-		
-		if(empty($cart)){
 
-			$response['message'] = "Not a valid request";
+		// Check if requested cart id exist or not
+		if(empty($cart)){
+			
+			$response['message'] = "Cart Not Found";
+			$response['action'] = "refresh";
+
 			return response($response,400);
 
-		}	
+		}
 
+		$proIdToUpdate = $inputs['id'];
 		$productInCart = isset($cart->products[$proIdToUpdate])?$cart->products[$proIdToUpdate]:false;
+		
+		// Set current quantity and sates
+		$chilledQty = (int)$inputs['quantity']['chilled'];
+		$nonChilledQty = (int)$inputs['quantity']['nonChilled'];
+
+		$totalQty = $chilledQty + $nonChilledQty;
+
+		// Check if product remove request is arise and product not available in cart.
+		if($productInCart===false && $totalQty==0){
+
+			$response['message'] = "Product is not available in cart which you want to remove";
+			$response['action'] = "refresh";
+
+			return response($response,400);
+
+		}
 
 		$productObj = new Products;
+		$product = $productObj->fetchProduct([
+						"id"=>$proIdToUpdate,
+					]);
 
-		$product = $productObj->getProducts(
-									array(
-										"id"=>$proIdToUpdate,
-										"with"=>array(
-											"discounts"
-										)
-									)
-								);
 
-		$product = $product[0];
+		// If Produt is not found.
+		if($product['success']===false){
 
-		if((int)$product['quantity']>0){
-			
-			$maxAvailQuantity = (int)$product['quantity'];
+			$response['message'] = "Product not found";
+			$response['action'] = "refresh";
+			return response($response,400);
 
-		}elseif($product['outOfStockType']==2){
-			
-			$maxAvailQuantity = (int)$product['maxQuantity'];
+		}
 
-		}else{
+		
+		$product = $product['product'];
 
-			// Handel if product goes dis-continue in middle of processing
-			$response['success'] = true;
+		// Handel if product goes dis-continue in middle of processing
+		if($product['quantity']<1 && $product['outOfStockType']==1){
+
 			$response['code'] = 101;
 			$response['message'] = "Product is no longer available";
 
 			$product['change'] = -$productInCart['quantity'];
 			$response['product']['quantity'] = 0;
-
-			$response['product']['product'] = $product;
 
 			try {
 				
@@ -363,122 +382,95 @@ class CartController extends Controller
 			}
 
 		}
-		
 
 		$updateProData = array(
 
-				"maxQuantity"=>$maxAvailQuantity,
-				"chilled"=>array(
-					"quantity"=>$productInCart!==false?$productInCart['chilled']['quantity']:0,
-					"status"=>"chilled",
-				),
-				"nonchilled"=>array(
-					"quantity"=>$productInCart!==false?$productInCart['nonchilled']['quantity']:0,
-					"status"=>"nonchilled",
-				),
-				"quantity"=>0,
-				"lastServedChilled" => (bool)$inputs['chilled']
-			);
+			"chilled"=>array(
+				"quantity"=>$chilledQty,
+				"status"=>"chilled",
+			),
+			"nonchilled"=>array(
+				"quantity"=>$nonChilledQty,
+				"status"=>"nonchilled",
+			),
+			"quantity"=>$totalQty,
+			"lastServedChilled" => (bool)$inputs['chilled'],
+			"sale"=>$product['proSales']
+		);
 
-		if((bool)$inputs['chilled']){
+		$oldQuantity = 0;
+		
+		if($productInCart!==false){
 
-			$updateProData['chilled']['quantity'] = (int)$inputs['quantity'];
+			$oldQuantity = (int)$productInCart['quantity'];
+
+			$updateProData['chilled']['quantity']-= $productInCart['chilled']['quantity'];
+			$updateProData['nonchilled']['quantity']-= $productInCart['nonchilled']['quantity'];
+
+			$updateProData['chilled']['status'] = $productInCart['chilled']['status'];
+			$updateProData['nonchilled']['status'] = $productInCart['nonchilled']['status'];
+
+		}
+
+		$change = $updateProData['quantity'] - $oldQuantity;//Track change in quantity
+
+		if($change>0){
+
+			$saleRes = $cart->setSaleAdd($proIdToUpdate,$updateProData);
 
 		}else{
 
-			$updateProData['nonchilled']['quantity'] = (int)$inputs['quantity'];
+			$products = $cart->products;
+			$products[$proIdToUpdate]['chilled']['quantity']+= $updateProData['chilled']['quantity'];
+			$products[$proIdToUpdate]['nonchilled']['quantity']+= $updateProData['nonchilled']['quantity'];
+			$products[$proIdToUpdate]['quantity'] = $products[$proIdToUpdate]['chilled']['quantity'] + $products[$proIdToUpdate]['nonchilled']['quantity'];
+
+			$cart->__set("products",$products);
+
+			if($change<0){
+				$saleRes = $cart->setSaleRemove($proIdToUpdate,$updateProData);
+			}
 
 		}
 
-		$oldQuantity = $productInCart!==false?(int)$productInCart['quantity']:0;
+		$cart->createAllPossibleSales();
 
-		$cart->products = array_merge($cart->products,[$proIdToUpdate=>$updateProData]);
+		$proRemaining = [];
+		foreach($cart->products as $key=>$cProduct){
+			$proRemaining[$key] = $cProduct['remainingQty'];
+		}
 
-		// Code to update total quantity
+		$product['change'] = $change;
+		
 		$updateProData = $cart->products[$proIdToUpdate];
 
-		$updateProData['quantity'] = (int)$updateProData['chilled']['quantity'] + (int)$updateProData['nonchilled']['quantity'];
-		
-		$product['change'] = $updateProData['quantity'] - $oldQuantity;//Track change in quantity
-
-		// Condition to check quantity is not more than available quantity
-		// if($product['quantity']==0 && $product['outOfStockType']==2){
-
-		// 	$product['quantity'] = $product['maxQuantity'];
-
-		// }
-
-
-		// if($updateProData['quantity']>(int)$updateProData['maxQuantity']){
-
-		// 	// Handel if product quantity is greater than available quantity
-		// 	$response['code'] = 100;
-		// 	$response['message'] = "Requested quantity is not available, max available is added to cart";
-
-		// 	$extraQuantity = $updateProData['quantity'] - $updateProData['maxQuantity'];
-		// 	$product['change'] = $updateProData['maxQuantity'] - $oldQuantity;
-			
-		// 	if($extraQuantity>0){
-
-		// 		if($extraQuantity > $updateProData['chilled']['quantity']){
-
-		// 			$extraQuantity-= $updateProData['chilled']['quantity'];
-		// 			$updateProData['chilled']['quantity'] = 0;
-
-		// 		}else{
-					
-
-		// 			$updateProData['chilled']['quantity']-=$extraQuantity;
-		// 			$extraQuantity = 0;
-
-		// 		}
-
-		// 		if($extraQuantity > $updateProData['nonchilled']['quantity']){
-
-		// 			$extraQuantity-= $updateProData['nonchilled']['quantity'];
-		// 			$updateProData['nonchilled']['quantity'] = 0;
-
-		// 		}else{
-
-		// 			$updateProData['nonchilled']['quantity']-=$extraQuantity;
-		// 			$extraQuantity = 0;
-
-		// 		}
-		// 	}
-
-		// 	$updateProData['quantity'] = (int)$updateProData['chilled']['quantity'] + (int)$updateProData['nonchilled']['quantity'];
-			
-			
-		// }
 
 		try {
+				
+				// $result = DB::collection('cart')->where('_id', new MongoId($id))
+				// 						->update(["products.".$proIdToUpdate=>$updateProData], ['upsert' => true]);
 
-			if($updateProData['quantity']>0){
+			$cart->save();
 
-				$cart->products = array_merge($cart->products,array($proIdToUpdate=>$updateProData));
-				$cart->save();
+			//$cart->unset('products.'.$proIdToUpdate);
 
-			}else{
-
-				$cart->unset('products.'.$proIdToUpdate);
-
-			}
-
+			unset($product['proSales']);
 			$updateProData['product'] = $product;
-			$response['success'] = true;
 			$response['message'] = "cart updated successfully";
 			$response['product'] = $updateProData;
+			$response['proRemaining'] = $proRemaining;
+			$response['sales'] = $cart->sales;
 
-			return response($response);
+			return response($response,200);
 
 		} catch(\Exception $e){
 
-			return response(["success"=>false,"message"=>"Something went worng"]);
-			return response(["success"=>false,"message"=>$e->getMessage()]);
+			return response(["message"=>$e->getMessage()],400);
+			return response(["message"=>"Something went worng"],400);
 
 		}
 
-		return response(["success"=>false,"message"=>"Something went worng"]);
+		return response(["message"=>"Something went worng"],400);
 
 	}
 
@@ -687,67 +679,67 @@ class CartController extends Controller
 
 	}
 
-	public function createpackage(Request $request, $cartKey){
-
-		$inputs = $request->all();
-		$packageId = $inputs['id'];
-		$packageDetail = $inputs['package'];
-
-		$cart = Cart::find($cartKey);
-
-		if(empty($cart)){
-
-			return response(array("success"=>false,"message"=>"Not a valid request"),400);
-
-		}
-
-		$packages = $cart->packages;
-
-		if(empty($packages)){
-
-			$packages = [];
-
-		}
-
-		$packageDetail['_unique'] = new mongoId();
-
-		if(isset($packageDetail['unique'])){
-
-			foreach ($packages as $key => $package) {
-
-				if(!isset($package["_unique"])){
-					unset($packages[$key]);
-					continue;
-				}
-				if($package["_unique"]==$packageDetail['unique']){
-					unset($packages[$key]);
-					$packageDetail['_unique'] = $package["_unique"];
-					break;
-				}
-
+	public function createpackage(Request $request, $cartKey){{
+	
+			$inputs = $request->all();
+			$packageId = $inputs['id'];
+			$packageDetail = $inputs['package'];
+	
+			$cart = Cart::find($cartKey);
+	
+			if(empty($cart)){
+	
+				return response(array("success"=>false,"message"=>"Not a valid request"),400);
+	
 			}
-		}
-
-		if(!isset($packageDetail['packageQuantity'])){
-			$packageDetail['packageQuantity'] = 1;
-		}
-		
-		$packageDetail['products'] = (array)$packageDetail['products'];
-		$packageDetail['_id'] = new mongoId($packageId);
-
-		try {
-
-			$result = Cart::where('_id', $cartKey)->push('packages',[$packageDetail]);
-			return response(["success"=>true,"message"=>"cart updated successfully","key"=>$packageDetail['_unique']]);
-
-		} catch(\Exception $e){
-
-			return response(["success"=>false,"message"=>"Something went worng"]);
-			return response(["success"=>false,"message"=>$e->getMessage()]);
-
-		}
-
-	}
+	
+			$packages = $cart->packages;
+	
+			if(empty($packages)){
+	
+				$packages = [];
+	
+			}
+	
+			$packageDetail['_unique'] = new mongoId();
+	
+			if(isset($packageDetail['unique'])){
+	
+				foreach ($packages as $key => $package) {
+	
+					if(!isset($package["_unique"])){
+						unset($packages[$key]);
+						continue;
+					}
+					if($package["_unique"]==$packageDetail['unique']){
+						unset($packages[$key]);
+						$packageDetail['_unique'] = $package["_unique"];
+						break;
+					}
+	
+				}
+			}
+	
+			if(!isset($packageDetail['packageQuantity'])){
+				$packageDetail['packageQuantity'] = 1;
+			}
+			
+			$packageDetail['products'] = (array)$packageDetail['products'];
+			$packageDetail['_id'] = new mongoId($packageId);
+	
+			try {
+	
+				$result = Cart::where('_id', $cartKey)->push('packages',[$packageDetail]);
+				return response(["success"=>true,"message"=>"cart updated successfully","key"=>$packageDetail['_unique']]);
+	
+			} catch(\Exception $e){
+	
+				return response(["success"=>false,"message"=>"Something went worng"]);
+				return response(["success"=>false,"message"=>$e->getMessage()]);
+	
+			}
+	
+		}}
 
 	public function putPromotion(Request $request, $cartKey){
 
@@ -1020,7 +1012,7 @@ jprd($product);
 		// 	});
 
 		
-prd($cart);
+
 		
 
 		$product = $cart->products[$productId];
@@ -1043,7 +1035,28 @@ prd($cart);
 
 		}
 
-	}	
+	}
+
+	public function putSaleChilledStatus($cartKey,Request $request){
+				
+		$saleId = $request->input('id');
+		$chilled = $request->input('chilled');				
+
+		try{
+
+			$cart = Cart::where("_id",$cartKey)
+					->where("sales._id",new mongoId($saleId))										
+					->update(["sales.$.chilled"=>$chilled]);
+			
+			return response(["message"=>"status changed"],200);
+
+		}catch(\Exception $e){
+
+			return response(["message"=>$e->getMessage()],400);
+
+		}
+
+	}
 
 	public function getDeliverykey(Request $request){
 
@@ -1214,6 +1227,55 @@ prd($cart);
 			}
 
 		return response(array("success"=>false,"message"=>"Something went wrong"));
+
+	}
+	
+	public function deleteSale($cartKey,$saleId,Request $request){
+		
+		$cart = Cart::find($cartKey);
+
+		if(empty($cart)){
+
+			return response(array("success"=>false,"message"=>"cart not found"),400);
+
+		}
+
+		$sales = $cart->sales;
+
+		if(empty($sales)){
+			return response(["success"=>false,"message"=>"no sale to remove"],400);
+		}
+		
+		try{
+
+			$result = $cart->removeSaleById($saleId);
+
+			$cart->createAllPossibleSales();
+			
+
+			//$cart->save();
+
+			$response = [
+				"success"=>true,
+				"message"=>"sale removed successfully",
+				'proRemaining' => [],
+				'sales' => []
+			];
+
+			foreach($cart->products as $key=>$cProduct){
+				$response['proRemaining'][$key] = $cProduct['remainingQty'];
+			}
+			$response['sales'] = $cart->sales;
+
+			return response($response,200);
+
+		}catch(\Exception $e){
+
+			return response(["success"=>false,"message"=>$e->getMessage()],400);
+
+		}
+
+		return response(["success"=>false,"message"=>"Something went wrong"],400);
 
 	}
 
@@ -1442,10 +1504,18 @@ prd($cart);
 									);
 
 			$request->session()->forget('deliverykey');
+			
+			//SAVE CARD IF USER CHECKED SAVE CARD FOR FUTURE PAYMENTS
+			if($cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['card'] == 'newcard' && $cartArr['payment']['savecard']){
+				$cardInfo = $cartArr['payment']['creditCard'];
+		        $user = User::find($userId);
+		        $user->push('savedCards',$cardInfo,true);
+			}
 
 			if($request->isMethod('get')){
 				return redirect('/#/orderplaced/'.$order['_id']);
 			}
+
 
 			return response(array("success"=>true,"message"=>"order placed successfully","order"=>$order['_id']));
 

@@ -138,113 +138,48 @@ class EmailTemplateController extends Controller
     
         $params = $request->all();
 
-        $template = new EmailTemplate;
+        extract($params);
 
-        $columns = array('_id','title','subject','content','updated_at');
+        $columns = ['_id','smallTitle','subject'];
+
+        $project = ['title'=>1,'subject'=>1];
+
+        $project['smallTitle'] = ['$toLower' => '$title'];
+
+        $query = [];
         
-        /* Individual column filtering */
-    
-        foreach($columns as $fieldKey=>$fieldTitle)
-        {
+        $query[]['$project'] = $project;
 
-            if ( isset($params[$fieldTitle]) && $params[$fieldTitle]!="" )
-            {
+        $sort = ['updated_at'=>-1];
 
-                $template = $template->where($fieldTitle, 'regex', "/.*$params[$fieldTitle]/i");
-
-            }
-        }
+        if(isset($params['order']) && !empty($params['order'])){
             
-        /*
-         * Ordering
-         */
-        
-        if ( isset( $params['order'] ) )
-        {
-
-            foreach($params['order'] as $orderKey=>$orderField){
-
-                if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
-                    
-                    $template = $template->orderBy($columns[ intval($orderField['column']) ],($orderField['dir']==='asc' ? 'asc' : 'desc'));
-                    
-                }
-            }
-
-        }
-        
-        /* Data set length after filtering */        
-
-        $iFilteredTotal = $template->count();
-
-        /*
-         * Paging
-         */
-        if ( isset( $params['start'] ) && $params['length'] != '-1' )
-        {
-            $template = $template->skip(intval( $params['start'] ))->take(intval( $params['length'] ) );
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
         }
 
-        
+        $query[]['$sort'] = $sort;
 
-        $iTotal = $template->count();
+        $model = EmailTemplate::raw()->aggregate($query);
 
-        $template = $template->get($columns);
+        $iTotalRecords = count($model['result']);
 
-        $template = $template->toArray();
-                
-        /*
-         * Output
-         */
-         
-        
-        $records = array(
-            "iTotalRecords" => $iTotal,
-            "iTotalDisplayRecords" => $iFilteredTotal,
-            "data" => array()
-        );
+        $query[]['$skip'] = (int)$start;
 
-             
-        
-        $status_list = array(            
-            array("warning" => "in-Active"),
-            array("success" => "Active")
-          );
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = EmailTemplate::raw()->aggregate($query);
+        }            
 
+        $response = [
+            'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+            'data' => $model['result']            
+        ];
 
-
-        $srStart = intval( $params['start'] );
-        if($params['order'][0]['column']==0 && $params['order'][0]['dir']=='asc'){
-            $srStart = intval($iTotal);
-        }
-
-        
-
-        $i = 1;
-        foreach($template as $key=>$value) {
-
-            $row=array();
-
-            if($params['order'][0]['column']==0 && $params['order'][0]['dir']=='asc'){
-                $row[] = $srStart--;//$row1[$aColumns[0]];
-            }else{
-                $row[] = ++$srStart;//$row1[$aColumns[0]];
-            }
-
-            $row[] = ucfirst($value['title']);
-
-            $row[] = $value['subject'];
-
-            /*$row[] = '<a title="View : '.$value['title'].'" ui-sref=userLayout.emailtemplates.show({templateid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a>'.
-                     '<a title="Edit : '.$value['title'].'" ui-sref=userLayout.emailtemplates.edit({templateid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';*/
-
-            $row[] = '<a title="Edit : '.$value['title'].'" ui-sref=userLayout.emailtemplates.edit({templateid:"'.$value['_id'].'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';                     
-            
-            $records['data'][] = $row;
-        }
-        
-        return response($records, 201);
-        
+        return response($response,200);
     }
 
 

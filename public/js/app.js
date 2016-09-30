@@ -13,16 +13,19 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ngScrollbars',
 	'ngMessages',	
 	'ngMap',
-	'vAccordion',	
+	'vAccordion',
 	'alcoholCart.directives',
 	'angularFblogin',
 	'ngPayments'
-]).config(['$locationProvider', function($location) {
+]).config(['$locationProvider','$mdThemingProvider', function($location,$mdThemingProvider) {
 	/*$location.html5Mode({
 		enabled: true,
 		requireBase: false
-	});*/		  
-  	//$location.hashPrefix('!');
+	});*/
+	//$location.hashPrefix('!');
+
+	$mdThemingProvider.theme('default').primaryPalette('purple');
+    //.accentPalette('orange');
 }]);
 
 

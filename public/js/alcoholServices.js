@@ -721,6 +721,7 @@ AlcoholDelivery.factory('AlcoholProduct',[
 		var nameSale = p.nameSales.pop();
 
 		this.nameSale = nameSale.listingTitle;
+		this.nameDetailSale = nameSale.detailTitle;
 
 	}
 
@@ -732,14 +733,16 @@ AlcoholDelivery.factory('AlcoholProduct',[
 		this.sale = {
 			quantity : pSale.conditionQuantity,
 			type : pSale.actionType,
-			title : pSale.listingTitle
+			title : pSale.listingTitle,
+			detailTitle : pSale.detailTitle,
+			actionProductId:pSale.actionProductId
 		};
 
 		if(pSale.actionType==2){
 			this.sale.discount = {
 				value : pSale.discountValue,
-				type : pSale.discountValue
-			}
+				type : pSale.discountType
+			}			
 		}
 
 		if(pSale.actionType==1){
@@ -930,6 +933,18 @@ AlcoholDelivery.factory('AlcoholProduct',[
 					this.discountedUnitPrice = price/quantity;
 					
 					this.price = price;
+					this.salePrice = price;
+
+					//PRODUCT HAS SALE ON ITSELF CONDITION
+					if(this.sale && this.sale.type == 2 && this.sale.quantity == 1 && this.sale.actionProductId.length == 0){
+						if(this.sale.discount.type == 1){//FIXED AMOUNT SALE
+							this.salePrice = this.price - this.sale.discount.value;						
+						}
+						if(this.sale.discount.type == 2){//% AMOUNT SALE
+							this.salePrice = this.price - (this.price * this.sale.discount.value/100);
+						}
+						this.salePrice = this.salePrice.toFixed(2);	
+					}
 
 				}
 				else {
@@ -974,8 +989,11 @@ AlcoholDelivery.factory('AlcoholProduct',[
 		}
 
 		_product.proUpdateTimeOut = $timeout(function(){
-
-			var quantity = _product.servechilled?_product.qChilled:_product.qNChilled;
+			
+			var quantity = {
+					chilled : parseInt(_product.qChilled),
+					nonChilled : parseInt(_product.qNChilled)
+				}
 
 			if(_product.isLoyaltyStoreProduct){
 
@@ -1054,7 +1072,7 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 					function(successRes){
 
-						if(successRes.success){							
+						if(successRes.success){
 
 							switch(successRes.code){
 								case 100:
@@ -1106,14 +1124,11 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 					},
 					function(errorRes){
-
+						//
 					}
 
-				);				
-
+				);
 			}
-			
-			
 			
 			if(_product.quantitycustom==0){
 				$scope.isInCart = false;

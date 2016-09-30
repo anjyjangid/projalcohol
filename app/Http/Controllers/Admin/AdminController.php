@@ -245,38 +245,65 @@ class AdminController extends Controller
         $params = $request->all();
 
         extract($params);
+
+        $columns = ['_id','smallTitle','email','status'];
+
+        $project = ['title'=>1,'status'=>1,'email'=>1,'first_name'=>1,'last_name'=>1];
+
+        $project['fullname'] = ['$concat'=>['$first_name',' ','$last_name']];
+
+        $query = [];        
         
-        $subadmin = new Admin;
+        $query[]['$project'] = $project;
+
+        $project['smallTitle'] = ['$toLower' => '$fullname'];
+
+        $query[]['$project'] = $project;
 
         if(isset($name) && trim($name)!=''){
-            $subadmin = $subadmin->where('first_name','like', '%'.$name.'%')->orWhere('last_name','like', '%'.$name.'%');            
+            $s = "/".$name."/i";
+            $query[]['$match']['fullname'] = ['$regex'=>new \MongoRegex($s)];
         }
-
-        //$subadmin = $subadmin->where('role',2);
-
-        $iTotalRecords = $subadmin->count();
 
         if(isset($email) && trim($email)!=''){
-            $subadmin = $subadmin->where('email','like', '%'.$email.'%');            
+            $s = "/".$email."/i";
+            $query[]['$match']['email'] = ['$regex'=>new \MongoRegex($s)];
         }
 
-        if(isset($status) && trim($status)!=''){
-            $subadmin = $subadmin->where('status',(int)$status);            
+        if(isset($status) && trim($status)!=''){            
+            $query[]['$match']['status'] = (int)$status;
         }
 
-        $subadmin = $subadmin->orderBy('created_at','desc');
+        $sort = ['updated_at'=>-1];
 
-        $subadmin = $subadmin
-        ->skip((int)$start)
-        ->take((int)$length)->get();
+        if(isset($params['order']) && !empty($params['order'])){
+            
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
+        }
+
+        $query[]['$sort'] = $sort;
+
+        $model = Admin::raw()->aggregate($query);
+
+        $iTotalRecords = count($model['result']);
+
+        $query[]['$skip'] = (int)$start;
+
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = Admin::raw()->aggregate($query);
+        }            
 
         $response = [
             'recordsTotal' => $iTotalRecords,
             'recordsFiltered' => $iTotalRecords,
             'draw' => $draw,
-            'data' => $subadmin            
-        ];      
-        return response($response,200);
+            'data' => $model['result']            
+        ];
+
+        return response($response,200);        
     }
 
     public function getSubadminuser(Request $request,$id){

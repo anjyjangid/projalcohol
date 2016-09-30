@@ -229,8 +229,8 @@ MetronicApp.directive('formFilter', function ($timeout) {
 
 			if(event.which === 13) {			
 
-				$(".filter-submit").click();
-				event.preventDefault();
+				$(".filter-submit").trigger('click');
+				//event.preventDefault();
 
 			}
 
@@ -238,7 +238,7 @@ MetronicApp.directive('formFilter', function ($timeout) {
 
 		element.bind("change", function(event) {
 		
-			$(".filter-submit").click();
+			$(".filter-submit").trigger('click');
 	
 		});
 
@@ -329,8 +329,8 @@ MetronicApp.directive('ckeditor', ['$timeout', '$q', function ($timeout, $q) {
 						strinsert_button_label:'Content Block',
 						strinsert_button_title:'Insert Content Block',
 						strinsert_button_voice:'Insert Content Block',                        
-						//filebrowserImageBrowseUrl:'/admin/global/browsegraphics',
-						filebrowserUploadUrl:'/admin/global/uploadgraphics'
+						// filebrowserImageBrowseUrl:'/adminapi/global/browsegraphics',
+						// filebrowserUploadUrl:'/adminapi/global/uploadgraphics'
 					};
 					options = angular.extend(options, scope[attrs.ckeditor]);
 

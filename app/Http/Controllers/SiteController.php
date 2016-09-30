@@ -8,6 +8,7 @@ use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Requests\QueryRequest;
 use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Products;
+use AlcoholDelivery\User;
 use DateTime;
 use Mail;
 class SiteController extends Controller
@@ -358,6 +359,21 @@ class SiteController extends Controller
             $message->setTo(['abhay@cgt.co.in'=>'Testing']);
             $message->setSubject($subject);
         });
+
+    }
+
+    public function getSearchLocation(Request $request){
+
+        // sleep(20);
+
+        $q = $request->get('q');
+
+        $user = new User;
+
+        $user = $user->searchLocation($q);        
+
+        return response($user,200);
+
 
     }
 }

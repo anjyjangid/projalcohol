@@ -230,7 +230,7 @@ class Products extends Eloquent
 		$globalPricing = Setting::where("_id",'=',"pricing")
 									->first([
 										'settings.regular_express_delivery',
-										'settings.express_delivery_bulk',										
+										'settings.express_delivery_bulk',
 									]);
 		$globalPricing = $globalPricing->settings;
 
@@ -298,7 +298,7 @@ class Products extends Eloquent
 			
 			$match['$match']['slug'] = $params['product'];
 			
-		}
+		}				
 		
 		$sortParam = [
 			'$sort' => [ 'created_at' => 1 ]
@@ -553,16 +553,6 @@ class Products extends Eloquent
 
 			$products = Products::raw()->aggregate($query);
 
-			// $products = DB::collection("products")->raw(function($collection) use($match,$skip,$sortParam,$limit,$fields){
-
-			// 	return $collection->aggregate([
-			// 				$match,
-			// 				$sortParam,
-			// 				$skip,
-			// 				$limit,
-			// 				$fields
-			// 			]);
-			// });
 
 		} catch(\Exception $e){
 
@@ -574,7 +564,272 @@ class Products extends Eloquent
 
 	}
 
-	public function fetchProduct($slug){}
+	public function fetchProduct($params){
+
+		$globalPricing = Setting::where("_id",'=',"pricing")
+									->first([
+										'settings.regular_express_delivery',
+										'settings.express_delivery_bulk',
+									]);
+
+		$redGlobal = $globalPricing->settings['regular_express_delivery'];
+		$edbGlobal = $globalPricing->settings['express_delivery_bulk'];
+
+		$isSingle = true;
+		if(!is_array($params['id'])){
+
+			$match = new mongoId($params['id']);
+
+		}else{
+
+			$isSingle = false;
+			$params['id'] = (array)$params['id'];
+			foreach($params['id'] as &$proId){
+				$proId = new MongoId($proId);
+			}
+
+			$match = [ '$in' => $params['id'] ];
+		}
+
+
+
+		try {
+
+			$query = [
+						[
+							'$match' => [
+								"_id" => $match,
+								"categoriesObject" => [ '$exists' => true ],
+								"status" => 1
+							]
+						],
+						[
+							'$project'=> [
+								"parentCat" => ['$arrayElemAt' => [ '$categoriesObject', 0 ]],
+								"subCat" => ['$arrayElemAt' => [ '$categoriesObject', 1 ]],
+
+								'chilled' => 1,
+								'description' =>  1,
+								'price' => [
+									'$multiply' => [ '$price', 1 ]
+								],
+								'categories' => 1,
+								'categoriesObject'=>1,
+								'imageFiles' => 1,
+								'name' => 1,
+								'slug' => 1,
+								'shortDescription' => 1,
+								'sku' => 1,
+								'quantity' => 1,
+								'regular_express_delivery' => 1,
+								'express_delivery' => 1,
+								'express_delivery_bulk' => 1,
+								'outOfStockType' => 1,
+								'availabilityDays' => 1,
+								'availabilityTime' => 1
+							]
+						],
+						[
+							'$lookup' => [
+								'from'=>'categories',
+								'localField'=>'parentCat',
+								'foreignField'=>'_id',
+								'as'=>'parentCat'
+							]
+						],						
+						[
+							'$lookup' => [
+								'from'=>'categories',
+								'localField'=>'subCat',
+								'foreignField'=>'_id',
+								'as'=>'subCat'
+							]
+						],						
+						[
+							'$unwind' => [
+								'path' =>  '$parentCat',
+								"preserveNullAndEmptyArrays" => true
+
+							]
+						],
+						[
+							'$unwind' => [
+								'path' =>  '$subCat',
+								"preserveNullAndEmptyArrays" => true
+
+							]
+						],
+						[
+							'$project' => [
+
+								'chilled' => 1,
+								'description' =>  1,
+								'price' => 1,
+								'categories' => 1,
+								'subCat'=>1,
+								'parentCat'=>1,
+								'imageFiles' => 1,
+								'name' => 1,
+								'slug' => 1,
+								'shortDescription' => 1,
+								'sku' => 1,
+								'quantity' => 1,
+								'regular_express_delivery' => 1,
+								'express_delivery' => 1,
+								'express_delivery_bulk' => 1,
+								'outOfStockType' => 1,
+								'availabilityDays' => 1,
+								'availabilityTime' => 1,
+
+								'regular_express_delivery' => [
+									'$ifNull' => [ '$regular_express_delivery',
+										[
+											'$ifNull' => [ '$subCat.regular_express_delivery',
+												[
+													'$ifNull' => [ '$parentCat.regular_express_delivery',null]
+												]
+											]
+										]
+									]
+								],
+
+								'express_delivery_bulk' => [
+									'$ifNull' => [ '$express_delivery_bulk',
+										[
+											'$ifNull' => [ '$subCat.express_delivery_bulk',
+												[
+													'$ifNull' => [ '$parentCat.express_delivery_bulk',null]
+												]
+											]
+										]
+									]
+								]
+							]
+						],
+						[ // lookup for Parent Category Sale
+							'$lookup' => [
+								'from' => 'sale',
+								'localField' => 'parentCat._id', 
+								'foreignField' => 'saleCategoryObjectId', 
+								'as' => 'pCatSale'
+							]
+						],
+						[ // lookup for Sub Category Sale
+							'$lookup' => [
+								'from' => 'sale',
+								'localField' => 'subCat._id',
+								'foreignField' => 'saleCategoryObjectId',
+								'as' => 'catSale'
+							]
+						],
+						[ // lookup for Product Category Sale
+							'$lookup' => [
+								'from' => 'sale',
+								'localField' => '_id',
+								'foreignField' => 'saleProductObjectId', 
+								'as' => 'productSale'
+							]
+						],
+						[
+							'$project' =>[			
+
+								'proSales' => [
+									'$filter' => [
+										'input' => [
+											'$setUnion' => ['$productSale','$catSale','$pCatSale']
+										],
+										'as' => 'sale',
+										'cond' => [
+											'$eq' => [ '$$sale.type', 1 ]
+										]
+									]
+								],
+								'chilled' => 1,
+								'description' =>  1,
+								'price' => 1,
+								'categories' => 1,
+								'categoriesObject'=>1,
+								'imageFiles' => 1,
+								'name' => 1,
+								'slug' => 1,
+								'shortDescription' => 1,
+								'sku' => 1,
+								'quantity' => 1,
+								'regular_express_delivery' => 1,
+								'express_delivery' => 1,
+								'express_delivery_bulk' => 1,
+								'outOfStockType' => 1,
+								'availabilityDays' => 1,
+								'availabilityTime' => 1,
+								'regular_express_delivery' => 1,
+								'express_delivery_bulk' => 1,
+							]
+						],
+						[
+							'$project' =>[
+
+								'proSales' => [
+									'$arrayElemAt'=> [ '$proSales', -1 ]
+								],
+								'chilled' => 1,
+								'description' =>  1,
+								'price' => 1,
+								'categories' => 1,
+								'categoriesObject'=>1,
+								'imageFiles' => 1,
+								'name' => 1,
+								'slug' => 1,
+								'shortDescription' => 1,
+								'sku' => 1,
+								'quantity' => 1,
+								'regular_express_delivery' => 1,
+								'express_delivery' => 1,
+								'express_delivery_bulk' => 1,
+								'outOfStockType' => 1,
+								'availabilityDays' => 1,
+								'availabilityTime' => 1,
+								'regular_express_delivery' => 1,
+								'express_delivery_bulk' => 1,
+							]
+						]
+
+					];
+			
+			$product = Products::raw()->aggregate($query);
+
+
+			if(isset($product['result'][0])){
+
+				foreach ($product['result'] as $key => &$tempPro) {
+						
+					if(is_null($tempPro['regular_express_delivery'])){
+						$tempPro['regular_express_delivery'] = $redGlobal;
+					}
+					if(is_null($tempPro['express_delivery_bulk'])){
+						$tempPro['express_delivery_bulk'] = $edbGlobal;
+					}
+
+				}
+
+			}
+
+			if($isSingle){
+				$product = $product['result'][0];
+			}else{
+				$product = $product['result'];
+			}
+
+			return ['success'=>true,"product"=>$product];
+
+
+		} catch(\Exception $e){
+
+			return ['success'=>false,"message"=>$e->getMessage()];
+
+		}
+
+	}
+	
 
 	public function packagelist()
 	{

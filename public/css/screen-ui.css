@@ -436,7 +436,7 @@ ui-sref {
 	float: left;
 	padding-right: 10px;
 	padding-left: 24px;
-	padding-top: 7px;
+	padding-top: 14px;
 	font-weight: 500;
 	text-transform: capitalize;
 	color: #010101;
@@ -632,7 +632,7 @@ ui-sref {
 	text-align: left;
 	line-height: 18px;
 	margin-bottom: 20px;
-	height: 54px;
+	height: 34px;
 	overflow: hidden;
 }
 .prod_price {
@@ -644,6 +644,7 @@ ui-sref {
 	text-transform: uppercase;
 	text-align: left;
 	margin-bottom: 5px;
+	min-height: 20px;
 }
 .prod_discout_price {
 	width: 100%;
@@ -857,7 +858,7 @@ ui-sref {
 }
 .footer1_sociallink img {
 	display: inline;
-	margin-right: 16px;
+	/*margin-right: 16px;*/
 }
 .footer1_privcvr {
 	float: left;
@@ -5078,7 +5079,7 @@ md-toolbar {
 }
 .col-sm-4.enter-locationdiv div {
 	float: left;
-	margin-top: 5px;
+	/*margin-top: 5px;*/
 }
 .menuulpadding {
 	float: left;
@@ -5128,18 +5129,18 @@ md-dialog .md-actions, md-dialog md-dialog-actions {
 ::-webkit-input-placeholder {
  color:#888888 !important
 }
-md-autocomplete-wrap ::-webkit-input-placeholder {
+.globalsearch md-autocomplete-wrap ::-webkit-input-placeholder {
  color:#d9a600 !important
 }
-md-autocomplete-wrap input::-moz-placeholder {
+.globalsearch md-autocomplete-wrap input::-moz-placeholder {
  color: #d9a600;
  opacity: 1;
 }
- md-autocomplete-wrap input:-moz-placeholder {
+ .globalsearch md-autocomplete-wrap input:-moz-placeholder {
  color: #d9a600;
  opacity: 1;
 }
-md-autocomplete-wrap input:-ms-input-placeholder { /* IE 10+ */
+.globalsearch md-autocomplete-wrap input:-ms-input-placeholder { /* IE 10+ */
  color:#d9a600 !important;
  opacity: 1;
 }
@@ -5169,9 +5170,9 @@ md-autocomplete-wrap input:-ms-input-placeholder { /* IE 10+ */
 	width: 1200px;
 	float: none
 }
-.fullwidth.modifyscroll md-checkbox .md-icon {
-	left: 23px;
-	top: 10px
+.fullwidth.modifyscroll .md-container {
+	left: 22px;
+	top: 22px
 }
 .md-dialog-content.alcohaladdadrebody.alcohal_reapeatorederbody {
 	padding-top: 10px;
@@ -5217,10 +5218,13 @@ md-autocomplete-wrap input:-ms-input-placeholder { /* IE 10+ */
 	padding: 40px 15px;
 	text-decoration: none;
 	vertical-align: middle;
+	transition: all 0.5s ease 0s;
+	-moz-transition: all 0.5s ease 0s;
+	-web-transition: all 0.5s ease 0s;
 }
 .navbar-fixed-top .signuplogin ul li {
 	align-items: center;
-	display: flex;
+	display: table;
 	float: right;
 	vertical-align: middle;
 }
@@ -5599,14 +5603,18 @@ md-checkbox.md-default-theme.md-checked .md-icon::after, md-checkbox.md-checked 
 	display: inline-block
 }
 .top-tabmainouter .owl-prev {
-	left: -11px;
+	left: -10px;
 	position: absolute;
-	top: 8px;
+	top: 13px;
+	background: none !important;
+	border: 0 none;
 }
 .top-tabmainouter .owl-next {
 	position: absolute;
 	right: -9px;
-	top: 8px;
+	top: 13px;
+	background: none !important;
+	border: 0 none;
 }
 .tabbable .owl-carousel {
 	width: 100%
@@ -5839,4 +5847,41 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
 	background: url("../images/add-wish-icon.png") no-repeat center center;
 	width: 50px;
 	height: 50px;
+}
+.footer1_sociallink a {	
+	margin-right: 16px;
+}
+
+.enter-locationdiv md-autocomplete{
+	margin-top: 5px;
+}
+.enter-locationdiv md-autocomplete-wrap{
+	box-shadow: none;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+}
+.enter-locationdiv md-autocomplete-wrap button{
+	display: none;
+}
+
+.alcohalosavebntcvr button:disabled{
+	background: #bbb;
+}
+.selectAddress{
+	position: absolute;bottom: 4px;left: 0px;	
+}
+.cartaddresses .addressbokk-trvaichacovr, .cartaddresses .addressbokk-addnewadresscovr{
+	width: 46%;
+}
+.addressbokk-trvaichacovr:hover, .adressmiddlepartcvr2:hover, .addressbokk-trvaichacovr.active{
+	border: 1px solid #8d00d4;
+	/*box-shadow: 0 0 2px #8d00d4;*/
+}
+.selectAddress .yelo_btn{
+	color: #444;
+	background-color: #ddd;
+}
+.addressbokk-trvaichacovr.active .selectAddress .yelo_btn{
+	color: #564111;
+	background-color: #ffc412;
 }

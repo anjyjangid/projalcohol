@@ -224,6 +224,19 @@ class Email extends Moloquent
 				
 			break ;
 
+			case 'salenotification':/* begin : Invitation Email { */
+								
+				$this->recipient_info["receiver"]['email'] = $data['email'];			
+				$this->recipient_info["receiver"]['name'] = $data['user_name'];
+
+				$this->recipient_info["replace"]["{user_name}"] = $data['user_name'];
+
+				$this->recipient_info["replace"]["{product_list}"] = $data['product_list'];
+
+				$this->recipient_info["message"] = str_ireplace(array_keys($this->recipient_info["replace"]),array_values($this->recipient_info["replace"]),$this->recipient_info["message"]);
+				
+			break ;
+
 			
 			default:return  (object)array("error"=>true , "success"=>false , "message"=>" Please Define Proper Type for  Email");
 									
@@ -234,7 +247,7 @@ class Email extends Moloquent
 				/*LAYOUT BASED MAIL*/
 
 				$data = ['content' => $this->recipient_info['message']];
-$this->recipient_info["receiver"]['email'] = 'anuragcgt@gmail.com';
+				// $this->recipient_info["receiver"]['email'] = 'anuragcgt@gmail.com';
 				Mail::send('emails.mail', $data, function ($message) {
 					$message->setTo(array($this->recipient_info["receiver"]['email']=>$this->recipient_info["receiver"]['name']));
 					$message->setSubject($this->recipient_info['subject']);

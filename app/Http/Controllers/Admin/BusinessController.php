@@ -37,6 +37,8 @@ class BusinessController extends Controller
 		$businessObj = new Business;
 		$inputs = $request->all();
 
+		$inputs['status'] = (int)$inputs['status'];
+
 		try {
 			$business = Business::create($inputs);			
 		
@@ -94,62 +96,58 @@ class BusinessController extends Controller
 	public function postList(Request $request)
 	{
 		$params = $request->all();
-		$business = new Business;
 
-		if(isset($params['company_name']) && trim($params['company_name'])!=''){
-		  $pname = $params['company_name'];
-		  $business = $business->where('company_name','regexp', "/.*$pname/i");
-		}
+        extract($params);
 
-		if(isset($params['status']) && trim($params['status'])!=''){
-		  $business = $business->where('status',(int)$params['status']);
-		}
+        $columns = ['_id','smallTitle','status'];
 
+        $project = ['company_name'=>1,'status'=>1];
 
-		$iTotalRecords = $business->count();
-		$iDisplayLength = intval($_REQUEST['length']);
-		$iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength; 
-		$iDisplayStart = intval($_REQUEST['start']);
-		$sEcho = intval($_REQUEST['draw']);
-		
-		$records = array();
-		$records["data"] = array(); 
+        $query = [];        
+        
+        $project['smallTitle'] = ['$toLower' => '$company_name'];
+        
+        $query[]['$project'] = $project;
 
-		$end = $iDisplayStart + $iDisplayLength;
-		$end = $end > $iTotalRecords ? $iTotalRecords : $end;
+        if(isset($company_name) && trim($company_name)!=''){
+            $s = "/".$company_name."/i";
+            $query[]['$match']['company_name'] = ['$regex'=>new \MongoRegex($s)];
+        }
 
-		$fstatus = [['danger'=>'Disabled'],['success'=>'Enabled']];
+        if(isset($status) && trim($status)!=''){            
+            $query[]['$match']['status'] = (int)$status;
+        }        
 
-		$notordered = true;
+        $sort = ['updated_at'=>-1];
 
+        if(isset($params['order']) && !empty($params['order'])){
+            
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
+        }
 
-		$columns = ['_id','company_name','status'];
+        $query[]['$sort'] = $sort;
 
-		if ( isset( $params['order'] ) ){
-			foreach($params['order'] as $orderKey=>$orderField){
-				if ( $params['columns'][intval($orderField['column'])]['orderable'] === "true" ){
-					$notordered = false;   
-					$business = $business->orderBy($columns[$orderField['column']],$orderField['dir']);                        
-				}
-			}
-		}
+        $model = Business::raw()->aggregate($query);
 
-		if($notordered){
-		  $business = $business->orderBy('_id','desc');
-		}
+        $iTotalRecords = count($model['result']);
 
-		$business = $business->skip($iDisplayStart)        
-		->take($iDisplayLength)->get();
+        $query[]['$skip'] = (int)$start;
 
-		$ids = $iDisplayStart;
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = Business::raw()->aggregate($query);
+        }            
 
-		$records["data"] = $business;
+        $response = [
+            'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+            'data' => $model['result']            
+        ];
 
-		$records["draw"] = $sEcho;
-		$records["recordsTotal"] = $iTotalRecords;
-		$records["recordsFiltered"] = $iTotalRecords; 
-
-		return response($records);
+        return response($response,200);		
 	}
 	
 

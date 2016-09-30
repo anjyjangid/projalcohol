@@ -90,126 +90,109 @@
 
 	var CategoriesTableAjax = function () {
 
-    var initPickers = function () {
-        //init date pickers
-        $('.date-picker').datepicker({
-            rtl: Metronic.isRTL(),
-            autoclose: true
-        });
-    }
+        var handleRecords = function () {        
 
-    
-    var handleRecords = function () {        
-
-        grid.init({
-            src: $("#categorieslisttab"),
-            onSuccess: function (grid) {
-                // execute some code after table records loaded
-            },
-            onError: function (grid) {
-                // execute some code on network or other general error  
-            },
-            loadingMessage: 'Loading...',
-            dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
-
-                // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-                // So when dropdowns used the scrollable div should be removed. 
-                //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
-                
-                "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
-
-                "lengthMenu": [
-
-                    [10, 20, 50, 100, 150, -1],
-                    [10, 20, 50, 100, 150, "All"] // change per page values here
-                ],
-                "pageLength": 10, // default record count per page
-                "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
-                        'orderable': false,
-                        'targets': [0,3,4]
-                    }],
-                "ajax": {
-                    "url": "../adminapi/category/categorylist", // ajax source
-                    // "data": function ( d ) {
-                    //     d._token = $('meta[name="_token"]').attr('content');
-
-                    //     Metronic.blockUI({
-                    //             message: "Loading.....",
-                    //             target: $("#categorieslisttab").parents(".table-container"),
-                    //             overlayColor: 'none',
-                    //             cenrerY: true,
-                    //             boxed: true
-                    //         });
-                    //     // d.custom = $('#myInput').val();
-                    //     // etc
-                    // },
-                    "type": "POST"
+            grid.init({
+                src: $("#categorieslisttab"),
+                onSuccess: function (grid) {
+                    // execute some code after table records loaded
                 },
-                "order": [
-                    [1, "asc"],
-                ], // set first column as a default sort by asc
-                "fnDrawCallback": function (oSettings) {
-                	
-					
-				    var content = $('#tBody');
-				    angular.element(document).injector().invoke(function($compile) {
-				        var scope = angular.element(content).scope();
-				        $compile(content)(scope);
-				    });
-					
-					
-					Metronic.initAjax()
+                onError: function (grid) {
+                    // execute some code on network or other general error  
+                },
+                loadingMessage: 'Loading...',
+                dataTable: { 
+                    "columns": [
+                        {                       
+                            mRender: function(data, type, full, meta) {
+                                return meta.row + meta.settings._iDisplayStart + 1;
+                            },
+                            orderable:false                     
+                        },{  
+                            data : "cat_title",
+                            orderable:true
+                        },{  
+                            mData: null,
+                            mRender: function(data, type, full) {                           
+                                if(data.ancestor)
+                                    return data.ancestor.cat_title;
+                                else
+                                    return '';
+                            },
+                            orderable:true
+                        },{  
+                            mData: null,
+                            mRender: function(data, type, full) {                           
+                                var bClass = (data.cat_status==0)?'warning':'success';
+                                var bLabel = (data.cat_status==0)?'In Active':'Active';                            
+                                var revertStatus = (data.cat_status==0)?1:0;
+                                return '<a href="javascript:void(0)"><span ng-click=changeStatus("'+data._id.$id+'") id="'+data._id.$id+'" data-table="category" data-status="'+revertStatus+'" class="label label-sm label-'+bClass+'">'+bLabel+'</span></a>';                                                       
+                            },
+                            orderable:true
+                        },{
+                            mData: null,
+                            mRender: function(data, type, full) {                           
+                                return '<a title="Edit" ui-sref=userLayout.categories.edit({categoryid:"'+data._id.$id+'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';                          
+                            },
+                            orderable:false
+                        }
+                    ],
+                    "ajax": {
+                        "url": "../adminapi/category/categorylist", // ajax source                    
+                        "type": "POST"
+                    },
+                    "order": [], // set first column as a default sort by asc
+                    "fnDrawCallback": function (oSettings) {
+    				    var content = $('#tBody');
+    				    angular.element(document).injector().invoke(function($compile) {
+    				        var scope = angular.element(content).scope();
+    				        $compile(content)(scope);
+    				    });
+    					Metronic.initAjax();
+    				}
+                }
+            });
 
-				},
-				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-										
-			    }
-            }
-        });
-
-        // handle group actionsubmit button click
-        grid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
-            e.preventDefault();
-            var action = $(".table-group-action-input", grid.getTableWrapper());
-            if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
-                grid.setAjaxParam("customActionType", "group_action");
-                grid.setAjaxParam("customActionName", action.val());
-                grid.setAjaxParam("id", grid.getSelectedRows());
-                grid.getDataTable().ajax.reload();
-                grid.clearAjaxParams();
-            } else if (action.val() == "") {
-                Metronic.alert({
-                    type: 'danger',
-                    icon: 'warning',
-                    message: 'Please select an action',
-                    container: grid.getTableWrapper(),
-                    place: 'prepend'
-                });
-            } else if (grid.getSelectedRowsCount() === 0) {
-                Metronic.alert({
-                    type: 'danger',
-                    icon: 'warning',
-                    message: 'No record selected',
-                    container: grid.getTableWrapper(),
-                    place: 'prepend'
-                });
-            }
-        });
-    }
-
-    return {
-
-        //main function to initiate the module
-        init: function () {
-
-            initPickers();
-            handleRecords();
+            // handle group actionsubmit button click
+            grid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
+                e.preventDefault();
+                var action = $(".table-group-action-input", grid.getTableWrapper());
+                if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
+                    grid.setAjaxParam("customActionType", "group_action");
+                    grid.setAjaxParam("customActionName", action.val());
+                    grid.setAjaxParam("id", grid.getSelectedRows());
+                    grid.getDataTable().ajax.reload();
+                    grid.clearAjaxParams();
+                } else if (action.val() == "") {
+                    Metronic.alert({
+                        type: 'danger',
+                        icon: 'warning',
+                        message: 'Please select an action',
+                        container: grid.getTableWrapper(),
+                        place: 'prepend'
+                    });
+                } else if (grid.getSelectedRowsCount() === 0) {
+                    Metronic.alert({
+                        type: 'danger',
+                        icon: 'warning',
+                        message: 'No record selected',
+                        container: grid.getTableWrapper(),
+                        place: 'prepend'
+                    });
+                }
+            });
         }
 
-    };
+        return {
 
-}();
+            //main function to initiate the module
+            init: function () {
+                handleRecords();
+            }
+
+        };
+
+    }();
 
 	CategoriesTableAjax.init();
 </script>

@@ -19,6 +19,7 @@ AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$
 
 			}).success(function(response) {
 
+				
 				_self.$restore(response.list);
 				d.resolve(response.list);
 
@@ -112,8 +113,13 @@ AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$
 			return this.getList();
 		};
 
-		this.getList = function(){
-			return this.$wishlist;
+		this.getList = function(page, pageSize){
+			if(typeof page == "undefined")
+				return this.$wishlist;
+			else if(!pageSize)
+				pageSize = 10;
+
+			return this.$wishlist.slice(page*pageSize, page*pageSize+pageSize);
 		};
 
 		this.getTotalProducts = function () {

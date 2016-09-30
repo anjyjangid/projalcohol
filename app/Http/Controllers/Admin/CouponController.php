@@ -172,6 +172,52 @@ class CouponController extends Controller
 	{
 		$params = $request->all();
 
+        extract($params);
+
+        $columns = ['_id','_id','smallTitle','discount','type','status'];
+
+        $project = ['image'=>1,'code'=>1,'discount'=>1,'type'=>1,'status'=>1];
+
+        $project['smallTitle'] = ['$toLower' => '$code'];
+
+        $query = [];
+        
+        $query[]['$project'] = $project;
+
+        $sort = ['updated_at'=>-1];
+
+        if(isset($params['order']) && !empty($params['order'])){
+            
+            $field = $columns[$params['order'][0]['column']];
+            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
+            $sort = [$field=>$direction];            
+        }
+
+        $query[]['$sort'] = $sort;
+
+        $model = Coupon::raw()->aggregate($query);
+
+        $iTotalRecords = count($model['result']);
+
+        $query[]['$skip'] = (int)$start;
+
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = Coupon::raw()->aggregate($query);
+        }            
+
+        $response = [
+            'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+            'data' => $model['result']            
+        ];
+
+        return response($response,200);
+
+
+		$params = $request->all();
+
 		$coupons = new Coupon;                
 
 		$columns = array('_id','code',"type","discount","status");

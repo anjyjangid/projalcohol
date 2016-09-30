@@ -149,22 +149,27 @@
                 // execute some code on network or other general error  
             },
             loadingMessage: 'Loading...',
-            dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
-
-                // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-                // So when dropdowns used the scrollable div should be removed. 
-                //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
+            dataTable: { 
                 "columns": [{		                
 	                	mRender: function(data, type, full, meta) {
-	                		return (meta.row)+1;		                	
+	                		return meta.row + meta.settings._iDisplayStart + 1;
 		                },
 		                orderable:false		                
 		            },{	 
 	                	data : "name",
 		                orderable:true
-		            },{	 
-	                	data : "category",
+		            },{
+		            	mData: null,
+		            	mRender: function(data, type, full) {	                        
+	                    	var cat = '';
+	                    	if(typeof data.categoryDetail != 'undefined')
+	                    		cat += data.categoryDetail.cat_title;
+
+	                    	if(typeof data.subcategoryDetail != 'undefined')
+	                    		cat += ' > '+data.subcategoryDetail.cat_title;
+
+	                    	return cat;
+	                    },
 		                orderable:false
 		            },{	 
 	                	data : "price",
@@ -190,34 +195,18 @@
 	                    },
 		                orderable:true
 		            },{
-		            	mData: null,
-		            	mRender: function(data, type, full) {	                        
-	                    	if(data.store != null){
-	                    		return data.store.quantity;
-	                    	}else{
-	                    		return 0;
-	                    	}	                    	
-	                    },
+		            	data : "quantity",
 		                orderable:true
-		            }/*,{	 
-	                	data : "quantity",
-		                orderable:true
-		            }*/,{
+		            },{
 		            	mData: null,
 		            	mRender: function(data, type, full) {		            		
-		            		return '<a ui-sref=userLayout.products.edit({productid:"'+data._id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+		            		return '<a ui-sref=userLayout.products.edit({productid:"'+data._id.$id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
 		            		
 	                    },
 		                orderable:false
 		            }
 		        ],
-
-                "lengthMenu": [
-                    [10, 20, 50, 100, 150, -1],
-                    [10, 20, 50, 100, 150, "All"] // change per page values here
-                ],
-                "pageLength": 10, // default record count per page
-				"ajax": {
+                "ajax": {
                     "url": "../adminapi/product/productlist", // ajax source                    
                 },                   
                 "order": [],

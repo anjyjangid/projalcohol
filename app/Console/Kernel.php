@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         \AlcoholDelivery\Console\Commands\Inspire::class,
         \AlcoholDelivery\Console\Commands\DatabaseBackup::class,
+        \AlcoholDelivery\Console\Commands\Notification::class,
     ];
 
     /**
@@ -25,7 +26,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('inspire')
-                 ->hourly();
+        //$schedule->command('inspire')->hourly();
+        $schedule->command('sale:notify')->everyMinute();
     }
 }

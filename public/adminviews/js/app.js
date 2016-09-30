@@ -330,7 +330,93 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 
 	}
 
-	
+	$scope.notifyUser = function(id,mnum){    	
+        $scope.notify = {
+            time:30,
+            sms:1,
+            mail:1,
+            numDisable:false,
+            loading:false,            
+            oid:id
+        };
+
+        $scope.notify.oid = id;
+
+        if(mnum == 0){
+            $scope.notify.sms = 0;
+            $scope.notify.numDisable = true;
+        }
+
+        $('#notify').find('.alert').remove();
+
+        $('#notify').modal('show');
+    };
+
+    $scope.sendNotification = function(){
+        $scope.notify.loading = true;        
+        $http.post('/adminapi/admin/notify',$scope.notify).then(function(res){
+            $scope.notify.loading = false;            
+            
+            var st = '';
+
+            if($scope.notify.mail){
+                if(!res.data.mailsent){
+                    Metronic.alert({
+                        type: 'danger',
+                        icon: 'warning',
+                        message: 'Could not send mail, please try again.',
+                        container: '#notify .portlet-body',
+                        place: 'prepend',
+                        reset: false,
+                        closeInSeconds:5                
+                    });
+                }else{
+                    Metronic.alert({
+                        type: 'success',
+                        icon: 'check',
+                        message: 'Mail has been sent successfully.',
+                        container: '#notify .portlet-body',
+                        place: 'prepend',
+                        reset: false,
+                        closeInSeconds:5
+                    });
+                }
+            }
+
+            if($scope.notify.sms){
+                if(!res.data.smssent){
+                    Metronic.alert({
+                        type: 'danger',
+                        icon: 'warning',
+                        message: 'Could not send SMS, please try again.',
+                        container: '#notify .portlet-body',
+                        place: 'prepend',
+                        reset: false,
+                        closeInSeconds:5
+                    });
+                }else{
+                    Metronic.alert({
+                        type: 'success',
+                        icon: 'check',
+                        message: 'SMS has been sent successfully.',
+                        container: '#notify .portlet-body',
+                        place: 'prepend',
+                        reset: false,
+                        closeInSeconds:5                
+                    });
+                }
+            }            
+        },function(erres){            
+            $scope.notify.loading = false;
+            Metronic.alert({
+                type: 'danger',
+                icon: 'warning',
+                message: erres.data.message,
+                container: '#notify .portlet-body',
+                place: 'prepend'
+            });
+        });
+    };	
 	
 }]);
 
@@ -456,6 +542,14 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 					id:'sidebar_menu_link_shared',
 					access : ['admin'],	
 					links:['userLayout.products.shared']	
+				},
+				{
+					label:'Stock order list',
+					icon:'icon-layers',
+					uisref:'userLayout.stocks.list',
+					id:'sidebar_menu_link_stocks',
+					access : ['admin'],	
+					links:['userLayout.stocks.list']	
 				}
 			]
 		},
@@ -530,6 +624,12 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 					uisref:'userLayout.stores.list',
 					icon:'icon-home',					
 					links:['userLayout.stores.list']
+				},
+				{
+					label:'Company Information',
+					uisref:'userLayout.company.list',
+					icon:'icon-info',					
+					links:['userLayout.company.list']
 				},
 				{
 					label:'General',
@@ -1442,6 +1542,52 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             }            
         })
 
+        .state('userLayout.stocks', {
+            abstract:true,            
+            templateUrl:'adminviews/views/auth.html',
+            controller: "StocksController",
+            resolve: {                
+                authenticate: authenticate,
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'adminviews/js/controllers/StocksController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state("userLayout.stocks.list", {
+            url: "/products/stocks",
+            templateUrl: "adminviews/views/stocks/list.html",
+            data:{
+				pageTitle:'Stock Order List',
+				breadCrumb:[					
+					{title:'Stock Order List','uisref':'#'}					
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }            
+        })
+
+        .state("userLayout.stocks.po", {
+            url: "/products/purchase-orders",
+            templateUrl: "adminviews/views/stocks/po.html",
+            data:{
+				pageTitle:'Purchase Orders',
+				breadCrumb:[					
+					{title:'Purchase Orders','uisref':'#'}
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }            
+        })
+
         .state('userLayout.packages', {
             abstract:true,            
             templateUrl:'adminviews/views/auth.html',            
@@ -1756,6 +1902,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                         name: 'MetronicApp',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
                         files: [                                                        
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
                             'adminviews/js/models/storeModel.js',
                             'adminviews/js/controllers/StoresController.js'
                         ]
@@ -1808,6 +1956,57 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                 authenticate: authenticate
             },
             controller: "StoreFormController",            
+        })
+
+        .state('userLayout.company', {
+            abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+            controller: "CompanyController",
+            resolve: {                
+                authenticate: authenticate,
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [                                                        
+                            'assets/global/plugins/ckeditor/ckeditor.js',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+                            'adminviews/js/controllers/CompanyController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('userLayout.company.list', {
+            url:'/company/list',
+			templateUrl:'adminviews/views/company/list.html',
+            data:{
+				pageTitle:'Company Information',				
+				breadCrumb:[
+					{title:'Company List','uisref':'#'}					
+				]				
+			},
+            resolve: {                
+                authenticate: authenticate                
+            }
+        })
+
+        .state('userLayout.company.edit', {
+            url:'/company/edit/{companyId}',
+			templateUrl:'adminviews/views/company/form.html',
+            controller:'CompanyFormController',
+            data:{
+				pageTitle:'Company Edit',				
+				breadCrumb:[
+					{title:'Company List','uisref':'userLayout.company.list'},
+					{title:'Edit','uisref':'#'}					
+				]				
+			},
+            resolve: {                
+                authenticate: authenticate                
+            }
         })
 
         .state('userLayout.settings', {
@@ -2021,7 +2220,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             data:{
 				pageTitle:'Edit coupons',				
 				breadCrumb:[
-					{title:'coupons','uisref':'userLayout.coupon.list'},
+					{title:'Coupons','uisref':'userLayout.coupon.list'},
 					{title:'Edit','uisref':'#'}					
 				]				
 			},            
@@ -2456,7 +2655,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
         function authenticate($q, AdminUserService, $state, $timeout, $location) {
 
-	      if (AdminUserService.isLogged()) {	      	
+	      if (AdminUserService.isLogged()) {
 	        // Resolve the promise successfully
 	        return $q.when()
 	      } else {

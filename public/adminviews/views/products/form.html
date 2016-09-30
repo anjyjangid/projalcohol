@@ -14,7 +14,7 @@
 			<div class="portlet-body">				
 				<tabset active="active">
 					<tab>
-						<tab-heading>General</tab-heading>
+						<tab-heading>General <span class="badge badge-danger" ng-bind="showError('general')"></span></tab-heading>
 
 						<div class="form-horizontal">
 							<div class="form-group" ng:class="{'has-error':errors.name[0]}">
@@ -76,20 +76,7 @@
 									select one or more categories </span>-->
 									<span class="help-block" ng-bind="errors.categories[0]"></span>
 								</div>
-							</div>							
-							
-							
-							
-							
-
-							
-							
-
-
-														
-
-							
-
+							</div>
 							<div class="form-group">
 								<label class="control-label col-md-2">Chilled/Non-chilled <span class="required" aria-required="true">
 								* </span></label>
@@ -564,15 +551,15 @@
 						                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.type'][0]"></span>
 						                </td>
 						                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.value'][0]}">						                    
-						                    <input min="1" type="number" step="any" class="form-control" ng-model="slots.value" placeholder="">
+						                    <input min="0" type="number" step="any" class="form-control" ng-model="slots.value" placeholder="">
 						                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.value'][0]"></span>
 						                </td>
 						                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.from_qty'][0]}">						                    
-						                    <input min="1" type="number" class="form-control" ng-model="slots.from_qty" placeholder="From Qty">						                    
+						                    <input min="0" type="number" class="form-control" ng-model="slots.from_qty" placeholder="From Qty">						                    
 						                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.from_qty'][0]"></span>
 						                </td>
 						                <td ng:class="{'has-error':errors[kp+'.bulk.'+bk+'.to_qty'][0]}">						                   
-						                    <input min="1" type="number" class="form-control" ng-model="slots.to_qty" placeholder="To Qty" max="99999">						                    
+						                    <input min="0" type="number" class="form-control" ng-model="slots.to_qty" placeholder="To Qty" max="99999">						                    
 						                    <span class="help-block" ng-bind="errors[kp+'.bulk.'+bk+'.to_qty'][0]"></span>
 						                </td>
 						                <td>
@@ -746,12 +733,12 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button aria-hidden="true" data-dismiss="modal" class="close" type="button"></button>
-				<h4 class="modal-title">Select Package Items</h4>
+				<h4 class="modal-title">Select Suggested Items</h4>
 			</div>
 			<div class="modal-body">
 				<div class="table-responsive">
 					
-					<input ng-model="searchbox" type="search" ng:class="{'spinner':searching}" ng-keyup="searchItem($event)" class="form-control" placeholder="Search items to add in package">						
+					<input ng-model="searchbox" type="search" ng:class="{'spinner':searching}" ng-keyup="searchItem($event)" class="form-control" placeholder="Search items to add in suggestion">						
 					
 					<table class="table table-striped table-hover" id="orderlist">
 						<tbody>

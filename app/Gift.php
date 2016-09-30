@@ -20,6 +20,8 @@ class Gift extends Eloquent
 		'description',
 		'category',
 		'subcategory',
+		'categoryObject',
+		'subcategoryObject',
 		'coverImage',
 		'limit',     
 		'costprice',
