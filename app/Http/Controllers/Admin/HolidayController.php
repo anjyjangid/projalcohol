@@ -52,7 +52,7 @@ class HolidayController extends Controller
     {
         $inputs = $request->all();
         
-        $inputs['timeStamp'] = (int)$inputs['timeStamp'];
+        $inputs['timeStamp'] = (float)$inputs['timeStamp'];
 
         $holiday = Holiday::create($inputs);    
 
@@ -134,8 +134,8 @@ class HolidayController extends Controller
     public function postList(Request $request){
 
         $param = $request->all();
-        $start = (int)$param['start'];
-        $end = (int)$param['end'];
+        $start = (float)$param['start'];
+        $end = (float)$param['end'];
         $holidays = Holiday::whereBetween('timeStamp', [$start, $end])->orWhere('_id','weekdayoff')->get();
         return response($holidays,200);
 
