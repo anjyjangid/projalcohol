@@ -383,7 +383,11 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			scope.decrement = function () {
 
-				scope.remainQty--;
+				if(typeof scope.remainQty !== 'undefined'){
+					scope.remainQty--;
+				}
+
+				
 				oldval = scope.val;
 				var value = parseFloat(parseFloat(Number(scope.val)) - parseFloat(scope.step)).toFixed(scope.decimals);
 
@@ -400,7 +404,10 @@ AlcoholDelivery.directive('sideBar', function() {
 			};
 
 			scope.increment = function () {
-				scope.remainQty++;
+
+				if(typeof scope.remainQty !== 'undefined'){
+					scope.remainQty++;
+				}
 				oldval = scope.val;
 				var value = parseFloat(parseFloat(Number(scope.val)) + parseFloat(scope.step)).toFixed(scope.decimals);
 
@@ -605,178 +612,11 @@ AlcoholDelivery.directive('sideBar', function() {
 			product:'=',			
 		},
 
-		controller: function($scope,$rootScope,$element,$timeout,$http,alcoholCart,$mdToast, UserService){
+		controller: function($scope, $rootScope, $element, $timeout, $http, alcoholCart, $mdToast, UserService){
 
-			// $scope.isInCart = false;
 			$scope.addMoreCustom = false;
 			$scope.element = $element;
-
-			// $scope.product.qChilled = 0;
-			// $scope.product.qNChilled = 0;
-
-			// $scope.product.isLoyaltyStoreProduct = false;
-			
-			// if($scope.product.isLoyaltyStoreProduct){
-			// 	var isInCart = alcoholCart.getLoyaltyProductById($scope.product._id);
-			// }else{
-			// 	var isInCart = alcoholCart.getProductById($scope.product._id);
-			// }
-
-			// if(isInCart!==false){
-
-			// 	$scope.isInCart = true;
-			// 	$scope.product.qChilled = isInCart.getRQuantity('chilled');
-			// 	$scope.product.qNChilled = isInCart.getRQuantity('nonchilled');
-
-			// }
-
-			// if($scope.product.quantity==0 && $scope.product.outOfStockType==2){
-
-			// 	$scope.maxQuantity = $scope.product.maxQuantity; //if product is out of stock then its max quantity is available for future order.
-
-			// }else{
-
-			// 	$scope.maxQuantity = $scope.product.quantity;
-
-			// }
-
-			// var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
-
-			// if(available<0){
-
-			// 	$scope.overQunatity = true;
-			// 	$scope.product.qNChilled = $scope.product.qNChilled + available;
-
-			// }
-
-			// var available = $scope.maxQuantity-$scope.product.qNChilled+$scope.product.qChilled;
-
-			// if(available<0){
-
-			// 	$scope.product.qChilled = $scope.product.qChilled + available;
-
-			// }
-
-			// $scope.$watchGroup(['product.qNChilled','product.qChilled','maxQuantity'],
-			// 			function(newValue, oldValue) {
-
-			// 				$scope.updateQuantity();
-
-			// 			},true
-			// 		);
-
-			// $scope.updateQuantity = function(){
-
-			// 	$scope.product.chilledMaxQuantity = $scope.maxQuantity - $scope.product.qNChilled;
-			// 	$scope.product.nonChilledMaxQuantity = $scope.maxQuantity - $scope.product.qChilled;
-			// 	$scope.tquantity = parseInt($scope.product.qNChilled)+parseInt($scope.product.qChilled);
-
-			// }
-
-			// $scope.addtocart = function(){
-
-			// 	if(typeof $scope.proUpdateTimeOut!=="undefined"){
-			// 		$timeout.cancel($scope.proUpdateTimeOut);
-			// 	}
-
-			// 	$scope.proUpdateTimeOut = $timeout(function(){
-
-			// 		var quantity = $scope.product.servechilled?$scope.product.qChilled:$scope.product.qNChilled;
-
-			// 		if($scope.product.isLoyaltyStoreProduct){
-
-			// 			var addFunc = "addLoyaltyProduct";
-
-			// 		}else{
-
-			// 			var addFunc = "addItem";
-
-			// 		}
-
-			// 		alcoholCart[addFunc]($scope.product._id,quantity,$scope.product.servechilled).then(
-
-			// 			function(successRes){
-
-			// 				if(successRes.success){							
-
-			// 					switch(successRes.code){
-			// 						case 100:
-
-			// 							$scope.product.qNChilled = successRes.product.nonchilled.quantity;
-			// 							$scope.product.qChilled = successRes.product.chilled.quantity;
-			// 							$scope.maxQuantity = successRes.product.maxQuantity;
-			// 							$scope.product.quantity = successRes.product.product.quantity;
-
-			// 							$scope.product.chilledMaxQuantity = $scope.maxQuantity - $scope.product.qNChilled;
-			// 							$scope.product.nonChilledMaxQuantity = $scope.maxQuantity - $scope.product.qChilled;
-			// 							$scope.tquantity = parseInt($scope.product.qNChilled)+parseInt($scope.product.qChilled);
-
-			// 							$timeout(function(){
-			// 							$mdToast.show({
-			// 								controller:function($scope){
-
-			// 									$scope.qChilled = 0;
-			// 									$scope.qNchilled = 0;
-
-			// 									$scope.closeToast = function(){
-			// 										$mdToast.hide();
-			// 									}
-			// 								},
-			// 								templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
-			// 								parent : $element,											
-			// 								position: 'top center',
-			// 								hideDelay:10000
-			// 							});
-			// 							},1000);
-
-			// 						break;
-			// 						case 101:
-										
-			// 							$scope.product.outOfStockType = successRes.product.product.outOfStockType;
-			// 							$scope.product.quantity = successRes.product.product.quantity;
-
-			// 							$timeout(function(){
-			// 							$mdToast.show({
-			// 								controller:function($scope){
-
-			// 									$scope.qChilled = 0;
-			// 									$scope.qNchilled = 0;
-
-			// 									$scope.closeToast = function(){
-			// 										$mdToast.hide();
-			// 									}
-			// 								},											
-			// 								templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
-			// 								parent : $element,											
-			// 								position: 'top center',
-			// 								hideDelay:10000
-			// 							});
-			// 							},1000);
-
-			// 						break;
-
-			// 					}
-								
-			// 				}
-
-			// 			},
-			// 			function(errorRes){
-
-			// 			}
-
-			// 		);
-					
-			// 		if($scope.product.quantitycustom==0){
-			// 			$scope.isInCart = false;
-			// 			$scope.addMoreCustom = false;
-			// 			$scope.product.quantitycustom = 1;
-			// 		}
-
-			// 	},1500)
-
-
-			// };
-
+		
 			$scope.focusout = function(){
 
 				$scope.addMoreCustom = false;
@@ -820,9 +660,7 @@ AlcoholDelivery.directive('sideBar', function() {
 					if($scope.product.notSufficient){
 						return false;
 					}
-
-					
-
+				
 				}
 
 				if($scope.maxQuantity < $scope.tquantity){

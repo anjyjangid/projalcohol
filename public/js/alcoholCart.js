@@ -194,8 +194,6 @@ AlcoholDelivery.service('alcoholCart', [
 
 	}
 
-
-
 	this.addLoyaltyProduct = function (id, quantity, serveAs) {
 
 		var defer = $q.defer();
@@ -218,45 +216,49 @@ AlcoholDelivery.service('alcoholCart', [
 
 		}).success(function(response) {
 
-			if(response.success){
+			var resProduct = response.product;
 
-				var resProduct = response.product;
+			if(inCart){
 
-				if(inCart){				
+				if(resProduct.quantity==0){
 
-					if(resProduct.quantity==0){
-
-						//_self.removeItemById(id);
-
-					}else{
-					
-						inCart.setTQuantity(resProduct.quantity);
-						inCart.setPrice(resProduct);
-
-					}									
+					//_self.removeItemById(id);
 
 				}else{
-					
-		    		var newItem = new alcoholCartLoyaltyItem(id,resProduct);
-					_self.$cart.loyalty[id] = newItem;
+				
+					inCart.setTQuantity(resProduct.quantity);
+					inCart.setPrice(resProduct);
 
-				}
+				}									
 
+			}else{
+				
+				var newItem = new alcoholCartLoyaltyItem(id,resProduct);
+				_self.$cart.loyalty[id] = newItem;
 
+			}
 
-				if(response.change!==0){
+			if(response.change!==0){
 
-					if(response.change>0){
+				if(response.change>0){
 
-						$rootScope.$broadcast('alcoholCart:updated',{msg:"Loyalty product added to cart",quantity:Math.abs(response.change)});
+					$rootScope.$broadcast('alcoholCart:updated',{msg:"Loyalty product added to cart",quantity:Math.abs(response.change)});
+
+				}else{
+
+					if(response.change==0){
+
+						$rootScope.$broadcast('alcoholCart:updated',{msg:"Loyalty product updated"});
 
 					}else{
 
 						$rootScope.$broadcast('alcoholCart:updated',{msg:"Loyalty product removed from cart",quantity:Math.abs(response.change)});
 
 					}
-				}
 
+					
+
+				}
 			}
 
 			defer.resolve(response);
@@ -631,6 +633,21 @@ AlcoholDelivery.service('alcoholCart', [
 			return build;
 		};	
 
+		this.getCreditByValue = function(value){
+
+			var giftCertificates = this.getCart().giftCertificates | [];
+			var build = false;
+
+			angular.forEach(giftCertificates, function (giftCertificate) {
+				
+				if (giftCertificates.getValue() == value) {
+					build = giftCertificate;
+				}
+			});
+			return build;
+
+		};
+
 		this.getLoyaltyProductById = function (productId){
 
 			var products = this.getCart().loyalty;
@@ -757,7 +774,13 @@ AlcoholDelivery.service('alcoholCart', [
 
 			return points;
 
-		}		
+		}
+
+		this.setLoyaltyPointsInCart = function(){
+
+			this.availableLoyaltyPoints = this.getLoyaltyPointsInCart();
+			console.log(this.availableLoyaltyPoints);
+		}
 
 		this.getPackages = function(){
 			return this.getCart().packages;
@@ -956,6 +979,7 @@ AlcoholDelivery.service('alcoholCart', [
 			$http.delete("cart/sale/"+deliveryKey+'/'+id).then(
 
 				function(response){
+					
 					response = response.data;
 					_self.setAllProductsRemainingQty(response.proRemaining);
 					_self.setAllSales(response.sales);
@@ -1490,11 +1514,11 @@ AlcoholDelivery.service('alcoholCart', [
 			var sales = [];
 
 			angular.copy(storedCart.products,products);
-			// angular.copy(storedCart.packages,packages);
-			// angular.copy(storedCart.promotions,promotions);
-			// angular.copy(storedCart.giftCards,giftCards);
-			// angular.copy(storedCart.gifts,gifts);
-			// angular.copy(storedCart.loyalty,loyalty);
+			angular.copy(storedCart.packages,packages);
+			angular.copy(storedCart.promotions,promotions);
+			angular.copy(storedCart.giftCards,giftCards);
+			angular.copy(storedCart.gifts,gifts);
+			angular.copy(storedCart.loyalty,loyalty);
 			angular.copy(storedCart.sales,sales);
 
 			storedCart.products = {};
@@ -1568,7 +1592,7 @@ AlcoholDelivery.service('alcoholCart', [
 				var newItem = new alcoholCartLoyaltyItem(key,item);
 				_self.$cart.loyalty[key] = newItem;
 				
-			});
+			});			
 
 			angular.forEach(packages, function (package,key) {
 
@@ -2049,15 +2073,12 @@ AlcoholDelivery.factory('alcoholCartLoyaltyItem', ['$log', function ($log){
 		var lProduct = function (id, proObj) {
 
 			this.setId(id);
-
 			this.setRQuantity(proObj.chilled.quantity,proObj.nonchilled.quantity);
-
 			this.setRChilledStatus(proObj.chilled.status,proObj.nonchilled.status);
 			this.setTQuantity(proObj.quantity);
 			this.setPrice(proObj.product);
 			this.setLastServedAs(proObj.lastServedChilled);
 			this.setProduct(proObj);
-
 			this.setRMaxQuantity(proObj.product);
 
 		};

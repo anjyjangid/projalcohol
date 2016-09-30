@@ -101,6 +101,10 @@ class CartController extends Controller
 
 				$userCart = $userCart->toArray();
 
+				if(!isset($userCart['loyalty'])){
+					$userCart['loyalty'] = [];
+				}
+
 				$productsIdInCart = array_merge(array_keys((array)$userCart['products']),array_keys((array)$userCart['loyalty']));
 
 				$productObj = new Products;
@@ -122,7 +126,7 @@ class CartController extends Controller
 							$userCart['products'][$product['_id']]['product'] = $product;
 						}
 
-						if(isset($userCart['products'][$product['_id']])){
+						if(isset($userCart['loyalty'][$product['_id']])){
 							$userCart['loyalty'][$product['_id']]['product'] = $product;
 						}
 
@@ -168,12 +172,12 @@ class CartController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show(Request $request,$id)
-	{
-		
-		// $id = new MongoId('57e911eb8a976f4e728b457a');
+
+	public function show(Request $request,$id){
 
 		$cart = Cart::findUpdated($id);		
+
+		$user = Auth::user('user');
 
 		if(empty($cart)){
 
@@ -199,7 +203,6 @@ class CartController extends Controller
 		
 		$isMerged = $this->mergecarts($cart['_id']);
 		
-
 		if($isMerged->success){
 
 			$cart = $isMerged->cart;
@@ -211,7 +214,6 @@ class CartController extends Controller
 		}
 
 		$productsIdInCart = array_merge(array_keys((array)$cart['products']),array_keys((array)$cart['loyalty']));
-
 
 		$productObj = new Products;
 
@@ -486,23 +488,19 @@ class CartController extends Controller
 
 		$user = Auth::user('user');
 
-		if($user===null){
-			return response(["message"=>"login required","code"=>"401"],401);
-		}		
+		// if($user===null){
+		// 	return response(["message"=>"login required","code"=>"401"],401);
+		// }
 		
-
 		$inputs = $request->all();
 
-		$cart = Cart::find($id);
+		$cart = Cart::find($id);		
 
-		// $pointsUsed = $this->getLoyaltyUsed();
-
-		// return response([$pointsUsed],400);
+		$loyaltyAvailable = $this->getLoyaltyAvailable($cart); // LOYALTY POINTS AVAILABLE BEFORE ADD NEW PRODUCT
 
 		$proIdToUpdate = $inputs['id'];
 
 		$response = [
-			"success"=>false,
 			"message"=>"Something went worng",
 			"code" => 000,
 		];
@@ -516,19 +514,17 @@ class CartController extends Controller
 
 		if(!isset($cart->loyalty)){
 			$cart->loyalty = [];
-		}
-
-		$productInCart = isset($cart->loyalty[$proIdToUpdate])?$cart->loyalty[$proIdToUpdate]:false;		
+		}			
 
 		$data = [
-					"loyalty" => [
+				"loyalty" => [
 
-						"chilled" => 1,
-						"_id" => new mongoId("57025683c31d53b2218b45a4"),
-						"quantity" => 1
+					"chilled" => 1,
+					"_id" => new mongoId("57025683c31d53b2218b45a4"),
+					"quantity" => 1
 
-					]
-				];
+				]
+			];
 
 		$product = Products::where("_id",$proIdToUpdate)
 					->where("status",1)
@@ -556,52 +552,47 @@ class CartController extends Controller
 						'availabilityDays',
 						'availabilityTime'
 					]);
-		
+
 		if(is_null($product)){
 
 			return response(["message"=>"Product not found","reload"=>true],400);
 
 		}
 
-		$loyaltyAvailable = $this->getLoyaltyAvailable($cart);
-		
+		$productInCart = isset($cart->loyalty[$proIdToUpdate])?$cart->loyalty[$proIdToUpdate]:false;
 
-		// if($user->loyaltyPoints > ){
-		// 	return response(["message"=>"login required","code"=>"401"],401);
-		// }
+		$chilledQty = (int)$inputs['quantity']['chilled'];
+		$nonChilledQty = (int)$inputs['quantity']['nonChilled'];
+
+		$totalQty = $chilledQty + $nonChilledQty;
 
 		$updateProData = array(
 
 				"_id" => new mongoId($proIdToUpdate),
 				"chilled"=>array(
-					"quantity"=>$productInCart!==false?$productInCart['chilled']['quantity']:0,
+					"quantity"=>$chilledQty,
 					"status"=>"chilled",
 				),
 				"nonchilled"=>array(
-					"quantity"=>$productInCart!==false?$productInCart['nonchilled']['quantity']:0,
+					"quantity"=>$nonChilledQty,
 					"status"=>"nonchilled",
 				),
-				"quantity"=>0,
+				"quantity"=>$totalQty,
 				"lastServedChilled" => (bool)$inputs['chilled'],
 				"points"=>$product['loyaltyValuePoint']
 			);
-		
-		if((bool)$inputs['chilled']){
 
-			$updateProData['chilled']['quantity'] = (int)$inputs['quantity'];
+		$oldQuantity = 0;
 
-		}else{
+		if($productInCart!==false){
 
-			$updateProData['nonchilled']['quantity'] = (int)$inputs['quantity'];
+			$oldQuantity = (int)$productInCart['quantity'];
+
+			$updateProData['chilled']['status'] = $productInCart['chilled']['status'];
+			$updateProData['nonchilled']['status'] = $productInCart['nonchilled']['status'];
 
 		}
 
-		//$cart->loyalty = array_merge($cart->loyalty,[$proIdToUpdate=>$updateProData]);
-		//Code to update total quantity
-		//$updateProData = $cart->loyalty[$proIdToUpdate];
-
-		$updateProData['quantity'] = (int)$updateProData['chilled']['quantity'] + (int)$updateProData['nonchilled']['quantity'];		
-		$oldQuantity = $productInCart!==false?(int)$productInCart['quantity']:0;
 		$changeInQty = $updateProData['quantity'] - $oldQuantity;//Track change in quantity
 		
 		$loyaltyRequired = (float)($product['loyaltyValuePoint'] * $changeInQty);
@@ -609,6 +600,7 @@ class CartController extends Controller
 		if($changeInQty>0){
 
 			if($loyaltyAvailable < $loyaltyRequired){
+
 				return response([
 						"message"=>"not sufficient loyalty points",
 						"quantity"=>[
@@ -618,18 +610,16 @@ class CartController extends Controller
 					],400);
 			}
 
-		}
-		
-		
+		}		
 
-
-		try {			
-
+		try {
 
 			if($updateProData['quantity']>0){
 
-				$cart->loyalty = array_merge($cart->loyalty,array($proIdToUpdate=>$updateProData));
-				$cart->save();
+				$result = DB::collection('cart')->where('_id', new MongoId($id))
+										->update(["loyalty.".$proIdToUpdate=>$updateProData], ['upsert' => true]);
+				// $cart->loyalty = array_merge($cart->loyalty,array($proIdToUpdate=>$updateProData));
+
 
 			}else{
 
@@ -641,7 +631,6 @@ class CartController extends Controller
 			$response['success'] = true;
 			$response['message'] = "loyalty product updated successfully";
 
-			
 			$response['change'] = $changeInQty;
 			$response['product'] = $updateProData;
 
@@ -649,12 +638,12 @@ class CartController extends Controller
 
 		} catch(\Exception $e){
 
-			//return response(["success"=>false,"message"=>"Something went worng"]);
-			return response(["success"=>false,"message"=>$e->getMessage()]);
+			return response(["message"=>"Something went worng"],400);
+			return response(["message"=>$e->getMessage()],400);
 
 		}
 
-		return response(["success"=>false,"message"=>"Something went worng"]);
+		return response(["message"=>"Something went worng"],400);
 
 	}
 
@@ -664,8 +653,9 @@ class CartController extends Controller
 
 			$user = Auth::user('user');
 			$userLoyaltyPoints = $user['loyaltyPoints'];
+			$userLoyaltyPoints = 60;
 			
-			$loyaltyPros = $cart->loyalty;
+			$loyaltyPros = $cart->loyalty | [];
 			$pointsUsed = 0;
 			foreach($loyaltyPros as $loyaltyPro){
 				$pointsUsed += ($loyaltyPro['points'] * $loyaltyPro['quantity']);
