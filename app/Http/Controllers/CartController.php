@@ -172,9 +172,10 @@ class CartController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
+
 	public function show(Request $request,$id){
 
-		$cart = Cart::findUpdated($id);
+		$cart = Cart::findUpdated($id);		
 
 		$user = Auth::user('user');
 
@@ -230,7 +231,7 @@ class CartController extends Controller
 
 				if(isset($cart['products'][$key])){
 
-					$cart['products'][$key]['sale'] = $product['proSales'];
+					$cart['products'][$key]['sale'] = @$product['proSales'];
 					unset($product['proSales']);
 					$cart['products'][$key]['product'] = $product;
 

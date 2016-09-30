@@ -31,19 +31,25 @@ class UserAddressRequest extends Request
 			
 			'firstname' => 'required|string|max:100',
 			'lastname' => 'required|string|max:100',
-			'company'=> 'string|max:100',
+			'HBRN' => 'required',
+			'PostalCode' => 'required',			
+			/*'company'=> 'string|max:100',
 			'building'=>'string|max:100',
 			'street'=>'required|string|max:100',
 			'postal'=>'required|string|max:10',
 			'house'=>'required|string|max:10',
 			'floor'=>'integer|max:1000',
 			'unit'=>'integer|max:100',
-			'instruction'=>'string|max:500'
+			'instruction'=>'string|max:500'*/
 
 		];
 
+		if(isset($input['manualForm'])){
+			$rules['house'] = 'required|string|max:10';
+		}
 
-		if(isset($input['place'])){
+
+		/*if(isset($input['place'])){
 
 			foreach($input['place']['address_components'] as $addresscom){
 
@@ -64,7 +70,7 @@ class UserAddressRequest extends Request
 
 			$rules['postal']='string|max:10';
 			$rules['house']='string|max:10';
-		}
+		}*/
 		
 		return $rules;
 	}

@@ -63,7 +63,8 @@ class Payment extends Model
         $response_array = json_decode($response, true);
         $ret['response_msg'] = $response_array['response_msg'];
         if(!empty($response_array) && isset($response_array['token_id'])){
-        	$cardInfo = ['token_id' => $response_array['token_id'],'type' => $request['type']];        	
+            $type = (isset($request['type']))?$request['type']:'visa';
+        	$cardInfo = ['token_id' => $response_array['token_id'],'type' => $type];        	
             if($saveUser){
                 $u = User::find($user->_id);
     			$u = $u->push('savedCards',$cardInfo,true);                

@@ -21,12 +21,12 @@
 					<div ng-repeat="(id,productInSale) in sale.products">
 						<div class="currentorderpopupulleft">{{productInSale.product.name}}</div>
 						<div class="currentorderpopupulcenter" ng-init="$parent.total = $parent.total + productInSale.quantity">{{productInSale.quantity}}</div>						
-						<div class="currentorderpopupulright">{{productInSale.product.price | pricingTxt}}</div>
+						<div class="currentorderpopupulright">{{(productInSale.product.price*productInSale.quantity) | pricingTxt}}</div>
 					</div>
 					<div ng-repeat="(id,productInAction) in sale.action">
 						<div class="currentorderpopupulleft">{{productInAction.product.name}}</div>
 						<div class="currentorderpopupulcenter" ng-init="$parent.total = $parent.total + productInAction.quantity">{{productInAction.quantity}}</div>						
-						<div class="currentorderpopupulright">{{productInAction.product.price | pricingTxt}}</div>
+						<div class="currentorderpopupulright">{{(productInAction.product.price*productInAction.quantity) | pricingTxt}}</div>
 					</div>					
 					<div>
 						<div class="currentorderpopupulleft">&nbsp;</div>

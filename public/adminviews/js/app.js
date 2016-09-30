@@ -1574,6 +1574,20 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             }            
         })
 
+        .state("userLayout.stocks.po", {
+            url: "/products/purchase-orders",
+            templateUrl: "adminviews/views/stocks/po.html",
+            data:{
+				pageTitle:'Purchase Orders',
+				breadCrumb:[					
+					{title:'Purchase Orders','uisref':'#'}
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }            
+        })
+
         .state('userLayout.packages', {
             abstract:true,            
             templateUrl:'adminviews/views/auth.html',            
@@ -1971,7 +1985,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             data:{
 				pageTitle:'Company Information',				
 				breadCrumb:[
-					{title:'Company Information','uisref':'#'}					
+					{title:'Company List','uisref':'#'}					
 				]				
 			},
             resolve: {                
@@ -1979,14 +1993,15 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             }
         })
 
-        .state('userLayout.company.form', {
-            url:'/company/edit',
+        .state('userLayout.company.edit', {
+            url:'/company/edit/{companyId}',
 			templateUrl:'adminviews/views/company/form.html',
             controller:'CompanyFormController',
             data:{
 				pageTitle:'Company Edit',				
 				breadCrumb:[
-					{title:'Company Edit','uisref':'#'}					
+					{title:'Company List','uisref':'userLayout.company.list'},
+					{title:'Edit','uisref':'#'}					
 				]				
 			},
             resolve: {                

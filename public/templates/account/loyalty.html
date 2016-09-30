@@ -54,8 +54,8 @@
 	</div>
 
 	<div class="wish-nextprvicvr">
-		<button type="button" class="wishprev" ng-click="prev()"><span class="glyphicon glyphicon-menu-left"></span> Previous </button>
-		<button type="button" class="wishnext" ng-click="next()">Next <span class="glyphicon glyphicon-menu-right"></span></button>
+		<button type="button" class="wishprev" ng-click="prev()" ng-disabled="pagination.start<1"><span class="glyphicon glyphicon-menu-left"></span> Previous </button>
+		<button type="button" class="wishnext" ng-click="next()" ng-disabled="!loyaltyMore">Next <span class="glyphicon glyphicon-menu-right"></span></button>
 	</div>
 
 </div>

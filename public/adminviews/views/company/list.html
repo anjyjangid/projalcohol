@@ -52,7 +52,7 @@
 	
 	var orderGrid = new Datatable();
 
-    	var OrdersTableAjax = function () {    
+    	var ListTableAjax = function () {    
 
         var handleRecords = function () {
 
@@ -74,44 +74,32 @@
                             orderable:false
                         },
                         {
-                            data:'name',
+                            data:'title',
                             orderable:true
-                        },
-                        {
-                            data:'supplierName',
-                            orderable:true
-                        },
-                        {
-                            data:'qtyOneHour',
-                            orderable:true
-                        },
-                        {
-                            data:'qtyAdvance',
-                            orderable:true
-                        },
-                        {
-                            data:'totalQty',
-                            orderable:true
-                        },
-                        {
-                            data:'purchaseOrder',
-                            orderable:true
-                        },
+                        },                        
                         {
                             mData: null,
                             mRender: function(data, type, full) {                           
-                                if(data.priority!=null){
-                                    return (data.priority).toFixed(0)+'%';                                
-                                }
-                                else{
-                                    return '';
+                                if(data.companyType == 1){
+                                    return 'End-consumer Interface (ECI)';                                
+                                }else if(data.companyType == 2){                                
+                                    return 'Business Interface (BI)';
+                                }else{
+                                    return 'Web Interface (WI)';
                                 }
                             },
                             orderable:true
+                        },{
+                            mData: null,
+                            mRender: function(data, type, full) {                           
+                                return '<a ui-sref=userLayout.company.edit({companyId:"'+data._id.$id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>';
+                                
+                            },
+                            orderable:false
                         }
                     ],
                     "ajax": {
-                        "url": "../adminapi/stocks/list",
+                        "url": "../adminapi/company/list",
                         "type": "POST"
                     },
                     "order": [],
@@ -122,12 +110,7 @@
     				        $compile(content)(scope);
     				    });
     					Metronic.initAjax()
-    				},
-                    "createdRow": function ( row, data, index ) {
-                        if ( data.priority == null ) {
-                            $(row).addClass('danger').attr('title','Update stocks attributes for this product');
-                        }
-                    }
+    				}                    
                 }
             });
 
@@ -171,7 +154,7 @@
 
     }();
 
-	//OrdersTableAjax.init();
+	ListTableAjax.init();
 
 </script>
 <!-- END MAIN JS

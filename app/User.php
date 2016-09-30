@@ -13,6 +13,8 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 use MongoId;
 
+use GuzzleHttp\Client;
+use DB;
 class User extends Eloquent implements AuthenticatableContract,
                                     AuthorizableContract,
                                     CanResetPasswordContract
@@ -78,5 +80,59 @@ class User extends Eloquent implements AuthenticatableContract,
         return $customer;
 
     }      
+
+    public static function searchLocation($searchVal,$live = false){             
+        
+        $token = '';
+
+        $cTimestamp = (int)strtotime(date('Y-m-d'));
+
+        $getToken = DB::collection('settings')->where('_id', 'mapSearch')->where('validity', $cTimestamp)->first();
+
+        if($getToken){
+            $token = $getToken['token'];
+        }else{
+
+            $accessKEY = 'vPBfQM5FomGus4Wx/0jfJcOcuoAHJPlR9LWiFrvt6BQFxSvcqeNC1dpYT5AA81WHIKKMzVnUP2c4OQEpmLtXaaYuuy2aaKF0w+unBoHjxYKh0zu0V8StFlU3iVTlLyOe|3Aq1GbPZzAY=';
+
+            $fetchToken = json_decode(file_get_contents('http://www.onemap.sg/API/services.svc/getToken?accessKEY='.$accessKEY), true);
+
+            if(isset($fetchToken['GetToken'][0]['NewToken'])){
+                $token = $fetchToken['GetToken'][0]['NewToken'];
+                DB::collection('settings')->raw()->update(['_id'=>'mapSearch'],['$set'=>['validity'=>$cTimestamp,'token'=>$token]],['upsert'=>true,'multi'=>false]);    
+            }
+            
+        }
+
+        $searchVal = urlencode($searchVal);
+
+        /*$json = json_decode(file_get_contents('http://www.onemap.sg/API/services.svc/basicSearch?token='.$token.'&wc=SEARCHVAL%20LIKE%20%27$'.$searchVal.'$%27&returnGeom=0&rset=1&getAddrDetl=Y'), true);
+
+        $json2 = json_decode(file_get_contents('http://www.onemap.sg/APIV2/services.svc/basicSearchV2?token='.$token.'&wc=SEARCHVAL%20LIKE%20%27$'.$searchVal.'$%27&returnGeom=0&rset=1&projSys=WGS84'), true);*/
+
+        $json = json_decode(file_get_contents('http://www.onemap.sg/API/services.svc/basicSearch?token='.$token.'&searchVal='.$searchVal.'&returnGeom=0&rset=1&getAddrDetl=Y'), true);
+
+        $json2 = json_decode(file_get_contents('http://www.onemap.sg/APIV2/services.svc/basicSearchV2?token='.$token.'&searchVal='.$searchVal.'&returnGeom=0&rset=1&projSys=WGS84'), true);
+
+        $response = [];
+
+        if(isset($json['SearchResults']) && isset($json['SearchResults'][0]['PageCount'])){
+            foreach ($json['SearchResults'] as $key => $value) {                
+                if(isset($value['PageCount'])) continue;
+
+                if(isset($value['PostalCode']) && trim($value['PostalCode']) == '') continue;
+                
+                $value['LAT'] = $json2['SearchResults'][$key]['Y'];
+                $value['LNG'] = $json2['SearchResults'][$key]['X'];
+                $response[] = $value;
+            } 
+
+            if(isset($response[0]['ErrorMessage'])){
+              $response = [];  
+            }          
+        }
+
+        return $response;    
+     }
     
 }
