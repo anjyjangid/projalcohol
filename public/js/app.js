@@ -13,7 +13,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ngScrollbars',
 	'ngMessages',	
 	'ngMap',
-	'vAccordion',	
+	'vAccordion',
 	'alcoholCart.directives',
 	'angularFblogin',
 	'ngPayments'

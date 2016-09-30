@@ -40,7 +40,7 @@
 
 					</td>
 					<td>
-						<div class="prod_chilled" ng-class="{notchilled:sale.chilled,invisible:cart.nonchilled}" ng-click="sale.updateChilledStatus()">
+						<div class="prod_chilled" ng-class="{notchilled:!sale.chilled,invisible:cart.nonchilled}" ng-click="alcoholCart.saleChilled(sale)">
 						<span>Chilled</span>
 						<div class="prod_chilled_icon"></div>
 						</div>
@@ -54,13 +54,13 @@
 						<div class="orderhistry2price">{{sale.price | pricingTxt}}</div>
 					</td>
 					<td> 
-						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="sale.remove()"><i class="glyphicon glyphicon-trash"></i></a>
+						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="removeSale(sale)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 
 				</tr>
 
-				<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getProducts()"></tr>
-				<tr ng-hide="cartproduct.remainingQty == 0" ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0">
+				<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getProducts()" ng-init="cartproduct.setStateRemainQty()"></tr>
+				<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0 && cartproduct['remain'+type]>0" >
 
 					<td width="52%">
 
@@ -101,12 +101,12 @@
 					<td>
 						<div class="checkoutmiddlevlauediv">
 
-							<input type="text" ng-model="cartproduct[type]" value="cartproduct[type]" min="0" mquantity="cartproduct[type+'Max']" ng-touch-spin on-increment="addtocart(cartproduct.product._id,type)" on-decrement="addtocart(cartproduct.product._id,type)">
+							<input type="text" ng-model="cartproduct[type]" value="cartproduct[type]" min="0" remain="cartproduct['remain'+type]" mquantity="cartproduct[type+'Max']" ng-touch-spin on-increment="addtocart(cartproduct.product._id.$id,type,up)" on-decrement="addtocart(cartproduct.product._id.$id,type,down)">
 
 						</div>
 					</td>
 					<td>
-						<div class="orderhistry2price">{{cartproduct.discountedUnitPrice * cartproduct[type] | pricingTxt}}</div>
+						<div class="orderhistry2price">{{cartproduct.discountedUnitPrice * cartproduct['remain'+type] | pricingTxt}}</div>
 					</td>
 					<td> 
 						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="remove(key,type)"><i class="glyphicon glyphicon-trash"></i></a>

@@ -1520,10 +1520,13 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 	}
 
+	$scope.addtocart = function(key,type,direction){
 
+		var proObj = $scope.cart.products[key];
 
+		
 
-	$scope.addtocart = function(key,type){
+		
 
 		if(typeof $scope.proUpdateTimeOut!=="undefined"){
 			$timeout.cancel($scope.proUpdateTimeOut);
@@ -1531,12 +1534,19 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 		$scope.proUpdateTimeOut = $timeout(function(){
 
-			
-
-				alcoholCart.addItem(key,$scope.cart.products[key].qChilled,true);			
-				alcoholCart.addItem(key,$scope.cart.products[key].qNChilled,false);
-
+			var quantity = {
+				chilled : parseInt(proObj.qChilled),
+				nonChilled : parseInt(proObj.qNChilled)
+			}
+			alcoholCart.addItem(key,quantity,proObj.servedAs).then(
+				function(response){
+					$scope.isInCart = true;
+				},
+				function(errRes){
 					
+				}
+
+			);								
 
 		},1500)
 
@@ -1551,6 +1561,22 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 		}
 
 	};
+
+	$scope.removeSale = function(saleObj){
+
+		var id = saleObj.getId();
+		id = id.$id;
+
+		alcoholCart.removeSale(id).then(
+			function(response){
+
+			},
+			function(errRes){
+
+			}
+		);
+
+	}
 
 	$scope.updateGiftCard = function(uid){
 

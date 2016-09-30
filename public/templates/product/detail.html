@@ -89,8 +89,8 @@
 			<div class="productslide_addbutton">
 				<div class="cartbtn" ng-if="product.quantity || product.outOfStockType == 2">
 					
-					<div class="addcart only-button" ng-click="addtocart()" ng-if="!isInCart"><span></span>add to cart</div>
-					<div class="addcart only-button" ng-click="addtocart()" ng-if="isInCart"><span></span>Update cart</div>
+					<div class="addcart only-button" ng-click="addtocart()" ng-if="!product.isInCart"><span></span>add to cart</div>
+					<div class="addcart only-button" ng-click="addtocart()" ng-if="product.isInCart"><span></span>Update cart</div>
 
 				</div>				
 				<div class="row">			

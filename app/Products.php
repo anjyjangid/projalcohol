@@ -666,7 +666,8 @@ class Products extends Eloquent
 								'description' =>  1,
 								'price' => 1,
 								'categories' => 1,
-								'categoriesObject'=>1,
+								'subCat'=>1,
+								'parentCat'=>1,
 								'imageFiles' => 1,
 								'name' => 1,
 								'slug' => 1,
@@ -708,7 +709,7 @@ class Products extends Eloquent
 						[ // lookup for Parent Category Sale
 							'$lookup' => [
 								'from' => 'sale',
-								'localField' => 'catParent', 
+								'localField' => 'parentCat._id', 
 								'foreignField' => 'saleCategoryObjectId', 
 								'as' => 'pCatSale'
 							]
@@ -716,7 +717,7 @@ class Products extends Eloquent
 						[ // lookup for Sub Category Sale
 							'$lookup' => [
 								'from' => 'sale',
-								'localField' => 'catSubParent',
+								'localField' => 'subCat._id',
 								'foreignField' => 'saleCategoryObjectId',
 								'as' => 'catSale'
 							]

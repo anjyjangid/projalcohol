@@ -19,6 +19,7 @@ AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$
 
 			}).success(function(response) {
 
+				
 				_self.$restore(response.list);
 				d.resolve(response.list);
 
