@@ -498,7 +498,7 @@ AlcoholDelivery.factory('GiftingProduct',['$filter',function($filter){
 
 }]);
 
-AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct',function($http,$q,AlcoholProduct){
+AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct','CreditCertificate',function($http,$q,AlcoholProduct,CreditCertificate){
 	
 	this.getProducts = function(params){
 
@@ -623,6 +623,47 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct',function
 				},products);
 				
 				defer.resolve(products);
+
+			},
+			function(errorRes){
+
+				defer.reject(errorRes.data);
+
+			}
+
+		)
+
+		return defer.promise;
+	}
+
+	this.getCreditCertificates = function(params){
+
+		var defer = $q.defer();
+
+		var defaultParams = {
+			
+			filter : null,
+			sort : 'new_asc',
+
+		}
+
+		angular.extend(defaultParams,params) // this will overwrite passed params to default
+
+		$http.get("loyaltystore/credits",{params : defaultParams}).then(
+
+			function(successRes){
+
+				var certificates = [];
+				
+				angular.forEach(successRes.data,function(cc,key){
+
+					var newCertificate = new CreditCertificate(cc);
+					this.push(newCertificate);
+
+				},certificates);
+				
+
+				defer.resolve(certificates);
 
 			},
 			function(errorRes){
@@ -766,8 +807,6 @@ AlcoholDelivery.factory('AlcoholProduct',[
 			slug : saleProduct.slug
 		}
 
-
-
 	}
 
 	product.prototype.getTotalQty = function(){
@@ -780,7 +819,7 @@ AlcoholDelivery.factory('AlcoholProduct',[
 			var p = this;
 		}
 
-		var productAvailQty = parseInt(p.quantity);		
+		var productAvailQty = parseInt(p.quantity);
 
 		this.addBtnAllowed = true;
 
@@ -790,7 +829,7 @@ AlcoholDelivery.factory('AlcoholProduct',[
 				
 				this.addBtnAllowed = false;
 
-			}			
+			}
 
 		}
 
@@ -810,9 +849,10 @@ AlcoholDelivery.factory('AlcoholProduct',[
 				    var userloyaltyPointsDue = userloyaltyPoints - pointsInCart;
 
 					var point = parseFloat(userloyaltyPointsDue);
+
 					var pointsRequired = this.loyaltyValue.point;
 
-					if(point < pointsRequired){
+					if(point < pointsRequired && !this.isInCart){
 						notSufficient = true;
 					}
 				}
@@ -877,12 +917,12 @@ AlcoholDelivery.factory('AlcoholProduct',[
 	}
 
 	product.prototype.setPrice = function(p){
-
+		var _product = this;
 		switch(this.type){
 			case 1:
 				if(typeof p.loyaltyValueType !== 'undefined'){
 
-					this.loyaltyValue = {
+					_product.loyaltyValue = {
 						type : parseInt(p.loyaltyValueType),
 						point : p.loyaltyValuePoint || 0,
 						price : p.loyaltyValuePrice || 0,
@@ -972,11 +1012,10 @@ AlcoholDelivery.factory('AlcoholProduct',[
 		this.shortDescription = p.shortDescription;
 		this.sku = p.sku;
 		this.slug = p.slug;
-		
 
 	}
 
-	product.prototype.addToCart = function(){
+	product.prototype.addToCart = function() {
 
 		var _product = this;
 
@@ -1002,59 +1041,60 @@ AlcoholDelivery.factory('AlcoholProduct',[
 					defer.reject({'notSufficient':true});
 
 				}
+
+				alcoholCart.setLoyaltyPointsInCart();
+
 				alcoholCart.addLoyaltyProduct(_product._id,quantity,_product.servechilled).then(
 
 					function(successRes){
-
-						if(successRes.success){
-
-							switch(successRes.code){
+						
+						switch(successRes.code){
 								case 100:
 
 									$timeout(function(){
-									$mdToast.show({
-										controller:function($scope){
+										$mdToast.show({
+											controller:function($scope){
 
-											$scope.qChilled = 0;
-											$scope.qNchilled = 0;
+												$scope.qChilled = 0;
+												$scope.qNchilled = 0;
 
-											$scope.closeToast = function(){
-												$mdToast.hide();
-											}
-										},
-										templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
-										parent : $element,											
-										position: 'top center',
-										hideDelay:10000
-									});
+												$scope.closeToast = function(){
+													$mdToast.hide();
+												}
+											},
+											templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+											parent : $element,											
+											position: 'top center',
+											hideDelay:10000
+										});
 									},1000);
 
 								break;
 								case 101:
 
 									$timeout(function(){
-									$mdToast.show({
-										controller:function($scope){
 
-											$scope.qChilled = 0;
-											$scope.qNchilled = 0;
+										$mdToast.show({
+											controller:function($scope){
 
-											$scope.closeToast = function(){
-												$mdToast.hide();
-											}
-										},											
-										templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
-										parent : $element,											
-										position: 'top center',
-										hideDelay:10000
-									});
+												$scope.qChilled = 0;
+												$scope.qNchilled = 0;
+
+												$scope.closeToast = function(){
+													$mdToast.hide();
+												}
+											},											
+											templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+											parent : $element,											
+											position: 'top center',
+											hideDelay:10000
+										});
+
 									},1000);
 
 								break;
 
 							}
-							
-						}
 
 					},
 					function(errorRes){
@@ -1147,3 +1187,64 @@ AlcoholDelivery.factory('AlcoholProduct',[
 	return product;
 
 }]);
+
+AlcoholDelivery.factory('CreditCertificate',['alcoholCart','$q',function(alcoholCart,$q){
+	
+	var certificate = function(data){
+
+		this.setQuantity(data);
+		this.setLoyalty(data.loyalty);
+		this.setValue(data.value);
+		this.setCommonSetings();
+
+	}
+
+
+	certificate.prototype.setQuantity = function(credit){
+
+		isInCart = alcoholCart.getCreditByValue(credit.value);
+
+		if(isInCart===false){
+			this.qNChilled = 0;
+		}else{
+			this.qNChilled = isInCart.quantity;
+		}		
+
+	};
+
+	certificate.prototype.setCommonSetings = function(){
+
+		this.servechilled = false;
+
+	}
+
+	certificate.prototype.setLoyalty = function(loyalty){
+
+		if (loyalty)  this.loyalty = parseInt(loyalty);
+		else {
+			$log.error('Loyalty must be provided');
+		}
+
+	};
+
+	certificate.prototype.setValue = function(value){
+
+		if (value)  this.value = parseFloat(value);
+		else {
+			$log.error('Value must be provided');
+		}
+
+	};
+
+	certificate.prototype.addToCart = function(){
+
+		var defer = $q.defer();
+
+			
+
+		return defer.promise;
+	};
+
+	return certificate;
+
+}])

@@ -41,7 +41,6 @@ AlcoholDelivery.config(['$controllerProvider', function($controllerProvider) {
 
 }]);
 
-
 AlcoholDelivery.filter('capitalize', function() {
 		return function(input, all) {
 			var reg = (all) ? /([^\W_]+[^\s-]*) */g : /([^\W_]+[^\s-]*)/;
@@ -398,7 +397,7 @@ AlcoholDelivery.factory('ScrollPagination', function($http,ProductService) {
 	// 		sortby:this.sortby
 	// 	}
 
- //    })
+ 	//  })
 
     ProductService.getProducts({
 
@@ -409,7 +408,7 @@ AlcoholDelivery.factory('ScrollPagination', function($http,ProductService) {
 		sort:this.sortby
 
 	}).then(function(items){
-
+		
 		// _self.totalResult = result.data.total;
 		for (var i = 0; i < items.length; i++) {
 			_self.items.push(items[i]);

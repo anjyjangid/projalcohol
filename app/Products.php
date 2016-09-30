@@ -626,7 +626,10 @@ class Products extends Eloquent
 								'express_delivery_bulk' => 1,
 								'outOfStockType' => 1,
 								'availabilityDays' => 1,
-								'availabilityTime' => 1
+								'availabilityTime' => 1,
+								'loyaltyValueType' => 1,
+								'loyaltyValuePoint' => 1,
+								'loyaltyValuePrice' => 1
 							]
 						],
 						[
@@ -680,6 +683,10 @@ class Products extends Eloquent
 								'outOfStockType' => 1,
 								'availabilityDays' => 1,
 								'availabilityTime' => 1,
+
+								'loyaltyValueType' => 1,
+								'loyaltyValuePoint' => 1,
+								'loyaltyValuePrice' => 1,
 
 								'regular_express_delivery' => [
 									'$ifNull' => [ '$regular_express_delivery',
@@ -763,6 +770,10 @@ class Products extends Eloquent
 								'availabilityTime' => 1,
 								'regular_express_delivery' => 1,
 								'express_delivery_bulk' => 1,
+
+								'loyaltyValueType' => 1,
+								'loyaltyValuePoint' => 1,
+								'loyaltyValuePrice' => 1
 							]
 						],
 						[
@@ -790,6 +801,10 @@ class Products extends Eloquent
 								'availabilityTime' => 1,
 								'regular_express_delivery' => 1,
 								'express_delivery_bulk' => 1,
+
+								'loyaltyValueType' => 1,
+								'loyaltyValuePoint' => 1,
+								'loyaltyValuePrice' => 1
 							]
 						]
 

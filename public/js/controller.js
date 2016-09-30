@@ -1430,8 +1430,6 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 					});
 
-					
-
 				}
 
 			}
@@ -1491,11 +1489,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 	$scope.addtocart = function(key,type,direction){
 
-		var proObj = $scope.cart.products[key];
-
-		
-
-		
+		var proObj = $scope.cart.products[key];	
 
 		if(typeof $scope.proUpdateTimeOut!=="undefined"){
 			$timeout.cancel($scope.proUpdateTimeOut);
@@ -3268,8 +3262,8 @@ AlcoholDelivery.controller('SearchController', [
 }]);
 
 AlcoholDelivery.controller('LoyaltyStoreController', [
-			'$q', '$http', '$scope', 'ScrollPagination',"UserService","$stateParams","alcoholCart","$timeout", 
-	function($q, $http, $scope, ScrollPagination,userService,$stateParams,alcoholCart,$timeout){
+			'$q', '$http', '$scope', 'ScrollPagination',"UserService","$stateParams","alcoholCart","ProductService","$timeout", 
+	function($q, $http, $scope, ScrollPagination,userService,$stateParams,alcoholCart,ProductService,$timeout){
 		
 		var user = userService.currentUser;
 
@@ -3277,12 +3271,16 @@ AlcoholDelivery.controller('LoyaltyStoreController', [
 		$scope.filter = $stateParams.filter;
 		$scope.sortby = $stateParams.sort;
 
-    	$scope.products = new ScrollPagination();
+		$scope.products = new ScrollPagination();
 
-    	$scope.credits = {};    	
+		$scope.credits = {};
+		$scope.availableLoyaltyPoints = alcoholCart.availableLoyaltyPoints;
 
-		$scope.$watch(function(){return alcoholCart.getLoyaltyPointsInCart();},function(newValue,oldValue){
+		alcoholCart.setLoyaltyPointsInCart();
 
+		$scope.$watch(alcoholCart.availableLoyaltyPoints,function(newValue,oldValue){
+console.log("ok");
+			
 			angular.forEach($scope.products.items, function(product,key){
 
 				product.setAddBtnState();
@@ -3292,12 +3290,13 @@ AlcoholDelivery.controller('LoyaltyStoreController', [
 		});    	
 
 
-    	$http.get('loyaltystore/credits').then(
+		ProductService.getCreditCertificates().then(
 
     		function(response){
 
-				$scope.credits = response.data;
-				
+				$scope.credits = response;
+				console.log($scope.credits);
+
     		},
     		function(errorRes){
 

@@ -21,7 +21,7 @@
 	<!-- Add to cart button to add non chilled product start -->
 	<div class="cartbtn" ng-if="!product.servechilled">
 	
-		<div class="addcart" ng-click="activeAddToCart()" ng-if="product.qNChilled<1 && !addMoreCustom" role="button" tabindex="0"><span></span>add to cart</div>
+		<div class="addcart" ng-click="activeAddToCart()" ng-if="product.qNChilled<1 && !addMoreCustom" role="button"><span></span>add to cart</div>
 
 		<div class="addmore" ng-if="product.qNChilled>0 && !addMoreCustom">
 			<input type="text" ng-model="product.qNChilled" value="product.qNChilled" min="0" mquantity="product.nonChilledMaxQuantity" ng-touch-spin on-increment="addtocart()" on-decrement="addtocart()" vertical="true">
