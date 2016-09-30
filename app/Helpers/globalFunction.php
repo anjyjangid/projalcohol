@@ -54,4 +54,10 @@
 
 	}
 
+	// Returns the next highest integer value by rounding up number if necessary. optional significance specifies the multiple
+	// used initially for applying tread offer based smart quantity in purchase order
+    function ceiling($number, $significance = 1) {
+        return ( is_numeric($number) && is_numeric($significance) ) ? (ceil($number/$significance)*$significance) : false;
+    }
+
 ?>

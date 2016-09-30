@@ -5,10 +5,13 @@
 				 <div class="checkoutstep5-left-first">
 					 <div class="checkoutstep5-left-first-left">
 						 <div class="checkoutstep5-left-first-lefttext">Delivery Address</div>
-						 <div class="checkoutstep5-left-first-lefttitle">
-						 	<span ng-if="address.detail.street">{{address.detail.street}},</span>
-						 	<span ng-if="address.detail.house">{{address.detail.house}},</span>
-						 	<span ng-if="address.detail.postal">{{address.detail.postal}}</span>
+						 <div class="checkoutstep5-left-first-lefttitle">						 							 	
+						 	<span ng-bind="address.detail.house"></span> 
+						 	<span ng-bind="address.detail.HBRN"></span>, 
+						 	<div ng-if="address.detail.FLOOR || address.detail.FLOOR">
+								<span ng-if="address.detail.FLOOR">#{{address.detail.FLOOR}} - </span> <span ng-if="address.detail.UNIT">{{address.detail.UNIT}}</span>
+							</div>
+						 	Singapore - <span ng-bind="address.detail.PostalCode"></span>						 	
 						 </div>
 					 </div>
 					 <a class="checkoutstep5-left-edit" ui-sref="mainLayout.checkout.address"><img src="images/checkoutstep5-editimg.png"></a>

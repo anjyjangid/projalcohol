@@ -96,6 +96,12 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::resource('stocks', 'Admin\StocksController',['only'=>['store']]);
 	Route::controller('stocks', 'Admin\StocksController');
 
+	Route::resource('company', 'Admin\CompanyController',['only'=>['show']]);
+	Route::controller('company', 'Admin\CompanyController');
+
+	Route::resource('purchaseorder', 'Admin\PurchaseOrderController');
+	Route::controller('purchaseorder', 'Admin\PurchaseOrderController');
+
 });
 
 Route::group(['prefix' => 'admin'], function () {					
@@ -229,35 +235,29 @@ Route::get('products/i/{folder}/{filename}', function ($folder,$filename)
     return Image::make(storage_path('products/') .$folder. '/' . $filename)->response();
 
 });
-Route::get('products/i/{filename}', function ($filename)
+
+//COMMON IMAGE ROUTES 
+Route::get('{storageFolder}/i/{filename}', function ($storageFolder,$filename)
 {
-	if(!file_exists(storage_path('products') . '/' . $filename)){
+	/*
+	* $storageFolder possible values
+	* 
+	* products
+	* packages
+	* sale	
+	* gifts
+	* giftcategory
+	* company
+	*
+	*/
+
+	if(!file_exists(storage_path($storageFolder) . '/' . $filename)){
 		$filename = "product-default.jpg";
 	}
-    return Image::make(storage_path('products') . '/' . $filename)->response();
-});
-/*PRODUCT IMAGE ROUTUING*/
-
-Route::get('packages/i/{filename}', function ($filename)
-{
-    return Image::make(storage_path('packages') . '/' . $filename)->response();
+    return Image::make(storage_path($storageFolder) . '/' . $filename)->response();
 });
 
-Route::get('sale/i/{filename}', function ($filename)
-{
-    return Image::make(storage_path('sale') . '/' . $filename)->response();
-});
-
-Route::get('gifts/i/{filename}', function ($filename)
-{
-    return Image::make(storage_path('gifts') . '/' . $filename)->response();
-});
-
-Route::get('giftcategory/i/{filename}', function ($filename)
-{
-    return Image::make(storage_path('giftcategory') . '/' . $filename)->response();
-});
-
+//ASSET IMAGE ROUTES
 Route::get('asset/i/{filename}', function ($filename)
 {
     return Image::make(public_path('img') . '/' . $filename)->response();

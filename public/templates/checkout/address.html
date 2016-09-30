@@ -1,44 +1,43 @@
 	<div class="shiping_add_box">
 	<div class="cover_div_addsboxs">
-	<div class="coverboxsegment_div">
+	<div class="addressbook-btmpannelcover cartaddresses" delivery="delivery" user-addresses></div>
 	
-	<!-- Address Boxes Start-->
-	<div class="div_addsboxs" ng-class="{active:delivery.address.key == key}" ng-repeat="(key, address) in addresses" >
-		<div class="addsboxs_innerdiv">
-			<div class="cover_rt_lftdiv">
-				<div class="rgt_iconadd_div"><img data-target="#Modalmapadess" data-toggle="modal" src="images/add_pic_iconrt.png"></div>
-				<div class="lft_textadd_div">
-					<div class="add_alltext">
-						<div class="plac_divetx">{{address.firstname +' '+address.lastname}}</div>
-						<div class="gry_text_div">{{address.street}}</div>
-						<div class="gry_text_div">{{address.house}}</div>
-						<div class="gry_text_div">Singapore - {{address.postal}}</div>
+	<!-- <div class="coverboxsegment_div">
+		<div class="div_addsboxs" ng-class="{active:delivery.address.key == key}" ng-repeat="(key, address) in addresses" >
+			<div class="addsboxs_innerdiv">
+				<div class="cover_rt_lftdiv">
+					<div class="rgt_iconadd_div"><img data-target="#Modalmapadess" data-toggle="modal" src="images/add_pic_iconrt.png"></div>
+					<div class="lft_textadd_div">
+						<div class="add_alltext">
+							<div class="plac_divetx">{{address.firstname +' '+address.lastname}}</div>
+							<div class="gry_text_div">{{address.street}}</div>
+							<div class="gry_text_div">{{address.house}}</div>
+							<div class="gry_text_div">Singapore - {{address.postal}}</div>
 
-						<div class="gry_text_div" ng-if="address.phone">Phone - {{address.phone}}</div>
-						<div class="gry_text_div" ng-if="user.phone">Phone - {{user.phone}}</div>								
+							<div class="gry_text_div" ng-if="address.phone">Phone - {{address.phone}}</div>
+							<div class="gry_text_div" ng-if="user.phone">Phone - {{user.phone}}</div>								
 
-					</div>
-					<div class="edit_del_icondiv">
-						<span><img ng-click="removeAddress(key)" src="images/del_pic2icon.png"></span>
-						<span><img ng-click="updateAddressModal($event,key)" src="images/edit-pic1pen.png"></span>
+						</div>
+						<div class="edit_del_icondiv">
+							<span><img ng-click="removeAddress(key)" src="images/del_pic2icon.png"></span>
+							<span><img ng-click="updateAddressModal($event,key)" src="images/edit-pic1pen.png"></span>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="yelo_btn_div">
-				<button data-toggle="modal" type="button" class="yelo_btn" ng-click="setSelectedAddress(key)">ship to this address</button>
+				<div class="yelo_btn_div">
+					<button data-toggle="modal" type="button" class="yelo_btn" ng-click="setSelectedAddress(key)">ship to this address</button>
+				</div>
 			</div>
 		</div>
-	</div>
-	<!-- Address Boxes Ends-->
+	
+		 <div data-target="#Modal-addnewaddress" data-toggle="modal" class="add-newaddbox" ng-click="showAddressViaMapModal($event)">
+			<div class="add-newaddinner">
+				<div class="pic-addnew_add"><img src="images/add_new-dumipic.png"></div>
+			 <div class="pic-addnew_text">Add new address</div>
 
-	 <div data-target="#Modal-addnewaddress" data-toggle="modal" class="add-newaddbox" ng-click="showAddressViaMapModal($event)">
-		<div class="add-newaddinner">
-			<div class="pic-addnew_add"><img src="images/add_new-dumipic.png"></div>
-		 <div class="pic-addnew_text">Add new address</div>
-
-		</div>
-	 </div>
-	 </div>
+			</div>
+		 </div>
+	 </div> -->
 	 <div class="specil_intertion_div">
 		<div class="div_specil_intertion_title">Special Instructions</div>
 		<div class="cover_secilinform">
@@ -72,3 +71,6 @@
 		<button class="checkoutcheckoutnowbutton2" ng-click="addressCheckout()">Next<span><img src="images/leftarrowpic.png"></span></button>
 	</div>
 </div>
+<!-- <pre>
+	{{delivery|json}}
+</pre> -->

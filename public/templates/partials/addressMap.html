@@ -1,5 +1,5 @@
 <md-dialog aria-label="Mango (Fruit)"  >
-	<form>
+	<form name="addressForm">
 		<md-toolbar ng-if="address.step==1">
 			<div class="md-toolbar-tools alcohal_addadress_header">
 				<div class="alcohal_addadress_headercurmain">            
@@ -15,12 +15,42 @@
 			<div class="md-dialog-content alcohaladdadrebody">
 				<div class="row">
 					<div class="col-sm-4 enter-locationdiv"> Enter your postal code or location name
-						<div>
-							<input places-auto-complete class="alcohalpopuptext" ng-model="address.typed" zoom="{{zoom}}"  component-restrictions="{{restrictions}}" types="{{types}}" on-place-changed="placeChanged()" />
-							<div ng-click="showAddressViaManuallyModal()">Can't find your address?</div>
+						<md-autocomplete				          
+				            md-no-cache="noCache"
+				            md-selected-item="selectedItem"				            
+				            md-search-text="addressData.SEARCHTEXT"
+				            md-selected-item-change="selectedItemChange(item)"
+				            md-items="item in querySearch(addressData.SEARCHTEXT)"
+				            md-item-text="item.HBRN+', ' +item.PostalCode"
+				            md-min-length="3"
+				            placeholder="Postal code or location name" 
+				            clear-autocomplete id="Auto" 
+				            md-menu-showing="openSuggestions()"
+				            md-input-name="addressData.SEARCHTEXT"
+				            >
+					      <md-item-template>
+					      	<span md-highlight-text="addressData.SEARCHTEXT" md-highlight-flags="^i"> {{item.HBRN}}, {{item.PostalCode}} </span>
+					      </md-item-template>
+					      <md-not-found> No location matching with "{{addressData.SEARCHTEXT}}".</md-not-found>					      					    	
+					    </md-autocomplete>
+					    <div ng-show="addressData.CATEGORY == 'Building'">
+							Building name (optional)
+							<input type="text"  ng-model="addressData.BLDG_NAME" class="alcohalpopuptext" ng-readonly="">							
+							<!-- <input places-auto-complete class="alcohalpopuptext" ng-model="address.typed" zoom="{{zoom}}"  component-restrictions="{{restrictions}}" types="{{types}}" on-place-changed="placeChanged()" /> -->
+							<div class="row">
+								<div class="col-sm-6">
+									Floor
+									<input type="text"  ng-model="addressData.FLOOR" class="alcohalpopuptext">							
+								</div>
+								<div class="col-sm-6">
+									Unit
+									<input type="text"  ng-model="addressData.UNIT" class="alcohalpopuptext">							
+								</div>
+							</div>							
 						</div>
+						<div ng-hide="addressData.PostalCode" ng-click="showAddressForm({ev:$event,key:null})">Can't find your address?</div>
 					</div>
-					<div class="col-sm-8">
+					<div class="col-sm-8">						
 						<ng-map style="width: 100%;height: 400px"></ng-map>
 					</div>
 				</div>
@@ -29,7 +59,7 @@
 		<md-dialog-actions layout="row" ng-if="address.step==1">
 			<div class="modal-footer alcohal_addadressfooter">
 				<div class="alcohalosavebntcvr">
-					<button class="adresssvaebtn" type="button" ng-click="setMapAddress()">SELECT THIS ADDRESS<span> <img src="images/alcholshoporderarrow.png"></span></button>
+					<button ng-disabled="!addressData.PostalCode" class="adresssvaebtn" type="button" ng-click="setMapAddress()">SELECT THIS ADDRESS<span> <img src="images/alcholshoporderarrow.png"></span></button>
 				</div>
 			</div>
 		</md-dialog-actions>
@@ -50,17 +80,17 @@
 				<div class="alcohlinputextcvr">
 					<div class="alcohlinputext" ng:class="{'has-error':errors.firstname[0]}">
 						<label>First Name: <span>*</span></label>
-						<input type="text" class="alcohalpopuptext" ng-model="address.firstname" placeholder="">
+						<input type="text" class="alcohalpopuptext" ng-model="addressData.firstname" placeholder="">
 						<span class="help-block" ng-bind="errors.firstname[0]"></span> </div>
 					<div class="alcohlinputrighttext" ng:class="{'has-error':errors.lastname[0]}">
 						<label>Last Name: <span>*</span></label>
-						<input type="text" class="alcohalpopuptext" ng-model="address.lastname" placeholder="">
+						<input type="text" class="alcohalpopuptext" ng-model="addressData.lastname" placeholder="">
 						<span class="help-block" ng-bind="errors.lastname[0]"></span> </div>
 				</div>
 				<div class="alcohlinputextcvr">
 					<div class="alcohlinputext" ng:class="{'has-error':errors.company[0]}">
 						<label>Company Name (optional)</label>
-						<input type="text" class="alcohalpopuptext" ng-model="address.company" placeholder="">
+						<input type="text" class="alcohalpopuptext" ng-model="addressData.company" placeholder="">
 						<span class="help-block" ng-bind="errors.company[0]"></span> </div>
 				</div>
 				<div class="alcohlinputextcvr">

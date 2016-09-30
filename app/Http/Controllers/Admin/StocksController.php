@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Products;
+use AlcoholDelivery\Stocks;
+use AlcoholDelivery\PurchaseOrder;
 use MongoId;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,7 +21,6 @@ class StocksController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -40,7 +41,7 @@ class StocksController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**
@@ -51,7 +52,6 @@ class StocksController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -88,231 +88,122 @@ class StocksController extends Controller
         //
     }
 
-    public function postList(Request $request)
+    public function postGeneratePo(Request $request)
     {
-        
         $params = $request->all();
+        $params["start"] = 0;
+        $params["length"] = -1;
 
-        extract($params);
-        
-        $model = new Products;
-        $project = ['name' => 1];
+        $stockList = Stocks::orderList($params);
 
-        $query = [];
+        $stockList = $stockList['data'];
+        // return response($stockList,200);
 
-        //JOIN TO STOCKS TABLE TO GET STOCK FOR THE CURRENT STORE
-        $query[]['$lookup'] = [
-            'from'=>'stocks',
-            'localField'=>'_id',
-            'foreignField'=>'productObjId',
-            'as'=>'store'
-        ];
+        $purchaseOrders = array();
 
-        //FILTER THE STORES FOR CURRENT USER
-        $userStoreId = Auth::user('admin')->storeId;
-        $project['store'] = [
-            '$filter'=>[
-                'input' => '$store',
-                'as' => 'store',
-                'cond' => ['$eq'=>['$$store.storeId',$userStoreId]]
-            ]
-        ]; 
-        
-        //JOIN TO ORDER TABLE TO GET QTY FOR ADVANCE ORDERS 
-        $query[]['$lookup'] = [
-            'from' => 'orders',
-            'localField' => '_id',
-            'foreignField' => 'productsLog._id',
-            'as' => 'myOrders'
-        ];
-
-        //FILTER THE ORDERS BY CONDITION OF TYPE AND STATUS
-        $project['advanceOrder'] = [
-            '$filter'=>[
-                'input' => '$myOrders',
-                'as' => 'order',
-                'cond' => [
-                    '$and'=>[
-                        ['$eq'=>['$$order.delivery.type',1]],
-                        ['$eq'=>['$$order.status',0]],
-                    ]
-                ]
-            ]
-        ];
-
-        //PROJECT ALL FIELDS
-        $query[]['$project'] = $project;
-        
-        //UNWIND THE STORE TO GET SINGLE OBJECT
-        $query[]['$unwind'] = [
-            'path' => '$store',
-            'preserveNullAndEmptyArrays' => true
-        ];
-
-        //JOIN TO SUPPLIER TO GET DEFAUL SUPPLIER
-        $query[]['$lookup'] = [
-            'from' => 'dealers',
-            'localField' => 'store.defaultDealerObjId',
-            'foreignField' => '_id',
-            'as' => 'supplier'
-        ];
-
-        $project['supplier'] = '$supplier';
-        $project['store'] = '$store';
-        $project['advanceOrder'] = '$advanceOrder';
-        $project['storeQty'] = ['$cond'=>['$store','$store.quantity',0]];
-        $project['storeMaxQty'] = ['$cond'=>['$store','$store.maxQuantity',0]];
-        $project['storeThreshold'] = ['$cond'=>['$store','$store.threshold',0]];
-
-        //PROJECT ALL FIELDS
-        $query[]['$project'] = $project;
-
-
-
-        //UNWIND THE SUPPLIER TO GET SINGLE SUPPLIER
-        $query[]['$unwind'] = [
-            'path' => '$supplier',
-            'preserveNullAndEmptyArrays' => true
-        ];        
-
-        $query[]['$unwind'] = [
-            'path' => '$advanceOrder',
-            'preserveNullAndEmptyArrays' => true
-        ]; 
-
-        
-        $project['qtyOneHour'] = ['$subtract'=>['$storeMaxQty','$storeQty']];
-
-        $project['advanceOrder'] = '$advanceOrder.productsLog';
-        
-        $query[]['$project'] = $project;
-
-        $project['advanceOrder'] = '$advanceOrder';
-        
-        $project['advanceProductLog'] = [
-            '$filter'=>[
-                'input' => '$advanceOrder',
-                'as' => 'advanceOrder',
-                'cond' => ['$eq'=>['$$advanceOrder._id','$_id']]                
-            ]
-        ];
-
-        $project['qtyOneHour'] = '$qtyOneHour';
-
-        $query[]['$project'] = $project;        
-
-        $query[]['$unwind'] = [
-            'path' => '$advanceProductLog',
-            'preserveNullAndEmptyArrays' => true
-        ];
-
-        $group = [
-            '_id' => '$_id',
-            'name' => ['$first'=>'$name'],
-            'store'=>['$first'=>'$store'],
-            'supplier'=>['$first'=>'$supplier'],
-            'qtyOneHour' => ['$first'=>'$qtyOneHour'],
-            'storeQty' => ['$first'=>'$storeQty'],
-            'storeMaxQty' => ['$first'=>'$storeMaxQty'],
-            'storeThreshold' => ['$first'=>'$storeThreshold'],
-            //'advanceOrder' => ['$push'=>'$advanceOrder'],
-            'qtyAdvance' => ['$sum'=>'$advanceProductLog.quantity']
-        ];
-
-        $query[]['$group'] = $group;
-
-        /*$query[]['$match'] = [
-            'qtyAdvance' => ['$gt'=>0]
-        ];*/
-
-
-
-        /*
-        * PRIORITY FORMULA 
-        * (CQ - AO) / MQ - RT/MQ
-        */
-        $project['qtyAdvance'] = '$qtyAdvance';
-
-        //SET ALL ATTR 0 IF maxQty of store is zero
-
-        $project['priority'] = [
-            '$cond' => [
-                ['$gt'=>['$storeMaxQty',0]],
-                [
-                    '$subtract' => [
-                                    [
-                                        '$multiply' => [
-                                            [
-                                                '$divide' => [
-                                                    [
-                                                        '$subtract' => [
-                                                            '$storeQty','$qtyAdvance'
-                                                        ]
-                                                    ],
-                                                    '$storeMaxQty'
-                                                ]
-                                            ],
-                                            100
-                                        ]
-                                    ],
-                                    [   
-                                        '$multiply' => [
-                                            [
-                                                '$divide' => [
-                                                    '$storeThreshold','$storeMaxQty'
-                                                ]
-                                            ],
-                                            100
-                                        ]
+        $responses = array();
+        foreach ($stockList as $i => $stock) {
+            if($stock['totalQty'] > $stock['purchaseOrder']) {
+                $productTrade = Products::raw()->aggregate([
+                    [
+                        '$match' => [
+                            '_id' => $stock['_id'],
+                            'dealerData' => [
+                                '$elemMatch' => [
+                                    'dealerId' => (string) $stock['supplier']['_id'],
+                                    'tradeValue' => [
+                                        '$gte' => 1
                                     ]
                                 ]
-                ],
-                null
-            ]
-        ];
+                            ]
+                        ]
+                    ],[
+                        '$project' => [ 'dealerData' => 1 ]
+                    ],[
+                        '$unwind' => [
+                            'path' => '$dealerData'
+                        ]
+                    ],[
+                        '$match' => [
+                            'dealerData.dealerId' => (string) $stock['supplier']['_id']
+                        ]
+                    ],[
+                        '$project' => [
+                            'tradeValue' => '$dealerData.tradeValue',
+                            'tradeQuantity' => '$dealerData.tradeQuantity'
+                        ]
+                    ]
+                ]);
 
-        $project['totalQty'] = ['$add' => ['$qtyOneHour','$qtyAdvance']];
+                if(count($productTrade['result'])>0)
+                    $tradeOffer = $productTrade['result'][0]['tradeValue'] + $productTrade['result'][0]['tradeQuantity'];
 
-        $project['purchaseOrder'] = ['$add'=>[0,0]];
+                if(!isset($tradeOffer) || $tradeOffer<1)
+                    $tradeOffer = 1;
 
-        $project['sTitle'] = ['$toLower' => '$name'];
+                $query1 = [
+                    'find' => [
+                        'store' => $stock['store']['storeObjId'],
+                        'supplier' => $stock['supplier']['_id'],
+                        'products._id' => $stock['_id'],
+                        'status' => 0
+                    ],
+                    'update' => [
+                        '$set' => [
+                            'products.$.order' => ceiling($stock['totalQty'], $tradeOffer)
+                        ]
+                    ]
+                ];
 
-        $project['sSupplier'] = ['$toLower' => '$supplier.title'];
-        $project['supplierName'] = ['$cond'=>['$supplier','$supplier.title','No Supplier']];            
+                $query2 = [
+                    'find' => [
+                        'store' => $stock['store']['storeObjId'],
+                        'supplier' => $stock['supplier']['_id'],
+                        'status' => 0
+                    ],
+                    'update' => [
+                        '$push' => [
+                            'products' => [
+                                '_id' => $stock['_id'],
+                                'order' => ceiling($stock['totalQty'], $tradeOffer)
+                            ]
+                        ]
+                    ],
+                    'options' => [
+                        'upsert' => true
+                    ]
+                ];
 
-        $query[]['$project'] = $project;
+                try{
+                    $response = PurchaseOrder::raw()->update($query1['find'], $query1['update']);
+                    if($response['n'] == 0)
+                        $response = PurchaseOrder::raw()->update($query2['find'], $query2['update'], $query2['options']);
+                }
+                catch(\Exception $e) {
+                    $response['ok'] = 0;
+                    $response['error'] = $e;
+                }
 
-        //DEFAULT SORT BY PRIORITY
-        $sort = ['priority'=>1];
-
-        //COL ARRAY FOR SORTING
-        $columns = ['_id','sTitle','sSupplier','qtyOneHour','qtyAdvance','totalQty','purchaseOrder','priority'];
-        if(isset($params['order']) && !empty($params['order'])){            
-            $field = $columns[$params['order'][0]['column']];
-            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
-            $sort = [$field=>$direction];            
+                $responses[] = $response;
+            }
         }
 
-        $query[]['$sort'] = $sort;
+        $success = 0;
+        foreach ($responses as $response) {
+            $success += $response['ok'];
+        }
 
-        $model = $model->raw()->aggregate($query);
+        $responses = [ "success" => ((count($responses)==$success)?1:(($success==0)?-1:0)), "products" => count($responses) ];
+        return response($responses, 200);
+    }
 
-        $iTotalRecords = count($model['result']);
+    public function postList(Request $request)
+    {
 
-        $query[]['$skip'] = (int)$start;
+        $params = $request->all();
 
-        if($length > 0){
-            $query[]['$limit'] = (int)$length;
-            $model = Products::raw()->aggregate($query);
-        }            
-
-        $response = [
-            'recordsTotal' => $iTotalRecords,
-            'recordsFiltered' => $iTotalRecords,
-            'draw' => $draw,
-            'data' => $model['result']            
-        ];
+        $response = Stocks::orderList($params);
 
         return response($response,200);
-    }    
+    }
 }

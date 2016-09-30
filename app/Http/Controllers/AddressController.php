@@ -53,8 +53,21 @@ class AddressController extends Controller
 		
 		$loggeduser = Auth::user('user');
 
+		if(isset($inputs['LAT']) && isset($inputs['LNG'])){
+			$inputs['LAT'] = (float)$inputs['LAT'];
+			$inputs['LNG'] = (float)$inputs['LNG'];
+		}
+
+		if(isset($inputs['X']) && isset($inputs['Y'])){
+			$inputs['X'] = (float)$inputs['X'];
+			$inputs['Y'] = (float)$inputs['Y'];
+		}
+
 		$user = User::find($loggeduser->_id);
 		
+		$user->push('address',$inputs,true);
+
+		return response($user);
 
 		$userAddress = $user->address;
 		$userAddress = (array)$userAddress;

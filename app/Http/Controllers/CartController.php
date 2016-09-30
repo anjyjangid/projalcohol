@@ -171,7 +171,7 @@ class CartController extends Controller
 	public function show(Request $request,$id)
 	{
 		
-		// $id = new MongoId('57e35ef211f6a1250b8b4567');
+		// $id = new MongoId('57e911eb8a976f4e728b457a');
 
 		$cart = Cart::findUpdated($id);		
 
@@ -229,7 +229,7 @@ class CartController extends Controller
 
 				if(isset($cart['products'][$key])){
 
-					$cart['products'][$key]['sale'] = $product['proSales'];
+					$cart['products'][$key]['sale'] = @$product['proSales'];
 					unset($product['proSales']);
 					$cart['products'][$key]['product'] = $product;
 

@@ -22,11 +22,14 @@ class Loyalty extends Model
 
 		$limit = isset($params['limit'])?(int)$params['limit']:10;
 
-		$loyalty = DB::collection('user')->where('_id', $userId)->project(['loyalty' => array('$slice' => [$offset,$limit])]);
+		$loyalty = DB::collection('user')->where('_id', $userId)->project(['loyalty' => array('$slice' => [$offset,($limit+1)])]);
 	
 		$loyalty = $loyalty->first(['loyalty']);		
 
-		return $loyalty['loyalty'];
+		return array(
+			"data" => array_slice($loyalty['loyalty'], 0, $limit),
+			"more" => count($loyalty['loyalty'])>$limit
+		);
 
 	}
 

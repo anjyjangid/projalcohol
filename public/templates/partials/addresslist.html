@@ -1,0 +1,29 @@
+<div class="addressbook-btmpannelcover pointer">
+	<div class="addressbokk-trvaichacovr" ng-class="{active:delivery.address.key == key}" ng-repeat="(key, address) in addresses" style="position: relative;" ng-click="delivery && setSelectedAddress(key)">
+		<div class="addressbok-travis">
+			<span><img src="images/addressbookpic1.png" /></span>
+			<div class="addrestravis-text">{{address.firstname}} {{address.lastname}}</div>
+			<div class="addresseditdltpic">
+				<a ng-click="showAddressForm({ev:$event,key:key}); $event.stopPropagation();"><img src="images/savedcardedit.png"></a>
+				<a ng-click="removeAddress(key); $event.stopPropagation();"><i class="glyphicon glyphicon-trash"></i></a>
+			</div>
+		</div>
+		<div class="addressbok-address">
+			<div ng-if="address.HBRN" class="gry_text_div">
+				<span ng-bind="address.house"></span> {{address.HBRN}}
+			</div>
+			<div ng-if="address.FLOOR || address.FLOOR" class="gry_text_div">
+				<span ng-if="address.FLOOR">#{{address.FLOOR}} - </span> <span ng-if="address.UNIT">{{address.UNIT}}</span>
+			</div>
+			<div ng-if="address.PostalCode" class="gry_text_div">Singapore - {{address.PostalCode}}</div>
+			<div ng-if="address.phone" class="gry_text_div">Phone - {{address.phone}}</div>
+		</div>	
+		<div class="yelo_btn_div selectAddress" ng-if="delivery">
+			<button data-toggle="modal" type="button" class="yelo_btn" >ship to this address</button>
+		</div>	
+	</div>
+	<div class="addressbokk-addnewadresscovr" ng-click="addNewAddress($event)">
+		<img src="images/addnewadrrspic2.png" />
+		<div class="addnewadresstext">Add new address</div>
+	</div>
+</div>

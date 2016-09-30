@@ -775,9 +775,11 @@ AlcoholDelivery.controller('OrderDetailController',['$scope','$rootScope','$stat
 
 }]);
 
-AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','$timeout', '$mdDialog', '$mdMedia', '$http','sweetAlert',function($scope, $rootScope, $state, $timeout, $mdDialog, $mdMedia, $http, sweetAlert){
+AlcoholDelivery.controller('AddressController',[
+	'$timeout','$q','$log','$scope','$rootScope','$state','$timeout', '$mdDialog', '$mdMedia', '$http','sweetAlert',
+	function($timeout, $q, $log, $scope, $rootScope, $state, $timeout, $mdDialog, $mdMedia, $http, sweetAlert){
 
-	$scope.errors = {};
+	/*$scope.errors = {};
 
 	$rootScope.getUserAddress = function(){
 
@@ -804,7 +806,7 @@ AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','
 
 				$scope.address = {
 					step:1
-				}
+				};
 
 				$scope.hide = function() {
 					$mdDialog.hide();
@@ -863,26 +865,26 @@ AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','
 
 				// Google map auto complete code start //
 
-				  $scope.types = "['geocode']";
-				  $scope.restrictions="{country:'sg'}";
-				  $scope.center = "[1.290270, 103.851959]";
-				  $scope.zoom = 2;
+				$scope.types = "['geocode']";
+				$scope.restrictions="{country:'sg'}";
+				$scope.center = "[1.290270, 103.851959]";
+				$scope.zoom = 2;
 
-				  $scope.placeChanged = function() {
-
-				    $scope.address.place = this.getPlace();
-				    var point = $scope.address.place.geometry.location;
-				    $scope.map.setCenter(point);
+				$scope.placeChanged = function() {
+					
+					$scope.address.place = this.getPlace();
+					var point = $scope.address.place.geometry.location;
+					$scope.map.setCenter(point);
 
 					$scope.map.setCenter(point);
 					$scope.map.setZoom(16);
 					$scope.marker.setMap(null);
-    				$scope.marker = new google.maps.Marker({
+					$scope.marker = new google.maps.Marker({
 							            position: point,
 							            map: $scope.map,
 							        });
 
-				  }
+				}
 
 				NgMap.getMap().then(function(map) {
 
@@ -892,18 +894,11 @@ AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','
 
 					setTimeout(function() {
 
-						var point = new google.maps.LatLng(1.290270,103.851959);
+						var point = new google.maps.LatLng(1.3544542534181963,103.86775184667965);
 
 						$scope.map.setCenter(point);
 						$scope.map.setZoom(12);
-						$scope.map.setOptions({draggable: false});
-
-        				// $scope.marker = new google.maps.Marker({
-								    //         position: point,
-								    //         map: $scope.map,
-								    //     });
-
-						
+						$scope.map.setOptions({draggable:true});
 
 					}, 500);
 
@@ -914,20 +909,12 @@ AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','
 
 				$scope.changeAddress = function(){
 
-					setTimeout(function() {
-
-					    var point = $scope.address.place.geometry.location;
-					    $scope.map.setCenter(point);
-
-						$scope.map.setZoom(12);
-						$scope.map.setOptions({draggable: false});
-
-        				$scope.marker = new google.maps.Marker({
-								            position: point,
-								            map: $scope.map,
-								        });
-
-					}, 100);
+					var lat = angular.copy($scope.addressData.LAT);
+					var long = angular.copy($scope.addressData.LNG);
+					var zoom = 18;
+					var item = angular.copy($scope.addressData);
+					
+					$scope.locateMap(lat,long,zoom,item);
 
 					$scope.address.step = 1;
 
@@ -935,33 +922,17 @@ AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','
 
 				$scope.setMapAddress = function(){
 
-					var isValid = validateAddress($scope.address.place);
-
-					if(isValid){
+					// var isValid = validateAddress($scope.address.place);
+					
+					if($scope.addressData.PostalCode){
 						$scope.address.step = 2;
-					}else{
-						sweetAlert.swal({
-
-			                title: "Please choose a valid address.",
-			                text: "",
-			                type: "warning",
-
-			                showCancelButton: true,
-			                confirmButtonColor: "#DD6B55",
-			                confirmButtonText: "Ok",
-			                closeOnConfirm: true,
-			                closeOnCancel: true
-
-			            });
 					}
 
 				}
 
 				$scope.saveAddress = function(){
 
-					$scope.errors = {};
-
-					$http.post("address", $scope.address, {
+					$http.post("address", $scope.addressData, {
 
 				    }).success(function(response) {
 
@@ -975,6 +946,61 @@ AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','
 
 				}
 
+				//NEW ADDRESS SEARCH
+
+				$scope.addressData = {SEARCHTEXT:''};
+				$scope.simulateQuery = true;
+				$scope.isDisabled = false;
+
+				$scope.querySearch = function(query){
+					return $http.get('/site/search-location?q='+query).then(function(result){
+					    return result.data;		    
+					});
+				}
+
+				$scope.selectedItemChange = function(item){					
+					if(item){	
+						lat = item.LAT;
+						long = item.LNG;
+						zoom = 18;
+						var addressData = angular.copy($scope.addressData.SEARCHTEXT);
+						$scope.addressData = angular.copy(item);
+						$scope.addressData.SEARCHTEXT = addressData;
+						$scope.locateMap(lat,long,zoom,item);				
+					}	
+				}
+
+				$scope.locateMap = function(lat,lng,zoom,item) {
+						var point = new google.maps.LatLng(lat,lng);						
+						setTimeout(function() {
+							if($scope.map){
+								$scope.map.setCenter(point);
+								$scope.map.setZoom(zoom);
+								$scope.map.setOptions({draggable:false});
+								//REMOVE THE PREVIOUS MARKER
+								if($scope.marker)
+									$scope.marker.setMap(null);
+
+								if(item.LAT){
+									$scope.marker = new google.maps.Marker({
+							            position: point,
+							            map: $scope.map,
+							        });
+								}				
+							}
+						},500);	
+				}
+
+				$scope.$watch('addressData.SEARCHTEXT',function(newValue,oldValue){
+					if(newValue == ''){
+						$scope.addressData = {};
+						var lat = 1.3544542534181963;
+						var long = 103.86775184667965;
+						var zoom = 12;
+						var item = angular.copy($scope.addressData);
+						$scope.locateMap(lat,long,zoom,item);
+					}
+				});
 			},
 			templateUrl: '/templates/partials/addressMap.html',
 			parent: angular.element(document.body),
@@ -987,7 +1013,7 @@ AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','
 
 		});
 
-	};
+	};	
 
 	function validateAddress(address){
 
@@ -1130,12 +1156,14 @@ AlcoholDelivery.controller('AddressController',['$scope','$rootScope','$state','
 	                    }
 	                }
             );
-	};
+	};*/
 
 }]);
 
 AlcoholDelivery.controller('WishlistController',['$scope','$rootScope','$state','$stateParams','$http','sweetAlert','UserService','alcoholCart','alcoholWishlist',function($scope,$rootScope,$state,$stateParams,$http,sweetAlert,UserService,alcoholCart,alcoholWishlist){
 
+	$scope.page = 0;
+	
 	$scope.alcoholCart = alcoholCart;
 
 	$scope.alcoholWishlist = alcoholWishlist;
@@ -1149,7 +1177,7 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 	$scope.pagination = {
 
 		start : 0,
-		limit : 1,
+		limit : 10,
 
 	}
 
@@ -1158,12 +1186,13 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 		if($scope.pagination.start==0){
 			return;
 		}
-		$scope.pagination.start--;
-
+		$scope.pagination.start-=$scope.pagination.limit;
 	}
+	
 	$scope.next = function(){
 
-		$scope.pagination.start++;
+		if($scope.loyaltyMore)
+			$scope.pagination.start+=$scope.pagination.limit;
 
 	}
 
@@ -1179,7 +1208,9 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 
 			function(response){
 
-				$scope.loyalty = response.data;
+				$scope.loyalty = response.data.data;
+
+				$scope.loyaltyMore = response.data.more;
 
 				$http.get("loyalty/statics").then(
 
@@ -1568,364 +1599,13 @@ AlcoholDelivery.controller('CartAddressController',[
 
 	$scope.delivery = alcoholCart.$cart.delivery;
 
-	$rootScope.getUserAddress = function(){
-
-		$http.get("address")
-			.success(function(response){
-
-				$scope.addresses = response;
-				$rootScope.addresses = $scope.addresses;
-
-			})
-			.error(function(data, status, headers) {
-			   	if(data.auth===false){
-			   		$state.go("mainLayout.checkout.cart");
-			   	}
-			})
-	}
-
-	$rootScope.getUserAddress();
-
-	$scope.showAddressViaMapModal = function(ev) {
-		
-		$mdDialog.show({
-			controller: function($scope, $rootScope, $mdDialog, NgMap, $document) {
-
-				$scope.address = {
-					step:1
-				}
-
-				$scope.hide = function() {
-					$mdDialog.hide();
-				};
-				$scope.cancel = function() {
-					$mdDialog.cancel();
-				};
-				$scope.answer = function(answer) {
-					$mdDialog.hide(answer);
-				};
-
-				$scope.showAddressViaManuallyModal = function(ev) {
-
-					$mdDialog.show({
-						controller: function($scope, $rootScope,$mdDialog, $http) {
-
-							$scope.hide = function() {
-								$mdDialog.hide();
-							};
-							$scope.cancel = function() {
-								$mdDialog.cancel();
-							};
-							$scope.answer = function(answer) {
-								$mdDialog.hide(answer);
-							};
-							$scope.saveAddress = function(){
-
-								$scope.errors = {};
-
-								$http.post("address", $scope.address, {
-
-						        }).success(function(response) {
-
-						        	$scope.errors = {};
-						        	$scope.hide();
-						        	$rootScope.getUserAddress();
-
-						        }).error(function(data, status, headers) {
-						        	$scope.errors = data;
-						        })
-							}
-						},
-						templateUrl: '/templates/partials/addressManually.html',
-						parent: angular.element(document.body),
-						targetEvent: ev,
-						clickOutsideToClose:true
-					})
-					.then(function(answer) {
-						$scope.status = 'You said the information was "' + answer + '".';
-					}, function() {
-						$scope.status = 'You cancelled the dialog.';
-					});
-
-				};
-
-
-				// Google map auto complete code start //
-
-				  $scope.types = "['geocode']";
-				  $scope.restrictions="{country:'sg'}";
-				  $scope.center = "[1.290270, 103.851959]";
-				  $scope.zoom = 2;
-
-				  $scope.placeChanged = function() {
-
-				    $scope.address.place = this.getPlace();
-				    var point = $scope.address.place.geometry.location;
-				    $scope.map.setCenter(point);
-
-					$scope.map.setCenter(point);
-					$scope.map.setZoom(16);
-
-					if(typeof $scope.marker!=="undefined")
-					$scope.marker.setMap(null);
-
-    				$scope.marker = new google.maps.Marker({
-							            position: point,
-							            map: $scope.map,
-							        });
-
-				  }
-
-				NgMap.getMap().then(function(map) {
-
-
-					$scope.map = map;
-					angular.map = $scope.map;
-
-					setTimeout(function() {
-
-						var point = new google.maps.LatLng(1.290270,103.851959);
-
-						$scope.map.setCenter(point);
-						$scope.map.setZoom(12);
-						$scope.map.setOptions({draggable: false});
-        				
-					}, 500);
-
-
-
-				});
-				// Google map auto complete code ends //
-
-				$scope.changeAddress = function(){
-
-					setTimeout(function() {
-
-					    var point = $scope.address.place.geometry.location;
-					    $scope.map.setCenter(point);
-
-						$scope.map.setZoom(12);
-						$scope.map.setOptions({draggable: false});
-
-        				$scope.marker = new google.maps.Marker({
-								            position: point,
-								            map: $scope.map,
-								        });
-
-					}, 100);
-
-					$scope.address.step = 1;
-
-				}
-
-				$scope.setMapAddress = function(){
-
-					var isValid = validateAddress($scope.address.place);
-
-					if(isValid){
-						$scope.address.step = 2;
-					}else{
-						sweetAlert.swal({
-
-			                title: "Please choose a valid address.",
-			                text: "",
-			                type: "warning",
-
-			                showCancelButton: true,
-			                confirmButtonColor: "#DD6B55",
-			                confirmButtonText: "Ok",
-			                closeOnConfirm: true,
-			                closeOnCancel: true
-
-			            });
-					}
-
-				}
-
-				$scope.saveAddress = function(){
-
-					$scope.errors = {};
-
-					$http.post("address", $scope.address, {
-
-				    }).success(function(response) {
-
-				    	$scope.errors = {};
-				    	$scope.hide();
-				    	$rootScope.getUserAddress();
-
-				    }).error(function(data, status, headers) {
-				    	$scope.errors = data;
-				    })
-
-				}
-
-
-			},
-			templateUrl: '/templates/partials/addressMap.html',
-			parent: angular.element(document.body),
-			targetEvent: ev,
-			clickOutsideToClose:true
-		})
-		.then(function(answer) {
-
-		}, function() {
-
-		});
-
-	};
-
-	function validateAddress(address){
-
-		var pullAddress = {
-			route:"",
-			neighborhood:""
-
-		};
-
-		if(typeof address !== "object" || typeof address.address_components === "undefined"){
-			return false;
-		}
-
-		for(addressObj in address.address_components){
-			switch(address.address_components[addressObj].types[0]){
-				case 'route':
-					pullAddress.route = address.address_components[addressObj].long_name;
-				break;
-				case 'neighborhood':
-					pullAddress.neighborhood = address.address_components[addressObj].long_name;
-				break;
-			}
-		}
-
-		if(pullAddress.route=="" || pullAddress.neighborhood==""){
-			return false;
-		}
-
-		return true;
-	}
-
-	$scope.updateAddressModal = function(ev,key) {
-
-		$mdDialog.show({
-
-			controller: function($scope, $rootScope, $mdDialog, $http) {
-
-				$scope.address = $rootScope.addresses[key];
-				$scope.update = true;
-				$scope.hide = function() {
-					$mdDialog.hide();
-				};
-				$scope.cancel = function() {
-					$mdDialog.cancel();
-				};
-				$scope.answer = function(answer) {
-					$mdDialog.hide(answer);
-				};
-				$scope.saveAddress = function(){
-
-					$scope.errors = {};
-
-					$http.put("address/"+key, $scope.address, {
-
-			        }).success(function(response) {
-
-			        	if(response.success){
-
-			        		$rootScope.getUserAddress();
-			        		$scope.errors = {};
-				        	$scope.hide();
-
-
-			        	}else{
-			        		alert(response.message)
-			        	}
-
-
-			        }).error(function(data, status, headers) {
-			        	$scope.errors = data;
-			        })
-
-				}
-
-			},
-			templateUrl: '/templates/partials/addressManually.html',
-			parent: angular.element(document.body),
-			targetEvent: ev,
-			clickOutsideToClose:true,
-			openFrom : angular.element(document.querySelector('#right')),
-        	closeTo : angular.element(document.querySelector('#right'))
-		})
-		.then(function(answer) {
-			$scope.status = 'You said the information was "' + answer + '".';
-		}, function() {
-			$scope.status = 'You cancelled the dialog.';
-		});
-
-	};
-
-	$scope.removeAddress = function(key) {
-
-		sweetAlert.swal({
-
-                title: "Are you sure?",
-                text: "Your will not be able to recover this address!",
-                type: "warning",
-                timer: 3000,
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Yes, remove !",
-                closeOnConfirm: false,
-                closeOnCancel: false
-
-            }).then(
-            	function(isConfirm) {
-                    if (isConfirm) {
-
-                        $http.delete("address/"+key)
-                            .success(function(response) {
-
-                                if(response.success){
-
-                                	if($scope.delivery.address.key===key){
-                                		$scope.delivery.address = null;
-                                	}
-
-                                    $rootScope.getUserAddress();
-                                    sweetAlert.swal({
-
-                                    	title: response.message,
-						                type: "success",
-						                timer: 2000,
-
-                                    });
-
-
-                                }else{
-
-                                    sweetAlert.swal("Cancelled!", response.message, "error");
-
-                                }
-
-                            })
-                            .error(function(data, status, headers) {
-                                sweetAlert.swal("Cancelled", data.message, "error");
-                            })
-
-                    } else {
-                        sweetAlert.swal("Cancelled", "Address safe :)", "error");
-                    }
-                }
-            );
-	};
-
-	$scope.setSelectedAddress = function(key){
-
+	/*$scope.setSelectedAddress = function(key){
+		console.log(key);
 		$scope.delivery.address = {};
 		$scope.delivery.address.key = key;
 		$scope.delivery.address.detail = $scope.addresses[key];
 
-	}
+	}*/
 
 	$scope.addressCheckout = function(){
 
