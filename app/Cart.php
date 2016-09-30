@@ -568,9 +568,14 @@ class Cart extends Moloquent
 
 		$sale = $product['sale'];
 
-		$unManipulatedProducts = $products;
+		$unManipulatedProducts = $products;		
+
 		$productToCreateSale = $this->getProductToCreateSale($products,$sale['_id'],$sale['conditionQuantity']);
-		
+
+		if($productToCreateSale===false){
+			return false;
+		}
+
 		$totalAvail = 0;
 		foreach ($productToCreateSale as $saleProkey => $qty) {
 			$totalAvail+= $qty;
@@ -678,7 +683,9 @@ class Cart extends Moloquent
 
 		foreach($products as $key=>&$product){
 
-			$proSale = $product['sale'];					
+			if(!isset($product['sale']) || empty($product['sale'])){continue;}
+
+			$proSale = $product['sale'];
 
 			if((string)$proSale['_id'] === (string)$saleId && $product['remainingQty']>0){
 				
@@ -706,6 +713,8 @@ class Cart extends Moloquent
 		if(count($salePro))
 		return $salePro;
 		return false;
+
+
 	}
 
 	private function addSale($sale,$salePro,$actionPro){
@@ -725,20 +734,22 @@ class Cart extends Moloquent
 		$products = $this->products;
 		$sales = isset($this->sales)?$this->sales:[];
 
-		foreach ($products as $key => $product) {
+		foreach ($products as $key => $product) {			
 
-			if($product['remainingQty'] < 1) {
+			if($product['remainingQty'] < 1 || !isset($product['sale']) || empty($product['sale'])) {
 				continue;
 			}
 
 			$sale = $product['sale'];
+
 			$isAble = true;
-
+			
 			while($isAble && $product['remainingQty']>0){
-
+				
 				$unManipulatedProducts = $products;
 
 				$productToCreateSale = $this->getProductToCreateSale($products,$sale['_id'],$sale['conditionQuantity']);
+
 
 				if($productToCreateSale === false){
 					$isAble = false;
@@ -836,9 +847,10 @@ class Cart extends Moloquent
 				
 				$sales[] = $saleObj;
 			}
-
+			
+			
 		}		
-				
+			
 		$this->__set("products",$products);
 
 		$this->__set("sales",$sales);

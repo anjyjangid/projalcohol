@@ -385,6 +385,7 @@ class CartController extends Controller
 
 		}
 
+
 		$updateProData = array(
 
 			"chilled"=>array(
@@ -397,7 +398,7 @@ class CartController extends Controller
 			),
 			"quantity"=>$totalQty,
 			"lastServedChilled" => (bool)$inputs['chilled'],
-			"sale"=>$product['proSales']
+			"sale"=>isset($product['proSales'])?$product['proSales']:false
 		);
 
 		$oldQuantity = 0;
@@ -434,8 +435,8 @@ class CartController extends Controller
 			}
 
 		}
-
 		$cart->createAllPossibleSales();
+
 
 		$proRemaining = [];
 		foreach($cart->products as $key=>$cProduct){
@@ -445,8 +446,7 @@ class CartController extends Controller
 		$product['change'] = $change;
 		
 		$updateProData = $cart->products[$proIdToUpdate];
-
-
+		
 		try {
 				
 				// $result = DB::collection('cart')->where('_id', new MongoId($id))
