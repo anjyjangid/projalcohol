@@ -1,7 +1,7 @@
 <div class="combo_slider combo_sliderProduct" ng-init="productView='alcohol'">
 
 	<div class="productbeerfiltertopcover">
-		<div class="productbeerfiltertoptitle text-capitalize">Loyalty Store</div>
+		<div class="productbeerfiltertoptitle text-capitalize">Loyalty Store <span>{{availableLoyaltyPoints}}</span></div>
 			<div class="row">
 				<div class="col-xs-12 col-sm-3 col-md-3"> 
 					<a href="javascript:void(0)" ng-class="{active:productView=='alcohol'}" ng-click="productView='alcohol'">Alcohol</a> 
@@ -44,20 +44,27 @@
 		<div id="loyalty-credits" ng-show="productView=='credits'">
 
 			<div class="col-xs-12 col-sm-3 comboproductitems" ng-repeat="credit in credits">
-								
+				
 				<div class="prod_pic">
 					<div class="credit_cash_pic"> {{credit.value}} </div>
 				</div>
 				<div class="prod_desc"> 
 					convert {{credit.loyalty}} loyalty to {{credit.value | pricingTxt}} credit
 				</div>
-				<div class="prod_addtocart">
+				<!-- <div class="prod_addtocart">
 
 					<div class="cartbtn">
 						<div class="addcart" role="button" tabindex="0"><span></span>add to cart</div>
 					</div>
 				
+				</div> -->
+
+				<div class="prod_addtocart">
+
+					<add-to-cart-btn ng-class="{'disabled': credit.notSufficient}" product="credit"></add-to-cart-btn>
+
 				</div>
+
 			</div>
 
 		</div>
