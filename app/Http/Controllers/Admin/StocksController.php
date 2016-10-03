@@ -146,7 +146,7 @@ class StocksController extends Controller
                         'store' => $stock['store']['storeObjId'],
                         'supplier' => $stock['supplier']['_id'],
                         'products._id' => $stock['_id'],
-                        'status' => 0
+                        'status' => ['$lte' => 1]
                     ],
                     'update' => [
                         '$set' => [
@@ -159,7 +159,7 @@ class StocksController extends Controller
                     'find' => [
                         'store' => $stock['store']['storeObjId'],
                         'supplier' => $stock['supplier']['_id'],
-                        'status' => 0
+                        'status' => ['$lte' => 1]
                     ],
                     'update' => [
                         '$push' => [
@@ -167,6 +167,9 @@ class StocksController extends Controller
                                 '_id' => $stock['_id'],
                                 'order' => ceiling($stock['totalQty'], $tradeOffer)
                             ]
+                        ],
+                        '$setOnInsert' => [
+                            'status' => 0
                         ]
                     ],
                     'options' => [

@@ -28,25 +28,36 @@ AlcoholDelivery.controller('AppController',
     	$rootScope.settings = response;    	
     });   
 
-$http.get("/super/category/",{params: {withCount:true}}).success(function(response){
 
-		$scope.categories = response;
-		$scope.AppController.categories = response;
-		$scope.parentCategories = [];
+	categoriesFac.getCategories().then(
 
-		$scope.parentChildcategory = {}
+		function(response){			
+			
+			categoriesFac.categories = response;
+			$scope.categories = response;
+			$scope.AppController.categories = response;
+			$scope.parentCategories = [];
 
-		for(key in $scope.categories){
+			$scope.parentChildcategory = {}
 
-			if(!$scope.categories[key].ancestors){
+			for(key in $scope.categories){
 
-				$scope.parentCategories.push($scope.categories[key])
+				if(!$scope.categories[key].ancestors){
+
+					$scope.parentCategories.push($scope.categories[key])
+
+				}
 
 			}
+		},
+		function(errorRes){}
+	);
 
-		}
+	/*$http.get("/super/category/",{params: {withCount:true}}).success(function(response){
 
-	});
+		
+
+	});*/
 
 	$scope.featuredProducts = function(){
 
@@ -1922,6 +1933,10 @@ AlcoholDelivery.controller('CartPaymentController',[
 	function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, sweetAlert, $interval, alcoholCart, $state){
 
 		$scope.payment = alcoholCart.$cart.payment;
+
+		if(typeof $scope.payment.savecard == 'undefined'){
+			$scope.payment.savecard = true;
+		}
 
 		$scope.proceedReview = function(){
 

@@ -138,9 +138,9 @@
                                 case 0:
                                     return '<span class="label label-sm label-primary">Pending</span>'
                                 case 1:
-                                    return '<span class="label label-sm label-success">Completed</span>'
-                                case 2:
                                     return '<span class="label label-sm label-info">Partially Accepted</span>'
+                                case 2:
+                                    return '<span class="label label-sm label-success">Completed</span>'
                                 case 3:
                                     return '<span class="label label-sm label-danger">Stocks Shortfall</span>'
                             }                           
@@ -149,9 +149,14 @@
                     },
                     {
                         mData: null,
-                        mRender: function(data, type, full) {                           
-                            return '<a ui-sref=userLayout.products.edit({productid:"'+data._id.$id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-pencil"></i> Edit</a>'+
-                                '<a ui-sref=userLayout.products.edit({productid:"'+data._id.$id+'"}) class="btn btn-xs default btn-editable"><i class="fa fa-eye"></i> Detail</a>';
+                        mRender: function(data, type, full) {
+                            if(data.status<=1)
+                                return '<a ui-sref="userLayout.stocks.poDetail({id:\''+data._id.$id+'\'})" class="btn btn-xs default btn-editable">'+
+                                '<i class="fa fa-pencil"></i> Edit</a>';
+                            
+                            else
+                                return '<a ui-sref="userLayout.stocks.poDetail({id:\''+data._id.$id+'\'})" class="btn btn-xs default btn-editable">'+
+                                '<i class="fa fa-eye"></i> Detail</a>';
                         },
                         orderable:false
                     }

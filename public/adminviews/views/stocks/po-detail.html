@@ -1,0 +1,45 @@
+<!-- BEGIN MAIN CONTENT -->
+<div class="row">
+	<div class="col-md-12">
+		<!-- <div class="note note-danger">
+			<p>
+				NOTE: The below datatable is not connected to a real database so the filter and sorting is just simulated for demo purposes only.
+			</p>
+		</div> -->
+		<!-- Begin: life time stats -->
+		<div class="portlet">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-order"></i>{{supplierTitle}}
+				</div>
+				
+			</div>
+			<div class="portlet-body">
+                <div class="pull-right" ng-show="status<=1">
+                    <button class="btn btn-info" ng-click="save(true)">Stocks Shortfall</button>
+                    <button class="btn btn-success" ng-click="save()">Save</button>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th width="100px">Received</th>
+                            <th width="100px">Remaining</th>
+                            <th width="100px" ng-show="status<=1">Add</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="p in products">
+                            <td>{{p.name}}</td>
+                            <td>{{p.received || 0}}</td>
+                            <td>{{p.order}}</td>
+                            <td ng-show="status<=1"><input type="number" ng-model="p.add" class="form-control input-sm"></td>
+                        </tr>
+                    </tbody>
+                </table>
+			</div>
+		</div>
+		<!-- End: life time stats -->
+	</div>
+</div>
+<!-- END MAIN CONTENT -->

@@ -3,19 +3,9 @@ function initScripts(options){
 		options = {};
  
  
- // 	$("#owl-demo").owlCarousel({
-	// 	navigation : true,
-	// 	navigationText :	["<",">"],
-	// 	pagination : false,
-	// 	items : 4,
-	// 	itemsDesktop : [1199,4],
-	// 	itemsDesktopSmall : [979,4],
-	// 	itemsTablet : [768,3],
-	// 	itemsTabletSmall : [767,2],
-	// 	itemsMobile : [479,1]
-	// });
+ 
 		
-	$("#owl-demo2").owlCarousel({
+	/*$("#owl-demo2").owlCarousel({
 		navigation : true,
 		navigationText :	["<",">"],
 		pagination : false,
@@ -71,7 +61,7 @@ function initScripts(options){
 		itemsTablet : [768,3],
 		itemsTabletSmall : [767,2],
 		itemsMobile : [479,1]
-	});
+	});*/
 	
 	$("#slider-1.demo input").switchButton({
 		width: 62,

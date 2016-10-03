@@ -265,8 +265,8 @@ class Stocks extends Eloquent
                 'as' => 'purchase_orders',
                 'cond' => [
                     '$and' => [
-                        '$eq' => [ '$$purchase_orders.store', $userStoreId ],
-                        '$eq' => [ '$$purchase_orders.status', 0 ]
+                        ['$eq' => [ '$$purchase_orders.store', new MongoId($userStoreId) ]],
+                        ['$lte' => [ '$$purchase_orders.status' , 1 ]]
                     ]
                 ]
             ]
