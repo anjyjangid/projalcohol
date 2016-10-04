@@ -5,9 +5,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'oc.lazyLoad',
 	'ngSanitize',
 	'ui.bootstrap',
-	'bootstrapLightbox',
 	'19degrees.ngSweetAlert2',
-	'angular-loading-bar',
 	'ngAnimate',
 	'ngMaterial',
 	'ngScrollbars',
@@ -276,7 +274,7 @@ AlcoholDelivery.factory('categoriesFac', ["$q", "$http", function($q, $http){
 		var d = $q.defer();
 
 		$http.get("/super/category/",{params: {withCount:true}}).success(function(response){
-
+			
 			d.resolve(response);
 
 		});
@@ -451,37 +449,10 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 		$stateProvider
 				.state('mainLayout', {
 						templateUrl: "/templates/index.html",
-						controller:function(){
-
-								setTimeout(function(){
-										initScripts({
-												disableScrollHeader:true
-										});
-								},100)
+						controller:function(){								
 						},
 						resolve: {
-								deps: ['$ocLazyLoad', function($ocLazyLoad) {
-										return $ocLazyLoad.load({
-												name: 'AlcoholDelivery',
-												insertBefore: '#ng_load_plugins_before',
-												debug: true,
-												serie: true,
-												files: [
-														//'js/controller/ProductsController.js',
-														'js/owl.carousel.min.js',
-														// 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
-														// 'js/jquery.switchButton.js',
-														'js/jquery.mCustomScrollbar.concat.min.js',
-														'js/jquery.bootstrap-touchspin.min.js',
-														// 'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js',
-														// 'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js',
-														// 'js/all_animations.js',
-														'js/js_init_scripts.js',
 
-												]
-										});
-								}],
-								
 								storeInit : function (store){
 									return store.init();
 								},
@@ -508,12 +479,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								controller:function($scope,$http){
 										$scope.AppController.category = "";
 										$scope.AppController.subCategory = "";
-										$scope.AppController.showpackage = false;
-										setTimeout(function(){
-												initScripts({
-														disableScrollHeader:true
-												});
-										},100)
+										$scope.AppController.showpackage = false;										
 								},
 
 							},
@@ -544,32 +510,9 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 							},
 
-						},
-
+						},						
+						data: {pageTitle: 'User Account'}						
 						
-						data: {pageTitle: 'User Account'},
-						
-						resolve: {
-								deps: ['$ocLazyLoad', function($ocLazyLoad) {
-										return $ocLazyLoad.load({
-												name: 'AlcoholDelivery',
-												insertBefore: '#ng_load_plugins_before',
-												// debug: true,
-												serie: true,
-												files: [
-													'js/owl.carousel.min.js',
-													// 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
-													// 'js/jquery.switchButton.js',
-													'js/jquery.mCustomScrollbar.concat.min.js',
-													'assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js',
-													// 'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js',
-													// 'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js',
-													// 'js/all_animations.js',
-													'js/js_init_scripts.js'
-												]
-										});
-								}]
-						}
 				})
 
 				.state('mainLayout.index.claim-gift-card', {
@@ -700,61 +643,23 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})				
 
 				.state('orderplaced', {
-
-						url: "/orderplaced/{order}",
-						templateUrl: "/templates/orderconfirmation.html",
-						controller:"OrderplacedController",
-						// resolve: {
-						// 		deps: ['$ocLazyLoad', function($ocLazyLoad) {
-						// 				return $ocLazyLoad.load({
-						// 						name: 'AlcoholDelivery',
-						// 						insertBefore: '#ng_load_plugins_before',
-						// 						// debug: true,
-						// 						serie: true,
-						// 						files: [
-						// 								'http://w.sharethis.com/button/buttons.js',														
-						// 						]
-						// 				});
-						// 		}]
-						// }
-						
+					url: "/orderplaced/{order}",
+					templateUrl: "/templates/orderconfirmation.html",
+					controller:"OrderplacedController"											
 				})
 
 				.state('accountLayout', {
-						abstract: true,
-						views : {
+					abstract: true,
+					views : {
 
-							"" : {
-								templateUrl : "/templates/accountLayout.html",
-							},
-							"navLeft@accountLayout" : {
-								templateUrl: "/templates/account/navLeft.html",
-							},
-
+						"" : {
+							templateUrl : "/templates/accountLayout.html",
 						},
-						resolve: {
-								deps: ['$ocLazyLoad', function($ocLazyLoad) {
-										return $ocLazyLoad.load({
-												name: 'AlcoholDelivery',
-												insertBefore: '#ng_load_plugins_before',
-												// debug: true,
-												serie: true,
-												files: [
-												
-														'js/owl.carousel.min.js',
-														// 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
-														// 'js/jquery.switchButton.js',
-														'js/jquery.mCustomScrollbar.concat.min.js',
-														'assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js',
-														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js',
-														'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js',
-														// 'js/all_animations.js',
-														'js/js_init_scripts.js'
-												]
-										});
-								}]
+						"navLeft@accountLayout" : {
+							templateUrl: "/templates/account/navLeft.html",
 						}
 
+					}
 				})
 				.state('accountLayout.profile', {
 						url: "/profile",
@@ -854,64 +759,25 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('mainLayout.search', {
-						url: '/search/{keyword}?{filter}&{sort}',
-						templateUrl : function(stateParams){
-							return "/templates/search.html";
-						},
-						params: {pageTitle: 'Search'},
-						controller:"SearchController",
-						resolve: {
-								deps: ['$ocLazyLoad', function($ocLazyLoad) {
-										return $ocLazyLoad.load({
-												name: 'AlcoholDelivery',
-												insertBefore: '#ng_load_plugins_before',
-												// debug: true,
-												serie: true,
-												files: [
-														'bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
-												]
-										});
-								}]
-						}
+					url: '/search/{keyword}?{filter}&{sort}',
+					templateUrl : function(stateParams){
+						return "/templates/search.html";
+					},
+					params: {pageTitle: 'Search'},
+					controller:"SearchController"						
 				})
 
 				.state('mainLayout.loyaltystore', {
-						url: '/loyalty-store?{filter}&{sort}',
-						templateUrl : "/templates/loyaltyStore.html",
-						params: {pageTitle: 'Loyalty Store'},
-						controller:"LoyaltyStoreController",
-						resolve: {
-								deps: ['$ocLazyLoad', function($ocLazyLoad) {
-										return $ocLazyLoad.load({
-												name: 'AlcoholDelivery',
-												insertBefore: '#ng_load_plugins_before',
-												// debug: true,
-												serie: true,
-												files: [
-														'bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',														
-												]
-										});
-								}]
-						}
+					url: '/loyalty-store?{filter}&{sort}',
+					templateUrl : "/templates/loyaltyStore.html",
+					params: {pageTitle: 'Loyalty Store'},
+					controller:"LoyaltyStoreController"					
 				})				
 				
 				.state('mainLayout.giftcategory', {					
 					url: "/gifts/{categorySlug}?/{type}",
 					templateUrl : '/templates/gifts/index.html',
-					controller: 'GiftProductController',
-					resolve: {
-						deps: ['$ocLazyLoad', function($ocLazyLoad) {
-							return $ocLazyLoad.load({
-								name: 'AlcoholDelivery',
-								insertBefore: '#ng_load_plugins_before',
-								// debug: true,
-								serie: true,
-								files: [
-									'bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
-								]
-							});
-						}]
-					}										
+					controller: 'GiftProductController'					
 				})				
 
 				.state('mainLayout.gift', {
@@ -1062,13 +928,13 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 
 	);
 
-	categoriesFac.getCategories().then(
+	/*categoriesFac.getCategories().then(
 
 		function(response){			
 			categoriesFac.categories = response;
 		},
 		function(errorRes){}
-	);
+	);*/
 
 
 	catPricing.GetCategoryPricing().then(

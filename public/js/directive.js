@@ -237,7 +237,7 @@ AlcoholDelivery.directive('sideBar', function() {
 					defaultOptions[key] = customOptions[key];
 				}
 
-            	// init carousel
+				// init carousel
 				if(typeof $(element).data('owlCarousel') === "undefined"){
 					$timeout(function(){
 						scope[ngModel] = $(element).owlCarousel(defaultOptions);
@@ -261,7 +261,8 @@ AlcoholDelivery.directive('sideBar', function() {
 
           	if(scope.$first && typeof $(element.parent()).data('owlCarousel') !== "undefined"){
           		
-				$(element.parent()).find(".owl-wrapper-outer").remove();//$(element.parent()).find(".owl-wrapper").remove();
+				$(element.parent()).find(".owl-wrapper-outer").remove();
+				//$(element.parent()).find(".owl-wrapper").remove();
           		$(element.parent()).data('owlCarousel').destroy();
 
           	}
@@ -370,7 +371,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			'mydecrement': '&onDecrement',
 			'val': "=value",
 			'max': "=mquantity",
-			'remainQty' : "=remain"
+			'remainQty' : "=?remain"
 		},
 		replace: true,
 		link: function (scope, element, attrs, ngModel) {
@@ -568,18 +569,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 					}, function(error) {
 
-						var toast = $mdToast.simple()
-							.textContent(error.message)
-							.action('OK')
-							.highlightAction(false)
-							.position("top right fixed");
-
-						$mdToast.show(toast).then(function(response) {
-							// if ( response == 'ok' ) {
-							// 	$('#login').modal('show');
-							// }
-						});
-
+						$('#login').modal('show');						
 
 					});
 			}			

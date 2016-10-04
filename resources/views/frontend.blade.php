@@ -29,8 +29,7 @@
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="css/owl.carousel.css">
 		<link rel="stylesheet" type="text/css" href="css/owl.theme.css">
-		<link rel="stylesheet" type="text/css" href="css/jquery.switchButton.css">
-        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
+		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
 
 		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.min.css')}}">
 
@@ -51,10 +50,15 @@
 			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
 		<link rel="stylesheet" media="screen and (max-device-width:1023px)" type="text/css" href="css/simple-sidebar.css">
-		<link rel="shortcut icon" href="images/favicon.ico"/>		
+		
+
+
+		<link rel="shortcut icon" href="images/favicon.ico"/>	
+		
 	</head>
 
 	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}">		    	    	 
+    	
     	<div class="loader" ng-bind="loadingmsg"></div>
     	<div id="wrapper">     	    		    		
 
@@ -84,24 +88,7 @@
 				</section>				
 				<section class="fullwidth footer1">
 					<div class="container">
-						<div class="row">
-						<!--  -->
-							<!-- <div class="col-xs-12 col-md-4 ">
-								<div class="footer_logo">
-									<img class="img-responsive" src="images/footerlogo.png" />
-								</div>
-								<div class="footer1_custmertext">10,000 Customers <br /> Already Connected</div>
-								<div class="footer1_custmerbtmtxt">She was bouncing away, when a cry from the two women, who had turned towards the bed, caused her to look round.</div>
-								<div class="footer1_sociallink">
-									<a target="_blank" href="@{{settings.social.twitter}}"><img class="img-responsive" src="images/footer1_twitter.png" /></a>
-									<a target="_blank" href="@{{settings.social.facebook}}"><img class="img-responsive" src="images/footer1_fb.png" /></a>
-									<a target="_blank" href="@{{settings.social.googleplus}}"><img class="img-responsive" src="images/footergoogle.png" /></a>
-								</div>
-								<div class="footer1_privcvr">
-									<div class="footer1_privcytext"><a ui-sref="cmsLayout.privacy-policy">Privacy Policy</a></div>
-									<div class="footer1_termstxt"><a ui-sref="cmsLayout.terms-conditions">Terms and Conditions</a></div>
-								</div>
-							</div> -->
+						<div class="row">						
 							<div class="col-xs-12 col-md-4 ">
 								<div class="footer1_title">Need help?</div>
 								<div class="footer1_subtitle">
@@ -215,32 +202,30 @@
 				</section>		
 			</div>
 		</div>
+		
 	</body>
 
 	<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
    
     
 	<script type="text/javascript" src="js/social.js"></script>
-    <script type="text/javascript" src="{{ asset('bower_components/dropzone/dist/dropzone.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/angular/angular.min.js') }}"></script>
-   
+    <script type="text/javascript" src="{{ asset('bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js') }}"></script> 
 
-    <script src="{{ asset('assets/global/plugins/angularjs/angular-sanitize.min.js') }}" type="text/javascript"></script>
-
-	<!-- <script src="{{ asset('assets/global/plugins/angularjs/angular-touch.min.js') }}" type="text/javascript"></script> -->
+    <script src="{{ asset('assets/global/plugins/angularjs/angular-sanitize.min.js') }}" type="text/javascript"></script>	
 
     <script type="text/javascript" src="{{ asset('bower_components/angular-route/angular-route.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/angular-cookies/angular-cookies.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('bower_components/angular-loading-bar/build/loading-bar.min.js') }}"></script>
+    
     <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap.min.js') }}"></script>
     
     
     <script type="text/javascript" src="{{ asset('bower_components/angular-ui-router/release/angular-ui-router.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/oclazyload/dist/ocLazyLoad.min.js') }}"></script>
-    <!-- <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') }}"></script> -->
+    
 
-    <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap-lightbox/dist/angular-bootstrap-lightbox.js') }}"></script>
+    
 
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAO1xAu1wBu7NZOqNBn9aoYg-RVstm60jc&libraries=places"></script>
     <script type="text/javascript" src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.js"></script>
@@ -259,7 +244,7 @@
 
 	<script src="{{ asset('bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js')}}"></script>
 	<script src="{{ asset('bower_components/ng-scrollbars/dist/scrollbars.min.js')}}"></script>
-
+	<script src="{{ asset('js/owl.carousel.min.js') }}"></script>	
 
 	<!-- Angular Material Library -->
 	<script type="text/javascript" src="{{ asset('bower_components/angular-material/angular-material.min.js') }}"></script>	
@@ -271,5 +256,6 @@
     <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
     <script type="text/javascript" src="js/directive.js"></script>
     <script src="{{ asset('bower_components/angular-fblogin/dist/angular-fblogin.js') }}"></script>   
-    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>           
+    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>   
+            
 </html>

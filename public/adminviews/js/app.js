@@ -1580,7 +1580,49 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             data:{
 				pageTitle:'Purchase Orders',
 				breadCrumb:[					
+					{title:'Stock Order List','uisref':'userLayout.stocks.list'},
 					{title:'Purchase Orders','uisref':'#'}
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate
+            }            
+        })
+
+        .state("userLayout.stocks.poDetail", {
+            url: "/products/po-detail",
+            templateUrl: "adminviews/views/stocks/po-detail.html",
+            controller: "PurchaseOrderController",
+            data:{
+				breadCrumb:[					
+					{title:'Stock Order List','uisref':'userLayout.stocks.list'},
+					{title:'Purchase Orders','uisref':'userLayout.stocks.po'},
+					{title:'Detail','uisref':'#'}
+				]				
+			},
+			resolve: {                
+                authenticate: authenticate,
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'adminviews/js/controllers/PurchaseOrderController.js'
+                        ]
+                    });
+                }]
+            }            
+        })
+
+        .state("userLayout.stocks.poEdit", {
+            url: "/products/po-edit",
+            templateUrl: "adminviews/views/stocks/po-edit.html",
+            data:{
+				pageTitle:'Purchase Orders',
+				breadCrumb:[					
+					{title:'Stock Order List','uisref':'userLayout.stocks.list'},
+					{title:'Purchase Orders','uisref':'userLayout.stocks.po'},
+					{title:'Edit','uisref':'#'}
 				]				
 			},
 			resolve: {                

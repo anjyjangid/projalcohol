@@ -192,4 +192,96 @@ class SuperController extends Controller
 		return response($promotions);
 	}
 
+	public function getCatlist(Request $request){
+		
+		$params = $request->all();
+
+		$query = [];
+
+		//FILTER ONLY PARENT CATEGORY
+		$query[]['$match']['ancestors'] = null;
+
+		//FILTER ONLY ENABLED CATEGORY
+		$query[]['$match']['cat_status'] = 1;
+
+		//GET ALL CHILD CATEGORIES
+		$query[]['$lookup'] = [
+			'from' => 'categories',
+			'localField' => '_id',
+			'foreignField' => 'ancestors._id',
+			'as' => 'child'
+		];
+		
+
+		$project = [
+			'cat_title' => 1,
+			'slug' => 1,
+			'isMenu' => 1,
+			'cat_status' => 1,
+			'cat_thumb' => 1,
+			'cat_lthumb' => 1,
+			'metaTitle' => 1,
+			'metaKeywords' => 1,
+			'metaDescription' => 1
+		];
+
+		//FILTER ONLY ENABLED CHILD CATEGORY
+		$project['activeChild'] = [
+    		'$filter'=>[
+                'input' => '$child',
+                'as' => 'child',
+                'cond' => ['$eq'=>['$$child.cat_status',1]]
+            ]
+    	];
+
+    	$query[]['$project'] = $project;
+
+    	//unwind child for getting product in it
+    	$query[]['$unwind'] = [
+            'path' => '$activeChild',
+            'preserveNullAndEmptyArrays' => true
+        ];
+
+        $query[]['$lookup'] = [
+			'from' => 'products',
+			'localField' => 'activeChild._id',
+			'foreignField' => 'categoriesObject',
+			'as' => 'activeChild.products'
+		];
+
+		// $project['activeChild'] = '$activeChild';
+		$project['activeChild'] = [
+			'_id' => 1,
+			'cat_title' => 1,
+			'slug' => 1,
+			'cat_status' => 1,
+			'metaTitle' => 1,
+			'metaKeywords' => 1,
+			'metaDescription' => 1,
+			'products' => ['$size'=>'$activeChild.products']
+		];
+		$query[]['$project'] = $project;
+
+		$group = [
+			'_id' => '$_id',
+			'cat_title' => ['$first' => '$cat_title'],
+			'slug' => ['$first' => '$slug'],
+			'isMenu' => ['$first' => '$isMenu'],
+			'cat_status' => ['$first' => '$cat_status'],
+			'cat_thumb' => ['$first' => '$cat_thumb'],
+			'cat_lthumb' => ['$first' => '$cat_lthumb'],
+			'metaTitle' => ['$first' => '$metaTitle'],
+			'metaKeywords' => ['$first' => '$metaKeywords'],
+			'metaDescription' => ['$first' => '$metaDescription'],
+			'activeChild' => ['$push' => '$activeChild']			
+		];
+
+		$query[]['$group'] = $group;
+
+		$model = Categories::raw()->aggregate($query);
+
+		return response($model,200);
+
+	}
+
 }
