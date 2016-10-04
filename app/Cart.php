@@ -311,6 +311,17 @@ class Cart extends Moloquent
 		
 	}
 
+	public function getLoyaltyCards(){
+
+		if(isset($this->loyaltyCards)){
+			
+			return $this->loyaltyCards;
+
+		}
+
+		return [];
+	}
+
 	private function getProductById($id){
 
 		if(isset($this->products[$id]))

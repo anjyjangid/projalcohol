@@ -1,13 +1,18 @@
 AlcoholDelivery.service('alcoholCart', [
-			'$rootScope', '$window', '$http', '$q', '$mdToast', '$filter', 'alcoholCartItem', 'alcoholCartLoyaltyItem', 'alcoholCartPackage','promotionsService','alcoholCartPromotion', 'alcoholCartGiftCard', 'alcoholCartGift', 'alcoholCartSale', 
-	function ($rootScope, $window, $http, $q, $mdToast, $filter, alcoholCartItem, alcoholCartLoyaltyItem, alcoholCartPackage, promotionsService, alcoholCartPromotion, alcoholCartGiftCard, alcoholCartGift, alcoholCartSale) {
+			'$rootScope', '$window', '$http', '$q', '$mdToast', '$filter', 'alcoholCartItem', 'alcoholCartLoyaltyItem', 
+			'alcoholCartPackage','promotionsService','alcoholCartPromotion', 'alcoholCartGiftCard', 'alcoholCartGift', 
+			'alcoholCartSale', 'alcoholCartCreditCard',
+	function ($rootScope, $window, $http, $q, $mdToast, $filter, alcoholCartItem, alcoholCartLoyaltyItem, 
+			alcoholCartPackage, promotionsService, alcoholCartPromotion, alcoholCartGiftCard, alcoholCartGift, 
+			alcoholCartSale, alcoholCartCreditCard) {
 
 	this.init = function(){
 		
 		this.$cart = {
 			
-			products : {},
+			products : {},			
 			loyalty : {},
+			loyaltyCards : {},
 			packages : [],
 			promotions :[],
 			nonchilled : false,
@@ -267,6 +272,70 @@ AlcoholDelivery.service('alcoholCart', [
 
 		return defer.promise
 	};
+
+	this.addCreditCertificate = function(id, quantity){
+
+		var defer = $q.defer();
+		var _self = this;		
+		
+		var deliveryKey = _self.getCartKey();
+
+		$http.put("/cart/loyalty/credit/"+deliveryKey, {
+				"id":parseInt(id),
+				"quantity":parseInt(quantity),				
+		}).then(
+
+			function(response){
+
+				var resProduct = response.data.card;
+				var inCart =  _self.getLoyaltyCardByValue(id);
+
+				if(inCart){
+
+					if(resProduct.quantity==0){
+
+						_self.removeItemById(id);
+
+					}else{
+
+						inCart.setQuantity(resProduct.quantity);
+						inCart.setPoints(resProduct.points);
+
+					}
+
+				}else{
+					
+					var newItem = new alcoholCartCreditCard(id,resProduct);
+					_self.$cart.loyaltyCards[id] = newItem;
+
+				}
+
+
+				if(response.data.change>0){
+
+					$rootScope.$broadcast('alcoholCart:updated',{msg:"CreditCard added to cart",quantity:Math.abs(response.data.change)});
+
+				}else{
+
+					$rootScope.$broadcast('alcoholCart:updated',{msg:"CreditCard removed from cart",quantity:Math.abs(response.data.change)});
+
+				}
+							
+				defer.resolve(response);
+
+			},
+			function(errRes){
+				
+
+				$rootScope.$broadcast('alcoholCart:notify',errRes.data.message);
+				defer.reject({quantity:errRes.data.quantity});
+
+			}
+		)
+
+		return defer.promise;
+
+	}
 
 	this.addBulk = function(products){
 
@@ -633,15 +702,16 @@ AlcoholDelivery.service('alcoholCart', [
 			return build;
 		};	
 
-		this.getCreditByValue = function(value){
+		this.getLoyaltyCardByValue = function(value){
 
-			var giftCertificates = this.getCart().giftCertificates | [];
+			var loyaltyCards = this.getCart().loyaltyCards || [];
 			var build = false;
-
-			angular.forEach(giftCertificates, function (giftCertificate) {
+			console.log(value);
+console.log(loyaltyCards);
+			angular.forEach(loyaltyCards, function (creditCard) {
 				
-				if (giftCertificates.getValue() == value) {
-					build = giftCertificate;
+				if (creditCard.getValue() == value) {
+					build = creditCard;
 				}
 			});
 			return build;
@@ -764,6 +834,10 @@ AlcoholDelivery.service('alcoholCart', [
 			return this.getCart().loyalty;
 		};
 
+		this.getLoyaltyCards = function(){
+			return this.getCart().loyaltyCards;
+		};
+
 		this.getLoyaltyPointsInCart = function(){
 
 			var lp = this.getLoyaltyProducts();
@@ -779,7 +853,7 @@ AlcoholDelivery.service('alcoholCart', [
 		this.setLoyaltyPointsInCart = function(){
 
 			this.availableLoyaltyPoints = this.getLoyaltyPointsInCart();
-			console.log(this.availableLoyaltyPoints);
+
 		}
 
 		this.getPackages = function(){
@@ -1507,6 +1581,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 			var products = {};
 			var loyalty = {};
+			var loyaltyCards = {};
 			var packages = [];
 			var promotions = [];
 			var giftCards = [];
@@ -1519,10 +1594,12 @@ AlcoholDelivery.service('alcoholCart', [
 			angular.copy(storedCart.giftCards,giftCards);
 			angular.copy(storedCart.gifts,gifts);
 			angular.copy(storedCart.loyalty,loyalty);
+			angular.copy(storedCart.loyaltyCards,loyaltyCards);
 			angular.copy(storedCart.sales,sales);
 
 			storedCart.products = {};
 			storedCart.loyalty = {};
+			storedCart.loyaltyCards = {};
 			storedCart.packages = [];
 			storedCart.promotions = [];
 			storedCart.giftCards = [];
@@ -1593,6 +1670,17 @@ AlcoholDelivery.service('alcoholCart', [
 				_self.$cart.loyalty[key] = newItem;
 				
 			});			
+
+			angular.forEach(loyaltyCards, function (cc,key) {
+
+				if(typeof cc !== 'object'){
+					return false;
+				}
+				
+				var newItem = new alcoholCartCreditCard(key,cc);
+				_self.$cart.loyaltyCards[key] = newItem;
+				
+			});
 
 			angular.forEach(packages, function (package,key) {
 
@@ -2301,6 +2389,58 @@ AlcoholDelivery.factory('alcoholCartPackage', ['$rootScope', '$log', function ($
 		return package;
 
 	}]);
+
+
+
+AlcoholDelivery.factory('alcoholCartCreditCard',[function(){
+
+	var creditCard = function(value,cardData){
+
+		this.setValue(value);
+		this.setPoints(cardData.points);
+		this.setQuantity(cardData.quantity);
+
+	}	
+
+	creditCard.prototype.getValue = function(){		
+		return this.value;
+	}
+
+	creditCard.prototype.setPoints = function(points){
+		this.points = points;
+		return this.points;
+	}
+
+	creditCard.prototype.setValue = function(value){
+		this.value = value;
+		return this.value;
+	}
+
+	creditCard.prototype.setQuantity = function(quantity){
+
+		this.quantity = quantity;
+		this.qNChilled = quantity;
+		return this.quantity;
+	}
+
+	creditCard.prototype.getQuantity = function(){		
+		return parseInt(this.quantity);
+	}
+
+	creditCard.prototype.getPoints = function(){
+
+		var cardPoints = parseInt(this.quantity) * parseFloat(this.value);
+		return cardPoints;
+
+	}	
+
+	creditCard.prototype.remove = function(){
+
+	}
+	
+	return creditCard;
+
+}]);
 
 AlcoholDelivery.factory('alcoholCartGiftCard',[function(){
 

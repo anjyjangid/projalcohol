@@ -2959,7 +2959,6 @@ AlcoholDelivery.controller('LoyaltyStoreController', [
 		alcoholCart.setLoyaltyPointsInCart();
 
 		$scope.$watch(alcoholCart.availableLoyaltyPoints,function(newValue,oldValue){
-console.log("ok");
 			
 			angular.forEach($scope.products.items, function(product,key){
 
@@ -2967,15 +2966,13 @@ console.log("ok");
 
 			});
 
-		});    	
-
+		});
 
 		ProductService.getCreditCertificates().then(
 
     		function(response){
 
-				$scope.credits = response;
-				console.log($scope.credits);
+				$scope.credits = response;				
 
     		},
     		function(errorRes){
@@ -2983,7 +2980,6 @@ console.log("ok");
     		}
 
     	);
-
 }]);
 
 AlcoholDelivery.controller('InviteController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll','sweetAlert', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll,sweetAlert){

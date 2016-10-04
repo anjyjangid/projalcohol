@@ -18,7 +18,6 @@ class Credits extends Model
 {
 	public function getCredits($userId,$params = []){
 
-
 		$count = DB::collection('user')->raw(function($collection) use($userId){
 
 				return $collection->aggregate(array(
@@ -51,6 +50,58 @@ class Credits extends Model
 					"count" => $count['ok'],
 					"credits" => $credits['creditsSummary']
 				];
+
+	}
+
+	public function getCredit($value){
+
+		$response = [
+			"success"=>false,
+			"message"=>"",
+			"card" => []
+		];
+
+		try{
+
+			$card = DB::collection('giftcategories')->raw(function($collection) use ($value){
+					return $collection->aggregate([
+								[
+									'$match' => [
+										'type' => 'giftcard'
+									]
+								],
+								[
+									'$unwind' => '$cards'
+								],
+								[
+									'$match' => [
+													'cards.value' => ['$eq'=>$value]
+												]
+								],
+								[
+									'$project' => [
+													'_id' => 0,
+													'value' => '$cards.value',
+													'loyalty' => '$cards.loyalty'
+												]
+								]
+							]);
+					});
+
+			if(!empty($card['result'])){
+
+				$response['success'] = true;
+				$response['card'] = $card['result'][0];
+
+			}
+
+		}catch(\Exception $e){
+
+			$response["message"]=$e->getMessage();
+
+		}
+
+		return (object)$response;
 
 	}
 

@@ -55,6 +55,14 @@
 					</div>
 				</li>
 
+				<li ng-repeat="(id,product) in alcoholCart.getLoyaltyCards()">
+					<div class="currentorderpopupulleft">{{product.value | pricingTxt}} Credit Certificate</div>
+					<div class="currentorderpopupulcenter">{{product.quantity}}</div>
+					<div class="currentorderpopupulright">
+						<i>LP {{product.points}}</i>						
+					</div>
+				</li>
+
 				<li ng-repeat="(key,package) in alcoholCart.getPackages()">
 					<div class="currentorderpopupulleft">{{package._name}}</div>
 					<div class="currentorderpopupulcenter">{{package._quantity}}</div>

@@ -204,7 +204,8 @@ Route::group(['prefix' => 'cart'], function () {
 	Route::put('gift/product/chilledtoggle/{giftUid}','CartController@putGiftProductChilledStatus');
 
 	Route::put('loyalty/{key}','CartController@putLoyalty');
-	
+
+	Route::put('loyalty/credit/{key}','CartController@putCreditCertificate');	
 
 });
 

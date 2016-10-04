@@ -6,12 +6,14 @@ use Illuminate\Http\Request;
 use AlcoholDelivery\Http\Requests;
 
 use AlcoholDelivery\Http\Requests\GiftCartRequest;
+use Illuminate\Support\Facades\Log;
 
 use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Cart as Cart;
 use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Products as Products;
 use AlcoholDelivery\Packages as Packages;
+use AlcoholDelivery\Credits as Credits;
 
 use AlcoholDelivery\Setting as Setting;
 use AlcoholDelivery\Orders as Orders;
@@ -647,18 +649,99 @@ class CartController extends Controller
 
 	}
 
+
+	public function putCreditCertificate(Request $request, $id) {
+
+		$user = Auth::user('user');		
+
+		// if($user===null){
+		// 	return response(["message"=>"login required"],401);
+		// }
+		
+		$inputs = $request->all();
+		$value = $inputs['id'];
+		$cart = Cart::find($id);
+
+		$CreditsObj = new Credits;
+		$result = $CreditsObj->getCredit($value);
+
+		if($result->success === false){
+			return response(["message"=>"Card not found"],400);
+		}
+
+		$card = $result->card;
+
+		$loyaltyAvailable = $this->getLoyaltyAvailable($cart); // LOYALTY POINTS AVAILABLE BEFORE ADD NEW PRODUCT
+
+		$loyaltyCards = $cart->getLoyaltyCards();
+
+		$change = $inputs['quantity'];
+		$alreadyInCartQty = 0;
+		if(isset($loyaltyCards[$value])){
+
+			$alreadyInCartQty = $loyaltyCards[$value]['quantity'];
+			$change = $inputs['quantity'] - $alreadyInCartQty;
+		}
+		
+		if($change>0){
+
+			$ableToadd = floor($loyaltyAvailable/$card['loyalty']);
+			
+			if($ableToadd < $change){
+				$change = $ableToadd;
+			}
+
+			if($change == 0){
+
+				return response(["message"=>"In sufficient points",'quantity'=>$alreadyInCartQty],400);
+
+			}
+
+			$inputs['quantity'] = $change + $alreadyInCartQty;
+		}
+
+		$loyaltyCards[$value] = [
+			'quantity'=>$inputs['quantity'],
+			'points'=> $card['loyalty']
+		];
+
+		try{
+
+
+			$cart->__set("loyaltyCards",$loyaltyCards);
+
+			$cart->save();			
+
+			return response(["message"=>"Credit added successfully",'change'=>$change,'card'=>$loyaltyCards[$value]],200);
+
+		}catch(\Exception $e){
+
+			Log::warning($e->getMessage());
+			return response(["message"=>"Something went wrong"],400);			
+
+		}	
+
+	}
+
 	private function getLoyaltyAvailable($cart){
 
 		if(is_object($cart)){
 
 			$user = Auth::user('user');
 			$userLoyaltyPoints = $user['loyaltyPoints'];
-			$userLoyaltyPoints = 60;
+			$userLoyaltyPoints = 400;
 			
-			$loyaltyPros = $cart->loyalty | [];
+			$loyaltyPros = is_array($cart->loyalty)?$cart->loyalty:[];
+			$loyaltyCardPros = is_array($cart->loyaltyCards)?$cart->loyaltyCards:[];
+
 			$pointsUsed = 0;
+
 			foreach($loyaltyPros as $loyaltyPro){
 				$pointsUsed += ($loyaltyPro['points'] * $loyaltyPro['quantity']);
+			}
+
+			foreach($loyaltyCardPros as $loyaltyCardPro){
+				$pointsUsed += ($loyaltyCardPro['points'] * $loyaltyCardPro['quantity']);
 			}
 
 			return $userLoyaltyPoints - $pointsUsed;
