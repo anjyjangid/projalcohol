@@ -9,7 +9,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ngAnimate',
 	'ngMaterial',
 	'ngScrollbars',
-	'ngMessages',	
+	'ngMessages',
 	'ngMap',
 	'vAccordion',
 	'alcoholCart.directives',
@@ -310,12 +310,24 @@ AlcoholDelivery.factory("UserService", [
 			
 		};		
 
-		return {
-			GetUser: GetUser,
-			GetUserAddress: GetUserAddress,
-			currentUser: null,
-	        currentUserAddress: null
-		};
+	function isLoggedIn(){
+
+		var userData = this.currentUser;
+		if(userData !== null && typeof userData.email !== "undefined"){
+			return userData;
+		}
+
+		return false;
+
+	};
+
+	return {
+		GetUser: GetUser,
+		GetUserAddress: GetUserAddress,
+		currentUser: null,
+		currentUserAddress: null,
+		isLoggedIn:isLoggedIn,
+	};
 	
 }]);
 
@@ -432,6 +444,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						controller:function(){								
 						},
 						resolve: {
+
 								storeInit : function (store){
 									return store.init();
 								},
@@ -637,7 +650,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						},
 						"navLeft@accountLayout" : {
 							templateUrl: "/templates/account/navLeft.html",
-						},
+						}
 
 					}
 				})
@@ -963,13 +976,13 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 	});
 
 
-	(function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "//connect.facebook.net/en_US/sdk.js";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
+	// (function(d, s, id) {
+ //      var js, fjs = d.getElementsByTagName(s)[0];
+ //      if (d.getElementById(id)) return;
+ //      js = d.createElement(s); js.id = id;
+ //      js.src = "//connect.facebook.net/en_US/sdk.js";
+ //      fjs.parentNode.insertBefore(js, fjs);
+ //    }(document, 'script', 'facebook-jssdk'));
 
     /*$rootScope.$on('fb.load', function() {
       $window.dispatchEvent(new Event('fb.load'));
