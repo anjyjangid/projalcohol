@@ -1573,6 +1573,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 		id = id.$id;
 
 		alcoholCart.removeSale(id).then(
+
 			function(response){
 
 			},

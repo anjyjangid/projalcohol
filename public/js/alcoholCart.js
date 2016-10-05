@@ -1003,8 +1003,9 @@ console.log(loyaltyCards);
 		};
 
 		this.removeItem = function (index) {
+
 			var item = this.$cart.items.splice(index, 1)[0] || {};
-			$rootScope.$broadcast('alcoholCart:itemRemoved', item);			
+			$rootScope.$broadcast('alcoholCart:itemRemoved', item);
 
 		};
 
@@ -1020,7 +1021,7 @@ console.log(loyaltyCards);
 					
 				}	
 			});
-			//this.setCart(cart);
+			 
 			$rootScope.$broadcast('alcoholCart:itemRemoved', item);
 			
 		};
@@ -1050,30 +1051,103 @@ console.log(loyaltyCards);
 			var cart = this.getCart();
 			var deliveryKey = this.getCartKey();
 			var _self = this;
+
 			$http.delete("cart/sale/"+deliveryKey+'/'+id).then(
 
 				function(response){
 					
 					response = response.data;
-					_self.setAllProductsRemainingQty(response.proRemaining);
-					_self.setAllSales(response.sales);
 					
+					_self.removeSaleAndSetProducts(id);
+
 					$rootScope.$broadcast('alcoholCart:saleRemoved', locSale);
 
 					defer.resolve(response);
 
 				},
-				function(errorRes){	
+				function(errorRes){
 
 					defer.reject(errorRes);
 
 				}
-			);	
-
+			);
 
 			return defer.promise;		
 			
 		};
+
+		this.removeSaleAndSetProducts = function(id){
+			
+			var item;
+			var cart = this.getCart();
+			var _self = this;
+
+			angular.forEach(cart.sales, function (sale, index) {
+
+				if(sale.getId().$id === id) {
+					 
+					sale['action'] = sale['action'] || [];
+
+					var products = [].concat(sale['products'] , sale['action'])
+
+					var toRemove = [];
+
+					angular.forEach(products, function(sPro){
+						toRemove[sPro._id] = sPro.quantity;
+					});
+
+
+					angular.forEach(toRemove, function( value, key ) {
+
+						var product = _self.getProductById(key);
+
+						var qtyChilled = parseInt(product.qChilled);
+						var qtyNonChilled = parseInt(product.qNChilled);
+
+						if(qtyChilled>$value){
+
+							qtyChilled-=$value;
+							$value = 0;
+
+						}else{
+
+							$value-= qtyChilled;
+							$qtyChilled=0;				
+
+						}
+
+						if($value > 0){							
+
+							if(qtyNonChilled>$value){
+
+								qtyNonChilled-=$value;
+								$value = 0;
+
+							}else{
+
+								$value-= qtyNonChilled;
+								$qtyNonChilled=0;
+
+							}
+
+						}
+
+						product.qChilled = qtyChilled;
+						product.qNChilled = qtyNonChilled;
+
+					});
+
+					var locPackage = cart.sales.splice(index, 1)[0] || {};
+					item = sale || {};
+
+
+				}
+
+			});			
+
+			$rootScope.$broadcast('alcoholCart:notify', "Sale Removed from cart");
+
+		}
 
 		this.removePromotion = function (id) {
 

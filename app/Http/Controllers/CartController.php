@@ -1313,7 +1313,7 @@ jprd($product);
 
 		}
 
-		$sales = $cart->sales;
+		$sales = $cart->sales;		
 
 		if(empty($sales)){
 			return response(["success"=>false,"message"=>"no sale to remove"],400);
@@ -1321,10 +1321,10 @@ jprd($product);
 		
 		try{
 
-			$result = $cart->removeSaleById($saleId);
+			$isRemoved = $cart->removeSaleById($saleId);
+			if($isRemoved){
 
-			$cart->createAllPossibleSales();
-			
+			}
 
 			//$cart->save();
 
@@ -1335,10 +1335,11 @@ jprd($product);
 				'sales' => []
 			];
 
-			foreach($cart->products as $key=>$cProduct){
-				$response['proRemaining'][$key] = $cProduct['remainingQty'];
-			}
-			$response['sales'] = $cart->sales;
+			// foreach($cart->products as $key=>$cProduct){
+			// 	$response['proRemaining'][$key] = $cProduct['remainingQty'];
+			// }
+
+			// $response['sales'] = $cart->sales;
 
 			return response($response,200);
 
