@@ -12,27 +12,27 @@
 				<div class="caption">
 					<i class="fa fa-order"></i>{{supplierTitle}}
 				</div>
-				
+
 			</div>
 			<div class="portlet-body">
                 <div class="pull-right" ng-show="status<=1">
                     <button class="btn btn-info" ng-click="save(true)">Stocks Shortfall</button>
-                    <button class="btn btn-success" ng-click="save()">Save</button>
+                    <button class="btn btn-success" ng-click="save()">Save Changes</button>
                 </div>
                 <table class="table">
                     <thead>
                         <tr>
                             <th>Product Name</th>
-                            <th width="100px">Received</th>
-                            <th width="100px">Remaining</th>
-                            <th width="100px" ng-show="status<=1">Add</th>
+                            <th width="15%">Qty Ordered</th>
+                            <th width="15%">Qty Accepted</th>
+                            <th width="15%" ng-show="status<=1">Quantity Received</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="p in products">
+                        <tr ng-repeat="p in products" ng-init="p.add = p.order">
                             <td>{{p.name}}</td>
+                            <td>{{p.order + (p.received || 0)}}</td>
                             <td>{{p.received || 0}}</td>
-                            <td>{{p.order}}</td>
                             <td ng-show="status<=1"><input type="number" ng-model="p.add" class="form-control input-sm"></td>
                         </tr>
                     </tbody>

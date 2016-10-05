@@ -8,6 +8,8 @@ use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
 
 use AlcoholDelivery\PurchaseOrder;
+use AlcoholDelivery\Stocks;
+use AlcoholDelivery\Products;
 use Illuminate\Support\Facades\Auth;
 use MongoId;
 
@@ -54,16 +56,17 @@ class PurchaseOrderController extends Controller
                     'status' => 1,
                     'supplier' => 1,
                     'count' => 1,
+                    'createTime' => 1,
                     'supplierName' => '$suppliers.title'
                 ]
             ]
         ];
 
+        $columns = [null, 'createTime', 'supplier', 'status'];
         if(isset($params['order']) && !empty($params['order'])) {
             $field = $columns[$params['order'][0]['column']];
             $direction = ($params['order'][0]['dir']=='asc')?1:-1;
-            $sort = [$field=>$direction];
-            $query[]['$sort'] = $sort;
+            $query[]['$sort'] = [ $field => $direction ];
         }
 
         $countQuery = [
@@ -77,14 +80,13 @@ class PurchaseOrderController extends Controller
                 '$project' => [
                     '_id' => 0,
                     'total' => 1,
+                    'createTime' => 1,
                     'results' => [
                         '$slice' => ['$results', (int)$skip, (int)$length]
                     ],
                 ]
             ]
         ];
-
-        $limitQuery = [];
 
         $response = PurchaseOrder::raw()->aggregate(array_merge($query, $countQuery));
 
@@ -206,13 +208,16 @@ class PurchaseOrderController extends Controller
         extract($params);
 
         if(isset($status)) {
-            $response = PurchaseOrder::raw()->update(['_id' => new MongoId($id)], ['$set' => ['status'=>3]]);
+            $response = PurchaseOrder::raw()->update(['_id' => new MongoId($id), 'status'=> ['$lte' => 1]], ['$set' => ['status'=>3]]);
         }
         if(isset($products)) {
 
             $hasUpdate = false;
             $isComplete = true;
             $received = false;
+
+            $userStoreId = Auth::user('admin')->storeId;
+
             foreach ($products as $i => $product) {
                 if(!isset($product['received']))
                     $products[$i]['received'] = 0;
@@ -224,6 +229,10 @@ class PurchaseOrderController extends Controller
                     $products[$i]['order'] -= $product['add'];
 
                     $hasUpdate = true;
+
+                    Stocks::raw()->update(["productId" => $product['_id']['$id'], "storeId" => $userStoreId], ['$inc' => ['quantity' => $product['add']]]);
+                    Products::raw()->update(["_id" => $products[$i]['_id']], ['$inc' => ['quantity' => $product['add']]]);
+                    // jprd($resp);
                 }
 
                 unset($products[$i]['add']);

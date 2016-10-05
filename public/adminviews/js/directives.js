@@ -222,28 +222,36 @@ MetronicApp.directive('dropdownMenuHover', function () {
 
 
 MetronicApp.directive('formFilter', function ($timeout) {
-  return {
-	restrict: 'C',
-	link: function (scope, element) {
-		element.bind("keypress", function(event) {
+	var reqPromise;
+	return {
+		restrict: 'C',
+		link: function (scope, element) {
 
-			if(event.which === 13) {			
+			element.bind("keypress", function(event) {
 
-				$(".filter-submit").trigger('click');
-				//event.preventDefault();
+				if(event.which === 13) {			
 
-			}
+					triggerReq();// $(".filter-submit").trigger('click');
+					//event.preventDefault();
 
-		});
+				}
 
-		element.bind("change", function(event) {
+			});
+
+			element.bind("change", function(event) {
+			
+				triggerReq();// $(".filter-submit").trigger('click');
 		
-			$(".filter-submit").trigger('click');
-	
-		});
+			});
 
-	}
-  };  
+			function triggerReq() {
+				if(reqPromise) $timeout.cancel(reqPromise);
+				reqPromise = $timeout(function(){
+					$(".filter-submit").trigger('click');
+				}, 500);
+			}
+		}
+	};
 });
 
 
