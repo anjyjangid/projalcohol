@@ -14,7 +14,7 @@
 			<div class="portlet-body">				
 				<tabset active="active">
 					<tab>
-						<tab-heading>General <span class="badge badge-danger" ng-bind="showError('general')"></span></tab-heading>
+						<tab-heading>General <span class="badge badge-danger" ng-if="taberr[0]">!</span></tab-heading>
 
 						<div class="form-horizontal">
 							<div class="form-group" ng:class="{'has-error':errors.name[0]}">
@@ -222,7 +222,7 @@
 
 					</tab>
 					<tab>
-					<tab-heading>Stock</tab-heading>
+					<tab-heading>Stock <span class="badge badge-danger" ng-if="taberr[1]">!</span></tab-heading>
 						<div class="form-horizontal">
 							
 							<div class="form-group" ng:class="{'has-error':errors.sku[0]}">
@@ -314,7 +314,7 @@
 						</div>		
 					</tab>	
 					<tab>
-						<tab-heading>Dealers</tab-heading>
+						<tab-heading>Dealers <span class="badge badge-danger" ng-if="taberr[2]">!</span></tab-heading>
 						
 						<div class="text-align-reverse margin-bottom-10">
 							<a ng-click="product.dealerData.push({})" class="btn yellow">
@@ -403,7 +403,7 @@
 						</div> -->
 					</tab>	
 					<tab>
-						<tab-heading>Pricing</tab-heading>
+						<tab-heading >Pricing <span class="badge badge-danger" ng-if="taberr[3]">!</span></tab-heading>
 						<div class="form-horizontal">
 							<table class="table table-bordered">
 						        <thead>
@@ -581,7 +581,7 @@
 						</div>
 					</tab>						
 					<tab>
-						<tab-heading>Meta</tab-heading>
+						<tab-heading>Meta <span class="badge badge-danger" ng-if="taberr[4]">!</span></tab-heading>
 						
 						<div class="form-horizontal">
 							<div class="form-group" ng:class="{'has-error':errors.metaTitle[0]}">
@@ -615,7 +615,7 @@
 					</tab>
 						
 					<tab>
-						<tab-heading>Images</tab-heading>
+						<tab-heading>Images <span class="badge badge-danger" ng-if="taberr[5]">!</span></tab-heading>
 
 						<div ng-show="errors.imageFiles[0]" class="alert alert-danger fade in">
 							<i class="fa-lg fa fa-warning"></i>
@@ -695,7 +695,7 @@
 					</tab>
 
 					<tab>
-						<tab-heading>Suggestion</tab-heading>
+						<tab-heading>Suggestion <span class="badge badge-danger" ng-if="taberr[6]">!</span></tab-heading>
 						
 						<div class="form-group row">
 							<label class="col-md-2 control-label">Products:</label>

@@ -1741,7 +1741,7 @@ ui-sref {
 	padding: 5px 10px;
 }
 .cartbtn {
-	/*width: 142px;*/
+	min-width: 142px;
 	height: 32px;
 	border: none;
 	border-radius: 5px;
@@ -3130,6 +3130,8 @@ ui-sref {
 }
 .paymenttype {
 	padding: 10px;
+	border:1px solid transparent;
+	position: relative;
 }
 .paymenttype.active {
 	box-shadow: -1px 1px 7px 6px #eed8f8;
@@ -5887,4 +5889,23 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
 .addressbokk-trvaichacovr.active .selectAddress .yelo_btn{
 	color: #564111;
 	background-color: #ffc412;
+}
+.paymenttype img.hidethumb{
+	display: none;
+	position: absolute;
+	top: 47%;
+	left: 40%;
+}
+.paymenttype.active img.hidethumb{
+	display: block;
+}
+
+.paymenttype img{
+	-moz-transition: all 0.3s ease 0s;
+	-webkit-transition: all 0.3s ease 0s;
+	transition: all 0.3s ease 0s;
+}
+
+.paymenttype.active > div > div > img{
+	margin-bottom: 15px;
 }

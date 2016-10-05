@@ -130,7 +130,7 @@ class UserController extends Controller
 			$curruser->save();
 
 			$return['success'] = true;
-			$return['message'] = "profile updated successfully";
+			$return['message'] = "Your profile settings has been updated successfully.";
 						
 		} catch(\Exception $e){
 			$return['message'] = "Something wrong";//$e->getMessage();            
@@ -208,7 +208,7 @@ class UserController extends Controller
 			$curruser->save();
 
 			$return['success'] = true;
-			$return['message'] = "password updated successfully";
+			$return['message'] = "Your password has been updated successfully.";
 						
 		} catch(\Exception $e){
 			$return['message'] = "Something wrong";//$e->getMessage();            

@@ -1,19 +1,15 @@
 <ul class="nav navbar-nav modify capitalize mobilesidebar" ng-cloak>
 	<!-- SHOW IN MOBILE ONLY -->
 	<li ng-hide="user.email" class="mobilemenu hide">
-		<a data-target="#login" data-toggle="modal">
-			LOGIN
-		</a>
+		<a class="pointer" ng-click="loginOpen($event);">LOGIN</a>
 	</li>
 	<li ng-hide="user.email" class="mobilemenu hide">
-    	<a data-target="#register" data-toggle="modal">
-    		SIGNUP
-    	</a>
+    	<a class="pointer" ng-click="signupOpen($event);"> SIGNUP </a>                       	
     </li>
-	<li ng:class="{'hideOp':hideOp}" class="dropdown mobilemenu hide" ng-show="user.email" ng-mouseover="hideOp=false" ng-mouseleave="hideOp=true" class="mobilemenu hide"> 
+	<li ng:class="{'hideOp':hideOp}" class="dropdown mobilemenu hide" ng-show="user.email" ng-click="hideOp=!hideOp"  class="mobilemenu hide"> 
 		<a class="username dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" > Hola, {{user.email}} 
 		</a>
-        <ul ng-click="hideOp=true" class="dropdown-menu profil-dropdown">
+        <ul  class="dropdown-menu profil-dropdown">
           <li><a ui-sref="accountLayout.profile">My Account</a></li>
           <li><a href="#" ng-click="logout()">Logout</a></li>
         </ul>
@@ -45,9 +41,9 @@
 
 	</li>
 	<li ng-class="{'active':AppController.category=='loyalty'}" class="dropdown">
-		<a ui-sref="mainLayout.loyaltystore">Loyalty Store</a>
+		<a class="pointer" ui-sref="mainLayout.loyaltystore">Loyalty Store</a>
 	</li>
 	<li ng-class="{'active':AppController.category=='gifts'}" class="dropdown">
-		<a ng-click="giftPopup($event)">Gift packaging</a>
+		<a class="pointer" ng-click="giftPopup($event)">Gift packaging</a>
 	</li>
 </ul>

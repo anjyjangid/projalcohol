@@ -2,15 +2,21 @@
 <div class="cover_creadetcard_cashdiv">
 	<div class="cover_cashdiv_left paymenttype" ng-click="payment.method='COD'" ng-class="{active:payment.method=='COD'}">
 		<div class="pic_divcash">
-			<div class="verticetnter2"><img src="images/cash_okpic.png"></div>
+			<div class="verticetnter2">
+				<img src="images/cashondelivery.png">				
+			</div>
 		</div>
 		<div class="divcash_text">Cash on Delivery</div>
+		<img src="images/activepaytype.png" class="hidethumb">
 	</div>
 	<div class="cover_creadetcard_right paymenttype" ng-click="payment.method='CARD'" ng-class="{active:payment.method=='CARD'}">
 		<div class="pic_creadetcard">
-			<div class="verticetnter"><img src="images/creaditcard_pic.png"></div>
+			<div class="verticetnter">
+				<img src="images/creaditcardpay.png">
+			</div>
 		</div>
 		<div class="creadetcard_text">Credit Card</div>
+		<img src="images/activepaytype.png" class="hidethumb">
 	</div>
 </div>
 <div class="availablecards">
