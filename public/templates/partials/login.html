@@ -1,0 +1,38 @@
+<md-dialog id="login" layout="column" flex-lg="40">
+	  <div class="md-toolbar-tools alcohalhdr">
+      <h2 show-sm hide-lg>Login to Your Account</h2>
+      <span flex></span>
+      <button type="button" class="close" ng-click="hide()" aria-label="Close">
+      	<span aria-hidden="true">&times;</span>
+      </button>        
+    </div>
+    <form ng-submit="loginSubmit()" name="loginForm">
+      <md-dialog-content>
+      <div class="modal-body alcohabody">
+        <div class="alcohal_regisemailcvr">
+          <div class="alcohal_regissigntxt" hide-xs hide-sm>Login to Your Account</div>
+          <div class="registeremailcvr" ng-class="{'has-error':login.errors.email[0]}">
+            <label>Email Address</label>
+            <input type="text" ng-model="login.email" class="alcohalrestertextbox form-control" placeholder="Email Address" />
+            <span class="help-block" ng-bind="login.errors.email[0]"></span> </div>
+          <div class="registeremailcvr" ng-class="{'has-error':login.errors.password[0]}">
+            <input autocomplete="off" type="password" ng-model="login.password" class="alcohalrestertextbox form-control" placeholder="Password" />
+            <span class="help-block" ng-bind="login.errors.password[0]"></span> </div>
+          <div class="fbloginDiv">
+            <div class="fblogin" id="login-btn"  align="center"> <img ng-click="loginToggle()" src="img/facebook_login.png"> </div>
+          </div>
+        </div>
+      </div>
+      </md-dialog-content>
+      <md-dialog-actions layout="column">
+      <div class="modal-footer alcohalfotter">
+        <div class="alcohal_regisemailcvr">
+          <div class="alcohallogin_forgettxt"> 
+            <a class="pointer" ng-click="forgotpassOpen($event)">Forgot Password?</a> 
+          </div>
+          <button ng-disabled="loading" type="submit" class="alcohalfootersign alcohal_fotrloginbox">Log in</button>
+        </div>
+      </div>
+      </md-dialog-actions>
+    </form>    
+</md-dialog>

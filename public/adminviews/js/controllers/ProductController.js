@@ -187,6 +187,7 @@ MetronicApp.controller('ProductAddController',[
 	'$rootScope', '$scope', '$location','$stateParams','$timeout','fileUpload','productModel',
 	function($rootScope, $scope,$location,$stateParams,$timeout,fileUpload,productModel) {
 
+	$scope.taberr = [0,0,0,0,0,0,0];
 	
 	/*$scope.$on('$viewContentLoaded', function() {
 		$scope.selectCategory();
@@ -227,7 +228,8 @@ MetronicApp.controller('ProductAddController',[
 			productModel.updateProduct($scope.product,$stateParams.productid).success(function(response){						
 				$location.path("products/list");
 			}).error(function(data, status, headers){			
-				$scope.errors = data;			
+				$scope.errors = data;	
+				$timeout(function(){$scope.tabErrors()});		
 			});
 
 		}else{
@@ -235,10 +237,18 @@ MetronicApp.controller('ProductAddController',[
 				$location.path("products/list");
 			}).error(function(data, status, headers){			
 				$scope.errors = data;			
+				$timeout(function(){$scope.tabErrors()});
 			});
 		}	
 		
 	};	
+
+	$scope.tabErrors = function(){
+		angular.forEach(angular.element(".tab-pane"), function(value, key){
+		    var elem = angular.element(".tab-pane")[key];
+		    $scope.taberr[key] = angular.element(elem).find('.has-error').length;		    
+		});				
+	};
 
 	$scope.imageRemove = function(i){
 		$scope.product.imageFiles.splice(i, 1);
@@ -337,7 +347,7 @@ MetronicApp.controller('ProductAddController',[
 	}
 
 	$scope.showError = function(tab){
-		return '';
+		return 2;
 	}
 
 }]);

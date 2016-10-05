@@ -34,27 +34,15 @@ AlcoholDelivery.directive('sideBar', function() {
 			user:'='
 		},*/
 		templateUrl: '/templates/partials/topmenu.html',
-		controller: function($scope,$rootScope,$http,$state,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard,$fblogin){
+		controller: function($scope,$rootScope,$http,$state,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard,$fblogin,$mdDialog){
 
 			$scope.list = [];
 
-			$scope.menu = {openSearch:true};
-
-			$scope.signup = {
-				terms:null
-			};
+			$scope.menu = {openSearch:true};			
 
 			$scope.login = {};
 			$scope.forgot = {};
-			$scope.reset = {};
-
-			$scope.resetSignup = function(){
-
-				$scope.signup = {
-					terms:null
-				};
-
-			}
+			$scope.reset = {};			
 
 			$scope.signupSubmit = function() {
 				$scope.signup.errors = {};
@@ -66,27 +54,14 @@ AlcoholDelivery.directive('sideBar', function() {
 						title: "Congratulation!",
 						text : "Account Created successfully. Please check your mail to verify your account",
 						timer: 10000
-					});
-	                $scope.signup = {
-						terms:null
-					};
-					$('#register').modal('hide');
-
+					});	                					
+	                $mdDialog.hide();
 	            }).error(function(data, status, headers) {
 	                $scope.signup.errors = data;
 	            });
 			};
 
-			$scope.loginSubmit = function(){
-				$scope.errors = {};
-				$http.post('/auth',$scope.login).success(function(response){				  
-
-					$scope.loginSuccess(response);
-
-				}).error(function(data, status, headers) {
-					$scope.errors = data;
-	            });
-			};
+			
 
 			$http.get('/check').success(function(response){
 	            $scope.user = response;
@@ -98,9 +73,7 @@ AlcoholDelivery.directive('sideBar', function() {
 				$scope.forgot.errors = {};
 				$http.post('/password/email',$scope.forgot).success(function(response){
 	                $scope.forgot = {};
-	                $scope.forgot.message = response.message;
-	                $('#forgot_password').modal('hide');
-	                $('#forgot_password_sent').modal('show');
+	                $scope.forgot.message = response.message;	                
 	            }).error(function(data, status, headers) {
 	                $scope.forgot.errors = data;
 	            });
@@ -153,7 +126,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 				$http.get('/auth/logout').success(function(response){				
 
-	                $scope.user = {};
+	                $scope.user = null;
 	                // Destroy Cart Params start
 	                delete $rootScope.deliverykey;
 	                localStorage.removeItem("deliverykey");	                
@@ -182,7 +155,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		        })
 		        .then(
 		            function(response){
-		            	$('#login').modal('hide');
+		            	$mdDialog.hide();
 		            	$http.post('/auth/registerfb',response)
 		            	.success(function(res){
 		            		$scope.loginSuccess(res);
@@ -193,13 +166,11 @@ AlcoholDelivery.directive('sideBar', function() {
 
 		    //INTIALIZE AFTER USER LOGIN(FB & NORMAL)
 		    $scope.loginSuccess = function(response){
-
 		    	UserService.currentUser = response;
-
 		    	$scope.login = {};
                 $scope.user = response;
 				$scope.user.name = response.email;
-                $('#login').modal('hide');
+                $mdDialog.hide();
                 $scope.errors = {};                
                 store.init().then(
                 	function(successRes){
@@ -209,9 +180,41 @@ AlcoholDelivery.directive('sideBar', function() {
                 );
                 alcoholWishlist.init();
                 ClaimGiftCard.claim();
-
-
 		    }
+
+		    $scope.signupOpen = function(ev){
+			    $scope.signup = {
+					terms:null,
+					errors:[]
+				};			    
+			    $mdDialog.show({
+					scope: $scope.$new(),
+					controller: function(){},
+					templateUrl: '/templates/partials/signup.html',
+					parent: angular.element(document.body),
+					targetEvent: ev,
+					clickOutsideToClose:true,		
+					fullscreen:true
+				});
+			}
+
+			$scope.forgotpassOpen = function(ev){
+			    $scope.forgot = {errors:[]};			    
+			    
+			    $mdDialog.show({
+					scope: $scope.$new(),
+					controller: function(){},
+					templateUrl: '/templates/partials/forgotpassword.html',
+					parent: angular.element(document.body),
+					targetEvent: ev,
+					clickOutsideToClose:true,		
+					fullscreen:true
+				});
+			}
+
+			$scope.hide = function() {
+				$mdDialog.hide();
+			};
 		}
 	};
 })
@@ -1235,7 +1238,7 @@ AlcoholDelivery.directive('sideBar', function() {
 								var point = new google.maps.LatLng(1.3544542534181963,103.86775184667965);
 								$scope.map.setCenter(point);
 								$scope.map.setZoom(12);
-								$scope.map.setOptions({draggable:true});
+								$scope.map.setOptions({draggable:false});
 							}, 500);
 						});
 
@@ -1267,7 +1270,7 @@ AlcoholDelivery.directive('sideBar', function() {
 									var point = new google.maps.LatLng(lat,lng);
 									$scope.map.setCenter(point);
 									$scope.map.setZoom(zoom);
-									$scope.map.setOptions({draggable:true});
+									$scope.map.setOptions({draggable:false});
 									//REMOVE THE PREVIOUS MARKER
 									if($scope.marker)
 										$scope.marker.setMap(null);
@@ -1328,12 +1331,13 @@ AlcoholDelivery.directive('sideBar', function() {
 					templateUrl: '/templates/partials/addressMap.html',
 					parent: angular.element(document.body),
 					targetEvent: ev,
-					clickOutsideToClose:true
+					clickOutsideToClose:true,
+					fullscreen:true
 				});
 			};			
 
 			$scope.showAddressForm = function(dObj) {
-
+				$scope.errors = {};
 				$mdDialog.show({
 					scope: $scope.$new(),
 					controller: function() {							
@@ -1376,7 +1380,8 @@ AlcoholDelivery.directive('sideBar', function() {
 					templateUrl: '/templates/partials/addressManually.html',
 					parent: angular.element(document.body),
 					targetEvent: dObj.ev,
-					clickOutsideToClose:true
+					clickOutsideToClose:true,
+					fullscreen:true
 				});
 
 			};
@@ -1420,8 +1425,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		       	);
 			};
 
-			$scope.setSelectedAddress = function(key){
-				console.log(key);
+			$scope.setSelectedAddress = function(key){				
 				$scope.delivery.address = {};
 				$scope.delivery.address.key = key;
 				$scope.delivery.address.detail = $scope.addresses[key];

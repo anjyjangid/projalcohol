@@ -1181,14 +1181,13 @@ AlcoholDelivery.factory('AlcoholProduct',[
 		return defer.promise;
 		};
 
-
-
-
 	return product;
 
 }]);
 
-AlcoholDelivery.factory('CreditCertificate',['alcoholCart','$q',function(alcoholCart,$q){
+AlcoholDelivery.factory('CreditCertificate',[
+			'alcoholCart','$q', '$timeout', 'UserService',
+	function(alcoholCart, $q, $timeout, UserService){
 	
 	var certificate = function(data){
 
@@ -1196,13 +1195,13 @@ AlcoholDelivery.factory('CreditCertificate',['alcoholCart','$q',function(alcohol
 		this.setLoyalty(data.loyalty);
 		this.setValue(data.value);
 		this.setCommonSetings();
+		this.setAddBtnState();
 
 	}
 
-
 	certificate.prototype.setQuantity = function(credit){
 
-		isInCart = alcoholCart.getCreditByValue(credit.value);
+		isInCart = alcoholCart.getLoyaltyCardByValue(credit.value);
 
 		if(isInCart===false){
 			this.qNChilled = 0;
@@ -1212,9 +1211,16 @@ AlcoholDelivery.factory('CreditCertificate',['alcoholCart','$q',function(alcohol
 
 	};
 
+	certificate.prototype.getQuantity = function(){
+
+		return parseInt(this.qNChilled);
+
+	}
+
 	certificate.prototype.setCommonSetings = function(){
 
 		this.servechilled = false;
+		this.isLoyaltyStoreProduct = true;
 
 	}
 
@@ -1240,10 +1246,122 @@ AlcoholDelivery.factory('CreditCertificate',['alcoholCart','$q',function(alcohol
 
 		var defer = $q.defer();
 
+		var _certificate = this;
 			
+
+		if(typeof _certificate.updateTimeOut!=="undefined"){
+
+			$timeout.cancel(_certificate.updateTimeOut);
+
+		}
+
+		_certificate.updateTimeOut = $timeout(function(){
+
+			if(_certificate.notSufficient){
+
+				defer.reject({'notSufficient':true});
+
+			}
+
+			alcoholCart.addCreditCertificate(_certificate.value,_certificate.qNChilled).then(
+
+				function(successRes){
+					
+					switch(successRes.code){
+							case 100:
+
+								$timeout(function(){
+									$mdToast.show({
+										controller:function($scope){
+
+											$scope.qChilled = 0;
+											$scope.qNchilled = 0;
+
+											$scope.closeToast = function(){
+												$mdToast.hide();
+											}
+										},
+										templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+										parent : $element,											
+										position: 'top center',
+										hideDelay:10000
+									});
+								},1000);
+
+							break;
+							case 101:
+
+								$timeout(function(){
+
+									$mdToast.show({
+										controller:function($scope){
+
+											$scope.qChilled = 0;
+											$scope.qNchilled = 0;
+
+											$scope.closeToast = function(){
+												$mdToast.hide();
+											}
+										},											
+										templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+										parent : $element,											
+										position: 'top center',
+										hideDelay:10000
+									});
+
+								},1000);
+
+							break;
+
+						}
+
+				},
+				function(errorRes){
+
+					_certificate.qNChilled = errorRes.quantity || 0;
+				}
+
+			);
+		},500)
 
 		return defer.promise;
 	};
+
+	certificate.prototype.setAddBtnState = function(p){
+
+		if( typeof p === 'undefined' ){
+			var p = this;
+		}
+
+		var productAvailQty = p.getQuantity();
+
+		this.addBtnAllowed = true;		
+
+		var notSufficient = false;
+		
+		var user = UserService.isLoggedIn();
+
+		if(user!==false){
+
+			var userloyaltyPoints = user.loyaltyPoints || 0;
+
+			var pointsInCart = alcoholCart.getLoyaltyPointsInCart() || 0;
+
+			var userloyaltyPointsDue = userloyaltyPoints - pointsInCart;
+
+			var point = parseFloat(userloyaltyPointsDue);
+
+			var pointsRequired = parseInt(this.value);
+
+			if(point < pointsRequired && !this.isInCart){
+				notSufficient = true;
+			}
+
+		}		
+
+		this.notSufficient = notSufficient;
+
+	}
 
 	return certificate;
 

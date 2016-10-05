@@ -204,7 +204,8 @@ Route::group(['prefix' => 'cart'], function () {
 	Route::put('gift/product/chilledtoggle/{giftUid}','CartController@putGiftProductChilledStatus');
 
 	Route::put('loyalty/{key}','CartController@putLoyalty');
-	
+
+	Route::put('loyalty/credit/{key}','CartController@putCreditCertificate');	
 
 });
 
@@ -241,6 +242,12 @@ Route::get('products/i/{folder}/{filename}', function ($folder,$filename)
 
 });
 
+//ASSET IMAGE ROUTES
+Route::get('asset/i/{filename}', function ($filename)
+{
+    return Image::make(public_path('img') . '/' . $filename)->response();
+});
+
 //COMMON IMAGE ROUTES 
 Route::get('{storageFolder}/i/{filename}', function ($storageFolder,$filename)
 {
@@ -262,11 +269,7 @@ Route::get('{storageFolder}/i/{filename}', function ($storageFolder,$filename)
     return Image::make(storage_path($storageFolder) . '/' . $filename)->response();
 });
 
-//ASSET IMAGE ROUTES
-Route::get('asset/i/{filename}', function ($filename)
-{
-    return Image::make(public_path('img') . '/' . $filename)->response();
-});
+
 
 Route::get('/check', 'UserController@check');
 Route::post('/auth', 'UserController@checkAuth');

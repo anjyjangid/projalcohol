@@ -51,14 +51,7 @@
 				<div class="prod_desc"> 
 					convert {{credit.loyalty}} loyalty to {{credit.value | pricingTxt}} credit
 				</div>
-				<!-- <div class="prod_addtocart">
-
-					<div class="cartbtn">
-						<div class="addcart" role="button" tabindex="0"><span></span>add to cart</div>
-					</div>
-				
-				</div> -->
-
+								
 				<div class="prod_addtocart">
 
 					<add-to-cart-btn ng-class="{'disabled': credit.notSufficient}" product="credit"></add-to-cart-btn>

@@ -9,8 +9,8 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ngAnimate',
 	'ngMaterial',
 	'ngScrollbars',
-	'ngMessages',	
-	//'ngMap',
+	'ngMessages',
+	'ngMap',
 	'vAccordion',
 	'alcoholCart.directives',
 	'angularFblogin',
@@ -245,14 +245,10 @@ AlcoholDelivery.factory('catPricing', ["$q", "$timeout", "$rootScope", "$http", 
 	var catPricing = {};
 
 	function GetCategoryPricing() {
-
 		var d = $q.defer();
 		$http.get("/category/pricing").success(function(response){
-
 			d.resolve(response);
-
 		});
-
 		return d.promise;
 	};
 
@@ -292,37 +288,45 @@ AlcoholDelivery.factory('categoriesFac', ["$q", "$http", function($q, $http){
 
 }]);
 
-AlcoholDelivery.factory("UserService", ["$q", "$timeout", "$http", function($q, $timeout, $http) {
+AlcoholDelivery.factory("UserService", [
+	"$q", "$timeout", "$http",  
+	function($q, $timeout, $http) {
 
-	function GetUser(){
+		function GetUser(){
+			var d = $q.defer();
+			$timeout(function(){
+				$http.get("/loggedUser").success(function(response){
+			    	d.resolve(response);
+			    })
+			}, 500);
+			return d.promise;
+		};
 
-		var d = $q.defer();
-		$timeout(function(){
+		function GetUserAddress(){
 
-			$http.get("/loggedUser").success(function(response){
+		};
 
-		    	d.resolve(response);
+		function LogoutReset(){
+			
+		};		
 
-		    })
+	function isLoggedIn(){
 
-		}, 500);
+		var userData = this.currentUser;
+		if(userData !== null && typeof userData.email !== "undefined"){
+			return userData;
+		}
 
-		return d.promise;
-	};
+		return false;
 
-	function GetUserAddress(){
-
-	};
-
-	function LogoutReset(){
-		
 	};
 
 	return {
 		GetUser: GetUser,
 		GetUserAddress: GetUserAddress,
-        currentUser: null,
-        currentUserAddress: null
+		currentUser: null,
+		currentUserAddress: null,
+		isLoggedIn:isLoggedIn,
 	};
 	
 }]);
@@ -440,6 +444,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						controller:function(){								
 						},
 						resolve: {
+
 								storeInit : function (store){
 									return store.init();
 								},
@@ -575,18 +580,19 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						controller:"CartReviewController"
 				})
 
-				.state('mainLayout.login', {
+				/*.state('mainLayout.login', {
 
 						url: "/login",
 						templateUrl: "/templates/index/home.html",
-						controller:function(UserService){
+						controller:function(UserService,$scope){
 
 							setTimeout(function(){
-								$('#login').modal('show');
+								$scope.loginOpen();
+								// $('#login').modal('show');
 							},1000)
 
 						}
-				})
+				})*/
 
 				.state('mainLayout.reset', {
 						url: "/reset/{token}",
@@ -644,7 +650,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						},
 						"navLeft@accountLayout" : {
 							templateUrl: "/templates/account/navLeft.html",
-						},
+						}
 
 					}
 				})
@@ -680,8 +686,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 				.state('accountLayout.address', {
 						url: "/address",
-						templateUrl: "/templates/account/address.html",
-						controller:"AddressController"
+						templateUrl: "/templates/account/address.html"						
 				})
 				.state('accountLayout.order', {
 						url: "/order/{orderid}",
@@ -844,7 +849,8 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 		}]);
 
-AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$location',
+AlcoholDelivery.service('LoadingInterceptor', [
+'$q', '$rootScope', '$log', '$location',
 function ($q, $rootScope, $log, $location) {
     'use strict';
 
@@ -860,8 +866,7 @@ function ($q, $rootScope, $log, $location) {
     }
 
     return {
-        request: function (config) {
-        	
+        request: function (config) {        	
             xhrCreations++;
             updateStatus();
             return config;
@@ -869,7 +874,7 @@ function ($q, $rootScope, $log, $location) {
         requestError: function (rejection) {
             xhrResolutions++;
             updateStatus();
-            //$log.error('Request error:', rejection);
+            // $log.error('Request error:', rejection);
             return $q.reject(rejection);
         },
         response: function (response) {
@@ -885,7 +890,8 @@ function ($q, $rootScope, $log, $location) {
 			};
 
 			if(rejection.status == 401){
-				$location.url('/login').replace();
+				$location.url('/').replace();
+				$rootScope.$broadcast('showLogin');				
 			};
 
             return $q.reject(rejection);
@@ -970,13 +976,13 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 	});
 
 
-	(function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "//connect.facebook.net/en_US/sdk.js";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
+	// (function(d, s, id) {
+ //      var js, fjs = d.getElementsByTagName(s)[0];
+ //      if (d.getElementById(id)) return;
+ //      js = d.createElement(s); js.id = id;
+ //      js.src = "//connect.facebook.net/en_US/sdk.js";
+ //      fjs.parentNode.insertBefore(js, fjs);
+ //    }(document, 'script', 'facebook-jssdk'));
 
     /*$rootScope.$on('fb.load', function() {
       $window.dispatchEvent(new Event('fb.load'));
