@@ -45,7 +45,7 @@ class UserAddressRequest extends Request
 		];
 
 		if(isset($input['manualForm'])){
-			$rules['house'] = 'required|string|max:10';
+			$rules['house'] = 'required';
 		}
 
 

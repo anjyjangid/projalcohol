@@ -25,25 +25,30 @@
           </div>
           <a ng-click="searchbar(0); openSearch=!openSearch" class="search_close">&times;</a> </div>
         <div ng-click="openMenu()" class="menu-icon"> <span class="line"></span> <span class="line"></span> <span class="line"></span> </div>
-        <div class="col-md-2 homecallus_cover"> <a ui-sref="mainLayout.index">
-          <div class="callshape">
-            <div class="homecallus">Call us now</div>
-            <div class="homechilled">9-chilled</div>
-            <div class="homechilled">9-2445533</div>
+        <div class="col-md-2 homecallus_cover"> <a href="tel:+6192445533">
+          <div class="callshape">            
+              <div class="homecallus">Call us now</div>
+              <div class="homechilled">9-chilled</div>
+              <div class="homechilled">9-2445533</div>            
           </div>
-          </a> </div>
+          </a> 
+        </div>
         <div class="col-md-10 top-logo-sideacnt-cover text-center">
           <div class="signuplogin_cover">
             <div class="signuplogin">
               <ul class="menuulpadding">
-                <li ng-hide="user.email"> <a data-target="#login" data-toggle="modal" href="javascript:;"> <span>login</span> </a> </li>
+                <li ng-hide="user.email"> 
+                  <a class="pointer" ng-click="loginOpen($event);"> <span>Login</span> </a> 
+                </li>
                 <li id="usermenuli" ng:class="{'hideOp':hideOp}" class="dropdown" ng-show="user.email" ng-mouseover="hideOp=false" ng-mouseleave="hideOp=true"> <a href="javascript:;" class="username dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" > Hola, {{user.email}} </a>
                   <ul ng-click="hideOp=true" class="dropdown-menu profil-dropdown">
                     <li><a ui-sref="accountLayout.profile">My Account</a></li>
-                    <li><a href="#" ng-click="logout()">Logout</a></li>
+                    <li><a class="pointer" ng-click="logout()">Logout</a></li>
                   </ul>
                 </li>
-                <li ng-hide="user.email"> <a data-target="#register" data-toggle="modal" href="javascript:;"><span>Signup</span></a> </li>
+                <li ng-hide="user.email"> 
+                  <a class="pointer" ng-click="signupOpen($event);"> <span>Signup</span> </a>                   
+                </li>
                 <alcoholcart-summary></alcoholcart-summary>
                 <li> <a class="search_icon" ng-click="searchbar(1); openSearch=!openSearch" ></a> </li>
               </ul>
@@ -190,7 +195,8 @@ new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'e
             <div class="registeremailcvr" ng-class="{'has-error':forgot.errors.email[0]}">
               <label>Enter your e-mail address below to reset your password. </label>
               <input type="text" ng-model="forgot.email" class="alcohalrestertextbox form-control" placeholder="Email Address" />
-              <span class="help-block" ng-bind="forgot.errors.email[0]"></span> </div>
+              <span class="help-block" ng-bind="forgot.errors.email[0]"></span> 
+            </div>
           </div>
         </div>
         <div class="modal-footer alcohalfotter">

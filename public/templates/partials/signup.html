@@ -1,0 +1,39 @@
+<md-dialog id="signup" layout="column" flex-lg="40" flex-sm="80" flex-gt-sm="66">
+      <div class="md-toolbar-tools alcohalhdr">
+        <h2 show-sm hide-lg>Sign Up for Free</h2>
+        <span flex></span>
+        <button type="button" class="close" ng-click="hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form ng-submit="signupSubmit()" name="myForm">
+        <md-dialog-content>
+        <div class="modal-body alcohabody">
+          <div class="alcohal_regisemailcvr">
+            <div class="alcohal_regissigntxt" hide-xs hide-sm>Sign Up for Free</div>
+            <div class="registeremailcvr" ng-class="{'has-error':signup.errors.email[0]}">
+              <input type="email" name="email" ng-model="signup.email" class="alcohalrestertextbox form-control" placeholder="Email Address" ng-model="formData.email">              
+              <span class="help-block" ng-bind="signup.errors.email[0]"></span> </div>
+            <div class="registeremailcvr" ng-class="{'has-error':signup.errors.password[0]}">
+              <input type="password" ng-model="signup.password" class="alcohalrestertextbox form-control" placeholder="Password">
+              <span class="help-block" ng-bind="signup.errors.password[0]"></span> </div>
+            <div class="registeremailcvr" ng-class="{'has-error':signup.errors.password_confirmation[0]}">
+              <input type="password" ng-model="signup.password_confirmation" class="alcohalrestertextbox form-control" placeholder="Confirm Password">
+              <span class="help-block" ng-bind="signup.errors.password_confirmation[0]"></span> </div>
+            <div class="registeremailcvr" ng-class="{'has-error':signup.errors.terms[0]}">
+              <md-checkbox ng-model="signup.terms" aria-label="leaveatdoor-checkbox" name="regis" id="regis" class="md-warn md-align-top-left">
+              <div class="register_checktext"> By submitting this form, I confirm that I have read and agree to Alcohol Delivery’s <a target="_blank" ui-sref="cmsLayout.terms-conditions">Terms of Use</a> and <a target="_blank" ui-sref="cmsLayout.privacy-policy">Privacy Policy</a> <span class="help-block" ng-bind="signup.errors.terms[0]"></span></div>
+              </md-checkbox>
+            </div>
+          </div>
+        </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="column">
+        <div class="modal-footer alcohalfotter">
+          <div class="alcohal_regisemailcvr">
+            <button ng-disabled="loading" type="submit" class="alcohalfootersign">Sign Up</button>
+          </div>
+        </div>
+        </md-dialog-actions>
+      </form>   
+</md-dialog>
