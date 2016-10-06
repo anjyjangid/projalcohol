@@ -52,6 +52,20 @@ class OrderController extends Controller
 		
 	}
 
+	public function update(Request $request,$id)
+	{
+		$params = $request->all();
+		// jprd($params);
+		$user = Auth::user('user');
+
+		if(isset($params['rate'])){
+			Orders::raw()->update(['_id'=> new MongoId($id), 'user' => new MongoId($user->_id)], ['$set'=>['rate'=>$params['rate']]]);
+			$resp = Orders::raw()->findOne(['_id'=> new MongoId($id)], ['rate'=>1]);
+
+			return response($resp['rate'], 200);
+		}
+	}
+
 	public function getSummary(Request $request,$id)
 	{
 
@@ -96,6 +110,7 @@ class OrderController extends Controller
 						),
 						'created_at'=>1,
 						'timeslot'=>1,
+						'rate'=>1
 					),
 				),				
 				array(

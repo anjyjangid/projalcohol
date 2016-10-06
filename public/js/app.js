@@ -14,7 +14,8 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'vAccordion',
 	'alcoholCart.directives',
 	'angularFblogin',
-	'ngPayments'
+	'ngPayments',
+	'infinite-scroll'
 ]).config(['$locationProvider','$mdThemingProvider', function($location,$mdThemingProvider) {
 	/*$location.html5Mode({
 		enabled: true,
@@ -300,8 +301,8 @@ AlcoholDelivery.factory("UserService", [
 
 	};
 
-	var _self = this;
 	function getIfUser(serverCheck, redirect){
+	var _self = this;
 
 		if(serverCheck)
 			return $http.get("/loggedUser")
@@ -660,6 +661,12 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 					},
 					resolve: {
+						storeInit : function (store){
+							return store.init();
+						},
+						wishlistInit : function(alcoholWishlist){
+							return alcoholWishlist.init();
+						},
 						loggedIn: function(UserService) {
 							return UserService.getIfUser(true, true);
 						}

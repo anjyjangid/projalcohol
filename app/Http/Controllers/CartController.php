@@ -1984,8 +1984,6 @@ jprd($product);
 				$proPutValues = $params['products'][$product['_id']];
 
 				$updateProData = array(
-
-							"maxQuantity"=>$product['maxQuantity'],
 							"chilled"=>array(
 								"quantity"=>0,
 								"status"=>"chilled",
