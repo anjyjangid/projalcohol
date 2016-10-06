@@ -98,7 +98,7 @@ AlcoholDelivery.service('alcoholCart', [
 						inCart.setTQuantity(resProduct.quantity);
 						inCart.setPrice(resProduct);
 
-						inCart.setRMaxQuantity(resProduct);
+						//inCart.setRMaxQuantity(resProduct);
 						inCart.setRemainingQty(resProduct.remainingQty);						
 
 					}									
@@ -357,7 +357,7 @@ AlcoholDelivery.service('alcoholCart', [
 								inCart.setTQuantity(product.quantity);
 								inCart.setPrice(product);
 
-								inCart.setRMaxQuantity(product);
+								//inCart.setRMaxQuantity(product);
 
 							}else{				
 								
@@ -406,7 +406,7 @@ AlcoholDelivery.service('alcoholCart', [
 								inCart.setTQuantity(product.quantity);
 								inCart.setPrice(product);
 
-								inCart.setRMaxQuantity(product);
+								//inCart.setRMaxQuantity(product);
 
 							}else{				
 								
@@ -706,8 +706,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 			var loyaltyCards = this.getCart().loyaltyCards || [];
 			var build = false;
-			console.log(value);
-console.log(loyaltyCards);
+			
 			angular.forEach(loyaltyCards, function (creditCard) {
 				
 				if (creditCard.getValue() == value) {
@@ -916,7 +915,9 @@ console.log(loyaltyCards);
 			var cart = this.getCart();
 
 			angular.forEach(cart.products, function (product) {
-				total += parseFloat(product.getTotal());
+				if(product.getQuantity()>0){
+					total += parseFloat(product.getTotal());
+				}
 			});
 
 			angular.forEach(cart.packages, function (package) {
@@ -933,6 +934,10 @@ console.log(loyaltyCards);
 
 			angular.forEach(cart.promotions, function (promotion) {
 				total += parseFloat(promotion.getPrice());
+			});
+
+			angular.forEach(cart.sales, function (sale) {
+				total += parseFloat(sale.getPrice());
 			});
 
 			return +parseFloat(total).toFixed(2);
@@ -1090,12 +1095,11 @@ console.log(loyaltyCards);
 
 					var products = [].concat(sale['products'] , sale['action'])
 
-					var toRemove = [];
+					var toRemove = {};
 
 					angular.forEach(products, function(sPro){
 						toRemove[sPro._id] = sPro.quantity;
 					});
-
 
 					angular.forEach(toRemove, function( value, key ) {
 
@@ -1104,42 +1108,41 @@ console.log(loyaltyCards);
 						var qtyChilled = parseInt(product.qChilled);
 						var qtyNonChilled = parseInt(product.qNChilled);
 
-						if(qtyChilled>$value){
+						if(qtyChilled>value){
 
-							qtyChilled-=$value;
-							$value = 0;
+							qtyChilled-=value;
+							value = 0;
 
 						}else{
 
-							$value-= qtyChilled;
-							$qtyChilled=0;				
+							value-= qtyChilled;
+							qtyChilled=0;
 
 						}
 
-						if($value > 0){							
+						if(value > 0){							
 
-							if(qtyNonChilled>$value){
+							if(qtyNonChilled>value){
 
-								qtyNonChilled-=$value;
-								$value = 0;
+								qtyNonChilled-=value;
+								value = 0;
 
 							}else{
 
-								$value-= qtyNonChilled;
-								$qtyNonChilled=0;
+								value-= qtyNonChilled;
+								qtyNonChilled=0;
 
 							}
 
 						}
 
-						product.qChilled = qtyChilled;
-						product.qNChilled = qtyNonChilled;
+						product.setRQuantity(qtyChilled,qtyNonChilled);
+												
 
 					});
 
 					var locPackage = cart.sales.splice(index, 1)[0] || {};
 					item = sale || {};
-
 
 				}
 
@@ -1985,6 +1988,10 @@ AlcoholDelivery.factory('alcoholCartSale', ['$log', function ($log){
 
 	};	
 
+	saleObj.prototype.getPrice = function(){
+		return parseFloat(this.price);
+	}
+
 	saleObj.prototype.getId = function(){
 		return this._id;
 	};
@@ -2011,7 +2018,7 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 			this.setProduct(data);
 			this.setSale(data.sale);
 
-			this.setRMaxQuantity(data.product);
+			//this.setRMaxQuantity(data.product);
 			
 
 		};
@@ -2095,8 +2102,10 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 
 			}
 
-			this.discountedUnitPrice = price/quantity;
-			
+			if(quantity>0){
+				this.discountedUnitPrice = price/quantity;
+			}
+
 			return this.price = price;
 			
 		};
@@ -2106,8 +2115,10 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 		};
 
 		item.prototype.setRQuantity = function(cQuantity,ncQuantity){
+
 			this.qChilled = cQuantity;
 			this.qNChilled = ncQuantity
+
 		}
 
 		item.prototype.setRMaxQuantity = function(product){
@@ -2241,7 +2252,7 @@ AlcoholDelivery.factory('alcoholCartLoyaltyItem', ['$log', function ($log){
 			this.setPrice(proObj.product);
 			this.setLastServedAs(proObj.lastServedChilled);
 			this.setProduct(proObj);
-			this.setRMaxQuantity(proObj.product);
+			//this.setRMaxQuantity(proObj.product);
 
 		};
 

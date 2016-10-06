@@ -952,8 +952,6 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 	$scope.cart = alcoholCart.$cart;
 
-	
-
 	$scope.smoke = {
 
 		status:false,
@@ -969,7 +967,6 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 	$scope.step = 1;
 
 	$scope.checkout = function(ev) {
-
 
 		isCartValid = alcoholCart.validate($scope.step);
 

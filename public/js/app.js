@@ -308,7 +308,7 @@ AlcoholDelivery.factory("UserService", [
 
 		function LogoutReset(){
 			
-		};		
+		};
 
 	function isLoggedIn(){
 
