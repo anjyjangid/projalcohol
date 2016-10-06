@@ -553,7 +553,7 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 				},
 				{
 					label:'Purchase Order',
-					icon:'fa-sticky-note-o',
+					icon:'fa fa-sticky-note-o',
 					uisref:'userLayout.stocks.po',
 					id:'sidebar_menu_link_po',
 					access : ['admin'],

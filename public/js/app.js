@@ -57,7 +57,7 @@ AlcoholDelivery.filter("ucwords", function () {
 			  return letter.toUpperCase();
 		   });
 		}
-		return input; 
+		return input;
 	}
 });
 
@@ -67,7 +67,7 @@ AlcoholDelivery.filter('isActive', function() {
 			if(typeof check !== 'undefined'){
 				return obj[field]===check;
 			}
-			
+
 			return true;
 		}
 });
@@ -99,7 +99,7 @@ AlcoholDelivery.filter('freeTxt', function() {
 AlcoholDelivery.filter('pricingTxt', function(currencyFilter,$rootScope) {
 
 		return function(price,freeTxt) {
-			
+
 			if(price === null || isNaN(price)){
 				price = 0;
 			}
@@ -270,7 +270,7 @@ AlcoholDelivery.factory('categoriesFac', ["$q", "$http", function($q, $http){
 		var d = $q.defer();
 
 		$http.get("/super/category/",{params: {withCount:true}}).success(function(response){
-			
+
 			d.resolve(response);
 
 		});
@@ -289,56 +289,59 @@ AlcoholDelivery.factory('categoriesFac', ["$q", "$http", function($q, $http){
 }]);
 
 AlcoholDelivery.factory("UserService", [
-	"$q", "$timeout", "$http",  
-	function($q, $timeout, $http) {
+"$q", "$timeout", "$http", "$state"
+, function($q, $timeout, $http, $state) {
 
-		function GetUser(){
-			var d = $q.defer();
-			$timeout(function(){
-				$http.get("/loggedUser").success(function(response){
-			    	d.resolve(response);
-			    })
-			}, 500);
-			return d.promise;
-		};
+	function GetUserAddress(){
 
-		function GetUserAddress(){
+	};
 
-		};
+	function LogoutReset(){
 
-		function LogoutReset(){
-			
-		};		
+	};
 
-	function isLoggedIn(){
+	var _self = this;
+	function getIfUser(serverCheck, redirect){
 
-		var userData = this.currentUser;
-		if(userData !== null && typeof userData.email !== "undefined"){
-			return userData;
-		}
+		if(serverCheck)
+			return $http.get("/loggedUser")
+			.then(function(res) {
+				if(!res.data || !res.data.auth){
+					_self.currentUser = false;
+					if(redirect) {
+						$state.go('mainLayout.index', null, {reload: true});
+					}
+				}
+				else
+					_self.currentUser = res.data;
 
-		return false;
+				return angular.copy(_self.currentUser);
+			})
+			.catch(function(err){
+				_self.currentUser = false;
+				throw err;
+			});
+
+		return angular.copy(_self.currentUser);
 
 	};
 
 	return {
-		GetUser: GetUser,
 		GetUserAddress: GetUserAddress,
 		currentUser: null,
 		currentUserAddress: null,
-		isLoggedIn:isLoggedIn,
+		getIfUser:getIfUser,
 	};
-	
 }]);
 
 AlcoholDelivery.factory('ScrollPaging', function($http) {
   var ScrollPaging = function(args,url) {
     this.items = [];
-    this.busy = false;    
+    this.busy = false;
     this.limitreached = false;
-    // this.totalResult = 0;    
-    this.url = url;    
-    this.params = args;    
+    // this.totalResult = 0;
+    this.url = url;
+    this.params = args;
     this.params.skip = 0;
     this.data = {};
     //SET DEFAULT LIMIT IF NOT SPECIFIED
@@ -354,7 +357,7 @@ AlcoholDelivery.factory('ScrollPaging', function($http) {
     }).then(function(result){
 		this.data = result.data;
 		var items = result.data.items;
-		this.totalResult = result.data.total;		
+		this.totalResult = result.data.total;
 		for (var i = 0; i < items.length; i++) {
 			this.items.push(items[i]);
 		}
@@ -393,7 +396,7 @@ AlcoholDelivery.factory('ScrollPagination', function($http,ProductService) {
     var _self = this;
 
 	// $http.get('loyaltystore',{
-		
+
 	// 	params : {
 	// 		type : 1,
 	// 		skip:this.skip,
@@ -413,7 +416,7 @@ AlcoholDelivery.factory('ScrollPagination', function($http,ProductService) {
 		sort:this.sortby
 
 	}).then(function(items){
-		
+
 		// _self.totalResult = result.data.total;
 		for (var i = 0; i < items.length; i++) {
 			_self.items.push(items[i]);
@@ -441,7 +444,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 		$stateProvider
 				.state('mainLayout', {
 						templateUrl: "/templates/index.html",
-						controller:function(){								
+						controller:function(){
 						},
 						resolve: {
 
@@ -450,8 +453,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								},
 								wishlistInit : function(alcoholWishlist){
 									return alcoholWishlist.init();
+								},
+								loggedIn: function(UserService) {
+									return UserService.getIfUser(true);
 								}
-								
+
 						}
 				})
 				.state('mainLayout.notfound', {
@@ -463,15 +469,15 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('mainLayout.index', {
-						url: "/",						
+						url: "/",
 						"views" : {
 
-							"" : {								
+							"" : {
 								templateUrl : "/templates/index/home.html",
 								controller:function($scope,$http){
 										$scope.AppController.category = "";
 										$scope.AppController.subCategory = "";
-										$scope.AppController.showpackage = false;										
+										$scope.AppController.showpackage = false;
 								},
 
 							},
@@ -492,7 +498,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 									$http.get("/super/brand/").success(function(response){
 										$scope.brands = response;
 									});
-									
+
 								}
 							},
 							"rightPanel" : {
@@ -502,9 +508,9 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 							},
 
-						},						
-						data: {pageTitle: 'User Account'}						
-						
+						},
+						data: {pageTitle: 'User Account'}
+
 				})
 
 				.state('mainLayout.index.claim-gift-card', {
@@ -516,8 +522,8 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								controller:"ClaimGiftCardController"
 							}
 						}
-						
-						
+
+
 				})
 
 				.state('mainLayout.checkout', {
@@ -605,10 +611,10 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 									$('#reset').modal({
 									    backdrop: 'static',
-				                        keyboard: true, 
+				                        keyboard: true,
 				                        show: true
 									})
-									
+
 
 								},1000)
 						}
@@ -626,19 +632,19 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 				.state('cmsLayout', {
 					abstract: true,
-					templateUrl:"/templates/cmsLayout.html",					
+					templateUrl:"/templates/cmsLayout.html",
 				})
 
 				.state('cmsLayout.pages', {
 					url: "/site/{slug}",
 					templateUrl:"/templates/cms/cms.html",
-					controller:'CmsController'						
-				})				
+					controller:'CmsController'
+				})
 
 				.state('orderplaced', {
 					url: "/orderplaced/{order}",
 					templateUrl: "/templates/orderconfirmation.html",
-					controller:"OrderplacedController"											
+					controller:"OrderplacedController"
 				})
 
 				.state('accountLayout', {
@@ -652,6 +658,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							templateUrl: "/templates/account/navLeft.html",
 						}
 
+					},
+					resolve: {
+						loggedIn: function(UserService) {
+							return UserService.getIfUser(true, true);
+						}
 					}
 				})
 				.state('accountLayout.profile', {
@@ -686,7 +697,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 				.state('accountLayout.address', {
 						url: "/address",
-						templateUrl: "/templates/account/address.html"						
+						templateUrl: "/templates/account/address.html"
 				})
 				.state('accountLayout.order', {
 						url: "/order/{orderid}",
@@ -721,8 +732,8 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 							},
 
-						}						
-						
+						}
+
 				})
 
 				.state('mainLayout.productLoyalty', {
@@ -756,33 +767,33 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						return "/templates/search.html";
 					},
 					params: {pageTitle: 'Search'},
-					controller:"SearchController"						
+					controller:"SearchController"
 				})
 
 				.state('mainLayout.loyaltystore', {
 					url: '/loyalty-store?{filter}&{sort}',
 					templateUrl : "/templates/loyaltyStore.html",
 					params: {pageTitle: 'Loyalty Store'},
-					controller:"LoyaltyStoreController"					
-				})				
-				
-				.state('mainLayout.giftcategory', {					
+					controller:"LoyaltyStoreController"
+				})
+
+				.state('mainLayout.giftcategory', {
 					url: "/gifts/{categorySlug}?/{type}",
 					templateUrl : '/templates/gifts/index.html',
-					controller: 'GiftProductController'					
-				})				
+					controller: 'GiftProductController'
+				})
 
 				.state('mainLayout.gift', {
 					url: "/gifts/product/{giftid}/:uid",
 					templateUrl : '/templates/gifts/giftdetail.html',
-					controller: 'GiftController'										
+					controller: 'GiftController'
 				})
 
 				.state('mainLayout.giftcards', {
 					url: "/giftcards/addgiftcard",
 					templateUrl : '/templates/gifts/giftcard.html',
-					controller: 'GiftCardController'										
-				})								
+					controller: 'GiftCardController'
+				})
 
 				.state('mainLayout.category', {
 						abstract : true,
@@ -866,7 +877,7 @@ function ($q, $rootScope, $log, $location) {
     }
 
     return {
-        request: function (config) {        	
+        request: function (config) {
             xhrCreations++;
             updateStatus();
             return config;
@@ -891,7 +902,7 @@ function ($q, $rootScope, $log, $location) {
 
 			if(rejection.status == 401){
 				$location.url('/').replace();
-				$rootScope.$broadcast('showLogin');				
+				$rootScope.$broadcast('showLogin');
 			};
 
             return $q.reject(rejection);
@@ -904,26 +915,26 @@ function ($q, $rootScope, $log, $location) {
 /* Init global settings and run the app */
 AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "catPricing", "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll",
 			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll) {
-	
+
 	angular.alcoholCart = alcoholCart;
 	angular.userservice = UserService;
 
 	$rootScope.$state = $state; // state to be accessed from view
-	
-	UserService.GetUser().then(
 
-		function(result) {
-			UserService.currentUser = result;
-		},
-		function(errorRes){
-			UserService.currentUser = result;
-		}
+	// UserService.GetUser().then(
 
-	);
+	// 	function(result) {
+	// 		UserService.currentUser = result;
+	// 	},
+	// 	function(errorRes){
+	// 		UserService.currentUser = result;
+	// 	}
+
+	// );
 
 	/*categoriesFac.getCategories().then(
 
-		function(response){			
+		function(response){
 			categoriesFac.categories = response;
 		},
 		function(errorRes){}
@@ -947,21 +958,12 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 		var regex = new RegExp('^accountLayout', 'i');
 		$anchorScroll();
 
-		UserService.GetUser().then(
-
-			function(result) {
-				if(result.auth===false && regex.test(toState.name)){
-					$state.go('mainLayout.index');
-				}
-				//UserService.currentUser = result;
-			}
-		);
 		angular.element('#wrapper').removeClass('toggled');
 
 	})
 
 	$rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
-	   
+
 	   $state.previous = {state:from, param:fromParams}
 	   $rootScope.appSettings.layout.pageRightbarExist = true;
 
@@ -987,7 +989,7 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
     /*$rootScope.$on('fb.load', function() {
       $window.dispatchEvent(new Event('fb.load'));
     });*/
-   
+
 
 	$rootScope.$on('alcoholCart:promotionAdded', function(data,msg){
 
@@ -1048,8 +1050,8 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 							$scope.isFreeDelivery = false;
 							$scope.freeRequired = 28;
 
-						},						
-						templateUrl: '/templates/toast-tpl/cart-update.html',						
+						},
+						templateUrl: '/templates/toast-tpl/cart-update.html',
 						parent : $document[0].querySelector('#cart-summary-icon'),
 						position: 'top center',
 						hideDelay:3000
@@ -1060,26 +1062,26 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 	$rootScope.$on('alcoholWishlist:itemRemoved', function(product){
 
 		/*$mdToast.show({
-			controller:function($scope){							
-				
+			controller:function($scope){
+
 				$scope.message = 'Item removed from wishlist';
-			},						
-			templateUrl: '/templates/toast-tpl/wishlist-notify.html',						
+			},
+			templateUrl: '/templates/toast-tpl/wishlist-notify.html',
 			parent : $document[0].querySelector('#usermenuli'),
 			position: 'top center',
 			hideDelay:3000
-		});*/		
+		});*/
 
 	});
 
 	$rootScope.$on('alcoholWishlist:change', function(object,params){
 
 		$mdToast.show({
-			controller:function($scope){							
-				
+			controller:function($scope){
+
 				$scope.message = params.message;
-			},						
-			templateUrl: '/templates/toast-tpl/wishlist-notify.html',						
+			},
+			templateUrl: '/templates/toast-tpl/wishlist-notify.html',
 			parent : $document[0].querySelector('#usermenuli'),
 			position: 'top center',
 			hideDelay:3000
@@ -1089,7 +1091,7 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 
 	// store.init();
 	// alcoholWishlist.init();
-	
+
 }]);
 
 /*AngularJS Credit Card Payment Service*/
@@ -1268,7 +1270,7 @@ angular.module('ngPayments', [])
       return {
         require: 'ngModel',
         scope: {
-          ngModel: '='          
+          ngModel: '='
         },
         link: function(scope, elem, attrs) {
 
@@ -1292,36 +1294,36 @@ angular.module('ngPayments', [])
                 ccVerified = scope.ngModel.valid = false;
               }
               /*if(card && scope.ngModel.cvc){
-              	var cl = scope.ngModel.cvc.length;              	
+              	var cl = scope.ngModel.cvc.length;
               	scope.ngModel.cvcValid = $payments.validateCVC(card.cvcLength, cl);
-              }*/              
+              }*/
             }
           }, true);
 
           scope.$watch('ngModel.month', function(newValue, oldValue) {
-			
+
 				expm = newValue;
-				scope.expiry = $payments.validateCardExpiry(expm, expy);              
-			
+				scope.expiry = $payments.validateCardExpiry(expm, expy);
+
           }, true);
 
           scope.$watch('ngModel.year', function(newValue, oldValue) {
-            
+
 				expy = newValue;
-				scope.expiry = $payments.validateCardExpiry(expm, expy);              
-            
+				scope.expiry = $payments.validateCardExpiry(expm, expy);
+
           }, true);
 
           scope.$watch('ngModel.cvc', function(newValue, oldValue) {
             	if(newValue && card){
             		scope.ngModel.cvcValid = $payments.validateCVC(card.cvcLength, newValue.length);
-                }        
+                }
           }, true);
 
           scope.$watch('ngModel.name', function(newValue, oldValue) {
 				cname = newValue;
-				scope.nameValid = $payments.validateName(cname);          	
-          }, true);         
+				scope.nameValid = $payments.validateName(cname);
+          }, true);
 
         }
       }
@@ -1394,7 +1396,7 @@ angular.module('ngPayments', [])
 AlcoholDelivery.filter('creditcard', function() {
 	return function(number) {
 		var r = number.substr(number.length-4,4);
-		return 'XXXX XXXX XXXX '+r;		
+		return 'XXXX XXXX XXXX '+r;
 	}
 });
 
@@ -1403,9 +1405,9 @@ AlcoholDelivery.filter('filterParentCat', function(){
 	return function(pCategories){
 
 		var inputArray = [];
-		
+
 		for(var key in pCategories) {
-			
+
 			if(typeof pCategories[key].featured!=='undefined' && pCategories[key].featured.length>0){
 				inputArray.push(pCategories[key]);
 			}
