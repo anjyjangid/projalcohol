@@ -10,6 +10,7 @@ use AlcoholDelivery\Products;
 use AlcoholDelivery\Stocks;
 use AlcoholDelivery\PurchaseOrder;
 use MongoId;
+use MongoDate;
 use Illuminate\Support\Facades\Auth;
 
 class StocksController extends Controller
@@ -21,6 +22,13 @@ class StocksController extends Controller
      */
     public function index()
     {
+
+        // $params["start"] = 0;
+        // $params["length"] = -1;
+
+        // $stockList = Stocks::orderList($params);
+
+        // jprd($stockList);
     }
 
     /**
@@ -97,7 +105,7 @@ class StocksController extends Controller
         $stockList = Stocks::orderList($params);
 
         $stockList = $stockList['data'];
-        // return response($stockList,200);
+        // jprd($stockList);
 
         $purchaseOrders = array();
 
@@ -150,7 +158,8 @@ class StocksController extends Controller
                     ],
                     'update' => [
                         '$set' => [
-                            'products.$.order' => ceiling($stock['totalQty'], $tradeOffer)
+                            'products.$.order' => ceiling($stock['totalQty'], $tradeOffer),
+                            'updateTime' => new MongoDate()
                         ]
                     ]
                 ];
@@ -168,8 +177,12 @@ class StocksController extends Controller
                                 'order' => ceiling($stock['totalQty'], $tradeOffer)
                             ]
                         ],
+                        '$set' => [
+                            'updateTime' => new MongoDate()
+                        ],
                         '$setOnInsert' => [
-                            'status' => 0
+                            'status' => 0,
+                            'createTime' => new MongoDate()
                         ]
                     ],
                     'options' => [
@@ -198,6 +211,39 @@ class StocksController extends Controller
 
         $responses = [ "success" => ((count($responses)==$success)?1:(($success==0)?-1:0)), "products" => count($responses) ];
         return response($responses, 200);
+    }
+
+    public function getSuppliers(){
+        $userStoreId = Auth::user('admin')->storeId;
+        $response = Stocks::raw()->aggregate([
+            [
+                '$match' => [
+                    'storeId' => $userStoreId
+                ]
+            ],[
+                '$group' => [
+                    '_id' => '$defaultDealerObjId'
+                ]
+            ],[
+                '$lookup' => [
+                    'from'=>'dealers',
+                    'localField'=>'_id',
+                    'foreignField'=>'_id',
+                    'as'=>'dealers'
+                ]
+            ],[
+                '$unwind' => [
+                    'path' => '$dealers',
+                    'preserveNullAndEmptyArrays' => true
+                ]
+            ],[
+                '$project' => [
+                    'title' => '$dealers.title'
+                ]
+            ]
+        ]);
+
+        return response($response['result'],200);
     }
 
     public function postList(Request $request)
