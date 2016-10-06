@@ -1322,24 +1322,16 @@ jprd($product);
 		try{
 
 			$isRemoved = $cart->removeSaleById($saleId);
+
 			if($isRemoved){
 
 			}
 
-			//$cart->save();
+			$cart->save();
 
 			$response = [
-				"success"=>true,
 				"message"=>"sale removed successfully",
-				'proRemaining' => [],
-				'sales' => []
-			];
-
-			// foreach($cart->products as $key=>$cProduct){
-			// 	$response['proRemaining'][$key] = $cProduct['remainingQty'];
-			// }
-
-			// $response['sales'] = $cart->sales;
+			];			
 
 			return response($response,200);
 

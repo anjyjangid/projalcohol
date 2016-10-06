@@ -961,8 +961,8 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 }
 
 .sale-pro-list li{
-	max-width: 100px;
-	max-height: 100px;
+	width: 100px;
+	height: 100px;
 }
 
 .saletag, .saletag:hover{	

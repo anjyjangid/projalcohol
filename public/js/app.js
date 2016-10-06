@@ -299,6 +299,7 @@ AlcoholDelivery.factory("UserService", [
 
 	function LogoutReset(){
 
+
 	};
 
 	function getIfUser(serverCheck, redirect){
