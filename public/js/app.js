@@ -579,19 +579,33 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						controller:"CartReviewController"
 				})
 
-				/*.state('mainLayout.login', {
+				.state('mainLayout.login', {
 
-						url: "/login",
-						templateUrl: "/templates/index/home.html",
-						controller:function(UserService,$scope){
+						url: "/mailverified/{status}",
+						//templateUrl: "/templates/index/home.html",
+						controller:function(sweetAlert,$location,$stateParams){
 
-							setTimeout(function(){
-								$scope.loginOpen();
-								// $('#login').modal('show');
-							},1000)
+							var title = '';
+							var type = 'error';
+							var msg = 'Invalid or expired verification link.';
+							if($stateParams.status == 1){
+								title = 'Congratulation!';
+								type = 'success';
+								msg = 'Your email has been verified successfully, you can login with your registered email & password.';	
+							}							
+
+							sweetAlert.swal({
+								type:type,
+								title: title,
+								text : msg,
+								timer: 0,
+								closeOnConfirm: true
+							});
+
+							$location.url('/').replace();
 
 						}
-				})*/
+				})
 
 				.state('cmsLayout.reset', {
 						url: "/reset/{token}",
@@ -928,6 +942,12 @@ function ($q, $rootScope, $log, $location) {
 				$rootScope.$broadcast('showLogin');
 			};
 
+			if(rejection.status == 500){				
+				$location.url('/404').replace();
+			};
+
+
+
             return $q.reject(rejection);
         }
     };
@@ -936,8 +956,8 @@ function ($q, $rootScope, $log, $location) {
 }]);
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "catPricing", "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll",
-			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll) {
+AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "catPricing", "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll","$timeout",
+			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll,$timeout) {
 
 	angular.alcoholCart = alcoholCart;
 	angular.userservice = UserService;
@@ -979,6 +999,7 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
 
 		var regex = new RegExp('^accountLayout', 'i');
+		
 		$anchorScroll();
 
 		angular.element('#wrapper').removeClass('toggled');
@@ -996,9 +1017,12 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 			description:$rootScope.settings.general.meta_desc,
 			keyword:$rootScope.settings.general.meta_keyword
 		};
+		
 		$rootScope.setMeta(mdata);
 
 	});
+
+	
 
 
 	// (function(d, s, id) {

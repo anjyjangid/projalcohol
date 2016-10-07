@@ -127,7 +127,8 @@ AlcoholDelivery.controller('AppController',
 				templateUrl: '/templates/partials/gift-packaging-popup.html',
 				parent: angular.element(document.body),
 				targetEvent: ev,
-				clickOutsideToClose: true
+				clickOutsideToClose: true,
+				fullscreen:true
 			}
 		)
 	};
@@ -1002,13 +1003,9 @@ AlcoholDelivery.controller('CartController',[
 
 					$scope.step = 2;
 
-					$scope.hide();
+					$mdDialog.hide();
 
-					$timeout(function() {
-						
-						$state.go("mainLayout.checkout.address");
-
-					}, 500);
+					$state.go("mainLayout.checkout.address");
 
 				}
 
@@ -1022,8 +1019,9 @@ AlcoholDelivery.controller('CartController',[
 			},
 			templateUrl: '/templates/checkout/dont-miss.html',
 			parent: angular.element(document.body),
-			targetEvent: ev,
-			clickOutsideToClose:true
+			//targetEvent: ev,
+			clickOutsideToClose:true,
+			fullscreen:true
 		})
 		.then(function(answer) {
 
@@ -1114,9 +1112,10 @@ AlcoholDelivery.controller('CartController',[
 	$scope.remove = function(key,type){
 
 		if(type=='qChilled'){
-			alcoholCart.addItem(key,0,true);
+			alcoholCart.removeProduct(key,true);
 		}else{
-			alcoholCart.addItem(key,0,false);
+			alcoholCart.removeProduct(key,false);
+			//alcoholCart.addItem(key,0,false);
 		}
 
 	};
@@ -1177,12 +1176,19 @@ AlcoholDelivery.controller('CartSmokeController',[
 }])
 
 AlcoholDelivery.controller('CartAddressController',[
-			'$scope','$rootScope','$state','$interval', '$http','$q', '$mdDialog', '$mdMedia','alcoholCart','sweetAlert',
-	function($scope, $rootScope, $state, $interval, $http, $q, $mdDialog, $mdMedia, alcoholCart, sweetAlert){
+			'$scope','$rootScope','$state','$interval','$http','$q', '$mdDialog', '$mdMedia','alcoholCart','sweetAlert', 'UserService', 
+	function($scope, $rootScope, $state, $interval, $http, $q, $mdDialog, $mdMedia, alcoholCart, sweetAlert, UserService){
 
 	$scope.errors = {};	
 
+
 	$scope.delivery = alcoholCart.$cart.delivery;
+	
+	$scope.user = UserService.getIfUser();
+
+	if(typeof $scope.user.mobile_number != 'undefined'){
+		$scope.delivery.contact = $scope.user.mobile_number;
+	}
 
 	/*$scope.setSelectedAddress = function(key){
 		console.log(key);
@@ -1233,6 +1239,7 @@ AlcoholDelivery.controller('CartAddressController',[
 		);
 
 	}
+	
 
 }]);
 
@@ -1477,8 +1484,8 @@ AlcoholDelivery.controller('CartDeliveryController',[
 }]);
 
 AlcoholDelivery.controller('CartPaymentController',[
-			'$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','sweetAlert', '$interval', 'alcoholCart', '$state',
-	function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, sweetAlert, $interval, alcoholCart, $state){
+			'$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','sweetAlert', '$interval', 'alcoholCart', '$state', '$location', '$anchorScroll',
+	function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, sweetAlert, $interval, alcoholCart, $state, $location, $anchorScroll){
 
 		$scope.payment = alcoholCart.$cart.payment;
 
@@ -1521,7 +1528,7 @@ AlcoholDelivery.controller('CartPaymentController',[
 				);
 			}
 
-		}
+		}		
 
 }]);
 
@@ -2145,12 +2152,7 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 
 	$rootScope.appSettings.layout.pageRightbarExist = false;
 
-	$rootScope.$on("$locationChangeSuccess", function(){
-        $timeout(function() {
-            $anchorScroll();
-       });
-    });
-
+	
 	$scope.AppController.category = "packages";
 	$scope.AppController.subCategory = $stateParams.type;
 	$scope.AppController.showpackage = true;
@@ -2238,11 +2240,7 @@ AlcoholDelivery.controller('PackageDetailController',
 
 	$rootScope.appSettings.layout.pageRightbarExist = false;
 
-	$rootScope.$on("$locationChangeSuccess", function(){
-        $timeout(function() {
-            $anchorScroll();
-       });
-    });
+	
 
 	$scope.AppController.category = "packages";
 	$scope.AppController.subCategory = $stateParams.type;

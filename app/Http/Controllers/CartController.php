@@ -906,7 +906,8 @@ class CartController extends Controller
 
 			// }
 
-			if(!empty($sessionCart->products || empty($userCart))){
+			if(!empty($sessionCart->products) || empty($userCart)){
+
 				$sessionCart->user = new MongoId($user->_id);
 
 				try{
@@ -1265,16 +1266,67 @@ jprd($product);
 		return response($slotArr,200);
 	}
 
-	public function removeproduct($proId,$type,Request $request){
-
-		$cartKey = $request->session()->get('deliverykey');
+	public function deleteProduct($cartKey,$proId,$type){		
 
 		$cart = Cart::find($cartKey);
 
-		$products = $cart->products;
-		$products[$proId][$type]=0;
+		$state = $type?'chilled':'nonchilled';
 
-		$products[$proId]['quantity'] = (int)$products[$proId]['chilled'] + (int)$products[$proId]['nonchilled'];
+		if(empty($cart)){
+
+			return response(["message"=>"cart not found"],400);
+
+		}
+
+		$products = $cart->products;
+		$product = $products[$proId];
+		
+
+		if(empty($product)){
+
+			return response(["message"=>"Invalid delete request","action"=>"refresh"],400);
+
+		}
+
+		$qtyRemaining = $product['remainingQty'];
+		$qtyChilled = $product['chilled']['quantity'];
+		$qtyNonChilled = $product['nonchilled']['quantity'];
+
+		if($type=="true"){
+
+			$qtyToRemove = $qtyRemaining - $qtyNonChilled;
+
+			if($qtyToRemove<1){
+
+				return response(["message"=>"Invalid delete request","action"=>"refresh"],400);
+
+			}
+
+			$qtyChilled-= $qtyToRemove;
+
+		}else{			
+
+			if($qtyRemaining>$qtyNonChilled){
+
+				$qtyToRemove = $qtyNonChilled;
+
+			}else{
+
+				$qtyToRemove = $qtyRemaining;
+
+			}
+
+			$qtyNonChilled-= $qtyToRemove;
+		}
+
+
+
+		$product['chilled']['quantity'] = $qtyChilled;
+		$product['nonchilled']['quantity'] = $qtyNonChilled;
+		$product['quantity'] = $qtyChilled + $qtyNonChilled;
+		$product['remainingQty']-= $qtyToRemove;
+		
+		$products[$proId] = $product;		
 
 			try {
 
@@ -1284,14 +1336,14 @@ jprd($product);
 
 					$cart->save();
 
-					return response(array("success"=>true,"message"=>"cart updated successfully","removeCode"=>200));
+					return response(["message"=>"cart updated successfully","removeCode"=>200,"product"=>$product,'change'=>$qtyToRemove],200);
 					//200 to know only chilled/nonchilled is removed
 
 				}else{
 
 					$cart->unset('products.'.$proId);
 
-					return response(array("success"=>true,"message"=>"cart updated successfully","removeCode"=>300));
+					return response(["message"=>"cart updated successfully","removeCode"=>300,'change'=>$qtyToRemove],200);
 					//300 to know complete product is removed
 
 				}
@@ -1305,8 +1357,8 @@ jprd($product);
 
 		return response(array("success"=>false,"message"=>"Something went wrong"));
 
-	}
-	
+	}	
+
 	public function deleteSale($cartKey,$saleId,Request $request){
 		
 		$cart = Cart::find($cartKey);
@@ -1464,6 +1516,14 @@ jprd($product);
 
 		$cart = $cartObj->where("_id","=",$cartKey)->first();
 
+		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){
+
+			$order = Orders::where(['reference' => $request->get('order_number')])->first();
+
+			if($order)
+				return redirect('/#/orderplaced/'.$order['_id']);
+		}
+
 		$cart->setLoyaltyPointUsed();
 
 
@@ -1605,7 +1665,7 @@ jprd($product);
 			//SAVE CARD IF USER CHECKED SAVE CARD FOR FUTURE PAYMENTS
 			if($cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['card'] == 'newcard' && $cartArr['payment']['savecard']){
 				$cardInfo = $cartArr['payment']['creditCard'];
-		        $user = User::find($userId);
+		        $user = User::find($user->_id);
 		        $user->push('savedCards',$cardInfo,true);
 			}
 

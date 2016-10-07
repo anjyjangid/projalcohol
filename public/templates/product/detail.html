@@ -16,13 +16,15 @@
 											
 		</data-owl-carousel>            
 	</div>
-				
 	<div class="col-xs-12 col-sm-6 col-md-6 product-detail-right-set" >
 		<div class="prddetailtitle">{{product.name}} </div>
 
 			<div class="prddetailsubexttitle">{{product.shortDescription}}</div>
 			<div class="prddetailnormaltext">{{product.description}}</div>
-			<div class="prddetailnormaltext nametag" ng-show="product.nameDetailSale">{{product.nameDetailSale}}</div>
+			<div class="prddetailnormaltext nametag" ng-if="product.nameDetailSale && !product.saleImage">{{product.nameDetailSale}}</div>
+			<div class="prddetailnormaltext" ng-if="product.saleImage">
+				<img src="sale/i/{{product.saleImage}}">
+			</div>
 			<div class="prddetailchilledcover text-noselect" ng-if="product.chilled && (product.quantity || product.outOfStockType == 2)" >
 				<div class="prodchilled-btn" ng-class="{'active':product.servechilled}" ng-click="product.servechilled=1">
 					<span>Chilled</span>
@@ -69,7 +71,10 @@
 			<div class="prddetailpricedicnt" ng-if="!viaLoyaltyStore">
 				{{product.salePrice | pricingTxt}}
 				<span ng-if="product.price != product.salePrice">{{product.price | pricingTxt}}</span>
-				<div class="salediscount" ng-show="product.sale">{{product.sale.detailTitle}}</div>				
+				<div class="salediscount" ng-if="product.sale && !product.sale.coverImage">{{product.sale.detailTitle}}</div>
+				<div class="pull-right" ng-if="product.sale.coverImage">
+					<img src="sale/i/{{product.sale.coverImage}}">
+				</div>				
 			</div>
 			
 

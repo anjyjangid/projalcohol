@@ -58,7 +58,7 @@ class Cart extends Moloquent
 		$cart["service"]["express"]["charges"] = $services['express_delivery']['value'];
 		$cart["smoke"]["charges"] = $services['cigratte_services']['value'];
 
-		$cart["delivery"] = [
+		$cart["service"]["delivery"] = [
 								"free" => false,
 								"charges" => $services['non_free_delivery']['value'],
 								"mincart" => $services['minimum_cart_value']['value'],
@@ -79,7 +79,7 @@ class Cart extends Moloquent
 			"promotions" => (object)[],
 			"sales" => [],
 			"delivery" => [
-				"type" => 1,
+				"type" => 0,
 				"charges" => null,
 				"address" => null,
 				"contact" => null,
@@ -134,6 +134,7 @@ class Cart extends Moloquent
 
 			$cart['products'] = (object)$cart['products'];
 			$cart['packages'] = (object)$cart['packages'];
+
 
 			return (object)array("success"=>true,"message"=>"cart generated succesfully","cart"=>$cart);
 
@@ -488,6 +489,7 @@ class Cart extends Moloquent
 					'_id' => new MongoId(),
 					'products'=>[],
 					'sale' => $product['sale']['_id'],
+					'chilled' => true,
 					'created_at' => new MongoDate()
 				];
 
@@ -820,6 +822,7 @@ class Cart extends Moloquent
 					'_id' => new MongoId(),
 					'products'=>[],
 					'sale' => $sale['_id'],
+					'chilled' => true,
 					'created_at' => new MongoDate()
 				];
 

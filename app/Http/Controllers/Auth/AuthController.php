@@ -157,19 +157,15 @@ class AuthController extends Controller
 		$user = User::where("email_key","=",$key)->first();
 
 		if(empty($user->_id)){
-			return redirect('/');
+			return redirect('/#/mailverified/0');
 		}
 		
 		$user->status = 1;
 		$user->verified = 1;
-
 		$user->save();
-
 		$user->unset("email_key");
 
-		
-		return redirect('/#/login');
-		
+		return redirect('/#/mailverified/1');
 	}
 
 	

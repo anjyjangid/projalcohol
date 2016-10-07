@@ -183,7 +183,7 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::post('repeatlast','CartController@postRepeatlast');
 
-	Route::delete('product/{key}/{type}','CartController@removeproduct');
+	Route::delete('product/{cartKey}/{key}/{type}','CartController@deleteProduct');
 
 	Route::delete('promotion/{key}','CartController@deletePromotion');
 

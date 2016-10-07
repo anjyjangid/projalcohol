@@ -350,6 +350,22 @@ MetronicApp.controller('ProductAddController',[
 		return 2;
 	}
 
+	$scope.$watch('product.imageFiles',function(newValue,oldValue){
+
+		var noCoverSelected = true;
+		
+		angular.forEach($scope.product.imageFiles,function(val,key){			
+			if(val.coverimage){
+				noCoverSelected = false;		
+			}
+		});		
+		
+		if(noCoverSelected && $scope.product.imageFiles.length){
+			$scope.product.imageFiles[0].coverimage = 1;
+		}
+
+	},true);
+
 }]);
 
 MetronicApp.directive('myChange', function() {

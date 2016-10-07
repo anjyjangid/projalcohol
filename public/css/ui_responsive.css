@@ -1663,7 +1663,7 @@ body.menu-slider.in {
 	  padding: 10px 7px
   }
   .christmas-mainouter .combo_slider .tab-content .item {
-   top:0 >>>>>>> c98587326c610e78b7b0f73c019f3b2028e812e1
+   top:0;
   }
   .searchtop.searchtop100 {
 	  top: 39px;
@@ -2270,7 +2270,7 @@ body.menu-slider.in {
 	  padding: 10px 7px
   }
   .text-capitalize {
-   font-size:14px >>>>>>> c98587326c610e78b7b0f73c019f3b2028e812e1
+   font-size:14px;
   }
   .btm10.ng-scope.searchopen .menu-icon {
 	  display: none

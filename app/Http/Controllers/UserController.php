@@ -102,7 +102,7 @@ class UserController extends Controller
 		$validator = Validator::make($inputs, [
 			'name' => 'required',
 			'email' => 'required|email|max:255|unique:user,email,'.$user->_id.",_id",
-			'mobile_number'=> 'required|numeric|digits_between:10,12',
+			'mobile_number'=> 'required|numeric|digits:8',
 		],[
 		   'mobile_number.required' => 'Mobile number is required',
 		   'mobile_number.numeric' => 'please enter valid mobile number',
