@@ -488,6 +488,7 @@ class Cart extends Moloquent
 					'_id' => new MongoId(),
 					'products'=>[],
 					'sale' => $product['sale']['_id'],
+					'chilled' => true,
 					'created_at' => new MongoDate()
 				];
 
@@ -820,6 +821,7 @@ class Cart extends Moloquent
 					'_id' => new MongoId(),
 					'products'=>[],
 					'sale' => $sale['_id'],
+					'chilled' => true,
 					'created_at' => new MongoDate()
 				];
 

@@ -96,11 +96,11 @@ AlcoholDelivery.service('alcoholCart', [
 					}else{
 
 						inCart.setRQuantity(resProduct.chilled.quantity,resProduct.nonchilled.quantity);
-						inCart.setTQuantity(resProduct.quantity);
+						inCart.setTQuantity(resProduct.remainingQty);
 						inCart.setPrice(resProduct);
 
 						//inCart.setRMaxQuantity(resProduct);
-						inCart.setRemainingQty(resProduct.remainingQty);						
+						inCart.setRemainingQty(resProduct.remainingQty);
 
 					}									
 
@@ -907,6 +907,7 @@ AlcoholDelivery.service('alcoholCart', [
 				}
 			});
 
+			count+= Object.keys(cart.sales).length;
 
 			count+= Object.keys(cart.loyalty).length;
 
@@ -923,6 +924,7 @@ AlcoholDelivery.service('alcoholCart', [
 			var cart = this.getCart();
 
 			angular.forEach(cart.products, function (product) {
+
 				if(product.getQuantity()>0){
 					total += parseFloat(product.getTotal());
 				}
