@@ -906,7 +906,7 @@ class CartController extends Controller
 
 			// }
 
-			if(!empty($sessionCart->products)){
+			if(!empty($sessionCart->products || empty($userCart))){
 				$sessionCart->user = new MongoId($user->_id);
 
 				try{
@@ -1489,8 +1489,8 @@ jprd($product);
 
 		}
 
-		//$cartArr['user'] = new MongoId($user->_id);
-		$cartArr['user'] = new MongoId("57c422d611f6a1450b8b456c");//for testing on postman		
+		$cartArr['user'] = new MongoId($user->_id);
+		// $cartArr['user'] = new MongoId("57c422d611f6a1450b8b456c");//for testing on postman		
 
 		$cartProductsArr = [];
 

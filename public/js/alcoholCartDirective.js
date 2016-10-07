@@ -3,17 +3,17 @@
 angular.module('alcoholCart.directives',[])
 
 	.controller('CartTopController',['$scope', 'alcoholCart',"$timeout", function($scope, alcoholCart) {
-		
-		$scope.alcoholCart = alcoholCart;			
+
+		$scope.alcoholCart = alcoholCart;
 
 		$scope.scrollconfig = {
 				autoHideScrollbar: false,
 				theme: 'light',
 				setHeight: 200,
 				scrollInertia: 0,
-			}	
+			}
 
-		angular.scrollconfig = $scope.scrollconfig;		
+		angular.scrollconfig = $scope.scrollconfig;
 
 	}])
 
@@ -131,10 +131,10 @@ angular.module('alcoholCart.directives',[])
 	}])
 
 	.directive('paymentForm', ['$rootScope','$timeout',function($rootScope,$timeout){
-		return {			
+		return {
 			restrict: 'E',
             replace: true,
-            template: 
+            template:
                 '<form action="{{ formData.url }}" method="{{ formData.method }}">' +
                 '   <div ng-repeat="(key,val) in formData.params">' +
                 '       <input type="hidden" name="{{ key }}" value="{{ val }}" />' +
