@@ -999,12 +999,8 @@ AlcoholDelivery.controller('CartController',[
 					$scope.step = 2;
 
 					$scope.hide();
-
-					$timeout(function() {
-						
-						$state.go("mainLayout.checkout.address");
-
-					}, 500);
+									
+					$state.go("mainLayout.checkout.address");				
 
 				}
 
@@ -1110,9 +1106,10 @@ AlcoholDelivery.controller('CartController',[
 	$scope.remove = function(key,type){
 
 		if(type=='qChilled'){
-			alcoholCart.addItem(key,0,true);
+			alcoholCart.removeProduct(key,true);
 		}else{
-			alcoholCart.addItem(key,0,false);
+			alcoholCart.removeProduct(key,false);
+			//alcoholCart.addItem(key,0,false);
 		}
 
 	};

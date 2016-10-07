@@ -936,8 +936,8 @@ function ($q, $rootScope, $log, $location) {
 }]);
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "catPricing", "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll",
-			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll) {
+AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "catPricing", "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll","$timeout",
+			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll,$timeout) {
 
 	angular.alcoholCart = alcoholCart;
 	angular.userservice = UserService;
@@ -978,10 +978,16 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
 
-		var regex = new RegExp('^accountLayout', 'i');
-		$anchorScroll();
+		var regex = new RegExp('^accountLayout', 'i');		
 
 		angular.element('#wrapper').removeClass('toggled');
+
+	
+		// $timeout(function() {
+						
+		// 	$anchorScroll();
+
+		// }, 1500);
 
 	})
 
@@ -997,6 +1003,10 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 			keyword:$rootScope.settings.general.meta_keyword
 		};
 		$rootScope.setMeta(mdata);
+
+
+
+		
 
 	});
 

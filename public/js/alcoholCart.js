@@ -1015,6 +1015,55 @@ AlcoholDelivery.service('alcoholCart', [
 
 		};
 
+
+		this.removeProduct = function (id,chilled) {
+
+			var defer = $q.defer();
+			var deliveryKey = this.getCartKey();
+			var _self = this;
+
+			$http.delete("cart/product/"+deliveryKey+'/'+id+'/'+chilled).then(
+
+				function(response){
+
+					response = response.data;
+
+					var inCart = _self.getProductById(id);
+
+					if(response.removeCode==200){
+
+						var resProduct = response.product;
+
+						inCart.setRQuantity(resProduct.chilled.quantity,resProduct.nonchilled.quantity);
+						inCart.setTQuantity(resProduct.quantity);
+						inCart.setRemainingQty(resProduct.remainingQty);
+
+					}else{
+						_self.removeItemById(id);
+					}
+
+
+					if(response.change>0){
+						
+						$rootScope.$broadcast('alcoholCart:updated',{msg:"Items removed from cart",quantity:Math.abs(response.change)});
+						
+					}
+
+					defer.resolve(response);
+
+				},
+				function(errorRes){
+
+					defer.reject(errorRes);
+
+				}
+			);
+
+			return defer.promise;		
+			
+		};
+
+
 		this.removeItemById = function (id) {
 
 			var item;

@@ -1181,12 +1181,13 @@ AlcoholDelivery.directive('sideBar', function() {
 		},
 		restrict: 'A',
 		templateUrl: '/templates/partials/addresslist.html',
-		controller: function($scope,$rootScope,$http,$state,$payments,UserService,$mdDialog,NgMap,sweetAlert){
+		controller: function($scope,$rootScope,$http,$state,$anchorScroll,$payments,UserService,$mdDialog,NgMap,sweetAlert){
 
 			$scope.listUserAddress = function(){
 				$http.get("address").success(function(response){
 					$scope.addresses = response;
 					$rootScope.addresses = $scope.addresses;
+					
 				}).error(function(data, status, headers) {
 
 				});
