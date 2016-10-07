@@ -766,6 +766,9 @@ AlcoholDelivery.factory('AlcoholProduct',[
 		this.nameSale = nameSale.listingTitle;
 		this.nameDetailSale = nameSale.detailTitle;
 
+		if(angular.isDefined(nameSale.coverImage))
+			this.saleImage = nameSale.coverImage.source;
+
 	}
 
 	product.prototype.setSale = function(p){
@@ -778,8 +781,11 @@ AlcoholDelivery.factory('AlcoholProduct',[
 			type : pSale.actionType,
 			title : pSale.listingTitle,
 			detailTitle : pSale.detailTitle,
-			actionProductId:pSale.actionProductId
+			actionProductId:pSale.actionProductId			
 		};
+
+		if(angular.isDefined(pSale.coverImage))
+			this.sale.coverImage = pSale.coverImage.source;
 
 		if(pSale.actionType==2){
 			this.sale.discount = {

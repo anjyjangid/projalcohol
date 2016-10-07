@@ -987,7 +987,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 					$scope.step = 2;
 
-					$scope.hide();
+					$mdDialog.hide();
 
 					$state.go("mainLayout.checkout.address");
 
@@ -1003,7 +1003,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 			},
 			templateUrl: '/templates/checkout/dont-miss.html',
 			parent: angular.element(document.body),
-			targetEvent: ev,
+			//targetEvent: ev,
 			clickOutsideToClose:true
 		})
 		.then(function(answer) {
@@ -1159,12 +1159,19 @@ AlcoholDelivery.controller('CartSmokeController',[
 }])
 
 AlcoholDelivery.controller('CartAddressController',[
-			'$scope','$rootScope','$state','$interval','$http','$q', '$mdDialog', '$mdMedia','alcoholCart','sweetAlert',
-	function($scope, $rootScope, $state, $interval, $http, $q, $mdDialog, $mdMedia, alcoholCart, sweetAlert){
+			'$scope','$rootScope','$state','$interval','$http','$q', '$mdDialog', '$mdMedia','alcoholCart','sweetAlert', 'UserService', 
+	function($scope, $rootScope, $state, $interval, $http, $q, $mdDialog, $mdMedia, alcoholCart, sweetAlert, UserService){
 
 	$scope.errors = {};
 
+
 	$scope.delivery = alcoholCart.$cart.delivery;
+	
+	$scope.user = UserService.getIfUser();
+
+	if(typeof $scope.user.mobile_number != 'undefined'){
+		$scope.delivery.contact = $scope.user.mobile_number;
+	}
 
 	/*$scope.setSelectedAddress = function(key){
 		console.log(key);
@@ -1215,6 +1222,7 @@ AlcoholDelivery.controller('CartAddressController',[
 		);
 
 	}
+	
 
 }]);
 
@@ -1459,8 +1467,8 @@ AlcoholDelivery.controller('CartDeliveryController',[
 }]);
 
 AlcoholDelivery.controller('CartPaymentController',[
-			'$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','sweetAlert', '$interval', 'alcoholCart', '$state',
-	function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, sweetAlert, $interval, alcoholCart, $state){
+			'$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','sweetAlert', '$interval', 'alcoholCart', '$state', '$location', '$anchorScroll',
+	function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, sweetAlert, $interval, alcoholCart, $state, $location, $anchorScroll){
 
 		$scope.payment = alcoholCart.$cart.payment;
 
@@ -1503,7 +1511,7 @@ AlcoholDelivery.controller('CartPaymentController',[
 				);
 			}
 
-		}
+		}		
 
 }]);
 
@@ -2127,12 +2135,7 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 
 	$rootScope.appSettings.layout.pageRightbarExist = false;
 
-	$rootScope.$on("$locationChangeSuccess", function(){
-        $timeout(function() {
-            $anchorScroll();
-       });
-    });
-
+	
 	$scope.AppController.category = "packages";
 	$scope.AppController.subCategory = $stateParams.type;
 	$scope.AppController.showpackage = true;
@@ -2220,11 +2223,7 @@ AlcoholDelivery.controller('PackageDetailController',
 
 	$rootScope.appSettings.layout.pageRightbarExist = false;
 
-	$rootScope.$on("$locationChangeSuccess", function(){
-        $timeout(function() {
-            $anchorScroll();
-       });
-    });
+	
 
 	$scope.AppController.category = "packages";
 	$scope.AppController.subCategory = $stateParams.type;

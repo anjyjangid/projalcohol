@@ -1181,12 +1181,13 @@ AlcoholDelivery.directive('sideBar', function() {
 		},
 		restrict: 'A',
 		templateUrl: '/templates/partials/addresslist.html',
-		controller: function($scope,$rootScope,$http,$state,$payments,UserService,$mdDialog,NgMap,sweetAlert){
+		controller: function($scope,$rootScope,$http,$state,$payments,UserService,$mdDialog,NgMap,sweetAlert,$anchorScroll){
 
 			$scope.listUserAddress = function(){
 				$http.get("address").success(function(response){
 					$scope.addresses = response;
-					$rootScope.addresses = $scope.addresses;
+					$rootScope.addresses = $scope.addresses;	
+					$anchorScroll();									
 				}).error(function(data, status, headers) {
 
 				});
@@ -1377,11 +1378,11 @@ AlcoholDelivery.directive('sideBar', function() {
 
 				sweetAlert.swal({
 		                title: "Are you sure?",
-		                text: "Your will not be able to recover this address!",
+		                //text: "You will not be able to recover this address!",
 		                type: "warning",
 		                showCancelButton: true,
 		                confirmButtonColor: "#DD6B55",
-		                confirmButtonText: "Yes, remove !",
+		                confirmButtonText: "Yes",
 		                closeOnConfirm: false,
 		                closeOnCancel: false
 	            }).then(function(isConfirm) {
