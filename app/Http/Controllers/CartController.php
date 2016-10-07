@@ -1516,6 +1516,14 @@ jprd($product);
 
 		$cart = $cartObj->where("_id","=",$cartKey)->first();
 
+		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){
+
+			$order = Orders::where(['reference' => $request->get('order_number')])->first();
+
+			if($order)
+				return redirect('/#/orderplaced/'.$order['_id']);
+		}
+
 		$cart->setLoyaltyPointUsed();
 
 
@@ -1657,7 +1665,7 @@ jprd($product);
 			//SAVE CARD IF USER CHECKED SAVE CARD FOR FUTURE PAYMENTS
 			if($cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['card'] == 'newcard' && $cartArr['payment']['savecard']){
 				$cardInfo = $cartArr['payment']['creditCard'];
-		        $user = User::find($userId);
+		        $user = User::find($user->_id);
 		        $user->push('savedCards',$cardInfo,true);
 			}
 
