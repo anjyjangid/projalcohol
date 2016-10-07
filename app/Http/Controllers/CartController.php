@@ -1266,7 +1266,7 @@ jprd($product);
 		return response($slotArr,200);
 	}
 
-	public function deleteProduct($cartKey,$proId,$type){
+	public function deleteProduct($cartKey,$proId,$type){		
 
 		$cart = Cart::find($cartKey);
 

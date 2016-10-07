@@ -899,7 +899,14 @@ AlcoholDelivery.service('alcoholCart', [
 
 			var cart = this.getCart();
 
-			var count = Object.keys(cart.products).length;
+			count = 0;
+
+			angular.forEach(cart.products, function (product) {
+				if(product.getQuantity()>0){
+					count++;
+				}
+			});
+
 
 			count+= Object.keys(cart.loyalty).length;
 
@@ -1017,6 +1024,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 
 		this.removeProduct = function (id,chilled) {
+
+
 
 			var defer = $q.defer();
 			var deliveryKey = this.getCartKey();
