@@ -31,7 +31,7 @@ class OrderController extends Controller
 
 	public function show($id)
 	{
-		
+
 		$user = Auth::user('user');
 
 		$order = Orders::where("_id","=",new MongoId($id))->where("user",'=',new MongoId($user->_id))->first();
@@ -39,7 +39,7 @@ class OrderController extends Controller
 		if(!empty($order)){
 
 			$order = $order->toArray();
-			
+
 			$order['dateslug'] = date("F d, Y H:i:s",strtotime($order['created_at']));
 			$order['status'] = 0;
 			$order['timeslot']['dateslug'] = date("F d, Y",$order['timeslot']['datekey']);
@@ -48,8 +48,8 @@ class OrderController extends Controller
 
 		}
 
-		return response(['success'=>false,"message"=>"Order not found"],400);		
-		
+		return response(['success'=>false,"message"=>"Order not found"],400);
+
 	}
 
 	public function update(Request $request,$id)
@@ -59,7 +59,8 @@ class OrderController extends Controller
 		$user = Auth::user('user');
 
 		if(isset($params['rate'])){
-			Orders::raw()->update(['_id'=> new MongoId($id), 'user' => new MongoId($user->_id)], ['$set'=>['rate'=>$params['rate']]]);
+			Orders::raw()->update(['_id'=> new MongoId($id), 'user' => new MongoId($user->_id), '$or'=>[['rate'=>null], ['rate'=>['lt'=>1]]]],
+				['$set'=>['rate'=>$params['rate']]]);
 			$resp = Orders::raw()->findOne(['_id'=> new MongoId($id)], ['rate'=>1]);
 
 			return response($resp['rate'], 200);
@@ -77,8 +78,8 @@ class OrderController extends Controller
 			return response(["message"=>"Order not found"],400);
 		}
 
-		$order->dop = strtotime($order->created_at);		
-		
+		$order->dop = strtotime($order->created_at);
+
 		return response($order,200);
 	}
 
@@ -87,13 +88,13 @@ class OrderController extends Controller
 		$user = Auth::user('user');
 
 		$orders = DB::collection('orders')->raw(function($collection) use($user){
-			return $collection->aggregate(array(      
+			return $collection->aggregate(array(
 				array(
 					'$match'=> array('user'=> new MongoId($user->_id))
 				),
 				array(
 					'$limit' => 10
-				),          
+				),
 				array(
 					'$skip' => 0
 				),
@@ -112,9 +113,9 @@ class OrderController extends Controller
 						'timeslot'=>1,
 						'rate'=>1
 					),
-				),				
+				),
 				array(
-					'$sort' => array('created_at'=> -1) 
+					'$sort' => array('created_at'=> -1)
 				)
 			));
 		});
