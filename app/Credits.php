@@ -157,7 +157,7 @@ class Credits extends Model
 			));
 		});
 
-		if(isset($statics['result'])){
+		if(isset($statics['result'][0])){
 			return $statics['result'][0];
 		}
 		
