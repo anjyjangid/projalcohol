@@ -27,8 +27,8 @@ class Loyalty extends Model
 		$loyalty = $loyalty->first(['loyalty']);		
 
 		return array(
-			"data" => array_slice($loyalty['loyalty'], 0, $limit),
-			"more" => count($loyalty['loyalty'])>$limit
+			"data" => array_slice(@$loyalty['loyalty'], 0, $limit),
+			"more" => count(@$loyalty['loyalty'])>$limit
 		);
 
 	}
