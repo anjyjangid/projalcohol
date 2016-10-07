@@ -579,19 +579,33 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						controller:"CartReviewController"
 				})
 
-				/*.state('mainLayout.login', {
+				.state('mainLayout.login', {
 
-						url: "/login",
-						templateUrl: "/templates/index/home.html",
-						controller:function(UserService,$scope){
+						url: "/mailverified/{status}",
+						//templateUrl: "/templates/index/home.html",
+						controller:function(sweetAlert,$location,$stateParams){
 
-							setTimeout(function(){
-								$scope.loginOpen();
-								// $('#login').modal('show');
-							},1000)
+							var title = '';
+							var type = 'error';
+							var msg = 'Invalid or expired verification link.';
+							if($stateParams.status == 1){
+								title = 'Congratulation!';
+								type = 'success';
+								msg = 'Your email has been verified successfully, you can login with your registered email & password.';	
+							}							
+
+							sweetAlert.swal({
+								type:type,
+								title: title,
+								text : msg,
+								timer: 0,
+								closeOnConfirm: true
+							});
+
+							$location.url('/').replace();
 
 						}
-				})*/
+				})
 
 				.state('cmsLayout.reset', {
 						url: "/reset/{token}",

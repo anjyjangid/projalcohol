@@ -127,7 +127,8 @@ AlcoholDelivery.controller('AppController',
 				templateUrl: '/templates/partials/gift-packaging-popup.html',
 				parent: angular.element(document.body),
 				targetEvent: ev,
-				clickOutsideToClose: true
+				clickOutsideToClose: true,
+				fullscreen:true
 			}
 		)
 	};
@@ -1015,7 +1016,8 @@ AlcoholDelivery.controller('CartController',[
 			templateUrl: '/templates/checkout/dont-miss.html',
 			parent: angular.element(document.body),
 			//targetEvent: ev,
-			clickOutsideToClose:true
+			clickOutsideToClose:true,
+			fullscreen:true
 		})
 		.then(function(answer) {
 
