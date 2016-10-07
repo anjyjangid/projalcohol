@@ -928,6 +928,12 @@ function ($q, $rootScope, $log, $location) {
 				$rootScope.$broadcast('showLogin');
 			};
 
+			if(rejection.status == 500){				
+				$location.url('/404').replace();
+			};
+
+
+
             return $q.reject(rejection);
         }
     };
