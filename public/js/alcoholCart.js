@@ -10,7 +10,8 @@ AlcoholDelivery.service('alcoholCart', [
 		
 		this.$cart = {
 			
-			products : {},			
+			products : {},
+			sales : [],			
 			loyalty : {},
 			loyaltyCards : {},
 			packages : [],
@@ -54,6 +55,7 @@ AlcoholDelivery.service('alcoholCart', [
 				slug:"",
 				slotslug:""
 			}
+
 		};		
 
 	};
@@ -98,7 +100,6 @@ AlcoholDelivery.service('alcoholCart', [
 						inCart.setRQuantity(resProduct.chilled.quantity,resProduct.nonchilled.quantity);
 						inCart.setTQuantity(resProduct.remainingQty);
 						inCart.setPrice(resProduct);
-
 						//inCart.setRMaxQuantity(resProduct);
 						inCart.setRemainingQty(resProduct.remainingQty);
 
@@ -963,17 +964,17 @@ AlcoholDelivery.service('alcoholCart', [
 		this.setCartTotal = function(){
 
 			var cartTotal = 0;
-			
+console.log("--------------------------------------");			
 			cartTotal+= parseFloat(this.getSubTotal());
 
 			cartTotal+= parseFloat(this.getAllServicesCharges());
 
 			cartTotal+= parseFloat(this.getDeliveryCharges());
-
+console.log(this.getDeliveryCharges());
 			cartTotal-= parseFloat(this.getDiscount());
-						
-			
-			return +parseFloat(cartTotal).toFixed(2);
+
+console.log("--------------------------------------");
+			return parseFloat(cartTotal).toFixed(2);
 
 		};
 
