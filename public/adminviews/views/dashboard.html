@@ -413,8 +413,11 @@ var ProductsTableAjax = function () {
 						mData: null,
 						sClass: "center",
 						mRender: function(data, type, full) {
-	                        var req = data.reqFactor*100;		                        
-	                        	r = '<h5>'+data.name+' <span class="label label-danger">'+req+'%</span></h5>';		                        
+							var r = '<h5>'+data.name+'</h5>';
+	                        if(data.reqFactor!=null){
+	                        	var req = data.reqFactor*100;		                        
+	                        	r = '<h5>'+data.name+' <span class="label label-danger">'+req+'%</span></h5>';	
+	                        }	
 	                        return r;
 	                    },					
 						orderable:true

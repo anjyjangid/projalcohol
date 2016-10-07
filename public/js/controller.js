@@ -142,34 +142,6 @@ AlcoholDelivery.controller('AppController',
 		if(typeof pdata == 'undefined') return [];
 
 		return $filter('filter')($rootScope.settings.pages,{section:section});
-	}
-
-	//GLOBAL LOGIN FUNCTIONS
-
-	$scope.$on("showLogin", function () {
-        $scope.loginOpen();
-    });
-
-	$scope.loginOpen = function(ev){
-	    $scope.login.errors = {};
-	    $mdDialog.show({
-			scope: $scope.$new(),
-			controller: function(){},
-			templateUrl: '/templates/partials/login.html',
-			parent: angular.element(document.body),
-			targetEvent: ev,
-			clickOutsideToClose:true,		
-			fullscreen:true
-		});
-	}
-
-	$scope.loginSubmit = function(){
-		$scope.login.errors = {};
-		$http.post('/auth',$scope.login).success(function(response){
-			$scope.loginSuccess(response);
-		}).error(function(data, status, headers) {
-			$scope.login.errors = data;
-        });
 	};
 
 }]);
@@ -1871,8 +1843,8 @@ AlcoholDelivery.controller('RepeatOrderController',[
 			templateUrl: '/templates/users/repeat-order.html',
 			parent: angular.element(document.body),
 			targetEvent: ev,
-			clickOutsideToClose:false
-
+			clickOutsideToClose:false,
+			fullscreen:true
 		})
 		.then(function(answer) {
 
@@ -1890,7 +1862,8 @@ AlcoholDelivery.controller('RepeatOrderController',[
 			templateUrl: '/templates/users/shopFromPrevious.html',
 			parent: angular.element(document.body),
 			targetEvent: ev,
-			clickOutsideToClose:false
+			clickOutsideToClose:false,
+			fullscreen:true
 
 		})
 		.then(function(answer) {

@@ -721,8 +721,8 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 		}
 		
 	];
-
-	$scope.menuOptions = $filter('accessValidate')(menuOptions);
+	$scope.menuOptions = menuOptions;
+	//$scope.menuOptions = $filter('accessValidate')(menuOptions);
 
 }]);
 

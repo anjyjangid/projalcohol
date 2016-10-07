@@ -468,10 +468,13 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 							"" : {								
 								templateUrl : "/templates/index/home.html",
-								controller:function($scope,$http){
+								controller:function($scope,$http,$rootScope){
 										$scope.AppController.category = "";
 										$scope.AppController.subCategory = "";
 										$scope.AppController.showpackage = false;										
+										$scope.showSignup = function(){
+											$rootScope.$broadcast('showSignup');
+										};
 								},
 
 							},
@@ -594,23 +597,46 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						}
 				})*/
 
-				.state('mainLayout.reset', {
+				.state('cmsLayout.reset', {
 						url: "/reset/{token}",
-						templateUrl: "/templates/index/home.html",
-						controller:function($rootScope,$stateParams){
+						templateUrl: "/templates/partials/resetpassword.html",
+						controller:function($rootScope,$stateParams,$scope,$http,$timeout,$mdDialog,sweetAlert,$location){
 
 							$rootScope.token = $stateParams.token;
 
-							setTimeout(function(){
+							$scope.resetSubmit = function() {
+								$scope.reset.errors = {};
+								$scope.reset.token = $rootScope.token;
+								$http.post('/password/reset',$scope.reset).success(function(response){
+					                $scope.reset = {};
+					                $scope.reset.errors = {};
+					                $timeout(function(){
+										$location.url('/').replace();
+									});
+					                sweetAlert.swal({
+										type:'success',
+										title: "Congratulation!",
+										text : response.message,
+										timer: 4000,
+										closeOnConfirm: false
+									});														                
+					            }).error(function(data, status, headers) {
+					            	if(typeof data.token !== "undefined" && data.token===false){
+					            		$timeout(function(){
+											$location.url('/').replace();
+										});
+					            		sweetAlert.swal({
+											type:'warning',
+											title: "Expired or used reset link!",
+											timer: 0,
+											showConfirmButton:true,
+											closeOnConfirm: true
+										});
 
-									$('#reset').modal({
-									    backdrop: 'static',
-				                        keyboard: true, 
-				                        show: true
-									})
-									
-
-								},1000)
+					            	}
+					                $scope.reset.errors = data;
+					            });
+							};							
 						}
 				})
 
