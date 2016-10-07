@@ -686,38 +686,42 @@ AlcoholDelivery.controller('OrdersController',['$scope','$rootScope','$state','$
 
 AlcoholDelivery.controller('OrderDetailController',['$scope','$rootScope','$state','$stateParams','$http','sweetAlert','UserService',function($scope,$rootScope,$state,$stateParams,$http,sweetAlert,UserService){
 
-	$scope.rate = 3;
-	$scope.max = 5;
-	$scope.isReadonly = false;
 	$scope.orderid = $stateParams.orderid;
-
-	$scope.hoveringOver = function(value) {
-		$scope.overStar = value;
-		$scope.percent = 100 * (value / $scope.max);
-	};
-
-	$scope.ratingStates = [
-
-		{stateOn: 'glyphicon-ok-sign', stateOff: 'glyphicon-ok-circle'},
-		{stateOn: 'glyphicon-star', stateOff: 'glyphicon-star-empty'},
-		{stateOn: 'glyphicon-heart', stateOff: 'glyphicon-ban-circle'},
-		{stateOn: 'glyphicon-heart'},
-		{stateOff: 'glyphicon-off'}
-
-	];
-
-	$scope.order = [];
+	$scope.order = {};
 
     $http.get("order/"+$stateParams.orderid)
-			.success(function(response){
+	.success(function(response){
 
-				$scope.order = response;
-				$scope.address = $scope.order.delivery.address;
+		$scope.order = response;
+		$scope.address = $scope.order.delivery.address;
 
-			})
-			.error(function(data, status, headers) {
+	})
+	.error(function(data, status, headers) {
 
-			})
+	})
+
+	$scope.getQuantity = function(product) {
+		var qChilled = product.chilled.quantity
+		  , qNChilled = product.nonchilled.quantity;
+
+		if(product.remainingQty) {
+			var usedInSale = product.quantity - product.remainingQty;
+
+			qChilled -= usedInSale;
+
+			if(qChilled<0){
+				qNChilled += qChilled;
+				qChilled = 0;
+			}
+
+		}
+		else
+			qChilled = qNChilled = 0;
+		
+		
+		product.chilled.remainingQty = qChilled;
+		product.nonchilled.remainingQty = qNChilled;
+	}
 
 }]);
 
