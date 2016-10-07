@@ -2521,7 +2521,6 @@ AlcoholDelivery.controller('SearchController', [
 			}
 			$scope.url = '/site/searchlist';
 			$scope.products = new ScrollPaging($scope.args,$scope.url);
-			console.log($scope.products);
     	}
     }
 
