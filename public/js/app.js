@@ -943,7 +943,7 @@ function ($q, $rootScope, $log, $location) {
 			};
 
 			if(rejection.status == 500){				
-				$location.url('/404').replace();
+				//$location.url('/404').replace();
 			};
 
 
