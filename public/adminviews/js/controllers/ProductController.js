@@ -203,7 +203,7 @@ MetronicApp.controller('ProductAddController',[
 			
 			var k = $scope.getKey($scope.cd,unique);			
 			
-			if(k)
+			if(k!==false)
 				$scope.product.categories = $scope.cd[k].id;
 			else
 				$scope.product.categories = [];
@@ -246,7 +246,7 @@ MetronicApp.controller('ProductAddController',[
 	$scope.tabErrors = function(){
 		angular.forEach(angular.element(".tab-pane"), function(value, key){
 		    var elem = angular.element(".tab-pane")[key];
-		    $scope.taberr[key] = angular.element(elem).find('.has-error').length;		    
+		    $scope.taberr[key] = angular.element(elem).find('.alert-danger').length+angular.element(elem).find('.has-error').length;		    
 		});				
 	};
 
@@ -280,7 +280,7 @@ MetronicApp.controller('ProductAddController',[
 		
 		var k = $scope.getKey($scope.cd,unique);		
 
-		if(k){
+		if(k!==false){
 
 			var selected = angular.copy($scope.cd[k]);
 			

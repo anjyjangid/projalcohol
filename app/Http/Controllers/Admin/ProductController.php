@@ -455,9 +455,15 @@ class ProductController extends Controller
 		$query[]['$project'] = $project;
 
 		$project['reqFactor'] = [
-			'$subtract' => [
-                ['$divide'=>['$quantity','$maxQuantity']],
-                ['$divide'=>['$threshold','$maxQuantity']]
+			'$cond' => [
+                ['$gt'=>['$maxQuantity',0]],
+				[
+					'$subtract' => [
+	                	['$divide'=>['$quantity','$maxQuantity']],
+	                	['$divide'=>['$threshold','$maxQuantity']]
+	                ]	
+	            ],
+	            null
             ]
 		];
 
@@ -491,7 +497,13 @@ class ProductController extends Controller
 
 		$model = Products::raw()->aggregate($query);
 
-		$iTotalRecords = count($model['result']);
+		$result = [];
+		
+		if(isset($model['result'])){
+			$result =  $model['result'];
+		}
+
+		$iTotalRecords = count($result);
 
 		$query[]['$skip'] = (int)$start;
         	
@@ -500,12 +512,18 @@ class ProductController extends Controller
 
 		$model = Products::raw()->aggregate($query);
 
+		$dataResult = [];
+		
+		if(isset($model['result'])){
+			$dataResult = $model['result'];
+		}
+
 		$response = [
 			'recordsTotal' => $iTotalRecords,
 			'recordsFiltered' => $iTotalRecords,
 			'draw' => $draw,
 			'length' => $length,
-			'data' => $model['result']
+			'data' => $dataResult
 		];
 
 		return response($response,200);				

@@ -42,7 +42,7 @@ class GiftCartRequest extends Request
 					'recipient.price'=> 'required|numeric',
 					'recipient.quantity'=> 'required|integer|min:1',
 					'recipient.sms'=> 'in:0,1',
-					'recipient.mobile'=> 'required_if:recipient.sms,1',
+					'recipient.mobile'=> 'required_if:recipient.sms,1|digits:8',
 				];
 			break;
 			default :
@@ -72,7 +72,7 @@ class GiftCartRequest extends Request
 			case 'giftcard':
 
 				$messages = [										
-					'recipient.mobile.required_if'=> 'To send SMS please provide mobile number',
+					'recipient.mobile.required_if'=> 'To send SMS please provide mobile number'					
 				];
 
 			break;

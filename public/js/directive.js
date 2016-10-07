@@ -79,50 +79,7 @@ AlcoholDelivery.directive('sideBar', function() {
 	            });
 			};
 
-			$scope.resetSubmit = function() {
-				$scope.reset.errors = {};
-				$scope.reset.token = $rootScope.token;
-				$http.post('/password/reset',$scope.reset).success(function(response){
-	                $scope.reset = {};
-	                $scope.reset.errors = {};
-
-	                $('#reset').modal('hide');
-
-		                sweetAlert.swal({
-							type:'success',
-							title: "Congratulation!",
-							text : response.message,
-							timer: 4000,
-							closeOnConfirm: false
-						});
-
-		                setTimeout(function(){
-							$state.go('mainLayout.login');
-						},4000)
-
-
-
-	            }).error(function(data, status, headers) {
-
-	            	if(typeof data.token !== "undefined" && data.token===false){
-
-	            		$('#reset').modal('hide');
-	            		$state.go('mainLayout.index');
-
-	            		sweetAlert.swal({
-							type:'warning',
-							title: "Not a valid token",
-							timer: 4000,
-							showConfirmButton:false,
-							closeOnConfirm: false
-						})
-	            	}
-
-	                $scope.reset.errors = data;
-	            });
-			};
-
-	        $scope.logout = function() {
+			$scope.logout = function() {
 
 				$http.get('/auth/logout').success(function(response){
 
@@ -215,6 +172,56 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.hide = function() {
 				$mdDialog.hide();
 			};
+
+			$scope.$on("showLogin", function () {
+		        $scope.loginOpen();
+		    });
+
+		    $scope.$on("showSignup", function (event,args) {
+		        $scope.signupOpen();
+		    });
+
+			$scope.loginOpen = function(ev){
+			    $scope.login.errors = {};
+			    var elementWrapper = {};
+    			elementWrapper.target = document.getElementById('loginlink');
+			    $mdDialog.show({
+					scope: $scope.$new(),
+					controller: function(){},
+					templateUrl: '/templates/partials/login.html',
+					parent: angular.element(document.body),
+					targetEvent: elementWrapper,
+					clickOutsideToClose:true,		
+					fullscreen:true
+				});
+			}
+
+			$scope.loginSubmit = function(){
+				$scope.login.errors = {};
+				$http.post('/auth',$scope.login).success(function(response){
+					$scope.loginSuccess(response);
+				}).error(function(data, status, headers) {
+					$scope.login.errors = data;
+		        });
+			};
+
+			//INTIALIZE AFTER USER LOGIN(FB & NORMAL)
+		    $scope.loginSuccess = function(response){
+		    	UserService.currentUser = response;
+		    	$scope.login = {};
+		        $scope.user = response;
+				$scope.user.name = response.email;
+		        $mdDialog.hide();
+		        $scope.errors = {};                
+		        store.init().then(
+		        	function(successRes){
+		        		$state.go($state.current, {}, {reload: true});
+		        	},
+		        	function(errorRes){}
+		        );
+		        alcoholWishlist.init();
+		        ClaimGiftCard.claim();
+		    }
 		}
 	};
 })
@@ -285,10 +292,11 @@ AlcoholDelivery.directive('sideBar', function() {
              if(element.hasClass('fixh')) return;
 
              if (this.pageYOffset >= 1) {
-                 element.addClass('navbar-shrink');
-             } else {
+                element.addClass('navbar-shrink');
+             } else if(this.pageYOffset == 0 && angular.element('md-backdrop').length == 0 && angular.element('.md-scroll-mask').length == 0) {
                  element.removeClass('navbar-shrink');
-             }
+             } 
+             
         });
     };
 })
@@ -572,7 +580,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 					}, function(error) {
 
-						$('#login').modal('show');
+						$rootScope.$broadcast('showLogin');
 
 					});
 			}
@@ -645,7 +653,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 					if(userData === null || userData.auth === false){
 
-						$('#login').modal('show');
+						$rootScope.$broadcast('showLogin');
 						return false;
 
 					}
@@ -867,10 +875,9 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.showCustomToast = function() {
 				$scope.nlabel = 'Wait..';
-
 				if(!UserService.getIfUser()){
 					$scope.nlabel = 'Notify Me';
-					$('#login').modal('show');
+					$rootScope.$broadcast('showLogin');
 				}else{
 					$http.post('/user/notifyme',{pid:$scope.product._id}).success(function(){
 						$scope.showPopover(UserService.getIfUser());
@@ -879,7 +886,6 @@ AlcoholDelivery.directive('sideBar', function() {
 					});
 				}
 			};
-
 
 			$scope.showPopover = function(result){
 				$mdToast.show({
