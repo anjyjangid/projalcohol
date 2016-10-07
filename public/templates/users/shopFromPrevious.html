@@ -19,8 +19,8 @@
 				<div class="alcohal_hisryorderboxcvr1" ng-repeat="orderSummary in orders" ng-click="previousOrder(orderSummary.reference,$event)">
              <div class="alchol-repeat-cover-3">
 					<div class="alcohal_hisryorderordertxt">Order: {{orderSummary.reference}}</div>
-					<div class="alcohal_hisryorderdelitext">Delivered on: Thu 10 Dec 2015</div>
-					<div class="alcohal_hisryorderitemtext">16 Items</div>
+					<div class="alcohal_hisryorderdelitext">Delivered on: {{ orderSummary.created_at.sec*1000 | date:'EEE, d MMM, yyyy'}}</div>
+					<div class="alcohal_hisryorderitemtext">{{orderSummary.quantity}} Items</div>
 				</div>
 				</div>
 			</div>
@@ -47,8 +47,8 @@
 		<div class="alcohal_orderhistory2bodytext1"> Order: {{order.reference}} (16 items) </div>
 		<div class="alcohal_orderhistory2bodytext2"> Delivered on: {{order.reference}} </div>
 		<div class="alcohal_ordehisty2selctboxcvr">
-			<input type="checkbox" class="orderhistysect_check" name="cc" id="b1">
-			<label for="b1"><span></span> Select all </label>
+			<!-- <input type="checkbox" class="orderhistysect_check" name="cc" id="b1"> -->
+			<md-checkbox ng-model="allSelected" ng-change="selectAll(allSelected)"> Select all</md-checkbox>
 		</div>
 		<div class="alcohal_ordehisty2selctblcvr">
         <div class="table-responsive">
@@ -68,7 +68,7 @@
 					<tr ng-repeat="product in order.products">
 						<td>
 							<div class="cheklble">
-								<md-checkbox ng-model="product.selected" aria-label="Checkbox 1"></md-checkbox>			
+								<md-checkbox ng-model="product.selected" ng-change="product.selected?0:$parent.allSelected=false" aria-label="Checkbox 1"></md-checkbox>			
 							</div>
 							
 						</td>

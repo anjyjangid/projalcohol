@@ -406,24 +406,10 @@ class Cart extends Moloquent
 
 		$saleProducts = [];
 
-		foreach ($this->sales as $sale) {
+		if($this->sales)
+			foreach ($this->sales as $sale) {
 
-			foreach ($sale['products'] as $salePro) {
-				
-				if(isset($saleProducts[$salePro['_id']])){
-
-					$saleProducts[$salePro['_id']]+= (int)$salePro['quantity'];
-
-				}else{
-
-					$saleProducts[$salePro['_id']] = (int)$salePro['quantity'];
-
-				}
-
-			}
-
-			if(isset($sale['action'])){
-				foreach ($sale['action'] as $salePro) {
+				foreach ($sale['products'] as $salePro) {
 					
 					if(isset($saleProducts[$salePro['_id']])){
 
@@ -436,9 +422,24 @@ class Cart extends Moloquent
 					}
 
 				}
-			}
 
-		}
+				if(isset($sale['action'])){
+					foreach ($sale['action'] as $salePro) {
+						
+						if(isset($saleProducts[$salePro['_id']])){
+
+							$saleProducts[$salePro['_id']]+= (int)$salePro['quantity'];
+
+						}else{
+
+							$saleProducts[$salePro['_id']] = (int)$salePro['quantity'];
+
+						}
+
+					}
+				}
+
+			}
 
 		$cartProducts = $this->products;
 
@@ -874,24 +875,97 @@ class Cart extends Moloquent
 
 		$sales = $this->sales;
 		$removed = false;
+		
+		$response = [
+			"success" => false,
+			"message" => ""
+		];
+
+
 		foreach ($sales as $index => $sale) {
 			
 			if((string)$sale['_id'] == $id){
-
-				$removed = true;
-				array_splice($sales,$index,1);
+				
+				$removed = array_splice($sales,$index,1);				
 				break;
 
 			}
 
 		}
 
-		if($removed){
-			$this->setRemainingQty();
+		if($removed !==  false){
+
+			$isProSet = $this->setProductsOnSaleRemoved($removed[0]);
+
+			if($isProSet){
+
+				$this->__set('sales',$sales);
+				$response['success'] = true;
+			}
+
 		}
 
-		$this->__set('sales',$sales);
+		return $response;		
 
+	}
+
+	/**
+	 * To set products remaining quantity after sale removed
+	 *
+	 * @var array $sale (Removed sale array)
+	**/
+	private function setProductsOnSaleRemoved($sale){
+
+		$sale['action'] = isset($sale['action'])?$sale['action']:[];
+		$products = array_merge($sale['products'],$sale['action']);
+		$toRemove = [];
+		foreach ($products as $value) {
+			$toRemove[$value['_id']] = $value['quantity'];
+		}
+
+		$saleProducts = $this->products;
+
+		foreach ($toRemove as $key => $value) {
+
+			$qtyChilled = (int)$saleProducts[$key]['chilled']['quantity'];
+			$qtyNonChilled = (int)$saleProducts[$key]['nonchilled']['quantity'];
+
+			if($qtyChilled>$value){
+
+				$qtyChilled-=$value;
+				$value = 0;
+
+			}else{
+
+				$value-= $qtyChilled;
+				$qtyChilled=0;				
+
+			}
+
+			if($value > 0){							
+
+				if($qtyNonChilled>$value){
+
+					$qtyNonChilled-=$value;
+					$value = 0;
+
+				}else{
+
+					$value-= $qtyNonChilled;
+					$qtyNonChilled=0;
+
+				}
+
+			}
+
+			$saleProducts[$key]['chilled']['quantity'] = $qtyChilled;
+			$saleProducts[$key]['nonchilled']['quantity'] = $qtyNonChilled;
+
+		}
+
+		$this->__set("products",$saleProducts);
+
+		return true;
 	}
 
 	public function confirmOrder($cartArr){		

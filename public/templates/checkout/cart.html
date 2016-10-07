@@ -383,24 +383,29 @@
 		<div class="checkboxtotaldiv-text">{{alcoholCart.getSubTotal() | pricingTxt}}</div>
 	</div>
 	<div class="checkboxtotaldiv-middle">
-		<div class="checkboxtotaldiv-middle-first">
-			<div class="checkboxtotaldiv-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
-
-			<div class="checkboxtotaldiv-text" ng-if="!cart.delivery.charges">Free</div>
-			<div class="checkboxtotaldiv-text" ng-if="cart.delivery.charges>0">{{alcoholCart.getDeliveryCharges() | pricingTxt }}</div>
-
+		<div class="col-sm-6">
+			<button class="checkoutergitpackage pull-left m-top-15"  ng-click="giftPopup($event)" >Gift Packaging</button>
 		</div>
-		<div class="checkboxtotaldiv-middle-first">
-			<div class="checkboxtotaldiv-title">Service Charge <span class=""><img src="images/questionimg.png"></span></div>
-			<div class="checkboxtotaldiv-text">{{alcoholCart.getAllServicesCharges() | pricingTxt}}</div>
-		</div>
-		<div class="checkboxtotaldiv-middle-first">
-			
-			<div class="checkboxtotaldiv-title">Discount (Non-Chilled) <span class="">
-				<img src="images/questionimg.png"></span>
+		<div class="col-sm-6">
+			<div class="checkboxtotaldiv-middle-first">
+				<div class="checkboxtotaldiv-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
+
+				<div class="checkboxtotaldiv-text" ng-if="!cart.delivery.charges">Free</div>
+				<div class="checkboxtotaldiv-text" ng-if="cart.delivery.charges>0">{{alcoholCart.getDeliveryCharges() | pricingTxt }}</div>
+
 			</div>
+			<div class="checkboxtotaldiv-middle-first">
+				<div class="checkboxtotaldiv-title">Service Charge <span class=""><img src="images/questionimg.png"></span></div>
+				<div class="checkboxtotaldiv-text">{{alcoholCart.getAllServicesCharges() | pricingTxt}}</div>
+			</div>
+			<div class="checkboxtotaldiv-middle-first">
+				
+				<div class="checkboxtotaldiv-title">Discount (Non-Chilled) <span class="">
+					<img src="images/questionimg.png"></span>
+				</div>
 
-			<div class="checkboxtotaldiv-text" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount() | pricingTxt}}</div>
+				<div class="checkboxtotaldiv-text" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount() | pricingTxt}}</div>
+			</div>
 		</div>
 	</div>
 	<div class="checkboxtotaldiv-buttom">
@@ -419,7 +424,7 @@
 		<button class="checkouterwantbutton" ng-class="{selected:cart.delivery.type==0}" ng-click="alcoholCart.setDeliveryType(0)">I want this order Now!</button>
 
 		<span>(Standard 1 hour delivery)</span>
-		<button class="checkoutergitpackage"  ng-click="giftPopup($event)" >Gift Packaging</button>
+		
 	</div>
 
 	<div class="checkouterexprienceouter" ng-show="cart.delivery.type==0">

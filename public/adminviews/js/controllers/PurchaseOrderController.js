@@ -1,10 +1,10 @@
 'use strict';
 
-MetronicApp.controller('PurchaseOrderController',['$rootScope', '$scope', '$timeout', '$http', 'sweetAlert'
-, function($rootScope, $scope, $timeout, $http, sweetAlert) {
+MetronicApp.controller('PurchaseOrderController',['$rootScope', '$scope', '$timeout', '$http', 'sweetAlert', '$stateParams'
+, function($rootScope, $scope, $timeout, $http, sweetAlert, $stateParams) {
 
 	function init() {
-		$http.get('/adminapi/purchaseorder/57ee720d16f2d14e0279f3f5')
+		$http.get('/adminapi/purchaseorder/'+$stateParams.id)
 		.then(function(res) {
 
 			res.data = res.data[0];
@@ -19,7 +19,7 @@ MetronicApp.controller('PurchaseOrderController',['$rootScope', '$scope', '$time
 	init();
 
 	$scope.save = function(shortfall){
-		$http.put('/adminapi/purchaseorder/57ee720d16f2d14e0279f3f5', shortfall?{status:3}:{products:$scope.products})
+		$http.put('/adminapi/purchaseorder/'+$stateParams.id, shortfall?{status:3}:{products:$scope.products})
 		.then(function(res) {
             Metronic.alert({
                 type: 'success',

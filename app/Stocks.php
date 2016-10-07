@@ -103,10 +103,26 @@ class Stocks extends Eloquent
                     '$and'=>[
                         ['$eq'=>['$$order.delivery.type',1]],
                         ['$eq'=>['$$order.status',0]],
+                        // ['$lte']
                     ]
                 ]
             ]
         ];
+
+        if(isset($params['filter']['from']) && isset($params['filter']['to'])) {
+            $project['advanceOrder']['$filter']['cond']['$and'][] = [
+                '$gte' => [
+                    '$$order.timeslot.datekey',
+                    strtotime($params['filter']['from'])
+                ]
+            ];
+            $project['advanceOrder']['$filter']['cond']['$and'][] = [
+                '$lte' => [
+                    '$$order.timeslot.datekey',
+                    strtotime($params['filter']['to'])
+                ]
+            ];
+        }
 
         //PROJECT ALL FIELDS
         $query[]['$project'] = $project;
@@ -314,9 +330,16 @@ class Stocks extends Eloquent
         //COL ARRAY FOR SORTING
         $columns = ['_id','sTitle','sSupplier','qtyOneHour','qtyAdvance','totalQty','purchaseOrder','priority'];
         if(isset($params['order']) && !empty($params['order'])) {
-            $field = $columns[$params['order'][0]['column']];
+            $field = $columns[$params['order'][0]['column']-1];
             $direction = ($params['order'][0]['dir']=='asc')?1:-1;
             $sort = [$field=>$direction];
+        }
+        if(!empty($params['filter']['supplier'])){
+            if(!empty($params['filter']['supplier'])){
+                $query[]['$match'] = [
+                    'supplier._id' => new MongoId($params['filter']['supplier'])
+                ];
+            }
         }
 
         $query[]['$sort'] = $sort;
@@ -332,8 +355,7 @@ class Stocks extends Eloquent
             $model = Products::raw()->aggregate($query);
         }
 
-        // header("Content-type: application/json");
-        // exit(json_encode($query));
+        // jprd($query);
 
         $response = [
             'recordsTotal' => $iTotalRecords,
