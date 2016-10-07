@@ -96,152 +96,298 @@
                 <div class="reviewtable-cover">      
                 <div class="table-responsive">  
                 
-				<!-- <table class="table cart-table">          
-					<tbody>
-						<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getProducts()"></tr>
-						<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0">
-							
-							<td width="52%">
+					<table class="table cart-table">
+						<tbody>
+
+							<tr ng-repeat="(key, sale) in alcoholCart.getSales()">
+
+								<td width="52%">
+									
+									<ul class="orhistry2_td2procdtcvr list-inline sale-pro-list">
+
+										<div ng-repeat-start="sPro in sale.products" ng-init="b = [] ; b[sPro.quantity-1] = null" ng-hide="true"></div>
+											<li class="cursor-pointer" ng-repeat="a in b">
+												<a ui-sref="mainLayout.product({product:sPro.product.slug})" title="View Product">
+													<img err-pro-src="" ng-src="products/i/200/{{sPro.product.image}}" alt="" class="img-responsive img-responsive-h" />
+												</a>
+											</li>
+										<div ng-repeat-end ng-hide="true"></div>
+
+										<div ng-repeat-start="sPro in sale.action" ng-init="b = [] ; b[sPro.quantity-1] = null" ng-hide="true"></div>
+											<li class="cursor-pointer" ng-repeat="a in b">
+												<a ui-sref="mainLayout.product({product:sPro.product.slug})" title="View Product">
+													<img err-pro-src="" ng-src="products/i/200/{{sPro.product.image}}" alt="" class="img-responsive img-responsive-h" />
+												</a>
+											</li>
+										<div ng-repeat-end ng-hide="true"></div>
+
+									</ul>
+
+									<div class="sale-tag-txt -cart">{{sale.title.long}}</div><span class="strike-txt">{{sale.strikePrice}}</span>
+								</td>
+								<td>
+									<div class="prod_chilled" ng-class="{notchilled:!sale.chilled,invisible:cart.nonchilled}">
+										<div class="prod_chilled_icon"></div>
+									</div>
+								</td>
+
+								<td></td>
+
+								<td>
+									<div class="orderhistry2price">{{sale.price | pricingTxt}}</div>
+								</td>
 								
-								<span ng-if="(cartproduct.onlyForAdvance && cart.delivery.type==0) || cartproduct.isNotAvailable" class="cart-alert">!
-								<md-tooltip class="cart-alert-tooltip" md-direction="top" >Sorry! This item is either out of stock, or unavailable for the quantity or delivery time selected.</md-tooltip></span>
+							</tr>
 
-								<div class="orhistry2_td2procdtcvr">
-									<span ui-sref="mainLayout.product({product:cartproduct.product._id})" class="cursor-pointer"><img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" /></span>
+							<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getProducts()" ng-init="cartproduct.setStateRemainQty()"></tr>
+							<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0 && cartproduct['remain'+type]>0" >
 
-									<div class="checkouter-td-right-text">
-										<div class="orhistry2_td2proctext1">{{cartproduct.product.name}}</div>
-										<div class="orhistry2_td2proctext2">{{cartproduct.product.shortDescription}}</div>
-										<div class="orhistry2_td2proctext1">{{settings.general.currency}} {{cartproduct.unitPrice}}</div>
-										<div class="orhistry2_td2proctext2">unit Price</div>
-								 	</div> 
+								<td width="52%">
 
-								</div>
-
-							</td>
-							<td width="131px">
-								<div class="prod_chilled" ng-class="{
-																		notchilled:!cartproduct[type+'Status'],
-																		invisible:!cartproduct.product.chilled || cart.nonchilled,
-																		
-																	}"
-																	ng-click="alcoholCart.updateChilledStatus(cartproduct._id,type)">
-									<span>Chilled</span>
-									<div class="prod_chilled_icon"></div>
-								</div>
-									
-							</td>
-							<td>
-								<div class="checkoutmiddlevlauediv">
-								
-									<input type="text" ng-model="cartproduct[type]" value="cartproduct[type]" min="0" mquantity="cartproduct[type+'Max']" ng-touch-spin on-increment="addtocart(cartproduct.product._id,type)" on-decrement="addtocart(cartproduct.product._id,type)">
-									
-								</div>
-							</td>
-							<td>
-								<div class="orderhistry2price">{{cartproduct.discountedUnitPrice * cartproduct[type] | currency:settings.general.currency:2}}</div>
-							</td>
-							
-						</tr>
-						<tr ng-repeat-end></tr>
-
-						<tr ng-repeat="(key, package) in alcoholCart.getPackages()">
-						
-							<td width="52%">
-							
-								<div class="orhistry2_td2procdtcvr" ui-sref="mainLayout.packages({type:package.original.type==2?'cocktail':'party'})">
-									<span><img err-pro-src="" ng-src="packages/i/{{package.original.coverImage.source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" /></span>
-
-
-									<div class="checkouter-td-right-text">
-										<div class="orhistry2_td2proctext1">{{package._name}}</div>
-										<div class="orhistry2_td2proctext2">{{package.original.description}}</div>
-										<div class="orhistry2_td2proctext1">{{settings.general.currency}} {{package.original.packagePrice}}</div>
-										<div class="orhistry2_td2proctext2">unit Price</div>
-								 	</div> 
-								</div>
-							</td>
-							<td>					
-							</td>
-							<td>
-
-								<div class="checkoutmiddlevlauediv">
-
-									<input type="text" ng-model="package._quantity" value="package._quantity" min="0" mquantity="package._maxquantity" ng-touch-spin on-increment="alcoholCart.addPackage(package._id,package.original)" on-decrement="alcoholCart.addPackage(package._id,package.original)">
-									
-								</div>
-							</td>
-							<td>
-								<div class="orderhistry2price">{{package._price | currency:settings.general.currency:2}}</div>
-							</td>
-							<td> 
-								<a class="checkoutmiddletabledeleteimg" ng-click="removepackage(package._uniqueId)"><i class="glyphicon glyphicon-trash"></i></a>
-							</td>
-						</tr>
-						
-						<tr ng-repeat="(key, giftCard) in alcoholCart.getGiftCards()">
-
-							<td width="52%">
-
-								<div class="orhistry2_td2procdtcvr">
-									<span>
-										{{giftCard.recipient.price | pricingTxt}}
+									<span ng-if="cartproduct.isAvail()" class="cart-alert">!
+										<md-tooltip class="cart-alert-tooltip" md-direction="top">Sorry! This item is either out of stock, or unavailable for the quantity or delivery time selected.</md-tooltip>
 									</span>
 
-									<div class="checkouter-td-right-text">
-										<div class="orhistry2_td2proctext1">{{giftCard.recipient.name}}</div>
-										<div class="orhistry2_td2proctext2">{{giftCard.recipient.message}}</div>
-										<div class="orhistry2_td2proctext1">{{giftCard.recipient.price | pricingTxt}}</div>
-										<div class="orhistry2_td2proctext2">unit Price</div>
-									</div> 
-								</div>
-							</td>
-							<td></td>
-							<td>
+									<div class="orhistry2_td2procdtcvr">
+									<span class="cursor-pointer">
+										<a ui-sref="mainLayout.product({product:cartproduct.product.slug})" title="View Product">
+											<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
+										</a>
+									</span>
 
-								<div class="checkoutmiddlevlauediv">
+										<div class="checkouter-td-right-text">
+											<div class="orhistry2_td2proctext1">{{cartproduct.product.name}}</div>
+											<div class="orhistry2_td2proctext2">{{cartproduct.product.shortDescription}}</div>
+											<div class="orhistry2_td2proctext1">{{cartproduct.unitPrice | pricingTxt}}</div>
+											<div class="orhistry2_td2proctext2">unit Price</div>
+										</div> 
 
-									<input type="text" ng-model="giftCard.recipient.quantity" value="giftCard.recipient.quantity" min="0" mquantity="100" ng-touch-spin on-increment="updateGiftCard(giftCard.getUniqueId())" on-decrement="updateGiftCard(giftCard.getUniqueId())">
+									</div>
+								</td>
+								<td width="131px">
 
-								</div>
-							</td>
-							<td>
-								<div class="orderhistry2price">{{giftCard.getPrice() | pricingTxt}}</div>
-							</td>
-						</tr>
+									<div class="prod_chilled" ng-class="{
+									notchilled:!cartproduct[type+'Status'],
+									invisible:!cartproduct.product.chilled || cart.nonchilled,
 
-						<tr ng-repeat="(key, promotion) in alcoholCart.getPromotions()">
-						
-							<td width="52%">
+									}">
+									
+										<div class="prod_chilled_icon"></div>
+									</div>
+
+								</td>
+								<td>
+									<div class="checkoutmiddlevlauediv text-center">
+
+										<span class="cart-pro-count">{{cartproduct['remain'+type]}}</span>
+
+									</div>
+								</td>
+								<td>
+									<div class="orderhistry2price">{{cartproduct.discountedUnitPrice * cartproduct['remain'+type] | pricingTxt}}</div>
+								</td>
+								
+							</tr>
+							<tr ng-repeat-end></tr>
+
+							<tr ng-repeat="(key, package) in alcoholCart.getPackages()">
+
+								<td width="52%">
+
+									<div class="orhistry2_td2procdtcvr">
+										<span>
+											<a ui-sref="mainLayout.packages({type:package.original.type==2?'cocktail':'party'})">
+												<img err-pro-src="" ng-src="packages/i/{{package.original.coverImage.source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" />
+											</a>
+										</span>
+
+										<div class="checkouter-td-right-text">
+											<div class="orhistry2_td2proctext1">{{package._name}}</div>
+											<div class="orhistry2_td2proctext2">{{package.original.description}}</div>
+											<div class="orhistry2_td2proctext1">{{package.original.packagePrice | pricingTxt}}</div>
+											<div class="orhistry2_td2proctext2">unit Price</div>
+										</div> 
+									</div>
+								</td>
+								<td></td>
+								<td>
+
+									<div class="checkoutmiddlevlauediv text-center">
+
+										<span class="cart-pro-count">{{package._quantity}}</span>
+
+									</div>
+								</td>
+								<td>
+									<div class="orderhistry2price">{{package._price | pricingTxt}}</div>
+								</td>
+								
+							</tr>
+
+							<tr ng-repeat="(key, giftCard) in alcoholCart.getGiftCards()">
+
+								<td width="52%">
+
+									<div class="orhistry2_td2procdtcvr">
+										<span>
+											{{giftCard.recipient.price | pricingTxt}}
+										</span>
+
+										<div class="checkouter-td-right-text">
+											<div class="orhistry2_td2proctext1">{{giftCard.recipient.name}}</div>
+											<div class="orhistry2_td2proctext2">{{giftCard.recipient.message}}</div>
+											<div class="orhistry2_td2proctext1">{{giftCard.recipient.price | pricingTxt}}</div>
+											<div class="orhistry2_td2proctext2">unit Price</div>
+										</div> 
+									</div>
+								</td>
+								<td></td>
+								<td>
+
+									<div class="checkoutmiddlevlauediv text-center">
+
+										<span class="cart-pro-count">{{giftCard.recipient.quantity}}</span>
+
+									</div>
+								</td>
+								<td>
+									<div class="orderhistry2price">{{giftCard.getPrice() | pricingTxt}}</div>
+								</td>
+								
+							</tr>				
+
+							<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getLoyaltyProducts()"></tr>
+							<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0">
+
+								<td width="52%">
+
+									<span ng-if="cartproduct.isAvail()" class="cart-alert">!
+										<md-tooltip class="cart-alert-tooltip" md-direction="top">Sorry! This item is either out of stock, or unavailable for the quantity or delivery time selected.</md-tooltip>
+									</span>
+
+									<div class="orhistry2_td2procdtcvr">
+									<span class="cursor-pointer">
+										<a ui-sref="mainLayout.product({product:cartproduct.product.slug})" title="View Product">
+											<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="img-responsive" />
+										</a>
+									</span>
+
+										<div class="checkouter-td-right-text">
+											<div class="orhistry2_td2proctext1">{{cartproduct.product.name}}</div>
+											<div class="orhistry2_td2proctext2">{{cartproduct.product.shortDescription}}</div>
+											<div class="orhistry2_td2proctext1">
+												<i>LP {{cartproduct.loyaltyValue.point}}</i>
+												<i ng-if='cartproduct.loyaltyValue.price>0'> + {{cartproduct.loyaltyValue.price | pricingTxt}}</i>
+											</div>
+											<div class="orhistry2_td2proctext2">unit Price</div>
+										</div> 
+
+									</div>
+
+								</td>
+								<td width="131px">
+
+									<div class="prod_chilled" ng-class="{
+									notchilled:!cartproduct[type+'Status'],
+									invisible:!cartproduct.product.chilled || cart.nonchilled,
+
+									}"
+									>						
+										<div class="prod_chilled_icon"></div>
+									</div>
+
+								</td>
+								<td>
+									<div class="checkoutmiddlevlauediv text-center">
+
+										<span class="cart-pro-count">{{cartproduct[type]}}</span>
+
+									</div>
+								</td>
+								<td>
+									<div class="orderhistry2price">
+										<i>LP {{cartproduct.loyaltyValue.point * cartproduct[type]}}</i>
+										<i ng-if='cartproduct.loyaltyValue.price>0'> + {{cartproduct.loyaltyValue.price * cartproduct[type] | pricingTxt}}</i>
+										
+									</div>
+								</td>
+								
+							</tr>
+							<tr ng-repeat-end></tr>
 							
-								<div class="orhistry2_td2procdtcvr">
-									<span ui-sref="mainLayout.product({product:promotion.product._id})" class="cursor-pointer"><img err-pro-src="" ng-src="products/i/200/{{promotion.product._image}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" /></span>
 
-									<div class="checkouter-td-right-text">
-										<div class="orhistry2_td2proctext1">{{promotion.product._title}}</div>
-										<div class="orhistry2_td2proctext2">{{promotion.product.description}}</div>						
-										<div class="orhistry2_td2proctext2">({{promotion._title}})</div>
-								 	</div> 
-								</div>
-							</td>
-							<td></td>
-							<td></td>
-							<td>
-								<div class="orderhistry2price">{{promotion.product._price | pricingTxt:true}}</div>
-							</td>
+							<tr ng-repeat="(key, promotion) in alcoholCart.getPromotions()">
+
+								<td width="52%">
+
+									<div class="orhistry2_td2procdtcvr">
+										<span>
+											<a ui-sref="mainLayout.product({product:promotion.product.slug})">
+												<img err-pro-src="" ng-src="products/i/200/{{promotion.product._image}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" />
+											</a>
+										</span>
+
+										<div class="checkouter-td-right-text">
+											<div class="orhistry2_td2proctext1">{{promotion.product._title}}</div>
+											<div class="orhistry2_td2proctext2">{{promotion.product.description}}</div>						
+											<div class="orhistry2_td2proctext2">({{promotion._title}})</div>
+										</div> 
+									</div>
+								</td>
+								<td></td>
+								<td></td>
+								<td>
+									<div class="orderhistry2price">{{promotion.product._price | pricingTxt:true}}</div>
+								</td>
+							</tr>
+
+
+							<tr ng-repeat-start="(key, gift) in alcoholCart.getGifts()"></tr>
+							<tr>
+								<td width="52%">
+
+									<div class="orhistry2_td2procdtcvr">
+										<span>
+											<a>
+												<img err-pro-src="" ng-src="{{gift.imageLink}}" alt="gift-pic" class="img-responsive" />
+											</a>
+										</span>
+
+										<div class="checkouter-td-right-text">
+											<div class="orhistry2_td2proctext1">{{gift.title}}</div>
+											<div class="orhistry2_td2proctext2">({{gift.subTitle}})</div>
+											<div class="orhistry2_td2proctext2">{{gift.description}}</div>
+										</div>
+									</div>
+
+									<ul class="list-inline gift-pack-products">
+										<li ng-repeat="(key, giftPro) in gift.getProducts()">
+											<a ui-sref="mainLayout.product({product:giftPro.cartPro.product.slug})" title="View :: {{giftPro.cartPro.product.name}}" ng-init="giftPro.cartPro = alcoholCart.getProductInCartById(giftPro._id)">
+											      	
+												<img err-pro-src="" ng-src="products/i/200/{{giftPro.cartPro.product.imageFiles | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
+											</a>
+										</li>
+									</ul>
+								</td>
+								<td></td>
+								<td>
+									<span class="cart-pro-count">{{gift.getProductAttachedCount()}}/{{gift.gsLimit()}}</span>
+								</td>
+								<td>
+									<div class="orderhistry2price">{{gift.gsPrice() | pricingTxt}}</div>
+
+								</td>
+								
+							</tr>
 							
-						</tr>
+							
+							<tr ng-repeat-end></tr>
 
-
-						
-					</tbody>
-				</table>
- -->
+						</tbody>
+					</table>
                 </div>
                 </div>
 				</div>  
-
-
 
 				<div class="checkoutstep5-mid-button-outer">
 				
@@ -250,4 +396,4 @@
 				<button class="checkoutstep5-mid-button" ng-click="orderConfirm()">Confirm Order <i class="glyphicon glyphicon-menu-right"></i></button>
 				
 				</div>
-<payment-form></payment-form>		
+<payment-form></payment-form>

@@ -900,7 +900,18 @@ angular.pagination = $scope.pagination;
 
 
 
-AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$timeout','UserService','sweetAlert','alcoholCart','alcoholGifting','store',function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $timeout, UserService, sweetAlert, alcoholCart, alcoholGifting, store){
+AlcoholDelivery.controller('CartController',[
+			'$scope','$rootScope','$state','$stateParams','$http','$q', '$mdDialog', '$mdMedia','$timeout',
+			'UserService','sweetAlert','alcoholCart','alcoholGifting','store'
+	,function($scope, $rootScope, $state, $stateParams, $http, $q, $mdDialog, $mdMedia, $timeout, 
+			UserService, sweetAlert, alcoholCart, alcoholGifting, store){
+	
+	// var isStepSet = alcoholCart.setCurrentStep($state.$current.data.step);
+	// if(isStepSet===false){
+	// 	$state.go("mainLayout.checkout.cart");
+	// }
+
+	//alcoholCart.validate();
 
 	$scope.alcoholCart = alcoholCart;
 
@@ -908,7 +919,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 
 	angular.alcoholCart = alcoholCart;
 
-	$scope.cart = alcoholCart.$cart;
+	$scope.cart = alcoholCart.$cart;	
 
 	$scope.smoke = {
 
@@ -929,7 +940,7 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 		isCartValid = alcoholCart.validate($scope.step);
 
 		if(!UserService.getIfUser())
-			return $('#login').modal('show');
+			return $rootScope.$broadcast('showLogin');
 
 
 		$mdDialog.show({
@@ -1095,9 +1106,10 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 	$scope.remove = function(key,type){
 
 		if(type=='qChilled'){
-			alcoholCart.addItem(key,0,true);
+			alcoholCart.removeProduct(key,true);
 		}else{
-			alcoholCart.addItem(key,0,false);
+			alcoholCart.removeProduct(key,false);
+			//alcoholCart.addItem(key,0,false);
 		}
 
 	};
@@ -1124,7 +1136,6 @@ AlcoholDelivery.controller('CartController',['$scope','$rootScope','$state','$ht
 		alcoholGifting.updateGiftCard(uid);
 
 	}
-
 
 
 }]);
@@ -1162,7 +1173,7 @@ AlcoholDelivery.controller('CartAddressController',[
 			'$scope','$rootScope','$state','$interval','$http','$q', '$mdDialog', '$mdMedia','alcoholCart','sweetAlert', 'UserService', 
 	function($scope, $rootScope, $state, $interval, $http, $q, $mdDialog, $mdMedia, alcoholCart, sweetAlert, UserService){
 
-	$scope.errors = {};
+	$scope.errors = {};	
 
 
 	$scope.delivery = alcoholCart.$cart.delivery;
@@ -2493,7 +2504,6 @@ AlcoholDelivery.controller('SearchController', [
 			}
 			$scope.url = '/site/searchlist';
 			$scope.products = new ScrollPaging($scope.args,$scope.url);
-			console.log($scope.products);
     	}
     }
 

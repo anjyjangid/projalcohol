@@ -900,29 +900,34 @@ class CartController extends Controller
 
 			$sessionCart = Cart::find($cartkey);
 
-			if(!empty($userCart)){
+			// if(!empty($userCart)){
 
-				$sessionCart->products = array_merge($sessionCart->products,$userCart->products);
+				// $sessionCart->products = array_merge($sessionCart->products,$userCart->products);
 
-			}
+			// }
 
-			$sessionCart->user = new MongoId($user->_id);
+			if(!empty($sessionCart->products) || empty($userCart)){
 
-			try{
+				$sessionCart->user = new MongoId($user->_id);
 
-				$sessionCart->save();
+				try{
 
-				if(!empty($userCart)){
+					$sessionCart->save();
 
-					$userCart->delete();
+					if(!empty($userCart)){
 
+						$userCart->delete();
+
+					}
+					return (object)["success"=>true,"message"=>"cart merge successfully","cart"=>$sessionCart->toArray()];
+
+				}catch(\Exception $e){
+					return (object)["success"=>false,"message"=>$e->getMessage()];
 				}
-				return (object)["success"=>true,"message"=>"cart merge successfully","cart"=>$sessionCart->toArray()];
 
-			}catch(\Exception $e){
-				return (object)["success"=>false,"message"=>$e->getMessage()];
 			}
 
+			return (object)["success"=>true,"message"=>"cart merge successfully","cart"=>$userCart->toArray()];
 
 		}else{
 			return (object)["success"=>false,"message"=>"login required to merge"];
@@ -1261,16 +1266,67 @@ jprd($product);
 		return response($slotArr,200);
 	}
 
-	public function removeproduct($proId,$type,Request $request){
-
-		$cartKey = $request->session()->get('deliverykey');
+	public function deleteProduct($cartKey,$proId,$type){		
 
 		$cart = Cart::find($cartKey);
 
-		$products = $cart->products;
-		$products[$proId][$type]=0;
+		$state = $type?'chilled':'nonchilled';
 
-		$products[$proId]['quantity'] = (int)$products[$proId]['chilled'] + (int)$products[$proId]['nonchilled'];
+		if(empty($cart)){
+
+			return response(["message"=>"cart not found"],400);
+
+		}
+
+		$products = $cart->products;
+		$product = $products[$proId];
+		
+
+		if(empty($product)){
+
+			return response(["message"=>"Invalid delete request","action"=>"refresh"],400);
+
+		}
+
+		$qtyRemaining = $product['remainingQty'];
+		$qtyChilled = $product['chilled']['quantity'];
+		$qtyNonChilled = $product['nonchilled']['quantity'];
+
+		if($type=="true"){
+
+			$qtyToRemove = $qtyRemaining - $qtyNonChilled;
+
+			if($qtyToRemove<1){
+
+				return response(["message"=>"Invalid delete request","action"=>"refresh"],400);
+
+			}
+
+			$qtyChilled-= $qtyToRemove;
+
+		}else{			
+
+			if($qtyRemaining>$qtyNonChilled){
+
+				$qtyToRemove = $qtyNonChilled;
+
+			}else{
+
+				$qtyToRemove = $qtyRemaining;
+
+			}
+
+			$qtyNonChilled-= $qtyToRemove;
+		}
+
+
+
+		$product['chilled']['quantity'] = $qtyChilled;
+		$product['nonchilled']['quantity'] = $qtyNonChilled;
+		$product['quantity'] = $qtyChilled + $qtyNonChilled;
+		$product['remainingQty']-= $qtyToRemove;
+		
+		$products[$proId] = $product;		
 
 			try {
 
@@ -1280,14 +1336,14 @@ jprd($product);
 
 					$cart->save();
 
-					return response(array("success"=>true,"message"=>"cart updated successfully","removeCode"=>200));
+					return response(["message"=>"cart updated successfully","removeCode"=>200,"product"=>$product,'change'=>$qtyToRemove],200);
 					//200 to know only chilled/nonchilled is removed
 
 				}else{
 
 					$cart->unset('products.'.$proId);
 
-					return response(array("success"=>true,"message"=>"cart updated successfully","removeCode"=>300));
+					return response(["message"=>"cart updated successfully","removeCode"=>300,'change'=>$qtyToRemove],200);
 					//300 to know complete product is removed
 
 				}
@@ -1301,8 +1357,8 @@ jprd($product);
 
 		return response(array("success"=>false,"message"=>"Something went wrong"));
 
-	}
-	
+	}	
+
 	public function deleteSale($cartKey,$saleId,Request $request){
 		
 		$cart = Cart::find($cartKey);
@@ -1452,13 +1508,16 @@ jprd($product);
 
 		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
 
-		if($cartKey == null){			
+		if($cartKey == null){
 			$cartKey = $request->get('merchant_data1');
 		}		
 
 		$cartObj = new Cart;
 
 		$cart = $cartObj->where("_id","=",$cartKey)->first();
+
+		$cart->setLoyaltyPointUsed();
+
 
 		if(empty($cart)){
 			if($request->isMethod('get'))
@@ -1469,7 +1528,7 @@ jprd($product);
 
 		$cartArr = $cart->toArray();
 
-		$this->setCartProductsList($cartArr);
+		$this->setCartProductsList($cartArr);		
 
 		$user = Auth::user('user');		
 
@@ -1482,7 +1541,8 @@ jprd($product);
 
 		}
 
-		$cartArr['user'] = new MongoId($user->_id);
+		//$cartArr['user'] = new MongoId($user->_id);
+		$cartArr['user'] = new MongoId("57c422d611f6a1450b8b456c");//for testing on postman		
 
 		$cartProductsArr = [];
 
@@ -1499,7 +1559,7 @@ jprd($product);
 									)
 								);
 
-////// Loyalty point calculation 
+////// Loyalty point Earned calculation
 
 		$loyaltyPoints = 0;
 		
@@ -1523,7 +1583,10 @@ jprd($product);
 
 		}
 
+		$cartArr["loyaltyPointEarned"] = $loyaltyPoints;
+
 //////
+
 		foreach($productsInCart as $key=>$product){
 
 			$cartArr['products'][$product["_id"]]['_id'] = new MongoId($product["_id"]);
@@ -1537,7 +1600,6 @@ jprd($product);
 
 		$cartArr['packages'] = $cartArr['packages'];
 
-	
 		try {
 
 			$order = Orders::create($cartArr);
@@ -1554,7 +1616,28 @@ jprd($product);
 
 			$order->save();
 
+			if($cart->loyaltyPointUsed>0){
+
+				$isUpdated = User::where('_id', $user->_id)->decrement('loyaltyPoints', $cart->loyaltyPointUsed);
+
+				$isUpdated = User::where('_id', $user->_id)
+									->push('loyalty', 
+											[
+												"type"=>"debit",
+												"points"=>$cart->loyaltyPointUsed,
+												"reason"=>[
+													"type"=>"order",
+													"key" => $reference,
+													"comment"=> "You have used this points by making a purchase on our website"
+												],
+												"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+											]
+										);
+
+			}
+
 			$isUpdated = User::where('_id', $user->_id)->increment('loyaltyPoints', $loyaltyPoints);
+
 			$isUpdated = User::where('_id', $user->_id)
 								->push('loyalty', 
 										[
@@ -1582,7 +1665,6 @@ jprd($product);
 				return redirect('/#/orderplaced/'.$order['_id']);
 			}
 
-
 			return response(array("success"=>true,"message"=>"order placed successfully","order"=>$order['_id']));
 
 		} catch(\Exception $e){
@@ -1594,10 +1676,12 @@ jprd($product);
 
 	private function setCartProductsList(&$cart){
 
+
 		$products = isset($cart['products'])?$cart['products']:[];
 		$packages = isset($cart['packages'])?$cart['packages']:[];
 		$promotions = isset($cart['promotions'])?$cart['promotions']:[];
-		//jprd($promotions);
+		$loyaltys = isset($cart['loyalty'])?$cart['loyalty']:[];
+
 		$proArr = [];
 		foreach($products as $proKey=>$pro){
 			$proArr[$proKey] = $pro["quantity"];
@@ -1636,17 +1720,24 @@ jprd($product);
 
 		}
 
+		
+		foreach($loyaltys as $lProKey=>$lPro){
+			$proArr[$lProKey] = $lPro["quantity"];
+		}
+
+
+
+
 		$oPro = [];
 		foreach($proArr as $proKey=>$quantity){
 			$oPro[] = ["_id"=>new mongoId($proKey),"quantity"=>$quantity];
 		}
 
-		$cart['productsLog'] = $oPro;
+		$cart['productsLog'] = $oPro;		
 
 	}
 
 	public function deploycart(Request $request,$cartKey){
-
 
 		$cart = Cart::find($cartKey);
 

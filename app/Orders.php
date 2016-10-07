@@ -33,11 +33,16 @@ class Orders extends Moloquent
 							'nonchilled',
 							'products',
 							'packages', 
+							'sales',
+							'loyalty',
+							'loyaltyCards',
 							'giftCards',
 							'user',
 							'total',
 							'payment',
 							'discount',
+							'loyaltyPointUsed',
+							'loyaltyPointEarned',
 							'reference',
 							'productsLog'
 						];

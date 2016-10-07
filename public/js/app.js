@@ -397,18 +397,6 @@ AlcoholDelivery.factory('ScrollPagination', function($http,ProductService) {
     this.busy = true;
     var _self = this;
 
-	// $http.get('loyaltystore',{
-
-	// 	params : {
-	// 		type : 1,
-	// 		skip:this.skip,
-	// 		limit:this.take,
-	// 		filter:this.filter,
-	// 		sortby:this.sortby
-	// 	}
-
- 	//  })
-
     ProductService.getProducts({
 
 		type : 1, // [1 for loyalty store]
@@ -546,6 +534,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 							},
 						},
+
 				})
 
 				.state('mainLayout.checkout.cart', {
@@ -559,8 +548,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								controller:"PromotionsController"
 							},
 						},
-						data: {step: 'cart'},
-						//controller:"CartController"
+						data: {step: 'cart'}						
 				})
 
 				.state('mainLayout.checkout.address', {
@@ -948,8 +936,8 @@ function ($q, $rootScope, $log, $location) {
 }]);
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "catPricing", "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll", "$timeout",
-			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll, $timeout) {
+AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "catPricing", "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll","$timeout",
+			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll,$timeout) {
 
 	angular.alcoholCart = alcoholCart;
 	angular.userservice = UserService;
@@ -1011,8 +999,6 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 		};
 		
 		$rootScope.setMeta(mdata);
-
-		
 
 	});
 
