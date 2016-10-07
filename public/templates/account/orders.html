@@ -14,7 +14,7 @@
 		<div class="col-sm-6">
 
 			<div class="-key cursor-pointer" ui-sref="accountLayout.order({orderid:order._id.$id})">Order: {{order.reference}}</div>
-			<div class="-timeslot">Delivered on: {{ order.timeslot.datekey | deliveryDateSlug}} {{order.timeslot.slotslug}}</div>
+			<div class="-timeslot">Delivered on: {{ order.created_at.sec | deliveryDateSlug}}</div>
 			<div class="-items">{{order.quantity}} Items</div>
 		</div>
 		<div class="col-sm-3">
@@ -27,7 +27,7 @@
 			<div class="-rating">
 				<div class="-rating-status">THANKS FOR RATING!</div>
 				<div class="-rating-value">
-					<rating ng-model="order.rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null" state-on="'glyphicon-heart'" state-off="'glyphicon-heart-empty'"></rating>
+					<span uib-rating ng-model="order.rate" ng-change="setRating(order)" max="5" enable-reset="false" state-on="'glyphicon-heart'" state-off="'glyphicon-heart-empty'"></span>
 				</div>
 			</div>
 		</div>

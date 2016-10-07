@@ -144,6 +144,13 @@
 							<span class="help-block" ng-bind="errors.metaDescription[0]"></span>
 						</div>
 					</div>
+					<div class="form-group" ng:class="{'has-error':errors.disclaimer[0]}">
+						<label class="col-md-2 control-label">Disclaimer:</label>
+						<div class="col-md-10">
+							<input type="text" class="form-control maxlength-handler" ng-model="giftcategory.disclaimer" placeholder="Note : Recipient will receive email/SMS immediately after checkout is completed.">							
+							<span class="help-block" ng-bind="errors.disclaimer[0]"></span>
+						</div>
+					</div>
 					<div class="form-group" ng:class="{'has-error':errors.status[0]}">
 						<label class="col-md-2 control-label">Status: <span class="required">
 						* </span>

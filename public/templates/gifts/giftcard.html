@@ -68,12 +68,12 @@
 
 								</md-checkbox>
 
-
 								<div ng-if="gift.recipient.sms == 1" class="form-group" ng:class="{'has-error':errors['recipient.mobile'][0]}" >
-
-									<input type="text" placeholder="Phone number" ng-model="gift.recipient.mobile" class="alcohalrestertextbox form-control">
+									<div class="input-group">
+										<div class="mobileinput input-group-addon">+65</div>
+										<input type="text" placeholder="Phone number" ng-model="gift.recipient.mobile" class="form-control">
+									</div>	
 									<span class="help-block" ng-bind="errors['recipient.mobile'][0]"></span>
-
 								</div>
 
 							</div>
@@ -93,8 +93,8 @@
 								<a class="btn product_addcart addcart-detail" ng-if="processing"><i class="fa fa-spinner fa-spin"></i> {{btnText}}</a>	
 
 							</div>
-							<div class="btm-text-giftnot">Note: This item is non-returnable.</div>
 						</div>
+						<div class="btm-text-giftnot">{{gift.disclaimer}}</div>
 					</div>
 					
 		</div>	    </div>

@@ -219,6 +219,7 @@ Route::resource('wishlist', 'WishlistController');
 Route::get('/order/summary/{id}','OrderController@getSummary');
 Route::get('/order/orders','OrderController@getOrders');
 Route::get('/order/{order}','OrderController@show');
+Route::post('/order/{id}','OrderController@update');
 
 Route::resource('address', 'AddressController');
 

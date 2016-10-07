@@ -27,6 +27,7 @@ class GiftCategory extends Eloquent
         'metaTitle',
         'metaKeywords',
         'metaDescription',
+        'disclaimer',
         'status'        
     ];    
 

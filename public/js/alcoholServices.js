@@ -488,6 +488,20 @@ AlcoholDelivery.factory('GiftingProduct',['$filter',function($filter){
 
 AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct','CreditCertificate',function($http,$q,AlcoholProduct,CreditCertificate){
 
+	this.prepareProductObjs = function(data, type) {
+		if(!type) type = 0;
+
+		var products = [];
+
+		angular.forEach(data, function(product,key) {
+			var newProduct = new AlcoholProduct(0, product);
+			// console.log(newProduct, product)
+			products.push(newProduct);
+		});
+
+		return products;
+	}
+
 	this.getProducts = function(params){
 
 		var defer = $q.defer();

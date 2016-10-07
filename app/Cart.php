@@ -406,24 +406,10 @@ class Cart extends Moloquent
 
 		$saleProducts = [];
 
-		foreach ($this->sales as $sale) {
+		if($this->sales)
+			foreach ($this->sales as $sale) {
 
-			foreach ($sale['products'] as $salePro) {
-				
-				if(isset($saleProducts[$salePro['_id']])){
-
-					$saleProducts[$salePro['_id']]+= (int)$salePro['quantity'];
-
-				}else{
-
-					$saleProducts[$salePro['_id']] = (int)$salePro['quantity'];
-
-				}
-
-			}
-
-			if(isset($sale['action'])){
-				foreach ($sale['action'] as $salePro) {
+				foreach ($sale['products'] as $salePro) {
 					
 					if(isset($saleProducts[$salePro['_id']])){
 
@@ -436,9 +422,24 @@ class Cart extends Moloquent
 					}
 
 				}
-			}
 
-		}
+				if(isset($sale['action'])){
+					foreach ($sale['action'] as $salePro) {
+						
+						if(isset($saleProducts[$salePro['_id']])){
+
+							$saleProducts[$salePro['_id']]+= (int)$salePro['quantity'];
+
+						}else{
+
+							$saleProducts[$salePro['_id']] = (int)$salePro['quantity'];
+
+						}
+
+					}
+				}
+
+			}
 
 		$cartProducts = $this->products;
 

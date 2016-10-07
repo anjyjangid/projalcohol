@@ -38,7 +38,7 @@
             <div class="signuplogin">
               <ul class="menuulpadding">
                 <li ng-hide="user.email"> 
-                  <a class="pointer" ng-click="loginOpen($event);"> <span>Login</span> </a> 
+                  <a id="loginlink" class="pointer" ng-click="loginOpen($event);"> <span>Login</span> </a> 
                 </li>
                 <li id="usermenuli" ng:class="{'hideOp':hideOp}" class="dropdown" ng-show="user.email" ng-mouseover="hideOp=false" ng-mouseleave="hideOp=true"> <a href="javascript:;" class="username dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" > Hola, {{user.email}} </a>
                   <ul ng-click="hideOp=true" class="dropdown-menu profil-dropdown">

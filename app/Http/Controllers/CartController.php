@@ -900,29 +900,33 @@ class CartController extends Controller
 
 			$sessionCart = Cart::find($cartkey);
 
-			if(!empty($userCart)){
+			// if(!empty($userCart)){
 
-				$sessionCart->products = array_merge($sessionCart->products,$userCart->products);
+				// $sessionCart->products = array_merge($sessionCart->products,$userCart->products);
 
-			}
+			// }
 
-			$sessionCart->user = new MongoId($user->_id);
+			if(!empty($sessionCart->products)){
+				$sessionCart->user = new MongoId($user->_id);
 
-			try{
+				try{
 
-				$sessionCart->save();
+					$sessionCart->save();
 
-				if(!empty($userCart)){
+					if(!empty($userCart)){
 
-					$userCart->delete();
+						$userCart->delete();
 
+					}
+					return (object)["success"=>true,"message"=>"cart merge successfully","cart"=>$sessionCart->toArray()];
+
+				}catch(\Exception $e){
+					return (object)["success"=>false,"message"=>$e->getMessage()];
 				}
-				return (object)["success"=>true,"message"=>"cart merge successfully","cart"=>$sessionCart->toArray()];
 
-			}catch(\Exception $e){
-				return (object)["success"=>false,"message"=>$e->getMessage()];
 			}
 
+			return (object)["success"=>true,"message"=>"cart merge successfully","cart"=>$userCart->toArray()];
 
 		}else{
 			return (object)["success"=>false,"message"=>"login required to merge"];
@@ -2011,8 +2015,6 @@ jprd($product);
 				$proPutValues = $params['products'][$product['_id']];
 
 				$updateProData = array(
-
-							"maxQuantity"=>$product['maxQuantity'],
 							"chilled"=>array(
 								"quantity"=>0,
 								"status"=>"chilled",

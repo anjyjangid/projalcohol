@@ -1,4 +1,5 @@
-AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$q', 'wishlistProduct','UserService','$filter', function ($rootScope, $window, $http, $q, wishlistProduct, UserService, $filter){
+AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$q', 'wishlistProduct','UserService','$filter', 'ProductService'
+, function ($rootScope, $window, $http, $q, wishlistProduct, UserService, $filter, ProductService){
 
 		this.init = function(){
 
@@ -19,6 +20,7 @@ AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$
 
 			}).success(function(response) {
 
+				// response.list = ProductService.prepareProductObjs(response.list);
 				
 				_self.$restore(response.list);
 				d.resolve(response.list);
