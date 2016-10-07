@@ -121,7 +121,7 @@ class Cart extends Moloquent
 			],
 			"nonchilled" => false,
 			"status" => 0,
-			"user" => null
+			"user" => null			
 		];
 
 
@@ -971,5 +971,34 @@ class Cart extends Moloquent
 	public function confirmOrder($cartArr){		
 
 	}	
+
+
+	public function setLoyaltyPointEarned(){
+
+		// due
+
+	}
+
+	public function setLoyaltyPointUsed(){
+
+		$loyaltyProducts = isset($this->loyalty)?$this->loyalty:[];
+		$loyaltyCards = isset($this->loyaltyCards)?$this->loyaltyCards:[];
+		$totalPoints = 0;
+
+		foreach ($loyaltyProducts as $key => $product) {
+			$totalPoints = $totalPoints + (((float)$product['points']) * ((int)$product['quantity']));
+		}
+
+		foreach ($loyaltyCards as $card) {
+			$totalPoints = $totalPoints + (((float)$card['points']) * ((int)$card['quantity']));
+		}
+
+		$this->__set("loyaltyPointUsed",$totalPoints);
+
+		return $totalPoints;
+
+	}
+
+
 
 }

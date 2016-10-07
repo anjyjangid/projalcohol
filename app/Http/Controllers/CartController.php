@@ -1456,13 +1456,16 @@ jprd($product);
 
 		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
 
-		if($cartKey == null){			
+		if($cartKey == null){
 			$cartKey = $request->get('merchant_data1');
 		}		
 
 		$cartObj = new Cart;
 
 		$cart = $cartObj->where("_id","=",$cartKey)->first();
+
+		$cart->setLoyaltyPointUsed();
+
 
 		if(empty($cart)){
 			if($request->isMethod('get'))
@@ -1473,7 +1476,7 @@ jprd($product);
 
 		$cartArr = $cart->toArray();
 
-		$this->setCartProductsList($cartArr);
+		$this->setCartProductsList($cartArr);		
 
 		$user = Auth::user('user');		
 
@@ -1486,7 +1489,8 @@ jprd($product);
 
 		}
 
-		$cartArr['user'] = new MongoId($user->_id);
+		//$cartArr['user'] = new MongoId($user->_id);
+		$cartArr['user'] = new MongoId("57c422d611f6a1450b8b456c");//for testing on postman		
 
 		$cartProductsArr = [];
 
@@ -1503,7 +1507,7 @@ jprd($product);
 									)
 								);
 
-////// Loyalty point calculation 
+////// Loyalty point Earned calculation
 
 		$loyaltyPoints = 0;
 		
@@ -1527,7 +1531,10 @@ jprd($product);
 
 		}
 
+		$cartArr["loyaltyPointEarned"] = $loyaltyPoints;
+
 //////
+
 		foreach($productsInCart as $key=>$product){
 
 			$cartArr['products'][$product["_id"]]['_id'] = new MongoId($product["_id"]);
@@ -1541,7 +1548,6 @@ jprd($product);
 
 		$cartArr['packages'] = $cartArr['packages'];
 
-	
 		try {
 
 			$order = Orders::create($cartArr);
@@ -1558,7 +1564,28 @@ jprd($product);
 
 			$order->save();
 
+			if($cart->loyaltyPointUsed>0){
+
+				$isUpdated = User::where('_id', $user->_id)->decrement('loyaltyPoints', $cart->loyaltyPointUsed);
+
+				$isUpdated = User::where('_id', $user->_id)
+									->push('loyalty', 
+											[
+												"type"=>"debit",
+												"points"=>$cart->loyaltyPointUsed,
+												"reason"=>[
+													"type"=>"order",
+													"key" => $reference,
+													"comment"=> "You have used this points by making a purchase on our website"
+												],
+												"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+											]
+										);
+
+			}
+
 			$isUpdated = User::where('_id', $user->_id)->increment('loyaltyPoints', $loyaltyPoints);
+
 			$isUpdated = User::where('_id', $user->_id)
 								->push('loyalty', 
 										[
@@ -1586,7 +1613,6 @@ jprd($product);
 				return redirect('/#/orderplaced/'.$order['_id']);
 			}
 
-
 			return response(array("success"=>true,"message"=>"order placed successfully","order"=>$order['_id']));
 
 		} catch(\Exception $e){
@@ -1598,10 +1624,12 @@ jprd($product);
 
 	private function setCartProductsList(&$cart){
 
+
 		$products = isset($cart['products'])?$cart['products']:[];
 		$packages = isset($cart['packages'])?$cart['packages']:[];
 		$promotions = isset($cart['promotions'])?$cart['promotions']:[];
-		//jprd($promotions);
+		$loyaltys = isset($cart['loyalty'])?$cart['loyalty']:[];
+
 		$proArr = [];
 		foreach($products as $proKey=>$pro){
 			$proArr[$proKey] = $pro["quantity"];
@@ -1640,17 +1668,24 @@ jprd($product);
 
 		}
 
+		
+		foreach($loyaltys as $lProKey=>$lPro){
+			$proArr[$lProKey] = $lPro["quantity"];
+		}
+
+
+
+
 		$oPro = [];
 		foreach($proArr as $proKey=>$quantity){
 			$oPro[] = ["_id"=>new mongoId($proKey),"quantity"=>$quantity];
 		}
 
-		$cart['productsLog'] = $oPro;
+		$cart['productsLog'] = $oPro;		
 
 	}
 
 	public function deploycart(Request $request,$cartKey){
-
 
 		$cart = Cart::find($cartKey);
 

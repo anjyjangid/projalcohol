@@ -1,8 +1,8 @@
 AlcoholDelivery.service('alcoholCart', [
-			'$rootScope', '$window', '$http', '$q', '$mdToast', '$filter', 'alcoholCartItem', 'alcoholCartLoyaltyItem', 
+			'$log','$rootScope', '$window', '$http', '$q', '$mdToast', '$filter', 'alcoholCartItem', 'alcoholCartLoyaltyItem', 
 			'alcoholCartPackage','promotionsService','alcoholCartPromotion', 'alcoholCartGiftCard', 'alcoholCartGift', 
 			'alcoholCartSale', 'alcoholCartCreditCard',
-	function ($rootScope, $window, $http, $q, $mdToast, $filter, alcoholCartItem, alcoholCartLoyaltyItem, 
+	function ($log, $rootScope, $window, $http, $q, $mdToast, $filter, alcoholCartItem, alcoholCartLoyaltyItem, 
 			alcoholCartPackage, promotionsService, alcoholCartPromotion, alcoholCartGiftCard, alcoholCartGift, 
 			alcoholCartSale, alcoholCartCreditCard) {
 
@@ -18,7 +18,7 @@ AlcoholDelivery.service('alcoholCart', [
 			nonchilled : false,
 			delivery : {
 
-				type : null,
+				type : 1,
 				charges : null,
 				address : null,
 				contact : null,
@@ -49,12 +49,13 @@ AlcoholDelivery.service('alcoholCart', [
 				}
 			},
 			timeslot : {
-					datekey:false,
-					slotkey:false,
-					slug:"",
-					slotslug:""
-				},
-		};
+				datekey:false,
+				slotkey:false,
+				slug:"",
+				slotslug:""
+			}
+		};		
+
 	};
 
 	this.addItem = function (id, quantity, serveAs) {
@@ -1891,9 +1892,80 @@ AlcoholDelivery.service('alcoholCart', [
 
 		}
 
-		this.validate = function(step){
-			return false;
+		this.stepsName = [
+			"cart",
+			"address",
+			"delivery",
+			"payment",
+			"review"
+		]
+		
+
+		this.setCurrentStep = function(step){			
+
+			var valid = false;
+			angular.forEach(this.stepsName,function(value){
+				if(value===step){
+					valid = true;
+				}
+			})
+
+			if(!valid){
+
+				$log.error("Not a valid cart step");
+				return false;
+			}
+			
+			return this.step = step;
+
 		}
+
+		this.validate = function(){
+
+			var _self = this;
+			var cart = this.getCart();
+			var stepName = this.step;
+						
+			var cartSteps = angular.copy(this.stepsName)
+			
+			var stepValidating = "";
+
+			while(stepValidating !== stepName){
+
+				stepValidating = cartSteps.shift();
+				// isValid = _self[stepValidating+'Validate']();
+
+			}
+
+			return false;
+		}		
+
+		this.cartValidate = function(){
+
+			return false;
+			// if(!cart.delivery.type){
+
+			// 	if(step){}
+
+			// }
+
+		}
+		this.addressValidate = function(){return false;}
+		this.deliveryValidate = function(){return false;}
+		this.paymentValidate = function(){return false;}
+		this.reviewValidate = function(){return false;}
+
+
+
+
+		this.stepCheckout = function(step){
+
+			$anchorScroll();
+
+		}
+
+
+
 
 	}]);
 
