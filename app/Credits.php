@@ -48,7 +48,7 @@ class Credits extends Model
 
 		return [
 					"count" => $count['ok'],
-					"credits" => $credits['creditsSummary']
+					"credits" => @$credits['creditsSummary']
 				];
 
 	}
