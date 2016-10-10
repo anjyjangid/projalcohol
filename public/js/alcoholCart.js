@@ -392,7 +392,7 @@ AlcoholDelivery.service('alcoholCart', [
 		var defer = $q.defer();
 		var _self = this;
 
-		$http.post('cart/repeatlast')
+		$http.post('cart/repeatlast', {cartKey: _self.getCartKey()})
 				.success(function(response){
 
 					if(response.success){					
@@ -964,16 +964,13 @@ AlcoholDelivery.service('alcoholCart', [
 		this.setCartTotal = function(){
 
 			var cartTotal = 0;
-console.log("--------------------------------------");			
 			cartTotal+= parseFloat(this.getSubTotal());
 
 			cartTotal+= parseFloat(this.getAllServicesCharges());
 
 			cartTotal+= parseFloat(this.getDeliveryCharges());
-console.log(this.getDeliveryCharges());
 			cartTotal-= parseFloat(this.getDiscount());
 
-console.log("--------------------------------------");
 			return parseFloat(cartTotal).toFixed(2);
 
 		};

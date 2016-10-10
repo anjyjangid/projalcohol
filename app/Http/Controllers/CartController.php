@@ -2039,7 +2039,7 @@ jprd($product);
 
 		$params = Orders::where("user",new mongoId($userLogged->_id))->orderBy("created_at","desc")->first(["products","packages","updated_at","reference"]);			
 
-		$cartKey = $request->session()->get('deliverykey');
+		$cartKey = $request->get('cartKey');
 		$cart = Cart::find($cartKey);
 		$cartProducts = $cart->products;
 
