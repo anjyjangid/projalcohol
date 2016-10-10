@@ -343,7 +343,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 		var defer = $q.defer();
 		var _self = this;
-		$http.put('cart/bulk',products)
+		$http.put('cart/bulk',angular.extend({ cartKey: _self.getCartKey() }, products))
 				.success(function(response){
 
 					if(response.success){					

@@ -1919,7 +1919,7 @@ jprd($product);
 	public function putBulk(Request $request){
 		
 		$params = $request->all();
-		$cartKey = $request->session()->get('deliverykey');
+		$cartKey = $params['cartKey'];//$request->session()->get('deliverykey');
 
 		$cart = Cart::find($cartKey);
 
@@ -1958,7 +1958,7 @@ jprd($product);
 
 				$updateProData = array(
 
-							"maxQuantity"=>$product['maxQuantity'],
+							// "maxQuantity"=>$product['maxQuantity'],
 							"chilled"=>array(
 								"quantity"=>0,
 								"status"=>"chilled",
