@@ -126,7 +126,9 @@ class CategoryController extends Controller
 		$category->slug = $inputs['slug'];
 		$category->isMenu = (int)$inputs['isMenu'];
 		$category->cat_status = 0;
-		$category->cat_thumb = $fileUpload->original['thumb'];
+		
+		if(isset($fileUpload->original['lthumb']))
+			$category->cat_thumb = $fileUpload->original['thumb'];
 		// $category->cat_lthumb = isset($fileUpload->original['lthumb'])?$fileUpload->original['lthumb']:'';
 
 		$category->metaTitle = @$inputs['metaTitle'];
