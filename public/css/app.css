@@ -1,3 +1,9 @@
+.btn-purple, .btn-purple:focus, .btn-purple:hover, .btn-purple:active, .btn-purple:active:focus {
+	background: #AA00FF;
+	border-color: #AA00FF;
+	color: #fff;
+}
+
 .full-width{
 	width: 100%;
 }
