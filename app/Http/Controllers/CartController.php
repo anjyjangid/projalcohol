@@ -1401,9 +1401,9 @@ jprd($product);
 
 	}
 
-	public function deleteGift($giftUId,Request $request){
+	public function deleteGift($giftUId,$cartKey){
 
-		$cartKey = $this->deliverykey;
+		// $cartKey = $this->deliverykey;
 
 		$cart = Cart::find($cartKey);
 
@@ -1594,7 +1594,7 @@ jprd($product);
 		$cartArr["loyaltyPointEarned"] = $loyaltyPoints;
 
 //////
-
+		if($productsInCart)
 		foreach($productsInCart as $key=>$product){
 
 			$cartArr['products'][$product["_id"]]['_id'] = new MongoId($product["_id"]);
@@ -2144,7 +2144,7 @@ jprd($product);
 		$gift = $giftModel->getGift($inputs['id']);
 
 		// Fetch Cart
-		$cartKey = $this->deliverykey;
+		$cartKey = $inputs['cartKey'];//$this->deliverykey;
 		
 		$cart = Cart::find($cartKey);
 
@@ -2153,6 +2153,7 @@ jprd($product);
 		$totalProducts = 0;		
 		$cartProducts = $cart->products;
 
+		if($cart->loyalty)
 		foreach($cart->loyalty as $key=>$loyalty){
 
 			if(isset($cartProducts[$key])){
@@ -2168,6 +2169,7 @@ jprd($product);
 			}
 		}
 
+		if($cart->promotions)
 		foreach($cart->promotions as $promotion){
 			$key = $promotion['productId'];
 			if(isset($cartProducts[$key])){
@@ -2187,8 +2189,8 @@ jprd($product);
 		foreach ($giftProducts as &$giftProduct) {						
 
 			$proId = $giftProduct['_id'];
-			$state = $giftProduct['state'];
-			$giftProduct['chilled'] = $state=='chilled'?true:false;
+			// $state = $giftProduct['state'];
+			$giftProduct['chilled'] = true;
 			$quantity = (int)$giftProduct['quantity'];
 
 			// Condition to check product is available in cart or not
@@ -2225,9 +2227,9 @@ jprd($product);
 
 		}			
 		
-		if($totalProducts<=1){
+		if($totalProducts<1){
 
-			$response['message'] = 'Please attached products';
+			$response['message'] = 'Please attach products';
 			return response($response,422);
 
 		}

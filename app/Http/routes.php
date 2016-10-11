@@ -193,7 +193,7 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::put('sale/chilled/{cartKey}','CartController@putSaleChilledStatus');
 
-	Route::delete('gift/{key}','CartController@deleteGift');
+	Route::delete('gift/{key}/{cartKey}','CartController@deleteGift');
 
 	Route::post('gift','CartController@postGift');
 	

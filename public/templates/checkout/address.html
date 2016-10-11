@@ -8,8 +8,12 @@
 			
 			<div class="alcohlinputext2" ng:class="{'has-error':errors.contact[0]}">
 
-				<label>Contact Number<span>*</span></label>			
-				<input type="text" class="alcohalpopuptext2" ng-model="delivery.contact" ng-minlength="8" ng-maxlength="13" only-digits>
+				<label>Contact Number<span>*</span></label>
+
+				<div class="input-group">
+					<div class="mobileinput input-group-addon">+65</div>
+					<input type="text" class="form-control alcohalpopuptext2" ng-model="delivery.contact" ng-minlength="8" ng-maxlength="13" only-digits>
+				</div>
 				<span class="help-block" ng-bind="errors.contact"></span>
 
 			</div>

@@ -167,7 +167,7 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 
 			isProExist = _self.getProductById(product._id);
 
-			if(isProExist === false){
+			if(isProExist === false && product.quantity>0){
 
 				var newItem = new GiftingProduct(
 												product._id,
@@ -235,7 +235,7 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 		});
 
 
-		return this.$products;
+		return this.$products; 
 	}
 
 	this.getProductById = function (id){
@@ -295,7 +295,7 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 		giftData['type'] = 'giftpackaging';
 		giftData['products'] = this.getGiftAttachedProduct();
 
-		$http.post("/cart/gift",giftData).then(
+		$http.post("/cart/gift",angular.extend({ cartKey: alcoholCart.getCartKey() }, giftData)).then(
 
 			function(successRes){
 

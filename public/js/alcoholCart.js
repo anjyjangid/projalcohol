@@ -1320,7 +1320,7 @@ AlcoholDelivery.service('alcoholCart', [
 			}else{
 
 				smoke.detail = detail;
-
+				$rootScope.$broadcast('alcoholCart:updated',{msg:"Smoke added to cart"});
 			}
 
 			this.deployCart();
@@ -1331,6 +1331,9 @@ AlcoholDelivery.service('alcoholCart', [
 
 			this.$cart.service.smoke.detail = "";
 
+			$rootScope.$broadcast('alcoholCart:updated',{msg:"Smoke removed from cart"});
+
+			this.deployCart();
 		}
 
 		this.empty = function () {
@@ -1576,6 +1579,7 @@ AlcoholDelivery.service('alcoholCart', [
 		this.removeGift = function (uid,fromServerSide) {
 
 			var cart = this.getCart();
+			var _self = this;
 			
 			var d = $q.defer();
 
@@ -1585,7 +1589,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 					if(typeof fromServerSide !== 'undefined' && fromServerSide){
 
-						$http.delete("cart/gift/"+uid).then(
+						$http.delete("cart/gift/"+uid+"/"+_self.getCartKey()).then(
 
 							function(successRes){
 								
