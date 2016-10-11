@@ -1905,6 +1905,15 @@ AlcoholDelivery.controller('RepeatOrderController',[
 
 	}
 
+	$scope.$watch('lastorder.products', function() {
+		var count = 0;
+		angular.forEach($scope.lastorder.products, function(product) {
+			if(product.selected)
+				count++;
+		});
+		$scope.selectedCount = count;
+	}, true);
+
 	$scope.addSelected = function(){
 
 		var selected = {

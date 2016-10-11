@@ -1007,3 +1007,33 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
     padding: 5px 10px;
     color: #333;
 }
+
+ .alcohalfooter_repeatorderbtn-rep {
+    background: #aa00ff;
+    border: medium none;
+    border-radius: 5px;
+    color: #fff;
+    float: right;
+    font-size: 11px;
+    font-weight: 500;
+    margin: 0;
+    padding: 5px 20px;
+    text-transform: uppercase;
+}
+
+.alcohalfooter_repeatorderbtn-add{
+	background: #cdcdcd;
+    border: medium none;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    margin: 0;
+    text-transform: uppercase;
+    color: #8f8f8f;
+    padding: 5px 15px;
+}
+
+.alcohalfooter_repeatorderbtn-add.active{
+	background: #aa00ff;
+    color: #fff;
+}
