@@ -1328,13 +1328,13 @@ ui-sref {
 	margin-top: 41px;
 }
 .alcohal_hisryorderboxcvr1 {
-	float: left;
+	display: inline-block;
 	border: 1px solid #d7d7d7;
 	padding: 10px;
 	border-radius: 5px;
 	margin-bottom: 18px;
 	width: 236px;
-	margin-right: 19px;
+	margin-right: 15px;
 	cursor: pointer;
 }
 .alcohal_hisryorderordertxt {
@@ -5193,9 +5193,9 @@ md-dialog .md-actions, md-dialog md-dialog-actions {
 .md-dialog-content.alcohaladdadrebody.alcohal_reapeatorederbody {
 	padding-top: 10px;
 }
-.alcohal_hisryorderboxcvr1:nth-child(3n+3) {
+/*.alcohal_hisryorderboxcvr1:nth-child(3n+3) {
 	margin-right: 0;
-}
+}*/
 .btn.product_addcart.addcart-detail.top-set-cart {
 	padding-top: 7px;
 }

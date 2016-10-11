@@ -21,6 +21,12 @@
 
 			<div class="prddetailsubexttitle">{{product.shortDescription}}</div>
 			<div class="prddetailnormaltext">{{product.description}}</div>
+			<div class="prddetailnormaltext">
+				<button class="btn btn-default btn-purple" ng-click="isInwishList?myWish():addToWishlist(0); $event.stopPropagation();">
+					<img src="images/add-wish-icon.png" /> 
+					<span ng-bind="isInwishList?'Added to Wishlist':'Add to Wishlist'"></span>
+				</button>
+			</div>
 			<div class="prddetailnormaltext nametag" ng-if="product.nameDetailSale && !product.saleImage">{{product.nameDetailSale}}</div>
 			<div class="prddetailnormaltext" ng-if="product.saleImage">
 				<img style="width: 100px;" src="sale/i/{{product.saleImage}}">
@@ -93,17 +99,27 @@
 			</div>
 			<div class="productslide_addbutton">
 				<div class="cartbtn" ng-if="product.quantity || product.outOfStockType == 2">
-					
+
 					<div class="addcart only-button" ng-click="addtocart()" ng-if="!product.isInCart"><span></span>add to cart</div>
 					<div class="addcart only-button" ng-click="addtocart()" ng-if="product.isInCart"><span></span>Update cart</div>
 
-				</div>				
+				</div>
 				<div class="row">			
 					<div class="col-md-4">
 						<out-of-stock product="product" ng-if="product.quantity<1 && product.outOfStockType == 1"></out-of-stock>
 					</div>
 				</div>
-			</div>			
+			</div>
+
+			<div class="salediv pull-left full-width m-top-15">
+				<md-checkbox ng-checked="saleExists()" ng-click="addToWishlist(1)" aria-label="leaveatdoor-checkbox">
+			    	Tell me when it's on sale
+			    </md-checkbox>
+				<md-tooltip md-direction="bottom" class="m-bottom-5">
+		        	Add this item to my Wish List and we will notify you when it goes on sale
+		        </md-tooltip>
+		    </div>
+
 	</div>
 </div>
 

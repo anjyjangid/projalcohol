@@ -14,13 +14,12 @@
 			<div class="add-bulk-wishlist-icon">
 
 				<div class="add-bulk-iner-widthset">
-					<div class="add-icon-main"> 
+					<div class="add-icon-main" ng-click="isInwishList?myWish():addToWishlist(0); $event.stopPropagation();">
 
 						<div class="add-wishlist-icondiv"><img src="images/add-wish-icon.png" /></div>
 
 						<div class="wishlist_discount">
-							<div class="wishlist" ng-if="!isInwishList" ng-click="addToWishlist(0); $event.stopPropagation();">Add to Wishlist</div>
-							<div class="wishlist" ng-click="myWish(); $event.stopPropagation();" ng-if="isInwishList">Added to Wishlist</div>							
+							<div class="wishlist" ng-bind="isInwishList?'Added to Wishlist':'Add to Wishlist'"></div>
 						</div>
 
 					</div>

@@ -20,9 +20,10 @@ AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$
 
 			}).success(function(response) {
 
-				// response.list = ProductService.prepareProductObjs(response.list);
-				
+				response.list = ProductService.prepareProductObjs(response.list);
+
 				_self.$restore(response.list);
+
 				d.resolve(response.list);
 
 			})
@@ -192,9 +193,14 @@ AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$
 
 			var _self = this;
 
+			_self.$wishlist = [];
+
 			angular.forEach(products, function (product,key) {
 
 				var newProduct = new wishlistProduct(product._id, product);
+				
+				angular.extend(newProduct,product);
+
 				_self.$wishlist.push(newProduct);
 
 			});
@@ -213,14 +219,19 @@ AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$
 AlcoholDelivery.factory('wishlistProduct', ['$rootScope', '$log', function ($rootScope, $log){
 
 		var product = function (id, data) {
+			
+			this.setId(id);			
 
-			this.setId(id);
-			this.setPrice(data);
 			this.setName(data.name);
 			this.setAddedSlug(data.wishlist.added_slug);
 			this.setNotify(data.wishlist.notify);
-			this.setAvailability(data.quantity);
-			this.setOriginal(data);
+			// this.setAvailability(data.quantity);
+			// this.setOriginal(data);
+
+
+			//--C--// product service add to cart function assign to current object //-C-//
+			this.addToCart = data.addToCart;
+			this.hrefDetail = data.hrefDetail;
 
 		};
 

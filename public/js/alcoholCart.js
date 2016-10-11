@@ -343,7 +343,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 		var defer = $q.defer();
 		var _self = this;
-		$http.put('cart/bulk',products)
+		$http.put('cart/bulk',angular.extend({ cartKey: _self.getCartKey() }, products))
 				.success(function(response){
 
 					if(response.success){					
@@ -392,7 +392,7 @@ AlcoholDelivery.service('alcoholCart', [
 		var defer = $q.defer();
 		var _self = this;
 
-		$http.post('cart/repeatlast')
+		$http.post('cart/repeatlast', {cartKey: _self.getCartKey()})
 				.success(function(response){
 
 					if(response.success){					
@@ -964,16 +964,15 @@ AlcoholDelivery.service('alcoholCart', [
 		this.setCartTotal = function(){
 
 			var cartTotal = 0;
-console.log("--------------------------------------");			
+
 			cartTotal+= parseFloat(this.getSubTotal());
 
 			cartTotal+= parseFloat(this.getAllServicesCharges());
 
 			cartTotal+= parseFloat(this.getDeliveryCharges());
-console.log(this.getDeliveryCharges());
+
 			cartTotal-= parseFloat(this.getDiscount());
 
-console.log("--------------------------------------");
 			return parseFloat(cartTotal).toFixed(2);
 
 		};
@@ -1323,7 +1322,7 @@ console.log("--------------------------------------");
 			}else{
 
 				smoke.detail = detail;
-
+				$rootScope.$broadcast('alcoholCart:updated',{msg:"Smoke added to cart"});
 			}
 
 			this.deployCart();
@@ -1334,6 +1333,9 @@ console.log("--------------------------------------");
 
 			this.$cart.service.smoke.detail = "";
 
+			$rootScope.$broadcast('alcoholCart:updated',{msg:"Smoke removed from cart"});
+
+			this.deployCart();
 		}
 
 		this.empty = function () {
@@ -1579,6 +1581,7 @@ console.log("--------------------------------------");
 		this.removeGift = function (uid,fromServerSide) {
 
 			var cart = this.getCart();
+			var _self = this;
 			
 			var d = $q.defer();
 
@@ -1588,7 +1591,7 @@ console.log("--------------------------------------");
 
 					if(typeof fromServerSide !== 'undefined' && fromServerSide){
 
-						$http.delete("cart/gift/"+uid).then(
+						$http.delete("cart/gift/"+uid+"/"+_self.getCartKey()).then(
 
 							function(successRes){
 								
@@ -2998,7 +3001,7 @@ AlcoholDelivery.service('store', ['$rootScope','$window','$http','alcoholCart','
 		return {
 
 			init : function (){
-
+				
 				var d = $q.defer();
 				if(typeof(Storage) !== "undefined"){
 
@@ -3014,7 +3017,7 @@ AlcoholDelivery.service('store', ['$rootScope','$window','$http','alcoholCart','
 
 							$http.get("cart/"+deliverykey).success(function(response){
 
-								alcoholCart.$restore(response.cart);
+								alcoholCart.$restore(response.cart);								
 								d.resolve("every thing all right");
 
 							})

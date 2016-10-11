@@ -255,6 +255,10 @@ AlcoholDelivery.directive('sideBar', function() {
 				if(typeof $(element).data('owlCarousel') === "undefined"){
 					$timeout(function(){
 						scope[ngModel] = $(element).owlCarousel(defaultOptions);
+						scope[ngModel].visibleItems = $(scope[ngModel]).data('owlCarousel').visibleItems.length;
+						
+
+						//visibleItems
 					});
 				}
             };
