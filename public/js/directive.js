@@ -296,14 +296,22 @@ AlcoholDelivery.directive('sideBar', function() {
 
 .directive("tscroll", function ($window) {
     return function(scope, element, attrs) {
+
+    	var svgMorpheus = new SVGMorpheus('#icon', {rotation: "none"});
+		var icons = ['question', 'answer'];
+
         angular.element($window).bind("scroll", function() {
+
              if(element.hasClass('fixh')) return;
 
              if (this.pageYOffset >= 1) {
                 element.addClass('navbar-shrink');
+                 svgMorpheus.to(icons[0]);
              } else if(this.pageYOffset == 0 && angular.element('md-backdrop').length == 0 && angular.element('.md-scroll-mask').length == 0) {
                  element.removeClass('navbar-shrink');
+                 svgMorpheus.to(icons[1]);
              } 
+			
              
         });
     };
