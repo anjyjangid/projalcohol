@@ -16,19 +16,25 @@
 				
 				<td>					
 					<div class="orhistry2_td2procdtcvr">																		
-						<span><img err-pro-src="" ng-src="products/i/200/{{product._original.imageFiles[0].source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" /></span>
+						<span><img err-pro-src="" ng-src="products/i/200/{{product.imageFiles | getProductThumb}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive img-responsive-h" /></span>
 						<div class="checkouter-td-right-text">
-							<div class="orhistry2_td2proctext1">{{product._name}}</div>
-							<div class="orhistry2_td2proctext2">{{product._original.shortDescription}}</div> 
-							<div class="orhistry2_td2proctext1 wishgaptop">{{settings.general.currency}} {{product._price}}</div>
+							<div class="orhistry2_td2proctext1" ng-click="product.hrefDetail()">{{product._name}}</div>
+							<div class="orhistry2_td2proctext2">{{product.shortDescription}}</div> 
+							<div class="orhistry2_td2proctext1 wishgaptop">{{product.price | pricingTxt}}</div>
 							<div>
 								<md-checkbox class="salelist" ng-model="product._notify" ng-true-value="1" ng-false-value="0" aria-label="Notify" ng-change="alcoholWishlist.add(product._id,1)">						
 									Tell me when it's on sale
-								</md-checkbox>								
+								</md-checkbox>
 					        </div>
 						</div>  
 					</div>
 					
+				</td>
+
+				<td>
+					<div class="prod_chilled us-txt" ng-class="{notchilled:!product.servechilled,invisible:{{!product.chilled}}}"  ng-click="product.servechilled=!product.servechilled"> <span>Chilled</span>
+						<div class="prod_chilled_icon"></div>
+					</div>
 				</td>
 
 				<td>
@@ -39,14 +45,20 @@
 							
 							<!-- <add-to-cart-btn product="product"></add-to-cart-btn> -->
 
-							<add-to-cart-btn product="product._original" ng-if="(product.cart.quantity || product._original.outOfStockType == 2)"></add-to-cart-btn>
+							<!-- <add-to-cart-btn product="product" ng-if="(product.cart.quantity || product.outOfStockType == 2)"></add-to-cart-btn> -->
+							<add-to-cart-btn
 
-							<out-of-stock product="product._original" ng-if="product.cart.quantity<1 && product._original.outOfStockType == 1"></out-of-stock>
+								product="product" 
+								ng-if="product.quantity || product.outOfStockType == 2"
+		>
+								</add-to-cart-btn>
+
+							<out-of-stock product="product" ng-if="product.quantity<1 && product.outOfStockType == 1"></out-of-stock>
 							
 						</div>
 
-						<div class="wishlist-tblestock" ng-if="product._isAvailable">In Stock</div>
-						<div class="wishlist-tblestock" ng-if="!product._isAvailable">Not In Stock</div>
+						<div class="wishlist-tblestock" ng-if="product.addBtnAllowed">In Stock</div>
+						<div class="wishlist-tblestock" ng-if="!product.addBtnAllowed">Not In Stock</div>
 
 					</div>
 				</td>

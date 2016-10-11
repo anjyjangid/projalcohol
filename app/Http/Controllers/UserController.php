@@ -130,7 +130,7 @@ class UserController extends Controller
 			$curruser->save();
 
 			$return['success'] = true;
-			$return['message'] = "Your profile settings has been updated successfully.";
+			$return['message'] = "Your profile settings have been updated successfully.";
 						
 		} catch(\Exception $e){
 			$return['message'] = "Something wrong";//$e->getMessage();            
@@ -357,10 +357,10 @@ class UserController extends Controller
 			}
 							
 			$order = $order->orderBy("created_at","desc")
-						   ->first(["products","packages","updated_at","reference"]);		
+						   ->first(["products","packages","updated_at","reference"]);
 
 			if(empty($order)){
-				return response(["message"=>"Order not found"],400);
+				return response(["message"=>"Order not found"],200);
 			}
 
 			$order = $order->toArray();

@@ -17,11 +17,13 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ngPayments',
 	'infinite-scroll'
 ]).config(['$locationProvider','$mdThemingProvider', function($location,$mdThemingProvider) {
+
 	/*$location.html5Mode({
 		enabled: true,
 		requireBase: false
 	});*/
-	//$location.hashPrefix('!');
+
+	// $location.hashPrefix('!');
 
 	$mdThemingProvider.theme('default').primaryPalette('purple');
     //.accentPalette('orange');
@@ -438,15 +440,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						},
 						resolve: {
 
-								storeInit : function (store){
-									return store.init();
-								},
-								wishlistInit : function(alcoholWishlist){
-									return alcoholWishlist.init();
-								},
-								loggedIn: function(UserService) {
-									return UserService.getIfUser(true);
-								}
+							appLoad : appLoad
 
 						}
 				})
@@ -677,12 +671,17 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 					},
 					resolve: {
-						storeInit : function (store){
-							return store.init();
+						storeInit : function (store,alcoholWishlist){
+							store.init().then(
+								function(){
+									return alcoholWishlist.init()
+								}
+							);
+
 						},
-						wishlistInit : function(alcoholWishlist){
-							return alcoholWishlist.init();
-						},
+						// wishlistInit : function(alcoholWishlist){
+						// 	return alcoholWishlist.init();
+						// },
 						loggedIn: function(UserService) {
 							return UserService.getIfUser(true, true);
 						}
@@ -882,6 +881,40 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				$locationProvider.hashPrefix = '!';*/
 
 		}]);
+	
+function appLoad($q, $state, $timeout, $location, store, alcoholWishlist, UserService) {
+	
+	var defer = $q.defer();
+
+	store.init().then(
+
+		function(storeRes){
+			alcoholWishlist.init().then(
+				function(wishRes){
+
+					UserService.getIfUser(true).then(
+						function(userRes){
+
+							defer.resolve();
+						}
+
+					);
+					
+
+				},
+				function(wishErrRes){
+					defer.reject();
+				}
+			)
+		},
+		function(storeErrRes){
+			defer.reject();
+		}
+	);
+
+	return defer.promise;
+};
+
 
 AlcoholDelivery.service('LoadingInterceptor', [
 '$q', '$rootScope', '$log', '$location',
@@ -929,10 +962,8 @@ function ($q, $rootScope, $log, $location) {
 			};
 
 			if(rejection.status == 500){				
-				$location.url('/404').replace();
+				//$location.url('/404').replace();
 			};
-
-
 
             return $q.reject(rejection);
         }
