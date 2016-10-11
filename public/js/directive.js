@@ -300,8 +300,9 @@ AlcoholDelivery.directive('sideBar', function() {
 .directive("tscroll", function ($window) {
     return function(scope, element, attrs) {
 
-    	var svgMorpheus = new SVGMorpheus('#icon', {rotation: "none"});
+    	var svgMorpheus = new SVGMorpheus('#icon');
 		var icons = ['question', 'answer'];
+		var prev=1;
 
         angular.element($window).bind("scroll", function() {
 
@@ -309,10 +310,15 @@ AlcoholDelivery.directive('sideBar', function() {
 
              if (this.pageYOffset >= 1) {
                 element.addClass('navbar-shrink');
+                if(prev!==0)
                  svgMorpheus.to(icons[0]);
+                prev = 0;
              } else if(this.pageYOffset == 0 && angular.element('md-backdrop').length == 0 && angular.element('.md-scroll-mask').length == 0) {
                  element.removeClass('navbar-shrink');
+                
+                if(prev!==1)
                  svgMorpheus.to(icons[1]);
+                 prev = 1;
              } 
 			
              
