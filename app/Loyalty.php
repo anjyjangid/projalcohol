@@ -26,9 +26,16 @@ class Loyalty extends Model
 	
 		$loyalty = $loyalty->first(['loyalty']);		
 
+		$data = [];
+		$more = false;
+		if(isset($loyalty['loyalty'])){
+			$data = $loyalty['loyalty'];
+			$more = count(@$loyalty['loyalty'])>$limit;
+		}
+
 		return array(
-			"data" => array_slice($loyalty['loyalty'], 0, $limit),
-			"more" => count($loyalty['loyalty'])>$limit
+			"data" => $data,
+			"more" => $more
 		);
 
 	}
@@ -85,7 +92,7 @@ class Loyalty extends Model
 			));
 		});
 
-		if(isset($statics['result'])){
+		if(isset($statics['result'][0])){
 			return $statics['result'][0];
 		}
 		

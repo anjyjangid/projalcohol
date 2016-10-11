@@ -127,7 +127,8 @@ AlcoholDelivery.controller('AppController',
 				templateUrl: '/templates/partials/gift-packaging-popup.html',
 				parent: angular.element(document.body),
 				targetEvent: ev,
-				clickOutsideToClose: true
+				clickOutsideToClose: true,
+				fullscreen:true
 			}
 		)
 	};
@@ -316,8 +317,8 @@ AlcoholDelivery.controller('ProductsFeaturedController', ['$scope', '$rootScope'
 }]);
 
 AlcoholDelivery.controller('ProductDetailController', [
-			'$scope', '$rootScope','$state','$http','$stateParams','alcoholCart','ProductService',
-	function($scope, $rootScope,$state,$http,$stateParams,alcoholCart,ProductService){
+			'$scope', '$rootScope','$state','$http','$stateParams','alcoholCart','ProductService', 'alcoholWishlist',
+	function($scope, $rootScope,$state,$http,$stateParams,alcoholCart,ProductService, alcoholWishlist){
 
 	$rootScope.appSettings.layout.pageRightbarExist = false;
 
@@ -331,6 +332,38 @@ AlcoholDelivery.controller('ProductDetailController', [
 
 		$scope.viaLoyaltyStore = true;
 
+	}
+
+	$scope.$watch('product._id', function(id){
+		if(id)
+			$scope.isInwishList = alcoholWishlist.getProductById(id);
+	});
+
+
+	$scope.saleExists = function () {
+		if($scope.product)
+			return alcoholWishlist.isNotified($scope.product._id);
+	};
+
+	$scope.addToWishlist = function(addInSale){
+
+		alcoholWishlist.add($scope.product._id,addInSale).then(function(response) {
+
+				if(response.success){
+
+					$scope.isInwishList = alcoholWishlist.getProductById($scope.product._id);
+
+				}
+
+			}, function(error) {
+
+				$rootScope.$broadcast('showLogin');
+
+			});
+	}
+
+	$scope.myWish = function(){
+		$state.go('accountLayout.wishlist');
 	}
 
   	$scope.syncPosition = function(el){
@@ -683,38 +716,42 @@ AlcoholDelivery.controller('OrdersController',['$scope','$rootScope','$state','$
 
 AlcoholDelivery.controller('OrderDetailController',['$scope','$rootScope','$state','$stateParams','$http','sweetAlert','UserService',function($scope,$rootScope,$state,$stateParams,$http,sweetAlert,UserService){
 
-	$scope.rate = 3;
-	$scope.max = 5;
-	$scope.isReadonly = false;
 	$scope.orderid = $stateParams.orderid;
-
-	$scope.hoveringOver = function(value) {
-		$scope.overStar = value;
-		$scope.percent = 100 * (value / $scope.max);
-	};
-
-	$scope.ratingStates = [
-
-		{stateOn: 'glyphicon-ok-sign', stateOff: 'glyphicon-ok-circle'},
-		{stateOn: 'glyphicon-star', stateOff: 'glyphicon-star-empty'},
-		{stateOn: 'glyphicon-heart', stateOff: 'glyphicon-ban-circle'},
-		{stateOn: 'glyphicon-heart'},
-		{stateOff: 'glyphicon-off'}
-
-	];
-
-	$scope.order = [];
+	$scope.order = {};
 
     $http.get("order/"+$stateParams.orderid)
-			.success(function(response){
+	.success(function(response){
 
-				$scope.order = response;
-				$scope.address = $scope.order.delivery.address;
+		$scope.order = response;
+		$scope.address = $scope.order.delivery.address;
 
-			})
-			.error(function(data, status, headers) {
+	})
+	.error(function(data, status, headers) {
 
-			})
+	})
+
+	$scope.getQuantity = function(product) {
+		var qChilled = product.chilled.quantity
+		  , qNChilled = product.nonchilled.quantity;
+
+		if(product.remainingQty) {
+			var usedInSale = product.quantity - product.remainingQty;
+
+			qChilled -= usedInSale;
+
+			if(qChilled<0){
+				qNChilled += qChilled;
+				qChilled = 0;
+			}
+
+		}
+		else
+			qChilled = qNChilled = 0;
+		
+		
+		product.chilled.remainingQty = qChilled;
+		product.nonchilled.remainingQty = qNChilled;
+	}
 
 }]);
 
@@ -1014,7 +1051,8 @@ AlcoholDelivery.controller('CartController',[
 			templateUrl: '/templates/checkout/dont-miss.html',
 			parent: angular.element(document.body),
 			//targetEvent: ev,
-			clickOutsideToClose:true
+			clickOutsideToClose:true,
+			fullscreen:true
 		})
 		.then(function(answer) {
 
@@ -1866,6 +1904,15 @@ AlcoholDelivery.controller('RepeatOrderController',[
 		});
 
 	}
+
+	$scope.$watch('lastorder.products', function() {
+		var count = 0;
+		angular.forEach($scope.lastorder.products, function(product) {
+			if(product.selected)
+				count++;
+		});
+		$scope.selectedCount = count;
+	}, true);
 
 	$scope.addSelected = function(){
 

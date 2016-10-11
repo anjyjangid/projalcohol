@@ -1402,9 +1402,9 @@ jprd($product);
 
 	}
 
-	public function deleteGift($giftUId,Request $request){
+	public function deleteGift($giftUId,$cartKey){
 
-		$cartKey = $this->deliverykey;
+		// $cartKey = $this->deliverykey;
 
 		$cart = Cart::find($cartKey);
 
@@ -1517,6 +1517,14 @@ jprd($product);
 
 		$cart = $cartObj->where("_id","=",$cartKey)->first();
 
+		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){
+
+			$order = Orders::where(['reference' => $request->get('order_number')])->first();
+
+			if($order)
+				return redirect('/#/orderplaced/'.$order['_id']);
+		}
+
 		$cart->setLoyaltyPointUsed();
 
 
@@ -1587,7 +1595,7 @@ jprd($product);
 		$cartArr["loyaltyPointEarned"] = $loyaltyPoints;
 
 //////
-
+		if($productsInCart)
 		foreach($productsInCart as $key=>$product){
 
 			$cartArr['products'][$product["_id"]]['_id'] = new MongoId($product["_id"]);
@@ -1658,7 +1666,7 @@ jprd($product);
 			//SAVE CARD IF USER CHECKED SAVE CARD FOR FUTURE PAYMENTS
 			if($cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['card'] == 'newcard' && $cartArr['payment']['savecard']){
 				$cardInfo = $cartArr['payment']['creditCard'];
-		        $user = User::find($userId);
+		        $user = User::find($user->_id);
 		        $user->push('savedCards',$cardInfo,true);
 			}
 
@@ -1912,7 +1920,7 @@ jprd($product);
 	public function putBulk(Request $request){
 		
 		$params = $request->all();
-		$cartKey = $request->session()->get('deliverykey');
+		$cartKey = $params['cartKey'];//$request->session()->get('deliverykey');
 
 		$cart = Cart::find($cartKey);
 
@@ -1951,7 +1959,7 @@ jprd($product);
 
 				$updateProData = array(
 
-							"maxQuantity"=>$product['maxQuantity'],
+							// "maxQuantity"=>$product['maxQuantity'],
 							"chilled"=>array(
 								"quantity"=>0,
 								"status"=>"chilled",
@@ -2032,7 +2040,7 @@ jprd($product);
 
 		$params = Orders::where("user",new mongoId($userLogged->_id))->orderBy("created_at","desc")->first(["products","packages","updated_at","reference"]);			
 
-		$cartKey = $request->session()->get('deliverykey');
+		$cartKey = $request->get('cartKey');
 		$cart = Cart::find($cartKey);
 		$cartProducts = $cart->products;
 
@@ -2137,7 +2145,7 @@ jprd($product);
 		$gift = $giftModel->getGift($inputs['id']);
 
 		// Fetch Cart
-		$cartKey = $this->deliverykey;
+		$cartKey = $inputs['cartKey'];//$this->deliverykey;
 		
 		$cart = Cart::find($cartKey);
 
@@ -2146,6 +2154,7 @@ jprd($product);
 		$totalProducts = 0;		
 		$cartProducts = $cart->products;
 
+		if($cart->loyalty)
 		foreach($cart->loyalty as $key=>$loyalty){
 
 			if(isset($cartProducts[$key])){
@@ -2161,6 +2170,7 @@ jprd($product);
 			}
 		}
 
+		if($cart->promotions)
 		foreach($cart->promotions as $promotion){
 			$key = $promotion['productId'];
 			if(isset($cartProducts[$key])){
@@ -2180,8 +2190,8 @@ jprd($product);
 		foreach ($giftProducts as &$giftProduct) {						
 
 			$proId = $giftProduct['_id'];
-			$state = $giftProduct['state'];
-			$giftProduct['chilled'] = $state=='chilled'?true:false;
+			// $state = $giftProduct['state'];
+			$giftProduct['chilled'] = true;
 			$quantity = (int)$giftProduct['quantity'];
 
 			// Condition to check product is available in cart or not
@@ -2218,9 +2228,9 @@ jprd($product);
 
 		}			
 		
-		if($totalProducts<=1){
+		if($totalProducts<1){
 
-			$response['message'] = 'Please attached products';
+			$response['message'] = 'Please attach products';
 			return response($response,422);
 
 		}

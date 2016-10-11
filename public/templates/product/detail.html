@@ -21,9 +21,15 @@
 
 			<div class="prddetailsubexttitle">{{product.shortDescription}}</div>
 			<div class="prddetailnormaltext">{{product.description}}</div>
+			<div class="prddetailnormaltext">
+				<button class="btn btn-default btn-purple" ng-click="isInwishList?myWish():addToWishlist(0); $event.stopPropagation();">
+					<img src="images/add-wish-icon.png" /> 
+					<span ng-bind="isInwishList?'Added to Wishlist':'Add to Wishlist'"></span>
+				</button>
+			</div>
 			<div class="prddetailnormaltext nametag" ng-if="product.nameDetailSale && !product.saleImage">{{product.nameDetailSale}}</div>
 			<div class="prddetailnormaltext" ng-if="product.saleImage">
-				<img src="sale/i/{{product.saleImage}}">
+				<img style="width: 100px;" src="sale/i/{{product.saleImage}}">
 			</div>
 			<div class="prddetailchilledcover text-noselect" ng-if="product.chilled && (product.quantity || product.outOfStockType == 2)" >
 				<div class="prodchilled-btn" ng-class="{'active':product.servechilled}" ng-click="product.servechilled=1">
@@ -73,7 +79,7 @@
 				<span ng-if="product.price != product.salePrice">{{product.price | pricingTxt}}</span>
 				<div class="salediscount" ng-if="product.sale && !product.sale.coverImage">{{product.sale.detailTitle}}</div>
 				<div class="pull-right" ng-if="product.sale.coverImage">
-					<img src="sale/i/{{product.sale.coverImage}}">
+					<img style="width: 100px;" src="sale/i/{{product.sale.coverImage}}">
 				</div>				
 			</div>
 			
@@ -103,7 +109,17 @@
 						<out-of-stock product="product" ng-if="product.quantity<1 && product.outOfStockType == 1"></out-of-stock>
 					</div>
 				</div>
-			</div>			
+			</div>
+
+			<div class="salediv pull-left full-width m-top-15">
+				<md-checkbox ng-checked="saleExists()" ng-click="addToWishlist(1)" aria-label="leaveatdoor-checkbox">
+			    	Tell me when it's on sale
+			    </md-checkbox>
+				<md-tooltip md-direction="bottom" class="m-bottom-5">
+		        	Add this item to my Wish List and we will notify you when it goes on sale
+		        </md-tooltip>
+		    </div>
+
 	</div>
 </div>
 

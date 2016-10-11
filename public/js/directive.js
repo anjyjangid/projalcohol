@@ -34,7 +34,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			user:'='
 		},*/
 		templateUrl: '/templates/partials/topmenu.html',
-		controller: function($scope,$rootScope,$http,$state,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard,$fblogin,$mdDialog){
+		controller: function($scope,$rootScope,$http,$state,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard,$fblogin,$mdDialog, $timeout){
 
 			$scope.list = [];
 
@@ -63,11 +63,15 @@ AlcoholDelivery.directive('sideBar', function() {
 
 
 
-			$http.get('/check').success(function(response){
-	            $scope.user = response;
-	        }).error(function(data, status, headers) {
+			// console.log(UserService.getIfUser())
+			$timeout(function(){
+            	$scope.user = UserService.getIfUser();
+			}, 0);
+			// $http.get('/check').success(function(response){
+	  //           $scope.user = response;
+	  //       }).error(function(data, status, headers) {
 
-	        });
+	  //       });
 
 	        $scope.forgotSubmit = function() {
 				$scope.forgot.errors = {};

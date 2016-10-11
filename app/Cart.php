@@ -287,18 +287,19 @@ class Cart extends Moloquent
 												// "with"=>["discounts"]
 											)
 										);
+		if($productsInCart){
+			foreach($productsInCart as $key=>$pic){
 
-		foreach($productsInCart as $key=>$pic){
+				$productsInCart[$pic['_id']] = $pic;
+				$productsInCart[$pic['_id']]['count'] = $products[$pic['_id']];
 
-			$productsInCart[$pic['_id']] = $pic;
-			$productsInCart[$pic['_id']]['count'] = $products[$pic['_id']];
+				unset($productsInCart[$key]);
 
-			unset($productsInCart[$key]);
+			}
 
+			return $productsInCart->toArray();
 		}
-
-		return $productsInCart->toArray();
-
+		return [];
 	}
 
 	public function setReference(){

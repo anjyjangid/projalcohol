@@ -53,18 +53,19 @@
 								</label>
 								<div class="col-md-10">
 									<div class="fileinput fileinput-new" data-provides="fileinput">
-										<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
+										<div class="fileinput-new thumbnail" style="max-width: 200px;">
 											<img err-src="asset/i/defaultImage.png" 
 												ng-src="sale/i/{{sale.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
 
 										</div>
-										<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
+										<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px;">
 										</div>
 										<div>
 											<span class="btn default btn-file">
 												<span class="fileinput-new">{{ sale.coverImage ? 'Change':'Select' }}</span>
 												<span class="fileinput-exists">Change</span>
 												<input type="file" placeholder="thumbnail" class="form-control" file-model="sale.image.thumb"/>
+												</span>												
 											</span>	
 										</div>
 									</div>
