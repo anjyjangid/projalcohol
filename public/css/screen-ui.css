@@ -101,6 +101,7 @@ ui-sref {
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
 	background-color: transparent;
 	color: #aa00ff;
+	font-weight: 600;
 }
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .open > a:hover {
 	background-color: transparent;
@@ -141,7 +142,7 @@ ui-sref {
 .modify .dropdown-menu li a {
 	color: #363535;
 	font-size: 13px;
-	padding: 8px 0;
+	padding: 8px 8px;
 	line-height: 18px;
 }
 .modify .dropdown-menu li a span {
@@ -156,6 +157,9 @@ ui-sref {
 	text-align: center;
 	line-height: 10px;
 }
+
+
+
 .homecallus {
 	color: rgba(44,32,17,0.50);
 	width: 100%;
@@ -541,6 +545,7 @@ ui-sref {
 	background: url(../images/sprite.png) no-repeat -410px 0px;
 	min-width: 24px;
 	min-height: 24px;
+	margin-right: 0;
 }
 .prod_chilled span {
 	float: right;
@@ -654,7 +659,7 @@ ui-sref {
 	text-transform: uppercase;
 	text-align: left;
 	font-weight: 600;
-	margin-bottom: 15px;
+	margin-bottom::;5px;
 }
 .prod_addtocart {
 	width: 100%;
@@ -715,7 +720,8 @@ ui-sref {
 	width: 100%;
 	float: left;
 	color: #010101;
-	padding: 0 14px
+	padding: 0 14px;
+	margin-bottom: 7px;
 }
 .ro_items {
 	width: 100%;
@@ -733,7 +739,7 @@ ui-sref {
 	padding: 0 7px;
 	float: right;
 	font-size: 12px;
-	color: #37474f;
+	color: #000000;
 	text-align: left;
 }
 .chk_unchk {
@@ -752,7 +758,7 @@ ui-sref {
 	background-color: #cdcdcd;
 }
 .modifyscroll {
-	height: 380px;
+	height: 333px;
 	overflow: hidden;
 }
 .ro_items.itemselect .chk_unchk {
@@ -1023,19 +1029,24 @@ ui-sref {
 	height: 100%;
 	margin-top: 0;
 	position: absolute;
-	width: 45%;
+	width: 30%;
 }
 .innertextmiddle {
 	display: table-cell;
 	vertical-align: middle;
 }
 .slido_pic {
-	width: 100%;
-	float: left;
-	text-align: center;
+	border-radius: 50%;
+    float: none;
+    height: 113px;
+    margin: 0 auto;
+    overflow: hidden;
+    text-align: center;
+    width: 113px;
 }
 .slido_pic img {
 	display: inline-block;
+	width: 100%;
 }
 .slido_txt {
 	width: 100%;
@@ -1047,17 +1058,18 @@ ui-sref {
 	text-overflow: ellipsis;
 	max-width: 200px;
 	margin: auto;
+	margin-top: 10px;
 }
 .slido_right {
 	float: right;
 	font-size: 18px;
 	font-weight: 500;
 	margin-top: 0;
-	min-height: 306px;
-	padding: 60px 30px 0;
+	min-height: 375px;
+	padding: 60px 53px 0;
 	position: relative;
 	right: 0;
-	width: 55%;
+	width: 70%;
 	word-wrap: break-word;
 }
 .brands {
@@ -1123,6 +1135,7 @@ ui-sref {
 	width: 100%;
 	float: left;
 	padding: 10px;
+	margin-bottom: 20px;
 }
 .addbtn {
 	width: 53px;
@@ -1419,7 +1432,8 @@ ui-sref {
 	font-size: 14px;
 	color: #999999;
 	font-weight: 500;
-	float: left;
+	float: right;
+	margin-right: 35px;
 	padding-top: 10px;
 }
 .alcohal_repeatorderbodytxt {
@@ -1501,7 +1515,7 @@ ui-sref {
 }
 .orhistry2_td2procdtcvr > span {
 	float: left;
-	margin-right: 20px;
+	margin-right: 15px;
 	width: 70px;
 	height: 70px;
 }
@@ -1585,8 +1599,8 @@ ui-sref {
 	color: #333;
 }
 .btn-default.active.focus, .btn-default.active:focus, .btn-default.active:hover, .btn-default.focus:active, .btn-default:active:focus, .btn-default:active:hover, .open > .dropdown-toggle.btn-default.focus, .open > .dropdown-toggle.btn-default:focus, .open > .dropdown-toggle.btn-default:hover {
-	background-color: #d4d4d4;
-	border-color: #8c8c8c;
+	background-color: #aa00ff;
+	border-color: #aa00ff;
 	color: #333;
 }
 }
@@ -1618,7 +1632,7 @@ ui-sref {
 }
 .bootstrap-touchspin .input-group-btn-vertical .bootstrap-touchspin-down {
 	border-radius: 0 0 4px;
-	margin-top: -2px;
+	margin-top: 0px;
 }
 .bootstrap-touchspin .input-group-btn-vertical > .btn {
 	display: block;
@@ -1745,7 +1759,7 @@ ui-sref {
 }
 .cartbtn {
 	min-width: 142px;
-	height: 32px;
+	height: 35px;
 	border: none;
 	border-radius: 5px;
 	cursor: pointer;
@@ -1774,7 +1788,7 @@ ui-sref {
 	height: 17px;
 	display: inline-block;
 	float: left;
-	margin: 4px -2px 0 10px;
+	margin:6px -2px 0 10px;
 }
 .addmore {
 	width: 100%;
@@ -1825,7 +1839,7 @@ ui-sref {
 	line-height: 30px;
 	border: none;
 	outline: none;
-	border-radius: 5px;
+	border-radius: 4px 0 0 4px;
 	color: #999;
 	padding: 5px;
 	font-size: 18px;
@@ -1918,12 +1932,13 @@ ui-sref {
 	font-weight: 500;
 	font-size: 13px;
 	color: #222122;
+	margin-top: 20px;
 }
 .productslide_addbutton {
 	width: 100%;
 	float: left;
-	margin-top: 15px;
-	max-width: 160px;
+	/*margin-top: 15px;
+	max-width: 160px;*/
 }
 .productslide_addbutton .addcart span {
 	margin: 5px 5px 0 10px;
@@ -1955,7 +1970,7 @@ ui-sref {
 }
 .comboproductitems {
 	margin-top: 30px;
-	margin-bottom: 30px;
+	margin-bottom: 0px;
 	padding: 10px;
 }
 .comboproductitems .prod_desc {
@@ -2066,9 +2081,9 @@ ui-sref {
 .productbeerfiltertoptitle {
 	width: 100%;
 	float: left;
-	font-size: 24px;
+	font-size: 24px !important;
 	font-weight: 400;
-	color: #656565;
+	color: #656565 !important;
 	margin-bottom: 20px;
 }
 .productbeerfiltertopcover .row div {
@@ -2112,7 +2127,7 @@ ui-sref {
 	outline: none;
 	background: transparent;
 	border: 0px;
-	color: #000;
+	color: #ffc412;
 	background-color: transparent;
 	box-shadow: 0px 0px 0px 0px;
 }
@@ -2125,6 +2140,7 @@ ui-sref {
 .checkoutmiddlevlauediv {
 	float: left;
 	width: 70px;
+
 }
 .checkouter-td-right-text {
 	width: 74%;
@@ -2138,7 +2154,7 @@ ui-sref {
 	float: none;
 }
 .checkoutmiddletable .orhistry2_td2procdtcvr > span {
-	margin-top: 20px;
+	margin-top: 5px;
 	display: inline-block;
 	width: 70px;
 	height: 70px;
@@ -2202,7 +2218,7 @@ ui-sref {
 	padding: 15px 25px 15px 0px;
 }
 .checkboxtotaldiv-title {
-	width: 85%;
+	width: 80%;
 	text-align: right;
 	float: left;
 	font-size: 16px;
@@ -2263,7 +2279,7 @@ ui-sref {
 	float: left;
 	padding: 20px 0px;
 	border-bottom: 1px solid #e2e2e2;
-	border-top: 1px solid #e2e2e2;
+	/*border-top: 1px solid #e2e2e2;*/
 }
 .checkoutproduct1:last-child {
 	margin-right: 0px;
@@ -2580,6 +2596,7 @@ ui-sref {
 	color: #222122;
 	font-size: 30px;
 	font-weight: 500;
+	position: relative;
 }
 .prddetailpricedicnt span {
 	color: #666;
@@ -2593,7 +2610,7 @@ ui-sref {
 	color: #00a651;
 	font-size: 14px;
 	font-weight: 400;
-	margin-top: 7px;
+	margin-top: 9px;
 }
 .prdquantitybulkcover {
 	width: 100%;
@@ -2610,7 +2627,7 @@ ui-sref {
 	margin-bottom: 6px;
 }
 .prdquantitybulkcover .checkoutmiddlevlauediv {
-	margin-right: 20px;
+	margin-right: 30px;
 }
 .prdquantitybulkcoverbulk {
 	width: auto;
@@ -2714,13 +2731,14 @@ ui-sref {
 }
 .prdquanbulkActive {
 	color: #aa00ff;
-	border-bottom: solid 2px #aa00ff;
-	margin-bottom: -2px;
+	border-bottom: solid 1px #aa00ff;
+	margin-bottom: -1px;
 }
 .owluperpartcover {
 	height: 415px;
 	text-align: center;
 	display: table;
+	margin-bottom: 15px;
 }
 .owluperpartcover .owl-item {
 	height: 415px;
@@ -2753,14 +2771,14 @@ ui-sref {
 	padding-left: 14px;
 }
 .bootstrap-touchspin.vertical .addmore-count {
-	border: 1px solid #cccccc;
+	/*border: 1px solid #cccccc;*/
 	border-radius: 3px 0 0 3px !important;
-	height: 38px;
+	height: 39px;
 	width: 100% !important;
 	display: inline-block;
 	text-align: center;
 	font-size: 20px !important;
-	padding: 5px 10px;
+	padding: 7px 5px;
 	color: #333;
 	float: none !important
 }
@@ -3314,6 +3332,7 @@ ui-sref {
 	float: left;
 	padding: 9px 10px;
 	width: 100%;
+	box-shadow: none;
 }
 .alcohlinputextarea12 {
 	float: left;
@@ -4556,7 +4575,10 @@ ui-sref {
 .addressbook-btmpannelcover {
 	float: left;
 	width: 100%;
-	margin-bottom: 60px;
+	margin-bottom: 75px;
+}
+.addressbook-btmpannelcover .addressbook-btmpannelcover {
+	margin-bottom: 0px;
 }
 .addressbokk-trvaichacovr {
 	float: left;
@@ -4646,9 +4668,9 @@ ui-sref {
 .currentorderpopup {
 	background: #ffffff none repeat scroll 0 0;
 	border-radius: 5px;
-	left: -135px;
+	left: calc(39% - 145px);
 	position: absolute;
-	top: 95%;
+	top: 98%;
 	width: 290px;
 	z-index: 9000;
 	padding: 0;
@@ -4672,11 +4694,11 @@ ui-sref {
 .productaddedpopup {
 	background: #ffffff none repeat scroll 0 0;
 	border-radius: 5px;
-	left: -135px;
+	left: calc(39% - 145px);
 	position: absolute;
 	top: 100%;
 	width: 290px;
-	z-index: 19;
+	z-index: 9009;
 	padding: 0;
 	border: none;
 	-webkit-box-shadow: 0px 29px 60px 0px rgba(86,111,140,0.6);
@@ -4733,6 +4755,7 @@ ui-sref {
 	margin: 0;
 	width: 100%;
 	float: left;
+	height: 200px;
 }
 .currentorderpopupul li {
 	list-style: none;
@@ -4769,7 +4792,7 @@ ui-sref {
 	/*background: #e1b11f url("../images/cart-icon-new.png") no-repeat scroll center 41px;*/
 }
 .navbar.navbar-default.navbar-fixed-top.navbar-shrink .signuplogin .dropdown:hover .cart_icon {
-	background: #e1b11f url("../images/cart-icon-new.png") no-repeat scroll center 25px;
+	/*background: #e1b11f url("../images/cart-icon-new.png") no-repeat scroll center 25px;*/
 }
 .additempopuppinkbox {
 	background: #aa00ff url("../images/imgpsh_fullsize.png") no-repeat right center;
@@ -5082,10 +5105,10 @@ md-switch {
 	font-size: 30px;
 	opacity: 0.8;
 }
-md-dialog {
+/*md-dialog {
 	margin: 0 auto;
 	width: 960px;
-}
+}*/
 md-toolbar {
 	background: transparent none repeat scroll 0 0 !important;
 	min-height: 70px;
@@ -5804,26 +5827,31 @@ md-checkbox.md-default-theme.md-checked .md-icon::after, md-checkbox.md-checked 
 .added {
 	float: left;
 	width: 100%;
-	box-shadow: 0 0 5px 2px #e5c8f6;
-	border-radius: 4px
+	
 }
-.added .addmore-count.ng-binding {
+
+.checkoutmiddlevlauediv .spin-border{
+	box-shadow: 0 0 5px 2px #e5c8f6;
+	border-radius: 4px;
 	border: 1px solid #aa00ff;
 }
+
+.added .addmore-count.ng-binding {	/*border: 1px solid #aa00ff;*/
+}
 .added .btn.btn-default.bootstrap-touchspin-up {
-	background: #aa00ff;
+	/*background: #aa00ff;
 	border-top: 1px solid #aa00ff;
-	border-right: 1px solid #aa00ff;
+	border-right: 1px solid #aa00ff;*/
 }
 .added .glyphicon.glyphicon-plus {
 	color: #fff
 }
 .added .btn.btn-default.bootstrap-touchspin-down {
-	border-bottom: 1px solid #aa00ff;
-	border-right: 1px solid #aa00ff;
+	/*border-bottom: 1px solid #aa00ff;
+	border-right: 1px solid #aa00ff;*/
 }
 .added .input-group.bootstrap-touchspin.ng-isolate-scope.ng-dirty.ng-valid.ng-valid-parse.vertical {
-	bottom: -1px;
+	bottom: 0px;
 }
 .added .btn.active.focus, .btn.active:focus, .btn.focus, .btn.focus:active, .btn:active:focus, .btn:focus {
 	outline: none
@@ -5924,4 +5952,37 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
 
 .paymenttype.active > div > div > img{
 	margin-bottom: 15px;
+}
+
+.brd-bot{
+	border-bottom: 1px dashed #ffffff;
+	margin: 0 0 5px;
+    padding: 0 0 5px;
+}
+.mobilemenu {
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+.tag-pic {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.via-padd{
+	padding:52px 0 45px;
+}
+
+.productaddedpopup:hover + a + span + div.currentorderpopup{
+	display: none;
+}
+
+.currentstep span{
+	color: #000000 !important;
+}
+
+.alcohlchekboxdiv12 md-checkbox .md-icon{
+	border-width: 1px;
+	border-color: rgba(215, 215, 215, 1) !important;
+
 }

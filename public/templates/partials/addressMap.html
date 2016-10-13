@@ -1,4 +1,4 @@
-<md-dialog aria-label="Add a New Delivery Address">
+<md-dialog aria-label="Add a New Delivery Address" layout="column" flex="40">
 	<form name="addressForm">
 		<md-toolbar ng-if="address.step==1">
 			<div class="md-toolbar-tools alcohal_addadress_header">
@@ -8,13 +8,13 @@
 					</div>
 				</div>
 				<span flex></span>
-				<md-button class="md-icon-button" ng-click="hide()"> &times; </md-button>
+				<md-button class="md-icon-button" ng-click="hide()" show-sm show-xs hide-lg hide-xl> &times; </md-button>
 			</div>
 		</md-toolbar>
 		<md-dialog-content ng-if="address.step==1">
 			<div class="md-dialog-content alcohaladdadrebody">
 				<div class="row">
-					<div class="col-sm-4 enter-locationdiv"> Enter your postal code or location name
+					<div class="col-sm-6 enter-locationdiv"> Enter your postal code or location name
 						<md-autocomplete				          
 				            md-no-cache="noCache"
 				            md-selected-item="selectedItem"				            
@@ -50,7 +50,7 @@
 						</div>
 						<div ng-hide="addressData.PostalCode" ng-click="showAddressForm({ev:$event,key:null})">Can't find your address?</div>
 					</div>
-					<div class="col-sm-8">						
+					<div class="col-sm-6">						
 						<ng-map style="width: 100%;height: 400px"></ng-map>
 					</div>
 				</div>

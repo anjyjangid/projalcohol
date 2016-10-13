@@ -154,7 +154,7 @@
 	width: 100%;
 }
 .pardqantitytexthead {
-	margin-top: 20px;
+	margin-top: 6px;
 	font-weight: 500
 }
 .party-alcholcover {
@@ -662,7 +662,7 @@
 	color: #fff;
 	font-size: 14.4px;
 	font-weight: 600;
-	margin-top: 25px;
+	margin-top: 20px;
 }
 .addcart-btncover {
 	width: 100%;
@@ -1333,7 +1333,7 @@ body.menu-slider.in {
 }
 .addmore-count.ng-binding {
 	position: relative;
-	top: -1px !important;
+	top: 0px !important;
 }
 .quantity-inputsetspan .addmore-count.ng-binding {
 	top: -2px !important
@@ -1343,7 +1343,7 @@ body.menu-slider.in {
 	top: 0;
 }
 .btn.btn-default.bootstrap-touchspin-up {
-	margin-top: -2px;
+	margin-top: 0px;
 }
 #menu-toggle {
 	display: none;
@@ -3223,6 +3223,23 @@ body.menu-slider.in {
   .add-icon-main {
 	  position: relative
   }
+
+
+.innerpagemargintop .nav.navbar-nav .dropdown-menu{
+	background-image: none !important;
+	background-color: #444444;
+	box-shadow: none;
+}
+
+.dropdown-menu.ng-scope.animate {
+    padding: 10px 0px!important;
+	box-shadow:none
+}
+
+/*.modify .dropdown-menu li a{
+	padding: 8px 0px !important;
+}
+*/
 }
 @media only screen and (width : 640px) {
   .alcohal_addadress_headertitle {

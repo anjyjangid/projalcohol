@@ -3,10 +3,10 @@
 	<li ng-if="!user.email" class="mobilemenu hide">
 		<a class="pointer" ng-click="loginOpen($event);">LOGIN</a>
 	</li>
-	<li ng-if="!user.email" class="mobilemenu hide">
+	<li ng-if="!user.email" class="mobilemenu hide brd-bot">
     	<a class="pointer" ng-click="signupOpen($event);"> SIGNUP </a>                       	
     </li>
-	<li ng:class="{'hideOp':hideOp}" class="dropdown mobilemenu hide" ng-if="user.email" ng-click="hideOp=!hideOp"  class="mobilemenu hide"> 
+	<li ng:class="{'hideOp':hideOp}" class="dropdown mobilemenu hide brd-bot" ng-if="user.email" ng-click="hideOp=!hideOp"  class="mobilemenu hide"> 
 		<a class="username dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" > Hola, {{user.email}} 
 		</a>
         <ul  class="dropdown-menu profil-dropdown">
