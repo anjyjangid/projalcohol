@@ -229,16 +229,19 @@
 													<div ng-repeat-start="pcprod in pc.products" ng:class="{'row':($index!=0 && $index%4==0)}"></div>
 													<div class="col-md-3" ng:class="{'has-error':errors['packageItems.'+pckey+'.products.'+$index+'.cprice'][0]}">
 														
-														<div class="thumbnail">
-															<img width="100" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{pcprod.imageFiles[0].source}}">	
+														<div class="thumbnail" style="padding: 9px;">
+															
+																<img err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{pcprod.imageFiles[0].source}}">
+															
 															<div class="caption">
 																<h5>{{ pcprod.name }} New Product</h5>
-																<h5>Before Price : <b>{{pcprod.sprice}}</b></h5>
-																<div >
+																<div>
+																	<h5>Before Price : <b>{{pcprod.sprice}}</b></h5>
 																	<input min="1" type="number" placeholder="After Price" step="any" class="form-control" ng-model="pcprod.cprice">
 																	<span class="help-block" ng-bind="errors['packageItems.'+pckey+'.products.'+$index+'.cprice'][0]"></span>
+																
+																	<a class="btn btn-sm btn-block btn-default" ng-click="removeItem(pckey,$index,pcprod._id)"><i class="fa fa-trash"></i> Remove</a>
 																</div>
-																<a class="btn btn-default" ng-click="removeItem(pckey,$index,pcprod._id)"><i class="fa fa-trash"></i> Remove</a>
 															</div>
 														</div>														
 														

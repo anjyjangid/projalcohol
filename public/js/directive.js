@@ -33,6 +33,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		/*scope:{
 			user:'='
 		},*/
+
 		templateUrl: '/templates/partials/topmenu.html',
 		controller: function($scope,$rootScope,$http,$state,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard,$fblogin,$mdDialog, $timeout){
 
@@ -65,23 +66,6 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.$watch(function(){return UserService.currentUser},function(newValue, oldValue) {
 				$scope.user = newValue;
 			});
-
-			// console.log(UserService.getIfUser())
-			// $timeout(function(){
-
-				
-
-			// 	// UserService.getIfUser(true)
-			// 	// .then(function(user){
-			// 	// 	$scope.user = user;					
-			// 	// });
-
-			// }, 0);
-			// $http.get('/check').success(function(response){
-	  //           $scope.user = response;
-	  //       }).error(function(data, status, headers) {
-
-	  //       });
 
 	        $scope.forgotSubmit = function() {
 				$scope.forgot.errors = {};
@@ -247,7 +231,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		        );
 		        alcoholWishlist.init();
 		        ClaimGiftCard.claim();
-		    }
+		    }	
 		}
 	};
 })
@@ -1437,6 +1421,7 @@ AlcoholDelivery.directive('sideBar', function() {
 	                        $http.delete("address/"+key)
 	                            .success(function(response) {
 	                                if(response.success){
+	                                    $mdDialog.hide();
 	                                    $scope.listUserAddress();
 	                                    sweetAlert.swal({
 	                                    	title: response.message,

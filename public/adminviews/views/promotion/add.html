@@ -71,7 +71,7 @@
 													<option value="0">Free</option>
 													<option value="1">Discounted</option>													
 												</select>
-												<input ng-if="product.type==1" type="number" placeholder="Discounted Price" step="any" class="form-control" ng-model="product.dprice">
+												<input min="1" step="any" ng-if="product.type==1" type="number" placeholder="Discounted Price" step="any" class="form-control" ng-model="product.dprice">
 
 											</div>
 											<a class="btn btn-default" ng-click="removeProduct($index)"><i class="fa fa-trash"></i> Remove</a>

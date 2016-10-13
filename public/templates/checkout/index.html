@@ -1,6 +1,12 @@
 <div class="combo_slider">
 
-	<div class="checkout_title">My Cart</div>
+	<div class="checkout_title">
+		<span ng-if="$state.$current.data.step=='cart'">My Cart</span>
+		<span ng-if="$state.$current.data.step=='address'">Delivery Address</span>
+		<span ng-if="$state.$current.data.step=='delivery'">Reserve your Delivery Slot</span>
+		<span ng-if="$state.$current.data.step=='payment'">Select Payment</span>
+		<span ng-if="$state.$current.data.step=='review'">Are these correct?</span>		
+	</div>
 
 	<div ng-if="alcoholCart.getTotalUniqueItems()">
 
