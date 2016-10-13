@@ -930,6 +930,9 @@ AlcoholDelivery.service('alcoholCart', [
 
 			count+= cart.giftCards.length;
 
+			count+= Object.keys(cart.loyaltyCards).length;
+
+
 			return count;
 		};
 

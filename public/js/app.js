@@ -941,12 +941,12 @@ function appLoad($q, $state, $timeout, $location, store, alcoholWishlist, UserSe
 					UserService.getIfUser(true).then(
 
 						function(userRes){
-							console.log("app Load");
+
 							defer.resolve();
+
 						}
 
 					);
-					
 
 				},
 				function(wishErrRes){
@@ -1201,7 +1201,7 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 	});
 
 
-	
+
 	// store.init();
 	// alcoholWishlist.init();
 
