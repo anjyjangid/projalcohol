@@ -1,8 +1,7 @@
 
 <li ng-class="{'hideOp':hideOpcart.hide}" class="dropdown cart-icon-set" id="cart-summary-icon" ng-mouseover="hideOpcart.hide=false" ng-mouseleave="hideOpcart.hide=true">
 
-<a href="javascript:void(0)" class="cart_icon"></a><span ng-if="alcoholCart.getTotalUniqueItems()">{{alcoholCart.getCartTotal() | pricingTxt}}</span>
-
+<a href="javascript:void(0)" class="cart_icon"></a><span ng-if="alcoholCart.getTotalUniqueItems()">{{alcoholCart.getSubTotal() | pricingTxt}}</span>
 <div class="dropdown-menu currentorderpopup">
 	<!-- Current order Start-->
 
@@ -14,10 +13,7 @@
 		</div>
 
 		<div>
-
-
-			
-			<ul  class="currentorderpopupul" ng-scrollbars>					
+			<ul  class="currentorderpopupul" ng-scrollbars ng-scrollbars-config="scrollconfig" ng-scrollbars-update="updateScrollbar">			
 				<li ng-init="total = 0" ng-repeat="(id,sale) in alcoholCart.getSales()">					
 					<div ng-repeat="(id,productInSale) in sale.products">
 						<div class="currentorderpopupulleft">{{productInSale.product.name}}</div>

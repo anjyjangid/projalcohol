@@ -32,17 +32,18 @@ We have received your order and shall be delivered as per schedule.</span></div>
 		</div>
 		<div class="paymentamnt-coverdiv">
 		<div class="lefttext-paymnt">Payment Method</div>
-		<div class="right-resultamounttxt" >Cash on Delivery</div>
+		<div class="right-resultamounttxt" >{{paymode}}</div>
 		
 		</div>
-		
 		<div class="paymentamnt-coverdiv">
 			
 			<div class="lefttext-paymnt">Delivery Time</div>
-
-			<div class="right-resultamounttxt" ng-if="order.delivery.type">{{daySlug}}, <br> {{slotslug}}</div>
-			<div class="right-resultamounttxt" ng-if="order.delivery.type==0 && !order.service.express.status">{{dopSlug}}, {{hour}}:{{minute}} {{aMpM}} +1 Hour</div>
-			<div class="right-resultamounttxt" ng-if="order.delivery.type==0 && order.service.express.status">{{dopSlug}}, {{hour}}:{{minute}} {{aMpM}} +30 Minutes</div>
+			<div class="right-resultamounttxt">{{deliveryDateTime}}</div>
+			<!-- <div class="right-resultamounttxt" ng-if="order.delivery.type">{{daySlug}}, <br> {{slotslug}}</div>
+			<div class="right-resultamounttxt" ng-if="order.delivery.type==0 && !order.service.express.status">		{{dopSlug}}, {{hour}}:{{minute}} {{aMpM}} +1 Hour
+			</div>
+			<div class="right-resultamounttxt" ng-if="order.delivery.type==0 && order.service.express.status">{{dopSlug}}, {{hour}}:{{minute}} {{aMpM}} +30 Minutes
+			</div> -->
 
 		</div>
 		

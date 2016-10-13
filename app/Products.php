@@ -933,4 +933,19 @@ class Products extends Eloquent
     public function suggestions(){
     	return $this->belongsToMany('AlcoholDelivery\Products', null, 'suggestedId', 'suggestionId');
     }
+
+    public function updateInventory($productLog){
+
+    	$qtyWiseProductArr = [];
+
+    	foreach ($productLog as $key => $value) {    		
+			$qtyWiseProductArr[(string)$value['_id']] = (int)$value['quantity'];
+    	}
+    	
+    	/*foreach ($productLog as $key => $value) {
+    		$productDetail = Products::find($value['_id']);
+
+    	}*/
+
+    }
 }

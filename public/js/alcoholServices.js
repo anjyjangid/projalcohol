@@ -682,8 +682,8 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct','CreditC
 }]);
 
 AlcoholDelivery.factory('AlcoholProduct',[
-			'$state','$filter','$log','$timeout','$q','catPricing','alcoholCart','UserService',
-	function($state,$filter, $log, $timeout, $q, catPricing, alcoholCart, UserService){
+			'$rootScope','$state','$filter','$log','$timeout','$q','catPricing','alcoholCart','UserService',
+	function($rootScope,$state,$filter, $log, $timeout, $q, catPricing, alcoholCart, UserService){
 
 	var product = function(type,product){
 
@@ -852,15 +852,16 @@ AlcoholDelivery.factory('AlcoholProduct',[
 			case 1:{
 
 				var notSufficient = false;
-				var userData = UserService.currentUser;
 
-				if( userData !== null && typeof userData.email !== "undefined"){
+				var userData = UserService.getIfUser();
 
-				    var userloyaltyPoints = userData.loyaltyPoints || 0;
+				if(userData!==false){
 
-				    var pointsInCart = alcoholCart.getLoyaltyPointsInCart();
+					var userloyaltyPoints = userData.loyaltyPoints || 0;
 
-				    var userloyaltyPointsDue = userloyaltyPoints - pointsInCart;
+					var pointsInCart = alcoholCart.getLoyaltyPointsInCart();				  				   
+
+					var userloyaltyPointsDue = userloyaltyPoints - pointsInCart;
 
 					var point = parseFloat(userloyaltyPointsDue);
 
@@ -1114,8 +1115,34 @@ AlcoholDelivery.factory('AlcoholProduct',[
 					},
 					function(errorRes){
 
-						_product.qChilled = errorRes.quantity.chilled || 0;
-						_product.qNchilled = errorRes.quantity.nonchilled || 0;
+						if(errorRes.code){
+
+							var code = parseInt(errorRes.code);
+
+							switch(code){
+
+								case 401:{
+
+									$rootScope.$broadcast('showLogin');
+
+								}
+								break;
+
+							}
+
+						}
+
+						if(errorRes.quantity){
+
+							_product.qChilled = errorRes.quantity.chilled | 0;
+							_product.qNchilled = errorRes.quantity.nonchilled | 0;
+
+						}else{
+
+							_product.qChilled = 0;
+							_product.qNchilled = 0;
+
+						}
 
 					}
 
@@ -1338,6 +1365,8 @@ AlcoholDelivery.factory('CreditCertificate',[
 							break;
 
 						}
+
+					_certificate.qNChilled = successRes.data.card.quantity || 0;
 
 				},
 				function(errorRes){

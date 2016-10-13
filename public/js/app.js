@@ -446,6 +446,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				.state('mainLayout', {
 						templateUrl: "/templates/index.html",
 						controller:function(){
+
 						},
 						resolve: {
 
@@ -667,6 +668,17 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				.state('cmsLayout', {
 					abstract: true,
 					templateUrl:"/templates/cmsLayout.html",
+					resolve: {
+						storeInit : function (store){
+							return store.init();
+						},
+						wishlistInit : function(alcoholWishlist){
+							return alcoholWishlist.init();
+						},
+						loggedIn: function(UserService) {
+							return UserService.getIfUser(true, true);
+						}
+					}
 				})
 
 				.state('cmsLayout.pages', {
@@ -678,7 +690,19 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				.state('orderplaced', {
 					url: "/orderplaced/{order}",
 					templateUrl: "/templates/orderconfirmation.html",
-					controller:"OrderplacedController"
+					controller:"OrderplacedController",
+					resolve: {
+						storeInit : function (store){
+							return store.init();
+						},
+						wishlistInit : function(alcoholWishlist){
+							return alcoholWishlist.init();
+						},
+						loggedIn: function(UserService) {
+							return UserService.getIfUser(true, true);
+						}
+					}
+
 				})
 
 				.state('accountLayout', {
@@ -847,6 +871,12 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							'' : {
 								templateUrl : '/templates/product/index.html',
 							},
+							'rightPanel' : {
+
+								templateUrl : "/templates/partials/rightBarRecentOrder.html",
+								controller : "RepeatOrderController",
+
+							},
 							// 'left' : {
 							// 	templateUrl : 'app/public/left.html',
 							// 	controller : 'DashboardController'
@@ -912,17 +942,20 @@ function appLoad($q, $state, $timeout, $location, store, alcoholWishlist, UserSe
 	store.init().then(
 
 		function(storeRes){
+
 			alcoholWishlist.init().then(
+
 				function(wishRes){
 
 					UserService.getIfUser(true).then(
+
 						function(userRes){
 
 							defer.resolve();
+
 						}
 
 					);
-					
 
 				},
 				function(wishErrRes){
@@ -1175,6 +1208,8 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 		});
 
 	});
+
+
 
 	// store.init();
 	// alcoholWishlist.init();
@@ -1504,4 +1539,20 @@ AlcoholDelivery.filter('filterParentCat', function(){
 		return inputArray;
 	}
 
-})
+});
+
+AlcoholDelivery.filter('dateSuffix', function ($filter) {
+    var suffixes = ["th", "st", "nd", "rd"];
+    return function (input) {
+        var dtfilter = $filter('date')(input, 'dd');
+        var day = parseInt(dtfilter, 10);
+        var relevantDigits = (day < 30) ? day % 20 : day % 30;
+        var suffix = (relevantDigits <= 3) ? suffixes[relevantDigits] : suffixes[0];
+        
+        var weekDay = $filter('date')(input, 'EEEE');
+        var monthYear = $filter('date')(input, 'MMMM')+', '+$filter('date')(input, 'yyyy');
+
+        //Thursday, 13 October, 2016
+        return weekDay+', '+day+suffix+' '+monthYear;
+    };
+});

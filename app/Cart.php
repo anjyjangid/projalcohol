@@ -962,8 +962,17 @@ class Cart extends Moloquent
 
 			}
 
-			$saleProducts[$key]['chilled']['quantity'] = $qtyChilled;
-			$saleProducts[$key]['nonchilled']['quantity'] = $qtyNonChilled;
+			$totalQty = $qtyChilled + $qtyNonChilled;
+
+			if($totalQty<1){
+
+				unset($saleProducts[$key]);
+
+			}else{
+				$saleProducts[$key]['chilled']['quantity'] = $qtyChilled;
+				$saleProducts[$key]['nonchilled']['quantity'] = $qtyNonChilled;
+				$saleProducts[$key]['quantity'] = $totalQty;
+			}
 
 		}
 

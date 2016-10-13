@@ -76,11 +76,11 @@ class ProductRequest extends Request
         {
             foreach ($input['imageFiles'] as $imageKey => $image)
             {
-                if(isset($image['source']) && empty($image['thumb'])){continue;}
                 $ruleKey = 'imageFiles.' . $imageKey;
-                $rules[$ruleKey . '.thumb'] = 'required|image|max:5102';
                 $rules[$ruleKey . '.label'] = 'required|max:100';
                 $rules[$ruleKey . '.order'] = 'required|integer';
+                if(isset($image['source']) && empty($image['thumb'])){continue;}
+                $rules[$ruleKey . '.thumb'] = 'required|image|max:5102';
             }
         }
 

@@ -1,16 +1,12 @@
 <ul class="nav navbar-nav modify capitalize mobilesidebar" ng-cloak>
 	<!-- SHOW IN MOBILE ONLY -->
-	
-	<li ng-hide="user.email" class="mobilemenu hide">
-		<a class="pointer" href="tel:+6192445533">9-2445533</a>
-	</li>
-	<li class="mobilemenu hide">
+	<li ng-if="!user.email" class="mobilemenu hide">
 		<a class="pointer" ng-click="loginOpen($event);">LOGIN</a>
 	</li>
-	<li ng-hide="user.email" class="mobilemenu hide brd-bot">
+	<li ng-if="!user.email" class="mobilemenu hide brd-bot">
     	<a class="pointer" ng-click="signupOpen($event);"> SIGNUP </a>                       	
     </li>
-	<li ng:class="{'hideOp':hideOp}" class="dropdown mobilemenu hide brd-bot" ng-show="user.email" ng-click="hideOp=!hideOp"  class="mobilemenu hide"> 
+	<li ng:class="{'hideOp':hideOp}" class="dropdown mobilemenu hide brd-bot" ng-if="user.email" ng-click="hideOp=!hideOp"  class="mobilemenu hide"> 
 		<a class="username dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" > Hola, {{user.email}} 
 		</a>
         <ul  class="dropdown-menu profil-dropdown">

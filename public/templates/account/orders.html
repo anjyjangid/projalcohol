@@ -15,7 +15,7 @@
 
 			<div class="-key cursor-pointer" ui-sref="accountLayout.order({orderid:order._id.$id})">Order: {{order.reference}}</div>
 			<div class="-timeslot">Delivered on: {{ order.created_at.sec | deliveryDateSlug}}</div>
-			<div class="-items">{{order.quantity}} Items</div>
+			<div class="-items">{{order.quantity}} {{(order.quantity>1)?'Items':'Item'}}</div>
 		</div>
 		<div class="col-sm-3">
 			<div class="-status">
