@@ -30,6 +30,7 @@ button:disabled {
 .img-responsive-h{
 	max-height: 100% !important;
 	margin: auto;
+	height: 46px;
 }
 
 .navbar .make-active {
@@ -310,7 +311,7 @@ li.subactive a, li.subactive a span {
   }
 
   .md-center {
-	  left: -85px;
+	  /*left: -85px;*/
 	  margin: 0      
   }
 
@@ -1013,7 +1014,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
     border: medium none;
     border-radius: 5px;
     color: #fff;
-    float: right;
+    float: left;
     font-size: 11px;
     font-weight: 500;
     margin: 0;

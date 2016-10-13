@@ -300,7 +300,7 @@ AlcoholDelivery.directive('sideBar', function() {
 .directive("tscroll", function ($window) {
     return function(scope, element, attrs) {
 
-    	var svgMorpheus = new SVGMorpheus('#icon');
+    	var svgMorpheus = new SVGMorpheus('#icon',{rotation:'none'});
 		var icons = ['question', 'answer'];
 		var prev=1;
 
@@ -527,7 +527,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 		// '</div>'
 
-		'<div class="input-group bootstrap-touchspin" ng-class={vertical:!verticalButtons}>' +
+		'<div class="input-group bootstrap-touchspin spin-border" ng-class={vertical:!verticalButtons}>' +
 		'  <span class="input-group-btn" ng-show="verticalButtons">' +
 		'    <button class="btn btn-default bootstrap-touchspin-down" ng-mousedown="startSpinDown()" ng-mouseup="stopSpin()">-</button>' +
 		'  </span>' +

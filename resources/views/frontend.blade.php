@@ -244,6 +244,7 @@
 
 	<script type="text/javascript" src="{{ asset('bower_components/angular-aria/angular-aria.min.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('bower_components/angular-messages/angular-messages.min.js') }}"></script>
+	
 
 	<script src="{{ asset('bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js')}}"></script>
 	<script src="{{ asset('bower_components/ng-scrollbars/dist/scrollbars.min.js')}}"></script>

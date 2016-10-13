@@ -40,9 +40,9 @@
 }
 .owl-theme .owl-controls .owl-page span{
 	display: block;
-	width: 4px;
-	height: 4px;
-	margin: 5px 4px;
+	width: 8px;
+	height: 8px;
+	margin: 5px 7px;
 	filter: Alpha(Opacity=50);/*IE7 fix*/
 	opacity: 0.5;
 	-webkit-border-radius: 20px;
@@ -58,7 +58,7 @@
 	background: #aa00ff;
 	width: 8px;
 	height: 8px;
-	margin:3px 4px;
+	margin:5px 7px;
 }
 
 /* If PaginationNumbers is true */

@@ -38,10 +38,19 @@ AlcoholDelivery.config(
 		});
 }]);
 
-AlcoholDelivery.config(['$controllerProvider', function($controllerProvider) {
+AlcoholDelivery.config(['$controllerProvider','ScrollBarsProvider', function($controllerProvider,ScrollBarsProvider) {
   // this option might be handy for migrating old apps, but please don't use it
   // in new ones!
   $controllerProvider.allowGlobals();
+	ScrollBarsProvider.defaults = {
+		scrollButtons: {
+		enable: true //enable scrolling buttons by default
+		},
+		axis: 'yx',
+		mouseWheel:{ preventDefault: true },
+		// setHeight: 200,
+		scrollInertia:0
+	};
 
 }]);
 
@@ -1132,7 +1141,7 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 						templateUrl: '/templates/toast-tpl/cart-update.html',
 						parent : $document[0].querySelector('#cart-summary-icon'),
 						position: 'top center',
-						hideDelay:3000
+						hideDelay:300000
 					});
 
 	});
