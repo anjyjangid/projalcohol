@@ -230,7 +230,7 @@ AlcoholDelivery.controller('ProductsController', [
 			sort: $stateParams.sort,
 
 		}).then(function(response) {
-
+			
 		   $scope.products = response;
 
 		 }, function(response) {

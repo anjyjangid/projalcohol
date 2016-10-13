@@ -335,7 +335,7 @@ class Products extends Eloquent
 
 		}
 
-		if(isset($params['parent']) && !empty($params['parent'])){
+		/*if(isset($params['parent']) && !empty($params['parent'])){
 			
 			$category = Categories::raw()->findOne(['slug' => $params['parent']]);
 
@@ -347,7 +347,7 @@ class Products extends Eloquent
 
 			$match['$match']['categories'] = $catKey;
 
-		}
+		}*/
 
 		if(isset($params['sort']) && !empty($params['sort'])){
 
@@ -415,7 +415,21 @@ class Products extends Eloquent
 				'path' => '$proSales.actionProductObjectId',
 				'preserveNullAndEmptyArrays' => true
 			]
-		];	
+		];
+
+		$unwindCategory = [
+			'$unwind' => [
+				'path' => '$parentCategory',
+				'preserveNullAndEmptyArrays' => true
+			]
+		];
+
+		$unwindSubCategory = [
+			'$unwind' => [
+				'path' => '$childCategory',
+				'preserveNullAndEmptyArrays' => true
+			]
+		];
 
 		$lookupSaleProduct = [
 			'$lookup' => [
@@ -424,6 +438,40 @@ class Products extends Eloquent
 				'foreignField' => '_id', 
 				'as' => 'saleProduct'
 			]
+		];
+
+		$lookupParentCategory = [
+			'$lookup' => [
+				'from' => 'categories',
+				'localField' => 'catParent',
+				'foreignField' => '_id', 
+				'as' => 'parentCategory'
+			]
+		];
+
+		$lookupChildCategory = [
+			'$lookup' => [
+				'from' => 'categories',
+				'localField' => 'catSubParent',
+				'foreignField' => '_id', 
+				'as' => 'childCategory'
+			]
+		];
+
+		if(isset($params['parent']) && !empty($params['parent'])){
+
+			$matchCategoryCondition[]['$match'] = [
+				'parentCategory.slug' => $params['parent']
+			];
+
+		}
+
+		$matchCategoryCondition[]['$match'] = [
+			'parentCategory.cat_status' => 1
+		];
+
+		$matchCategoryCondition[]['$match'] = [
+			'childCategory.cat_status' => 1
 		];
 
 
@@ -449,7 +497,11 @@ class Products extends Eloquent
 							'outOfStockType' => 1,
 							// 'maxQuantity' => 1,
 							'availabilityDays' => 1,
-							'availabilityTime' => 1
+							'availabilityTime' => 1,
+							'catParent' => ['$arrayElemAt'=> [ '$categoriesObject', 0 ]],
+							'catSubParent' => ['$arrayElemAt'=> [ '$categoriesObject', 1 ]],
+							'parentCategory' => 1,
+							'childCategory' => 1
 						]
 		];
 
@@ -545,7 +597,24 @@ class Products extends Eloquent
 
 				if($params['type']==0){
 					//$query = array_merge($query,[$lookupParentCatSale,$lookupCatSale,$lookupProSale,$saleProject,$unwind,$unwindAction,$lookupSaleProduct]);
-					$query = array_merge($query,[$lookupParentCatSale,$lookupCatSale,$lookupProSale,$saleProject,$firstProSaleProject,$unwind,$unwindAction,$lookupSaleProduct]);
+					$query = array_merge(
+								$query,
+								[
+									$lookupParentCategory,
+									$lookupChildCategory,
+									$lookupParentCatSale,
+									$lookupCatSale,
+									$lookupProSale,
+									$saleProject,
+									$firstProSaleProject,
+									$unwindCategory,
+									$unwindSubCategory,
+									$unwind,
+									$unwindAction,
+									$lookupSaleProduct
+								],
+								$matchCategoryCondition
+							);
 					//jprd($query);
 				}
 
