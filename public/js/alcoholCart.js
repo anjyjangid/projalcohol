@@ -1,10 +1,10 @@
 AlcoholDelivery.service('alcoholCart', [
 			'$log','$rootScope', '$window', '$http', '$q', '$mdToast', '$filter', 'alcoholCartItem', 'alcoholCartLoyaltyItem', 
 			'alcoholCartPackage','promotionsService','alcoholCartPromotion', 'alcoholCartGiftCard', 'alcoholCartGift', 
-			'alcoholCartSale', 'alcoholCartCreditCard',
-	function ($log, $rootScope, $window, $http, $q, $mdToast, $filter, alcoholCartItem, alcoholCartLoyaltyItem, 
-			alcoholCartPackage, promotionsService, alcoholCartPromotion, alcoholCartGiftCard, alcoholCartGift, 
-			alcoholCartSale, alcoholCartCreditCard) {
+			'alcoholCartSale', 'alcoholCartCreditCard','UserService'
+	,function ($log, $rootScope, $window, $http, $q, $mdToast, $filter, alcoholCartItem, alcoholCartLoyaltyItem, 
+			alcoholCartPackage, promotionsService, alcoholCartPromotion, alcoholCartGiftCard, alcoholCartGift,
+			alcoholCartSale, alcoholCartCreditCard, UserService) {
 
 	this.init = function(){
 		
@@ -234,7 +234,7 @@ AlcoholDelivery.service('alcoholCart', [
 				}else{
 				
 					inCart.setTQuantity(resProduct.quantity);
-					inCart.setPrice(resProduct);
+					inCart.setPrice(resProduct.product);
 
 				}									
 
@@ -343,7 +343,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 		var defer = $q.defer();
 		var _self = this;
-		$http.put('cart/bulk',products)
+		$http.put('cart/bulk',angular.extend({ cartKey: _self.getCartKey() }, products))
 				.success(function(response){
 
 					if(response.success){					
@@ -392,7 +392,7 @@ AlcoholDelivery.service('alcoholCart', [
 		var defer = $q.defer();
 		var _self = this;
 
-		$http.post('cart/repeatlast')
+		$http.post('cart/repeatlast', {cartKey: _self.getCartKey()})
 				.success(function(response){
 
 					if(response.success){					
@@ -828,12 +828,16 @@ AlcoholDelivery.service('alcoholCart', [
 		};
 
 		this.getSales = function(){
-			return this.getCart().sales;
+			return this.getCart().sales  || [];
 		}	
 
 		this.getLoyaltyProducts = function(){
-			return this.getCart().loyalty;
+			return this.getCart().loyalty || {};
 		};
+
+		this.getLoyaltyCreditCertificates = function(){
+			return this.getCart().loyaltyCards || {};
+		}
 
 		this.getLoyaltyCards = function(){
 			return this.getCart().loyaltyCards;
@@ -842,19 +846,29 @@ AlcoholDelivery.service('alcoholCart', [
 		this.getLoyaltyPointsInCart = function(){
 
 			var lp = this.getLoyaltyProducts();
+			var lCC = this.getLoyaltyCreditCertificates();
 			var points = 0;
+
 			angular.forEach(lp, function(product,key){
 				points = points + parseInt(product.loyaltyValue.point);
 			});
 
-			return points;
+			angular.forEach(lCC, function(product,key){
+				points = points + product.getLoyaltyPoints();
+			});
+
+			return parseInt(points);
 
 		}
 
 		this.setLoyaltyPointsInCart = function(){
 
-			this.availableLoyaltyPoints = this.getLoyaltyPointsInCart();
+			var pointsUsedInCart = this.getLoyaltyPointsInCart();
+			var pointsInUserAccount = parseInt(UserService.currentUser.loyaltyPoints);
 
+			this.availableLoyaltyPoints = pointsInUserAccount - pointsUsedInCart;
+
+			return this.availableLoyaltyPoints;
 		}
 
 		this.getPackages = function(){
@@ -964,16 +978,15 @@ AlcoholDelivery.service('alcoholCart', [
 		this.setCartTotal = function(){
 
 			var cartTotal = 0;
-console.log("--------------------------------------");			
+
 			cartTotal+= parseFloat(this.getSubTotal());
 
 			cartTotal+= parseFloat(this.getAllServicesCharges());
 
 			cartTotal+= parseFloat(this.getDeliveryCharges());
-console.log(this.getDeliveryCharges());
+
 			cartTotal-= parseFloat(this.getDiscount());
 
-console.log("--------------------------------------");
 			return parseFloat(cartTotal).toFixed(2);
 
 		};
@@ -1210,8 +1223,8 @@ console.log("--------------------------------------");
 
 			});			
 
-			$rootScope.$broadcast('alcoholCart:notify', "Sale Removed from cart");
-
+			$rootScope.$broadcast('alcoholCart:updated',{msg:"Sale Removed from cart"});
+			
 		}
 
 		this.removePromotion = function (id) {
@@ -1323,7 +1336,7 @@ console.log("--------------------------------------");
 			}else{
 
 				smoke.detail = detail;
-
+				$rootScope.$broadcast('alcoholCart:updated',{msg:"Smoke added to cart"});
 			}
 
 			this.deployCart();
@@ -1334,6 +1347,9 @@ console.log("--------------------------------------");
 
 			this.$cart.service.smoke.detail = "";
 
+			$rootScope.$broadcast('alcoholCart:updated',{msg:"Smoke removed from cart"});
+
+			this.deployCart();
 		}
 
 		this.empty = function () {
@@ -1579,6 +1595,7 @@ console.log("--------------------------------------");
 		this.removeGift = function (uid,fromServerSide) {
 
 			var cart = this.getCart();
+			var _self = this;
 			
 			var d = $q.defer();
 
@@ -1588,7 +1605,7 @@ console.log("--------------------------------------");
 
 					if(typeof fromServerSide !== 'undefined' && fromServerSide){
 
-						$http.delete("cart/gift/"+uid).then(
+						$http.delete("cart/gift/"+uid+"/"+_self.getCartKey()).then(
 
 							function(successRes){
 								
@@ -2636,19 +2653,26 @@ AlcoholDelivery.factory('alcoholCartCreditCard',[function(){
 
 	creditCard.prototype.setQuantity = function(quantity){
 
-		this.quantity = quantity;
-		this.qNChilled = quantity;
+		this.quantity = parseInt(quantity);
+		this.qNChilled = parseInt(quantity);
 		return this.quantity;
 	}
 
 	creditCard.prototype.getQuantity = function(){		
-		return parseInt(this.quantity);
+		return this.quantity;
 	}
 
 	creditCard.prototype.getPoints = function(){
 
 		var cardPoints = parseInt(this.quantity) * parseFloat(this.value);
 		return cardPoints;
+
+	}	
+
+	creditCard.prototype.getLoyaltyPoints = function(){
+
+		var loyaltyPoints = parseInt(this.quantity) * parseFloat(this.points);
+		return loyaltyPoints;
 
 	}	
 
@@ -2998,7 +3022,7 @@ AlcoholDelivery.service('store', ['$rootScope','$window','$http','alcoholCart','
 		return {
 
 			init : function (){
-
+				
 				var d = $q.defer();
 				if(typeof(Storage) !== "undefined"){
 
@@ -3014,7 +3038,7 @@ AlcoholDelivery.service('store', ['$rootScope','$window','$http','alcoholCart','
 
 							$http.get("cart/"+deliverykey).success(function(response){
 
-								alcoholCart.$restore(response.cart);
+								alcoholCart.$restore(response.cart);								
 								d.resolve("every thing all right");
 
 							})

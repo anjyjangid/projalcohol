@@ -1328,13 +1328,13 @@ ui-sref {
 	margin-top: 41px;
 }
 .alcohal_hisryorderboxcvr1 {
-	float: left;
+	display: inline-block;
 	border: 1px solid #d7d7d7;
 	padding: 10px;
 	border-radius: 5px;
 	margin-bottom: 18px;
 	width: 236px;
-	margin-right: 19px;
+	margin-right: 15px;
 	cursor: pointer;
 }
 .alcohal_hisryorderordertxt {
@@ -1664,38 +1664,41 @@ ui-sref {
 }
 .navbar-fixed-top.navbar-shrink .logo_cover {
 	min-height: 60px;
-	-moz-transition: all 0.5s ease 0s;
-	-webkit-transition: all 0.5s ease 0s;
-	transition: all 0.5s ease 0s;
+	-moz-transition: all 1s ease-in-out;
+	-webkit-transition: all 1s ease-in-out;
+	transition: all 1s ease-in-out;
 }
 .logolarge {
 	left: 46%;
 	position: absolute;
 	top: 5px;
-	transition: all 0.5s ease 0s;
+	transition: all 1s ease-in-out;
 	width: 171px;
+	opacity: 1;
 }
 .text-center .logosmall {
-	width: 0px;
+	width: 51px;
 	position: absolute;
 	left: 50%;
 	top: 20px;
-	-moz-transition: all 0.5s ease 0s;
-	-webkit-transition: all 0.5s ease 0s;
-	transition: all 0.5s ease 0s;
+	opacity: 0;
+	-moz-transition: all 1s ease-in-out;
+	-webkit-transition: all 1s ease-in-out;
+	transition: all 1s ease-in-out;
 }
 .navbar-fixed-top.navbar-shrink .logolarge {
-	width: 0px;
-	-moz-transition: all 0.5s ease 0s;
-	-webkit-transition: all 0.5s ease 0s;
-	transition: all 0.5s ease 0s;
-	display: inherit
+	width: 171px;
+	opacity: 0;
+	-moz-transition: all 1s ease-in-out;
+	-webkit-transition: all 1s ease-in-out;
+	transition: all 1s ease-in-out;
+	/*display: inline-block;*/
 }
 .navbar-fixed-top.navbar-shrink .text-center .logosmall {
-	width: 51px;
-	-moz-transition: all 0.5s ease 0s;
-	-webkit-transition: all 0.5s ease 0s;
-	transition: all 0.5s ease 0s;
+	opacity:1;
+	-moz-transition: all 0.5s ease-in-out 0s;
+	-webkit-transition: all 0.5s ease-in-out 0s;
+	transition: all 0.5s ease-in-out 0s;
 }
 .navbar-fixed-top.navbar-shrink .callshape {
 	background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
@@ -2114,7 +2117,7 @@ ui-sref {
 	box-shadow: 0px 0px 0px 0px;
 }
 .checkoutmiddleouter {
-	padding: 0px 15px;
+	padding: 0px 25px;
 	width: 100%;
 	float: left;
 	transition: all 0.5s ease 0s;
@@ -3092,9 +3095,16 @@ ui-sref {
 	margin-top: 30px;
 }
 .cover_div_addsboxs {
-	width: 555px;
+	width: 100%;
+	float: left;
 	margin: 0 auto;
 }
+
+
+.addressbook-btmpannelcover .addressbokk-trvaichacovr:nth-child(even){
+	margin-right: 0px;
+}
+
 .div_addsboxs:nth-child(odd) {
 	width: 48%;
 	float: left;
@@ -4303,7 +4313,7 @@ ui-sref {
 	width: 100%;
 }
 .signuplogin .dropdown:hover a {
-	background: #e1b11f none repeat scroll 0 0;
+	/*background: #e1b11f none repeat scroll 0 0;*/
 }
 .profil-dropdown li a {
 	float: left;
@@ -4592,7 +4602,7 @@ ui-sref {
 	color: #666666;
 	float: left;
 	font-size: 12px;
-	padding: 6px 5px 4px 36px;
+	padding: 4px 5px 5px 36px	;
 	width: 100%;
 }
 .addresseditdltpic > a {
@@ -4642,6 +4652,7 @@ ui-sref {
 	width: 290px;
 	z-index: 9000;
 	padding: 0;
+	border: none;
 	-webkit-box-shadow: 0px 29px 60px 0px rgba(86,111,140,0.6);
 	-moz-box-shadow: 0px 29px 60px 0px rgba(86,111,140,0.6);
 	box-shadow: 0px 29px 60px 0px rgba(86,111,140,0.6);
@@ -4656,6 +4667,7 @@ ui-sref {
 	top: -7px;
 	transform: rotate(135deg);
 	width: 20px;
+	border: none;
 }
 .productaddedpopup {
 	background: #ffffff none repeat scroll 0 0;
@@ -4666,6 +4678,7 @@ ui-sref {
 	width: 290px;
 	z-index: 19;
 	padding: 0;
+	border: none;
 	-webkit-box-shadow: 0px 29px 60px 0px rgba(86,111,140,0.6);
 	-moz-box-shadow: 0px 29px 60px 0px rgba(86,111,140,0.6);
 	box-shadow: 0px 29px 60px 0px rgba(86,111,140,0.6);
@@ -4680,6 +4693,7 @@ ui-sref {
 	top: -7px;
 	transform: rotate(135deg);
 	width: 20px;
+	border: none;
 }
 .currentorderpopuppinkbox {
 	float: left;
@@ -4752,7 +4766,7 @@ ui-sref {
 	float: left;
 }
 .navbar.navbar-default.navbar-fixed-top .signuplogin .dropdown:hover .cart_icon {
-	background: #e1b11f url("../images/cart-icon-new.png") no-repeat scroll center 41px;
+	/*background: #e1b11f url("../images/cart-icon-new.png") no-repeat scroll center 41px;*/
 }
 .navbar.navbar-default.navbar-fixed-top.navbar-shrink .signuplogin .dropdown:hover .cart_icon {
 	background: #e1b11f url("../images/cart-icon-new.png") no-repeat scroll center 25px;
@@ -5179,9 +5193,9 @@ md-dialog .md-actions, md-dialog md-dialog-actions {
 .md-dialog-content.alcohaladdadrebody.alcohal_reapeatorederbody {
 	padding-top: 10px;
 }
-.alcohal_hisryorderboxcvr1:nth-child(3n+3) {
+/*.alcohal_hisryorderboxcvr1:nth-child(3n+3) {
 	margin-right: 0;
-}
+}*/
 .btn.product_addcart.addcart-detail.top-set-cart {
 	padding-top: 7px;
 }
@@ -5309,10 +5323,10 @@ md-dialog .md-actions, md-dialog md-dialog-actions {
 .img-responsive.logosmall {
 	display: table-cell;
 	max-height: inherit;
-	transition: all 0.5s ease 0s;
+	transition: all 1s ease-in-out;
 }
 .img-responsive.logolarge {
-	display: inherit;
+	/*display: inherit;*/
 	left: 0;
 	position: relative;
 	top: 0;
@@ -5321,10 +5335,11 @@ md-dialog .md-actions, md-dialog md-dialog-actions {
 .navbar-fixed-top.navbar-shrink .text-center .logosmall {
 }
 .navbar-fixed-top.navbar-shrink .img-responsive.logosmall {
-	display: inherit;
+	/*display: inherit;*/
 	vertical-align: middle;
-	transition: all 0.5s ease 0s;
+	transition: all 1s ease-in-out;
 	width: 51px;/* width: 51px;*/
+	opacity: 1;
 }
 .callshape {
 	background: rgba(0, 0, 0, 0) url("../../images/Shapecall2.png") no-repeat scroll 0 center;
@@ -5361,13 +5376,14 @@ md-dialog .md-actions, md-dialog md-dialog-actions {
 	z-index: 9999
 }
 .img-responsive.logosmall {
-	display: inherit;
+	/*display: inherit;*/
 	left: 36%;
 	position: absolute;
 	top: 23px;
-	transition: all 0.5s ease 0s;
+	transition: all 1s ease-in-out;
 	vertical-align: middle;
-	width: 0;
+	width: 51px;
+	opacity: 0;
 }
 .navbar-fixed-top .searchtop.searchtop100 .img-responsive.logolarge {
 	display: none
@@ -5876,7 +5892,7 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
 	position: absolute;bottom: 4px;left: 0px;	
 }
 .cartaddresses .addressbokk-trvaichacovr, .cartaddresses .addressbokk-addnewadresscovr{
-	width: 46%;
+	width: 48.5%;
 }
 .addressbokk-trvaichacovr:hover, .adressmiddlepartcvr2:hover, .addressbokk-trvaichacovr.active{
 	border: 1px solid #8d00d4;

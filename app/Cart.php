@@ -287,18 +287,19 @@ class Cart extends Moloquent
 												// "with"=>["discounts"]
 											)
 										);
+		if($productsInCart){
+			foreach($productsInCart as $key=>$pic){
 
-		foreach($productsInCart as $key=>$pic){
+				$productsInCart[$pic['_id']] = $pic;
+				$productsInCart[$pic['_id']]['count'] = $products[$pic['_id']];
 
-			$productsInCart[$pic['_id']] = $pic;
-			$productsInCart[$pic['_id']]['count'] = $products[$pic['_id']];
+				unset($productsInCart[$key]);
 
-			unset($productsInCart[$key]);
+			}
 
+			return $productsInCart->toArray();
 		}
-
-		return $productsInCart->toArray();
-
+		return [];
 	}
 
 	public function setReference(){
@@ -961,8 +962,17 @@ class Cart extends Moloquent
 
 			}
 
-			$saleProducts[$key]['chilled']['quantity'] = $qtyChilled;
-			$saleProducts[$key]['nonchilled']['quantity'] = $qtyNonChilled;
+			$totalQty = $qtyChilled + $qtyNonChilled;
+
+			if($totalQty<1){
+
+				unset($saleProducts[$key]);
+
+			}else{
+				$saleProducts[$key]['chilled']['quantity'] = $qtyChilled;
+				$saleProducts[$key]['nonchilled']['quantity'] = $qtyNonChilled;
+				$saleProducts[$key]['quantity'] = $totalQty;
+			}
 
 		}
 

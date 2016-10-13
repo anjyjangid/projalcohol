@@ -2683,8 +2683,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             }
         });
 
-
-
         function authenticate($q, AdminUserService, $state, $timeout, $location) {
 
 	      if (AdminUserService.isLogged()) {
