@@ -1624,12 +1624,13 @@ jprd($product);
 
 			$order->save();
 
+			$userObj = User::where('_id', $user->_id);
+
 			if($cart->loyaltyPointUsed>0){
 
-				$isUpdated = User::where('_id', $user->_id)->decrement('loyaltyPoints', $cart->loyaltyPointUsed);
+				$userObj->decrement('loyaltyPoints', $cart->loyaltyPointUsed);
 
-				$isUpdated = User::where('_id', $user->_id)
-									->push('loyalty', 
+				$userObj->push('loyalty', 
 											[
 												"type"=>"debit",
 												"points"=>$cart->loyaltyPointUsed,
@@ -1644,10 +1645,9 @@ jprd($product);
 
 			}
 
-			$isUpdated = User::where('_id', $user->_id)->increment('loyaltyPoints', $loyaltyPoints);
+			$userObj->increment('loyaltyPoints', $loyaltyPoints);
 
-			$isUpdated = User::where('_id', $user->_id)
-								->push('loyalty', 
+			$userObj->push('loyalty', 
 										[
 											"type"=>"credit",
 											"points"=>$loyaltyPoints,
@@ -1665,8 +1665,8 @@ jprd($product);
 			//SAVE CARD IF USER CHECKED SAVE CARD FOR FUTURE PAYMENTS
 			if($cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['card'] == 'newcard' && $cartArr['payment']['savecard']){
 				$cardInfo = $cartArr['payment']['creditCard'];
-		        $user = User::find($user->_id);
-		        $user->push('savedCards',$cardInfo,true);
+		        // $user = User::find($user->_id);
+		        $userObj->push('savedCards',$cardInfo,true);
 			}
 
 			if($request->isMethod('get')){

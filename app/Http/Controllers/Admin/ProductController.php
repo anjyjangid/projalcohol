@@ -611,6 +611,42 @@ class ProductController extends Controller
 
 	public function getTest(Request $request){
 
+		$query = [];
+			
+		$ids = [new MongoId('57c53011b190ec430d8b456e'), new MongoId('57c6b32db190ecc02e8b4576'),new MongoId('57c6957fb190ecc02e8b456b')];
+
+
+		$query[]['$match'] = [
+			'_id' => ['$in'=>$ids]
+		];
+
+		$query[]['$lookup'] = [
+			'from' => 'stocks',
+			'localField' => '_id',
+			'foreignField' => 'productObjId',
+			'as' => 'storeStocks'
+		];
+
+		$query[]['$project'] = ['quantity'=>1,'storeStocks'=>1];
+
+		$query[]['$unwind'] = [
+			'path' => '$storeStocks',
+			'preserveNullAndEmptyArrays' => true
+		];
+
+		$query[]['$sort'] = ['storeStocks.storeObjId' => 1];
+
+		$query[]['$group'] = [
+			'_id' => '$_id',
+			'quantity' => ['$first' => '$quantity'],
+			'storeStocks' => ['$push' => '$storeStocks']
+		];
+				
+		$model = Products::raw()->aggregate($query);
+
+		return response($model);
+
+
 		/*$create = DB::collection('mytest')->insert(
 			[
 				'name' => 'test',

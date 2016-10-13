@@ -1244,8 +1244,8 @@ AlcoholDelivery.controller('CartAddressController',[
 }]);
 
 AlcoholDelivery.controller('CartDeliveryController',[
-			'$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$interval', 'alcoholCart', 'sweetAlert',
-	function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $interval, alcoholCart, sweetAlert){
+	'$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$interval', 'alcoholCart', 'sweetAlert', '$filter',
+	function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $interval, alcoholCart, sweetAlert, $filter){
 
 
 	if($scope.$parent.cart.delivery.type==0){
@@ -1295,48 +1295,12 @@ AlcoholDelivery.controller('CartDeliveryController',[
 			}
 		);
 
-	$scope.dateChangeAction = function(){
-
-		$scope.weeksName = new Array(7);
-		$scope.weeksName[0]=  "Sunday";
-		$scope.weeksName[1] = "Monday";
-		$scope.weeksName[2] = "Tuesday";
-		$scope.weeksName[3] = "Wednesday";
-		$scope.weeksName[4] = "Thursday";
-		$scope.weeksName[5] = "Friday";
-		$scope.weeksName[6] = "Saturday";
-
-		$scope.monthsName = new Array(12);
-		$scope.monthsName[0]=  "January";
-		$scope.monthsName[1] = "February";
-		$scope.monthsName[2] = "March";
-		$scope.monthsName[3] = "April";
-		$scope.monthsName[4] = "May";
-		$scope.monthsName[5] = "June";
-		$scope.monthsName[6] = "July";
-		$scope.monthsName[7] = "August";
-		$scope.monthsName[8] = "September";
-		$scope.monthsName[9] = "Octomber";
-		$scope.monthsName[10] = "November";
-		$scope.monthsName[11] = "December";
-
-
-
-		$scope.day = $scope.myDate.getDate();
-		$scope.year = $scope.myDate.getFullYear();
-		$scope.weekName = $scope.weeksName[$scope.myDate.getDay()];
-		$scope.monthName = $scope.monthsName[$scope.myDate.getMonth()];
-
-		$scope.daySlug = $scope.weekName+', '+$scope.day+' '+$scope.monthName+', '+$scope.year;
-
-		$scope.currDate = $scope.myDate.getFullYear()+'-'+($scope.myDate.getMonth()+1)+'-'+$scope.myDate.getDate();
-
+	$scope.dateChangeAction = function(){	
+		$scope.daySlug = $filter('dateSuffix')($scope.myDate);
+		$scope.currDate = $filter('date')($scope.myDate,'yyyy-MM-dd');
 		$http.get("cart/timeslots/"+$scope.currDate).success(function(response){
-
 			$scope.timeslots = response;
-
 	    });
-
 	}
 
 
@@ -1533,8 +1497,8 @@ AlcoholDelivery.controller('CartPaymentController',[
 }]);
 
 AlcoholDelivery.controller('CartReviewController',[
-			'$scope','$rootScope','$http','$q','$state', '$mdDialog', '$mdMedia', '$interval', 'alcoholCart','store','sweetAlert','$sce',
-	function($scope, $rootScope, $http, $q, $state, $mdDialog, $mdMedia, $interval, alcoholCart, store, sweetAlert,$sce){
+			'$scope','$rootScope','$http','$q','$state', '$mdDialog', '$mdMedia', '$interval', 'alcoholCart','store','sweetAlert','$sce', '$filter',
+	function($scope, $rootScope, $http, $q, $state, $mdDialog, $mdMedia, $interval, alcoholCart, store, sweetAlert,$sce,$filter){
 
 	$scope.card = {
 		formAction:'',
@@ -1545,40 +1509,15 @@ AlcoholDelivery.controller('CartReviewController',[
 
 	$scope.cart = alcoholCart.$cart;
 
-	$scope.address = alcoholCart.$cart.delivery.address;
-
-	$scope.weeksName = new Array(7);
-	$scope.weeksName[0]=  "Sunday";
-	$scope.weeksName[1] = "Monday";
-	$scope.weeksName[2] = "Tuesday";
-	$scope.weeksName[3] = "Wednesday";
-	$scope.weeksName[4] = "Thursday";
-	$scope.weeksName[5] = "Friday";
-	$scope.weeksName[6] = "Saturday";
-
-	$scope.monthsName = new Array(12);
-	$scope.monthsName[0]=  "January";
-	$scope.monthsName[1] = "February";
-	$scope.monthsName[2] = "March";
-	$scope.monthsName[3] = "April";
-	$scope.monthsName[4] = "May";
-	$scope.monthsName[5] = "June";
-	$scope.monthsName[6] = "July";
-	$scope.monthsName[7] = "August";
-	$scope.monthsName[8] = "September";
-	$scope.monthsName[9] = "Octomber";
-	$scope.monthsName[10] = "November";
-	$scope.monthsName[11] = "December";
+	$scope.address = alcoholCart.$cart.delivery.address;	
 
 	var mili = $scope.cart.timeslot.datekey * 1000;
 	$scope.myDate = new Date(mili);
 
-	$scope.day = $scope.myDate.getDate();
-	$scope.year = $scope.myDate.getFullYear();
-	$scope.weekName = $scope.weeksName[$scope.myDate.getDay()];
-	$scope.monthName = $scope.monthsName[$scope.myDate.getMonth()];
+	// $scope.daySlug = $scope.weekName+', '+$scope.day+' '+$scope.monthName+', '+$scope.year;
+	
+	$scope.daySlug = $filter('dateSuffix')($scope.myDate);
 
-	$scope.daySlug = $scope.weekName+', '+$scope.day+' '+$scope.monthName+', '+$scope.year;
 	$scope.slotslug = $scope.$parent.cart.timeslot.slotslug;
 
 
@@ -1646,38 +1585,16 @@ AlcoholDelivery.controller('CartReviewController',[
 }]);
 
 AlcoholDelivery.controller('OrderplacedController',[
-			'$scope','$http','$stateParams','sweetAlert','SocialSharingService',
-	function($scope,$http,$stateParams,sweetAlert,SocialSharingService){
+	'$scope','$http','$stateParams','$filter','sweetAlert','SocialSharingService',
+	function($scope,$http,$stateParams,$filter,sweetAlert,SocialSharingService){
 
 	$scope.order = $stateParams.order;
 
 	$http.get("order/summary/"+$scope.order).success(function(response){
+    	
     	$scope.order = response;
 
-    	$scope.orderNumber = $scope.order.reference;
-
-    	$scope.weeksName = new Array(7);
-		$scope.weeksName[0]=  "Sunday";
-		$scope.weeksName[1] = "Monday";
-		$scope.weeksName[2] = "Tuesday";
-		$scope.weeksName[3] = "Wednesday";
-		$scope.weeksName[4] = "Thursday";
-		$scope.weeksName[5] = "Friday";
-		$scope.weeksName[6] = "Saturday";
-
-		$scope.monthsName = new Array(12);
-		$scope.monthsName[0]=  "January";
-		$scope.monthsName[1] = "February";
-		$scope.monthsName[2] = "March";
-		$scope.monthsName[3] = "April";
-		$scope.monthsName[4] = "May";
-		$scope.monthsName[5] = "June";
-		$scope.monthsName[6] = "July";
-		$scope.monthsName[7] = "August";
-		$scope.monthsName[8] = "September";
-		$scope.monthsName[9] = "Octomber";
-		$scope.monthsName[10] = "November";
-		$scope.monthsName[11] = "December";
+    	$scope.orderNumber = $scope.order.reference;    	
 
 		if($scope.order.timeslot.datekey!==false){
 
@@ -1690,27 +1607,46 @@ AlcoholDelivery.controller('OrderplacedController',[
 		}
 
 
-		$scope.myDate = new Date(mili);
+		$scope.myDate = new Date(mili);	
 
-		$scope.day = $scope.myDate.getDate();
-		$scope.year = $scope.myDate.getFullYear();
-		$scope.weekName = $scope.weeksName[$scope.myDate.getDay()];
-		$scope.monthName = $scope.monthsName[$scope.myDate.getMonth()];
-
-		$scope.daySlug = $scope.day+' '+$scope.monthName+', '+$scope.year;
+		// $scope.daySlug = $scope.day+' '+$scope.monthName+', '+$scope.year;
+		$scope.daySlug = $filter('dateSuffix')($scope.myDate);
+		
 		$scope.slotslug = $scope.order.timeslot.slotslug;
 
 		var dopmili = $scope.order.dop * 1000;
 		$scope.dopDate = new Date(dopmili);
 
-		$scope.dopDay = $scope.dopDate.getDate();
+		$scope.dopSlug = $filter('dateSuffix')($scope.dopDate);
+		
+		if($scope.order.delivery.type == 1){
+			$scope.deliveryDateTime = $scope.daySlug+', '+$scope.slotslug;
+		}else{
+			$scope.deliveryDateTime = $scope.dopSlug+', '+$filter('date')($scope.dopDate,'hh:mm a');
+
+			if($scope.order.service.express.status){
+				$scope.deliveryDateTime += ' +30 Minutes';
+			}else{
+				$scope.deliveryDateTime += ' +1 Hour';
+			}
+		}
+
+		if($scope.order.payment.method == 'COD'){
+			$scope.paymode = 'Cash on Delivery';
+		}else{
+			$scope.paymode = 'Debit/Credit Card';
+		}
+
+		
+
+		/*$scope.dopDay = $scope.dopDate.getDate();
 		$scope.dopYear = $scope.dopDate.getFullYear();
 		$scope.dopMonthName = $scope.monthsName[$scope.dopDate.getMonth()];
 		$scope.dopSlug = $scope.dopMonthName+' '+$scope.dopDay+', '+$scope.year;
 
 		$scope.hour = $scope.dopDate.getHours() % 12 || 12;
 		$scope.minute = $scope.dopDate.getMinutes();
-		$scope.aMpM = $scope.dopDate.getHours() > 12 ? 'PM' : 'AM';
+		$scope.aMpM = $scope.dopDate.getHours() > 12 ? 'PM' : 'AM';*/
 
 
     });
