@@ -1223,8 +1223,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 			});			
 
-			$rootScope.$broadcast('alcoholCart:notify', "Sale Removed from cart");
-
+			$rootScope.$broadcast('alcoholCart:updated',{msg:"Sale Removed from cart"});
+			
 		}
 
 		this.removePromotion = function (id) {
@@ -2655,7 +2655,6 @@ AlcoholDelivery.factory('alcoholCartCreditCard',[function(){
 
 		this.quantity = parseInt(quantity);
 		this.qNChilled = parseInt(quantity);
-		console.log(this);
 		return this.quantity;
 	}
 
