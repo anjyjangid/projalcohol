@@ -2569,19 +2569,19 @@ AlcoholDelivery.controller('LoyaltyStoreController', [
 		$scope.products = new ScrollPagination();
 
 		$scope.credits = {};
-		$scope.availableLoyaltyPoints = alcoholCart.availableLoyaltyPoints;
+		
 
-		// alcoholCart.setLoyaltyPointsInCart();
+		$scope.$watch(function(){return alcoholCart.setLoyaltyPointsInCart();},function(newValue,oldValue){
 
-		// $scope.$watch(alcoholCart.availableLoyaltyPoints,function(newValue,oldValue){
+			$scope.availableLoyaltyPoints = newValue;
 
-		// 	angular.forEach($scope.products.items, function(product,key){
+			angular.forEach($scope.products.items, function(product,key){
 
-		// 		product.setAddBtnState();
+				product.setAddBtnState();
 
-		// 	});
+			});
 
-		// });
+		});
 
 		ProductService.getCreditCertificates().then(
 

@@ -491,9 +491,9 @@ class CartController extends Controller
 
 		$user = Auth::user('user');
 
-		// if($user===null){
-		// 	return response(["message"=>"login required","code"=>"401"],401);
-		// }
+		if($user===null){
+			return response(["message"=>"login required","code"=>"401"],400);
+		}
 		
 		$inputs = $request->all();
 

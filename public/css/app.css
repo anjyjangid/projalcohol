@@ -1,3 +1,9 @@
+#icon {
+  width: 171px;
+  height: 76px;
+  margin: auto;
+}
+
 .btn-purple, .btn-purple:focus, .btn-purple:hover, .btn-purple:active, .btn-purple:active:focus {
 	background: #AA00FF;
 	border-color: #AA00FF;

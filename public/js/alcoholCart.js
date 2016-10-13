@@ -1,10 +1,10 @@
 AlcoholDelivery.service('alcoholCart', [
 			'$log','$rootScope', '$window', '$http', '$q', '$mdToast', '$filter', 'alcoholCartItem', 'alcoholCartLoyaltyItem', 
 			'alcoholCartPackage','promotionsService','alcoholCartPromotion', 'alcoholCartGiftCard', 'alcoholCartGift', 
-			'alcoholCartSale', 'alcoholCartCreditCard',
-	function ($log, $rootScope, $window, $http, $q, $mdToast, $filter, alcoholCartItem, alcoholCartLoyaltyItem, 
-			alcoholCartPackage, promotionsService, alcoholCartPromotion, alcoholCartGiftCard, alcoholCartGift, 
-			alcoholCartSale, alcoholCartCreditCard) {
+			'alcoholCartSale', 'alcoholCartCreditCard','UserService'
+	,function ($log, $rootScope, $window, $http, $q, $mdToast, $filter, alcoholCartItem, alcoholCartLoyaltyItem, 
+			alcoholCartPackage, promotionsService, alcoholCartPromotion, alcoholCartGiftCard, alcoholCartGift,
+			alcoholCartSale, alcoholCartCreditCard, UserService) {
 
 	this.init = function(){
 		
@@ -234,7 +234,7 @@ AlcoholDelivery.service('alcoholCart', [
 				}else{
 				
 					inCart.setTQuantity(resProduct.quantity);
-					inCart.setPrice(resProduct);
+					inCart.setPrice(resProduct.product);
 
 				}									
 
@@ -828,12 +828,16 @@ AlcoholDelivery.service('alcoholCart', [
 		};
 
 		this.getSales = function(){
-			return this.getCart().sales;
+			return this.getCart().sales  || [];
 		}	
 
 		this.getLoyaltyProducts = function(){
-			return this.getCart().loyalty;
+			return this.getCart().loyalty || {};
 		};
+
+		this.getLoyaltyCreditCertificates = function(){
+			return this.getCart().loyaltyCards || {};
+		}
 
 		this.getLoyaltyCards = function(){
 			return this.getCart().loyaltyCards;
@@ -842,19 +846,29 @@ AlcoholDelivery.service('alcoholCart', [
 		this.getLoyaltyPointsInCart = function(){
 
 			var lp = this.getLoyaltyProducts();
+			var lCC = this.getLoyaltyCreditCertificates();
 			var points = 0;
+
 			angular.forEach(lp, function(product,key){
 				points = points + parseInt(product.loyaltyValue.point);
 			});
 
-			return points;
+			angular.forEach(lCC, function(product,key){
+				points = points + product.getLoyaltyPoints();
+			});
+
+			return parseInt(points);
 
 		}
 
 		this.setLoyaltyPointsInCart = function(){
 
-			this.availableLoyaltyPoints = this.getLoyaltyPointsInCart();
+			var pointsUsedInCart = this.getLoyaltyPointsInCart();
+			var pointsInUserAccount = parseInt(UserService.currentUser.loyaltyPoints);
 
+			this.availableLoyaltyPoints = pointsInUserAccount - pointsUsedInCart;
+
+			return this.availableLoyaltyPoints;
 		}
 
 		this.getPackages = function(){
@@ -2639,19 +2653,27 @@ AlcoholDelivery.factory('alcoholCartCreditCard',[function(){
 
 	creditCard.prototype.setQuantity = function(quantity){
 
-		this.quantity = quantity;
-		this.qNChilled = quantity;
+		this.quantity = parseInt(quantity);
+		this.qNChilled = parseInt(quantity);
+		console.log(this);
 		return this.quantity;
 	}
 
 	creditCard.prototype.getQuantity = function(){		
-		return parseInt(this.quantity);
+		return this.quantity;
 	}
 
 	creditCard.prototype.getPoints = function(){
 
 		var cardPoints = parseInt(this.quantity) * parseFloat(this.value);
 		return cardPoints;
+
+	}	
+
+	creditCard.prototype.getLoyaltyPoints = function(){
+
+		var loyaltyPoints = parseInt(this.quantity) * parseFloat(this.points);
+		return loyaltyPoints;
 
 	}	
 

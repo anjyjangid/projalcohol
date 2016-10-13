@@ -11,9 +11,15 @@ angular.module('alcoholCart.directives',[])
 				theme: 'light',
 				setHeight: 200,
 				scrollInertia: 0,
-			}
+				advanced:{
+				        updateOnContentResize: true
+				    }
+			};
 
 		angular.scrollconfig = $scope.scrollconfig;
+
+
+		// $scope.updateScrollbar('scrollTo', 10);
 
 	}])
 

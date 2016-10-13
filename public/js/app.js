@@ -437,6 +437,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				.state('mainLayout', {
 						templateUrl: "/templates/index.html",
 						controller:function(){
+
 						},
 						resolve: {
 
@@ -903,12 +904,15 @@ function appLoad($q, $state, $timeout, $location, store, alcoholWishlist, UserSe
 	store.init().then(
 
 		function(storeRes){
+
 			alcoholWishlist.init().then(
+
 				function(wishRes){
 
 					UserService.getIfUser(true).then(
-						function(userRes){
 
+						function(userRes){
+							console.log("app Load");
 							defer.resolve();
 						}
 

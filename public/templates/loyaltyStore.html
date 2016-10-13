@@ -1,7 +1,7 @@
 <div class="combo_slider combo_sliderProduct" ng-init="productView='alcohol'">
 
 	<div class="productbeerfiltertopcover">
-		<div class="productbeerfiltertoptitle text-capitalize">Loyalty Store <span>{{availableLoyaltyPoints}}</span></div>
+		<div class="productbeerfiltertoptitle text-capitalize">Loyalty Store <span ng-if="availableLoyaltyPoints">{{availableLoyaltyPoints}}</span></div>
 			<div class="row">
 				<div class="col-xs-12 col-sm-3 col-md-3"> 
 					<a href="javascript:void(0)" ng-class="{active:productView=='alcohol'}" ng-click="productView='alcohol'">Alcohol</a> 
