@@ -692,12 +692,6 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 					templateUrl: "/templates/orderconfirmation.html",
 					controller:"OrderplacedController",
 					resolve: {
-						storeInit : function (store){
-							return store.init();
-						},
-						wishlistInit : function(alcoholWishlist){
-							return alcoholWishlist.init();
-						},
 						loggedIn: function(UserService) {
 							return UserService.getIfUser(true, true);
 						}
