@@ -2463,6 +2463,7 @@ AlcoholDelivery.controller('SearchController', [
 			$(".signuplogin_cover").addClass("rightminus100").removeClass("again0right");
 			$(".rightplcholder").removeClass('hide');
 			$("#headcontainer").addClass('searchopen');
+			$(".logos-inner-cover").addClass('hide');
 
 
 			if($.trim($(".searchtop input").val())=="")
@@ -2475,6 +2476,7 @@ AlcoholDelivery.controller('SearchController', [
 			$(".signuplogin_cover").removeClass("rightminus100").addClass("again0right");
 			$(".rightplcholder").addClass('hide');
 			$("#headcontainer").removeClass('searchopen');
+			$(".logos-inner-cover").removeClass('hide');
 		}
 	}
 

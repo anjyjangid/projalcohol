@@ -628,6 +628,7 @@ ui-sref {
 .prod_pic img {
 	display: inline-block;
 	max-height: 100%;
+	max-width: 160px;
 }
 .prod_desc {
 	width: 100%;
@@ -1759,7 +1760,8 @@ ui-sref {
 }
 .cartbtn {
 	min-width: 142px;
-	height: 35px;
+	max-width: 160px;
+	height: 32px;
 	border: none;
 	border-radius: 5px;
 	cursor: pointer;
@@ -1776,7 +1778,7 @@ ui-sref {
 	float: left;
 	border-radius: 5px;
 	height: 32px;
-	line-height: 32px;
+	line-height: 30px;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -1788,7 +1790,7 @@ ui-sref {
 	height: 17px;
 	display: inline-block;
 	float: left;
-	margin:6px -2px 0 10px;
+	margin:5px -2px 0 10px;
 }
 .addmore {
 	width: 100%;
@@ -4668,7 +4670,7 @@ ui-sref {
 .currentorderpopup {
 	background: #ffffff none repeat scroll 0 0;
 	border-radius: 5px;
-	left: calc(39% - 145px);
+	left: calc(26% - 145px);
 	position: absolute;
 	top: 98%;
 	width: 290px;
@@ -4694,7 +4696,7 @@ ui-sref {
 .productaddedpopup {
 	background: #ffffff none repeat scroll 0 0;
 	border-radius: 5px;
-	left: calc(39% - 145px);
+	left: calc(26% - 145px);
 	position: absolute;
 	top: 100%;
 	width: 290px;
@@ -5844,8 +5846,14 @@ md-checkbox.md-default-theme.md-checked .md-icon::after, md-checkbox.md-checked 
 	border-right: 1px solid #aa00ff;*/
 }
 .added .glyphicon.glyphicon-plus {
-	color: #fff
+	color: #333;
 }
+
+
+.added .glyphicon.glyphicon-plus {
+	color: #333;
+}
+
 .added .btn.btn-default.bootstrap-touchspin-down {
 	/*border-bottom: 1px solid #aa00ff;
 	border-right: 1px solid #aa00ff;*/
@@ -5985,4 +5993,18 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
 	border-width: 1px;
 	border-color: rgba(215, 215, 215, 1) !important;
 
+}
+
+.bootstrap-touchspin-up:hover .glyphicon, .bootstrap-touchspin-down:hover .glyphicon{
+	color: #ffc412;
+}
+
+.additempopuppinkboxrightinner a{
+	background-color: transparent;
+	margin: 0px;
+	padding: 0px;
+	color: inherit;
+	border: none;
+	text-decoration: none;
+	background-image: none;
 }
