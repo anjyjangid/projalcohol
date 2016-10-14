@@ -611,10 +611,22 @@ class ProductController extends Controller
 
 	public function getTest(Request $request){
 
+		$users = User::all();
+
+		foreach ($users as $key => $value) {
+			foreach ($value['address'] as $akey => $address) {
+				$value['address'][$akey]['location'] = [$address->LNG,$address->LAT];
+			}
+
+			$value->save();
+		}		
+
+		dd($users);		
+		
 		$query = [];
 			
 		$ids = [new MongoId('57c53011b190ec430d8b456e'), new MongoId('57c6b32db190ecc02e8b4576'),new MongoId('57c6957fb190ecc02e8b456b')];
-
+		
 
 		$query[]['$match'] = [
 			'_id' => ['$in'=>$ids]
@@ -646,6 +658,7 @@ class ProductController extends Controller
 
 		return response($model);
 
+		
 
 		/*$create = DB::collection('mytest')->insert(
 			[
