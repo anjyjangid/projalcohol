@@ -36,6 +36,10 @@ button:disabled {
 .img-responsive-h{
 	max-height: 100% !important;
 	margin: auto;
+}
+
+
+.ro_pic .img-responsive-h{
 	height: 46px;
 }
 
