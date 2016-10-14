@@ -16,5 +16,5 @@
 // });
 
 Number.prototype.toFixed = function(digits) {
-    return Math.round(this * Math.pow(10, digits))/100;
+    return Math.round(this * Math.pow(10, digits))/Math.pow(10, digits);
 }
