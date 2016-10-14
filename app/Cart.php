@@ -751,7 +751,7 @@ class Cart extends Moloquent
 
 		foreach ($products as $key => $product) {			
 
-			if($product['remainingQty'] < 1 || !isset($product['sale']) || empty($product['sale'])) {
+			if((isset($product['remainingQty']) && $product['remainingQty'] < 1) || !isset($product['sale']) || empty($product['sale'])) {
 				continue;
 			}
 
