@@ -692,12 +692,6 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 					templateUrl: "/templates/orderconfirmation.html",
 					controller:"OrderplacedController",
 					resolve: {
-						storeInit : function (store){
-							return store.init();
-						},
-						wishlistInit : function(alcoholWishlist){
-							return alcoholWishlist.init();
-						},
 						loggedIn: function(UserService) {
 							return UserService.getIfUser(true, true);
 						}
@@ -1174,7 +1168,7 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 						templateUrl: '/templates/toast-tpl/cart-update.html',
 						parent : $document[0].querySelector('#cart-summary-icon'),
 						position: 'top center',
-						hideDelay:300000
+						hideDelay:3000
 					});
 
 	});

@@ -56,6 +56,8 @@ class AddressController extends Controller
 		if(isset($inputs['LAT']) && isset($inputs['LNG'])){
 			$inputs['LAT'] = (float)$inputs['LAT'];
 			$inputs['LNG'] = (float)$inputs['LNG'];
+
+			$inputs['location'] = [$inputs['LNG'],$inputs['LAT']];
 		}
 
 		if(isset($inputs['X']) && isset($inputs['Y'])){
