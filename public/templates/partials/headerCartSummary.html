@@ -2,7 +2,7 @@
 <li ng-class="{'hideOp':hideOpcart.hide}" class="dropdown cart-icon-set" id="cart-summary-icon" ng-mouseover="hideOpcart.hide=false" ng-mouseleave="hideOpcart.hide=true">
 
 <a href="javascript:void(0)" class="cart_icon"></a><span ng-if="alcoholCart.getTotalUniqueItems()">{{alcoholCart.getSubTotal() | pricingTxt}}</span>
-<div class="dropdown-menu currentorderpopup">
+<div class="dropdown-menu currentorderpopup" ng:class="{'emptycartbox':!alcoholCart.getTotalUniqueItems()}">
 	<!-- Current order Start-->
 
 	<div ng-if="alcoholCart.getTotalUniqueItems()">

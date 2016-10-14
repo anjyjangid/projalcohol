@@ -728,7 +728,7 @@ ui-sref {
 	width: 100%;
 	float: left;
 	margin: 12px 0px;
-	padding: 0 10px;
+	padding: 5px 10px;
 	position: relative;
 }
 .ro_pic {
@@ -2235,6 +2235,16 @@ ui-sref {
 	/*float:right;*/
 	position: relative;
 }
+
+.checkboxtotaldiv-middle-first .checkboxtotaldiv-text {
+	float:right;
+}
+
+
+.checkboxtotaldiv-middle-first  .checkboxtotaldiv-title{
+	width: 85%;
+}
+
 .checkboxtotaldiv-middle-first {
 	width: 100%;
 	float: left;
@@ -4590,10 +4600,10 @@ ui-sref {
 	border: 1px solid #d7d7d7;
 	border-radius: 5px;
 	float: left;
-	padding: 25px 26px;
+	padding: 15px 25px;
 	width: 31%;
 	margin: 10px 20px 10px 0;
-	min-height: 155px;
+	min-height: 160px;
 }
 .addressbokk-addnewadresscovr {
 	border: 2px dashed #d7d7d7;
@@ -4670,7 +4680,7 @@ ui-sref {
 .currentorderpopup {
 	background: #ffffff none repeat scroll 0 0;
 	border-radius: 5px;
-	left: calc(26% - 145px);
+	left: calc(39% - 145px);
 	position: absolute;
 	top: 98%;
 	width: 290px;
@@ -4696,7 +4706,7 @@ ui-sref {
 .productaddedpopup {
 	background: #ffffff none repeat scroll 0 0;
 	border-radius: 5px;
-	left: calc(26% - 145px);
+	left: calc(39% - 145px);
 	position: absolute;
 	top: 100%;
 	width: 290px;
@@ -4719,6 +4729,12 @@ ui-sref {
 	width: 20px;
 	border: none;
 }
+
+
+#usermenuli .productaddedpopup {
+	left: calc(43% - 145px);
+}
+
 .currentorderpopuppinkbox {
 	float: left;
 	width: 100%;
@@ -5213,7 +5229,7 @@ md-dialog .md-actions, md-dialog md-dialog-actions {
 }
 .fullwidth.modifyscroll .md-container {
 	left: 22px;
-	top: 22px
+	top: 28px;
 }
 .md-dialog-content.alcohaladdadrebody.alcohal_reapeatorederbody {
 	padding-top: 10px;
@@ -5925,7 +5941,7 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
 	background: #bbb;
 }
 .selectAddress{
-	position: absolute;bottom: 4px;left: 0px;	
+	position: absolute;bottom: 10px;left: 0px;	
 }
 .cartaddresses .addressbokk-trvaichacovr, .cartaddresses .addressbokk-addnewadresscovr{
 	width: 48.5%;
@@ -6000,11 +6016,15 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
 }
 
 .additempopuppinkboxrightinner a{
-	background-color: transparent;
-	margin: 0px;
-	padding: 0px;
-	color: inherit;
-	border: none;
-	text-decoration: none;
-	background-image: none;
+	background-color: transparent !important;
+	margin: 0px !important;
+	padding: 0px !important;
+	color: inherit !important;
+	border: none !important;
+	text-decoration: none !important;
+	background-image: none !important;
+}
+
+.emptycartbox {
+    left: calc(26% - 145px);
 }
