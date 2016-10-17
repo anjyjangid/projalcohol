@@ -28,9 +28,9 @@
 			<span class="addmorehere" ng-click="activeAddToCartCustom()" role="button" tabindex="0">add more</span>
 		</div>
 
-		<div class="addmanual" ng-if="addMoreCustom">
+		<div class="addmanual" ng-if="addMoreCustom" ng-blur="focusout()">
 				<div class="relat">
-					<input ng-model="product.qNChilled" type="text" only-digits ng-blur="focusout()"/>
+					<input ng-model="product.qNChilled" type="text" only-digits />
 					<div class="addbuttton" ng-click="addCustom()">add</div>
 				</div>
 			</div>
