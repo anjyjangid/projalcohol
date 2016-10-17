@@ -1,4 +1,4 @@
-<md-dialog aria-label="Address manually">
+<md-dialog aria-label="Address manually" flex="50">
   <form>
     <md-toolbar>
       <div class="md-toolbar-tools alcohal_addadress_header">
@@ -72,7 +72,12 @@
     </md-dialog-content>
     <md-dialog-actions layout="row">
       <div class="modal-footer alcohal_addadressfooter">
-        <div ng-if="!update" class="alcohal_adress2fotter" ng-click="hide()"> <img src="images/order_history2backpic.png"> <span>Cancel</span> </div>
+        <div ng-if="!update" class="alcohal_adress2fotter" ng-click="hide()"> 
+          <img src="images/order_history2backpic.png"> <span>Cancel</span> 
+        </div>
+        <div ng-if="update" class="alcohal_adress2fotter" ng-click="removeAddress(currentKey)"> 
+          <span>DELETE THIS ADDRESS</span> 
+        </div>
         <div class="alcohalosavebntcvr">
           <button class="adresssvaebtn" ng-click="saveManualAddress()" type="button">SAVE <span> <img src="images/alcholshoporderarrow.png"></span></button>
         </div>

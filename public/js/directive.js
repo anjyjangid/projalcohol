@@ -33,6 +33,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		/*scope:{
 			user:'='
 		},*/
+
 		templateUrl: '/templates/partials/topmenu.html',
 		controller: function($scope,$rootScope,$http,$state,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard,$fblogin,$mdDialog, $timeout){
 
@@ -61,17 +62,10 @@ AlcoholDelivery.directive('sideBar', function() {
 	            });
 			};
 
-
-
-			// console.log(UserService.getIfUser())
-			$timeout(function(){
-            	$scope.user = UserService.getIfUser();
-			}, 0);
-			// $http.get('/check').success(function(response){
-	  //           $scope.user = response;
-	  //       }).error(function(data, status, headers) {
-
-	  //       });
+			// Any change in user login detail will be tracked here
+			$scope.$watch(function(){return UserService.currentUser},function(newValue, oldValue) {
+				$scope.user = newValue;
+			});
 
 	        $scope.forgotSubmit = function() {
 				$scope.forgot.errors = {};
@@ -93,7 +87,8 @@ AlcoholDelivery.directive('sideBar', function() {
 	                localStorage.removeItem("deliverykey");
 	                store.init().then(
 	                	function(successRes){
-	                		$state.go("mainLayout.index", {}, {reload: true});
+	                		$state.go($state.current, {}, {reload: true});
+	                		// $state.go("mainLayout.index", {}, {reload: true});
 	                	},
 	                	function(errorRes){}
 	                );
@@ -109,39 +104,50 @@ AlcoholDelivery.directive('sideBar', function() {
 			}
 			//FACEBOOK LOGIN
 			$scope.loginToggle = function() {
-		    	$fblogin({
-		            fbId: '273669936304095',
-		            permissions: 'email,user_birthday',
-		            fields: 'first_name,last_name,locale,email,birthday'
-		        })
-		        .then(
-		            function(response){
-		            	$mdDialog.hide();
-		            	$http.post('/auth/registerfb',response)
-		            	.success(function(res){
-		            		$scope.loginSuccess(res);
-		            	});
-		            }
-		        );
-		    };
+				$fblogin({
+					fbId: '273669936304095',
+					permissions: 'email,user_birthday',
+					fields: 'first_name,last_name,locale,email,birthday'
+				})
+				.then(
+					function(response){
 
-		    //INTIALIZE AFTER USER LOGIN(FB & NORMAL)
-		    $scope.loginSuccess = function(response){
-		    	UserService.currentUser = response;
-		    	$scope.login = {};
-                $scope.user = response;
-				$scope.user.name = response.email;
-                $mdDialog.hide();
-                $scope.errors = {};
-                store.init().then(
-                	function(successRes){
-                		$state.go($state.current, {}, {reload: true});
-                	},
-                	function(errorRes){}
-                );
-                alcoholWishlist.init();
-                ClaimGiftCard.claim();
-		    }
+						$mdDialog.hide();
+						$http.post('/auth/registerfb',response)
+						.success(function(res){
+
+							$scope.loginSuccess(res);
+
+						});
+
+					}
+				);
+			};
+
+			// INTIALIZE AFTER USER LOGIN(FB & NORMAL)
+			// $scope.loginSuccess = function(response){
+
+			// 	UserService.currentUser = response;
+			// 	$scope.login = {};
+			// 	$scope.user = response;
+			// 	$scope.user.name = response.email;
+			// 	$mdDialog.hide();
+			// 	$scope.errors = {};
+			// 	store.init().then(
+
+			// 		function(successRes){
+			// 			//$state.go($state.current, {}, {reload: true});
+			// 		},
+			// 		function(errorRes){
+
+			// 		}
+
+			// 	);
+
+			// 	//alcoholWishlist.init();
+			// 	ClaimGiftCard.claim();
+
+			// }
 
 		    $scope.signupOpen = function(ev){
 			    $scope.signup = {
@@ -213,10 +219,10 @@ AlcoholDelivery.directive('sideBar', function() {
 		    $scope.loginSuccess = function(response){
 		    	UserService.currentUser = response;
 		    	$scope.login = {};
-		        $scope.user = response;
-				$scope.user.name = response.email;
+		  //       $scope.user = response;
+				// $scope.user.name = response.email;
 		        $mdDialog.hide();
-		        $scope.errors = {};                
+		        $scope.errors = {};
 		        store.init().then(
 		        	function(successRes){
 		        		$state.go($state.current, {}, {reload: true});
@@ -225,7 +231,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		        );
 		        alcoholWishlist.init();
 		        ClaimGiftCard.claim();
-		    }
+		    }	
 		}
 	};
 })
@@ -300,7 +306,7 @@ AlcoholDelivery.directive('sideBar', function() {
 .directive("tscroll", function ($window) {
     return function(scope, element, attrs) {
 
-    	var svgMorpheus = new SVGMorpheus('#icon');
+    	var svgMorpheus = new SVGMorpheus('#icon',{rotation:'none'});
 		var icons = ['question', 'answer'];
 		var prev=1;
 
@@ -527,7 +533,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 		// '</div>'
 
-		'<div class="input-group bootstrap-touchspin" ng-class={vertical:!verticalButtons}>' +
+		'<div class="input-group bootstrap-touchspin spin-border" ng-class={vertical:!verticalButtons}>' +
 		'  <span class="input-group-btn" ng-show="verticalButtons">' +
 		'    <button class="btn btn-default bootstrap-touchspin-down" ng-mousedown="startSpinDown()" ng-mouseup="stopSpin()">-</button>' +
 		'  </span>' +
@@ -676,7 +682,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 				if($scope.product.isLoyaltyStoreProduct === true){
 
-					if(userData === null || userData.auth === false){
+					if(userData===false){
 
 						$rootScope.$broadcast('showLogin');
 						return false;
@@ -1415,6 +1421,7 @@ AlcoholDelivery.directive('sideBar', function() {
 	                        $http.delete("address/"+key)
 	                            .success(function(response) {
 	                                if(response.success){
+	                                    $mdDialog.hide();
 	                                    $scope.listUserAddress();
 	                                    sweetAlert.swal({
 	                                    	title: response.message,

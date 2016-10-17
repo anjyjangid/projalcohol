@@ -158,7 +158,7 @@
 											<div class="col-sm-4" ng-show="product.loyaltyValueType == 1" ng:class="{'has-error':errors.loyaltyValuePrice[0]}">
 												<span id="loyaltyValuePriceAdd">+</span>
 												<span class="help-block">price</span>
-												<input type="number" min="0" class="form-control" ng-model="product.loyaltyValuePrice" placeholder="amount">
+												<input type="number" min="0" step="any" class="form-control" ng-model="product.loyaltyValuePrice" placeholder="amount">
 												<span class="help-block" ng-bind="errors.loyaltyValuePrice[0]"></span>
 											</div>
 

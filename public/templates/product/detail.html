@@ -78,7 +78,7 @@
 				{{product.salePrice | pricingTxt}}
 				<span ng-if="product.price != product.salePrice">{{product.price | pricingTxt}}</span>
 				<div class="salediscount" ng-if="product.sale && !product.sale.coverImage">{{product.sale.detailTitle}}</div>
-				<div class="pull-right" ng-if="product.sale.coverImage">
+				<div class="pull-right tag-pic" ng-if="product.sale.coverImage">
 					<img style="width: 100px;" src="sale/i/{{product.sale.coverImage}}">
 				</div>				
 			</div>
@@ -100,8 +100,8 @@
 			<div class="productslide_addbutton">
 				<div class="cartbtn" ng-if="product.quantity || product.outOfStockType == 2">
 
-					<div class="addcart only-button" ng-click="addtocart()" ng-if="!product.isInCart"><span></span>add to cart</div>
-					<div class="addcart only-button" ng-click="addtocart()" ng-if="product.isInCart"><span></span>Update cart</div>
+					<div class="addcart only-button prod_addtocart" ng-click="addtocart()" ng-if="!product.isInCart"><span></span>add to cart</div>
+					<div class="addcart only-button prod_addtocart" ng-click="addtocart()" ng-if="product.isInCart"><span></span>Update cart</div>
 
 				</div>
 				<div class="row">			

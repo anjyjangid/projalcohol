@@ -23,6 +23,7 @@
 									<a ui-sref="mainLayout.product({product:sPro.product.slug})" title="View Product">
 										<img err-pro-src="" ng-src="products/i/200/{{sPro.product.image}}" alt="" class="img-responsive img-responsive-h" />
 									</a>
+									
 								</li>
 							<div ng-repeat-end ng-hide="true"></div>
 
@@ -30,7 +31,7 @@
 								<li class="cursor-pointer" ng-repeat="a in b">
 									<a ui-sref="mainLayout.product({product:sPro.product.slug})" title="View Product">
 										<img err-pro-src="" ng-src="products/i/200/{{sPro.product.image}}" alt="" class="img-responsive img-responsive-h" />
-									</a>
+									</a>																		
 								</li>
 							<div ng-repeat-end ng-hide="true"></div>
 
@@ -39,7 +40,7 @@
 						<div class="sale-tag-txt -cart">{{sale.title.long}}</div><span class="strike-txt">{{sale.strikePrice}}</span>
 
 					</td>
-					<td>
+					<td width="131px">
 						<div class="prod_chilled" ng-class="{notchilled:!sale.chilled,invisible:cart.nonchilled}" ng-click="alcoholCart.saleChilled(sale)">
 						<span>Chilled</span>
 						<div class="prod_chilled_icon"></div>

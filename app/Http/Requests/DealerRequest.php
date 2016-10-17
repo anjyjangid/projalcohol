@@ -59,7 +59,7 @@ class DealerRequest extends Request
 
         foreach ($this->request->get('contacts') as $key => $contact) {
                 
-            $messages['contacts.'.$key.'.number.digits_between'] = 'Enter valid number';
+            $messages['contacts.'.$key.'.number.digits_between'] = 'The contact number must be between 10 and 12 digits.';
 
         }
 

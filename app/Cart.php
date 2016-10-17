@@ -751,7 +751,7 @@ class Cart extends Moloquent
 
 		foreach ($products as $key => $product) {			
 
-			if($product['remainingQty'] < 1 || !isset($product['sale']) || empty($product['sale'])) {
+			if((isset($product['remainingQty']) && $product['remainingQty'] < 1) || !isset($product['sale']) || empty($product['sale'])) {
 				continue;
 			}
 
@@ -962,8 +962,17 @@ class Cart extends Moloquent
 
 			}
 
-			$saleProducts[$key]['chilled']['quantity'] = $qtyChilled;
-			$saleProducts[$key]['nonchilled']['quantity'] = $qtyNonChilled;
+			$totalQty = $qtyChilled + $qtyNonChilled;
+
+			if($totalQty<1){
+
+				unset($saleProducts[$key]);
+
+			}else{
+				$saleProducts[$key]['chilled']['quantity'] = $qtyChilled;
+				$saleProducts[$key]['nonchilled']['quantity'] = $qtyNonChilled;
+				$saleProducts[$key]['quantity'] = $totalQty;
+			}
 
 		}
 

@@ -189,9 +189,12 @@ body {
 	display: none;
 }
 .dropdown-menu.ng-scope.animate {
-    padding: 10px 15px!important;
+    padding: 10px 25px!important;
 	box-shadow:none
 }
+
+
+
 .dropdown-menu.ng-scope.animate li a{
 	padding-top:6px  !important;
 		padding-bottom:6px  !important;

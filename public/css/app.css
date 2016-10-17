@@ -1,3 +1,9 @@
+#icon {
+  width: 171px;
+  height: 76px;
+  margin: auto;
+}
+
 .btn-purple, .btn-purple:focus, .btn-purple:hover, .btn-purple:active, .btn-purple:active:focus {
 	background: #AA00FF;
 	border-color: #AA00FF;
@@ -30,6 +36,11 @@ button:disabled {
 .img-responsive-h{
 	max-height: 100% !important;
 	margin: auto;
+}
+
+
+.ro_pic .img-responsive-h{
+	height: 46px;
 }
 
 .navbar .make-active {
@@ -310,7 +321,7 @@ li.subactive a, li.subactive a span {
   }
 
   .md-center {
-	  left: -85px;
+	  /*left: -85px;*/
 	  margin: 0      
   }
 
@@ -1013,7 +1024,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
     border: medium none;
     border-radius: 5px;
     color: #fff;
-    float: right;
+    float: left;
     font-size: 11px;
     font-weight: 500;
     margin: 0;
