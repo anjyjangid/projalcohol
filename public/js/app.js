@@ -1161,14 +1161,23 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 
 							$scope.quantity = params.quantity;
 							$scope.message = params.msg;
-							$scope.isFreeDelivery = false;
-							$scope.freeRequired = 28;
+
+							$scope.freeRequired = alcoholCart.getRemainToFreeDelivery();
+							$scope.requiredPer = alcoholCart.getRemainToFreeDelivery('percentage')+'%';
+							
+							if($scope.freeRequired>0){
+								$scope.isFreeDelivery = false;
+							}else{
+								$scope.isFreeDelivery = true;
+							}
+							
+							
 
 						},
 						templateUrl: '/templates/toast-tpl/cart-update.html',
 						parent : $document[0].querySelector('#cart-summary-icon'),
 						position: 'top center',
-						hideDelay:3000
+						hideDelay:300000
 					});
 
 	});

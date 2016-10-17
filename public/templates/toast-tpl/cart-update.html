@@ -13,12 +13,12 @@
 	</div>
 	<div class="additempopupwhitebox">
 		
-		<div class="additempopupwhiteblacktext" ng-if="!isFreeDelivery">25.78 more to FREE delivery</div>
+		<div class="additempopupwhiteblacktext" ng-if="!isFreeDelivery">{{freeRequired}} more to FREE delivery</div>
 		<div class="additempopupwhiteblacktext" ng-if="isFreeDelivery">Nice! You've unlocked FREE delivery!</div>
 
 		<div class="additempopupwhitebarimgcover">
 			<div class="additempopupwhitebarcover">
-				<div class="scale"></div>
+				<div class="scale" ng-style="{'width':requiredPer}"></div>
 			</div>
 			<img src="images/imgpsh_fullsize_small.png" />
 		</div>

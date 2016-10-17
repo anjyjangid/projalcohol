@@ -1002,6 +1002,29 @@ AlcoholDelivery.service('alcoholCart', [
 
 		};
 
+		this.getRemainToFreeDelivery = function(type){
+
+
+			var delivery = this.$cart.service.delivery;
+
+			var subTotal = parseFloat(this.getSubTotal());
+
+			if(subTotal>=parseFloat(delivery.mincart)){
+				this.remainToFreeDelivery = 0;
+				this.remainToFreeDeliveryPer = 100;
+			}else{
+				this.remainToFreeDelivery = delivery.mincart - subTotal;
+				this.remainToFreeDeliveryPer = subTotal*100/delivery.mincart;
+			}
+
+			if(type=='percentage'){
+
+				return this.remainToFreeDeliveryPer.toFixed(2);
+
+			}
+			return this.remainToFreeDelivery.toFixed(2);
+		}
+
 		this.setDeliveryCharges =function(){
 			
 			var delivery = this.$cart.service.delivery;
@@ -1011,12 +1034,12 @@ AlcoholDelivery.service('alcoholCart', [
 			if(subTotal>=parseFloat(delivery.mincart)){
 				
 				this.$cart.service.delivery.free = true;
-				this.$cart.delivery.charges = 0;
+				this.$cart.delivery.charges = 0;				
 
 			}else{
 
 				this.$cart.service.delivery.free = false;
-				this.$cart.delivery.charges = parseFloat(this.$cart.service.delivery.charges).toFixed(2);
+				this.$cart.delivery.charges = parseFloat(this.$cart.service.delivery.charges).toFixed(2);				
 
 			}
 			
