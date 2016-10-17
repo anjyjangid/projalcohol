@@ -33,6 +33,23 @@ class CartAdmin extends Moloquent
 
 		return $cart;
 
+	}
+
+	public function deleteLastUnProcessed($adminId){
+
+		try{
+
+			$cart = self::where('generatedBy',$adminId)->orderBy('updated_at', 'desc')->first();
+
+			$cart->delete();
+
+			return true;
+
+		}catch(Exception $e){
+
+			return false;
+
+		}
 	}	
 
 	public function generate($adminId){
