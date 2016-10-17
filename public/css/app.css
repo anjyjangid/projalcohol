@@ -1048,3 +1048,8 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	background: #aa00ff;
     color: #fff;
 }
+
+
+.cartNonChilledActive .prod_chilled{
+	cursor: not-allowed !important;
+}

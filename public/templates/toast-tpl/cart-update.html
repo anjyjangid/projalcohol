@@ -20,7 +20,9 @@
 			<div class="additempopupwhitebarcover">
 				<div class="scale" ng-style="{'width':requiredPer}"></div>
 			</div>
-			<img src="images/imgpsh_fullsize_small.png" />
+			<img src="images/imgpsh_fullsize_small.png" ng-hide="isFreeDelivery"/>
+			<img src="images/freedelivery-active.png" ng-hide="!isFreeDelivery"/>
+			
 		</div>
 	</div>
 

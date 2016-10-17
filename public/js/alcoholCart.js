@@ -1519,6 +1519,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 		this.updateChilledStatus = function(id,type){
 			
+			if(this.$cart.nonchilled)return false; // unable to change product chilled status if whole cart set as nonchilled
+
 			var product = this.getProductById(id);
 
 			product[type+'Status'] = !product[type+'Status'];
@@ -1541,6 +1543,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 
 		this.saleChilled = function(saleObj){
+			
+			if(this.$cart.nonchilled)return false; // unable to change product chilled status if whole cart set as nonchilled
 			
 			var saleId = saleObj.getId();
 			saleId = saleId.$id;
