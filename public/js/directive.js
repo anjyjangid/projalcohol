@@ -648,10 +648,26 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.addMoreCustom = false;
 			$scope.element = $element;
+			$scope.isAddCustom = false;
 
 			$scope.focusout = function(){
 
-				$scope.addMoreCustom = false;
+				console.log("I am in");
+				$timeout(function() {
+					
+					$scope.addMoreCustom = false;
+console.log("tisaddcustome : ",$scope.isAddCustom);					
+					if(!$scope.isAddCustom){
+console.log("tisaddcustome : ",$scope.isAddCustom);
+						var p = alcoholCart.getProductById($scope.product._id);
+						$scope.product.qChilled = p.qChilled;
+						$scope.product.qNChilled = p.qNChilled;
+
+					}
+
+					$scope.isAddCustom = false;
+
+				}, 500);
 
 			};
 
@@ -666,13 +682,10 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			};
 
-			$scope.addCustom = function(){
-
-				var currQ = $scope.product.servechilled
-
-				if($scope.product.qNChilled)
-
-				$scope.activeAddToCart();
+			$scope.addCustom = function(){				
+				$scope.isAddCustom = true;
+console.log("isaddcustome : ",$scope.isAddCustom);
+				$scope.addtocart();
 
 			};
 

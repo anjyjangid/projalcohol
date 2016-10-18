@@ -11,6 +11,7 @@ use AlcoholDelivery\Http\Controllers\Controller;
 
 use Storage;
 use Validator;
+use MongoId;
 
 use AlcoholDelivery\Business as Business;
 
@@ -66,9 +67,15 @@ class BusinessController extends Controller
 		$business = business::find($id);
 
 		$business->company_name = $inputs['company_name'];
+		$business->company_email = $inputs['company_email'];
 		$business->delivery_address = $inputs['delivery_address'];	
 		$business->billing_address = $inputs['billing_address'];				
 
+		for ($i=0; $i<count($inputs['products']); $i++) {
+			$inputs['products'][$i]['_id'] = new MongoId($inputs['products'][$i]['_id']);
+		}
+
+		$business->products = $inputs['products'];
 		$business->status = (int)$inputs['status'];    
 
 		if($business->save()){
@@ -82,12 +89,76 @@ class BusinessController extends Controller
 
 	public function getDetail($businessId)
 	{
-		$businessObj = new Business;
+		// $businessObj = new Business;
 
-		$result = $businessObj->getBusiness(array(
-						"key"=>$businessId,
-						"multiple"=>false
-					));
+		// $result = $businessObj->getBusiness(array(
+		// 				"key"=>$businessId,
+		// 				"multiple"=>false
+		// 			));
+
+		$result = Business::raw()->aggregate([
+			[
+				'$match' => [
+					'_id' => new MongoId($businessId)
+				]
+			],
+			[
+				'$unwind' => [
+					'path' => '$products'
+				]
+			],
+			[
+				'$lookup' => [
+					'from' => 'products',
+					'localField' => 'products._id',
+					'foreignField' => '_id',
+					'as' => 'productDetails',
+				]
+			],
+			[
+				'$unwind' => [
+					'path' => '$productDetails'
+				]
+			],
+			[
+				'$project' => [
+					'company_name' => 1,
+					'delivery_address' => 1,
+					'billing_address' => 1,
+					'company_email' => 1,
+					'products' => [
+						'_id' => '$productDetails._id',
+						'categories' => '$productDetails.categories',
+						'name' => '$productDetails.name',
+						'sprice' => '$productDetails.price',
+						'imageFiles' => '$productDetails.imageFiles',
+						'cprice' => '$products.price'
+					]
+				]
+			],
+			[
+				'$group' => [
+					'_id' => [
+						'company_name' => '$company_name',
+						'delivery_address' => '$delivery_address',
+						'billing_address' => '$billing_address',
+						'company_email' => '$company_email',
+					],
+					'products' => [
+						'$push' => '$products'
+					]
+				]
+			]
+		]);
+
+		if(!empty($result['result'])){
+			$result['result'][0]['_id']['products'] = $result['result'][0]['products'];
+			$result = $result['result'][0]['_id'];
+
+			for ($i=0 ; $i<count($result['products']) ; $i++) {
+				$result['products'][$i]['_id'] = (string)$result['products'][$i]['_id'];
+			}
+		}
 		
 		return response($result, 201);
 	}

@@ -4875,10 +4875,12 @@ ui-sref {
 .additempopupwhitebarcover {
 	width: 86%;
 	height: 10px;
-	background: #aa00ff;
+	background: #ebeef0;
 	float: left;
 	border-radius: 50px;
 	margin-top: 10px;
+	position: relative;
+    overflow: hidden;
 }
 #smokeneedpanel md-switch {
 	background-color: #7700B3;
