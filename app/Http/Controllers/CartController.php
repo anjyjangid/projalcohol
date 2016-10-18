@@ -21,6 +21,7 @@ use AlcoholDelivery\Promotion as Promotion;
 use AlcoholDelivery\Holiday as Holiday;
 use AlcoholDelivery\User as User;
 use AlcoholDelivery\Gift as Gift;
+use AlcoholDelivery\Email;
 
 use DB;
 use MongoDate;
@@ -1615,17 +1616,9 @@ jprd($product);
 
 			$cart->delete();
 			
-			$reference = "ADSG";
+			$reference = $order->reference;			
 
-			$reference.= ((int)date("ymd",strtotime($order->created_at)) - 123456);
-			$reference.="O";
-			$reference.= (string)date("Hi",strtotime($order->created_at));
-
-			//$order->reference = $reference;
-
-			$order->save();
-
-			$userObj = User::where('_id', $user->_id);
+			$userObj = User::find($user->_id);
 
 			if($cart->loyaltyPointUsed>0){
 
@@ -1669,6 +1662,23 @@ jprd($product);
 		        // $user = User::find($user->_id);
 		        $userObj->push('savedCards',$cardInfo,true);
 			}
+
+			//Update inventory if order is 1 hour delivery
+			if($order['delivery']['type'] == 0){
+				$model = new Products();
+				$model->updateInventory($order);
+			}
+
+			//CONFIRMATION EMAIL 
+			$emailTemplate = new Email('orderconfirm');
+			$mailData = [
+                'email' => strtolower($userObj->email),
+                'user_name' => ($userObj->name)?$userObj->name:$userObj->email,
+                'order_number' => $reference
+            ];
+
+            $mailSent = $emailTemplate->sendEmail($mailData);
+
 
 			if($request->isMethod('get')){
 				return redirect('/#/orderplaced/'.$order['_id']);

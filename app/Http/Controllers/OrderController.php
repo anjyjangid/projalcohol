@@ -92,9 +92,9 @@ class OrderController extends Controller
 				array(
 					'$match'=> array('user'=> new MongoId($user->_id))
 				),
-				array(
+				/*array(
 					'$limit' => 10
-				),
+				),*/
 				array(
 					'$skip' => 0
 				),
