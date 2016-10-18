@@ -13,6 +13,10 @@ use Storage;
 use Validator;
 use MongoId;
 
+use AlcoholDelivery\Setting;
+use AlcoholDelivery\Categories;
+use AlcoholDelivery\Sale;
+
 use AlcoholDelivery\Business as Business;
 
 class BusinessController extends Controller
@@ -126,13 +130,16 @@ class BusinessController extends Controller
 					'delivery_address' => 1,
 					'billing_address' => 1,
 					'company_email' => 1,
+					'status' => 1,
 					'products' => [
 						'_id' => '$productDetails._id',
 						'categories' => '$productDetails.categories',
 						'name' => '$productDetails.name',
-						'sprice' => '$productDetails.price',
+						'price' => '$productDetails.price',
+						'regular_express_delivery' => '$productDetails.regular_express_delivery',
 						'imageFiles' => '$productDetails.imageFiles',
-						'cprice' => '$products.price'
+						'disc' => '$products.disc',
+						'type' => '$products.type'
 					]
 				]
 			],
@@ -143,6 +150,7 @@ class BusinessController extends Controller
 						'delivery_address' => '$delivery_address',
 						'billing_address' => '$billing_address',
 						'company_email' => '$company_email',
+						'status' => '$status'
 					],
 					'products' => [
 						'$push' => '$products'
@@ -159,10 +167,45 @@ class BusinessController extends Controller
 				$result['products'][$i]['_id'] = (string)$result['products'][$i]['_id'];
 			}
 		}
+
+
+      $settingObj = new Setting;
+
+      $global = $settingObj->getSettings(array(
+                  "key"=>'pricing',
+                  "multiple"=>false
+                ));
+
+		foreach($result['products'] as $key => $value) {
+		  $tier = $global->settings['regular_express_delivery'];
+			// dd($value);
+		  if(isset($value['regular_express_delivery']) && !empty($value['regular_express_delivery'])){
+		    $tier = $value['regular_express_delivery'];          
+		  }else{
+		    $categories = Categories::whereIn('_id',$value['categories'])->get();
+		    if($categories){
+		      foreach ($categories as $ckey => $cvalue) {
+		        if(isset($cvalue['regular_express_delivery']) && !empty($cvalue['regular_express_delivery'])){
+		          $tier = $cvalue['regular_express_delivery'];                
+		        }
+		      }
+		    }
+		  }
+		  $result['products'][$key]['sale'] = Sale::raw()->findOne(['type'=>1,'saleProductId'=>['$eq'=>$value['_id']]]);
+		  $result['products'][$key]['sprice'] = $this->calculatePrice($value['price'],$tier);                        
+		}
 		
 		return response($result, 201);
 	}
 
+    protected function calculatePrice($cost = 0, $tiers){
+      if($tiers['type'] == 1){
+        $p = $cost+($cost/100*$tiers['value']);
+      }else{
+        $p = $cost+$tiers['value'];
+      }      
+      return round($p,2);
+    }
 
 	public function postList(Request $request)
 	{

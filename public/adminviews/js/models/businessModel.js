@@ -53,10 +53,11 @@ MetronicApp.factory('businessModel', ['$http', '$cookies','$location', function(
 			fields = angular.copy(fields);
 
 			for(var i in fields.products){
-				if(fields.products[i].cprice && fields.products[i].cprice!=fields.products[i].sprice)
+				if(fields.products[i].disc)
 					fields.products[i] = {
 						_id: fields.products[i]._id,
-						price: fields.products[i].cprice
+						disc: fields.products[i].disc,
+						type: fields.products[i].type
 					};
 				else
 					fields.products[i] = null;
