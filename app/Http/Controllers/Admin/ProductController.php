@@ -25,6 +25,7 @@ use AlcoholDelivery\Email;
 use AlcoholDelivery\Inventory;
 use AlcoholDelivery\Stocks;
 use AlcoholDelivery\Sale;
+use AlcoholDelivery\Orders;
 use Illuminate\Support\Facades\Auth;
 
 use Faker;
@@ -611,22 +612,35 @@ class ProductController extends Controller
 
 	public function getTest(Request $request){
 
-		$users = User::all();
+		//USER ADDRESS UPDATE
+		/*$users = User::whereRaw(['address'=>['$exists'=>true]])->get();
 
-		foreach ($users as $key => $value) {
-			foreach ($value['address'] as $akey => $address) {
-				$value['address'][$akey]['location'] = [$address->LNG,$address->LAT];
-			}
+		foreach ($users as $key => $value) {			
+			foreach($value->address as $address){
+				
+				if(isset($address['LNG']))
+					User::raw()->update(['email'=>$value['email'],'address.LAT'=>$address['LAT']],['$set'=>['address.$.location'=>[$address['LNG'],$address['LAT']]]]);
 
-			$value->save();
-		}		
-
-		dd($users);		
+			}			
+		}*/
+			
 		
 		$query = [];
-			
-		$ids = [new MongoId('57c53011b190ec430d8b456e'), new MongoId('57c6b32db190ecc02e8b4576'),new MongoId('57c6957fb190ecc02e8b456b')];
 		
+		$orderId = new MongoId('57ff62b0b190ec570e8b4592');
+
+		$order = Orders::whereRaw(['_id'=>$orderId])->get(['_id','productsLog'])->first();
+
+		$proQty = [];
+		$ids = [];
+
+		foreach ($order['productsLog'] as $key => $value) {
+			$id = (string)$value['_id'];
+			$proQty[$id] = $value['quantity'];
+			$ids[] = $value['_id'];
+		}	
+
+		//dd($proQty,$ids);	
 
 		$query[]['$match'] = [
 			'_id' => ['$in'=>$ids]
@@ -657,6 +671,61 @@ class ProductController extends Controller
 		$model = Products::raw()->aggregate($query);
 
 		return response($model);
+
+		$inventoryLog = [];
+		exit;
+		foreach ($model['result'] as $key => $value) {
+			
+			$product = Products::find($value['_id']);
+
+			$qtyReq = $proQty[(string)$value['_id']];
+
+			foreach ($value['storeStocks'] as $storeStockskey => $storeStocksvalue) {
+				
+				$storeStock = Stocks::find($storeStocksvalue['_id']);				
+				$qtyFullFilled = true;
+				//CHECK REQUIRED QTY MEETS THE STORE QTY
+				if($storeStock->quantity < $qtyReq){
+					$newQty = 0;
+					$qtyToPull = $storeStock->quantity;
+					$qtyFullFilled = false;
+				}else{
+					$newQty = $storeStock->quantity-$qtyReq;					
+					$qtyToPull = $qtyReq;
+				}
+
+				//UPDATE QTY FOR THE STORE
+				$storeStock->quantity = $newQty;
+				$storeStock->save();
+
+				//PREPARE TRANSACTION OF PRODUCT FOR THE STORE
+				$inventoryLog[] = [
+					'productId' => $value['_id'],
+					'orderId' => $orderId,
+					'storeId' => $storeStocksvalue['_id'],
+					'quantity' => $qtyToPull
+				];
+				
+				if($qtyFullFilled){
+					break; //REQUIRED QTY MEETS THE STORE QTY THEN BREAK THE LOOP
+				}else{
+					$qtyReq -= $qtyToPull; //UPDATE THE REQUIRED QTY FIELD FOR NEXT STORE IN THE LOOP
+				}
+			}
+
+			/*UPDATE TOTAL QTY IN PRODUCT COLLECTION*/
+			$product->quantity -= $proQty[(string)$value['_id']];
+			$product->save();
+
+		}
+		
+		//INSERT INVENTORY LOG
+		if($inventoryLog){
+			$r = DB::collection('inventoryLog')->insert($inventoryLog);
+		}
+		
+
+		//return response($model);
 
 		
 

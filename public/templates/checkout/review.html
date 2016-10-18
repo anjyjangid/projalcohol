@@ -62,7 +62,7 @@
 			 </div>
 				<div class="col-md-5 col-sm-6 col-xs-12 checkoutstep5-mid-right">
 					<div class="checkboxtotaldiv">
-						<button class="checkoutstep5-mid-button" ng-click="orderConfirm()">Confirm Order <i class="glyphicon glyphicon-menu-right"></i></button>
+						<button class="checkoutstep5-mid-button" ng-disabled="loading" ng-click="orderConfirm()">Confirm Order <i class="glyphicon glyphicon-menu-right"></i></button>
 						<div class="checkoutstep5right-middle ">
 							<div class="checkoutstep5right-middle-first">
 								<div class="checkoutstep5right-middle-title">Subtotal <span class=""></span></div>
@@ -393,7 +393,7 @@
 				
 				<a class="checkouterback2" ui-sref="mainLayout.checkout.payment"><span><img src="images/order_history2backpic.png"></span>BACK</a>				
 				
-				<button class="checkoutstep5-mid-button" ng-click="orderConfirm()">Confirm Order <i class="glyphicon glyphicon-menu-right"></i></button>
+				<button class="checkoutstep5-mid-button" ng-disabled="loading" ng-click="orderConfirm()">Confirm Order <i class="glyphicon glyphicon-menu-right"></i></button>
 				
 				</div>
 <payment-form></payment-form>

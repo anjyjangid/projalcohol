@@ -1,5 +1,8 @@
 <ul class="nav navbar-nav modify capitalize mobilesidebar" ng-cloak>
 	<!-- SHOW IN MOBILE ONLY -->
+	<li class="mobilemenu hide">
+		<a class="pointer" href="tel:+6192445533">Call us now : 9-2445533</a>
+	</li>
 	<li ng-if="!user.email" class="mobilemenu hide">
 		<a class="pointer" ng-click="loginOpen($event);">LOGIN</a>
 	</li>
@@ -7,7 +10,7 @@
     	<a class="pointer" ng-click="signupOpen($event);"> SIGNUP </a>                       	
     </li>
 	<li ng:class="{'hideOp':hideOp}" class="dropdown mobilemenu hide brd-bot" ng-if="user.email" ng-click="hideOp=!hideOp"  class="mobilemenu hide"> 
-		<a class="username dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" > Hola, {{user.email}} 
+		<a class="username dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" > Hola, {{(user.name)?user.name:user.email}} 
 		</a>
         <ul  class="dropdown-menu profil-dropdown">
           <li><a ui-sref="accountLayout.profile">My Account</a></li>
