@@ -7,7 +7,7 @@
 	<div class="checkbox-gray-toptext">SAVE {{cart.discount.nonchilled.exemption | pricingTxt}} by choosing to have your drinks delivered Non-Chilled.</div>
 </div>
 
-<div class="checkoutmiddletable">
+<div class="checkoutmiddletable" ng-class="{cartNonChilledActive: cart.nonchilled}">
 	<div class="table-responsive">
 		<table class="table cart-table">
 			<tbody>
@@ -41,7 +41,7 @@
 
 					</td>
 					<td width="131px">
-						<div class="prod_chilled" ng-class="{notchilled:!sale.chilled,invisible:cart.nonchilled}" ng-click="alcoholCart.saleChilled(sale)">
+						<div class="prod_chilled" ng-class="{notchilled:!sale.chilled || cart.nonchilled}" ng-click="alcoholCart.saleChilled(sale)">
 						<span>Chilled</span>
 						<div class="prod_chilled_icon"></div>
 						</div>
@@ -89,14 +89,15 @@
 					<td width="131px">
 
 						<div class="prod_chilled" ng-class="{
-						notchilled:!cartproduct[type+'Status'],
-						invisible:!cartproduct.product.chilled || cart.nonchilled,
+						notchilled:!cartproduct[type+'Status'] || cart.nonchilled,
+						invisible:!cartproduct.product.chilled ,
 
 						}"
 						ng-click="alcoholCart.updateChilledStatus(cartproduct._id,type)">
 						<span>Chilled</span>
 						<div class="prod_chilled_icon"></div>
 						</div>
+
 
 					</td>
 					<td>
@@ -217,8 +218,8 @@
 					<td width="131px">
 
 						<div class="prod_chilled" ng-class="{
-						notchilled:!cartproduct[type+'Status'],
-						invisible:!cartproduct.product.chilled || cart.nonchilled,
+						notchilled:!cartproduct[type+'Status'] || cart.nonchilled,
+						invisible:!cartproduct.product.chilled
 
 						}"
 						ng-click="alcoholCart.updateChilledStatus(cartproduct._id,type)">

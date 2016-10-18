@@ -1161,8 +1161,17 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 
 							$scope.quantity = params.quantity;
 							$scope.message = params.msg;
-							$scope.isFreeDelivery = false;
-							$scope.freeRequired = 28;
+
+							$scope.freeRequired = alcoholCart.getRemainToFreeDelivery();
+							$scope.requiredPer = alcoholCart.getRemainToFreeDelivery('percentage')+'%';
+
+							if($scope.freeRequired>0){
+								$scope.isFreeDelivery = false;
+							}else{
+								$scope.isFreeDelivery = true;
+							}
+							
+							
 
 						},
 						templateUrl: '/templates/toast-tpl/cart-update.html',

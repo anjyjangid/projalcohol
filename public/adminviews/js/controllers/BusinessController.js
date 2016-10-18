@@ -1,7 +1,7 @@
 'use strict';
 
-MetronicApp.controller('BusinessController',['$rootScope', '$scope', '$timeout','$http','businessModel', function($rootScope, $scope, $timeout,$http,businessModel) {
-console.log('fdas');
+MetronicApp.controller('BusinessController',['$rootScope', '$scope', '$timeout','$http','businessModel', '$q'
+, function($rootScope, $scope, $timeout,$http,businessModel, $q) {
 
 	$scope.$on('$viewContentLoaded', function() {   
 		Metronic.initAjax(); // initialize core components
@@ -18,7 +18,6 @@ console.log('fdas');
 MetronicApp.controller('BusinessAddController',['$scope', '$http','businessModel', function($scope,$http,businessModel) {
 	
 	$scope.errors = {};
-
 	$scope.business = {		
 		status:"1",
 		billing_address : [{}],
@@ -52,9 +51,14 @@ MetronicApp.controller('BusinessAddController',['$scope', '$http','businessModel
 }]);
 
 
-MetronicApp.controller('BusinessUpdateController',['$rootScope', '$scope', '$timeout','$http','$stateParams','businessModel', function($rootScope, $scope, $timeout,$http,$stateParams,businessModel) {
+MetronicApp.controller('BusinessUpdateController',['$rootScope', '$scope', '$timeout','$http','$stateParams','businessModel', '$q'
+, function($rootScope, $scope, $timeout,$http,$stateParams,businessModel, $q) {
 
 	businessModel.getBusiness($stateParams.businessid).success(function(data){
+
+		if(!data.products)
+			data.products = [];
+
 		$scope.business = data;
 		if(typeof data.billing_address == 'undefined'){
 			$scope.business.billing_address = [{}];
@@ -62,14 +66,13 @@ MetronicApp.controller('BusinessUpdateController',['$rootScope', '$scope', '$tim
 		if(typeof data.delivery_address == 'undefined'){
 			$scope.business.delivery_address = [{}];
 		}
-		$scope.hideBasicInfo = true; 
+		$scope.hideBasicInfo = true;
+
 	});
 
 	$scope.store = function(){
-
-		var data = $scope.business;		
-		//POST DATA WITH FILES
-		businessModel.updateBusiness(data,$stateParams.businessid).success(function(response){
+		businessModel.updateBusiness($scope.business, $stateParams.businessid)
+		.success(function(response){
 			//$location.path("business/list");
 		}).error(function(data, status, headers){						
 			$scope.errors = data;			
@@ -86,5 +89,55 @@ MetronicApp.controller('BusinessUpdateController',['$rootScope', '$scope', '$tim
 		$scope.business.delivery_address.splice(i, 1);
 	}	
 
+	$scope.product = { searchBox: null, waitQueue: null, reqTimeout: $q.defer() };
+
+	$scope.searchItem = function(){
+		var qry = $scope.product.searchBox;
+
+		if($scope.product.waitQueue)
+			$timeout.cancel($scope.product.waitQueue);
+
+		if(qry && qry.length>=3) {
+			$scope.searching = true;
+
+			$scope.product.waitQueue = $timeout(function(){
+				$scope.product.reqTimeout.resolve();
+				$scope.product.reqTimeout = $q.defer();
+				$http.get("/adminapi/package/searchproduct",{params:{length:10,qry:qry}, timeout: $scope.product.reqTimeout.promise})
+				.then(function(response) {
+
+					response.data.forEach(function(item){
+						for(var i in $scope.business.products){
+							if($scope.business.products[i]._id == item._id){
+								item.added=true;
+								break;
+							}
+						}
+					})
+
+					$scope.itemlist = response.data;
+				})
+				.finally(function() {
+					$scope.searching = false;
+				});
+			}, 600);
+		}
+		else {
+			$scope.itemlist = [];
+		}
+	};
+
+	$scope.$watch('product.searchBox', $scope.searchItem);
+
+	$scope.addItem = function(p){
+		p.added = true;
+		p.quantity = 1;
+
+		$scope.business.products.push(angular.copy(p));
+	};
+
+	$scope.removeItem = function(proKey){
+		$scope.business.products.splice(proKey,1);
+	}
 
 }]);

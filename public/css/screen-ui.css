@@ -201,7 +201,7 @@ ui-sref {
 	transition:all 0.5s ease 0s;*/
 }
 .signuplogin a:hover {
-	background-color: #e1b11f;
+	/*background-color: #e1b11f;*/
 }
 .dropdown.cart-icon-set span:hover {
 	background-color: #e1b11f;
@@ -728,7 +728,7 @@ ui-sref {
 	width: 100%;
 	float: left;
 	margin: 12px 0px;
-	padding: 0 10px;
+	padding: 5px 10px;
 	position: relative;
 }
 .ro_pic {
@@ -2235,6 +2235,16 @@ ui-sref {
 	/*float:right;*/
 	position: relative;
 }
+
+.checkboxtotaldiv-middle-first .checkboxtotaldiv-text {
+	float:right;
+}
+
+
+.checkboxtotaldiv-middle-first  .checkboxtotaldiv-title{
+	width: 85%;
+}
+
 .checkboxtotaldiv-middle-first {
 	width: 100%;
 	float: left;
@@ -3121,9 +3131,15 @@ ui-sref {
 }
 
 
-.addressbook-btmpannelcover .addressbokk-trvaichacovr:nth-child(even){
+.addressbook-btmpannelcover.cartaddresses .addressbokk-trvaichacovr:nth-child(even){
 	margin-right: 0px;
 }
+
+
+.addressbook-btmpannelcover. .addressbokk-trvaichacovr:nth-child(3n){
+	margin-right: 0px;
+}
+
 
 .div_addsboxs:nth-child(odd) {
 	width: 48%;
@@ -3238,7 +3254,6 @@ ui-sref {
 	width: 100%;
 	float: left;
 	text-align: center;
-	margin-bottom: 6px;
 }
 .yelo_btn {
 	margin: 0 auto;
@@ -4590,18 +4605,18 @@ ui-sref {
 	border: 1px solid #d7d7d7;
 	border-radius: 5px;
 	float: left;
-	padding: 25px 26px;
-	width: 31%;
+	padding: 15px 25px;
+	width: 32%;
 	margin: 10px 20px 10px 0;
-	min-height: 155px;
+	min-height: 120px;
 }
 .addressbokk-addnewadresscovr {
 	border: 2px dashed #d7d7d7;
 	border-radius: 5px;
 	float: left;
-	padding: 25px 26px;
+	padding:14px 26px 0;
 	width: 31%;
-	margin: 10px 20px 10px 0;
+	margin: 10px 0px 10px 0;
 	text-align: center;
 }
 .addressbok-travis {
@@ -4628,6 +4643,7 @@ ui-sref {
 	font-size: 12px;
 	padding: 4px 5px 5px 36px	;
 	width: 100%;
+	min-height: 66px;
 }
 .addresseditdltpic > a {
 	color: #959595;
@@ -4670,7 +4686,7 @@ ui-sref {
 .currentorderpopup {
 	background: #ffffff none repeat scroll 0 0;
 	border-radius: 5px;
-	left: calc(26% - 145px);
+	left: calc(39% - 145px);
 	position: absolute;
 	top: 98%;
 	width: 290px;
@@ -4696,7 +4712,7 @@ ui-sref {
 .productaddedpopup {
 	background: #ffffff none repeat scroll 0 0;
 	border-radius: 5px;
-	left: calc(26% - 145px);
+	left: calc(39% - 145px);
 	position: absolute;
 	top: 100%;
 	width: 290px;
@@ -4719,6 +4735,12 @@ ui-sref {
 	width: 20px;
 	border: none;
 }
+
+
+#usermenuli .productaddedpopup {
+	left: calc(43% - 145px);
+}
+
 .currentorderpopuppinkbox {
 	float: left;
 	width: 100%;
@@ -4853,10 +4875,12 @@ ui-sref {
 .additempopupwhitebarcover {
 	width: 86%;
 	height: 10px;
-	background: #aa00ff;
+	background: #ebeef0;
 	float: left;
 	border-radius: 50px;
 	margin-top: 10px;
+	position: relative;
+    overflow: hidden;
 }
 #smokeneedpanel md-switch {
 	background-color: #7700B3;
@@ -5213,7 +5237,7 @@ md-dialog .md-actions, md-dialog md-dialog-actions {
 }
 .fullwidth.modifyscroll .md-container {
 	left: 22px;
-	top: 22px
+	top: 28px;
 }
 .md-dialog-content.alcohaladdadrebody.alcohal_reapeatorederbody {
 	padding-top: 10px;
@@ -5662,6 +5686,24 @@ md-checkbox.md-default-theme.md-checked .md-icon::after, md-checkbox.md-checked 
 	background: none !important;
 	border: 0 none;
 }
+
+
+
+/*.tab-content .owl-prev {
+	left: 0px;
+	position: absolute;
+	top: 46%;
+	background: none !important;
+	border: 0 none;
+}
+.tab-content .owl-next {
+	position: absolute;
+	right: 0px;
+	top: 46%;
+	background: none !important;
+	border: 0 none;
+}*/
+
 .tabbable .owl-carousel {
 	width: 100%
 }
@@ -5832,11 +5874,19 @@ md-checkbox.md-default-theme.md-checked .md-icon::after, md-checkbox.md-checked 
 	
 }
 
-.checkoutmiddlevlauediv .spin-border{
+.checkoutmiddlevlauediv .spin-border, .spin-border{
 	box-shadow: 0 0 5px 2px #e5c8f6;
 	border-radius: 4px;
 	border: 1px solid #aa00ff;
 }
+
+
+.addmore .spin-border{
+	box-shadow: 0 0 0px 0px #e5c8f6;
+	border-radius: 0px;
+	border: 0px solid #aa00ff;
+}
+
 
 .added .addmore-count.ng-binding {	/*border: 1px solid #aa00ff;*/
 }
@@ -5925,11 +5975,20 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
 	background: #bbb;
 }
 .selectAddress{
-	position: absolute;bottom: 4px;left: 0px;	
+	position: relative;
+	width: 100%;
+	float: left;
+	margin: 5px 0 0 0;
 }
 .cartaddresses .addressbokk-trvaichacovr, .cartaddresses .addressbokk-addnewadresscovr{
 	width: 48.5%;
 }
+
+
+.cartaddresses .addressbokk-addnewadresscovr{
+	padding: 25px 26px;
+}
+
 .addressbokk-trvaichacovr:hover, .adressmiddlepartcvr2:hover, .addressbokk-trvaichacovr.active{
 	border: 1px solid #8d00d4;
 	/*box-shadow: 0 0 2px #8d00d4;*/
@@ -6000,11 +6059,15 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
 }
 
 .additempopuppinkboxrightinner a{
-	background-color: transparent;
-	margin: 0px;
-	padding: 0px;
-	color: inherit;
-	border: none;
-	text-decoration: none;
-	background-image: none;
+	background-color: transparent !important;
+	margin: 0px !important;
+	padding: 0px !important;
+	color: inherit !important;
+	border: none !important;
+	text-decoration: none !important;
+	background-image: none !important;
+}
+
+.emptycartbox {
+    left: calc(26% - 145px);
 }

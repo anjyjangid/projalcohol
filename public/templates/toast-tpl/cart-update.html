@@ -6,21 +6,23 @@
 				<td class="additempopuppinkboxleft">{{quantity}}</td>
 				<td class="additempopuppinkboxright">
 					{{message}}
-					<div class="additempopuppinkboxrightinner"><a href="">View my cart</a></div>
+					<div class="additempopuppinkboxrightinner"><a ui-sref="mainLayout.checkout.cart">View my cart</a></div>
 				</td>
 			</tr>
 		</table>					
 	</div>
 	<div class="additempopupwhitebox">
 		
-		<div class="additempopupwhiteblacktext" ng-if="!isFreeDelivery">25.78 more to FREE delivery</div>
+		<div class="additempopupwhiteblacktext" ng-if="!isFreeDelivery">{{freeRequired}} more to FREE delivery</div>
 		<div class="additempopupwhiteblacktext" ng-if="isFreeDelivery">Nice! You've unlocked FREE delivery!</div>
 
 		<div class="additempopupwhitebarimgcover">
 			<div class="additempopupwhitebarcover">
-				<div class="scale"></div>
+				<div class="scale" ng-style="{'width':requiredPer}"></div>
 			</div>
-			<img src="images/imgpsh_fullsize_small.png" />
+			<img src="images/imgpsh_fullsize_small.png" ng-hide="isFreeDelivery"/>
+			<img src="images/freedelivery-active.png" ng-hide="!isFreeDelivery"/>
+			
 		</div>
 	</div>
 
