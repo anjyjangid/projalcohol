@@ -327,7 +327,10 @@ class Products extends Eloquent
 			}
 
 			if($params['filter']=="new"){
-				$match['$match']['created_at'] = ['$gt'=> new \DateTime('-1 months')];
+				
+				$onemonthOld = strtotime('-1 months');
+
+				$match['$match']['created_at'] = ['$gt'=> new \MongoDate($onemonthOld)];
 			}
 
 			if($params['filter']=="in-stock"){
