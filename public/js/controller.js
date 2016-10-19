@@ -451,20 +451,16 @@ AlcoholDelivery.controller('ProductDetailController', [
 
 		function(response){
 
-			$scope.product = response;
+			$scope.product = response;				
 
-			$scope.$watchGroup(['product.qNChilled','product.qChilled','maxQuantity'],
-				function(newValue, oldValue) {
+			if(!$scope.product.isInCart){
 
-					$scope.updateQuantity();
-
-				},true
-			);
-
-			$scope.updateQuantity = function(){
-
-				$scope.tquantity = parseInt($scope.product.qNChilled)+parseInt($scope.product.qChilled);
-
+				if($scope.product.chilled){
+					$scope.product.qChilled = 1;
+				}else{
+					$scope.product.qNChilled = 1;
+				}
+				
 			}
 
 			$scope.addtocart = function(){
@@ -478,8 +474,6 @@ AlcoholDelivery.controller('ProductDetailController', [
 						$scope.isInCart = true;
 					}
 				);
-				//alcoholCart.addItem($scope.product._id,$scope.product.qNChilled,false);
-
 
 			};
 
@@ -2627,7 +2621,8 @@ AlcoholDelivery.controller('GiftController', [
 
 		if($stateParams.giftid){
 
-			$http.get('/gift/'+$stateParams.giftid).success(function(result){
+			$http.get('/gift/'+$stateParams.giftid)
+			.success(function(result){
 
 				$scope.gift = result;
 
@@ -2654,8 +2649,7 @@ AlcoholDelivery.controller('GiftController', [
 				}
 
 				$scope.processing = false;
-				angular.alcoholGifting = alcoholGifting;
-
+				
 				$scope.alcoholGifting = alcoholGifting;
 
 				alcoholGifting.setCurrentGift(result);
@@ -2716,19 +2710,18 @@ AlcoholDelivery.controller('GiftController', [
 							}
 
 							$scope.errors = errorRes.data;
-							$anchorScroll();
 
 						}
 
 					).finally(function(res){
-
 						$scope.processing = false;
 
 					});
 
 				}
 
-			}).error(function(err){
+			})
+			.error(function(err){
 
 			});
 

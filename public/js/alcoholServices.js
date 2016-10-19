@@ -234,6 +234,14 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 
 		});
 
+		angular.forEach(this.$products,function(pro){
+
+			var isInGift = alcoholCart.isProductInGift(pro._id);
+			if(isInGift!==false){
+				pro._quantity = pro._quantity - isInGift.quantity
+			}
+
+		});
 
 		return this.$products; 
 	}
@@ -295,12 +303,11 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 		giftData['type'] = 'giftpackaging';
 		giftData['products'] = this.getGiftAttachedProduct();
 
-		$http.post("/cart/gift",angular.extend({ cartKey: alcoholCart.getCartKey() }, giftData)).then(
+		$http.put("/cart/gift/"+alcoholCart.getCartKey(),giftData).then(
 
 			function(successRes){
 
 				alcoholCart.addGift(successRes.data.gift);
-
 				defer.resolve(successRes.data.gift);
 
 			},
