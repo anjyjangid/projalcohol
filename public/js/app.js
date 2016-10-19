@@ -574,7 +574,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				.state('mainLayout.checkout.payment', {
 						url: "/cart/payment",
 						templateUrl : "/templates/checkout/payment.html",
-						data: {step: 'payment',stepCount:5},
+						data: {step: 'payment',stepCount:4},
 						controller:"CartPaymentController"
 				})
 
