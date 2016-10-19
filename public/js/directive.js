@@ -651,14 +651,13 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.isAddCustom = false;
 
 			$scope.focusout = function(){
-
-				console.log("I am in");
+				
 				$timeout(function() {
 					
 					$scope.addMoreCustom = false;
-console.log("tisaddcustome : ",$scope.isAddCustom);					
+
 					if(!$scope.isAddCustom){
-console.log("tisaddcustome : ",$scope.isAddCustom);
+
 						var p = alcoholCart.getProductById($scope.product._id);
 						$scope.product.qChilled = p.qChilled;
 						$scope.product.qNChilled = p.qNChilled;
@@ -683,8 +682,8 @@ console.log("tisaddcustome : ",$scope.isAddCustom);
 			};
 
 			$scope.addCustom = function(){				
+
 				$scope.isAddCustom = true;
-console.log("isaddcustome : ",$scope.isAddCustom);
 				$scope.addtocart();
 
 			};
@@ -692,6 +691,7 @@ console.log("isaddcustome : ",$scope.isAddCustom);
 			$scope.activeAddToCart = function() {
 
 				var userData = UserService.currentUser;
+				$element.find(".addmore-count").css({visibility: "hidden"});
 
 				if($scope.product.isLoyaltyStoreProduct === true){
 
@@ -736,10 +736,22 @@ console.log("isaddcustome : ",$scope.isAddCustom);
 				}
 
 				$scope.addMoreCustom = false;
-
+				
 				$timeout(function(){
-					$element.find(".addmore-count").animate({ top: "0px"},300);
-				}, 100);
+					
+					$element.find(".addmore-count").css({top: "30px"});
+
+					$timeout(function(){					
+
+						$element.find(".addmore-count").css({visibility: "visible"});
+						
+						$element.find(".addmore-count").animate({ top: "0px"},300);
+
+					}, 100);
+
+				}, 100)
+
+				
 
 				if($scope.product.servechilled){
 

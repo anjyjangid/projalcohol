@@ -225,7 +225,8 @@ function initScripts(options){
 		  $(".addcart").hide();
 		  $(".addmore").show();
 		  //$(".addmore .bootstrap-touchspin").show('slide', { direction: 'down' }, 250);
-		  $(".addmore .bootstrap-touchspin input").animate({ top: "0px"},300);
+		  $(".addmore .bootstrap-touchspin .addmore-count").css({ top: "-30px"},0);
+		  $(".addmore .bootstrap-touchspin .addmore-count").animate({ top: "0px"},300);
 	});
 
 	$(".addmorehere").click(function () {

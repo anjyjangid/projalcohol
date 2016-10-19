@@ -21,6 +21,7 @@ use AlcoholDelivery\Promotion as Promotion;
 use AlcoholDelivery\Holiday as Holiday;
 use AlcoholDelivery\User as User;
 use AlcoholDelivery\Gift as Gift;
+use AlcoholDelivery\Email;
 
 use DB;
 use MongoDate;
@@ -49,6 +50,9 @@ class CartController extends Controller
 			$this->deliverykey = session()->get('deliverykey');
 		}
 
+		$this->middleware('cart.unavailable');// check cart is available or not;
+
+		
 	}
 
 	/**
@@ -889,7 +893,7 @@ class CartController extends Controller
 
 	}
 
-	public function mergecarts($cartkey){
+	public function mergecarts($cartKey){
 
 		$user = Auth::user('user');
 
@@ -897,9 +901,9 @@ class CartController extends Controller
 
 		if(isset($user->_id)){
 
-			$userCart = Cart::where("user","=",new MongoId($user->_id))->where("_id","!=",new MongoId($cartkey))->first();
+			$userCart = Cart::where("user","=",new MongoId($user->_id))->where("_id","!=",new MongoId($cartKey))->first();
 
-			$sessionCart = Cart::find($cartkey);
+			$sessionCart = Cart::find($cartKey);
 
 			// if(!empty($userCart)){
 
@@ -1209,13 +1213,22 @@ jprd($product);
 
 		$tomorrowTimeStr = strtotime('tomorrow');
 		$passedTimeStr = strtotime($date);
+		
 	
 		if($passedTimeStr < $tomorrowTimeStr){
 			return response(["message"=>"In-valid date passed, Time slot is not available for previous date"],400);
 		}
 
+		$start = (float)$passedTimeStr*1000;
+		$end = (float)(strtotime('+6 days',$passedTimeStr)*1000);
+		
 		$holiday = new Holiday;
-		$holidays = $holiday->getHolidays(['start'=>(int)$passedTimeStr*1000, 'end'=>((int)$passedTimeStr + 86400) * 1000]);	
+		$holidays = $holiday->getHolidays(
+			[
+				'start'=>$start, 
+				'end'=>$end
+			]
+		);	
 
 		$currDate = date("Y-m-d", $tomorrowTimeStr);
 
@@ -1224,9 +1237,12 @@ jprd($product);
 		$weeknumber = date("N",strtotime($passedDate));//pass "3" for 2016-06-08(wednesday)
 
 		$weekDaysOff = [];
+		$holidayTimestamp = [];
 		foreach($holidays as $holiday){
 			if($holiday['_id']==="weekdayoff"){
 				$weekDaysOff = $holiday['dow'];
+			}else{
+				$holidayTimestamp[] = ($holiday['timeStamp'])/1000;
 			}
 		}
 
@@ -1247,11 +1263,18 @@ jprd($product);
 
 		for($i=1;$i<=7;$i++){
 
+			$datekey = strtotime($tempDate);
+			$datestamp = date("d M",$datekey);			
+			$status = 1;
+			if(in_array($weeknumber==7?0:$weeknumber, $weekDaysOff) || (in_array($datekey,$holidayTimestamp))){
+				$status = 0;
+			}
+
 			$slotArr[$weekKeys[$weeknumber]] = [
 				'slots' => $timeSlots[$weeknumber-1],
-				'datestamp' => date("d M",strtotime($tempDate)),
-				'datekey' => strtotime($tempDate),
-				'status' => in_array($weeknumber==7?0:$weeknumber, $weekDaysOff)?0:1,
+				'datestamp' => $datestamp,
+				'datekey' => $datekey,
+				'status' => $status//in_array($weeknumber==7?0:$weeknumber, $weekDaysOff)?0:1,
 			];
 
 			$tempDate = date("Y-m-d",strtotime('+1 day', strtotime($tempDate)));
@@ -1615,17 +1638,9 @@ jprd($product);
 
 			$cart->delete();
 			
-			$reference = "ADSG";
+			$reference = $order->reference;			
 
-			$reference.= ((int)date("ymd",strtotime($order->created_at)) - 123456);
-			$reference.="O";
-			$reference.= (string)date("Hi",strtotime($order->created_at));
-
-			//$order->reference = $reference;
-
-			$order->save();
-
-			$userObj = User::where('_id', $user->_id);
+			$userObj = User::find($user->_id);
 
 			if($cart->loyaltyPointUsed>0){
 
@@ -1670,6 +1685,23 @@ jprd($product);
 		        $userObj->push('savedCards',$cardInfo,true);
 
 			}
+
+			//Update inventory if order is 1 hour delivery
+			if($order['delivery']['type'] == 0){
+				$model = new Products();
+				$model->updateInventory($order);
+			}
+
+			//CONFIRMATION EMAIL 
+			$emailTemplate = new Email('orderconfirm');
+			$mailData = [
+                'email' => strtolower($userObj->email),
+                'user_name' => ($userObj->name)?$userObj->name:$userObj->email,
+                'order_number' => $reference
+            ];
+
+            $mailSent = $emailTemplate->sendEmail($mailData);
+
 
 			if($request->isMethod('get')){
 				return redirect('/#/orderplaced/'.$order['_id']);
@@ -2130,7 +2162,7 @@ jprd($product);
 		
 	}
 
-	public function postGift(GiftCartRequest $request){
+	public function putGift($cartKey,GiftCartRequest $request){
 
 		$response = [
 			'message'=>'',
@@ -2145,90 +2177,36 @@ jprd($product);
 
 		$gift = $giftModel->getGift($inputs['id']);
 
-		// Fetch Cart
-		$cartKey = $inputs['cartKey'];//$this->deliverykey;
-		
 		$cart = Cart::find($cartKey);
-
+		
 		$giftProducts = $inputs['products'];
 
-		$totalProducts = 0;		
-		$cartProducts = $cart->products;
+		$cartProducts = $cart->getProductsNotInGift();
 
-		if($cart->loyalty)
-		foreach($cart->loyalty as $key=>$loyalty){
+		$totalProducts = 0;
 
-			if(isset($cartProducts[$key])){
-
-				$cartProducts[$key]['quantity']+= (int)$loyalty['quantity'];
-
-			}else{
-
-				$cartProducts[$key] = [
-					'quantity'=>(int)$loyalty['quantity']
-				];
-
-			}
-		}
-
-		if($cart->promotions)
-		foreach($cart->promotions as $promotion){
-			$key = $promotion['productId'];
-			if(isset($cartProducts[$key])){
-
-				$cartProducts[$key]['quantity']++;
-
-			}else{
-
-				$cartProducts[$key] = [
-					'quantity'=>1
-				];
-
-			}
-		}
-
-
-		foreach ($giftProducts as &$giftProduct) {						
+		foreach ($giftProducts as $giftProduct) {
 
 			$proId = $giftProduct['_id'];
-			// $state = $giftProduct['state'];
-			$giftProduct['chilled'] = true;
+						
 			$quantity = (int)$giftProduct['quantity'];
 
-			// Condition to check product is available in cart or not
-			// Condition to check state(chilled/non chilled) is available or not
+			// Condition to check product is available in cart or not			
 
-			if(isset($cartProducts[$proId]) && $cartProducts[$proId]['quantity']>=$quantity){
+			if(isset($cartProducts[$proId]) && $cartProducts[$proId]>=$quantity){			
 
-				// if(!isset($cartProducts[$proId][$state]['inGift'])){ // set inGift eky if not exist in product state
-
-				// 	$cartProducts[$proId][$state]['inGift'] = [];
-
-				// }
-
-				// $newInGift =  [ // gift data attached to product state
-				// 		'_id' => $gift['_id'],
-				// 		'quantity' => $quantity,
-				// 		'state' => $cartProducts[$proId][$state]['status']
-				// 	];
-
-				// To set state of product passed to add
-				// $giftProduct['state'] = $newInGift['state'];
-
-				// $cartProducts[$proId][$state]['inGift'] = array_merge($cartProducts[$proId][$state]['inGift'],[$newInGift]);
-
-				$totalProducts+=(int)$quantity;					
+				$totalProducts+=(int)$quantity;
 				
 			}else{
 
-				$response['message'] = 'One or more products attached are not in cart';
+				$response['message'] = 'Products attached quantity not match with in cart';
 				$response['reload'] = true;
 				return response($response,422);
 
 			}
 
-		}			
-		
+		}
+
 		if($totalProducts<1){
 
 			$response['message'] = 'Please attach products';
@@ -2244,7 +2222,7 @@ jprd($product);
 		}
 
 
-		$cart->products = $cartProducts;
+		//$cart->products = $cartProducts;
 		
 		$gifts = empty($cart->gifts)?[]:$cart->gifts;
 
@@ -2269,11 +2247,11 @@ jprd($product);
 
 			$cart->save();
 
-			return response(["success"=>true,"message"=>"cart updated successfully","gift"=>$newGift],200);
+			return response(["message"=>"cart updated successfully","gift"=>$newGift],200);
 
 		}catch(\Exception $e){
 
-			return response(["success"=>false,"message"=>$e->getMessage()],400);
+			return response(["message"=>$e->getMessage()],400);
 
 		}
 

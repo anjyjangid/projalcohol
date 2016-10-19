@@ -1014,4 +1014,47 @@ class Cart extends Moloquent
 
 
 
+	public function getProductsNotInGift(){	
+
+		$productsInCart = $this->getProductIncartCount();
+
+		$gifts = $this->gifts;
+
+		if(empty($gifts)){
+			return $productsInCart;
+		}
+
+		$productsInGift = [];
+		foreach ($gifts as $gift) {
+			
+			foreach ($gift['products'] as $product) {
+
+				if(isset($productsInGift[$product['_id']])){
+					$productsInGift[$product['_id']]+= $product['quantity'];
+				}else{
+					$productsInGift[$product['_id']] = $product['quantity'];
+				}
+				
+			}
+
+		}
+
+		foreach ($productsInCart as $proKey => &$count) {
+
+			$countInGift = 0;
+
+			if(isset($productsInGift[$proKey])){
+				$countInGift = $productsInGift[$proKey];
+			}
+
+			$count-= $countInGift;
+			
+		}
+			
+		return $productsInCart;
+
+	}
+
+
+
 }
