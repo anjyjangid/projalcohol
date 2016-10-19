@@ -1,4 +1,4 @@
-<div class="combo_slider">
+	<div class="combo_slider">
 
 	<div class="checkout_title">
 		<span ng-if="$state.$current.data.step=='cart'">My Cart</span>
@@ -12,13 +12,7 @@
 
 	<div class="steps_notify">
 
-			<div class="step_grid">			
-
-				<a class="step1" ng:class="{'currentstep':$state.$current.data.step=='cart'}"><span>Shopping Cart</span></a>
-				<a class="step2" ng:class="{'currentstep':$state.$current.data.step=='address'}"><span>Address</span></a>
-				<a class="step3" ng:class="{'currentstep':$state.$current.data.step=='delivery'}"><span>Delivery</span></a>
-				<a class="step4" ng:class="{'currentstep':$state.$current.data.step=='payment'}"><span>Payment</span></a>
-				<a class="step5" ng:class="{'currentstep':$state.$current.data.step=='review'}"><span>Review &amp; Confirm</span></a>
+			<!-- <div class="step_grid">			
 
 				<img src="images/step1.png" ng-show="$state.$current.data.step=='cart'" class="img-responsive">
 				<img src="images/step2.png" ng-show="$state.$current.data.step=='address'" class="img-responsive">
@@ -26,6 +20,33 @@
 				<img src="images/step4.png" ng-show="$state.$current.data.step=='payment'" class="img-responsive">
 				<img src="images/step5.png" ng-show="$state.$current.data.step=='review'" class="img-responsive">
 
+			</div> -->
+			<div class="steps-cover stepcount-1">
+				<div class="step-progressbar">
+					<div class="progressbar-state">
+						<div class="progressbar-loading"></div>
+					</div>
+				</div>
+				<div class="step-ratio">
+					<div class="step-individual step-1"></div>
+					<a class="steps-text" ng:class="{'currentstep':$state.$current.data.step=='cart'}"><span>Shopping Cart</span></a>
+				</div>
+				<div class="step-ratio">
+					<div class="step-individual step-2"></div>
+					<a class="steps-text" ng:class="{'currentstep':$state.$current.data.step=='address'}"><span>Address</span></a>
+				</div>
+				<div class="step-ratio">
+					<div class="step-individual step-3"></div>
+					<a class="steps-text" ng:class="{'currentstep':$state.$current.data.step=='delivery'}"><span>Delivery</span></a>
+				</div>
+				<div class="step-ratio">
+					<div class="step-individual step-4"></div>
+					<a class="steps-text" ng:class="{'currentstep':$state.$current.data.step=='payment'}"><span>Payment</span></a>
+				</div>
+				<div class="step-ratio">
+					<div class="step-individual step-5"></div>
+					<a class="steps-text" ng:class="{'currentstep':$state.$current.data.step=='review'}"><span>Review &amp; Confirm</span></a>
+				</div>
 			</div>
 	</div>
 

@@ -1318,7 +1318,7 @@ ui-sref {
 }
 .alcohal_orderhistorytxtcvr {
 	margin: 0 auto;
-	width: 82%;
+	width: 78%;
 }
 .alcohal_orderhistorybodytxt {
 	margin: 0 auto;
@@ -1341,6 +1341,12 @@ ui-sref {
 	width: 100%;
 	margin-top: 41px;
 }
+
+
+.alcohal_hisryorderboxcvr .alcohal_hisryorderboxcvr1:nth-child(even){
+	margin-right: 0px;
+}
+
 .alcohal_hisryorderboxcvr1 {
 	display: inline-block;
 	border: 1px solid #d7d7d7;
@@ -2759,7 +2765,8 @@ ui-sref {
 	float: none;
 }
 .owldownpartcover img {
-	width: 58px;
+	max-width: 100%;
+	width: auto;
 	height: 58px;
 	border: solid 1px #ebeef0;
 }
@@ -2945,7 +2952,7 @@ ui-sref {
 	position: absolute;
 	top: 0;
 }
-.step1 {
+/*.step1 {
 	left: 52px;
 }
 .step2 {
@@ -2959,8 +2966,8 @@ ui-sref {
 }
 .step5 {
 	right: 51px;
-}
-.steps_notify .step_grid a span {
+}*/
+/*.steps_notify .step_grid a span {
 	text-transform: uppercase;
 	bottom: -23px;
 	color: #888888;
@@ -2970,10 +2977,30 @@ ui-sref {
 	position: absolute;
 	text-align: center;
 	width: 110px;
+}*/
+
+
+.steps-text {
+	text-transform: uppercase;
+	color: #888888;
+	display: inline-block;
+	font-size: 10px;
+	text-align: center;
+	width: 100%;
+	margin-top: 12px;
 }
-#step1.active a:nth-child(1) span, #step2.active a:nth-child(2) span, #step3.active a:nth-child(3) span, #step4.active a:nth-child(4) span, #step5.active a:nth-child(5) span {
+
+
+/*#step1.active a:nth-child(1) span, #step2.active a:nth-child(2) span, #step3.active a:nth-child(3) span, #step4.active a:nth-child(4) span, #step5.active a:nth-child(5) span {
+	color: #564111;
+}*/
+
+.steps-text.active{
 	color: #564111;
 }
+
+
+
 .checkout_title {
 	width: 100%;
 	float: left;
@@ -3136,10 +3163,17 @@ ui-sref {
 }
 
 
-.addressbook-btmpannelcover. .addressbokk-trvaichacovr:nth-child(3n){
+.addressbook-btmpannelcover .addressbokk-trvaichacovr:nth-child(3n){
 	margin-right: 0px;
 }
 
+.addressbook-btmpannelcover .addressbokk-trvaichacovr{
+	margin: 10px 17px 10px 0;
+}
+
+.addressbook-btmpannelcover.cartaddresses .addressbokk-trvaichacovr{
+	margin: 10px 20px 10px 0;
+}
 
 .div_addsboxs:nth-child(odd) {
 	width: 48%;
@@ -4142,7 +4176,7 @@ ui-sref {
 	float: right;
 	background-color: #fff;
 	border-radius: 5px;
-	padding: 21px 31px 33px 26px;
+	padding: 21px 25px 33px 25px;
 	border: 1px solid #dfe2e4;
 	margin-bottom: 16px;
 }
@@ -6044,9 +6078,9 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
 	display: none;
 }
 
-.currentstep span{
+/*.currentstep span{
 	color: #000000 !important;
-}
+}*/
 
 .alcohlchekboxdiv12 md-checkbox .md-icon{
 	border-width: 1px;
@@ -6071,3 +6105,169 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
 .emptycartbox {
     left: calc(26% - 145px);
 }
+
+.no-pro-found-table{
+	width: 100%;
+	text-align: center;
+	display: table;
+}
+
+.no-pro-found-cell{
+	height: 200px;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+
+.steps-cover{
+	width: 100%;
+	float: left;
+	position: relative;
+}
+
+
+.step-ratio{
+	width: 20%;
+	float: left;
+}
+
+.step-individual{
+	margin: 0 auto;
+	width: 60px;
+	height: 60px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-color: #ebeef0;
+	border-radius: 50%;
+	position: relative;
+	z-index: 3;
+	cursor: pointer;
+}
+
+/*.step-individual.active{
+	background-color: #ffc412;
+}*/
+
+.step-progressbar{
+	height: 10px;
+    left: 10%;
+    position: absolute;
+    top: 25px;
+    width: calc(100% - 20%);
+	background-color: #ebeef0;
+	z-index: 3;
+}
+
+.progressbar-state{
+	width: 100%;
+	float: left;
+	position: relative;
+}
+
+.progressbar-loading{
+	width: 0%;
+	position: absolute;
+	background-color: #ffc412;
+	height: 4px;
+	left:0px;
+	top: 3px;
+	transition: all 0.5s linear 0s;
+}
+
+.stepcount-1 .progressbar-loading{
+	width: 0%;
+}
+.stepcount-2 .progressbar-loading{
+	width: 25%;
+}
+.stepcount-3 .progressbar-loading{
+	width: 50%;
+}
+.stepcount-4 .progressbar-loading{
+	width: 75%;
+}
+.stepcount-5 .progressbar-loading{
+	width: 100%;
+}
+
+.step-1{
+	background-image: url(../images/step-1.png);	
+}
+
+.stepcount-1 .step-1, 
+.stepcount-2 .step-1, 
+.stepcount-3 .step-1,
+.stepcount-4 .step-1,
+.stepcount-5 .step-1{
+	background-image: url(../images/step-1h.png);
+	background-color: #ffc412;
+	transition: all 0s linear 0.5s;	
+}
+
+.step-2{
+	background-image: url(../images/step-2.png);	
+}
+
+.stepcount-2 .step-2,
+.stepcount-3 .step-2,
+.stepcount-4 .step-2,
+.stepcount-5 .step-2{
+	background-image: url(../images/step-2h.png);
+	background-color: #ffc412;
+	transition: all 0s linear 0.5s;		
+}
+
+
+.step-3{
+	background-image: url(../images/step-3.png);	
+}
+
+.stepcount-3 .step-3,
+.stepcount-4 .step-3,
+.stepcount-5 .step-3{
+	background-image: url(../images/step-3h.png);
+	background-color: #ffc412;
+	transition: all 0s linear 0.5s;		
+}
+
+.step-4{
+	background-image: url(../images/step-4.png);	
+}
+
+.stepcount-4 .step-4,
+.stepcount-5 .step-4{
+	background-image: url(../images/step-4h.png);
+	background-color: #ffc412;
+	transition: all 0s linear 0.5s;		
+}
+
+.step-5{
+	background-image: url(../images/step-5.png);	
+}
+
+.stepcount-5 .step-5{
+	background-image: url(../images/step-5h.png);
+	background-color: #ffc412;
+	transition: all 0s linear 0.5s;		
+}
+
+.stepcount-1 .step-1 + .steps-text {
+    color: #564111;
+}
+
+.stepcount-2 .step-2 + .steps-text {
+    color: #564111;
+}
+
+.stepcount-3 .step-3 + .steps-text {
+    color: #564111;
+}
+
+.stepcount-4 .step-4 + .steps-text {
+    color: #564111;
+}
+
+.stepcount-5 .step-5 + .steps-text {
+    color: #564111;
+}
+
