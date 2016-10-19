@@ -312,7 +312,7 @@ class Products extends Eloquent
 			'$limit' => 100
 		];
 
-		if(isset($params['type'])){
+		if(isset($params['type']) && $params['type']!=0){
 
 			if($params['type']==1){
 				$match['$match']['isLoyalty'] = 1;
@@ -327,7 +327,7 @@ class Products extends Eloquent
 			}
 
 			if($params['filter']=="new"){
-				$match['$match']['created_at'] = ['$gt'=> new DateTime('-1 months')];
+				$match['$match']['created_at'] = ['$gt'=> new \DateTime('-1 months')];
 			}
 
 			if($params['filter']=="in-stock"){
@@ -335,6 +335,13 @@ class Products extends Eloquent
 			}
 
 		}
+
+		if(isset($params['keyword']) && !empty($params['keyword'])){
+			$s = "/".$params['keyword']."/i";
+			$match['$match']['name'] = ['$regex'=>new \MongoRegex($s)];
+		}
+
+
 
 		/*if(isset($params['parent']) && !empty($params['parent'])){
 			
@@ -358,7 +365,7 @@ class Products extends Eloquent
 
 			$sortArr = explode("_", $params['sort']);                    
 			$sort = array_pop($sortArr);
-			$sortDir = $sort=='asc'?-1:1;
+			$sortDir = $sort=='asc'?1:-1;
 			$sort = array_pop($sortArr);
 
 			$sortParam['$sort'][$sort] = (int)$sortDir;
@@ -459,22 +466,19 @@ class Products extends Eloquent
 			]
 		];
 
-		if(isset($params['parent']) && !empty($params['parent'])){
+		//CATEGORY WISE SEARCH 
+		if(isset($params['parent']) && !empty($params['parent'])){			
 
-			$matchCategoryCondition[]['$match'] = [
-				'parentCategory.slug' => $params['parent']
+			$matchCategoryCondition['$match']['$or'] = [
+				['parentCategory.slug' => $params['parent']],
+				['childCategory.slug' => $params['parent']],
 			];
 
 		}
 
-		$matchCategoryCondition[]['$match'] = [
-			'parentCategory.cat_status' => 1
-		];
-
-		$matchCategoryCondition[]['$match'] = [
-			'childCategory.cat_status' => 1
-		];
-
+		//FILTER PRODUCTS HAVING INACTIVE CATEGORIES & SUBCATEGORIES
+		$matchCategoryCondition['$match']['parentCategory.cat_status'] = 1;
+		$matchCategoryCondition['$match']['childCategory.cat_status'] = 1;
 
 		$fields = [
 			'$project' => [
@@ -499,8 +503,6 @@ class Products extends Eloquent
 							// 'maxQuantity' => 1,
 							'availabilityDays' => 1,
 							'availabilityTime' => 1,
-							'catParent' => ['$arrayElemAt'=> [ '$categoriesObject', 0 ]],
-							'catSubParent' => ['$arrayElemAt'=> [ '$categoriesObject', 1 ]],
 							'parentCategory' => 1,
 							'childCategory' => 1
 						]
@@ -573,7 +575,11 @@ class Products extends Eloquent
 								'deliveryType' => 1,
 								'outOfStockType' => 1,
 								'availabilityDays' => 1,
-								'availabilityTime' => 1
+								'availabilityTime' => 1,
+								'catParent' => ['$arrayElemAt'=> [ '$categoriesObject', 0 ]],
+								'catSubParent' => ['$arrayElemAt'=> [ '$categoriesObject', -1 ]],
+								'parentCategory' => 1,
+								'childCategory' => 1
 							]
 					];
 
@@ -588,10 +594,15 @@ class Products extends Eloquent
 
 			$query = [
 						$match,
+						$fields,
+						$lookupParentCategory,
+						$lookupChildCategory,
+						$unwindCategory,
+						$unwindSubCategory,
+						$matchCategoryCondition,
 						$sortParam,
 						$skip,
 						$limit,
-						$fields
 					];
 
 			if(isset($params['type'])){
@@ -601,25 +612,27 @@ class Products extends Eloquent
 					$query = array_merge(
 								$query,
 								[
-									$lookupParentCategory,
-									$lookupChildCategory,
+									/*$lookupParentCategory,
+									$lookupChildCategory,*/
 									$lookupParentCatSale,
 									$lookupCatSale,
 									$lookupProSale,
 									$saleProject,
 									$firstProSaleProject,
-									$unwindCategory,
-									$unwindSubCategory,
+									/*$unwindCategory,
+									$unwindSubCategory,*/
 									$unwind,
 									$unwindAction,
 									$lookupSaleProduct
-								],
-								$matchCategoryCondition
+								]
+								//$matchCategoryCondition
 							);
 					//jprd($query);
 				}
 
 			}
+
+			//dd($query);
 
 			$products = Products::raw()->aggregate($query);
 

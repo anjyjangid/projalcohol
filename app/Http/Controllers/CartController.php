@@ -1274,7 +1274,7 @@ jprd($product);
 				'slots' => $timeSlots[$weeknumber-1],
 				'datestamp' => $datestamp,
 				'datekey' => $datekey,
-				'status' => $status//in_array($weeknumber==7?0:$weeknumber, $weekDaysOff)?0:1,
+				'status' => $status
 			];
 
 			$tempDate = date("Y-m-d",strtotime('+1 day', strtotime($tempDate)));

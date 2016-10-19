@@ -93,6 +93,91 @@ class SiteController extends Controller
         
         $products = new Products;
 
+        $query = [];
+
+        $query[]['$match'] = [
+            "categoriesObject" => [ '$exists' => true ],
+            "status" => 1
+        ];
+
+        if(isset($keyword) && !empty($keyword)){
+            $s = "/".$keyword."/i";
+            $query[]['$match']['name'] = ['$regex'=>new \MongoRegex($s)];
+        }
+
+        $query[]['$project'] = [
+            'chilled' => 1,
+            'description' =>  1,
+            'price' => [
+                '$multiply' => [ '$price', 1 ]
+            ],
+            'categories' => 1,
+            'categoriesObject'=>1,
+            // 'discountPrice' => 1,
+            'imageFiles' => 1,
+            'name' => 1,
+            'slug' => 1,
+            'shortDescription' => 1,
+            'sku' => 1,
+            'quantity' => 1,
+            'regular_express_delivery' => 1,
+            'express_delivery' => 1,
+            'express_delivery_bulk' => 1,
+            'outOfStockType' => 1,
+            // 'maxQuantity' => 1,
+            'availabilityDays' => 1,
+            'availabilityTime' => 1,
+            'catParent' => ['$arrayElemAt'=> [ '$categoriesObject', 0 ]],
+            'catSubParent' => ['$arrayElemAt'=> [ '$categoriesObject', -1 ]],
+            'parentCategory' => 1,
+            'childCategory' => 1
+        ];
+
+
+
+        $query[]['$lookup'] = [
+            'from' => 'categories',
+            'localField' => 'catParent',
+            'foreignField' => '_id', 
+            'as' => 'parentCategory'
+        ];
+
+        $query[]['$lookup'] = [
+            'from' => 'categories',
+            'localField' => 'catSubParent',
+            'foreignField' => '_id', 
+            'as' => 'childCategory'            
+        ];
+
+        $query[]['$unwind'] = [
+            'path' => '$parentCategory',
+            'preserveNullAndEmptyArrays' => true
+        ];
+
+        $query[]['$unwind'] = [
+            'path' => '$childCategory',
+            'preserveNullAndEmptyArrays' => true
+        ];
+
+        $query[]['$match'] = [
+            'parentCategory.cat_status' => 1            
+        ];
+
+        $query[]['$match'] = [
+            'childCategory.cat_status' => 1
+        ];
+
+        $query[]['$skip'] = 0;
+        $query[]['$limit'] = 10;
+
+        $products = Products::raw()->aggregate($query);
+
+        if(isset($products['result'])){
+            return response($products['result'],200);
+        }else{
+            return response([],200);
+        }
+
         if(isset($keyword) && trim($keyword)!=''){            
             $products = $products->where('name','regexp', "/.*$keyword/i")->where('status',1);
         }

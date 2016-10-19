@@ -391,7 +391,7 @@ AlcoholDelivery.factory('ScrollPaging', function($http) {
 
 AlcoholDelivery.factory('ScrollPagination', function($http,ProductService) {
 
-  var Search = function(keyword,filter,sortby) {
+  var Search = function(keyword,filter,sortby,type) {
     this.items = [];
     this.busy = false;
     this.skip = 0;
@@ -401,6 +401,7 @@ AlcoholDelivery.factory('ScrollPagination', function($http,ProductService) {
     this.totalResult = 0;
     this.filter = filter;
     this.sortby = sortby;
+    this.type = type || 1;
   };
 
   Search.prototype.nextPage = function() {
@@ -410,11 +411,12 @@ AlcoholDelivery.factory('ScrollPagination', function($http,ProductService) {
 
     ProductService.getProducts({
 
-		type : 1, // [1 for loyalty store]
+		type : this.type, // [1 for loyalty store]
 		skip:this.skip,
 		limit:this.take,
 		filter:this.filter,
-		sort:this.sortby
+		sort:this.sortby,
+		keyword:this.keyword
 
 	}).then(function(items){
 

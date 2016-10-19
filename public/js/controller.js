@@ -2387,8 +2387,8 @@ AlcoholDelivery.controller('PackageDetailController',
 }]);
 
 AlcoholDelivery.controller('SearchController', [
-'$timeout', '$q', '$log', '$http', '$state', '$scope', '$rootScope', '$timeout', '$anchorScroll', '$stateParams', 'ScrollPaging', 'ProductService'
-, function($timeout, $q, $log, $http, $state, $scope, $rootScope, $timeout, $anchorScroll, $stateParams, ScrollPaging, ProductService){
+'$timeout', '$q', '$log', '$http', '$state', '$scope', '$rootScope', '$timeout', '$anchorScroll', '$stateParams', 'ScrollPagination', 'ProductService'
+, function($timeout, $q, $log, $http, $state, $scope, $rootScope, $timeout, $anchorScroll, $stateParams, ScrollPagination, ProductService){
 
 		$scope.AppController.category = "";
 		$scope.AppController.subCategory = "";
@@ -2421,7 +2421,6 @@ AlcoholDelivery.controller('SearchController', [
     function querySearch (query) {
 		return $http.get('/site/search/' + query).then(function(result){
 		    result.data = ProductService.prepareProductObjs(result.data);
-		    // console.log(data);
 		    return result.data;
 		});
     }
@@ -2479,13 +2478,18 @@ AlcoholDelivery.controller('SearchController', [
 
 	if($stateParams.keyword){
     	if($stateParams.keyword!=''){
-    		$scope.args = {
+    		/*$scope.args = {
     			keyword:$stateParams.keyword,
     			filter:$stateParams.filter,
     			sortby:$stateParams.sort
 			}
 			$scope.url = '/site/searchlist';
-			$scope.products = new ScrollPaging($scope.args,$scope.url);
+			$scope.products = new ScrollPaging($scope.args,$scope.url);*/
+			$scope.keyword = $stateParams.keyword;
+			$scope.filter = $stateParams.filter;
+			$scope.sortby = $stateParams.sort;
+
+			$scope.products = new ScrollPagination($scope.keyword,$scope.filter,$scope.sortby,'0');
     	}
     }
 

@@ -553,11 +553,11 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 				},
 				{
 					label:'Purchase Order',
-					icon:'fa fa-sticky-note-o',
+					icon:'icon-doc',
 					uisref:'userLayout.stocks.po',
 					id:'sidebar_menu_link_po',
 					access : ['admin'],
-					links:['userLayout.stocks.po']
+					links:['userLayout.stocks.po','userLayout.stocks.poDetail']
 				}
 			]
 		},
@@ -1585,6 +1585,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         .state("userLayout.stocks.po", {
             url: "/products/purchase-orders",
             templateUrl: "adminviews/views/stocks/po.html",
+            controller: "PurchaseOrderController",
             data:{
 				pageTitle:'Purchase Orders',
 				breadCrumb:[
@@ -1592,7 +1593,16 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
+                authenticate: authenticate,
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'adminviews/js/controllers/PurchaseOrderController.js'
+                        ]
+                    });
+                }]
             }
         })
 
