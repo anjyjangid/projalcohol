@@ -514,7 +514,8 @@ class Products extends Eloquent
 							'parentCategory' => 1,
 							'childCategory' => 1,
 							'status' => 1,
-							'created_at' => 1
+							'created_at' => 1,
+							'isFeatured' => 1
 						]
 		];
 
