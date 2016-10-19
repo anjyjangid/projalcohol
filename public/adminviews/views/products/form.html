@@ -39,15 +39,6 @@
 
 							</div>
 
-							<div class="form-group" ng:class="{'has-error':errors.description[0]}">
-								<label class="col-md-2 control-label">Description: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<textarea class="form-control" ng-model="product.description"></textarea>
-									<span class="help-block" ng-bind="errors.description[0]"></span>
-								</div>
-							</div>
 							<div class="form-group" ng:class="{'has-error':errors.shortDescription[0]}">
 								<label class="col-md-2 control-label">Short Description: <span class="required">
 								* </span>
@@ -55,6 +46,16 @@
 								<div class="col-md-10">
 									<textarea class="form-control" ng-model="product.shortDescription" style="margin-top: 0px; margin-bottom: 0px; height: 54px;"></textarea>
 									<span class="help-block" ng-bind="errors.shortDescription[0]"></span>
+								</div>
+							</div>
+							
+							<div class="form-group" ng:class="{'has-error':errors.description[0]}">
+								<label class="col-md-2 control-label">Description: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<textarea class="form-control" ng-model="product.description"></textarea>
+									<span class="help-block" ng-bind="errors.description[0]"></span>
 								</div>
 							</div>
 							

@@ -98,12 +98,7 @@ class SiteController extends Controller
         $query[]['$match'] = [
             "categoriesObject" => [ '$exists' => true ],
             "status" => 1
-        ];
-
-        if(isset($keyword) && !empty($keyword)){
-            $s = "/".$keyword."/i";
-            $query[]['$match']['name'] = ['$regex'=>new \MongoRegex($s)];
-        }
+        ];       
 
         $query[]['$project'] = [
             'chilled' => 1,
@@ -133,8 +128,6 @@ class SiteController extends Controller
             'childCategory' => 1
         ];
 
-
-
         $query[]['$lookup'] = [
             'from' => 'categories',
             'localField' => 'catParent',
@@ -158,6 +151,16 @@ class SiteController extends Controller
             'path' => '$childCategory',
             'preserveNullAndEmptyArrays' => true
         ];
+
+        if(isset($keyword) && !empty($keyword)){
+            $s = "/".$keyword."/i";
+            
+            $query[]['$match']['$or'] = [
+                ['name' => ['$regex'=>new \MongoRegex($s)]],
+                ['parentCategory.cat_title' => ['$regex'=>new \MongoRegex($s)]],
+                ['childCategory.cat_title' => ['$regex'=>new \MongoRegex($s)]]
+            ];    
+        }
 
         $query[]['$match'] = [
             'parentCategory.cat_status' => 1            

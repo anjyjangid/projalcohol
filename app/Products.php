@@ -341,7 +341,12 @@ class Products extends Eloquent
 
 		if(isset($params['keyword']) && !empty($params['keyword'])){
 			$s = "/".$params['keyword']."/i";
-			$match['$match']['name'] = ['$regex'=>new \MongoRegex($s)];
+			//$match['$match']['name'] = ['$regex'=>new \MongoRegex($s)];
+			$match['$match']['$or'] = [
+                ['name' => ['$regex'=>new \MongoRegex($s)]],
+                ['parentCategory.cat_title' => ['$regex'=>new \MongoRegex($s)]],
+                ['childCategory.cat_title' => ['$regex'=>new \MongoRegex($s)]]
+            ];
 		}
 
 
@@ -507,7 +512,9 @@ class Products extends Eloquent
 							'availabilityDays' => 1,
 							'availabilityTime' => 1,
 							'parentCategory' => 1,
-							'childCategory' => 1
+							'childCategory' => 1,
+							'status' => 1,
+							'created_at' => 1
 						]
 		];
 
@@ -595,13 +602,13 @@ class Products extends Eloquent
 			
 			// $count = $this::where($match['$match'])->count();
 
-			$query = [
-						$match,
+			$query = [						
 						$fields,
 						$lookupParentCategory,
 						$lookupChildCategory,
 						$unwindCategory,
 						$unwindSubCategory,
+						$match,
 						$matchCategoryCondition,
 						$sortParam,
 						$skip,

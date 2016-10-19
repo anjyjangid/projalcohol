@@ -554,34 +554,34 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								controller:"PromotionsController"
 							},
 						},
-						data: {step: 'cart'}						
+						data: {step: 'cart',stepCount:1}						
 				})
 
 				.state('mainLayout.checkout.address', {
 						url: "/cart/address",
 						templateUrl : "/templates/checkout/address.html",
-						data: {step: 'address'},
+						data: {step: 'address',stepCount:2},
 						controller:"CartAddressController"
 				})
 
 				.state('mainLayout.checkout.delivery', {
 						url: "/cart/delivery",
 						templateUrl : "/templates/checkout/delivery.html",
-						data: {step: 'delivery'},
+						data: {step: 'delivery',stepCount:3},
 						controller:"CartDeliveryController"
 				})
 
 				.state('mainLayout.checkout.payment', {
 						url: "/cart/payment",
 						templateUrl : "/templates/checkout/payment.html",
-						data: {step: 'payment'},
+						data: {step: 'payment',stepCount:5},
 						controller:"CartPaymentController"
 				})
 
 				.state('mainLayout.checkout.review', {
 						url: "/cart/review",
 						templateUrl : "/templates/checkout/review.html",
-						data: {step: 'review'},
+						data: {step: 'review',stepCount:5},
 						controller:"CartReviewController"
 				})
 
