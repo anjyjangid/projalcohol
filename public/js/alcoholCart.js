@@ -1073,8 +1073,6 @@ AlcoholDelivery.service('alcoholCart', [
 
 		this.removeProduct = function (id,chilled) {
 
-
-
 			var defer = $q.defer();
 			var deliveryKey = this.getCartKey();
 			var _self = this;
@@ -2381,7 +2379,7 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', function ($roo
 		};
 
 		item.prototype.getQuantity = function(){
-			return this.quantity;
+			return parseInt(this.quantity);
 		};
 
 		item.prototype.setProduct = function(data){

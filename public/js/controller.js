@@ -1137,10 +1137,13 @@ AlcoholDelivery.controller('CartController',[
 	$scope.remove = function(key,type){
 
 		if(type=='qChilled'){
+
 			alcoholCart.removeProduct(key,true);
+
 		}else{
+
 			alcoholCart.removeProduct(key,false);
-			//alcoholCart.addItem(key,0,false);
+
 		}
 
 	};

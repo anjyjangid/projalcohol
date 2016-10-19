@@ -834,6 +834,17 @@ AlcoholDelivery.factory('AlcoholProduct',[
 		return parseInt(this.qChilled) + parseInt(this.qNChilled);
 	}
 
+	product.prototype.getTotalQtyInCart = function(){
+
+		var isInCart = alcoholCart.getProductById(this._id);
+
+		if(isInCart!==false)
+		return isInCart.getQuantity();
+	
+		return 0;
+
+	}
+
 	product.prototype.setAddBtnState = function(p){
 
 		if( typeof p === 'undefined' ){
