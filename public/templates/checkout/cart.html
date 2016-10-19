@@ -299,9 +299,9 @@
 
 						<ul class="list-inline gift-pack-products">
 							<li ng-repeat="(key, giftPro) in gift.getProducts()">
-								<a ui-sref="mainLayout.product({product:giftPro.cartPro.product.slug})" title="View :: {{giftPro.cartPro.product.name}}" ng-init="giftPro.cartPro = alcoholCart.getProductInCartById(giftPro._id)">
+								<a ui-sref="mainLayout.product({product:giftPro.product.slug})" title="View :: {{giftPro.product.name}}">
 								      	
-									<img err-pro-src="" ng-src="products/i/200/{{giftPro.cartPro.product.imageFiles | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
+									<img err-pro-src="" ng-src="products/i/200/{{giftPro.product.icon }}" alt="" class="img-responsive img-responsive-h" />
 								</a>
 							</li>
 						</ul>
