@@ -453,15 +453,16 @@ class CartController extends Controller
 		$product['change'] = $change;
 		
 		$updateProData = $cart->products[$proIdToUpdate];
-		
+
+		$cart->validateGiftContainers();	
+
 		try {
-				
-				// $result = DB::collection('cart')->where('_id', new MongoId($id))
-				// 						->update(["products.".$proIdToUpdate=>$updateProData], ['upsert' => true]);
+
+			// if($cart[$proId]['quantity']<1){
+
+			// }
 
 			$cart->save();
-
-			//$cart->unset('products.'.$proIdToUpdate);
 
 			unset($product['proSales']);
 			$updateProData['product'] = $product;

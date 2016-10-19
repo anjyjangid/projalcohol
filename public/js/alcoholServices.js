@@ -162,7 +162,7 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 		var products = alcoholCart.getProducts();
 		var promotions = alcoholCart.getPromotions();
 		var loyalty = alcoholCart.getLoyaltyProducts();
-
+console.log(products);
 		angular.forEach(products, function(product, key) {
 
 			isProExist = _self.getProductById(product._id);
@@ -840,7 +840,7 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 		if(isInCart!==false)
 		return isInCart.getQuantity();
-	
+
 		return 0;
 
 	}

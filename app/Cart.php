@@ -913,6 +913,69 @@ class Cart extends Moloquent
 
 	}
 
+	public function validateGiftContainers(){
+
+		$productsInCart = $this->getProductIncartCount();
+		$giftContainersInCart = $this->getContainerGiftsInCart();
+		
+		foreach($giftContainersInCart as $i=>$cGift){
+		
+			foreach($cGift['products'] as &$product){
+
+				if(isset($productsInCart[$product['_id']])){
+					
+					$qtyInCart = $productsInCart[$product['_id']];
+
+					if($qtyInCart >= $product['quantity']){
+						
+
+						$productsInCart[$product['_id']]-=$product['quantity'];
+
+						continue;
+					}
+
+				}
+
+				$product['quantity'] = 0;
+
+			}
+
+			$giftContainersInCart[$i] =  $cGift;
+
+		}
+		
+		foreach($giftContainersInCart as $giftKey=>&$cGift){
+
+			foreach($cGift['products'] as $key=>&$product){
+
+				if($product['quantity']<1){
+
+					unset($giftContainersInCart[$giftKey]['products'][$key]);
+				}
+
+			}
+
+			if(count($cGift['products'])==0){
+
+				unset($giftContainersInCart[$giftKey]);
+
+			}
+
+		}
+		
+		$this->__set("gifts",$giftContainersInCart);
+
+	}
+
+
+	public function getContainerGiftsInCart(){
+		
+		if(isset($this->gifts))
+			return $this->gifts;
+
+		return [];
+
+	}
 	/**
 	 * To set products remaining quantity after sale removed
 	 *
