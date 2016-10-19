@@ -57,9 +57,11 @@ class AuthController extends Controller
 			'email' => 'required|email|max:255|unique:user',
 			'password' => 'required|confirmed|between:8,12',
 			'password_confirmation' => 'required',
-			'terms' => 'required'
+			'terms' => 'required|accepted'
 		],[           
-		   'terms.required' => 'Please agree terms.'
+		   'terms.required' => 'Please agree terms.',
+		   'terms.accepted' => 'Please agree terms.'
+		   
 		]);
 	}
 

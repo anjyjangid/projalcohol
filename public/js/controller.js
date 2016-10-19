@@ -2419,6 +2419,7 @@ AlcoholDelivery.controller('SearchController', [
 	 * remote dataservice call.
 	 */
     function querySearch (query) {
+
 		return $http.get('/site/search/' + query).then(function(result){
 		    result.data = ProductService.prepareProductObjs(result.data);
 		    return result.data;
