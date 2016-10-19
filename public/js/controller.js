@@ -1328,7 +1328,7 @@ AlcoholDelivery.controller('CartDeliveryController',[
 
 	$scope.dateChangeAction = function(){	
 		$scope.daySlug = $filter('dateSuffix')($scope.myDate);
-		$scope.currDate = $filter('date')($scope.myDate,'yyyy-MM-dd');
+		$scope.currDate = $filter('date')($scope.myDate,'yyyy-MM-dd');		
 		$http.get("cart/timeslots/"+$scope.currDate).success(function(response){
 			$scope.timeslots = response;
 	    });

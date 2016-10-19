@@ -41,7 +41,7 @@ AlcoholDelivery.config(
 AlcoholDelivery.config(['$controllerProvider','ScrollBarsProvider', function($controllerProvider,ScrollBarsProvider) {
   // this option might be handy for migrating old apps, but please don't use it
   // in new ones!
-  $controllerProvider.allowGlobals();
+	$controllerProvider.allowGlobals();
 	ScrollBarsProvider.defaults = {
 		scrollButtons: {
 		enable: true //enable scrolling buttons by default

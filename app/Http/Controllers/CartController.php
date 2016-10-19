@@ -1210,13 +1210,22 @@ jprd($product);
 
 		$tomorrowTimeStr = strtotime('tomorrow');
 		$passedTimeStr = strtotime($date);
+		
 	
 		if($passedTimeStr < $tomorrowTimeStr){
 			return response(["message"=>"In-valid date passed, Time slot is not available for previous date"],400);
 		}
 
+		$start = (float)$passedTimeStr*1000;
+		$end = (float)(strtotime('+6 days',$passedTimeStr)*1000);
+		
 		$holiday = new Holiday;
-		$holidays = $holiday->getHolidays(['start'=>(int)$passedTimeStr*1000, 'end'=>((int)$passedTimeStr + 86400) * 1000]);	
+		$holidays = $holiday->getHolidays(
+			[
+				'start'=>$start, 
+				'end'=>$end
+			]
+		);	
 
 		$currDate = date("Y-m-d", $tomorrowTimeStr);
 
@@ -1225,9 +1234,12 @@ jprd($product);
 		$weeknumber = date("N",strtotime($passedDate));//pass "3" for 2016-06-08(wednesday)
 
 		$weekDaysOff = [];
+		$holidayTimestamp = [];
 		foreach($holidays as $holiday){
 			if($holiday['_id']==="weekdayoff"){
 				$weekDaysOff = $holiday['dow'];
+			}else{
+				$holidayTimestamp[] = ($holiday['timeStamp'])/1000;
 			}
 		}
 
@@ -1248,11 +1260,18 @@ jprd($product);
 
 		for($i=1;$i<=7;$i++){
 
+			$datekey = strtotime($tempDate);
+			$datestamp = date("d M",$datekey);			
+			$status = 1;
+			if(in_array($weeknumber==7?0:$weeknumber, $weekDaysOff) || (in_array($datekey,$holidayTimestamp))){
+				$status = 0;
+			}
+
 			$slotArr[$weekKeys[$weeknumber]] = [
 				'slots' => $timeSlots[$weeknumber-1],
-				'datestamp' => date("d M",strtotime($tempDate)),
-				'datekey' => strtotime($tempDate),
-				'status' => in_array($weeknumber==7?0:$weeknumber, $weekDaysOff)?0:1,
+				'datestamp' => $datestamp,
+				'datekey' => $datekey,
+				'status' => $status//in_array($weeknumber==7?0:$weeknumber, $weekDaysOff)?0:1,
 			];
 
 			$tempDate = date("Y-m-d",strtotime('+1 day', strtotime($tempDate)));
