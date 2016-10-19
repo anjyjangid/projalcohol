@@ -1053,3 +1053,8 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 .cartNonChilledActive .prod_chilled{
 	cursor: not-allowed !important;
 }
+
+.prod_addtocart .addmore-count{
+	position: relative;
+	/*transition-duration: 1s;*/
+}

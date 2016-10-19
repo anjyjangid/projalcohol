@@ -31,6 +31,8 @@ class Kernel extends HttpKernel
         'guest' => \AlcoholDelivery\Http\Middleware\RedirectIfAuthenticated::class,
         //ADDED LINE FOR MULTI AUTH
         'admin'       => \AlcoholDelivery\Http\Middleware\AdminAuthenticate::class,
-        'admin.guest' => \AlcoholDelivery\Http\Middleware\AdminGuest::class
+        'admin.guest' => \AlcoholDelivery\Http\Middleware\AdminGuest::class,
+        'cart.unavailable' => \AlcoholDelivery\Http\Middleware\CartNotAvailable::class
+
     ];
 }

@@ -26,7 +26,7 @@
 	</div>
 		<a ui-sref="mainLayout.category.products({categorySlug:c.slug})" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >{{c.cat_title}} <span class="caret" ng-show='isChildExist'></span></a>
 
-		<ul ng-click="hideMenu()" class="dropdown-menu" ng-class="{'animate':showPersonSubMenu}" ng-style="{'background-image':'url(/assets/resources/category/lthumb/400/{{c.cat_lthumb}})'}" ng-if='isChildExist'>
+		<ul ng-click="hideMenu()" class="dropdown-menu" ng-class="{'animate':showPersonSubMenu}" ng-style="{'background-image':'url(/assets/resources/category/thumb/400/{{c.cat_thumb}})'}" ng-if='isChildExist'>
 			<li class="dm_title">{{c.cat_title}}</li>			
 			<li ng-class="{'subactive':AppController.subCategory==cc.slug}" ng-repeat="cc in childCategories">
 				<a ui-sref="mainLayout.category.subCatProducts({categorySlug:c.slug,subcategorySlug:cc.slug})">{{cc.cat_title}}<span>{{cc.productCount}}</span></a>

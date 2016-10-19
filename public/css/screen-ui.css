@@ -2103,6 +2103,7 @@ ui-sref {
 	float: left;
 	margin-left: 4px;
 	position: relative;
+	overflow: hidden;
 }
 .addmore .bootstrap-touchspin input {
 	position: absolute;

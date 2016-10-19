@@ -234,6 +234,14 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 
 		});
 
+		angular.forEach(this.$products,function(pro){
+
+			var isInGift = alcoholCart.isProductInGift(pro._id);
+			if(isInGift!==false){
+				pro._quantity = pro._quantity - isInGift.quantity
+			}
+
+		});
 
 		return this.$products; 
 	}
@@ -295,12 +303,11 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 		giftData['type'] = 'giftpackaging';
 		giftData['products'] = this.getGiftAttachedProduct();
 
-		$http.post("/cart/gift",angular.extend({ cartKey: alcoholCart.getCartKey() }, giftData)).then(
+		$http.put("/cart/gift/"+alcoholCart.getCartKey(),giftData).then(
 
 			function(successRes){
 
 				alcoholCart.addGift(successRes.data.gift);
-
 				defer.resolve(successRes.data.gift);
 
 			},
@@ -825,6 +832,17 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 	product.prototype.getTotalQty = function(){
 		return parseInt(this.qChilled) + parseInt(this.qNChilled);
+	}
+
+	product.prototype.getTotalQtyInCart = function(){
+
+		var isInCart = alcoholCart.getProductById(this._id);
+
+		if(isInCart!==false)
+		return isInCart.getQuantity();
+	
+		return 0;
+
 	}
 
 	product.prototype.setAddBtnState = function(p){

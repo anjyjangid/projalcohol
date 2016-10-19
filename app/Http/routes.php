@@ -173,7 +173,7 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::get('availability/{cartkey}','CartController@availability');
 
-	Route::put('merge/{cartkey}','CartController@mergecarts');
+	Route::put('merge/{cartKey}','CartController@mergecarts');
 
 	Route::put('chilledstatus/{cartkey}','CartController@updateProductChilledStatus');
 
@@ -197,7 +197,7 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::delete('gift/{key}/{cartKey}','CartController@deleteGift');
 
-	Route::post('gift','CartController@postGift');
+	Route::put('gift/{cartKey}','CartController@putGift');
 	
 	Route::post('giftcard','CartController@postGiftcard');
 

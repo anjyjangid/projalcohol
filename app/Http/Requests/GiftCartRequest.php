@@ -31,7 +31,8 @@ class GiftCartRequest extends Request
 					'recipient.message'=> 'required|max:200',					
 					'recipient.name'=> 'required',
 				];
-
+		$rules = [];
+		
 		switch($input['type']){
 
 			case 'giftcard':

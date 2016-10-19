@@ -1331,10 +1331,13 @@ body.menu-slider.in {
 .searchtop.searchtop100 .search_icon {
 	margin-right: 0
 }
-.addmore-count.ng-binding {
+/*.addmore-count.ng-binding {
 	position: relative;
-	top: 0px ;
-}
+
+	top: 0px !important;
+}*/
+
+
 .quantity-inputsetspan .addmore-count.ng-binding {
 	top: -2px !important
 }

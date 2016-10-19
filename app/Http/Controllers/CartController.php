@@ -50,6 +50,9 @@ class CartController extends Controller
 			$this->deliverykey = session()->get('deliverykey');
 		}
 
+		$this->middleware('cart.unavailable');// check cart is available or not;
+
+		
 	}
 
 	/**
@@ -890,7 +893,7 @@ class CartController extends Controller
 
 	}
 
-	public function mergecarts($cartkey){
+	public function mergecarts($cartKey){
 
 		$user = Auth::user('user');
 
@@ -898,9 +901,9 @@ class CartController extends Controller
 
 		if(isset($user->_id)){
 
-			$userCart = Cart::where("user","=",new MongoId($user->_id))->where("_id","!=",new MongoId($cartkey))->first();
+			$userCart = Cart::where("user","=",new MongoId($user->_id))->where("_id","!=",new MongoId($cartKey))->first();
 
-			$sessionCart = Cart::find($cartkey);
+			$sessionCart = Cart::find($cartKey);
 
 			// if(!empty($userCart)){
 
@@ -2159,7 +2162,7 @@ jprd($product);
 		
 	}
 
-	public function postGift(GiftCartRequest $request){
+	public function putGift($cartKey,GiftCartRequest $request){
 
 		$response = [
 			'message'=>'',
@@ -2174,90 +2177,36 @@ jprd($product);
 
 		$gift = $giftModel->getGift($inputs['id']);
 
-		// Fetch Cart
-		$cartKey = $inputs['cartKey'];//$this->deliverykey;
-		
 		$cart = Cart::find($cartKey);
-
+		
 		$giftProducts = $inputs['products'];
 
-		$totalProducts = 0;		
-		$cartProducts = $cart->products;
+		$cartProducts = $cart->getProductsNotInGift();
 
-		if($cart->loyalty)
-		foreach($cart->loyalty as $key=>$loyalty){
+		$totalProducts = 0;
 
-			if(isset($cartProducts[$key])){
-
-				$cartProducts[$key]['quantity']+= (int)$loyalty['quantity'];
-
-			}else{
-
-				$cartProducts[$key] = [
-					'quantity'=>(int)$loyalty['quantity']
-				];
-
-			}
-		}
-
-		if($cart->promotions)
-		foreach($cart->promotions as $promotion){
-			$key = $promotion['productId'];
-			if(isset($cartProducts[$key])){
-
-				$cartProducts[$key]['quantity']++;
-
-			}else{
-
-				$cartProducts[$key] = [
-					'quantity'=>1
-				];
-
-			}
-		}
-
-
-		foreach ($giftProducts as &$giftProduct) {						
+		foreach ($giftProducts as $giftProduct) {
 
 			$proId = $giftProduct['_id'];
-			// $state = $giftProduct['state'];
-			$giftProduct['chilled'] = true;
+						
 			$quantity = (int)$giftProduct['quantity'];
 
-			// Condition to check product is available in cart or not
-			// Condition to check state(chilled/non chilled) is available or not
+			// Condition to check product is available in cart or not			
 
-			if(isset($cartProducts[$proId]) && $cartProducts[$proId]['quantity']>=$quantity){
+			if(isset($cartProducts[$proId]) && $cartProducts[$proId]>=$quantity){			
 
-				// if(!isset($cartProducts[$proId][$state]['inGift'])){ // set inGift eky if not exist in product state
-
-				// 	$cartProducts[$proId][$state]['inGift'] = [];
-
-				// }
-
-				// $newInGift =  [ // gift data attached to product state
-				// 		'_id' => $gift['_id'],
-				// 		'quantity' => $quantity,
-				// 		'state' => $cartProducts[$proId][$state]['status']
-				// 	];
-
-				// To set state of product passed to add
-				// $giftProduct['state'] = $newInGift['state'];
-
-				// $cartProducts[$proId][$state]['inGift'] = array_merge($cartProducts[$proId][$state]['inGift'],[$newInGift]);
-
-				$totalProducts+=(int)$quantity;					
+				$totalProducts+=(int)$quantity;
 				
 			}else{
 
-				$response['message'] = 'One or more products attached are not in cart';
+				$response['message'] = 'Products attached quantity not match with in cart';
 				$response['reload'] = true;
 				return response($response,422);
 
 			}
 
-		}			
-		
+		}
+
 		if($totalProducts<1){
 
 			$response['message'] = 'Please attach products';
@@ -2273,7 +2222,7 @@ jprd($product);
 		}
 
 
-		$cart->products = $cartProducts;
+		//$cart->products = $cartProducts;
 		
 		$gifts = empty($cart->gifts)?[]:$cart->gifts;
 
@@ -2298,11 +2247,11 @@ jprd($product);
 
 			$cart->save();
 
-			return response(["success"=>true,"message"=>"cart updated successfully","gift"=>$newGift],200);
+			return response(["message"=>"cart updated successfully","gift"=>$newGift],200);
 
 		}catch(\Exception $e){
 
-			return response(["success"=>false,"message"=>$e->getMessage()],400);
+			return response(["message"=>$e->getMessage()],400);
 
 		}
 
