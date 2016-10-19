@@ -187,7 +187,7 @@ class ProductController extends Controller
 			return response($result['products'],200);
 		}
 
-		return response(["message"=>$result->message],422);
+		return response(["message"=>$result],422);
 
 	}
 

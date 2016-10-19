@@ -3,6 +3,11 @@
 MetronicApp.controller('PurchaseOrderController',['$rootScope', '$scope', '$timeout', '$http', 'sweetAlert', '$stateParams'
 , function($rootScope, $scope, $timeout, $http, sweetAlert, $stateParams) {
 
+	$scope.$on('$viewContentLoaded', function() {
+        Metronic.initAjax(); // initialize core components
+        Layout.setSidebarMenuActiveLink('set', $('#sidebar_menu_link_products')); // set cms link active in sidebar menu
+    });
+	
 	function init() {
 		$http.get('/adminapi/purchaseorder/'+$stateParams.id)
 		.then(function(res) {
@@ -16,7 +21,8 @@ MetronicApp.controller('PurchaseOrderController',['$rootScope', '$scope', '$time
 		});
 	}
 
-	init();
+	if($stateParams.id)
+		init();
 
 	$scope.save = function(shortfall){
 		$http.put('/adminapi/purchaseorder/'+$stateParams.id, shortfall?{status:3}:{products:$scope.products})

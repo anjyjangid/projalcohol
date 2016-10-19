@@ -391,7 +391,7 @@ AlcoholDelivery.factory('ScrollPaging', function($http) {
 
 AlcoholDelivery.factory('ScrollPagination', function($http,ProductService) {
 
-  var Search = function(keyword,filter,sortby) {
+  var Search = function(keyword,filter,sortby,type) {
     this.items = [];
     this.busy = false;
     this.skip = 0;
@@ -401,6 +401,7 @@ AlcoholDelivery.factory('ScrollPagination', function($http,ProductService) {
     this.totalResult = 0;
     this.filter = filter;
     this.sortby = sortby;
+    this.type = type || 1;
   };
 
   Search.prototype.nextPage = function() {
@@ -410,11 +411,12 @@ AlcoholDelivery.factory('ScrollPagination', function($http,ProductService) {
 
     ProductService.getProducts({
 
-		type : 1, // [1 for loyalty store]
+		type : this.type, // [1 for loyalty store]
 		skip:this.skip,
 		limit:this.take,
 		filter:this.filter,
-		sort:this.sortby
+		sort:this.sortby,
+		keyword:this.keyword
 
 	}).then(function(items){
 
@@ -552,34 +554,34 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								controller:"PromotionsController"
 							},
 						},
-						data: {step: 'cart'}						
+						data: {step: 'cart',stepCount:1}						
 				})
 
 				.state('mainLayout.checkout.address', {
 						url: "/cart/address",
 						templateUrl : "/templates/checkout/address.html",
-						data: {step: 'address'},
+						data: {step: 'address',stepCount:2},
 						controller:"CartAddressController"
 				})
 
 				.state('mainLayout.checkout.delivery', {
 						url: "/cart/delivery",
 						templateUrl : "/templates/checkout/delivery.html",
-						data: {step: 'delivery'},
+						data: {step: 'delivery',stepCount:3},
 						controller:"CartDeliveryController"
 				})
 
 				.state('mainLayout.checkout.payment', {
 						url: "/cart/payment",
 						templateUrl : "/templates/checkout/payment.html",
-						data: {step: 'payment'},
+						data: {step: 'payment',stepCount:4},
 						controller:"CartPaymentController"
 				})
 
 				.state('mainLayout.checkout.review', {
 						url: "/cart/review",
 						templateUrl : "/templates/checkout/review.html",
-						data: {step: 'review'},
+						data: {step: 'review',stepCount:5},
 						controller:"CartReviewController"
 				})
 
