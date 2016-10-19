@@ -107,7 +107,7 @@ class OrderController extends Controller
 
 	}
 
-	public function getNewcart(){
+	public function getNewcart(Request $request){
 
 		$user = Auth::user('admin');
 
@@ -116,10 +116,18 @@ class OrderController extends Controller
 		];
 		
 		try{
-			
-			$cartObj = new CartAdmin;	
-			$result = $cartObj->generate(new MongoId($user->_id));
 
+			$cartObj = new CartAdmin;
+			$userId = new MongoId($user->_id);
+			$cart = $cartObj->getLastUnProcessed($userId);
+
+			if(!empty($cart)){
+
+				$result = $cartObj->deleteLastUnProcessed($userId);
+
+			}
+
+			$result = $cartObj->generate($userId);
 			$response['cart'] = $result->cart;
 
 			$request->session()->put('deliverykeyAdmin', $result->cart['_id']);

@@ -159,6 +159,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::controller('credits', 'CreditsController');
 	Route::resource('credits', 'CreditsController');
 
+	Route::resource('address', 'AddressController');
+
 });
 
 Route::group(['prefix' => 'cart'], function () {
@@ -221,7 +223,7 @@ Route::get('/order/orders','OrderController@getOrders');
 Route::get('/order/{order}','OrderController@show');
 Route::post('/order/{id}','OrderController@update');
 
-Route::resource('address', 'AddressController');
+
 
 Route::resource('package', 'PackageController',['only'=>['*']]);
 Route::controller('package', 'PackageController');

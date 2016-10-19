@@ -81,24 +81,24 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	$scope.errors = {};
 	$scope.searchby = "";
 	$scope.consumer = {
-			mobile : '',
-			name : '',
-			email : '',
-			addresses : ''
-		};
+		mobile : '',
+		name : '',
+		email : '',
+		addresses : ''
+	};
 
 	angular.alcoholCart = alcoholCart;
 	$scope.cart = alcoholCart.getCart();
 
-
 	$scope.$watch('consumer.mobile',function() {
 
 		$scope.users = [];
-		
+
 		if($scope.consumer.mobile.length < 2){
 			return false;
 		}
-		var param = {mobile_number:$scope.consumer.mobile};
+
+		var param = { mobile_number: $scope.consumer.mobile };
 		$scope.fetchUser(param);
 
 	});
@@ -108,9 +108,9 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		$scope.users = [];		
 
 		if($scope.consumer.name.length < 2){
-
 			return false;
 		}
+
 		var param = {name:$scope.consumer.name};
 		$scope.fetchUser(param);
 
@@ -127,6 +127,8 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		$scope.fetchUser(param);
 
 	});
+
+	$scope.newCart = alcoholCart.newCart;
 
 	$scope.resetsearch = function(){
 		
@@ -162,8 +164,6 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		)
 
 	}
-
-
 	// Google map auto complete code start //
 
 	$scope.types = "['geocode']";
@@ -173,22 +173,21 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 	$scope.placeChanged = function() {
 
-	$scope.address.place = this.getPlace();
-	var point = $scope.address.place.geometry.location;
-	$scope.map.setCenter(point);
+		$scope.address.place = this.getPlace();
+		var point = $scope.address.place.geometry.location;
+		$scope.map.setCenter(point);
 
-	$scope.map.setCenter(point);
-	$scope.map.setZoom(16);
-	$scope.marker.setMap(null);
-	$scope.marker = new google.maps.Marker({
-			            position: point,
-			            map: $scope.map,
-			        });
+		$scope.map.setCenter(point);
+		$scope.map.setZoom(16);
+		$scope.marker.setMap(null);
+		$scope.marker = new google.maps.Marker({
+			position: point,
+			map: $scope.map,
+		});
 
 	}
 
 	NgMap.getMap().then(function(map) {
-
 
 		$scope.map = map;
 		angular.map = $scope.map;
@@ -202,23 +201,19 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 			$scope.map.setOptions({draggable: false});
 
 			$scope.marker = new google.maps.Marker({
-					            position: point,
-					            map: $scope.map,
-					        });
+				position: point,
+				map: $scope.map,
+			});
 
 		}, 500);
-
-
 
 	});
 
 	// Google map auto complete code ends //
-
-
-
 }])
 
-.controller('OrderProductsController',['$scope', '$http', '$timeout', '$mdDialog', 'alcoholCart', 'categoriesService', 'productFactory',function($scope, $http, $timeout, $mdDialog, alcoholCart, categoriesService, productFactory){
+.controller('OrderProductsController',['$scope', '$http', '$timeout', '$mdDialog', 'alcoholCart', 'categoriesService', 'productFactory', '$q'
+, function($scope, $http, $timeout, $mdDialog, alcoholCart, categoriesService, productFactory, $q){
 
 	angular.alcoholCart = alcoholCart;
 	angular.categoriesService = categoriesService;
@@ -251,6 +246,8 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		}
 	);
 
+	var searchTimeout, searchHttpTimeout = $q.defer();
+
 	$scope.$watch('productquery',function(newValue, oldValue){
 
 		if(typeof newValue === 'undefined'){
@@ -259,32 +256,47 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 		var qry = newValue;
 
+		if(searchTimeout){
+			$timeout.cancel(searchTimeout);
+			searchTimeout = null;
+
+			searchHttpTimeout.resolve()
+			searchHttpTimeout = $q.defer();
+		}
+
+
 		if(qry.length>=3){
 
-			$scope.searching = true;		
+			searchTimeout = $timeout(function() {
+				$scope.searching = true;		
 
-			var searchParams = {
-				qry : qry,
-				parentCategory : $scope.catSelected.parent == ''?'':$scope.catSelected.parent._id,
-				subCategory : $scope.catSelected.sub == ''?'':$scope.catSelected.sub._id
-			};
-			
+				var searchParams = {
+					qry : qry,
+					parentCategory : $scope.catSelected.parent == ''?'':$scope.catSelected.parent._id,
+					subCategory : $scope.catSelected.sub == ''?'':$scope.catSelected.sub._id
+				};
 
-			$http.get("/adminapi/product/searchproduct",{params : searchParams}).success(function(response){
+				$http.get("/adminapi/product/searchproduct", {
+					params : searchParams,
+					timeout: searchHttpTimeout.promise
+				})
+				.success(function(response) {
 
-				angular.forEach(response, function(value,key){
-					response[key] = new productFactory(value);
+					angular.forEach(response, function(value, key){
+						response[key] = new productFactory(value);
+					});
+
+					$scope.itemlist = response;
+					$scope.searching = false;
 				});
 
-				$scope.itemlist = response;
-				$scope.searching = false;
-			});
-
+			}, 600);
 			
 
 		}else{
 
 			$scope.itemlist = [];
+			$scope.selected.product=null;
 
 		}
 
@@ -306,35 +318,33 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 	}
 
+	var proUpdateTimeOut = {};
+
 	$scope.addtocart = function(key,type){
 
-		if(typeof $scope.proUpdateTimeOut!=="undefined"){
-			$timeout.cancel($scope.proUpdateTimeOut);
+		if(proUpdateTimeOut[key]){
+			$timeout.cancel(proUpdateTimeOut[key]);
 		}
 
-		$scope.proUpdateTimeOut = $timeout(function(){
+		proUpdateTimeOut[key] = $timeout(function() {
 
-			if(type=='qChilled'){
+			alcoholCart.addProduct(key, {
+				chilled: parseInt($scope.cart.products[key].qChilled),
+				nonChilled: parseInt($scope.cart.products[key].qNChilled)
+			}, type=='qChilled');
 
-				alcoholCart.addProduct(key,$scope.cart.products[key].qChilled,true);
-
-			}else{
-
-				alcoholCart.addProduct(key,$scope.cart.products[key].qNChilled,false);
-
-			}		
-
-		},1500)
+		},600);
 
 	};
 
 	$scope.remove = function(key,type){
 
-		if(type=='qChilled'){
-			alcoholCart.addProduct(key,0,true);
-		}else{
-			alcoholCart.addProduct(key,0,false);
-		}
+		alcoholCart.addProduct(key, {
+
+			chilled: type=='qChilled'?0:parseInt($scope.cart.products[key].qChilled),
+			nonChilled: type!='qChilled'?0:parseInt($scope.cart.products[key].qNChilled)
+
+		}, type=='qChilled');
 
 	};
 
@@ -361,7 +371,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 				templateUrl: '/adminviews/views/orders/order/searchpackage.html',
 				parent: angular.element(document.body),
 				targetEvent: ev,
-				clickOutsideToClose:false
+				clickOutsideToClose:true
 			})
 			.then(function(answer) {
 
@@ -374,7 +384,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 .controller('OrderProductDetailController',['$scope', '$http', 'alcoholCart', 'categoriesService', 'productFactory',function($scope, $http, alcoholCart, categoriesService, productFactory){
 
-	
+
 }])
 
 .controller('OrderPackageController',['$scope', '$http', '$mdDialog', 'alcoholCart', 'categoriesService',function($scope, $http, $mdDialog, alcoholCart, categoriesService){

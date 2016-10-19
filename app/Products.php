@@ -12,6 +12,7 @@ use DB;
 use mongoId;
 use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Stocks;
+use MongoDate;
 
 class Products extends Eloquent
 {
@@ -1003,18 +1004,102 @@ class Products extends Eloquent
     	return $this->belongsToMany('AlcoholDelivery\Products', null, 'suggestedId', 'suggestionId');
     }
 
-    public function updateInventory($productLog){
+    public function updateInventory($order){
 
-    	$qtyWiseProductArr = [];
+    	$orderId = $order['_id'];
 
-    	foreach ($productLog as $key => $value) {    		
-			$qtyWiseProductArr[(string)$value['_id']] = (int)$value['quantity'];
-    	}
+    	$proQty = [];
+		$ids = [];
+
+		foreach ($order['productsLog'] as $key => $value) {
+			$id = (string)$value['_id'];
+			$proQty[$id] = $value['quantity'];
+			$ids[] = $value['_id'];
+		}
     	
-    	/*foreach ($productLog as $key => $value) {
-    		$productDetail = Products::find($value['_id']);
+    	$query[]['$match'] = [
+			'_id' => ['$in'=>$ids]
+		];
 
-    	}*/
+		$query[]['$lookup'] = [
+			'from' => 'stocks',
+			'localField' => '_id',
+			'foreignField' => 'productObjId',
+			'as' => 'storeStocks'
+		];
+
+		$query[]['$project'] = ['quantity'=>1,'storeStocks'=>1];
+
+		$query[]['$unwind'] = [
+			'path' => '$storeStocks',
+			'preserveNullAndEmptyArrays' => true
+		];
+
+		$query[]['$sort'] = ['storeStocks.storeObjId' => 1];
+
+		$query[]['$group'] = [
+			'_id' => '$_id',
+			'quantity' => ['$first' => '$quantity'],
+			'storeStocks' => ['$push' => '$storeStocks']
+		];
+				
+		$model = Products::raw()->aggregate($query);
+
+		$inventoryLog = [];
+
+		if(isset($model['result']) && !empty($model['result'])){
+
+			foreach ($model['result'] as $key => $value) {
+			
+				$product = Products::find($value['_id']);
+
+				$qtyReq = $proQty[(string)$value['_id']];
+
+				foreach ($value['storeStocks'] as $storeStockskey => $storeStocksvalue) {
+					
+					$storeStock = Stocks::find($storeStocksvalue['_id']);				
+					$qtyFullFilled = true;
+					//CHECK REQUIRED QTY MEETS THE STORE QTY
+					if($storeStock->quantity < $qtyReq){
+						$newQty = 0;
+						$qtyToPull = $storeStock->quantity;
+						$qtyFullFilled = false;
+					}else{
+						$newQty = $storeStock->quantity-$qtyReq;					
+						$qtyToPull = $qtyReq;
+					}
+
+					//UPDATE QTY FOR THE STORE
+					$storeStock->quantity = $newQty;
+					$storeStock->save();
+
+					//PREPARE TRANSACTION OF PRODUCT FOR THE STORE
+					$inventoryLog[] = [
+						'productId' => $value['_id'],
+						'orderId' => $orderId,
+						'storeId' => $storeStocksvalue['storeObjId'],
+						'quantity' => $qtyToPull,
+						'created_at' => new MongoDate(strtotime(date('Y-m-d H:i:s')))
+					];
+					
+					if($qtyFullFilled){
+						break; //REQUIRED QTY MEETS THE STORE QTY THEN BREAK THE LOOP
+					}else{
+						$qtyReq -= $qtyToPull; //UPDATE THE REQUIRED QTY FIELD FOR NEXT STORE IN THE LOOP
+					}
+				}
+
+				/*UPDATE TOTAL QTY IN PRODUCT COLLECTION*/
+				$product->quantity -= $proQty[(string)$value['_id']];
+				$product->save();
+
+			}
+		
+		}
+		//INSERT INVENTORY LOG
+		if($inventoryLog){
+			$r = DB::collection('inventoryLog')->insert($inventoryLog);
+		}
 
     }
 }

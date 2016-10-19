@@ -49,11 +49,25 @@ MetronicApp.factory('businessModel', ['$http', '$cookies','$location', function(
         },     
 
         updateBusiness: function(fields,businessid){
-	       	
-	       	//put is used to updated data, Laravel router automatically redirect to update function 
+			
+			fields = angular.copy(fields);
+
+			for(var i in fields.products){
+				if(fields.products[i].disc)
+					fields.products[i] = {
+						_id: fields.products[i]._id,
+						disc: fields.products[i].disc,
+						type: fields.products[i].type
+					};
+				else
+					fields.products[i] = null;
+			}
+
+			fields.products = fields.products.filter(function(p){ return p; });
+
 	        return $http.post("/adminapi/business/update/"+businessid, fields, {
 	            
-	        }).error(function(data, status, headers) {            
+	        }).error(function(data, status, headers) {
 	            Metronic.alert({
 	                type: 'danger',
 	                icon: 'warning',
@@ -63,8 +77,7 @@ MetronicApp.factory('businessModel', ['$http', '$cookies','$location', function(
 	                closeInSeconds: 3
 	            });
 	        })
-	        .success(function(response) {	            
-	            
+	        .success(function(response) {
 	            Metronic.alert({
 	                type: 'success',
 	                icon: 'check',
@@ -74,7 +87,6 @@ MetronicApp.factory('businessModel', ['$http', '$cookies','$location', function(
 	                closeInSeconds: 3
 	            });
 	            $location.path("business/list");
-
 	        })
 	        /*.error(function(data, status, headers) {            
 	            Metronic.alert({

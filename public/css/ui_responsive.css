@@ -1333,8 +1333,11 @@ body.menu-slider.in {
 }
 /*.addmore-count.ng-binding {
 	position: relative;
+
 	top: 0px !important;
 }*/
+
+
 .quantity-inputsetspan .addmore-count.ng-binding {
 	top: -2px !important
 }
@@ -2344,6 +2347,12 @@ body.menu-slider.in {
 	  float: none;
 	  text-align: center;
   }
+
+.addmore .bootstrap-touchspin{
+	float: left !important;
+	display: table !important;
+}
+
   .registernowbtn.ng-scope {
 	  margin: 20px 0;
   }
