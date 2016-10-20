@@ -2617,8 +2617,8 @@ AlcoholDelivery.controller('GiftProductController', [
 }]);
 
 AlcoholDelivery.controller('GiftController', [
-	'$q', '$http', '$scope', '$stateParams', '$rootScope', '$state', 'alcoholGifting', 'sweetAlert', '$anchorScroll',
-	function($q, $http, $scope, $stateParams, $rootScope, $state, alcoholGifting, sweetAlert, $anchorScroll){
+	'$q', '$http', '$scope', '$stateParams', '$rootScope', '$state', 'alcoholGifting', 'alcoholCart', 'sweetAlert', '$anchorScroll',
+	function($q, $http, $scope, $stateParams, $rootScope, $state, alcoholGifting, alcoholCart, sweetAlert, $anchorScroll){
 		$rootScope.appSettings.layout.pageRightbarExist = false;
 
 
@@ -2662,6 +2662,8 @@ AlcoholDelivery.controller('GiftController', [
 
 				alcoholGifting.setCurrentGift(result);
 
+				alcoholGifting.$products = [];
+
 				$scope.products = alcoholGifting.getProducts();
 
 				$scope._inGift = [];
@@ -2682,6 +2684,41 @@ AlcoholDelivery.controller('GiftController', [
 					});
 				}
 
+
+				if($scope.giftData._uid){
+
+					var gift = alcoholCart.getGiftByUniqueId($scope.giftData._uid);
+					$scope.giftData.recipient = gift.recipient;
+					
+					angular.forEach($scope.products,function(gProduct){
+
+						angular.forEach(gift.products,function(product){
+
+							if(gProduct._id==product.getId()){
+
+								gProduct._quantity+= parseInt(product.quantity);
+								gProduct._inGift = parseInt(product.quantity);
+
+							}
+
+						})
+
+					})		
+
+					angular.forEach($scope.products,function(gProduct,index){
+
+						if(gProduct._quantity<1){
+
+							$scope.products.splice(index, 1)[0];
+
+						}
+
+					})
+
+					$scope.totalAttached();
+
+				}
+
 				$scope.addGift = function(){
 
 					$scope.processing = true;
@@ -2692,6 +2729,8 @@ AlcoholDelivery.controller('GiftController', [
 
 							$scope.giftData._uid = successRes._uid.$id;
 							$scope.btnText = 'update cart';
+
+							$state.go($state.current, {giftid:$stateParams.giftid,uid:successRes._uid.$id}, {reload: true});
 
 						},
 						function(errorRes){
