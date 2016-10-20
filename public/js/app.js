@@ -671,15 +671,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 					abstract: true,
 					templateUrl:"/templates/cmsLayout.html",
 					resolve: {
-						storeInit : function (store){
-							return store.init();
-						},
-						wishlistInit : function(alcoholWishlist){
-							return alcoholWishlist.init();
-						},
-						loggedIn: function(UserService) {
-							return UserService.getIfUser(true, true);
-						}
+						appLoad : appLoad
 					}
 				})
 
