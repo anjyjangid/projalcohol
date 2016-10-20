@@ -28,14 +28,12 @@
 		
 		<div class="product-listcover2" infinite-scroll='products.nextPage()' infinite-scroll-disabled='products.busy' infinite-scroll-distance='1'>
 		    <div al-tpl-product classes="col-xs-12 col-sm-3 col-md-3 comboproductitems" info="product" ng-repeat="product in products.items"></div>
-		    <h4 class="no-pro-found-table" align="center" ng-if="products.items.length == 0">
+		    <h4 class="no-pro-found-table" align="center" ng-if="products.items.length == 0 && !products.busy">
 				<div class="no-pro-found-cell">No product(s) found</div>
 			</h4>
+			<h4 class="no-pro-found-table" align="center" ng-if="products.busy">
+				<div class="no-pro-found-cell">Loading data...</div>
+			</h4>
 		</div>	
-	</div>
-	<!-- <div class="fullwidth">
-		<div ng-show='products.busy' align="center"><h4>Loading data...</h4></div>			
-		<div ng-show='products.limitreached' align="center"></div>
-		<div ng-show='products.items.length == 0 && !products.busy' align="center"><h4>No product(s) found</h4></div>
-	</div> -->
+	</div>	
 </div>	
