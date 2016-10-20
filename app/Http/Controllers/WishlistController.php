@@ -183,7 +183,7 @@ class WishlistController extends Controller
 
 			}else{
 				$notify = 0;
-				$response['message'] = "Added to wishlist";
+				$response['message'] = "This has been added to your wishlist";
 				if(isset($params['addInSale']) && $params['addInSale']==1){
 					$notify = 1;
 					$response['message'] .= ' & notification enabled';

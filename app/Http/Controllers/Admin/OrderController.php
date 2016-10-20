@@ -330,7 +330,7 @@ class OrderController extends Controller
 
 		$columns = ['reference','consumer.name','noOfProducts','payment.total','created_at','delivery.type','status'];
 
-		$sort = ['created_at' => 1]; 
+		$sort = ['created_at' => -1]; 
 
 		if(isset($params['order']) && !empty($params['order'])){
 			$field = $columns[$params['order'][0]['column']];			

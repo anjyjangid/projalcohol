@@ -554,35 +554,50 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								controller:"PromotionsController"
 							},
 						},
-						data: {step: 'cart',stepCount:1}						
+						data: {step: 'cart',stepCount:1},
+						resolve:{
+							validateCheckout:validateCheckout
+						}						
 				})
 
 				.state('mainLayout.checkout.address', {
 						url: "/cart/address",
 						templateUrl : "/templates/checkout/address.html",
+						controller:"CartAddressController",
 						data: {step: 'address',stepCount:2},
-						controller:"CartAddressController"
+						resolve:{
+							validateCheckout:validateCheckout
+						}
 				})
 
 				.state('mainLayout.checkout.delivery', {
 						url: "/cart/delivery",
 						templateUrl : "/templates/checkout/delivery.html",
+						controller:"CartDeliveryController",
 						data: {step: 'delivery',stepCount:3},
-						controller:"CartDeliveryController"
+						resolve:{
+							validateCheckout:validateCheckout
+						}
 				})
 
 				.state('mainLayout.checkout.payment', {
 						url: "/cart/payment",
 						templateUrl : "/templates/checkout/payment.html",
+						controller:"CartPaymentController",
 						data: {step: 'payment',stepCount:4},
-						controller:"CartPaymentController"
+						resolve:{
+							validateCheckout:validateCheckout
+						}
 				})
 
 				.state('mainLayout.checkout.review', {
 						url: "/cart/review",
 						templateUrl : "/templates/checkout/review.html",
+						controller:"CartReviewController",
 						data: {step: 'review',stepCount:5},
-						controller:"CartReviewController"
+						resolve:{
+							validateCheckout:validateCheckout
+						}
 				})
 
 				.state('mainLayout.login', {
@@ -958,6 +973,16 @@ function appLoad($q, $state, $timeout, $location, store, alcoholWishlist, UserSe
 
 	return defer.promise;
 };
+
+function validateCheckout($q, $state, $timeout, $location, store, alcoholWishlist, UserService) {
+	var defer = $q.defer();
+	
+	//defer.reject();
+	
+	defer.resolve();
+	
+	return defer.promise;
+}
 
 
 AlcoholDelivery.service('LoadingInterceptor', [
