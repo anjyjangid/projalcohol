@@ -175,6 +175,19 @@ class Cart extends Moloquent
 		$cartDiscount['nonchilled']['exemption'] = $services['non_chilled_delivery']['value'];
 		$cart->discount = $cartDiscount;
 
+
+		// code to apply filters so invalid data dosen't get fetch//
+
+		// foreach ($cart->products as $key => $product) {
+
+		// 	if($product['quantity']<0){
+		// 		unset($cart['products'][$key]);
+		// 	}
+
+		// }
+
+
+
 		try{
 
 			$cart->save();			
@@ -188,6 +201,7 @@ class Cart extends Moloquent
 
 	}
 
+	
 	public function getProductIncartCount($data = ''){
 		
 		if($data === ''){
@@ -1077,7 +1091,7 @@ class Cart extends Moloquent
 
 
 
-	public function getProductsNotInGift(){	
+	public function getProductsNotInGift($exceptGiftId){	
 
 		$productsInCart = $this->getProductIncartCount();
 
@@ -1089,7 +1103,13 @@ class Cart extends Moloquent
 
 		$productsInGift = [];
 		foreach ($gifts as $gift) {
+
 			
+			if($exceptGiftId!="" && new MongoId($exceptGiftId) == $gift['_uid']){
+				continue;
+			}
+			
+
 			foreach ($gift['products'] as $product) {
 
 				if(isset($productsInGift[$product['_id']])){

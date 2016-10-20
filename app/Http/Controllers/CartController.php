@@ -206,7 +206,7 @@ class CartController extends Controller
 			$cart = $cart->toArray();
 
 		}
-		
+
 		$isMerged = $this->mergecarts($cart['_id']);
 		
 		if($isMerged->success){
@@ -458,9 +458,13 @@ class CartController extends Controller
 
 		try {
 
-			// if($cart[$proId]['quantity']<1){
+			if($cart->products[$proIdToUpdate]['quantity']<1){
 
-			// }
+				$products = $cart->products;
+				unset($products[$proIdToUpdate]);
+				$cart->__set("products",$products);
+
+			}
 
 			$cart->save();
 
@@ -2182,7 +2186,9 @@ jprd($product);
 		
 		$giftProducts = $inputs['products'];
 
-		$cartProducts = $cart->getProductsNotInGift();
+		$except = isset($inputs['_uid'])?$inputs['_uid']:'';
+
+		$cartProducts = $cart->getProductsNotInGift($except);
 
 		$totalProducts = 0;
 
@@ -2239,6 +2245,14 @@ jprd($product);
 				"limit"=> $gift['limit'],
 				"image"=> $gift['coverImage']['source'],
 			];
+		
+		if($except!==""){
+			foreach($gifts as $key=>$gift){
+				if($gift['_uid'] == new MongoId($except)){
+					unset($gifts[$key]);
+				}
+			}
+		}
 
 		$gifts = array_merge($gifts,[$newGift]);
 
