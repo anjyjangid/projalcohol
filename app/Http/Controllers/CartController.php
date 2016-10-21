@@ -454,7 +454,7 @@ class CartController extends Controller
 		
 		$updateProData = $cart->products[$proIdToUpdate];
 
-		$cart->validateGiftContainers();	
+		$cart->validateGiftContainers();
 
 		try {
 

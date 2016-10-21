@@ -594,10 +594,9 @@ AlcoholDelivery.service('alcoholCart', [
 		var cGifts = this.getGifts();
 		var proInCartCount = this.getProductsCountInCart();
 		
-
 		angular.forEach(cGifts,function(cGift,i){
 
-			angular.forEach(cGift.products,function(product){
+			angular.forEach(cGift.products,function(product,index){
 
 				var key = product.getId();
 				
@@ -606,7 +605,7 @@ AlcoholDelivery.service('alcoholCart', [
 					var qtyInCart = proInCartCount[key];
 					var qtyInGift = product.getQuantity();
 
-					if(qtyInCart >= qtyInGift){
+					if(qtyInCart > 0){
 
 						proInCartCount[key]-=qtyInGift;
 
@@ -616,7 +615,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 				}
 
-				cGifts[i].products.splice(key, 1)[0]
+				cGifts[i].products.splice(index, 1)[0]
 
 			})
 
@@ -1253,6 +1252,7 @@ AlcoholDelivery.service('alcoholCart', [
 					
 					_self.removeSaleAndSetProducts(id);
 
+					_self.validateContainerGift();
 					$rootScope.$broadcast('alcoholCart:saleRemoved', locSale);
 
 					defer.resolve(response);
@@ -1325,7 +1325,6 @@ AlcoholDelivery.service('alcoholCart', [
 						}
 
 						product.setRQuantity(qtyChilled,qtyNonChilled);
-												
 
 					});
 
@@ -2437,8 +2436,10 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', '$filter', fun
 
 		item.prototype.setRQuantity = function(cQuantity,ncQuantity){
 
-			this.qChilled = cQuantity;
-			this.qNChilled = ncQuantity
+			this.qChilled = parseInt(cQuantity);
+			this.qNChilled = parseInt(ncQuantity);
+
+			this.setTQuantity(this.qChilled+this.qNChilled);
 
 		}
 
