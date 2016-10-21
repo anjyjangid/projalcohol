@@ -439,6 +439,7 @@ AlcoholDelivery.service('alcoholCart', [
 		var d = $q.defer();
 
 		var products = [];
+
 		angular.forEach(detail.packageItems,function(item,key){
 			angular.forEach(item.products,function(product,key){
 				if(product.cartquantity > 0){
@@ -1225,6 +1226,17 @@ AlcoholDelivery.service('alcoholCart', [
 			var locPackage;
 			var cart = this.getCart();
 			
+			$http.delete("cart/package/"+deliveryKey+'/'+id).then(
+
+				function(){
+
+				},
+				function(){
+
+				}
+
+			);
+		
 			angular.forEach(cart.packages, function (package, index) {
 
 				if(package.getUniqueId() === id) {

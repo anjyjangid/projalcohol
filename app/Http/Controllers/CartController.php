@@ -762,7 +762,7 @@ class CartController extends Controller
 
 	}
 
-	public function createpackage(Request $request, $cartKey){{
+	public function postPackage(Request $request, $cartKey){{
 	
 			$inputs = $request->all();
 			$packageId = $inputs['id'];
@@ -809,7 +809,7 @@ class CartController extends Controller
 			
 			$packageDetail['products'] = (array)$packageDetail['products'];
 			$packageDetail['_id'] = new mongoId($packageId);
-	
+
 			try {
 	
 				$result = Cart::where('_id', $cartKey)->push('packages',[$packageDetail]);

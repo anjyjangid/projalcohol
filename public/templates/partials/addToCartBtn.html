@@ -5,7 +5,7 @@
 	
 		<div class="addcart" ng-click="activeAddToCart()" ng-if="(product.qChilled<1 && !addMoreCustom) || !product.qChilled" role="button" tabindex="0"><span></span>add to cart</div>
 
-		<div class="addmore" ng-if="product.qChilled>0 && !addMoreCustom">
+		<div class="addmore" ng-show="product.qChilled>0 && !addMoreCustom">
 			<input type="text" ng-model="product.qChilled" value="product.qChilled" min="0" mquantity="product.chilledMaxQuantity" ng-touch-spin on-increment="addtocart()" on-decrement="addtocart()" vertical="true">
 			<span class="addmorehere" ng-click="activeAddToCartCustom()" role="button" tabindex="0">add more</span>
 		</div>
@@ -23,7 +23,7 @@
 	
 		<div class="addcart" ng-click="activeAddToCart()" ng-if="(product.qNChilled<1 && !addMoreCustom) || !product.qNChilled" role="button"><span></span>add to cart</div>
 
-		<div class="addmore" ng-if="product.qNChilled>0 && !addMoreCustom">
+		<div class="addmore" ng-show="product.qNChilled>0 && !addMoreCustom">
 			<input type="text" ng-model="product.qNChilled" value="product.qNChilled" min="0" mquantity="product.nonChilledMaxQuantity" ng-touch-spin on-increment="addtocart()" on-decrement="addtocart()" vertical="true">
 			<span class="addmorehere" ng-click="activeAddToCartCustom()" role="button" tabindex="0">add more</span>
 		</div>

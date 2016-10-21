@@ -694,7 +694,9 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.activeAddToCart = function() {
 
 				var userData = UserService.currentUser;
+
 				$element.find(".addmore-count").css({visibility: "hidden"});
+				$element.find(".addmore-count").css({top: "30px"});
 
 				if($scope.product.isLoyaltyStoreProduct === true){
 
@@ -742,9 +744,20 @@ AlcoholDelivery.directive('sideBar', function() {
 				
 				$timeout(function(){
 					
-					$element.find(".addmore-count").css({top: "30px"});
+					if($scope.product.servechilled){
 
+						if($scope.product.qChilled==0)
+						$scope.product.qChilled = 1;
+
+					}else{
+
+						if($scope.product.qNChilled==0)
+						$scope.product.qNChilled = 1;
+					}
+					
 					$timeout(function(){					
+						
+						$scope.addtocart();
 
 						$element.find(".addmore-count").css({visibility: "visible"});
 						
@@ -756,18 +769,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 				
 
-				if($scope.product.servechilled){
-
-					if($scope.product.qChilled==0)
-					$scope.product.qChilled = 1;
-
-				}else{
-
-					if($scope.product.qNChilled==0)
-					$scope.product.qNChilled = 1;
-				}
-
-				$scope.addtocart();
+				
 
 			};
 
