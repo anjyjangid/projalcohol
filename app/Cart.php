@@ -944,7 +944,7 @@ class Cart extends Moloquent
 					$qtyInCart = $productsInCart[$product['_id']];
 
 					if($qtyInCart > 0){
-
+						
 						$productsInCart[$product['_id']]-=$product['quantity'];
 
 						continue;

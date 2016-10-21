@@ -1010,6 +1010,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 			count+= cart.packages.length;
 
+			count+= cart.gifts.length;
+
 			count+= cart.giftCards.length;
 
 			count+= Object.keys(cart.loyaltyCards).length;
@@ -1751,8 +1753,8 @@ AlcoholDelivery.service('alcoholCart', [
 							function(successRes){
 								
 								var locGift = cart.gifts.splice(index, 1)[0] || {};
-
-								$rootScope.$broadcast('alcoholCart:giftRemoved', "Gift removed from cart");
+								
+								$rootScope.$broadcast('alcoholCart:updated',{msg:"Gift removed from cart",quantity:1});
 								
 								d.resolve(successRes);
 
@@ -1801,7 +1803,7 @@ AlcoholDelivery.service('alcoholCart', [
 			return cards;
 		}
 
-		this.addGift = function(giftData){
+		this.addGift = function(giftData,isUpdated){
 
 			var isFound = false;
 			if(typeof giftData._uid === 'undefined'){
@@ -1819,7 +1821,12 @@ AlcoholDelivery.service('alcoholCart', [
 				this.$cart.gifts = this.$cart.gifts || [];
 				this.$cart.gifts.push(gift);
 
-				$rootScope.$broadcast('alcoholCart:updated',{msg:"Gift added to cart",quantity:1});
+				if(isUpdated===true){
+					$rootScope.$broadcast('alcoholCart:updated',{msg:"Gift Updated Successfully",quantity:1});
+				}else{
+					$rootScope.$broadcast('alcoholCart:updated',{msg:"Gift added to cart",quantity:1});
+				}
+				
 
 			}
 
@@ -2917,15 +2924,13 @@ AlcoholDelivery.factory('alcoholCartGift',["$log", "giftProduct",function($log, 
 		this.gsTitle(giftData.title);
 		this.gsSubTitle(giftData.subTitle);		
 		this.gsDescription(giftData.description);
-		this.gsLimit(giftData.limit);
 		this.gsPrice(giftData.price);
 		this.setImageLink(giftData.image);
-		
-
 		this.setRecipient(giftData.recipient);
 
 		if(typeof giftData.products !== 'undefined'){
 			this.setProducts(giftData.products);
+			this.gsLimit(giftData.limit);
 		}
 
 	}

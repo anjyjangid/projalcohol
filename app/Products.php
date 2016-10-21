@@ -281,9 +281,8 @@ class Products extends Eloquent
 			unset($tempCat["_id"]);
 			$product = array_merge($tempCat,$product);
 		}
-				
-	}
 
+	}
 
 	public function fetchProducts($params){
 
@@ -319,6 +318,7 @@ class Products extends Eloquent
 			}
 			
 		}
+
 
 		if(isset($params['filter'])){
 

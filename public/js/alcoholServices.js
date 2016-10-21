@@ -265,7 +265,9 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 	};
 
 	this.setCurrentGift = function(gift){
+
 		this.currentGift = gift;
+
 	};
 
 	this.getCurrentGift = function(){
@@ -302,19 +304,27 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 		var defer = $q.defer();
 
 		giftData['id'] = this.getCurrentGift()._id;
-		giftData['type'] = 'giftpackaging';
-		giftData['products'] = this.getGiftAttachedProduct();
+
+		giftData['type'] = 'giftattach';
+		if(this.currentGift.type!=0){
+
+			giftData['type'] = 'giftpackaging';
+			giftData['products'] = this.getGiftAttachedProduct();
+
+		}
+
 
 		$http.put("/cart/gift/"+alcoholCart.getCartKey(),giftData).then(
 
 			function(successRes){
 
+				isUpdated = false;
 				if(giftData._uid){
-
+					isUpdated = true;
 					alcoholCart.removeGift(giftData._uid);
 				}
 
-				alcoholCart.addGift(successRes.data.gift);
+				alcoholCart.addGift(successRes.data.gift,isUpdated);
 				defer.resolve(successRes.data.gift);
 
 			},
