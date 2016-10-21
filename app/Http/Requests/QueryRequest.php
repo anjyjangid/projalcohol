@@ -46,12 +46,12 @@ class QueryRequest extends Request
                 $rules['brandsToSell'] = 'required';
             }else{
                 if($this->type == 'event-planner'){
-                    $rules['dateOfEvent'] = 'required|date|after:now';
+                    $rules['dateOfEvent'] = 'required|date_format:d/m/Y|after:now';
                     $rules['typeOfEvent'] = 'required|max:100';
                     $rules['noOfPax'] = 'required|numeric';
                 }
                 if($this->type == 'book-a-bartender'){
-                    $rules['dateOfEvent'] = 'required|date|after:now';
+                    $rules['dateOfEvent'] = 'required|date_format:d/m/Y|after:now';
                     $rules['noOfBartender'] = 'required|numeric';
                     $rules['hoursRequired'] = 'required|numeric';
                 }

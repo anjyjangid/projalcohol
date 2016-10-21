@@ -12,8 +12,8 @@
 			</div>
 		</md-toolbar>
 		<md-dialog-content ng-if="address.step==1">
-			<div class="md-dialog-content alcohaladdadrebody">
-				<div class="row">
+			<div class="md-dialog-content alcohaladdadrebody new-cover">
+				<div class="">
 					<div class="col-sm-6 enter-locationdiv"> Enter your postal code or location name
 						<md-autocomplete				          
 				            md-no-cache="noCache"
@@ -50,8 +50,8 @@
 						</div>
 						<div ng-hide="addressData.PostalCode" ng-click="showAddressForm({ev:$event,key:null})">Can't find your address?</div>
 					</div>
-					<div class="col-sm-6">						
-						<ng-map style="width: 100%;height: 400px"></ng-map>
+					<div class="col-sm-6 no-pad">						
+						<ng-map style="width: 100%;height: 300px"></ng-map>
 					</div>
 				</div>
 			</div>

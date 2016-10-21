@@ -42,7 +42,7 @@ class DealerRequest extends Request
 
             $rules['contacts.'.$key.'.name'] = 'required';
             $rules['contacts.'.$key.'.des'] = 'required';
-            $rules['contacts.'.$key.'.number'] = 'required|digits_between:10,12';
+            $rules['contacts.'.$key.'.number'] = 'required|digits_between:8,10';
 
         }
 

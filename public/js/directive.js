@@ -1313,6 +1313,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 						$scope.locateMap = function(lat,lng,zoom,item) {
 							setTimeout(function() {
+								
 								if($scope.map){
 									var point = new google.maps.LatLng(lat,lng);
 									$scope.map.setCenter(point);
