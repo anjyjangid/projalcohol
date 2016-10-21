@@ -243,9 +243,15 @@ ui-sref {
 	position: relative;
 	z-index: 10;
 	top: 0;
-	margin-right: 10px;
+	margin-right: 0px;
+	padding: 40px 20px 60px !important;
 	cursor: pointer;
 }
+
+.navbar-shrink .search_icon {
+	padding: 35px 20px 35px !important;
+}
+
 .searchtop.searchtop100 .search_icon {
 	top: 0;
 	background: rgba(0, 0, 0, 0) url("../images/sprite.png") no-repeat scroll -317px 0;
@@ -290,6 +296,7 @@ ui-sref {
 	height: 20px;
 	min-height: 100px;
 	min-width: 41px;
+	cursor: default;
 }
 /*.cart_icon:hover {
 	background: #e1b11f url(../images/sprite.png) no-repeat -340px 33px !important;
@@ -1066,7 +1073,7 @@ ui-sref {
 	font-size: 18px;
 	font-weight: 500;
 	margin-top: 0;
-	min-height: 375px;
+	min-height: 300px;
 	padding: 60px 53px 0;
 	position: relative;
 	right: 0;
@@ -1319,6 +1326,7 @@ ui-sref {
 .alcohal_orderhistorytxtcvr {
 	margin: 0 auto;
 	width: 78%;
+	max-width: 490px;
 }
 .alcohal_orderhistorybodytxt {
 	margin: 0 auto;
@@ -4018,6 +4026,7 @@ ui-sref {
 }
 .username {
 	max-width: 150px;
+	min-width: 150px;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
@@ -4873,7 +4882,8 @@ ui-sref {
 	font-family: 'Work Sans', sans-serif;
 	font-weight: normal;
 	text-transform: none;
-	padding-left: 15px;
+	padding-left:50px;
+	text-align: left;
 }
 .additempopuppinkboxrightinner {
 	width: 100%;
@@ -5172,7 +5182,7 @@ md-switch {
 }*/
 md-toolbar {
 	background: transparent none repeat scroll 0 0 !important;
-	min-height: 70px;
+	min-height: 64px;
 }
 .col-sm-4.enter-locationdiv > div {
 	padding-top: 5px;
@@ -5321,6 +5331,10 @@ md-dialog .md-actions, md-dialog md-dialog-actions {
 	transition: all 0.5s ease 0s;
 	-moz-transition: all 0.5s ease 0s;
 	-web-transition: all 0.5s ease 0s;
+}
+
+.signuplogin li:hover, .signuplogin li:focus {
+	background-color: #e1b11f !important;
 }
 .navbar-fixed-top .signuplogin ul li {
 	align-items: center;
@@ -6272,3 +6286,18 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
     color: #564111;
 }
 
+
+
+.new-cover{
+	padding: 0 0 0 0 !important; 
+
+}
+
+
+.new-cover .enter-locationdiv{
+	padding: 24px;
+}
+
+.no-pad{
+	padding: 0 !important;
+}

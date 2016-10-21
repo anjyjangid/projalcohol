@@ -917,11 +917,14 @@ class Cart extends Moloquent
 
 			if($isProSet){
 
+				$this->validateGiftContainers();
 				$this->__set('sales',$sales);
 				$response['success'] = true;
 			}
 
 		}
+
+
 
 		return $response;		
 
@@ -940,9 +943,8 @@ class Cart extends Moloquent
 					
 					$qtyInCart = $productsInCart[$product['_id']];
 
-					if($qtyInCart >= $product['quantity']){
+					if($qtyInCart > 0){
 						
-
 						$productsInCart[$product['_id']]-=$product['quantity'];
 
 						continue;
