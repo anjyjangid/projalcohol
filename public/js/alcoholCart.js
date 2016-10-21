@@ -112,7 +112,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 			_self.setAllProductsRemainingQty(proRemaining);
 			_self.setAllSales(sales);
-			//_self.checkAllGiftContainer();
+			
 
 			if(resProduct.product.change!==0){
 
@@ -123,6 +123,8 @@ AlcoholDelivery.service('alcoholCart', [
 				}
 				
 			}
+
+			_self.validateContainerGift();
 
 			defer.resolve(response);
 
@@ -587,6 +589,45 @@ AlcoholDelivery.service('alcoholCart', [
 
 	}
 
+	this.validateContainerGift = function(){
+
+		var cGifts = this.getGifts();
+		var proInCartCount = this.getProductsCountInCart();
+		
+
+		angular.forEach(cGifts,function(cGift,i){
+
+			angular.forEach(cGift.products,function(product){
+
+				var key = product.getId();
+				
+				if(typeof proInCartCount[key] !== 'undefined'){
+
+					var qtyInCart = proInCartCount[key];
+					var qtyInGift = product.getQuantity();
+
+					if(qtyInCart >= qtyInGift){
+
+						proInCartCount[key]-=qtyInGift;
+
+						return;
+
+					}
+
+				}
+
+				cGifts[i].products.splice(key, 1)[0]
+
+			})
+
+			if(cGifts[i].products.length<1){
+				cGifts.splice(i, 1)[0]
+			}
+
+		})
+
+	}
+
 	this.setPromotionsInCart = function(){
 
 		_oCart = this;
@@ -602,18 +643,18 @@ AlcoholDelivery.service('alcoholCart', [
 
 	}
 
-		this.getPromotionById = function(promoId){
+	this.getPromotionById = function(promoId){
 
-			var promotions = this.getCart().promotions;
-			var build = false;
-			
-			angular.forEach(promotions, function (promotion) {
-				if  (promotion._id === promoId) {
-					build = promotion;
-				}
-			});
-			return build;
-		}
+		var promotions = this.getCart().promotions;
+		var build = false;
+		
+		angular.forEach(promotions, function (promotion) {
+			if  (promotion._id === promoId) {
+				build = promotion;
+			}
+		});
+		return build;
+	}
 
 		this.getProductById = function (productId){
 
@@ -680,6 +721,55 @@ AlcoholDelivery.service('alcoholCart', [
 			}
 			
 			if(build!==false){return build;}
+
+		}
+
+
+		this.getProductsCountInCart = function(){
+
+			var products = this.getProducts();
+			var promotions = this.getPromotions();
+			var loyalty = this.getLoyaltyProducts();
+
+			var prosInCart = {};
+
+			angular.forEach(products, function(product, key) {
+				prosInCart[key] = product.getQuantity();
+			});
+
+			// angular.forEach(promotions, function(promotion, key) {
+				
+			// 	if(promotion.product._id == productId){
+			// 		var product = {
+			// 			imageFiles : [
+			// 				{
+			// 					coverimage:1,
+			// 					source:promotion.product._image
+			// 				}
+			// 			],
+			// 			slug : promotion.product._slug,
+			// 			name: promotion.product._title
+			// 		}
+			// 		build = {product:product};
+			// 	}
+
+			// });
+
+			
+			angular.forEach(loyalty, function(product, key) {
+
+				if(typeof prosInCart[key] === 'undefined'){
+
+					prosInCart[key] = product.getQuantity();
+
+				}else{
+
+					prosInCart[key] = parseInt(prosInCart[key]) + parseInt(product.getQuantity());
+
+				}
+			});
+			
+			return prosInCart;
 
 		}
 
@@ -1676,6 +1766,11 @@ AlcoholDelivery.service('alcoholCart', [
 
 						);
 					}
+					else{
+
+						var locGift = cart.gifts.splice(index, 1)[0] || {};
+						d.resolve({success:true});
+					}
 
 				}	
 			});
@@ -2218,7 +2313,7 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', '$filter', fun
 
 				this.setRChilledStatus(data.chilled.status,data.nonchilled.status);
 				this.setRemainingQty(data.remainingQty);
-				this.setTQuantity(data.remainingQty);
+				this.setTQuantity(data.quantity);
 				this.setPrice(data);
 				this.setLastServedAs(data.lastServedChilled);
 				this.setProduct(data);
@@ -2286,7 +2381,7 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', '$filter', fun
 
 			var unitPrice = originalPrice;
 
-			var quantity = this.getQuantity();
+			var quantity = this.getRemainingQty();
 
 			var advancePricing = original.regular_express_delivery;
 			
@@ -2424,7 +2519,15 @@ AlcoholDelivery.factory('alcoholCartItem', ['$rootScope', '$log', '$filter', fun
 			this.remainingQty = rQty;
 			this.setStateRemainQty();
 
-		};		
+		};
+
+		item.prototype.getRemainingQty = function(){
+
+			if(this.remainingQty) return this.remainingQty;
+
+			return 0;
+
+		};
 
 		item.prototype.setStateRemainQty = function(){
 
@@ -2931,7 +3034,6 @@ AlcoholDelivery.factory('alcoholCartGift',["$log", "giftProduct",function($log, 
 			angular.forEach(products, function(product,index){
 
 				var productObj = new giftProduct(product,_self.getUniqueId());
-				console.log("giftProduct:",productObj);
 				this.push(productObj);
 
 			},this.products)

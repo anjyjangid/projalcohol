@@ -34,7 +34,7 @@
 			    		<div class="gift-card-innerform">
 							<label class="full-width">Message <span class="max-char-color pull-right" align="right"> Max. characters : 200</span></label>
 							<textarea maxlength="200" ng-model="giftData.recipient.message" class="alcohalrestertextbox form-control" ng-change="errors['recipient.message'][0]=''"></textarea>
-							<span ng-class="max-char-color" ng-show="giftData.recipient.message.length>0">
+							<span ng-class="max-char-color" ng-style="{'visibility': giftData.recipient.message.length>0 ? 'visible' : 'hidden'}">
 								left : {{200 - giftData.recipient.message.length}}
 							</span>
 						</div>

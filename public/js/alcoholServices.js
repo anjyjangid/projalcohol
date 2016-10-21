@@ -157,6 +157,8 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 
 	this.getProducts = function(){
 
+		//this.$products = [];
+
 		var _self = this;
 
 		var products = alcoholCart.getProducts();
@@ -238,7 +240,7 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 
 			var isInGift = alcoholCart.isProductInGift(pro._id);
 			if(isInGift!==false){
-				pro._quantity = pro._quantity - isInGift.quantity
+				pro._quantity = pro._quantity - isInGift.quantity;
 			}
 
 		});
@@ -306,6 +308,11 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 		$http.put("/cart/gift/"+alcoholCart.getCartKey(),giftData).then(
 
 			function(successRes){
+
+				if(giftData._uid){
+
+					alcoholCart.removeGift(giftData._uid);
+				}
 
 				alcoholCart.addGift(successRes.data.gift);
 				defer.resolve(successRes.data.gift);
@@ -839,8 +846,8 @@ AlcoholDelivery.factory('AlcoholProduct',[
 		var isInCart = alcoholCart.getProductById(this._id);
 
 		if(isInCart!==false)
-		return isInCart.getQuantity();
-	
+		return isInCart.getRQuantity('chilled') + isInCart.getRQuantity('nonchilled');
+
 		return 0;
 
 	}

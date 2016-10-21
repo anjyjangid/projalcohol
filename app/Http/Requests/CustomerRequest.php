@@ -31,7 +31,7 @@ class CustomerRequest extends Request
         $rules = [
             'name' => 'required|string|max:255',            
             'email' => 'required|email|max:255|unique:user,email,'.@$input['_id'].",_id",            
-            'mobile_number'=> 'required|numeric|digits_between:10,12',            
+            'mobile_number'=> 'required|numeric|digits_between:8,10',            
             'status'=> 'required|integer|in:0,1',
         ];
 

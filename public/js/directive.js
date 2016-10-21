@@ -35,7 +35,8 @@ AlcoholDelivery.directive('sideBar', function() {
 		},*/
 
 		templateUrl: '/templates/partials/topmenu.html',
-		controller: function($scope,$rootScope,$http,$state,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard,$fblogin,$mdDialog, $timeout){
+		controller: function($scope,$rootScope,$http,$state,sweetAlert,UserService,store
+							,alcoholWishlist,ClaimGiftCard,$fblogin,$mdDialog, $timeout){
 
 			$scope.list = [];
 
@@ -651,20 +652,21 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.isAddCustom = false;
 
 			$scope.focusout = function(){
-				
+
 				$timeout(function() {
-					
 					$scope.addMoreCustom = false;
 
-					if(!$scope.isAddCustom){
+					if(typeof $scope.isAddCustom === "undefined"){
 
 						var p = alcoholCart.getProductById($scope.product._id);
 						$scope.product.qChilled = p.qChilled;
 						$scope.product.qNChilled = p.qNChilled;
 
-					}
+					}else{
 
-					$scope.isAddCustom = false;
+						delete $scope.isAddCustom;
+
+					}				
 
 				}, 500);
 
@@ -685,6 +687,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 				$scope.isAddCustom = true;
 				$scope.addtocart();
+				$scope.addMoreCustom = false;
 
 			};
 
@@ -1310,6 +1313,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 						$scope.locateMap = function(lat,lng,zoom,item) {
 							setTimeout(function() {
+								
 								if($scope.map){
 									var point = new google.maps.LatLng(lat,lng);
 									$scope.map.setCenter(point);
