@@ -23,7 +23,7 @@
 				<span class="arrow" ng-if="item.subItems"></span>
 			</a>
 			<ul class="sub-menu" ng-if="item.subItems">
-				<li ng-repeat="subItem in item.subItems" ng-class="{'selectedsubmenu':isActivelink(subItem.links,$state.$current.name)}" class="ms-hover">
+				<li ng-repeat="subItem in item.subItems" ng-class="{'active':isActivelink(subItem.links,$state.$current.name)}" class="ms-hover">
 					<a ui-sref="{{subItem.uisref}}">
 						<i class="{{subItem.icon}}"></i>			
 						<span ng-bind="subItem.label"></span>
