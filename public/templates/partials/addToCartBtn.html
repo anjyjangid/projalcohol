@@ -1,11 +1,11 @@
 <div class="prod_addtocart">
 
 	<!-- Add to cart button to add chilled product start -->
-	<div class="cartbtn" ng-if="product.servechilled">
+	<div class="cartbtn" ng-show="product.servechilled">
 	
 		<div class="addcart" ng-click="activeAddToCart()" ng-if="(product.qChilled<1 && !addMoreCustom) || !product.qChilled" role="button" tabindex="0"><span></span>add to cart</div>
 
-		<div class="addmore" ng-show="product.qChilled>0 && !addMoreCustom">
+		<div class="addmore" ng-class="{fadeshow:product.qChilled>0 && !addMoreCustom}" ng-show="product.qChilled>0 && !addMoreCustom">
 			<input type="text" ng-model="product.qChilled" value="product.qChilled" min="0" mquantity="product.chilledMaxQuantity" ng-touch-spin on-increment="addtocart()" on-decrement="addtocart()" vertical="true">
 			<span class="addmorehere" ng-click="activeAddToCartCustom()" role="button" tabindex="0">add more</span>
 		</div>
@@ -19,11 +19,11 @@
 	<!-- Add to cart button to add chilled product ends -->
 
 	<!-- Add to cart button to add non chilled product start -->
-	<div class="cartbtn" ng-if="!product.servechilled">
+	<div class="cartbtn" ng-show="!product.servechilled">
 	
 		<div class="addcart" ng-click="activeAddToCart()" ng-if="(product.qNChilled<1 && !addMoreCustom) || !product.qNChilled" role="button"><span></span>add to cart</div>
 
-		<div class="addmore" ng-show="product.qNChilled>0 && !addMoreCustom">
+		<div class="addmore" ng-class="{fadeshow:product.qNChilled>0 && !addMoreCustom}" ng-show="product.qNChilled>0 && !addMoreCustom">
 			<input type="text" ng-model="product.qNChilled" value="product.qNChilled" min="0" mquantity="product.nonChilledMaxQuantity" ng-touch-spin on-increment="addtocart()" on-decrement="addtocart()" vertical="true">
 			<span class="addmorehere" ng-click="activeAddToCartCustom()" role="button" tabindex="0">add more</span>
 		</div>

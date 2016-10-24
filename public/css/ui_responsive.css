@@ -1310,6 +1310,7 @@ body.menu-slider.in {
 }
 .dropdown.cart-icon-set span {
 	padding: 0 5px;
+	cursor:default;
 }
 .navbar-shrink .dropdown.cart-icon-set span, .navbar-shrink .dropdown.cart-icon-set span:hover, .navbar-shrink .dropdown.cart-icon-set span:focus {
 	padding: 0 5px;
