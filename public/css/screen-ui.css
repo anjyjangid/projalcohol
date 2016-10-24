@@ -630,7 +630,7 @@ ui-sref {
 	min-height: 30px;
 }
 .no-image.prod_pic img {
-	display: none;
+	/*display: none;*/
 }
 .prod_pic img {
 	display: inline-block;
@@ -1773,30 +1773,38 @@ ui-sref {
 	padding: 5px 10px;
 }
 .cartbtn {
-	min-width: 142px;
-	max-width: 160px;
+	width: 158px;
 	height: 32px;
 	border: none;
 	border-radius: 5px;
 	cursor: pointer;
 	position: relative;
-	border: 1px solid #AA00FF;
-	background: #AA00FF;
+	border: 1px solid #aa00ff;
+	background: #aa00ff;
 	text-transform: uppercase;
-	font-weight: 600;
-	font-size: 13px;
+	font-weight: 500;
+	font-size: 12px;
+	font-family: 'Work Sans', sans-serif;
 	color: #ffffff;
+	opacity: 0.9;
 }
+
+.cartbtn:hover{
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+	opacity: 1;
+}
+
 .addcart {
 	width: 100%;
 	float: left;
 	border-radius: 5px;
-	height: 32px;
+	height: 30px;
 	line-height: 30px;
 	position: absolute;
 	top: 0;
 	left: 0;
-	z-index: 1;
+	z-index: 4;
+	background: #aa00ff;
 }
 .addcart span {
 	background: url(../images/sprite.png) no-repeat -381px 0;
@@ -1804,29 +1812,38 @@ ui-sref {
 	height: 17px;
 	display: inline-block;
 	float: left;
-	margin:5px -2px 0 10px;
+	margin:4px 3px 0 12px;
 }
 .addmore {
 	width: 100%;
 	float: left;
 	border-radius: 5px;
-	height: 32px;
-	line-height: 32px;
+	height: 30px;
+	line-height: 30px;
 	position: absolute;
 	top: 0;
 	left: 0;
 	z-index: 2;
+	transition: opacity 0.20s ease;
+	opacity:0;
 }
+
+.fadeshow{
+	opacity:1;	
+	transition: opacity 0.20s ease;
+}
+
 .addmanual {
 	width: 100%;
 	float: left;
 	border-radius: 5px;
-	height: 32px;
-	line-height: 32px;
+	height: 30px;
+	line-height: 30px;
 	position: absolute;
 	top: 0;
 	left: 0;
 	z-index: 3;
+
 }
 .horizontal .addmore-count {
 	background-color: transparent;
@@ -1851,22 +1868,28 @@ ui-sref {
 .addmanual input {
 	width: 0%;
 	float: left;
-	height: 30px;
-	line-height: 30px;
+	height: 32px;
+	line-height: 32px;
 	border: none;
 	outline: none;
 	border-radius: 4px 0 0 4px;
-	color: #999;
-	padding: 5px;
-	font-size: 18px;
+	padding: 5px 5px 5px 26px;
+	font-size: 12px;
+	font-family: 'Work Sans', sans-serif;
+	color: #37474f;
 	position: relative;
+	border-left: 1px solid #bdc2c5;
+	border-top: 1px solid #bdc2c5;
+	border-bottom: 1px solid #bdc2c5;
+	margin:-1px 0 -1px -1px; 
+	transition: padding-left linear 0.2s;
 }
 .addmanual .addbuttton {
 	width: 100%;
 	float: right;
 	border-radius: 5px;
 	height: 30px;
-	background: #AA00FF;
+	background:transparent;
 	line-height: 30px;
 	position: absolute;
 	top: 0;
@@ -2115,7 +2138,7 @@ ui-sref {
 	background: transparent;
 	width: 52px;
 	float: left;
-	margin-left: 4px;
+	margin-left: 10px;
 	position: relative;
 	overflow: hidden;
 }
@@ -2125,20 +2148,24 @@ ui-sref {
 	left: 11;
 }
 .addmorehere {
-	display: inline-block;
-	width: 80px;
-	float: right;
-	text-align: left;
+	background-color: #8c00d1;
+    border: 1px solid #8c00d1;
+    border-radius: 0 4px 4px 0;
+    display: inline-block;
+    float: right;
+    margin:-1px -1px 0 0px;
+    text-align: center;
+    width: 82px;
 }
 .addmore .bootstrap-touchspin-down, .addmore .bootstrap-touchspin-up {
 	background-color: transparent;
 	border-color: transparent;
 	border: 0px;
 	color: #fff;
-	font-size: 19px;
-	font-weight: 500;
+	font-size: 15px;
+	font-weight: 600;
 	padding: 0;
-	margin-top: -3px;
+	margin-top: -2px;
 }
 .addmore .bootstrap-touchspin-down:focus, .addmore .bootstrap-touchspin-up:focus, .addmore .bootstrap-touchspin-down:active, .addmore .bootstrap-touchspin-up:active, .addmore .bootstrap-touchspin-down:hover, .addmore .bootstrap-touchspin-up:hover {
 	outline: none;
@@ -2146,7 +2173,7 @@ ui-sref {
 	border: 0px;
 	color: #ffc412;
 	background-color: transparent;
-	box-shadow: 0px 0px 0px 0px;
+	box-shadow: none;
 }
 .checkoutmiddleouter {
 	padding: 0px 25px;
@@ -5334,7 +5361,7 @@ md-dialog .md-actions, md-dialog md-dialog-actions {
 }
 
 .signuplogin li:hover, .signuplogin li:focus {
-	background-color: #e1b11f !important;
+	/*background-color: #e1b11f !important;*/
 }
 .navbar-fixed-top .signuplogin ul li {
 	align-items: center;
@@ -5608,7 +5635,7 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
 	width: 100%;
 	float: left;
 	font-size: 14px;
-	padding-bottom: 5px;
+	padding-bottom: 0px;
 	color: #666;
 }
 .btn-success {
@@ -6300,4 +6327,41 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
 
 .no-pad{
 	padding: 0 !important;
+}
+
+.addmore .bootstrap-touchspin-down{
+	margin-right: -15px !important;
+}
+
+.addmore .bootstrap-touchspin-up{
+	margin-left: -15px !important;
+}
+
+
+.mCSB_buttonUp, .mCSB_buttonDown{
+	padding: 0 !important;
+}
+
+.amt-title{
+	padding-bottom: 5px !important;
+}
+
+a.core-block{
+	position: relative;
+}
+
+.yellow-tag {
+    bottom: 52px;
+    left: 0;
+    position: absolute;
+}
+
+
+button{
+	opacity: 0.9;
+}
+
+
+button:hover{
+	opacity: 1;
 }

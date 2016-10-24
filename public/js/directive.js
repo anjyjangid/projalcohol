@@ -695,6 +695,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 				var userData = UserService.currentUser;
 				$element.find(".addmore-count").css({visibility: "hidden"});
+				$element.find(".addmore").css({ "opacity": "0"});
 
 				if($scope.product.isLoyaltyStoreProduct === true){
 
@@ -745,6 +746,8 @@ AlcoholDelivery.directive('sideBar', function() {
 					$element.find(".addmore-count").css({top: "30px"});
 
 					$timeout(function(){					
+						
+						$element.find(".addmore").css({ "opacity": "1"});
 
 						$element.find(".addmore-count").css({visibility: "visible"});
 						
@@ -776,7 +779,8 @@ AlcoholDelivery.directive('sideBar', function() {
 				$scope.addMoreCustom = true;
 
 				$timeout(function(){
-					$element.find(".addmanual input").animate({ width: "70%"},250).focus();
+					$element.find(".addmanual input").animate({ width: "70%"},250);
+					$element.find(".addmanual input").css({ "padding-left": "13px"});
 		  			$element.find(".addmanual .addbuttton").animate({ width: "30%"},250);
 				}, 100);
 
