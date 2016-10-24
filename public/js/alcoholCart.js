@@ -608,7 +608,11 @@ AlcoholDelivery.service('alcoholCart', [
 
 					if(qtyInCart > 0){
 
+						if(qtyInCart<qtyInGift){							
+							product.setQuantity(qtyInCart);
+						}
 						proInCartCount[key]-=qtyInGift;
+
 
 						return;
 
@@ -1188,6 +1192,8 @@ AlcoholDelivery.service('alcoholCart', [
 						$rootScope.$broadcast('alcoholCart:updated',{msg:"Items removed from cart",quantity:Math.abs(response.change)});
 						
 					}
+
+					_self.validateContainerGift();
 
 					defer.resolve(response);
 
