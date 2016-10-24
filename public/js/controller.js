@@ -2177,7 +2177,7 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 
 
 		$scope.processing = true;
-
+		
 		alcoholCart.addPackage(packageId,currPackage).then(
 
 			function(response) {

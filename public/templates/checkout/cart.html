@@ -296,18 +296,18 @@
 							</div>
 						</div>
 
-						<ul class="list-inline gift-pack-products">
+						<ul class="list-inline gift-pack-products">								
 							<li ng-repeat="(key, giftPro) in gift.getProducts()">
+								<span class="qty-tag-hang">X {{giftPro.quantity}}</span>
 								<a ui-sref="mainLayout.product({product:giftPro.product.slug})" title="View :: {{giftPro.product.name}}">
-								      	
 									<img err-pro-src="" ng-src="products/i/200/{{giftPro.product.icon }}" alt="" class="img-responsive img-responsive-h" />
 								</a>
 							</li>
 						</ul>
 					</td>
 					<td></td>
-					<td>
-						<!-- {{gift.getProductAttachedCount()}}/{{gift.gsLimit()}} -->
+					<td>						
+						
 					</td>
 					<td>
 						<div class="orderhistry2price">{{gift.gsPrice() | pricingTxt}}</div>

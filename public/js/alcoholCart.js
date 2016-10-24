@@ -490,7 +490,7 @@ AlcoholDelivery.service('alcoholCart', [
 		    	if(inCart){
 		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Package updated"});
 		    	}else{
-		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Package added to cart"});
+		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Package added to cart",quantity:detail.packageQuantity});
 		    	}
 
 				d.resolve(response);
@@ -620,7 +620,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 			})
 
-			if(cGifts[i].products.length<1){
+			if(typeof cGifts[i].products!=="undefined" && cGifts[i].products.length<1){
 				cGifts.splice(i, 1)[0]
 			}
 

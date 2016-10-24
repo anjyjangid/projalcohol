@@ -87,9 +87,8 @@ AlcoholDelivery.directive('sideBar', function() {
 	                delete $rootScope.deliverykey;
 	                localStorage.removeItem("deliverykey");
 	                store.init().then(
-	                	function(successRes){
-	                		$state.go($state.current, {}, {reload: true});
-	                		// $state.go("mainLayout.index", {}, {reload: true});
+	                	function(successRes){	                		
+	                		$state.go("mainLayout.index", {}, {reload: true});
 	                	},
 	                	function(errorRes){}
 	                );
