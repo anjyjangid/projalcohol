@@ -762,7 +762,7 @@ class CartController extends Controller
 
 	}
 
-	public function postPackage(Request $request, $cartKey){{
+	public function postPackage(Request $request, $cartKey){
 	
 			$inputs = $request->all();
 			$packageId = $inputs['id'];
@@ -822,7 +822,46 @@ class CartController extends Controller
 	
 			}
 	
-		}}
+		}
+
+	public function deletePackage($packageUId,$cartKey){
+		
+		$response = ["message"=>""];
+
+		$cart = Cart::find($cartKey);
+		
+		$packages = $cart->packages;
+
+		if(empty($packages)){
+
+			$response['message'] = 'no package to remove';
+
+			return response($response,405);
+
+		}
+		
+		try{
+
+			$isRemoved = DB::collection('cart')->where('_id', $cartKey)->pull('packages', ['_unique' => new MongoId($packageUId)]);
+
+			$response['message'] = 'package removed successfully';
+
+			$response['data'] = $isRemoved;
+
+			return response($response,200);
+			
+
+		}catch(\Exception $e){
+
+			$response['message'] = $e->getMessage();
+
+			Log::warning($response['message']);
+
+		}
+
+		return response(["message"=>"Something went wrong"],400);
+
+	}
 
 	public function putPromotion(Request $request, $cartKey){
 

@@ -753,7 +753,7 @@ body.loadingpayment .loader{
 	border: 1px solid #ccc;
 	padding: 10px;
 	text-align: center;
-	margin: 0 45px 0 5px;
+	margin: 10px 45px 0 5px;
     position: relative;
 }
 

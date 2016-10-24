@@ -337,9 +337,9 @@ AlcoholDelivery.directive('sideBar', function() {
     link: function(scope, element, attrs) {
       element.bind('error', function() {
 
-        element.parent(".prod_pic").addClass("no-image");
+		element.parent(".prod_pic").addClass("no-image");
 
-          attrs.$set('src', attrs.errSrc);
+		attrs.$set('src', attrs.errSrc);
 
       });
     }
