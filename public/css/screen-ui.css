@@ -5239,6 +5239,15 @@ md-toolbar {
 .dropdown.cart-icon-set:hover {
 	background-color: #e1b11f !important;
 }
+
+ul.menuulpadding  li:hover{
+	background-color: #e1b11f !important;
+}
+
+ul.menuulpadding li ul li:hover{
+	background-color:transparent !important;
+}
+
 .signuplogin ul li:nth-child(4) a:hover, .signuplogin ul li:nth-child(4) a:focus, .signuplogin ul li:nth-child(4) a:active, .signuplogin ul li:nth-child(4) a {
 	background-color: transparent;
 }
