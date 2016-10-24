@@ -454,7 +454,7 @@ class CartController extends Controller
 		
 		$updateProData = $cart->products[$proIdToUpdate];
 
-		$cart->validateGiftContainers();	
+		$cart->validateGiftContainers();
 
 		try {
 
@@ -762,7 +762,7 @@ class CartController extends Controller
 
 	}
 
-	public function createpackage(Request $request, $cartKey){{
+	public function postPackage(Request $request, $cartKey){{
 	
 			$inputs = $request->all();
 			$packageId = $inputs['id'];
@@ -809,7 +809,7 @@ class CartController extends Controller
 			
 			$packageDetail['products'] = (array)$packageDetail['products'];
 			$packageDetail['_id'] = new mongoId($packageId);
-	
+
 			try {
 	
 				$result = Cart::where('_id', $cartKey)->push('packages',[$packageDetail]);
@@ -2175,7 +2175,6 @@ jprd($product);
 		];
 
 		$inputs = $request->all();
-
 		// Get gift detail
 
 		$giftModel = new Gift;
@@ -2184,69 +2183,75 @@ jprd($product);
 
 		$cart = Cart::find($cartKey);
 		
-		$giftProducts = $inputs['products'];
-
 		$except = isset($inputs['_uid'])?$inputs['_uid']:'';
 
-		$cartProducts = $cart->getProductsNotInGift($except);
+		if($gift->type==1){
 
-		$totalProducts = 0;
+			$giftProducts = $inputs['products'];
 
-		foreach ($giftProducts as $giftProduct) {
+			$cartProducts = $cart->getProductsNotInGift($except);
 
-			$proId = $giftProduct['_id'];
-						
-			$quantity = (int)$giftProduct['quantity'];
+			$totalProducts = 0;
 
-			// Condition to check product is available in cart or not			
+			foreach ($giftProducts as $giftProduct) {
 
-			if(isset($cartProducts[$proId]) && $cartProducts[$proId]>=$quantity){			
+				$proId = $giftProduct['_id'];
+							
+				$quantity = (int)$giftProduct['quantity'];
 
-				$totalProducts+=(int)$quantity;
-				
-			}else{
+				// Condition to check product is available in cart or not			
 
-				$response['message'] = 'Products attached quantity not match with in cart';
-				$response['reload'] = true;
+				if(isset($cartProducts[$proId]) && $cartProducts[$proId]>=$quantity){			
+
+					$totalProducts+=(int)$quantity;
+					
+				}else{
+
+					$response['message'] = 'Products attached quantity not match with in cart';
+					$response['reload'] = true;
+					return response($response,422);
+
+				}
+
+			}
+
+			if($totalProducts<1){
+
+				$response['message'] = 'Please attach products';
+				return response($response,422);
+
+			}
+
+			if($totalProducts>$gift['limit']){
+
+				$response['message'] = 'Products count is more than limit';
 				return response($response,422);
 
 			}
 
 		}
-
-		if($totalProducts<1){
-
-			$response['message'] = 'Please attach products';
-			return response($response,422);
-
-		}
-
-		if($totalProducts>$gift['limit']){
-
-			$response['message'] = 'Products count is more than limit';
-			return response($response,422);
-
-		}
-
-
-		//$cart->products = $cartProducts;
 		
 		$gifts = empty($cart->gifts)?[]:$cart->gifts;
 
 		$newGift = [
 				"_id" => $gift['_id'],
 				'_uid'=> new MongoId(),
-				"products"=> $giftProducts,
+				
 				"recipient" => $inputs['recipient'],
 				"price" => $gift['price'],
 				"title"=> $gift['title'],
 				"subTitle"=> $gift['subTitle'],
 				"description"=> $gift['description'],
-				"limit"=> $gift['limit'],
+				
 				"image"=> $gift['coverImage']['source'],
 			];
+
+		if($gift->type==1){
+			$newGift["products"] = $giftProducts;
+			$newGift["limit"] = $gift['limit'];
+		}
 		
-		if($except!==""){
+		if(isset($except) && $except!==""){
 			foreach($gifts as $key=>$gift){
 				if($gift['_uid'] == new MongoId($except)){
 					unset($gifts[$key]);
@@ -2254,6 +2259,7 @@ jprd($product);
 			}
 		}
 
+		
 		$gifts = array_merge($gifts,[$newGift]);
 
 		try{

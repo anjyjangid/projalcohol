@@ -27,7 +27,7 @@ class GiftCartRequest extends Request
 		$input = Input::all();
 
 		$rulesCommon = [
-					'type' => 'required|in:"giftcard","giftpackaging"',
+					'type' => 'required|in:"giftcard","giftpackaging","giftattach"',
 					'recipient.message'=> 'required|max:200',					
 					'recipient.name'=> 'required',
 				];
@@ -39,7 +39,7 @@ class GiftCartRequest extends Request
 
 				$rules = [
 					
-					'recipient.email'=> 'required|email',					
+					'recipient.email'=> 'required|email',
 					'recipient.price'=> 'required|numeric',
 					'recipient.quantity'=> 'required|integer|min:1',
 					'recipient.sms'=> 'in:0,1',

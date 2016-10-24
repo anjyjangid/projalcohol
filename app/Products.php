@@ -281,9 +281,8 @@ class Products extends Eloquent
 			unset($tempCat["_id"]);
 			$product = array_merge($tempCat,$product);
 		}
-				
-	}
 
+	}
 
 	public function fetchProducts($params){
 
@@ -319,6 +318,7 @@ class Products extends Eloquent
 			}
 			
 		}
+
 
 		if(isset($params['filter'])){
 
@@ -589,8 +589,11 @@ class Products extends Eloquent
 								'availabilityTime' => 1,
 								'catParent' => ['$arrayElemAt'=> [ '$categoriesObject', 0 ]],
 								'catSubParent' => ['$arrayElemAt'=> [ '$categoriesObject', -1 ]],
-								'parentCategory' => 1,
-								'childCategory' => 1
+								'status' => 1,
+								'created_at' => 1,
+								'isFeatured' => 1,
+								'isLoyalty' => 1,
+								'categoriesObject' => 1
 							]
 					];
 

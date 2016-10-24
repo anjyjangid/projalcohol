@@ -2177,7 +2177,7 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 
 
 		$scope.processing = true;
-
+		
 		alcoholCart.addPackage(packageId,currPackage).then(
 
 			function(response) {
@@ -2193,7 +2193,6 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 			},
 			function(error) {
 
-				console.error(error);
 				$scope.processing = false;
 
 			});
@@ -2683,7 +2682,6 @@ AlcoholDelivery.controller('GiftController', [
 
 					});
 				}
-
 
 				if($scope.giftData._uid){
 
