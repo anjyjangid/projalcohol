@@ -121,8 +121,8 @@
 
 						<div class="orhistry2_td2procdtcvr">
 							<span>
-								<a ui-sref="mainLayout.packages({type:package.original.type==2?'cocktail':'party'})">
-									<img err-pro-src="" ng-src="packages/i/{{package.original.coverImage.source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" />
+								<a ui-sref="mainLayout.packagedetail({type:package.original.type==2?'cocktail':'party',id:package._id,uid:package._uniqueId})">
+									<img err-pro-src="" ng-src="packages/i/{{package.original.coverImage.source}}" src="asset/i/defaultImage.png" alt="" class="img-responsive" />
 								</a>
 							</span>
 
@@ -139,7 +139,7 @@
 
 						<div class="checkoutmiddlevlauediv">
 
-							<input type="text" ng-model="package.original.packageQuantity" value="package._quantity" min="0" mquantity="package._maxquantity" ng-touch-spin on-increment="alcoholCart.addPackage(package._uniqueId,package.original)" on-decrement="alcoholCart.addPackage(package._uniqueId,package.original)">
+							<input type="text" ng-model="package.original.packageQuantity" value="package._quantity" min="0" mquantity="package._maxquantity" ng-touch-spin on-increment="updatePackage(package._uniqueId)" on-decrement="updatePackage(package._uniqueId)">
 
 						</div>
 					</td>

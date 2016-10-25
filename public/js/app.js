@@ -825,7 +825,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('mainLayout.packagedetail', {
-						url: "/packagedetail/{type}/{id}",
+						url: "/packagedetail/{type}/{id}/{uid}",
 						templateUrl : function(stateParams){
 							return "/templates/packages/"+stateParams.type+"detail.html";
 						},
@@ -1199,8 +1199,6 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 								$scope.isFreeDelivery = true;
 							}
 							
-							
-
 						},
 						templateUrl: '/templates/toast-tpl/cart-update.html',
 						parent : $document[0].querySelector('#cart-summary-icon'),

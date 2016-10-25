@@ -29,6 +29,7 @@ class CartNotAvailable
 
 			case "PUT":
 			case "DELETE":
+			case "POST":
 
 				$cartKey = \Route::current()->getParameter('cartKey');
 
@@ -51,7 +52,7 @@ class CartNotAvailable
 		}
 		
 		if(!$response['success']){
-			return response($response,400);
+			return response($response,406);
 		}
 
 		return $next($request);
