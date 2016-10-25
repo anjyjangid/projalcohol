@@ -54,7 +54,8 @@ class ProductRequest extends Request
             
 
             'store.threshold' => 'required|numeric|lt:store.maxQuantity',
-            'store.maxQuantity' => 'required|numeric|gte:store.quantity',
+            //'store.maxQuantity' => 'required|numeric|gte:store.quantity',
+            'store.maxQuantity' => 'required|numeric',
             'store.defaultDealerId' => 'required',
             'dealerData' => 'required|array|min:1',
             'outOfStockType' => 'required|integer',

@@ -11,9 +11,9 @@
  */
 
 /*TO VIEW MAIL TEMPLATE*/
-/*Route::get('/mymail', function () {
-    return view('emails.mail',['content'=>'<b>HELLO</b>']);
-});*/
+Route::get('/printjob', function () {
+    return view('invoice.content');
+});
 
 Route::group(['prefix' => 'adminapi'], function () {
 
@@ -269,6 +269,7 @@ Route::get('{storageFolder}/i/{filename}', function ($storageFolder,$filename)
 	if(!file_exists(storage_path($storageFolder) . '/' . $filename)){
 		$filename = "product-default.jpg";
 	}
+	
     return Image::make(storage_path($storageFolder) . '/' . $filename)->response();
 });
 
