@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Requests\BusinessRequest;
+use AlcoholDelivery\Http\Requests\BusinessAddrRequest;
 
 use AlcoholDelivery\Http\Controllers\Controller;
 
@@ -31,6 +32,51 @@ class BusinessController extends Controller
 		
 	}
 
+	public function getAutocomplete($col, Request $request)
+	{
+		// prd("hi");
+		$params = $request->all();
+		$users = new Business;
+
+		$columns = ['company_name','company_email'];
+
+		if(isset($params['q']) && !empty(trim($params['q']))) {
+			$users = $users->where($col,'regexp', "/.*".$params['q']."/i");
+			return response($users->get($columns));
+		}
+	
+		return response([]);
+	}
+
+	public function postAddress(BusinessAddrRequest $request, $id)
+	{
+		$inputs = $request->all();
+
+		$business = Business::find($id);
+
+		$business->push('address',$inputs,true);
+
+		return response($business);
+	}
+
+	public function getAddresses($id) {
+		$business = new Business;
+
+		$business = $business->where('_id', $id)->first(['address']);
+
+		return response($business);
+	}
+
+	public function postSave(BusinessRequest $request)
+	{
+		$inputs = $request->all();
+
+		if(!empty($inputs['_id']))
+			return $this->postUpdate($request, $inputs['_id']);
+		else
+			return $this->postStore($request);
+	}
+
 	/**
 	 * Store a newly created resource in storage.
 	 *
@@ -41,6 +87,8 @@ class BusinessController extends Controller
 	{
 		$businessObj = new Business;
 		$inputs = $request->all();
+
+		// prd($inputs);
 
 		$inputs['status'] = (int)$inputs['status'];
 
@@ -53,9 +101,8 @@ class BusinessController extends Controller
 				
 		}
 		
-		return response(array("success"=>true,"message"=>"Business created successfully"));
+		return response(array("success"=>true,"message"=>"Business created successfully", '_id' => $business->_id));
 	}
-
 
 	/**
 	 * Update the specified resource in storage.
@@ -72,15 +119,20 @@ class BusinessController extends Controller
 
 		$business->company_name = $inputs['company_name'];
 		$business->company_email = $inputs['company_email'];
-		$business->delivery_address = $inputs['delivery_address'];	
-		$business->billing_address = $inputs['billing_address'];				
 
-		for ($i=0; $i<count($inputs['products']); $i++) {
+		if(!empty($inputs['delivery_address']))
+			$business->delivery_address = $inputs['delivery_address'];	
+		if(!empty($inputs['billing_address']))
+			$business->billing_address = $inputs['billing_address'];				
+
+		for ($i=0; $i<count(@$inputs['products']); $i++) {
 			$inputs['products'][$i]['_id'] = new MongoId($inputs['products'][$i]['_id']);
 		}
 
-		$business->products = $inputs['products'];
-		$business->status = (int)$inputs['status'];    
+		if(!empty($inputs['products']))
+			$business->products = $inputs['products'];
+		if(isset($inputs['status']))
+			$business->status = (int)$inputs['status'];
 
 		if($business->save()){
 			return response(array("success"=>true,"message"=>"Business updated successfully"));
@@ -108,7 +160,8 @@ class BusinessController extends Controller
 			],
 			[
 				'$unwind' => [
-					'path' => '$products'
+					'path' => '$products',
+					'preserveNullAndEmptyArrays' => true
 				]
 			],
 			[
@@ -121,7 +174,8 @@ class BusinessController extends Controller
 			],
 			[
 				'$unwind' => [
-					'path' => '$productDetails'
+					'path' => '$productDetails',
+					'preserveNullAndEmptyArrays' => true
 				]
 			],
 			[

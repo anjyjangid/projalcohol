@@ -610,6 +610,19 @@ class ProductController extends Controller
 
 	}
 
+	public function getProductsearch(Request $request){
+		$params = $request->all();
+		if(!empty($params['categories']))
+			$params['categories'] = explode(',', $params['categories']);
+		$params['type'] = 0;
+		$result = (new Products)->fetchProducts($params);
+
+		if(!empty($result['products']))
+			$result = $result['products'];
+
+		return response($result, 200);
+	}
+
 	public function getTest(Request $request){
 
 		//USER ADDRESS UPDATE

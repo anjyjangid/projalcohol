@@ -19,6 +19,7 @@ class Business extends Eloquent
      */
     protected $fillable = [
         'company_name',
+        'company_email',
         'status', 
         'billing_address',
         'delivery_address'       

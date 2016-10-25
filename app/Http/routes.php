@@ -102,6 +102,8 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::resource('purchaseorder', 'Admin\PurchaseOrderController');
 	Route::controller('purchaseorder', 'Admin\PurchaseOrderController');
 
+	Route::post('address/{id}','AddressController@store');
+	// Route::controller('address', 'AddressController');
 });
 
 Route::group(['prefix' => 'admin'], function () {					

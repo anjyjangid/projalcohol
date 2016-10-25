@@ -1,180 +1,424 @@
 <div class="row">
 	<div class="col-md-12">
-		<div class="portlet box blue" id="adminorder">
+		<div class="portlet box blue">
 			<div class="portlet-title">
-				<div class="caption">
-					<i class="fa fa-gift"></i> Create Order
-				</div>
-				<div class="tools hidden-xs">
-					<a href="javascript:;" class="collapse">
-					</a>
-					<a href="#portlet-config" data-toggle="modal" class="config">
-					</a>
-					<a href="javascript:;" class="reload">
-					</a>
-					<a href="javascript:;" class="remove">
-					</a>
-				</div>
+				<div class="caption">Buyer Detail</div>
+				<!-- <div class="tools hidden-xs">
+					<a href="javascript:;" class="collapse"></a>
+				</div> -->
 			</div>
 			<div class="portlet-body form">
-				<form role="form">
-					<div class="form-body">
-						
-						<div class="row">
-
-						<div class="col-sm-6">
-
-							<div class="form-group" ng-class="{'has-warning':errors.mobile[0]}" >
-
-								<label class="control-label col-md-4">Phone number <span class="required">*</span></label>
-								<div class="col-md-8 input-group" ng-class="{'active':searchby=='mobile'}">
-
-									<div class="input-icon right">
-										<i class="fa fa-warning tooltips" data-original-title="{errors.mobile[0]}" data-container="body" ng-if="errors.mobile[0]"></i>
-										<input type="text" class="form-control" ng-class="{spinner:mobileFetch}" ng-model="consumer.mobile" ng-blur="resetsearch()" ng-focus="searchby='mobile'"/>
+				<div class="form-body">
+					<!-- <div class="form-group">
+						<label class="control-label">Order Type: </label>
+						<div class="btn-group">
+							<label
+								class="btn btn-info"
+								ng-model="cart.orderType"
+								btn-radio="'consumer'">
+								<span ng-class="{'fa fa-check':cart.orderType=='consumer'}"></span>
+								Consumer
+							</label>
+							<label
+								class="btn btn-info"
+								ng-model="cart.orderType"
+								btn-radio="'business'">
+								<span ng-class="{'fa fa-check':cart.orderType=='business'}"></span>
+								Business
+							</label>
+						</div>
+					</div> -->
+					<tabset active="cart.orderType">
+						<tab select="cart.orderType='consumer'" heading="Consumer">
+							<div class="row">
+							<div class="col-sm-6 form-horizontal">
+								<h3>Consumer</h3>
+								<div class="form-group" ng-class="{'has-error':errors['mobile_number']}">
+									<label class="control-label col-md-4">Phone number <span class="required">*</span></label>
+									<div class="col-md-8">
+										<input
+											type="text"
+											typeahead="c.mobile_number as c.mobile_number+' ('+c.name+' - '+c.email+')' for c in autoComplete($viewValue, 'mobile_number')"
+											typeahead-on-select="customerSelect($item, $model, $label)"
+											typeahead-wait-ms="500"
+											typeahead-focus-first="true"
+											typeahead-loading="loading.mobile_number"
+											ng-class="{'spinner': loading.mobile_number}"
+											class="form-control"
+											ng-model="cart.consumer.mobile_number">
+										<span class="help-block" ng-bind="errors['mobile_number'][0]"></span>
 									</div>
-
-									<ul class="userlist">
-										<li ng-repeat="user in users" ng-click="selectuser(user)">
-											{{user.mobile_number}}
-										</li>
-									</ul>
-
 								</div>
-								
-							</div>
-
-							
-							<div class="form-group">
-								<label class="control-label col-md-4">Name <span class="required">*</span></label>
-								<div class="col-md-8 input-group" ng-class="{'active':searchby=='name'}">
-									<input type="text" class="form-control" ng-model="consumer.name" ng-blur="resetsearch()" ng-focus="searchby='name'"/>
-
-									<ul class="userlist">
-										<li ng-repeat="user in users" ng-click="selectuser(user)">
-											{{user.name}}
-										</li>
-									</ul>
-
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label class="control-label col-md-4">Alternate contact number</label>
-								<div class="col-md-8 input-group">
-									<input type="text" class="form-control" ng-model="consumer.alternate_contact_number"/>
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label class="control-label col-md-4">E-mail <span class="required">*</span></label>
-
-								<div class="col-md-8 input-group">
-									<span class="input-group-addon">
-									<i class="fa fa-envelope"></i>
-									</span>
-									<input type="text" class="form-control" ng-model="consumer.email"/>
-									<ul class="userlist">
-										<li ng-repeat="user in users" ng-click="selectuser(user)">
-											{{user.email}}
-										</li>
-									</ul>
-								</div>
-								
-							</div>
-
-
-							<div class="form-group" ng-class="{'has-warning':errors.address[0]}" ng-if="consumer.addresses">
-
-								<label class="control-label col-md-4">Phone number <span class="required">*</span></label>
-								<div class="col-md-8 input-group" ng-class="{'active':searchby=='mobile'}">
-
-									<div class="input-icon right">
-										<i class="fa fa-warning tooltips" data-original-title="{errors.mobile[0]}" data-container="body" ng-if="errors.mobile[0]"></i>
-										<input type="text" class="form-control" ng-class="{spinner:mobileFetch}" ng-model="consumer.mobile" ng-blur="resetsearch()" ng-focus="searchby='mobile'"/>
+								<div class="form-group" ng-class="{'has-error':errors['name']}">
+									<label class="control-label col-md-4">Name <span class="required">*</span></label>
+									<div class="col-md-8">
+										<input
+											type="text"
+											typeahead="c.name as c.name+' ('+c.email+')' for c in autoComplete($viewValue, 'name')"
+											typeahead-on-select="customerSelect($item, $model, $label)"
+											typeahead-wait-ms="500"
+											typeahead-focus-first="true"
+											typeahead-loading="loading.name"
+											ng-class="{'spinner': loading.name}"
+											class="form-control"
+											ng-model="cart.consumer.name">
+										<span class="help-block" ng-bind="errors['name'][0]"></span>
 									</div>
-
-									<ul class="addresslist">
-										<li ng-repeat="address in consumer.addresses" ng-click="">
-											{{address}}
-										</li>
-										<li>Address Not found</li>
-									</ul>
-
 								</div>
-								
-							</div>
-
-						</div>
-
-						<div class="col-sm-6">
-
-							<div class="form-group" ng-class="{'has-warning':errors['cart.delivery.type'][0]}">
-
-								<label class="control-label col-md-4">Delivery Method <span class="required">*</span></label>
-								<div class="col-md-8 input-group">
-								<div class="input-icon right">
-									
-									<i class="fa fa-warning tooltips" data-original-title="{{errors['cart.delivery.type'][0]}}" data-container="body" ng-if="errors['cart.delivery.type'][0]"></i>
-
-									<select class="form-control" ng-model="cart.delivery.type">
-										
-										<option value="0">Advance</option>
-										<option value="1">Standard 1 hour delivery</option>
-
-									</select>								
+								<div class="form-group" ng-class="{'has-error':errors['email']}">
+									<label class="control-label col-md-4">E-mail <span class="required">*</span></label>
+									<div class="col-md-8">
+										<div class="input-group">
+											<span class="input-group-addon">
+												<i class="fa fa-envelope"></i>
+											</span>
+											<input
+												type="text"
+												typeahead="c.email for c in autoComplete($viewValue)"
+												typeahead-on-select="customerSelect($item, $model, $label)"
+												typeahead-wait-ms="500"
+												typeahead-focus-first="true"
+												typeahead-loading="loading.email"
+												ng-class="{'spinner': loading.email}"
+												class="form-control"
+												ng-model="cart.consumer.email"
+												ng-change="clearProp(cart.consumer, '_id'); cart.addresses=[];">
+										</div>
+										<span class="help-block" ng-bind="errors['email'][0]"></span>
+									</div>
 								</div>
-								</div>
-
-							</div>
-
-
-							
-							<div class="form-group" ng-show="cart.delivery.type == 1">
-								<label class="control-label col-md-4">Express 30 minute delivery <span class="required">*</span></label>
-								<div class="col-md-8 input-group">
-									<select class="form-control" ng-model="cart.service.express.status">
-										<option value="false">No</option>
-										<option value="true">Yes</option>
-									</select>
-									
+								<div class="form-group">
+									<div class="col-sm-offset-4 col-sm-8">
+										<button
+											class="btn btn-primary"
+											ng-click="updateConsumer()"
+											ng-disabled="savingCust">{{(cart.consumer._id?'Save':'Save New')}}</button>
+										<button
+											class="btn btn-default"
+											ng-click="clearProp(cart, 'consumer');errors=null;"
+											ng-disabled="savingCust">Clear</button>
+									</div>
 								</div>
 							</div>
-							
-							<ng-map style="width: 100%;height: 400px"></ng-map>
-						</div>
+							</div>
+						</tab>
+						<tab select="cart.orderType='business'" heading="Business">
+							<div class="row">
+							<div class="col-sm-6 form-horizontal">
+								<h2>Business Client</h2>
+								<div class="form-group" ng-class="{'has-error':errors['company_name']}">
+									<label class="control-label col-md-4">Name <span class="required">*</span></label>
+									<div class="col-md-8">
+										<input
+											type="text"
+											typeahead="b.company_name as b.company_name+' ('+b.company_email+')' for b in autoComplete($viewValue, 'company_name')"
+											typeahead-on-select="customerSelect($item, $model, $label)"
+											typeahead-wait-ms="500"
+											typeahead-focus-first="true"
+											typeahead-loading="loading.company_name"
+											ng-class="{'spinner': loading.company_name}"
+											class="form-control"
+											ng-model="cart.business.company_name">
+										<span class="help-block" ng-bind="errors['company_name'][0]"></span>
+									</div>
+								</div>
+								<div class="form-group" ng-class="{'has-error':errors['company_email']}">
+									<label class="control-label col-md-4">E-mail <span class="required">*</span></label>
+									<div class="col-md-8">
+										<div class="input-group">
+											<span class="input-group-addon">
+												<i class="fa fa-envelope"></i>
+											</span>
+											<input
+												type="text"
+												typeahead="b.company_email for b in autoComplete($viewValue, 'company_email')"
+												typeahead-on-select="customerSelect($item, $model, $label)"
+												typeahead-wait-ms="500"
+												typeahead-focus-first="true"
+												typeahead-loading="loading.company_email"
+												ng-class="{'spinner': loading.company_email}"
+												class="form-control"
+												ng-model="cart.business.company_email"
+												ng-change="clearProp(cart.business, '_id'); cart.addresses=[];">
+										</div>
+										<span class="help-block" ng-bind="errors['company_email'][0]"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-offset-4 col-sm-8">
+										<button
+											class="btn btn-primary"
+											ng-click="updateConsumer()"
+											ng-disabled="savingCust">{{(cart.business._id?'Save':'Save New')}}</button>
+										<button
+											class="btn btn-default"
+											ng-click="clearProp(cart, 'business');errors=null;"
+											ng-disabled="savingCust">Clear</button>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6" ng-show="cart.business._id">
+								<h3>Billing Address</h3>
+								<div class="row">
+									<div class="col-lg-6" ng-repeat-start="address in cart.addresses">
+										<a class="thumbnail" ng-class="{'active':cart.selectedBilAddr==$index}" ng-click="cart.selectedBilAddr=$index">
+											<div class="caption">
+												<h4>{{address.firstname+' '+address.lastname}}</h4>
+												{{address.SEARCHVAL}}<br>
+												<span ng-if="address.FLOOR&&address.UNIT">{{'#'+address.FLOOR+' - '+address.UNIT}}<br></span>
+												Singapore - {{address.PostalCode}}
+											</div>
+										</a>
+									</div>
+									<div ng-repeat-end class="clearfix visible-lg-block" ng-if="$index%2==1"></div>
 
-						</div>
-
-						<hr />
-
+									<div class="col-lg-6">
+										<a class="thumbnail" ng-click="newAddress()">
+											<div class="caption">
+												<span class="glyphicon glyphicon-plus"></span>
+												Add new Address
+											</div>
+										</a>
+									</div>
+								</div>
+							</div>
+							</div>
+						</tab>
+					</tabset>
+					<p ng-hide="cart[cart.orderType]._id">Please Save the user to select address</p>
+					<div class="row" ng-show="cart[cart.orderType]._id">
+					<div class="col-sm-6">
+						<h3>Delivery Address</h3>
 						<div class="row">
-							<div class="col-sm-12" ui-view="products"></div>
-						</div>
+							<div class="col-lg-6" ng-repeat-start="address in cart.addresses">
+								<a class="thumbnail" ng-class="{'active':cart.selectedAddress==$index}" ng-click="cart.selectedAddress=$index">
+									<div class="caption">
+										<h4>{{address.firstname+' '+address.lastname}}</h4>
+										{{address.SEARCHVAL}}<br>
+										<span ng-if="address.FLOOR&&address.UNIT">{{'#'+address.FLOOR+' - '+address.UNIT}}<br></span>
+										Singapore - {{address.PostalCode}}
+									</div>
+								</a>
+							</div>
+							<div ng-repeat-end class="clearfix visible-lg-block" ng-if="$index%2==1"></div>
 
-						<div class="row" ng-if="cart.delivery.type != 1">
-							<hr />
-							<div class="col-sm-12" ui-view="delivery"></div>
+							<div class="col-lg-6">
+								<a class="thumbnail" ng-click="newAddress()">
+									<div class="caption">
+										<span class="glyphicon glyphicon-plus"></span>
+										Add new Address
+									</div>
+								</a>
+							</div>
 						</div>
-
-						<div class="row">
-							<hr />
-							<div class="col-sm-12" ui-view="payment"></div>
-						</div>
-
-						<div class="row">
-							<hr />
-							<div class="col-sm-12" ui-view="review"></div>
-						</div>
-						
 					</div>
-
-					<div class="form-actions">
-						<button type="submit" class="btn blue">Submit</button>
-						<button type="button" class="btn default" ng-click="newCart()">Cancel order</button>
+					<div class="col-sm-6">
+						<h3>Delivery Type</h3>
+						<div class="form-group" ng-class="{'has-warning':errors['cart.delivery.type'][0]}">
+							<label class="control-label col-md-4">Delivery Method <span class="required">*</span></label>
+							<div class="col-md-8 input-group">
+							<div class="input-icon right">
+								<i class="fa fa-warning tooltips" data-original-title="{{errors['cart.delivery.type'][0]}}" data-container="body" ng-if="errors['cart.delivery.type'][0]"></i>
+								<select class="form-control" ng-model="cart.delivery.type">
+									<option value="0">Advance</option>
+									<option value="1">Standard 1 hour delivery</option>
+								</select>
+							</div>
+							</div>
+						</div>
+						<div class="form-group" ng-show="cart.delivery.type == 1">
+							<label class="control-label col-md-4">Express 30 minute delivery <span class="required">*</span></label>
+							<div class="col-md-8 input-group">
+								<div class="btn-group">
+									<label
+										class="btn btn-info"
+										ng-model="cart.service.express.status"
+										btn-radio="false">
+										<span ng-class="{'fa fa-check':!cart.service.express.status}"></span>
+										No
+									</label>
+									<label
+										class="btn btn-info"
+										ng-model="cart.service.express.status"
+										btn-radio="true">
+										<span ng-class="{'fa fa-check':cart.service.express.status}"></span>
+										Yes
+									</label>
+								</div>
+							</div>
+						</div>
+						<!-- <ng-map style="width: 100%;height: 400px"></ng-map> -->
 					</div>
-				</form>
+					</div>
+				</div>
 			</div>
+		</div>
+		<div class="portlet box blue">
+			<div class="portlet-title">
+				<div class="caption">Products</div>
+				<!-- <div class="tools hidden-xs">
+					<a href="javascript:;" class="collapse"></a>
+				</div> -->
+			</div>
+			<div class="portlet-body form">
+				<div class="form-body" ng-if="(cart.addresses[cart.selectedAddress] || cart.addresses[cart.selectedBilAddr]) && cart[cart.orderType]._id">
+					<div class="clearfix" ui-view="products"></div>
+					<div class="clearfix" ui-view="review"></div>
+				</div>
+			</div>
+		</div>
+		<div class="portlet box blue" ng-if="cart.delivery.type == 1">
+			<div class="portlet-title">
+				<div class="caption">Delivery Slot</div>
+				<!-- <div class="tools hidden-xs">
+					<a href="javascript:;" class="collapse"></a>
+				</div> -->
+			</div>
+			<div class="portlet-body form">
+				<div class="form-body">
+					<div class="clearfix" ui-view="delivery"></div>
+				</div>
+			</div>
+		</div>
+		<div class="portlet box blue">
+			<div class="portlet-title">
+				<div class="caption">Payment</div>
+				<!-- <div class="tools hidden-xs">
+					<a href="javascript:;" class="collapse"></a>
+				</div> -->
+			</div>
+			<div class="portlet-body form">
+				<div class="form-body">
+					<div class="clearfix" ui-view="payment"></div>
+				</div>
+			</div>
+		</div>
+		<div class="form-actions">
+			<button type="submit" class="btn blue">Submit</button>
+			<button type="button" class="btn default" ng-click="newCart()">Cancel order</button>
 		</div>
 	</div>
 </div>
+
+<script type="text/ng-template" id="newAddress.html">
+	<div class="modal-header">
+		<h3 class="modal-title">New Delivery Address</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row" ng-if="type==1">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label class="control-label">Enter your postal code or location name</label>
+					<input
+						type="text"
+						typeahead="l.SEARCHVAL for l in searchLocation($viewValue)"
+						typeahead-min-length="3"
+						typeahead-on-select="locationSelect($item, $model, $label)"
+						typeahead-wait-ms="300"
+						typeahead-focus-first="true"
+						typeahead-loading="loading.location"
+						ng-class="{'spinner': loading.location}"
+						class="form-control"
+						ng-model="selectedAddr">
+				</div>
+				<div class="form-group" ng-if="address">
+					<label class="control-label">Building name (optional)</label>
+					<input type="text" class="form-control" ng-model="address.BLDG_NAME">
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group" ng-if="address">
+							<label class="control-label">Floor</label>
+							<input type="text" class="form-control" ng-model="address.FLOOR">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group" ng-if="address">
+							<label class="control-label">Unit</label>
+							<input type="text" class="form-control" ng-model="address.UNIT">
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			<div class="col-md-6">
+				<ng-map style="width: 100%;height: 400px"></ng-map>
+			</div>
+		</div>
+		<div ng-if="type>1">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label>First Name: <span>*</span></label>
+						<input type="text" class="form-control" ng-model="address.firstname">
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label>Last Name: <span>*</span></label>
+						<input type="text" class="form-control" ng-model="address.lastname">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label>Company Name (optional)</label>
+						<input type="text" class="form-control" ng-model="address.company">
+					</div>
+				</div>
+				<div class="col-md-6" ng-show="type>2">
+					<div class="form-group">
+						<label>Building Name (optional)</label>
+						<input type="text" class="form-control" ng-model="address.BLDG_NAME">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6" ng-show="type>2">
+					<div class="form-group">
+						<label>Street <span>*</span></label>
+						<input type="text" class="form-control" ng-model="address.HBRN">
+					</div>
+				</div>
+				<div class="col-md-6" ng-show="type>2">
+					<div class="form-group">
+						<label>Postal Code <span>*</span></label>
+						<input type="text" class="form-control" ng-model="address.PostalCode">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6" ng-show="type>2">
+					<div class="form-group">
+						<label>Block/House No <span>*</span></label>
+						<input type="text" class="form-control" ng-model="address.house">
+					</div>
+				</div>
+				<div class="col-md-3" ng-show="type>2">
+					<div class="form-group">
+						<label>Floor (optional)</label>
+						<input type="text" class="form-control" ng-model="address.FLOOR">
+					</div>
+				</div>
+				<div class="col-md-3" ng-show="type>2">
+					<div class="form-group">
+						<label>Unit (optional)</label>
+						<input type="text" class="form-control" ng-model="address.UNIT">
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label>Address Specific Instructions (optional)</label>
+				<textarea type="text" class="form-control" ng-model="address.instruction"></textarea>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button ng-disabled="savingData" class="btn btn-default" ng-click="type=3" ng-show="type==1">Enter address manually</button>
+		<button ng-disabled="savingData || !address" class="btn btn-primary" ng-click="type=2" ng-show="type==1">Next</button>
+		<button ng-disabled="savingData" class="btn btn-primary" ng-click="save()" ng-show="type>1">Save</button>
+		<button ng-disabled="savingData" class="btn btn-warning" ng-click="cancel()">Cancel</button>
+	</div>
+</script>

@@ -7,9 +7,9 @@
 <div class="checkoutstepthree_dayfordelivery">Please choose a timeslot from below</div>
 
 <div id="timeslots">
-	<div class="slots-bunch" ng-repeat="(key, slotbunch)  in timeslots" ng-class="{active:timeslot.datekey==slotbunch.datekey}">
+	<div class="slots-bunch" ng-repeat="slotbunch in timeslots | orderBy:'datekey'" ng-class="{active:timeslot.datekey==slotbunch.datekey}">
 		<div class="slots-bunch-title">
-			<div class="week-stamp">{{key}}</div>
+			<div class="week-stamp">{{slotbunch.day}}</div>
 			<div class="date-stamp">{{slotbunch.datestamp}}</div>
 		</div>
 
