@@ -11,9 +11,9 @@
  */
 
 /*TO VIEW MAIL TEMPLATE*/
-/*Route::get('/mymail', function () {
-    return view('emails.mail',['content'=>'<b>HELLO</b>']);
-});*/
+Route::get('/printjob', function () {
+    return view('invoice.content');
+});
 
 Route::group(['prefix' => 'adminapi'], function () {
 
@@ -179,7 +179,11 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::put('chilledstatus/{cartkey}','CartController@updateProductChilledStatus');
 
-	Route::post('package/{cartkey}','CartController@createpackage');
+	Route::post('package/{cartKey}','CartController@postPackage');
+
+	Route::put('package/{uid}/{cartKey}','CartController@putPackage');
+
+	Route::delete('package/{key}/{cartKey}','CartController@deletePackage');
 	
 	Route::put('promotion/{cartkey}','CartController@putPromotion');
 
@@ -271,6 +275,7 @@ Route::get('{storageFolder}/i/{filename}', function ($storageFolder,$filename)
 	if(!file_exists(storage_path($storageFolder) . '/' . $filename)){
 		$filename = "product-default.jpg";
 	}
+	
     return Image::make(storage_path($storageFolder) . '/' . $filename)->response();
 });
 

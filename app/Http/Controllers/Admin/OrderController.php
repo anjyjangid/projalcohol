@@ -289,7 +289,12 @@ class OrderController extends Controller
 		}	
 
 		if(isset($deliveryType) && trim($deliveryType)!=''){						
-			$query[]['$match']['delivery.type'] = (int)$deliveryType;
+			if($deliveryType == 2){
+				$query[]['$match']['delivery.type'] = 0;
+				$query[]['$match']['service.express.status'] = true;
+			}else{
+				$query[]['$match']['delivery.type'] = (int)$deliveryType;
+			}
 		}
 
 		if(isset($status) && trim($status)!=''){						
@@ -313,7 +318,7 @@ class OrderController extends Controller
 			$query[]['$match']['consumer.name'] = ['$regex'=>new \MongoRegex($s)];
 		}
 
-		$project = ['reference'=>1,'delivery'=>1,'status'=>1,'_id'=>1,'created_at'=>1,'payment'=>1];
+		$project = ['reference'=>1,'delivery'=>1,'status'=>1,'_id'=>1,'created_at'=>1,'payment'=>1,'service'=>1];
 
 		$project['orderDate'] = ['$dateToString'=>['format' => '%Y-%m-%d','date'=>'$created_at']];
 

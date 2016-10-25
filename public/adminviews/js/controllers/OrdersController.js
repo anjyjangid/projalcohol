@@ -39,7 +39,17 @@ MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout'
     angular.orderModel = orderModel;
     orderModel.getOrder($stateParams.order).success(function(response){
 		$scope.order = response;
-		$scope.shipping = response.user.address[response.delivery.address.key];
+
+		//$scope.shipping = response.user.address[response.delivery.address.key];
+		$scope.serviceCharge = 0;
+		if($scope.service.express.status){
+			$scope.serviceCharge += $scope.service.express.charges;
+		}
+
+		if($scope.service.smoke.status){
+			$scope.serviceCharge += $scope.service.smoke.charges;
+		}
+
 	});
 	$scope.setStatus = function(status){
 		orderModel.setStatus($scope.order._id,status);

@@ -35,7 +35,7 @@
                                     Order date
                                 </th>        								
 								<th width="10%">
-									Order type
+									Delivery type
 								</th>
 								<th width="10%">
 									Status
@@ -59,8 +59,9 @@
 								<td>
                                     <select name="deliveryType" class="form-control form-filter input-sm">
                                         <option value="">All</option>
-                                        <option value="1">Advance</option>                                       
-                                        <option value="0">Express</option>
+                                        <option value="0">Standard 1 hour</option>
+                                        <option value="1">Advance Order</option>
+                                        <option value="2">Express 30 min</option>
                                     </select>                        
                                 </td>								
 								<td>
@@ -216,7 +217,11 @@
                         mRender: function(data, type, full) {
                             var delivery = data.delivery; 
                             if(delivery.type == 0){
-                                return '<span class="label label-sm label-danger">Express</span>';
+                                if(data.service.express.status){
+                                    return '<span class="label label-sm label-danger">Express</span>';
+                                }else{
+                                    return '<span class="label label-sm label-danger">Standard</span>';
+                                }
                             }else{
                                 return '<span class="label label-sm label-success">Advance</span>';
                             }                       

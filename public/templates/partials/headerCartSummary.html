@@ -80,8 +80,8 @@
 
 				<li ng-repeat="(key,gift) in alcoholCart.getGifts()">
 					<div class="currentorderpopupulleft">
-						Gift : {{gift.gsTitle()}} <br />
-						product: {{gift.getProductAttachedCount()}}/{{gift.gsLimit()}}
+						Gift : {{gift.gsTitle()}} 
+						<span ng-if="gift.products"> <br />product: {{gift.getProductAttachedCount()}}/{{gift.gsLimit()}}</span>
 					</div>
 					<div class="currentorderpopupulcenter">1</div>
 					<div class="currentorderpopupulright">{{gift.gsPrice() | pricingTxt}}</div>

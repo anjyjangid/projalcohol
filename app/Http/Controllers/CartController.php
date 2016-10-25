@@ -255,30 +255,34 @@ class CartController extends Controller
 		
 
 		// package validate and manage start
-		$packagesInCart = [];
-		foreach($cart['packages'] as $package){
+		if(!empty($cart['packages'])){
 
-			array_push($packagesInCart, $package['_id']);
+			$packagesInCart = [];
+			foreach($cart['packages'] as $package){
 
-		}
+				array_push($packagesInCart, $package['_id']);
 
-		$packages = new Packages;
-		$packages = $packages->whereIn("_id",$packagesInCart)->where('status',1)->get(['title','subTitle','description','coverImage','packageItems']);
-
-		foreach($cart['packages'] as &$package){
-
-			foreach($packages as $oPackage){
-
-				if((string)$package['_id'] === $oPackage->_id){
-
-					$package = array_merge($oPackage->toArray(),$package);
-					$package['packagePrice'] =  100; // due:: this should be calculated from server
-
-				}
 			}
 
-		}		
+			$packages = new Packages;
+			$packages = $packages->whereIn("_id",$packagesInCart)->where('status',1)->get(['title','subTitle','description','coverImage','packageItems']);
 
+			foreach($cart['packages'] as &$package){
+
+				foreach($packages as $oPackage){
+
+					if((string)$package['_id'] === $oPackage->_id){
+
+						$package = array_merge($package,$oPackage->toArray());
+
+						//$package['packagePrice'] =  100; // due:: this should be calculated from server
+
+					}
+				}
+
+			}
+
+		}
 		// package validate and manage end
 
 		$request->session()->put('deliverykey', $cart['_id']);
@@ -454,7 +458,7 @@ class CartController extends Controller
 		
 		$updateProData = $cart->products[$proIdToUpdate];
 
-		$cart->validateGiftContainers();	
+		$cart->validateGiftContainers();
 
 		try {
 
@@ -762,19 +766,17 @@ class CartController extends Controller
 
 	}
 
-	public function createpackage(Request $request, $cartKey){{
+	public function postPackage(Request $request, $cartKey){
 	
 			$inputs = $request->all();
 			$packageId = $inputs['id'];
-			$packageDetail = $inputs['package'];
-	
+			$products = $inputs['products'];
+			$quantity = $inputs['quantity'];
+
+			$price = $inputs['price'];
+			$saving = $inputs['savings'];
+
 			$cart = Cart::find($cartKey);
-	
-			if(empty($cart)){
-	
-				return response(array("success"=>false,"message"=>"Not a valid request"),400);
-	
-			}
 	
 			$packages = $cart->packages;
 	
@@ -783,46 +785,149 @@ class CartController extends Controller
 				$packages = [];
 	
 			}
+
+
+			$packageDetail = [
+				'_unique' => new mongoId(),
+				"products" => $products,
+				"packageQuantity" => abs($quantity),
+				"_id" => new mongoId($packageId),
+				"packagePrice" => $price,
+				"saving" => $saving
+			];			
+		
+			$response = [
+				"message"=>"cart updated successfully"
+			];
+
+			// if(isset($packageDetail['unique'])){
 	
-			$packageDetail['_unique'] = new mongoId();
+			// 	foreach ($packages as $key => $package) {
 	
-			if(isset($packageDetail['unique'])){
+			// 		if(!isset($package["_unique"])){
+			// 			unset($packages[$key]);
+			// 			continue;
+			// 		}
+
+			// 		if($package["_unique"]==$packageDetail['unique']){
+			// 			unset($packages[$key]);
+			// 			$packageDetail['_unique'] = $package["_unique"];
+			// 			break;
+			// 		}
 	
-				foreach ($packages as $key => $package) {
-	
-					if(!isset($package["_unique"])){
-						unset($packages[$key]);
-						continue;
-					}
-					if($package["_unique"]==$packageDetail['unique']){
-						unset($packages[$key]);
-						$packageDetail['_unique'] = $package["_unique"];
-						break;
-					}
-	
-				}
-			}
-	
-			if(!isset($packageDetail['packageQuantity'])){
-				$packageDetail['packageQuantity'] = 1;
-			}
-			
-			$packageDetail['products'] = (array)$packageDetail['products'];
-			$packageDetail['_id'] = new mongoId($packageId);
-	
+			// 	}
+			// }
+
 			try {
-	
-				$result = Cart::where('_id', $cartKey)->push('packages',[$packageDetail]);
-				return response(["success"=>true,"message"=>"cart updated successfully","key"=>$packageDetail['_unique']]);
+		
+				$result = Cart::where('_id', $cartKey)->push('packages',$packageDetail);
+				
+				$response['key'] = (string)$packageDetail['_unique'];
+
+				return response($response,200);
 	
 			} catch(\Exception $e){
-	
-				return response(["success"=>false,"message"=>"Something went worng"]);
-				return response(["success"=>false,"message"=>$e->getMessage()]);
+				
+				Log::warning("Package Insert : ".$e->getMessage());
 	
 			}
+
+			$response = ["message"=>"Something went wrong"];
+			return response($response,400);
 	
-		}}
+	}
+
+	public function putPackage($uniqueId, $cartKey, Request $request){
+	
+			$inputs = $request->all();
+			
+			$quantity = $inputs['quantity'];
+
+			$response = [
+				"message"=>"cart updated successfully"
+			];
+
+			try {
+						
+				if(isset($inputs['products'])){
+					
+					$update = [
+
+						"packages.$.products" => $inputs['products'],
+						"packages.$.packageQuantity" => abs($quantity),
+						"packages.$.packagePrice" => $inputs['price'],
+						"packages.$.saving" => $inputs['savings']
+					];
+					
+				}else{
+
+					$update = [
+						"packages.$.packageQuantity" => abs($quantity)
+					];
+
+				}
+
+				$result = DB::collection('cart')->raw()->update(
+							[
+								'_id' => new MongoId($cartKey),
+								'packages._unique'=>new MongoId($uniqueId)
+							],
+							[
+								'$set' => $update
+							]
+						);
+
+				return response($response,200);
+	
+			} catch(\Exception $e){
+				
+				Log::warning("Package Update : ".$e->getMessage());
+	
+			}
+
+			$response = ["message"=>"Something went wrong"];
+			return response($response,400);
+	
+	}
+
+	public function deletePackage($packageUId,$cartKey){
+		
+		$response = ["message"=>""];
+
+		$cart = Cart::find($cartKey);
+		
+		$packages = $cart->packages;
+
+		if(empty($packages)){
+
+			$response['message'] = 'no package to remove';
+
+			return response($response,405);
+
+		}
+		
+		try{
+
+			$isRemoved = DB::collection('cart')->where('_id', $cartKey)->pull('packages', ['_unique' => new MongoId($packageUId)]);
+
+			$response['message'] = 'package removed successfully';
+
+			$response['data'] = $isRemoved;
+
+			return response($response,200);
+			
+
+		}catch(\Exception $e){
+
+			$response['message'] = $e->getMessage();
+
+			Log::warning($response['message']);
+
+		}
+
+		return response(["message"=>"Something went wrong"],400);
+
+	}
 
 	public function putPromotion(Request $request, $cartKey){
 
@@ -2175,7 +2280,6 @@ jprd($product);
 		];
 
 		$inputs = $request->all();
-
 		// Get gift detail
 
 		$giftModel = new Gift;
@@ -2184,69 +2288,75 @@ jprd($product);
 
 		$cart = Cart::find($cartKey);
 		
-		$giftProducts = $inputs['products'];
-
 		$except = isset($inputs['_uid'])?$inputs['_uid']:'';
 
-		$cartProducts = $cart->getProductsNotInGift($except);
+		if($gift->type==1){
 
-		$totalProducts = 0;
+			$giftProducts = $inputs['products'];
 
-		foreach ($giftProducts as $giftProduct) {
+			$cartProducts = $cart->getProductsNotInGift($except);
 
-			$proId = $giftProduct['_id'];
-						
-			$quantity = (int)$giftProduct['quantity'];
+			$totalProducts = 0;
 
-			// Condition to check product is available in cart or not			
+			foreach ($giftProducts as $giftProduct) {
 
-			if(isset($cartProducts[$proId]) && $cartProducts[$proId]>=$quantity){			
+				$proId = $giftProduct['_id'];
+							
+				$quantity = (int)$giftProduct['quantity'];
 
-				$totalProducts+=(int)$quantity;
-				
-			}else{
+				// Condition to check product is available in cart or not			
 
-				$response['message'] = 'Products attached quantity not match with in cart';
-				$response['reload'] = true;
+				if(isset($cartProducts[$proId]) && $cartProducts[$proId]>=$quantity){			
+
+					$totalProducts+=(int)$quantity;
+					
+				}else{
+
+					$response['message'] = 'Products attached quantity not match with in cart';
+					$response['reload'] = true;
+					return response($response,422);
+
+				}
+
+			}
+
+			if($totalProducts<1){
+
+				$response['message'] = 'Please attach products';
+				return response($response,422);
+
+			}
+
+			if($totalProducts>$gift['limit']){
+
+				$response['message'] = 'Products count is more than limit';
 				return response($response,422);
 
 			}
 
 		}
-
-		if($totalProducts<1){
-
-			$response['message'] = 'Please attach products';
-			return response($response,422);
-
-		}
-
-		if($totalProducts>$gift['limit']){
-
-			$response['message'] = 'Products count is more than limit';
-			return response($response,422);
-
-		}
-
-
-		//$cart->products = $cartProducts;
 		
 		$gifts = empty($cart->gifts)?[]:$cart->gifts;
 
 		$newGift = [
 				"_id" => $gift['_id'],
 				'_uid'=> new MongoId(),
-				"products"=> $giftProducts,
+				
 				"recipient" => $inputs['recipient'],
 				"price" => $gift['price'],
 				"title"=> $gift['title'],
 				"subTitle"=> $gift['subTitle'],
 				"description"=> $gift['description'],
-				"limit"=> $gift['limit'],
+				
 				"image"=> $gift['coverImage']['source'],
 			];
+
+		if($gift->type==1){
+			$newGift["products"] = $giftProducts;
+			$newGift["limit"] = $gift['limit'];
+		}
 		
-		if($except!==""){
+		if(isset($except) && $except!==""){
 			foreach($gifts as $key=>$gift){
 				if($gift['_uid'] == new MongoId($except)){
 					unset($gifts[$key]);
@@ -2254,6 +2364,7 @@ jprd($product);
 			}
 		}
 
+		
 		$gifts = array_merge($gifts,[$newGift]);
 
 		try{
