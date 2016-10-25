@@ -72,7 +72,7 @@
 													 Grand Total:
 												</div>
 												<div class="col-md-7 value">
-													 ${{order.total}}
+													 ${{order.payment.total}}
 												</div>
 											</div>
 											<div class="row static-info">
@@ -80,7 +80,9 @@
 													 Payment Information:
 												</div>
 												<div class="col-md-7 value">
-													 <span>C.O.D</span>
+													 <span >
+													 	{{(order.payment.method == 'COD')?'Cash on delivery':'Debit/Credit card';}}
+													 </span>
 												</div>
 											</div>
 
@@ -89,9 +91,9 @@
 													 Delivery Type:
 												</div>
 												<div class="col-md-7 value">
-													<div ng-if="order.delivery.type==0">
-														Standard
-														<span ng-if="order.service.express.status">(Express)</span>
+													<div ng-if="order.delivery.type==0">														
+														<span ng-if="!order.service.express.status">Standard 1 hour delivery</span>
+														<span ng-if="order.service.express.status">Express 30 min delivery</span>
 													</div>
 													<div ng-if="order.delivery.type==1">Advance Order</div>
 												</div>
@@ -148,7 +150,7 @@
 									</div>
 								</div>	
 							</div>
-							<div class="row">								
+							<div class="row" ng-init="shipping = order.delivery.address.detail">								
 								<div class="col-md-6 col-sm-12">
 									<div class="portlet red-sunglo box">
 										<div class="portlet-title">
@@ -160,18 +162,61 @@
 										<div class="portlet-body">
 											<div class="row static-info">
 												<div class="col-md-12 value">
-																										
-													 {{shipping.firstname}} {{shipping.lastname}}<br>
-													 {{shipping.street}}<br>													 
-													 {{shipping.postal}} Singapore<br>
-
-													 <div ng-if="shipping.instruction"><br>Address Instruction : <br>{{shipping.instruction}}</div>
-													 <span ng-if="order.delivery.contact">{{'T:' + order.delivery.contact}}</span><br>
-
-													 <div ng-if="order.delivery.instructions">
-													 	Delivery Instructions : {{order.delivery.instructions}}
-													 </div>
-
+													{{shipping.firstname}} {{shipping.lastname}}
+												</div>	
+												<div class="col-md-12 value" ng-if="shipping.company">
+													{{shipping.company}}
+												</div>
+												<div class="col-md-12 value" ng-if="shipping.BLDG_NAME">
+													{{shipping.BLDG_NAME}}
+												</div>
+												<div class="col-md-12 value" ng-if="shipping.HBRN">
+													{{shipping.HBRN}}
+												</div>
+												<div class="col-md-12 value" ng-if="shipping.FLOOR || shipping.FLOOR">
+													<span ng-if="shipping.FLOOR">#{{shipping.FLOOR}} - </span>
+													<span ng-if="shipping.UNIT">{{shipping.UNIT}}</span>
+												</div>
+												<div class="col-md-12 value" ng-if="shipping.PostalCode">
+													Singapore - {{shipping.PostalCode}}
+												</div>												
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6 col-sm-12">
+									<div class="portlet red-sunglo box">
+										<div class="portlet-title">
+											<div class="caption">
+												<i class="fa fa-cogs"></i>Delivery Instruction
+											</div>
+											
+										</div>
+										<div class="portlet-body">
+											<div class="row static-info">												
+												<div ng-if="shipping.instruction">
+													<div class="col-md-5 name">
+														 Address Specific Instructions:
+													</div>
+													<div class="col-md-5 value">
+														 {{shipping.instruction}}
+													</div>
+												</div>
+												<div ng-if="order.delivery.contact">
+													<div class="col-md-5 name">
+														 Delivery Contact #:
+													</div>
+													<div class="col-md-5 value">
+														 {{order.delivery.contact}}
+													</div>
+												</div>												 
+												<div ng-if="order.delivery.instructions">
+													<div class="col-md-5 name">
+														 Delivery Instructions :
+													</div>
+													<div class="col-md-5 value">
+														 {{order.delivery.instructions}}
+													</div>
 												</div>
 											</div>
 										</div>
@@ -196,11 +241,11 @@
 														 Product
 													</th>
 													<th>
-														 Status
+														 Chilled/Non-chilled
 													</th>
-													<th>
+													<!-- <th>
 														 Original Price
-													</th>
+													</th> -->
 													<th>
 														 Price
 													</th>
@@ -218,15 +263,15 @@
 														<td width="52%">
 															<div class="orhistry2_td2procdtcvr">
 																<div class="checkouter-td-right-text">
-																	<div class="orhistry2_td2proctext1">{{orderproduct.product.name}}</div>
+																	<div class="orhistry2_td2proctext1">{{orderproduct.original.name}}</div>
 															 	</div> 
 															</div>
 														</td>
 														<td>{{type}}</td>
-														<td>{{orderproduct.product.price}}</td>
-														<td>{{orderproduct.product.price}}</td>
+														<!-- <td>{{orderproduct.original.price}}</td> -->
+														<td>{{orderproduct.original.price}}</td>
 														<td>{{orderproduct[type].quantity}}</td>
-														<td>{{10 * orderproduct[type].quantity}}</td>
+														<td>{{orderproduct.original.price * orderproduct[type].quantity}}</td>
 
 													</tr>
 													<tr ng-repeat-end></tr>
@@ -247,48 +292,52 @@
 												 Sub Total:
 											</div>
 											<div class="col-md-3 value">
-												 $1,124.50
+												 {{order.payment.subtotal | currency}}
 											</div>
 										</div>
 										<div class="row static-info align-reverse">
 											<div class="col-md-8 name">
-												 Shipping:
+												 Delivery Charge:
 											</div>
-											<div class="col-md-3 value" ng-if="!order.delivery.free">${{order.delivery.charges}}</div>
-											<div class="col-md-3 value" ng-if="order.delivery.free">Free</div>
+											<div class="col-md-3 value" ng-if="!order.service.delivery.free">
+												{{order.service.delivery.charges | currency}}
+											</div>
+											<div class="col-md-3 value" ng-if="order.service.delivery.free">
+												Free
+											</div>
 										</div>
 										<div class="row static-info align-reverse">
 											<div class="col-md-8 name">
-												 Grand Total:
+												 Service charge:
 											</div>
 											<div class="col-md-3 value">
-												 $1,260.00
+												 {{serviceCharge | currency}}
 											</div>
 										</div>
 										<div class="row static-info align-reverse">
 											<div class="col-md-8 name">
-												 Total Paid:
+												 Total:
 											</div>
 											<div class="col-md-3 value">
-												 $1,260.00
+												{{order.payment.total | currency}}
 											</div>
 										</div>
-										<div class="row static-info align-reverse">
+										<!-- <div class="row static-info align-reverse">
 											<div class="col-md-8 name">
 												 Total Refunded:
 											</div>
 											<div class="col-md-3 value">
 												 $0.00
 											</div>
-										</div>
-										<div class="row static-info align-reverse">
+										</div> -->
+										<!-- <div class="row static-info align-reverse">
 											<div class="col-md-8 name">
 												 Total Due:
 											</div>
 											<div class="col-md-3 value">
-												 $1,124.50
+												 {{order.payment.total | currency}}
 											</div>
-										</div>
+										</div> -->
 									</div>
 								</div>
 							</div>

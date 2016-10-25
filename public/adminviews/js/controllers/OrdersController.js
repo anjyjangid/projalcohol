@@ -60,7 +60,15 @@ MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout'
     orderModel.getOrder($stateParams.order).success(function(response){
 		
 		$scope.order = response;
-		$scope.shipping = response.user.address[response.delivery.address.key];
+		//$scope.shipping = response.user.address[response.delivery.address.key];
+		$scope.serviceCharge = 0;
+		if($scope.service.express.status){
+			$scope.serviceCharge += $scope.service.express.charges;
+		}
+
+		if($scope.service.smoke.status){
+			$scope.serviceCharge += $scope.service.smoke.charges;
+		}
 
 	});
 
