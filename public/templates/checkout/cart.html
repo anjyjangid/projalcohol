@@ -147,7 +147,7 @@
 						<div class="orderhistry2price">{{package._price | pricingTxt}}</div>
 					</td>
 					<td> 
-						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="package.original.packageQuantity=0;alcoholCart.removePackage(package._uniqueId,true)"><i class="glyphicon glyphicon-trash"></i></a>
+						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removePackage(package._uniqueId,true)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>
 
@@ -181,7 +181,7 @@
 						<div class="orderhistry2price">{{giftCard.getPrice() | pricingTxt}}</div>
 					</td>
 					<td> 
-						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="package.original.packageQuantity=0;alcoholCart.removeCard(giftCard._uniqueId,true)"><i class="glyphicon glyphicon-trash"></i></a>
+						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removeCard(giftCard._uniqueId,true)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>				
 
@@ -283,9 +283,10 @@
 					<td width="52%">
 
 						<div class="orhistry2_td2procdtcvr">
+
 							<span>
 								<a ui-sref="mainLayout.gift({giftid:gift.getId(),uid:gift.getUniqueId()})">
-									<img err-pro-src="" ng-src="{{gift.imageLink}}" alt="gift-pic" class="img-responsive" />
+									<img err-pro-src="asset/i/defaultImage.png" ng-src="{{gift.coverImage.source}}" alt="gift-pic" class="img-responsive" />
 								</a>
 							</span>
 
@@ -296,18 +297,18 @@
 							</div>
 						</div>
 
-						<ul class="list-inline gift-pack-products">
+						<ul class="list-inline gift-pack-products">								
 							<li ng-repeat="(key, giftPro) in gift.getProducts()">
+								<span class="qty-tag-hang">X {{giftPro.quantity}}</span>
 								<a ui-sref="mainLayout.product({product:giftPro.product.slug})" title="View :: {{giftPro.product.name}}">
-								      	
 									<img err-pro-src="" ng-src="products/i/200/{{giftPro.product.icon }}" alt="" class="img-responsive img-responsive-h" />
 								</a>
 							</li>
 						</ul>
 					</td>
 					<td></td>
-					<td>
-						<!-- {{gift.getProductAttachedCount()}}/{{gift.gsLimit()}} -->
+					<td>						
+						
 					</td>
 					<td>
 						<div class="orderhistry2price">{{gift.gsPrice() | pricingTxt}}</div>

@@ -936,7 +936,9 @@ class Cart extends Moloquent
 		$giftContainersInCart = $this->getContainerGiftsInCart();
 		
 		foreach($giftContainersInCart as $i=>$cGift){
-		
+			
+			if(empty($cGift['products'])){continue;}
+
 			foreach($cGift['products'] as &$product){
 
 				if(isset($productsInCart[$product['_id']])){
@@ -945,6 +947,10 @@ class Cart extends Moloquent
 
 					if($qtyInCart > 0){
 						
+						if($qtyInCart<$product['quantity']){
+							$product['quantity'] = $qtyInCart;
+						}
+
 						$productsInCart[$product['_id']]-=$product['quantity'];
 
 						continue;
@@ -961,6 +967,8 @@ class Cart extends Moloquent
 		}
 		
 		foreach($giftContainersInCart as $giftKey=>&$cGift){
+
+			if(empty($cGift['products'])){continue;}
 
 			foreach($cGift['products'] as $key=>&$product){
 
@@ -1107,10 +1115,11 @@ class Cart extends Moloquent
 		foreach ($gifts as $gift) {
 
 			
-			if($exceptGiftId!="" && new MongoId($exceptGiftId) == $gift['_uid']){
+			if(($exceptGiftId!="" && new MongoId($exceptGiftId) == $gift['_uid']) || empty($gift['products'])){
 				continue;
 			}
 			
+
 
 			foreach ($gift['products'] as $product) {
 

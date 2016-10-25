@@ -1,163 +1,163 @@
 
-			<div class="checkoutstep5-mid-top">
-			<div class="row">
-			 <div class="col-md-7 col-sm-6 col-xs-12 checkoutstep5-mid-left">
-			 	<div class="checkoutstep5-left-first">
-					 <div class="checkoutstep5-left-first-left">
-						 <div class="checkoutstep5-left-first-lefttext">Order Id</div>
-						 <div class="checkoutstep5-left-first-lefttitle">{{order.reference}}</div>
-					 </div>
+<div class="checkoutstep5-mid-top">
+	<div class="row">
+		 <div class="col-md-7 col-sm-6 col-xs-12 checkoutstep5-mid-left">
+		 	<div class="checkoutstep5-left-first">
+				 <div class="checkoutstep5-left-first-left">
+					 <div class="checkoutstep5-left-first-lefttext">Order Id</div>
+					 <div class="checkoutstep5-left-first-lefttitle">{{order.reference}}</div>
 				 </div>
 			 </div>
-			</div>
 		 </div>
-				<div class="checkoutmiddletable">
-				<div class="chekoutstep5-table-title">List of item odered</div>
-				<table class="table">
+	</div>
+</div>
+		<div class="checkoutmiddletable">
+		<div class="chekoutstep5-table-title">List of item odered</div>
+		<table class="table">
 
-				<tbody>
-					<tr ng-repeat-start="(key, cartproduct) in order.products"></tr>
-					<tr ng-repeat="type in ['chilled','nonchilled']" ng-init="getQuantity(cartproduct)" ng-show="cartproduct[type].quantity>0" >
+		<tbody>
+			<tr ng-repeat-start="(key, cartproduct) in order.products"></tr>
+			<tr ng-repeat="type in ['chilled','nonchilled']" ng-init="getQuantity(cartproduct)" ng-show="cartproduct[type].quantity>0" >
 
-						<td width="52%">
+				<td width="52%">
 
-							<div class="orhistry2_td2procdtcvr">
-							<span class="cursor-pointer">
-								<a ui-sref="mainLayout.product({product:cartproduct.original.slug})" title="View Product">
-									<img err-pro-src="" ng-src="products/i/200/{{cartproduct.original.imageFiles | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
-								</a>
-							</span>
+					<div class="orhistry2_td2procdtcvr">
+					<span class="cursor-pointer">
+						<a ui-sref="mainLayout.product({product:cartproduct.original.slug})" title="View Product">
+							<img err-pro-src="" ng-src="products/i/200/{{cartproduct.original.imageFiles | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
+						</a>
+					</span>
 
-								<div class="checkouter-td-right-text">
-									<div class="orhistry2_td2proctext1">{{cartproduct.original.name}}</div>
-									<div class="orhistry2_td2proctext2">{{cartproduct.original.shortDescription}}</div>
-									<div class="orhistry2_td2proctext1">{{cartproduct.original.price | pricingTxt}}</div>
-									<div class="orhistry2_td2proctext2">unit Price</div>
-								</div>
+						<div class="checkouter-td-right-text">
+							<div class="orhistry2_td2proctext1">{{cartproduct.original.name}}</div>
+							<div class="orhistry2_td2proctext2">{{cartproduct.original.shortDescription}}</div>
+							<div class="orhistry2_td2proctext1">{{cartproduct.original.price | pricingTxt}}</div>
+							<div class="orhistry2_td2proctext2">unit Price</div>
+						</div>
 
-							</div>
+					</div>
 
-						</td>
-						<td width="131px">
+				</td>
+				<td width="131px">
 
-							<div class="prod_chilled" ng-class="{ notchilled:type=='nonchilled' }">
-								<span>Chilled</span>
-								<div class="prod_chilled_icon"></div>
-							</div>
+					<div class="prod_chilled" ng-class="{ notchilled:type=='nonchilled' }">
+						<span>Chilled</span>
+						<div class="prod_chilled_icon"></div>
+					</div>
 
-						</td>
-						<td width="100px">
-							<span class="orderhistry2price" ng-bind="cartproduct[type].quantity"></span>
-						</td>
-						<td>
-							<div class="orderhistry2price">{{cartproduct[type].quantity*cartproduct.original.price | pricingTxt}}</div>
-						</td>
-					</tr>
-					<tr ng-repeat-end></tr>
+				</td>
+				<td width="100px">
+					<span class="orderhistry2price" ng-bind="cartproduct[type].quantity"></span>
+				</td>
+				<td>
+					<div class="orderhistry2price">{{cartproduct[type].quantity*cartproduct.original.price | pricingTxt}}</div>
+				</td>
+			</tr>
+			<tr ng-repeat-end></tr>
 
-					<!-- <tr ng-repeat="(key, orderproduct) in order.products">
-						<td width="52%">
-							<div class="orhistry2_td2procdtcvr">
-								<span><img err-pro-src="" ng-src="products/i/200/{{orderproduct.original.imageFiles | getProductThumb}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" /></span>
-								<div class="checkouter-td-right-text">
-									<div class="orhistry2_td2proctext1">{{orderproduct.original.name}}</div>
-									<div class="orhistry2_td2proctext2">{{orderproduct.original.shortDescription}}</div>
-									<div class="orhistry2_td2proctext1">{{settings.general.currency}} {{orderproduct.original.price}}</div>
-							 	</div>
-							</div>
-						</td>
-						<td>
-								<div class="prod_chilled" ng-show="!order.nonchilled" ng-class="{notchilled:!orderproduct.original.chilled,invisible:!orderproduct.original.chilled}">
-									<span>Chilled</span>
-									<div class="prod_chilled_icon"></div>
-								</div>
-						</td>
+			<!-- <tr ng-repeat="(key, orderproduct) in order.products">
+				<td width="52%">
+					<div class="orhistry2_td2procdtcvr">
+						<span><img err-pro-src="" ng-src="products/i/200/{{orderproduct.original.imageFiles | getProductThumb}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" /></span>
+						<div class="checkouter-td-right-text">
+							<div class="orhistry2_td2proctext1">{{orderproduct.original.name}}</div>
+							<div class="orhistry2_td2proctext2">{{orderproduct.original.shortDescription}}</div>
+							<div class="orhistry2_td2proctext1">{{settings.general.currency}} {{orderproduct.original.price}}</div>
+					 	</div>
+					</div>
+				</td>
+				<td>
+						<div class="prod_chilled" ng-show="!order.nonchilled" ng-class="{notchilled:!orderproduct.original.chilled,invisible:!orderproduct.original.chilled}">
+							<span>Chilled</span>
+							<div class="prod_chilled_icon"></div>
+						</div>
+				</td>
 
-						<td>
-							<div class="orderhistry2price">{{orderproduct.original.finalprice | currency:settings.general.currency:2}}</div>
+				<td>
+					<div class="orderhistry2price">{{orderproduct.original.finalprice | currency:settings.general.currency:2}}</div>
 
-						</td>
-					</tr> -->
-				</tbody>
-				</table>
-				</div>
+				</td>
+			</tr> -->
+		</tbody>
+		</table>
+		</div>
 
 <div class="checkoutstep5-mid-top">
-			<div class="row">
-			 <div class="col-md-7 col-sm-6 col-xs-12 checkoutstep5-mid-left">
-				 <div class="checkoutstep5-left-first">
-					 <div class="checkoutstep5-left-first-left">
-						 <div class="checkoutstep5-left-first-lefttext">Delivery Address</div>
-						 <div class="checkoutstep5-left-first-lefttitle">
-						 	<span ng-if="address.detail.street">{{address.detail.street}},</span>
-						 	<span ng-if="address.detail.house">{{address.detail.house}},</span>
-						 	<span ng-if="address.detail.postal">{{address.detail.postal}}</span>
-						 </div>
-					 </div>
-
+	<div class="row">
+	 <div class="col-md-7 col-sm-6 col-xs-12 checkoutstep5-mid-left">
+		 <div class="checkoutstep5-left-first">
+			 <div class="checkoutstep5-left-first-left">
+				 <div class="checkoutstep5-left-first-lefttext">Delivery Address</div>
+				 <div class="checkoutstep5-left-first-lefttitle">
+				 	<span ng-if="address.detail.street">{{address.detail.street}},</span>
+				 	<span ng-if="address.detail.house">{{address.detail.house}},</span>
+				 	<span ng-if="address.detail.postal">{{address.detail.postal}}</span>
 				 </div>
-				 <div class="checkoutstep5-left-first" ng-if="order.delivery.type==1">
-					 <div class="checkoutstep5-left-first-left">
-						 <div class="checkoutstep5-left-first-lefttext">Delivery Time</div>
-						 <div class="checkoutstep5-left-first-lefttitle">{{order.timeslot.datekey | deliveryDateSlug}}, between {{order.timeslot.slotslug}}</div>
-					 </div>
+			 </div>
 
-				 </div>
-				 <div class="checkoutstep5-left-first">
-					 <div class="checkoutstep5-left-first-left">
-						 <div class="checkoutstep5-left-first-lefttext">Payment</div>
-						 <div class="checkoutstep5-left-first-lefttitle">Cash on Delivery</div>
-					 </div>
+		 </div>
+		 <div class="checkoutstep5-left-first" ng-if="order.delivery.type==1">
+			 <div class="checkoutstep5-left-first-left">
+				 <div class="checkoutstep5-left-first-lefttext">Delivery Time</div>
+				 <div class="checkoutstep5-left-first-lefttitle">{{order.timeslot.datekey | deliveryDateSlug}}, between {{order.timeslot.slotslug}}</div>
+			 </div>
 
-				 </div>
-				 <div class="checkoutstep5-left-first">
-					 <div class="checkoutstep5-left-first-left">
-						 <div class="checkoutstep5-left-first-lefttext">Delivery mode</div>
+		 </div>
+		 <div class="checkoutstep5-left-first">
+			 <div class="checkoutstep5-left-first-left">
+				 <div class="checkoutstep5-left-first-lefttext">Payment</div>
+				 <div class="checkoutstep5-left-first-lefttitle">Cash on Delivery</div>
+			 </div>
 
-						 <div class="checkoutstep5-left-first-lefttitle" ng-if="order.delivery.type==0">Express Delivery<span class=""><img src="images/questionimg.png"></span></div>
-						 <div class="checkoutstep5-left-first-lefttitle" ng-if="order.delivery.type==1">Advance Delivery<span class=""><img src="images/questionimg.png"></span></div>
+		 </div>
+		 <div class="checkoutstep5-left-first">
+			 <div class="checkoutstep5-left-first-left">
+				 <div class="checkoutstep5-left-first-lefttext">Delivery mode</div>
 
-					 </div>
-
-				 </div>
-
-				 <div class="checkoutstep5-left-first" ng-if="order.service.smoke.status">
-					 <div class="checkoutstep5-left-first-left">
-
-						 <div class="checkoutstep5-left-first-lefttext">Smoke detail</div>
-						 <div class="checkoutstep5-left-first-lefttitle">{{order.service.smoke.detail}}</div>
-
-					 </div>
-
-				 </div>
+				 <div class="checkoutstep5-left-first-lefttitle" ng-if="order.delivery.type==0">Express Delivery<span class=""><img src="images/questionimg.png"></span></div>
+				 <div class="checkoutstep5-left-first-lefttitle" ng-if="order.delivery.type==1">Advance Delivery<span class=""><img src="images/questionimg.png"></span></div>
 
 			 </div>
-				<div class="col-md-5 col-sm-6 col-xs-12 checkoutstep5-mid-right">
-					<div class="checkboxtotaldiv">
 
-						<div class="checkoutstep5right-middle ">
-							<div class="checkoutstep5right-middle-first">
-								<div class="checkoutstep5right-middle-title">Subtotal <span class=""></span></div>
-								<div class="checkboxtotaldiv-text">{{order.payment.subtotal | currency:settings.general.currency:2}}</div>
-							</div>
-							<div class="checkoutstep5right-middle-first">
-								<div class="checkoutstep5right-middle-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
-								<div class="checkboxtotaldiv-text">{{order.delivery.charges | pricingTxt}}</div>
-							</div>
-							<div class="checkoutstep5right-middle-first">
-								<div class="checkoutstep5right-middle-title">Service Charge <span class=""><img src="images/questionimg.png"></span></div>
-								<div class="checkboxtotaldiv-text">{{order.service.total | pricingTxt}}</div>
-							</div>
-							<div class="checkoutstep5right-middle-first">
-								<div class="checkoutstep5right-middle-title" >Discount (Non-Chilled) <span class=""><img src="images/questionimg.png"></span></div>
-								<div class="checkboxtotaldiv-text" ng-class="{txtcross:!order.nonchilled}">-{{services.chilled | currency:settings.general.currency:2}}</div>
-							</div>
-						</div>
-						<div class="checkoutstep5right-buttom">
-							<div class="checkoutstep5right-bottom-title">Total</div>
-							<div class="checkoutstep5right-bottom-text">{{order.payment.total | currency:settings.general.currency:2}}</div>
-						</div>
+		 </div>
+
+		 <div class="checkoutstep5-left-first" ng-if="order.service.smoke.status">
+			 <div class="checkoutstep5-left-first-left">
+
+				 <div class="checkoutstep5-left-first-lefttext">Smoke detail</div>
+				 <div class="checkoutstep5-left-first-lefttitle">{{order.service.smoke.detail}}</div>
+
+			 </div>
+
+		 </div>
+
+	 </div>
+		<div class="col-md-5 col-sm-6 col-xs-12 checkoutstep5-mid-right">
+			<div class="checkboxtotaldiv">
+
+				<div class="checkoutstep5right-middle ">
+					<div class="checkoutstep5right-middle-first">
+						<div class="checkoutstep5right-middle-title">Subtotal <span class=""></span></div>
+						<div class="checkboxtotaldiv-text">{{order.payment.subtotal | currency:settings.general.currency:2}}</div>
+					</div>
+					<div class="checkoutstep5right-middle-first">
+						<div class="checkoutstep5right-middle-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
+						<div class="checkboxtotaldiv-text">{{order.delivery.charges | pricingTxt}}</div>
+					</div>
+					<div class="checkoutstep5right-middle-first">
+						<div class="checkoutstep5right-middle-title">Service Charge <span class=""><img src="images/questionimg.png"></span></div>
+						<div class="checkboxtotaldiv-text">{{order.service.total | pricingTxt}}</div>
+					</div>
+					<div class="checkoutstep5right-middle-first">
+						<div class="checkoutstep5right-middle-title" >Discount (Non-Chilled) <span class=""><img src="images/questionimg.png"></span></div>
+						<div class="checkboxtotaldiv-text" ng-class="{txtcross:!order.nonchilled}">-{{services.chilled | currency:settings.general.currency:2}}</div>
 					</div>
 				</div>
+				<div class="checkoutstep5right-buttom">
+					<div class="checkoutstep5right-bottom-title">Total</div>
+					<div class="checkoutstep5right-bottom-text">{{order.payment.total | currency:settings.general.currency:2}}</div>
+				</div>
 			</div>
-		 </div>				
+		</div>
+	</div>
+ </div>				

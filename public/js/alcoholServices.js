@@ -937,7 +937,6 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 	}
 
-
 	product.prototype.setPricingParams = function(categories,bulkPricing,singlePricing){
 
 		var categoryKey = [];

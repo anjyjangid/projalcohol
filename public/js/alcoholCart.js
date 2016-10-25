@@ -434,22 +434,30 @@ AlcoholDelivery.service('alcoholCart', [
 	this.addPackage = function (id,detail) {
 
 		var _self = this;
-		var deliveryKey = _self.getCartKey();		
+
+		var deliveryKey = _self.getCartKey();
 		
 		var d = $q.defer();
 
 		var products = [];
+
 		angular.forEach(detail.packageItems,function(item,key){
+
 			angular.forEach(item.products,function(product,key){
+
 				if(product.cartquantity > 0){
 
 					var tempPro = {
 						_id:product._id,
 						quantity : product.cartquantity
 					};
+
 					products.push(tempPro);
+					
 				}
+
 			})
+
 		});		
 
 		$http.post("/cart/package/"+deliveryKey, {
@@ -489,7 +497,7 @@ AlcoholDelivery.service('alcoholCart', [
 		    	if(inCart){
 		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Package updated"});
 		    	}else{
-		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Package added to cart"});
+		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Package added to cart",quantity:detail.packageQuantity});
 		    	}
 
 				d.resolve(response);
@@ -607,7 +615,11 @@ AlcoholDelivery.service('alcoholCart', [
 
 					if(qtyInCart > 0){
 
+						if(qtyInCart<qtyInGift){							
+							product.setQuantity(qtyInCart);
+						}
 						proInCartCount[key]-=qtyInGift;
+
 
 						return;
 
@@ -619,7 +631,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 			})
 
-			if(cGifts[i].products.length<1){
+			if(typeof cGifts[i].products!=="undefined" && cGifts[i].products.length<1){
 				cGifts.splice(i, 1)[0]
 			}
 
@@ -1188,6 +1200,8 @@ AlcoholDelivery.service('alcoholCart', [
 						
 					}
 
+					_self.validateContainerGift();
+
 					defer.resolve(response);
 
 				},
@@ -1222,19 +1236,40 @@ AlcoholDelivery.service('alcoholCart', [
 
 		this.removePackage = function (id,fromServerSide) {
 
+			var defer = $q.defer();
 			var locPackage;
 			var cart = this.getCart();
-			
-			angular.forEach(cart.packages, function (package, index) {
+			var deliveryKey = this.getCartKey();
+			var _self = this;
 
-				if(package.getUniqueId() === id) {
+			$http.delete("cart/package/"+id+'/'+deliveryKey).then(
 
-					var locPackage = cart.packages.splice(index, 1)[0] || {};
+				function(response){
 
-				}	
-			});
-			
-			$rootScope.$broadcast('alcoholCart:itemRemoved', locPackage);
+					angular.forEach(cart.packages, function (package, index) {
+
+						if(package.getUniqueId() === id) {
+
+							var locPackage = cart.packages.splice(index, 1)[0] || {};
+
+							$rootScope.$broadcast('alcoholCart:updated',{msg:"Package Removed from cart",quantity:1});
+
+						}
+
+					});	
+
+					defer.resolve(response);
+
+				},
+				function(errorRes){
+
+					defer.reject(errorRes);
+
+				}
+
+			);
+		
+			return defer.promise;					
 			
 		};
 
@@ -2733,7 +2768,12 @@ AlcoholDelivery.factory('alcoholCartPackage', ['$rootScope', '$log', function ($
 
 		package.prototype.setUniqueId = function(uniqueId){
 			if (uniqueId){
-				this._uniqueId = uniqueId;				
+
+				if(typeof uniqueId.$id !== "undefined"){
+					uniqueId = uniqueId.$id;
+				}
+				this._uniqueId = uniqueId;
+
 			}
 			else {
 				$log.error('An Unique Id must be provided');
