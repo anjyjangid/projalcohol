@@ -515,6 +515,7 @@ position: relative;
     width: 100%;
     text-align: center;
     height: 100px;
+    overflow: hidden;
 }
 
 .disabled  {
@@ -562,4 +563,8 @@ position: relative;
 .verticetnter2 {
 	display: table-cell;
 	vertical-align: middle;
+}
+.img-cover img{
+	width: auto;
+	height: 100px;	
 }
