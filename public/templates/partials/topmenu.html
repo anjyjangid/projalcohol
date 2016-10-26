@@ -18,7 +18,7 @@
                     md-min-length="2"
                     md-input-id="site-search"                    
                     placeholder="Search for items" clear-autocomplete id="Auto" md-menu-showing="ctrl.openSuggestions()"
-                    md-escape-options="none">
+                    >
                     <md-item-template> <img width="40" err-src="asset/i/defaultImage.png" src="products/i/200/{{item.imageFiles | getProductThumb}}"> <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i"> {{item.name}} </span> </md-item-template>
                     <md-not-found> No products matching "{{ctrl.searchText}}" were found.</md-not-found>
                   </md-autocomplete>

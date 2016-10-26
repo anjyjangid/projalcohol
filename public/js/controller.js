@@ -2523,8 +2523,8 @@ AlcoholDelivery.controller('SearchController', [
     function selectedItemChange(item) {
 		
 		if(item){
-			$state.go('mainLayout.product',{product:item.slug});
 			self.searchText = '';
+			$state.go('mainLayout.product',{product:item.slug});
 			$timeout(function() {
 				$anchorScroll();
 		    	//$scope.searchbar(0);
