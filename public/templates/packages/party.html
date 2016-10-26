@@ -13,8 +13,10 @@
 
 	        	<div class="left-party-content"  ng:class="{'right-party-content':$odd}" ng-init="package.packageQuantity = 1">
 	          		<div class="party-topimgdiv">  
-	          			<img class="img-responsive" ng-src="packages/i/{{package.coverImage.source}}" err-src="http://placehold.it/455x252/{{($index+1)*100}}/?text=No+Image"/ >
-                        <div class="party-hover-effect">
+
+						<img class="img-responsive img-responsive-h" ng-src="packages/i/{{packages.coverImage.source}}" err-src=""/ >
+
+						<div class="party-hover-effect">
 	                        <div class="customizebtn">
 		                        <div class="customize-inner">
 			                        <a class="btn btn-default" ui-sref="mainLayout.packagedetail({type:'party',id:package._id})" role="button">

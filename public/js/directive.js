@@ -919,7 +919,10 @@ AlcoholDelivery.directive('sideBar', function() {
     link: function(scope, element, attrs) {
       element.bind('error', function() {
         if (attrs.src != attrs.errSrc) {
-          attrs.$set('src', attrs.errSrc);
+
+			if(attrs.errSrc==""){attrs.errSrc="asset/i/defaultImage.png"}
+			attrs.$set('src', attrs.errSrc);
+		
         }
       });
     }
