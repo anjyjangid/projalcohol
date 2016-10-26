@@ -6510,3 +6510,22 @@ button:hover{
 .purple-button:hover{
 	color: #ffffff;
 }
+
+
+.alcohaladdadrebody .no-pad{
+	padding: 0 1px 0 0 !important;
+}
+
+.cock-img{
+	height: 82px;
+	width: 100%;
+	float: left;
+	text-align: center;
+}
+
+.cock-img img{
+	display: inline-block;
+    height: auto;
+    max-height: 100%;
+    max-width: 100%;
+}

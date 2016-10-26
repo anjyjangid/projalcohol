@@ -26,7 +26,7 @@
 			<data-owl-carousel class="owl-carousel owl-theme" data-options="{navigation : false,pagination : true,items : 6}">
 				<div owl-carousel-item="" ng-repeat="productItem in package.productlist">
 					<div class="thumbnail cocktail-products-div">
-					<img err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{productItem.imageFiles[0].source}}">	
+					<div class="cock-img"><img err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{productItem.imageFiles[0].source}}">	</div>
 						<div class="caption">
 							{{ productItem.name }}
 						</div>
@@ -37,7 +37,7 @@
 			<div class="cocktail-cartbtn">
 				<a class="btn product_addcart addcart-detail cocktail-cart-margintop" ui-sref="mainLayout.packagedetail({type:'cocktail',id:package._id})"><img src="images/cart-icon.png">  Add to Cart</a>
 				<div class="cocktail-amntdivcover"><div class="amntrupee"> $56.5</div><span>Amount :</span>
-            <div class="saving-cocktail-cover"> <div class="saving-titie-amnt"> $2</div><span>saving :</span></div></div>
+            <div class="saving-cocktail-cover"><span>saving :</span> <div class="saving-titie-amnt"> $2</div></div></div>
                 
                 
 			</div>
