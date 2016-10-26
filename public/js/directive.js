@@ -103,26 +103,26 @@ AlcoholDelivery.directive('sideBar', function() {
 				angular.element('#wrapper').toggleClass('toggled');
 			}
 			//FACEBOOK LOGIN
-			// $scope.loginToggle = function() {
-			// 	$fblogin({
-			// 		fbId: '273669936304095',
-			// 		permissions: 'email,user_birthday',
-			// 		fields: 'first_name,last_name,locale,email,birthday'
-			// 	})
-			// 	.then(
-			// 		function(response){
+			$scope.loginToggle = function() {
+				$fblogin({
+					fbId: '273669936304095',
+					permissions: 'email,user_birthday',
+					fields: 'first_name,last_name,locale,email,birthday'
+				})
+				.then(
+					function(response){
 
-			// 			$mdDialog.hide();
-			// 			$http.post('/auth/registerfb',response)
-			// 			.success(function(res){
+						$mdDialog.hide();
+						$http.post('/auth/registerfb',response)
+						.success(function(res){
 
-			// 				$scope.loginSuccess(res);
+							$scope.loginSuccess(res);
 
-			// 			});
+						});
 
-			// 		}
-			// 	);
-			// };
+					}
+				);
+			};
 
 			// INTIALIZE AFTER USER LOGIN(FB & NORMAL)
 			// $scope.loginSuccess = function(response){
@@ -306,27 +306,29 @@ AlcoholDelivery.directive('sideBar', function() {
 .directive("tscroll", function ($window) {
     return function(scope, element, attrs) {
 
-    	var svgMorpheus = new SVGMorpheus('#icon',{rotation:'none'});
+		var svgMorpheus = new SVGMorpheus('#icon',{rotation:'none'});
 		var icons = ['question', 'answer'];
 		var prev=1;
 
         angular.element($window).bind("scroll", function() {
 
-             if(element.hasClass('fixh')) return;
+			if(element.hasClass('fixh')) return;
 
-             if (this.pageYOffset >= 1) {
-                element.addClass('navbar-shrink');
-                if(prev!==0)
-                 svgMorpheus.to(icons[0]);
-                prev = 0;
-             } else if(this.pageYOffset == 0 && angular.element('md-backdrop').length == 0 && angular.element('.md-scroll-mask').length == 0) {
-                 element.removeClass('navbar-shrink');
-                
-                if(prev!==1)
-                 svgMorpheus.to(icons[1]);
-                 prev = 1;
-             } 
-			
+			if (this.pageYOffset >= 1) {
+
+				element.addClass('navbar-shrink');
+				
+				if(prev!==0)
+				svgMorpheus.to(icons[0]);
+				prev = 0;
+
+			} else if(this.pageYOffset == 0 && angular.element('md-backdrop').length == 0 && angular.element('.md-scroll-mask').length == 0) {
+				element.removeClass('navbar-shrink');
+
+				if(prev!==1)
+				svgMorpheus.to(icons[1]);
+				prev = 1;
+			} 
              
         });
     };

@@ -3434,7 +3434,7 @@ AlcoholDelivery.service('store', ['$rootScope','$window','$http','alcoholCart','
 		}
 	}]);
 
-AlcoholDelivery.service("promotionsService",["$http","$log","$q",function($http,$log,$q){
+AlcoholDelivery.service("promotionsService",["$http","$log","$q","$rootScope",function($http,$log,$q,$rootScope){
 
 	this.init = function(){
 
@@ -3447,6 +3447,11 @@ AlcoholDelivery.service("promotionsService",["$http","$log","$q",function($http,
 			function(succRes){
 				
 				_self.$promotions = succRes.data;
+				angular.forEach(_self.$promotions, function(promo){
+
+					//promo.products = $rootScope.prepareProductObjs(promo.products);
+
+				})
 
 				defer.resolve(_self.$promotions);
 			},
