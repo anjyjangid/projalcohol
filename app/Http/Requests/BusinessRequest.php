@@ -30,29 +30,30 @@ class BusinessRequest extends Request
 
         $rules = [
             'company_name' => 'required|string|max:255',            
+            'company_email' => 'required|email|max:255|unique:businesses,company_email,'.@$input['_id'].",_id",
         ];
 
-        $billing_address = Request::input('billing_address');
+        // $billing_address = Request::input('billing_address');
         
-        foreach ($this->request->get('billing_address') as $key => $billing_address) {
+        // foreach ($this->request->get('billing_address') as $key => $billing_address) {
 
-            $rules['billing_address.'.$key.'.typed'] = 'required';
-            $rules['billing_address.'.$key.'.receiver_contact'] = 'required';
-            $rules['billing_address.'.$key.'.street'] = 'required';
-            $rules['billing_address.'.$key.'.receiver_name'] = 'required';
-            $rules['billing_address.'.$key.'.instruction'] = 'required';
-            $rules['billing_address.'.$key.'.postal'] = 'required';
-        }
+        //     $rules['billing_address.'.$key.'.typed'] = 'required';
+        //     $rules['billing_address.'.$key.'.receiver_contact'] = 'required';
+        //     $rules['billing_address.'.$key.'.street'] = 'required';
+        //     $rules['billing_address.'.$key.'.receiver_name'] = 'required';
+        //     $rules['billing_address.'.$key.'.instruction'] = 'required';
+        //     $rules['billing_address.'.$key.'.postal'] = 'required';
+        // }
 
-        foreach ($this->request->get('delivery_address') as $key => $delivery_address) {
+        // foreach ($this->request->get('delivery_address') as $key => $delivery_address) {
 
-            $rules['delivery_address.'.$key.'.typed'] = 'required';
-            $rules['delivery_address.'.$key.'.receiver_contact'] = 'required';
-            $rules['delivery_address.'.$key.'.street'] = 'required';
-            $rules['delivery_address.'.$key.'.receiver_name'] = 'required';
-            $rules['delivery_address.'.$key.'.instruction'] = 'required';
-            $rules['delivery_address.'.$key.'.postal'] = 'required';
-        }        
+        //     $rules['delivery_address.'.$key.'.typed'] = 'required';
+        //     $rules['delivery_address.'.$key.'.receiver_contact'] = 'required';
+        //     $rules['delivery_address.'.$key.'.street'] = 'required';
+        //     $rules['delivery_address.'.$key.'.receiver_name'] = 'required';
+        //     $rules['delivery_address.'.$key.'.instruction'] = 'required';
+        //     $rules['delivery_address.'.$key.'.postal'] = 'required';
+        // }
 
         return $rules;
     }

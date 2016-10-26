@@ -2437,6 +2437,7 @@ ui-sref {
 .checkouterexpresstext {
 	font-size: 12px;
 	color: #666666;
+	font-weight: normal;
 }
 .checkouterexpresstext a {
 	color: #666666;

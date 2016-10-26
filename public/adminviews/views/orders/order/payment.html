@@ -1,15 +1,17 @@
 <div class="checkoutstepthree_showdate">Please choose a payment method from below</div>
 <div class="row">
 	<div class="col-sm-4 col-sm-offset-2 paymenttype" ng-class="{active:payment.type=='cod'}" ng-click="payment.type='cod'">
-		<div class="pic_divcash">
-			<div class="verticetnter2"><img src="images/cash_okpic.png"></div>
+		<div class="pic_divcash" style="height: 149px;">
+			<div class="verticetnter2"><img src="images/cashondelivery.png"></div>
 		</div>
 		<div class="divcash_text">Cash on Delivery</div>
+		<img src="images/activepaytype.png" class="hidethumb" ng-show="payment.type=='cod'">
 	</div>
 	<div class="col-sm-4 paymenttype" ng-class="{active:payment.type=='credit'}" ng-click="payment.type='credit'">
-		<div class="pic_creadetcard">
-			<div class="verticetnter"><img src="images/creaditcard_pic.png"></div>
+		<div class="pic_creadetcard" style="height: 149px;">
+			<div class="verticetnter"><img src="images/creaditcardpay.png"></div>
 		</div>
 		<div class="creadetcard_text">Credit Card</div>
+		<img src="images/activepaytype.png" class="hidethumb" ng-show="payment.type=='credit'">
 	</div>
 </div>
