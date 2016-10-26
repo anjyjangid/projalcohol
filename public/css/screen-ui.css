@@ -117,7 +117,7 @@ ui-sref {
 	box-shadow: 0 10px 60px rgba(86, 111, 140, 0.6);
 	background: #ffffff url(../images/drop_bg.png) no-repeat 95% 107%;
 	background-size: auto 200px;
-	min-width: 482px;
+	min-width: 520px;
 	min-height: 0/*372px*/;
 	height: 100%
 }
@@ -254,7 +254,7 @@ ui-sref {
 
 .searchtop.searchtop100 .search_icon {
 	top: 0;
-	background: rgba(0, 0, 0, 0) url("../images/sprite.png") no-repeat scroll -317px 0;
+	background: rgba(0, 0, 0, 0) url("../images/sprite.png") no-repeat scroll -308px 0;
 }
 .searchtop input {
 	border: none;
@@ -532,6 +532,7 @@ ui-sref {
 }
 .prod_chilled {
 	width: 100%;
+	min-width: 80px;
 	float: left;
 	margin-bottom: 15px;
 	cursor: pointer;
@@ -2180,6 +2181,7 @@ ui-sref {
 	width: 100%;
 	float: left;
 	transition: all 0.5s ease 0s;
+	text-align: center;
 }
 .checkoutmiddlevlauediv {
 	float: left;
@@ -2966,7 +2968,7 @@ ui-sref {
 	float: left;
 	position: relative;
 	min-height: 60px;
-	margin: 30px 0 45px;
+	margin: 30px 0 42px;
 }
 .steps_notify .step_grid {
 	width: 100%;
@@ -3489,15 +3491,27 @@ ui-sref {
 	text-align: center
 }
 .checkoutstepthree_showdate {
-	width: 100%;
-	float: left;
+	width: auto;
+	display: inline-block;
+	float: none;
 	font-size: 24px;
 	font-weight: 400;
 	color: #222;
 	text-align: center;
-	margin-top: 15px;
-	margin-bottom: 51px;
+	margin-top: 25px;
+	margin-bottom:55px;
+	padding: 16px 20px 6px 22px;
+	border:1px solid #d7d7d7;
+	border-radius: 4px;
+	position: relative;
 }
+
+.checkoutstepthree_showdate:hover{
+	border:1px solid #aa00ff;
+	box-shadow: 0 0 3px #aa00ff;
+}
+
+
 .checkoutstepthree_showdate img {
 	vertical-align: top;
 	margin-top: 8px;
@@ -3650,12 +3664,13 @@ ui-sref {
 	font-size: 12px;
 	font-weight: 500;
 	text-align: right;
-	width: 67%;
+	width: 72%;
 }
 .checkoutstep5right-middle-title span {
 	width: 12px;
 	display: inline-block;
 	height: 12px;
+	margin-left: 5px;
 }
 .checkoutstep5right-buttom {
 	border-top: 1px solid #e2e2e2;
@@ -4398,6 +4413,8 @@ ui-sref {
 .help-block {
 	margin-top: 5px;
 	margin-bottom: 5px;
+	width: 100%;
+	float: left;
 }
 .has-error input[type='text'] {
 	border-color: #f13e64;
@@ -5063,7 +5080,8 @@ md-backdrop.md-dialog-backdrop {
 div#timeslots {
 	float: left;
 	width: 100%;
-	margin-top: 50px;
+	margin-top: 35px;
+	margin-left: 1px;
 }
 .emptycart {
 	text-align: center;
@@ -5079,7 +5097,7 @@ div#timeslots {
 	background: url(../images/checkoutstep3_calender.png);
 	background-repeat: no-repeat;
 	position: relative;
-	top: -5px;
+	top: 0;
 }
 .checkoutstepthree_showdate md-icon.md-datepicker-calendar-icon.ng-scope svg {
 	display: none;
@@ -5558,6 +5576,11 @@ md-dialog .md-actions, md-dialog md-dialog-actions {
 	position: relative;
 	text-align: right;
 }
+
+.checkoutstep5right-middle-first .checkboxtotaldiv-text-font-size {
+	text-transform: uppercase;
+}
+
 .checkboxtotaldiv-text-botm-text {
 	color: #222222;
 	font-size: 18px;
@@ -6245,13 +6268,18 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
 	background-image: url(../images/step-1.png);	
 }
 
+.stepcount-1 .step-1{
+	background-color: #ffc412;
+}
+
 .stepcount-1 .step-1, 
 .stepcount-2 .step-1, 
 .stepcount-3 .step-1,
 .stepcount-4 .step-1,
 .stepcount-5 .step-1{
+	border: 3px solid #ffc412;
 	background-image: url(../images/step-1h.png);
-	background-color: #ffc412;
+	/*background-color: #ffc412;*/
 	transition: all 0s linear 0.5s;	
 }
 
@@ -6259,12 +6287,18 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
 	background-image: url(../images/step-2.png);	
 }
 
+
+.stepcount-2 .step-2{
+	background-color: #ffc412;
+}
+
 .stepcount-2 .step-2,
 .stepcount-3 .step-2,
 .stepcount-4 .step-2,
 .stepcount-5 .step-2{
 	background-image: url(../images/step-2h.png);
-	background-color: #ffc412;
+	/*background-color: #ffc412;*/
+	border: 3px solid #ffc412;
 	transition: all 0s linear 0.5s;		
 }
 
@@ -6273,11 +6307,17 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
 	background-image: url(../images/step-3.png);	
 }
 
+
+.stepcount-3 .step-3{
+	background-color: #ffc412;
+}
+
 .stepcount-3 .step-3,
 .stepcount-4 .step-3,
 .stepcount-5 .step-3{
 	background-image: url(../images/step-3h.png);
-	background-color: #ffc412;
+	/*background-color: #ffc412;*/
+	border: 3px solid #ffc412;
 	transition: all 0s linear 0.5s;		
 }
 
@@ -6285,10 +6325,16 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
 	background-image: url(../images/step-4.png);	
 }
 
+
+.stepcount-4 .step-4{
+	background-color: #ffc412;
+}
+
 .stepcount-4 .step-4,
 .stepcount-5 .step-4{
 	background-image: url(../images/step-4h.png);
-	background-color: #ffc412;
+	/*background-color: #ffc412;*/
+	border: 3px solid #ffc412;
 	transition: all 0s linear 0.5s;		
 }
 
@@ -6373,4 +6419,57 @@ button{
 
 button:hover{
 	opacity: 1;
+}
+
+.side-menu-responsive .dropdown-menu > li > a:focus, .side-menu-responsive .dropdown-menu > li > a:hover{
+	background-color: transparent;
+}
+
+
+.wishprev{
+	opacity: 1;
+	color:#555555;
+}
+
+
+
+.md-autocomplete-suggestions li{
+	margin:10px 0; 
+}
+
+
+.checkoutstepthree_showdate .md-button.md-icon-button{
+	width: 17px;
+	height: 18px;
+	padding: 0px;
+	margin: 0px;
+	min-height: 18px;
+	line-height: 0px;
+	top: -8px;
+	left: 5px;
+	border-radius: 0px;
+}
+
+.checkoutstepthree_showdate .md-icon-button + .md-datepicker-input-container{
+	left: calc(50% - 173px);
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    width: 50%;
+}
+
+.checkoutstepthree_showdate md-icon{
+	width: 17px;
+	height: 18px;
+	min-width: 17px;
+	min-height: 18px;
+}
+
+.checkoutstepthree_showdate .md-datepicker-input-container{
+
+}
+
+.checkoutstepthree_showdate md-datepicker{
+	padding: 0px;
+	margin: 0px;
 }
