@@ -1489,4 +1489,28 @@ AlcoholDelivery.directive('sideBar', function() {
 			}
 		}
 	};
+})
+.directive('onClickOutside', function($timeout) {
+	return {
+	  restrict: 'A',
+	  scope: {
+	    onClickOutside: "&"
+	  },
+	  link: function(scope, element, attr) {
+
+	    angular.element(document).bind('click', function(event) {
+	      var isChild = childOf(event.target, element[0]);
+	      if (!isChild) {
+	        scope.$apply(scope.onClickOutside);
+	      }
+
+	    });
+
+	    function childOf(c, p) {
+	      while ((c = c.parentNode) && c !== p);
+	      return !!c;
+	    }
+	  }
+
+	};
 });

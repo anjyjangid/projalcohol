@@ -47,11 +47,9 @@ class AddressController extends Controller
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(UserAddressRequest $request)
+	public function store(UserAddressRequest $request, $id='')
 	{
 		$inputs = $request->all();
-		
-		$loggeduser = Auth::user('user');
 
 		if(isset($inputs['LAT']) && isset($inputs['LNG'])){
 			$inputs['LAT'] = (float)$inputs['LAT'];
@@ -65,8 +63,15 @@ class AddressController extends Controller
 			$inputs['Y'] = (float)$inputs['Y'];
 		}
 
-		$user = User::find($loggeduser->_id);
-		
+		$admin = Auth::user('admin');
+		if(!empty($admin) && !empty($id)) {
+			$user = User::find($id);
+		}
+		else {
+			$loggeduser = Auth::user('user');
+			$user = User::find($loggeduser->_id);
+		}
+
 		$user->push('address',$inputs,true);
 
 		return response($user);

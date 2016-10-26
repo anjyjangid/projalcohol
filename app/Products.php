@@ -299,6 +299,18 @@ class Products extends Eloquent
 			$match['$match']['slug'] = $params['product'];
 			
 		}				
+
+		if(!empty($params['search'])){
+
+			$match['$match']['name'] = [ '$regex' => $params['search'], '$options' => 'ig' ];
+
+		}
+
+		if(!empty($params['categories'])){
+
+			$match['$match']['categories'] = [ '$all' => $params['categories'] ];
+
+		}
 		
 		$sortParam = [
 			'$sort' => [ 'created_at' => 1 ]

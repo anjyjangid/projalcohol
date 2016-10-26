@@ -489,6 +489,7 @@ position: relative;
 
 .paymenttype{
 	padding: 10px;
+	text-align: center;
 }
 
 .paymenttype.active{
@@ -514,4 +515,51 @@ position: relative;
     width: 100%;
     text-align: center;
     height: 100px;
+}
+
+.disabled  {
+	color: grey;
+}
+
+.slots-bunch.active .single-slot.selected {
+    border: 1px solid purple;
+}
+
+.paymenttype img.hidethumb{
+	position: absolute;
+	top: 47%;
+	left: 40%;
+}
+
+.paymenttype.active > div > div > img{
+	margin-bottom: 15px;
+}
+
+.paymenttype img{
+	-moz-transition: all 0.3s ease 0s;
+	-webkit-transition: all 0.3s ease 0s;
+	transition: all 0.3s ease 0s;
+}
+
+.pic_divcash {
+	width: 100%;
+	float: left;
+	height: 149px;
+	display: table;
+	text-align: center;
+}
+.pic_creadetcard {
+	float: right;
+	height: 149px;
+	text-align: center;
+	width: 100%;
+	display: table;
+}
+.verticetnter {
+	display: table-cell;
+	vertical-align: middle;
+}
+.verticetnter2 {
+	display: table-cell;
+	vertical-align: middle;
 }
