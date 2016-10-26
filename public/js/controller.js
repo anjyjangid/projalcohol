@@ -762,7 +762,8 @@ AlcoholDelivery.controller('WishlistController',['$scope','$rootScope','$state',
 
 }]);
 
-AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$timeout',function($scope,$http,sweetAlert,$timeout){
+AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$timeout', '$anchorScroll',
+	function($scope,$http,sweetAlert,$timeout,$anchorScroll){
 
 	$scope.pagination = {
 
@@ -827,6 +828,7 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 				$scope.process.fetching = false;
 
 			},1000)
+			$anchorScroll();
 
 		});
 
@@ -2526,10 +2528,8 @@ AlcoholDelivery.controller('SearchController', [
 			self.searchText = '';
 			$state.go('mainLayout.product',{product:item.slug});
 			$timeout(function() {
-				$anchorScroll();
-		    	//$scope.searchbar(0);
-			});
-		    //$scope.openSearch = false;
+				$anchorScroll();		    	
+			});		    
 		}
     }
 
@@ -2548,8 +2548,7 @@ AlcoholDelivery.controller('SearchController', [
     
     function clearInputBoxOnBlur(){
         angular.element("#site-search").bind("blur", function(){
-            $scope.searchbar(0); 
-            //self.searchText = '';            
+            $scope.searchbar(0);             
         });
     }
 
