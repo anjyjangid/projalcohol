@@ -2543,13 +2543,12 @@ AlcoholDelivery.controller('SearchController', [
     	return false;
     }   
 
-    $timeout(clearInputBoxOnBlur, 0);
-
+    $timeout(clearInputBoxOnBlur, 0);    
     $scope.openSearch = false;
-
     function clearInputBoxOnBlur(){
         angular.element("#site-search").bind("blur", function(){
-            $scope.searchbar(0);            
+            $scope.searchbar(0); 
+            $scope.openSearch = true;
         });
     }
 

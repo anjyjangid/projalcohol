@@ -306,26 +306,26 @@ AlcoholDelivery.directive('sideBar', function() {
 .directive("tscroll", function ($window) {
     return function(scope, element, attrs) {
 
-    	// var svgMorpheus = new SVGMorpheus('#icon',{rotation:'none'});
+    	var svgMorpheus = new SVGMorpheus('#icon',{rotation:'none'});
 		var icons = ['question', 'answer'];
 		var prev=1;
 
         angular.element($window).bind("scroll", function() {
 
-             // if(element.hasClass('fixh')) return;
+             if(element.hasClass('fixh')) return;
 
-             // if (this.pageYOffset >= 1) {
-             //    element.addClass('navbar-shrink');
-             //    if(prev!==0)
-             //     svgMorpheus.to(icons[0]);
-             //    prev = 0;
-             // } else if(this.pageYOffset == 0 && angular.element('md-backdrop').length == 0 && angular.element('.md-scroll-mask').length == 0) {
-             //     element.removeClass('navbar-shrink');
+             if (this.pageYOffset >= 1) {
+                element.addClass('navbar-shrink');
+                if(prev!==0)
+                 svgMorpheus.to(icons[0]);
+                prev = 0;
+             } else if(this.pageYOffset == 0 && angular.element('md-backdrop').length == 0 && angular.element('.md-scroll-mask').length == 0) {
+                 element.removeClass('navbar-shrink');
                 
-             //    if(prev!==1)
-             //     svgMorpheus.to(icons[1]);
-             //     prev = 1;
-             // } 
+                if(prev!==1)
+                 svgMorpheus.to(icons[1]);
+                 prev = 1;
+             } 
 			
              
         });
@@ -1485,29 +1485,5 @@ AlcoholDelivery.directive('sideBar', function() {
 				$scope.delivery.address.detail = $scope.addresses[key];
 			}
 		}
-	};
-})
-.directive('onClickOutside', function($timeout) {
-	return {
-	  restrict: 'A',
-	  scope: {
-	    onClickOutside: "&"
-	  },
-	  link: function(scope, element, attr) {
-
-	    angular.element(document).bind('click', function(event) {
-	      var isChild = childOf(event.target, element[0]);
-	      if (!isChild) {
-	        scope.$apply(scope.onClickOutside);
-	      }
-
-	    });
-
-	    function childOf(c, p) {
-	      while ((c = c.parentNode) && c !== p);
-	      return !!c;
-	    }
-	  }
-
 	};
 });
