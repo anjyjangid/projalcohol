@@ -2180,7 +2180,7 @@ ui-sref {
 	padding: 0px 25px;
 	width: 100%;
 	float: left;
-	transition: all 0.5s ease 0s;	
+	transition: all 0.5s ease 0s;
 }
 .checkoutmiddlevlauediv {
 	float: left;
@@ -3168,8 +3168,8 @@ ui-sref {
 	text-transform: uppercase;
 	width: 100%;
 }
-<!--
----------end-------------> /*--------checkoutsteps2---------*/
+/*<!--
+---------end------------->*/ /*--------checkoutsteps2---------*/
 .step2div .steps_notify {
  margin: 27px 0 15px;
 }
@@ -6472,4 +6472,14 @@ button:hover{
 .checkoutstepthree_showdate md-datepicker{
 	padding: 0px;
 	margin: 0px;
+}
+
+.checkout-date-cover{
+	width: 100%;
+	float: left;
+	text-align: center;
+}
+
+.md-datepicker-input-mask{
+	height: 0px !important;
 }

@@ -1073,3 +1073,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
     right: -30px;
     white-space: nowrap;
 }
+
+.again21 a.search_icon{
+	display: none;
+}

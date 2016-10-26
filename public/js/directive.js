@@ -329,7 +329,6 @@ AlcoholDelivery.directive('sideBar', function() {
 				svgMorpheus.to(icons[1]);
 				prev = 1;
 			} 
-						
              
         });
     };
@@ -1491,29 +1490,5 @@ AlcoholDelivery.directive('sideBar', function() {
 				$scope.delivery.address.detail = $scope.addresses[key];
 			}
 		}
-	};
-})
-.directive('onClickOutside', function($timeout) {
-	return {
-	  restrict: 'A',
-	  scope: {
-	    onClickOutside: "&"
-	  },
-	  link: function(scope, element, attr) {
-
-	    angular.element(document).bind('click', function(event) {
-	      var isChild = childOf(event.target, element[0]);
-	      if (!isChild) {
-	        scope.$apply(scope.onClickOutside);
-	      }
-
-	    });
-
-	    function childOf(c, p) {
-	      while ((c = c.parentNode) && c !== p);
-	      return !!c;
-	    }
-	  }
-
 	};
 });
