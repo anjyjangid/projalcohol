@@ -12,14 +12,20 @@
 
 				<div class="dropdown productdropdownbtn" uib-dropdown>
 				  <button class="btn dropdown-toggle" type="button" id="dropdownMenu1" uib-dropdown-toggle aria-haspopup="true" aria-expanded="true">
-				    Sort by
+				    <span ng-bind="currentSort.label"></span>
 				    <span class="caret"></span>
 				  </button>
-
+					
 				  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" uib-dropdown-menu>
-				    <li><a ui-sref="mainLayout.search({keyword:keyword,filter:filter,sort:'price_asc'})">Price Ascending</a></li>
-				    <li><a ui-sref="mainLayout.search({keyword:keyword,filter:filter,sort:'price_desc'})">Price Descending</a></li>
-
+				    <li ng-repeat="soptions in sortOptions">
+				    	<a ui-sref="mainLayout.search({keyword:keyword,filter:filter,sort:soptions.value})">{{soptions.label}}</a>
+				    </li>
+				    <!-- <li>
+				    	<a ui-sref="mainLayout.search({keyword:keyword,filter:filter,sort:'price_asc'})">Price Ascending</a>
+				    </li>
+				    <li>
+				    	<a ui-sref="mainLayout.search({keyword:keyword,filter:filter,sort:'price_desc'})">Price Descending</a>
+				    </li> -->
 				  </ul>
 				</div>
 			</ul>

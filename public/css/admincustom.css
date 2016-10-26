@@ -515,6 +515,7 @@ position: relative;
     width: 100%;
     text-align: center;
     height: 100px;
+    overflow: hidden;
 }
 
 .disabled  {
@@ -563,7 +564,6 @@ position: relative;
 	display: table-cell;
 	vertical-align: middle;
 }
-
 
 .orhistry2_td2procdtcvr {
 	float: left;
@@ -692,4 +692,9 @@ position: relative;
 
 md-radio-button:focus, .paymenttype:focus, .single-slot:focus {
     outline: none;
+}
+
+.img-cover img{
+	width: auto;
+	height: 100px;	
 }

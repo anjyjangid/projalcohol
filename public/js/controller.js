@@ -145,6 +145,12 @@ AlcoholDelivery.controller('AppController',
 		return $filter('filter')($rootScope.settings.pages,{section:section});
 	};
 
+	$scope.sortOptions = [
+		{value:'',label:'Popularity'},
+		{value:'price_asc',label:'Price - Low to High'},
+		{value:'price_desc',label:'Price - High to Low'},		
+	];
+
 }]);
 
 AlcoholDelivery.controller('ProductsController', [
@@ -167,6 +173,8 @@ AlcoholDelivery.controller('ProductsController', [
 	}
 
 	if(typeof $stateParams.toggle==="undefined"){$stateParams.toggle="all";}
+
+	$scope.currentSort = $filter('filter')($scope.sortOptions,{value:$stateParams.sort})[0];
 
 	var data = {
 		category:$category,
@@ -762,7 +770,8 @@ AlcoholDelivery.controller('WishlistController',['$scope','$rootScope','$state',
 
 }]);
 
-AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$timeout',function($scope,$http,sweetAlert,$timeout){
+AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$timeout', '$anchorScroll',
+	function($scope,$http,sweetAlert,$timeout,$anchorScroll){
 
 	$scope.pagination = {
 
@@ -827,6 +836,7 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 				$scope.process.fetching = false;
 
 			},1000)
+			$anchorScroll();
 
 		});
 
@@ -2478,8 +2488,8 @@ AlcoholDelivery.controller('PackageDetailController',
 }]);
 
 AlcoholDelivery.controller('SearchController', [
-'$timeout', '$q', '$log', '$http', '$state', '$scope', '$rootScope', '$timeout', '$anchorScroll', '$stateParams', 'ScrollPagination', 'ProductService'
-, function($timeout, $q, $log, $http, $state, $scope, $rootScope, $timeout, $anchorScroll, $stateParams, ScrollPagination, ProductService){
+'$timeout', '$q', '$log', '$http', '$state', '$scope', '$rootScope', '$timeout', '$anchorScroll', '$stateParams', '$filter', 'ScrollPagination', 'ProductService'
+, function($timeout, $q, $log, $http, $state, $scope, $rootScope, $timeout, $anchorScroll, $stateParams, $filter, ScrollPagination, ProductService){
 
 		$scope.AppController.category = "";
 		$scope.AppController.subCategory = "";
@@ -2500,6 +2510,7 @@ AlcoholDelivery.controller('SearchController', [
 	    self.selectedItemChange = selectedItemChange;
 	    self.searchTextChange   = searchTextChange;
 	    self.submitQuery   = submitQuery;
+	    
 
 
 	// ******************************
@@ -2520,14 +2531,13 @@ AlcoholDelivery.controller('SearchController', [
       //$log.info('Text changed to ' + text);
     }
     function selectedItemChange(item) {
+		
 		if(item){
-			$state.go('mainLayout.product',{product:item.slug});
 			self.searchText = '';
+			$state.go('mainLayout.product',{product:item.slug});
 			$timeout(function() {
-				$anchorScroll();
-			});
-		    $scope.openSearch = false;
-		    $scope.searchbar(0);
+				$anchorScroll();		    	
+			});		    
 		}
     }
 
@@ -2540,6 +2550,14 @@ AlcoholDelivery.controller('SearchController', [
     		$state.go('mainLayout.search',{keyword:self.searchText});
     	}
     	return false;
+    }   
+
+    $timeout(clearInputBoxOnBlur, 0);    
+    
+    function clearInputBoxOnBlur(){
+        angular.element("#site-search").bind("blur", function(){
+            $scope.searchbar(0);             
+        });
     }
 
     $scope.searchbar = function(toggle){
@@ -2552,10 +2570,9 @@ AlcoholDelivery.controller('SearchController', [
 			$(".rightplcholder").removeClass('hide');
 			$("#headcontainer").addClass('searchopen');
 			$(".logos-inner-cover").addClass('hide');
-
-
-			if($.trim($(".searchtop input").val())=="")
-				$(".searchtop input").focus();
+			self.searchText = ''
+			//if(self.searchText == '')
+			angular.element("#site-search").focus();
 		}else{
 			$(".searchtop").removeClass("searchtop100").addClass("again21");
 			$(".search_close").removeClass("search_close_opaque");
@@ -2567,6 +2584,8 @@ AlcoholDelivery.controller('SearchController', [
 			$(".logos-inner-cover").removeClass('hide');
 		}
 	}
+
+	$scope.currentSort = $filter('filter')($scope.sortOptions,{value:$stateParams.sort})[0];
 
 	if($stateParams.keyword){
     	if($stateParams.keyword!=''){

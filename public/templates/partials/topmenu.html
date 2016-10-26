@@ -1,24 +1,27 @@
 <nav tscroll class="navbar navbar-default navbar-fixed-top ">
   <div class="main-header-botm-cover">
     <div class="container">
-      <div class="btm10" id="headcontainer" ng-controller="SearchController as ctrl">
-        <div class="searchtop again21"> <a class="search_icon" ng-show="openSearch"></a>
+      <div class="btm10" id="headcontainer" ng-controller="SearchController as ctrl" >
+        <div class="searchtop again21">
+          <a class="search_icon"></a>
           <div layout="column" ng-cloak>
             <md-content class="globalsearch">
               <form ng-submit="ctrl.submitQuery()">
-                <md-autocomplete				          
-                                md-no-cache="ctrl.noCache"
-                                md-selected-item="ctrl.selectedItem"
-                                md-search-text-change="ctrl.searchTextChange(ctrl.searchText)"
-                                md-search-text="ctrl.searchText"
-                                md-selected-item-change="ctrl.selectedItemChange(item)"
-                                md-items="item in ctrl.querySearch(ctrl.searchText)"
-                                md-item-text="item.name"
-                                md-min-length="2"
-                                placeholder="Search for items" clear-autocomplete id="Auto" md-menu-showing="ctrl.openSuggestions()">
-                  <md-item-template> <img width="40" err-src="asset/i/defaultImage.png" src="products/i/200/{{item.imageFiles | getProductThumb}}"> <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i"> {{item.name}} </span> </md-item-template>
-                  <md-not-found> No products matching "{{ctrl.searchText}}" were found.</md-not-found>
-                </md-autocomplete>
+                  <md-autocomplete				          
+                    md-no-cache="ctrl.noCache"
+                    md-selected-item="ctrl.selectedItem"
+                    md-search-text-change="ctrl.searchTextChange(ctrl.searchText)"
+                    md-search-text="ctrl.searchText"
+                    md-selected-item-change="ctrl.selectedItemChange(item)"
+                    md-items="item in ctrl.querySearch(ctrl.searchText)"
+                    md-item-text="item.name"
+                    md-min-length="2"
+                    md-input-id="site-search"                    
+                    placeholder="Search for items" clear-autocomplete id="Auto" md-menu-showing="ctrl.openSuggestions()"
+                    >
+                    <md-item-template> <img width="40" err-src="asset/i/defaultImage.png" src="products/i/200/{{item.imageFiles | getProductThumb}}"> <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i"> {{item.name}} </span> </md-item-template>
+                    <md-not-found> No products matching "{{ctrl.searchText}}" were found.</md-not-found>
+                  </md-autocomplete>
                 <span class="rightplcholder hide">Press 'enter' key to see results</span>
               </form>
             </md-content>

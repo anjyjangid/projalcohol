@@ -889,7 +889,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	background-position: -265px -20px;
 }
 .newcardicons.visa{
-	background-position: -91px -622px;
+	background-position: -100px -622px;
 }
 
 .salediscount{
@@ -1015,9 +1015,10 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
     width: 45px;
     display: inline-block;
     text-align: center;
-    font-size: 20px !important;
+    font-size: 18px !important;
     padding: 5px 10px;
-    color: #333;
+    color: #000000;
+    font-weight:500;
 }
 
  .alcohalfooter_repeatorderbtn-rep {
@@ -1071,4 +1072,8 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
     padding: 2px 0 0 0;
     right: -30px;
     white-space: nowrap;
+}
+
+.again21 a.search_icon{
+	display: none;
 }
