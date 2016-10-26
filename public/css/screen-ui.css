@@ -2181,7 +2181,6 @@ ui-sref {
 	width: 100%;
 	float: left;
 	transition: all 0.5s ease 0s;
-	text-align: center;
 }
 .checkoutmiddlevlauediv {
 	float: left;
@@ -6473,4 +6472,14 @@ button:hover{
 .checkoutstepthree_showdate md-datepicker{
 	padding: 0px;
 	margin: 0px;
+}
+
+.checkout-date-cover{
+	width: 100%;
+	float: left;
+	text-align: center;
+}
+
+.md-datepicker-input-mask{
+	height: 0px !important;
 }
