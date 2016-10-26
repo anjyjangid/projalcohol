@@ -965,7 +965,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			      parent : $document[0].querySelector('#toastBounds'),
 			      //parent : $document[0].querySelector('nav'),
 			      position: 'top center',
-			      hideDelay:6000
+			      hideDelay:0
 			    });
 
 				$scope.nlabel = 'Notify Me';
