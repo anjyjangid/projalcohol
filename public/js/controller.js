@@ -2548,7 +2548,7 @@ AlcoholDelivery.controller('SearchController', [
     function clearInputBoxOnBlur(){
         angular.element("#site-search").bind("blur", function(){
             $scope.searchbar(0); 
-            $scope.openSearch = true;
+            self.searchText = '';            
         });
     }
 
@@ -2564,8 +2564,8 @@ AlcoholDelivery.controller('SearchController', [
 			$(".logos-inner-cover").addClass('hide');
 
 
-			if($.trim($(".searchtop input").val())=="")
-				$(".searchtop input").focus();
+			if(self.searchText == '')
+				angular.element("#site-search").focus();
 		}else{
 			$(".searchtop").removeClass("searchtop100").addClass("again21");
 			$(".search_close").removeClass("search_close_opaque");
