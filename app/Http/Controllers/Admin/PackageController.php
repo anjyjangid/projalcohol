@@ -81,7 +81,7 @@ class PackageController extends Controller
                 foreach ($discount['products'] as $prokey => $provalue) {
                   $inputs['packageItems'][$dKey]['products'][$prokey] = [
                     '_id' => $provalue['_id'],
-                    'cprice' => (int)$provalue['cprice'],
+                    'cprice' => (float)$provalue['cprice'],
                   ];
                 }                
 
@@ -212,7 +212,7 @@ class PackageController extends Controller
                   unset($inputs['packageItems'][$dKey]['products'][$prokey]['$$hashKey']);
                   $inputs['packageItems'][$dKey]['products'][$prokey] = [
                     '_id' => $provalue['_id'],
-                    'cprice' => (int)$provalue['cprice'],
+                    'cprice' => (float)$provalue['cprice'],
                   ];
                 }                
 

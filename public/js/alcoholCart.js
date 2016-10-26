@@ -564,24 +564,39 @@ AlcoholDelivery.service('alcoholCart', [
 
 			$http.put("/cart/package/"+uid+'/'+deliveryKey, data).error(function(data, status, headers) {
 
-				defer.resolve(data);
 				$rootScope.$broadcast('alcoholCart:updated',{msg:"Something went wrong"});
+				defer.reject(data);
 
 			}).success(function(response) {
+
+				var oldQtyt = proInCart.getOldQuantity();
+				var changeInQty = data.quantity - oldQtyt;
 
 				proInCart.setQuantity(data.quantity);
 
 				if(detail){
-
-					proInCart.setQuantity(data.quantity);
+					
 					proInCart.setProducts(data.products);
 					proInCart.setSaving(data.saving);
 					proInCart.setPrice(data.price);
 
-				}
+		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Package Updated"});
 
-		    	$rootScope.$broadcast('alcoholCart:updated',{msg:"Package Updated"});
-		    	
+				}else{
+					//proInCart.setSaving();
+					proInCart.setPrice();
+
+					if(changeInQty>0){
+
+						$rootScope.$broadcast('alcoholCart:updated',{msg:"Package(s) added to cart",quantity:Math.abs(changeInQty)});
+
+					}else{
+
+						$rootScope.$broadcast('alcoholCart:updated',{msg:"Package(s) removed from cart",quantity:Math.abs(changeInQty)});
+					}
+
+				}	
+
 				defer.resolve(response);
 				
 			});
@@ -2897,14 +2912,23 @@ AlcoholDelivery.factory('alcoholCartPackage', ['$rootScope', '$log', function ($
 			else $log.info('This package has no original detail');
 		};
 		
+		package.prototype.getOldQuantity = function(){
+			return this._oldQuantity || 0;
+		}
+
 		package.prototype.setQuantity = function(quantity){
 			this._maxquantity = 100;
-			if (quantity) this._quantity = parseInt(quantity);
+			if (quantity){
+
+				this._oldQuantity = quantity;
+				this._quantity = quantity;
+
+			}
 
 		};
 
 		package.prototype.getQuantity = function(){
-			if (this._quantity) return parseInt(this._quantity);
+			if (this._quantity) return this._quantity;
 			else $log.info('This package quantity has some issue');
 		};
 
@@ -2914,13 +2938,6 @@ AlcoholDelivery.factory('alcoholCartPackage', ['$rootScope', '$log', function ($
 			else { $log.info('This package saving has some issue') };
 
 		};
-
-		package.prototype.getQuantity = function(){
-			if (this._quantity) return parseInt(this._quantity);
-			else $log.info('This package quantity has some issue');
-		};
-
-
 
 		package.prototype.getProductsCount = function(){
 
@@ -2936,12 +2953,23 @@ AlcoholDelivery.factory('alcoholCartPackage', ['$rootScope', '$log', function ($
 
 		}
 
+		package.prototype.setUnitPrice = function(unitPrice){
+			this._unitPrice = unitPrice;
+		}
+
 		package.prototype.setPrice = function(price){
+
+			if(typeof price =='undefined' && typeof this._price !== 'undefined'){
+				price = this._unitPrice;
+			}
+
 
 			var unitPrice = parseFloat(price);
 
+			this.setUnitPrice(unitPrice);
+
 			var quantity = this.getQuantity();
-							
+				console.log(quantity);
 			price = quantity * unitPrice;
 			price = parseFloat(price.toFixed(2));
 					
