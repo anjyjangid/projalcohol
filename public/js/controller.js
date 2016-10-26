@@ -2408,6 +2408,7 @@ AlcoholDelivery.controller('SearchController', [
 	    self.selectedItemChange = selectedItemChange;
 	    self.searchTextChange   = searchTextChange;
 	    self.submitQuery   = submitQuery;
+	    
 
 
 	// ******************************
@@ -2448,6 +2449,16 @@ AlcoholDelivery.controller('SearchController', [
     		$state.go('mainLayout.search',{keyword:self.searchText});
     	}
     	return false;
+    }   
+
+    $timeout(clearInputBoxOnBlur, 0);
+
+    $scope.openSearch = false;
+
+    function clearInputBoxOnBlur(){
+        angular.element("#site-search").bind("blur", function(){
+            $scope.searchbar(0);            
+        });
     }
 
     $scope.searchbar = function(toggle){
