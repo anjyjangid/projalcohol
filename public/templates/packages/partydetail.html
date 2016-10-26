@@ -18,9 +18,9 @@
 				
 			  	</div>
 				<div class="media-body party-detail-contentcover">
-					<h4 class="media-heading party-detail-heading">{{packages.title}}</h4>
-					<p class="party-detail-btm-title">{{packages.subTitle}}</p>
-					<p class="party-product-desc">{{packages.description}}</p>    										
+					<h4 class="media-heading party-detail-heading">{{::packages.title}}</h4>
+					<p class="party-detail-btm-title">{{::packages.subTitle}}</p>
+					<p class="party-product-desc">{{::packages.description}}</p>    										
 					<p class="packtiti-rightset packag-amnt-divcolr">Package Amount</p>
 			    	<h3 class="amntrupee-clsdetail">${{packages.packagePrice}}</h3>
                 
@@ -59,7 +59,7 @@
 												<!-- <p>{{pcprod.cprice}} - {{pcprod.sprice}}</p> -->
 											</div>
 		                                    <div class="detail-productdiv">
-											<img  err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{pcprod.imageFiles[0].source}}"></div>
+											<img  err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{pcprod.imageFiles[0].source}}" class="img-responsive img-responsive-h"></div>
 											<div class="checkoutmiddlevlauediv party-checkout-detail" style="float: none;">
 												<input type="text" value="pcprod.customizequantity" ng-model="pcprod.customizequantity" ng-change="validateByIndex($parent.$index)" mquantity="packageItem.quantity" min="0" ng-touch-spin>
 											</div>

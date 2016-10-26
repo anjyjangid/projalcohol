@@ -255,30 +255,34 @@ class CartController extends Controller
 		
 
 		// package validate and manage start
-		$packagesInCart = [];
-		foreach($cart['packages'] as $package){
+		if(!empty($cart['packages'])){
 
-			array_push($packagesInCart, $package['_id']);
+			$packagesInCart = [];
+			foreach($cart['packages'] as $package){
 
-		}
+				array_push($packagesInCart, $package['_id']);
 
-		$packages = new Packages;
-		$packages = $packages->whereIn("_id",$packagesInCart)->where('status',1)->get(['title','subTitle','description','coverImage','packageItems']);
-
-		foreach($cart['packages'] as &$package){
-
-			foreach($packages as $oPackage){
-
-				if((string)$package['_id'] === $oPackage->_id){
-
-					$package = array_merge($oPackage->toArray(),$package);
-					$package['packagePrice'] =  100; // due:: this should be calculated from server
-
-				}
 			}
 
-		}		
+			$packages = new Packages;
+			$packages = $packages->whereIn("_id",$packagesInCart)->where('status',1)->get(['title','subTitle','description','coverImage','packageItems']);
 
+			foreach($cart['packages'] as &$package){
+
+				foreach($packages as $oPackage){
+
+					if((string)$package['_id'] === $oPackage->_id){
+
+						$package = array_merge($package,$oPackage->toArray());
+
+						//$package['packagePrice'] =  100; // due:: this should be calculated from server
+
+					}
+				}
+
+			}
+
+		}
 		// package validate and manage end
 
 		$request->session()->put('deliverykey', $cart['_id']);
@@ -766,15 +770,13 @@ class CartController extends Controller
 	
 			$inputs = $request->all();
 			$packageId = $inputs['id'];
-			$packageDetail = $inputs['package'];
-	
+			$products = $inputs['products'];
+			$quantity = $inputs['quantity'];
+
+			$price = $inputs['price'];
+			$saving = $inputs['savings'];
+
 			$cart = Cart::find($cartKey);
-	
-			if(empty($cart)){
-	
-				return response(array("success"=>false,"message"=>"Not a valid request"),400);
-	
-			}
 	
 			$packages = $cart->packages;
 	
@@ -783,46 +785,110 @@ class CartController extends Controller
 				$packages = [];
 	
 			}
+
+
+			$packageDetail = [
+				'_unique' => new mongoId(),
+				"products" => $products,
+				"packageQuantity" => abs($quantity),
+				"_id" => new mongoId($packageId),
+				"packagePrice" => $price,
+				"saving" => $saving
+			];			
+		
+			$response = [
+				"message"=>"cart updated successfully"
+			];
+
+			// if(isset($packageDetail['unique'])){
 	
-			$packageDetail['_unique'] = new mongoId();
+			// 	foreach ($packages as $key => $package) {
 	
-			if(isset($packageDetail['unique'])){
+			// 		if(!isset($package["_unique"])){
+			// 			unset($packages[$key]);
+			// 			continue;
+			// 		}
+
+			// 		if($package["_unique"]==$packageDetail['unique']){
+			// 			unset($packages[$key]);
+			// 			$packageDetail['_unique'] = $package["_unique"];
+			// 			break;
+			// 		}
 	
-				foreach ($packages as $key => $package) {
-	
-					if(!isset($package["_unique"])){
-						unset($packages[$key]);
-						continue;
-					}
-					if($package["_unique"]==$packageDetail['unique']){
-						unset($packages[$key]);
-						$packageDetail['_unique'] = $package["_unique"];
-						break;
-					}
-	
-				}
-			}
-	
-			if(!isset($packageDetail['packageQuantity'])){
-				$packageDetail['packageQuantity'] = 1;
-			}
-			
-			$packageDetail['products'] = (array)$packageDetail['products'];
-			$packageDetail['_id'] = new mongoId($packageId);
+			// 	}
+			// }
 
 			try {
-	
-				$result = Cart::where('_id', $cartKey)->push('packages',[$packageDetail]);
-				return response(["success"=>true,"message"=>"cart updated successfully","key"=>$packageDetail['_unique']]);
+		
+				$result = Cart::where('_id', $cartKey)->push('packages',$packageDetail);
+				
+				$response['key'] = (string)$packageDetail['_unique'];
+
+				return response($response,200);
 	
 			} catch(\Exception $e){
-	
-				return response(["success"=>false,"message"=>"Something went worng"]);
-				return response(["success"=>false,"message"=>$e->getMessage()]);
+				
+				Log::warning("Package Insert : ".$e->getMessage());
 	
 			}
+
+			$response = ["message"=>"Something went wrong"];
+			return response($response,400);
 	
-		}
+	}
+
+	public function putPackage($uniqueId, $cartKey, Request $request){
+	
+			$inputs = $request->all();
+			
+			$quantity = $inputs['quantity'];
+
+			$response = [
+				"message"=>"cart updated successfully"
+			];
+
+			try {
+						
+				if(isset($inputs['products'])){
+					
+					$update = [
+
+						"packages.$.products" => $inputs['products'],
+						"packages.$.packageQuantity" => abs($quantity),
+						"packages.$.packagePrice" => $inputs['price'],
+						"packages.$.saving" => $inputs['savings']
+					];
+					
+				}else{
+
+					$update = [
+						"packages.$.packageQuantity" => abs($quantity)
+					];
+
+				}
+
+				$result = DB::collection('cart')->raw()->update(
+							[
+								'_id' => new MongoId($cartKey),
+								'packages._unique'=>new MongoId($uniqueId)
+							],
+							[
+								'$set' => $update
+							]
+						);
+
+				return response($response,200);
+	
+			} catch(\Exception $e){
+				
+				Log::warning("Package Update : ".$e->getMessage());
+	
+			}
+
+			$response = ["message"=>"Something went wrong"];
+			return response($response,400);
+	
+	}
 
 	public function deletePackage($packageUId,$cartKey){
 		

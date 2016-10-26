@@ -50,11 +50,91 @@ class CustomerController extends Controller
 			$users = $users->orderBy('mobile_number','desc')->get();
 		}
 
-		
-		
-		
-
 		return response($users);
+	}
+
+	public function getAddresses($id) {
+		$user = new User;
+
+		$user = $user->where('_id', $id)->first(['address']);
+
+		$addresses = [];
+		if(!empty($user) && !empty($user['address']))
+			foreach ($user['address'] as $address) {
+				$addresses[] = $address;
+			}
+
+		$user['address'] = $addresses;
+
+		return response($user);
+	}
+
+	public function getAutocomplete($col, Request $request)
+	{
+		// prd("hi");
+		$params = $request->all();
+		$users = new User;
+
+		$columns = ['name','email','mobile_number'];
+
+		if(isset($params['q']) && !empty(trim($params['q']))) {
+			$users = $users->where($col,'regexp', "/.*".$params['q']."/i");
+			return response($users->get($columns));
+		}
+	
+		return response([]);
+	}
+
+	public function postSave(CustomerRequest $request)
+	{
+		$inputs = $request->all();
+
+		$customer = user::where('email', '=', $inputs['email'])->first();
+
+		if(empty($customer)) {
+			if(empty($inputs['password'])){
+	            $chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+	            $inputs['password'] = substr( str_shuffle( $chars ), 0, 6 );
+	        }
+
+			try {
+
+				$user = User::create([
+
+					'name' => $inputs['name'],
+					'mobile_number' => $inputs['mobile_number'],
+					'email' => $inputs['email'],
+					'password' => bcrypt($inputs['password']),
+					'status' => 1,
+					'verified' => 1,
+
+				]);
+			
+			} catch(\Exception $e){
+				
+				return response(array("success"=>false,"message"=>$e->getMessage()));
+					
+			}
+
+			$email = new Email('login');
+			$email->sendEmail($inputs);
+			
+			return response(array("success"=>true,"message"=>"Customer created successfully", '_id'=>$user->_id));
+		}
+		else {
+			$customer = user::find($inputs['_id']);
+			
+			$customer->name = $inputs['name'];
+			$customer->email = $inputs['email'];
+			$customer->mobile_number = $inputs['mobile_number'];
+			
+			if($customer->save()){
+				return response(array("success"=>true,"message"=>"Customer updated successfully"));
+			}
+			
+			return response(array("success"=>false,"message"=>"Something went worng"));
+		}
+
 	}
 
 	/**
@@ -76,6 +156,11 @@ class CustomerController extends Controller
 	public function postStore(CustomerRequest $request)
 	{
 		$inputs = $request->all();
+
+		if(empty($inputs['password'])){
+            $chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+            $inputs['password'] = substr( str_shuffle( $chars ), 0, 6 );
+        }
 
 		try {
 

@@ -102,6 +102,8 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::resource('purchaseorder', 'Admin\PurchaseOrderController');
 	Route::controller('purchaseorder', 'Admin\PurchaseOrderController');
 
+	Route::post('address/{id}','AddressController@store');
+	// Route::controller('address', 'AddressController');
 });
 
 Route::group(['prefix' => 'admin'], function () {					
@@ -177,7 +179,9 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::put('chilledstatus/{cartkey}','CartController@updateProductChilledStatus');
 
-	Route::post('package/{cartkey}','CartController@postPackage');
+	Route::post('package/{cartKey}','CartController@postPackage');
+
+	Route::put('package/{uid}/{cartKey}','CartController@putPackage');
 
 	Route::delete('package/{key}/{cartKey}','CartController@deletePackage');
 	
