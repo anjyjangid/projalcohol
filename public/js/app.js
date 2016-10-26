@@ -1042,8 +1042,8 @@ function ($q, $rootScope, $log, $location) {
 }]);
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoholWishlist", "catPricing", "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll","$timeout",
-			 function($rootScope, settings, alcoholCart, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll,$timeout) {
+AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService", "store", "alcoholWishlist", "catPricing", "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll","$timeout",
+			 function($rootScope, settings, alcoholCart, ProductService, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll,$timeout) {
 
 	angular.alcoholCart = alcoholCart;
 	angular.userservice = UserService;
@@ -1117,6 +1117,13 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "store", "alcoh
 
 	};
 
+	$rootScope.prepareProductObjs = function(data){
+
+		var products = ProductService.prepareProductObjs(data);
+		
+		return products;
+
+	}
 	
 
 
