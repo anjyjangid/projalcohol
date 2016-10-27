@@ -27,8 +27,8 @@ class StoreRequest extends Request
         return [            
             'name' => 'required|max:100',
             'address' => 'required',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
+            //'latitude' => 'required|numeric',
+            //'longitude' => 'required|numeric',
             'metaTitle' => 'required|max:100',
             'metaKeywords' => 'required|max:150',
             'metaDescription' => 'required|max:150',
