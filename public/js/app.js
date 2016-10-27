@@ -1,5 +1,6 @@
 /*This is the main file where angular is defined*/
 var AlcoholDelivery = angular.module('AlcoholDelivery', [
+	"AlcoholCartFactories",
 	"ui.router",
 	'ngCookies',
 	'oc.lazyLoad',

@@ -1,5 +1,6 @@
-MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcoholCartPackage', 'alcoholCartGiftCard'
-, function($http, $q, alcoholCartProduct, alcoholCartPackage, alcoholCartGiftCard){
+MetronicApp
+.service('alcoholCart',['$http', '$q', 'alcoholCartItem', 'alcoholCartPackage', 'alcoholCartGiftCard'
+, function($http, $q, alcoholCartItem, alcoholCartPackage, alcoholCartGiftCard){
 
 	this.init = function(){
 
@@ -91,7 +92,7 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 
 			}else{
 
-				var newItem = new alcoholCartProduct(id, resProduct);
+				var newItem = new alcoholCartItem(id, resProduct);
 				_self.$cart.products[id] = newItem;
 
 			}
@@ -443,7 +444,7 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 
 			angular.forEach(storedCart.products, function (item,key) {
 
-				var newItem = new alcoholCartProduct(key, item);
+				var newItem = new alcoholCartItem(key, item);
 				_self.$cart.products[key] = newItem;
 
 			});
@@ -492,389 +493,6 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 
 }])
 
-
-.factory('alcoholCartProduct', ['$rootScope', '$log', function ($rootScope, $log){
-
-	var item = function (id, data) {
-
-		this.setId(id);
-
-		this.setRQuantity(data.chilled.quantity,data.nonchilled.quantity);
-
-		this.setRChilledStatus(data.chilled.status,data.nonchilled.status);
-		this.setRemainingQty(data.remainingQty);
-		this.setTQuantity(data.remainingQty);
-		this.setPrice(data);
-		this.setLastServedAs(data.lastServedChilled);
-		this.setProduct(data);
-		this.setSale(data.sale);
-
-		//this.setRMaxQuantity(data.product);
-
-
-	};
-
-	item.prototype.setId = function(id){
-		if (id)  this._id = id;
-		else {
-			$log.error('An ID must be provided');
-		}
-	};
-
-	item.prototype.getId = function(){
-		return this._id;
-	};
-
-	item.prototype.setLastServedAs = function(servedAs){
-		return this.servedAs = servedAs;
-	}
-
-	item.prototype.getLastServedAs = function(){
-		return this.servedAs;
-	}
-
-	item.prototype.setName = function(name){
-		if (name)  this._name = name;
-		else {
-			$log.error('A name must be provided');
-		}
-	};
-	item.prototype.getName = function(){
-		return this._name;
-	};
-
-	item.prototype.setPrice = function(product){
-
-		var original = product.product;
-
-		var originalPrice = parseFloat(original.price);
-
-		var unitPrice = originalPrice;
-
-		var quantity = this.getQuantity();
-
-		var advancePricing = original.regular_express_delivery;
-
-		if(advancePricing.type==1){
-
-			unitPrice +=  parseFloat(originalPrice * advancePricing.value/100);
-
-		}else{
-
-			unitPrice += parseFloat(advancePricing.value);
-
-		}
-
-		price = unitPrice;
-		price = parseFloat(price.toFixed(2));
-
-		this.unitPrice = price;
-
-		var bulkArr = original.express_delivery_bulk.bulk;
-
-		for(i=0;i<bulkArr.length;i++){
-
-			var bulk = bulkArr[i];
-
-			if(quantity >= bulk.from_qty && quantity<=bulk.to_qty){
-
-				if(bulk.type==1){
-
-					price = quantity * (originalPrice + (originalPrice * bulk.value/100));
-
-				}else{
-
-					price = quantity * (originalPrice + bulk.value);
-
-				}
-
-				price = parseFloat(price.toFixed(2));
-			}
-
-		}
-
-		if(quantity>0){
-			this.discountedUnitPrice = price/quantity;
-		}
-
-		return this.price = price;
-
-	};
-
-	item.prototype.getPrice = function(){
-		return parseFloat(this.price);
-	};
-
-	item.prototype.setRQuantity = function(cQuantity,ncQuantity){
-
-		this.qChilled = cQuantity;
-		this.qNChilled = ncQuantity
-
-	}
-
-	item.prototype.setRMaxQuantity = function(product){
-
-		if(product.quantity==0 && product.outOfStockType==2){
-			product.quantity = product.maxQuantity;
-		}
-
-		this.qChilledMax = product.maxQuantity - this.qNChilled;
-		this.qNChilledMax = product.maxQuantity - this.qChilled;
-
-	}
-
-	item.prototype.setRChilledStatus = function(cLastStatus,ncLastStatus){
-
-		var status = {
-				"chilled":true,
-				"nonchilled":false
-			}
-
-		this.qChilledStatus = status[cLastStatus];
-		this.qNChilledStatus = status[ncLastStatus];
-
-	}
-
-	item.prototype.getRQuantity = function(type){
-
-		if(type=='chilled'){
-			return this.qChilled;
-		}
-
-		return this.qNChilled;
-	}
-
-	item.prototype.setTQuantity = function(quantity){
-
-		var quantityInt = parseInt(quantity);
-		return this.quantity = quantityInt;
-
-	};
-
-	item.prototype.getQuantity = function(){
-		return this.quantity;
-	};
-
-	item.prototype.setProduct = function(data){
-
-		this.onlyForAdvance = false;
-		if(data.product.quantity==0 && data.product.outOfStockType==2){
-
-			this.onlyForAdvance = true;
-		}
-
-		if (data.product) this.product = data.product;
-	};
-
-	item.prototype.setNonAvailability = function(status){
-		return this.isNotAvailable = Boolean(status);
-	}
-
-	item.prototype.getData = function(){
-		if (this.product) return this.product;
-		else $log.info('This item has no product detail');
-	};
-
-	item.prototype.getTotal = function(){
-		return +parseFloat(this.getPrice()).toFixed(2);
-	};
-
-	item.prototype.setSale = function(sale){
-		this.sale = sale;
-	};
-
-	item.prototype.toObject = function() {
-		return {
-			id: this.getId(),
-			name: this.getName(),
-			price: this.getPrice(),
-			quantity: this.getQuantity(),
-			data: this.getData(),
-			total: this.getTotal()
-		}
-	};
-
-	item.prototype.setRemainingQty = function(rQty){
-
-		this.remainingQty = rQty;
-		this.setStateRemainQty();
-
-	};
-
-	item.prototype.setStateRemainQty = function(){
-
-		var remainqChilled = 0;
-		var remainqNChilled = 0;
-		var rQty = this.remainingQty;
-
-		if(rQty>this.qNChilled){
-
-			remainqNChilled = this.qNChilled;
-
-		}else{
-
-			remainqNChilled = rQty;
-
-		}
-
-		var stillRemain = rQty - this.qNChilled;
-		if(stillRemain>0){
-			remainqChilled = stillRemain;
-		}
-
-		this.remainqChilled = remainqChilled;
-		this.remainqNChilled = remainqNChilled;;
-
-
-	}
-
-	return item;
-
-}])
-
-.factory('alcoholCartPackage', ['$rootScope', '$log', function ($rootScope, $log){
-
-		var package = function (id, uniqueId, data) {
-
-			this.setId(id);
-			this.setUniqueId(uniqueId);
-			this.setName(data.title);
-			this.setQuantity(data.packageQuantity);
-			this.setPrice(data.packagePrice);
-			this.setOriginal(data);
-
-		};
-
-		package.prototype.setId = function(id){
-			if (id)  this._id = id;
-			else {
-				$log.error('An ID must be provided');
-			}
-		};
-
-		package.prototype.getId = function(){
-			return this._id;
-		};
-
-		package.prototype.setUniqueId = function(uniqueId){
-			if (uniqueId){
-				this._uniqueId = uniqueId;
-			}
-			else {
-				$log.error('An Unique Id must be provided');
-			}
-		};
-
-		package.prototype.getUniqueId = function(){
-			return this._uniqueId;
-		};
-
-		package.prototype.setName = function(name){
-			if (name)  this._name = name;
-			else {
-				$log.error('A name must be provided');
-			}
-		};
-		package.prototype.getName = function(){
-			return this._name;
-		};
-
-		package.prototype.setOriginal = function(data){
-			if (data) {
-				this.original = data;
-				this.original.unique = this.getUniqueId();
-			}
-		};
-
-		package.prototype.getOriginal = function(){
-			if (this.original) return this.original;
-			else $log.info('This package has no original detail');
-		};
-
-		package.prototype.setQuantity = function(quantity){
-			this._maxquantity = 100;
-			if (quantity) this._quantity = parseInt(quantity);
-
-		};
-
-		package.prototype.getQuantity = function(){
-			if (this._quantity) return parseInt(this._quantity);
-			else $log.info('This package quantity has some issue');
-		};
-
-		package.prototype.setPrice = function(price){
-
-			var unitPrice = parseFloat(price);
-
-			var quantity = this.getQuantity();
-
-			price = quantity * unitPrice;
-			price = parseFloat(price.toFixed(2));
-
-			return this._price = price;
-
-		};
-
-		package.prototype.getPrice = function(){
-			return parseFloat(this._price);
-		};
-
-		package.prototype.getTotal = function(){
-			return +parseFloat(this.getPrice()).toFixed(2);
-		};
-
-		return package;
-
-	}])
-
-.factory('giftingProduct',['$filter',function($filter){
-
-	var giftProduct = function(id,quantity,title,images,slug){
-
-		this._id = id;
-		this._quantity = parseInt(quantity);
-		this._maxQuantity = parseInt(quantity);
-		this._title = title;
-		this._image = $filter('getProductThumb')(images);
-		this._slug = slug;
-		this._inGift = 0;
-
-	}
-	return giftProduct;
-
-}])
-
-.factory('alcoholCartGiftCard',[function(){
-
-	var giftCard = function(cardData){
-
-		this.setUniqueId(cardData._uid);
-		this.setRecipient(cardData.recipient);
-
-	}
-
-	giftCard.prototype.getUniqueId = function(){
-		return this._uid.$id;
-	}
-
-	giftCard.prototype.setUniqueId = function(uid){
-		this._uid = uid;
-		return this._uid;
-	}
-
-	giftCard.prototype.setRecipient = function(recipient){
-		this.recipient = recipient;
-	}
-
-	giftCard.prototype.remove = function(){
-
-	}
-
-
-	return giftCard;
-
-}])
-
 .service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToast', 'alcoholCart', function ($rootScope, $q, $http, $mdToast, alcoholCart) {
 
 	this.addUpdateGiftCard = function(gift){
@@ -902,7 +520,6 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 
 		return defer.promise;
 	}
-
 
 }])
 
@@ -935,6 +552,7 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 		}
 
 	}
+
 }])
 
 .service('categoriesService', ['$http', '$q', '$log', function ($http, $q, $log){
@@ -1028,7 +646,6 @@ MetronicApp.service('alcoholCart',['$http', '$q', 'alcoholCartProduct', 'alcohol
 
 		return category;
 	}
-
 
 }])
 
