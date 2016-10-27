@@ -257,6 +257,7 @@
     <script type="text/javascript" src="js/controller.js"></script>
     <script type="text/javascript" src="js/alcoholServices.js"></script>
     <script type="text/javascript" src="js/alcoholCart.js"></script>
+    <script type="text/javascript" src="js/cartFactories.js"></script>
     <script type="text/javascript" src="js/alcoholWishlist.js"></script>
     <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
     <script type="text/javascript" src="js/directive.js"></script>
