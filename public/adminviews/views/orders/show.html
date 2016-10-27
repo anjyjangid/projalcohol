@@ -150,7 +150,7 @@
 									</div>
 								</div>	
 							</div>
-							<div class="row" ng-init="shipping = order.delivery.address.detail">								
+							<div class="row">								
 								<div class="col-md-6 col-sm-12">
 									<div class="portlet red-sunglo box">
 										<div class="portlet-title">
@@ -193,28 +193,28 @@
 											
 										</div>
 										<div class="portlet-body">
-											<div class="row static-info">												
+											<div class="row static-info">	
 												<div ng-if="shipping.instruction">
-													<div class="col-md-5 name">
+													<div class="col-md-6 name">
 														 Address Specific Instructions:
 													</div>
-													<div class="col-md-5 value">
+													<div class="col-md-6 value">
 														 {{shipping.instruction}}
 													</div>
 												</div>
 												<div ng-if="order.delivery.contact">
-													<div class="col-md-5 name">
+													<div class="col-md-6 name">
 														 Delivery Contact #:
 													</div>
-													<div class="col-md-5 value">
+													<div class="col-md-6 value">
 														 {{order.delivery.contact}}
 													</div>
 												</div>												 
 												<div ng-if="order.delivery.instructions">
-													<div class="col-md-5 name">
+													<div class="col-md-6 name">
 														 Delivery Instructions :
 													</div>
-													<div class="col-md-5 value">
+													<div class="col-md-6 value">
 														 {{order.delivery.instructions}}
 													</div>
 												</div>
