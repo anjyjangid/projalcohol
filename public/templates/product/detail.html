@@ -1,7 +1,9 @@
 <!-- <div product-breadcrumb info="product" viaLoyaltyStore="viaLoyaltyStore"></div> -->
 <div product-breadcrumb info="product"></div>
 
+
 <div class="productdetailcovermainbgimg">
+<div class="row">
 	<div class="col-xs-12 col-sm-6 col-md-6" ng-class="{comboproductitems_outofstock:{{!product.quantity}}}">
 
 		<data-owl-carousel class="owl-carousel owluperpartcover" data-options="parentOwlOptions" ng-model="sync1">
@@ -16,9 +18,30 @@
 											
 		</data-owl-carousel>            
 	</div>
-	<div class="col-xs-12 col-sm-6 col-md-6 product-detail-right-set" >
+	<div class="col-xs-12 col-sm-6 col-md-6 product-detail-right-set" ng:class="{'has-sale-div':product.sale || product.nameDetailSale}">
 		<div class="prddetailtitle">{{product.name}} </div>
-
+			<div class="tag-purple-new-pos">
+				<div class="tag-purple-new" ng-if="product.sale && !product.sale.coverImage">				
+					<div class="skew"></div>
+					<div class="skew2"></div>
+					<div class="salediscount tag-button-new">{{product.sale.detailTitle}}</div>
+				</div>
+				<div class="tag-purple-new transparent-bg" ng-if="product.sale.coverImage">					
+					<div class="pull-right tag-pic" ng-if="product.sale.coverImage">
+						<img style="width: 100px;" src="sale/i/{{product.sale.coverImage}}">
+					</div>
+				</div>
+				<div class="tag-yellow-new" ng-if="product.nameDetailSale && !product.saleImage">				
+					<div class="skew"></div>
+					<div class="skew2"></div>
+				<div class="nametag">{{product.nameDetailSale}}</div>
+				</div>
+				<div class="tag-yellow-new transparent-bg" ng-if="product.saleImage">					
+			<div class="prddetailnormaltext" ng-if="product.saleImage">
+				<img style="width: 100px;" src="sale/i/{{product.saleImage}}">
+				</div>
+			</div>
+			</div>
 			<div class="prddetailsubexttitle">{{product.shortDescription}}</div>
 			<div class="prddetailnormaltext">{{product.description}}</div>
 			<div class="prddetailnormaltext">
@@ -27,10 +50,7 @@
 					<span ng-bind="isInwishList?'Added to Wishlist':'Add to Wishlist'"></span>
 				</button>
 			</div>
-			<div class="prddetailnormaltext nametag" ng-if="product.nameDetailSale && !product.saleImage">{{product.nameDetailSale}}</div>
-			<div class="prddetailnormaltext" ng-if="product.saleImage">
-				<img style="width: 100px;" src="sale/i/{{product.saleImage}}">
-			</div>
+			
 			<div class="prddetailchilledcover text-noselect" ng-if="product.chilled && (product.quantity || product.outOfStockType == 2)" >
 				<div class="prodchilled-btn" ng-class="{'active':product.servechilled}" ng-click="product.servechilled=1">
 					<span>Chilled</span>
@@ -80,10 +100,7 @@
 			<div class="prddetailpricedicnt" ng-if="!viaLoyaltyStore">
 				{{product.salePrice | pricingTxt}}
 				<span ng-if="product.price != product.salePrice">{{product.price | pricingTxt}}</span>
-				<div class="salediscount" ng-if="product.sale && !product.sale.coverImage">{{product.sale.detailTitle}}</div>
-				<div class="pull-right tag-pic" ng-if="product.sale.coverImage">
-					<img style="width: 100px;" src="sale/i/{{product.sale.coverImage}}">
-				</div>				
+								
 			</div>
 			
 
@@ -125,5 +142,5 @@
 
 	</div>
 </div>
-
+</div>
 <div ui-view="alsoboughtthis"></div>
