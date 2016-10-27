@@ -23,26 +23,26 @@
                   <table width="100%" border="0" cellspacing="2" cellpadding="0" align="right" style="font-size:12px; margin-top:2px;">
                     <tbody>
                     <tr>
-                      <td align="center" nowrap="nowrap" style="font-size:12px;">
-                        <img style="width:120px;margin-left: 8px;" class="img-responsive" src="{{ asset('images/ad_logo.png') }}">
+                      <td colspan="2" align="center" nowrap="nowrap" style="font-size:12px;">
+                        <img style="width:130px;margin-left: 8px;" class="img-responsive" src="{{ asset('images/ad_logo.png') }}">
                       </td>
                     </tr>                    
                     <tr>
-                      <td align="center" nowrap="nowrap" style="font-size:12px;padding-top: 5px;">
+                      <td colspan="2" align="center" nowrap="nowrap" style="font-size:12px;padding-top: 5px;">
                         <strong>Tel:+6592445533</strong>
                       </td>
                     </tr>
                     <tr>                      
-                      <td align="left" nowrap="nowrap">&nbsp;</td>
+                      <td colspan="2" align="left" nowrap="nowrap">&nbsp;</td>
                     </tr>
                     <tr>                      
-                      <td align="center" nowrap="nowrap">
+                      <td colspan="2" align="center" nowrap="nowrap">
                         <h5><strong>Invoice</strong></h5>
                         <h4><strong>ADSG37561O0731</strong></h4>
                       </td>
                     </tr>
                     <tr>
-                      <td>
+                      <td valign="top">
                         <div><strong>Delivery Address</strong></div>
                         <div>John Doe</div>
                         <div>Nexus</div>
@@ -51,12 +51,20 @@
                         <div>#2 - 3</div>
                         <div>Singapore - 460543</div>
                       </td>
+                      <td valign="top" align="right">
+                        <div><strong>Order date</strong></div>
+                        <div>27-10-2016 12:05</div>
+                        <div><strong>Delivery date</strong></div>
+                        <div>27-10-2016 01:05</div>
+                        <div><strong>Contact Number</strong></div>
+                        <div>+6580458222</div>
+                      </td>
                     </tr>
                     <tr>                      
-                      <td align="left" nowrap="nowrap">&nbsp;</td>
+                      <td colspan="2" align="left" nowrap="nowrap">&nbsp;</td>
                     </tr>
                     <tr>
-                      <td>
+                      <td colspan="2">
                         <table width="100%" border="0" cellspacing="2" cellpadding="0">
                           <tr>
                             <td align="left">QTY</td>
@@ -80,11 +88,8 @@
                             <td align="right">58.20</td>
                           </tr>
                           <tr valign="top">
-                            <td align="left">2</td>
-                            <td>Tiger beer(chilled)</td>
-                            <td align="right">16.20</td>
-                            <td align="right">32.40</td>
-                          </tr>
+                            <td colspan="4"><strong>On Sale</strong></td>
+                          </tr>                          
                           <tr valign="top">
                             <td align="left">1</td>
                             <td>Absolute Vodka</td>
@@ -104,13 +109,56 @@
                             <td align="right">32.40</td>
                           </tr>
                           <tr valign="top">
+                            <td colspan="4"><strong>Packages</strong></td>
+                          </tr>
+                          <tr valign="top">
+                            <td align="left">1</td>
+                            <td>Party package (8-10 pax)</td>
+                            <td align="right">148.20</td>
+                            <td align="right">148.20</td>
+                          </tr>
+                          <tr valign="top">
+                            <td colspan="4"><strong>Gift Certificate</strong></td>
+                          </tr>
+                          <tr valign="top">
+                            <td align="left">1</td>
+                            <td>Gift Certificate</td>
+                            <td align="right">500.00</td>
+                            <td align="right">500.00</td>
+                          </tr>
+                          <tr valign="top">
+                            <td colspan="4"><strong>Loyalty</strong></td>
+                          </tr>
+                          <tr valign="top">
+                            <td align="left">2</td>
+                            <td>Tiger beer(chilled)</td>
+                            <td align="right">16.20</td>
+                            <td align="right">32.40</td>
+                          </tr>
+                          <tr valign="top">
                             <td align="left">1</td>
                             <td>Absolute Vodka</td>
                             <td align="right">48.20</td>
                             <td align="right">48.20</td>
                           </tr>
-                          
-
+                          <tr valign="top">
+                            <td colspan="4"><strong>Promotions</strong></td>
+                          </tr>
+                          <tr valign="top">
+                            <td align="left">1</td>
+                            <td>Red wine</td>
+                            <td align="right">Free</td>
+                            <td align="right">Free</td>
+                          </tr>
+                          <tr valign="top">
+                            <td colspan="4"><strong>Gift packaging</strong></td>
+                          </tr>
+                          <tr valign="top">
+                            <td align="left">1</td>
+                            <td>Basket</td>
+                            <td align="right">25</td>
+                            <td align="right">25</td>
+                          </tr>
                           <tr>                      
                             <td align="left" nowrap="nowrap">&nbsp;</td>
                           </tr>
@@ -135,7 +183,7 @@
                           </tr>
                           <tr class="topborder bottomborder">
                             <td align="right" valign="center" colspan="3"><strong>Total</strong></td>    
-                            <td align="right" valign="center"><h4 class="nomargin">$280</h4></td>
+                            <td align="right" valign="center"><h4 class="nomargin">$225</h4></td>
                           </tr>                          
                         </table>
                       </td>  
