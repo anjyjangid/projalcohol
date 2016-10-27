@@ -265,7 +265,7 @@ class CartController extends Controller
 			}
 
 			$packages = new Packages;
-			$packages = $packages->whereIn("_id",$packagesInCart)->where('status',1)->get(['title','subTitle','description','coverImage','packageItems']);
+			$packages = $packages->whereIn("_id",$packagesInCart)->where('status',1)->get(['title','subTitle','type','description','coverImage','packageItems']);
 
 			foreach($cart['packages'] as &$package){
 
@@ -1643,12 +1643,19 @@ jprd($product);
 		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
 
 		if($cartKey == null){
+
 			$cartKey = $request->get('merchant_data1');
-		}		
+
+		}
+
 
 		$cartObj = new Cart;
 
 		$cart = $cartObj->where("_id","=",$cartKey)->first();
+
+		$cart->cartToOrder();
+
+		prd("out if cartToOrder");
 
 		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){
 
@@ -1728,14 +1735,15 @@ jprd($product);
 		$cartArr["loyaltyPointEarned"] = $loyaltyPoints;
 
 //////
-		if($productsInCart)
-		foreach($productsInCart as $key=>$product){
+		if($productsInCart){
+			foreach($productsInCart as $key=>$product){
 
-			$cartArr['products'][$product["_id"]]['_id'] = new MongoId($product["_id"]);
+				$cartArr['products'][$product["_id"]]['_id'] = new MongoId($product["_id"]);
 
-			$cartArr['products'][$product["_id"]]['original'] = $product;
-			$cartProductsArr[] = $cartArr['products'][$product["_id"]];
+				$cartArr['products'][$product["_id"]]['original'] = $product;
+				$cartProductsArr[] = $cartArr['products'][$product["_id"]];
 
+			}
 		}
 
 		$cartArr['products'] = $cartProductsArr;

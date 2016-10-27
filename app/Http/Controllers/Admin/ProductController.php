@@ -617,8 +617,13 @@ class ProductController extends Controller
 		$params['type'] = 0;
 		$result = (new Products)->fetchProducts($params);
 
-		if(!empty($result['products']))
+		if(!empty($result['products'])){
 			$result = $result['products'];
+
+			foreach ($result as $key => &$product) {
+				$product['_id'] = (string)$product['_id'];
+			}
+		}
 
 		return response($result, 200);
 	}

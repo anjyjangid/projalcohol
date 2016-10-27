@@ -6,6 +6,7 @@ use Moloquent;
 
 use AlcoholDelivery\Setting as Setting;
 use AlcoholDelivery\Products as Products;
+use AlcoholDelivery\Packages as Packages;
 
 use MongoId;
 use MongoDate;
@@ -1100,8 +1101,7 @@ class Cart extends Moloquent
 	}
 
 
-
-	public function getProductsNotInGift($exceptGiftId){	
+	public function getProductsNotInGift($exceptGiftId){
 
 		$productsInCart = $this->getProductIncartCount();
 
@@ -1150,5 +1150,214 @@ class Cart extends Moloquent
 	}
 
 
+	public function cartToOrder(){
+
+		$productsInCart = $this->getProductIncartCount();
+		$order = [];
+
+		$proIds = array_keys($productsInCart);
+
+		$productObj = new products();
+
+		$productsInCart = $productObj->fetchProduct(["id"=>$proIds]);
+
+		$proDetails = [];
+		$proSales = [];
+		foreach ($productsInCart['product'] as $product) {
+
+			$product['common'] = [
+
+				'name'=>$product['name'],
+				'slug'=>$product['slug'],
+				'description'=>$product['description'],
+				'shortDescription'=>$product['shortDescription'],
+				'sku'=>$product['sku'],
+				'chilled'=>(bool)$product['chilled'],
+
+			];
+
+			foreach ($product['imageFiles'] as $key => $value) {
+
+				if($value['coverimage']){
+					$value['common']['icon'] = $value['source'];
+				}
+
+			}
+
+			$product['unitprice'] = $product['price'];
+
+			if($product['regular_express_delivery']['type']==1){
+
+				$product['unitprice'] +=  (float)($product['unitprice'] * $product['regular_express_delivery']['value']/100);
+
+			}else{
+
+				$product['unitprice'] += (float)($product['regular_express_delivery']['value']);
+
+			}
+
+			$product['unitprice'] = round($product['unitprice'], 2);			
+				
+			$proDetails[(string)$product['_id']] = $product;
+
+			if(isset($product['proSales'])){
+
+				$objSale = [
+					"title" => $product['proSales']['listingTitle'],
+					"detailTitle" => $product['proSales']['detailTitle'],
+					"discountValue" => $product['proSales']['discountValue'],
+					"actionType" => $product['proSales']['actionType'],
+					"discountType" => $product['proSales']['discountType'],
+					"type" => $product['proSales']['type']
+				];
+
+
+				if(isset($product['proSales']['actionProductId']) && count($product['proSales']['actionProductId'])>0){
+					$objSale['action'] = true;
+				}
+
+				$proSales[(string)$product['proSales']['_id']] = $objSale;
+
+			}
+
+		}
+
+		unset($productsInCart);
+		
+		// Set sale products start //
+		if(isset($this->sales)){
+
+			foreach($this->sales as $sale){
+
+				$sObj = [
+					'_id'=>new MongoId((string)$sale['sale']),
+					'chilled'=>(bool)$sale['chilled'],
+					'products'=>$sale['products']
+				];
+
+				$currSale = $proSales[(string)$sale['sale']];
+				$totalPrice = 0;
+				
+				$price = 0;
+				$actionProPrice = 0;
+
+				foreach ($sObj['products'] as $product){
+					
+					$detail = $proDetails[(string)$product['_id']];
+
+					$price = $price + ($detail['unitprice'] * $product['quantity']);
+					
+				}
+				
+
+				if(isset($sale['action'])){
+
+					$sObj['action'] = $sale['action'];
+
+					foreach ($sObj['action'] as $product) {
+
+						$detail = $proDetails[(string)$product['_id']];
+
+						$tempP = $detail['unitprice'] * $product['quantity'];
+
+						$actionProPrice+= $tempP;
+						$price+= $tempP;
+
+					}
+
+				}
+
+				$strikePrice = $price;
+
+				$currPrice = 0;
+				if($currSale['actionType'] == 1){
+					 
+					// $qty = detail.giftQuantity;
+					// currPrice = parseFloat(price) - parseFloat(actionProPrice);
+					// currPrice = currPrice * qty;
+
+				}else{
+
+					if($currSale['discountType']==1){
+						
+						if(isset($currSale['action'])){
+
+							$currPrice = $actionProPrice - $currSale['discountValue'];
+							$currPrice = $price - $currPrice;
+
+						}else{
+
+							$currPrice = $price - $currSale['discountValue'];
+
+						}
+						
+
+					}else{
+
+						if(isset($currSale['action'])){
+							$currPrice = $actionProPrice - ($actionProPrice * $currSale['discountValue'] / 100);
+							$currPrice = $price - $currPrice;
+						}else{
+							$currPrice = $price - ($price * $currSale['discountValue'] / 100);
+						}
+
+					}
+
+				}
+
+				$sObj['price'] = [
+					'original' => number_format($strikePrice,2),
+					'sale' => number_format($currPrice,2)
+				];
+
+				$order['sales'][] = $sObj;
+
+			}
+			
+
+			
+		}		
+		// Set sale products ends //
+
+		// Set packages start //
+
+		if(isset($this->packages)){
+
+			$packagesInCart = [];
+			foreach($this->packages as $package){
+
+				array_push($packagesInCart, $package['_id']);
+
+			}
+
+			$packages = new Packages;
+			$packages = $packages->whereIn("_id",$packagesInCart)->where('status',1)->get(['title','subTitle','type','description','coverImage','packageItems']);
+			$packages = $packages->toArray();
+
+			$packagesInCart = [];
+			foreach($packages as $package){
+				$packagesInCart[(string)$package['_id']] = $package;
+			}
+			
+			foreach ($this->packages as $key => $package) {
+
+				$oPDetail = $packagesInCart[(string)$package['_id']];
+				prd($oPDetail);
+
+				$oPackage = [
+					''
+				];
+
+				$order['packages'][(string)$package['_id']] = $oPackage;
+			}
+
+		}
+
+		// Set packages ends //
+
+		prd($order);
+		prd("is it complete");
+
+	}	
 
 }

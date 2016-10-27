@@ -4,6 +4,7 @@ Metronic AngularJS App Main Script
 
 /* Metronic App */
 var MetronicApp = angular.module("MetronicApp", [
+	"AlcoholCartFactories",
 	"ui.router",
 	"ui.bootstrap",
 	"oc.lazyLoad",

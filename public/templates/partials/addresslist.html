@@ -4,8 +4,12 @@
 			<span><img src="images/addressbookpic1.png" /></span>
 			<div class="addrestravis-text">{{address.firstname}} {{address.lastname}}</div>
 			<div class="addresseditdltpic">
-				<a ng-click="showAddressForm({ev:$event,key:key}); $event.stopPropagation();"><img src="images/savedcardedit.png"></a>
-				<a ng-click="removeAddress(key); $event.stopPropagation();"><i class="glyphicon glyphicon-trash"></i></a>
+				<a ng-click="showAddressForm({ev:$event,key:key}); $event.stopPropagation();">
+					<i class="glyphicon glyphicon-pencil"></i>
+				</a>
+				<a ng-click="removeAddress(key); $event.stopPropagation();">
+					<i class="glyphicon glyphicon-trash"></i>
+				</a>
 			</div>
 		</div>
 		<div class="addressbok-address">

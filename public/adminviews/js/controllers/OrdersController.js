@@ -40,7 +40,7 @@ MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout'
     orderModel.getOrder($stateParams.order).success(function(response){
 		$scope.order = response;
 
-		//$scope.shipping = response.user.address[response.delivery.address.key];
+		$scope.shipping = response.delivery.address.detail;
 		$scope.serviceCharge = 0;
 		if($scope.service.express.status){
 			$scope.serviceCharge += $scope.service.express.charges;
@@ -90,13 +90,14 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 		var api;
 		if($scope.cart.orderType=='business')
-			api = '/adminapi/business/addresses/'+customer._id;
+			api = '/adminapi/business/detail/'+customer._id;
 		else
-			api = '/adminapi/customer/addresses/'+customer._id;
+			api = '/adminapi/customer/detail/'+customer._id;
 
 		$http.get(api)
 		.then(function(res){
 			$scope.cart.addresses = res.data.address;
+			$scope.cart.savedCards = res.data.savedCards;
 		});
 	}
 
@@ -107,6 +108,11 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 			api = '/adminapi/business/save';
 		else
 			api = '/adminapi/customer/save';
+
+		if(!$scope.cart[$scope.cart.orderType]._id) {
+			$scope.cart.addresses = [];
+			$scope.cart.savedCards = [];
+		}
 
 		$scope.savingCust = true;
 		delete $scope.errors;
@@ -121,6 +127,18 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		.finally(function(){
 			$scope.savingCust = false;
 		});
+	}
+
+	$scope.qualifyFor = function(section){
+
+		if(!$scope.cart || !$scope.cart[$scope.cart.orderType] || !$scope.cart[$scope.cart.orderType]._id){
+			return false;
+		}
+		else if(!$scope.cart.addresses[$scope.cart.selectedAddress] && !$scope.cart.addresses[$scope.cart.selectedBilAddr]) {
+			return section=='address';
+		}
+		else
+			return true;
 	}
 
 	$scope.newAddress = function(address){
@@ -582,11 +600,103 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 	if(!$scope.payment)
 		$scope.payment = {};
-	if(!$scope.payment.type)
-		$scope.payment.type = 'cod';
+	if(!$scope.payment.method)
+		$scope.payment.method = 'COD';
 
 }])
 
 .controller('OrderReviewController',['$scope', '$http', 'alcoholCart',function($scope, $http, alcoholCart){
 	$scope.alcoholCart = alcoholCart;
 }])
+
+
+
+.directive('userCards', function(){
+
+	return {
+		scope :{
+			paymentmode: '=paymentmode',
+			payment:'=payment',
+			savedCards: '=savedcards'
+		},
+		restrict: 'A',
+		templateUrl: '/adminviews/views/orders/order/addcard.html',
+		controller: function($scope,$rootScope,$http,$state,sweetAlert,alcoholCart){//,$payments
+
+			$scope.$on('addcardsubmit', function() {
+	            $scope.addnewcard();
+	        });
+
+	    	// $scope.userdata = {};
+
+		    // $scope.verified = function () {
+		    // 	return $payments.verified();
+		    // }
+
+		    $scope.addnewcard = function(){
+		    	if($scope.paymentmode){
+		    		$scope.payment.creditCard.token = 1;
+		    	}
+		    	$scope.processingcard = true;
+		    	$scope.errors = [];
+				$http.post('/payment/addcard',$scope.payment.creditCard).success(function(rdata){
+
+					if($scope.paymentmode){
+						$scope.payment.creditCard = rdata.card;
+
+						alcoholCart.deployCart().then(
+							function(result){
+								$state.go('mainLayout.checkout.review');
+							}
+						);
+
+					}else{
+						$scope.payment.card = '';
+						// $scope.userdata = rdata.user;
+						$scope.savedCards = rdata.user.savedCards;
+						$scope.payment.creditCard = {};
+					}
+
+					$scope.processingcard = false;
+				}).error(function(errors){
+					$scope.errors = errors;
+					$scope.processingcard = false;
+				});
+			}
+
+			$scope.removeCard = function(card){
+				sweetAlert.swal({
+				  title: 'Are you sure?',
+				  text: "You won't be able to revert this!",
+				  type: 'warning',
+				  showCancelButton: true,
+				  confirmButtonColor: '#3085d6',
+				  cancelButtonColor: '#d33',
+				  confirmButtonText: 'Yes, delete it!'
+				}).then(function() {
+					$http.post('/payment/removecard',card).success(function(rdata){
+						// $scope.userdata = rdata.user;
+						$scope.savedCards = rdata.user.savedCards;
+						$scope.payment.card = '';
+					}).error(function(errors){
+						sweetAlert.swal({
+							type:'error',
+							text:errors,
+						});
+					});
+				});
+			}
+
+			$scope.changeCard = function(card){
+				$scope.payment.creditCard = card;
+			}
+
+		}
+	};
+})
+.filter('creditcard', function() {
+	return function(number) {
+		var r = number.substr(number.length-4,4);
+		return 'XXXX XXXX XXXX '+r;
+	}
+})

@@ -1,0 +1,95 @@
+<div class="checkoutmiddletable">
+    <div ng-init="payment.card='newcard'" >
+        <md-radio-group ng-model="payment.card" ng:class="{'hideselector':!paymentmode}">
+        <table class="table wislistborbtm" id="cardtable">
+            <tbody>
+                <tr ng-repeat="card in savedCards">
+                    <td>
+                        <md-radio-button value="{{card.token_id}}" ng-click="changeCard(card)" class="paymentselector">
+                            <div class="orhistry2_td2procdtcvr">
+                                <span ng:class="card.type" class="newcardicons"></span>
+                                <div class="checkouter-td-right-text">
+                                    <div class="orhistry2_td2proctext1">{{card.token_id | creditcard}}</div>
+                                    <div class="orhistry2_td2proctext2">{{card.type}}</div>
+                                </div>  
+                            </div>
+                        </md-radio-button>
+                    </td>
+                    <td align="right">
+                        <a href="javascript:void(0)" ng-click="removeCard(card)" class="checkoutmiddletabledeleteimg"><i class="glyphicon glyphicon-trash"></i></a>
+                    </td>                
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <md-radio-button value="newcard" ng-click="changeCard({})" class="paymentselector">
+                            <div class="orhistry2_td2procdtcvr">            
+                                <span class="cardicons">
+                                    <div class="addicon" ng-hide="paymentmode">+</div>
+                                </span>
+                                <div class="checkouter-td-right-text">
+                                    <div class="orhistry2_td2proctext1">&nbsp;</div>
+                                    <div class="orhistry2_td2proctext2">
+                                        {{paymentmode?'NEW CARD':'ADD NEW CARD'}}
+                                    </div>
+                                </div>                            
+                            </div>
+                        </md-radio-button>
+                        <div class="addcardform" ng-show="payment.card=='newcard'">
+                            <div class="row">
+                                <form ng-model="payment.creditCard" name="profileFrm" class="" ng-submit="addnewcard()" validate-card>        
+                                    <div class="order-fetching" ng-if="processingcard"></div>
+                                    <div class="col-xs-12">
+                                        <div class="form-group" ng:class="{'has-error':errors.number[0]}">
+                                            <label>Card Number</label>
+                                            <input type="text" ng-model="payment.creditCard.number" placeholder="Card Number" format-card class="form-control">
+                                            <span class="help-block">{{errors.number[0]}}</span>
+                                        </div>
+                                    </div>    
+                                    <!-- <div class="col-xs-4">
+                                        <div class="form-group" ng:class="{'has-error':errors.cvc[0]}">
+                                            <label>CVV</label>
+                                            <input type="password" ng-model="payment.creditCard.cvc" placeholder="CVV" class="form-control">
+                                            <span class="help-block">{{errors.cvc[0]}}</span>
+                                        </div>        
+                                    </div> -->
+                                    <div class="col-xs-6">
+                                        <div class="form-group" ng:class="{'has-error':errors.name[0]}">
+                                            <label>Name on card</label>
+                                            <input type="text" ng-model="payment.creditCard.name" placeholder="Name on card" class="form-control">
+                                            <span class="help-block">{{errors.name[0]}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <div class="form-group" ng:class="{'has-error':errors.month[0]}">
+                                            <label>Exp. date</label>
+                                            <input type="text" maxlength="2" ng-model="payment.creditCard.month" placeholder="MM" class="form-control">
+                                            <span class="help-block">{{errors.month[0]}}</span>
+                                        </div>        
+                                    </div>
+                                    <div class="col-xs-3">        
+                                        <div class="form-group" ng:class="{'has-error':errors.year[0]}">
+                                            <label>&nbsp;</label>
+                                            <input type="text" maxlength="2" ng-model="payment.creditCard.year" placeholder="YY" class="form-control">
+                                            <span class="help-block">{{errors.year[0]}}</span>
+                                        </div>
+                                    </div>           
+                                    <div ng-hide="paymentmode" class="col-xs-12">
+                                        <button class="btn" type="submit"> Add </button> 
+                                        <button class="btn" type="button" ng-click="payment.card = ''" > Cancel </button> 
+                                    </div>
+                                    <div ng-show="paymentmode" class="col-xs-12">
+                                        <md-checkbox ng-model="payment.savecard" aria-label="leaveatdoor-checkbox">
+                                            Save for future payments
+                                        </md-checkbox>
+                                    </div>
+                                    <!-- {{creditCard|json}} -->
+                                </form>  
+                            </div>
+                        </div>
+                    </td>      
+                </tr>
+            </tbody>
+        </table>
+        </md-radio-group>
+    </div>
+</div>        
