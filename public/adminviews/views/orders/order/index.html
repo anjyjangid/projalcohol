@@ -82,7 +82,7 @@
 												ng-class="{'spinner': loading.email}"
 												class="form-control"
 												ng-model="cart.consumer.email"
-												ng-change="clearProp(cart.consumer, '_id'); cart.addresses=[];">
+												ng-change="clearProp(cart.consumer, '_id');">
 										</div>
 										<span class="help-block" ng-bind="errors['email'][0]"></span>
 									</div>
@@ -139,7 +139,7 @@
 												ng-class="{'spinner': loading.company_email}"
 												class="form-control"
 												ng-model="cart.business.company_email"
-												ng-change="clearProp(cart.business, '_id'); cart.addresses=[];">
+												ng-change="clearProp(cart.business, '_id');">
 										</div>
 										<span class="help-block" ng-bind="errors['company_email'][0]"></span>
 									</div>
@@ -157,7 +157,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-sm-6" ng-show="cart.business._id">
+							<div class="col-sm-6" ng-show="qualifyFor('address')">
 								<h3>Billing Address</h3>
 								<div class="row">
 									<div class="col-lg-6" ng-repeat-start="address in cart.addresses">
@@ -173,24 +173,28 @@
 									<div ng-repeat-end class="clearfix visible-lg-block" ng-if="$index%2==1"></div>
 
 									<div class="col-lg-6">
-										<a class="thumbnail" ng-click="newAddress()">
+										<button class="btn btn-primary" ng-click="newAddress()">
+											<span class="glyphicon glyphicon-plus"></span>
+											Add new Address
+										</button>
+										<!-- <a class="thumbnail" ng-click="newAddress()">
 											<div class="caption">
 												<span class="glyphicon glyphicon-plus"></span>
 												Add new Address
 											</div>
-										</a>
+										</a> -->
 									</div>
 								</div>
 							</div>
 							</div>
 						</tab>
 					</tabset>
-					<p ng-hide="cart[cart.orderType]._id">Please Save the user to select address</p>
-					<div class="row" ng-show="cart[cart.orderType]._id">
+					<p ng-hide="qualifyFor('address')" class="text-danger">Please Save the user to select address</p>
+					<div class="row" ng-show="qualifyFor('address')">
 					<div class="col-sm-6">
 						<h3>Delivery Address</h3>
 						<div class="row">
-							<div class="col-lg-6" ng-repeat-start="address in cart.addresses">
+							<div class="col-lg-6" ng-repeat-start="address in cart.addresses | limitTo:(showall?cart.addresses.length:3)">
 								<a class="thumbnail" ng-class="{'active':cart.selectedAddress==$index}" ng-click="cart.selectedAddress=$index">
 									<div class="caption">
 										<h4>{{address.firstname+' '+address.lastname}}</h4>
@@ -203,12 +207,21 @@
 							<div ng-repeat-end class="clearfix visible-lg-block" ng-if="$index%2==1"></div>
 
 							<div class="col-lg-6">
-								<a class="thumbnail" ng-click="newAddress()">
+								<p ng-show="cart.addresses.length>3">
+									<button class="btn btn-default" ng-click="showall=!showall">
+										Show {{showall?'less':('all ('+cart.addresses.length+')')}}
+									</button>
+								</p>
+								<button class="btn btn-primary" ng-click="newAddress()">
+									<span class="glyphicon glyphicon-plus"></span>
+									Add new Address
+								</button>
+								<!-- <a class="thumbnail" ng-click="newAddress()">
 									<div class="caption">
 										<span class="glyphicon glyphicon-plus"></span>
 										Add new Address
 									</div>
-								</a>
+								</a> -->
 							</div>
 						</div>
 					</div>
@@ -261,13 +274,13 @@
 				</div> -->
 			</div>
 			<div class="portlet-body form">
-				<div class="form-body" ng-if="(cart.addresses[cart.selectedAddress] || cart.addresses[cart.selectedBilAddr]) && cart[cart.orderType]._id">
+				<div class="form-body" ng-if="qualifyFor('products')">
 					<div class="clearfix" ui-view="products"></div>
 					<div class="clearfix" ui-view="review"></div>
 				</div>
 			</div>
 		</div>
-		<div class="portlet box blue" ng-if="cart.delivery.type == 1">
+		<div class="portlet box blue" ng-if="cart.delivery.type != 1">
 			<div class="portlet-title">
 				<div class="caption">Delivery Slot</div>
 				<!-- <div class="tools hidden-xs">
@@ -275,7 +288,7 @@
 				</div> -->
 			</div>
 			<div class="portlet-body form">
-				<div class="form-body">
+				<div class="form-body" ng-if="qualifyFor('delivery')">
 					<div class="clearfix" ui-view="delivery"></div>
 				</div>
 			</div>
@@ -288,7 +301,7 @@
 				</div> -->
 			</div>
 			<div class="portlet-body form">
-				<div class="form-body">
+				<div class="form-body" ng-if="qualifyFor('payment')">
 					<div class="clearfix" ui-view="payment"></div>
 				</div>
 			</div>

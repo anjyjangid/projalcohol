@@ -298,7 +298,13 @@ class Products extends Eloquent
 			
 			$match['$match']['slug'] = $params['product'];
 			
-		}				
+		}
+
+		if(isset($params['id'])){
+			
+			$match['$match']['_id'] = $params['id'];
+
+		}
 
 		if(!empty($params['search'])){
 
@@ -863,6 +869,8 @@ class Products extends Eloquent
 								'chilled' => 1,
 								'description' =>  1,
 								'price' => 1,
+								'subCat'=>1,
+								'parentCat'=>1,
 								'categories' => 1,
 								'categoriesObject'=>1,
 								'imageFiles' => 1,
@@ -894,6 +902,8 @@ class Products extends Eloquent
 								'chilled' => 1,
 								'description' =>  1,
 								'price' => 1,
+								'subCat'=>1,
+								'parentCat'=>1,
 								'categories' => 1,
 								'categoriesObject'=>1,
 								'imageFiles' => 1,

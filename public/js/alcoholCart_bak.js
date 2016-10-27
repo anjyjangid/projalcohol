@@ -2427,7 +2427,7 @@ AlcoholDelivery.factory('alcoholCartSale', ['$log', function ($log){
 
 		this.price = currPrice.toFixed(2);
 
-	};
+	};	
 
 	saleObj.prototype.getPrice = function(){
 		return parseFloat(this.price);

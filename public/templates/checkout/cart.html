@@ -197,7 +197,7 @@
 						<div class="orhistry2_td2procdtcvr">
 						<span class="cursor-pointer">
 							<a ui-sref="mainLayout.product({product:cartproduct.product.slug})" title="View Product">
-								<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="img-responsive" />
+								<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
 							</a>
 						</span>
 
@@ -286,7 +286,7 @@
 
 							<span>
 								<a ui-sref="mainLayout.gift({giftid:gift.getId(),uid:gift.getUniqueId()})">
-									<img err-pro-src="asset/i/defaultImage.png" ng-src="{{gift.coverImage.source}}" alt="gift-pic" class="img-responsive" />
+									<img err-src="asset/i/defaultImage.png" ng-src="{{gift.imageLink}}" alt="gift-pic" class="img-responsive" />
 								</a>
 							</span>
 
@@ -301,7 +301,7 @@
 							<li ng-repeat="(key, giftPro) in gift.getProducts()">
 								<span class="qty-tag-hang">X {{giftPro.quantity}}</span>
 								<a ui-sref="mainLayout.product({product:giftPro.product.slug})" title="View :: {{giftPro.product.name}}">
-									<img err-pro-src="" ng-src="products/i/200/{{giftPro.product.icon }}" alt="" class="img-responsive img-responsive-h" />
+									<img err-src="" ng-src="products/i/200/{{giftPro.product.icon }}" alt="" class="img-responsive img-responsive-h" />
 								</a>
 							</li>
 						</ul>

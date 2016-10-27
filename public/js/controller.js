@@ -145,6 +145,12 @@ AlcoholDelivery.controller('AppController',
 		return $filter('filter')($rootScope.settings.pages,{section:section});
 	};
 
+	$scope.sortOptions = [
+		{value:'',label:'Popularity'},
+		{value:'price_asc',label:'Price - Low to High'},
+		{value:'price_desc',label:'Price - High to Low'},		
+	];
+
 }]);
 
 AlcoholDelivery.controller('ProductsController', [
@@ -167,6 +173,8 @@ AlcoholDelivery.controller('ProductsController', [
 	}
 
 	if(typeof $stateParams.toggle==="undefined"){$stateParams.toggle="all";}
+
+	$scope.currentSort = $filter('filter')($scope.sortOptions,{value:$stateParams.sort})[0];
 
 	var data = {
 		category:$category,
@@ -2480,8 +2488,8 @@ AlcoholDelivery.controller('PackageDetailController',
 }]);
 
 AlcoholDelivery.controller('SearchController', [
-'$timeout', '$q', '$log', '$http', '$state', '$scope', '$rootScope', '$timeout', '$anchorScroll', '$stateParams', 'ScrollPagination', 'ProductService'
-, function($timeout, $q, $log, $http, $state, $scope, $rootScope, $timeout, $anchorScroll, $stateParams, ScrollPagination, ProductService){
+'$timeout', '$q', '$log', '$http', '$state', '$scope', '$rootScope', '$timeout', '$anchorScroll', '$stateParams', '$filter', 'ScrollPagination', 'ProductService'
+, function($timeout, $q, $log, $http, $state, $scope, $rootScope, $timeout, $anchorScroll, $stateParams, $filter, ScrollPagination, ProductService){
 
 		$scope.AppController.category = "";
 		$scope.AppController.subCategory = "";
@@ -2576,6 +2584,8 @@ AlcoholDelivery.controller('SearchController', [
 			$(".logos-inner-cover").removeClass('hide');
 		}
 	}
+
+	$scope.currentSort = $filter('filter')($scope.sortOptions,{value:$stateParams.sort})[0];
 
 	if($stateParams.keyword){
     	if($stateParams.keyword!=''){

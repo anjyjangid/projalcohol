@@ -1,17 +1,21 @@
 <div class="checkoutstepthree_showdate">Please choose a payment method from below</div>
 <div class="row">
-	<div class="col-sm-4 col-sm-offset-2 paymenttype" ng-class="{active:payment.type=='cod'}" ng-click="payment.type='cod'">
+	<div class="col-sm-4 col-sm-offset-2 paymenttype" ng-class="{active:payment.method=='COD'}" ng-click="payment.method='COD'">
 		<div class="pic_divcash" style="height: 149px;">
 			<div class="verticetnter2"><img src="images/cashondelivery.png"></div>
 		</div>
 		<div class="divcash_text">Cash on Delivery</div>
-		<img src="images/activepaytype.png" class="hidethumb" ng-show="payment.type=='cod'">
+		<img src="images/activepaytype.png" class="hidethumb" ng-show="payment.method=='COD'">
 	</div>
-	<div class="col-sm-4 paymenttype" ng-class="{active:payment.type=='credit'}" ng-click="payment.type='credit'">
+	<div class="col-sm-4 paymenttype" ng-class="{active:payment.method=='CARD'}" ng-click="payment.method='CARD'">
 		<div class="pic_creadetcard" style="height: 149px;">
 			<div class="verticetnter"><img src="images/creaditcardpay.png"></div>
 		</div>
 		<div class="creadetcard_text">Credit Card</div>
-		<img src="images/activepaytype.png" class="hidethumb" ng-show="payment.type=='credit'">
+		<img src="images/activepaytype.png" class="hidethumb" ng-show="payment.method=='CARD'">
 	</div>
+</div>
+<br>
+<div class="availablecards">
+	<div paymentmode="true" payment="payment" savedcards="cart.savedCards" ng-show="payment.method=='CARD'" user-cards></div>
 </div>
