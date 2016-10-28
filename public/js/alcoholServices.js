@@ -340,8 +340,9 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 	this.addGiftCard = function(gift){
 
 		var defer = $q.defer();
+		var cartKey = alcoholCart.getCartKey();
 
-		$http.post("/cart/giftcard",{
+		$http.post("/cart/giftcard/"+cartKey,{
 			type: 'giftcard',
 			id:gift._id,
 			recipient : gift.recipient
