@@ -2969,7 +2969,7 @@ AlcoholDelivery.factory('alcoholCartPackage', ['$rootScope', '$log', function ($
 			this.setUnitPrice(unitPrice);
 
 			var quantity = this.getQuantity();
-				console.log(quantity);
+
 			price = quantity * unitPrice;
 			price = parseFloat(price.toFixed(2));
 					

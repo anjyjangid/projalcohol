@@ -2,13 +2,11 @@
 
 namespace AlcoholDelivery;
 
-use Illuminate\Database\Eloquent\Model;
+use Moloquent;
 
 use AlcoholDelivery\Setting as Setting;
 
-use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
-
-class Gift extends Eloquent
+class Gift extends Moloquent
 {
 	protected $primaryKey = "_id";
 	protected $collection = 'gift';

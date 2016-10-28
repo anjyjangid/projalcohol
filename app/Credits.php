@@ -2,7 +2,7 @@
 
 namespace AlcoholDelivery;
 
-use Illuminate\Database\Eloquent\Model;
+use Moloquent;
 
 use AlcoholDelivery\User as User;
 
@@ -14,7 +14,7 @@ use MongoId;
 
 use MongoDate;
 
-class Credits extends Model
+class Credits extends Moloquent
 {
 	public function getCredits($userId,$params = []){
 
@@ -104,6 +104,58 @@ class Credits extends Model
 		return (object)$response;
 
 	}
+
+	// public function getCreditsDetail($values){
+
+	// 	$response = [
+	// 		"success"=>false,
+	// 		"message"=>"",
+	// 		"card" => []
+	// 	];
+
+	// 	try{
+
+	// 		$card = DB::collection('giftcategories')->raw(function($collection) use ($value){
+	// 				return $collection->aggregate([
+	// 							[
+	// 								'$match' => [
+	// 									'type' => 'giftcard'
+	// 								]
+	// 							],
+	// 							[
+	// 								'$unwind' => '$cards'
+	// 							],
+	// 							[
+	// 								'$match' => [
+	// 												'cards.value' => ['$in'=>$values]
+	// 											]
+	// 							],
+	// 							[
+	// 								'$project' => [
+	// 												'_id' => 0,
+	// 												'value' => '$cards.value',
+	// 												'loyalty' => '$cards.loyalty'
+	// 											]
+	// 							]
+	// 						]);
+	// 				});
+
+	// 		if(!empty($card['result'])){
+
+	// 			$response['success'] = true;
+	// 			$response['card'] = $card['result'];
+
+	// 		}
+
+	// 	}catch(\Exception $e){
+
+	// 		$response["message"]=$e->getMessage();
+
+	// 	}
+
+	// 	return (object)$response;
+
+	// }
 
 	public function getCreditsStatics($userId){
 

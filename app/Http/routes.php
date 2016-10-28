@@ -205,7 +205,7 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::put('gift/{cartKey}','CartController@putGift');
 	
-	Route::post('giftcard','CartController@postGiftcard');
+	Route::post('giftcard/{cartKey}','CartController@postGiftcard');
 
 	Route::put('giftcard/{uid}','CartController@putGiftcard');
 

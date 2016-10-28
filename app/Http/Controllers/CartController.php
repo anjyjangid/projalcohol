@@ -1652,10 +1652,7 @@ jprd($product);
 		$cartObj = new Cart;
 
 		$cart = $cartObj->where("_id","=",$cartKey)->first();
-
-		$cart->cartToOrder();
-
-		prd("out if cartToOrder");
+		
 
 		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){
 
@@ -1690,8 +1687,8 @@ jprd($product);
 
 		}
 
-		$cartArr['user'] = new MongoId($user->_id);
-		// $cartArr['user'] = new MongoId("57c422d611f6a1450b8b456c");//for testing on postman
+		//$cartArr['user'] = new MongoId($user->_id);
+		$cartArr['user'] = new MongoId("57c422d611f6a1450b8b456c");//for testing on postman
 
 		$cartProductsArr = [];
 
@@ -1734,26 +1731,14 @@ jprd($product);
 
 		$cartArr["loyaltyPointEarned"] = $loyaltyPoints;
 
-//////
-		if($productsInCart){
-			foreach($productsInCart as $key=>$product){
-
-				$cartArr['products'][$product["_id"]]['_id'] = new MongoId($product["_id"]);
-
-				$cartArr['products'][$product["_id"]]['original'] = $product;
-				$cartProductsArr[] = $cartArr['products'][$product["_id"]];
-
-			}
-		}
-
-		$cartArr['products'] = $cartProductsArr;
-
-		$cartArr['packages'] = $cartArr['packages'];
+//////			
 
 		try {
+			
+			$orderObj = $cart->cartToOrder();
 
-			$order = Orders::create($cartArr);
-
+			$order = Orders::create($orderObj);
+			
 			$cart->delete();
 			
 			$reference = $order->reference;			
@@ -1877,23 +1862,18 @@ jprd($product);
 
 			}
 			
-
 		}
-
 		
 		foreach($loyaltys as $lProKey=>$lPro){
 			$proArr[$lProKey] = $lPro["quantity"];
 		}
-
-
-
 
 		$oPro = [];
 		foreach($proArr as $proKey=>$quantity){
 			$oPro[] = ["_id"=>new mongoId($proKey),"quantity"=>$quantity];
 		}
 
-		$cart['productsLog'] = $oPro;		
+		$cart['productsLog'] = $oPro;
 
 	}
 
@@ -2392,13 +2372,11 @@ jprd($product);
 
 	}
 
-	public function postGiftcard(GiftCartRequest $request){
+	public function postGiftcard(GiftCartRequest $request,$cartKey){
 
 		$user = Auth::user('user');
 
-		$inputs = $request->all();
-		
-		$cartKey = $this->deliverykey;
+		$inputs = $request->all();			
 		
 		$cart = Cart::find($cartKey);
 				
