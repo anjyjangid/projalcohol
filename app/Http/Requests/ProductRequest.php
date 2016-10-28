@@ -116,8 +116,8 @@ class ProductRequest extends Request
             foreach ($input['advance_order_bulk']['bulk'] as $bk => $bval)
             {
                 $ruleKey = 'advance_order_bulk.bulk.' . $bk;
-                $rules[$ruleKey . '.from_qty'] = 'required|numeric|min:1';
-                $rules[$ruleKey . '.to_qty'] = 'required|numeric|min:1|max:99999';
+                $rules[$ruleKey . '.from_qty'] = 'required|numeric|min:2';
+                $rules[$ruleKey . '.to_qty'] = 'required|numeric|min:2|max:99999';
                 $rules[$ruleKey . '.type'] = 'required|numeric';
                 $rules[$ruleKey . '.value'] = 'required|numeric';
             }
@@ -128,8 +128,8 @@ class ProductRequest extends Request
             foreach ($input['express_delivery_bulk']['bulk'] as $bk => $bval)
             {
                 $ruleKey = 'express_delivery_bulk.bulk.' . $bk;
-                $rules[$ruleKey . '.from_qty'] = 'required|numeric|min:1';
-                $rules[$ruleKey . '.to_qty'] = 'required|numeric|min:1|max:99999';
+                $rules[$ruleKey . '.from_qty'] = 'required|numeric|min:2';
+                $rules[$ruleKey . '.to_qty'] = 'required|numeric|min:2|max:99999';
                 $rules[$ruleKey . '.type'] = 'required|numeric';
                 $rules[$ruleKey . '.value'] = 'required|numeric';
             }

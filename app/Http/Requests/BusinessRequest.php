@@ -25,16 +25,21 @@ class BusinessRequest extends Request
     public function rules()
     {
         $input = Input::all();
-
         $rules = [];
-
         $rules = [
             'company_name' => 'required|string|max:255',            
             'company_email' => 'required|email|max:255|unique:businesses,company_email,'.@$input['_id'].",_id",
         ];
 
         // $billing_address = Request::input('billing_address');
-        
+        foreach ($this->request->get('billing_address') as $key => $billing_address) {
+            $rules['billing_address.'.$key.'.first_name'] = 'required';
+            $rules['billing_address.'.$key.'.last_name'] = 'required';
+            $rules['billing_address.'.$key.'.receiver_contact'] = 'required';
+            $rules['billing_address.'.$key.'.address'] = 'required';
+            $rules['billing_address.'.$key.'.instruction'] = 'required';
+        }
+
         // foreach ($this->request->get('billing_address') as $key => $billing_address) {
 
         //     $rules['billing_address.'.$key.'.typed'] = 'required';
@@ -58,17 +63,21 @@ class BusinessRequest extends Request
         return $rules;
     }
 
-    /*public function messages()
+    public function messages()
     {
-
-        $messages = [
-
-                'required' => 'This field is required'
-        ];
-
+        foreach ($this->request->get('billing_address') as $key => $billing_address) {
+            $messages['billing_address.'.$key.'.first_name.required'] = 'The Receiver\'s First Name field is required.';
+            $messages['billing_address.'.$key.'.last_name.required'] = 'The Receiver\'s Last Name field is required.';
+            $messages['billing_address.'.$key.'.receiver_contact.required'] = 'The Receiver\'s Contact field is required.';
+            $messages['billing_address.'.$key.'.address.required'] = 'The Location field is required.';
+            $messages['billing_address.'.$key.'.instruction.required'] = 'The Receiver\'s Instruction field is required.';
+        }
+        // $messages = [
+        //     'billing_address.0.first_name.required' => 'This field is required'
+        // ];
         return $messages;
 
-    }*/
+    }
 
     // public function response(array $errors){
         

@@ -552,14 +552,14 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 					access : ['admin'],
 					links:['userLayout.stocks.list']
 				},
-				{
+				/*{
 					label:'Purchase Order',
 					icon:'icon-doc',
 					uisref:'userLayout.stocks.po',
 					id:'sidebar_menu_link_po',
 					access : ['admin'],
 					links:['userLayout.stocks.po','userLayout.stocks.poDetail']
-				}
+				}*/
 			]
 		},
 		{

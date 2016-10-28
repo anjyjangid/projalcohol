@@ -1320,7 +1320,8 @@ angular.module('ngPayments', [])
         }, {
           type: 'amex',
           pattern: /^3[47]/,
-          format: /(\d{1,4})(\d{1,6})?(\d{1,5})?/,
+          //format: /(\d{1,4})(\d{1,6})?(\d{1,5})?/,
+          format: defaultFormat,
           length: [15],
           cvcLength: [3, 4],
           luhn: true
