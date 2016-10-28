@@ -58,7 +58,7 @@ class BusinessRequest extends Request
         return $rules;
     }
 
-    public function messages()
+    /*public function messages()
     {
 
         $messages = [
@@ -68,7 +68,7 @@ class BusinessRequest extends Request
 
         return $messages;
 
-    }
+    }*/
 
     // public function response(array $errors){
         

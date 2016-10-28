@@ -12,7 +12,7 @@
 
 /*TO VIEW MAIL TEMPLATE*/
 Route::get('/printjob', function () {
-    return view('invoice.content');
+    return view('invoice.pos');
 });
 
 Route::group(['prefix' => 'adminapi'], function () {

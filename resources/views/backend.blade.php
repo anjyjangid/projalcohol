@@ -143,6 +143,7 @@ License: You must have a valid license purchased only from themeforest(the above
 	<script src="{{ asset('adminviews/js/app.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('adminviews/js/directives.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('adminviews/js/orderService.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/cartFactories.js') }}" type="text/javascript"></script>
 	<!-- END APP LEVEL ANGULARJS SCRIPTS -->
 
 	<!-- BEGIN APP LEVEL JQUERY SCRIPTS -->

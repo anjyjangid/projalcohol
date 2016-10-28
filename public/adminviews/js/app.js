@@ -4,6 +4,7 @@ Metronic AngularJS App Main Script
 
 /* Metronic App */
 var MetronicApp = angular.module("MetronicApp", [
+	"AlcoholCartFactories",
 	"ui.router",
 	"ui.bootstrap",
 	"oc.lazyLoad",
@@ -1099,7 +1100,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
         .state("userLayout.business.add", {
             url: "/business/add",
-            templateUrl: "adminviews/views/business/add.html",
+            templateUrl: "adminviews/views/business/form.html",
             data:{
 				pageTitle:'Add New Business',
 				breadCrumb:[
@@ -1116,7 +1117,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
         .state("userLayout.business.edit",{
             url: "/business/edit/{businessid}",
-            templateUrl: "adminviews/views/business/edit.html",
+            templateUrl: "adminviews/views/business/form.html",
             data:{
 				pageTitle:'Edit Business',
 				breadCrumb:[
