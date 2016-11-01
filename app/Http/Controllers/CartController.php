@@ -51,7 +51,6 @@ class CartController extends Controller
 		}
 
 		$this->middleware('cart.unavailable');// check cart is available or not;
-
 		
 	}
 
@@ -1731,7 +1730,7 @@ jprd($product);
 
 		$cartArr["loyaltyPointEarned"] = $loyaltyPoints;
 
-//////			
+//////
 
 		try {
 			
@@ -1814,7 +1813,7 @@ jprd($product);
 
 		} catch(\Exception $e){
 
-			return response(array("success"=>false,"message"=>$e->getMessage()));
+			return response(["message"=>$e->getMessage()],400);
 
 		}
 	}

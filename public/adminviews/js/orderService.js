@@ -542,6 +542,37 @@ MetronicApp
 
 	};
 
+	this.deployCart = function(){
+
+		var cart = {};
+		var cartKey = this.getCartKey();
+
+		angular.copy(this.getCart(),cart);
+		
+		delete cart.packages;
+		delete cart.products;
+		delete cart._id;
+		delete cart.created_at;
+		delete cart.updated_at;
+
+		var d = $q.defer();
+
+		$http.put("adminapi/order/deploycart/"+cartKey, cart,{
+
+		}).error(function(data, status, headers) {
+
+			d.reject(data);
+
+		}).success(function(response) {
+
+			d.resolve(response);
+
+		});
+
+		return d.promise;
+
+	}
+
 	this.newCart = function() {
 		var _self = this;
 		return $http.get("/adminapi/order/newcart")

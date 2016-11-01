@@ -85,14 +85,21 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	}
 
 	$scope.customerSelect = function(customer) {
+
+		delete $scope.cart['consumer'];
+		delete $scope.cart['business'];
+		$scope.cart.user = null;
+
 		$scope.cart[$scope.cart.orderType] = customer;
-		delete $scope.cart[($scope.cart.orderType=='consumer')?'business':'consumer'];
+		$scope.cart.user = customer._id;
 
 		var api;
 		if($scope.cart.orderType=='business')
 			api = '/adminapi/business/detail/'+customer._id;
 		else
 			api = '/adminapi/customer/detail/'+customer._id;
+
+		alcoholCart.deployCart();
 
 		$http.get(api)
 		.then(function(res){

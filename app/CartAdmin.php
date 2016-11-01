@@ -25,7 +25,22 @@ class CartAdmin extends Moloquent
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['_id', 'products','packages','nonchilled','delivery','service','discount','timeslot','payment','status','user', 'generatedBy'];
+	protected $fillable = [
+							'_id', 
+							'products',
+							'packages',
+							'nonchilled',
+							'delivery',
+							'service',
+							'discount',
+							'timeslot',
+							'payment',
+							'status',
+							'user',
+							'orderType',
+							'generatedBy'
+						];
+	
 
 	public function getLastUnProcessed($adminId){
 
