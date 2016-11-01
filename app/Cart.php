@@ -7,6 +7,9 @@ use Moloquent;
 use AlcoholDelivery\Setting as Setting;
 use AlcoholDelivery\Products as Products;
 use AlcoholDelivery\Packages as Packages;
+use AlcoholDelivery\Credits as Credits;
+use AlcoholDelivery\Promotion;
+use AlcoholDelivery\Gift;
 
 use MongoId;
 use MongoDate;
@@ -202,7 +205,6 @@ class Cart extends Moloquent
 
 	}
 
-	
 	public function getProductIncartCount($data = ''){
 		
 		if($data === ''){
@@ -417,7 +419,6 @@ class Cart extends Moloquent
 		return $response;
 
 	}
-
 
 	private function setRemainingQty(){
 
@@ -1100,7 +1101,6 @@ class Cart extends Moloquent
 
 	}
 
-
 	public function getProductsNotInGift($exceptGiftId){
 
 		$productsInCart = $this->getProductIncartCount();
@@ -1142,25 +1142,42 @@ class Cart extends Moloquent
 			}
 
 			$count-= $countInGift;
-			
+
 		}
-			
+
 		return $productsInCart;
 
 	}
 
-
 	public function cartToOrder(){
 
 		$productsInCart = $this->getProductIncartCount();
-		$order = [];
+
+		$order = [
+			'interface'=>1			
+		];
+
+		$total = 0;
+		$subtotal = 0;
+		$totalPoints = 0;
 
 		$proIds = array_keys($productsInCart);
 
 		$productObj = new products();
+		
+		// product log start //
+
+			$oPro = [];
+			foreach($productsInCart as $proKey=>$quantity){
+				$oPro[] = ["_id"=>new mongoId($proKey),"quantity"=>$quantity];
+			}
+
+			$order['productsLog'] = $oPro;
+
+		// product log ends //
+
 
 		$productsInCart = $productObj->fetchProduct(["id"=>$proIds]);
-
 		$proDetails = [];
 		$proSales = [];
 		foreach ($productsInCart['product'] as $product) {
@@ -1236,6 +1253,9 @@ class Cart extends Moloquent
 				];
 
 				$currSale = $proSales[(string)$sale['sale']];
+
+				$sObj['sale'] = $currSale;
+
 				$totalPrice = 0;
 				
 				$price = 0;
@@ -1271,10 +1291,10 @@ class Cart extends Moloquent
 
 				$currPrice = 0;
 				if($currSale['actionType'] == 1){
-					 
-					// $qty = detail.giftQuantity;
-					// currPrice = parseFloat(price) - parseFloat(actionProPrice);
-					// currPrice = currPrice * qty;
+
+					$qty = $currSale['giftQuantity'];
+					$currPrice = $price - $actionProPrice;
+					$currPrice = $currPrice * $qty;
 
 				}else{
 
@@ -1310,13 +1330,13 @@ class Cart extends Moloquent
 					'sale' => number_format($currPrice,2)
 				];
 
+				$subtotal+= $sObj['price']['sale'];
+
 				$order['sales'][] = $sObj;
 
-			}
+			}			
 			
-
-			
-		}		
+		}
 		// Set sale products ends //
 
 		// Set packages start //
@@ -1342,21 +1362,352 @@ class Cart extends Moloquent
 			foreach ($this->packages as $key => $package) {
 
 				$oPDetail = $packagesInCart[(string)$package['_id']];
-				prd($oPDetail);
-
+				
 				$oPackage = [
-					''
+					'title' => $oPDetail['title'],
+					'subTitle' => $oPDetail['subTitle'],
+					'description' => $oPDetail['description'],
+					'coverImage' => $oPDetail['coverImage']['source'],
+					'price' => $package['packagePrice'] * $package['packageQuantity']
 				];
 
-				$order['packages'][(string)$package['_id']] = $oPackage;
+				$oPackage = array_merge($package,$oPackage);
+				
+				$subtotal+= $oPackage['price'];
+
+				$order['packages'][] = $oPackage;
+
 			}
 
 		}
 
 		// Set packages ends //
 
-		prd($order);
-		prd("is it complete");
+		// Set promotions start //
+
+		if(isset($this->promotions)){
+
+			$promosInCart = [];
+			foreach($this->promotions as $promo){
+				$promosInCart[] = new MongoId($promo['promoId']);
+			}
+
+			$promosInCart = Promotion::whereIn('_id', $promosInCart)->get();
+			$promosInCart = $promosInCart->toArray();
+
+			foreach ($promosInCart as $key => $promotion) {
+
+				foreach ($this->promotions as $key => $promoInCart) {
+
+					$oPromo = [
+						'title' => $promotion['title'],
+						'qualifyAmt' => $promotion['price']
+					];
+
+					if($promoInCart['promoId'] == $promotion['_id']){
+
+						foreach ($promotion['items'] as $key => $product) {
+							
+							if((string)$product['_id']===(string)$promoInCart['productId']){
+
+								$oPromo['price'] = 0;
+								if($product['type']==1){
+									$oPromo['price'] = $product['price'];
+								}
+
+							}
+						}
+
+					}
+
+					$subtotal+= $oPromo['price'];
+
+					$order['promotion'][] = $oPromo;
+				}
+
+			}
+
+		}
+
+		// Set promotions ends //
+
+
+		// Set loyalty products start //
+
+		if(isset($this->loyalty)){
+			 
+			foreach($this->loyalty as $key=>$product){
+
+				$detail = $proDetails[(string)$product['_id']];
+				
+				$qtyChilled = 0;
+				$qtyNonChilled = 0;
+
+				if($product['chilled']['status']==='chilled'){
+					$qtyChilled = $product['chilled']['quantity'];
+				}
+				if($product['nonchilled']['status']==='chilled'){
+					$qtyChilled = $product['nonchilled']['quantity'];
+				}
+
+				if($product['chilled']['status']==='nonchilled'){
+					$qtyNonChilled = $product['chilled']['quantity'];
+				}
+				if($product['nonchilled']['status']==='nonchilled'){
+					$qtyNonChilled = $product['nonchilled']['quantity'];
+				}
+
+				$qtyTotal = $qtyChilled + $qtyNonChilled;
+
+			
+				$oLoyalty = [
+					"_id" => new MongoId((string)$product['_id']),
+					"quantity" => [
+						"chilled" => $qtyChilled,
+						"nonChilled" => $qtyNonChilled,
+						"total" => $qtyTotal,
+					],
+					"price" => [
+						"points" =>$detail['loyaltyValuePoint'] * $qtyTotal,
+						"amount" =>isset($detail['loyaltyValuePrice'])?$detail['loyaltyValuePrice'] * $qtyTotal:0,
+					]
+				];
+
+				$totalPoints+= $oPackage['price']['points'];
+				$subtotal+= $oPackage['price']['amount'];
+
+				$order['loyalty'][] = $oLoyalty;
+			}
+		}
+
+		// Set loyalty products ends //
+
+		// Set loyalty cards start //
+
+		if(isset($this->loyaltyCards)){
+			
+			foreach ($this->loyaltyCards as $key => $value) {
+
+				$value['value'] = $key;
+				$value['total'] = $value['quantity'] * $value['points'];
+
+				$totalPoints+=$value['total'];
+
+				$order['loyaltyCards'][] = $value;
+			}
+
+		}
+
+		// Set loyalty cards start //
+
+		// Set Gift packaging start //
+		if(isset($this->gifts)){
+
+			$giftsDetail = [];
+			foreach($this->gifts as $gift){
+				$giftsDetail[] = new MongoId($gift['_id']);
+			}
+
+			$giftsDetail = Gift::whereIn("_id",$giftsDetail)->get();
+			$giftsDetail = $giftsDetail->toArray();
+			$gifts = [];
+			foreach($giftsDetail as $gift){
+				$gifts[$gift['_id']] = $gift;
+			}
+			unset($giftsDetail);
+
+			foreach ($this->gifts as $key => $gift) {
+				
+				$gDetail = $gifts[$gift['_id']];
+
+				$gift['type'] = $gDetail['type'];
+				$gift['price'] = $gDetail['costprice'];
+				$gift['title'] = $gDetail['title'];
+				$gift['subTitle'] = $gDetail['subTitle'];
+				$gift['description'] = $gDetail['description'];
+				$gift['image'] = $gDetail['coverImage']['source'];
+
+				
+
+				$subtotal+=$gift['price'];
+
+				if($gift['type']==1){
+
+					$gift['limit'] = $gDetail['limit'];
+					$order['gift']['container'][] =$gift;
+
+				}else{
+
+					$order['gift']['individual'][] =$gift;
+
+				}
+
+			}
+
+		}
+		// Set Gift packaging ends //
+
+
+		// Set Gift Certificate start //		
+
+		if(isset($this->giftCards)){
+			
+			$data = GiftCategory::where('type','=','giftcard')->first();
+
+			foreach ($this->giftCards as $key => $value) {
+
+				$value['price'] = $value['recipient']['price'] * $value['recipient']['quantity'];
+				$value['quantity'] = $value['recipient']['quantity'];
+
+				$value['title'] = $data['title'];
+				$value['subTitle'] = $data['subTitle'];
+				$value['description'] = $data['description'];
+				
+				$subtotal+=$value['price'];
+
+				$order['giftCards'][] = $value;
+			}
+			
+		}
+
+		// Set Gift Certificate ends //
+
+		// Set Products start //
+		if(isset($this->products)){
+
+			foreach($this->products as $key=>$product){
+
+				$proDetail = $proDetails[$key];
+
+
+				$oProduct = $proDetail['common'];
+				$oProduct['_id'] = new MongoId($key);
+				$oProduct['unitprice'] = $proDetail['unitprice'];
+
+				$qtyChilled = 0;
+				$qtyNonChilled = 0;
+
+				if($product['chilled']['status']==='chilled'){
+					$qtyChilled = $product['chilled']['quantity'];
+				}
+				if($product['nonchilled']['status']==='chilled'){
+					$qtyChilled = $product['nonchilled']['quantity'];
+				}
+
+				if($product['chilled']['status']==='nonchilled'){
+					$qtyNonChilled = $product['chilled']['quantity'];
+				}
+				if($product['nonchilled']['status']==='nonchilled'){
+					$qtyNonChilled = $product['nonchilled']['quantity'];
+				}
+
+				$qtyTotal = $qtyChilled + $qtyNonChilled;
+
+				$oProduct["quantity"] = [
+							"unitprice" => $oProduct['unitprice'],
+							"chilled" => $qtyChilled,
+							"nonChilled" => $qtyNonChilled,
+							"total" => $qtyTotal
+						];
+
+				$remainingQty = $product['remainingQty'];
+
+				$chilledRemain = 0;
+				if($remainingQty>$qtyNonChilled){
+
+					$nonChilledRemain = $qtyNonChilled;
+
+				}else{
+
+					$nonChilledRemain = $remainingQty;
+
+				}
+
+				$stillRemain = $remainingQty - $qtyNonChilled;
+
+				if($stillRemain>0){
+					$chilledRemain = $stillRemain;
+				}
+
+				
+
+				$oProduct["afterSale"] = [
+							"chilled" => $chilledRemain,
+							"nonChilled" => $nonChilledRemain							
+						];
+
+				$oProduct['qtyfinal'] = $chilledRemain + $nonChilledRemain;				
+
+				$price = 0;
+
+				if($oProduct['qtyfinal']>1){
+
+					$originalPrice = $proDetail['price'];
+					foreach ($proDetail['express_delivery_bulk']['bulk'] as $key => $bulk) {
+
+					if($oProduct['qtyfinal'] >= $bulk['from_qty'] && $oProduct['qtyfinal']<=$bulk['to_qty']){
+
+						if($bulk['type']==1){
+
+							$price = $oProduct['qtyfinal'] * ($originalPrice + ($originalPrice * $bulk['value']/100));
+
+						}else{
+
+							$price = $oProduct['qtyfinal'] * ($originalPrice + $bulk['value']);
+
+						}
+						
+						$price = number_format($price,2);
+					}
+
+				}
+
+				}elseif($oProduct['qtyfinal']==1){
+
+					$price = $oProduct['unitprice'];
+
+				}
+
+				$oProduct['price'] = $price;
+
+				if($oProduct['qtyfinal']>0){
+					$oProduct['unitprice'] = $price/$oProduct['qtyfinal'];
+				}
+
+				$subtotal+=$price;
+				$order['products'][] = $oProduct;
+
+
+			}
+
+		}
+		// Set Products ends //
+
+		$order['nonchilled'] = $this->nonchilled;
+		$order['status'] = $this->status;
+		$order['user'] = $this->user;
+		$order['reference'] = $this->reference;
+		$order['timeslot'] = $this->timeslot;
+		$order['delivery'] = $this->delivery;
+		$order['service'] = $this->service;
+		$order['discount'] = $this->discount;
+		$order['loyaltyPointEarned'] = 0;
+
+		$order['doStatus'] = 1;
+		if($order['delivery']['type']==1){
+			$order['doStatus'] = 0;
+		}
+		
+		$order['payment'] = [
+			'subtotal' => $subtotal,
+			'points' => $totalPoints,
+			'total'=> $subtotal,
+			'method' => $this->payment['method']
+		];
+
+
+		
+		return $order;
 
 	}	
 

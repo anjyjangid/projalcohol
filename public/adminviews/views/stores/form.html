@@ -26,7 +26,7 @@
 									<span class="help-block" ng-bind="errors.name[0]"></span>
 								</div>
 							</div>								
-							<div class="form-group" ng:class="{'has-error':errors.address[0]}">
+							<!-- <div class="form-group" ng:class="{'has-error':errors.address[0]}">
 								<label class="col-md-2 control-label">Store Address: <span class="required">
 								* </span>
 								</label>
@@ -49,9 +49,28 @@
 									<span class="help-block">Longitude</span>
 									<span class="help-block" ng-bind="errors.longitude[0]"></span>
 								</div>
-							</div>
+							</div>--->
+{{address|json}}
+							<div class="form-group" ng:class="{'has-error':errors.address[0]}">
+								<label class="col-md-2 control-label">Enter your postal code or location name: <span class="required">
+								* </span>
+								</label>
+								<div class="col-md-10">
+									<input
+										type="text"
+										typeahead="l.SEARCHVAL for l in searchLocation($viewValue)"
+										typeahead-min-length="3"
+										typeahead-on-select="locationSelect($item, $model, $label)"
+										typeahead-wait-ms="300"
+										typeahead-focus-first="true"
+										typeahead-loading="loading.location"
+										ng-class="{'spinner': loading.location}"
+										class="form-control"
+										ng-model="storeInfo.address">
+									<span class="help-block" ng-bind="errors.address[0]"></span>
 
-																
+								</div>
+							</div>									
 						</div>	
 
 					</tab>

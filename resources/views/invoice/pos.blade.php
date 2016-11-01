@@ -14,17 +14,17 @@
       </td>
     </tr>
     <tr>
-    	<td align="left" valign="top" style="padding:20px;">
+    	<td align="left" valign="top">
         <div id="print_barcode">
-          <table width="350" border="0" align="center" cellpadding="0" cellspacing="0">
+          <table width="302" border="0" align="center" cellpadding="0" cellspacing="0">
             <tbody>
               <tr>
-                <td align="left" valign="middle" style="width:235px; padding-right:10px;">
-                  <table width="100%" border="0" cellspacing="2" cellpadding="0" align="right" style="font-size:12px; margin-top:2px;">
+                <td align="left" valign="middle">
+                  <table width="100%" border="0" cellspacing="2" cellpadding="2" align="right" style="font-size:12px; margin-top:5px;">
                     <tbody>
                     <tr>
                       <td colspan="2" align="center" nowrap="nowrap" style="font-size:12px;">
-                        <img style="width:130px;margin-left: 8px;" class="img-responsive" src="{{ asset('images/ad_logo.png') }}">
+                        <img style="width:150px;margin-left: 55px;" class="img-responsive" src="{{ asset('img/poslogo.png') }}">
                       </td>
                     </tr>                    
                     <tr>
@@ -66,7 +66,7 @@
                     <tr>
                       <td colspan="2">
                         <table width="100%" border="0" cellspacing="2" cellpadding="0">
-                          <tr>
+                          <tr class="">
                             <td align="left">QTY</td>
                             <td>PRODUCT</td>
                             <td align="right">UNIT</td>
@@ -86,40 +86,37 @@
                             <td>Red wine</td>
                             <td align="right">58.20</td>
                             <td align="right">58.20</td>
-                          </tr>
-                          <tr valign="top">
-                            <td colspan="4"><strong>On Sale</strong></td>
                           </tr>                          
                           <tr valign="top">
                             <td align="left">1</td>
-                            <td>Absolute Vodka</td>
-                            <td align="right">48.20</td>
-                            <td align="right">48.20</td>
+                            <td><strong>3 FREE 1</strong></td>
+                            <td align="right">148.20</td>
+                            <td align="right">148.20</td>
                           </tr>
                           <tr valign="top">
-                            <td align="left">1</td>
-                            <td>Red wine</td>
-                            <td align="right">58.20</td>
-                            <td align="right">58.20</td>
+                            <td align="left"></td>
+                            <td>3 Red wine</td>
+                            <td align="right"></td>
+                            <td align="right"></td>
+                          </tr>
+                          <tr valign="top">
+                            <td align="left"></td>
+                            <td>1 Black Label</td>
+                            <td align="right"></td>
+                            <td align="right"></td>
                           </tr>
                           <tr valign="top">
                             <td align="left">2</td>
                             <td>Tiger beer(chilled)</td>
                             <td align="right">16.20</td>
                             <td align="right">32.40</td>
-                          </tr>
-                          <tr valign="top">
-                            <td colspan="4"><strong>Packages</strong></td>
-                          </tr>
+                          </tr>                          
                           <tr valign="top">
                             <td align="left">1</td>
-                            <td>Party package (8-10 pax)</td>
+                            <td><strong>Party package (8-10 pax)</strong></td>
                             <td align="right">148.20</td>
                             <td align="right">148.20</td>
-                          </tr>
-                          <tr valign="top">
-                            <td colspan="4"><strong>Gift Certificate</strong></td>
-                          </tr>
+                          </tr>                          
                           <tr valign="top">
                             <td align="left">1</td>
                             <td>Gift Certificate</td>
@@ -127,9 +124,6 @@
                             <td align="right">500.00</td>
                           </tr>
                           <tr valign="top">
-                            <td colspan="4"><strong>Loyalty</strong></td>
-                          </tr>
-                          <tr valign="top">
                             <td align="left">2</td>
                             <td>Tiger beer(chilled)</td>
                             <td align="right">16.20</td>
@@ -137,60 +131,89 @@
                           </tr>
                           <tr valign="top">
                             <td align="left">1</td>
-                            <td>Absolute Vodka</td>
-                            <td align="right">48.20</td>
-                            <td align="right">48.20</td>
-                          </tr>
-                          <tr valign="top">
-                            <td colspan="4"><strong>Promotions</strong></td>
+                            <td>Loyalty product</td>
+                            <td align="right">0.00</td>
+                            <td align="right">0.00</td>
                           </tr>
                           <tr valign="top">
                             <td align="left">1</td>
-                            <td>Red wine</td>
-                            <td align="right">Free</td>
-                            <td align="right">Free</td>
+                            <td><strong>Basket</strong></td>
+                            <td align="right">25.00</td>
+                            <td align="right">25.00</td>
                           </tr>
                           <tr valign="top">
-                            <td colspan="4"><strong>Gift packaging</strong></td>
+                            <td align="left"></td>
+                            <td>1 Absolute Vodka</td>
+                            <td align="right"></td>
+                            <td align="right"></td>
                           </tr>
                           <tr valign="top">
+                            <td align="left"></td>
+                            <td>2 Tiger beer</td>
+                            <td align="right"></td>
+                            <td align="right"></td>
+                          </tr>
+                          <!-- <tr valign="top">
                             <td align="left">1</td>
-                            <td>Basket</td>
-                            <td align="right">25</td>
-                            <td align="right">25</td>
-                          </tr>
-                          <tr>                      
-                            <td align="left" nowrap="nowrap">&nbsp;</td>
-                          </tr>
-                          <tr>
-                            <td align="right" colspan="3"><strong>Subtotal</strong></td>    
-                            <td align="right"><strong>200</strong></td>
-                          </tr>
-                          <tr>
-                            <td align="right" colspan="3"><strong>Delivery Charge</strong></td>    
-                            <td align="right"><strong>20</strong></td>
+                            <td>
+                              <strong>Need smoke</strong>
+                              <div>Need smoke details will be printed here.</div>
+                            </td>
+                            <td align="right">5.00</td>
+                            <td align="right">5.00</td>
+                          </tr> -->
+                          <tr class="bottomborder">                      
+                            <td colspan="4" align="left" nowrap="nowrap"></td>
                           </tr>
                           <tr>
-                            <td align="right" colspan="3"><strong>Service Charge</strong></td>    
-                            <td align="right"><strong>5</strong></td>
+                            <td align="left" colspan="3"><strong>Subtotal</strong></td>    
+                            <td align="right"><strong>992.60</strong></td>
                           </tr>
                           <tr>
-                            <td align="right" colspan="3"><strong>Discount (Non-Chilled)</strong></td>    
-                            <td align="right"><strong>0</strong></td>
+                            <td align="left" colspan="3"><strong>Delivery Charge</strong></td>    
+                            <td align="right"><strong>20.00</strong></td>
+                          </tr>                          
+                          <tr>
+                            <td align="left" colspan="3"><strong>Service Charge</strong></td>    
+                            <td align="right"><strong>55.00</strong></td>
                           </tr>
-                          <tr>                      
-                            <td align="left" nowrap="nowrap">&nbsp;</td>
+                          <tr>
+                            <td></td>
+                            <td align="left" colspan="2">
+                              <div><b>Need smoke ($5) :</b> Need smoke details will be printed here.</div>
+                              <div><b>Express delivery ($50).</b></div>
+                            </td>                                
                           </tr>
-                          <tr class="topborder bottomborder">
-                            <td align="right" valign="center" colspan="3"><strong>Total</strong></td>    
-                            <td align="right" valign="center"><h4 class="nomargin">$225</h4></td>
+                          <tr>
+                            <td align="left" colspan="3"><strong>Discount (Non-Chilled)</strong></td>    
+                            <td align="right"><strong>-1.00</strong></td>
+                          </tr>                          
+                          <tr class="topborder">
+                            <td align="left" valign="center" colspan="3"><strong>Total</strong></td>    
+                            <td align="right" valign="center"><h5 class="nomargin">1,066.60</h5></td>
+                          </tr>
+                          <tr class="bottomborder">
+                            <td align="left" valign="center" colspan="3"><strong>Payment mode : C.O.D</strong></td>    
+                            <td align="right" valign="center"><h5 class="nomargin">1,066.60</h5></td>
+                          </tr>
+                          <tr class="bottomborder">
+                            <td align="left" valign="center" colspan="3"><strong>To Pay</strong></td>    
+                            <td align="right" valign="center"><h5 class="nomargin"><strong>$1,066.60</strong></h5></td>
                           </tr>                          
                         </table>
                       </td>  
                     </tr> 
+                    <tr><td>&nbsp;</td></tr>
                     <tr>
-                      <td></td>
-
+                      <td colspan="4">
+                        <h5><u>Terms & conditions</u></h5>
+                        <ul style="margin-left: 13px;padding:0px;">
+                          <li>Cancellation will be accepted within 1 day for advance delivery.</li>
+                          <li>Cost of cigarettes must be paid in CASH.</li> 
+                          <li>Service charge does not include cost of cigarettes.</li>
+                          <li>Service is not applicable for Express Delivery.</li>
+                        </ul>
+                      </td>
                     </tr>                   
                     </tbody>
                   </table>

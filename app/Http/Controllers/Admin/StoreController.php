@@ -41,11 +41,10 @@ class StoreController extends Controller
     {
         $inputs = $request->all();
 
-        $inputs['latitude'] = (float)($inputs['latitude']);
-        $inputs['longitude'] = (float)($inputs['longitude']);
+        //$inputs['latitude'] = (float)($inputs['latitude']);
+        //$inputs['longitude'] = (float)($inputs['longitude']);
 
-        $inputs['location'] = [$inputs['latitude'],$inputs['longitude']];
-
+        //$inputs['location'] = [$inputs['latitude'],$inputs['longitude']];
         $store = Store::create($inputs);
 
         if($store){
@@ -94,10 +93,10 @@ class StoreController extends Controller
     {
         $inputs = $request->all();
 
-        $inputs['latitude'] = (float)($inputs['latitude']);
-        $inputs['longitude'] = (float)($inputs['longitude']);
+        //$inputs['latitude'] = (float)($inputs['latitude']);
+        //$inputs['longitude'] = (float)($inputs['longitude']);
 
-        $inputs['location'] = [$inputs['latitude'],$inputs['longitude']];
+        //$inputs['location'] = [$inputs['latitude'],$inputs['longitude']];
 
         $store = Store::find($id);
 

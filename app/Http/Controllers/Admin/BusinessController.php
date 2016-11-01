@@ -93,7 +93,8 @@ class BusinessController extends Controller
 		$inputs['status'] = (int)$inputs['status'];
 
 		try {
-			$business = Business::create($inputs);			
+			dd($inputs);
+			$business = Business::create($inputs);
 		
 		} catch(\Exception $e){
 			

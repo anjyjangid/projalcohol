@@ -552,14 +552,14 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 					access : ['admin'],
 					links:['userLayout.stocks.list']
 				},
-				{
+				/*{
 					label:'Purchase Order',
 					icon:'icon-doc',
 					uisref:'userLayout.stocks.po',
 					id:'sidebar_menu_link_po',
 					access : ['admin'],
 					links:['userLayout.stocks.po','userLayout.stocks.poDetail']
-				}
+				}*/
 			]
 		},
 		{
@@ -1100,7 +1100,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
         .state("userLayout.business.add", {
             url: "/business/add",
-            templateUrl: "adminviews/views/business/add.html",
+            templateUrl: "adminviews/views/business/form.html",
             data:{
 				pageTitle:'Add New Business',
 				breadCrumb:[
@@ -1117,7 +1117,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
         .state("userLayout.business.edit",{
             url: "/business/edit/{businessid}",
-            templateUrl: "adminviews/views/business/edit.html",
+            templateUrl: "adminviews/views/business/form.html",
             data:{
 				pageTitle:'Edit Business',
 				breadCrumb:[
