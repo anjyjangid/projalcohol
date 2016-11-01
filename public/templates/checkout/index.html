@@ -31,21 +31,21 @@
 					<div class="step-individual step-1"></div>
 					<a class="steps-text" ui-sref-active="currentstep"><span>Shopping Cart</span></a>
 				</div>
-				<div class="step-ratio" ui-sref="mainLayout.checkout.address" ui-sref-opts="{reload: true}">
+				<div class="step-ratio" ng-click="$state.$current.data.stepCount<=2?null:$state.go('mainLayout.checkout.address', {}, {reload: true})" ng-disabled="$state.$current.data.stepCount<=2">
 					<div class="step-individual step-2"></div>
-					<a class="steps-text" ui-sref-active="currentstep"><span>Address</span></a>
+					<a class="steps-text" ng-class="{'currentstep':$state.$current.data.stepCount==2}"><span>Address</span></a>
 				</div>
-				<div class="step-ratio" ui-sref="mainLayout.checkout.delivery" ui-sref-opts="{reload: true}">
+				<div class="step-ratio" ng-click="$state.$current.data.stepCount<=3?null:$state.go('mainLayout.checkout.delivery', {}, {reload: true})" ng-disabled="$state.$current.data.stepCount<=3">
 					<div class="step-individual step-3"></div>
-					<a class="steps-text" ui-sref-active="currentstep"><span>Delivery</span></a>
+					<a class="steps-text" ng-class="{'currentstep':$state.$current.data.stepCount==3}"><span>Delivery</span></a>
 				</div>
-				<div class="step-ratio" ui-sref="mainLayout.checkout.payment" ui-sref-opts="{reload: true}">
+				<div class="step-ratio" ng-click="$state.$current.data.stepCount<=4?null:$state.go('mainLayout.checkout.payment', {}, {reload: true})" ng-disabled="$state.$current.data.stepCount<=4">
 					<div class="step-individual step-4"></div>
-					<a class="steps-text" ui-sref-active="currentstep"><span>Payment</span></a>
+					<a class="steps-text" ng-class="{'currentstep':$state.$current.data.stepCount==4}"><span>Payment</span></a>
 				</div>
-				<div class="step-ratio" ui-sref="mainLayout.checkout.review" ui-sref-opts="{reload: true}">
+				<div class="step-ratio" ng-click="$state.$current.data.stepCount<=5?null:$state.go('mainLayout.checkout.review', {}, {reload: true})" ng-disabled="$state.$current.data.stepCount<=5">
 					<div class="step-individual step-5"></div>
-					<a class="steps-text" ui-sref-active="currentstep"><span>Review &amp; Confirm</span></a>
+					<a class="steps-text" ng-class="{'currentstep':$state.$current.data.stepCount==5}"><span>Review &amp; Confirm</span></a>
 				</div>
 			</div>
 	</div>

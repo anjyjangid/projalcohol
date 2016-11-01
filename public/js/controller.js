@@ -1205,10 +1205,8 @@ AlcoholDelivery.controller('CartController',[
 
 }]);
 
-AlcoholDelivery.controller('PromotionsController',['$scope', '$rootScope', '$http', '$interval', 'alcoholCart', 'promotionsService', 'AlcoholProduct', 'cartValidation'
-,function($scope, $rootScope, $http, $interval, alcoholCart, promotionsService, AlcoholProduct, cartValidation){
-
-	cartValidation.init();
+AlcoholDelivery.controller('PromotionsController',['$scope', '$rootScope', '$http', '$interval', 'alcoholCart', 'promotionsService', 'AlcoholProduct'
+,function($scope, $rootScope, $http, $interval, alcoholCart, promotionsService, AlcoholProduct){
 
 	$scope.alcoholCart = alcoholCart;
 	$scope._promo = promotionsService;
@@ -1238,11 +1236,10 @@ AlcoholDelivery.controller('CartSmokeController',[
 }])
 
 AlcoholDelivery.controller('CartAddressController',[
-			'$scope','$rootScope','$state','$interval','$http','$q', '$mdDialog', '$mdMedia','alcoholCart','sweetAlert', 'UserService', 'cartValidation'
-	, function($scope, $rootScope, $state, $interval, $http, $q, $mdDialog, $mdMedia, alcoholCart, sweetAlert, UserService, cartValidation){
+			'$scope','$rootScope','$state','$interval','$http','$q', '$mdDialog', '$mdMedia','alcoholCart','sweetAlert', 'UserService'
+	, function($scope, $rootScope, $state, $interval, $http, $q, $mdDialog, $mdMedia, alcoholCart, sweetAlert, UserService){
 
 	$scope.errors = {};	
-	cartValidation.init();
 
 	$scope.delivery = alcoholCart.$cart.delivery;
 	
@@ -1306,10 +1303,8 @@ AlcoholDelivery.controller('CartAddressController',[
 }]);
 
 AlcoholDelivery.controller('CartDeliveryController',[
-	'$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$interval', 'alcoholCart', 'sweetAlert', '$filter', 'cartValidation'
-	, function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $interval, alcoholCart, sweetAlert, $filter, cartValidation){
-
-	cartValidation.init();
+	'$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$interval', 'alcoholCart', 'sweetAlert', '$filter'
+	, function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $interval, alcoholCart, sweetAlert, $filter){
 
 	$scope.alcoholCart = alcoholCart;
 
@@ -1499,10 +1494,8 @@ AlcoholDelivery.controller('CartDeliveryController',[
 }]);
 
 AlcoholDelivery.controller('CartPaymentController',[
-			'$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','sweetAlert', '$interval', 'alcoholCart', '$state', '$location', '$anchorScroll', 'cartValidation'
-	, function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, sweetAlert, $interval, alcoholCart, $state, $location, $anchorScroll, cartValidation){
-
-		cartValidation.init();
+			'$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','sweetAlert', '$interval', 'alcoholCart', '$state', '$location', '$anchorScroll'
+	, function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, sweetAlert, $interval, alcoholCart, $state, $location, $anchorScroll){
 
 		$scope.payment = alcoholCart.$cart.payment;
 
@@ -1550,15 +1543,13 @@ AlcoholDelivery.controller('CartPaymentController',[
 }]);
 
 AlcoholDelivery.controller('CartReviewController',[
-			'$scope','$rootScope','$http','$q','$state', '$mdDialog', '$mdMedia', '$interval', 'alcoholCart','store','sweetAlert','$sce', '$filter', 'cartValidation'
-	, function($scope, $rootScope, $http, $q, $state, $mdDialog, $mdMedia, $interval, alcoholCart, store, sweetAlert,$sce,$filter, cartValidation){
+			'$scope','$rootScope','$http','$q','$state', '$mdDialog', '$mdMedia', '$interval', 'alcoholCart','store','sweetAlert','$sce', '$filter'
+	, function($scope, $rootScope, $http, $q, $state, $mdDialog, $mdMedia, $interval, alcoholCart, store, sweetAlert,$sce,$filter){
 
 	$scope.card = {
 		formAction:'',
 		formData:{}
 	}
-
-	cartValidation.init();
 
 	$scope.alcoholCart = alcoholCart;
 
