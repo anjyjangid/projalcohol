@@ -2,7 +2,7 @@
 @section('content')
 <div id="content">
 <div align="center" id="background">
-  <p id="bg-text">1 hr delivery</p>
+  <p id="bg-text">1hr delivery</p>
 </div>
 <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
   <tbody>
@@ -95,28 +95,54 @@
                           </tr>
                           <tr valign="top">
                             <td align="left"></td>
-                            <td>3 Red wine</td>
-                            <td align="right"></td>
-                            <td align="right"></td>
+                            <td>
+                              <table cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                  <td valign="top">3</td>      
+                                  <td valign="top">Red wine</td>
+                                </tr>
+                              </table>  
+                            </td>                            
                           </tr>
                           <tr valign="top">
                             <td align="left"></td>
-                            <td>1 Black Label</td>
-                            <td align="right"></td>
-                            <td align="right"></td>
+                            <td>
+                              <table cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                  <td valign="top">1</td>      
+                                  <td valign="top">Black label</td>
+                                </tr>
+                              </table>  
+                            </td>                            
                           </tr>
-                          <tr valign="top">
-                            <td align="left">2</td>
-                            <td>Tiger beer(chilled)</td>
-                            <td align="right">16.20</td>
-                            <td align="right">32.40</td>
-                          </tr>                          
                           <tr valign="top">
                             <td align="left">1</td>
                             <td><strong>Party package (8-10 pax)</strong></td>
                             <td align="right">148.20</td>
                             <td align="right">148.20</td>
-                          </tr>                          
+                          </tr>   
+                          <tr valign="top">
+                            <td align="left"></td>
+                            <td>
+                              <table cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                  <td valign="top">2</td>      
+                                  <td valign="top">Red wine</td>
+                                </tr>
+                              </table>  
+                            </td>                            
+                          </tr>
+                          <tr valign="top">
+                            <td align="left"></td>
+                            <td>
+                              <table cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                  <td valign="top">1</td>      
+                                  <td valign="top">Champagne Saber</td>
+                                </tr>
+                              </table>  
+                            </td>                            
+                          </tr>                       
                           <tr valign="top">
                             <td align="left">1</td>
                             <td>Gift Certificate</td>
@@ -143,25 +169,15 @@
                           </tr>
                           <tr valign="top">
                             <td align="left"></td>
-                            <td>1 Absolute Vodka</td>
-                            <td align="right"></td>
-                            <td align="right"></td>
-                          </tr>
-                          <tr valign="top">
-                            <td align="left"></td>
-                            <td>2 Tiger beer</td>
-                            <td align="right"></td>
-                            <td align="right"></td>
-                          </tr>
-                          <!-- <tr valign="top">
-                            <td align="left">1</td>
                             <td>
-                              <strong>Need smoke</strong>
-                              <div>Need smoke details will be printed here.</div>
-                            </td>
-                            <td align="right">5.00</td>
-                            <td align="right">5.00</td>
-                          </tr> -->
+                              <table cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                  <td valign="top">10</td>      
+                                  <td valign="top">Absolute Vodka</td>
+                                </tr>
+                              </table>  
+                            </td>                            
+                          </tr>                          
                           <tr class="bottomborder">                      
                             <td colspan="4" align="left" nowrap="nowrap"></td>
                           </tr>
@@ -180,7 +196,8 @@
                           <tr>
                             <td></td>
                             <td align="left" colspan="2">
-                              <div><b>Need smoke ($5) :</b> Need smoke details will be printed here.</div>
+                              <div><b>Need smoke ($5) :</b></div>
+                              <div>Need smoke details will be printed here.</div>
                               <div><b>Express delivery ($50).</b></div>
                             </td>                                
                           </tr>
@@ -206,9 +223,12 @@
                     <tr><td>&nbsp;</td></tr>
                     <tr>
                       <td colspan="4">
-                        <h5><u>Terms & conditions</u></h5>
+                        <strong><u>Delivery instructions</u></strong>
+                        <div>Call upon delivery.</div>
+                        <div>Leave this order at my doorstep.</div>
+                        <div>&nbsp;</div>
+                        <strong><u>Terms & conditions</u></strong>
                         <ul style="margin-left: 13px;padding:0px;">
-                          <li>Cancellation will be accepted within 1 day for advance delivery.</li>
                           <li>Cost of cigarettes must be paid in CASH.</li> 
                           <li>Service charge does not include cost of cigarettes.</li>
                           <li>Service is not applicable for Express Delivery.</li>

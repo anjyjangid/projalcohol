@@ -1108,7 +1108,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 					{title:'Add','uisref':'#'}
 				]
 			},
-            controller:"BusinessAddController",
+            // controller:"BusinessAddController",
+            controller:"BusinessUpdateController",
 			resolve: {
                 authenticate: authenticate
             }

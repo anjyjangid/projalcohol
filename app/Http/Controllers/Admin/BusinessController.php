@@ -88,7 +88,7 @@ class BusinessController extends Controller
 		$businessObj = new Business;
 		$inputs = $request->all();
 
-		// prd($inputs);
+		prd($inputs);
 
 		$inputs['status'] = (int)$inputs['status'];
 

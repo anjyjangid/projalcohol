@@ -33,7 +33,7 @@ MetronicApp.factory('businessModel', ['$http', '$cookies','$location', function(
 	                place: 'prepend',
 	                closeInSeconds: 3
 	            });
-	            $location.path("business/list");
+	            // $location.path("business/list");
 
 	        })
 	        /*.error(function(data, status, headers) {            
