@@ -1610,7 +1610,7 @@ AlcoholDelivery.service('alcoholCart', [
 		
 		this.isEmpty = function () {
 			
-			return (getTotalUniqueItems() > 0 ? false : true);
+			return (this.getTotalUniqueItems() > 0 ? false : true);
 
 		};
 
@@ -2530,3 +2530,86 @@ AlcoholDelivery.service("promotionsService",["$http","$log","$q","$rootScope",fu
 	}
 	
 }]);
+
+AlcoholDelivery.service('cartValidation',['alcoholCart', '$state', '$mdToast', function(alcoholCart, $state, $mdToast) {
+
+	function showToast(msg) {
+		var toast = $mdToast.simple()
+			.textContent(msg)
+			.highlightAction(false)
+			.position("top right");
+		$mdToast.show(toast);
+		return toast;
+	}
+
+	this.init = function() {
+		// console.log($state.current.name, alcoholCart);
+
+		var cart = alcoholCart.$cart
+		  , states = [
+				'mainLayout.checkout.cart',
+				'mainLayout.checkout.address',
+				'mainLayout.checkout.delivery',
+				'mainLayout.checkout.payment',
+				'mainLayout.checkout.review',
+			]
+		  , step = states.indexOf($state.current.name)
+		  , prevState = states.indexOf($state.previous.name);
+
+		// return true;
+
+		if(step > 0) {
+			if(alcoholCart.isEmpty()){
+				showToast("Add some products to the cart!");
+				return $state.go(states[0], {}, {reload: true});
+			}
+			for (var i in cart.promotions){
+				if(alcoholCart.getCartTotal() < cart.promotions[i]._price){
+					showToast("Invalid promotion is applied!");
+					return $state.go(states[0], {}, {reload: true});
+				}
+			}
+			if(typeof cart.delivery == 'undefined' || typeof cart.delivery.type == 'undefined'){
+				showToast("Please select delivery type!");
+				return $state.go(states[0], {}, {reload: true});
+			}
+		}
+
+		if(step > 1) {
+			if(typeof cart.delivery == 'undefined' ||
+				typeof cart.delivery.address == 'undefined' ||
+				typeof cart.delivery.address.detail == 'undefined' ||
+				typeof cart.delivery.address.key == 'undefined' ||
+				typeof cart.delivery.contact== 'undefined'
+			){
+				showToast("Please select a delivery address!");
+				return $state.go(states[1], {}, {reload: true});
+			}
+		}
+
+		if(step == 2 && cart.delivery.type != 1){
+			if(prevState>2){
+				$state.go(states[1], {}, {reload: true});
+			}else{
+				$state.go(states[3], {}, {reload: true});
+			}
+			return;
+		}
+
+		if(step > 2 && cart.delivery.type == 1){
+			if(typeof cart.timeslot == 'undefined' || typeof cart.timeslot.slotkey == 'undefined' || typeof cart.timeslot.datekey == 'undefined'){
+				showToast("Please select a Time slot!");
+				return $state.go(states[2], {}, {reload: true});
+			}
+		}
+
+		if(step > 3){
+			if(typeof cart.payment == 'undefined' || typeof cart.payment.method == 'undefined'){
+				showToast("Please select a payment method!");
+				return $state.go(states[3], {}, {reload: true});
+			}
+		}
+
+		return true;
+	}
+}])
