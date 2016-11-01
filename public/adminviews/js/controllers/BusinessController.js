@@ -20,8 +20,8 @@ MetronicApp.controller('BusinessAddController',['$scope', '$http','businessModel
 	$scope.errors = {};
 	$scope.business = {		
 		status:"1",
-		billing_address : [{}],
-		delivery_address : [{}]		
+		address : [{}],
+		// delivery_address : [{}]
 	};	
 	
 	$scope.store = function(){
@@ -40,7 +40,8 @@ MetronicApp.controller('BusinessAddController',['$scope', '$http','businessModel
 
 	$scope.billingAddressRemove = function(i){
 		
-		$scope.business.billing_address.splice(i, 1);
+		// $scope.business.billing_address.splice(i, 1);
+		$scope.business.address.splice(i, 1);
 	}
 
 	$scope.deliveryAddressRemove = function(i){
@@ -54,40 +55,57 @@ MetronicApp.controller('BusinessAddController',['$scope', '$http','businessModel
 MetronicApp.controller('BusinessUpdateController',['$rootScope', '$scope', '$timeout','$http','$stateParams','businessModel', '$q'
 , function($rootScope, $scope, $timeout,$http,$stateParams,businessModel, $q) {
 
-	businessModel.getBusiness($stateParams.businessid).success(function(data){
+	$scope.errors = {};
+	$scope.business = {		
+		status:"1",
+		address : [{}],
+		products: []
+		// delivery_address : [{}]
+	};
 
-		if(!data.products)
-			data.products = [];
-
-		$scope.business = data;
-		if(typeof data.billing_address == 'undefined'){
-			$scope.business.billing_address = [{}];
-		}
-		if(typeof data.delivery_address == 'undefined'){
-			$scope.business.delivery_address = [{}];
-		}
-		$scope.hideBasicInfo = true;
-
-	});
-
-	$scope.store = function(){
-		businessModel.updateBusiness($scope.business, $stateParams.businessid)
-		.success(function(response){
-			//$location.path("business/list");
-		}).error(function(data, status, headers){						
-			$scope.errors = data;			
+	if($stateParams.businessid){
+		businessModel.getBusiness($stateParams.businessid).success(function(data){
+			if(!data.products)
+				data.products = [];
+			$scope.business = data;
+			if(typeof data.billing_address == 'undefined'){
+				$scope.business.billing_address = [{}];
+			}
+			if(typeof data.delivery_address == 'undefined'){
+				$scope.business.delivery_address = [{}];
+			}
+			$scope.hideBasicInfo = true;
 		});
 	}
 
-	$scope.billingAddressRemove = function(i){
-		
-		$scope.business.billing_address.splice(i, 1);
+	$scope.store = function(){
+		if($stateParams.businessid){
+			businessModel.updateBusiness($scope.business, $stateParams.businessid)
+			.success(function(response){
+				//$location.path("business/list");
+			}).error(function(data, status, headers){						
+				$scope.errors = data;			
+			});
+		}else{
+			var data = $scope.business;
+			// console.log(data);
+			// return false;
+			//POST DATA WITH FILES
+			businessModel.storeBusiness(data).success(function(response){
+			}).error(function(data, status, headers){
+				$scope.errors = data;
+			});
+		}
 	}
 
-	$scope.deliveryAddressRemove = function(i){
+	$scope.billingAddressRemove = function(i){
+		$scope.business.address.splice(i, 1);
+	}
+
+	// $scope.deliveryAddressRemove = function(i){
 		
-		$scope.business.delivery_address.splice(i, 1);
-	}	
+	// 	$scope.business.delivery_address.splice(i, 1);
+	// }	
 
 	$scope.product = { searchBox: null, waitQueue: null, reqTimeout: $q.defer() };
 
@@ -132,12 +150,27 @@ MetronicApp.controller('BusinessUpdateController',['$rootScope', '$scope', '$tim
 	$scope.addItem = function(p){
 		p.added = true;
 		p.quantity = 1;
-
 		$scope.business.products.push(angular.copy(p));
 	};
 
 	$scope.removeItem = function(proKey){
 		$scope.business.products.splice(proKey,1);
+	}
+
+
+	$scope.searchLocation = function(q){
+		return $http.get('/site/search-location', {params: {q}})
+		.then(function(res){
+			return res.data;
+		});
+	}
+	
+	$scope.locationSelect = function(location, model, label, index) {
+		location.location = [parseFloat(location.LAT),parseFloat(location.LNG)];
+		
+		$scope.business.address[index] = location;
+		// console.log($scope.business.address[index]);
+		// $scope.business.address.location = [parseFloat(location.LAT),parseFloat(location.LNG)];		
 	}
 
 }]);

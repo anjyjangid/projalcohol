@@ -88,12 +88,13 @@ class BusinessController extends Controller
 		$businessObj = new Business;
 		$inputs = $request->all();
 
-		// prd($inputs);
+		prd($inputs);
 
 		$inputs['status'] = (int)$inputs['status'];
 
 		try {
-			$business = Business::create($inputs);			
+			dd($inputs);
+			$business = Business::create($inputs);
 		
 		} catch(\Exception $e){
 			

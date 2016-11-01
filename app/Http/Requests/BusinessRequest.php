@@ -25,16 +25,22 @@ class BusinessRequest extends Request
     public function rules()
     {
         $input = Input::all();
-
         $rules = [];
-
         $rules = [
             'company_name' => 'required|string|max:255',            
             'company_email' => 'required|email|max:255|unique:businesses,company_email,'.@$input['_id'].",_id",
         ];
-
+        dd($input);
         // $billing_address = Request::input('billing_address');
-        
+        if(!empty($input['address']) && count($input['address'])>0)
+            foreach ($this->request->get('address') as $key => $address) {
+                $rules['address.'.$key.'.first_name'] = 'required';
+                $rules['address.'.$key.'.last_name'] = 'required';
+                $rules['address.'.$key.'.receiver_contact'] = 'required';
+                $rules['address.'.$key.'.address'] = 'required';
+                $rules['address.'.$key.'.instruction'] = 'required';
+            }
+
         // foreach ($this->request->get('billing_address') as $key => $billing_address) {
 
         //     $rules['billing_address.'.$key.'.typed'] = 'required';
@@ -60,12 +66,16 @@ class BusinessRequest extends Request
 
     public function messages()
     {
-
-        $messages = [
-
-                'required' => 'This field is required'
-        ];
-
+        foreach ($this->request->get('address') as $key => $billing_address) {
+            $messages['address.'.$key.'.first_name.required'] = 'The Receiver\'s First Name field is required.';
+            $messages['address.'.$key.'.last_name.required'] = 'The Receiver\'s Last Name field is required.';
+            $messages['address.'.$key.'.receiver_contact.required'] = 'The Receiver\'s Contact field is required.';
+            $messages['address.'.$key.'.address.required'] = 'The Location field is required.';
+            $messages['address.'.$key.'.instruction.required'] = 'The Receiver\'s Instruction field is required.';
+        }
+        // $messages = [
+        //     'billing_address.0.first_name.required' => 'This field is required'
+        // ];
         return $messages;
 
     }

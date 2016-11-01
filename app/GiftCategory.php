@@ -2,11 +2,9 @@
 
 namespace AlcoholDelivery;
 
-use Illuminate\Database\Eloquent\Model;
+use Moloquent;
 
-use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
-
-class GiftCategory extends Eloquent
+class GiftCategory extends Moloquent
 {
     protected $primaryKey = "_id";
     protected $foreignKey = "parent";

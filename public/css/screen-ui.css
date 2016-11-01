@@ -119,7 +119,7 @@ ui-sref {
 	background-size: auto 200px;
 	min-width: 520px;
 	min-height: 0/*372px*/;
-	height: 100%
+	min-height: 100%
 }
 .navbar-default {
 	background-color: transparent;
@@ -1074,12 +1074,19 @@ ui-sref {
 	font-size: 18px;
 	font-weight: 500;
 	margin-top: 0;
-	min-height: 300px;
-	padding: 60px 53px 0;
+	height: 300px;
+	padding: 50px 53px 50px;
 	position: relative;
 	right: 0;
 	width: 70%;
 	word-wrap: break-word;
+	display: table;
+}
+.slido-rightinnertext{
+	display: table-cell;
+	width: 100%;
+	height: 100%;
+	vertical-align: middle;
 }
 .brands {
 	margin-bottom: 45px;
@@ -1442,7 +1449,8 @@ ui-sref {
 .alcohal_reapeatorederbtnsocvercvr {
 	margin: 0 auto;
 	padding-bottom: 30px;
-	width: 50%;
+	width: 337px;
+	overflow: hidden;
 }
 .alcohal_reapeatorenothnxtxt {
 	font-size: 14px;
@@ -2272,7 +2280,7 @@ ui-sref {
 	padding: 15px 25px 15px 0px;
 }
 .checkboxtotaldiv-title {
-	width: 80%;
+	width: 88%;
 	text-align: right;
 	float: left;
 	font-size: 16px;
@@ -2294,7 +2302,7 @@ ui-sref {
 
 
 .checkboxtotaldiv-middle-first  .checkboxtotaldiv-title{
-	width: 85%;
+	width: 79%;
 }
 
 .checkboxtotaldiv-middle-first {
@@ -2549,6 +2557,8 @@ ui-sref {
 	font-size: 28px;
 	color: #666;
 	font-weight: 500;
+	position: relative;
+	z-index: 4
 }
 .prddetailsubexttitle {
 	width: 100%;
@@ -2556,6 +2566,7 @@ ui-sref {
 	font-size: 14px;
 	color: #666;
 	font-weight: 500;
+	position: relative;
 }
 .prddetailnormaltext {
 	width: 100%;
@@ -6148,7 +6159,7 @@ md-radio-button.md-default-theme .md-on, md-radio-button .md-on {
     letter-spacing: 1px;
 }
 .tag-pic {
-    position: absolute;
+    position: relative;
     right: 0;
     top: 0;
 }
@@ -6528,4 +6539,86 @@ button:hover{
     height: auto;
     max-height: 100%;
     max-width: 100%;
+}
+
+.repaet-layout-height {
+	display: inline-block !important;
+}
+
+.md-toast-content{
+	position: relative;
+}
+
+.arrow-popup{
+	background: #ffffff none repeat scroll 0 0;
+    height: 20px;
+    left: 50%;
+    position: absolute;
+    top: -5px;
+    transform: rotate(44deg);
+    width: 20px;
+}
+
+.product-detail-right-set{
+	position: relative;
+}
+
+.skew2 {
+    background: #ffffff none repeat scroll 0 0;
+    bottom: 0;
+    height: 50%;
+    left: -25px;
+    position: absolute;
+    transform: skewX(45deg);
+    width: 40px;
+    z-index: 3;
+}
+.skew {
+    background: #ffffff none repeat scroll 0 0;
+    height: 50%;
+    left: -25px;
+    position: absolute;
+    top: 0;
+    transform: skewX(-45deg);
+    width: 40px;
+    z-index: 3;
+}
+
+
+.tag-purple-new{
+	background: #aa00ff none repeat scroll 0 0;
+    border-radius: 0 2px 2px 0;
+    float: right;
+    position: relative;
+    max-width: 195px;
+    width: auto;
+}
+
+.tag-purple-new-pos{
+	position: absolute;
+	top: 10px;
+	right: -5px;
+	width: 195px;
+	word-wrap: break-word;
+}
+
+.tag-yellow-new{
+	background: #ffc412 none repeat scroll 0 0;
+    border-radius: 0 2px 2px 0;
+    float: right;
+    position: relative;
+    max-width: 195px;
+    width: auto;
+    margin-top: 7px;
+}
+
+.has-sale-div .prddetailtitle, .has-sale-div .prddetailsubexttitle, .has-sale-div .prddetailnormaltext, .has-sale-div .prddetailnormaltext{
+	width: 57%;
+	position: relative;
+	z-index: 4px;
+
+}
+
+.transparent-bg{
+	background-color:transparent !important;
 }

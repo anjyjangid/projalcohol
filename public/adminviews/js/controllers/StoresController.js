@@ -65,5 +65,17 @@ MetronicApp.controller('StoreFormController',[
 			});	
 		}		
 	}
+
+	$scope.searchLocation = function(q){
+		return $http.get('/site/search-location', {params: {q}})
+		.then(function(res){
+			return res.data;
+		});
+	}
+	
+	$scope.locationSelect = function(location) {
+		$scope.storeInfo.address = location;
+		$scope.storeInfo.address.location = [parseFloat(location.LAT),parseFloat(location.LNG)];		
+	}
 }]);
 
