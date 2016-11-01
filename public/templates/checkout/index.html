@@ -27,25 +27,25 @@
 						<div class="progressbar-loading"></div>
 					</div>
 				</div>
-				<div class="step-ratio">
+				<div class="step-ratio" ui-sref="mainLayout.checkout.cart" ui-sref-opts="{reload: true}">
 					<div class="step-individual step-1"></div>
-					<a class="steps-text" ng:class="{'currentstep':$state.$current.data.step=='cart'}"><span>Shopping Cart</span></a>
+					<a class="steps-text" ui-sref-active="currentstep"><span>Shopping Cart</span></a>
 				</div>
-				<div class="step-ratio">
+				<div class="step-ratio" ui-sref="mainLayout.checkout.address" ui-sref-opts="{reload: true}">
 					<div class="step-individual step-2"></div>
-					<a class="steps-text" ng:class="{'currentstep':$state.$current.data.step=='address'}"><span>Address</span></a>
+					<a class="steps-text" ui-sref-active="currentstep"><span>Address</span></a>
 				</div>
-				<div class="step-ratio">
+				<div class="step-ratio" ui-sref="mainLayout.checkout.delivery" ui-sref-opts="{reload: true}">
 					<div class="step-individual step-3"></div>
-					<a class="steps-text" ng:class="{'currentstep':$state.$current.data.step=='delivery'}"><span>Delivery</span></a>
+					<a class="steps-text" ui-sref-active="currentstep"><span>Delivery</span></a>
 				</div>
-				<div class="step-ratio">
+				<div class="step-ratio" ui-sref="mainLayout.checkout.payment" ui-sref-opts="{reload: true}">
 					<div class="step-individual step-4"></div>
-					<a class="steps-text" ng:class="{'currentstep':$state.$current.data.step=='payment'}"><span>Payment</span></a>
+					<a class="steps-text" ui-sref-active="currentstep"><span>Payment</span></a>
 				</div>
-				<div class="step-ratio">
+				<div class="step-ratio" ui-sref="mainLayout.checkout.review" ui-sref-opts="{reload: true}">
 					<div class="step-individual step-5"></div>
-					<a class="steps-text" ng:class="{'currentstep':$state.$current.data.step=='review'}"><span>Review &amp; Confirm</span></a>
+					<a class="steps-text" ui-sref-active="currentstep"><span>Review &amp; Confirm</span></a>
 				</div>
 			</div>
 	</div>
