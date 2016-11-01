@@ -103,8 +103,7 @@ class OrderController extends Controller
 			return response($response,400);
 
 		}
-
-		prd($response);
+		
 		return response($response,200);
 
 	}
@@ -320,7 +319,7 @@ class OrderController extends Controller
 		}
 
 		//SET CART REFERENCE FOR ORDER ID
-		$cart->setReference();
+		//$cart->setReference();
 
 		try {
 

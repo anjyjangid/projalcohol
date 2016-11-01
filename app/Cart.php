@@ -1180,6 +1180,7 @@ class Cart extends Moloquent
 				'slug'=>$product['slug'],
 				'description'=>$product['description'],
 				'shortDescription'=>$product['shortDescription'],
+
 				'sku'=>$product['sku'],
 				'chilled'=>(bool)$product['chilled'],
 
@@ -1188,7 +1189,7 @@ class Cart extends Moloquent
 			foreach ($product['imageFiles'] as $key => $value) {
 
 				if($value['coverimage']){
-					$value['common']['icon'] = $value['source'];
+					$product['common']['coverImage'] = $value['source'];
 				}
 
 			}
@@ -1426,6 +1427,8 @@ class Cart extends Moloquent
 								if($product['type']==1){
 									$oPromo['price'] = $product['price'];
 								}
+
+								$oPromo['product'] = new MongoId((string)$product['_id']);
 
 								$subtotal+= $oPromo['price'];
 
