@@ -433,6 +433,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 	this.addPackage = function (id,detail) {
 
+		console.log(arguments);
 		var _self = this;
 
 		var deliveryKey = _self.getCartKey();
