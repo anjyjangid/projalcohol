@@ -11,6 +11,8 @@ use AlcoholDelivery\Credits as Credits;
 use AlcoholDelivery\Promotion;
 use AlcoholDelivery\Gift;
 
+use Illuminate\Support\Facades\Auth;
+
 use MongoId;
 use MongoDate;
 
@@ -48,6 +50,7 @@ class Cart extends Moloquent
 						'user',
 						'reference'
 					];
+	
 
 	public function setKey($keyVal){
 		$this->key = $keyVal;
@@ -1153,7 +1156,7 @@ class Cart extends Moloquent
 
 	public function cartToOrder(){
 
-		$productsInCart = $this->getProductIncartCount();
+		$productsInCartCount = $this->getProductIncartCount();
 
 		$order = [
 			'interface'=>1			
@@ -1163,23 +1166,12 @@ class Cart extends Moloquent
 		$subtotal = 0;
 		$totalPoints = 0;
 
-		$proIds = array_keys($productsInCart);
+		$proIds = array_keys($productsInCartCount);
 
 		$productObj = new products();
-		
-		// product log start //
-
-			$oPro = [];
-			foreach($productsInCart as $proKey=>$quantity){
-				$oPro[] = ["_id"=>new mongoId($proKey),"quantity"=>$quantity];
-			}
-
-			$order['productsLog'] = $oPro;
-
-		// product log ends //
-
 
 		$productsInCart = $productObj->fetchProduct(["id"=>$proIds]);
+
 		$proDetails = [];
 		$proSales = [];
 		foreach ($productsInCart['product'] as $product) {
@@ -1190,6 +1182,7 @@ class Cart extends Moloquent
 				'slug'=>$product['slug'],
 				'description'=>$product['description'],
 				'shortDescription'=>$product['shortDescription'],
+
 				'sku'=>$product['sku'],
 				'chilled'=>(bool)$product['chilled'],
 
@@ -1198,7 +1191,7 @@ class Cart extends Moloquent
 			foreach ($product['imageFiles'] as $key => $value) {
 
 				if($value['coverimage']){
-					$value['common']['icon'] = $value['source'];
+					$product['common']['coverImage'] = $value['source'];
 				}
 
 			}
@@ -1241,7 +1234,25 @@ class Cart extends Moloquent
 
 		}
 
+		// product log start //
+
+			$order['productsLog'] = [];
+
+			foreach($productsInCartCount as $proKey=>$quantity){
+				
+				$oPro = [
+					"_id" => new mongoId($proKey),
+					"quantity" => (int)$quantity
+				];
+
+				$oPro = array_merge($oPro,$proDetails[$proKey]['common']);
+				array_push($order['productsLog'], $oPro);
+			}
+
+			 
+		// product log ends //
 		unset($productsInCart);
+		unset($productsInCartCount);
 		
 		// Set sale products start //
 		if(isset($this->sales)){
@@ -1401,9 +1412,11 @@ class Cart extends Moloquent
 
 				foreach ($this->promotions as $key => $promoInCart) {
 
+
 					$oPromo = [
 						'title' => $promotion['title'],
-						'qualifyAmt' => $promotion['price']
+						'qualifyAmt' => $promotion['price'],
+						'price' => 0
 					];
 
 					if($promoInCart['promoId'] == $promotion['_id']){
@@ -1412,22 +1425,29 @@ class Cart extends Moloquent
 							
 							if((string)$product['_id']===(string)$promoInCart['productId']){
 
-								$oPromo['price'] = 0;
+								
 								if($product['type']==1){
 									$oPromo['price'] = $product['price'];
 								}
+
+								$oPromo['product'] = new MongoId((string)$product['_id']);
+
+								$subtotal+= $oPromo['price'];
+
+								$order['promotion'][] = $oPromo;
+
+								break ;
 
 							}
 						}
 
 					}
 
-					$subtotal+= $oPromo['price'];
-
-					$order['promotion'][] = $oPromo;
+					
 				}
 
 			}
+			
 
 		}
 
@@ -1581,8 +1601,8 @@ class Cart extends Moloquent
 
 				$proDetail = $proDetails[$key];
 
-
-				$oProduct = $proDetail['common'];
+				//$oProduct = $proDetail['common'];
+				$oProduct = [];
 				$oProduct['_id'] = new MongoId($key);
 				$oProduct['unitprice'] = $proDetail['unitprice'];
 
@@ -1707,8 +1727,6 @@ class Cart extends Moloquent
 			'method' => $this->payment['method']
 		];
 
-
-		
 		return $order;
 
 	}	

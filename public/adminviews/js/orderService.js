@@ -117,6 +117,66 @@ MetronicApp
 
 
 	};
+	
+	this.addPackage = function (id,detail) {
+
+		var _self = this;
+
+		var deliveryKey = _self.getCartKey();
+		
+		var d = $q.defer();
+
+		var products = [];
+
+		angular.forEach(detail.packageItems,function(item,key){
+
+			angular.forEach(item.products,function(product,key){
+
+				if(product.cartquantity > 0){
+
+					var tempPro = {
+						_id:product._id,
+						quantity : product.cartquantity
+					};
+
+					products.push(tempPro);
+
+				}
+
+			})
+
+		});		
+
+		$http.post("/cart/package/"+deliveryKey, {
+				"id":id,
+				"products":products,
+				"quantity" : parseInt(detail.packageQuantity),
+				"price" : parseFloat(detail.packagePrice),
+				"savings" : parseFloat(detail.packageSavings)
+
+		}).error(function(data, status, headers) {
+
+			$rootScope.$broadcast('alcoholCart:updated',{msg:"Something went wrong"});
+
+		}).success(function(response) {			
+			
+			var inCart = _self.getPackageByUniqueId(response.key);
+
+			detail.products = products;
+
+			var newPackage = new alcoholCartPackage(id, response.key, detail);
+
+	    	_self.$cart.packages.push(newPackage);
+
+	    	$rootScope.$broadcast('alcoholCart:updated',{msg:"Package added to cart",quantity:detail.packageQuantity});
+	    	
+			d.resolve(response);
+			
+		});
+
+		return d.promise;		
+
+	};
 
 	this.getGiftCardByUniqueId = function(cardUniqueId){
 
@@ -481,6 +541,37 @@ MetronicApp
 		// _self.$cart._id = storedCart._id;
 
 	};
+
+	this.deployCart = function(){
+
+		var cart = {};
+		var cartKey = this.getCartKey();
+
+		angular.copy(this.getCart(),cart);
+		
+		delete cart.packages;
+		delete cart.products;
+		delete cart._id;
+		delete cart.created_at;
+		delete cart.updated_at;
+
+		var d = $q.defer();
+
+		$http.put("adminapi/order/deploycart/"+cartKey, cart,{
+
+		}).error(function(data, status, headers) {
+
+			d.reject(data);
+
+		}).success(function(response) {
+
+			d.resolve(response);
+
+		});
+
+		return d.promise;
+
+	}
 
 	this.newCart = function() {
 		var _self = this;

@@ -51,7 +51,6 @@ class CartController extends Controller
 		}
 
 		$this->middleware('cart.unavailable');// check cart is available or not;
-
 		
 	}
 
@@ -1687,8 +1686,8 @@ jprd($product);
 
 		}
 
-		//$cartArr['user'] = new MongoId($user->_id);
-		$cartArr['user'] = new MongoId("57c422d611f6a1450b8b456c");//for testing on postman
+		$cartArr['user'] = new MongoId($user->_id);
+		//$cartArr['user'] = new MongoId("57c422d611f6a1450b8b456c");//for testing on postman
 
 		$cartProductsArr = [];
 
@@ -1731,7 +1730,7 @@ jprd($product);
 
 		$cartArr["loyaltyPointEarned"] = $loyaltyPoints;
 
-//////			
+//////
 
 		try {
 			
@@ -1814,7 +1813,7 @@ jprd($product);
 
 		} catch(\Exception $e){
 
-			return response(array("success"=>false,"message"=>$e->getMessage()));
+			return response(["message"=>$e->getMessage()],400);
 
 		}
 	}

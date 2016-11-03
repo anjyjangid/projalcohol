@@ -26,6 +26,8 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	
 	Route::resource('order', 'Admin\OrderController',['except'=>'show']);
 	Route::controller('order', 'Admin\OrderController');
+
+	//Route::put('deploycart/{cartKey}','CartController@deploycart');
 	
 	Route::resource('product', 'Admin\ProductController',['only'=>['update','store']]);
 	Route::controller('product', 'Admin\ProductController');
