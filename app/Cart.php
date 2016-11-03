@@ -1705,6 +1705,7 @@ class Cart extends Moloquent
 		}
 		// Set Products ends //
 
+
 		$order['nonchilled'] = $this->nonchilled;
 		$order['status'] = $this->status;
 		$order['user'] = $this->user;
@@ -1720,12 +1721,35 @@ class Cart extends Moloquent
 			$order['doStatus'] = 0;
 		}
 		
+		$total = $subtotal;
+		$serviceCharges = 0;
+		$discountExemption = 0;
+
+		if($order['service']['express']['status']){
+			$serviceCharges+=$order['service']['express']['charges'];
+		}
+		if($order['service']['smoke']['status']){
+			$serviceCharges+=$order['service']['smoke']['charges'];
+		}
+		if(!$order['service']['delivery']['free']){
+			$serviceCharges+=$order['service']['delivery']['charges'];
+		}
+
+		if($order['discount']['nonchilled']['status']){
+			$discountExemption+=$order['discount']['nonchilled']['exemption'];
+		}
+
+		$total+=$serviceCharges;
+		$total-=$discountExemption;	
+
 		$order['payment'] = [
-			'subtotal' => $subtotal,
+			'subtotal' => round($subtotal,2),
 			'points' => $totalPoints,
-			'total'=> $subtotal,
+			'service'=>$serviceCharges,
+			'discount'=>$discountExemption,
+			'total'=> $total,
 			'method' => $this->payment['method']
-		];
+		];		
 
 		return $order;
 
