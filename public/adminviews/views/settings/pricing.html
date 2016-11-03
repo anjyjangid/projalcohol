@@ -81,7 +81,14 @@
                     <input type="number" min="0" step="any" class="form-control" ng-model="setting.value" placeholder="">
                     <span class="help-block" ng-bind="errors[kv+'.value'][0]"></span>                     
                 </td>
-                <td align="center">N/A</td>
+                <td align="center" ng:class="{'has-error':invalidPostalCode}">
+                    <ui-select multiple tagging tagging-label="" ng-if="kv=='express_delivery'" ng-model="setting.applicablePostalCodes" theme="bootstrap" ng-disabled="disabled" ng-init="values = [];">
+                        <ui-select-match placeholder="Enter Postal Codes">{{$item}}</ui-select-match>
+                        <ui-select-choices repeat="postal in values | filter:$select.search">
+                           {{postal}}
+                        </ui-select-choices>
+                    </ui-select>
+                </td>
                 <td align="center">N/A</td>
             </tr>
             <tr>

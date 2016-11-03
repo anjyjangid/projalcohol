@@ -10,7 +10,22 @@ MetronicApp.factory('businessModel', ['$http', '$cookies','$location', function(
             return $http.post("/admin/product/store", {data:data});
         },*/
 
+        parseProductData: function(fields){
+        	for(var i in fields.products){
+				if(fields.products[i].disc)
+        			fields.products[i] = {_id: fields.products[i]._id,disc: fields.products[i].disc,type: fields.products[i].type};
+        		else{
+        			fields.products[i] = null;
+        		}
+        	}
+			return fields.products.filter(function(p){ return p; });
+        },
+
         storeBusiness: function(fields){
+    		fields = angular.copy(fields);
+    		fields.products = this.parseProductData(fields);
+        	// fields.products  = fieldsCopy.products.filter(function(p){ return p; });
+
 	        return $http.post("/adminapi/business/store", fields, {
 	            
 	        }).error(function(data, status, headers) {            
@@ -33,7 +48,8 @@ MetronicApp.factory('businessModel', ['$http', '$cookies','$location', function(
 	                place: 'prepend',
 	                closeInSeconds: 3
 	            });
-	            // $location.path("business/list");
+	            if(response.success)
+	            	$location.path("business/list");
 
 	        })
 	        /*.error(function(data, status, headers) {            
@@ -46,24 +62,13 @@ MetronicApp.factory('businessModel', ['$http', '$cookies','$location', function(
 	            });
 	        });*/
 
-        },     
-
+        },	
         updateBusiness: function(fields,businessid){
-			
-			fields = angular.copy(fields);
 
-			for(var i in fields.products){
-				if(fields.products[i].disc)
-					fields.products[i] = {
-						_id: fields.products[i]._id,
-						disc: fields.products[i].disc,
-						type: fields.products[i].type
-					};
-				else
-					fields.products[i] = null;
-			}
+        	fields = angular.copy(fields);
+    		fields.products = this.parseProductData(fields);
 
-			fields.products = fields.products.filter(function(p){ return p; });
+        	// fields.products  = fields.products.filter(function(p){ return p; });
 
 	        return $http.post("/adminapi/business/update/"+businessid, fields, {
 	            
@@ -86,7 +91,9 @@ MetronicApp.factory('businessModel', ['$http', '$cookies','$location', function(
 	                place: 'prepend',
 	                closeInSeconds: 3
 	            });
-	            $location.path("business/list");
+	            
+	            if(response.success)
+	            	$location.path("business/list");
 	        })
 	        /*.error(function(data, status, headers) {            
 	            Metronic.alert({

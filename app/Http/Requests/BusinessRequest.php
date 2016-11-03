@@ -30,16 +30,24 @@ class BusinessRequest extends Request
             'company_name' => 'required|string|max:255',            
             'company_email' => 'required|email|max:255|unique:businesses,company_email,'.@$input['_id'].",_id",
         ];
-        dd($input);
+        // dd($input);
         // $billing_address = Request::input('billing_address');
-        if(!empty($input['address']) && count($input['address'])>0)
+        if(!empty($input['address']) && count($input['address'])>0){
             foreach ($this->request->get('address') as $key => $address) {
                 $rules['address.'.$key.'.first_name'] = 'required';
                 $rules['address.'.$key.'.last_name'] = 'required';
-                $rules['address.'.$key.'.receiver_contact'] = 'required';
-                $rules['address.'.$key.'.address'] = 'required';
+                $rules['address.'.$key.'.receiver_contact'] = 'required|regex:/[0-9]{10}/';
+                $rules['address.'.$key.'.SEARCHVAL'] = 'required';
                 $rules['address.'.$key.'.instruction'] = 'required';
             }
+        }
+
+        // Do not need product Discount validation
+        // if(!empty($input['products']) && count($input['products'])>0){
+        //     foreach ($this->request->get('products') as $key => $products) {
+        //         $rules['products.'.$key.'.disc'] = 'required';
+        //     }
+        // }
 
         // foreach ($this->request->get('billing_address') as $key => $billing_address) {
 
@@ -70,9 +78,16 @@ class BusinessRequest extends Request
             $messages['address.'.$key.'.first_name.required'] = 'The Receiver\'s First Name field is required.';
             $messages['address.'.$key.'.last_name.required'] = 'The Receiver\'s Last Name field is required.';
             $messages['address.'.$key.'.receiver_contact.required'] = 'The Receiver\'s Contact field is required.';
-            $messages['address.'.$key.'.address.required'] = 'The Location field is required.';
+            $messages['address.'.$key.'.receiver_contact.regex'] = 'The Receiver\'s Contact Number is invalid.';
+            $messages['address.'.$key.'.SEARCHVAL.required'] = 'The Location field is required.';
             $messages['address.'.$key.'.instruction.required'] = 'The Receiver\'s Instruction field is required.';
         }
+
+        // Do not need product Discount validation
+        // foreach ($this->request->get('products') as $key => $products) {
+        //     $messages['products.'.$key.'.disc.required'] = 'The Discount field is required.';
+        // }
+
         // $messages = [
         //     'billing_address.0.first_name.required' => 'This field is required'
         // ];
