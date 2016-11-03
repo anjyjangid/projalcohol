@@ -272,6 +272,10 @@ AlcoholDelivery.service('alcoholCart', [
 		});
 
 		return defer.promise
+	};	
+
+	this.getApplicablePostalCodes = function(){
+		return this.getCart().applicablePostalCodes || [];
 	};
 
 	this.addCreditCertificate = function(id, quantity){

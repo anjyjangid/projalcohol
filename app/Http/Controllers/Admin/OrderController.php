@@ -387,22 +387,33 @@ class OrderController extends Controller
 			$query[]['$match']['consumer.name'] = ['$regex'=>new \MongoRegex($s)];
 		}
 
-		$project = ['reference'=>1,'delivery'=>1,'status'=>1,'_id'=>1,'created_at'=>1,'payment'=>1,'service'=>1];
+		$project = [
+				'reference'=>1,
+				'delivery'=>1,
+				'status'=>1,
+				'_id'=>1,
+				'created_at'=>1,
+				'payment'=>1,
+				'service'=>1,
+				
+			];
 
 		$project['orderDate'] = ['$dateToString'=>['format' => '%Y-%m-%d','date'=>'$created_at']];
 
 		$project['consumer'] = '$consumer';
 
-		$project['noOfProducts'] = [
+		/*$project['noOfProducts'] = [
 			'$sum' =>[
-				['$size'=>'$products'],
-				['$size'=>'$packages'],
+				['$size'=>'$productsLog'],
+				//['$size'=>'$packages'],
 			]
-		];
+		];*/
+
+		//$project['noOfProducts'] = ['$size'=>'$productsLog'];			
 
 		$query[]['$project'] = $project;
 
-		$columns = ['reference','consumer.name','noOfProducts','payment.total','created_at','delivery.type','status'];
+		$columns = ['reference','consumer.name','payment.total','created_at','delivery.type','status'];
 
 		$sort = ['created_at' => -1]; 
 

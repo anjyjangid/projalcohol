@@ -809,6 +809,7 @@ ui-sref {
 	line-height: 16px;
 	margin-top: 10px;
 	margin-top: 23px;
+	min-height:30px;
 }
 .footer1_subtitle {
 	float: left;
@@ -1247,7 +1248,7 @@ ui-sref {
 	width: 522px;
 }
 .register_checktext {
-	float: right;
+	float: left;
 	width: 93%;
 	font-size: 14px;
 	font-family: 'Work Sans', sans-serif;
@@ -4265,9 +4266,10 @@ ui-sref {
 	float: left;
 }
 .pic_divinnertext {
-	width: 83%;
-	float: right;
-	text-align: left;
+	float: left;
+    padding-left: 20px;
+    text-align: left;
+    width: 92%;
 }
 .pic_divinnertextbold {
 	width: 100%;
@@ -4809,12 +4811,12 @@ ui-sref {
 	background: #aa00ff none repeat scroll 0 0;
 	content: "";
 	float: left;
-	height: 20px;
+	height: 18px;
 	left: 50%;
 	position: absolute;
-	top: -7px;
+	top: -9px;
 	transform: rotate(135deg);
-	width: 20px;
+	width: 18px;
 	border: none;
 }
 .productaddedpopup {
@@ -4835,12 +4837,12 @@ ui-sref {
 	background: #aa00ff none repeat scroll 0 0;
 	content: "";
 	float: left;
-	height: 20px;
+	height: 18px;
 	left: 50%;
 	position: absolute;
-	top: -7px;
+	top: -9px;
 	transform: rotate(135deg);
-	width: 20px;
+	width: 18px;
 	border: none;
 }
 

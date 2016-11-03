@@ -1278,6 +1278,11 @@ AlcoholDelivery.controller('CartAddressController',[
 			return false;
 		}
 
+		var deliveryPostalCode = $scope.delivery.address.detail.PostalCode.substr(0,2);
+		if(alcoholCart.getApplicablePostalCodes().indexOf(deliveryPostalCode)==-1){
+			alcoholCart.setExpressStatus(0);
+			$rootScope.$broadcast('alcoholCart:notify',"We regret to inform you that the Express Delivery service does not cover your delivery area. Please read the Terms & Conditions for more information.");
+		}
 		alcoholCart.deployCart().then(
 
 			function(response){

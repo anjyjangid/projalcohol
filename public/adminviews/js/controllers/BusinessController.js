@@ -65,21 +65,35 @@ MetronicApp.controller('BusinessUpdateController',['$rootScope', '$scope', '$tim
 
 	if($stateParams.businessid){
 		businessModel.getBusiness($stateParams.businessid).success(function(data){
+			console.log($stateParams.businessid);
+			
 			if(!data.products)
 				data.products = [];
 			$scope.business = data;
-			if(typeof data.billing_address == 'undefined'){
-				$scope.business.billing_address = [{}];
-			}
-			if(typeof data.delivery_address == 'undefined'){
-				$scope.business.delivery_address = [{}];
+			if(typeof data.address == 'undefined'){
+				$scope.business.address = [{}];
 			}
 			$scope.hideBasicInfo = true;
+			$scope.business._id = $stateParams.businessid;
 		});
 	}
 
 	$scope.store = function(){
+		$scope.productInfoIncompelete = false;
+		
+		for(var i in $scope.business.products){
+			if(!$scope.business.products[i].disc){
+				$scope.productInfoIncompelete = true;
+				break;
+			}
+		}
+		if($scope.productInfoIncompelete){
+			Metronic.alert({type: 'danger',icon: 'warning',message: 'Please fill all products discount.',container: '.portlet-body',place: 'prepend',closeInSeconds: 3});
+			return false;
+		}
+
 		if($stateParams.businessid){
+			$scope.business._id = $stateParams.businessid;
 			businessModel.updateBusiness($scope.business, $stateParams.businessid)
 			.success(function(response){
 				//$location.path("business/list");
@@ -93,7 +107,7 @@ MetronicApp.controller('BusinessUpdateController',['$rootScope', '$scope', '$tim
 			//POST DATA WITH FILES
 			businessModel.storeBusiness(data).success(function(response){
 			}).error(function(data, status, headers){
-				$scope.errors = data;
+				$scope.errorss = data;
 			});
 		}
 	}
@@ -150,6 +164,7 @@ MetronicApp.controller('BusinessUpdateController',['$rootScope', '$scope', '$tim
 	$scope.addItem = function(p){
 		p.added = true;
 		p.quantity = 1;
+		console.log(angular.copy(p));
 		$scope.business.products.push(angular.copy(p));
 	};
 
@@ -167,10 +182,11 @@ MetronicApp.controller('BusinessUpdateController',['$rootScope', '$scope', '$tim
 	
 	$scope.locationSelect = function(location, model, label, index) {
 		location.location = [parseFloat(location.LAT),parseFloat(location.LNG)];
-		
-		$scope.business.address[index] = location;
-		// console.log($scope.business.address[index]);
-		// $scope.business.address.location = [parseFloat(location.LAT),parseFloat(location.LNG)];		
+		var data  = $scope.business.address[index];
+		for ( var key in location ) {
+			data[key] = location[key];
+	 	}
+		$scope.business.address[index] = data;
 	}
 
 }]);

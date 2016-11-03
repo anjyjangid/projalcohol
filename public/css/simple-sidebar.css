@@ -128,6 +128,10 @@ body {
 #wrapper.toggled .side-menu-responsive, #wrapper.toggled .laeftdivmain {
 	width: 80%;
 	opacity: 1;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+	transition: all 0.5s ease;
 }
 #bs-example-navbar-collapse-1 {
 	display: block;
@@ -195,10 +199,10 @@ body {
 	box-shadow:none;
 }
 
-.dropdown-menu.ng-scope.animate li a{
+/*.dropdown-menu.ng-scope.animate li a{
 	padding-top:6px  !important;
 		padding-bottom:6px  !important;
-}
+}*/
 
 .dropdown.ng-scope.ng-isolate-scope.open  .dropdown-menu{
 	 padding: 8px 0!important;
