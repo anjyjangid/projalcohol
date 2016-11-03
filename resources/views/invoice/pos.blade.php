@@ -1,8 +1,53 @@
 @extends('invoice.layout')
 @section('content')
+
+<?php 
+  if($order['delivery']['type'] == 1){
+    $delivery = 'advance delivery';
+  }else{
+    $delivery = '1hr delivery';
+    if($order['service']['express']['status'])
+       $delivery = 'express delivery';
+  }
+
+  $address = $order['delivery']['address']['detail'];
+
+  $paymode = '';
+
+  $topay = 0;
+
+  if($order['payment']['method'] == 'COD'){
+    $paymode = 'C.O.D';    
+    $topay = $order['payment']['total'];
+  }else{
+    $paymode = 'Debit/Credit card';
+  }
+
+  $dateOfDelivery = '';
+
+  $date = strtotime($order['created_at']);
+
+  if($order['delivery']['type'] == 1){
+    if($order['timeslot']['datekey']!==false){
+      $date = $order['timeslot']['datekey'];
+    }    
+    $dateOfDelivery = date('Y-m-d',$date).'<br> BW : '.$order['timeslot']['slotslug'];
+  }else{
+    $dateOfDelivery = date('Y-m-d H:i',$date);   
+
+    if($order['service']['express']['status']){
+      $dateOfDelivery = date('Y-m-d H:i',strtotime('+30 minutes',strtotime($dateOfDelivery)));               
+    }else{
+      $dateOfDelivery = date('Y-m-d H:i',strtotime('+60 minutes',strtotime($dateOfDelivery)));               
+    }
+  }
+  
+
+?>
+
 <div id="content">
 <div align="center" id="background">
-  <p id="bg-text">1 hr delivery</p>
+  <p id="bg-text">{{ $delivery }}</p>
 </div>
 <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
   <tbody>
@@ -23,41 +68,60 @@
                   <table width="100%" border="0" cellspacing="2" cellpadding="2" align="right" style="font-size:12px; margin-top:5px;">
                     <tbody>
                     <tr>
-                      <td colspan="2" align="center" nowrap="nowrap" style="font-size:12px;">
-                        <img style="width:150px;margin-left: 55px;" class="img-responsive" src="{{ asset('img/poslogo.png') }}">
+                      <td align="left" nowrap="nowrap" style="font-size:12px;">
+                        <img style="width:150px;" class="img-responsive" src="{{ asset('img/poslogo.png') }}">
+                      </td>
+                      <td align="right" nowrap="nowrap" valign="bottom">
+                        <h5 class="nomargin"><strong>Invoice</strong></h5>
                       </td>
                     </tr>                    
                     <tr>
-                      <td colspan="2" align="center" nowrap="nowrap" style="font-size:12px;padding-top: 5px;">
+                      <td valign="center" align="left" nowrap="nowrap">
                         <strong>Tel:+6592445533</strong>
+                      </td>
+                      <td valign="center" align="right">
+                        <h5 class="nomargin"><strong>{{ $order['reference'] }}</strong></h5>
                       </td>
                     </tr>
                     <tr>                      
                       <td colspan="2" align="left" nowrap="nowrap">&nbsp;</td>
                     </tr>
-                    <tr>                      
+                    <!-- <tr>                      
                       <td colspan="2" align="center" nowrap="nowrap">
                         <h5><strong>Invoice</strong></h5>
-                        <h4><strong>ADSG37561O0731</strong></h4>
+                        <h4><strong>{{ $order['reference'] }}</strong></h4>
                       </td>
-                    </tr>
+                    </tr> -->
                     <tr>
                       <td valign="top">
                         <div><strong>Delivery Address</strong></div>
-                        <div>John Doe</div>
-                        <div>Nexus</div>
-                        <div>CHENG SAN GREEN</div>
-                        <div>ANG MO KIO AVENUE 10</div>
-                        <div>#2 - 3</div>
-                        <div>Singapore - 460543</div>
+                        <div>{{ $address['firstname'].' '.$address['lastname'] }}</div>
+                        <?php if(isset($address['company'])){?>
+                          <div>{{ $address['company'] }}</div>
+                        <?php }?>
+                        <?php if(isset($address['BLDG_NAME'])){?>
+                        <div>{{ $address['BLDG_NAME'] }}</div>
+                        <?php }?>
+                        <div>{{ $address['HBRN'] }}</div>
+                        <?php if(isset($address['FLOOR']) || isset($address['UNIT'])){?>
+                          <div>
+                            <?php if(isset($address['FLOOR'])){?>
+                            <span>#{{ $address['FLOOR'] }} - </span>
+                            <?php }?>
+                            <?php if(isset($address['UNIT'])){?>
+                            <span>{{ $address['UNIT'] }}</span>
+                            <?php }?>
+                          </div>
+                        <?php }?>
+                        <div>Singapore - {{ $address['PostalCode'] }}</div>
                       </td>
                       <td valign="top" align="right">
                         <div><strong>Order date</strong></div>
-                        <div>27-10-2016 12:05</div>
+                        <div>{{ date('Y-m-d H:i',strtotime($order['created_at'])) }}</div>
                         <div><strong>Delivery date</strong></div>
-                        <div>27-10-2016 01:05</div>
+                        <div><?php echo $dateOfDelivery ?></div>
                         <div><strong>Contact Number</strong></div>
-                        <div>+6580458222</div>
+                        <div>{{ $order['delivery']['contact'] }}</div>
                       </td>
                     </tr>
                     <tr>                      
@@ -75,130 +139,105 @@
                           <tr valign="top">
                             <td></td>
                           </tr>
-                          <tr valign="top">
-                            <td align="left">1</td>
-                            <td>Absolute Vodka</td>
-                            <td align="right">48.20</td>
-                            <td align="right">48.20</td>
-                          </tr>
-                          <tr valign="top">
-                            <td align="left">1</td>
-                            <td>Red wine</td>
-                            <td align="right">58.20</td>
-                            <td align="right">58.20</td>
-                          </tr>                          
-                          <tr valign="top">
-                            <td align="left">1</td>
-                            <td><strong>3 FREE 1</strong></td>
-                            <td align="right">148.20</td>
-                            <td align="right">148.20</td>
-                          </tr>
-                          <tr valign="top">
-                            <td align="left"></td>
-                            <td>3 Red wine</td>
-                            <td align="right"></td>
-                            <td align="right"></td>
-                          </tr>
-                          <tr valign="top">
-                            <td align="left"></td>
-                            <td>1 Black Label</td>
-                            <td align="right"></td>
-                            <td align="right"></td>
-                          </tr>
-                          <tr valign="top">
-                            <td align="left">2</td>
-                            <td>Tiger beer(chilled)</td>
-                            <td align="right">16.20</td>
-                            <td align="right">32.40</td>
-                          </tr>                          
-                          <tr valign="top">
-                            <td align="left">1</td>
-                            <td><strong>Party package (8-10 pax)</strong></td>
-                            <td align="right">148.20</td>
-                            <td align="right">148.20</td>
-                          </tr>                          
-                          <tr valign="top">
-                            <td align="left">1</td>
-                            <td>Gift Certificate</td>
-                            <td align="right">500.00</td>
-                            <td align="right">500.00</td>
-                          </tr>
-                          <tr valign="top">
-                            <td align="left">2</td>
-                            <td>Tiger beer(chilled)</td>
-                            <td align="right">16.20</td>
-                            <td align="right">32.40</td>
-                          </tr>
-                          <tr valign="top">
-                            <td align="left">1</td>
-                            <td>Loyalty product</td>
-                            <td align="right">0.00</td>
-                            <td align="right">0.00</td>
-                          </tr>
-                          <tr valign="top">
-                            <td align="left">1</td>
-                            <td><strong>Basket</strong></td>
-                            <td align="right">25.00</td>
-                            <td align="right">25.00</td>
-                          </tr>
-                          <tr valign="top">
-                            <td align="left"></td>
-                            <td>1 Absolute Vodka</td>
-                            <td align="right"></td>
-                            <td align="right"></td>
-                          </tr>
-                          <tr valign="top">
-                            <td align="left"></td>
-                            <td>2 Tiger beer</td>
-                            <td align="right"></td>
-                            <td align="right"></td>
-                          </tr>
-                          <!-- <tr valign="top">
-                            <td align="left">1</td>
-                            <td>
-                              <strong>Need smoke</strong>
-                              <div>Need smoke details will be printed here.</div>
-                            </td>
-                            <td align="right">5.00</td>
-                            <td align="right">5.00</td>
-                          </tr> -->
+                            <?php foreach ($order['particulars'] as $key => $value) {
+                              $isPackage = '';                            
+                              if(isset($value['products']) && !empty($value['products']))
+                                $isPackage = 'fontbold';
+
+                              $value['unitPrice'] = formatPrice($value['unitPrice']);
+                              
+
+                            ?>                             
+                            <tr valign="top">
+                              <td align="left">
+                                <?php echo (!$isPackage)?$value['quantity']:'';?>
+                              </td>
+                              <td class="{{ $isPackage }}">
+                                <?php echo $value['name'];?>
+                              </td>
+                              <td align="right"><?php echo (!$isPackage)?$value['unitPrice']:'';?></td>
+                              <td align="right"><?php echo formatPrice($value['total']);?></td>
+                            </tr>
+                            <?php if($isPackage){?>
+                              <tr valign="top">
+                                <td align="left"></td>
+                                <td style="padding: 0px;">
+                                  <table cellpadding="0" cellspacing="0" border="0">
+                                    <?php foreach($value['products'] as $packageProduct){?>
+                                    <tr>
+                                      <td valign="top"><?php echo $packageProduct['quantity'];?></td>      
+                                      <td valign="top"><?php echo $packageProduct['name'];?></td>
+                                    </tr>
+                                    <?php }?>                                    
+                                  </table>  
+                                </td>                            
+                              </tr>
+                            <?php }?>
+                          <?php }?>
+                                                                            
                           <tr class="bottomborder">                      
                             <td colspan="4" align="left" nowrap="nowrap"></td>
                           </tr>
                           <tr>
                             <td align="left" colspan="3"><strong>Subtotal</strong></td>    
-                            <td align="right"><strong>992.60</strong></td>
+                            <td align="right"><strong>{{ formatPrice($order['payment']['subtotal']) }}</strong></td>
                           </tr>
+                          <?php if(!$order['service']['delivery']['free']){?>
                           <tr>
                             <td align="left" colspan="3"><strong>Delivery Charge</strong></td>    
-                            <td align="right"><strong>20.00</strong></td>
-                          </tr>                          
-                          <tr>
-                            <td align="left" colspan="3"><strong>Service Charge</strong></td>    
-                            <td align="right"><strong>55.00</strong></td>
-                          </tr>
-                          <tr>
-                            <td></td>
-                            <td align="left" colspan="2">
-                              <div><b>Need smoke ($5) :</b> Need smoke details will be printed here.</div>
-                              <div><b>Express delivery ($50).</b></div>
-                            </td>                                
-                          </tr>
+                            <td align="right"><strong> {{ formatPrice($order['service']['delivery']['charges']) }} </strong></td>
+                          </tr>   
+                          <?php } ?>                       
+                          <?php if($order['service']['express']['status'] || $order['service']['smoke']['status']){
+                            $serviceChrg = 0;
+                            $expressDetails = '';
+                            $smokeDetails = '';
+                            if($order['service']['express']['status']){
+                              $serviceChrg += $order['service']['express']['charges'];
+                              $expressDetails = '<div><b>Express delivery ($'.formatPrice($order['service']['express']['charges']).')</b></div>';
+                            }
+                            if($order['service']['smoke']['status']){
+                              $serviceChrg += $order['service']['smoke']['charges'];                              
+                            }
+
+                            ?>
+                            <tr>
+                              <td align="left" colspan="3"><strong>Service Charge</strong></td>    
+                              <td align="right"><strong>{{ formatPrice($serviceChrg) }}</strong></td>
+                            </tr>                          
+                            <tr>
+                              <td></td>
+                              <td align="left" colspan="2">
+                                <?php if($order['service']['smoke']['status']){?>
+                                <div><b>Need smoke (${{ $order['service']['smoke']['charges'] }})</b></div>
+                                <div>{{ $order['service']['smoke']['detail'] }}</div>
+                                <?php }?>
+                                {{ $expressDetails }}
+                              </td>                                
+                            </tr>
+                          <?php }?>
+                          <?php if($order['discount']['nonchilled']['status']){?>
                           <tr>
                             <td align="left" colspan="3"><strong>Discount (Non-Chilled)</strong></td>    
-                            <td align="right"><strong>-1.00</strong></td>
+                            <td align="right"><strong>-{{ formatPrice($order['discount']['nonchilled']['exemption']) }}</strong></td>
                           </tr>                          
+                          <?php }?>
                           <tr class="topborder">
                             <td align="left" valign="center" colspan="3"><strong>Total</strong></td>    
-                            <td align="right" valign="center"><h5 class="nomargin">1,066.60</h5></td>
+                            <td align="right" valign="center"><h5 class="nomargin">{{ formatPrice($order['payment']['total']) }}</h5></td>
                           </tr>
+                          
                           <tr class="bottomborder">
-                            <td align="left" valign="center" colspan="3"><strong>Payment mode : C.O.D</strong></td>    
-                            <td align="right" valign="center"><h5 class="nomargin">1,066.60</h5></td>
+                            <td align="left" valign="center" colspan="3"><strong>Payment mode : {{ $paymode }}</strong></td>    
+                            <td align="right" valign="center"><h5 class="nomargin">{{ formatPrice($order['payment']['total']) }}</h5></td>
                           </tr>
                           <tr class="bottomborder">
                             <td align="left" valign="center" colspan="3"><strong>To Pay</strong></td>    
-                            <td align="right" valign="center"><h5 class="nomargin"><strong>$1,066.60</strong></h5></td>
+                            <td align="right" valign="center">
+                              <h5 class="nomargin">
+                                <strong>${{ formatPrice($topay) }}</strong>
+                              </h5>
+                            </td>
                           </tr>                          
                         </table>
                       </td>  
@@ -206,12 +245,22 @@
                     <tr><td>&nbsp;</td></tr>
                     <tr>
                       <td colspan="4">
-                        <h5><u>Terms & conditions</u></h5>
+                        <?php if($order['delivery']['leaveatdoor'] || $order['delivery']['instructions']){?>
+                        <strong><u>Delivery instructions</u></strong>
+                        <?php if($order['delivery']['leaveatdoor']){?>
+                        <div>Leave this order at my doorstep.</div>
+                        <?php }?>
+                        <?php if($order['delivery']['instructions']){?>                        
+                        <div>{{ $order['delivery']['instructions'] }}</div>
+                        <?php }?>
+                        <div>&nbsp;</div>
+                        <?php }?>
+                        <strong><u>Terms & Conditions with reference to http://alcoholdelivery.com.sg/</u></strong>
                         <ul style="margin-left: 13px;padding:0px;">
-                          <li>Cancellation will be accepted within 1 day for advance delivery.</li>
+                          <?php if($order['service']['smoke']['status']){?>
                           <li>Cost of cigarettes must be paid in CASH.</li> 
-                          <li>Service charge does not include cost of cigarettes.</li>
-                          <li>Service is not applicable for Express Delivery.</li>
+                          <li>Service charge does not include cost of cigarettes.</li>                          
+                          <?php }?>                          
                         </ul>
                       </td>
                     </tr>                   

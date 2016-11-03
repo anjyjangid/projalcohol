@@ -1083,3 +1083,11 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 .again21 a.search_icon{
 	display: none;
 }
+
+.step-ratio[disabled] {
+    cursor: not-allowed;
+}
+
+.step-ratio[disabled] .step-individual {
+    cursor: not-allowed;
+}

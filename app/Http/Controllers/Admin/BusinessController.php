@@ -88,18 +88,17 @@ class BusinessController extends Controller
 		$businessObj = new Business;
 		$inputs = $request->all();
 
-		// prd($inputs);
 
 		$inputs['status'] = (int)$inputs['status'];
 
+		for ($i=0; $i<count(@$inputs['products']); $i++) {
+			$inputs['products'][$i]['_id'] = new MongoId($inputs['products'][$i]['_id']);
+		}
+
 		try {
-			dd($inputs);
 			$business = Business::create($inputs);
-		
 		} catch(\Exception $e){
-			
 			return response(array("success"=>false,"message"=>$e->getMessage()));
-				
 		}
 		
 		return response(array("success"=>true,"message"=>"Business created successfully", '_id' => $business->_id));
@@ -121,10 +120,8 @@ class BusinessController extends Controller
 		$business->company_name = $inputs['company_name'];
 		$business->company_email = $inputs['company_email'];
 
-		if(!empty($inputs['delivery_address']))
-			$business->delivery_address = $inputs['delivery_address'];	
-		if(!empty($inputs['billing_address']))
-			$business->billing_address = $inputs['billing_address'];				
+		if(!empty($inputs['address']))
+			$business->address = $inputs['address'];
 
 		for ($i=0; $i<count(@$inputs['products']); $i++) {
 			$inputs['products'][$i]['_id'] = new MongoId($inputs['products'][$i]['_id']);
@@ -132,6 +129,7 @@ class BusinessController extends Controller
 
 		if(!empty($inputs['products']))
 			$business->products = $inputs['products'];
+
 		if(isset($inputs['status']))
 			$business->status = (int)$inputs['status'];
 
@@ -186,6 +184,7 @@ class BusinessController extends Controller
 					'billing_address' => 1,
 					'company_email' => 1,
 					'status' => 1,
+					'address' => 1,
 					'products' => [
 						'_id' => '$productDetails._id',
 						'categories' => '$productDetails.categories',
@@ -205,7 +204,8 @@ class BusinessController extends Controller
 						'delivery_address' => '$delivery_address',
 						'billing_address' => '$billing_address',
 						'company_email' => '$company_email',
-						'status' => '$status'
+						'address' => '$address',
+						'status' => '$status',
 					],
 					'products' => [
 						'$push' => '$products'

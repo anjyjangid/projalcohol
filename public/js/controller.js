@@ -1115,7 +1115,6 @@ AlcoholDelivery.controller('CartController',[
 		}
 
 		return isChilled;
-
 	}
 
 	$scope.addtocart = function(key,type,direction){
@@ -1143,10 +1142,9 @@ AlcoholDelivery.controller('CartController',[
 			);
 
 		},1500)
-
 	};
 
-	$scope.updatePackage = function(uid){		
+	$scope.updatePackage = function(uid){
 
 		if(typeof $scope.packageUTOut[uid]!=="undefined"){
 
@@ -1168,10 +1166,7 @@ AlcoholDelivery.controller('CartController',[
 			);
 
 		},1000)
-
 	};
-
-
 
 	$scope.remove = function(key,type){
 
@@ -1184,7 +1179,6 @@ AlcoholDelivery.controller('CartController',[
 			alcoholCart.removeProduct(key,false);
 
 		}
-
 	};
 
 	$scope.removeSale = function(saleObj){
@@ -1201,19 +1195,18 @@ AlcoholDelivery.controller('CartController',[
 
 			}
 		);
-
 	}
 
 	$scope.updateGiftCard = function(uid){
 
 		alcoholGifting.updateGiftCard(uid);
-
 	}
 
 
 }]);
 
-AlcoholDelivery.controller('PromotionsController',['$scope', '$rootScope', '$http', '$interval', 'alcoholCart', 'promotionsService', 'AlcoholProduct',function($scope, $rootScope, $http, $interval, alcoholCart, promotionsService, AlcoholProduct){
+AlcoholDelivery.controller('PromotionsController',['$scope', '$rootScope', '$http', '$interval', 'alcoholCart', 'promotionsService', 'AlcoholProduct'
+,function($scope, $rootScope, $http, $interval, alcoholCart, promotionsService, AlcoholProduct){
 
 	$scope.alcoholCart = alcoholCart;
 	$scope._promo = promotionsService;
@@ -1243,11 +1236,10 @@ AlcoholDelivery.controller('CartSmokeController',[
 }])
 
 AlcoholDelivery.controller('CartAddressController',[
-			'$scope','$rootScope','$state','$interval','$http','$q', '$mdDialog', '$mdMedia','alcoholCart','sweetAlert', 'UserService', 
-	function($scope, $rootScope, $state, $interval, $http, $q, $mdDialog, $mdMedia, alcoholCart, sweetAlert, UserService){
+			'$scope','$rootScope','$state','$interval','$http','$q', '$mdDialog', '$mdMedia','alcoholCart','sweetAlert', 'UserService'
+	, function($scope, $rootScope, $state, $interval, $http, $q, $mdDialog, $mdMedia, alcoholCart, sweetAlert, UserService){
 
 	$scope.errors = {};	
-
 
 	$scope.delivery = alcoholCart.$cart.delivery;
 	
@@ -1286,6 +1278,11 @@ AlcoholDelivery.controller('CartAddressController',[
 			return false;
 		}
 
+		var deliveryPostalCode = $scope.delivery.address.detail.PostalCode.substr(0,2);
+		if(alcoholCart.getApplicablePostalCodes().indexOf(deliveryPostalCode)==-1){
+			alcoholCart.setExpressStatus(0);
+			$rootScope.$broadcast('alcoholCart:notify',"We regret to inform you that the Express Delivery service does not cover your delivery area. Please read the Terms & Conditions for more information.");
+		}
 		alcoholCart.deployCart().then(
 
 			function(response){
@@ -1311,21 +1308,8 @@ AlcoholDelivery.controller('CartAddressController',[
 }]);
 
 AlcoholDelivery.controller('CartDeliveryController',[
-	'$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$interval', 'alcoholCart', 'sweetAlert', '$filter',
-	function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $interval, alcoholCart, sweetAlert, $filter){
-
-
-	if($scope.$parent.cart.delivery.type==0){
-
-		if($state.previous.state.controller==="CartPaymentController"){
-			$scope.step = 2;
-			$state.go("mainLayout.checkout.address");
-		}else{
-			$scope.step = 4;
-			$state.go("mainLayout.checkout.payment");
-		}
-
-	}
+	'$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$interval', 'alcoholCart', 'sweetAlert', '$filter'
+	, function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $interval, alcoholCart, sweetAlert, $filter){
 
 	$scope.alcoholCart = alcoholCart;
 
@@ -1515,8 +1499,8 @@ AlcoholDelivery.controller('CartDeliveryController',[
 }]);
 
 AlcoholDelivery.controller('CartPaymentController',[
-			'$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','sweetAlert', '$interval', 'alcoholCart', '$state', '$location', '$anchorScroll',
-	function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, sweetAlert, $interval, alcoholCart, $state, $location, $anchorScroll){
+			'$scope','$rootScope','$http','$q', '$mdDialog', '$mdMedia','sweetAlert', '$interval', 'alcoholCart', '$state', '$location', '$anchorScroll'
+	, function($scope, $rootScope, $http, $q, $mdDialog, $mdMedia, sweetAlert, $interval, alcoholCart, $state, $location, $anchorScroll){
 
 		$scope.payment = alcoholCart.$cart.payment;
 
@@ -1564,8 +1548,8 @@ AlcoholDelivery.controller('CartPaymentController',[
 }]);
 
 AlcoholDelivery.controller('CartReviewController',[
-			'$scope','$rootScope','$http','$q','$state', '$mdDialog', '$mdMedia', '$interval', 'alcoholCart','store','sweetAlert','$sce', '$filter',
-	function($scope, $rootScope, $http, $q, $state, $mdDialog, $mdMedia, $interval, alcoholCart, store, sweetAlert,$sce,$filter){
+			'$scope','$rootScope','$http','$q','$state', '$mdDialog', '$mdMedia', '$interval', 'alcoholCart','store','sweetAlert','$sce', '$filter'
+	, function($scope, $rootScope, $http, $q, $state, $mdDialog, $mdMedia, $interval, alcoholCart, store, sweetAlert,$sce,$filter){
 
 	$scope.card = {
 		formAction:'',

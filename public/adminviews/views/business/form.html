@@ -7,7 +7,8 @@
 					<span class="caption-subject font-blue-madison bold uppercase">
 					{{business._id?'Update':'Add'}} Business</span>
 				</div>
-				<div class="actions btn-set">					
+				<div class="actions btn-set">
+
 					<button ng-disabled="loading" class="btn green" ng-click="store()"><i class="fa fa-check"></i>{{business._id?'Update':'Save'}}</button>
 				</div>
 			</div>
@@ -36,65 +37,73 @@
 						<tab>
 							<tab-heading>Address</tab-heading>
 							<div class="text-align-reverse margin-bottom-10">
-								<a href="javascript:void(0)" ng-click="business.billing_address.push({})" class="btn yellow">
+								<a href="javascript:void(0)" ng-click="business.address.push({})" class="btn yellow">
 									<i class="fa fa-plus"></i> Add Address 
 								</a>								
 							</div>
-							<div class="form-horizontal"  ng-repeat="detail in business.billing_address">
+							<div class="form-horizontal"  ng-repeat="detail in business.address">
 								<div class="row">
-									<div class="form-group col-md-6" ng-class="{'has-error':errors['billing_address.'+$index+'.first_name'][0]}">
+									<div class="form-group col-md-6" ng-class="{'has-error':errors['address.'+$index+'.first_name'][0]}">
 										<label class="col-md-3 control-label">Receiver's First Name: <span class="required">
 										* </span>
 										</label>
 										<div class="col-md-9">
 											<input type="text" class="form-control" ng-model="detail.first_name" placeholder="" name="first_name">
-											<span class="help-block" ng-bind="errors['billing_address.'+$index+'.first_name'][0]"></span>
+											<span class="help-block" ng-bind="errors['address.'+$index+'.first_name'][0]"></span>
 										</div>
 									</div>
-									<div class="form-group col-md-6" ng-class="{'has-error':errors['billing_address.'+$index+'.last_name'][0]}">
+									<div class="form-group col-md-6" ng-class="{'has-error':errors['address.'+$index+'.last_name'][0]}">
 										<label class="col-md-3 control-label">Receiver's Last Name: <span class="required">
 										* </span>
 										</label>
 										<div class="col-md-9">
 											<input type="text" class="form-control" ng-model="detail.last_name" placeholder="" name="last_name">
-											<span class="help-block" ng-bind="errors['billing_address.'+$index+'.last_name'][0]"></span>
+											<span class="help-block" ng-bind="errors['address.'+$index+'.last_name'][0]"></span>
 										</div>
 									</div>
 								</div>
 								<div class="row">
-									<div class="form-group col-md-6" ng-class="{'has-error':errors['billing_address.'+$index+'.receiver_contact'][0]}">
+									<div class="form-group col-md-6" ng-class="{'has-error':errors['address.'+$index+'.receiver_contact'][0]}">
 										<label class="col-md-3 control-label">Receiver's Contact Number: <span class="required">
 										* </span>
 										</label>
 										<div class="col-md-9">
 											<input type="text" class="form-control" ng-model="detail.receiver_contact" placeholder="" name="receiver_contact">
-											<span class="help-block" ng-bind="errors['billing_address.'+$index+'.receiver_contact'][0]"></span>
+											<span class="help-block" ng-bind="errors['address.'+$index+'.receiver_contact'][0]"></span>
 										</div>
 									</div>
-									<div class="form-group col-md-6" ng-class="{'has-error':errors['billing_address.'+$index+'.instruction'][0]}">
-										<label class="col-md-3 control-label">Instruction: <span class="required">
+									<div class="form-group col-md-6" ng-class="{'has-error':errors['address.'+$index+'.instruction'][0]}">
+										<label class="col-md-3 control-label">Instruction: <span class="required">	
 										* </span>
 										</label>
 										<div class="col-md-9">
 											<input type="text" class="form-control" ng-model="detail.instruction" placeholder="" name="instruction">
-											<span class="help-block" ng-bind="errors['billing_address.'+$index+'.instruction'][0]"></span>
+											<span class="help-block" ng-bind="errors['address.'+$index+'.instruction'][0]"></span>
 										</div>
 									</div>
 								</div>
 								<div class="row">
-									<div class="form-group col-md-6" ng-class="{'has-error':errors['billing_address.'+$index+'.address'][0]}">
-										<label class="col-md-3 control-label">Location: <span class="required">
-										* </span>
-										</label>
+									<div class="form-group col-md-6" ng-class="{'has-error':errors['address.'+$index+'.SEARCHVAL'][0]}">
+										<label class="col-md-3 control-label">Location: <span class="required">* </span></label>
 										<div class="col-md-9">
-											<input type="text" class="form-control" ng-model="detail.address" placeholder="" name="address">
-											<span class="help-block" ng-bind="errors['billing_address.'+$index+'.address'][0]"></span>
+											<input type="text"
+												typeahead="l.SEARCHVAL for l in searchLocation($viewValue)"
+												typeahead-min-length="3"
+												typeahead-on-select="locationSelect($item, $model, $label,$index)"
+												typeahead-wait-ms="300"
+												typeahead-focus-first="true"
+												typeahead-loading="loading.location"
+												ng-class="{'spinner': loading.location}"
+												class="form-control"
+												ng-model="detail.SEARCHVAL">
+											<!-- <input type="text" class="form-control" ng-model="detail.address" placeholder="" name="address"> -->
+											<span class="help-block" ng-bind="errors['address.'+$index+'.SEARCHVAL'][0]"></span>
 										</div>
 									</div>
 									<div class="form-group col-md-6">
 										<label class="col-md-3 control-label">Building name (optional):</label>
 										<div class="col-md-9">
-											<input type="text" class="form-control" ng-model="detail.address.building_name" placeholder="" name="building_name">		
+											<input type="text" class="form-control" ng-model="detail.BLDG_NAME" placeholder="" name="BLDG_NAME">		
 										</div>
 									</div>
 								</div>
@@ -102,17 +111,17 @@
 									<div class="form-group col-md-6">
 										<label class="col-md-3 control-label">Floor: </label>
 										<div class="col-md-9">
-											<input type="text" class="form-control" ng-model="detail.address.floor" placeholder="" name="floor">
+											<input type="text" class="form-control" ng-model="detail.floor" placeholder="" name="floor">
 										</div>
 									</div>
 									<div class="form-group col-md-6">
 										<label class="col-md-3 control-label">Unit: </label>
 										<div class="col-md-9">
-											<input type="text" class="form-control" ng-model="detail.address.unit" placeholder="" name="unit">
+											<input type="text" class="form-control" ng-model="detail.unit" placeholder="" name="unit">
 										</div>
 									</div>
 								</div>	
-								<div class="text-align-reverse margin-bottom-10" ng-show="business.billing_address.length > 1">
+								<div class="text-align-reverse margin-bottom-10" ng-show="business.address.length > 1">
 									<a href="#" class="btn default btn-sm" ng-click="billingAddressRemove($index)">
 										<i class="fa fa-times"></i> Remove </a>								
 								</div>								
@@ -146,14 +155,10 @@
 												<h5>Before Price : <b>${{pcprod.sprice}}</b></h5>
 												<div class="input-group">
 													<span class="input-group-btn">
-														<button class="btn btn-{{pcprod.type=='$'?'primary':'default'}}"
-														ng-click="pcprod.type='$'"
-														>$</button>
-														<button class="btn btn-{{pcprod.type!='$'?'primary':'default'}}"
-														ng-click="pcprod.type='%'"
-														>%</button>
+														<button class="btn btn-{{pcprod.type=='$'?'primary':'default'}}" ng-click="pcprod.type='$'">$</button>
+														<button class="btn btn-{{pcprod.type!='$'?'primary':'default'}}" ng-click="pcprod.type='%'" >%</button>
 													</span>
-													<input min="1" type="number" placeholder="After Price" step="any" class="form-control" ng-model="pcprod.disc">
+													<input min="1" type="number" placeholder="Discount" step="any" class="form-control" ng-model="pcprod.disc">
 												</div>
 												<!-- <span class="help-block" ng-bind="errors['packageItems.'+pckey+'.products.'+$index+'.cprice'][0]"></span> -->
 												<p>After Price: <b>{{pcprod.sprice-((pcprod.type=='$'?pcprod.disc:(pcprod.disc*0.01*pcprod.sprice))||0) | currency}}</b></p>

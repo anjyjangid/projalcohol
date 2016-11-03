@@ -36,6 +36,8 @@ class Orders extends Moloquent
 							'sales',
 							'loyalty',
 							'loyaltyCards',
+							'promotion',
+							'gift',
 							'giftCards',
 							'user',
 							'total',

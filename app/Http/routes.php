@@ -11,9 +11,7 @@
  */
 
 /*TO VIEW MAIL TEMPLATE*/
-Route::get('/printjob', function () {
-    return view('invoice.pos');
-});
+Route::get('/printjob/{reference}', 'OrderController@getOrderdetail');
 
 Route::group(['prefix' => 'adminapi'], function () {
 
@@ -28,6 +26,8 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	
 	Route::resource('order', 'Admin\OrderController',['except'=>'show']);
 	Route::controller('order', 'Admin\OrderController');
+
+	//Route::put('deploycart/{cartKey}','CartController@deploycart');
 	
 	Route::resource('product', 'Admin\ProductController',['only'=>['update','store']]);
 	Route::controller('product', 'Admin\ProductController');

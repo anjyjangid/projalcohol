@@ -272,6 +272,10 @@ AlcoholDelivery.service('alcoholCart', [
 		});
 
 		return defer.promise
+	};	
+
+	this.getApplicablePostalCodes = function(){
+		return this.getCart().applicablePostalCodes || [];
 	};
 
 	this.addCreditCertificate = function(id, quantity){
@@ -433,6 +437,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 	this.addPackage = function (id,detail) {
 
+		console.log(arguments);
 		var _self = this;
 
 		var deliveryKey = _self.getCartKey();
@@ -1609,7 +1614,7 @@ AlcoholDelivery.service('alcoholCart', [
 		
 		this.isEmpty = function () {
 			
-			return (getTotalUniqueItems() > 0 ? false : true);
+			return (this.getTotalUniqueItems() > 0 ? false : true);
 
 		};
 
@@ -2338,7 +2343,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 	}]);
 
-AlcoholDelivery.service('store', ['$rootScope','$window','$http','alcoholCart','promotionsService','$q', function ($rootScope,$window,$http,alcoholCart,promotionsService,$q) {
+AlcoholDelivery.service('store', ['$rootScope','$window','$http','alcoholCart','promotionsService','$q', 'cartValidation', function ($rootScope,$window,$http,alcoholCart,promotionsService,$q, cartValidation) {
 
 		return {
 
@@ -2357,9 +2362,10 @@ AlcoholDelivery.service('store', ['$rootScope','$window','$http','alcoholCart','
 
 						function(){
 
+
 							$http.get("cart/"+deliverykey).success(function(response){
 
-								alcoholCart.$restore(response.cart);								
+								alcoholCart.$restore(response.cart);
 								d.resolve("every thing all right");
 
 							})
@@ -2529,3 +2535,94 @@ AlcoholDelivery.service("promotionsService",["$http","$log","$q","$rootScope",fu
 	}
 	
 }]);
+
+AlcoholDelivery.service('cartValidation',['alcoholCart', '$state', '$mdToast', function(alcoholCart, $state, $mdToast) {
+
+	this.showToast = function (msg) {
+		if(!msg) return false;
+		var toast = $mdToast.simple()
+			.textContent(msg)
+			.highlightAction(false)
+			.position("top right");
+		$mdToast.show(toast);
+		return true;
+	}
+
+	this.init = function(toState, fromState) {
+		if(!toState) {
+			toState = $state.current;
+			fromState = $state.previous;
+		}
+
+		if(!/^mainLayout\.checkout\..+$/.test(toState.name)) return true;
+
+		// console.log(toState.name, alcoholCart);
+
+		var cart = alcoholCart.$cart
+		  , states = [
+				'mainLayout.checkout.cart',
+				'mainLayout.checkout.address',
+				'mainLayout.checkout.delivery',
+				'mainLayout.checkout.payment',
+				'mainLayout.checkout.review',
+			]
+		  , step = states.indexOf(toState.name)
+		  , prevState = fromState?states.indexOf(fromState.name):0;
+
+		// return true;
+
+		if(step > 0) {
+			if(alcoholCart.isEmpty()){
+				$state.go(states[0], {err: "Add some products to the cart!"}, {reload: true});
+				return false;
+			}
+			for (var i in cart.promotions){
+				if(alcoholCart.getCartTotal() < cart.promotions[i]._price){
+					$state.go(states[0], {err: "Invalid promotion is applied!"}, {reload: true});
+					return false;
+				}
+			}
+			if(typeof cart.delivery == 'undefined' || typeof cart.delivery.type == 'undefined'){
+				$state.go(states[0], {err: "Please select delivery type!"}, {reload: true});
+				return false;
+			}
+		}
+
+		if(step > 1) {
+			if(typeof cart.delivery == 'undefined' ||
+				typeof cart.delivery.address == 'undefined' ||
+				typeof cart.delivery.address.detail == 'undefined' ||
+				typeof cart.delivery.address.key == 'undefined' ||
+				typeof cart.delivery.contact== 'undefined'
+			){
+				$state.go(states[1], {err: "Please select a delivery address!"}, {reload: true});
+				return false;
+			}
+		}
+
+		if(step == 2 && cart.delivery.type != 1){
+			if(prevState>2){
+				$state.go(states[1], {}, {reload: true});
+			}else{
+				$state.go(states[3], {}, {reload: true});
+			}
+			return false;
+		}
+
+		if(step > 2 && cart.delivery.type == 1){
+			if(typeof cart.timeslot == 'undefined' || typeof cart.timeslot.slotkey == 'undefined' || typeof cart.timeslot.datekey == 'undefined'){
+				$state.go(states[2], {err: "Please select a Time slot!"}, {reload: true});
+				return false;
+			}
+		}
+
+		if(step > 3){
+			if(typeof cart.payment == 'undefined' || typeof cart.payment.method == 'undefined'){
+				$state.go(states[3], {err: "Please select a payment method!"}, {reload: true});
+				return false;
+			}
+		}
+
+		return true;
+	}
+}])

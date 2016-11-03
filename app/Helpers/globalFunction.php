@@ -61,4 +61,23 @@
         return ( is_numeric($number) && is_numeric($significance) ) ? (ceil($number/$significance)*$significance) : false;
     }
 
+    if (!function_exists('formatPrice')) {
+
+	    /**
+	     * Format integer to a price
+	     *
+	     * @param integer $price
+	     *
+	     * @return string
+	     */
+	    function formatPrice($price)
+	    {
+	        // Do your necessary logic
+	        if($price == 0)
+	        	return 'FREE';
+	        else
+	    		return number_format( $price, 2 );	        
+	    }
+	}
+
 ?>

@@ -15,6 +15,7 @@ use Storage;
 use Validator;
 use AlcoholDelivery\Products as Products;
 use MongoId;
+use MongoDate;
 use DB;
 
 
@@ -51,6 +52,7 @@ class OrderController extends Controller
 		try{
 
 			$cartObj = new CartAdmin;
+			
 			$cart = $cartObj->getLastUnProcessed(new MongoId($user->_id));
 
 			if(empty($cart)){
@@ -92,7 +94,6 @@ class OrderController extends Controller
 
 				$request->session()->put('deliverykeyAdmin', $cart['_id']);
 
-
 			}			
 
 		}catch(Exception $e){
@@ -102,7 +103,7 @@ class OrderController extends Controller
 			return response($response,400);
 
 		}
-
+		
 		return response($response,200);
 
 	}
@@ -275,6 +276,68 @@ class OrderController extends Controller
 
 	}
 
+	public function putDeploycart(Request $request,$cartKey){
+
+		$cart = CartAdmin::find($cartKey);
+
+		if(empty($cart)){
+			return response(array("success"=>false,"message"=>"something went wrong with cart"));
+		}
+
+		$params = $request->all();
+
+		if(isset($params['nonchilled'])){
+			$cart->nonchilled = $params['nonchilled'];
+		}
+
+		if(isset($params['delivery'])){
+			$cart->delivery = $params['delivery'];
+		}
+
+		if(isset($params['service'])){
+			$cart->service = $params['service'];
+		}
+
+		if(isset($params['payment'])){
+			$cart->payment = $params['payment'];
+		}
+
+		if(isset($params['discount'])){
+			$cart->discount = $params['discount'];
+		}
+
+		if(isset($params['timeslot'])){
+
+			$cart->timeslot = $params['timeslot'];
+
+		}
+
+		if(isset($params['user'])){
+
+			$cart->user = new MongoId($params['user']);
+
+		}
+
+		//SET CART REFERENCE FOR ORDER ID
+		//$cart->setReference();
+
+		try {
+
+			$cart->save();
+
+			return response(["message"=>"cart updated successfully"],200);
+
+		} catch(\Exception $e){
+
+			return response(["message"=>$e->getMessage()],400);
+
+		}
+
+		return response(["message"=>'Something went wrong'],400);
+		
+
+	}
+
 	public function postOrders(Request $request){
 		
 		$params = $request->all();
@@ -318,22 +381,33 @@ class OrderController extends Controller
 			$query[]['$match']['consumer.name'] = ['$regex'=>new \MongoRegex($s)];
 		}
 
-		$project = ['reference'=>1,'delivery'=>1,'status'=>1,'_id'=>1,'created_at'=>1,'payment'=>1,'service'=>1];
+		$project = [
+				'reference'=>1,
+				'delivery'=>1,
+				'status'=>1,
+				'_id'=>1,
+				'created_at'=>1,
+				'payment'=>1,
+				'service'=>1,
+				
+			];
 
 		$project['orderDate'] = ['$dateToString'=>['format' => '%Y-%m-%d','date'=>'$created_at']];
 
 		$project['consumer'] = '$consumer';
 
-		$project['noOfProducts'] = [
+		/*$project['noOfProducts'] = [
 			'$sum' =>[
-				['$size'=>'$products'],
-				['$size'=>'$packages'],
+				['$size'=>'$productsLog'],
+				//['$size'=>'$packages'],
 			]
-		];
+		];*/
+
+		//$project['noOfProducts'] = ['$size'=>'$productsLog'];			
 
 		$query[]['$project'] = $project;
 
-		$columns = ['reference','consumer.name','noOfProducts','payment.total','created_at','delivery.type','status'];
+		$columns = ['reference','consumer.name','payment.total','created_at','delivery.type','status'];
 
 		$sort = ['created_at' => -1]; 
 

@@ -227,16 +227,18 @@ html{font-family:sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:1
     z-index:1;
     padding-bottom: 0px;
     overflow: hidden;
+
 }
 
 #bg-text
 {
     color:#000;
     opacity: 0.3;
-    font-size:60px;
+    font-size:40px;
     transform:rotate(300deg);
     -webkit-transform:rotate(300deg);
-    border: 0px solid;
+    text-transform: uppercase;    
+    font-weight: bold;
 }
 /*# sourceMappingURL=bootstrap.css.map */
 
@@ -257,4 +259,8 @@ table tr, table tr{
 
 .topborder td, .bottomborder td{
 	padding: 5px 2px;
+}
+
+.fontbold{
+	font-weight: bold;
 }

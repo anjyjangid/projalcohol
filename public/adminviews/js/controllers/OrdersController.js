@@ -85,14 +85,21 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	}
 
 	$scope.customerSelect = function(customer) {
+
+		delete $scope.cart['consumer'];
+		delete $scope.cart['business'];
+		$scope.cart.user = null;
+
 		$scope.cart[$scope.cart.orderType] = customer;
-		delete $scope.cart[($scope.cart.orderType=='consumer')?'business':'consumer'];
+		$scope.cart.user = customer._id;
 
 		var api;
 		if($scope.cart.orderType=='business')
 			api = '/adminapi/business/detail/'+customer._id;
 		else
 			api = '/adminapi/customer/detail/'+customer._id;
+
+		alcoholCart.deployCart();
 
 		$http.get(api)
 		.then(function(res){
@@ -134,7 +141,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		if(!$scope.cart || !$scope.cart[$scope.cart.orderType] || !$scope.cart[$scope.cart.orderType]._id){
 			return false;
 		}
-		else if(!$scope.cart.addresses[$scope.cart.selectedAddress] && !$scope.cart.addresses[$scope.cart.selectedBilAddr]) {
+		else if(!$scope.cart.addresses || (!$scope.cart.addresses[$scope.cart.selectedAddress] && !$scope.cart.addresses[$scope.cart.selectedBilAddr])) {
 			return section=='address';
 		}
 		else
@@ -179,6 +186,13 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 		delete ob[prop];
 	}
+
+		$modal.open({
+			controller: "OrderPackageController",
+			templateUrl: '/adminviews/views/orders/order/searchpackage.html',
+		}).result
+		.then(function(answer) {
+		});
 }])
 .controller('NewAddressModel',[ '$scope', '$modalInstance', 'NgMap', '$http', 'detail'
 , function($scope, $modalInstance, NgMap, $http, detail) {
@@ -244,8 +258,8 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	// Google map auto complete code ends //
 }])
 
-.controller('OrderProductsController',['$scope', '$http', '$timeout', '$mdDialog', 'alcoholCart', 'categoriesService', 'productFactory', '$q'
-, function($scope, $http, $timeout, $mdDialog, alcoholCart, categoriesService, productFactory, $q){
+.controller('OrderProductsController',['$scope', '$http', '$timeout', '$mdDialog', 'alcoholCart', 'categoriesService', 'productFactory', '$q', '$modal'
+, function($scope, $http, $timeout, $mdDialog, alcoholCart, categoriesService, productFactory, $q, $modal){
 	angular.alcoholCart = alcoholCart;
 	angular.categoriesService = categoriesService;
 	$scope.alcoholCart = alcoholCart;
@@ -351,18 +365,13 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 			});
 	}
 	$scope.package = function(ev) {
-		$mdDialog.show({
-				controller: "OrderPackageController",
-				templateUrl: '/adminviews/views/orders/order/searchpackage.html',
-				parent: angular.element(document.body),
-				targetEvent: ev,
-				clickOutsideToClose:true
-			})
-			.then(function(answer) {
-			}, function() {
-			});
+		$modal.open({
+			controller: "OrderPackageController",
+			templateUrl: '/adminviews/views/orders/order/searchpackage.html',
+		}).result
+		.then(function(answer) {
+		});
 	}
-
 }])
 
 .controller('OrderProductDetailController',['$scope', '$http', 'alcoholCart', 'categoriesService', 'productFactory',function($scope, $http, alcoholCart, categoriesService, productFactory){
@@ -385,11 +394,30 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		}
 	];
 	$scope.catSelected = $scope.categories[0];
+
+	$scope.cart = alcoholCart.getCart();
+	$scope.alcoholCart = alcoholCart;
+
 	$scope.hide = function() {
 		$mdDialog.hide();
 	};
 	$scope.cancel = function() {
 		$mdDialog.cancel();
+	};
+
+	$scope.packages = {};
+	$scope.selected = {};
+	$scope.fetchList = function(type) {
+		if(!$scope.packages[type])
+			$http.get('/package/packages/'+type)
+			.then(function(res){
+				$scope.packages[type] = res.data;
+				$scope.selected.package = res.data[0];
+			})
+		else
+			$scope.selected.package = $scope.packages[type][0];
+
+		$scope.packageType=type;
 	};
 
 }])
@@ -608,8 +636,6 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 .controller('OrderReviewController',['$scope', '$http', 'alcoholCart',function($scope, $http, alcoholCart){
 	$scope.alcoholCart = alcoholCart;
 }])
-
-
 
 .directive('userCards', function(){
 

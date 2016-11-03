@@ -546,6 +546,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 				.state('mainLayout.checkout.cart', {
 						url: "/cart",
+						params: {err:false},
 						views : {
 							"":{
 								templateUrl : "/templates/checkout/cart.html",
@@ -555,49 +556,63 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								controller:"PromotionsController"
 							},
 						},
-						data: {step: 'cart',stepCount:1},
-						resolve:{
-							validateCheckout:validateCheckout
-						}						
+						data: {step: 'cart',stepCount:1}						,
+						resolve: {
+							showToastIfErr: function($stateParams,cartValidation){
+								cartValidation.showToast($stateParams.err);
+							}
+						}
 				})
 
 				.state('mainLayout.checkout.address', {
 						url: "/cart/address",
+						params: {err:false},
 						templateUrl : "/templates/checkout/address.html",
 						controller:"CartAddressController",
 						data: {step: 'address',stepCount:2},
-						resolve:{
-							validateCheckout:validateCheckout
+						resolve: {
+							showToastIfErr: function($stateParams,cartValidation){
+								cartValidation.showToast($stateParams.err);
+							}
 						}
 				})
 
 				.state('mainLayout.checkout.delivery', {
 						url: "/cart/delivery",
+						params: {err:false},
 						templateUrl : "/templates/checkout/delivery.html",
 						controller:"CartDeliveryController",
 						data: {step: 'delivery',stepCount:3},
-						resolve:{
-							validateCheckout:validateCheckout
+						resolve: {
+							showToastIfErr: function($stateParams,cartValidation){
+								cartValidation.showToast($stateParams.err);
+							}
 						}
 				})
 
 				.state('mainLayout.checkout.payment', {
 						url: "/cart/payment",
+						params: {err:false},
 						templateUrl : "/templates/checkout/payment.html",
 						controller:"CartPaymentController",
 						data: {step: 'payment',stepCount:4},
-						resolve:{
-							validateCheckout:validateCheckout
+						resolve: {
+							showToastIfErr: function($stateParams,cartValidation){
+								cartValidation.showToast($stateParams.err);
+							}
 						}
 				})
 
 				.state('mainLayout.checkout.review', {
 						url: "/cart/review",
+						params: {err:false},
 						templateUrl : "/templates/checkout/review.html",
 						controller:"CartReviewController",
 						data: {step: 'review',stepCount:5},
-						resolve:{
-							validateCheckout:validateCheckout
+						resolve: {
+							showToastIfErr: function($stateParams,cartValidation){
+								cartValidation.showToast($stateParams.err);
+							}
 						}
 				})
 
@@ -1043,8 +1058,8 @@ function ($q, $rootScope, $log, $location) {
 }]);
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService", "store", "alcoholWishlist", "catPricing", "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll","$timeout",
-			 function($rootScope, settings, alcoholCart, ProductService, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll,$timeout) {
+AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService", "store", "alcoholWishlist", "catPricing", "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll","$timeout","cartValidation"
+, function($rootScope, settings, alcoholCart, ProductService, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll,$timeout,cartValidation) {
 
 	angular.alcoholCart = alcoholCart;
 	angular.userservice = UserService;
@@ -1082,7 +1097,7 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService
 
 	);
 
-
+	$rootScope.isAppInitialized = false;
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
 
 		var regex = new RegExp('^accountLayout', 'i');
@@ -1091,6 +1106,9 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService
 
 		angular.element('#wrapper').removeClass('toggled');
 
+
+		if($rootScope.isAppInitialized && !cartValidation.init(toState, fromState))
+			event.preventDefault();
 	})
 
 	$rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
@@ -1107,6 +1125,11 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService
 		
 		$rootScope.setMeta(mdata);
 
+		if(!$rootScope.isAppInitialized){
+			if(!cartValidation.init())
+				ev.preventDefault();
+			$rootScope.isAppInitialized = true;
+		}
 	});	
 
 

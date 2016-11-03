@@ -1,57 +1,66 @@
 <div class=" modal-lg">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" ng-click="cancel">&times;</button>
+			<h4 class="modal-title">Search Package</h4>
+		</div>
 
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" ng-click="cancel">&times;</button>
-        <h4 class="modal-title">Search Package</h4>
-      </div>
+		<div class="modal-body">
 
-      <div class="modal-body">
-      <!-- {{catSelected}} -->
-        <div class="input-group">
-	    	<div class="input-group-btn">
-				<button type="button" class="btn green dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-					<span class="md-click-circle md-click-animate"></span>
+			<tabset>
+				<tab select="fetchList('party')" heading="Party Package"></tab>
+				<tab select="fetchList('cocktail')" heading="Cocktail Package"></tab>
+			</tabset>
 
-					{{catSelected.title}} <i class="fa fa-angle-down"></i>
-				</button>
-
-				<ul class="dropdown-menu">							
-					<li ng-repeat="category in categories">
-						<a href="#" ng-click="catSelected = category">{{category.title}}</a>
-					</li>
-				</ul>
-			</div>
-					
-			<input ng-model="packagequery" type="search" ng:class="{'spinner':searching}" class="form-control" placeholder="Search package to add in cart">
-        </div>
-        <div id="searchContainer" class="row">
-        	<div class="col-sm-4">
-				<table class="table table-striped table-hover" id="orderlist">
-					<tbody>
-						<tr ng-repeat="p in checkItem()" ng-click="selected.product = p">
-							<td width="40" valign="middle">
-								<img class="img-responsive" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{p.imageFiles | getProductThumb}}">
-							</td>
-							<td valign="middle">									
-								{{p.name}}
-								<div><b>${{p.unitPrice}}</b></div>
-							</td>							
-						</tr>						
-					</tbody>
-				</table>
-			</div>
-			<div class="col-sm-8">
-				<div class="row product-detail" ng-if="selected.product">
-					<order-product-detail product='selected.product'></order-product-detail>
+			<div class="row">
+				<div class="col-sm-4">
+					<table class="table table-striped table-hover" id="orderlist">
+						<tbody>
+							<tr ng-repeat="p in packages[packageType]" ng-click="selected.package = p">
+								<td width="40" valign="middle">
+									<img class="img-responsive" err-src="asset/i/defaultImage.png" ng-src="products/i/{{p.coverImage.source | getProductThumb}}">
+								</td>
+								<td valign="middle">
+									{{p.title}}
+									<div>
+										Amount: <b>${{p.packagePrice}}</b><br>
+										<span class="text-success">Savings: <b>${{p.packageSavings}}</b></span>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-sm-8">
+					<div class="row" ng-if="selected.package && packageType=='party'" ng-init="p=selected.package">
+						<div class="col-sm-6">
+							<img class="img-responsive" err-src="asset/i/defaultImage.png" ng-src="products/i/{{p.coverImage.source | getProductThumb}}">
+							<br>
+							<p class="caption" ng-bind="p.description"></p>
+						</div>
+						<div class="col-sm-6">
+							<h2 ng-bind="p.title"></h2>
+							<p class="lead" ng-bind="p.subTitle"></p>
+							<p>
+								Package Amount<br>
+								<span class="h2 strong">${{p.packagePrice}}</span>
+							</p>
+							<p class="text-success">
+								Savings<br>
+								<span class="h2 strong">${{p.packageSavings}}</span>
+							</p>
+							<div class="form-group">
+								<label>Quantity</label>
+								<input type="number" ng-model="p.packageQuantity" min="0" class="form-control" ng-init="p.packageQuantity=1">
+							</div>
+							<button class="btn btn-primary" ng-click="alcoholCart.addPackage(p._id, p)">Add to Cart</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" ng-click="cancel">Close</button>
-      </div>
-    </div>
-  </div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" ng-click="cancel">Close</button>
+		</div>
+	</div>
+</div>
