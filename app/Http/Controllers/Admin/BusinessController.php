@@ -182,8 +182,7 @@ class BusinessController extends Controller
 			[
 				'$project' => [
 					'company_name' => 1,
-					'delivery_address' => 1,
-					'billing_address' => 1,
+					'address' => 1,
 					'company_email' => 1,
 					'status' => 1,
 					'products' => [
@@ -202,8 +201,7 @@ class BusinessController extends Controller
 				'$group' => [
 					'_id' => [
 						'company_name' => '$company_name',
-						'delivery_address' => '$delivery_address',
-						'billing_address' => '$billing_address',
+						'address' => '$address',
 						'company_email' => '$company_email',
 						'status' => '$status'
 					],
@@ -219,7 +217,13 @@ class BusinessController extends Controller
 			$result = $result['result'][0]['_id'];
 
 			for ($i=0 ; $i<count($result['products']) ; $i++) {
-				$result['products'][$i]['_id'] = (string)$result['products'][$i]['_id'];
+				if(!empty($result['products'][$i]))
+					$result['products'][$i]['_id'] = (string)$result['products'][$i]['_id'];
+				else {
+					array_splice($result['products'], $i, 1);
+					$i--;
+				}
+
 			}
 		}
 
@@ -246,20 +250,23 @@ class BusinessController extends Controller
 		      }
 		    }
 		  }
-		  $result['products'][$key]['sale'] = Sale::raw()->findOne(['type'=>1,'saleProductId'=>['$eq'=>$value['_id']]]);
-		  $result['products'][$key]['sprice'] = $this->calculatePrice($value['price'],$tier);                        
+			$result['products'][$key]['sale'] = Sale::raw()->findOne(['type'=>1,'saleProductId'=>['$eq'=>$value['_id']]]);
+			$result['products'][$key]['sprice'] = $this->calculatePrice($value['price'],$tier);
 		}
-		
+
 		return response($result, 201);
+
 	}
 
     protected function calculatePrice($cost = 0, $tiers){
+      
       if($tiers['type'] == 1){
         $p = $cost+($cost/100*$tiers['value']);
       }else{
         $p = $cost+$tiers['value'];
       }      
       return round($p,2);
+
     }
 
 	public function postList(Request $request)

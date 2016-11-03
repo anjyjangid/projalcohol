@@ -289,7 +289,7 @@ class OrderController extends Controller
 		if(isset($params['nonchilled'])){
 			$cart->nonchilled = $params['nonchilled'];
 		}
-
+		
 		if(isset($params['delivery'])){
 			$cart->delivery = $params['delivery'];
 		}
@@ -309,6 +309,12 @@ class OrderController extends Controller
 		if(isset($params['timeslot'])){
 
 			$cart->timeslot = $params['timeslot'];
+
+		}
+
+		if(isset($params['orderType'])){
+
+			$cart->orderType = $params['orderType'];
 
 		}
 
