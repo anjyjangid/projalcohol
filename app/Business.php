@@ -17,13 +17,7 @@ class Business extends Eloquent
      *
      * @var array
      */
-    protected $fillable = [
-        'company_name',
-        'company_email',
-        'status', 
-        'billing_address',
-        'delivery_address'       
-    ];
+    protected $fillable = ['company_name','company_email','status', 'billing_address','delivery_address','address','products'];
 
     /**
      * The attributes excluded from the model's JSON form.

@@ -128,12 +128,12 @@ class Cart extends Moloquent
 			],
 			"nonchilled" => false,
 			"status" => 0,
-			"user" => null			
+			"user" => null,
 		];
 
 
 		$cart = self::setServices($cart);
-
+		
 		try{
 			
 			$cart = self::create($cart);
@@ -161,14 +161,16 @@ class Cart extends Moloquent
 			return false;
 		}
 
-		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value'])->first();
+		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.express_delivery.applicablePostalCodes','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value'])->first();
 
 		$services = $services['settings'];
 
 		$cartServices = $cart->service;
 
 		$cartServices["express"]["charges"] = $services['express_delivery']['value'];
+
 		$cartServices["smoke"]["charges"] = $services['cigratte_services']['value'];
+		
 
 		$cartServices["delivery"] = [
 								"free" => false,
@@ -177,7 +179,7 @@ class Cart extends Moloquent
 							];
 
 		$cart->service = $cartServices;							
-
+		$cart->applicablePostalCodes = $services['express_delivery']['applicablePostalCodes'];
 		$cartDiscount = $cart->discount;							
 		$cartDiscount['nonchilled']['exemption'] = $services['non_chilled_delivery']['value'];
 		$cart->discount = $cartDiscount;
@@ -1180,6 +1182,7 @@ class Cart extends Moloquent
 				'slug'=>$product['slug'],
 				'description'=>$product['description'],
 				'shortDescription'=>$product['shortDescription'],
+
 				'sku'=>$product['sku'],
 				'chilled'=>(bool)$product['chilled'],
 
@@ -1188,7 +1191,7 @@ class Cart extends Moloquent
 			foreach ($product['imageFiles'] as $key => $value) {
 
 				if($value['coverimage']){
-					$value['common']['icon'] = $value['source'];
+					$product['common']['coverImage'] = $value['source'];
 				}
 
 			}
@@ -1426,6 +1429,8 @@ class Cart extends Moloquent
 								if($product['type']==1){
 									$oPromo['price'] = $product['price'];
 								}
+
+								$oPromo['product'] = new MongoId((string)$product['_id']);
 
 								$subtotal+= $oPromo['price'];
 

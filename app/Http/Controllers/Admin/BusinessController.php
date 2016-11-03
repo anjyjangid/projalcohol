@@ -88,18 +88,17 @@ class BusinessController extends Controller
 		$businessObj = new Business;
 		$inputs = $request->all();
 
-		prd($inputs);
 
 		$inputs['status'] = (int)$inputs['status'];
 
+		for ($i=0; $i<count(@$inputs['products']); $i++) {
+			$inputs['products'][$i]['_id'] = new MongoId($inputs['products'][$i]['_id']);
+		}
+
 		try {
-			dd($inputs);
 			$business = Business::create($inputs);
-		
 		} catch(\Exception $e){
-			
 			return response(array("success"=>false,"message"=>$e->getMessage()));
-				
 		}
 		
 		return response(array("success"=>true,"message"=>"Business created successfully", '_id' => $business->_id));
@@ -121,10 +120,8 @@ class BusinessController extends Controller
 		$business->company_name = $inputs['company_name'];
 		$business->company_email = $inputs['company_email'];
 
-		if(!empty($inputs['delivery_address']))
-			$business->delivery_address = $inputs['delivery_address'];	
-		if(!empty($inputs['billing_address']))
-			$business->billing_address = $inputs['billing_address'];				
+		if(!empty($inputs['address']))
+			$business->address = $inputs['address'];
 
 		for ($i=0; $i<count(@$inputs['products']); $i++) {
 			$inputs['products'][$i]['_id'] = new MongoId($inputs['products'][$i]['_id']);
@@ -132,6 +129,7 @@ class BusinessController extends Controller
 
 		if(!empty($inputs['products']))
 			$business->products = $inputs['products'];
+
 		if(isset($inputs['status']))
 			$business->status = (int)$inputs['status'];
 
@@ -182,10 +180,10 @@ class BusinessController extends Controller
 			[
 				'$project' => [
 					'company_name' => 1,
-					'delivery_address' => 1,
-					'billing_address' => 1,
+					'address' => 1,
 					'company_email' => 1,
 					'status' => 1,
+					'address' => 1,
 					'products' => [
 						'_id' => '$productDetails._id',
 						'categories' => '$productDetails.categories',
@@ -202,10 +200,10 @@ class BusinessController extends Controller
 				'$group' => [
 					'_id' => [
 						'company_name' => '$company_name',
-						'delivery_address' => '$delivery_address',
-						'billing_address' => '$billing_address',
+						'address' => '$address',
 						'company_email' => '$company_email',
-						'status' => '$status'
+						'address' => '$address',
+						'status' => '$status',
 					],
 					'products' => [
 						'$push' => '$products'
@@ -219,7 +217,13 @@ class BusinessController extends Controller
 			$result = $result['result'][0]['_id'];
 
 			for ($i=0 ; $i<count($result['products']) ; $i++) {
-				$result['products'][$i]['_id'] = (string)$result['products'][$i]['_id'];
+				if(!empty($result['products'][$i]))
+					$result['products'][$i]['_id'] = (string)$result['products'][$i]['_id'];
+				else {
+					array_splice($result['products'], $i, 1);
+					$i--;
+				}
+
 			}
 		}
 
@@ -246,20 +250,23 @@ class BusinessController extends Controller
 		      }
 		    }
 		  }
-		  $result['products'][$key]['sale'] = Sale::raw()->findOne(['type'=>1,'saleProductId'=>['$eq'=>$value['_id']]]);
-		  $result['products'][$key]['sprice'] = $this->calculatePrice($value['price'],$tier);                        
+			$result['products'][$key]['sale'] = Sale::raw()->findOne(['type'=>1,'saleProductId'=>['$eq'=>$value['_id']]]);
+			$result['products'][$key]['sprice'] = $this->calculatePrice($value['price'],$tier);
 		}
-		
+
 		return response($result, 201);
+
 	}
 
     protected function calculatePrice($cost = 0, $tiers){
+      
       if($tiers['type'] == 1){
         $p = $cost+($cost/100*$tiers['value']);
       }else{
         $p = $cost+$tiers['value'];
       }      
       return round($p,2);
+
     }
 
 	public function postList(Request $request)

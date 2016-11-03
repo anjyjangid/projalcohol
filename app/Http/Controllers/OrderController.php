@@ -19,7 +19,7 @@ class OrderController extends Controller
 
 	public function __construct()
 	{
-		$this->middleware('auth');
+		$this->middleware('auth',['except' => 'getOrderdetail']);
 	}
 
 	/**
@@ -111,7 +111,11 @@ class OrderController extends Controller
 						),
 						'created_at'=>1,
 						'timeslot'=>1,
-						'rate'=>1
+						'rate'=>1,
+						//'productsLog' => 1,
+						'quantity' => array(
+							'$sum' => '$productsLog.quantity'
+						),
 					),
 				),
 				array(
@@ -127,5 +131,342 @@ class OrderController extends Controller
 
 	}
 
+	public function getOrderdetail(Request $request,$reference){
 
+		$order = Orders::where('reference','=',$reference)->first();		
+
+
+		//return response($order);
+		//$logupdate = [];
+
+		/*foreach ($order['productsLog'] as $key => $value) {
+			$products = Products::find($value['_id']);			
+			$logupdate[$key] = $value;
+			$logupdate[$key]['name'] = $products['name'];
+			$logupdate[$key]['slug'] = $products['slug'];
+			$logupdate[$key]['description'] = $products['description'];
+			$logupdate[$key]['shortDescription'] = $products['shortDescription'];
+			$logupdate[$key]['sku'] = $products['sku'];
+			$logupdate[$key]['chilled'] = $products['chilled'];
+		}
+
+		$order->productsLog = $logupdate;
+
+		$order->save();*/		
+
+		if($order){
+
+			
+			try{
+
+			$productInfo = [];
+			if(isset($order['productsLog']) && !empty($order['productsLog'])){
+				foreach ($order['productsLog'] as $key => $value) {
+					$productInfo[(string)$value['_id']] = $value;
+				}
+			}
+
+			$particulars = [];
+			//INDIVIDUAL PRODUCTS IN CART
+			if(isset($order['products']) && !empty($order['products'])){
+				foreach ($order['products'] as $key => $value) {
+					if(isset($value['qtyfinal']) && $value['qtyfinal']>0){
+						$productId = (string)$value['_id'];
+						$product = $productInfo[$productId];
+						
+						//HAS CHILLED 
+						if(isset($value['quantity']['chilled']) && $value['quantity']['chilled']>0){							
+							$particulars[] = [
+								'_id' => $value['_id'],
+								'name' => $product['name'],
+								'slug' => $product['slug'],
+								'description' => $product['description'],
+								'shortDescription' => $product['shortDescription'],
+								'sku' => $product['sku'],
+								'chilled' => true,
+								'quantity' => $value['quantity']['chilled'],
+								'unitPrice' => $value['unitprice'],
+								'total' => $value['quantity']['chilled']*$value['unitprice'],
+								'products' => []
+							];
+						}
+
+						//HAS NON-CHILLED 
+						if(isset($value['quantity']['nonChilled']) && $value['quantity']['nonChilled']>0){							
+							$particulars[] = [
+								'_id' => $value['_id'],
+								'name' => $product['name'],
+								'slug' => $product['slug'],
+								'description' => $product['description'],
+								'shortDescription' => $product['shortDescription'],
+								'sku' => $product['sku'],
+								'chilled' => false,
+								'quantity' => $value['quantity']['nonChilled'],
+								'unitPrice' => $value['unitprice'],
+								'total' => $value['quantity']['nonChilled']*$value['unitprice'],
+								'products' => []
+							];
+						}
+
+					}
+				}		
+			}
+
+			//SALE & TAGS PRODUCT
+			if(isset($order['sales']) && !empty($order['sales'])){
+				foreach ($order['sales'] as $key => $value) {					
+					
+					$saleProduct = [];
+
+					foreach ($value['products'] as $pkey => $pvalue) {
+						$productId = (string)$pvalue['_id'];
+						$product = $productInfo[$productId];						
+						
+						$chillstatus = ($product['chilled'] && $value['chilled'])?true:false;
+
+						$saleProduct[] = [
+							'_id' => $pvalue['_id'],
+							'name' => $product['name'],
+							'slug' => $product['slug'],
+							'description' => $product['description'],
+							'shortDescription' => $product['shortDescription'],
+							'sku' => $product['sku'],
+							'chilled' => $chillstatus,
+							'quantity' => $pvalue['quantity'],							
+						];
+					}
+					
+					$particulars[] = [
+						'_id' => $value['_id'],
+						'name' => $value['sale']['title'],
+						'detailTitle' => $value['sale']['detailTitle'],
+						'slug' => '',
+						'description' => '',
+						'shortDescription' => '',
+						'sku' => '',
+						'chilled' => $value['chilled'],
+						'quantity' => '',
+						'unitPrice' => '',
+						'total' => $value['price']['sale'],
+						'products' => $saleProduct
+					];					
+				}
+			}
+
+			//PACKAGES
+			if(isset($order['packages']) && !empty($order['packages'])){			
+
+
+				foreach ($order['packages'] as $key => $value) {
+					$packageProduct = [];
+					foreach ($value['products'] as $pkey => $pvalue) {
+						$productId = (string)$pvalue['_id'];
+						$product = $productInfo[$productId];						
+						$packageProduct[] = [
+							'_id' => $pvalue['_id'],
+							'name' => $product['name'],
+							'slug' => $product['slug'],
+							'description' => $product['description'],
+							'shortDescription' => $product['shortDescription'],
+							'sku' => $product['sku'],
+							'chilled' => $product['chilled'],
+							'quantity' => $pvalue['quantity'],							
+						];
+					}
+					$particulars[] = [
+						'_id' => $value['_id'],
+						'name' => $value['title'],
+						'slug' => '',
+						'description' => $value['description'],
+						'shortDescription' => $value['subTitle'],
+						'sku' => '',
+						'chilled' => false,
+						'coverImage' => $value['coverImage'],
+						'quantity' => $value['packageQuantity'],
+						'unitPrice' => $value['packagePrice'],
+						'total' => $value['price'],
+						'products' => $packageProduct
+					];
+				}
+			}
+
+			//GIFT CARDS
+			if(isset($order['giftCards']) && !empty($order['giftCards'])){
+				foreach ($order['giftCards'] as $key => $value) {
+					$particulars[] = [
+						'_id' => $value['_id'],
+						'name' => $value['title'],
+						'slug' => '',
+						'description' => $value['description'],
+						'shortDescription' => $value['subTitle'],
+						'chilled' => false,
+						'quantity' => $value['quantity'],
+						'unitPrice' => $value['price']/$value['quantity'],
+						'total' => $value['price'],
+						'recipient' => $value['recipient']						
+					];
+				}
+			}
+
+			//LOYALTY PRODUCTS
+			if(isset($order['loyalty']) && !empty($order['loyalty'])){
+				foreach ($order['loyalty'] as $key => $value) {
+					$productId = (string)$value['_id'];
+					$product = $productInfo[$productId];
+					
+					if($value['quantity']['chilled']>0){
+						$particulars[] = [
+							'_id' => $product['_id'],
+							'name' => $product['name'],
+							'slug' => '',
+							'description' => $product['description'],
+							'shortDescription' => $product['shortDescription'],
+							'chilled' => true,
+							'quantity' => $value['quantity']['chilled'],
+							'unitPrice' => $value['price']['amount'],
+							'total' => $value['price']['amount']*$value['quantity']['chilled'],
+							'unitLoyalty' => $value['price']['points'],
+							'totalLoyalty' => $value['price']['points']*$value['quantity']['chilled']
+						];						
+					}
+					if($value['quantity']['nonChilled']>0){
+						$particulars[] = [
+							'_id' => $product['_id'],
+							'name' => $product['name'],
+							'slug' => '',
+							'description' => $product['description'],
+							'shortDescription' => $product['shortDescription'],
+							'chilled' => false,
+							'quantity' => $value['quantity']['nonChilled'],
+							'unitPrice' => $value['price']['amount'],
+							'total' => $value['price']['amount']*$value['quantity']['nonChilled'],
+							'unitLoyalty' => $value['price']['points'],
+							'totalLoyalty' => $value['price']['points']*$value['quantity']['nonChilled']
+						];						
+					}
+
+				}
+			}
+
+			//LOYALTY CARDS
+			if(isset($order['loyaltyCards']) && !empty($order['loyaltyCards'])){
+				foreach ($order['loyaltyCards'] as $key => $value) {
+					$particulars[] = [
+						'_id' => '',
+						'name' => 'Convert '.$value['points'].' to $'.$value['value'].' credits',
+						'slug' => '',
+						'description' => '',
+						'shortDescription' => '',
+						'chilled' => false,
+						'quantity' => $value['quantity'],
+						'unitPrice' => '',
+						'total' => '',
+						'unitLoyalty' => $value['points'],
+						'totalLoyalty' => $value['points']*$value['quantity']
+					];				
+				}				
+			}	
+
+			//GIFT PACAGING
+			if(isset($order['gift']) && !empty($order['gift'])){
+				foreach ($order['gift']['container'] as $containerkey => $containervalue) {						
+						$giftpackage = [];
+						foreach ($containervalue['products'] as $cpkey => $cpvalue) {
+							$productId = (string)$cpvalue['_id'];
+							$product = $productInfo[$productId];
+							$giftpackage[] = [
+								'_id' => $product['_id'],
+								'name' => $product['name'],
+								'slug' => $product['slug'],
+								'description' => $product['description'],
+								'shortDescription' => $product['shortDescription'],
+								'sku' => $product['sku'],
+								'chilled' => false,
+								'quantity' => $cpvalue['quantity']								
+							];
+						}
+
+						$particulars[] = [
+							'_id' => $containervalue['_id'],
+							'name' => $containervalue['title'],
+							'slug' => '',
+							'description' => $containervalue['description'],
+							'shortDescription' => $containervalue['subTitle'],
+							'chilled' => false,
+							'quantity' => 1,
+							'unitPrice' => $containervalue['price'],							
+							'total' => $containervalue['price'],
+							'products' => $giftpackage
+						];
+					
+				}
+			}		
+
+			//PROMOTIONS 
+			
+			if(isset($order['promotion']) && !empty($order['promotion'])){
+				foreach ($order['promotion'] as $promotionkey => $promotionvalue) {
+
+					if(isset($promotionvalue['product'])){
+						$productId = (string)$promotionvalue['product'];
+						$product = $productInfo[$productId];
+
+						$promotionalProduct[] = [
+							'_id' => $product['_id'],
+							'name' => $product['name'],
+							'slug' => $product['slug'],
+							'description' => $product['description'],
+							'shortDescription' => $product['shortDescription'],
+							'sku' => $product['sku'],
+							'chilled' => false,
+							'quantity' => 1						
+						];
+
+						$particulars[] = [
+							'_id' => '',
+							'name' => $promotionvalue['title'],
+							'slug' => '',
+							'description' => '',
+							'shortDescription' => '',
+							'chilled' => false,
+							'quantity' => 1,
+							'unitPrice' => $promotionvalue['price'],							
+							'total' => $promotionvalue['price'],
+							'products' => $promotionalProduct
+						];
+					}
+				}
+			}
+
+			$order['particulars'] = $particulars;
+			
+			unset($order['promotion']);
+			unset($order['gift']);
+			unset($order['loyaltyCards']);
+			unset($order['loyalty']);
+			unset($order['giftCards']);
+			unset($order['packages']);
+			unset($order['sales']);
+			unset($order['products']);
+			unset($order['productsLog']);
+
+		}catch(\Exception $e){
+			return view('invoice.404',['id'=>$reference,'error' => $e->getMessage()]);
+		}
+			//return response($order);
+
+			//UNSET ALL THE ARRAY OF ITEMS
+
+
+
+			return view('invoice.pos',['order'=>$order]);
+			
+		}else{
+
+			return view('invoice.404',['id'=>$reference]);
+
+		}
+	}
+
+	
 }

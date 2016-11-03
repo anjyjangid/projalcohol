@@ -234,7 +234,7 @@ html{font-family:sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:1
 {
     color:#000;
     opacity: 0.3;
-    font-size:50px;
+    font-size:40px;
     transform:rotate(300deg);
     -webkit-transform:rotate(300deg);
     text-transform: uppercase;    
@@ -259,4 +259,8 @@ table tr, table tr{
 
 .topborder td, .bottomborder td{
 	padding: 5px 2px;
+}
+
+.fontbold{
+	font-weight: bold;
 }

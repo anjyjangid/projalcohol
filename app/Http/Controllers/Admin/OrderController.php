@@ -103,8 +103,7 @@ class OrderController extends Controller
 			return response($response,400);
 
 		}
-
-		prd($response);
+		
 		return response($response,200);
 
 	}
@@ -290,7 +289,7 @@ class OrderController extends Controller
 		if(isset($params['nonchilled'])){
 			$cart->nonchilled = $params['nonchilled'];
 		}
-
+		
 		if(isset($params['delivery'])){
 			$cart->delivery = $params['delivery'];
 		}
@@ -313,6 +312,12 @@ class OrderController extends Controller
 
 		}
 
+		if(isset($params['orderType'])){
+
+			$cart->orderType = $params['orderType'];
+
+		}
+
 		if(isset($params['user'])){
 
 			$cart->user = new MongoId($params['user']);
@@ -320,7 +325,7 @@ class OrderController extends Controller
 		}
 
 		//SET CART REFERENCE FOR ORDER ID
-		$cart->setReference();
+		//$cart->setReference();
 
 		try {
 
@@ -382,22 +387,33 @@ class OrderController extends Controller
 			$query[]['$match']['consumer.name'] = ['$regex'=>new \MongoRegex($s)];
 		}
 
-		$project = ['reference'=>1,'delivery'=>1,'status'=>1,'_id'=>1,'created_at'=>1,'payment'=>1,'service'=>1];
+		$project = [
+				'reference'=>1,
+				'delivery'=>1,
+				'status'=>1,
+				'_id'=>1,
+				'created_at'=>1,
+				'payment'=>1,
+				'service'=>1,
+				
+			];
 
 		$project['orderDate'] = ['$dateToString'=>['format' => '%Y-%m-%d','date'=>'$created_at']];
 
 		$project['consumer'] = '$consumer';
 
-		$project['noOfProducts'] = [
+		/*$project['noOfProducts'] = [
 			'$sum' =>[
-				['$size'=>'$products'],
-				['$size'=>'$packages'],
+				['$size'=>'$productsLog'],
+				//['$size'=>'$packages'],
 			]
-		];
+		];*/
+
+		//$project['noOfProducts'] = ['$size'=>'$productsLog'];			
 
 		$query[]['$project'] = $project;
 
-		$columns = ['reference','consumer.name','noOfProducts','payment.total','created_at','delivery.type','status'];
+		$columns = ['reference','consumer.name','payment.total','created_at','delivery.type','status'];
 
 		$sort = ['created_at' => -1]; 
 

@@ -63,9 +63,9 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 	$scope.cart = alcoholCart.getCart();
 
-	$scope.cart.orderType = "consumer";
+	// $scope.cart.orderType = "consumer";
 
-	$scope.cart.addresses = [];
+	// $scope.cart.addresses = [];
 
 	$scope.autoComplete = function(term, field, api){
 		if(!api)
@@ -103,6 +103,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 		$http.get(api)
 		.then(function(res){
+			
 			$scope.cart.addresses = res.data.address;
 			$scope.cart.savedCards = res.data.savedCards;
 		});

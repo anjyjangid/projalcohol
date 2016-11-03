@@ -7,7 +7,8 @@
 					<span class="caption-subject font-blue-madison bold uppercase">
 					{{business._id?'Update':'Add'}} Business</span>
 				</div>
-				<div class="actions btn-set">					
+				<div class="actions btn-set">
+
 					<button ng-disabled="loading" class="btn green" ng-click="store()"><i class="fa fa-check"></i>{{business._id?'Update':'Save'}}</button>
 				</div>
 			</div>
@@ -154,12 +155,8 @@
 												<h5>Before Price : <b>${{pcprod.sprice}}</b></h5>
 												<div class="input-group">
 													<span class="input-group-btn">
-														<button class="btn btn-{{pcprod.type=='$'?'primary':'default'}}"
-														ng-click="pcprod.type='$'"
-														>$</button>
-														<button class="btn btn-{{pcprod.type!='$'?'primary':'default'}}"
-														ng-click="pcprod.type='%'"
-														>%</button>
+														<button class="btn btn-{{pcprod.type=='$'?'primary':'default'}}" ng-click="pcprod.type='$'">$</button>
+														<button class="btn btn-{{pcprod.type!='$'?'primary':'default'}}" ng-click="pcprod.type='%'" >%</button>
 													</span>
 													<input min="1" type="number" placeholder="Discount" step="any" class="form-control" ng-model="pcprod.disc">
 												</div>

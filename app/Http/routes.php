@@ -11,9 +11,7 @@
  */
 
 /*TO VIEW MAIL TEMPLATE*/
-Route::get('/printjob', function () {
-    return view('invoice.pos');
-});
+Route::get('/printjob/{reference}', 'OrderController@getOrderdetail');
 
 Route::group(['prefix' => 'adminapi'], function () {
 

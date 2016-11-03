@@ -15,7 +15,7 @@ var MetronicApp = angular.module("MetronicApp", [
 	"slugifier",
 	"angular-storage",
 	"ui.calendar",
-	'ngMap',
+	'ngMap'	
 ]);
 
 
@@ -2115,7 +2115,17 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
+                authenticate: authenticate,
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+            		return $ocLazyLoad.load({
+            		    name: 'ui.select',
+            		    insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+            		    files: [
+            		        'assets/global/plugins/angularjs/plugins/ui-select/select.min.css',
+            		        'assets/global/plugins/angularjs/plugins/ui-select/select.min.js'
+            		    ]
+            		});
+                }],
             }
         })
 
