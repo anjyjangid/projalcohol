@@ -266,6 +266,8 @@ MetronicApp.directive('fileModel', ['$parse', function ($parse) {
 			element.bind('change', function(e){
 				scope.$apply(function(){
 					modelSetter(scope, element[0].files[0]);
+					if(attrs.fileSelected)
+						scope.$eval(attrs.fileSelected, {$file: element[0].files[0]});
 				});
 			});            
 		}

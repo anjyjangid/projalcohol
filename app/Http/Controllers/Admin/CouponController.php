@@ -168,6 +168,63 @@ class CouponController extends Controller
 		return response(array($coupons,"success"=>true,"message"=>"Record(s) Removed Successfully"));
 	}
 
+	public function postImport(Request $request){
+		$params = $request->all();
+
+
+		$handle = fopen($params['csv']->getRealPath(), "r");
+
+		$skipLines = 2;
+
+		if ($handle) {
+			$inputs = [];
+			$coupons = [];
+			$i = 0;
+			while (($line = fgets($handle)) !== false) {
+				$i++;
+				if($skipLines){
+					$skipLines--;
+					continue;
+				}
+
+				$line = explode(',', $line);
+
+				$line[0] = strtoupper($line[0]);
+
+				$input = ['code'=>$line[0], 'type'=>$line[2]=='$'?1:0, 'discount'=>(int)$line[3], 'status'=>$line[8]=='0'?0:1];
+
+				$coupons[] = $line[0];
+
+				$req = new CouponRequest($input);
+
+				$validator = Validator::make($req->all(), $req->rules(), $req->messages());
+
+				if ($validator->fails()){
+					$err = ['err' => $validator->errors()->all()];
+					$err['row_number'] = $i;
+					$err['data'] = $input;
+					return response($err, 422);
+				}
+
+				$inputs[] = $req->all();
+			}
+
+			if(count($coupons) != count(array_unique($coupons)))
+				return response("There are multiple entries with same coupon code!", 400);
+
+			try {
+				$resp =  \DB::collection('coupons')->insert($inputs);
+
+				return response($resp, 200);
+			} catch(\Exception $e){
+				return response(array("success"=>false,"message"=>$e->getMessage()),400);
+			}
+			fclose($handle);
+		} else {
+			return response("Error reading file!", 400);
+		}
+	}
+
 	public function postListing(Request $request,$id = false)
 	{
 		$params = $request->all();
