@@ -3,7 +3,25 @@
 	<div class="fullwidth innerpagemargintop">
 		<div class="container">
 			<div class="row">
-				<div ng-class="col-md-10" ui-view></div>
+				<div class="col-md-2 side-menu-responsive cms-leftmenu">
+					<nav class="navbar navbar-default">
+						<!-- Brand and toggle get grouped for better mobile display -->
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							</button>
+						</div>
+						<!-- Collect the nav links, forms, and other content for toggling -->
+						<div class="collapse navbar-collapse nopadd" id="bs-example-navbar-collapse-1">
+							<side-bar noInit="true"></side-bar>
+						</div>
+						<!-- /.navbar-collapse -->
+					</nav>
+				</div>
+                <div ng-class="col-md-10" ui-view></div>
 			</div>
 		</div>
 	</div>
