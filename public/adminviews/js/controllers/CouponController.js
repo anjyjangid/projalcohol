@@ -1,6 +1,6 @@
 'use strict';
 
-MetronicApp.controller('CouponController',['$rootScope', '$scope', '$timeout','$http', function($rootScope, $scope, $timeout,$http) {
+MetronicApp.controller('CouponController',['$rootScope', '$scope', '$timeout','$http', 'sweetAlert', '$q', function($rootScope, $scope, $timeout,$http,sweetAlert,$q) {
 
     $scope.$on('$viewContentLoaded', function() {   
         Metronic.initAjax(); // initialize core components
@@ -11,7 +11,47 @@ MetronicApp.controller('CouponController',['$rootScope', '$scope', '$timeout','$
     $rootScope.settings.layout.pageBodySolid = false;
     $rootScope.settings.layout.pageSidebarClosed = false;  
 
+    $scope.selected = function(file) {
+    	console.log(file)
+    }
 
+    $scope.importCSV = function() {
+    	sweetAlert.swal({
+			title: "Import CSV",
+			text: "Select the input file<br><a href=\"/adminviews/coupons.csv\">Click here to Download the format</a>",
+			input: "file",
+			inputAttributes: {
+				accept: ".csv"
+			},
+			showCancelButton: true,
+			closeOnCancel: false,
+			showLoaderOnConfirm: true,
+			preConfirm: function(file) {
+				console.log(file);
+				if(!file)
+					return $q(function(resolve, reject){
+						reject("Please select a csv file");
+					})
+				var fd = new FormData();
+				fd.append('csv', file);
+
+				return $http.post('/adminapi/coupon/import', fd, {
+					transformRequest: angular.identity,
+					headers: {'Content-Type': undefined}
+				})
+				.catch(function(err){
+					if(err.data && typeof err.data == "string")
+						throw(new Error(err.data));
+					if(err.data)
+						throw(new Error(err.data.err[0]+"<br>\nOn Row: "+err.data.row_number+", Coupon: "+err.data.data.code));
+					
+					throw err;	
+				})
+			}
+		}).then(function(data) {
+			console.log(data);
+		})
+    }
 }]); 
 
 MetronicApp.controller('CouponAddController',['$rootScope','$scope','$http','$stateParams','couponModel','packageModel', function($rootScope,$scope,$http,$stateParams,couponModel,packageModel) {
