@@ -1705,6 +1705,9 @@ class Cart extends Moloquent
 		}
 		// Set Products ends //
 
+		$created_at = strtotime('now');		
+		$order['created_at'] = new MongoDate($created_at);
+
 		$order['nonchilled'] = $this->nonchilled;
 		$order['status'] = $this->status;
 		$order['user'] = $this->user;
@@ -1718,6 +1721,19 @@ class Cart extends Moloquent
 		$order['doStatus'] = 1;
 		if($order['delivery']['type']==1){
 			$order['doStatus'] = 0;
+			$order['delivery']['deliveryDate'] = date('Y-m-d',$order['timeslot']['datekey']);
+			$order['delivery']['deliveryDateTime'] = date('Y-m-d H:i:s',$order['timeslot']['datekey']);
+			$order['delivery']['deliveryTimeRange'] = $order['timeslot']['slotslug'];
+		}else{
+
+			$orderDateTime = strtotime('+60 minutes',$created_at);
+			if($order['service']['express']['status']){
+				$orderDateTime = strtotime('+30 minutes',$created_at);
+			}
+
+			$order['delivery']['deliveryDate'] = date('Y-m-d',$orderDateTime);
+			$order['delivery']['deliveryDateTime'] = date('Y-m-d H:i:s',$orderDateTime);
+			$order['delivery']['deliveryTimeRange'] = '';
 		}
 		
 		$order['payment'] = [
@@ -1725,7 +1741,7 @@ class Cart extends Moloquent
 			'points' => $totalPoints,
 			'total'=> $subtotal,
 			'method' => $this->payment['method']
-		];
+		];	
 
 		return $order;
 

@@ -15,7 +15,7 @@ var MetronicApp = angular.module("MetronicApp", [
 	"slugifier",
 	"angular-storage",
 	"ui.calendar",
-	'ngMap'	
+	"ngMap"
 ]);
 
 
@@ -663,6 +663,12 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 					uisref:'userLayout.settings.loyalty',
 					icon:'icon-wallet',
 					links:['userLayout.settings.loyalty']
+				},
+				{
+					label:'Cloud Printers',
+					uisref:'userLayout.settings.cloudprinters',
+					icon:'icon-printer',
+					links:['userLayout.settings.cloudprinters']
 				}
 
 			]
@@ -2143,6 +2149,21 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                 authenticate: authenticate
             }
         })
+
+	    .state("userLayout.settings.cloudprinters", {
+	        url: "/cloudprinters",
+	        templateUrl: "adminviews/views/settings/cloudprinters.html",
+	        data:{
+				pageTitle:'Cloud Printers',
+				key:"cloudprinters",
+				breadCrumb:[
+					{title:'Cloud Printers','uisref':'#'}
+				]
+			},
+			resolve: {
+	            authenticate: authenticate
+	        }
+	    })
 
         .state('userLayout.promotion', {
             abstract:true,

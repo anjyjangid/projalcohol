@@ -1255,7 +1255,9 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService
 	});
 
 	$rootScope.$on('alcoholWishlist:change', function(object,params){
-
+		var def = 3000;
+		if(params.hideDelay)
+			def = params.hideDelay;
 		$mdToast.show({
 			controller:function($scope){
 
@@ -1264,7 +1266,7 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService
 			templateUrl: '/templates/toast-tpl/wishlist-notify.html',
 			parent : $document[0].querySelector('#usermenuli'),
 			position: 'top center',
-			hideDelay:3000
+			hideDelay:def
 		});
 
 	});

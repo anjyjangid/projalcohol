@@ -42,12 +42,12 @@ MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout'
 
 		$scope.shipping = response.delivery.address.detail;
 		$scope.serviceCharge = 0;
-		if($scope.service.express.status){
-			$scope.serviceCharge += $scope.service.express.charges;
+		if($scope.order.service.express.status){
+			$scope.serviceCharge += $scope.order.service.express.charges;
 		}
 
-		if($scope.service.smoke.status){
-			$scope.serviceCharge += $scope.service.smoke.charges;
+		if($scope.order.service.smoke.status){
+			$scope.serviceCharge += $scope.order.service.smoke.charges;
 		}
 
 	});

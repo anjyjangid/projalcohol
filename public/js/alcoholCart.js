@@ -1745,6 +1745,10 @@ AlcoholDelivery.service('alcoholCart', [
 			this.deployCart();
 		}
 
+		this.getExpressStatus = function(){
+			return this.$cart.service.express.status;
+		}
+
 		this.updateChilledStatus = function(id,type){
 			
 			if(this.$cart.nonchilled)return false; // unable to change product chilled status if whole cart set as nonchilled
