@@ -774,8 +774,7 @@ md-dialog#dont-miss-popup{
 }
 
 .prod_addtocart.disabled .cartbtn {
-    background: #cdcdcd;
-    width: 100%;
+    background: #cdcdcd !important;
     font-size: 12px;
     font-weight: 500;
     color: #8f8f8f;
@@ -786,6 +785,7 @@ md-dialog#dont-miss-popup{
 }
 .prod_addtocart.disabled .cartbtn .addcart{
     cursor: not-allowed;
+	 background: #cdcdcd !important;
 }
 
 

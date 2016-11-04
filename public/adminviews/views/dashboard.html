@@ -275,7 +275,7 @@
 								<th width="10%">
 									Status
 								</th>
-								<th width="10%">
+								<th width="12%">
 									Actions
 								</th>
 							</tr>
@@ -640,7 +640,7 @@ var handleRecords = function () {
                     mRender: function(data, type, full) {
                         var OId = data._id.$id;
                         var consumerContact = (typeof data.consumer.mobile_number != 'undefined')?data.consumer.mobile_number:0;
-                        return '<a title="View Detail" ui-sref=userLayout.orders.show({order:"'+OId+'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a> <a title="Notify user" ng-click=notifyUser("'+OId+'",'+consumerContact+') class="btn btn-xs default"><i class="glyphicon glyphicon-comment"></i></a>';
+                        return '<a title="View Detail" ui-sref=userLayout.orders.show({order:"'+OId+'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a> <a title="Notify user" ng-click=notifyUser("'+OId+'",'+consumerContact+') class="btn btn-xs default"><i class="glyphicon glyphicon-comment"></i></a><a title="Print Invoice" class="btn btn-xs default" target="_blank" href="/printjob/'+data.reference+'"><i class="fa fa-print"></i></a>';
                     },                  
                     orderable:false                     
                 }

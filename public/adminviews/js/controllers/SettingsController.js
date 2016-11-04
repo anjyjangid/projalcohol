@@ -34,9 +34,15 @@ MetronicApp.controller('SettingsController',['$rootScope', '$scope', '$timeout',
     ];*/
 
 	$scope.popt = ['Fixed Amount','% Amount'];
-		
-
 	
+	//To authroize google account and get cloud priters access token
+	$scope.authorizeGoogleAccount = function(){
+		$http.post("/adminapi/setting/authorize-google-account/").success(function(success){
+			if(success.success){
+				window.open(success.url,500,500);
+			}
+		});
+	}
 
 }]);
 

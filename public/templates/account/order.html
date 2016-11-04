@@ -16,43 +16,62 @@
 		<table class="table">
 
 		<tbody>
-			<tr ng-repeat-start="(key, cartproduct) in order.products"></tr>
-			<tr ng-repeat="type in ['chilled','nonchilled']" ng-init="getQuantity(cartproduct)" ng-show="cartproduct[type].quantity>0" >
+			<tr ng-repeat-start="(key, cartproduct) in order.particulars"></tr>
+			
 
 				<td width="52%">
 
-					<div class="orhistry2_td2procdtcvr">
-					<span class="cursor-pointer">
-						<a ui-sref="mainLayout.product({product:cartproduct.original.slug})" title="View Product">
-							<img err-pro-src="" ng-src="products/i/200/{{cartproduct.original.imageFiles | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
-						</a>
-					</span>
+					<div ng-if="cartproduct.category == 'saleproduct' && cartproduct.products.length">
+						<div class="col-md-3" ng-repeat="packageproducts in cartproduct.products">
+							<span class="cursor-pointer">
+								<a ui-sref="mainLayout.product({product:packageproducts.slug})" title="View Product">
+									<img alt="{{packageproducts.name}}" err-pro-src="" ng-src="products/i/200/{{packageproducts.coverImage}}" alt="" class="img-responsive img-responsive-h"/>
+								</a>
+							</span>							
+						</div>	
+					</div>
 
+					<div class="orhistry2_td2procdtcvr">
+						<span class="cursor-pointer" ng-if="cartproduct.category != 'saleproduct'">
+							<a ui-sref="mainLayout.product({product:cartproduct.slug})" title="View Product">
+								<img err-pro-src="" ng-src="products/i/200/{{cartproduct.coverImage}}" alt="" class="img-responsive img-responsive-h" />
+							</a>
+						</span>
 						<div class="checkouter-td-right-text">
-							<div class="orhistry2_td2proctext1">{{cartproduct.original.name}}</div>
-							<div class="orhistry2_td2proctext2">{{cartproduct.original.shortDescription}}</div>
-							<div class="orhistry2_td2proctext1">{{cartproduct.original.price | pricingTxt}}</div>
-							<div class="orhistry2_td2proctext2">unit Price</div>
+							<div class="orhistry2_td2proctext1">{{cartproduct.name}}</div>
+							<div class="orhistry2_td2proctext2">{{cartproduct.shortDescription}}</div>
+							<div class="orhistry2_td2proctext1">{{cartproduct.unitPrice | pricingTxt}}</div>
+							<div class="orhistry2_td2proctext2" ng-if="cartproduct.products.length == 0">unit Price</div>
 						</div>
 
 					</div>
 
-				</td>
-				<td width="131px">
+					<div ng-if="cartproduct.category != 'saleproduct' && cartproduct.products.length">
+						<div class="col-md-3" ng-repeat="packageproducts in cartproduct.products">
+							<span class="cursor-pointer">
+								<a ui-sref="mainLayout.product({product:packageproducts.slug})" title="View Product">
+									<img alt="{{packageproducts.name}}" err-pro-src="" ng-src="products/i/200/{{packageproducts.coverImage}}" alt="" class="img-responsive img-responsive-h"/>
+								</a>
+							</span>							
+						</div>	
+					</div>
 
-					<div class="prod_chilled" ng-class="{ notchilled:type=='nonchilled' }">
+				</td>
+				<td>
+
+					<div class="prod_chilled" ng-class="{ notchilled:cartproduct.chilled }">
 						<span>Chilled</span>
 						<div class="prod_chilled_icon"></div>
 					</div>
 
 				</td>
-				<td width="100px">
-					<span class="orderhistry2price" ng-bind="cartproduct[type].quantity"></span>
+				<td>
+					<span class="orderhistry2price" ng-bind="cartproduct.quantity"></span>
 				</td>
 				<td>
-					<div class="orderhistry2price">{{cartproduct[type].quantity*cartproduct.original.price | pricingTxt}}</div>
+					<div class="orderhistry2price">{{cartproduct.total | pricingTxt}}</div>
 				</td>
-			</tr>
+			
 			<tr ng-repeat-end></tr>
 
 			<!-- <tr ng-repeat="(key, orderproduct) in order.products">
@@ -89,9 +108,12 @@
 			 <div class="checkoutstep5-left-first-left">
 				 <div class="checkoutstep5-left-first-lefttext">Delivery Address</div>
 				 <div class="checkoutstep5-left-first-lefttitle">
-				 	<span ng-if="address.detail.street">{{address.detail.street}},</span>
-				 	<span ng-if="address.detail.house">{{address.detail.house}},</span>
-				 	<span ng-if="address.detail.postal">{{address.detail.postal}}</span>
+				 	<span ng-bind="address.detail.house"></span> 
+				 	<span ng-bind="address.detail.HBRN"></span>, 
+				 	<div ng-if="address.detail.FLOOR || address.detail.FLOOR">
+						<span ng-if="address.detail.FLOOR">#{{address.detail.FLOOR}} - </span> <span ng-if="address.detail.UNIT">{{address.detail.UNIT}}</span>
+					</div>
+				 	Singapore - <span ng-bind="address.detail.PostalCode"></span>
 				 </div>
 			 </div>
 
@@ -106,7 +128,9 @@
 		 <div class="checkoutstep5-left-first">
 			 <div class="checkoutstep5-left-first-left">
 				 <div class="checkoutstep5-left-first-lefttext">Payment</div>
-				 <div class="checkoutstep5-left-first-lefttitle">Cash on Delivery</div>
+				 <div class="checkoutstep5-left-first-lefttitle">
+				 {{(cart.payment.method == 'COD')?'Cash on delivery':'Credit/Debit Card'}}
+				 </div>
 			 </div>
 
 		 </div>
@@ -114,7 +138,10 @@
 			 <div class="checkoutstep5-left-first-left">
 				 <div class="checkoutstep5-left-first-lefttext">Delivery mode</div>
 
-				 <div class="checkoutstep5-left-first-lefttitle" ng-if="order.delivery.type==0">Express Delivery<span class=""><img src="images/questionimg.png"></span></div>
+				 <div class="checkoutstep5-left-first-lefttitle" ng-if="order.delivery.type==0">
+				 	{{ (order.service.express.status)?'Express Delivery (Gauranteed 30 mins delivery)':'Standard 1hr Delivery'}}
+				 	<span class=""><img src="images/questionimg.png"></span>
+				 </div>
 				 <div class="checkoutstep5-left-first-lefttitle" ng-if="order.delivery.type==1">Advance Delivery<span class=""><img src="images/questionimg.png"></span></div>
 
 			 </div>

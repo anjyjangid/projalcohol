@@ -20,28 +20,8 @@
     $paymode = 'C.O.D';    
     $topay = $order['payment']['total'];
   }else{
-    $paymode = 'Debit/Credit card';
-  }
-
-  $dateOfDelivery = '';
-
-  $date = strtotime($order['created_at']);
-
-  if($order['delivery']['type'] == 1){
-    if($order['timeslot']['datekey']!==false){
-      $date = $order['timeslot']['datekey'];
-    }    
-    $dateOfDelivery = date('Y-m-d',$date).'<br> BW : '.$order['timeslot']['slotslug'];
-  }else{
-    $dateOfDelivery = date('Y-m-d H:i',$date);   
-
-    if($order['service']['express']['status']){
-      $dateOfDelivery = date('Y-m-d H:i',strtotime('+30 minutes',strtotime($dateOfDelivery)));               
-    }else{
-      $dateOfDelivery = date('Y-m-d H:i',strtotime('+60 minutes',strtotime($dateOfDelivery)));               
-    }
-  }
-  
+    $paymode = 'Debit/Credit Card';
+  } 
 
 ?>
 
@@ -117,9 +97,12 @@
                       </td>
                       <td valign="top" align="right">
                         <div><strong>Order date</strong></div>
-                        <div>{{ date('Y-m-d H:i',strtotime($order['created_at'])) }}</div>
+                        <div>{{ date('Y-m-d',strtotime($order['created_at'])) }}</div>
                         <div><strong>Delivery date</strong></div>
-                        <div><?php echo $dateOfDelivery ?></div>
+                        <div><?php echo @$order['delivery']['deliveryDate']; ?></div>
+                        <?php if(isset($order['delivery']['deliveryTimeRange']) && $order['delivery']['deliveryTimeRange']!=''){?>                        
+                        <div><?php echo @$order['delivery']['deliveryTimeRange']; ?></div>
+                        <?php }?>
                         <div><strong>Contact Number</strong></div>
                         <div>{{ $order['delivery']['contact'] }}</div>
                       </td>
@@ -189,12 +172,10 @@
                           </tr>   
                           <?php } ?>                       
                           <?php if($order['service']['express']['status'] || $order['service']['smoke']['status']){
-                            $serviceChrg = 0;
-                            $expressDetails = '';
-                            $smokeDetails = '';
+                            $serviceChrg = 0;                            
                             if($order['service']['express']['status']){
                               $serviceChrg += $order['service']['express']['charges'];
-                              $expressDetails = '<div><b>Express delivery ($'.formatPrice($order['service']['express']['charges']).')</b></div>';
+                              
                             }
                             if($order['service']['smoke']['status']){
                               $serviceChrg += $order['service']['smoke']['charges'];                              
@@ -210,9 +191,11 @@
                               <td align="left" colspan="2">
                                 <?php if($order['service']['smoke']['status']){?>
                                 <div><b>Need smoke (${{ $order['service']['smoke']['charges'] }})</b></div>
-                                <div>{{ $order['service']['smoke']['detail'] }}</div>
+                                <div>{{ @$order['service']['smoke']['detail'] }}</div>
+                                <?php }
+                                if($order['service']['express']['status']){?>
+                                <div><b>Express delivery (${{ $order['service']['express']['charges'] }})</b></div>
                                 <?php }?>
-                                {{ $expressDetails }}
                               </td>                                
                             </tr>
                           <?php }?>
@@ -235,7 +218,7 @@
                             <td align="left" valign="center" colspan="3"><strong>To Pay</strong></td>    
                             <td align="right" valign="center">
                               <h5 class="nomargin">
-                                <strong>${{ formatPrice($topay) }}</strong>
+                                <strong>${{ formatPrice($topay,0) }}</strong>
                               </h5>
                             </td>
                           </tr>                          

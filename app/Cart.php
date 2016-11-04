@@ -1705,6 +1705,9 @@ class Cart extends Moloquent
 		}
 		// Set Products ends //
 
+		$created_at = strtotime('now');		
+		$order['created_at'] = new MongoDate($created_at);
+
 		$order['nonchilled'] = $this->nonchilled;
 		$order['status'] = $this->status;
 		$order['user'] = $this->user;
@@ -1718,14 +1721,50 @@ class Cart extends Moloquent
 		$order['doStatus'] = 1;
 		if($order['delivery']['type']==1){
 			$order['doStatus'] = 0;
+			$order['delivery']['deliveryDate'] = date('Y-m-d',$order['timeslot']['datekey']);
+			$order['delivery']['deliveryDateTime'] = date('Y-m-d H:i:s',$order['timeslot']['datekey']);
+			$order['delivery']['deliveryTimeRange'] = $order['timeslot']['slotslug'];
+		}else{
+
+			$orderDateTime = strtotime('+60 minutes',$created_at);
+			if($order['service']['express']['status']){
+				$orderDateTime = strtotime('+30 minutes',$created_at);
+			}
+
+			$order['delivery']['deliveryDate'] = date('Y-m-d',$orderDateTime);
+			$order['delivery']['deliveryDateTime'] = date('Y-m-d H:i:s',$orderDateTime);
+			$order['delivery']['deliveryTimeRange'] = '';
 		}
 		
+		$total = $subtotal;
+		$serviceCharges = 0;
+		$discountExemption = 0;
+
+		if($order['service']['express']['status']){
+			$serviceCharges+=$order['service']['express']['charges'];
+		}
+		if($order['service']['smoke']['status']){
+			$serviceCharges+=$order['service']['smoke']['charges'];
+		}
+		if(!$order['service']['delivery']['free']){
+			$serviceCharges+=$order['service']['delivery']['charges'];
+		}
+
+		if($order['discount']['nonchilled']['status']){
+			$discountExemption+=$order['discount']['nonchilled']['exemption'];
+		}
+
+		$total+=$serviceCharges;
+		$total-=$discountExemption;	
+
 		$order['payment'] = [
-			'subtotal' => $subtotal,
+			'subtotal' => round($subtotal,2),
 			'points' => $totalPoints,
-			'total'=> $subtotal,
+			'service'=>$serviceCharges,
+			'discount'=>$discountExemption,
+			'total'=> $total,
 			'method' => $this->payment['method']
-		];
+		];	
 
 		return $order;
 
