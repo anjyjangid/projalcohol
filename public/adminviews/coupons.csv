@@ -1,0 +1,2 @@
+coupon code*,description*,type(%),discount*,max user(UL),per user(UL),valid from(NOW),upto(UL),Status(1)
+EXAMPLE,this row will not be evaluated,% or $,10,,1,02/11/16,02/12/16,0 or 1

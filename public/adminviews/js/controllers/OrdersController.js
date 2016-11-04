@@ -42,12 +42,12 @@ MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout'
 
 		$scope.shipping = response.delivery.address.detail;
 		$scope.serviceCharge = 0;
-		if($scope.service.express.status){
-			$scope.serviceCharge += $scope.service.express.charges;
+		if($scope.order.service.express.status){
+			$scope.serviceCharge += $scope.order.service.express.charges;
 		}
 
-		if($scope.service.smoke.status){
-			$scope.serviceCharge += $scope.service.smoke.charges;
+		if($scope.order.service.smoke.status){
+			$scope.serviceCharge += $scope.order.service.smoke.charges;
 		}
 
 	});
@@ -63,9 +63,9 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 	$scope.cart = alcoholCart.getCart();
 
-	$scope.cart.orderType = "consumer";
+	// $scope.cart.orderType = "consumer";
 
-	$scope.cart.addresses = [];
+	// $scope.cart.addresses = [];
 
 	$scope.autoComplete = function(term, field, api){
 		if(!api)
@@ -103,6 +103,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 		$http.get(api)
 		.then(function(res){
+			
 			$scope.cart.addresses = res.data.address;
 			$scope.cart.savedCards = res.data.savedCards;
 		});

@@ -4,8 +4,9 @@ namespace AlcoholDelivery;
 
 use Moloquent;
 
-use AlcoholDelivery\Setting as Setting;
-use AlcoholDelivery\Products as Products;
+use AlcoholDelivery\User;
+use AlcoholDelivery\Setting;
+use AlcoholDelivery\Products;
 
 class CartAdmin extends Moloquent
 {
@@ -26,7 +27,7 @@ class CartAdmin extends Moloquent
 	 * @var array
 	 */
 	protected $fillable = [
-							'_id', 
+							'_id',
 							'products',
 							'packages',
 							'nonchilled',
@@ -45,6 +46,26 @@ class CartAdmin extends Moloquent
 	public function getLastUnProcessed($adminId){
 
 		$cart = self::where('generatedBy',$adminId)->orderBy('updated_at', 'desc')->first();
+
+		$cart->addresses = [];
+		if(!empty($cart->user)){
+
+			$userId = (string)$cart->user;
+			$user = User::find($userId);
+
+			if($cart->orderType==='consumer'){
+				$cart->consumer = [
+
+					"_id"=> $userId,
+					"name"=> $user->name,
+					"mobile_number"=> $user->mobile_number,
+					"email"=> $user->email
+				];
+				$cart->addresses = $user->address;
+			}
+			
+		}
+		
 
 		return $cart;
 

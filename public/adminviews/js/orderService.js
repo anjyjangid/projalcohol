@@ -546,7 +546,7 @@ MetronicApp
 
 		var cart = {};
 		var cartKey = this.getCartKey();
-
+console.log(cartKey);
 		angular.copy(this.getCart(),cart);
 		
 		delete cart.packages;
@@ -623,7 +623,7 @@ MetronicApp
 			return $q(function(resolve,reject){
 
 				$http.get("/adminapi/order").success(function(response){
-
+					console.log(response);
 					if(!response.isUnprocessed){
 
 						alcoholCart.newCart()
