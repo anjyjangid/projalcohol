@@ -47,7 +47,8 @@ class Orders extends Moloquent
 							'loyaltyPointEarned',
 							'reference',
 							'productsLog',
-							'doStatus'
+							'doStatus',
+							'interface'
 						];
 
 	public function getOrders($where = [], $extra = []){
