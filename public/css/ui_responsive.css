@@ -609,7 +609,7 @@
 	width: auto;
 	float: right;
 	line-height: 1.2;
-	margin-top: -7px;
+	
 }
 .media-left.cocktail-leftimgdiv img {
 	display: inline-block;
@@ -1270,7 +1270,7 @@ body.menu-slider.in {
 .saving-titie-amnt {
 	float: left;
 	width: auto;
-	padding-left: 5px
+	
 }
 .btn.product_addcart.addcart-detail.cocktail-cart-margintop {
 	margin-top: 0
@@ -1312,7 +1312,7 @@ body.menu-slider.in {
 	height: 83px
 }
 .dropdown.cart-icon-set {
-	max-width: 47%;
+	
 	padding-right: 2px;
 	position: relative
 }
@@ -1365,6 +1365,9 @@ body.menu-slider.in {
 }
 .checkouter-td-right-text > div {
     float: left;
+}
+.cms-leftmenu{
+	display:none;
 }
 @media (min-width : 1024px) and (max-width : 1200px) {
   .christmas-mainouter.col-md-8 {
@@ -1607,17 +1610,7 @@ body.menu-slider.in {
   .package-desc.ng-binding {
 	  width: 69%;
   }
-  .saving-titie-amnt {
-	  float: right;
-	  padding-left: 0;
-	  width: 26%;
-  }
-  .saving-cocktail-cover span {
-	  float: right;
-	  padding-right: 13px;
-	  text-transform: uppercase;
-	  width: auto;
-  }
+  
   .cockatil-bodycover {
 	  width: 58%
   }
@@ -1710,6 +1703,9 @@ body.menu-slider.in {
 .addressbook-btmpannelcover .addressbokk-trvaichacovr:nth-child(3n){
 	margin-right:17px;
 }
+.addressbook-btmpannelcover .addressbokk-trvaichacovr,.addressbook-btmpannelcover.cartaddresses .addressbokk-trvaichacovr {
+    margin: 10px 17px 10px 0;
+}
 .addressbokk-trvaichacovr.ng-scope:nth-of-type(2n+2) {
     margin-right: 0 !important;
 }
@@ -1718,6 +1714,21 @@ body.menu-slider.in {
 }
 .checkboxtotaldiv-title{
 	width:86%;
+}
+.checkoutstep5-mid-left {
+    float: left;
+    width: 60%;
+}
+.checkoutstep5-mid-right {
+    float: left;
+    width: 40%;
+}
+.laeftdivmain {
+    float: left;
+    width: 25%;
+}
+.rgrhtdiv {
+    width: 75% !important;
 }
 }
 @media (min-width : 768px) and (max-width : 1023px) {
@@ -2035,7 +2046,7 @@ body.menu-slider.in {
 	  display: block
   }
   .dropdown.cart-icon-set span {
-	  display: table-cell
+	  display: inline-block;
   }
   .rgrhtdiv {
 	 
@@ -2088,7 +2099,8 @@ body.menu-slider.in {
 	  margin-right: 0;
   }
   .checkouter-td-right-text {
-	  width: 73%
+	  width: 73%;
+	  padding-left:10px;
   }
   .step5 {
 	  right: 29px;
@@ -2229,17 +2241,7 @@ body.menu-slider.in {
   .moredetail-cocktailtext > a {
 	  width: 25%;
   }
-  .saving-cocktail-cover span {
-	  float: right;
-	  padding-right: 15px;
-	  text-transform: uppercase;
-	  width: auto;
-  }
-  .saving-titie-amnt {
-	  float: right;
-	  padding-left: 0;
-	  width: 28%;
-  }
+ 
   .cocktail-detail-width {
 	  width: 25%;
 	  float: left
@@ -2348,7 +2350,7 @@ body.menu-slider.in {
 }
 
 .cartbtn{
-	margin: 0 auto;
+	/*margin: 0 auto;*/
 	float: none;
 }
 
@@ -2400,7 +2402,12 @@ body.menu-slider.in {
 #cart-summary-icon{
 	display:block !important;
 }
-
+.checkoutstep5right-middle-title{
+	width:73%;
+}
+.footer1 {
+    padding-top: 40px;
+}
 }
 @media only screen and (max-width : 767px) {
   .col-md-2.homecallus_cover {
@@ -2619,7 +2626,7 @@ body.menu-slider.in {
 	  width: 88%;
   }
   .onthego {
-	  font-size: 110px
+	  font-size: 100px
   }
   .footer2_madetxt {
 	  font-size: 40px;
@@ -2821,7 +2828,8 @@ body.menu-slider.in {
 	  float: none;
 	  margin-right: 20px;
 	  width: 73%;
-	  display: inline-block
+	  display: inline-block;
+	  margin-left:10px;
   }
   .checkoutmiddletable .orhistry2_td2proctext2 {
 	  float: left
@@ -3396,6 +3404,9 @@ body.menu-slider.in {
 .innerpagemargintop p{
 	text-align:justify;
 }
+.innerpagemargintop h3 {
+    font-size:18px;
+}
 .addressbook-btmpannelcover .addressbokk-trvaichacovr:nth-child(3n){
 	margin-right:17px;
 }
@@ -3433,6 +3444,22 @@ font-size:18px;
 .emptycartbox {
     left: inherit;
     right: 0;
+}
+.currentorderpopup{
+	left:inherit;
+	right:0px;
+}
+.dropdown.cart-icon-set span {
+    display: inline-block !important;
+}
+.checkoutstep5right-bottom-title{
+	width:72%;
+}
+.cocktail-amntdivcover > span{
+	float:left
+}
+.happy_hours_txt{
+	font-size:100px;
 }
 }
 @media only screen and (width : 640px) {
@@ -3664,7 +3691,7 @@ font-size:18px;
 	  width: 88%;
   }
   .onthego {
-	  font-size: 110px
+	  font-size: 100px
   }
   .searchtop {
 	  right: 26.5%;
@@ -3848,6 +3875,9 @@ font-size:18px;
 	  margin: 0;
 	  width: 100%;
   }
+  .cartaddresses .addressbokk-trvaichacovr, .cartaddresses .addressbokk-addnewadresscovr{
+	  width: 100%;
+	 }
   .addressbook-btmpannelcover {
 	  margin-bottom: 10px
   }
@@ -3939,7 +3969,7 @@ font-size:18px;
 	  width: 100%
   }
   .checkoutstep5-left-first-left {
-	  width: 88%
+	  width: 87%
   }
   .checkouterwantbutton {
 	  width: 100%;
@@ -4230,14 +4260,14 @@ font-size:18px;
 	  padding-bottom: 10px;
   }
   .dropdown.productdropdownbtn {
-	  width: 100%;
+	  width: 155px;
 	  margin-right: 0;
 	  margin-top: 0;
   }
   .dropdown.productdropdownbtn.open {
 	  left: 0;
 	  right: 0;
-	  width: 100%;
+	  width: 155px;
   }
   .nav.nav-tabs.productcomboul {
 	  padding-left: 0;
@@ -4250,6 +4280,7 @@ font-size:18px;
   }
 .checkouter-td-right-text{
 	width:65%;
+	margin-left:10px;
 }
 .checkboxtotaldiv-middle{
 	padding:15px 0px;
@@ -4270,5 +4301,39 @@ font-size:18px;
 }
 #cart-summary-icon{
 	display:block !important;
+}
+.alcohlchekboxdiv12 md-checkbox{
+	float:left;
+}
+.alcohlchekboxdiv12 > label {
+    float: left;
+    width: 87%;
+}
+.dropdown.cart-icon-set span {
+    display: none !important;
+}
+.checkoutstep5right-bottom-title{
+	width:70%;
+}
+.amntrupee{
+	width:70%;
+	text-align:left;
+}
+.alcohalorderhisttitle {
+    font-size: 16px;
+}
+.combo_slider .nav-tabs li a{
+	padding:10px;
+}
+.productaddedpopup{
+	left:inherit;
+	right:0px;
+}
+.productaddedpopup::before{
+	left:inherit;
+	right:42px;
+}
+.alcohal_addadress_headertitle {
+    font-size: 16px;
 }
 }

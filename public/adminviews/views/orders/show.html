@@ -8,11 +8,10 @@
 					| {{order.dateslug}} </span>
 				</div>
 				<div class="actions">
-					<button class="btn default yellow-stripe" ng-click="setStatus('success')">
-					<i class="fa fa-angle-left"></i>
-					<span class="hidden-480">
-					Placed </span>
-					</button>
+					<a class="btn default yellow-stripe" target="_blank" href="/printjob/{{order.reference}}">
+						<i class="fa fa-print"></i>
+						<span class="hidden-480">Print </span>
+					</a>
 					
 				</div>
 				<div class="actions">
@@ -234,115 +233,73 @@
 										</div>
 										<div class="portlet-body">
 											<div class="table-responsive">
-												<table class="table table-hover table-bordered table-striped">
+												<table class="table table-hover table-bordered">
 												<thead>
 												<tr>
 													<th>
 														 Product
-													</th>
-													<th>
-														 Chilled/Non-chilled
-													</th>
+													</th>													
 													<!-- <th>
 														 Original Price
 													</th> -->
-													<th>
-														 Price
-													</th>
-													<th>
+													<th style="text-align: center;">
 														 Quantity
 													</th>
-													<th>
+													<th style="text-align: right;">
+														Loyalty Point
+													</th>
+													<th style="text-align: right;">
+														 Unit Price
+													</th>
+													<th style="text-align: right;">
 														 Total
 													</th>
 												</tr>
 												</thead>
 												<tbody>
-													<tr ng-repeat-start="(key, orderproduct) in order.products"></tr>
-													<tr ng-repeat="type in ['chilled','nonchilled']" ng-if="orderproduct[type].quantity>0">
-														<td width="52%">
-															<div class="orhistry2_td2procdtcvr">
-																<div class="checkouter-td-right-text">
-																	<div class="orhistry2_td2proctext1">{{orderproduct.original.name}}</div>
-															 	</div> 
-															</div>
-														</td>
-														<td>{{type}}</td>
-														<!-- <td>{{orderproduct.original.price}}</td> -->
-														<td>{{orderproduct.original.price}}</td>
-														<td>{{orderproduct[type].quantity}}</td>
-														<td>{{orderproduct.original.price * orderproduct[type].quantity}}</td>
-
+													<tr ng-repeat-start="(key, orderproduct) in order.particulars">
 													</tr>
-													<tr ng-repeat-end></tr>
+														<td ng:class="{'bold':orderproduct.products.length}">{{orderproduct.name}} - {{orderproduct.category}}
+														<div style="font-weight: normal;" ng-repeat="(pkey, packageProduct) in orderproduct.products">
+															{{packageProduct.quantity}}&nbsp;&times;&nbsp;{{packageProduct.name}}
+														</div>
+														</td>														
+														<td align="center">{{orderproduct.quantity}}</td>
+														<td align="right">{{orderproduct.totalLoyalty}}</td>
+														<td align="right">{{orderproduct.unitPrice | pricingTxt}}</td>
+														<td align="right">{{orderproduct.total | pricingTxt}}</td>
+															
+													<tr ng-repeat-end>													
+													<tr>
+														<td colspan="4" align="right">Sub Total</td>
+														<td align="right">{{order.payment.subtotal | pricingTxt}}</td>
+													</tr>
+													<tr ng-if="!order.service.delivery.free">
+														<td colspan="4" align="right">Delivery Charge</td>
+														<td align="right">{{order.service.delivery.charges | pricingTxt}}</td>
+													</tr>
+													<tr ng-if="order.service.smoke.status || order.service.express.status">
+														<td colspan="4" align="right">
+															Service Charge
+															<div ng-if="order.service.smoke.status">Need Smoke ({{order.service.smoke.charges | pricingTxt}})</div>
+															<div ng-if="order.service.express.status">Express Delivery ({{order.service.express.charges | pricingTxt}})</div>
+														</td>
+														<td align="right">															
+															{{ serviceCharge | pricingTxt }}
+														</td>
+													</tr>
+													<tr>
+														<td colspan="4" align="right"><h4>Total</h4></td>
+														<td align="right"><h4>{{order.payment.total | pricingTxt}}</h4></td>
+													</tr>												
 												</tbody>
 												</table>
 											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-6">
-								</div>
-								<div class="col-md-6">
-									<div class="well">
-										<div class="row static-info align-reverse">
-											<div class="col-md-8 name">
-												 Sub Total:
-											</div>
-											<div class="col-md-3 value">
-												 {{order.payment.subtotal | currency}}
-											</div>
-										</div>
-										<div class="row static-info align-reverse">
-											<div class="col-md-8 name">
-												 Delivery Charge:
-											</div>
-											<div class="col-md-3 value" ng-if="!order.service.delivery.free">
-												{{order.service.delivery.charges | currency}}
-											</div>
-											<div class="col-md-3 value" ng-if="order.service.delivery.free">
-												Free
-											</div>
-										</div>
-										<div class="row static-info align-reverse">
-											<div class="col-md-8 name">
-												 Service charge:
-											</div>
-											<div class="col-md-3 value">
-												 {{serviceCharge | currency}}
-											</div>
-										</div>
-										<div class="row static-info align-reverse">
-											<div class="col-md-8 name">
-												 Total:
-											</div>
-											<div class="col-md-3 value">
-												{{order.payment.total | currency}}
-											</div>
-										</div>
-										<!-- <div class="row static-info align-reverse">
-											<div class="col-md-8 name">
-												 Total Refunded:
-											</div>
-											<div class="col-md-3 value">
-												 $0.00
-											</div>
-										</div> -->
-										<!-- <div class="row static-info align-reverse">
-											<div class="col-md-8 name">
-												 Total Due:
-											</div>
-											<div class="col-md-3 value">
-												 {{order.payment.total | currency}}
-											</div>
-										</div> -->
-									</div>
-								</div>
-							</div>
-						</div>
-						
+							</div>							
+						</div>						
 					</div>
 				</div>
 			</div>

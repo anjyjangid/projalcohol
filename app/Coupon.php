@@ -21,8 +21,7 @@ class Coupon extends Moloquent
 	* The attributes that are mass assignable.  *
 	* @var array 								*
 	*********************************************/
-	protected $fillable = ['code', 'type', 'discount', 'status'];
-
+	protected $fillable = ['code', 'name', 'type', 'discount', 'total', 'coupon_uses', 'customer_uses', 'start_date', 'end_date', 'status'];
 
 	/******		
 		The attributes that are mass assignable.

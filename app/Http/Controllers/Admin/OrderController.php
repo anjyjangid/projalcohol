@@ -184,7 +184,8 @@ class OrderController extends Controller
 
 		if(!empty($order)){
 
-			$order = $order->toArray();
+			$orderarray = $order->toArray();
+			$order = $order->formatorder($orderarray);
 
 			$order['user'] = user::where('_id',"=",$order['user'])->first(['name','email','mobile_number','status','created_at','address']);
 			$order['user'] = $order['user']->toArray();
@@ -395,7 +396,7 @@ class OrderController extends Controller
 				'created_at'=>1,
 				'payment'=>1,
 				'service'=>1,
-				
+				'reference'=> 1
 			];
 
 		$project['orderDate'] = ['$dateToString'=>['format' => '%Y-%m-%d','date'=>'$created_at']];

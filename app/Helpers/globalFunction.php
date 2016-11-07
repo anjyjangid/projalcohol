@@ -70,10 +70,10 @@
 	     *
 	     * @return string
 	     */
-	    function formatPrice($price)
+	    function formatPrice($price,$showFree = 1)
 	    {
 	        // Do your necessary logic
-	        if($price == 0)
+	        if($price == 0 && $showFree)
 	        	return 'FREE';
 	        else
 	    		return number_format( $price, 2 );	        

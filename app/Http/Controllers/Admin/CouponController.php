@@ -55,11 +55,8 @@ class CouponController extends Controller
 	public function store(CouponRequest $request)
 	{
 
-		$inputs = $request->all();
-		
-		$inputs['status'] = (int)$inputs['status'];
-		$inputs['type'] = (int)$inputs['type'];	
-		
+		$inputs = $request->formatCols(['code', 'name', 'type', 'discount', 'total', 'coupon_uses', 'customer_uses', 'start_date', 'end_date', 'status', 'products', 'categories']);
+
 		try {
 
 			Coupon::create($inputs);
@@ -99,8 +96,115 @@ class CouponController extends Controller
 	 */
 	public function getDetail($id)
 	{
-		$coupon = new coupon;
-		$result = $coupon->getCoupon($id);
+
+		$result = Coupon::raw()->aggregate([
+			[
+				'$match' => [ '_id' => new MongoId($id) ]
+			], [
+				'$unwind' => [
+					'path' => '$products',
+					'preserveNullAndEmptyArrays' => true
+				]
+			], [
+				'$lookup' => [
+					'from'=>'products',
+					'localField'=>'products',
+					'foreignField'=>'_id',
+					'as'=>'saleProductDetail'
+				]
+			], [
+				'$unwind' => [
+					'path' => '$saleProductDetail',
+					'preserveNullAndEmptyArrays' => true
+				]
+			], [
+				'$group' => [
+					'_id' => '$_id',
+					'code' => ['$first' => '$code'],
+					'name' => ['$first' => '$name'],
+					'type' => ['$first' => '$type'],
+					'discount' => ['$first' => '$discount'],
+					'total' => ['$first' => '$total'],
+					'coupon_uses' => ['$first' => '$coupon_uses'],
+					'customer_uses' => ['$first' => '$customer_uses'],
+					'start_date' => ['$first' => '$start_date'],
+					'end_date' => ['$first' => '$end_date'],
+					'status' => ['$first' => '$status'],
+					'csvImport' => ['$first' => '$csvImport'],
+					'categories' => ['$first' => '$categories'],
+					'saleProductDetail' => [
+						'$push' => [
+							'_id' => '$saleProductDetail._id',
+							'name' => '$saleProductDetail.name',
+							'imageFiles' => '$saleProductDetail.imageFiles',
+						]
+					]
+				]
+			], [
+				'$unwind' => [
+					'path' => '$categories',
+					'preserveNullAndEmptyArrays' => true
+				]
+			], [
+				'$lookup' => [
+					'from'=>'categories',
+					'localField'=>'categories',
+					'foreignField'=>'_id',
+					'as'=>'saleCategoryDetail'
+				]
+			], [
+				'$unwind' => [
+					'path' => '$saleCategoryDetail',
+					'preserveNullAndEmptyArrays' => true
+				]
+			], [
+				'$group' => [
+					'_id' => '$_id',
+					'code' => ['$first' => '$code'],
+					'name' => ['$first' => '$name'],
+					'type' => ['$first' => '$type'],
+					'discount' => ['$first' => '$discount'],
+					'total' => ['$first' => '$total'],
+					'coupon_uses' => ['$first' => '$coupon_uses'],
+					'customer_uses' => ['$first' => '$customer_uses'],
+					'start_date' => ['$first' => '$start_date'],
+					'end_date' => ['$first' => '$end_date'],
+					'status' => ['$first' => '$status'],
+					'csvImport' => ['$first' => '$csvImport'],
+					'saleProductDetail' => ['$first' => '$saleProductDetail'],
+					'saleCategoryDetail' => [
+						'$push' => [
+							'_id' => '$saleCategoryDetail._id',
+							'cat_title' => '$saleCategoryDetail.cat_title',
+							'ancestors' => '$saleCategoryDetail.ancestors',
+						]
+					]
+				]
+			]
+		]);
+
+        if($result['ok'] != 1 || !isset($result['result'][0]))
+        	return response('Coupon not found', 422);
+
+        $result = $result['result'][0];
+
+        if(count($result['saleProductDetail'])==1 && empty($result['saleProductDetail'][0]))
+        	unset($result['saleProductDetail']);
+        if(count($result['saleCategoryDetail'])==1 && empty($result['saleCategoryDetail'][0]))
+        	unset($result['saleCategoryDetail']);
+
+		if(!empty($result['saleCategoryDetail']))
+			foreach ($result['saleCategoryDetail'] as &$category) {
+				$category['name'] = $category['cat_title'];
+				if(isset($category['ancestors'])){
+					$category['name'] = $category['ancestors'][0]['title'].' > '.$category['cat_title'];
+				}
+
+				unset($category['ancestors']);
+				unset($category['cat_title']);
+			}
+		// $coupon = new coupon;
+		// $result = $coupon->getCoupon($id);
 
 		return response($result, 201);
 
@@ -120,16 +224,15 @@ class CouponController extends Controller
 
 		if(is_null($coupon)){
 
-			return response(array("success"=>false,"message"=>"Invalid Request :: Record you want to update is not exist"));
+			return response(array("success"=>false,"message"=>"Invalid Request :: Record you want to update does not exist"));
 
 		}
 
-		$inputs = $request->all();            
+		$inputs = $request->formatCols(['code', 'name', 'type', 'discount', 'total', 'coupon_uses', 'customer_uses', 'start_date', 'end_date', 'status', 'products', 'categories']);
 
-		$coupon->code = $inputs['code'];
-		$coupon->status = (int)$inputs['status'];		
-		$coupon->type = (int)$inputs['type'];		
-		$coupon->discount = (float)$inputs['discount'];
+		foreach ($inputs as $col => $value) {
+			$coupon[$col] = $value;
+		}
 
 		try {
 
@@ -152,7 +255,7 @@ class CouponController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy($ids)
-	{        
+	{
 		$keys = explode(",", $ids);
 		
 		try {
@@ -191,7 +294,19 @@ class CouponController extends Controller
 
 				$line[0] = strtoupper($line[0]);
 
-				$input = ['code'=>$line[0], 'type'=>$line[2]=='$'?1:0, 'discount'=>(int)$line[3], 'status'=>$line[8]=='0'?0:1];
+				$input = [
+					'code'=>$line[0],
+					'name'=>$line[1],
+					'type'=>$line[2]=='$'?1:0,
+					'discount'=>(float)$line[3],
+					'total'=>(int)$line[4],
+					'coupon_uses'=>(int)$line[5],
+					'customer_uses'=>(int)$line[6],
+					'start_date'=>$line[7],
+					'end_date'=>$line[8],
+					'status'=>$line[9]=='0'?0:1,
+					'csvImport'=>true
+				];
 
 				$coupons[] = $line[0];
 
@@ -206,18 +321,22 @@ class CouponController extends Controller
 					return response($err, 422);
 				}
 
-				$inputs[] = $req->all();
+				$inputs[] = $req->formatCols();
 			}
 
 			if(count($coupons) != count(array_unique($coupons)))
-				return response("There are multiple entries with same coupon code!", 400);
+				return response("There are multiple entries with same coupon code in the CSV file!", 400);
 
 			try {
 				$resp =  \DB::collection('coupons')->insert($inputs);
 
-				return response($resp, 200);
+				if($resp)
+					return response("Coupons imported successfully", 200);
+				else
+					return response("Error saving data!", 400);
+
 			} catch(\Exception $e){
-				return response(array("success"=>false,"message"=>$e->getMessage()),400);
+				return response($e->getMessage(),400);
 			}
 			fclose($handle);
 		} else {

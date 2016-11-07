@@ -16,7 +16,7 @@ MetronicApp.factory('couponModel', ['$http', '$cookies','$location', function($h
 	                type: 'danger',
 	                icon: 'warning',
 	                message: 'Please enter all required fields.',
-	                container: '.portlet-body',
+	                container: '#main-container.portlet-body',
 	                place: 'prepend',
 	                closeInSeconds: 3
 	            });
@@ -40,7 +40,7 @@ MetronicApp.factory('couponModel', ['$http', '$cookies','$location', function($h
 	                type: 'danger',
 	                icon: 'warning',
 	                message: data,
-	                container: '.portlet-body',
+	                container: '#main-container.portlet-body',
 	                place: 'prepend'
 	            });
 	        });*/
@@ -58,7 +58,7 @@ MetronicApp.factory('couponModel', ['$http', '$cookies','$location', function($h
 	                type: 'danger',
 	                icon: 'warning',
 	                message: 'Please enter all required fields.',
-	                container: '.portlet-body',
+	                container: '#main-container.portlet-body',
 	                place: 'prepend',
 	                closeInSeconds: 3
 	            });
@@ -84,7 +84,7 @@ MetronicApp.factory('couponModel', ['$http', '$cookies','$location', function($h
 		                type: 'danger',
 		                icon: 'warning',
 		                message: response.message,
-		                container: '.portlet-body',
+		                container: '#main-container.portlet-body',
 		                place: 'prepend',
 		                closeInSeconds: 10
 		            });
@@ -98,7 +98,7 @@ MetronicApp.factory('couponModel', ['$http', '$cookies','$location', function($h
 	                type: 'danger',
 	                icon: 'warning',
 	                message: data,
-	                container: '.portlet-body',
+	                container: '#main-container.portlet-body',
 	                place: 'prepend'
 	            });
 	        });*/
