@@ -674,7 +674,7 @@ class Products extends Eloquent
 			return ['success'=>false,"message"=>$e->getMessage()];
 
 		}
-
+		
 		return ['success'=>true,'products'=>$products['result']];
 
 	}

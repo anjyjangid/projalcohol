@@ -247,6 +247,24 @@
 				</tr>
 				<tr ng-repeat-end></tr>
 				
+				<tr ng-repeat="(id,product) in alcoholCart.getLoyaltyCards()">
+
+					<td>{{product.value | pricingTxt}} Credit Certificate</td>
+										
+					<td></td>
+					<td>
+						<div class="checkoutmiddlevlauediv">
+
+							<input type="text" ng-model="cartproduct[type]" value="product.quantity" min="0" mquantity="100" ng-touch-spin on-increment="" on-decrement="">
+
+						</div>
+					</td>
+
+					<td>
+						<div class="orderhistry2price">LP {{product.points}}</div>
+					</td>
+					<td></td>
+				</tr>
 
 				<tr ng-repeat="(key, promotion) in alcoholCart.getPromotions()">
 

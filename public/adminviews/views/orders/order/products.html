@@ -149,22 +149,25 @@
 			
 			<input ng-model="productquery" type="search" ng:class="{'spinner':searching}" class="form-control" placeholder="Search products to add in cart">
         </div>
-        <div id="searchContainer" class="row">
+        <div id="searchContainer">
         	<div class="col-sm-4">
-				<table class="table table-striped table-hover" id="orderlist">
+        		<div class="row">
+				<table class="table table-striped" id="orderlist">
 					<tbody>
-						<tr ng-repeat="p in checkItem()" ng-click="selected.product = p">
-							<td width="40" valign="middle">
-								<img class="img-responsive" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{p.imageFiles | getProductThumb}}">
+						<tr ng-repeat="p in products" ng-click="selected.product = p;selected.index = $index" ng-class='{proSelected:selected.index==$index}'>
+							<td width="60" valign="middle">
+								<img class="img-responsive img-responsive-h" err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{p.imageFiles | getProductThumb}}">
 							</td>
-							<td valign="middle">									
+							<td valign="middle">								
 								{{p.name}}
-								<div><b>${{p.unitPrice}}</b></div>
-								{{p.nameSales?p.nameSales[0].detailTitle:''}}
+								<div><b>${{p.unitPrice}}</b></div>								
+								<span  ng-if="p.sale" class="label label-sm label-info">{{p.sale.title}}</li>
 							</td>							
-						</tr>							
+						</tr>
 					</tbody>
 				</table>
+				</div>
+
 			</div>
 			<div class="col-sm-8">
 				<div class="row product-detail" ng-if="selected.product">
@@ -174,9 +177,7 @@
 		</div>
         
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
+      
     </div>
   </div>
 </div>

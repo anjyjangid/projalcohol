@@ -16,38 +16,43 @@
 				</div>
 			</div>
 			<div class="prdquantitybulkcover text-noselect" ng-if="product.quantity || product.outOfStockType == 2">
-
 				<div class="checkoutmiddlevlauediv">
-						<div class="pardqantitytexthead">Quantity</div>										
 
-						<div ng-if="product.servechilled" ng-class="{added:product.qChilled>0}">
-							<input type="number" ng-model="product.qChilled" min="0" class="form-control" maxlength="3">
-						</div>
+					<div class="pardqantitytexthead">Quantity</div>
 
-						<div ng-if="!product.servechilled" ng-class="{added:product.qNChilled>0}">
-							<input type="number" ng-model="product.qNChilled" min="0" class="form-control" maxlength="3">
-						</div>
+					<div ng-if="product.servechilled" ng-class="{added:product.qChilled>0}">
+						<input type="text" value="product.qChilled" ng-model="product.qChilled" min="0" mquantity="product.chilledMaxQuantity" ng-touch-spin>
+					</div>
 
+					<div ng-if="!product.servechilled" ng-class="{added:product.qNChilled>0}">
+						<input type="text" value="product.qNChilled" ng-model="product.qNChilled" min="0" mquantity	="product.nonChilledMaxQuantity" ng-touch-spin>
+					</div>
 
 				</div>
+				<div class="prdquantitybulkcoverbulk" ng-if="!viaLoyaltyStore">
 
-				<div class="prdquantitybulkcoverbulk">
 					<div class="pardqantitytexthead">Bulk Quantity Discounts Chart (Piece)</div>
+					
 					<div class="prdquantitybulkcoverbulkbox">
+
 						<div class="prdquanbulkboxone">Qty<br />Amount</div>
 
-																			
-						<div class="prdquanbulkboxtwo" ng-repeat="bulkBlock in product.express_delivery_bulk.bulk" ng-class="{'prdquanbulkActive':product.getTotalQuantity()>=bulkBlock.from_qty && product.getTotalQuantity()<=bulkBlock.to_qty}">
+						<div class="prdquanbulkboxtwo" ng-repeat="bulkBlock in product.bulkPricing" ng-class="{'prdquanbulkActive':product.getTotalQty()>=bulkBlock.from_qty && product.getTotalQty()<=bulkBlock.to_qty}">
 							
 							{{bulkBlock.from_qty}}<span ng-if="bulkBlock.to_qty!=99999">-{{bulkBlock.to_qty}}</span><span ng-if="bulkBlock.to_qty==99999">+</span>
 							<br />${{bulkBlock.price}}
 
-						</div>												
+						</div>
+
 					</div>
+
 				</div>
 			</div>
 			<div class="prddetailtotalamount">Total Cost</div>
-			<div class="prddetailpricedicnt">{{product.getPrice() | pricingTxt}}</div>
+			<div class="prddetailpricedicnt">
+				{{product.salePrice | pricingTxt}}
+				<span ng-if="product.price != product.salePrice">{{product.price | pricingTxt}}</span>
+			</div>
 
 			<div class="prddetailinstock" ng-if="product.quantity || product.outOfStockType == 2">
 			In Stock <not-available product="product"></not-available></div>

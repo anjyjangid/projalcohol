@@ -38,6 +38,7 @@ angular.module('AlcoholCartFactories', [])
 		var actionProPrice = 0;
 
 		angular.forEach(this.products, function (pro) {
+
 			price = price + (parseFloat(pro.product.price) * pro.quantity);
 		});
 
@@ -54,6 +55,7 @@ angular.module('AlcoholCartFactories', [])
 		this.strikePrice = strikePrice;
 
 		var currPrice = 0;
+
 		if(detail.actionType == 1){
 
 			 var qty = detail.giftQuantity;
@@ -64,28 +66,37 @@ angular.module('AlcoholCartFactories', [])
 
 			if(detail.discountType==1){
 
-				if(detail.actionProductId.count>0){
-					currPrice = actionProPrice - detail.discountValue;
-					currPrice = price - currPrice;
-				}else{
+				if(detail.actionProductId.length>0){
+
 					currPrice = price - detail.discountValue;
+					//currPrice = price - currPrice;
+
+				}else{
+
+					currPrice = price - detail.discountValue;
+
 				}
 
 
 			}else{
 
-				if(detail.actionProductId.count>0){
-					currPrice = actionProPrice - (actionProPrice * detail.discountValue / 100);
-					currPrice = price - currPrice;
+				if(detail.actionProductId.length>0){
+
+					currPrice = price - (actionProPrice * detail.discountValue / 100);
+
 				}else{
+
 					currPrice = price - (price * detail.discountValue / 100);
+
 				}
 
 			}
 
 		}
-
+		
+		this.totalDiscount = (parseFloat(price) - parseFloat(currPrice)).toFixed(2);
 		this.price = currPrice.toFixed(2);
+
 
 	};
 
