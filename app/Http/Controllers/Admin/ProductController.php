@@ -611,14 +611,19 @@ class ProductController extends Controller
 	}
 
 	public function getProductsearch(Request $request){
+
 		$params = $request->all();
+
 		if(!empty($params['categories']))
 			$params['categories'] = explode(',', $params['categories']);
 		$params['type'] = 0;
 		$result = (new Products)->fetchProducts($params);
 
+
+		$result = $result['products'];
+		
 		if(!empty($result['products'])){
-			$result = $result['products'];
+
 
 			foreach ($result as $key => &$product) {
 				$product['_id'] = (string)$product['_id'];

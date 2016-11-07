@@ -2629,4 +2629,4 @@ AlcoholDelivery.service('cartValidation',['alcoholCart', '$state', '$mdToast', f
 
 		return true;
 	}
-}])
+}]);

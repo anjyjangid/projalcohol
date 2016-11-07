@@ -698,3 +698,16 @@ md-radio-button:focus, .paymenttype:focus, .single-slot:focus {
 	width: auto;
 	height: 100px;	
 }
+
+.name-sale-tag{
+	background: #b119ff;
+	padding: 1px 6px;
+	color: #fff;
+	border-radius: 2px;
+	margin: 0;
+}
+
+tr.proSelected {
+    border-right: 2px solid #26a69a;
+    border-left: 2px solid #26a69a;
+}

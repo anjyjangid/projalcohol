@@ -142,9 +142,9 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		if(!$scope.cart || !$scope.cart[$scope.cart.orderType] || !$scope.cart[$scope.cart.orderType]._id){
 			return false;
 		}
-		else if(!$scope.cart.addresses || (!$scope.cart.addresses[$scope.cart.selectedAddress] && !$scope.cart.addresses[$scope.cart.selectedBilAddr])) {
-			return section=='address';
-		}
+		// else if(!$scope.cart.addresses || (!$scope.cart.addresses[$scope.cart.selectedAddress] && !$scope.cart.addresses[$scope.cart.selectedBilAddr])) {
+		// 	return section=='address';
+		// }
 		else
 			return true;
 	}
@@ -187,13 +187,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 		delete ob[prop];
 	}
-
-		$modal.open({
-			controller: "OrderPackageController",
-			templateUrl: '/adminviews/views/orders/order/searchpackage.html',
-		}).result
-		.then(function(answer) {
-		});
+		
 }])
 .controller('NewAddressModel',[ '$scope', '$modalInstance', 'NgMap', '$http', 'detail'
 , function($scope, $modalInstance, NgMap, $http, detail) {
@@ -259,10 +253,9 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	// Google map auto complete code ends //
 }])
 
-.controller('OrderProductsController',['$scope', '$http', '$timeout', '$mdDialog', 'alcoholCart', 'categoriesService', 'productFactory', '$q', '$modal'
-, function($scope, $http, $timeout, $mdDialog, alcoholCart, categoriesService, productFactory, $q, $modal){
-	angular.alcoholCart = alcoholCart;
-	angular.categoriesService = categoriesService;
+.controller('OrderProductsController',['$scope', '$http', '$timeout', '$mdDialog', 'alcoholCart', 'categoriesService', 'productFactory', 'AlcoholProduct', '$q', '$modal'
+, function($scope, $http, $timeout, $mdDialog, alcoholCart, categoriesService, productFactory, AlcoholProduct, $q, $modal){
+
 	$scope.alcoholCart = alcoholCart;
 	$scope.categories = {};
 	$scope.selectedproduct = "";
@@ -314,11 +307,19 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 					timeout: searchHttpTimeout.promise
 				})
 				.success(function(response) {
+
 					angular.forEach(response, function(value, key){
-						response[key] = new productFactory(value);
+						response[key] = new AlcoholProduct(value);
 					});
-					$scope.itemlist = response;
+
+					if(angular.isDefined(response[0])){
+						$scope.selected.product = response[0];
+						$scope.selected.index = 0;
+					}
+					
+					$scope.products = response;
 					$scope.searching = false;
+
 				});
 			}, 600);
 		}else{
@@ -327,6 +328,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		}
 	})
 	$scope.checkItem = function(){
+
 		if(!$scope.itemlist) return [];
 		return $scope.itemlist.filter(function(item){
 			if  (alcoholCart.getProductById(item._id)) {

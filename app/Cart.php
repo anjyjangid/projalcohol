@@ -1315,8 +1315,8 @@ class Cart extends Moloquent
 						
 						if(isset($currSale['action'])){
 
-							$currPrice = $actionProPrice - $currSale['discountValue'];
-							$currPrice = $price - $currPrice;
+							$currPrice = $price - $currSale['discountValue'];
+							//$currPrice = $price - $currPrice;
 
 						}else{
 
@@ -1328,8 +1328,7 @@ class Cart extends Moloquent
 					}else{
 
 						if(isset($currSale['action'])){
-							$currPrice = $actionProPrice - ($actionProPrice * $currSale['discountValue'] / 100);
-							$currPrice = $price - $currPrice;
+							$currPrice = $price - ($actionProPrice * $currSale['discountValue'] / 100);
 						}else{
 							$currPrice = $price - ($price * $currSale['discountValue'] / 100);
 						}
