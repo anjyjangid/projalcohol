@@ -3,7 +3,8 @@
 		<table>
 			<tr>
 				<!-- <td class="additempopuppinkboxleft">{{quantity}}</td> -->
-				<td class="additempopuppinkboxright">
+				<td align="left" class="additempopuppinkboxright">
+					<h4 ng-if="hideDelay == 0" class="pull-right closePopup" ng-click="hidePopup()">&times;</h4>
 					{{message}}					
 				</td>
 			</tr>

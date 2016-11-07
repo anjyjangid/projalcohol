@@ -83,7 +83,7 @@
 									</div>
 								</div>
 								<div class="row">
-									<div class="form-group col-md-6" ng-class="{'has-error':errors['address.'+$index+'.SEARCHVAL'][0]}">
+									<div class="form-group col-md-6" ng-class="{'has-error':errors['address.'+$index+'.SEARCHVAL'][0] || errors['address.'+$index+'.location'][0]}">
 										<label class="col-md-3 control-label">Location: <span class="required">* </span></label>
 										<div class="col-md-9">
 											<input type="text"
@@ -98,6 +98,7 @@
 												ng-model="detail.SEARCHVAL">
 											<!-- <input type="text" class="form-control" ng-model="detail.address" placeholder="" name="address"> -->
 											<span class="help-block" ng-bind="errors['address.'+$index+'.SEARCHVAL'][0]"></span>
+											<span class="help-block" ng-bind="errors['address.'+$index+'.location'][0]"></span>
 										</div>
 									</div>
 									<div class="form-group col-md-6">

@@ -15,21 +15,26 @@
 		<div>
 			<ul  class="currentorderpopupul" ng-scrollbars ng-scrollbars-config="scrollconfig" ng-scrollbars-update="updateScrollbar">			
 				<li ng-init="total = 0" ng-repeat="(id,sale) in alcoholCart.getSales()">					
-					<div ng-repeat="(id,productInSale) in sale.products">
+					<div ng-repeat="(id,productInSale) in sale.products">						
 						<div class="currentorderpopupulleft">{{productInSale.product.name}}</div>
 						<div class="currentorderpopupulcenter" ng-init="$parent.total = $parent.total + productInSale.quantity">{{productInSale.quantity}}</div>						
-						<div class="currentorderpopupulright">{{(productInSale.product.price*productInSale.quantity) | pricingTxt}}</div>
+						<div class="currentorderpopupulright" ng:class="{'strike-txt':!sale.action}">{{(productInSale.product.price*productInSale.quantity) | pricingTxt}}</div>
 					</div>
 					<div ng-repeat="(id,productInAction) in sale.action">
 						<div class="currentorderpopupulleft">{{productInAction.product.name}}</div>
 						<div class="currentorderpopupulcenter" ng-init="$parent.total = $parent.total + productInAction.quantity">{{productInAction.quantity}}</div>						
-						<div class="currentorderpopupulright">{{(productInAction.product.price*productInAction.quantity) | pricingTxt}}</div>
-					</div>					
-					<div>
+						<div class="currentorderpopupulright strike-txt">{{(productInAction.product.price*productInAction.quantity) | pricingTxt}}</div>
+					</div>	
+					<!-- <div>
+						<div class="currentorderpopupulleft">
+							<pre>{{sale|json}}</pre>
+						</div>
+					</div> -->				
+					<!-- <div>
 						<div class="currentorderpopupulleft">&nbsp;</div>
 						<div class="currentorderpopupulcenter">&nbsp;</div>
 						<div class="currentorderpopupulright strike-txt">{{sale.strikePrice | pricingTxt}}</div>
-					</div>
+					</div> -->
 					<div>
 						<div class="currentorderpopupulleft"><span class="saletag">{{sale.title.small}}</span></div>
 						<div class="currentorderpopupulcenter">&nbsp;<!-- {{total}} --></div>

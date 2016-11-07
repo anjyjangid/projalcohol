@@ -39,6 +39,7 @@ class BusinessRequest extends Request
                 $rules['address.'.$key.'.receiver_contact'] = 'required|regex:/[0-9]{10}/';
                 $rules['address.'.$key.'.SEARCHVAL'] = 'required';
                 $rules['address.'.$key.'.instruction'] = 'required';
+                $rules['address.'.$key.'.location'] = 'required';
             }
         }
 
@@ -81,6 +82,7 @@ class BusinessRequest extends Request
             $messages['address.'.$key.'.receiver_contact.regex'] = 'The Receiver\'s Contact Number is invalid.';
             $messages['address.'.$key.'.SEARCHVAL.required'] = 'The Location field is required.';
             $messages['address.'.$key.'.instruction.required'] = 'The Receiver\'s Instruction field is required.';
+            $messages['address.'.$key.'.location.required'] = 'Invalid address, please select a valid address from the list.';
         }
 
         // Do not need product Discount validation

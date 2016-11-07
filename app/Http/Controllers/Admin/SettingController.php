@@ -16,6 +16,8 @@ use AlcoholDelivery\Setting as Setting;
 
 use AlcoholDelivery\Libraries\GoogleCloudPrint\GoogleCloudPrint;
 
+use DB;
+
 class SettingController extends Controller
 {
     /**
@@ -80,44 +82,98 @@ class SettingController extends Controller
     **/
     public function getAuthorizeGoogleAccount(Request $request){
         // dd($request->all());
-        $googleObject  = new GoogleCloudPrint;
-        $url = GoogleCloudPrint::$urlconfig['authorization_url']."?".http_build_query(array_merge(GoogleCloudPrint::$redirectConfig,GoogleCloudPrint::$offlineAccessConfig));
-        return response(['success'=>true,'url'=>$url]);
+        $gcp = new GoogleCloudPrint();
+        $urlconfig = GoogleCloudPrint::$urlconfig;
+        $redirectConfig = GoogleCloudPrint::$redirectConfig;
+        $offlineAccessConfig = GoogleCloudPrint::$offlineAccessConfig;
+        $authConfig = GoogleCloudPrint::$authConfig;
+        $redirectConfig['redirect_uri'] = url('adminapi/setting/authorize-google-account');
+        $authConfig['redirect_uri'] = url('adminapi/setting/authorize-google-account');
+        $refreshTokenConfig = GoogleCloudPrint::$refreshTokenConfig;
 
-        if (isset($_GET['op'])) {
-            
-            if ($_GET['op']=="getauth") {
-                header("Location: ".$urlconfig['authorization_url']."?".http_build_query($redirectConfig));
-                exit;
-            }
-            else if ($_GET['op']=="offline") {
-                header("Location: ".$urlconfig['authorization_url']."?".http_build_query(array_merge($redirectConfig,$offlineAccessConfig)));
-                exit;
-            }
-        }
-
-        session_start();
-
-        // Google redirected back with code in query string.
         if(isset($_GET['code']) && !empty($_GET['code'])) {
             
             $code = $_GET['code'];
-            $authConfig['code'] = $code;
+            $authConfig['code'] = $code;            
             
             // Create object
-            $gcp = new GoogleCloudPrint();
-            $responseObj = $gcp->getAccessToken($urlconfig['accesstoken_url'],$authConfig);
-            
-            $accessToken = $responseObj->access_token;
+            $responseObj = $gcp->getAccessToken($urlconfig['accesstoken_url'],$authConfig);           
 
             // We requested offline access
             if (isset($responseObj->refresh_token)) {
-            header("Location: offlineToken.php?offlinetoken=".$responseObj->refresh_token);
-            exit;
+
+                $accessToken = $responseObj->access_token;
+                
+                $gcp->setAuthToken($accessToken);
+                $printers = $gcp->getPrinters();               
+
+                $tokenData = [
+                    'refresh_token' => $responseObj->refresh_token,
+                    'printers' => $printers,
+                    'setDefault' => 0
+                ];
+
+
+                DB::collection('printers')->raw()->remove([]);
+
+                DB::collection('printers')->insert($tokenData);
+                
+                /*header("Location: offlineToken.php?offlinetoken=".$responseObj->refresh_token);
+                exit;*/
+            }else{
+                
+                $printers = DB::collection('printers')->first();
+                
+                if($printers){
+
+                    $refreshTokenConfig['refresh_token'] = $printers['refresh_token'];
+
+                    $token = $gcp->getAccessTokenByRefreshToken($urlconfig['refreshtoken_url'],http_build_query($refreshTokenConfig));
+
+                    $gcp->setAuthToken($token);
+
+                    $printers = $gcp->getPrinters();
+
+                    $update = DB::collection('printers')->raw()->update([],['$set'=>['printers'=>$printers]]);
+
+                }
             }
-            $_SESSION['accessToken'] = $accessToken;
-            header("Location: example.php");
+
+            return redirect('/admin#/cloudprinters');
+            
+            /*$_SESSION['accessToken'] = $accessToken;
+            header("Location: example.php");*/
         }
+        
+
+        //return response($redirectConfig,400);
+
+        $url = $urlconfig['authorization_url']."?".http_build_query(array_merge($redirectConfig,$offlineAccessConfig));
+        return response(['success'=>true,'url'=>$url]);        
+
+        // Google redirected back with code in query string.
+        
+
+    }
+
+    public function getPrinterlist(Request $request){
+
+         $printers = DB::collection('printers')->first();
+         return response($printers);
+
+    }
+
+    public function postUpdate(Request $request){
+
+        $data = $request->all();
+
+        if(isset($data['setDefault'])){            
+            $update = DB::collection('printers')->raw()->update([],['$set'=>['setDefault'=>$data['setDefault']]]);
+            if($update)
+                return response('Updated successfully.',200);
+        }
+
+        return response('Error in saving printer detail',400);
 
     }
     

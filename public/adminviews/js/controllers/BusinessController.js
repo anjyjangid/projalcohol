@@ -65,8 +65,6 @@ MetronicApp.controller('BusinessUpdateController',['$rootScope', '$scope', '$tim
 
 	if($stateParams.businessid){
 		businessModel.getBusiness($stateParams.businessid).success(function(data){
-			console.log($stateParams.businessid);
-			
 			if(!data.products)
 				data.products = [];
 			$scope.business = data;
@@ -107,7 +105,7 @@ MetronicApp.controller('BusinessUpdateController',['$rootScope', '$scope', '$tim
 			//POST DATA WITH FILES
 			businessModel.storeBusiness(data).success(function(response){
 			}).error(function(data, status, headers){
-				$scope.errorss = data;
+				$scope.errors = data;
 			});
 		}
 	}

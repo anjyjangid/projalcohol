@@ -1091,3 +1091,10 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 .step-ratio[disabled] .step-individual {
     cursor: not-allowed;
 }
+.closePopup{
+	margin: 0;
+    position: absolute;
+    right: 8px;
+    top: 5px;
+    font-size: 20px;
+}

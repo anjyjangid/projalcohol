@@ -51,7 +51,7 @@
 									<span class="help-block" ng-bind="errors.longitude[0]"></span>
 								</div>
 							</div> -->
-							<div class="form-group" ng:class="{'has-error':errors.address[0]}">
+							<div class="form-group" ng:class="{'has-error':errors.address[0] || errors['address.location'][0]}">
 								<label class="col-md-2 control-label">Enter your postal code or location name: <span class="required">
 								* </span>
 								</label>
@@ -68,11 +68,11 @@
 										class="form-control"
 										ng-model="storeInfo.address">
 									<span class="help-block" ng-bind="errors.address[0]"></span>
-
+									<span class="help-block" ng-bind="errors['address.location'][0]"></span>
 								</div>
 							</div>									
 						</div>	
-
+						{{errors | json}}
 					</tab>
 											
 					<tab>
