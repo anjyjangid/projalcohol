@@ -40,7 +40,7 @@ button:disabled {
 
 
 .ro_pic .img-responsive-h{
-	height: 46px;
+	max-height: 46px;
 }
 
 .navbar .make-active {

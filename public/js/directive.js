@@ -101,6 +101,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.openMenu = function(){
 				angular.element('#wrapper').toggleClass('toggled');
+				angular.element('body').toggleClass(' hidden-scroll');
 			}
 			//FACEBOOK LOGIN
 			$scope.loginToggle = function() {
