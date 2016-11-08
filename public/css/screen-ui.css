@@ -2350,7 +2350,7 @@ ui-sref {
 .checkout-product {
 	width: 100%;
 	float: left;
-	padding: 20px 0px;
+	padding: 0px 0px 20px 0px;
 	border-bottom: 1px solid #e2e2e2;
 	/*border-top: 1px solid #e2e2e2;*/
 }

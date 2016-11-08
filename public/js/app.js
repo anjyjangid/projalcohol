@@ -1139,15 +1139,7 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService
 			
 		return product
 
-	};
-
-	$rootScope.prepareProductObjs = function(data){
-
-		var products = ProductService.prepareProductObjs(data);
-		
-		return products;
-
-	}
+	};	
 	
 
 
@@ -1164,40 +1156,18 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService
     });*/
 
 
-	$rootScope.$on('alcoholCart:promotionAdded', function(data,msg){
-
-		$mdToast.show(
-			$mdToast.simple()
-				.textContent(msg)
-				.highlightAction(false)
-				.position("top right fixed")
-				.hideDelay(4000)
-			);
-
-	});
-
-
-	$rootScope.$on('alcoholCart:promotionRemoved', function(data,msg){
-
-		$mdToast.show(
-			$mdToast.simple()
-				.textContent(msg)
-				.highlightAction(false)
-				.position("top right fixed")
-				.hideDelay(4000)
-			);
-
-	});
-
 	$rootScope.$on('alcoholCart:notify', function(data,msg){
 
-		$mdToast.show(
-			$mdToast.simple()
-				.textContent(msg)
-				.highlightAction(false)
-				.position("top right fixed")
-				.hideDelay(4000)
-			);
+		$mdToast.show({
+			controller:function($scope){
+
+				$scope.message = msg;
+			},
+			templateUrl: '/templates/toast-tpl/wishlist-notify.html',
+			parent : $document[0].querySelector('#cart-summary-icon'),
+			position: 'top center',
+			hideDelay:4000
+		});
 
 	});
 

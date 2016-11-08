@@ -105,16 +105,16 @@
 									
 									<ul class="orhistry2_td2procdtcvr list-inline sale-pro-list">
 
-										<div ng-repeat-start="sPro in sale.products" ng-init="b = [] ; b[sPro.quantity-1] = null" ng-hide="true"></div>
-											<li class="cursor-pointer" ng-repeat="a in b">
+										<div ng-repeat-start="sPro in sale.products" ng-hide="true"></div>
+											<li class="cursor-pointer" ng-repeat="a in sPro.productQtyArr">
 												<a ui-sref="mainLayout.product({product:sPro.product.slug})" title="View Product">
 													<img err-pro-src="" ng-src="products/i/200/{{sPro.product.image}}" alt="" class="img-responsive img-responsive-h" />
 												</a>
 											</li>
 										<div ng-repeat-end ng-hide="true"></div>
 
-										<div ng-repeat-start="sPro in sale.action" ng-init="b = [] ; b[sPro.quantity-1] = null" ng-hide="true"></div>
-											<li class="cursor-pointer" ng-repeat="a in b">
+										<div ng-repeat-start="sPro in sale.action" ng-hide="true"></div>
+											<li class="cursor-pointer" ng-repeat="a in sPro.productQtyArr">
 												<a ui-sref="mainLayout.product({product:sPro.product.slug})" title="View Product">
 													<img err-pro-src="" ng-src="products/i/200/{{sPro.product.image}}" alt="" class="img-responsive img-responsive-h" />
 												</a>
