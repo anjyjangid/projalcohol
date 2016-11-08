@@ -41,5 +41,33 @@ MetronicApp.factory('settingsModel', ['$http', '$cookies','$location', function(
 
     };
 
+    settingsModel.updatePrinter = function(postedData) {
+
+        return $http.post("/adminapi/setting/update", postedData, {
+                
+            }).error(function(data, status, headers) {            
+                Metronic.alert({
+                    type: 'danger',
+                    icon: 'warning',
+                    message: 'Please enter all required fields.',
+                    container: '.portlet-body',
+                    place: 'prepend',
+                    closeInSeconds: 3
+                });
+            })
+            .success(function(response) {               
+                
+                Metronic.alert({
+                    type: 'success',
+                    icon: 'check',
+                    message: 'Data has been updated successfully',
+                    container: '#info-message',
+                    place: 'prepend',
+                    closeInSeconds: 3
+                });
+            })
+
+    };
+
     return settingsModel;
 }])

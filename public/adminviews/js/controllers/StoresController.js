@@ -20,7 +20,7 @@ MetronicApp.controller('StoreFormController',[
 	
 	$scope.errors = {};	
 
-	$scope.storeInfo = {};
+	$scope.storeInfo = {};	
 
 	if($stateParams.storeId){
 
@@ -68,7 +68,7 @@ MetronicApp.controller('StoreFormController',[
 
 	$scope.searchLocation = function(q){
 		return $http.get('/site/search-location', {params: {q}})
-		.then(function(res){
+		.then(function(res){			
 			return res.data;
 		});
 	}

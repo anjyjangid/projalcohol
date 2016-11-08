@@ -1,6 +1,8 @@
 'use strict';
 
-MetronicApp.controller('SettingsController',['$rootScope', '$scope', '$timeout','$http','$state','settingsModel', function($rootScope, $scope, $timeout,$http,$state,settingsModel) {
+MetronicApp.controller('SettingsController',[
+	'$rootScope', '$scope', '$timeout','$http','$state','settingsModel', 
+	function($rootScope, $scope, $timeout,$http,$state,settingsModel) {
 	
     $scope.$on('$viewContentLoaded', function() {   
         Metronic.initAjax(); // initialize core components
@@ -35,14 +37,7 @@ MetronicApp.controller('SettingsController',['$rootScope', '$scope', '$timeout',
 
 	$scope.popt = ['Fixed Amount','% Amount'];
 	
-	//To authroize google account and get cloud priters access token
-	$scope.authorizeGoogleAccount = function(){
-		$http.post("/adminapi/setting/authorize-google-account/").success(function(success){
-			if(success.success){
-				window.open(success.url,500,500);
-			}
-		});
-	}
+	
 
 }]);
 
@@ -81,5 +76,30 @@ MetronicApp.controller('SettingFormController',['$rootScope', '$scope', '$timeou
 	$scope.reset = function() {
 		$scope.settings = angular.copy($scope.master);
 	};
+
+}]);
+
+MetronicApp.controller('SettingPrinterController',['$rootScope', '$scope', '$timeout','$http','$state','settingsModel', function($rootScope, $scope, $timeout,$http,$state,settingsModel) {
+	//To authroize google account and get cloud priters access token
+	$scope.authorizeGoogleAccount = function(){
+		$http.get("/adminapi/setting/authorize-google-account/").success(function(response){
+			if(response.success){
+				
+				//$sce.trustAsResourceUrl(response.url);
+				window.location.href = response.url;
+				//window.open(success.url,500,500);
+			}
+		});
+	}
+
+	$scope.printers = [];
+
+	$http.get("/adminapi/setting/printerlist/").success(function(response){
+		$scope.printerData = response;		
+	});
+
+	$scope.update = function(){
+		settingsModel.updatePrinter($scope.printerData);		
+	}
 
 }]);

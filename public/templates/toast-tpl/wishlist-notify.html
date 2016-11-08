@@ -3,7 +3,9 @@
 		<table class="full-width">
 			<tr>
 				<!-- <td class="additempopuppinkboxleft">{{quantity}}</td> -->
-				<td class="additempopuppinkboxright text-center">
+				<td align="left" class="additempopuppinkboxright text-center">
+					<h4 ng-if="hideDelay == 0" class="pull-right closePopup" ng-click="hidePopup()">&times;</h4>
+
 					{{message}}					
 				</td>
 			</tr>

@@ -1282,7 +1282,7 @@ AlcoholDelivery.controller('CartAddressController',[
 			var deliveryPostalCode = $scope.delivery.address.detail.PostalCode.substr(0,2);
 			if(alcoholCart.getApplicablePostalCodes().indexOf(deliveryPostalCode)==-1){
 				alcoholCart.setExpressStatus(0);
-				$rootScope.$broadcast('alcoholWishlist:change', {message:"We regret to inform you that the Express Delivery service does not cover your delivery area. Please read the Terms & Conditions for more information.",hideDelay:50000});
+				$rootScope.$broadcast('alcoholWishlist:change', {message:"We regret to inform you that the Express Delivery service does not cover your delivery area. Please read the Terms & Conditions for more information.",hideDelay:0,targId:'cart-summary-icon'});
 				// $rootScope.$broadcast('alcoholCart:notify',"We regret to inform you that the Express Delivery service does not cover your delivery area. Please read the Terms & Conditions for more information.");
 			}
 		}

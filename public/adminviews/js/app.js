@@ -2162,7 +2162,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 			},
 			resolve: {
 	            authenticate: authenticate
-	        }
+	        },
+	        controller:'SettingPrinterController'
 	    })
 
         .state('userLayout.promotion', {

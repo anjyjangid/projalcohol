@@ -1225,16 +1225,25 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService
 	});
 
 	$rootScope.$on('alcoholWishlist:change', function(object,params){
-		var def = 3000;
-		if(params.hideDelay)
+		var def = 5000;
+		var targId = 'usermenuli';
+		if(angular.isDefined(params.hideDelay))
 			def = params.hideDelay;
+		if(angular.isDefined(params.targId))
+			targId = params.targId;		
+
 		$mdToast.show({
 			controller:function($scope){
 
 				$scope.message = params.message;
+				$scope.hideDelay = params.hideDelay;
+
+				$scope.hidePopup = function(){
+					$mdToast.hide();	
+				}
 			},
 			templateUrl: '/templates/toast-tpl/wishlist-notify.html',
-			parent : $document[0].querySelector('#usermenuli'),
+			parent : $document[0].querySelector('#'+targId),
 			position: 'top center',
 			hideDelay:def
 		});
