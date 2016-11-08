@@ -1098,3 +1098,46 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
     top: 5px;
     font-size: 20px;
 }
+md-virtual-repeat-container {
+  height: 50vh;
+  min-height: 50vh;
+  max-height: 50vh;
+}
+
+.md-autocomplete-suggestions-container .md-autocomplete-suggestions li {
+  line-height: inherit;
+  height: auto;
+}
+
+.procatname{
+	color: #666666;
+}
+
+.nomargin{
+	margin:0px;
+}
+
+.nopad{
+	padding: 0px;
+}
+
+.md-autocomplete-suggestions-container.md-default-theme li:hover, 
+.md-autocomplete-suggestions-container li:hover, 
+.md-autocomplete-suggestions-container.md-default-theme li.selected, 
+.md-autocomplete-suggestions-container li.selected{
+	background: none;
+}
+
+button.detailwishbut{
+	padding: 6px;
+	line-height: 0;
+}
+
+.detailwish .add-wishlist-icondiv{
+	display: block;
+}
+
+.detailwish .wishlist{
+	left: 15px;
+	min-width: auto;
+}

@@ -5,7 +5,24 @@
 <div class="productdetailcovermainbgimg">
 <div class="row">
 	<div class="col-xs-12 col-sm-6 col-md-6" ng-class="{comboproductitems_outofstock:{{!product.quantity}}}">
+		<!-- <div class="prddetailnormaltext">
+			<button title="{{isInwishList?'Added to Wishlist':'Add to Wishlist'}}" class="btn btn-default btn-purple detailwishbut" ng-click="isInwishList?myWish():addToWishlist(0); $event.stopPropagation();">
+				<img src="images/add-wish-icon.png" /> 
+				<span ng-bind="isInwishList?'Added to Wishlist':'Add to Wishlist'"></span>
+			</button>
+		</div> -->
 
+		<div class="add-bulk-iner-widthset detailwish">
+			<div class="add-icon-main" ng-click="isInwishList?myWish():addToWishlist(0); $event.stopPropagation();">
+
+				<div class="add-wishlist-icondiv"><img src="images/add-wish-icon.png" /></div>
+
+				<div class="wishlist_discount">
+					<div class="wishlist" ng-bind="isInwishList?'Added to Wishlist':'Add to Wishlist'"></div>
+				</div>
+
+			</div>
+		</div>
 		<data-owl-carousel class="owl-carousel owluperpartcover" data-options="parentOwlOptions" ng-model="sync1">
 
 				<img err-pro-src="" ng-src="products/i/400/{{image.source}}" alt="" class="img-responsive img-responsive-h"  owl-carousel-item="" ng-repeat="image in product.imageFiles" class="item"/>
@@ -16,7 +33,9 @@
 
 				<img err-pro-src="" ng-src="products/i/200/{{image.source}}" alt="" class="img-responsive img-responsive-h" ng-click="syncClick($index)" owl-carousel-item ng-repeat="image in product.imageFiles" class="item"/>
 											
-		</data-owl-carousel>            
+		</data-owl-carousel> 
+
+		<div class="prddetailnormaltext">{{product.description}}</div>           
 	</div>
 	<div class="col-xs-12 col-sm-6 col-md-6 product-detail-right-set" ng:class="{'has-sale-div':product.sale || product.nameDetailSale}">
 		<div class="prddetailtitle">{{product.name}} </div>
@@ -43,13 +62,13 @@
 			</div>
 			</div>
 			<div class="prddetailsubexttitle">{{product.shortDescription}}</div>
-			<div class="prddetailnormaltext">{{product.description}}</div>
-			<div class="prddetailnormaltext">
+			<!-- <div class="prddetailnormaltext">{{product.description}}</div> -->
+			<!-- <div class="prddetailnormaltext">
 				<button class="btn btn-default btn-purple" ng-click="isInwishList?myWish():addToWishlist(0); $event.stopPropagation();">
 					<img src="images/add-wish-icon.png" /> 
 					<span ng-bind="isInwishList?'Added to Wishlist':'Add to Wishlist'"></span>
 				</button>
-			</div>
+			</div> -->
 			
 			<div class="prddetailchilledcover text-noselect" ng-if="product.chilled && (product.quantity || product.outOfStockType == 2)" >
 				<div class="prodchilled-btn" ng-class="{'active':product.servechilled}" ng-click="product.servechilled=1">
