@@ -53,7 +53,7 @@
 			<not-available product="productInfo"></not-available>
 		</div>
 
-		<div ng-if="!productInfo.promo || promotion.inCart">
+		<div ng-if="!productInfo.promo">
 			<div class="prod_price"><span ng-if="productInfo.price != productInfo.salePrice">{{productInfo.price | pricingTxt}}</span></div>
 			<div class="prod_discout_price" ng-if="!loyalty">{{productInfo.salePrice | pricingTxt}}</div>
 			<div class="prod_discout_price" ng-if="loyalty">
@@ -64,19 +64,21 @@
 			</div>
 		</div>
 
-		<div ng-if="productInfo.promo && !promotion.inCart">
+		<div ng-if="productInfo.promo">
+			<div class="prod_price">{{productInfo.unDiscountedPrice | pricingTxt}}</div>
 			<div class="prod_discout_price">{{productInfo.promo.price | pricingTxt:true}}</div>
 		</div>
 	</a>
 	</div>
 	<div class="prod_addtocart" ng-if="productInfo.addBtnAllowed">
 		
-		<button class="checkoutproductbutton" ng-if="productInfo.promo && !promotion.inCart" ng-click="alcoholCart.addPromo(promotion._id,productInfo._id,$event)">Add Promo</button>
+		<button class="checkoutproductbutton" ng-if="productInfo.promo && !promotion.inCart" ng-click="alcoholCart.addPromo(promotion._id,productInfo._id,productInfo.servechilled,$event)">Add Promo</button>
+		<button class="checkoutproductbutton in-active" ng-if="productInfo.promo && promotion.inCart">Already Added</button>
 
 		<add-to-cart-btn 
 				ng-class="{'disabled': productInfo.notSufficient}" 
 				product="productInfo" 
-				ng-if="promotion.inCart || !productInfo.promo && (productInfo.quantity || productInfo.outOfStockType == 2)"
+				ng-if="!productInfo.promo && (productInfo.quantity || productInfo.outOfStockType == 2)"
 		>
 		</add-to-cart-btn>
 

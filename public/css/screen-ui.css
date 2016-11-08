@@ -1580,7 +1580,7 @@ ui-sref {
 	font-weight: 600;
 }
 .orderhistry2price {
-	float: left;
+	float: right;
 	color: #000000;
 	font-weight: 500;
 	font-size: 18px;
@@ -2350,7 +2350,7 @@ ui-sref {
 .checkout-product {
 	width: 100%;
 	float: left;
-	padding: 20px 0px;
+	padding: 0px 0px 20px 0px;
 	border-bottom: 1px solid #e2e2e2;
 	/*border-top: 1px solid #e2e2e2;*/
 }
@@ -6430,7 +6430,7 @@ a.core-block{
 .yellow-tag {
     bottom: 52px;
     left: 0;
-    position: absolute;
+    margin-right:5px;
 }
 
 
@@ -6623,4 +6623,61 @@ button:hover{
 
 .transparent-bg{
 	background-color:transparent !important;
+}
+.bordernone{
+	border:none !important;
+}
+.borde-subtotal{
+	border-right:1px solid #ddd !important;
+}
+.chekoutstep5-table{
+	width:100%;
+	float:left;
+}
+.chekoutstep5-table .checkoutstep5-left-first{
+	padding:0px;
+}
+.chekoutstep5-table table td{
+	padding: 14px 10px 13px !important;
+}
+.chekoutstep5-table .checkoutstep5-left-first-left{
+	width:100%;
+}
+.chekoutstep5-table .checkoutstep5right-middle-title {
+	float:right;
+	width:auto;
+}
+.chekoutstep5-table .checkoutstep5right-bottom-title {
+	float:right;
+	width:auto;
+}
+.chekoutstep5-table .prod_chilled,.checkoutmiddletable .prod_chilled{
+	margin-bottom:0px;
+}
+.chekoutstep5-table .new-img{
+	display: inline-block;
+    max-height: 50px !important;
+    vertical-align: top;
+}
+.listimgborder{
+	 float: left;
+    padding: 0 5px;
+    width: 70px;
+}
+.listimgborder span {
+    border: 1px solid #dddddd;
+    float: left;
+    height: 57px;
+    text-align: center;
+    vertical-align: middle;
+    width: 100%;
+	position:relative;
+}
+.listimgborder span img{
+	position:absolute;
+	top:0px;
+	bottom:0px;
+	left:0px;
+	right:0px;
+	margin:auto;
 }

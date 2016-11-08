@@ -179,6 +179,8 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::put('chilledstatus/{cartkey}','CartController@updateProductChilledStatus');
 
+	Route::put('promoChilledStatus/{cartkey}','CartController@updatePromoChilledStatus');
+	
 	Route::post('package/{cartKey}','CartController@postPackage');
 
 	Route::put('package/{uid}/{cartKey}','CartController@putPackage');

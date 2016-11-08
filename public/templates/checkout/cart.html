@@ -12,14 +12,16 @@
 		<table class="table cart-table">
 			<tbody>
 
-				<tr ng-repeat="(key, sale) in alcoholCart.getSales()">
+				<tr ng-repeat="sale in alcoholCart.getSales()">
 
 					<td width="52%">
 						
 						<ul class="orhistry2_td2procdtcvr list-inline sale-pro-list">
 
-							<div ng-repeat-start="sPro in sale.products" ng-init="b = [] ; b[sPro.quantity-1] = null" ng-hide="true"></div>
-								<li class="cursor-pointer" ng-repeat="a in b">
+							<div ng-repeat-start="sPro in sale.products" ng-hide="true"></div>
+
+								<li class="cursor-pointer" ng-repeat="a in sPro.productQtyArr">
+
 									<a ui-sref="mainLayout.product({product:sPro.product.slug})" title="View Product">
 										<img err-pro-src="" ng-src="products/i/200/{{sPro.product.image}}" alt="" class="img-responsive img-responsive-h" />
 									</a>
@@ -27,8 +29,11 @@
 								</li>
 							<div ng-repeat-end ng-hide="true"></div>
 
-							<div ng-repeat-start="sPro in sale.action" ng-init="b = [] ; b[sPro.quantity-1] = null" ng-hide="true"></div>
-								<li class="cursor-pointer" ng-repeat="a in b">
+							<li ng-if="sale.action.length" class="sale-action-add-icon">
+								<table><tr><td>+</td></tr></table>
+							</li>
+							<div ng-repeat-start="sPro in sale.action" ng-hide="true"></div>
+								<li class="cursor-pointer" ng-repeat="a in sPro.productQtyArr">
 									<a ui-sref="mainLayout.product({product:sPro.product.slug})" title="View Product">
 										<img err-pro-src="" ng-src="products/i/200/{{sPro.product.image}}" alt="" class="img-responsive img-responsive-h" />
 									</a>																		
@@ -51,7 +56,8 @@
 
 					</td>
 					<td>
-						<div class="orderhistry2price">{{sale.price | pricingTxt}}</div>
+
+						<div class="orderhistry2price"><span class="strike-txt-only">{{sale.strikePrice | pricingTxt}}</span><br>{{sale.price | pricingTxt}}</div>
 					</td>
 					<td> 
 						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="removeSale(sale)"><i class="glyphicon glyphicon-trash"></i></a>
@@ -288,7 +294,7 @@
 						<div class="orhistry2_td2procdtcvr">
 							<span>
 								<a ui-sref="mainLayout.product({product:promotion.product.slug})">
-									<img err-pro-src="" ng-src="products/i/200/{{promotion.product._image}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" />
+									<img err-pro-src="" ng-src="products/i/200/{{promotion.product._image}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="icon" class="img-responsive" />
 								</a>
 							</span>
 
@@ -299,10 +305,25 @@
 							</div> 
 						</div>
 					</td>
-					<td></td>
+					<td width="131px">
+
+						<div class="prod_chilled" ng-class="{
+						notchilled:!promotion.chilled || cart.nonchilled,
+						invisible:!promotion.product._isChilledAllowed
+
+						}"
+						ng-click="alcoholCart.promoChilledStatus(promotion._id)">
+						<span>Chilled</span>
+						<div class="prod_chilled_icon"></div>
+						</div>
+
+					</td>
 					<td></td>
 					<td>
-						<div class="orderhistry2price">{{promotion.product._price | pricingTxt:true}}</div>
+						<div class="orderhistry2price">
+							<span class="strike-txt-only">{{promotion.product.unDiscountedPrice | pricingTxt}}</span>
+							{{promotion.product._price | pricingTxt:true}}
+						</div>
 
 					</td>
 					<td> 
@@ -469,7 +490,7 @@
 
 		</div>
 		<div class="checkouterexpressdiv">
-			<div class="checkouterexpresstitle">Express Delivery <span class="checkouterexpresstext">(Gauranteed 30 mins delivery)</span></div>
+			<div class="checkouterexpresstitle">Express Delivery <span class="checkouterexpresstext">(Guaranteed 30 mins delivery)</span></div>
 			
 			<div class="checkouterexpresstext">{{cart.service.express.charges | pricingTxt}} surcharge applies. <a ui-sref="cmsLayout.terms-conditions">Terms &amp; Conditions</a> applies.</div>	
 		</div>

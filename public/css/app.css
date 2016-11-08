@@ -40,7 +40,7 @@ button:disabled {
 
 
 .ro_pic .img-responsive-h{
-	height: 46px;
+	max-height: 46px;
 }
 
 .navbar .make-active {
@@ -556,6 +556,11 @@ md-toast.promo-notqualified-toast:before {
 	cursor: not-allowed;
 }
 
+button.checkoutproductbutton.in-active{
+	background-color: #CDCDCD;
+	cursor: not-allowed;
+}
+
 .page-not-found{
 	font-weight: 100;
 	font-family: 'Lato';
@@ -985,8 +990,27 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 }
 
 .sale-pro-list li{
-	width: 100px;
-	height: 100px;
+	width: 60px;
+    height: 60px;
+    /*border: 1px solid #ccc;*/
+    margin: 0 4px;
+    padding: 5px;
+}
+
+.sale-pro-list li.sale-action-add-icon table {
+    height: 100%;
+    vertical-align: middle;
+    font-size: 1.5em;
+}
+
+.sale-pro-list li.sale-action-add-icon table td{
+	padding: 0 !important;
+}
+
+.sale-pro-list li.sale-action-add-icon {
+    display: inline-block;
+    vertical-align: top;
+    width: auto;
 }
 
 .saletag, .saletag:hover{	
@@ -1005,7 +1029,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
     border-bottom: 8px solid transparent;
     border-right: 7px solid #aa00ff;
 }
-.strike-txt{
+.strike-txt,.strike-txt-only{
     text-decoration: line-through;
 }
 
@@ -1090,6 +1114,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 
 .step-ratio[disabled] .step-individual {
     cursor: not-allowed;
+
 }
 .closePopup{
 	margin: 0;

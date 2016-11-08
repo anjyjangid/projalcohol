@@ -13,6 +13,8 @@
 </div>
 		<div class="checkoutmiddletable">
 		<div class="chekoutstep5-table-title">List of item odered</div>
+        <div class="chekoutstep5-table">
+        <div class="table-responsive">
 		<table class="table">
 
 		<tbody>
@@ -25,7 +27,7 @@
 						<div class="col-md-3" ng-repeat="packageproducts in cartproduct.products">
 							<span class="cursor-pointer">
 								<a ui-sref="mainLayout.product({product:packageproducts.slug})" title="View Product">
-									<img alt="{{packageproducts.name}}" err-pro-src="" ng-src="products/i/200/{{packageproducts.coverImage}}" alt="" class="img-responsive img-responsive-h"/>
+									<img alt="{{packageproducts.name}}" err-pro-src="" ng-src="products/i/200/{{packageproducts.coverImage}}" class="img-responsive img-responsive-h "/>
 								</a>
 							</span>							
 						</div>	
@@ -34,7 +36,7 @@
 					<div class="orhistry2_td2procdtcvr">
 						<span class="cursor-pointer" ng-if="cartproduct.category != 'saleproduct'">
 							<a ui-sref="mainLayout.product({product:cartproduct.slug})" title="View Product">
-								<img err-pro-src="" ng-src="products/i/200/{{cartproduct.coverImage}}" alt="" class="img-responsive img-responsive-h" />
+								<img err-pro-src="" ng-src="products/i/200/{{cartproduct.coverImage}}" alt="" class="img-responsive img-responsive-h " />
 							</a>
 						</span>
 						<div class="checkouter-td-right-text">
@@ -47,10 +49,10 @@
 					</div>
 
 					<div ng-if="cartproduct.category != 'saleproduct' && cartproduct.products.length">
-						<div class="col-md-3" ng-repeat="packageproducts in cartproduct.products">
+						<div class="col-md-3 listimgborder" ng-repeat="packageproducts in cartproduct.products">
 							<span class="cursor-pointer">
 								<a ui-sref="mainLayout.product({product:packageproducts.slug})" title="View Product">
-									<img alt="{{packageproducts.name}}" err-pro-src="" ng-src="products/i/200/{{packageproducts.coverImage}}" alt="" class="img-responsive img-responsive-h"/>
+									<img alt="{{packageproducts.name}}" err-pro-src="" ng-src="products/i/200/{{packageproducts.coverImage}}" class="img-responsive img-responsive-h new-img"/>
 								</a>
 							</span>							
 						</div>	
@@ -97,11 +99,115 @@
 
 				</td>
 			</tr> -->
+            <tr>
+              <td colspan="1"  width="64%">
+               <div class="checkoutstep5-left-first bordernone">
+			 <div class="checkoutstep5-left-first-left">
+				 <div class="checkoutstep5-left-first-lefttext">Delivery Address</div>
+				 <div class="checkoutstep5-left-first-lefttitle">
+				 	<span ng-bind="address.detail.house"></span> 
+				 	<span ng-bind="address.detail.HBRN"></span>, 
+				 	<div ng-if="address.detail.FLOOR || address.detail.FLOOR">
+						<span ng-if="address.detail.FLOOR">#{{address.detail.FLOOR}} - </span> <span ng-if="address.detail.UNIT">{{address.detail.UNIT}}</span>
+					</div>
+				 	Singapore - <span ng-bind="address.detail.PostalCode"></span>
+				 </div>
+			 </div>
+
+		 </div>
+              </td>
+              <td class="bordernone" colspan="2">
+               <div class="checkoutstep5right-middle-title">Subtotal </div>
+              </td>
+              <td class="bordernone">
+               <div class="checkboxtotaldiv-text">{{order.payment.subtotal | currency:settings.general.currency:2}}</div>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="1"  width="64%">
+               <div class="checkoutstep5-left-first bordernone" ng-if="order.delivery.type==1">
+			 <div class="checkoutstep5-left-first-left">
+				 <div class="checkoutstep5-left-first-lefttext">Delivery Time</div>
+				 <div class="checkoutstep5-left-first-lefttitle">{{order.timeslot.datekey | deliveryDateSlug}}, between {{order.timeslot.slotslug}}</div>
+			 </div>
+
+		 </div>
+              </td>
+              <td class="bordernone" colspan="2">
+               <div class="checkoutstep5right-middle-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
+              </td>
+              <td class="bordernone">
+               <div class="checkboxtotaldiv-text">{{order.delivery.charges | pricingTxt}}</div>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="1"  width="64%">
+               <div class="checkoutstep5-left-first bordernone">
+			 <div class="checkoutstep5-left-first-left">
+				 <div class="checkoutstep5-left-first-lefttext">Payment</div>
+				 <div class="checkoutstep5-left-first-lefttitle">
+				 {{(cart.payment.method == 'COD')?'Cash on delivery':'Credit/Debit Card'}}
+				 </div>
+			 </div>
+
+		 </div>
+              </td>
+              <td class="bordernone" colspan="2">
+               <div class="checkoutstep5right-middle-title">Service Charge <span class=""><img src="images/questionimg.png"></span></div>
+              </td>
+              <td class="bordernone">
+               <div class="checkboxtotaldiv-text">{{order.service.total | pricingTxt}}</div>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="1"  width="64%">
+               <div class="checkoutstep5-left-first bordernone">
+			 <div class="checkoutstep5-left-first-left">
+				 <div class="checkoutstep5-left-first-lefttext">Delivery mode</div>
+
+				 <div class="checkoutstep5-left-first-lefttitle" ng-if="order.delivery.type==0">
+				 	{{ (order.service.express.status)?'Express Delivery (Gauranteed 30 mins delivery)':'Standard 1hr Delivery'}}
+				 	<span class=""><img src="images/questionimg.png"></span>
+				 </div>
+				 <div class="checkoutstep5-left-first-lefttitle" ng-if="order.delivery.type==1">Advance Delivery<span class=""><img src="images/questionimg.png"></span></div>
+
+			 </div>
+
+		 </div>
+              </td>
+              <td class="bordernone" colspan="2">
+               <div class="checkoutstep5right-middle-title" >Discount (Non-Chilled) <span class=""><img src="images/questionimg.png"></span></div>
+              </td>
+              <td class="bordernone">
+               <div class="checkboxtotaldiv-text" ng-class="{txtcross:!order.nonchilled}">-{{services.chilled | currency:settings.general.currency:2}}</div>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="1"  width="64%">
+               <div class="checkoutstep5-left-first bordernone" ng-if="order.service.smoke.status">
+			 <div class="checkoutstep5-left-first-left">
+
+				 <div class="checkoutstep5-left-first-lefttext">Smoke detail</div>
+				 <div class="checkoutstep5-left-first-lefttitle">{{order.service.smoke.detail}}</div>
+
+			 </div>
+
+		 </div>
+              </td>
+              <td class="bordernone" colspan="2">
+               <div class="checkoutstep5right-bottom-title">Total</div>
+              </td>
+              <td class="bordernone">
+               <div class="checkoutstep5right-bottom-text">{{order.payment.total | currency:settings.general.currency:2}}</div>
+              </td>
+            </tr>
 		</tbody>
 		</table>
+        </div>
+        </div>
 		</div>
 
-<div class="checkoutstep5-mid-top">
+<!--<div class="checkoutstep5-mid-top">
 	<div class="row">
 	 <div class="col-md-7 col-sm-6 col-xs-12 checkoutstep5-mid-left">
 		 <div class="checkoutstep5-left-first">
@@ -187,4 +293,4 @@
 			</div>
 		</div>
 	</div>
- </div>				
+ </div>				-->
