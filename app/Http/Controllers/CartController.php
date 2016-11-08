@@ -934,6 +934,8 @@ class CartController extends Controller
 
 		$promoId = $request->input('promoId');
 
+		$chilled = $request->input('chilled');
+
 		$cart = Cart::find($cartKey);
 
 		if(empty($cart)){
@@ -981,7 +983,8 @@ class CartController extends Controller
 
 		$promoToInsert = [
 			"productId" => $productId,
-			"promoId" => $promoId
+			"promoId" => $promoId,
+			"chilled" => $chilled===true?1:0
 		];
 
 		$cartPromotion = array_merge([$promoToInsert],$cartPromotion);
@@ -1146,6 +1149,27 @@ jprd($product);
 		}
 
 	}
+
+	public function updatePromoChilledStatus(Request $request,$cartKey){
+		
+		$promoId = $request->input('id');
+		$chilled = $request->input('chilled');				
+
+		try{
+
+			$cart = Cart::where("_id",$cartKey)
+					->where("promotions.promoId",$promoId)										
+					->update(["promotions.$.chilled"=>$chilled]);
+			
+			return response(["message"=>"status changed"],200);
+
+		}catch(\Exception $e){
+
+			return response(["message"=>$e->getMessage()],400);
+
+		}
+
+	}	
 
 	public function putGiftProductChilledStatus(Request $request,$giftUid){
 		
@@ -1686,8 +1710,8 @@ jprd($product);
 
 		}
 
-		//$cartArr['user'] = new MongoId($user->_id);
-		$cartArr['user'] = new MongoId("57c422d611f6a1450b8b456c");//for testing on postman
+		$cartArr['user'] = new MongoId($user->_id);
+		//$cartArr['user'] = new MongoId("57c422d611f6a1450b8b456c");//for testing on postman
 
 		$cartProductsArr = [];
 

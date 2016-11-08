@@ -34,6 +34,21 @@ class StoreRequest extends Request
             'metaDescription' => 'required|max:150',
             'email' => 'required|email',
             'telephone' => 'required|numeric',
+            'address.location' => 'required'
         ];
+
+    }
+
+    public function messages()
+    {
+
+        $messages = [
+
+                'address.location.required' => 'Invalid address, please select a valid address from the list',
+
+        ];
+            
+        return $messages;
+
     }
 }

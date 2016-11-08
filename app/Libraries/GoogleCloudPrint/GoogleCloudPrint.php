@@ -52,13 +52,13 @@ class GoogleCloudPrint {
 	    'access_type' => 'offline'
 	);
 	
-	// public static $refreshTokenConfig = array(
+	public static $refreshTokenConfig = array(
 	    
-	//     'refresh_token' => "1/KvzDzQy0n9GYSTdGaYYPJfDnpvVdgSi7ZP1NdBUekH6j0TpBnIAjcGD-QugLxcGK",
-	//     'client_id' => $authConfig['client_id'],
-	//     'client_secret' => $authConfig['client_secret'],
-	//     'grant_type' => "refresh_token" 
-	// );
+	    'refresh_token' => "1/KvzDzQy0n9GYSTdGaYYPJfDnpvVdgSi7ZP1NdBUekH6j0TpBnIAjcGD-QugLxcGK",
+	    'client_id' 	=> '560402887297-6mkdppgijfmi5gv6fvlfe41hn2dubkpk.apps.googleusercontent.com',
+	    'client_secret' => 'JFxHeUKmsu9kv4Syr4XyTs_d',
+	    'grant_type' => "refresh_token" 
+	);
 	
 	public static $urlconfig = array(	
 	    'authorization_url' 	=> 'https://accounts.google.com/o/oauth2/auth',

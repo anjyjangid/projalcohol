@@ -1,18 +1,45 @@
-<!-- BEGIN MAIN CONTENT -->
+<!-- BEGIN MAIN CONTENT -->	
 <div class="row">
 	<div class="col-md-12">		
 		<!-- Begin: life time stats -->
 		<div class="portlet light">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="icon-handbag"></i>{{$state.$current.data.pageTitle}}
+					<i class="icon-printer"></i>{{$state.$current.data.pageTitle}}
 				</div>
 				<div class="actions">
 					<button type="button" class="btn default yellow-stripe" ng-click="authorizeGoogleAccount();">
-						<span class="hidden-480">Authorize Google Account</span>
+						<i class="{{(printerData.printers.length)?'fa fa-refresh':'fa fa-plus'}}"></i>
+						<span class="hidden-480">
+							{{(printerData.printers.length)?'Refresh printer list':'Add cloud printer(s)';}}
+						</span>
 					</button>					
 				</div>
 			</div>
+			<form role="form" ng-submit="update()" required="false">
+				<div class="portlet-body">
+					<div ng-if="printerData.printers.length">
+						<h4>Choose printer for automated printing.</h4>
+						<div class="row static-info" ng-repeat="(pk,printer) in printerData.printers">
+							<div class="col-md-5 name">
+								 <label>
+								 <input plugin-uniform type="radio" name="printer" ng-model="printerData.setDefault" ng-value="{{pk}}"> 
+								 <b>{{printer.name}}</b>
+								 </label>							 
+							</div>
+							<div class="col-md-7 value">
+							</div>
+						</div>
+					</div>
+					<div align="center" ng-if="printerData.printers.length == 0">
+						<h4>No printer(s) connected. Please click on "Add cloud printer(s)" to add printer(s) from google cloud</h4>
+					</div>					
+				</div>
+				<button ng-disabled="loading" class="btn green" type="submit">
+					<i class="fa fa-check"></i>Update
+				</button>					
+			</form>
+			
 		</div>
 		<!-- End: life time stats -->
 	</div>

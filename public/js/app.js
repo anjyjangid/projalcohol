@@ -1139,15 +1139,7 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService
 			
 		return product
 
-	};
-
-	$rootScope.prepareProductObjs = function(data){
-
-		var products = ProductService.prepareProductObjs(data);
-		
-		return products;
-
-	}
+	};	
 	
 
 
@@ -1164,40 +1156,18 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService
     });*/
 
 
-	$rootScope.$on('alcoholCart:promotionAdded', function(data,msg){
-
-		$mdToast.show(
-			$mdToast.simple()
-				.textContent(msg)
-				.highlightAction(false)
-				.position("top right fixed")
-				.hideDelay(4000)
-			);
-
-	});
-
-
-	$rootScope.$on('alcoholCart:promotionRemoved', function(data,msg){
-
-		$mdToast.show(
-			$mdToast.simple()
-				.textContent(msg)
-				.highlightAction(false)
-				.position("top right fixed")
-				.hideDelay(4000)
-			);
-
-	});
-
 	$rootScope.$on('alcoholCart:notify', function(data,msg){
 
-		$mdToast.show(
-			$mdToast.simple()
-				.textContent(msg)
-				.highlightAction(false)
-				.position("top right fixed")
-				.hideDelay(4000)
-			);
+		$mdToast.show({
+			controller:function($scope){
+
+				$scope.message = msg;
+			},
+			templateUrl: '/templates/toast-tpl/wishlist-notify.html',
+			parent : $document[0].querySelector('#cart-summary-icon'),
+			position: 'top center',
+			hideDelay:4000
+		});
 
 	});
 
@@ -1234,7 +1204,7 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService
 						templateUrl: '/templates/toast-tpl/cart-update.html',
 						parent : $document[0].querySelector('#cart-summary-icon'),
 						position: 'top center',
-						hideDelay:5000
+						hideDelay:3000
 					});
 
 	});
@@ -1255,16 +1225,25 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService
 	});
 
 	$rootScope.$on('alcoholWishlist:change', function(object,params){
-		var def = 3000;
-		if(params.hideDelay)
+		var def = 5000;
+		var targId = 'usermenuli';
+		if(angular.isDefined(params.hideDelay))
 			def = params.hideDelay;
+		if(angular.isDefined(params.targId))
+			targId = params.targId;		
+
 		$mdToast.show({
 			controller:function($scope){
 
 				$scope.message = params.message;
+				$scope.hideDelay = params.hideDelay;
+
+				$scope.hidePopup = function(){
+					$mdToast.hide();	
+				}
 			},
 			templateUrl: '/templates/toast-tpl/wishlist-notify.html',
-			parent : $document[0].querySelector('#usermenuli'),
+			parent : $document[0].querySelector('#'+targId),
 			position: 'top center',
 			hideDelay:def
 		});

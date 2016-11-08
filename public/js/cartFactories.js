@@ -9,6 +9,8 @@ angular.module('AlcoholCartFactories', [])
 
 		this.setPrices(detail);
 
+		this.setProductsQtyArr();
+
 	}
 
 
@@ -32,13 +34,40 @@ angular.module('AlcoholCartFactories', [])
 
 	};
 
+	saleObj.prototype.setProductsQtyArr = function(){
+
+		angular.forEach(this.products, function (pro) {
+			
+			pro.productQtyArr = new Array();
+
+			for (i = 0; i < pro.quantity; i++) { 
+				pro.productQtyArr.push(i)
+			}
+			
+			
+		});
+
+		angular.forEach(this.action, function (pro) {
+
+			pro.productQtyArr = new Array();
+
+			for (i = 0; i < pro.quantity; i++) { 
+				pro.productQtyArr.push(i)
+			}
+
+		});
+
+	}
+
 	saleObj.prototype.setPrices = function(detail){
 
 		var price = 0;
 		var actionProPrice = 0;
 
 		angular.forEach(this.products, function (pro) {
+
 			price = price + (parseFloat(pro.product.price) * pro.quantity);
+
 		});
 
 		angular.forEach(this.action, function (pro) {
@@ -54,6 +83,7 @@ angular.module('AlcoholCartFactories', [])
 		this.strikePrice = strikePrice;
 
 		var currPrice = 0;
+
 		if(detail.actionType == 1){
 
 			 var qty = detail.giftQuantity;
@@ -64,28 +94,37 @@ angular.module('AlcoholCartFactories', [])
 
 			if(detail.discountType==1){
 
-				if(detail.actionProductId.count>0){
-					currPrice = actionProPrice - detail.discountValue;
-					currPrice = price - currPrice;
-				}else{
+				if(detail.actionProductId.length>0){
+
 					currPrice = price - detail.discountValue;
+					//currPrice = price - currPrice;
+
+				}else{
+
+					currPrice = price - detail.discountValue;
+
 				}
 
 
 			}else{
 
-				if(detail.actionProductId.count>0){
-					currPrice = actionProPrice - (actionProPrice * detail.discountValue / 100);
-					currPrice = price - currPrice;
+				if(detail.actionProductId.length>0){
+
+					currPrice = price - (actionProPrice * detail.discountValue / 100);
+
 				}else{
+
 					currPrice = price - (price * detail.discountValue / 100);
+
 				}
 
 			}
 
 		}
-
+		
+		this.totalDiscount = (parseFloat(price) - parseFloat(currPrice)).toFixed(2);
 		this.price = currPrice.toFixed(2);
+
 
 	};
 
@@ -299,8 +338,22 @@ angular.module('AlcoholCartFactories', [])
 	};
 
 	item.prototype.getTotal = function(){
+
 		return +parseFloat(this.getPrice()).toFixed(2);
+
 	};
+
+	item.prototype.getRemainQtyPrice = function(){
+
+		var remainQty = this.getRemainingQty();
+		if(remainQty<1){
+			return 0;
+		}
+		return +parseFloat(this.getPrice()).toFixed(2);
+
+	};
+
+
 
 	item.prototype.setSale = function(sale){
 		this.sale = sale;
@@ -998,11 +1051,12 @@ angular.module('AlcoholCartFactories', [])
 
 .factory('alcoholCartPromotion',['$log','$filter',function($log,$filter){
 
-	var oPromotion = function(promotion,product){
+	var oPromotion = function(promotion,product,chilled){
 
 		this.setPromotion(promotion);
 		this.setProduct(product);
 		this.setPrice(product);
+		this.setChilledStatus(chilled);
 
 	}
 
@@ -1013,7 +1067,7 @@ angular.module('AlcoholCartFactories', [])
 		this._price = parseFloat(promo.price);
 
 	}
-	oPromotion.prototype.setProduct = function(product){
+	oPromotion.prototype.setProduct = function(product){		
 
 		this.product = {
 
@@ -1021,6 +1075,7 @@ angular.module('AlcoholCartFactories', [])
 			_sku : product.sku,
 			_title : product.name,
 			_description : product.description,
+			_isChilledAllowed : product.chilled,
 			_shortDescription : product.shortDescription,
 			_image : $filter('getProductThumb')(product.imageFiles),
 			_slug : product.slug,
@@ -1030,12 +1085,43 @@ angular.module('AlcoholCartFactories', [])
 	}
 
 	oPromotion.prototype.setPrice = function(product){
+
 		if(parseInt(product.promo.type)===0) {
 			this.product._price = 0;
 		}else{
 			this.product._price = parseFloat(product.promo.price);
 		}
+
+		var unitPrice = parseFloat(product.price);
+
+		var advancePricing = product.regular_express_delivery;
+
+		if(advancePricing.type==1){
+
+			unitPrice +=  parseFloat(unitPrice * advancePricing.value/100);
+
+		}else{
+
+			unitPrice += parseFloat(advancePricing.value);
+
+		}
+		
+		this.product.unDiscountedPrice = unitPrice.toFixed(2);
+
 	}
+
+	
+
+	oPromotion.prototype.setChilledStatus = function(status){
+
+		if(status===true){
+			this.chilled = true;
+		}else{
+			this.chilled = false;
+		}		
+
+	}
+	
 
 	oPromotion.prototype.getPrice = function(){
 		return parseFloat(this.product._price);

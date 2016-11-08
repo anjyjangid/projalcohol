@@ -158,19 +158,16 @@ MetronicApp.directive('ngTouchSpin', ['$timeout', '$interval', function($timeout
 
 		},
 		template:
-		
 		'<div class="input-group">'+
-		'	<div class="spinner-buttons input-group-btn">'+
-		'		<button ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()" type="button" class="btn spinner-up blue"><span class="md-click-circle md-click-animate"></span>'+
-		'		<i class="fa fa-plus"></i>'+
-		'		</button>'+
-		'	</div>'+		
-		// '   <input type="text" class="spinner-input form-control" ng-bind="val" readonly="">'+
-		'	<span class="spinner-input form-control" ng-bind="val"></span>'+
-
 		'	<div class="spinner-buttons input-group-btn">'+
 		'		<button ng-mousedown="startSpinDown()" ng-mouseup="stopSpin()" type="button" class="btn spinner-down red"><span class="md-click-circle md-click-animate"></span>'+
 		'		<i class="fa fa-minus"></i>'+
+		'		</button>'+
+		'	</div>'+		
+		'	<span class="spinner-input form-control" ng-bind="val"></span>'+
+		'	<div class="spinner-buttons input-group-btn">'+
+		'		<button ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()" type="button" class="btn spinner-up blue"><span class="md-click-circle md-click-animate"></span>'+
+		'		<i class="fa fa-plus"></i>'+
 		'		</button>'+
 		'	</div>'+
 		'</div>'
