@@ -610,8 +610,7 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct','CreditC
 			function(response){
 
 				var products = [];
-
-				angular.forEach(response.data.dontMiss,function(product,key){
+				angular.forEach(response.data,function(product,key){
 
 					var newProduct = new AlcoholProduct(0,product);
 					this.push(newProduct);
@@ -711,7 +710,7 @@ AlcoholDelivery.factory('AlcoholProduct',[
 	function($rootScope,$state,$filter, $log, $timeout, $q, catPricing, alcoholCart, UserService){
 
 	var product = function(type,product){
-
+	
 		this._id = product._id.$id || product._id;
 
 		this.type = type;
@@ -732,6 +731,14 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 				this.setSale(product);
 			}
+
+			if(angular.isDefined(product.parentCategory)){
+				this.setParentDetail(product.parentCategory);
+			}
+
+			if(angular.isDefined(product.childCategory)){
+				this.setChildDetail(product.childCategory);
+			}			
 
 		}
 
@@ -1265,6 +1272,14 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 		product.prototype.hrefDetail = function(){
 			$state.go('mainLayout.product', {'product': this.slug});
+		};
+
+		product.prototype.setParentDetail = function(p){
+			this.parentCategory = p;
+		};
+
+		product.prototype.setChildDetail = function(p){
+			this.childCategory = p;
 		};
 
 	return product;

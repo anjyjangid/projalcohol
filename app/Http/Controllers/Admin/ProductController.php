@@ -647,7 +647,10 @@ class ProductController extends Controller
 			}			
 		}*/
 			
-		
+		$deliveryOrders = DB::collection('orders')->where('doStatus',1)->get(['reference']);
+
+		return response($deliveryOrders);
+
 		$query = [];
 		
 		$orderId = new MongoId('57ff62b0b190ec570e8b4592');

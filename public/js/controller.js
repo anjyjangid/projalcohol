@@ -2531,10 +2531,9 @@ AlcoholDelivery.controller('SearchController', [
     function searchTextChange(text) {
       //$log.info('Text changed to ' + text);
     }
-    function selectedItemChange(item) {
-		
-		if(item){
-			self.searchText = '';
+    function selectedItemChange(item) {		
+		if(item){			
+			self.searchText = '';			
 			$state.go('mainLayout.product',{product:item.slug});
 			$timeout(function() {
 				$anchorScroll();		    	
@@ -2557,7 +2556,10 @@ AlcoholDelivery.controller('SearchController', [
     
     function clearInputBoxOnBlur(){
         angular.element("#site-search").bind("blur", function(){
-            $scope.searchbar(0);             
+            var autoChild = document.getElementById('Auto').firstElementChild;
+		    var el = angular.element(autoChild);
+		    el.scope().$mdAutocompleteCtrl.hidden = true;            
+            $scope.searchbar(0);                         
         });
     }
 
@@ -2575,6 +2577,7 @@ AlcoholDelivery.controller('SearchController', [
 			//if(self.searchText == '')
 			angular.element("#site-search").focus();
 		}else{
+			
 			$(".searchtop").removeClass("searchtop100").addClass("again21");
 			$(".search_close").removeClass("search_close_opaque");
 			$(".logoss").removeClass("leftminusopacity leftminus100").addClass("again0left againopacity");
@@ -2583,6 +2586,7 @@ AlcoholDelivery.controller('SearchController', [
 			$(".rightplcholder").addClass('hide');
 			$("#headcontainer").removeClass('searchopen');
 			$(".logos-inner-cover").removeClass('hide');
+			
 		}
 	}
 

@@ -17,7 +17,7 @@ body {
 	transition: all 0.5s ease;
 }
 #wrapper.toggled {
-	padding-left: 80%;
+	padding-left: 70%;
 }
 #sidebar-wrapper {
 	z-index: 1000;
@@ -126,7 +126,7 @@ body {
 	margin: 0;
 }
 #wrapper.toggled .side-menu-responsive, #wrapper.toggled .laeftdivmain {
-	width: 80%;
+	width:70%;
 	opacity: 1;
 	-webkit-transition: all 0.5s ease;
 	-moz-transition: all 0.5s ease;
@@ -145,7 +145,7 @@ body {
 }
 #wrapper.toggled .navbar.navbar-default.navbar-fixed-top {
 	position: fixed;
-	transform: translate(80%, 0);
+	transform: translate(70%, 0);
 }
 .menu-icon > .line {
 	background-color: #614911;
@@ -239,7 +239,8 @@ ul.mobilesidebar li.active:not(.open) ul{
     top:0;
     padding: 0px 10px;
     width: auto;
-    background: transparent;
+    background: #ebeef0 ;
+	z-index:999;
 }
 .modal {
 	z-index: 99999;
