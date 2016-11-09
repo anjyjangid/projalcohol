@@ -1230,7 +1230,7 @@ class Cart extends Moloquent
 				$objSale = [
 					"title" => $product['proSales']['listingTitle'],
 					"detailTitle" => $product['proSales']['detailTitle'],
-					"discountValue" => $product['proSales']['discountValue'],
+					"discountValue" => isset($product['proSales']['discountValue'])?$product['proSales']['discountValue']:0,
 					"actionType" => $product['proSales']['actionType'],
 					"discountType" => $product['proSales']['discountType'],
 					"type" => $product['proSales']['type']

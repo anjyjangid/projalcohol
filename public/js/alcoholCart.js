@@ -960,6 +960,10 @@ AlcoholDelivery.service('alcoholCart', [
 
 				this.$cart.nonchilled = status;
 				this.$cart.discount.nonchilled.status = status;
+
+				msg = (status)?'Non-Chilled condition activated':'Chilled condition activated';
+
+				$rootScope.$broadcast('alcoholWishlist:change',{message:msg,targId:'cart-summary-icon'});
 			}
 
 			this.deployCart().then(

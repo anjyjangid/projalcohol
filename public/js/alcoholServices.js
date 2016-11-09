@@ -732,6 +732,14 @@ AlcoholDelivery.factory('AlcoholProduct',[
 				this.setSale(product);
 			}
 
+			if(angular.isDefined(product.parentCategory)){
+				this.setParentDetail(product.parentCategory);
+			}
+
+			if(angular.isDefined(product.childCategory)){
+				this.setChildDetail(product.childCategory);
+			}			
+
 		}
 
 		this.setSettings(product);
@@ -1264,6 +1272,14 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 		product.prototype.hrefDetail = function(){
 			$state.go('mainLayout.product', {'product': this.slug});
+		};
+
+		product.prototype.setParentDetail = function(p){
+			this.parentCategory = p;
+		};
+
+		product.prototype.setChildDetail = function(p){
+			this.childCategory = p;
 		};
 
 	return product;

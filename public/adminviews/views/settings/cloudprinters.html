@@ -13,7 +13,7 @@
 						<span class="hidden-480">
 							{{(printerData.printers.length)?'Refresh printer list':'Add cloud printer(s)';}}
 						</span>
-					</button>					
+					</button>										
 				</div>
 			</div>
 			<form role="form" ng-submit="update()" required="false">
@@ -25,6 +25,27 @@
 								 <label>
 								 <input plugin-uniform type="radio" name="printer" ng-model="printerData.setDefault" ng-value="{{pk}}"> 
 								 <b>{{printer.name}}</b>
+								 </label>							 
+							</div>
+							<div class="col-md-7 value">
+							</div>
+						</div>
+						<h4>Print Status</h4>
+						<div class="row static-info">
+							<div class="col-md-5 name">
+								 <label>
+								 <input plugin-uniform type="radio" name="printerStatus" ng-model="printerData.status" ng-value="1"> 
+								 <b>Enable</b>
+								 </label>							 
+							</div>
+							<div class="col-md-7 value">
+							</div>
+						</div>
+						<div class="row static-info">
+							<div class="col-md-5 name">
+								 <label>
+								 <input plugin-uniform type="radio" name="printerStatus" ng-model="printerData.status" ng-value="0"> 
+								 <b>Disable</b>
 								 </label>							 
 							</div>
 							<div class="col-md-7 value">

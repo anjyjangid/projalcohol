@@ -110,6 +110,7 @@ class SettingController extends Controller
                 $tokenData = [
                     'refresh_token' => $responseObj->refresh_token,
                     'printers' => $printers,
+                    'status' => 1,
                     'setDefault' => 0
                 ];
 
@@ -168,7 +169,13 @@ class SettingController extends Controller
         $data = $request->all();
 
         if(isset($data['setDefault'])){            
-            $update = DB::collection('printers')->raw()->update([],['$set'=>['setDefault'=>$data['setDefault']]]);
+            
+            $update = DB::collection('printers')->raw()->update([],[
+                '$set'=>[
+                    'setDefault'=>$data['setDefault'],
+                    'status' => (int)$data['status'],
+                ]
+            ]);
             if($update)
                 return response('Updated successfully.',200);
         }
