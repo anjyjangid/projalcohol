@@ -610,8 +610,7 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct','CreditC
 			function(response){
 
 				var products = [];
-
-				angular.forEach(response.data.dontMiss,function(product,key){
+				angular.forEach(response.data,function(product,key){
 
 					var newProduct = new AlcoholProduct(0,product);
 					this.push(newProduct);
@@ -711,7 +710,7 @@ AlcoholDelivery.factory('AlcoholProduct',[
 	function($rootScope,$state,$filter, $log, $timeout, $q, catPricing, alcoholCart, UserService){
 
 	var product = function(type,product){
-
+	
 		this._id = product._id.$id || product._id;
 
 		this.type = type;
