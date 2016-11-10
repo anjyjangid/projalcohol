@@ -489,6 +489,7 @@ class Cart extends Moloquent
 		$remainingQty = $updateParams['quantity'];		
 
 		$products = $this->products;
+
 		$sales = isset($this->sales)?$this->sales:[];
 		
 		$currProduct = $this->getProductById($proId);
@@ -499,8 +500,8 @@ class Cart extends Moloquent
 
 		foreach($products as $productId=>$product){
 			
-			if(isset($product['sale']) && $product['remainingQty']>0){
-				
+			if(isset($product['sale']) && !$this->isSingleProductSale($product['sale']) && $product['remainingQty']>0){
+
 				$isAble = $this->canCreateSale($productId,$proId,$qty,$updateParams['sale']);
 
 				if($isAble===false){
@@ -566,7 +567,7 @@ class Cart extends Moloquent
 				
 				$sales[] = $saleObj;
 
-			}
+			}			
 
 		}
 
@@ -590,10 +591,20 @@ class Cart extends Moloquent
 		}
 
 		$products[$proId]['remainingQty']+= $qty;
-				
+		
 		$this->__set("products",$products);
 
 		$this->__set("sales",$sales);
+
+	}
+
+	private function isSingleProductSale($sale){
+
+		if($sale['conditionQuantity']==1 && empty($sale['actionProductId'])){
+				return true;
+		}
+
+		return false;
 
 	}
 
@@ -603,8 +614,12 @@ class Cart extends Moloquent
 		$product = $products[$cartProId];		
 
 		$sale = $product['sale'];
+		
+		if($this->isSingleProductSale($sale)){
+			return false;
+		}
 
-		$unManipulatedProducts = $products;		
+		$unManipulatedProducts = $products;
 
 		$productToCreateSale = $this->getProductToCreateSale($products,$sale['_id'],$sale['conditionQuantity']);
 
@@ -705,7 +720,6 @@ class Cart extends Moloquent
 
 			// }
 
-
 		}
 
 		return $productToCreateSale;
@@ -718,7 +732,7 @@ class Cart extends Moloquent
 		$salePro = [];
 
 		foreach($products as $key=>&$product){
-
+						
 			if(!isset($product['sale']) || empty($product['sale'])){continue;}
 
 			$proSale = $product['sale'];
@@ -753,17 +767,17 @@ class Cart extends Moloquent
 
 	}
 
-	private function addSale($sale,$salePro,$actionPro){
+	// private function addSale($sale,$salePro,$actionPro){
 
-		$sale = [
-			"sale" => $sale,
-			"salePro" => $salePro,
-			"actionPro" => $actionPro
-		];
+	// 	$sale = [
+	// 		"sale" => $sale,
+	// 		"salePro" => $salePro,
+	// 		"actionPro" => $actionPro
+	// 	];
 		
-		$this->sale[] = $sale;
+	// 	$this->sale[] = $sale;
 
-	}
+	// }
 
 	public function createAllPossibleSales(){
 
@@ -772,7 +786,7 @@ class Cart extends Moloquent
 
 		foreach ($products as $key => $product) {			
 
-			if((isset($product['remainingQty']) && $product['remainingQty'] < 1) || !isset($product['sale']) || empty($product['sale'])) {
+			if((isset($product['remainingQty']) && $product['remainingQty'] < 1) || !isset($product['sale']) || empty($product['sale']) || $this->isSingleProductSale($product['sale'])) {
 				continue;
 			}
 
@@ -784,8 +798,7 @@ class Cart extends Moloquent
 				
 				$unManipulatedProducts = $products;
 
-				$productToCreateSale = $this->getProductToCreateSale($products,$sale['_id'],$sale['conditionQuantity']);
-
+				$productToCreateSale = $this->getProductToCreateSale($products,$sale['_id'],$sale['conditionQuantity']);				
 
 				if($productToCreateSale === false){
 					$isAble = false;
@@ -822,7 +835,7 @@ class Cart extends Moloquent
 
 						$actionPro = $products[$conditionProductId];
 
-						if($actionPro['remainingQty']>=$actionQty){
+						if(!$this->isSingleProductSale($actionPro['sale']) && $actionPro['remainingQty']>=$actionQty){
 
 							$actionPro['remainingQty']-=$actionQty;
 							$productToCreateSale['action'][$conditionProductId] = $actionQty;
@@ -1217,7 +1230,7 @@ class Cart extends Moloquent
 				$objSale = [
 					"title" => $product['proSales']['listingTitle'],
 					"detailTitle" => $product['proSales']['detailTitle'],
-					"discountValue" => $product['proSales']['discountValue'],
+					"discountValue" => isset($product['proSales']['discountValue'])?$product['proSales']['discountValue']:0,
 					"actionType" => $product['proSales']['actionType'],
 					"discountType" => $product['proSales']['discountType'],
 					"type" => $product['proSales']['type']

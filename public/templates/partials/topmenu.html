@@ -18,8 +18,21 @@
                     md-min-length="2"
                     md-input-id="site-search"                    
                     placeholder="Search for items" clear-autocomplete id="Auto" md-menu-showing="ctrl.openSuggestions()"
+                    id="Auto"
                     >
-                    <md-item-template> <img width="40" err-src="asset/i/defaultImage.png" src="products/i/200/{{item.imageFiles | getProductThumb}}"> <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i"> {{item.name}} </span> </md-item-template>
+                    <md-item-template> 
+                      <div class="ro_items nomargin nopad">
+                        <div class="ro_pic">
+                          <img err-src="asset/i/defaultImage.png" src="products/i/200/{{item.imageFiles | getProductThumb}}" class="img-responsive img-responsive-h"> 
+                        </div>
+                        <!-- md-highlight-text="ctrl.searchText" md-highlight-flags="^i" -->                      
+                        <div class="ro_desc pull-left"> 
+                          {{item.name}} 
+                          <div>{{item.shortDescription}}</div>
+                          <div class="procatname"><small>{{item.parentCategory.cat_title}}</small></div>                          
+                        </div>
+                      </div> 
+                    </md-item-template>
                     <md-not-found> No products matching "{{ctrl.searchText}}" were found.</md-not-found>
                   </md-autocomplete>
                 <span class="rightplcholder hide">Press 'enter' key to see results</span>

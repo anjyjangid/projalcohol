@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 
-use AlcoholDelivery\Categories as Categories;
-use AlcoholDelivery\Setting as Setting;
+use AlcoholDelivery\Categories;
+use AlcoholDelivery\Setting;
+use AlcoholDelivery\Dontmiss;
+
 use DB;
 use mongoId;
 use Illuminate\Support\Facades\Auth;
@@ -964,6 +966,313 @@ class Products extends Eloquent
 
 	}
 	
+	public function fetchDontMissProducts($params){
+
+		$proInCartIds = $params['id'];
+		$quantity = $params['quantity'];
+
+		$globalPricing = Setting::where("_id",'=',"pricing")
+									->first([
+										'settings.regular_express_delivery',
+										'settings.express_delivery_bulk',
+									]);
+
+		$redGlobal = $globalPricing->settings['regular_express_delivery'];
+		$edbGlobal = $globalPricing->settings['express_delivery_bulk'];
+
+		$isSingle = true;
+		if(!is_array($params['id'])){
+
+			$match = new mongoId($params['id']);
+
+		}else{
+
+			$isSingle = false;
+			$params['id'] = (array)$params['id'];
+			foreach($params['id'] as &$proId){
+				$proId = new MongoId($proId);
+			}
+
+			$match = [ '$nin' => $params['id'] ];
+		}
+
+
+
+		try {
+
+			$query = [						
+						[
+							'$unwind' => '$products'
+						],
+						[
+							'$match' => [
+								'products' => [
+									'$nin' => $proInCartIds
+								]
+							]
+						],
+						[
+							'$lookup' => [
+								'from'=>'products',
+								'localField'=>'products',
+								'foreignField'=>'_id',
+								'as'=>'dontMiss'
+							]
+						],
+						[
+							'$unwind' => '$dontMiss'
+						],
+						[
+							'$match' => [
+								'dontMiss.status' => 1									
+							]
+						],
+						[
+							'$sample' => [
+								'size' => $quantity
+							] 
+						],
+						[
+							'$project'=> [
+								"parentCat" => ['$arrayElemAt' => [ '$dontMiss.categoriesObject', 0 ]],
+								"subCat" => ['$arrayElemAt' => [ '$dontMiss.categoriesObject', 1 ]],
+
+								'chilled' => '$dontMiss.chilled',
+								'description' =>  1,
+								'price' => [
+									'$multiply' => [ '$dontMiss.price', 1 ]
+								],
+								'categories' => '$dontMiss.categories',
+								'categoriesObject'=>'$dontMiss.categoriesObject',
+								'imageFiles' => '$dontMiss.imageFiles',
+								'name' => '$dontMiss.name',
+								'slug' => '$dontMiss.slug',
+								'shortDescription' => '$dontMiss.shortDescription',
+								'sku' => '$dontMiss.sku',
+								'quantity' => '$dontMiss.quantity',
+								'regular_express_delivery' => '$dontMiss.regular_express_delivery',
+								'express_delivery' => '$dontMiss.express_delivery',
+								'express_delivery_bulk' => '$dontMiss.express_delivery_bulk',
+								'outOfStockType' => '$dontMiss.outOfStockType',
+								'availabilityDays' => '$dontMiss.availabilityDays',
+								'availabilityTime' => '$dontMiss.availabilityTime',
+								'loyaltyValueType' => '$dontMiss.loyaltyValueType',
+								'loyaltyValuePoint' => '$dontMiss.loyaltyValuePoint',
+								'loyaltyValuePrice' =>'$dontMiss.loyaltyValuePrice'
+							]
+						],
+						[
+							'$lookup' => [
+								'from'=>'categories',
+								'localField'=>'parentCat',
+								'foreignField'=>'_id',
+								'as'=>'parentCat'
+							]
+						],						
+						[
+							'$lookup' => [
+								'from'=>'categories',
+								'localField'=>'subCat',
+								'foreignField'=>'_id',
+								'as'=>'subCat'
+							]
+						],						
+						[
+							'$unwind' => [
+								'path' =>  '$parentCat',
+								"preserveNullAndEmptyArrays" => true
+
+							]
+						],
+						[
+							'$unwind' => [
+								'path' =>  '$subCat',
+								"preserveNullAndEmptyArrays" => true
+
+							]
+						],
+						[
+							'$project' => [
+
+								'chilled' => 1,
+								'description' =>  1,
+								'price' => 1,
+								'categories' => 1,
+								'subCat'=>1,
+								'parentCat'=>1,
+								'imageFiles' => 1,
+								'name' => 1,
+								'slug' => 1,
+								'shortDescription' => 1,
+								'sku' => 1,
+								'quantity' => 1,
+								'regular_express_delivery' => 1,
+								'express_delivery' => 1,
+								'express_delivery_bulk' => 1,
+								'outOfStockType' => 1,
+								'availabilityDays' => 1,
+								'availabilityTime' => 1,
+
+								'loyaltyValueType' => 1,
+								'loyaltyValuePoint' => 1,
+								'loyaltyValuePrice' => 1,
+
+								'regular_express_delivery' => [
+									'$ifNull' => [ '$regular_express_delivery',
+										[
+											'$ifNull' => [ '$subCat.regular_express_delivery',
+												[
+													'$ifNull' => [ '$parentCat.regular_express_delivery',null]
+												]
+											]
+										]
+									]
+								],
+
+								'express_delivery_bulk' => [
+									'$ifNull' => [ '$express_delivery_bulk',
+										[
+											'$ifNull' => [ '$subCat.express_delivery_bulk',
+												[
+													'$ifNull' => [ '$parentCat.express_delivery_bulk',null]
+												]
+											]
+										]
+									]
+								]
+							]
+						],
+						[ // lookup for Parent Category Sale
+							'$lookup' => [
+								'from' => 'sale',
+								'localField' => 'parentCat._id', 
+								'foreignField' => 'saleCategoryObjectId', 
+								'as' => 'pCatSale'
+							]
+						],
+						[ // lookup for Sub Category Sale
+							'$lookup' => [
+								'from' => 'sale',
+								'localField' => 'subCat._id',
+								'foreignField' => 'saleCategoryObjectId',
+								'as' => 'catSale'
+							]
+						],
+						[ // lookup for Product Category Sale
+							'$lookup' => [
+								'from' => 'sale',
+								'localField' => '_id',
+								'foreignField' => 'saleProductObjectId', 
+								'as' => 'productSale'
+							]
+						],
+						[
+							'$project' =>[			
+
+								'proSales' => [
+									'$filter' => [
+										'input' => [
+											'$setUnion' => ['$productSale','$catSale','$pCatSale']
+										],
+										'as' => 'sale',
+										'cond' => [
+											'$eq' => [ '$$sale.type', 1 ]
+										]
+									]
+								],
+								'chilled' => 1,
+								'description' =>  1,
+								'price' => 1,
+								'subCat'=>1,
+								'parentCat'=>1,
+								'categories' => 1,
+								'categoriesObject'=>1,
+								'imageFiles' => 1,
+								'name' => 1,
+								'slug' => 1,
+								'shortDescription' => 1,
+								'sku' => 1,
+								'quantity' => 1,
+								'regular_express_delivery' => 1,
+								'express_delivery' => 1,
+								'express_delivery_bulk' => 1,
+								'outOfStockType' => 1,
+								'availabilityDays' => 1,
+								'availabilityTime' => 1,
+								'regular_express_delivery' => 1,
+								'express_delivery_bulk' => 1,
+
+								'loyaltyValueType' => 1,
+								'loyaltyValuePoint' => 1,
+								'loyaltyValuePrice' => 1
+							]
+						],
+						[
+							'$project' =>[
+
+								'proSales' => [
+									'$arrayElemAt'=> [ '$proSales', -1 ]
+								],
+								'chilled' => 1,
+								'description' =>  1,
+								'price' => 1,
+								'subCat'=>1,
+								'parentCat'=>1,
+								'categories' => 1,
+								'categoriesObject'=>1,
+								'imageFiles' => 1,
+								'name' => 1,
+								'slug' => 1,
+								'shortDescription' => 1,
+								'sku' => 1,
+								'quantity' => 1,
+								'regular_express_delivery' => 1,
+								'express_delivery' => 1,
+								'express_delivery_bulk' => 1,
+								'outOfStockType' => 1,
+								'availabilityDays' => 1,
+								'availabilityTime' => 1,
+								'regular_express_delivery' => 1,
+								'express_delivery_bulk' => 1,
+
+								'loyaltyValueType' => 1,
+								'loyaltyValuePoint' => 1,
+								'loyaltyValuePrice' => 1
+							]
+						]
+
+					];
+			
+			$product = Dontmiss::raw()->aggregate($query);
+
+			if(isset($product['result'][0])){
+
+				foreach ($product['result'] as $key => &$tempPro) {
+						
+					if(is_null($tempPro['regular_express_delivery'])){
+						$tempPro['regular_express_delivery'] = $redGlobal;
+					}
+					if(is_null($tempPro['express_delivery_bulk'])){
+						$tempPro['express_delivery_bulk'] = $edbGlobal;
+					}
+
+				}
+
+			}
+
+			$product = $product['result'];			
+
+			return ['success'=>true,"product"=>$product];
+
+
+		} catch(\Exception $e){
+
+			return ['success'=>false,"message"=>$e->getMessage()];
+
+		}
+
+	
+	}
 
 	public function packagelist()
 	{

@@ -13,7 +13,7 @@
 						<span class="hidden-480">
 							{{(printerData.printers.length)?'Refresh printer list':'Add cloud printer(s)';}}
 						</span>
-					</button>					
+					</button>										
 				</div>
 			</div>
 			<form role="form" ng-submit="update()" required="false">
@@ -30,12 +30,33 @@
 							<div class="col-md-7 value">
 							</div>
 						</div>
+						<h4>Print Status</h4>
+						<div class="row static-info">
+							<div class="col-md-5 name">
+								 <label>
+								 <input plugin-uniform type="radio" name="printerStatus" ng-model="printerData.status" ng-value="1"> 
+								 <b>Enable</b>
+								 </label>							 
+							</div>
+							<div class="col-md-7 value">
+							</div>
+						</div>
+						<div class="row static-info">
+							<div class="col-md-5 name">
+								 <label>
+								 <input plugin-uniform type="radio" name="printerStatus" ng-model="printerData.status" ng-value="0"> 
+								 <b>Disable</b>
+								 </label>							 
+							</div>
+							<div class="col-md-7 value">
+							</div>
+						</div>
 					</div>
-					<div align="center" ng-if="printerData.printers.length == 0">
+					<div align="center" ng-if="printerData.length == 0">
 						<h4>No printer(s) connected. Please click on "Add cloud printer(s)" to add printer(s) from google cloud</h4>
 					</div>					
 				</div>
-				<button ng-disabled="loading" class="btn green" type="submit">
+				<button ng-if="printerData.printers.length" ng-disabled="loading" class="btn green" type="submit">
 					<i class="fa fa-check"></i>Update
 				</button>					
 			</form>

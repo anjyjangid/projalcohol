@@ -55,7 +55,7 @@ class CouponController extends Controller
 	public function store(CouponRequest $request)
 	{
 
-		$inputs = $request->formatCols(['code', 'name', 'type', 'discount', 'total', 'coupon_uses', 'customer_uses', 'start_date', 'end_date', 'status', 'products', 'categories']);
+		$inputs = $request->formatCols(['code', 'name', 'type', 'discount', 'total', 'coupon_uses', 'customer_uses', 'start_date', 'end_date', 'status', 'products', 'categories', 'discount_status']);
 
 		try {
 
@@ -124,6 +124,7 @@ class CouponController extends Controller
 					'name' => ['$first' => '$name'],
 					'type' => ['$first' => '$type'],
 					'discount' => ['$first' => '$discount'],
+					'discount_status' => ['$first' => '$discount_status'],
 					'total' => ['$first' => '$total'],
 					'coupon_uses' => ['$first' => '$coupon_uses'],
 					'customer_uses' => ['$first' => '$customer_uses'],
@@ -164,6 +165,7 @@ class CouponController extends Controller
 					'name' => ['$first' => '$name'],
 					'type' => ['$first' => '$type'],
 					'discount' => ['$first' => '$discount'],
+					'discount_status' => ['$first' => '$discount_status'],
 					'total' => ['$first' => '$total'],
 					'coupon_uses' => ['$first' => '$coupon_uses'],
 					'customer_uses' => ['$first' => '$customer_uses'],
@@ -228,7 +230,7 @@ class CouponController extends Controller
 
 		}
 
-		$inputs = $request->formatCols(['code', 'name', 'type', 'discount', 'total', 'coupon_uses', 'customer_uses', 'start_date', 'end_date', 'status', 'products', 'categories']);
+		$inputs = $request->formatCols(['code', 'name', 'type', 'discount', 'total', 'coupon_uses', 'customer_uses', 'start_date', 'end_date', 'status', 'products', 'categories', 'discount_status']);
 
 		foreach ($inputs as $col => $value) {
 			$coupon[$col] = $value;

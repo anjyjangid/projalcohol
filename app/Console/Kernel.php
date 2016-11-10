@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         \AlcoholDelivery\Console\Commands\Inspire::class,
         \AlcoholDelivery\Console\Commands\DatabaseBackup::class,
         \AlcoholDelivery\Console\Commands\Notification::class,
+        \AlcoholDelivery\Console\Commands\PrintJob::class,
     ];
 
     /**

@@ -264,19 +264,42 @@ class CartController extends Controller
 			}
 
 			$packages = new Packages;
-			$packages = $packages->whereIn("_id",$packagesInCart)->where('status',1)->get(['title','subTitle','type','description','coverImage','packageItems']);
+			$packages = $packages->whereIn("_id",$packagesInCart)->where('status',1)->with('productlist')->get(['title','subTitle','type','description','coverImage','packageItems']);
 
 			foreach($cart['packages'] as &$package){
 
-				foreach($packages as $oPackage){
+				foreach($packages as &$oPackage){
 
 					if((string)$package['_id'] === $oPackage->_id){
 
 						$package = array_merge($package,$oPackage->toArray());
 
 						//$package['packagePrice'] =  100; // due:: this should be calculated from server
+						
+						$proDetail = [];
 
-					}
+						foreach ($package['productlist'] as $pkey => $pvalue) {
+							$proDetail[(string)$pvalue['_id']]['name'] = $pvalue['name'];
+							$proDetail[(string)$pvalue['_id']]['quantityAdded'] = 0;
+						}
+
+						$addedQuantity = [];
+
+						foreach ($package['products'] as $pkey => $pvalue) {
+							$proDetail[(string)$pvalue['_id']]['quantityAdded'] = $pvalue['quantity'];
+						}
+
+						unset($package['productlist']);
+						
+						foreach ($package['packageItems'] as $oPackagekey => &$oPackagevalue) {
+							foreach ($oPackagevalue['products'] as &$provalue) {
+								$pDetail = $proDetail[(string)$provalue['_id']];
+								$provalue['name'] = $pDetail['name'];
+								$provalue['quantityAdded'] = $pDetail['quantityAdded'];
+							}
+						}								
+					}					
+
 				}
 
 			}
@@ -1833,7 +1856,7 @@ jprd($product);
 				return redirect('/#/orderplaced/'.$order['_id']);
 			}
 
-			return response(array("success"=>true,"message"=>"order placed successfully","order"=>$order['_id']));
+			return response(array("success"=>true,"message"=>"Order Placed Successfully","order"=>$order['_id']));
 
 		} catch(\Exception $e){
 

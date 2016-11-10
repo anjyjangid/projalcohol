@@ -88,8 +88,7 @@ angular.module('AlcoholCartFactories', [])
 
 			 var qty = detail.giftQuantity;
 			 currPrice = parseFloat(price) - parseFloat(actionProPrice);
-			 currPrice = currPrice * qty;
-
+			 
 		}else{
 
 			if(detail.discountType==1){
@@ -121,10 +120,10 @@ angular.module('AlcoholCartFactories', [])
 			}
 
 		}
-		
 		this.totalDiscount = (parseFloat(price) - parseFloat(currPrice)).toFixed(2);
 		this.price = currPrice.toFixed(2);
 
+		
 
 	};
 
@@ -154,10 +153,11 @@ angular.module('AlcoholCartFactories', [])
 			this.setRChilledStatus(data.chilled.status,data.nonchilled.status);
 			this.setRemainingQty(data.remainingQty);
 			this.setTQuantity(data.quantity);
+			this.setSale(data.sale); //sale should be ser prior setprice
 			this.setPrice(data);
 			this.setLastServedAs(data.lastServedChilled);
 			this.setProduct(data);
-			this.setSale(data.sale);
+			
 
 			this.setIcon();
 		}
@@ -212,6 +212,23 @@ angular.module('AlcoholCartFactories', [])
 		return this.icon;
 	};
 
+	item.prototype.setSalePrice = function(sale){
+		
+		var price = this.unitPrice;
+		var quantity = this.getRemainingQty();
+
+		if(sale.discountType==2){
+			price = price - (price * sale.discountValue / 100);
+		}else{
+			price = price - sale.discountValue;
+		}
+
+		this.discountedUnitPrice = price;
+
+		price = price * quantity;
+
+		this.price = price;
+	}
 
 	item.prototype.setPrice = function(product){
 
@@ -240,6 +257,12 @@ angular.module('AlcoholCartFactories', [])
 
 		this.unitPrice = price;
 
+		if(this.isSingleSale){
+
+			this.setSalePrice(product.sale);
+			return false;
+		}
+
 		var bulkArr = original.express_delivery_bulk.bulk;
 
 		for(i=0;i<bulkArr.length;i++){
@@ -264,7 +287,8 @@ angular.module('AlcoholCartFactories', [])
 		}
 
 		if(quantity>0){
-			this.discountedUnitPrice = price/quantity;
+			this.discountedUnitPrice = parseFloat((price/quantity).toFixed(2));
+			console.log(this.discountedUnitPrice,quantity);
 		}
 
 		return this.price = price;
@@ -353,10 +377,13 @@ angular.module('AlcoholCartFactories', [])
 
 	};
 
-
-
 	item.prototype.setSale = function(sale){
+
 		this.sale = sale;
+
+		if(sale && sale.conditionQuantity==1 && sale.actionProductId.length==0){
+			this.isSingleSale = true;
+		}		
 	};
 
 	item.prototype.toObject = function() {

@@ -1564,6 +1564,23 @@ AlcoholDelivery.filter('creditcard', function() {
 	}
 });
 
+AlcoholDelivery.filter('creditcardname', function() {
+	return function(name) {
+		var cardName = {
+			visa:'VISA',
+			maestro:'Maestro',
+			dinersclub:'Diners Club',
+			laser:'LASER',
+			jcb:'JCB',
+			unionpay:'UnionPay',
+			discover:'Discover',
+			mastercard:'MasterCard',
+			amex:'American Express'
+		};		
+		return cardName[name];
+	}
+});
+
 AlcoholDelivery.filter('filterParentCat', function(){
 
 	return function(pCategories){
