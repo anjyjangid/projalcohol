@@ -62,7 +62,6 @@ AlcoholDelivery.service('alcoholCart', [
 
 	this.addItem = function (id, quantity, serveAs) {
 
-
 		var defer = $q.defer();
 
 		var inCart = this.getProductById(id);
@@ -98,8 +97,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 					inCart.setRQuantity(resProduct.chilled.quantity,resProduct.nonchilled.quantity);
 					inCart.setTQuantity(resProduct.remainingQty);
-					inCart.setPrice(resProduct);						
 					inCart.setRemainingQty(resProduct.remainingQty);
+					inCart.setPrice(resProduct);
 
 				}									
 
@@ -1546,7 +1545,7 @@ AlcoholDelivery.service('alcoholCart', [
 				if(isEligible===false){
 
 					var toast = $mdToast.simple()
-						.textContent("Promotion Product removed from your cart due to non eligilibility")
+						.textContent("Promotion bundle removed")
 						.highlightAction(false)
 						.position("top right");
 					$mdToast.show(toast);
@@ -2199,7 +2198,7 @@ AlcoholDelivery.service('alcoholCart', [
 				}else if(isEligible===false){
 
 					var toast = $mdToast.simple()
-						.textContent("Promotion Product removed from your cart due to non eligilibility")
+						.textContent("Promotion bundle removed")
 						.highlightAction(false)
 						.position("top right");
 					$mdToast.show(toast);
@@ -2580,7 +2579,7 @@ AlcoholDelivery.service("promotionsService",[
 
 	}
 
-	this.setProductUnDiscountedPrice = function(product){		
+	this.setProductUnDiscountedPrice = function(product){
 
 		var unitPrice = parseFloat(product.price);
 

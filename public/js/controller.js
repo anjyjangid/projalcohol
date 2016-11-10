@@ -1,6 +1,6 @@
 AlcoholDelivery.controller('AppController',
-	['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService',
-	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter, ProductService) {
+	['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 'alcoholCart',
+	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter, ProductService, alcoholCart) {
 
 	$rootScope.setMeta = function(meta){
 
@@ -131,6 +131,8 @@ AlcoholDelivery.controller('AppController',
 				fullscreen:true
 			}
 		)
+
+
 	};
 
 	$scope.loadingmsg = false;
@@ -144,6 +146,17 @@ AlcoholDelivery.controller('AppController',
 
 		return $filter('filter')($rootScope.settings.pages,{section:section});
 	};
+
+	$scope.checkCoupon = function(discountCode){
+
+		//var cartKey = alcoholCart.getCartKey();
+		var couponCode = discountCode;
+
+		$http.post("checkCoupon",{params: {coupon: couponCode}}).success(function(result){
+			console.log(result);
+		}).error(function(){
+		});
+	}
 
 	$scope.sortOptions = [
 		{value:'',label:'Popularity'},

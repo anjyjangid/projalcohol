@@ -163,6 +163,10 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::resource('address', 'AddressController');
 
+	Route::controller('coupon', 'CouponController');
+
+	Route::post('checkCoupon','CouponController@checkCoupon');
+
 });
 
 Route::group(['prefix' => 'cart'], function () {

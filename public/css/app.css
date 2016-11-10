@@ -1123,6 +1123,13 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
     top: 5px;
     font-size: 20px;
 }
+
+.orderhistry2price .strike-txt-only {
+    font-size: 0.9em;
+    font-weight: 300;
+    color: #666;
+}
+
 md-virtual-repeat-container {
   height: 50vh;
   min-height: 50vh;

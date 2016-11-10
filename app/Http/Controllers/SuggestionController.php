@@ -8,6 +8,7 @@ use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
 
 use AlcoholDelivery\Dontmiss;
+use AlcoholDelivery\Products;
 use AlcoholDelivery\Cart;
 use mongoId;
 use DB;
@@ -28,76 +29,86 @@ class SuggestionController extends Controller
 		$productWithCount = $cart->getProductIncartCount();
 		$proInCartIds = array_keys($productWithCount);
 
-		foreach ($proInCartIds as $key => &$value) {
-			$value = new mongoId($value);
-		}
+		// foreach ($proInCartIds as $key => &$value) {
+		// 	$value = new mongoId($value);
+		// }
 
 		$quantity = Dontmiss::first(['quantity']);
 		$quantity = $quantity->quantity;
 
-		$result = DB::collection('dontmiss')->raw(function($collection) use($quantity,$proInCartIds)
-			{
-					return $collection->aggregate([
-							[
-								'$unwind' => '$products'
-							],
-							[
-								'$match' => [
-									'products' => [
-										'$nin' => $proInCartIds
-									]
-								]
-							],
-							[
-								'$lookup' => [
+		$params = $request->all();
 
-									'from'=>'products',
-									'localField'=>'products',
-									'foreignField'=>'_id',
-									'as'=>'dontMiss'
+		$product = new Products;
 
-								]
-							],
-							[
-								'$unwind' => '$dontMiss'
-							],
+		$result = $product->fetchDontMissProducts(["id"=>$proInCartIds,"quantity"=>$quantity]);
 
-							[
-								'$match' => [
-									'dontMiss.status' => 1									
-								]
-							],
-							[
-								'$sample' => [
-									'size' => $quantity
-								] 
-							],
+		// $result = DB::collection('dontmiss')->raw(function($collection) use($quantity,$proInCartIds)
+		// 	{
+		// 			return $collection->aggregate([
+		// 					[
+		// 						'$unwind' => '$products'
+		// 					],
+		// 					[
+		// 						'$match' => [
+		// 							'products' => [
+		// 								'$nin' => $proInCartIds
+		// 							]
+		// 						]
+		// 					],
+		// 					[
+		// 						'$lookup' => [
 
-							[
-								'$group' => [
-									'_id' => '$_id',									
-									'dontMiss' => [
-										'$push' => '$dontMiss'
-									]
-								]
-							],
-							// [
-							// 	'$project' => [	
+		// 							'from'=>'products',
+		// 							'localField'=>'products',
+		// 							'foreignField'=>'_id',
+		// 							'as'=>'dontMiss'
+
+		// 						]
+		// 					],
+		// 					[
+		// 						'$unwind' => '$dontMiss'
+		// 					],
+
+		// 					[
+		// 						'$match' => [
+		// 							'dontMiss.status' => 1									
+		// 						]
+		// 					],
+		// 					[
+		// 						'$sample' => [
+		// 							'size' => $quantity
+		// 						] 
+		// 					],
+
+		// 					[
+		// 						'$group' => [
+		// 							'_id' => '$_id',									
+		// 							'dontMiss' => [
+		// 								'$push' => '$dontMiss'
+		// 							]
+		// 						]
+		// 					],
+		// 					// [
+		// 					// 	'$project' => [	
 									
-							// 		'dontMiss._id' => 1,
+		// 					// 		'dontMiss._id' => 1,
 									
-							// 	]
-							// ]
+		// 					// 	]
+		// 					// ]
 
 							
-					]);
-			});
+		// 			]);
+		// 	});
 
-		if($result['ok']==1){
-			$result = array_pop($result['result']);
+		if($result['success']){
+
+			$result = $result['product'];
 			return response($result, 200);
+
 		}else{
+
 			return response($result, 400);
+
 		}
 	}
 
