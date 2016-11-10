@@ -60,7 +60,7 @@ angular.module('AlcoholCartFactories', [])
 	}
 
 	saleObj.prototype.setPrices = function(detail){
-
+		
 		var price = 0;
 		var actionProPrice = 0;
 
