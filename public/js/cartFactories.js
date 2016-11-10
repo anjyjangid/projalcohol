@@ -88,8 +88,7 @@ angular.module('AlcoholCartFactories', [])
 
 			 var qty = detail.giftQuantity;
 			 currPrice = parseFloat(price) - parseFloat(actionProPrice);
-			 currPrice = currPrice * qty;
-
+			 
 		}else{
 
 			if(detail.discountType==1){
@@ -121,10 +120,10 @@ angular.module('AlcoholCartFactories', [])
 			}
 
 		}
-		
 		this.totalDiscount = (parseFloat(price) - parseFloat(currPrice)).toFixed(2);
 		this.price = currPrice.toFixed(2);
 
+		
 
 	};
 
