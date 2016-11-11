@@ -262,6 +262,7 @@ angular.module('AlcoholCartFactories', [])
 
 			this.setSalePrice(product.sale);
 			return false;
+
 		}
 
 		var bulkArr = original.express_delivery_bulk.bulk;
@@ -295,6 +296,8 @@ angular.module('AlcoholCartFactories', [])
 		return this.price = price;
 
 	};
+
+	
 
 	item.prototype.getPrice = function(){
 		return parseFloat(this.price);
