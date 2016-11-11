@@ -25,16 +25,16 @@
 		</div>
 		<data-owl-carousel class="owl-carousel owluperpartcover" data-options="parentOwlOptions" ng-model="sync1">
 
-				<img err-pro-src="" ng-src="products/i/400/{{image.source}}" alt="" class="img-responsive img-responsive-h"  owl-carousel-item="" ng-repeat="image in product.imageFiles" class="item"/>
+				<img err-pro-src="" ng-src="products/i/400/{{image.source}}" alt="" isCover="{{image.coverimage}}" sortOrder="{{image.order}}" class="img-responsive img-responsive-h sync1"  owl-carousel-item="" ng-repeat="image in product.imageFiles"/>
 															
 		</data-owl-carousel >
 
 		<data-owl-carousel class="owl-carousel owldownpartcover" data-options="childOwlOptions" ng-model="sync2">
 
-				<img err-pro-src="" ng-src="products/i/200/{{image.source}}" alt="" class="img-responsive img-responsive-h" ng-click="syncClick($index)" owl-carousel-item ng-repeat="image in product.imageFiles" class="item"/>
+				<img err-pro-src="" ng-src="products/i/200/{{image.source}}" alt="" class="img-responsive img-responsive-h" ng-click="syncClick(image.order)" owl-carousel-item ng-repeat="image in product.imageFiles | orderBy:'order'"/>
 											
 		</data-owl-carousel> 
-
+		
 		<div class="prddetailnormaltext">{{product.description}}</div>           
 	</div>
 	<div class="col-xs-12 col-sm-6 col-md-6 product-detail-right-set" ng:class="{'has-sale-div':product.sale || product.nameDetailSale}">

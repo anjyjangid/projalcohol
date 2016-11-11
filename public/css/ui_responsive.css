@@ -59,7 +59,7 @@
 	font-size: 13px;
 	width: 65%;
 	overflow: hidden;
-	white-space: nowrap;
+	/*white-space: nowrap;*/
 	text-overflow: ellipsis;
 }
 .custmize-contntset {
@@ -750,6 +750,7 @@
 	margin: 0;
 	/*width: 100%;*/
 	display: inline-block;
+	max-width:100%;
 }
 .btm-contetnrecipie {
 	width: 100%;
@@ -1268,8 +1269,9 @@ body.menu-slider.in {
 	width: auto;
 }
 .saving-titie-amnt {
-	float: left;
-	width: auto;
+	float: right;
+    margin-left: 19px;
+    width: auto;
 	
 }
 .btn.product_addcart.addcart-detail.cocktail-cart-margintop {
@@ -1607,12 +1609,16 @@ body.menu-slider.in {
 	  float: left;
 	  padding-left: 0;
 	  padding-top: 3px;
-	  width: 22%;
+	  width: 50%;
   }
   .package-amtcover {
 	  float: left;
-	  width: 28%;
+	  width: 50%;
   }
+  .add-cart-cover {
+    float: left;
+    width: 100%;
+}
   .amntrupee-clsdetail {
 	  font-size: 21px
   }
@@ -1741,6 +1747,10 @@ body.menu-slider.in {
 }
 .rgrhtdiv {
     width: 75% !important;
+}
+.checkoutmiddletable table td{
+	padding-left:6px !important;
+	padding-right:7px !important;
 }
 }
 @media (min-width : 768px) and (max-width : 1023px) {
@@ -2229,12 +2239,15 @@ body.menu-slider.in {
 	  float: left;
 	  padding-left: 0;
 	  padding-top: 3px;
-	  width: 20%;
+	  width: 50%;
   }
   .package-amtcover {
 	  float: left;
-	  width: 26%;
+	  width: 50%;
   }
+  .add-cart-cover{
+	   width: 100%;
+	 }
   .btmcontn-set > a {
 	  width: 31%;
   }
@@ -2436,6 +2449,16 @@ body.menu-slider.in {
     float: none;
     vertical-align: middle;
     width: 60px;
+}
+.comboproductdetailitems{
+	width:26%;
+}
+.checkoutmiddletable table td{
+	padding-left:8px !important;
+	padding-right:8px !important;
+}
+.thumbnail.cocktail-products-div{
+	width:95%;
 }
 }
 @media only screen and (max-width : 767px) {
@@ -2832,7 +2855,7 @@ body.menu-slider.in {
 	  width: 48.5%;
   }
   .addressbook-btmpannelcover .addressbokk-trvaichacovr{
-	  margin-right: 10px;
+	  margin-right: 10px !important;
 	 }
 	 .addressbook-btmpannelcover .addressbokk-trvaichacovr:nth-child(3n) {
     margin-right: 10px;
@@ -3066,7 +3089,8 @@ body.menu-slider.in {
 	  width: 100%;
   }
   .ordernno-divcenterset {
-	  width: 100%
+	  width: 100%;
+	  padding:0px 15px;
   }
   md-datepicker {
 	  margin-right: 0
@@ -3161,7 +3185,10 @@ body.menu-slider.in {
 	  margin-bottom: 33px;
   }
   .comboproductitems {
-	  width: 50%
+	  width: 48%
+  }
+  .comboproductitems:nth-of-type(2n+2) {
+	  float:right;
   }
   .productbeerfiltertopcover .row div {
 	  width: 25%
@@ -3232,12 +3259,14 @@ body.menu-slider.in {
 	  width: 25%;
   }
   .product-desccocktail.ng-binding {
-	  width: 71%;
+	  width: 100%;
+	  max-width:100%;
+	  font-size:14px;
   }
   .cocktail-amntdivcover {
 	  float: left;
 	  text-align: center;
-	  width: 100%;
+	  width: auto;
   }
   .saving-cocktail-cover span {
 	  width: auto
@@ -3269,16 +3298,17 @@ body.menu-slider.in {
 	  width: 29%;
   }
   .amntrupee-clsdetail {
-	  font-size: 23px
+	  font-size: 23px !important
   }
   .title-propertset.ng-binding {
 	  font-size: 21px;
 	  margin-top: 0;
   }
   .moredetail-cocktailtext > a {
-	  font-size: 13px;
+	  font-size: 14px;
 	  margin: 2px 0;
-	  width: 29%;
+	  text-align:left;
+	  width: 100%;
   }
   .party-detail-btm-width {
 	  width: 33.33%;
@@ -3304,7 +3334,8 @@ body.menu-slider.in {
 	  position: relative
   }
   .navbar-fixed-top .logos-inner-cover {
-	  min-width: auto
+	  min-width: auto;
+	
   }
   .img-responsive.logosmall {
 	  left: 0;
@@ -3395,7 +3426,7 @@ body.menu-slider.in {
 
 
 .navbar-default .navbar-nav li a{
-	font-size: 16px;
+	font-size: 18px;
 	padding: 10px 0;
 }
 
@@ -3493,7 +3524,7 @@ font-size:18px;
 	height:inherit;
 }
 .proHoverEffect,.col-xs-12.col-sm-3.col-md-3.comboproductitems {
-    box-shadow: none;
+    box-shadow: none !important;
     transition: all 0.5s ease 0s;
 	border:1px solid #d6dce0;
 } 
@@ -3527,14 +3558,15 @@ font-size:18px;
 	background: rgba(0, 0, 0, 0) url("../images/caret_r-white.png") no-repeat scroll center center;
 	
 }
-.cartbtn{
-	width:100%;
+#toastBounds{
+	margin-bottom:5px;
 }
 .salediv{
 	float:left !important; 
 }
 md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	font-size:14px !important;
+	text-align:left !important;
 }
 
 .ro_desc{
@@ -3570,6 +3602,44 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	position:static;
 	float:right;
 }
+.repeatbtn{
+	float:left;
+	margin-left:10px;
+}
+.md-dialog-container, md-dialog {
+	z-index:99999; 
+}
+.navbar-fixed-top.navbar-shrink .logos-inner-cover{
+	display:unset;
+}
+md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
+	min-width:220px;
+}
+
+.package-desc{
+	font-size:16px;
+}
+.alcohal_reapeatorederbtnsocvercvr{
+	text-align:center;
+}
+.alcohalfooter_repeatorderbtn{
+	padding:10px 20px;
+	float:none;
+	margin-right:0px !important; 
+}
+.thumbnail.cocktail-products-div{
+	width:90%;
+	
+}
+.prddetailnormaltext{
+	width:50%;
+}
+.checkoutmiddlevlauediv{
+	width:43%;
+}
+.productdetailtitle{
+	font-size:20px;
+}
 }
 @media only screen and (width : 640px) {
   .alcohal_addadress_headertitle {
@@ -3581,6 +3651,9 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 @media only screen and (max-width : 639px){
 	 .addressbook-btmpannelcover .addressbokk-trvaichacovr:nth-child(3n){
 	margin-right:10px;
+}
+.cartaddresses .addressbokk-trvaichacovr, .cartaddresses .addressbokk-addnewadresscovr{
+	width:100%;
 }
 }
 @media only screen and (max-width : 479px) {
@@ -4143,7 +4216,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
   .checkoutmiddlevlauediv {
 	  display: inline-block;
 	  float: none;
-	  width: 100%;
+	  width: 50%;
   }
   .prdquantitybulkcoverbulk {
 	  display: inline-block;
@@ -4293,12 +4366,15 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	  width: 100%;
   }
   .moredetail-cocktailtext > a {
-	  font-size: 11px;
+	  font-size: 14px;
+	  text-align:left;
 	  margin: 2px 0;
-	  width: 25%;
+	  width: 100%;
   }
   .product-desccocktail.ng-binding {
-	  width: 75%;
+	  width: 100%;
+	  max-width:100%;
+	  font-size:14px;
   }
   /*.cocktail-cartbtn{
 			text-align:center
@@ -4312,7 +4388,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
   .cocktail-amntdivcover {
 	  float: left;
 	  text-align: center;
-	  width: 100%;
+	  width: auto;
   }
   .saving-cocktail-cover span {
 	  width: auto
@@ -4339,7 +4415,8 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
   }
   .media-left.cocktail-leftimgdiv {
 	  width: 100%;
-	  height: 100%
+	  height: 100%;
+	  padding-right:0px;
   }
   .title-propertset.ng-binding {
 	  margin-top: 15px
@@ -4425,7 +4502,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	width:70%;
 }
 .amntrupee{
-	width:70%;
+	
 	text-align:left;
 }
 .alcohalorderhisttitle {
@@ -4448,6 +4525,10 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
  
 .currentorderpopup::before{
 	right:10px;
+}
+.thumbnail.cocktail-products-div{
+	width:100%;
+	
 }
 }
 @media only screen and (max-width : 479px) {

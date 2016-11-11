@@ -60,8 +60,8 @@ MetronicApp.controller('CouponAddController',['$rootScope','$scope','$http','$st
 	$scope.errors = {};
 
 	$scope.coupon = {
-		status:"1",
-		type:"1",
+		/*status:"1",
+		type:"1",*/
 		saleProductId:[],
 		saleProductDetail:[],
 		saleCategoryId:[],

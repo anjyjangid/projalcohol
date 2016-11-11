@@ -1259,7 +1259,7 @@ AlcoholDelivery.run([
 
 	});
 
-
+	
 
 	// store.init();
 	// alcoholWishlist.init();
@@ -1570,6 +1570,23 @@ AlcoholDelivery.filter('creditcard', function() {
 	return function(number) {
 		var r = number.substr(number.length-4,4);
 		return 'XXXX XXXX XXXX '+r;
+	}
+});
+
+AlcoholDelivery.filter('creditcardname', function() {
+	return function(name) {
+		var cardName = {
+			visa:'VISA',
+			maestro:'Maestro',
+			dinersclub:'Diners Club',
+			laser:'LASER',
+			jcb:'JCB',
+			unionpay:'UnionPay',
+			discover:'Discover',
+			mastercard:'MasterCard',
+			amex:'American Express'
+		};		
+		return cardName[name];
 	}
 });
 

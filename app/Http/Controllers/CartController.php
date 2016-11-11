@@ -1856,7 +1856,7 @@ jprd($product);
 				return redirect('/#/orderplaced/'.$order['_id']);
 			}
 
-			return response(array("success"=>true,"message"=>"order placed successfully","order"=>$order['_id']));
+			return response(array("success"=>true,"message"=>"Order Placed Successfully","order"=>$order['_id']));
 
 		} catch(\Exception $e){
 

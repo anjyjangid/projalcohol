@@ -54,6 +54,9 @@ AlcoholDelivery.service('alcoholWishlist', ['$rootScope', '$window', '$http', '$
 
 			}).error(function(data, status, headers) {
 
+				if(!data.auth)
+					$rootScope.$broadcast('showLogin');				
+				
 				d.reject(data);
 
 			}).success(function(response) {

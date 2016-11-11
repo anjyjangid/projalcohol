@@ -552,14 +552,14 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 					access : ['admin'],
 					links:['userLayout.stocks.list']
 				},
-				/*{
+				{
 					label:'Purchase Order',
 					icon:'icon-doc',
 					uisref:'userLayout.stocks.po',
 					id:'sidebar_menu_link_po',
 					access : ['admin'],
 					links:['userLayout.stocks.po','userLayout.stocks.poDetail']
-				}*/
+				}
 			]
 		},
 		{
@@ -1619,9 +1619,10 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             templateUrl: "adminviews/views/stocks/po-detail.html",
             controller: "PurchaseOrderController",
             data:{
+				pageTitle:'Purchase Order Detail',
 				breadCrumb:[
 					{title:'Purchase Orders','uisref':'userLayout.stocks.po'},
-					{title:'View','uisref':'#'}
+					{title:'Detail','uisref':'#'}
 				]
 			},
 			resolve: {

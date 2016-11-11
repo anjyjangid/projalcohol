@@ -52,11 +52,11 @@
 							</div>
 						</div>
 					</div>
-					<div align="center" ng-if="printerData.printers.length == 0">
+					<div align="center" ng-if="printerData.length == 0">
 						<h4>No printer(s) connected. Please click on "Add cloud printer(s)" to add printer(s) from google cloud</h4>
 					</div>					
 				</div>
-				<button ng-disabled="loading" class="btn green" type="submit">
+				<button ng-if="printerData.printers.length" ng-disabled="loading" class="btn green" type="submit">
 					<i class="fa fa-check"></i>Update
 				</button>					
 			</form>
