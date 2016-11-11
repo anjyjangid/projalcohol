@@ -988,7 +988,8 @@ AlcoholDelivery.controller('CartController',[
 		savecard:true
 	}
 
-	$scope.packageUTOut = {};
+	$scope.packageUTOut = [];
+	$scope.proUpdateTimeOut = [];
 
 	$scope.step = 1;
 
@@ -1136,11 +1137,11 @@ AlcoholDelivery.controller('CartController',[
 
 		var proObj = $scope.cart.products[key];
 
-		if(typeof $scope.proUpdateTimeOut!=="undefined"){
-			$timeout.cancel($scope.proUpdateTimeOut);
+		if(angular.isDefined($scope.proUpdateTimeOut[key])){
+			$timeout.cancel($scope.proUpdateTimeOut[key]);
 		}
 
-		$scope.proUpdateTimeOut = $timeout(function(){
+		$scope.proUpdateTimeOut[key] = $timeout(function(){
 
 			var quantity = {
 				chilled : parseInt(proObj.qChilled),
