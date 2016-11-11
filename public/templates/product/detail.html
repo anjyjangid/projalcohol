@@ -4,7 +4,7 @@
 
 <div class="productdetailcovermainbgimg">
 <div class="row">
-	<div class="col-xs-12 col-sm-6 col-md-6" ng-class="{comboproductitems_outofstock:{{!product.quantity}}}">
+	<div class="col-xs-12 col-sm-6 col-md-6" ng-class="{comboproductitems_outofstock:{{!(product.quantity>0)}}}">
 		<!-- <div class="prddetailnormaltext">
 			<button title="{{isInwishList?'Added to Wishlist':'Add to Wishlist'}}" class="btn btn-default btn-purple detailwishbut" ng-click="isInwishList?myWish():addToWishlist(0); $event.stopPropagation();">
 				<img src="images/add-wish-icon.png" /> 
@@ -71,7 +71,7 @@
 				</button>
 			</div> -->
 			
-			<div class="prddetailchilledcover text-noselect" ng-if="product.chilled && (product.quantity || product.outOfStockType == 2)" >
+			<div class="prddetailchilledcover text-noselect" ng-if="product.chilled && (product.quantity>0 || product.outOfStockType == 2)" >
 				<div class="prodchilled-btn" ng-class="{'active':product.servechilled}" ng-click="product.servechilled=1">
 					<span>Chilled</span>
 					<div class="-icon"></div>
@@ -82,7 +82,7 @@
 					<div class="-icon"></div>
 				</div>
 			</div>
-			<div class="prdquantitybulkcover text-noselect" ng-if="product.quantity || product.outOfStockType == 2">
+			<div class="prdquantitybulkcover text-noselect" ng-if="product.quantity>0 || product.outOfStockType == 2">
 				<div class="checkoutmiddlevlauediv">
 						<div class="pardqantitytexthead">Quantity</div>
 
@@ -139,7 +139,7 @@
 			</div>
 
 			<div class="productslide_addbutton">
-				<div class="cartbtn" ng-if="product.quantity || product.outOfStockType == 2">
+				<div class="cartbtn" ng-if="product.quantity>0 || product.outOfStockType == 2">
 					<div class="addcart only-button prod_addtocart" ng-click="addtocart()" ng-if="!product.isInCart || product.getTotalQtyInCart()<1"><span></span>add to cart</div>
 					<div class="addcart only-button prod_addtocart" ng-click="addtocart()" ng-if="product.isInCart && product.getTotalQtyInCart()>0"><span></span>Update cart</div>
 

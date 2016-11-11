@@ -1,4 +1,4 @@
-<div class="{{classes}}" ng-class="{comboproductitems_outofstocks:{{!productInfo.quantity>0 && productInfo.outOfStockType == 1}}}">
+<div class="{{classes}}" ng-class="{comboproductitems_outofstocks:{{!(productInfo.quantity>0) && productInfo.outOfStockType == 1}}}">
 
 
 	<!-- <div ng-if="productInfo.quantity<1 && productInfo.outOfStockType == 1" class="productsoldoutbkbtn">Sold Out</div> -->
