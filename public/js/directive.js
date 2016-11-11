@@ -612,10 +612,6 @@ AlcoholDelivery.directive('sideBar', function() {
 
 						}
 
-					}, function(error) {
-
-						$rootScope.$broadcast('showLogin');
-
 					});
 			}
 
@@ -1199,6 +1195,17 @@ AlcoholDelivery.directive('sideBar', function() {
 				$scope.payment.creditCard = card;
 			}
 
+			var offset = 0; range = 10;
+			var currentYear = new Date().getFullYear();			
+			$scope.years = [];
+            for (var i = (offset*1); i < (range*1) + 1; i++){
+                $scope.years.push(currentYear + i);
+            }
+
+            $scope.months = [];
+            for (var i = 0; i < 12; i++){
+                $scope.months.push(1 + i);
+            }
 			/*$scope.testCard = [
 		        {
 		          token_id:"2992471298821111",

@@ -370,17 +370,13 @@ AlcoholDelivery.controller('ProductDetailController', [
 
 		alcoholWishlist.add($scope.product._id,addInSale).then(function(response) {
 
-				if(response.success){
+			if(response.success){
 
-					$scope.isInwishList = alcoholWishlist.getProductById($scope.product._id);
+				$scope.isInwishList = alcoholWishlist.getProductById($scope.product._id);
 
-				}
+			}
 
-			}, function(error) {
-
-				$rootScope.$broadcast('showLogin');
-
-			});
+		});
 	}
 
 	$scope.myWish = function(){
@@ -400,11 +396,17 @@ AlcoholDelivery.controller('ProductDetailController', [
 		if($($scope.sync2).data("owlCarousel") !== undefined){
 		  $scope.center(current);
 		}
+
+
 	}
 
-	$scope.syncClick = function(number){
-		$scope.sync1.trigger("owl.goTo",number);
+	$scope.syncClick = function(number){		
+		var key = angular.element($("[sortOrder='"+number+"']"));		
+		var ind = $('img.sync1').index(key);		
+		$scope.sync1.trigger("owl.goTo",ind);
   	}
+
+
 
 	$scope.center = function(number){
 
@@ -455,7 +457,7 @@ AlcoholDelivery.controller('ProductDetailController', [
 		pagination 				: false,
 		responsiveRefreshRate : 100,
 		afterInit : function(el){
-			el.find(".owl-item").eq(0).addClass("synced");
+			el.find(".owl-item").eq(0).addClass("synced");			
 		}
 
 	}

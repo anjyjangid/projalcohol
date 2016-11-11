@@ -236,7 +236,8 @@ MetronicApp.controller('SaleFormController',[
 
     };
 
-    
-
+    $scope.removeSaleImage = function(){    	
+    	$scope.sale.coverImage = {source:''};
+    }
 
 }]);

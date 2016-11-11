@@ -207,6 +207,8 @@ class SaleController extends Controller
             if(isset($inputs['image']) && !empty($inputs['image']))
                 $this->saveImage($sale,$inputs['image']);
             
+            
+
             if($inputs['type'] == 1)
                 $this->notifySale($inputs,$id);
 
