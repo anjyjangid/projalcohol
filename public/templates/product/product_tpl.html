@@ -1,4 +1,4 @@
-<div class="{{classes}}" ng-class="{comboproductitems_outofstocks:{{!productInfo.quantity && productInfo.outOfStockType == 1}}}">
+<div class="{{classes}}" ng-class="{comboproductitems_outofstocks:{{!productInfo.quantity>0 && productInfo.outOfStockType == 1}}}">
 
 
 	<!-- <div ng-if="productInfo.quantity<1 && productInfo.outOfStockType == 1" class="productsoldoutbkbtn">Sold Out</div> -->
@@ -78,7 +78,7 @@
 		<add-to-cart-btn 
 				ng-class="{'disabled': productInfo.notSufficient}" 
 				product="productInfo" 
-				ng-if="!productInfo.promo && (productInfo.quantity || productInfo.outOfStockType == 2)"
+				ng-if="!productInfo.promo && (productInfo.quantity>0 || productInfo.outOfStockType == 2)"
 		>
 		</add-to-cart-btn>
 
