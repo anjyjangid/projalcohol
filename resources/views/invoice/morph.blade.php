@@ -8,14 +8,14 @@
 <body>
 
 	<input max="1" min="0" step="0.01" type="range" value="0" id="mySelect" onchange="myFunction()">
-	<label>
-          <input name="blend" type="checkbox">
+		<!-- <label>
+        <input name="blend" type="checkbox">
           Custom blend
         </label>
         <label>
           <input name="finalTouch" type="checkbox">
           Custom final touch
-        </label>
+        </label> -->
 
 </body>
 </html>
