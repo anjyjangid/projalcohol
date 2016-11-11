@@ -13,7 +13,7 @@
 			<tbody>				
 
 				<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getProducts()" ng-init="cartproduct.setStateRemainQty()"></tr>
-				<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0 && cartproduct['remain'+type]>0" >
+				<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0 && cartproduct['remain'+type]>0">
 
 					<td width="52%">
 
