@@ -1342,7 +1342,7 @@ AlcoholDelivery.service('alcoholCart', [
 		};
 
 
-		this.removeItemById = function (id) {
+		this.removeItemById = function (id,notify) {
 
 			var item;
 			var cart = this.getCart();
@@ -1351,11 +1351,15 @@ AlcoholDelivery.service('alcoholCart', [
 
 					delete cart.products[index];
 					item = product || {};
-					
-				}	
+
+				}
 			});
-			 
-			$rootScope.$broadcast('alcoholCart:itemRemoved', item);
+
+			var showNotification = notify || true;
+
+			if(showNotification){
+				$rootScope.$broadcast('alcoholCart:itemRemoved', item);
+			}
 			
 		};
 
@@ -1486,7 +1490,13 @@ AlcoholDelivery.service('alcoholCart', [
 
 						}
 
-						product.setRQuantity(qtyChilled,qtyNonChilled);
+						var totalProQty = qtyChilled+qtyNonChilled;
+						
+						if(totalProQty<1){
+							_self.removeItemById(product.getId());
+						}else{
+							product.setRQuantity(qtyChilled,qtyNonChilled);
+						}
 
 					});
 
