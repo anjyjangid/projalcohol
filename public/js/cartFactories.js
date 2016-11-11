@@ -288,8 +288,7 @@ angular.module('AlcoholCartFactories', [])
 		}
 
 		if(quantity>0){
-			this.discountedUnitPrice = parseFloat((price/quantity).toFixed(2));
-			console.log(this.discountedUnitPrice,quantity);
+			this.discountedUnitPrice = parseFloat((price/quantity).toFixed(2));	
 		}
 
 		return this.price = price;

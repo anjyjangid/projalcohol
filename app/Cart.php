@@ -498,7 +498,7 @@ class Cart extends Moloquent
 
 		// Check any product is required newly added product to create a sale.
 
-		foreach($products as $productId=>$product){
+		foreach($products as $productId=>&$product){
 			
 			if(isset($product['sale']) && !$this->isSingleProductSale($product['sale']) && $product['remainingQty']>0){
 
@@ -551,7 +551,7 @@ class Cart extends Moloquent
 						break;
 						default : {
 
-							$products[$key]['remainingQty']-=$saleProQty;							
+							$products[$key]['remainingQty']-=$saleProQty;
 
 							$saleObj['products'][] = [
 
@@ -562,6 +562,8 @@ class Cart extends Moloquent
 						}
 
 					}
+
+					$this->products = $products; // to set all new changes in $product var to current cart products.
 
 				}
 				
@@ -732,7 +734,7 @@ class Cart extends Moloquent
 		$salePro = [];
 
 		foreach($products as $key=>&$product){
-						
+			
 			if(!isset($product['sale']) || empty($product['sale'])){continue;}
 
 			$proSale = $product['sale'];
@@ -742,6 +744,7 @@ class Cart extends Moloquent
 				if($product['remainingQty']>=$quantity){
 
 					$salePro[$key] = $quantity;
+					$quantity = 0;
 
 				}else{
 
@@ -752,9 +755,10 @@ class Cart extends Moloquent
 
 				$product['remainingQty']-= $salePro[$key];
 
+
 			}
 
-			if($quantity===0){
+			if($quantity==0){
 				break;
 			}
 
