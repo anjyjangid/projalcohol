@@ -13,6 +13,10 @@
 /*TO VIEW MAIL TEMPLATE*/
 Route::get('/printjob/{reference}', 'OrderController@getOrderdetail');
 
+Route::get('/morphing', function(){
+	return view('invoice.morph');
+});
+
 Route::group(['prefix' => 'adminapi'], function () {
 
 	Route::controller('auth', 'Auth\AdminAuthController');
