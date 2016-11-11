@@ -230,8 +230,8 @@
 								<div class="orhistry2_td2proctext1">{{cartproduct.product.name}}</div>
 								<div class="orhistry2_td2proctext2">{{cartproduct.product.shortDescription}}</div>
 								<div class="orhistry2_td2proctext1">
-									<i>LP {{cartproduct.loyaltyValue.point}}</i>
-									<i ng-if='cartproduct.loyaltyValue.price>0'> + {{cartproduct.loyaltyValue.price | pricingTxt}}</i>
+									<i>LP {{cartproduct.loyaltyValue.point/cartproduct[type]}}</i>
+									<i ng-if='cartproduct.loyaltyValue.price>0'> + {{cartproduct.loyaltyValue.price/cartproduct[type] | pricingTxt}}</i>
 								</div>
 								<div class="orhistry2_td2proctext2">unit Price</div>
 							</div> 
@@ -261,8 +261,8 @@
 					</td>
 					<td>
 						<div class="orderhistry2price">
-							<i>LP {{cartproduct.loyaltyValue.point * cartproduct[type]}}</i>
-							<i ng-if='cartproduct.loyaltyValue.price>0'> + {{cartproduct.loyaltyValue.price * cartproduct[type] | pricingTxt}}</i>
+							<i>LP {{cartproduct.loyaltyValue.point}}</i>
+							<i ng-if='cartproduct.loyaltyValue.price>0'> + {{cartproduct.loyaltyValue.price | pricingTxt}}</i>
 							
 						</div>
 					</td>

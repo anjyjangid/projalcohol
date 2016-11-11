@@ -115,7 +115,7 @@ class Promotion extends Moloquent
 
 				$tempPromoPro['promo'] = [
 											'type'=>$item['type'],
-											'price'=>$item['price'],
+											'price'=>$item['type']==1?$item['price']:0,
 										];
 				$item = $tempPromoPro;
 			}

@@ -1,10 +1,12 @@
 AlcoholDelivery.service('alcoholCart', [
-			'$log','$rootScope', '$window', '$http', '$q', '$mdToast', '$filter', 'alcoholCartItem', 'alcoholCartLoyaltyItem', 
+			'$log','$rootScope', '$window', '$http', '$q', '$mdToast', '$filter', '$timeout', 'alcoholCartItem', 'alcoholCartLoyaltyItem', 
 			'alcoholCartPackage','promotionsService','alcoholCartPromotion', 'alcoholCartGiftCard', 'alcoholCartGift', 
 			'alcoholCartSale', 'alcoholCartCreditCard','UserService'
-	,function ($log, $rootScope, $window, $http, $q, $mdToast, $filter, alcoholCartItem, alcoholCartLoyaltyItem, 
+	,function ($log, $rootScope, $window, $http, $q, $mdToast, $filter, $timeout, alcoholCartItem, alcoholCartLoyaltyItem, 
 			alcoholCartPackage, promotionsService, alcoholCartPromotion, alcoholCartGiftCard, alcoholCartGift,
 			alcoholCartSale, alcoholCartCreditCard, UserService) {
+
+	var _self = this;
 
 	this.init = function(){
 		
@@ -680,7 +682,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 					_self.setPromotionsInCart();
 										
-					$rootScope.$broadcast('alcoholCart:notify',"Promotion added to cart");
+					$rootScope.$broadcast('alcoholCart:notify',"Promotion added to cart",2000);
 
 				}							
 
@@ -959,11 +961,7 @@ AlcoholDelivery.service('alcoholCart', [
 			if(typeof status !=="undefined"){
 
 				this.$cart.nonchilled = status;
-				this.$cart.discount.nonchilled.status = status;
-
-				msg = (status)?'Non-Chilled condition activated':'Chilled condition activated';
-
-				$rootScope.$broadcast('alcoholWishlist:change',{message:msg,targId:'cart-summary-icon'});
+				this.$cart.discount.nonchilled.status = status;				
 			}
 
 			this.deployCart().then(
@@ -1176,18 +1174,26 @@ AlcoholDelivery.service('alcoholCart', [
 				total += parseFloat(gifts.gsPrice());
 			});
 			
-
-			promotionsService.setEligibility(total);
-			
-			this.removeNonEligiblePromotions(total);
-
-			angular.forEach(cart.promotions, function (promotion) {
-				total += parseFloat(promotion.getPrice());
-			});
+			promotionsService.setEligibility(total);			
 
 			angular.forEach(cart.sales, function (sale) {
 				total += parseFloat(sale.getPrice());
 			});
+
+			if(typeof this.nonEligiblePromotionsCheck!=="undefined"){
+				$timeout.cancel(this.nonEligiblePromotionsCheck);
+			}			
+			
+			var totalWithoutPromotion = total;
+			this.nonEligiblePromotionsCheck = $timeout(function() {
+				_self.removeNonEligiblePromotions(totalWithoutPromotion);
+			},1000,false)
+
+			
+			angular.forEach(cart.promotions, function (promotion) {
+				total += parseFloat(promotion.getPrice());
+			});
+			
 
 			return +parseFloat(total).toFixed(2);
 
@@ -1544,13 +1550,16 @@ AlcoholDelivery.service('alcoholCart', [
 
 				if(isEligible===false){
 
-					var toast = $mdToast.simple()
-						.textContent("Promotion bundle removed")
-						.highlightAction(false)
-						.position("top right");
-					$mdToast.show(toast);
+					_self.removePromotion(promotion._id).then(
+						
+						// function(successRes){							
+						// 	promotions.splice(key, 1)[0] || {};
+						// },
+						// function(errorRes){
+						// 	console.log("okok");
+						// }
 
-					promotions.splice(key, 1)[0] || {};
+					);					
 
 				}
 				
