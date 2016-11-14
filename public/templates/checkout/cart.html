@@ -127,7 +127,8 @@
 
 				<tr ng-repeat="(key, package) in alcoholCart.getPackages()">
 
-					<td width="52%">						
+					<td width="52%">	
+						 <!-- <pre>{{package|json}}</pre> -->
 						<div class="orhistry2_td2procdtcvr">
 							<span>
 								<a ui-sref="mainLayout.packagedetail({type:package.original.type==2?'cocktail':'party',id:package._id,uid:package._uniqueId})">
@@ -146,15 +147,15 @@
 						
 						<div ng-repeat="(key, packageItem) in package.original.packageItems" ng-if="package.original.type==1">
 							<span class="orhistry2_td2proctext2" >{{packageItem.title}} - </span> 
-							<span class="orhistry2_td2proctext2" ng-if="packageproduct.quantityAdded" ng-repeat="packageproduct in packageItem.products">
-								{{packageproduct.quantityAdded}}x {{packageproduct.name}}
+							<span class="orhistry2_td2proctext2" ng-if="packageproduct.cartquantity" ng-repeat="packageproduct in packageItem.products">
+								{{packageproduct.cartquantity}}x {{packageproduct.name}}
 							</span>
 						</div>
 
 						<div ng-repeat="(key, packageItem) in package.original.packageItems" ng-if="package.original.type==2">
 							<span class="orhistry2_td2proctext2" >Ingredient # {{$index+1}} - </span> 
-							<span class="orhistry2_td2proctext2" ng-if="packageproduct.quantityAdded" ng-repeat="packageproduct in packageItem.products">
-								{{packageproduct.quantityAdded}}x {{packageproduct.name}}
+							<span class="orhistry2_td2proctext2" ng-if="packageproduct.cartquantity" ng-repeat="packageproduct in packageItem.products">
+								{{packageproduct.cartquantity}}x {{packageproduct.name}}
 							</span>
 						</div>
 						

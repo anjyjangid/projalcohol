@@ -16,22 +16,29 @@
           <input name="finalTouch" type="checkbox">
           Custom final touch
         </label> -->
-
+    <button onclick="an();">Animate</button>
 </body>
 </html>
 
 <script type="text/javascript">
 	var json = {"images":[{"points":[{"x":114,"y":0},{"x":0,"y":33},{"x":0,"y":76},{"x":83,"y":0},{"x":171,"y":56},{"x":147,"y":76}],"src":"ad_logo.png","x":0,"y":0},{"points":[{"x":59,"y":-4},{"x":-9,"y":20},{"x":9,"y":38},{"x":30,"y":-1},{"x":45,"y":20},{"x":27,"y":29}],"src":"{{ asset('images/logo-small.png') }}","x":59,"y":23}],"triangles":[[1,2,3],[0,3,4],[4,3,5],[2,3,5]]};
 
-	var json = {"images":[{"points":[{"x":31,"y":27},{"x":112,"y":0},{"x":171,"y":76},{"x":120,"y":14},{"x":70,"y":5},{"x":31,"y":76},{"x":0,"y":39},{"x":0,"y":76},{"x":171,"y":51}],"src":"{{ asset('images/ad_logo.png') }}","x":0,"y":0},{"points":[{"x":1,"y":17},{"x":52,"y":0},{"x":15,"y":34},{"x":51,"y":11},{"x":27,"y":0},{"x":5,"y":43},{"x":-7,"y":17},{"x":-8,"y":42},{"x":-16,"y":53}],"src":"{{ asset('images/logo-small.png') }}","x":60,"y":23}],"triangles":[[1,3,4],[0,3,4],[0,3,6],[6,3,7],[5,3,7],[2,5,8],[3,5,8]]};
+	var json = {"images":[{"points":[{"x":31,"y":27},{"x":112,"y":-5},{"x":171,"y":76},{"x":120,"y":14},{"x":70,"y":5},{"x":31,"y":76},{"x":0,"y":39},{"x":0,"y":76},{"x":171,"y":51}],"src":"{{ asset('images/ad_logo.png') }}","x":0,"y":0},{"points":[{"x":1,"y":17},{"x":52,"y":0},{"x":15,"y":34},{"x":51,"y":11},{"x":27,"y":0},{"x":5,"y":43},{"x":-7,"y":17},{"x":-8,"y":42},{"x":-16,"y":53}],"src":"{{ asset('images/logo-small.png') }}","x":60,"y":23}],"triangles":[[1,3,4],[0,3,4],[0,3,6],[6,3,7],[5,3,7],[2,5,8],[3,5,8]]};
 	var morpher = new Morpher(json);
 	document.body.appendChild(morpher.canvas);
 	
+	var t = true;
 
+	function an() {
+		if(t){
+			morpher.set([1, 0]);
+			morpher.animate([0, 1], 200);	
+		}else{
+			morpher.set([0, 1]);
+			morpher.animate([1, 0], 200);
+		}
 
-	function animate() {
-		morpher.set([0, 1]);
-		morpher.animate([1, 0], 1000);
+		t = !t;	
 	}
 
 	

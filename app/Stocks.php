@@ -203,8 +203,17 @@ class Stocks extends Eloquent
             'qtyAdvance' => ['$sum'=>'$advanceProductLog.quantity']
         ];
 
+        //UPDATE THIS FIELD IN CASE CURRENT STORE LOGIN IS NOT MAIN STORE
+
+        //GET MAIN STORE ID
+        //$userStoreId = Auth::user('admin')->storeId;
+        $mainStore = Admin::whereRaw(['role'=>1])->first();
+        if($mainStore && $mainStore['storeId'] != $userStoreId)
+            $group['qtyAdvance'] = ['$sum'=>0];
+       
         $query[]['$group'] = $group;
 
+        
         /*$query[]['$match'] = [
             'qtyAdvance' => ['$gt'=>0]
         ];*/

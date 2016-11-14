@@ -311,25 +311,39 @@ AlcoholDelivery.directive('sideBar', function() {
 		var icons = ['question', 'answer'];
 		var prev=1;
 
+		var json = {"images":[{"points":[{"x":31,"y":27},{"x":112,"y":-5},{"x":171,"y":76},{"x":120,"y":14},{"x":70,"y":5},{"x":31,"y":76},{"x":0,"y":39},{"x":0,"y":76},{"x":171,"y":51}],"src":"../images/ad_logo.png","x":0,"y":0},{"points":[{"x":1,"y":17},{"x":52,"y":0},{"x":15,"y":34},{"x":51,"y":11},{"x":27,"y":0},{"x":5,"y":43},{"x":-7,"y":17},{"x":-8,"y":42},{"x":-16,"y":53}],"src":"../images/logo-small.png","x":60,"y":23}],"triangles":[[1,3,4],[0,3,4],[0,3,6],[6,3,7],[5,3,7],[2,5,8],[3,5,8]]};
+
+		/*var morpher = new Morpher(json);
+		morpher.set([1, 0]);
+		angular.element('#myLogo').append(morpher.canvas);*/
+
         angular.element($window).bind("scroll", function() {
 
-			if(element.hasClass('fixh')) return;
+			//if(element.hasClass('fixh')) return;
 
-			if (this.pageYOffset >= 1) {
+			if(angular.element('md-backdrop').length == 0 && angular.element('.md-scroll-mask').length == 0){
 
-				element.addClass('navbar-shrink');
-				
-				if(prev!==0)
-				svgMorpheus.to(icons[0]);
-				prev = 0;
+				if (this.pageYOffset >= 1) {
+					element.addClass('navbar-shrink');
+					//morpher.animate([0, 1], 150);
+					
+					if(prev!==0)
+					svgMorpheus.to(icons[0]);
+					prev = 0;
 
-			} else if(this.pageYOffset == 0 && angular.element('md-backdrop').length == 0 && angular.element('.md-scroll-mask').length == 0) {
-				element.removeClass('navbar-shrink');
+					
+					
 
-				if(prev!==1)
-				svgMorpheus.to(icons[1]);
-				prev = 1;
-			} 
+				} else if(this.pageYOffset == 0) {
+					element.removeClass('navbar-shrink');
+					//morpher.animate([1, 0], 150);
+
+					if(prev!==1)
+					svgMorpheus.to(icons[1]);
+					prev = 1;					
+				} 
+
+			}
              
         });
     };
