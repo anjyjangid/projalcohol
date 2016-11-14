@@ -231,8 +231,8 @@
 								<div class="orhistry2_td2proctext1">{{cartproduct.product.name}}</div>
 								<div class="orhistry2_td2proctext2">{{cartproduct.product.shortDescription}}</div>
 								<div class="orhistry2_td2proctext1">
-									<i>LP {{cartproduct.loyaltyValue.point/cartproduct[type]}}</i>
-									<i ng-if='cartproduct.loyaltyValue.price>0'> + {{cartproduct.loyaltyValue.price/cartproduct[type] | pricingTxt}}</i>
+									<i>LP {{cartproduct.loyaltyValue.unitPoint}}</i>
+									<i ng-if='cartproduct.loyaltyValue.price>0'> + {{cartproduct.loyaltyValue.unitPrice | pricingTxt}}</i>
 								</div>
 								<div class="orhistry2_td2proctext2">unit Price</div>
 							</div> 
@@ -247,7 +247,7 @@
 						invisible:!cartproduct.product.chilled
 
 						}"
-						ng-click="alcoholCart.updateChilledStatus(cartproduct._id,type)">
+						ng-click="alcoholCart.loyaltyChilledStatus(cartproduct._id,type)">
 						<span>Chilled</span>
 						<div class="prod_chilled_icon"></div>
 						</div>
@@ -256,40 +256,42 @@
 					<td>
 						<div class="checkoutmiddlevlauediv">
 
-							<input type="text" ng-model="cartproduct[type]" value="cartproduct[type]" min="0" mquantity="cartproduct[type+'Max']" ng-touch-spin on-increment="addtocart(cartproduct.product._id,type)" on-decrement="addtocart(cartproduct.product._id,type)">
+							<input type="text" ng-model="cartproduct[type]" value="cartproduct[type]" min="0" mquantity="cartproduct[type+'Max']" ng-touch-spin on-increment="updateLoyaltyProduct(cartproduct.product._id,type)" on-decrement="updateLoyaltyProduct(cartproduct.product._id,type)">
 
 						</div>
 					</td>
 					<td>
 						<div class="orderhistry2price">
-							<i>LP {{cartproduct.loyaltyValue.point}}</i>
-							<i ng-if='cartproduct.loyaltyValue.price>0'> + {{cartproduct.loyaltyValue.price | pricingTxt}}</i>
+							<i>LP {{cartproduct.loyaltyValue.unitPoint * cartproduct[type]}}</i>
+							<i ng-if='cartproduct.loyaltyValue.price>0'> + {{cartproduct.loyaltyValue.unitPrice * cartproduct[type] | pricingTxt}}</i>
 							
 						</div>
 					</td>
 					<td> 
-						<!-- <a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="remove(key,type)"><i class="glyphicon glyphicon-trash"></i></a> -->
+						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="removeLoyaltyProduct(key,type)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>
 				<tr ng-repeat-end></tr>
 				
-				<tr ng-repeat="(id,product) in alcoholCart.getLoyaltyCards()">
+				<tr ng-repeat="(key,product) in alcoholCart.getLoyaltyCards()" ng-if="product.quantity">
 
 					<td>{{product.value | pricingTxt}} Credit Certificate</td>
-										
+
 					<td></td>
 					<td>
 						<div class="checkoutmiddlevlauediv">
 
-							<input type="text" ng-model="cartproduct[type]" value="product.quantity" min="0" mquantity="100" ng-touch-spin on-increment="" on-decrement="">
+							<input type="text" ng-model="product.quantity" value="product.quantity" min="0" mquantity="100" ng-touch-spin on-increment="updateLoyaltyCard(key)" on-decrement="updateLoyaltyCard(key)">
 
 						</div>
 					</td>
 
 					<td>
-						<div class="orderhistry2price">LP {{product.points}}</div>
+						<div class="orderhistry2price">LP {{product.points * product.quantity}}</div>
 					</td>
-					<td></td>
+					<td> 
+						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removeLoyaltyCard(key)"><i class="glyphicon glyphicon-trash"></i></a>
+					</td>
 				</tr>
 
 				<tr ng-repeat="(key, promotion) in alcoholCart.getPromotions()">

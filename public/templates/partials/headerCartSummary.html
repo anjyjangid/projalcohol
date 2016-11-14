@@ -35,9 +35,21 @@
 				</li>					
 
 				<li ng-hide="product.remainingQty == 0" ng-repeat="(id,product) in alcoholCart.getProducts()">
-					<div class="currentorderpopupulleft">{{product.product.name}}</div>
+
+					<div class="currentorderpopupulleft">
+						{{product.product.name}}
+						<span class="saletag" ng-if="product.isSingleSale">{{product.sale.detailTitle}}</span>
+						
+					</div>
 					<div class="currentorderpopupulcenter">{{product.remainingQty}}</div>
-					<div class="currentorderpopupulright">{{product.getPrice() | pricingTxt}}</div>
+					
+					<div class="currentorderpopupulright">
+						<strike-txt ng-if="product.isSingleSale" class="strike-txt">
+							{{product.unitPrice * product.quantity | pricingTxt}}
+						</strike-txt>
+						{{product.getPrice() | pricingTxt}}
+					</div>
+
 				</li>
 
 				<li ng-repeat="(id,product) in alcoholCart.getLoyaltyProducts()">

@@ -1267,7 +1267,7 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 		},1500)
 
-		return defer.promise;
+	return defer.promise;
 		};
 
 		product.prototype.hrefDetail = function(){

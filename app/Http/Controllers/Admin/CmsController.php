@@ -111,7 +111,7 @@ class CmsController extends Controller
             return response(array("success"=>true,"message"=>"Cms ".ucfirst($page->title)." page updated successfully"));
         }
         
-        return response(array("success"=>false,"message"=>"Something went worng"));
+        return response(array("success"=>false,"message"=>"Something went wrong"));
         
     }
 

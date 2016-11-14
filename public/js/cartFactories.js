@@ -288,8 +288,7 @@ angular.module('AlcoholCartFactories', [])
 		}
 
 		if(quantity>0){
-			this.discountedUnitPrice = parseFloat((price/quantity).toFixed(2));
-			console.log(this.discountedUnitPrice,quantity);
+			this.discountedUnitPrice = parseFloat((price/quantity).toFixed(2));	
 		}
 
 		return this.price = price;
@@ -510,6 +509,9 @@ angular.module('AlcoholCartFactories', [])
 			point : p.loyaltyValuePoint || 0,
 			price : p.loyaltyValuePrice || 0,
 		};
+
+		this.loyaltyValue.unitPoint = this.loyaltyValue.point;
+		this.loyaltyValue.unitPrice = this.loyaltyValue.price;
 
 		this.loyaltyValue.point*= parseInt(qty);
 		this.loyaltyValue.price*= parseFloat(qty);

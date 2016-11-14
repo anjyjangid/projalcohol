@@ -132,7 +132,7 @@ class CustomerController extends Controller
 				return response(array("success"=>true,"message"=>"Customer updated successfully"));
 			}
 			
-			return response(array("success"=>false,"message"=>"Something went worng"));
+			return response(array("success"=>false,"message"=>"Something went wrong"));
 		}
 
 	}
@@ -233,7 +233,7 @@ class CustomerController extends Controller
 			return response(array("success"=>true,"message"=>"Customer updated successfully"));
 		}
 		
-		return response(array("success"=>false,"message"=>"Something went worng"));
+		return response(array("success"=>false,"message"=>"Something went wrong"));
 		
 	}
 

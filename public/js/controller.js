@@ -990,6 +990,8 @@ AlcoholDelivery.controller('CartController',[
 
 	$scope.packageUTOut = [];
 	$scope.proUpdateTimeOut = [];
+	$scope.lproUpdateTimeOut = [];
+	$scope.lproCardUpdateTimeOut = [];
 
 	$scope.step = 1;
 
@@ -1160,6 +1162,61 @@ AlcoholDelivery.controller('CartController',[
 		},1500)
 	};
 
+	$scope.updateLoyaltyProduct = function(key,type,direction){
+
+		var proObj = $scope.alcoholCart.getLoyaltyProductById(key);
+
+		if(proObj===false){return false;}
+
+		if(angular.isDefined($scope.lproUpdateTimeOut[key])){
+			$timeout.cancel($scope.lproUpdateTimeOut[key]);
+		}
+
+		$scope.lproUpdateTimeOut[key] = $timeout(function(){
+
+			var quantity = {
+				chilled : parseInt(proObj.qChilled),
+				nonChilled : parseInt(proObj.qNChilled)
+			}
+			alcoholCart.addLoyaltyProduct(key,quantity,proObj.servedAs).then(
+				function(response){
+					$scope.isInCart = true;
+				},
+				function(errRes){
+
+				}
+
+			);
+
+		},1500)
+	};
+
+	$scope.updateLoyaltyCard = function(key){
+
+		var proObj = $scope.alcoholCart.getLoyaltyCardByValue(key);
+
+		if(proObj===false){return false;}
+
+		if(angular.isDefined($scope.lproCardUpdateTimeOut[key])){
+			$timeout.cancel($scope.lproCardUpdateTimeOut[key]);
+		}
+
+		$scope.lproCardUpdateTimeOut[key] = $timeout(function(){
+			var quantity = proObj.quantity;
+			alcoholCart.addCreditCertificate(key,quantity).then(
+				function(response){
+					$scope.isInCart = true;
+				},
+				function(errRes){
+
+				}
+
+			);
+
+		},1500)
+	};
+	
+
 	$scope.updatePackage = function(uid){
 
 		if(typeof $scope.packageUTOut[uid]!=="undefined"){
@@ -1193,6 +1250,19 @@ AlcoholDelivery.controller('CartController',[
 		}else{
 
 			alcoholCart.removeProduct(key,false);
+
+		}
+	};
+
+	$scope.removeLoyaltyProduct = function(key,type){
+
+		if(type=='qChilled'){
+
+			alcoholCart.removeLoyaltyProduct(key,true);
+
+		}else{
+
+			alcoholCart.removeLoyaltyProduct(key,false);
 
 		}
 	};
