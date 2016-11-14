@@ -510,6 +510,9 @@ angular.module('AlcoholCartFactories', [])
 			price : p.loyaltyValuePrice || 0,
 		};
 
+		this.loyaltyValue.unitPoint = this.loyaltyValue.point;
+		this.loyaltyValue.unitPrice = this.loyaltyValue.price;
+
 		this.loyaltyValue.point*= parseInt(qty);
 		this.loyaltyValue.price*= parseFloat(qty);
 

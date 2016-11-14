@@ -12,7 +12,7 @@ use AlcoholDelivery\Promotion;
 use AlcoholDelivery\Gift;
 
 use Illuminate\Support\Facades\Auth;
-
+use stdClass;
 use MongoId;
 use MongoDate;
 
@@ -333,17 +333,6 @@ class Cart extends Moloquent
 
 		$this->reference = $reference;
 		
-	}
-
-	public function getLoyaltyCards(){
-
-		if(isset($this->loyaltyCards)){
-			
-			return $this->loyaltyCards;
-
-		}
-
-		return [];
 	}
 
 	private function getProductById($id){
@@ -1103,10 +1092,58 @@ class Cart extends Moloquent
 
 	}
 
-	public function setLoyaltyPointUsed(){
+	public function getLoyaltyProducts(){
 
-		$loyaltyProducts = isset($this->loyalty)?$this->loyalty:[];
-		$loyaltyCards = isset($this->loyaltyCards)?$this->loyaltyCards:[];
+		return isset($this->loyalty)?$this->loyalty:[];
+
+	}
+
+	public function getLoyaltyProductById($id){
+
+		$pObj = false;
+		$lProducts = $this->getLoyaltyProducts();
+
+		foreach ($lProducts as $key => $value) {
+
+			if($key === $id){
+				$pObj = $value;
+				break;
+			}
+
+		}
+		
+		return $pObj;
+
+	}
+
+	public function getLoyaltyCards(){
+
+		return isset($this->loyaltyCards)?$this->loyaltyCards:[];
+
+	}
+
+	public function getLoyaltyCardByValue($value){
+
+		$pObj = false;
+		$lProducts = $this->getLoyaltyCards();
+
+		foreach ($lProducts as $key => $card) {
+
+			if($key == $value){
+				$pObj = $card;
+				break;
+			}
+
+		}
+		
+		return $pObj;
+
+	}
+
+	public function getLoyaltyPointUsed(){
+
+		$loyaltyProducts = $this->getLoyaltyProducts();
+		$loyaltyCards = $this->getLoyaltyCards();
 		$totalPoints = 0;
 
 		foreach ($loyaltyProducts as $key => $product) {
@@ -1115,11 +1152,28 @@ class Cart extends Moloquent
 
 		foreach ($loyaltyCards as $card) {
 			$totalPoints = $totalPoints + (((float)$card['points']) * ((int)$card['quantity']));
-		}
+		}		
+
+		return $totalPoints;
+
+	}
+
+	public function setLoyaltyPointUsed(){
+
+		$totalPoints = $this->getLoyaltyPointUsed();
 
 		$this->__set("loyaltyPointUsed",$totalPoints);
 
 		return $totalPoints;
+
+	}
+
+
+	public function removeAllLoyaltyProduct(){
+		
+		$this->__set("loyalty",new stdClass());
+		$this->__set("loyaltyCards",new stdClass());
+		$this->__set("loyaltyPointUsed",0);
 
 	}
 

@@ -103,7 +103,7 @@ class EmailTemplateController extends Controller
             return response(array("success"=>true,"message"=>"Email Template ".ucfirst($template->title)." updated successfully"));
         }
 
-        return response(array("success"=>false,"message"=>"Something went worng"));
+        return response(array("success"=>false,"message"=>"Something went wrong"));
 
     }
 
