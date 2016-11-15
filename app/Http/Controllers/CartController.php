@@ -281,13 +281,13 @@ class CartController extends Controller
 
 						foreach ($package['productlist'] as $pkey => $pvalue) {
 							$proDetail[(string)$pvalue['_id']]['name'] = $pvalue['name'];
-							$proDetail[(string)$pvalue['_id']]['quantityAdded'] = 0;
+							$proDetail[(string)$pvalue['_id']]['cartquantity'] = 0;
 						}
 
 						$addedQuantity = [];
 
 						foreach ($package['products'] as $pkey => $pvalue) {
-							$proDetail[(string)$pvalue['_id']]['quantityAdded'] = $pvalue['quantity'];
+							$proDetail[(string)$pvalue['_id']]['cartquantity'] = $pvalue['quantity'];
 						}
 
 						unset($package['productlist']);
@@ -296,7 +296,7 @@ class CartController extends Controller
 							foreach ($oPackagevalue['products'] as &$provalue) {
 								$pDetail = $proDetail[(string)$provalue['_id']];
 								$provalue['name'] = $pDetail['name'];
-								$provalue['quantityAdded'] = $pDetail['quantityAdded'];
+								$provalue['cartquantity'] = $pDetail['cartquantity'];
 							}
 						}								
 					}					

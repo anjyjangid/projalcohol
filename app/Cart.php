@@ -1565,8 +1565,8 @@ class Cart extends Moloquent
 					]
 				];
 
-				$totalPoints+= $oPackage['price']['points'];
-				$subtotal+= $oPackage['price']['amount'];
+				$totalPoints+= $oLoyalty['price']['points'];
+				$subtotal+= $oLoyalty['price']['amount'];
 
 				$order['loyalty'][] = $oLoyalty;
 			}

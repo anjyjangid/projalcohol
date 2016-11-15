@@ -587,7 +587,7 @@ angular.module('AlcoholCartFactories', [])
 
 }])
 
-.factory('alcoholCartPackage', ['$rootScope', '$log', function ($rootScope, $log){
+.factory('alcoholCartPackage', ['$rootScope', '$log', '$filter', function ($rootScope, $log, $filter){
 
 	var package = function (id, uniqueId, data) {
 
@@ -598,6 +598,7 @@ angular.module('AlcoholCartFactories', [])
 		this.setPrice(data.packagePrice);
 		this.setOriginal(data);
 		this.setProducts(data.products);
+		this.setPackageItems();
 
 	};
 
@@ -728,6 +729,15 @@ angular.module('AlcoholCartFactories', [])
 
 	package.prototype.getTotal = function(){
 		return +parseFloat(this.getPrice()).toFixed(2);
+	};
+
+	package.prototype.setPackageItems = function(){
+		angular.forEach(this.original.packageItems,function(packageItem,packageKey){
+			angular.forEach(packageItem.products,function(product,productKey){									
+				product.quantityAdded = product.cartquantity;				
+			});
+		});
+
 	};
 
 	return package;
