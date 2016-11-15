@@ -74,48 +74,7 @@ class AddressController extends Controller
 
 		$user->push('address',$inputs,true);
 
-		return response($user);
-
-		$userAddress = $user->address;
-		$userAddress = (array)$userAddress;
-
-		if(isset($inputs['place'])){
-
-			foreach($inputs['place']['address_components'] as $addresscom){
-
-				if($addresscom['types'][0]=="route"){					
-					$inputs['street']=$addresscom['long_name'];
-				}
-
-				if($addresscom['types'][0]=="postal_code"){				
-					$inputs['postal']=$addresscom['long_name'];
-				}
-				
-			}
-
-			unset($inputs['step']);	
-			
-			unset($inputs['place']);
-		
-		}
-
-		$user->address = array_merge($userAddress, array($inputs));
-
-		$return = array("success"=>false,"message"=>"","data"=>""); 
-
-
-		try {
-
-			$user->save();
-
-			$return['success'] = true;
-			$return['message'] = "Address added successfully";
-						
-		} catch(\Exception $e){
-			$return['message'] = $e->getMessage();//$e->getMessage();
-		}
-
-		return response($return);
+		return response($user);		
 
 	}
 
@@ -202,9 +161,13 @@ class AddressController extends Controller
 
 		$address = $user->__get("address");
 		
-		unset($address[$id]);
+		$addressToPull = (array)$address[$id];
 
-		$user->__set("address",$address);
+		//unset($address[$id]);
+
+		$user->pull("address",$addressToPull);		
+
+		//$user->__set("address",$address);
 
 		$return = array("success"=>false,"message"=>"","data"=>""); 
 

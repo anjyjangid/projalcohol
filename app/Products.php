@@ -11,7 +11,7 @@ use AlcoholDelivery\Setting;
 use AlcoholDelivery\Dontmiss;
 
 use DB;
-use mongoId;
+use MongoId;
 use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Stocks;
 use MongoDate;
@@ -101,7 +101,7 @@ class Products extends Eloquent
 		// 				return $collection->aggregate([
 		// 					[
 		// 						'$match' => [
-		// 							'_id' => new mongoId($id)
+		// 							'_id' => new MongoId($id)
 		// 						]
 		// 					],
 		// 					[
@@ -695,7 +695,7 @@ class Products extends Eloquent
 		$isSingle = true;
 		if(!is_array($params['id'])){
 
-			$match = new mongoId($params['id']);
+			$match = new MongoId($params['id']);
 
 		}else{
 
@@ -991,7 +991,7 @@ class Products extends Eloquent
 		$isSingle = true;
 		if(!is_array($params['id'])){
 
-			$match = new mongoId($params['id']);
+			$match = new MongoId($params['id']);
 
 		}else{
 
@@ -1372,7 +1372,7 @@ class Products extends Eloquent
 
     public function updateInventory($order){
 
-    	$orderId = $order['_id'];
+    	$orderId = new MongoId($order['_id']);
 
     	$proQty = [];
 		$ids = [];
