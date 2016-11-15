@@ -746,7 +746,9 @@ class Products extends Eloquent
 								'availabilityTime' => 1,
 								'loyaltyValueType' => 1,
 								'loyaltyValuePoint' => 1,
-								'loyaltyValuePrice' => 1
+								'loyaltyValuePrice' => 1,
+								'loyaltyType'=>1,
+								'loyalty'=>1
 							]
 						],
 						[
@@ -804,6 +806,8 @@ class Products extends Eloquent
 								'loyaltyValueType' => 1,
 								'loyaltyValuePoint' => 1,
 								'loyaltyValuePrice' => 1,
+								'loyaltyType'=>1,
+								'loyalty'=>1,
 
 								'regular_express_delivery' => [
 									'$ifNull' => [ '$regular_express_delivery',
@@ -892,7 +896,9 @@ class Products extends Eloquent
 
 								'loyaltyValueType' => 1,
 								'loyaltyValuePoint' => 1,
-								'loyaltyValuePrice' => 1
+								'loyaltyValuePrice' => 1,
+								'loyaltyType'=>1,
+								'loyalty'=>1
 							]
 						],
 						[
@@ -925,7 +931,9 @@ class Products extends Eloquent
 
 								'loyaltyValueType' => 1,
 								'loyaltyValuePoint' => 1,
-								'loyaltyValuePrice' => 1
+								'loyaltyValuePrice' => 1,
+								'loyaltyType'=>1,
+								'loyalty'=>1
 							]
 						]
 
