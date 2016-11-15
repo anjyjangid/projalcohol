@@ -12,6 +12,7 @@ use AlcoholDelivery\Stocks;
 use AlcoholDelivery\Products;
 use Illuminate\Support\Facades\Auth;
 use MongoId;
+use MongoDate;
 
 class PurchaseOrderController extends Controller
 {
@@ -218,6 +219,8 @@ class PurchaseOrderController extends Controller
 
             $userStoreId = Auth::user('admin')->storeId;
 
+            $inventoryLog = [];
+
             foreach ($products as $i => $product) {
                 if(!isset($product['received']))
                     $products[$i]['received'] = 0;
@@ -232,7 +235,15 @@ class PurchaseOrderController extends Controller
 
                     Stocks::raw()->update(["productId" => $product['_id']['$id'], "storeId" => $userStoreId], ['$inc' => ['quantity' => $product['add']]]);
                     Products::raw()->update(["_id" => $products[$i]['_id']], ['$inc' => ['quantity' => $product['add']]]);
-                    // jprd($resp);
+
+                    //PREPARE TRANSACTION OF PRODUCT FOR THE STORE
+                    $inventoryLog[] = [
+                        'productId' => new MongoId($product['_id']['$id']),
+                        'purchaseOrderId' => new MongoId($id),
+                        'storeId' => new MongoId($userStoreId),
+                        'quantity' => $product['add'],
+                        'created_at' => new MongoDate(strtotime(date('Y-m-d H:i:s')))
+                    ];                    
                 }
 
                 unset($products[$i]['add']);
@@ -244,6 +255,13 @@ class PurchaseOrderController extends Controller
                     $received = true;
             }
 
+            //INSERT INVENTORY LOG
+            if($inventoryLog){
+                $r = DB::collection('inventoryLog')->insert($inventoryLog);
+            }
+
+            //PROCESS ADVANCE ORDER
+            
             if($isComplete)
                 $status = 2;
             else if($received)
@@ -253,6 +271,8 @@ class PurchaseOrderController extends Controller
 
             if($hasUpdate)
                 $response = PurchaseOrder::raw()->update(['_id' => new MongoId($id)], ['$set' => ['products'=>$products, 'status'=>$status]]);
+
+            
         }
 
         if(!isset($response))
