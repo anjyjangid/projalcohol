@@ -26,6 +26,7 @@ use AlcoholDelivery\Email;
 use DB;
 use MongoDate;
 use MongoId;
+use stdClass;
 
 use AlcoholDelivery\Payment;
 
@@ -1666,6 +1667,10 @@ jprd($product);
 				unset($loyaltyPros[$proId]);
 			}
 
+			if(empty($loyaltyPros)){
+				$loyaltyPros = new stdClass();
+			}
+
 			$cart->__set("loyalty",$loyaltyPros);
 			
 			$cart->save();
@@ -1697,6 +1702,10 @@ jprd($product);
 			$loyaltyCards = $cart->loyaltyCards;
 					
 			unset($loyaltyCards[$value]);
+			
+			if(empty($loyaltyCards)){
+				$loyaltyCards = new stdClass();
+			}
 			
 			$cart->__set("loyaltyCards",$loyaltyCards);
 			
