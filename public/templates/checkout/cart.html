@@ -438,24 +438,21 @@
 </div>
 
 <div class="checkboxtotaldiv">
-	<div class="row">
-		<div class="col-md-4">
-			
-		</div>
-		<div class="col-md-4">
-			
-		</div>
-	</div>
 	<div class="checkboxtotaldiv-top">
-		<!-- <div class="col-md-6">
-			<input type="text" class="form-control" name="discountCode" ng-model="discountCode" value="" placeholder="Coupon Code" >
-			<button ng-click="checkCoupon(discountCode)" class="btn btn-success">Apply</button>
-
+		<div class="col-md-6">
+			<div class="input-group">
+			   <input type="text" class="form-control" name="discountCode" ng-model="discountCode" value="" placeholder="Coupon Code" >
+			   <span class="input-group-btn">
+			        <button ng-click="checkCoupon(discountCode)" class="btn btn-success">Apply</button>
+			   </span>
+			   <!-- <a href="javascript:void(0)" ng-click="removeCoupon()">Remove</a> -->
+			</div>
+			<div class="error" ng-hide="invalidCodeMsg">Invalid Coupon Code</div>
 		</div>
-		<div class="col-md-6"> -->
+		<div class="col-md-6">
 			<div class="checkboxtotaldiv-title">Subtotal</div>
 			<div class="checkboxtotaldiv-text">{{alcoholCart.getSubTotal() | pricingTxt}}</div>
-		<!-- </div> -->
+		</div>
 	</div>
 	<div class="checkboxtotaldiv-middle">
 		<div class="col-sm-6">

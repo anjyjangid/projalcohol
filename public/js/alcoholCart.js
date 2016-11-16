@@ -2236,7 +2236,12 @@ AlcoholDelivery.service('alcoholCart', [
 			});
 
 			_self.setPromotionsInCart();
+			//console.log(storedCart.couponData);
 
+			if(typeof(storedCart.couponData) !== "undefined"){
+				$rootScope.discountCode = storedCart.couponData.code;
+				_self.setCouponPrice(storedCart.couponData);
+			}
 		};
 
 		this.deployCart = function(){
@@ -2370,12 +2375,64 @@ AlcoholDelivery.service('alcoholCart', [
 		this.reviewValidate = function(){return false;}
 
 
-
-
 		this.stepCheckout = function(step){
-
 			$anchorScroll();
+		}
 
+		this.setCouponPrice = function(coupon){
+
+			var _self = this;
+			var cType = coupon.type;
+			var cDiscount = coupon.discount;
+			var cDiscountStatus = coupon.discount_status;
+			var cTotal = coupon.total;
+			var cProducts = coupon.products;
+			var cCategories = coupon.categories;
+
+			var productsList = _self.getProducts();
+			console.log(productsList);
+			var cartTotal = this.getSubTotal();
+
+			if(!cTotal || (cTotal && cTotal <= cartTotal) ){
+			
+				angular.forEach(productsList, function (item) {
+					item.setPrice(item);
+					item.setCoupon(coupon);
+				});
+			}
+	
+		}
+
+		this.removeCoupon = function(){
+			var _self = this;
+			var productsList = this.getProducts();
+
+			$http.post("checkCoupon", {params: {cart: _self.getCartKey(), removeCoupon: 1}}).success(function(result){
+				angular.forEach(productsList, function (item) {
+					item.setPrice(item);
+				});
+			}).error(function(){
+
+			});
+	
+		}
+
+		this.checkCoupon = function(discountCode, cartKey){
+			var _self = this;
+			var cartKey = cartKey;
+			var couponCode = discountCode;
+
+			$http.post("checkCoupon", {params: {cart: cartKey, coupon: couponCode}}).success(function(result){
+				if(result.errorCode==1){
+					_self.removeCoupon();
+					$rootScope.invalidCodeMsg = false;
+				}else{
+					$rootScope.invalidCodeMsg = true;
+					_self.setCouponPrice(result.coupon);
+				}
+
+			}).error(function(){
+			});
 		}
 
 	}]);

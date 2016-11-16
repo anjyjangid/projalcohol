@@ -296,6 +296,55 @@ angular.module('AlcoholCartFactories', [])
 
 	};
 
+	item.prototype.setCoupon = function(coupon){
+		var cType = coupon.type;
+		var cDiscount = coupon.discount;
+		var cDiscountStatus = coupon.discount_status;
+		var cTotal = coupon.total;
+		var cProducts = coupon.products;
+		var cCategories = coupon.categories;
+
+		var discountAmount = 0;
+		var pAmount = 0;
+		var hasCategory = 0;
+		var quantity = this.remainingQty;
+		if (cProducts.length > 0) {
+			if(cProducts.indexOf(this._id) == -1) {
+				return;
+			}
+		}
+
+		if (cCategories.length > 0) {
+			angular.forEach(this.product.categories, function (pCat) {
+				if(cCategories.indexOf(pCat) > -1) {
+					hasCategory = 1;
+				}	
+			});
+
+			if(!hasCategory)
+				return;
+		}
+
+		if(cDiscountStatus==1){
+			pAmount = this.unitPrice*quantity;
+		}else{
+			pAmount = this.discountedUnitPrice*quantity;
+		}
+
+		if(cType==1){
+			discountAmount = pAmount - cDiscount;
+		}else{
+			discountAmount = pAmount - ((pAmount*cDiscount)/100);
+		}
+
+		if(cDiscountStatus==1 && discountAmount > this.discountedUnitPrice*quantity){
+			discountAmount = this.discountedUnitPrice*quantity;
+		}
+
+		this.discountedUnitPrice = parseFloat((discountAmount/quantity).toFixed(2));
+		this.price = discountAmount.toFixed(2);
+	}
+
 	item.prototype.getPrice = function(){
 		return parseFloat(this.price);
 	};

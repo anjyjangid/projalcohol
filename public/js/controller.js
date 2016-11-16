@@ -147,15 +147,16 @@ AlcoholDelivery.controller('AppController',
 		return $filter('filter')($rootScope.settings.pages,{section:section});
 	};
 
+	$rootScope.invalidCodeMsg = true;
+
 	$scope.checkCoupon = function(discountCode){
+		$scope.discountCode = discountCode;
+		alcoholCart.checkCoupon(discountCode, alcoholCart.getCartKey());
+	}
 
-		//var cartKey = alcoholCart.getCartKey();
-		var couponCode = discountCode;
-
-		$http.post("checkCoupon",{params: {coupon: couponCode}}).success(function(result){
-			console.log(result);
-		}).error(function(){
-		});
+	$scope.removeCoupon = function(){
+		$scope.discountCode = '';
+		alcoholCart.removeCoupon();
 	}
 
 	$scope.sortOptions = [
