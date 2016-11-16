@@ -550,4 +550,12 @@ class Orders extends Moloquent
 
 		return $order;
 	}
+
+	public function processAdvanceOrder($orderIds){
+
+		/*if(){
+			
+		}*/
+
+	}
 }

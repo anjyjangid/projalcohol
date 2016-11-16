@@ -32,8 +32,8 @@ class CategoryRequest extends Request
             'isMenu'=> 'required|integer|in:0,1',
             'thumb' => 'required',
             'metaTitle' => 'required|max:100',
-            'metaKeywords' => 'required|max:150',
-            'metaDescription' => 'required|max:150',
+            'metaKeywords' => 'required|max:200',
+            'metaDescription' => 'required|max:200',
         ];
         
         if($this->hasFile('thumb')){

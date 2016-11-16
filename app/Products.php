@@ -1437,6 +1437,7 @@ class Products extends Eloquent
 						'orderId' => $orderId,
 						'storeId' => $storeStocksvalue['storeObjId'],
 						'quantity' => $qtyToPull,
+						'type' => 1,
 						'created_at' => new MongoDate(strtotime(date('Y-m-d H:i:s')))
 					];
 					

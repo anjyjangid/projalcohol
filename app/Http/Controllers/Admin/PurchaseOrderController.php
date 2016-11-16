@@ -10,6 +10,7 @@ use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\PurchaseOrder;
 use AlcoholDelivery\Stocks;
 use AlcoholDelivery\Products;
+use AlcoholDelivery\Orders;
 use Illuminate\Support\Facades\Auth;
 use MongoId;
 use MongoDate;
@@ -204,6 +205,16 @@ class PurchaseOrderController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
+        $model = PurchaseOrder::find($id);
+
+        $advanceOrders = [];
+        if($model){
+            if(isset($model->advanceOrderId)){
+                $advanceOrders = Orders::whereRaw(['_id'=>['$in'=>$model->advanceOrderId],'doStatus'=>0])->get();
+            }
+        }
+
         $params = $request->all();
 
         extract($params);
