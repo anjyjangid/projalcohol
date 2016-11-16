@@ -1806,7 +1806,8 @@ jprd($product);
 
 		$cartObj = new Cart;
 
-		$cart = $cartObj->where("_id","=",$cartKey)->first();
+		// $cart = $cartObj->where("_id","=",$cartKey)->first();
+		$cart = Cart::findUpdated($cartKey);
 		
 
 		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){
@@ -1817,9 +1818,6 @@ jprd($product);
 				return redirect('/#/orderplaced/'.$order['_id']);
 		}
 
-		$cart->setLoyaltyPointUsed();
-
-
 		if(empty($cart)){
 			if($request->isMethod('get'))
 				return redirect('/');	
@@ -1827,9 +1825,7 @@ jprd($product);
 				return response(["success"=>false,"message"=>"cart not found"],405); //405 => method not allowed
 		}
 
-		$cartArr = $cart->toArray();
-
-		$this->setCartProductsList($cartArr);		
+		$cartArr = $cart->toArray();		
 
 		$user = Auth::user('user');		
 
@@ -1842,97 +1838,58 @@ jprd($product);
 
 		}
 
-		$cartArr['user'] = new MongoId($user->_id);
-		//$cartArr['user'] = new MongoId("57c422d611f6a1450b8b456c");//for testing on postman
-
-		$cartProductsArr = [];
-
-		$productsIdInCart = array_keys((array)$cartArr['products']);
-
-		$productObj = new Products;
-
-		$productsInCart = $productObj->getProducts(
-									array(
-										"id"=>$productsIdInCart,
-										"with"=>array(
-											"discounts"
-										)
-									)
-								);
-
-////// Loyalty point Earned calculation
-
-		$loyaltyPoints = 0;
-		
-		$productsData = $cartObj->getAllProductsIncart($cartArr);
-
-		// return response($productsData,400);
-
-		foreach ($productsData as $key => $value) {
-
-			if((int)$value['loyaltyType']==0){
-
-				if(!isset($value['loyalty'])){$value['loyalty']=0;}
-
-				$loyaltyPoints+= $value['count'] * ($value['price'] * $value['loyalty']/100);
-
-			}else{
-
-				$loyaltyPoints+= $value['count'] * $value['loyalty'];
-
-			}
-
-		}
-
-		$cartArr["loyaltyPointEarned"] = $loyaltyPoints;
-
-//////
+		//$cartArr['user'] = new MongoId($user->_id);
+		$cartArr['user'] = new MongoId("57c422d611f6a1450b8b456c");//for testing on postman
 
 		try {
 			
 			$orderObj = $cart->cartToOrder();
-
+			
 			$order = Orders::create($orderObj);
-			
+
 			$cart->delete();
-			
+
 			$reference = $order->reference;			
 
 			$userObj = User::find($user->_id);
 
-			if($cart->loyaltyPointUsed>0){
+			if($orderObj['loyaltyPointUsed']>0){
 
-				$userObj->decrement('loyaltyPoints', $cart->loyaltyPointUsed);
+				$userObj->decrement('loyaltyPoints', $orderObj['loyaltyPointUsed']);
 
 				$userObj->push('loyalty', 
-											[
-												"type"=>"debit",
-												"points"=>$cart->loyaltyPointUsed,
-												"reason"=>[
-													"type"=>"order",
-													"key" => $reference,
-													"comment"=> "You have used this points by making a purchase on our website"
-												],
-												"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
-											]
-										);
+									[
+										"type"=>"debit",
+										"points"=>$orderObj['loyaltyPointUsed'],
+										"reason"=>[
+											"type"=>"order",
+											"key" => $reference,
+											"comment"=> "You have used this points by making a purchase on our website"
+										],
+										"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+									]
+								);
 
 			}
 
-			$userObj->increment('loyaltyPoints', $loyaltyPoints);
+			$loyaltyPoints = $orderObj['loyaltyPointEarned'];
+			if($loyaltyPoints>0){
 
-			$userObj->push('loyalty', 
-										[
-											"type"=>"credit",
-											"points"=>$loyaltyPoints,
-											"reason"=>[
-												"type"=>"order",
-												"key" => $reference,
-												"comment"=> "You have earned this points by making a purchase on our website"
-											],
-											"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
-										]
-									);
+				$userObj->increment('loyaltyPoints', $loyaltyPoints);
+
+				$userObj->push('loyalty', 
+									[
+										"type"=>"credit",
+										"points"=>$loyaltyPoints,
+										"reason"=>[
+											"type"=>"order",
+											"key" => $reference,
+											"comment"=> "You have earned this points by making a purchase"
+										],
+										"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+									]
+								);
+			}
 
 			$request->session()->forget('deliverykey');
 			
