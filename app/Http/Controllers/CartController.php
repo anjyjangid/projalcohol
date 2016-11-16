@@ -22,6 +22,7 @@ use AlcoholDelivery\Holiday as Holiday;
 use AlcoholDelivery\User as User;
 use AlcoholDelivery\Gift as Gift;
 use AlcoholDelivery\Email;
+use AlcoholDelivery\Coupon;
 
 use DB;
 use MongoDate;
@@ -203,7 +204,6 @@ class CartController extends Controller
 		}else{
 
 			$cart = $cart->toArray();
-
 		}
 
 		$isMerged = $this->mergecarts($cart['_id']);
@@ -216,6 +216,22 @@ class CartController extends Controller
 
 		if(!isset($cart['loyalty'])){
 			$cart['loyalty'] = [];
+		}
+
+		if(isset($cart['coupon']) && $cart['coupon']){
+			$couponData = Coupon::where(['_id' => $cart['coupon'], 'status'=>1])->first();
+
+			unset($couponData->start_date);
+			unset($couponData->end_date);
+			unset($couponData->csvImport);
+			unset($couponData->name);
+			unset($couponData->updated_at);
+			unset($couponData->_id);
+			unset($couponData->status);
+			unset($couponData->coupon_uses);
+			unset($couponData->customer_uses);
+
+			$cart['couponData'] = $couponData->toArray();
 		}
 
 		$productsIdInCart = array_merge(array_keys((array)$cart['products']),array_keys((array)$cart['loyalty']));

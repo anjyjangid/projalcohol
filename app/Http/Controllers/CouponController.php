@@ -9,6 +9,8 @@ use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Coupon;
 use AlcoholDelivery\Cart;
 
+use MongoId;
+
 class CouponController extends Controller
 {
     /**
@@ -32,14 +34,23 @@ class CouponController extends Controller
 
         extract($params);
         
-        $totalItem = 0;
-        $errorCode= 0;
+        $errorCode = 0;
+        $msg = '';
         $coupon = array();
 
-        $couponData = Coupon::where('code', 'regexp', '/^'.$params['coupon'].'$/i')->where(['status'=>1])->first();
+        if(isset($params['coupon'])){
+            $couponData = Coupon::where('code', 'regexp', '/^'.$params['coupon'].'$/i')->where(['status'=>1])->first();
+        }        
 
-        if($couponData->_id){
+        if(isset($couponData->_id)){
            if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date)>= time()){
+
+            if(isset($params['cart'])){
+                $cart = Cart::find($params['cart']);
+                $cart->coupon = new MongoId($couponData->_id);
+                $cart->save();
+            }
+
             unset($couponData->start_date);
             unset($couponData->end_date);
             unset($couponData->csvImport);
@@ -48,17 +59,28 @@ class CouponController extends Controller
             unset($couponData->_id);
             unset($couponData->code);
             unset($couponData->status);
+            unset($couponData->coupon_uses);
+            unset($couponData->customer_uses);
 
             $coupon = $couponData;
            }
         }else{
-            $errorCode= 1; 
+            $errorCode = 1;
+            $msg = 'Invalid Coupon Code';
         }
 
+        if($errorCode==1 || (isset($params['removeCoupon']) && $params['removeCoupon']==1)){
+            if(isset($params['cart'])){
+                $cart = Cart::find($params['cart']);
+                $cart->coupon = '';
+                $cart->save();
+            }
+        }
 
         $response = [
             'errorCode' => $errorCode,
             'coupon' => $coupon,
+            'msg'=> $msg,
         ];
 
         return response($response, 200);
