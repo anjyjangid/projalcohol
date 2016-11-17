@@ -4,7 +4,7 @@
 
 <div class="productdetailcovermainbgimg">
 <div class="row">
-	<div class="col-xs-12 col-sm-6 col-md-6" ng-class="{comboproductitems_outofstock:{{!product.quantity}}}">
+	<div class="col-xs-12 col-sm-6 col-md-6" ng-class="{comboproductitems_outofstock:{{!(product.quantity>0)}}}">
 		<!-- <div class="prddetailnormaltext">
 			<button title="{{isInwishList?'Added to Wishlist':'Add to Wishlist'}}" class="btn btn-default btn-purple detailwishbut" ng-click="isInwishList?myWish():addToWishlist(0); $event.stopPropagation();">
 				<img src="images/add-wish-icon.png" /> 
@@ -25,16 +25,16 @@
 		</div>
 		<data-owl-carousel class="owl-carousel owluperpartcover" data-options="parentOwlOptions" ng-model="sync1">
 
-				<img err-pro-src="" ng-src="products/i/400/{{image.source}}" alt="" class="img-responsive img-responsive-h"  owl-carousel-item="" ng-repeat="image in product.imageFiles" class="item"/>
+				<img err-pro-src="" ng-src="products/i/400/{{image.source}}" alt="" isCover="{{image.coverimage}}" sortOrder="{{image.order}}" class="img-responsive img-responsive-h sync1"  owl-carousel-item="" ng-repeat="image in product.imageFiles"/>
 															
 		</data-owl-carousel >
 
 		<data-owl-carousel class="owl-carousel owldownpartcover" data-options="childOwlOptions" ng-model="sync2">
 
-				<img err-pro-src="" ng-src="products/i/200/{{image.source}}" alt="" class="img-responsive img-responsive-h" ng-click="syncClick($index)" owl-carousel-item ng-repeat="image in product.imageFiles" class="item"/>
+				<img err-pro-src="" ng-src="products/i/200/{{image.source}}" alt="" class="img-responsive img-responsive-h" ng-click="syncClick(image.order)" owl-carousel-item ng-repeat="image in product.imageFiles | orderBy:'order'"/>
 											
 		</data-owl-carousel> 
-
+		
 		<div class="prddetailnormaltext">{{product.description}}</div>           
 	</div>
 	<div class="col-xs-12 col-sm-6 col-md-6 product-detail-right-set" ng:class="{'has-sale-div':product.sale || product.nameDetailSale}">
@@ -71,7 +71,7 @@
 				</button>
 			</div> -->
 			
-			<div class="prddetailchilledcover text-noselect" ng-if="product.chilled && (product.quantity || product.outOfStockType == 2)" >
+			<div class="prddetailchilledcover text-noselect" ng-if="product.chilled && (product.quantity>0 || product.outOfStockType == 2)" >
 				<div class="prodchilled-btn" ng-class="{'active':product.servechilled}" ng-click="product.servechilled=1">
 					<span>Chilled</span>
 					<div class="-icon"></div>
@@ -82,7 +82,7 @@
 					<div class="-icon"></div>
 				</div>
 			</div>
-			<div class="prdquantitybulkcover text-noselect" ng-if="product.quantity || product.outOfStockType == 2">
+			<div class="prdquantitybulkcover text-noselect" ng-if="product.quantity>0 || product.outOfStockType == 2">
 				<div class="checkoutmiddlevlauediv">
 						<div class="pardqantitytexthead">Quantity</div>
 
@@ -132,14 +132,14 @@
 			</div>
 
 
-			<div class="prddetailinstock" ng-if="product.quantity || product.outOfStockType == 2">
+			<div class="prddetailinstock" ng-if="product.quantity>0 || product.outOfStockType == 2">
 			In Stock <not-available product="product"></not-available></div>
 			<div class="prddetailinstock" ng-if="product.quantity<1 && product.outOfStockType == 1">
 				<span class="text-danger">Out of Stock</span>
 			</div>
 
 			<div class="productslide_addbutton">
-				<div class="cartbtn" ng-if="product.quantity || product.outOfStockType == 2">
+				<div class="cartbtn" ng-if="product.quantity>0 || product.outOfStockType == 2">
 					<div class="addcart only-button prod_addtocart" ng-click="addtocart()" ng-if="!product.isInCart || product.getTotalQtyInCart()<1"><span></span>add to cart</div>
 					<div class="addcart only-button prod_addtocart" ng-click="addtocart()" ng-if="product.isInCart && product.getTotalQtyInCart()>0"><span></span>Update cart</div>
 

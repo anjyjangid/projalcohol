@@ -77,11 +77,11 @@ button:disabled {
 
 /* ANIMATE */
 .fade {
-	position: relative;
+	/*position: relative;
 	top: 0;
 	left: 0;
 	right: 0;
-	height: 100%;
+	height: 100%;*/
 	opacity: 1;
 }
 .fade.ng-enter
@@ -105,11 +105,11 @@ button:disabled {
 }
 
 .slide {
-	position: relative;
+	/*position: relative;
 	left: 0;
 	top: 0;
 	width: 100%;
-	height: 100%;
+	height: 100%;*/
 }
 .slide.ng-enter,
 .slide.ng-leave {

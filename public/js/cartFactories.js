@@ -60,7 +60,7 @@ angular.module('AlcoholCartFactories', [])
 	}
 
 	saleObj.prototype.setPrices = function(detail){
-
+		
 		var price = 0;
 		var actionProPrice = 0;
 
@@ -88,8 +88,7 @@ angular.module('AlcoholCartFactories', [])
 
 			 var qty = detail.giftQuantity;
 			 currPrice = parseFloat(price) - parseFloat(actionProPrice);
-			 currPrice = currPrice * qty;
-
+			 
 		}else{
 
 			if(detail.discountType==1){
@@ -121,10 +120,10 @@ angular.module('AlcoholCartFactories', [])
 			}
 
 		}
-		
 		this.totalDiscount = (parseFloat(price) - parseFloat(currPrice)).toFixed(2);
 		this.price = currPrice.toFixed(2);
 
+		
 
 	};
 
@@ -262,6 +261,7 @@ angular.module('AlcoholCartFactories', [])
 
 			this.setSalePrice(product.sale);
 			return false;
+
 		}
 
 		var bulkArr = original.express_delivery_bulk.bulk;
@@ -288,8 +288,7 @@ angular.module('AlcoholCartFactories', [])
 		}
 
 		if(quantity>0){
-			this.discountedUnitPrice = parseFloat((price/quantity).toFixed(2));
-			console.log(this.discountedUnitPrice,quantity);
+			this.discountedUnitPrice = parseFloat((price/quantity).toFixed(2));	
 		}
 
 		return this.price = price;
@@ -306,43 +305,48 @@ angular.module('AlcoholCartFactories', [])
 
 		var discountAmount = 0;
 		var pAmount = 0;
+		var hasProduct = 1;
 		var hasCategory = 0;
 		var quantity = this.remainingQty;
-		if (cProducts.length > 0) {
-			if(cProducts.indexOf(this._id) == -1) {
-				return;
+
+		if(typeof cProducts !== "undefined"){
+			if (cProducts.length > 0) {
+				if(cProducts.indexOf(this._id) == -1) {
+					hasProduct = 0;
+				}
 			}
 		}
 
-		if (cCategories.length > 0) {
-			angular.forEach(this.product.categories, function (pCat) {
-				if(cCategories.indexOf(pCat) > -1) {
-					hasCategory = 1;
-				}	
-			});
+		if(typeof cCategories !== "undefined"){
+			if (cCategories.length > 0) {
+				angular.forEach(this.product.categories, function (pCat) {
+					if(cCategories.indexOf(pCat) > -1) {
+						hasCategory = 1;
+					}	
+				});
+			}
+		}		
 
-			if(!hasCategory)
-				return;
-		}
+		if(hasProduct || hasCategory){
+			if(cDiscountStatus==1){
+				pAmount = this.unitPrice*quantity;
+			}else{
+				pAmount = this.discountedUnitPrice*quantity;
+			}
 
-		if(cDiscountStatus==1){
-			pAmount = this.unitPrice*quantity;
-		}else{
-			pAmount = this.discountedUnitPrice*quantity;
-		}
+			if(cType==1){
+				discountAmount = pAmount - cDiscount;
+			}else{
+				discountAmount = pAmount - ((pAmount*cDiscount)/100);
+			}
 
-		if(cType==1){
-			discountAmount = pAmount - cDiscount;
-		}else{
-			discountAmount = pAmount - ((pAmount*cDiscount)/100);
-		}
+			if(cDiscountStatus==1 && discountAmount > this.discountedUnitPrice*quantity){
+				discountAmount = this.discountedUnitPrice*quantity;
+			}
 
-		if(cDiscountStatus==1 && discountAmount > this.discountedUnitPrice*quantity){
-			discountAmount = this.discountedUnitPrice*quantity;
-		}
-
-		this.discountedUnitPrice = parseFloat((discountAmount/quantity).toFixed(2));
-		this.price = discountAmount.toFixed(2);
+			this.discountedUnitPrice = parseFloat((discountAmount/quantity).toFixed(2));
+			this.price = discountAmount.toFixed(2);
+		}		
 	}
 
 	item.prototype.getPrice = function(){
@@ -558,6 +562,9 @@ angular.module('AlcoholCartFactories', [])
 			price : p.loyaltyValuePrice || 0,
 		};
 
+		this.loyaltyValue.unitPoint = this.loyaltyValue.point;
+		this.loyaltyValue.unitPrice = this.loyaltyValue.price;
+
 		this.loyaltyValue.point*= parseInt(qty);
 		this.loyaltyValue.price*= parseFloat(qty);
 
@@ -632,7 +639,7 @@ angular.module('AlcoholCartFactories', [])
 
 }])
 
-.factory('alcoholCartPackage', ['$rootScope', '$log', function ($rootScope, $log){
+.factory('alcoholCartPackage', ['$rootScope', '$log', '$filter', function ($rootScope, $log, $filter){
 
 	var package = function (id, uniqueId, data) {
 
@@ -643,6 +650,7 @@ angular.module('AlcoholCartFactories', [])
 		this.setPrice(data.packagePrice);
 		this.setOriginal(data);
 		this.setProducts(data.products);
+		this.setPackageItems();
 
 	};
 
@@ -773,6 +781,15 @@ angular.module('AlcoholCartFactories', [])
 
 	package.prototype.getTotal = function(){
 		return +parseFloat(this.getPrice()).toFixed(2);
+	};
+
+	package.prototype.setPackageItems = function(){
+		angular.forEach(this.original.packageItems,function(packageItem,packageKey){
+			angular.forEach(packageItem.products,function(product,productKey){									
+				product.quantityAdded = product.cartquantity;				
+			});
+		});
+
 	};
 
 	return package;

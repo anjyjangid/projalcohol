@@ -1,10 +1,12 @@
 AlcoholDelivery.service('alcoholCart', [
-			'$log','$rootScope', '$window', '$http', '$q', '$mdToast', '$filter', 'alcoholCartItem', 'alcoholCartLoyaltyItem', 
+			'$log','$rootScope', '$window', '$http', '$q', '$mdToast', '$filter', '$timeout', 'alcoholCartItem', 'alcoholCartLoyaltyItem', 
 			'alcoholCartPackage','promotionsService','alcoholCartPromotion', 'alcoholCartGiftCard', 'alcoholCartGift', 
 			'alcoholCartSale', 'alcoholCartCreditCard','UserService'
-	,function ($log, $rootScope, $window, $http, $q, $mdToast, $filter, alcoholCartItem, alcoholCartLoyaltyItem, 
+	,function ($log, $rootScope, $window, $http, $q, $mdToast, $filter, $timeout, alcoholCartItem, alcoholCartLoyaltyItem, 
 			alcoholCartPackage, promotionsService, alcoholCartPromotion, alcoholCartGiftCard, alcoholCartGift,
 			alcoholCartSale, alcoholCartCreditCard, UserService) {
+
+	var _self = this;
 
 	this.init = function(){
 		
@@ -227,10 +229,11 @@ AlcoholDelivery.service('alcoholCart', [
 
 				if(resProduct.quantity==0){
 
-					//_self.removeItemById(id);
+					_self.removeLoyaltyProductById(id);
 
 				}else{
-				
+					
+					inCart.setRQuantity(resProduct.chilled.quantity,resProduct.nonchilled.quantity);
 					inCart.setTQuantity(resProduct.quantity);
 					inCart.setPrice(resProduct.product);
 
@@ -436,7 +439,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 	this.addPackage = function (id,detail) {
 
-		console.log(arguments);
+		//console.log(arguments);
 		var _self = this;
 
 		var deliveryKey = _self.getCartKey();
@@ -680,7 +683,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 					_self.setPromotionsInCart();
 										
-					$rootScope.$broadcast('alcoholCart:notify',"Promotion added to cart");
+					$rootScope.$broadcast('alcoholCart:notify',"Promotion added to cart",2000);
 
 				}							
 
@@ -920,6 +923,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 		this.getLoyaltyProductById = function (productId){
 
+			if(angular.isDefined(productId.$id)){ productId = productId.$id}
+
 			var products = this.getCart().loyalty;
 			var build = false;
 
@@ -959,11 +964,7 @@ AlcoholDelivery.service('alcoholCart', [
 			if(typeof status !=="undefined"){
 
 				this.$cart.nonchilled = status;
-				this.$cart.discount.nonchilled.status = status;
-
-				msg = (status)?'Non-Chilled condition activated':'Chilled condition activated';
-
-				$rootScope.$broadcast('alcoholWishlist:change',{message:msg,targId:'cart-summary-icon'});
+				this.$cart.discount.nonchilled.status = status;				
 			}
 
 			this.deployCart().then(
@@ -1161,7 +1162,13 @@ AlcoholDelivery.service('alcoholCart', [
 				if(product.getQuantity()>0){
 					total += parseFloat(product.getRemainQtyPrice());
 				}
-			});			
+			});
+
+			angular.forEach(this.getLoyaltyProducts(), function (product) {
+
+				total += (parseFloat(product.loyaltyValue.price)).toFixed(2);
+
+			});
 
 			angular.forEach(cart.packages, function (package) {
 				total += parseFloat(package.getTotal());
@@ -1176,18 +1183,26 @@ AlcoholDelivery.service('alcoholCart', [
 				total += parseFloat(gifts.gsPrice());
 			});
 			
-
-			promotionsService.setEligibility(total);
-			
-			this.removeNonEligiblePromotions(total);
-
-			angular.forEach(cart.promotions, function (promotion) {
-				total += parseFloat(promotion.getPrice());
-			});
+			promotionsService.setEligibility(total);			
 
 			angular.forEach(cart.sales, function (sale) {
 				total += parseFloat(sale.getPrice());
 			});
+
+			if(typeof this.nonEligiblePromotionsCheck!=="undefined"){
+				$timeout.cancel(this.nonEligiblePromotionsCheck);
+			}
+			
+			var totalWithoutPromotion = total;
+			this.nonEligiblePromotionsCheck = $timeout(function() {
+				_self.removeNonEligiblePromotions(totalWithoutPromotion);
+			},1000,false)
+
+			
+			angular.forEach(cart.promotions, function (promotion) {
+				total += parseFloat(promotion.getPrice());
+			});
+			
 
 			return +parseFloat(total).toFixed(2);
 
@@ -1333,10 +1348,9 @@ AlcoholDelivery.service('alcoholCart', [
 
 			return defer.promise;		
 			
-		};
+		};		
 
-
-		this.removeItemById = function (id) {
+		this.removeItemById = function (id,notify) {
 
 			var item;
 			var cart = this.getCart();
@@ -1345,11 +1359,67 @@ AlcoholDelivery.service('alcoholCart', [
 
 					delete cart.products[index];
 					item = product || {};
-					
-				}	
+
+				}
 			});
-			 
-			$rootScope.$broadcast('alcoholCart:itemRemoved', item);
+
+			var showNotification = notify || true;
+
+			if(showNotification){
+				$rootScope.$broadcast('alcoholCart:itemRemoved', item);
+			}
+			
+		};
+
+		this.removeLoyaltyProductById = function (id,notify) {
+
+			var item;
+			var lProducts = this.getLoyaltyProducts();
+			var cart = this.getCart();
+
+			angular.forEach(lProducts, function (lProduct, index) {
+				if(index === id) {
+
+					delete cart.loyalty[index];
+					item = lProduct || {};
+
+				}
+			});
+
+			var showNotification = true;
+
+			if(angular.isDefined(notify) && notify===false)
+			showNotification = false;
+
+			if(showNotification){
+				$rootScope.$broadcast('alcoholCart:updated',{msg:"Loyalty product removed from cart"});
+			}
+			
+		};
+
+		this.removeLoyaltyCardByValue = function (id,notify) {
+
+			var item;
+			var lCards = this.getLoyaltyCards();
+			var cart = this.getCart();
+
+			angular.forEach(lCards, function (lCard, value) {
+				if(value === id) {
+
+					delete cart.loyaltyCards[value];
+					item = lCard || {};
+
+				}
+			});
+
+			var showNotification = true;
+
+			if(angular.isDefined(notify) && notify===false)
+			showNotification = false;
+
+			if(showNotification){
+				$rootScope.$broadcast('alcoholCart:updated',{msg:"Loyalty card removed from cart"});
+			}
 			
 		};
 
@@ -1391,6 +1461,90 @@ AlcoholDelivery.service('alcoholCart', [
 			return defer.promise;					
 			
 		};
+
+		this.removeLoyaltyProduct = function (id,chilled) {
+
+			var defer = $q.defer();
+			var deliveryKey = this.getCartKey();
+			var _self = this;
+
+			$http.delete("cart/loyalty/"+deliveryKey+'/'+id+'/'+chilled).then(
+
+				function(response){
+
+					response = response.data;
+
+					var inCart = _self.getLoyaltyProductById(id);
+
+					var qtyChilled = inCart.getRQuantity('chilled');
+					var qtyNonChilled = inCart.getRQuantity('nonchilled');
+					var qtyBefore = qtyChilled+qtyNonChilled;
+
+					if(chilled){
+						qtyChilled = 0;
+					}else{
+						qtyNonChilled = 0;
+					}
+
+					var qtyAfter = qtyChilled+qtyNonChilled;
+					
+					if(qtyAfter>0){
+						inCart.setRQuantity(qtyChilled,qtyNonChilled);
+						inCart.setTQuantity(qtyAfter);
+					}else{
+						var diff = qtyBefore - qtyAfter;
+						_self.removeLoyaltyProductById(id,false);
+
+						$rootScope.$broadcast('alcoholCart:updated',{msg:"Loyalty product removed from cart",quantity:Math.abs(diff)});
+					}
+										
+					_self.validateContainerGift();
+
+					defer.resolve(response);
+
+				},
+				function(errorRes){
+
+					defer.reject(errorRes);
+
+				}
+			);
+
+			return defer.promise;		
+			
+		};
+
+		this.removeLoyaltyCard = function (id) {
+
+			var defer = $q.defer();
+			var deliveryKey = this.getCartKey();
+			var _self = this;
+
+			$http.delete("cart/loyaltycard/"+deliveryKey+'/'+id).then(
+
+				function(response){					
+
+					var inCart = _self.getLoyaltyCardByValue(id);
+
+					_self.removeLoyaltyCardByValue(id);
+
+					$rootScope.$broadcast('alcoholCart:updated',{msg:"Loyalty card removed from cart",quantity:Math.abs(inCart.quantity)});					
+
+					defer.resolve(response);
+
+				},
+				function(errorRes){
+
+					defer.reject(errorRes);
+
+				}
+			);
+
+			return defer.promise;		
+			
+		};
+
+		
 
 		this.removeSale = function (id) {
 
@@ -1480,7 +1634,13 @@ AlcoholDelivery.service('alcoholCart', [
 
 						}
 
-						product.setRQuantity(qtyChilled,qtyNonChilled);
+						var totalProQty = qtyChilled+qtyNonChilled;
+						
+						if(totalProQty<1){
+							_self.removeItemById(product.getId());
+						}else{
+							product.setRQuantity(qtyChilled,qtyNonChilled);
+						}
 
 					});
 
@@ -1544,13 +1704,16 @@ AlcoholDelivery.service('alcoholCart', [
 
 				if(isEligible===false){
 
-					var toast = $mdToast.simple()
-						.textContent("Promotion bundle removed")
-						.highlightAction(false)
-						.position("top right");
-					$mdToast.show(toast);
+					_self.removePromotion(promotion._id).then(
+						
+						// function(successRes){							
+						// 	promotions.splice(key, 1)[0] || {};
+						// },
+						// function(errorRes){
+						// 	console.log("okok");
+						// }
 
-					promotions.splice(key, 1)[0] || {};
+					);					
 
 				}
 				
@@ -1774,6 +1937,30 @@ AlcoholDelivery.service('alcoholCart', [
 			var deliveryKey = this.getCartKey();
 
 			$http.put("/cart/chilledstatus/"+deliveryKey, {
+					"id":id,
+					"chilled":product.qChilledStatus,
+					"nonchilled":product.qNChilledStatus
+				},{
+
+			}).error(function(data, status, headers) {
+
+			}).success(function(response) {
+
+			});
+
+		}
+
+		this.loyaltyChilledStatus = function(id,type){
+			
+			if(this.$cart.nonchilled)return false; // unable to change product chilled status if whole cart set as nonchilled
+
+			var product = this.getLoyaltyProductById(id);
+
+			product[type+'Status'] = !product[type+'Status'];
+						
+			var deliveryKey = this.getCartKey();
+
+			$http.put("/cart/chilled/loyalty/"+deliveryKey, {
 					"id":id,
 					"chilled":product.qChilledStatus,
 					"nonchilled":product.qNChilledStatus
@@ -2382,15 +2569,10 @@ AlcoholDelivery.service('alcoholCart', [
 		this.setCouponPrice = function(coupon){
 
 			var _self = this;
-			var cType = coupon.type;
-			var cDiscount = coupon.discount;
-			var cDiscountStatus = coupon.discount_status;
 			var cTotal = coupon.total;
-			var cProducts = coupon.products;
-			var cCategories = coupon.categories;
 
 			var productsList = _self.getProducts();
-			console.log(productsList);
+			//console.log(productsList);
 			var cartTotal = this.getSubTotal();
 
 			if(!cTotal || (cTotal && cTotal <= cartTotal) ){
@@ -2423,9 +2605,10 @@ AlcoholDelivery.service('alcoholCart', [
 			var couponCode = discountCode;
 
 			$http.post("checkCoupon", {params: {cart: cartKey, coupon: couponCode}}).success(function(result){
-				if(result.errorCode==1){
+				if(result.errorCode==1 || result.errorCode==2){
 					_self.removeCoupon();
 					$rootScope.invalidCodeMsg = false;
+					$rootScope.invalidCodeMsgTxt = result.msg;
 				}else{
 					$rootScope.invalidCodeMsg = true;
 					_self.setCouponPrice(result.coupon);

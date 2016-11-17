@@ -11,13 +11,19 @@ body {
 
 #wrapper {
 	padding-left: 0;
-	-webkit-transition: all 0.5s ease;
+	/*-webkit-transition: all 0.5s ease;
 	-moz-transition: all 0.5s ease;
 	-o-transition: all 0.5s ease;
-	transition: all 0.5s ease;
+	transition: all 0.5s ease;*/
+	
+	-moz-transition: all .3s ease-out;
+	-o-transition: all .3s ease-out;
+	-webkit-transition: all .3s ease-out;
+	transition: all .3s ease-out;
 }
 #wrapper.toggled {
-	padding-left: 70%;
+	
+	height:100%;
 }
 #sidebar-wrapper {
 	z-index: 1000;
@@ -28,10 +34,15 @@ body {
 	margin-left: -250px;
 	overflow-y: auto;
 	background: #000;
-	-webkit-transition: all 0.5s ease;
+	/*-webkit-transition: all 0.5s ease;
 	-moz-transition: all 0.5s ease;
 	-o-transition: all 0.5s ease;
-	transition: all 0.5s ease;
+	transition: all 0.5s ease;*/
+	
+	-moz-transition: all .3s ease-out;
+	-o-transition: all .3s ease-out;
+	-webkit-transition: all .3s ease-out;
+	transition: all .3s ease-out;
 }
 #wrapper.toggled #sidebar-wrapper {
 	width: 250px;
@@ -111,27 +122,42 @@ body {
 }
 .side-menu-responsive, .laeftdivmain{
 	display: block;
-	width: 0px;
-	opacity: 0;
+	width:70%;
+	opacity: 1;
 	position: fixed;
 	background: #333;
-	-webkit-transition: all 0.5s ease;
+	/*-webkit-transition: all 0.5s ease;
 	-moz-transition: all 0.5s ease;
 	-o-transition: all 0.5s ease;
-	transition: all 0.5s ease;
+	transition: all 0.5s ease;*/
+	
+	-moz-transition: all .3s ease-out;
+	-o-transition: all .3s ease-out;
+	-webkit-transition: all .3s ease-out;
+	transition: all .3s ease-out;
 	height: 100%;
 	overflow: hidden;
 	overflow-y: auto;
 	padding: 0;
 	margin: 0;
+	 transform: translate(-100%);
+	
 }
 #wrapper.toggled .side-menu-responsive, #wrapper.toggled .laeftdivmain {
-	width:70%;
+	 
+	transform: translate(0px, 0px);
 	opacity: 1;
-	-webkit-transition: all 0.5s ease;
+	/*-webkit-transition: all 0.5s ease;
 	-moz-transition: all 0.5s ease;
 	-o-transition: all 0.5s ease;
-	transition: all 0.5s ease;
+	transition: all 0.5s ease;*/
+	
+	-moz-transition: all .3s ease-out;
+	-o-transition: all .3s ease-out;
+	-webkit-transition: all .3s ease-out;
+	transition: all .3s ease-out;
+	z-index:1;
+	
 }
 #bs-example-navbar-collapse-1 {
 	display: block;
@@ -146,6 +172,19 @@ body {
 #wrapper.toggled .navbar.navbar-default.navbar-fixed-top {
 	position: fixed;
 	transform: translate(70%, 0);
+}
+#wrapper.toggled .christmas-mainouter{
+	-moz-transition: all .2s ease-out;
+	-o-transition: all .2s ease-out;
+	-webkit-transition: all .2s ease-out;
+	transition: all .2s ease-out;
+	transform: translate(70%, 0);
+}
+.christmas-mainouter{
+	-moz-transition: all .2s ease-out;
+	-o-transition: all .2s ease-out;
+	-webkit-transition: all .2s ease-out;
+	transition: all .2s ease-out;
 }
 .menu-icon > .line {
 	background-color: #614911;
@@ -240,7 +279,7 @@ ul.mobilesidebar li.active:not(.open) ul{
     padding: 0px 10px;
     width: auto;
     background: #ebeef0 ;
-	z-index:999;
+	
 }
 .modal {
 	z-index: 99999;

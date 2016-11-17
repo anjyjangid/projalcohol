@@ -27,6 +27,7 @@ use AlcoholDelivery\Coupon;
 use DB;
 use MongoDate;
 use MongoId;
+use stdClass;
 
 use AlcoholDelivery\Payment;
 
@@ -231,6 +232,22 @@ class CartController extends Controller
 			unset($couponData->coupon_uses);
 			unset($couponData->customer_uses);
 
+			if(!empty($couponData->products)){
+				foreach ($couponData->products as $pValue) {
+					$getObj = get_object_vars($pValue);
+					$productList[] = $getObj['$id'];
+				}
+				$couponData->products = $productList;
+			}
+
+			if(!empty($couponData->categories)){
+				foreach ($couponData->categories as $pValue) {
+					$getObj = get_object_vars($pValue);
+					$catList[] = $getObj['$id'];
+				}
+				$couponData->categories = $catList;
+			}			
+
 			$cart['couponData'] = $couponData->toArray();
 		}
 
@@ -296,13 +313,13 @@ class CartController extends Controller
 
 						foreach ($package['productlist'] as $pkey => $pvalue) {
 							$proDetail[(string)$pvalue['_id']]['name'] = $pvalue['name'];
-							$proDetail[(string)$pvalue['_id']]['quantityAdded'] = 0;
+							$proDetail[(string)$pvalue['_id']]['cartquantity'] = 0;
 						}
 
 						$addedQuantity = [];
 
 						foreach ($package['products'] as $pkey => $pvalue) {
-							$proDetail[(string)$pvalue['_id']]['quantityAdded'] = $pvalue['quantity'];
+							$proDetail[(string)$pvalue['_id']]['cartquantity'] = $pvalue['quantity'];
 						}
 
 						unset($package['productlist']);
@@ -311,7 +328,7 @@ class CartController extends Controller
 							foreach ($oPackagevalue['products'] as &$provalue) {
 								$pDetail = $proDetail[(string)$provalue['_id']];
 								$provalue['name'] = $pDetail['name'];
-								$provalue['quantityAdded'] = $pDetail['quantityAdded'];
+								$provalue['cartquantity'] = $pDetail['cartquantity'];
 							}
 						}								
 					}					
@@ -522,11 +539,11 @@ class CartController extends Controller
 		} catch(\Exception $e){
 
 			return response(["message"=>$e->getMessage()],400);
-			return response(["message"=>"Something went worng"],400);
+			return response(["message"=>"Something went wrong"],400);
 
 		}
 
-		return response(["message"=>"Something went worng"],400);
+		return response(["message"=>"Something went wrong"],400);
 
 	}
 
@@ -534,10 +551,10 @@ class CartController extends Controller
 	 * Update the specified resource in storage.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
-	 * @param  int  $id
+	 * @param  int  $cartKey
 	 * @return \Illuminate\Http\Response
 	 */
-	public function putLoyalty(Request $request, $id)
+	public function putLoyalty(Request $request, $cartKey)
 	{
 
 		$user = Auth::user('user');
@@ -548,27 +565,28 @@ class CartController extends Controller
 		
 		$inputs = $request->all();
 
-		$cart = Cart::find($id);		
+		$cart = Cart::find($cartKey);		
 
 		$loyaltyAvailable = $this->getLoyaltyAvailable($cart); // LOYALTY POINTS AVAILABLE BEFORE ADD NEW PRODUCT
+
+		if($loyaltyAvailable===false || $loyaltyAvailable<0){
+
+			$cart->removeAllLoyaltyProduct();			
+			$cart->save();
+			return response(["message"=>"There is some thing wrong with loyalty products, Resetting loyalty products in cart","action"=>'refresh'],405);
+
+		}
 
 		$proIdToUpdate = $inputs['id'];
 
 		$response = [
-			"message"=>"Something went worng",
+			"message"=>"Something went wrong",
 			"code" => 000,
-		];
-
-		if(empty($cart)){
-
-			$response['message'] = "Not a valid request";
-			return response($response,400);
-
-		}
+		];		
 
 		if(!isset($cart->loyalty)){
 			$cart->loyalty = [];
-		}			
+		}
 
 		$data = [
 				"loyalty" => [
@@ -583,10 +601,10 @@ class CartController extends Controller
 		$product = Products::where("_id",$proIdToUpdate)
 					->where("status",1)
 					->where("isLoyalty",1)					
-					->where(function($query){
-						$query->where("quantity",'>',0)
-							  ->orWhere("outOfStockType",2);
-					})
+					// ->where(function($query){
+					// 	$query->where("quantity",'>',0)
+					// 		  ->orWhere("outOfStockType",2);
+					// })
 					->first([
 						'chilled',
 						'description',
@@ -609,7 +627,7 @@ class CartController extends Controller
 
 		if(is_null($product)){
 
-			return response(["message"=>"Product not found","reload"=>true],400);
+			return response(["message"=>"Product not found"],405);
 
 		}
 
@@ -670,10 +688,8 @@ class CartController extends Controller
 
 			if($updateProData['quantity']>0){
 
-				$result = DB::collection('cart')->where('_id', new MongoId($id))
+				$result = DB::collection('cart')->where('_id', new MongoId($cartKey))
 										->update(["loyalty.".$proIdToUpdate=>$updateProData], ['upsert' => true]);
-				// $cart->loyalty = array_merge($cart->loyalty,array($proIdToUpdate=>$updateProData));
-
 
 			}else{
 
@@ -681,8 +697,7 @@ class CartController extends Controller
 
 			}
 
-			$updateProData['product'] = $product;
-			$response['success'] = true;
+			$updateProData['product'] = $product;			
 			$response['message'] = "loyalty product updated successfully";
 
 			$response['change'] = $changeInQty;
@@ -692,17 +707,16 @@ class CartController extends Controller
 
 		} catch(\Exception $e){
 
-			return response(["message"=>"Something went worng"],400);
-			return response(["message"=>$e->getMessage()],400);
+			Log::warning("Loyalty Product Add : ".$e->getMessage());
 
 		}
 
-		return response(["message"=>"Something went worng"],400);
+		return response(["message"=>"Something went wrong"],400);
 
 	}
 
 
-	public function putCreditCertificate(Request $request, $id) {
+	public function putCreditCertificate(Request $request, $cartKey) {
 
 		$user = Auth::user('user');		
 
@@ -712,7 +726,7 @@ class CartController extends Controller
 		
 		$inputs = $request->all();
 		$value = $inputs['id'];
-		$cart = Cart::find($id);
+		$cart = Cart::find($cartKey);
 
 		$CreditsObj = new Credits;
 		$result = $CreditsObj->getCredit($value);
@@ -724,6 +738,14 @@ class CartController extends Controller
 		$card = $result->card;
 
 		$loyaltyAvailable = $this->getLoyaltyAvailable($cart); // LOYALTY POINTS AVAILABLE BEFORE ADD NEW PRODUCT
+
+		if($loyaltyAvailable===false || $loyaltyAvailable<0){
+
+			$cart->removeAllLoyaltyProduct();			
+			$cart->save();
+			return response(["message"=>"There is some thing wrong with loyalty products, Resetting loyalty products in cart","action"=>'refresh'],400);
+
+		}
 
 		$loyaltyCards = $cart->getLoyaltyCards();
 
@@ -781,20 +803,7 @@ class CartController extends Controller
 
 			$user = Auth::user('user');
 			$userLoyaltyPoints = $user['loyaltyPoints'];
-			$userLoyaltyPoints = 400;
-			
-			$loyaltyPros = is_array($cart->loyalty)?$cart->loyalty:[];
-			$loyaltyCardPros = is_array($cart->loyaltyCards)?$cart->loyaltyCards:[];
-
-			$pointsUsed = 0;
-
-			foreach($loyaltyPros as $loyaltyPro){
-				$pointsUsed += ($loyaltyPro['points'] * $loyaltyPro['quantity']);
-			}
-
-			foreach($loyaltyCardPros as $loyaltyCardPro){
-				$pointsUsed += ($loyaltyCardPro['points'] * $loyaltyCardPro['quantity']);
-			}
+			$pointsUsed = $cart->getLoyaltyPointUsed();
 
 			return $userLoyaltyPoints - $pointsUsed;
 
@@ -1189,6 +1198,37 @@ jprd($product);
 
 	}
 
+	public function updateLoyaltyChilledStatus(Request $request,$cartKey){
+
+		$cart = Cart::find($cartKey);
+
+		$productId = $request->input('id');
+		$chilled = $request->input('chilled');
+		$nonchilled = $request->input('nonchilled');
+
+		$lProduct = $cart->getLoyaltyProductById($productId);
+
+		$lProduct['chilled']['status'] = $chilled?'chilled':'nonchilled';
+		$lProduct['nonchilled']['status'] = $nonchilled?'chilled':'nonchilled';
+
+		$lProducts = $cart->getLoyaltyProducts();
+		$lProducts[$productId] = $lProduct;
+
+		$cart->__set("loyalty",$lProducts);
+
+		try{
+
+			$cart->save();
+			return response(["message"=>"status changed"],200);
+
+		}catch(\Exception $e){
+
+			return response(["message"=>$e->getMessage()]);
+
+		}
+
+	}	
+
 	public function updatePromoChilledStatus(Request $request,$cartKey){
 		
 		$promoId = $request->input('id');
@@ -1546,8 +1586,8 @@ jprd($product);
 
 
 			} catch(\Exception $e){
-
-				return response(array("success"=>false,"message"=>$e->getMessage()));
+				
+				Log::warning("Delete Product : ".$e->getMessage());
 
 			}
 
@@ -1588,8 +1628,8 @@ jprd($product);
 			return response($response,200);
 
 		}catch(\Exception $e){
-
-			return response(["success"=>false,"message"=>$e->getMessage()],400);
+			
+			Log::warning("Delete Sale : ".$e->getMessage());
 
 		}
 
@@ -1622,14 +1662,99 @@ jprd($product);
 			return response(["success"=>true,"message"=>"gift removed successfully"],200);
 
 		}catch(\Exception $e){
-
-			return (object)["success"=>false,"message"=>$e->getMessage()];
+			
+			Log::warning("Delete Gift : ".$e->getMessage());
 
 		}
 
 		return response(["success"=>false,"message"=>"Something went wrong"],400);
 
 	}
+
+	public function deleteLoyaltyProduct($cartKey,$proId,$type){		
+
+		$cart = Cart::find($cartKey);
+		
+		$loyalty = $cart->getLoyaltyProductById($proId);		
+
+		if($loyalty === false){
+			return response(["message"=>"Product not found"],405);
+		}
+		
+		if($type){
+			$loyalty['chilled']['quantity'] = 0;
+		}else{
+			$loyalty['nonchilled']['quantity'] = 0;
+		}
+
+		$total = $loyalty['chilled']['quantity'] + $loyalty['nonchilled']['quantity'];
+
+		try{
+
+			$loyaltyPros = $cart->loyalty;
+
+			if($total>0){
+				$loyaltyPros[$proId] = $loyalty;				
+			}else{
+				unset($loyaltyPros[$proId]);
+			}
+
+			if(empty($loyaltyPros)){
+				$loyaltyPros = new stdClass();
+			}
+
+			$cart->__set("loyalty",$loyaltyPros);
+			
+			$cart->save();
+
+			return response(["message"=>"Removed successfully"],200);
+
+		}catch(\Exception $e){
+
+			Log::warning("Delete Loyalty Product : ".$e->getMessage());
+
+		}
+
+		return response(["success"=>false,"message"=>"Something went wrong"],400);
+
+	}
+
+	public function deleteLoyaltyCard($cartKey,$value){		
+
+		$cart = Cart::find($cartKey);
+		
+		$loyaltyCard = $cart->getLoyaltyCardByValue($value);
+
+		if($loyaltyCard === false){
+			return response(["message"=>"Card not found"],405);
+		}
+
+		try{
+
+			$loyaltyCards = $cart->loyaltyCards;
+					
+			unset($loyaltyCards[$value]);
+			
+			if(empty($loyaltyCards)){
+				$loyaltyCards = new stdClass();
+			}
+			
+			$cart->__set("loyaltyCards",$loyaltyCards);
+			
+			$cart->save();
+
+			return response(["message"=>"Removed successfully"],200);
+
+		}catch(\Exception $e){
+
+			Log::warning("Delete Loyalty Card : ".$e->getMessage());
+
+		}
+
+		return response(["success"=>false,"message"=>"Something went wrong"],400);
+
+	}
+	
 
 	public function deleteCard($cardUId,Request $request){
 
@@ -1654,8 +1779,8 @@ jprd($product);
 			return response(["success"=>true,"message"=>"gift cards removed successfully"],200);
 
 		}catch(\Exception $e){
-
-			return (object)["success"=>false,"message"=>$e->getMessage()];
+			
+			Log::warning("Delete Card : ".$e->getMessage());
 
 		}
 
@@ -1692,8 +1817,8 @@ jprd($product);
 			return response(["success"=>true,"message"=>"promotion removed successfully"],200);
 
 		}catch(\Exception $e){
-
-			return (object)["success"=>false,"message"=>$e->getMessage()];
+			
+			Log::warning("Delete Promotion : ".$e->getMessage());
 
 		}
 
@@ -1713,7 +1838,8 @@ jprd($product);
 
 		$cartObj = new Cart;
 
-		$cart = $cartObj->where("_id","=",$cartKey)->first();
+		// $cart = $cartObj->where("_id","=",$cartKey)->first();
+		$cart = Cart::findUpdated($cartKey);
 		
 
 		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){
@@ -1724,9 +1850,6 @@ jprd($product);
 				return redirect('/#/orderplaced/'.$order['_id']);
 		}
 
-		$cart->setLoyaltyPointUsed();
-
-
 		if(empty($cart)){
 			if($request->isMethod('get'))
 				return redirect('/');	
@@ -1734,9 +1857,7 @@ jprd($product);
 				return response(["success"=>false,"message"=>"cart not found"],405); //405 => method not allowed
 		}
 
-		$cartArr = $cart->toArray();
-
-		$this->setCartProductsList($cartArr);		
+		$cartArr = $cart->toArray();		
 
 		$user = Auth::user('user');		
 
@@ -1749,97 +1870,58 @@ jprd($product);
 
 		}
 
-		$cartArr['user'] = new MongoId($user->_id);
-		//$cartArr['user'] = new MongoId("57c422d611f6a1450b8b456c");//for testing on postman
-
-		$cartProductsArr = [];
-
-		$productsIdInCart = array_keys((array)$cartArr['products']);
-
-		$productObj = new Products;
-
-		$productsInCart = $productObj->getProducts(
-									array(
-										"id"=>$productsIdInCart,
-										"with"=>array(
-											"discounts"
-										)
-									)
-								);
-
-////// Loyalty point Earned calculation
-
-		$loyaltyPoints = 0;
-		
-		$productsData = $cartObj->getAllProductsIncart($cartArr);
-
-		// return response($productsData,400);
-
-		foreach ($productsData as $key => $value) {
-
-			if((int)$value['loyaltyType']==0){
-
-				if(!isset($value['loyalty'])){$value['loyalty']=0;}
-
-				$loyaltyPoints+= $value['count'] * ($value['price'] * $value['loyalty']/100);
-
-			}else{
-
-				$loyaltyPoints+= $value['count'] * $value['loyalty'];
-
-			}
-
-		}
-
-		$cartArr["loyaltyPointEarned"] = $loyaltyPoints;
-
-//////
+		//$cartArr['user'] = new MongoId($user->_id);
+		$cartArr['user'] = new MongoId("57c422d611f6a1450b8b456c");//for testing on postman
 
 		try {
 			
-			$orderObj = $cart->cartToOrder();
-
+			$orderObj = $cart->cartToOrder($cartKey);
+			
 			$order = Orders::create($orderObj);
-			
+
 			$cart->delete();
-			
+
 			$reference = $order->reference;			
 
 			$userObj = User::find($user->_id);
 
-			if($cart->loyaltyPointUsed>0){
+			if($orderObj['loyaltyPointUsed']>0){
 
-				$userObj->decrement('loyaltyPoints', $cart->loyaltyPointUsed);
+				$userObj->decrement('loyaltyPoints', $orderObj['loyaltyPointUsed']);
 
 				$userObj->push('loyalty', 
-											[
-												"type"=>"debit",
-												"points"=>$cart->loyaltyPointUsed,
-												"reason"=>[
-													"type"=>"order",
-													"key" => $reference,
-													"comment"=> "You have used this points by making a purchase on our website"
-												],
-												"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
-											]
-										);
+									[
+										"type"=>"debit",
+										"points"=>$orderObj['loyaltyPointUsed'],
+										"reason"=>[
+											"type"=>"order",
+											"key" => $reference,
+											"comment"=> "You have used this points by making a purchase on our website"
+										],
+										"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+									]
+								);
 
 			}
 
-			$userObj->increment('loyaltyPoints', $loyaltyPoints);
+			$loyaltyPoints = $orderObj['loyaltyPointEarned'];
+			if($loyaltyPoints>0){
 
-			$userObj->push('loyalty', 
-										[
-											"type"=>"credit",
-											"points"=>$loyaltyPoints,
-											"reason"=>[
-												"type"=>"order",
-												"key" => $reference,
-												"comment"=> "You have earned this points by making a purchase on our website"
-											],
-											"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
-										]
-									);
+				$userObj->increment('loyaltyPoints', $loyaltyPoints);
+
+				$userObj->push('loyalty', 
+									[
+										"type"=>"credit",
+										"points"=>$loyaltyPoints,
+										"reason"=>[
+											"type"=>"order",
+											"key" => $reference,
+											"comment"=> "You have earned this points by making a purchase"
+										],
+										"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+									]
+								);
+			}
 
 			$request->session()->forget('deliverykey');
 			
@@ -1872,7 +1954,7 @@ jprd($product);
 				return redirect('/#/orderplaced/'.$order['_id']);
 			}
 
-			return response(array("success"=>true,"message"=>"order placed successfully","order"=>$order['_id']));
+			return response(array("success"=>true,"message"=>"Order Placed Successfully","order"=>$order['_id']));
 
 		} catch(\Exception $e){
 
@@ -1990,7 +2072,7 @@ jprd($product);
 
 		}
 
-		return response(array("success"=>false,"message"=>"Something went worng"));
+		return response(array("success"=>false,"message"=>"Something went wrong"));
 
 	}
 

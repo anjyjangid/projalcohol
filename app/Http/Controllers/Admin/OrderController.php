@@ -237,7 +237,7 @@ class OrderController extends Controller
 			return response(array("success"=>true,"message"=>"Dealer updated successfully"));
 		}
 		
-		return response(array("success"=>false,"message"=>"Something went worng"));
+		return response(array("success"=>false,"message"=>"Something went wrong"));
 		
 	}
 

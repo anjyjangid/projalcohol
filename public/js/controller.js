@@ -371,17 +371,13 @@ AlcoholDelivery.controller('ProductDetailController', [
 
 		alcoholWishlist.add($scope.product._id,addInSale).then(function(response) {
 
-				if(response.success){
+			if(response.success){
 
-					$scope.isInwishList = alcoholWishlist.getProductById($scope.product._id);
+				$scope.isInwishList = alcoholWishlist.getProductById($scope.product._id);
 
-				}
+			}
 
-			}, function(error) {
-
-				$rootScope.$broadcast('showLogin');
-
-			});
+		});
 	}
 
 	$scope.myWish = function(){
@@ -401,11 +397,17 @@ AlcoholDelivery.controller('ProductDetailController', [
 		if($($scope.sync2).data("owlCarousel") !== undefined){
 		  $scope.center(current);
 		}
+
+
 	}
 
-	$scope.syncClick = function(number){
-		$scope.sync1.trigger("owl.goTo",number);
+	$scope.syncClick = function(number){		
+		var key = angular.element($("[sortOrder='"+number+"']"));		
+		var ind = $('img.sync1').index(key);		
+		$scope.sync1.trigger("owl.goTo",ind);
   	}
+
+
 
 	$scope.center = function(number){
 
@@ -456,7 +458,7 @@ AlcoholDelivery.controller('ProductDetailController', [
 		pagination 				: false,
 		responsiveRefreshRate : 100,
 		afterInit : function(el){
-			el.find(".owl-item").eq(0).addClass("synced");
+			el.find(".owl-item").eq(0).addClass("synced");			
 		}
 
 	}
@@ -987,7 +989,10 @@ AlcoholDelivery.controller('CartController',[
 		savecard:true
 	}
 
-	$scope.packageUTOut = {};
+	$scope.packageUTOut = [];
+	$scope.proUpdateTimeOut = [];
+	$scope.lproUpdateTimeOut = [];
+	$scope.lproCardUpdateTimeOut = [];
 
 	$scope.step = 1;
 
@@ -1135,11 +1140,11 @@ AlcoholDelivery.controller('CartController',[
 
 		var proObj = $scope.cart.products[key];
 
-		if(typeof $scope.proUpdateTimeOut!=="undefined"){
-			$timeout.cancel($scope.proUpdateTimeOut);
+		if(angular.isDefined($scope.proUpdateTimeOut[key])){
+			$timeout.cancel($scope.proUpdateTimeOut[key]);
 		}
 
-		$scope.proUpdateTimeOut = $timeout(function(){
+		$scope.proUpdateTimeOut[key] = $timeout(function(){
 
 			var quantity = {
 				chilled : parseInt(proObj.qChilled),
@@ -1157,6 +1162,61 @@ AlcoholDelivery.controller('CartController',[
 
 		},1500)
 	};
+
+	$scope.updateLoyaltyProduct = function(key,type,direction){
+
+		var proObj = $scope.alcoholCart.getLoyaltyProductById(key);
+
+		if(proObj===false){return false;}
+
+		if(angular.isDefined($scope.lproUpdateTimeOut[key])){
+			$timeout.cancel($scope.lproUpdateTimeOut[key]);
+		}
+
+		$scope.lproUpdateTimeOut[key] = $timeout(function(){
+
+			var quantity = {
+				chilled : parseInt(proObj.qChilled),
+				nonChilled : parseInt(proObj.qNChilled)
+			}
+			alcoholCart.addLoyaltyProduct(key,quantity,proObj.servedAs).then(
+				function(response){
+					$scope.isInCart = true;
+				},
+				function(errRes){
+
+				}
+
+			);
+
+		},1500)
+	};
+
+	$scope.updateLoyaltyCard = function(key){
+
+		var proObj = $scope.alcoholCart.getLoyaltyCardByValue(key);
+
+		if(proObj===false){return false;}
+
+		if(angular.isDefined($scope.lproCardUpdateTimeOut[key])){
+			$timeout.cancel($scope.lproCardUpdateTimeOut[key]);
+		}
+
+		$scope.lproCardUpdateTimeOut[key] = $timeout(function(){
+			var quantity = proObj.quantity;
+			alcoholCart.addCreditCertificate(key,quantity).then(
+				function(response){
+					$scope.isInCart = true;
+				},
+				function(errRes){
+
+				}
+
+			);
+
+		},1500)
+	};
+	
 
 	$scope.updatePackage = function(uid){
 
@@ -1191,6 +1251,19 @@ AlcoholDelivery.controller('CartController',[
 		}else{
 
 			alcoholCart.removeProduct(key,false);
+
+		}
+	};
+
+	$scope.removeLoyaltyProduct = function(key,type){
+
+		if(type=='qChilled'){
+
+			alcoholCart.removeLoyaltyProduct(key,true);
+
+		}else{
+
+			alcoholCart.removeLoyaltyProduct(key,false);
 
 		}
 	};

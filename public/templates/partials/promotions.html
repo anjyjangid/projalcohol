@@ -1,7 +1,7 @@
 <div ng-repeat="promotion in _promo.$promotions" ng-if="promotion.eligible.already || promotion.eligible.nearest">		
 
 	<div class="checkoutcongratulationouter" ng-if="promotion.eligible.nearest">
-		<div class="checkout-congratulation-title">Hurry! You required ${{promotion.eligible.required}} to quilify this promotion.</div>
+		<div class="checkout-congratulation-title">Hurry! You required ${{promotion.eligible.required}} to qualify this promotion.</div>
 	</div>
 	<div class="checkoutcongratulationouter" ng-if="promotion.eligible.already">
 		<div class="checkout-congratulation-title">Congratulations! You qualify for special {{promotion.price | pricingTxt}} promotion.</div>

@@ -14,34 +14,42 @@
 
 		<div>
 			<ul  class="currentorderpopupul" ng-scrollbars ng-scrollbars-config="scrollconfig" ng-scrollbars-update="updateScrollbar">			
-				<li ng-init="total = 0" ng-repeat="(id,sale) in alcoholCart.getSales()">					
+				<li ng-init="total = 0; salePrice.price = sale.price" ng-repeat="(id,sale) in alcoholCart.getSales()">					
 					<div ng-repeat="(id,productInSale) in sale.products">						
 						<div class="currentorderpopupulleft">{{productInSale.product.name}}</div>
 						<div class="currentorderpopupulcenter" ng-init="$parent.total = $parent.total + productInSale.quantity">{{productInSale.quantity}}</div>						
 						<div class="currentorderpopupulright" ng:class="{'strike-txt':!sale.action}">{{(productInSale.product.price*productInSale.quantity) | pricingTxt}}</div>
 					</div>
 					<div ng-repeat="(id,productInAction) in sale.action">
+						{{salePrice.price = productInAction.product.price*productInAction.quantity;''}}
 						<div class="currentorderpopupulleft">{{productInAction.product.name}}</div>
 						<div class="currentorderpopupulcenter" ng-init="$parent.total = $parent.total + productInAction.quantity">{{productInAction.quantity}}</div>						
 						<div class="currentorderpopupulright strike-txt">{{(productInAction.product.price*productInAction.quantity) | pricingTxt}}</div>
-					</div>										
-					<!-- <div>
-						<div class="currentorderpopupulleft">&nbsp;</div>
-						<div class="currentorderpopupulcenter">&nbsp;</div>
-						<div class="currentorderpopupulright strike-txt">{{sale.strikePrice | pricingTxt}}</div>
-					</div> -->					
+					</div>																				
 					<div>
 						<div class="currentorderpopupulleft"><span class="saletag">{{sale.title.small}}</span></div>
 						<div class="currentorderpopupulcenter">&nbsp;<!-- {{total}} --></div>
-						<div ng-if="sale.action" class="currentorderpopupulright">{{(sale.price - sale.totalDiscount) | pricingTxt}}</div>
-						<div ng-if="!sale.action" class="currentorderpopupulright">{{sale.price | pricingTxt}}</div>					
+						<div ng-if="sale.action" class="currentorderpopupulright">{{(salePrice.price - sale.totalDiscount) | pricingTxt:true}}</div>
+						<div ng-if="!sale.action" class="currentorderpopupulright">{{sale.price | pricingTxt:true}}</div>					
 					</div>
 				</li>					
 
 				<li ng-hide="product.remainingQty == 0" ng-repeat="(id,product) in alcoholCart.getProducts()">
-					<div class="currentorderpopupulleft">{{product.product.name}}</div>
+
+					<div class="currentorderpopupulleft">
+						{{product.product.name}}
+						<span class="saletag" ng-if="product.isSingleSale">{{product.sale.detailTitle}}</span>
+						
+					</div>
 					<div class="currentorderpopupulcenter">{{product.remainingQty}}</div>
-					<div class="currentorderpopupulright">{{product.getPrice() | pricingTxt}}</div>
+					
+					<div class="currentorderpopupulright">
+						<strike-txt ng-if="product.isSingleSale" class="strike-txt">
+							{{product.unitPrice * product.quantity | pricingTxt}}
+						</strike-txt>
+						{{product.getPrice() | pricingTxt}}
+					</div>
+
 				</li>
 
 				<li ng-repeat="(id,product) in alcoholCart.getLoyaltyProducts()">

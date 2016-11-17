@@ -33,7 +33,7 @@
                             <td>{{p.name}}</td>
                             <td>{{p.order + (p.received || 0)}}</td>
                             <td>{{p.received || 0}}</td>
-                            <td ng-show="status<=1"><input type="number" ng-model="p.add" class="form-control input-sm"></td>
+                            <td ng-show="status<=1"><input type="number" min="0" ng-model="p.add" class="form-control input-sm"></td>
                         </tr>
                     </tbody>
                 </table>
