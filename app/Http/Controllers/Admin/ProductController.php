@@ -635,6 +635,21 @@ class ProductController extends Controller
 
 	public function getTest(Request $request){
 
+		$model = \AlcoholDelivery\PurchaseOrder::find('582b0d10cc48f6ed6ced4957');
+
+        if($model){
+            if(isset($model->advanceOrderId)){
+
+            	//return gettype($model->advanceOrderId);	
+
+                $orders = \AlcoholDelivery\Orders::whereRaw(['_id'=>['$in'=>$model->advanceOrderId]])->get();
+                // prd($orders);
+                return response($orders);
+            }
+        }
+
+        return response('Error');
+
 		//USER ADDRESS UPDATE
 		/*$users = User::whereRaw(['address'=>['$exists'=>true]])->get();
 
