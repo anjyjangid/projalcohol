@@ -1226,6 +1226,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 			cartTotal-= parseFloat(this.getDiscount());
 
+			cartTotal-= parseFloat(this.getCouponDiscount());
+
 			return parseFloat(cartTotal).toFixed(2);
 
 		};
@@ -1327,13 +1329,15 @@ AlcoholDelivery.service('alcoholCart', [
 						_self.removeItemById(id);
 					}
 
-
 					if(response.change>0){
 						
 						$rootScope.$broadcast('alcoholCart:updated',{msg:"Items removed from cart",quantity:Math.abs(response.change)});
 						
 					}
 
+					if(typeof(_self.$cart.couponData) !== "undefined"){
+						_self.setCouponPrice(_self.$cart.couponData);
+					}
 					_self.validateContainerGift();
 
 					defer.resolve(response);
@@ -2427,6 +2431,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 			if(typeof(storedCart.couponData) !== "undefined"){
 				$rootScope.discountCode = storedCart.couponData.code;
+				_self.$cart.couponData = storedCart.couponData;
 				_self.setCouponPrice(storedCart.couponData);
 			}
 		};
@@ -2574,25 +2579,35 @@ AlcoholDelivery.service('alcoholCart', [
 			var productsList = _self.getProducts();
 			//console.log(productsList);
 			var cartTotal = this.getSubTotal();
+			var discountTotal = 0;
 
 			if(!cTotal || (cTotal && cTotal <= cartTotal) ){
 			
 				angular.forEach(productsList, function (item) {
-					item.setPrice(item);
-					item.setCoupon(coupon);
+					//item.setPrice(item);
+					var discountAmt = item.setCoupon(coupon);
+					discountTotal += discountAmt;
 				});
 			}
-	
+
+			this.$cart.couponDiscount = discountTotal;
+			//console.log(this.$cart);
 		}
 
 		this.removeCoupon = function(){
 			var _self = this;
 			var productsList = this.getProducts();
 
+			$rootScope.couponInput = true;
+			$rootScope.couponOutput = false;
+			this.$cart.couponDiscount = 0;
+
 			$http.post("checkCoupon", {params: {cart: _self.getCartKey(), removeCoupon: 1}}).success(function(result){
-				angular.forEach(productsList, function (item) {
+				/*angular.forEach(productsList, function (item) {
 					item.setPrice(item);
-				});
+				});*/
+				delete _self.$cart.couponData;
+
 			}).error(function(){
 
 			});
@@ -2609,13 +2624,22 @@ AlcoholDelivery.service('alcoholCart', [
 					_self.removeCoupon();
 					$rootScope.invalidCodeMsg = false;
 					$rootScope.invalidCodeMsgTxt = result.msg;
+					$rootScope.couponInput = true;
+					$rootScope.couponOutput = false;
 				}else{
 					$rootScope.invalidCodeMsg = true;
+					_self.$cart.couponData = result.coupon;
 					_self.setCouponPrice(result.coupon);
+					$rootScope.couponInput = false;
+					$rootScope.couponOutput = true;
 				}
 
 			}).error(function(){
 			});
+		}
+
+		this.getCouponDiscount = function(){
+			return this.$cart.couponDiscount;
 		}
 
 	}]);

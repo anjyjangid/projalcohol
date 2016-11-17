@@ -148,6 +148,8 @@ AlcoholDelivery.controller('AppController',
 	};
 
 	$rootScope.invalidCodeMsg = true;
+	$rootScope.couponInput = true;
+	$rootScope.couponOutput = false;
 
 	$scope.checkCoupon = function(discountCode){
 		$scope.discountCode = discountCode;
@@ -156,6 +158,7 @@ AlcoholDelivery.controller('AppController',
 
 	$scope.removeCoupon = function(){
 		$scope.discountCode = '';
+		delete $scope.discountCode;
 		alcoholCart.removeCoupon();
 	}
 
