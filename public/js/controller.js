@@ -147,21 +147,6 @@ AlcoholDelivery.controller('AppController',
 		return $filter('filter')($rootScope.settings.pages,{section:section});
 	};
 
-	$rootScope.invalidCodeMsg = true;
-	$rootScope.couponInput = true;
-	$rootScope.couponOutput = false;
-
-	$scope.checkCoupon = function(discountCode){
-		$scope.discountCode = discountCode;
-		alcoholCart.checkCoupon(discountCode, alcoholCart.getCartKey());
-	}
-
-	$scope.removeCoupon = function(){
-		$scope.discountCode = '';
-		delete $scope.discountCode;
-		alcoholCart.removeCoupon();
-	}
-
 	$scope.sortOptions = [
 		{value:'',label:'Popularity'},
 		{value:'price_asc',label:'Price - Low to High'},
@@ -1000,6 +985,26 @@ AlcoholDelivery.controller('CartController',[
 	$scope.lproCardUpdateTimeOut = [];
 
 	$scope.step = 1;
+
+	$rootScope.invalidCodeMsg = true;
+	if(alcoholCart.getCouponCode()){
+		$rootScope.couponInput = false;
+		$rootScope.couponOutput = true;
+	}else{
+		$rootScope.couponInput = true;
+		$rootScope.couponOutput = false;
+	}
+
+	$scope.checkCoupon = function(discountCode){
+		$scope.discountCode = discountCode;
+		alcoholCart.checkCoupon(discountCode, alcoholCart.getCartKey());
+	}
+
+	$scope.removeCoupon = function(){
+		$scope.discountCode = '';
+		delete $scope.discountCode;
+		alcoholCart.removeCoupon();
+	}
 
 	$scope.checkout = function(ev) {
 

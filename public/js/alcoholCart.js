@@ -2433,6 +2433,10 @@ AlcoholDelivery.service('alcoholCart', [
 				$rootScope.discountCode = storedCart.couponData.code;
 				_self.$cart.couponData = storedCart.couponData;
 				_self.setCouponPrice(storedCart.couponData);
+			}else{
+				$rootScope.discountCode = '';
+				delete $rootScope.discountCode;
+				console.log('no coupon code');
 			}
 		};
 
@@ -2640,6 +2644,14 @@ AlcoholDelivery.service('alcoholCart', [
 
 		this.getCouponDiscount = function(){
 			return this.$cart.couponDiscount;
+		}
+
+		this.getCouponCode = function(){
+			if(typeof(_self.$cart.couponData) !== "undefined"){
+				return _self.$cart.couponData.code;
+			}else{
+				return;
+			}
 		}
 
 	}]);

@@ -444,7 +444,7 @@
 	<div class="checkboxtotaldiv-top">
 		<div class="col-md-6">
 			<div class="input-group" ng-show="couponInput">
-			   <input type="text" class="form-control" name="discountCode" ng-model="discountCode" value="" placeholder="Coupon Code" >
+			   <input type="text" class="form-control" name="discountCode" ng-model="discountCode" value="{{alcoholCart.getCouponCode()}}" placeholder="Coupon Code" >
 			   <span class="input-group-btn">
 			        <button ng-click="checkCoupon(discountCode)" class="btn btn-success">Apply</button>
 			   </span>
