@@ -635,7 +635,7 @@ class ProductController extends Controller
 
 	public function getTest(Request $request){
 
-		$model = \AlcoholDelivery\PurchaseOrder::find('582b0d10cc48f6ed6ced4957');
+		$model = \AlcoholDelivery\PurchaseOrder::find('582d8af76e245f41af986a20');
 
         if($model){
             if(isset($model->advanceOrderId)){
@@ -644,7 +644,7 @@ class ProductController extends Controller
 
                 $orders = \AlcoholDelivery\Orders::whereRaw(['_id'=>['$in'=>$model->advanceOrderId]])->get();
                 // prd($orders);
-                return response($orders);
+                return response(['PO'=>$model,'ORDER'=>$orders]);
             }
         }
 

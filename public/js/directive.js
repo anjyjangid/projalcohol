@@ -233,6 +233,10 @@ AlcoholDelivery.directive('sideBar', function() {
 		        alcoholWishlist.init();
 		        ClaimGiftCard.claim();
 		    }	
+
+		    $scope.visitLink = function(slug){
+		    	$state.go('cmsLayout.pages',{slug:slug,target:'_blank'});
+		    }
 		}
 	};
 })
@@ -998,6 +1002,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		},
 		scope: {
 			product:'=',
+			tagsize:'@'
 		},
 		controller: function($scope,$rootScope,$log,$filter){
 

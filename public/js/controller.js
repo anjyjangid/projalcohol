@@ -1356,9 +1356,9 @@ AlcoholDelivery.controller('CartAddressController',[
 			return false;
 		}
 
-		$scope.delivery.contact = parseInt($scope.delivery.contact);
+		//$scope.delivery.contact = parseInt($scope.delivery.contact);
 
-		if($scope.delivery.contact===""  || $scope.delivery.contact===null || isNaN($scope.delivery.contact)){
+		if($scope.delivery.contact===""  || $scope.delivery.contact===null/* || isNaN($scope.delivery.contact)*/){
 
 			$scope.errors.contact = "Please enter contact person number";
 
@@ -2314,6 +2314,10 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 
 	}
 
+	$scope.viewDetail = function(roption){
+		$state.go('mainLayout.packagedetail',roption);
+	}
+
 }]);
 
 AlcoholDelivery.controller('PackageDetailController',
@@ -2558,6 +2562,10 @@ AlcoholDelivery.controller('PackageDetailController',
 	$scope.toTrustedHTML = function( html ){
 	    return $sce.trustAsHtml( html );
 	}
+
+	/*$scope.$on('accordionA:onReady', function () {	  
+	  $scope.accordionA.toggle(0);
+	});*/
 
 
 }]);
