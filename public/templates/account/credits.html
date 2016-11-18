@@ -1,64 +1,62 @@
 <div class="breadcrumdiv">
   <ol class="breadcrumb">
-    <li><a ui-sref="mainLayout.index">Home</a></li>  
-    <li><a>My Account</a></li>  
-    <li class="active">Credits</li>
+	<li><a ui-sref="mainLayout.index">Home</a></li>  
+	<li><a>My Account</a></li>  
+	<li class="active">Credits</li>
   </ol>
 </div>
 
 <div ng-if="credits.length">
   <div class="titlecreidt">Credits</div>
   <div class="balancedetailsdiv">
-    <div class="balancedetailsdivinner">
-      <div class="amountdiv">{{statics.credit | pricingTxt}}</div>
-      <div class="elventestgry">Current Balance</div>
-    </div>
-    <div class="balancedetailsdivinner">
-      <div class="amountdiv">{{statics.price | pricingTxt}}</div>
-      <div class="elventestgry">Recently Earned</div>
-    </div>
-    <div class="balancedetailsdivinner">
-      <div class="amountdiv">{{statics.credit | pricingTxt}}</div>
-      <div class="elventestgry">Worth of Credits</div>
-    </div>
+	<div class="balancedetailsdivinner">
+	  <div class="amountdiv">{{statics.total | pricingTxt}}</div>
+	  <div class="elventestgry">Current Balance</div>
+	</div>
+	<div class="balancedetailsdivinner">
+	  <div class="amountdiv">{{statics.recent.earned | pricingTxt}}</div>
+	  <div class="elventestgry">Recently Earned</div>
+	</div>
+	
   </div>
   <div class="credis-table-main">
   <div class="table-responsive">
-    <table class="creditable">
-      
-      <thead>
-        <tr>
-          <th>Reason</th>
-          <th>earned</th>
-          <th>redeemed</th>
-          <th>comment</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="credit in credits">
-          <td>
-            <div class="mainfirsttddiv">
-              <div class="arowpicdiv"><a href="#"><img src="images/upload_picn.png"/></a></div>
-              <div class="textfistrdivmain">
-                <div class="textboldtit">Earned As Gift</div>
-                <div class="textnormalit">From : {{credit.reason.sender.name}}</div>
-                <div class="text_time_no">{{ (credit.on.sec * 1000) | date:'yyyy-MM-dd h:mm:ss a'}}</div>
-              </div>
-            </div>
-          </td>
-          <td><div class="fig_txtup">{{credit.price | pricingTxt}}</div></td>
-          <td><div class="fig_txtup">-</div></td>
-          <td><div class="cometdivtextpar">{{credit.reason.comment}}</div></td>
-        </tr>
-        
-      </tbody>
-    </table>
+  
+	<table class="creditable">
+	  
+		<thead>
+			<tr>
+				<th>Reason</th>
+				<th>earned</th>
+				<th>redeemed</th>
+				<th>comment</th>
+			</tr>
+	  </thead>
+	  <tbody>
+		<tr ng-repeat="credit in credits">
+		  <td>
+			<div class="mainfirsttddiv">
+			  <div class="arowpicdiv"><a href="#"><img src="images/upload_picn.png"/></a></div>
+			  <div class="textfistrdivmain">
+				<div class="textboldtit">{{credit.shortComment}}</div>
+				<div class="textnormalit">From : {{credit.reference}}</div>
+				<div class="text_time_no">{{ (credit.created_at.sec * 1000) | date:'yyyy-MM-dd h:mm:ss a'}}</div>
+			  </div>
+			</div>
+		  </td>
+		  <td><div class="fig_txtup">{{credit.credit | pricingTxt}}</div></td>
+		  <td><div class="fig_txtup">-</div></td>
+		  <td><div class="cometdivtextpar">{{credit.comment}}</div></td>
+		</tr>
+		
+	  </tbody>
+	</table>
   </div>
   </div>
 
   <div class="wish-nextprvicvr">
-    <button type="button" class="wishprev" ng-click="prev()"><span class="glyphicon glyphicon-menu-left"></span> Previous </button>
-    <button type="button" class="wishnext" ng-click="next()">Next <span class="glyphicon glyphicon-menu-right"></span></button>
+	<button type="button" class="wishprev" ng-click="prev()"><span class="glyphicon glyphicon-menu-left"></span> Previous </button>
+	<button type="button" class="wishnext" ng-click="next()">Next <span class="glyphicon glyphicon-menu-right"></span></button>
   </div>
 
 </div>

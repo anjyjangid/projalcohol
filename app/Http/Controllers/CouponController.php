@@ -61,7 +61,8 @@ class CouponController extends Controller
                     
                     $couponData1 = Coupon::raw()->aggregate($subQuery);
                     
-                    $userCouponCnt = $couponData1['result'][0]['number'];
+                    if(isset($couponData1['result'][0]))
+                        $userCouponCnt = $couponData1['result'][0]['number'];
                 }                
                 
                 if((isset($couponData->used_count) && $couponData->coupon_uses && $couponData->coupon_uses <= $couponData->used_count) || ( $userCouponCnt && $couponData->customer_uses <= $userCouponCnt) ){

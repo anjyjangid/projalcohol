@@ -45,6 +45,7 @@ class Orders extends Moloquent
 							'discount',
 							'loyaltyPointUsed',
 							'loyaltyPointEarned',
+							'creditsFromLoyalty',
 							'reference',
 							'productsLog',
 							'doStatus',

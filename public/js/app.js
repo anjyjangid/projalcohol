@@ -1164,7 +1164,7 @@ AlcoholDelivery.run([
 
 
 	$rootScope.$on('alcoholCart:notify', function(data,msg,hideDelay){
-		console.log(hideDelay || settings.messages.hideDelay);
+		
 		$mdToast.show({
 			controller:function($scope){
 

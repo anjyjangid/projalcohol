@@ -1,8 +1,9 @@
 AlcoholDelivery.service('alcoholCart', [
-			'$log','$rootScope', '$window', '$http', '$q', '$mdToast', '$filter', '$timeout', 'alcoholCartItem', 'alcoholCartLoyaltyItem', 
+			'$log','$rootScope', '$window', '$http', '$q', '$mdToast', '$filter', '$timeout', 'sweetAlert', 'alcoholCartItem', 'alcoholCartLoyaltyItem', 
 			'alcoholCartPackage','promotionsService','alcoholCartPromotion', 'alcoholCartGiftCard', 'alcoholCartGift', 
 			'alcoholCartSale', 'alcoholCartCreditCard','UserService'
-	,function ($log, $rootScope, $window, $http, $q, $mdToast, $filter, $timeout, alcoholCartItem, alcoholCartLoyaltyItem, 
+	,function ($log, $rootScope, $window, $http, $q, $mdToast, $filter, 
+			$timeout, sweetAlert, alcoholCartItem, alcoholCartLoyaltyItem, 
 			alcoholCartPackage, promotionsService, alcoholCartPromotion, alcoholCartGiftCard, alcoholCartGift,
 			alcoholCartSale, alcoholCartCreditCard, UserService) {
 
@@ -801,6 +802,28 @@ AlcoholDelivery.service('alcoholCart', [
 
 		}
 
+		this.isEligibleNonChilled = function(){
+
+			var products = this.getProducts();
+			// var packages = this.getPackages();
+			// var promotions = this.getPromotions();
+			var isEligible = false;
+			angular.forEach(products, function (item,key) {
+				if(item.getChilledAllowed()){
+					
+					isEligible = true;
+					return false;
+				}
+				if(isEligible)
+					return false;
+
+			});
+
+			if(!isEligible)
+			this.$cart.nonchilled = false;
+			return isEligible;
+			
+		}
 		this.getProductInCartById = function(productId){
 
 			var products = this.getProducts();
@@ -961,6 +984,23 @@ AlcoholDelivery.service('alcoholCart', [
 
 		this.setCartChilled = function(status){
 
+			var isEligible = this.isEligibleNonChilled();
+			
+			if(!isEligible){
+
+				sweetAlert.swal({
+								type:'warning',
+								title: "There are no chilled items in your cart.",
+								text : "Chilled items are usually beers, champagnes and white wines",
+								customClass: 'swal-wide',
+								timer: 4000,
+								showConfirmButton:false,
+								closeOnConfirm: true
+							});				
+
+				return false;
+			}
+
 			if(typeof status !=="undefined"){
 
 				this.$cart.nonchilled = status;
@@ -984,6 +1024,8 @@ AlcoholDelivery.service('alcoholCart', [
 		this.setDiscount = function(){
 
 			var discount = 0;
+
+			this.isEligibleNonChilled();
 
 			if(this.$cart.nonchilled){
 
@@ -1226,6 +1268,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 			cartTotal-= parseFloat(this.getDiscount());
 
+			cartTotal-= parseFloat(this.getCouponDiscount());
+
 			return parseFloat(cartTotal).toFixed(2);
 
 		};
@@ -1327,13 +1371,15 @@ AlcoholDelivery.service('alcoholCart', [
 						_self.removeItemById(id);
 					}
 
-
 					if(response.change>0){
 						
 						$rootScope.$broadcast('alcoholCart:updated',{msg:"Items removed from cart",quantity:Math.abs(response.change)});
 						
 					}
 
+					if(typeof(_self.$cart.couponData) !== "undefined"){
+						_self.setCouponPrice(_self.$cart.couponData);
+					}
 					_self.validateContainerGift();
 
 					defer.resolve(response);
@@ -2423,10 +2469,9 @@ AlcoholDelivery.service('alcoholCart', [
 			});
 
 			_self.setPromotionsInCart();
-			//console.log(storedCart.couponData);
-
 			if(typeof(storedCart.couponData) !== "undefined"){
-				$rootScope.discountCode = storedCart.couponData.code;
+				//$rootScope.discountCode = storedCart.couponData.code;
+				_self.$cart.couponData = storedCart.couponData;
 				_self.setCouponPrice(storedCart.couponData);
 			}
 		};
@@ -2561,7 +2606,6 @@ AlcoholDelivery.service('alcoholCart', [
 		this.paymentValidate = function(){return false;}
 		this.reviewValidate = function(){return false;}
 
-
 		this.stepCheckout = function(step){
 			$anchorScroll();
 		}
@@ -2574,25 +2618,35 @@ AlcoholDelivery.service('alcoholCart', [
 			var productsList = _self.getProducts();
 			//console.log(productsList);
 			var cartTotal = this.getSubTotal();
+			var discountTotal = 0;
 
 			if(!cTotal || (cTotal && cTotal <= cartTotal) ){
 			
 				angular.forEach(productsList, function (item) {
-					item.setPrice(item);
-					item.setCoupon(coupon);
+					//item.setPrice(item);
+					var discountAmt = item.setCoupon(coupon);
+					discountTotal += discountAmt;
 				});
 			}
-	
+
+			this.$cart.couponDiscount = discountTotal;
+			//console.log(this.$cart);
 		}
 
 		this.removeCoupon = function(){
 			var _self = this;
 			var productsList = this.getProducts();
 
+			$rootScope.couponInput = true;
+			$rootScope.couponOutput = false;
+			this.$cart.couponDiscount = 0;
+
 			$http.post("checkCoupon", {params: {cart: _self.getCartKey(), removeCoupon: 1}}).success(function(result){
-				angular.forEach(productsList, function (item) {
+				/*angular.forEach(productsList, function (item) {
 					item.setPrice(item);
-				});
+				});*/
+				delete _self.$cart.couponData;
+
 			}).error(function(){
 
 			});
@@ -2609,13 +2663,33 @@ AlcoholDelivery.service('alcoholCart', [
 					_self.removeCoupon();
 					$rootScope.invalidCodeMsg = false;
 					$rootScope.invalidCodeMsgTxt = result.msg;
+					$rootScope.couponInput = true;
+					$rootScope.couponOutput = false;
 				}else{
 					$rootScope.invalidCodeMsg = true;
+					_self.$cart.couponData = result.coupon;
 					_self.setCouponPrice(result.coupon);
+					$rootScope.couponInput = false;
+					$rootScope.couponOutput = true;
 				}
 
 			}).error(function(){
 			});
+		}
+
+		this.getCouponDiscount = function(){
+			if(typeof(_self.$cart.couponDiscount) !== "undefined")
+				return this.$cart.couponDiscount;
+
+			return 0;
+		}
+
+		this.getCouponCode = function(){
+			if(typeof(_self.$cart.couponData) !== "undefined"){
+				return _self.$cart.couponData.code;
+			}else{
+				return;
+			}
 		}
 
 	}]);

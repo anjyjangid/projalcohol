@@ -147,7 +147,7 @@ angular.module('AlcoholCartFactories', [])
 
 		try{
 			this.setId(id);
-
+			this.setChilledAllowed(data.product.chilled);
 			this.setRQuantity(data.chilled.quantity,data.nonchilled.quantity);
 
 			this.setRChilledStatus(data.chilled.status,data.nonchilled.status);
@@ -158,7 +158,6 @@ angular.module('AlcoholCartFactories', [])
 			this.setLastServedAs(data.lastServedChilled);
 			this.setProduct(data);
 			
-
 			this.setIcon();
 		}
 		catch(err){
@@ -178,6 +177,15 @@ angular.module('AlcoholCartFactories', [])
 	item.prototype.getId = function(){
 		return this._id;
 	};
+
+	item.prototype.setChilledAllowed = function(chillAllowed){
+
+		return this.chillAllowed = chillAllowed;
+	}
+
+	item.prototype.getChilledAllowed = function(){
+		return this.chillAllowed;
+	}
 
 	item.prototype.setLastServedAs = function(servedAs){
 		return this.servedAs = servedAs;
@@ -298,7 +306,7 @@ angular.module('AlcoholCartFactories', [])
 	item.prototype.setCoupon = function(coupon){
 		var cType = coupon.type;
 		var cDiscount = coupon.discount;
-		var cDiscountStatus = coupon.discount_status;
+		var cDiscountStatus = parseInt(coupon.discount_status);
 		var cTotal = coupon.total;
 		var cProducts = coupon.products;
 		var cCategories = coupon.categories;
@@ -308,6 +316,7 @@ angular.module('AlcoholCartFactories', [])
 		var hasProduct = 1;
 		var hasCategory = 0;
 		var quantity = this.remainingQty;
+		var couponAmount = 0;
 
 		if(typeof cProducts !== "undefined"){
 			if (cProducts.length > 0) {
@@ -336,17 +345,33 @@ angular.module('AlcoholCartFactories', [])
 
 			if(cType==1){
 				discountAmount = pAmount - cDiscount;
+				couponAmount = cDiscount;
 			}else{
 				discountAmount = pAmount - ((pAmount*cDiscount)/100);
+				couponAmount = ((pAmount*cDiscount)/100);
 			}
 
 			if(cDiscountStatus==1 && discountAmount > this.discountedUnitPrice*quantity){
-				discountAmount = this.discountedUnitPrice*quantity;
+				//discountAmount = this.discountedUnitPrice*quantity;
+				couponAmount = 0;
 			}
 
-			this.discountedUnitPrice = parseFloat((discountAmount/quantity).toFixed(2));
-			this.price = discountAmount.toFixed(2);
-		}		
+			if(!cDiscountStatus && discountAmount < this.discountedUnitPrice*quantity){
+				var diffAmt = this.discountedUnitPrice*quantity - discountAmount;
+
+				couponAmount = 0;
+				if(diffAmt>0){
+					couponAmount = diffAmt;
+				}
+			}
+
+			this.couponDiscount = couponAmount.toFixed(2);
+
+			/*this.discountedUnitPrice = parseFloat((discountAmount/quantity).toFixed(2));
+			this.price = discountAmount.toFixed(2);*/
+		}
+
+		return couponAmount.toFixed(2);		
 	}
 
 	item.prototype.getPrice = function(){
