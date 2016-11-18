@@ -1173,3 +1173,10 @@ button.detailwishbut{
 	left: 15px;
 	min-width: auto;
 }
+
+.swal2-modal.swal-wide.show-swal2 {
+    width: 50% !important;
+    margin-right: auto !important;
+    left: 25%;
+    margin-left: auto !important;
+}

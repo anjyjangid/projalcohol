@@ -147,7 +147,7 @@ angular.module('AlcoholCartFactories', [])
 
 		try{
 			this.setId(id);
-
+			this.setChilledAllowed(data.product.chilled);
 			this.setRQuantity(data.chilled.quantity,data.nonchilled.quantity);
 
 			this.setRChilledStatus(data.chilled.status,data.nonchilled.status);
@@ -158,7 +158,6 @@ angular.module('AlcoholCartFactories', [])
 			this.setLastServedAs(data.lastServedChilled);
 			this.setProduct(data);
 			
-
 			this.setIcon();
 		}
 		catch(err){
@@ -178,6 +177,15 @@ angular.module('AlcoholCartFactories', [])
 	item.prototype.getId = function(){
 		return this._id;
 	};
+
+	item.prototype.setChilledAllowed = function(chillAllowed){
+
+		return this.chillAllowed = chillAllowed;
+	}
+
+	item.prototype.getChilledAllowed = function(){
+		return this.chillAllowed;
+	}
 
 	item.prototype.setLastServedAs = function(servedAs){
 		return this.servedAs = servedAs;

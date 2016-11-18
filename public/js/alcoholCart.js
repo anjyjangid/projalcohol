@@ -1,8 +1,9 @@
 AlcoholDelivery.service('alcoholCart', [
-			'$log','$rootScope', '$window', '$http', '$q', '$mdToast', '$filter', '$timeout', 'alcoholCartItem', 'alcoholCartLoyaltyItem', 
+			'$log','$rootScope', '$window', '$http', '$q', '$mdToast', '$filter', '$timeout', 'sweetAlert', 'alcoholCartItem', 'alcoholCartLoyaltyItem', 
 			'alcoholCartPackage','promotionsService','alcoholCartPromotion', 'alcoholCartGiftCard', 'alcoholCartGift', 
 			'alcoholCartSale', 'alcoholCartCreditCard','UserService'
-	,function ($log, $rootScope, $window, $http, $q, $mdToast, $filter, $timeout, alcoholCartItem, alcoholCartLoyaltyItem, 
+	,function ($log, $rootScope, $window, $http, $q, $mdToast, $filter, 
+			$timeout, sweetAlert, alcoholCartItem, alcoholCartLoyaltyItem, 
 			alcoholCartPackage, promotionsService, alcoholCartPromotion, alcoholCartGiftCard, alcoholCartGift,
 			alcoholCartSale, alcoholCartCreditCard, UserService) {
 
@@ -801,6 +802,28 @@ AlcoholDelivery.service('alcoholCart', [
 
 		}
 
+		this.isEligibleNonChilled = function(){
+
+			var products = this.getProducts();
+			// var packages = this.getPackages();
+			// var promotions = this.getPromotions();
+			var isEligible = false;
+			angular.forEach(products, function (item,key) {
+				if(item.getChilledAllowed()){
+					
+					isEligible = true;
+					return false;
+				}
+				if(isEligible)
+					return false;
+
+			});
+
+			if(!isEligible)
+			this.$cart.nonchilled = false;
+			return isEligible;
+			
+		}
 		this.getProductInCartById = function(productId){
 
 			var products = this.getProducts();
@@ -960,6 +983,23 @@ AlcoholDelivery.service('alcoholCart', [
 		};
 
 		this.setCartChilled = function(status){
+
+			var isEligible = this.isEligibleNonChilled();
+			
+			if(!isEligible){
+
+				sweetAlert.swal({
+								type:'warning',
+								title: "There are no chilled items in your cart.",
+								text : "Chilled items are usually beers, champagnes and white wines",
+								customClass: 'swal-wide',
+								timer: 4000,
+								showConfirmButton:false,
+								closeOnConfirm: true
+							});				
+
+				return false;
+			}
 
 			if(typeof status !=="undefined"){
 
@@ -2427,16 +2467,10 @@ AlcoholDelivery.service('alcoholCart', [
 			});
 
 			_self.setPromotionsInCart();
-			//console.log(storedCart.couponData);
-
 			if(typeof(storedCart.couponData) !== "undefined"){
-				$rootScope.discountCode = storedCart.couponData.code;
+				//$rootScope.discountCode = storedCart.couponData.code;
 				_self.$cart.couponData = storedCart.couponData;
 				_self.setCouponPrice(storedCart.couponData);
-			}else{
-				$rootScope.discountCode = '';
-				delete $rootScope.discountCode;
-				console.log('no coupon code');
 			}
 		};
 
@@ -2570,7 +2604,6 @@ AlcoholDelivery.service('alcoholCart', [
 		this.paymentValidate = function(){return false;}
 		this.reviewValidate = function(){return false;}
 
-
 		this.stepCheckout = function(step){
 			$anchorScroll();
 		}
@@ -2643,7 +2676,10 @@ AlcoholDelivery.service('alcoholCart', [
 		}
 
 		this.getCouponDiscount = function(){
-			return this.$cart.couponDiscount;
+			if(typeof(_self.$cart.couponDiscount) !== "undefined")
+				return this.$cart.couponDiscount;
+
+			return 0;
 		}
 
 		this.getCouponCode = function(){
