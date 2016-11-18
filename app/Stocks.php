@@ -102,7 +102,7 @@ class Stocks extends Eloquent
                 'cond' => [
                     '$and'=>[
                         ['$eq'=>['$$order.delivery.type',1]],
-                        ['$eq'=>['$$order.status',0]],
+                        ['$eq'=>['$$order.doStatus',0]],
                         // ['$lte']
                     ]
                 ]
@@ -167,11 +167,15 @@ class Stocks extends Eloquent
 
         $project['qtyOneHour'] = ['$subtract'=>['$storeMaxQty','$storeQty']];
 
+        $project['advanceOrderId'] = '$advanceOrder._id';
+
         $project['advanceOrder'] = '$advanceOrder.productsLog';
 
         $query[]['$project'] = $project;
 
         $project['advanceOrder'] = '$advanceOrder';
+
+        $project['advanceOrderId'] = '$advanceOrderId';
 
         $project['advanceProductLog'] = [
             '$filter'=>[
@@ -199,7 +203,7 @@ class Stocks extends Eloquent
             'storeQty' => ['$first'=>'$storeQty'],
             'storeMaxQty' => ['$first'=>'$storeMaxQty'],
             'storeThreshold' => ['$first'=>'$storeThreshold'],
-            //'advanceOrder' => ['$push'=>'$advanceOrder'],
+            'advanceOrderId' => ['$push'=>'$advanceOrderId'],
             'qtyAdvance' => ['$sum'=>'$advanceProductLog.quantity']
         ];
 
@@ -208,8 +212,10 @@ class Stocks extends Eloquent
         //GET MAIN STORE ID
         //$userStoreId = Auth::user('admin')->storeId;
         $mainStore = Admin::whereRaw(['role'=>1])->first();
-        if($mainStore && $mainStore['storeId'] != $userStoreId)
+        if($mainStore && $mainStore['storeId'] != $userStoreId){
             $group['qtyAdvance'] = ['$sum'=>0];
+            $project['advanceOrderId'] = '$null';
+        }
        
         $query[]['$group'] = $group;
 

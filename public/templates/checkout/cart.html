@@ -441,24 +441,23 @@
 </div>
 
 <div class="checkboxtotaldiv">
-	<div class="row">
-		<div class="col-md-4">
-			
-		</div>
-		<div class="col-md-4">
-			
-		</div>
-	</div>
 	<div class="checkboxtotaldiv-top">
-		<!-- <div class="col-md-6">
-			<input type="text" class="form-control" name="discountCode" ng-model="discountCode" value="" placeholder="Coupon Code" >
-			<button ng-click="checkCoupon(discountCode)" class="btn btn-success">Apply</button>
-
+		<div class="col-md-6">
+			<div class="input-group" ng-show="couponInput">
+			   <input type="text" class="form-control" name="discountCode" ng-model="discountCode" value="" placeholder="Coupon Code" >
+			   <span class="input-group-btn">
+			        <button ng-click="checkCoupon(discountCode)" class="btn btn-success">Apply</button>
+			   </span>
+			</div>
+			<div class="input-group" ng-show="couponOutput">
+			<span>"{{discountCode}}" Coupon Applied </span>  <button ng-click="removeCoupon()" class="btn btn-success">Remove</button>
+			</div>
+			<div class="error" ng-hide="invalidCodeMsg">{{invalidCodeMsgTxt}}</div>
 		</div>
-		<div class="col-md-6"> -->
+		<div class="col-md-6">
 			<div class="checkboxtotaldiv-title">Subtotal</div>
 			<div class="checkboxtotaldiv-text">{{alcoholCart.getSubTotal() | pricingTxt}}</div>
-		<!-- </div> -->
+		</div>
 	</div>
 	<div class="checkboxtotaldiv-middle">
 		<div class="col-sm-6">
@@ -483,6 +482,14 @@
 				</div>
 
 				<div class="checkboxtotaldiv-text" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount() | pricingTxt}}</div>
+			</div>
+			<div class="checkboxtotaldiv-middle-first" ng-show="alcoholCart.getCouponDiscount()">
+				
+				<div class="checkboxtotaldiv-title">Coupon Discount <span class="">
+					<img src="images/questionimg.png"></span>
+				</div>
+
+				<div class="checkboxtotaldiv-text" ng-class="">-{{alcoholCart.getCouponDiscount() | pricingTxt}}</div>
 			</div>
 		</div>
 	</div>

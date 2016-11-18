@@ -1267,7 +1267,7 @@ class Cart extends Moloquent
 
 	}
 
-	public function cartToOrder(){
+	public function cartToOrder($cartKey=null){
 
 		$productsInCartCount = $this->getProductIncartCount();
 
@@ -1832,8 +1832,106 @@ class Cart extends Moloquent
 				$subtotal+=$price;
 				$order['products'][] = $oProduct;
 
-
 			}
+
+			//SET COUPON IF COUPON CODE IS APPLIED
+
+			if($cartKey){
+				$cartData = Cart::where(['_id' => $cartKey])->first();
+
+				if(isset($cartData->coupon) && $cartData->coupon){
+					$couponData = Coupon::where(['_id' => $cartData->coupon, 'status'=>1])->first();
+
+					$coupon = $couponData->toArray();
+
+					if (isset($coupon) && $coupon['_id']) {
+						$cDiscount = $coupon['discount'];
+						$cTotal = $coupon['total'];
+						$discountTotal = 0;
+
+						if(!$cTotal || ($cTotal && $cTotal <= $subtotal) ){
+
+							foreach($order['products'] as $key=>$nOrder){
+								$quantity = $nOrder['qtyfinal'];
+								$hasCategory = 0;
+								$unitPrice = $nOrder['unitprice'];
+								$discountedUnitPrice = $nOrder['unitprice'];
+
+								$prodDetail = $proDetails[(string)$nOrder['_id']];
+
+
+								if(!empty($coupon['products'])){
+									if(!in_array((string)$nOrder['_id'], $coupon['products'])){
+										continue;
+									}
+								}
+
+								if(!empty($coupon['categories'])){
+
+									foreach ($prodDetail['categories'] as $catVal) {
+										if(!in_array((string)$catVal, $coupon['categories'])){
+											$hasCategory = 1;
+										}
+									}
+
+									if(!$hasCategory)
+										continue;
+								}
+
+								if($coupon['discount_status']==1){
+									$pAmount = $unitPrice*$quantity;
+								}else{
+									$pAmount = $discountedUnitPrice*$quantity;
+								}
+
+								if($coupon['type']==1){
+									$discountAmount = $pAmount - $cDiscount;
+								}else{
+									$discountAmount = $pAmount - (($pAmount*$cDiscount)/100);
+								}
+
+								if($coupon['discount_status']==1 && $discountAmount > $discountedUnitPrice*$quantity){
+									$discountAmount = $discountedUnitPrice*$quantity;
+								}
+
+								$discountTotal +=  $pAmount - $discountAmount;
+
+								if($discountAmount)
+									$order['products'][$key]['price'] = $discountAmount;
+							}
+						
+							$subtotal = $subtotal - $discountTotal;
+
+
+							//UPDATE COUPON COUNT AND COUPON LIST
+
+							$newList = array('orderId'=> 2, 'userId'=>1);
+
+							if(!isset($coupon['used_count'])){
+								$used_count = 0;
+							}else{
+								$used_count = $coupon['used_count'];
+							}
+
+							if(isset($couponData->used_list)){
+								$oldList = $coupon['used_list'];
+							}else{
+								$oldList = array();
+							}
+
+							array_push($oldList, $newList);
+
+							if($couponData){
+								$couponData->used_count = $used_count + 1;
+								$couponData->used_list = $oldList;
+								$couponData->save();
+							}
+						}
+					}
+				}
+			}
+
+			//prd($order);
 
 		}
 		
