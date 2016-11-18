@@ -1025,6 +1025,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 			var discount = 0;
 
+			this.isEligibleNonChilled();
+
 			if(this.$cart.nonchilled){
 
 				discount += this.$cart.discount.nonchilled.exemption;
