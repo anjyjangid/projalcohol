@@ -21,6 +21,7 @@ class Cart extends Moloquent
 	protected $primaryKey = "_id";
 	protected $collection = 'cart';
 	public static $key;
+	
 	/**
 	 * Indicates if the model should be timestamped.
 	 *
@@ -35,7 +36,6 @@ class Cart extends Moloquent
 	 */
 	protected $fillable = [
 
-						'_id',
 						'products',
 						'loyalty',
 						'packages',
@@ -1340,9 +1340,15 @@ class Cart extends Moloquent
 
 				if(isset($product['proSales']['actionProductId']) && count($product['proSales']['actionProductId'])>0){
 					$objSale['action'] = true;
+					
 				}
 
-				$proSales[(string)$product['proSales']['_id']] = $objSale;
+				if($objSale['actionType']==1){
+					
+					$objSale['giftQuantity'] = $product['proSales']['giftQuantity'];
+				}
+
+				$proSales[(string)$product['proSales']['_id']] = $objSale;				
 
 			}
 
@@ -1419,6 +1425,7 @@ class Cart extends Moloquent
 				$strikePrice = $price;
 
 				$currPrice = 0;
+				
 				if($currSale['actionType'] == 1){
 
 					$qty = $currSale['giftQuantity'];
@@ -1465,6 +1472,7 @@ class Cart extends Moloquent
 			}			
 			
 		}
+
 		// Set sale products ends //
 
 		// Set packages start //
@@ -1622,10 +1630,14 @@ class Cart extends Moloquent
 		// Set loyalty cards start //
 
 		if(isset($this->loyaltyCards)){
-			
+
+			$creditsFromLoyalty = 0;
 			foreach ($this->loyaltyCards as $key => $value) {
 
 				$value['value'] = $key;
+				
+				$creditsFromLoyalty = $creditsFromLoyalty + ($value['quantity'] * $value['value']);
+
 				$value['total'] = $value['quantity'] * $value['points'];
 
 				$totalPoints+=$value['total'];
@@ -1633,6 +1645,7 @@ class Cart extends Moloquent
 				$order['loyaltyCards'][] = $value;
 			}
 
+			$order['creditsFromLoyalty'] = $creditsFromLoyalty;
 		}
 
 		// Set loyalty cards start //
@@ -1716,6 +1729,7 @@ class Cart extends Moloquent
 
 				$proDetail = $proDetails[$key];
 
+
 				//$oProduct = $proDetail['common'];
 				$oProduct = [];
 				$oProduct['_id'] = new MongoId($key);
@@ -1795,6 +1809,10 @@ class Cart extends Moloquent
 						}
 						
 						$price = number_format($price,2);
+
+
+
+
 					}
 
 				}
@@ -1818,6 +1836,7 @@ class Cart extends Moloquent
 			}
 
 		}
+		
 		// Set Products ends //
 
 		$created_at = strtotime('now');		

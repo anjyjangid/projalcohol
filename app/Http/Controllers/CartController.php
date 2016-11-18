@@ -9,19 +9,21 @@ use AlcoholDelivery\Http\Requests\GiftCartRequest;
 use Illuminate\Support\Facades\Log;
 
 use AlcoholDelivery\Http\Controllers\Controller;
-use AlcoholDelivery\Cart as Cart;
+use AlcoholDelivery\Cart;
 use Illuminate\Support\Facades\Auth;
-use AlcoholDelivery\Products as Products;
-use AlcoholDelivery\Packages as Packages;
-use AlcoholDelivery\Credits as Credits;
+use AlcoholDelivery\Products;
+use AlcoholDelivery\Packages;
+use AlcoholDelivery\Credits;
 
-use AlcoholDelivery\Setting as Setting;
-use AlcoholDelivery\Orders as Orders;
-use AlcoholDelivery\Promotion as Promotion;
-use AlcoholDelivery\Holiday as Holiday;
-use AlcoholDelivery\User as User;
-use AlcoholDelivery\Gift as Gift;
+use AlcoholDelivery\Setting;
+use AlcoholDelivery\Orders;
+use AlcoholDelivery\Promotion;
+use AlcoholDelivery\Holiday;
+use AlcoholDelivery\User;
+use AlcoholDelivery\Gift;
 use AlcoholDelivery\Email;
+use AlcoholDelivery\CreditTransactions;
+use AlcoholDelivery\ErrorLog;
 
 use DB;
 use MongoDate;
@@ -1795,6 +1797,17 @@ jprd($product);
 
 	public function confirmorder(Request $request,$cartKey = null){
 
+		$user = Auth::user('user');
+		$user = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
+
+		$userObj = User::find($user->_id);
+
+		if(empty($userObj)){
+
+			return response(['message'=>"Un-Authorised login"],401);
+
+		}
+
 		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
 
 		if($cartKey == null){
@@ -1803,10 +1816,6 @@ jprd($product);
 
 		}
 
-
-		$cartObj = new Cart;
-
-		// $cart = $cartObj->where("_id","=",$cartKey)->first();
 		$cart = Cart::findUpdated($cartKey);
 		
 
@@ -1827,8 +1836,6 @@ jprd($product);
 
 		$cartArr = $cart->toArray();		
 
-		$user = Auth::user('user');		
-
 		//PREPARE PAYMENT FORM DATA
 		if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD'){
 
@@ -1838,41 +1845,56 @@ jprd($product);
 
 		}
 
-		//$cartArr['user'] = new MongoId($user->_id);
-		$cartArr['user'] = new MongoId("57c422d611f6a1450b8b456c");//for testing on postman
+		$cartArr['user'] = new MongoId($user->_id);
 
 		try {
 			
-			$orderObj = $cart->cartToOrder();
-			
-			$order = Orders::create($orderObj);
+			$userObj = User::find($user->_id);			
+
+			$order = $cart->cartToOrder();
+
+			$order = Orders::create($order);			
 
 			$cart->delete();
 
-			$reference = $order->reference;			
+			$reference = $order->reference;
 
-			$userObj = User::find($user->_id);
+			if(isset($order->creditsFromLoyalty) && $order->creditsFromLoyalty>0){
 
-			if($orderObj['loyaltyPointUsed']>0){
-
-				$userObj->decrement('loyaltyPoints', $orderObj['loyaltyPointUsed']);
-
-				$userObj->push('loyalty', 
-									[
-										"type"=>"debit",
-										"points"=>$orderObj['loyaltyPointUsed'],
-										"reason"=>[
-											"type"=>"order",
-											"key" => $reference,
-											"comment"=> "You have used this points by making a purchase on our website"
-										],
-										"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
-									]
-								);
+				$creditsFromLoyalty = $order['creditsFromLoyalty'];				
+				
+				$creditObj = [								
+								"credit"=>$creditsFromLoyalty,
+								"method"=>"order",
+								"reference" => $reference,
+								"user" => new mongoId($user->_id),
+								"comment"=> "You have earned this credits in exchange of loyalty points"
+							];
+				
+				CreditTransactions::transaction('credit',$creditObj,$userObj);
 
 			}
 
-			$loyaltyPoints = $orderObj['loyaltyPointEarned'];
+			if($order['loyaltyPointUsed']>0){
+
+				$userObj->decrement('loyaltyPoints', $order['loyaltyPointUsed']);
+
+				$userObj->push('loyalty',
+								[
+									"type"=>"debit",
+									"points"=>$order['loyaltyPointUsed'],
+									"reason"=>[
+										"type"=>"order",
+										"key" => $reference,
+										"comment"=> "You have used this points by making a purchase on our website"
+									],
+									"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+								]
+							);
+
+			}
+
+			$loyaltyPoints = $order['loyaltyPointEarned'];
 			if($loyaltyPoints>0){
 
 				$userObj->increment('loyaltyPoints', $loyaltyPoints);
@@ -1917,7 +1939,6 @@ jprd($product);
 
             $mailSent = $emailTemplate->sendEmail($mailData);
 
-
 			if($request->isMethod('get')){
 				return redirect('/#/orderplaced/'.$order['_id']);
 			}
@@ -1926,9 +1947,15 @@ jprd($product);
 
 		} catch(\Exception $e){
 
-			return response(["message"=>$e->getMessage()],400);
+			ErrorLog::create('emergency',[
+					'error'=>$e,
+					'message'=> 'Cart Confirm'
+				]);
 
 		}
+
+		return response(["message"=>'Something went wrong'],400);
+		
 	}
 
 	private function setCartProductsList(&$cart){

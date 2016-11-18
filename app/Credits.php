@@ -4,9 +4,9 @@ namespace AlcoholDelivery;
 
 use Moloquent;
 
-use AlcoholDelivery\User as User;
+use AlcoholDelivery\User;
 
-use AlcoholDelivery\Setting as Setting;
+use AlcoholDelivery\Setting;
 
 use DB;
 
@@ -14,7 +14,7 @@ use MongoId;
 
 use MongoDate;
 
-class Credits extends Moloquent
+class Credits extends Moloquent	
 {
 	public function getCredits($userId,$params = []){
 
@@ -215,6 +215,7 @@ class Credits extends Moloquent
 		
 		return $statics;
 
-	}	
+	}
+
 	
 }

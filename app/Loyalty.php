@@ -93,11 +93,21 @@ class Loyalty extends Model
 			));
 		});
 
-		if(isset($statics['result'][0])){
-			return $statics['result'][0];
+		$points = [
+			'count' => 0,
+			'credit' => 0,
+			'debit' => 0
+		];
+
+		foreach ($statics['result'] as $key => $value) {
+
+			$points[$value['_id']]+= $value['credit'];
+			$points[$value['_id'].'_last'] = $value['points'];
+			$points['count']+= $value['count'];
+
 		}
-		
-		return $statics;
+
+		return $points;
 
 	}
 
