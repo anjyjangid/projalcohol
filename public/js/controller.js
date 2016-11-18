@@ -988,6 +988,7 @@ AlcoholDelivery.controller('CartController',[
 
 	$rootScope.invalidCodeMsg = true;
 	if(alcoholCart.getCouponCode()){
+		$scope.discountCode = alcoholCart.getCouponCode();
 		$rootScope.couponInput = false;
 		$rootScope.couponOutput = true;
 	}else{
