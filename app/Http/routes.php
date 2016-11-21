@@ -37,6 +37,7 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::controller('product', 'Admin\ProductController');
 
 	Route::controller('admin', 'Admin\AdminController');
+	Route::controller('usergroup', 'Admin\UserGroupController');
 	
 	Route::resource('customer', 'Admin\CustomerController');
 	Route::controller('customer', 'Admin\CustomerController');

@@ -183,6 +183,7 @@ class AdminController extends Controller
             'last_name' => 'required|string|max:255',            
             'email' => 'required|email|max:255|unique:admin,email,'.@$id.',_id',            
             'storeId' => 'required',
+            'user_type' => 'required',
             'password' => 'required|between:8,32',
             'confirmPassword' => 'required|same:password',
             'status'=> 'required|integer|in:0,1',            
@@ -204,12 +205,16 @@ class AdminController extends Controller
         $data['storeId'] = $data['storeId'];
         $data['storeObjId'] = new MongoId($data['storeId']);
 
+        //$data['user_type'] = $data['user_type'];
+        $data['user_type'] = new MongoId($data['user_type']);
+
         $inputs = [
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
             'email' => $data['email'],            
             'storeId' => $data['storeId'],
             'storeObjId' => $data['storeObjId'],
+            'user_type' => $data['user_type'],
             'status' => (int)$data['status'],
             //'role' => 1
         ];
