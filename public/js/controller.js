@@ -147,21 +147,6 @@ AlcoholDelivery.controller('AppController',
 		return $filter('filter')($rootScope.settings.pages,{section:section});
 	};
 
-	$rootScope.invalidCodeMsg = true;
-	$rootScope.couponInput = true;
-	$rootScope.couponOutput = false;
-
-	$scope.checkCoupon = function(discountCode){
-		$scope.discountCode = discountCode;
-		alcoholCart.checkCoupon(discountCode, alcoholCart.getCartKey());
-	}
-
-	$scope.removeCoupon = function(){
-		$scope.discountCode = '';
-		delete $scope.discountCode;
-		alcoholCart.removeCoupon();
-	}
-
 	$scope.sortOptions = [
 		{value:'',label:'Popularity'},
 		{value:'price_asc',label:'Price - Low to High'},
@@ -876,7 +861,7 @@ AlcoholDelivery.controller('CreditsController',['$scope','$http','sweetAlert','$
 	$scope.pagination = {
 
 		start : 0,
-		limit : 1,
+		limit : 10,
 		count : 0
 
 	}
@@ -908,25 +893,27 @@ angular.pagination = $scope.pagination;
 		};
 
 
-		$http.get("credits",{params: $scope.pagination}).then(
+		$http.get("credits/transactions",{params: $scope.pagination}).then(
 
 			function(response){
 
 				$scope.pagination.count = response.data.count;
 
-				$scope.credits = response.data.credits;
+				$scope.credits = response.data.transactions;
 
-				$http.get("credits/statics").then(
+				$scope.statics = response.data.statics;
 
-					function(statRes){
+				// $http.get("credits/statics").then(
 
-						$scope.statics = statRes.data;
+				// 	function(statRes){
 
-					},
-					function(errStatRes){
+				// 		$scope.statics = statRes.data;
 
-					}
-				);
+				// 	},
+				// 	function(errStatRes){
+
+				// 	}
+				// );
 
 			},function(errRes){
 
@@ -998,6 +985,27 @@ AlcoholDelivery.controller('CartController',[
 	$scope.lproCardUpdateTimeOut = [];
 
 	$scope.step = 1;
+
+	$rootScope.invalidCodeMsg = true;
+	if(alcoholCart.getCouponCode()){
+		$scope.discountCode = alcoholCart.getCouponCode();
+		$rootScope.couponInput = false;
+		$rootScope.couponOutput = true;
+	}else{
+		$rootScope.couponInput = true;
+		$rootScope.couponOutput = false;
+	}
+
+	$scope.checkCoupon = function(discountCode){
+		$scope.discountCode = discountCode;
+		alcoholCart.checkCoupon(discountCode, alcoholCart.getCartKey());
+	}
+
+	$scope.removeCoupon = function(){
+		$scope.discountCode = '';
+		delete $scope.discountCode;
+		alcoholCart.removeCoupon();
+	}
 
 	$scope.checkout = function(ev) {
 
@@ -1359,9 +1367,9 @@ AlcoholDelivery.controller('CartAddressController',[
 			return false;
 		}
 
-		$scope.delivery.contact = parseInt($scope.delivery.contact);
+		//$scope.delivery.contact = parseInt($scope.delivery.contact);
 
-		if($scope.delivery.contact===""  || $scope.delivery.contact===null || isNaN($scope.delivery.contact)){
+		if($scope.delivery.contact===""  || $scope.delivery.contact===null/* || isNaN($scope.delivery.contact)*/){
 
 			$scope.errors.contact = "Please enter contact person number";
 
@@ -2317,6 +2325,10 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 
 	}
 
+	$scope.viewDetail = function(roption){
+		$state.go('mainLayout.packagedetail',roption);
+	}
+
 }]);
 
 AlcoholDelivery.controller('PackageDetailController',
@@ -2561,6 +2573,10 @@ AlcoholDelivery.controller('PackageDetailController',
 	$scope.toTrustedHTML = function( html ){
 	    return $sce.trustAsHtml( html );
 	}
+
+	/*$scope.$on('accordionA:onReady', function () {	  
+	  $scope.accordionA.toggle(0);
+	});*/
 
 
 }]);

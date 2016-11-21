@@ -27,7 +27,7 @@ class UserController extends Controller
 		// setting the credentials array
 		$credentials = [
 			'email' => strtolower($request->input('email')),
-			'password' => $request->input('password'),
+			'password' => $request->input('password'),			
 		];
 
 		$invalidcredentials = false;
@@ -35,6 +35,13 @@ class UserController extends Controller
 		// if the credentials are wrong
 		if (!Auth::attempt('user',$credentials)) {
 			$invalidcredentials = 'Username password does not match';            
+		}
+
+		if(Auth::user('user') && Auth::user('user')->verified!=1){
+			$invalidcredentials = 'You need to verify your email. We have sent a verification email, please check your email.';	
+			$email = new Email('welcome');
+			$email->sendEmail(Auth::user('user'));
+			Auth::logout();
 		}
 		
 		if ($validator->fails() || $invalidcredentials){

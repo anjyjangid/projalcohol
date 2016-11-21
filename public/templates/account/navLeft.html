@@ -18,7 +18,7 @@
     <div class="pic_divinnertextnormal"><a ng:class="{'active':$state.current.name == 'accountLayout.password'}" ui-sref="accountLayout.password">Change Password</a></div>
     <div class="pic_divinnertextnormal">
     <a ng:class="{'active':$state.current.name == 'accountLayout.address'}" ui-sref="accountLayout.address">
-    Address Book
+    Manage Addresses
     </a>
     </div>
     <div class="pic_divinnertextnormal">
@@ -35,9 +35,9 @@
     <div class="pic_divinnertextnormal">
       <a ng:class="{'active':$state.current.name == 'accountLayout.loyalty'}" ui-sref="accountLayout.loyalty">Loyalty Points <span ng-bind="user.loyaltyPoints || 0"></span></a></div>
     <div class="pic_divinnertextnormal">
-    <a ng:class="{'active':$state.current.name == 'accountLayout.credits'}" ui-sref="accountLayout.credits">Credits <span ng-bind="user.userCredits">0</span></a></div>
+    <a ng:class="{'active':$state.current.name == 'accountLayout.credits'}" ui-sref="accountLayout.credits">Credits <span ng-bind="user.credits.total | pricingTxt"></span></a></div>
     <div class="pic_divinnertextnormal">
-    <a ng:class="{'active':$state.current.name == 'accountLayout.cards'}" ui-sref="accountLayout.cards">Saved Cards</a></div>
+    <a ng:class="{'active':$state.current.name == 'accountLayout.cards'}" ui-sref="accountLayout.cards">Manage Credit Cards</a></div>
   </div>
 </div>
 <div class="pic_divinnertitle bordernoebtm">

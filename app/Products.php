@@ -518,6 +518,10 @@ class Products extends Eloquent
 							'categories' => 1,
 							'categoriesObject'=>1,
 							// 'discountPrice' => 1,
+							'isLoyalty' => 1,
+							'loyaltyValueType' => 1,
+							'loyaltyValuePoint' => 1,
+							'loyaltyValuePrice' => 1,
 							'imageFiles' => 1,
 							'name' => 1,
 							'slug' => 1,
@@ -1445,7 +1449,7 @@ class Products extends Eloquent
 						'orderId' => $orderId,
 						'storeId' => $storeStocksvalue['storeObjId'],
 						'quantity' => $qtyToPull,
-						'type' => 1,
+						'type' => 0,
 						'created_at' => new MongoDate(strtotime(date('Y-m-d H:i:s')))
 					];
 					
