@@ -1031,7 +1031,7 @@ AlcoholDelivery.directive('sideBar', function() {
 				}else{
 					return false;
 				}
-			}
+			};
 
 			$scope.addDays = function(days,mins){
 				var old = days;
@@ -1044,7 +1044,7 @@ AlcoholDelivery.directive('sideBar', function() {
 				curDate.setHours(0,0,0,0);
 				curDate.setDate(curDate.getDate() + days);
 				return curDate.setMinutes(mins);
-			}
+			};
 
 			$scope.availDate = $scope.addDays($scope.product.availabilityDays,$scope.product.availabilityTime);
 
