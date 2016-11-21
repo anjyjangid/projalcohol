@@ -36,7 +36,7 @@ class Admin extends Eloquent implements AuthenticatableContract,
      *
      * @var array
      */
-    protected $fillable = ['first_name', 'last_name', 'email', 'storeId', 'storeObjId', 'password','role', 'status'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'storeId', 'storeObjId', 'password','role', 'status', 'user_type'];
 
     /**
      * The attributes excluded from the model's JSON form.

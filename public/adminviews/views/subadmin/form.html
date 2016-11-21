@@ -68,6 +68,18 @@
 							<span class="help-block" ng-bind="errors.confirmPassword[0]"></span>
 						</div>
 					</div>
+					<div class="form-group" ng:class="{'has-error':errors.user_type[0]}">
+						<label class="col-md-2 control-label">User Role: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<select class="table-group-action-input form-control input-medium" ng-model="subadmin.user_type" required="">
+								<option value="">Select</option>
+								<option ng-repeat="role in usergroup" value="{{role._id}}">{{role.name}}</option>
+							</select>
+							<span class="help-block" ng-bind="errors.user_type[0]"></span>
+						</div>
+					</div>
 					<div class="form-group" ng:class="{'has-error':errors.status[0]}">
 						<label class="col-md-2 control-label">Status: <span class="required">
 						* </span>
