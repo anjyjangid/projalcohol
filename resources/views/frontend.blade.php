@@ -58,9 +58,9 @@
 		
 	</head>
 
-	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}">		    	    	 
-    	
-    	<div class="loader" ng-bind="loadingmsg"></div>
+	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}">		    	    	     	
+    	<div class="loader"></div>
+    	<div ng-bind="loadingmsg" ng-show="loadingmsg" class="ldmsg" align="center"></div>
     	<div id="wrapper">     	    		    		
 
 	        <div id="page-content-wrapper">    	

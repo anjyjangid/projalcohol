@@ -583,10 +583,13 @@ AlcoholDelivery.service('alcoholCart', [
 				proInCart.setQuantity(data.quantity);
 
 				if(detail){
-					
+					console.log(data);
 					proInCart.setProducts(data.products);
 					proInCart.setSaving(data.saving);
 					proInCart.setPrice(data.price);
+					proInCart.setOriginal(detail);
+					proInCart.setPackageItems();
+
 
 		    		$rootScope.$broadcast('alcoholCart:updated',{msg:"Package Updated"});
 
