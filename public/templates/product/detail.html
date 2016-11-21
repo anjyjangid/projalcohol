@@ -40,9 +40,7 @@
 	<div class="col-xs-12 col-sm-6 col-md-6 product-detail-right-set" ng:class="{'has-sale-div':product.sale || product.nameDetailSale}">
 		<div class="prddetailtitle">{{product.name}} </div>
 			<div class="tag-purple-new-pos">
-				<div class="tag-lightyellow-new" ng-if="product.quantity==0 && product.outOfStockType == 2">
-					<not-available product="product" tagsize="1"></not-available>
-				</div>				
+				<not-available product="product" tagsize="1"></not-available>
 				<div class="fullwidth"></div>
 				<div class="tag-yellow-new" ng-if="product.nameDetailSale && !product.saleImage">				
 					<div class="skew"></div>

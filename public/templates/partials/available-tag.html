@@ -1,15 +1,15 @@
 <div>
-<span ng-if="!tagsize" class="yellow-tag">
-	<span class="label label-warning" ng-if="product.quantity<1 && product.outOfStockType==2"> 	
-		{{ availDate | date:'EEE ha' }}
-		<md-tooltip class="blktool" md-direction="top" >
-			Available after  {{availDate | date:'ha, EEEE, d MMM'}}
-	  	</md-tooltip>
+	<span ng-if="!tagsize" class="yellow-tag">
+		<span class="label label-warning" ng-if="product.quantity<1 && product.outOfStockType==2"> 	
+			{{ availDate | date:'EEE ha' }}
+			<md-tooltip class="blktool" md-direction="top" >
+				Available after  {{availDate | date:'ha, EEEE, d MMM'}}
+		  	</md-tooltip>
+		</span>
 	</span>
-</span>
-<div ng-if="tagsize">	
-	<div class="skew"></div>
-	<div class="skew2"></div>
-	<div class="salediscount tag-button-new">Available after  {{availDate | date:'ha, EEEE, d MMM'}}</div>
-</div>
+	<div class="tag-lightyellow-new" ng-if="tagsize && product.quantity<1 && product.outOfStockType==2">	
+		<div class="skew"></div>
+		<div class="skew2"></div>
+		<div class="salediscount tag-button-new">Available after  {{availDate | date:'ha, EEEE, d MMM'}}</div>
+	</div>
 </div>
