@@ -100,7 +100,7 @@ class CmsController extends Controller
         $page->linkTitle = $inputs['linkTitle'];
         //$page->description = $inputs['description'];
         $page->content = $inputs['content'];
-        $page->status = $inputs['status'];
+        $page->status = (int)$inputs['status'];
         $page->slug = $inputs['slug'];
         $page->metaTitle = @$inputs['metaTitle'];
         $page->metaKeywords = @$inputs['metaKeywords'];

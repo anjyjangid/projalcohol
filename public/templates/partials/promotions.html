@@ -8,8 +8,24 @@
 		<div class="checkout-congratulation-text">Please select one of the following products.</div>
 	</div>
 
-	<div class="checkout-product"  ng-class="{notEligible:!promotion.eligible.already}">
+	<!-- <div class="checkout-product fullwidth prod-in-slider" ng-class="{notEligible:!promotion.eligible.already}">
 		<div class="row">
+			<data-owl-carousel class="owl-carousel owl-theme" data-options="{
+							
+						navigation : false,
+						pagination : false,
+						items : 4
+
+				}">
+		      <div owl-carousel-item="" ng-repeat="product in promotion.products" class="">		        	
+		        	<div al-tpl-product info="product" classes="comboproductitems proHoverEffect" promotion="promotion"></div>		
+		      </div>
+		    </data-owl-carousel>							
+		</div>		
+	</div> -->
+
+	<div class="checkout-product"  ng-class="{notEligible:!promotion.eligible.already}">
+		<div class="row">			
 			<data-owl-carousel class="owl-carousel owl-theme" data-options="{
 							
 						navigation : false,
@@ -19,13 +35,14 @@
 				}">
 				
 				<div owl-carousel-item="" al-tpl-product 
-								classes="col-xs-12 m-bottom-20 comboproductitems"
+								classes="col-xs-12 m-bottom-20 comboproductitems proHoverEffect"
 								ng-repeat="product in promotion.products"
 								info="product"
 								promotion="promotion"
 					></div>
 
 			</data-owl-carousel>
+			
 		</div>
 	</div>
 </div>
