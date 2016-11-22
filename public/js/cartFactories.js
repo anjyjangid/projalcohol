@@ -946,10 +946,27 @@ angular.module('AlcoholCartFactories', [])
 		this.setRecipient(giftData.recipient);
 
 		if(typeof giftData.products !== 'undefined'){
+			this.setType('container');
 			this.setProducts(giftData.products);
 			this.gsLimit(giftData.limit);
 		}
 
+	}
+	gift.prototype.setType = function(type){
+
+		if(type)
+		this.type = type
+	}
+
+	gift.prototype.getType = function(){
+		return this.type;
+	}
+
+	gift.prototype.isContainer = function(){
+
+		if(this.getType()==='container')
+		return true;
+		return false;		
 	}
 
 	gift.prototype.getUniqueId = function(){

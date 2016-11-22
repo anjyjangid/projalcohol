@@ -1108,11 +1108,10 @@ AlcoholDelivery.run([
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
 
 		var regex = new RegExp('^accountLayout', 'i');
-		
+
 		$anchorScroll();
 
 		angular.element('#wrapper').removeClass('toggled');
-
 
 		if($rootScope.isAppInitialized && !cartValidation.init(toState, fromState))
 			event.preventDefault();
