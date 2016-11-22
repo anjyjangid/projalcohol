@@ -188,9 +188,9 @@ body {
 }
 .menu-icon > .line {
 	background-color: #614911;
-	height: 4px;
+	height: 3px;
 	display: block;
-	width: 30px;
+	width: 26px;
 	border-radius: 7px;
 	z-index: 100000;
 }
@@ -209,7 +209,7 @@ body {
 	z-index: 9999;
 }
 .navbar-shrink .menu-icon {
-	top: 25px
+	top: 26px
 }
 .modify .dropdown-menu li {
 	margin-right: 0;
