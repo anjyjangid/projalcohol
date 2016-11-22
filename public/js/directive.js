@@ -1026,6 +1026,7 @@ AlcoholDelivery.directive('sideBar', function() {
 					return true;
 				}
 				var tsofdate = cDate.getTime();
+				
 				var isPh = $filter('filter')(holiDays,{timeStamp:tsofdate});
 				if(typeof isPh[0] !== 'undefined'){
 					return true;
@@ -1035,7 +1036,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			};
 
 			$scope.addDays = function(days,mins){
-				var old = days;
+				var old = days;				
 				//CHECK UNTILL THE DAY IS NOT HOLIDAY OR WEEKDAYOFF
 				while($scope.isHoliday(days)){
 					days+=1;

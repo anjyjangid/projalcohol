@@ -1213,7 +1213,7 @@ AlcoholDelivery.run([
 						templateUrl: '/templates/toast-tpl/cart-update.html',
 						parent : $document[0].querySelector('#cart-summary-icon'),
 						position: 'top center',
-						hideDelay:0
+						hideDelay:3000
 					});
 
 	});
