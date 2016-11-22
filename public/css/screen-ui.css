@@ -5905,7 +5905,7 @@ md-checkbox.md-default-theme.md-checked .md-icon::after, md-checkbox.md-checked 
 	transition: all 0.5s ease 0s;
 }
 
-.product-listcover2.ng-scope {
+.product-listcover2 {
 	float: left;
 	padding: 0 15px;
 	width: 100%;
