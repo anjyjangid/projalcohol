@@ -193,6 +193,9 @@ AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
     var appSettings = {
         layout: {
             pageRightbarExist: true, // sidebar menu state
+        },
+        messages : {
+        	hideDelay : 4000
         }
     };
 
@@ -1058,11 +1061,15 @@ function ($q, $rootScope, $log, $location) {
 }]);
 
 /* Init global settings and run the app */
-AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService", "store", "alcoholWishlist", "catPricing", "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll","$timeout","cartValidation"
-, function($rootScope, settings, alcoholCart, ProductService, store, alcoholWishlist, catPricing, categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll,$timeout,cartValidation) {
+AlcoholDelivery.run([
+		"$rootScope", "appSettings", "alcoholCart", "ProductService", "store", "alcoholWishlist", "catPricing"
+		, "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll"
+		, "$timeout","cartValidation"
+, function($rootScope, settings, alcoholCart, ProductService, store, alcoholWishlist, catPricing
+		,categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll
+		,$timeout,cartValidation) {
 
 	angular.alcoholCart = alcoholCart;
-	angular.userservice = UserService;
 
 	$rootScope.$state = $state; // state to be accessed from view
 
@@ -1156,8 +1163,8 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService
     });*/
 
 
-	$rootScope.$on('alcoholCart:notify', function(data,msg){
-
+	$rootScope.$on('alcoholCart:notify', function(data,msg,hideDelay){
+		
 		$mdToast.show({
 			controller:function($scope){
 
@@ -1166,8 +1173,10 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService
 			templateUrl: '/templates/toast-tpl/wishlist-notify.html',
 			parent : $document[0].querySelector('#cart-summary-icon'),
 			position: 'top center',
-			hideDelay:4000
+			hideDelay:hideDelay || settings.messages.hideDelay
+
 		});
+
 
 	});
 
@@ -1250,7 +1259,7 @@ AlcoholDelivery.run(["$rootScope", "appSettings", "alcoholCart", "ProductService
 
 	});
 
-
+	
 
 	// store.init();
 	// alcoholWishlist.init();

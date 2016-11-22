@@ -13,6 +13,10 @@
 /*TO VIEW MAIL TEMPLATE*/
 Route::get('/printjob/{reference}', 'OrderController@getOrderdetail');
 
+Route::get('/morphing', function(){
+	return view('invoice.morph');
+});
+
 Route::group(['prefix' => 'adminapi'], function () {
 
 	Route::controller('auth', 'Auth\AdminAuthController');
@@ -33,6 +37,7 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::controller('product', 'Admin\ProductController');
 
 	Route::controller('admin', 'Admin\AdminController');
+	Route::controller('usergroup', 'Admin\UserGroupController');
 	
 	Route::resource('customer', 'Admin\CustomerController');
 	Route::controller('customer', 'Admin\CustomerController');
@@ -217,9 +222,15 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::put('gift/product/chilledtoggle/{giftUid}','CartController@putGiftProductChilledStatus');
 
-	Route::put('loyalty/{key}','CartController@putLoyalty');
+	Route::put('loyalty/{cartKey}','CartController@putLoyalty');
 
-	Route::put('loyalty/credit/{key}','CartController@putCreditCertificate');	
+	Route::put('loyalty/credit/{cartKey}','CartController@putCreditCertificate');
+	
+	Route::delete('loyalty/{cartKey}/{key}/{type}','CartController@deleteLoyaltyProduct');
+	Route::delete('loyaltycard/{cartKey}/{key}','CartController@deleteLoyaltyCard');
+	
+	Route::put('chilled/loyalty/{cartkey}','CartController@updateLoyaltyChilledStatus');
+	
 
 });
 

@@ -137,7 +137,7 @@ class BusinessController extends Controller
 			return response(array("success"=>true,"message"=>"Business updated successfully"));
 		}
 		
-		return response(array("success"=>false,"message"=>"Something went worng"));
+		return response(array("success"=>false,"message"=>"Something went wrong"));
 		
 	}
 

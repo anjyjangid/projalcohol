@@ -3,7 +3,7 @@
 namespace AlcoholDelivery\Http\Requests;
 
 use AlcoholDelivery\Http\Requests\Request;
-
+use Input;
 class CardRequest extends Request
 {
     /**
@@ -23,12 +23,24 @@ class CardRequest extends Request
      */
     public function rules()
     {
+        $input = Input::all();
+
+
+        $currentYear = date('Y');
+        $currentMonth = date('m');
+
+        $validMonth = 'required|numeric|between:1,12';
+        $validYear = 'required|numeric|between:'.$currentYear.','.($currentYear+10);
+        if(isset($input['year']) && $currentYear==$input['year']){
+            $validMonth = 'required|numeric|between:'.$currentMonth.',12';
+        }
+
         return [
             'number' => 'required',
             //'cvc' => 'required|numeric',            
             'name' => 'required|max:45|min:3',
-            'month' => 'required|numeric|between:1,12',
-            'year' => 'required|numeric',            
+            'month' => $validMonth,//'required|numeric|between:1,12',
+            'year' => $validYear//'required|numeric',            
         ];
     }
 
@@ -37,6 +49,8 @@ class CardRequest extends Request
 
         $messages = [
             'required' => 'This field is required',
+            'month.between' => 'Card is Expired',
+            'year.between' => 'Card is Expired ',
         ];
 
         return $messages;

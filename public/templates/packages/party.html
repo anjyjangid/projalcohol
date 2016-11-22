@@ -10,9 +10,8 @@
 		<div class="partypackegescover"><img src="images/party_package.png" class="img-responsive" ></div>	        
         <div class="party-package-coverdiv">
         	<div ng-repeat-start="package in packages" ng:class="{'row':($index%2==0)}"></div>
-
-	        	<div class="left-party-content"  ng:class="{'right-party-content':$odd}" ng-init="package.packageQuantity = 1">
-	          		<div class="party-topimgdiv">  
+        		<div class="left-party-content"  ng:class="{'right-party-content':$odd}" ng-init="package.packageQuantity = 1">
+	          		<div class="party-topimgdiv" ng-click="viewDetail({type:'party',id:package._id});">  
 
 						<img class="img-responsive img-responsive-h" ng-src="packages/i/{{package.coverImage.source}}" err-src=""/ >
 
@@ -20,7 +19,7 @@
 	                        <div class="customizebtn">
 		                        <div class="customize-inner">
 			                        <a class="btn btn-default" ui-sref="mainLayout.packagedetail({type:'party',id:package._id})" role="button">
-			                        	<img src="images/customize-icon.png" ><span>Customize</span>
+			                        	<img src="images/customize-icon.png" ><span>CLICK HERE TO CUSTOMISE YOUR PACKAGE!</span>
 			                        </a>
 		                        </div>
 	                        </div>

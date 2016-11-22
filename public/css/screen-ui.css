@@ -1965,7 +1965,7 @@ ui-sref {
 	margin-top: 9px;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	white-space: nowrap;
+	/*white-space: nowrap;*/
 }
 .productslide_actualprice {
 	float: left;
@@ -5912,7 +5912,7 @@ md-checkbox.md-default-theme.md-checked .md-icon::after, md-checkbox.md-checked 
 	transition: all 0.5s ease 0s;
 }
 
-.product-listcover2.ng-scope {
+.product-listcover2 {
 	float: left;
 	padding: 0 15px;
 	width: 100%;
@@ -6605,6 +6605,7 @@ button:hover{
     position: relative;
     max-width: 195px;
     width: auto;
+    margin-bottom: 7px;
 }
 
 .tag-purple-new-pos{
@@ -6622,7 +6623,17 @@ button:hover{
     position: relative;
     max-width: 195px;
     width: auto;
-    margin-top: 7px;
+    margin-bottom: 7px;
+}
+
+.tag-lightyellow-new{
+	background: #f0ad4e none repeat scroll 0 0;
+    border-radius: 0 2px 2px 0;
+    float: right;
+    position: relative;
+    max-width: 195px;
+    width: auto;
+    margin-bottom: 7px;
 }
 
 .has-sale-div .prddetailtitle, .has-sale-div .prddetailsubexttitle, .has-sale-div .prddetailnormaltext, .has-sale-div .prddetailnormaltext{

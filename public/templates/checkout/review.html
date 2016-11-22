@@ -25,7 +25,7 @@
 				 </div>
 				 <div class="checkoutstep5-left-first">
 					 <div class="checkoutstep5-left-first-left">
-						 <div class="checkoutstep5-left-first-lefttext">Payment</div>
+						 <div class="checkoutstep5-left-first-lefttext">Payment Method</div>
 						 <div class="checkoutstep5-left-first-lefttitle">
 							{{(cart.payment.method == 'COD')?'Cash on delivery':''}}
 						 </div>
@@ -72,7 +72,7 @@
 								<div class="checkoutstep5right-middle-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
 								
 								<div class="checkboxtotaldiv-text-font-size" ng-if="!cart.delivery.charges">Free</div>
-		<div class="checkboxtotaldiv-text-font-size" ng-if="cart.delivery.charges>0">{{alcoholCart.getDeliveryCharges() | currency:settings.general.currency:2 }}</div>
+								<div class="checkboxtotaldiv-text-font-size" ng-if="cart.delivery.charges>0">{{alcoholCart.getDeliveryCharges() | currency:settings.general.currency:2 }}</div>
 							</div>
 							<div class="checkoutstep5right-middle-first">
 								<div class="checkoutstep5right-middle-title">Service Charge <span class=""><img src="images/questionimg.png"></span></div>
@@ -81,6 +81,10 @@
 							<div class="checkoutstep5right-middle-first">
 								<div class="checkoutstep5right-middle-title" >Discount (Non-Chilled) <span class=""><img src="images/questionimg.png"></span></div>
 								<div class="checkboxtotaldiv-text-font-size" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount() | currency:settings.general.currency:2}}</div>
+							</div>
+							<div class="checkoutstep5right-middle-first" ng-show="alcoholCart.getCouponDiscount()">
+								<div class="checkoutstep5right-middle-title" >Coupon Discount <span class=""><img src="images/questionimg.png"></span></div>
+								<div class="checkboxtotaldiv-text-font-size" ng-class="">-{{alcoholCart.getCouponDiscount() | currency:settings.general.currency:2}}</div>
 							</div>
 						</div>
 						<div class="checkoutstep5right-buttom">

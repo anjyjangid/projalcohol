@@ -1071,6 +1071,11 @@ AlcoholDelivery.factory('AlcoholProduct',[
 		this.sku = p.sku;
 		this.slug = p.slug;
 
+		this.isLoyalty = p.isLoyalty;
+		this.loyaltyValueType = p.loyaltyValueType;
+		this.loyaltyValuePoint = p.loyaltyValuePoint;
+		this.loyaltyValuePrice = p.loyaltyValuePrice;
+
 	}
 
 	product.prototype.addToCart = function() {
@@ -1267,7 +1272,7 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 		},1500)
 
-		return defer.promise;
+	return defer.promise;
 		};
 
 		product.prototype.hrefDetail = function(){

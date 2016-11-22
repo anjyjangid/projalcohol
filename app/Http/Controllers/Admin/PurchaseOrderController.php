@@ -10,8 +10,11 @@ use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\PurchaseOrder;
 use AlcoholDelivery\Stocks;
 use AlcoholDelivery\Products;
+use AlcoholDelivery\Orders;
 use Illuminate\Support\Facades\Auth;
 use MongoId;
+use MongoDate;
+use DB;
 
 class PurchaseOrderController extends Controller
 {
@@ -203,12 +206,24 @@ class PurchaseOrderController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
+        $model = PurchaseOrder::find($id);
+
+        $advanceOrders = [];
+        if($model){
+            if(isset($model->advanceOrderId)){
+                $advanceOrders = Orders::whereRaw(['_id'=>['$in'=>$model->advanceOrderId],'doStatus'=>0])->get();
+            }
+        }
+
         $params = $request->all();
 
         extract($params);
 
-        if(isset($status)) {
-            $response = PurchaseOrder::raw()->update(['_id' => new MongoId($id), 'status'=> ['$lte' => 1]], ['$set' => ['status'=>3]]);
+        if(isset($status) && $model->status<1){
+            $model->status = 3;
+            $model->save();
+            /*$response = PurchaseOrder::raw()->update(['_id' => new MongoId($id), 'status'=> ['$lte' => 1]], ['$set' => ['status'=>3]]);*/
         }
         if(isset($products)) {
 
@@ -216,7 +231,13 @@ class PurchaseOrderController extends Controller
             $isComplete = true;
             $received = false;
 
-            $userStoreId = Auth::user('admin')->storeId;
+            $user = Auth::user('admin');
+            $userStoreId = $user->storeId;
+            $inventoryLog = [];
+            //IF ADVANCE ORDER ARE ASSOCIATED WITH PO THEN PROCESS THEM FIRST
+            if(!empty($advanceOrders)){
+                //$this->processAdvanceOrder($advanceOrders,$products,$inventoryLog,$user,$id);
+            }
 
             foreach ($products as $i => $product) {
                 if(!isset($product['received']))
@@ -232,7 +253,17 @@ class PurchaseOrderController extends Controller
 
                     Stocks::raw()->update(["productId" => $product['_id']['$id'], "storeId" => $userStoreId], ['$inc' => ['quantity' => $product['add']]]);
                     Products::raw()->update(["_id" => $products[$i]['_id']], ['$inc' => ['quantity' => $product['add']]]);
-                    // jprd($resp);
+
+                    //PREPARE TRANSACTION OF PRODUCT FOR THE STORE
+                    $inventoryLog[] = [
+                        'productId' => new MongoId($product['_id']['$id']),
+                        'purchaseOrderId' => new MongoId($id),
+                        'storeId' => new MongoId($userStoreId),
+                        'actionUserId' => new MongoId($user->_id),
+                        'quantity' => $product['add'],
+                        'type' => 1,
+                        'created_at' => new MongoDate(strtotime(date('Y-m-d H:i:s')))
+                    ];                    
                 }
 
                 unset($products[$i]['add']);
@@ -244,6 +275,13 @@ class PurchaseOrderController extends Controller
                     $received = true;
             }
 
+            //INSERT INVENTORY LOG
+            if($inventoryLog){
+                $r = DB::collection('inventoryLog')->insert($inventoryLog);
+            }
+
+            //PROCESS ADVANCE ORDER
+            
             if($isComplete)
                 $status = 2;
             else if($received)
@@ -253,6 +291,8 @@ class PurchaseOrderController extends Controller
 
             if($hasUpdate)
                 $response = PurchaseOrder::raw()->update(['_id' => new MongoId($id)], ['$set' => ['products'=>$products, 'status'=>$status]]);
+
+            
         }
 
         if(!isset($response))
@@ -270,5 +310,110 @@ class PurchaseOrderController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /*
+    * Process advance order on PO Update
+    * @param 
+    * object $advanceOrders
+    * array $products
+    * array $inventoryLog
+    */
+    private function processAdvanceOrder($advanceOrders,&$products,&$inventoryLog,$user,$id){
+
+        $userStoreId = $user->storeId;
+        
+        $received = [];
+        foreach ($products as $key => $product) {
+            $productId = (string)$product['_id']['$id'];
+
+            //PREPARE TRANSACTION OF PRODUCT FOR THE STORE
+            $inventoryLogVal = [
+                'productId' => new MongoId($productId),
+                'orderId' => new MongoId($key),
+                'storeId' => new MongoId($userStoreId),
+                'purchaseOrderId' => new MongoId($id),
+                'actionUserId' => new MongoId($user->_id),
+                'quantity' => $productsLog['quantity'],
+                'type' => 1,
+                'created_at' => new MongoDate(strtotime(date('Y-m-d H:i:s')))
+            ];
+
+            $received[$productId] = $product['add'];
+        }
+
+        $taken = [];
+        $orderProcessed = [];
+        foreach ($advanceOrders as $akey => $advanceOrder) {
+            $key = (string)$advanceOrder['_id'];
+            if(isset($advanceOrder->productsLog)){
+                foreach ($advanceOrder->productsLog as $pkey => $productsLog) {
+                    
+                    //IF THE ORDER IS ALREADY DISCARDED THEN SKIP THE LOOP
+                    if(isset($orderProcessed[$key]) && $orderProcessed[$key] == 0) continue;
+                    
+                    $vkey = (string)$productsLog['_id'];
+                    $vvalue = $productsLog['quantity'];
+
+                    if(isset($received[$vkey]) && $received[$vkey]>=$vvalue){
+                        $received[$vkey] -= $vvalue;
+                        $taken[$key][$vkey] = $vvalue;
+                        $orderProcessed[$key] = 1;
+                    }else{
+                        if(isset($taken[$key])){
+                            foreach($taken[$key] as $tkey => &$tvalue) {
+                                $received[$tkey] += $tvalue;
+                                $tvalue = 0;
+                            }
+                        }
+                        $orderProcessed[$key] = 0;
+                    }
+                }
+            }
+        }
+
+        //UPDATE REMAINING QTY FOR 1 HR AFTER DEDUCTING QTY FOR ADVANCE ORDER FOR EACH PRODUCT
+        foreach ($products as $key => $product) {
+            $productId = (string)$product['_id']['$id'];
+            $product['add'] = $received[$productId];
+        }
+
+        //PREPARE ADVANCE ORDER WITH INVENTORY LOG
+        foreach ($advanceOrders as $akey => $advanceOrder) {
+            $key = (string)$advanceOrder['_id'];
+            //ORDER COMPLETE
+            if(isset($orderProcessed[$key]) && $orderProcessed[$key]==1){                
+                if(isset($advanceOrder->productsLog)){
+                    foreach ($advanceOrder->productsLog as $pkey => $productsLog) {
+                        
+                        //PREPARE TRANSACTION OF PRODUCT FOR THE STORE
+                        $inventoryLogVal = [
+                            'productId' => new MongoId($productsLog['_id']),
+                            'orderId' => new MongoId($key),
+                            'storeId' => new MongoId($userStoreId),
+                            'purchaseOrderId' => new MongoId($id),
+                            'actionUserId' => new MongoId($user->_id),
+                            'quantity' => $productsLog['quantity'],
+                            'type' => 1,
+                            'created_at' => new MongoDate(strtotime(date('Y-m-d H:i:s')))
+                        ];
+
+                        //IN TRANSACTION
+                        $inventoryLog[] = $inventoryLogVal;
+
+                        //CHANGE TYPE
+                        $inventoryLogVal['type'] = 0;
+
+                        //OUT TRANSACTION
+                        $inventoryLog[] = $inventoryLogVal;                        
+                    }
+                }
+                //READY ORDER FOR PRINT
+                $advanceOrder->doStatus = 1;
+                $advanceOrder->save();
+            }else{
+                //LOGIN FOR ORDER NOT COMPLETED AFTER PO RECEIVED
+            }
+        }
     }
 }

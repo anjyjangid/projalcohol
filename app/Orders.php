@@ -45,6 +45,7 @@ class Orders extends Moloquent
 							'discount',
 							'loyaltyPointUsed',
 							'loyaltyPointEarned',
+							'creditsFromLoyalty',
 							'reference',
 							'productsLog',
 							'doStatus',
@@ -549,5 +550,13 @@ class Orders extends Moloquent
 		unset($order['productsLog']);
 
 		return $order;
+	}
+
+	public function processAdvanceOrder($orderIds){
+
+		/*if(){
+			
+		}*/
+
 	}
 }

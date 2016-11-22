@@ -492,6 +492,13 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 					icon:'icon-user-following',
 					links:['userLayout.business.list','userLayout.business.add','userLayout.business.edit'],
 					access : ['admin']
+				},
+				{
+					label:'User Groups',
+					uisref:'userLayout.usergroups.list',
+					icon:'icon-user-following',
+					links:['userLayout.usergroups.list','userLayout.usergroups.add','userLayout.usergroups.edit'],
+					access : ['admin']
 				}
 			]
 		},
@@ -2726,7 +2733,84 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 					}
                 }
             }
-        });
+        })
+
+        .state('userLayout.usergroups', {
+            abstract:true,
+            templateUrl:'adminviews/views/auth.html',
+            controller: "UsergroupsController",
+            resolve: {
+                authenticate: authenticate,
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+                            'adminviews/js/controllers/UsergroupsController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+        .state("userLayout.usergroups.list", {
+        	url: "/usergroups/list",
+        	templateUrl: "adminviews/views/usergroups/list.html",
+        	data:{
+        		pageTitle:'User Groups',
+        		breadCrumb:[
+        		{title:'User Groups','uisref':'#'}
+        		]
+        	},
+        	resolve: {
+        		authenticate: authenticate,
+        	}
+        })
+        .state("userLayout.usergroups.add", {
+        	url: "/usergroups/add",
+        	templateUrl: "adminviews/views/usergroups/add.html",
+        	data:{
+        		pageTitle:'User Groups',
+        		breadCrumb:[
+        		{title:'User Groups','uisref':'userLayout.usergroups.list'},
+        		{title:'Add','uisref':'#'}
+        		]
+        	},
+        	resolve: {
+        		authenticate: authenticate,
+        	}
+        })
+
+        .state('userLayout.usergroups.edit', {
+        	url: '/usergroups/edit/{id}',
+        	templateUrl:'adminviews/views/usergroups/add.html',
+        	data:{
+        		pageTitle:'Edit User Groups',
+        		breadCrumb:[
+        		{title:'User Groups','uisref':'userLayout.usergroups.list'},
+        		{title:'Edit','uisref':'#'}
+        		]
+        	},
+        	resolve: {
+        		authenticate: authenticate
+        	}
+        })
+
+        .state("userLayout.usergroups.pagelist", {
+        	url: "/usergroups/page_list",
+        	templateUrl: "adminviews/views/usergroups/page_list.html",
+        	data:{
+        		pageTitle:'Pages List',
+        		breadCrumb:[
+        		{title:'User Groups','uisref':'userLayout.usergroups.list'}
+        		]
+        	},
+        	resolve: {
+        		authenticate: authenticate,
+        	}
+        })
+        ;
 
         function authenticate($q, AdminUserService, $state, $timeout, $location) {
 

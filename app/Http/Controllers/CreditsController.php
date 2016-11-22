@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
 
-use AlcoholDelivery\Credits as Credits;
+use AlcoholDelivery\Credits;
+use AlcoholDelivery\CreditTransactions;
 
 
 class CreditsController extends Controller
@@ -41,6 +42,29 @@ class CreditsController extends Controller
 		$credits = $this->creditsModel->getCredits($this->user->_id,$params);
 
 		return response($credits,200);
+
+	}
+
+	/**
+	* 
+	*/
+	public function getTransactions(Request $request){
+		
+		$params = $request->all();
+		$creditTransactions = new CreditTransactions;
+		$credits = $creditTransactions->getCredits($this->user->_id,$params);
+
+		if($credits['success']){
+
+			return response(
+				[
+					'transactions'=>$credits['transactions'],
+					'statics'=>$this->user->credits,
+					'count'=>$credits['count']
+				],200);			
+		}
+
+		return response(['message'=>'Something went wrong'],400);
 
 	}
 

@@ -12,7 +12,7 @@ use AlcoholDelivery\Promotion;
 use AlcoholDelivery\Gift;
 
 use Illuminate\Support\Facades\Auth;
-
+use stdClass;
 use MongoId;
 use MongoDate;
 
@@ -21,6 +21,7 @@ class Cart extends Moloquent
 	protected $primaryKey = "_id";
 	protected $collection = 'cart';
 	public static $key;
+	
 	/**
 	 * Indicates if the model should be timestamped.
 	 *
@@ -35,7 +36,6 @@ class Cart extends Moloquent
 	 */
 	protected $fillable = [
 
-						'_id',
 						'products',
 						'loyalty',
 						'packages',
@@ -195,8 +195,6 @@ class Cart extends Moloquent
 
 		// }
 
-
-
 		try{
 
 			$cart->save();			
@@ -205,7 +203,7 @@ class Cart extends Moloquent
 		}catch(\Exception $e){
 
 			return false;
-			
+
 		}
 
 	}
@@ -333,17 +331,6 @@ class Cart extends Moloquent
 
 		$this->reference = $reference;
 		
-	}
-
-	public function getLoyaltyCards(){
-
-		if(isset($this->loyaltyCards)){
-			
-			return $this->loyaltyCards;
-
-		}
-
-		return [];
 	}
 
 	private function getProductById($id){
@@ -498,7 +485,7 @@ class Cart extends Moloquent
 
 		// Check any product is required newly added product to create a sale.
 
-		foreach($products as $productId=>$product){
+		foreach($products as $productId=>&$product){
 			
 			if(isset($product['sale']) && !$this->isSingleProductSale($product['sale']) && $product['remainingQty']>0){
 
@@ -551,7 +538,7 @@ class Cart extends Moloquent
 						break;
 						default : {
 
-							$products[$key]['remainingQty']-=$saleProQty;							
+							$products[$key]['remainingQty']-=$saleProQty;
 
 							$saleObj['products'][] = [
 
@@ -562,6 +549,8 @@ class Cart extends Moloquent
 						}
 
 					}
+
+					$this->products = $products; // to set all new changes in $product var to current cart products.
 
 				}
 				
@@ -732,7 +721,7 @@ class Cart extends Moloquent
 		$salePro = [];
 
 		foreach($products as $key=>&$product){
-						
+			
 			if(!isset($product['sale']) || empty($product['sale'])){continue;}
 
 			$proSale = $product['sale'];
@@ -742,6 +731,7 @@ class Cart extends Moloquent
 				if($product['remainingQty']>=$quantity){
 
 					$salePro[$key] = $quantity;
+					$quantity = 0;
 
 				}else{
 
@@ -752,9 +742,10 @@ class Cart extends Moloquent
 
 				$product['remainingQty']-= $salePro[$key];
 
+
 			}
 
-			if($quantity===0){
+			if($quantity==0){
 				break;
 			}
 
@@ -1095,14 +1086,106 @@ class Cart extends Moloquent
 
 	public function setLoyaltyPointEarned(){
 
-		// due
+		$products = $this->getProductsWithoutAnySale();
+		$loyaltyPoints = 0;
+		foreach($this->productsLog as $proInCart){
+
+			$id = (string)$proInCart['_id'];
+
+			if(!isset($products[$id])){continue;}
+
+			$qty = $products[$id];
+			$point = 0;
+			if((int)$proInCart['loyaltyType']==0){
+
+				if(!isset($proInCart['loyalty'])){$proInCart['loyalty']=0;}
+
+				$point+= $qty * ($proInCart['costPrice'] * $proInCart['loyalty']/100);
+
+			}else{
+
+				$point+= $qty * $proInCart['loyalty'];
+
+			}
+
+			$loyaltyPoints = $loyaltyPoints + (float)(round($point,2));
+
+		}
+
+		$this->__set('loyaltyPoints',$loyaltyPoints);
+		return $loyaltyPoints;
+	}
+
+	public function getProductsWithoutAnySale(){
+
+		$proArr = [];
+		$products = $this->__get("products");
+
+		foreach($products as $key=>$product){
+
+			if($product['remainingQty']<1){
+				continue;
+			}
+
+			$proArr[$key] = $product['remainingQty'];
+
+		}
+
+		return $proArr;
+	}
+
+	public function getLoyaltyProducts(){
+
+		return isset($this->loyalty)?$this->loyalty:[];
 
 	}
 
-	public function setLoyaltyPointUsed(){
+	public function getLoyaltyProductById($id){
 
-		$loyaltyProducts = isset($this->loyalty)?$this->loyalty:[];
-		$loyaltyCards = isset($this->loyaltyCards)?$this->loyaltyCards:[];
+		$pObj = false;
+		$lProducts = $this->getLoyaltyProducts();
+
+		foreach ($lProducts as $key => $value) {
+
+			if($key === $id){
+				$pObj = $value;
+				break;
+			}
+
+		}
+		
+		return $pObj;
+
+	}
+
+	public function getLoyaltyCards(){
+
+		return isset($this->loyaltyCards)?$this->loyaltyCards:[];
+
+	}
+
+	public function getLoyaltyCardByValue($value){
+
+		$pObj = false;
+		$lProducts = $this->getLoyaltyCards();
+
+		foreach ($lProducts as $key => $card) {
+
+			if($key == $value){
+				$pObj = $card;
+				break;
+			}
+
+		}
+		
+		return $pObj;
+
+	}
+
+	public function getLoyaltyPointUsed(){
+
+		$loyaltyProducts = $this->getLoyaltyProducts();
+		$loyaltyCards = $this->getLoyaltyCards();
 		$totalPoints = 0;
 
 		foreach ($loyaltyProducts as $key => $product) {
@@ -1111,11 +1194,28 @@ class Cart extends Moloquent
 
 		foreach ($loyaltyCards as $card) {
 			$totalPoints = $totalPoints + (((float)$card['points']) * ((int)$card['quantity']));
-		}
+		}		
+
+		return $totalPoints;
+
+	}
+
+	public function setLoyaltyPointUsed(){
+
+		$totalPoints = $this->getLoyaltyPointUsed();
 
 		$this->__set("loyaltyPointUsed",$totalPoints);
 
 		return $totalPoints;
+
+	}
+
+
+	public function removeAllLoyaltyProduct(){
+		
+		$this->__set("loyalty",new stdClass());
+		$this->__set("loyaltyCards",new stdClass());
+		$this->__set("loyaltyPointUsed",0);
 
 	}
 
@@ -1167,7 +1267,7 @@ class Cart extends Moloquent
 
 	}
 
-	public function cartToOrder(){
+	public function cartToOrder($cartKey=null){
 
 		$productsInCartCount = $this->getProductIncartCount();
 
@@ -1188,7 +1288,7 @@ class Cart extends Moloquent
 		$proDetails = [];
 		$proSales = [];
 		foreach ($productsInCart['product'] as $product) {
-
+			
 			$product['common'] = [
 
 				'name'=>$product['name'],
@@ -1198,7 +1298,8 @@ class Cart extends Moloquent
 
 				'sku'=>$product['sku'],
 				'chilled'=>(bool)$product['chilled'],
-
+				'loyaltyType'=>(int)$product['loyaltyType'],
+				'loyalty'=>(float)$product['loyalty'],
 			];
 
 			foreach ($product['imageFiles'] as $key => $value) {
@@ -1239,9 +1340,15 @@ class Cart extends Moloquent
 
 				if(isset($product['proSales']['actionProductId']) && count($product['proSales']['actionProductId'])>0){
 					$objSale['action'] = true;
+					
 				}
 
-				$proSales[(string)$product['proSales']['_id']] = $objSale;
+				if($objSale['actionType']==1){
+					
+					$objSale['giftQuantity'] = $product['proSales']['giftQuantity'];
+				}
+
+				$proSales[(string)$product['proSales']['_id']] = $objSale;				
 
 			}
 
@@ -1252,21 +1359,23 @@ class Cart extends Moloquent
 			$order['productsLog'] = [];
 
 			foreach($productsInCartCount as $proKey=>$quantity){
-				
+
 				$oPro = [
 					"_id" => new mongoId($proKey),
-					"quantity" => (int)$quantity
+					"quantity" => (int)$quantity,
+					"costPrice" => $proDetails[$proKey]['price']
 				];
 
 				$oPro = array_merge($oPro,$proDetails[$proKey]['common']);
 				array_push($order['productsLog'], $oPro);
 			}
 
-			 
+			$this->__set('productsLog',$order['productsLog']);
+
 		// product log ends //
 		unset($productsInCart);
 		unset($productsInCartCount);
-		
+
 		// Set sale products start //
 		if(isset($this->sales)){
 
@@ -1316,6 +1425,7 @@ class Cart extends Moloquent
 				$strikePrice = $price;
 
 				$currPrice = 0;
+				
 				if($currSale['actionType'] == 1){
 
 					$qty = $currSale['giftQuantity'];
@@ -1362,6 +1472,7 @@ class Cart extends Moloquent
 			}			
 			
 		}
+
 		// Set sale products ends //
 
 		// Set packages start //
@@ -1507,8 +1618,8 @@ class Cart extends Moloquent
 					]
 				];
 
-				$totalPoints+= $oPackage['price']['points'];
-				$subtotal+= $oPackage['price']['amount'];
+				$totalPoints+= $oLoyalty['price']['points'];
+				$subtotal+= $oLoyalty['price']['amount'];
 
 				$order['loyalty'][] = $oLoyalty;
 			}
@@ -1519,10 +1630,14 @@ class Cart extends Moloquent
 		// Set loyalty cards start //
 
 		if(isset($this->loyaltyCards)){
-			
+
+			$creditsFromLoyalty = 0;
 			foreach ($this->loyaltyCards as $key => $value) {
 
 				$value['value'] = $key;
+				
+				$creditsFromLoyalty = $creditsFromLoyalty + ($value['quantity'] * $value['value']);
+
 				$value['total'] = $value['quantity'] * $value['points'];
 
 				$totalPoints+=$value['total'];
@@ -1530,6 +1645,7 @@ class Cart extends Moloquent
 				$order['loyaltyCards'][] = $value;
 			}
 
+			$order['creditsFromLoyalty'] = $creditsFromLoyalty;
 		}
 
 		// Set loyalty cards start //
@@ -1613,6 +1729,7 @@ class Cart extends Moloquent
 
 				$proDetail = $proDetails[$key];
 
+
 				//$oProduct = $proDetail['common'];
 				$oProduct = [];
 				$oProduct['_id'] = new MongoId($key);
@@ -1692,6 +1809,10 @@ class Cart extends Moloquent
 						}
 						
 						$price = number_format($price,2);
+
+
+
+
 					}
 
 				}
@@ -1711,10 +1832,113 @@ class Cart extends Moloquent
 				$subtotal+=$price;
 				$order['products'][] = $oProduct;
 
-
 			}
 
+			//SET COUPON IF COUPON CODE IS APPLIED
+
+			if($cartKey){
+				$cartData = Cart::where(['_id' => $cartKey])->first();
+
+				if(isset($cartData->coupon) && $cartData->coupon){
+					$couponData = Coupon::where(['_id' => $cartData->coupon, 'status'=>1])->first();
+
+					if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date)>= time()){
+						$coupon = $couponData->toArray();
+
+						if (isset($coupon) && $coupon['_id']) {
+							$cDiscount = $coupon['discount'];
+							$cTotal = $coupon['total'];
+							$discountTotal = 0;
+
+							if(!$cTotal || ($cTotal && $cTotal <= $subtotal) ){
+
+								foreach($order['products'] as $key=>$nOrder){
+									$quantity = $nOrder['qtyfinal'];
+									$hasCategory = 0;
+									$unitPrice = $nOrder['unitprice'];
+									$discountedUnitPrice = $nOrder['unitprice'];
+
+									$prodDetail = $proDetails[(string)$nOrder['_id']];
+
+
+									if(!empty($coupon['products'])){
+										if(!in_array((string)$nOrder['_id'], $coupon['products'])){
+											continue;
+										}
+									}
+
+									if(!empty($coupon['categories'])){
+
+										foreach ($prodDetail['categories'] as $catVal) {
+											if(!in_array((string)$catVal, $coupon['categories'])){
+												$hasCategory = 1;
+											}
+										}
+
+										if(!$hasCategory)
+											continue;
+									}
+
+									if($coupon['discount_status']==1){
+										$pAmount = $unitPrice*$quantity;
+									}else{
+										$pAmount = $discountedUnitPrice*$quantity;
+									}
+
+									if($coupon['type']==1){
+										$discountAmount = $pAmount - $cDiscount;
+									}else{
+										$discountAmount = $pAmount - (($pAmount*$cDiscount)/100);
+									}
+
+									if($coupon['discount_status']==1 && $discountAmount > $discountedUnitPrice*$quantity){
+										$discountAmount = $discountedUnitPrice*$quantity;
+									}
+
+									$discountTotal +=  $pAmount - $discountAmount;
+
+									if($discountAmount)
+										$order['products'][$key]['price'] = $discountAmount;
+								}
+							
+								$subtotal = $subtotal - $discountTotal;
+
+
+								//UPDATE COUPON COUNT AND COUPON LIST
+								$user = Auth::user('user');
+								$userId = new MongoId($user->_id);
+
+								$newList = array('orderId'=> 100, 'userId'=> $userId);
+
+								if(!isset($coupon['used_count'])){
+									$used_count = 0;
+								}else{
+									$used_count = $coupon['used_count'];
+								}
+
+								if(isset($couponData->used_list)){
+									$oldList = $coupon['used_list'];
+								}else{
+									$oldList = array();
+								}
+
+								array_push($oldList, $newList);
+
+								if($couponData){
+									$couponData->used_count = $used_count + 1;
+									$couponData->used_list = $oldList;
+									$couponData->save();
+								}
+							}
+						}
+					}
+				}
+			}
+
+			//prd($order);
+
 		}
+		
 		// Set Products ends //
 
 		$created_at = strtotime('now');		
@@ -1748,6 +1972,12 @@ class Cart extends Moloquent
 			$order['delivery']['deliveryTimeRange'] = '';
 		}
 		
+		$lpEarned = $this->setLoyaltyPointEarned();
+		$order['loyaltyPointEarned'] = $lpEarned;
+
+		$lpUsed = $this->setLoyaltyPointUsed();
+		$order['loyaltyPointUsed'] = $lpUsed;
+
 		$total = $subtotal;
 		$serviceCharges = 0;
 		$discountExemption = 0;
@@ -1755,9 +1985,15 @@ class Cart extends Moloquent
 		if($order['service']['express']['status']){
 			$serviceCharges+=$order['service']['express']['charges'];
 		}
+		
 		if($order['service']['smoke']['status']){
 			$serviceCharges+=$order['service']['smoke']['charges'];
 		}
+
+		if($subtotal>=$order['service']['delivery']['mincart']){
+			$order['service']['delivery']['free'] = true;
+		}
+
 		if(!$order['service']['delivery']['free']){
 			$serviceCharges+=$order['service']['delivery']['charges'];
 		}
@@ -1767,19 +2003,19 @@ class Cart extends Moloquent
 		}
 
 		$total+=$serviceCharges;
-		$total-=$discountExemption;	
+		$total-=$discountExemption;
 
 		$order['payment'] = [
 			'subtotal' => round($subtotal,2),
-			'points' => $totalPoints,
-			'service'=>$serviceCharges,
-			'discount'=>$discountExemption,
-			'total'=> $total,
+			'points' => round($totalPoints,2),
+			'service'=> round($serviceCharges,2),
+			'discount'=> round($discountExemption,2),
+			'total'=> round($total,2),
 			'method' => $this->payment['method']
-		];	
+		];
 
 		return $order;
 
-	}	
+	}
 
 }

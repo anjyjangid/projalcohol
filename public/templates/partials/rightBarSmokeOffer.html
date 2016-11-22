@@ -17,7 +17,7 @@
     </div>
 
     <div ng-class="{hide:!smoke.status}">
-        <div class="checkoutrighttext">Let us get your cigarettes for you! For additional {{}} service charge, we will purchase your desired cigarette from convenience stores while delivering your alcohol to your doorstep!</div>
+        <div class="checkoutrighttext">Let us get your cigarettes for you! For additional service charge of {{smoke.charges | pricingTxt}}, we will purchase your desired cigarette from convenience stores while delivering your alcohol to your doorstep!</div>
         <textarea type="text" class="checkoutrightpleasediv" ng-model="smoke.detail" placeholder="Please provide details. (Brand, Quantity)" rows="5"></textarea>
 
         <div class="checkoutrighbuttonouter">

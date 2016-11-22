@@ -276,74 +276,81 @@ class CouponController extends Controller
 	public function postImport(Request $request){
 		$params = $request->all();
 
+		try {
 
-		$handle = fopen($params['csv']->getRealPath(), "r");
+			$handle = fopen($params['csv']->getRealPath(), "r");
 
-		$skipLines = 2;
+			$skipLines = 2;
 
-		if ($handle) {
-			$inputs = [];
-			$coupons = [];
-			$i = 0;
-			while (($line = fgets($handle)) !== false) {
-				$i++;
-				if($skipLines){
-					$skipLines--;
-					continue;
+			if ($handle) {
+				$inputs = [];
+				$coupons = [];
+				$i = 0;
+				while (($line = fgets($handle)) !== false) {
+					$i++;
+					if($skipLines){
+						$skipLines--;
+						continue;
+					}
+
+					$line = explode(',', $line);
+
+					$line[0] = strtoupper($line[0]);
+
+					$input = [
+						'code'=>$line[0],
+						'name'=>$line[1],
+						'type'=>$line[2]=='$'?1:0,
+						'discount'=>(float)$line[3],
+						'total'=>(int)$line[4],
+						'coupon_uses'=>(int)$line[5],
+						'customer_uses'=>(int)$line[6],
+						'start_date'=>$line[7],
+						'end_date'=>$line[8],
+						'status'=>$line[9]=='0'?0:1,
+						'csvImport'=>true
+					];
+
+					$coupons[] = $line[0];
+
+					$req = new CouponRequest($input);
+
+					$validator = Validator::make($req->all(), $req->rules(), $req->messages());
+
+					if ($validator->fails()){
+						$err = ['err' => $validator->errors()->all()];
+						$err['row_number'] = $i;
+						$err['data'] = $input;
+						return response($err, 422);
+					}
+
+					$inputs[] = $req->formatCols();
 				}
 
-				$line = explode(',', $line);
+				if(count($coupons) != count(array_unique($coupons)))
+					return response("There are multiple entries with same coupon code in the CSV file!", 400);
 
-				$line[0] = strtoupper($line[0]);
+				try {
+					$resp =  \DB::collection('coupons')->insert($inputs);
 
-				$input = [
-					'code'=>$line[0],
-					'name'=>$line[1],
-					'type'=>$line[2]=='$'?1:0,
-					'discount'=>(float)$line[3],
-					'total'=>(int)$line[4],
-					'coupon_uses'=>(int)$line[5],
-					'customer_uses'=>(int)$line[6],
-					'start_date'=>$line[7],
-					'end_date'=>$line[8],
-					'status'=>$line[9]=='0'?0:1,
-					'csvImport'=>true
-				];
+					if($resp)
+						return response("Coupons imported successfully", 200);
+					else
+						return response("Error saving data!", 400);
 
-				$coupons[] = $line[0];
-
-				$req = new CouponRequest($input);
-
-				$validator = Validator::make($req->all(), $req->rules(), $req->messages());
-
-				if ($validator->fails()){
-					$err = ['err' => $validator->errors()->all()];
-					$err['row_number'] = $i;
-					$err['data'] = $input;
-					return response($err, 422);
+				} catch(\Exception $e){
+					return response($e->getMessage(),400);
 				}
 
-				$inputs[] = $req->formatCols();
+				fclose($handle);
+			} else {
+				return response("Error reading file!", 400);
 			}
+		
+		} catch(\Exception $e){
+			return response("Error reading file. Please upload a csv file.", 400);
+		}	
 
-			if(count($coupons) != count(array_unique($coupons)))
-				return response("There are multiple entries with same coupon code in the CSV file!", 400);
-
-			try {
-				$resp =  \DB::collection('coupons')->insert($inputs);
-
-				if($resp)
-					return response("Coupons imported successfully", 200);
-				else
-					return response("Error saving data!", 400);
-
-			} catch(\Exception $e){
-				return response($e->getMessage(),400);
-			}
-			fclose($handle);
-		} else {
-			return response("Error reading file!", 400);
-		}
 	}
 
 	public function postListing(Request $request,$id = false)

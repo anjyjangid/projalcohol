@@ -71,11 +71,12 @@
             <tr ng-if="setting.category == 'service'" ng-repeat="(kv, setting) in settings">
                 <td class="control-label"> {{setting.label}}: <span class="required"> * </span> </td>
                 <td ng:class="{'has-error':errors[kv+'.type'][0]}">
-                    <select empty="false" class="form-control" ng-model="setting.type">            
+                    <!-- <select empty="false" class="form-control" ng-model="setting.type">            
                         <option value="0">Fix Amount</option>
                         <option value="1">% of Amount</option>
                     </select>
-                    <span class="help-block" ng-bind="errors[kv+'.type'][0]"></span>
+                    <span class="help-block" ng-bind="errors[kv+'.type'][0]"></span> -->
+                    <span>Fix Amount</span>
                 </td>
                 <td ng:class="{'has-error':errors[kv+'.value'][0]}">
                     <input type="number" min="0" step="any" class="form-control" ng-model="setting.value" placeholder="">
@@ -97,11 +98,12 @@
             <tr ng-if="setting.category == 'discount'" ng-repeat="(kv, setting) in settings">
                 <td class="control-label"> {{setting.label}}: <span class="required"> * </span> </td>
                 <td ng:class="{'has-error':errors[kv+'.type'][0]}">
-                    <select empty="false" class="form-control" ng-model="setting.type">            
+                    <!-- <select empty="false" class="form-control" ng-model="setting.type">            
                         <option value="0">Fix Amount</option>
                         <option value="1">% of Amount</option>
                     </select>
-                    <span class="help-block" ng-bind="errors[kv+'.type'][0]"></span>
+                    <span class="help-block" ng-bind="errors[kv+'.type'][0]"></span> -->
+                    <span>Fix Amount</span>
                 </td>
                 <td ng:class="{'has-error':errors[kv+'.value'][0]}">
                     <input type="number" min="0" step="any" class="form-control" ng-model="setting.value" placeholder="">

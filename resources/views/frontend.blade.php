@@ -58,9 +58,9 @@
 		
 	</head>
 
-	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}">		    	    	 
-    	
-    	<div class="loader" ng-bind="loadingmsg"></div>
+	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}">		    	    	     	
+    	<div class="loader"></div>
+    	<div ng-bind="loadingmsg" ng-show="loadingmsg" class="ldmsg" align="center"></div>
     	<div id="wrapper">     	    		    		
 
 	        <div id="page-content-wrapper">    	
@@ -68,14 +68,24 @@
              	<top-menu></top-menu>          
         
 	    		<div ui-view class="ancontainer"></div>
-
+	    		<div id="fb-root"></div>
+				<script>(function(d, s, id) {
+				  var js, fjs = d.getElementsByTagName(s)[0];
+				  if (d.getElementById(id)) return;
+				  js = d.createElement(s); js.id = id;
+				  js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.8";
+				  fjs.parentNode.insertBefore(js, fjs);
+				}(document, 'script', 'facebook-jssdk'));</script>
 				<section class="fullwidth social_block">
 					<div class="container">
 						<div class="socilblok_folowtxt">
 							<div class="socilblok_folowtxt1">Follow and like us for latest deals and updates:
 							</div>
 						</div>
-						<div class="socilblok_twtr">
+						<div class="socilblok_twtr" style="margin-left: 20px;">
+						<div class="fb-like" data-href="https://www.facebook.com/alcoholdelivery.com.sg/" data-layout="standard" data-action="like" data-size="large" data-show-faces="true" data-share="true" ></div>
+						</div>
+						<!-- <div class="socilblok_twtr">
 							<a target="_blank" href="@{{settings.social.twitter}}"><img class="img-responsive" src="images/socl_itwtr.png" />
 							<span>Twitter</span>
 							</a>
@@ -84,7 +94,7 @@
 							<a target="_blank" href="@{{settings.social.facebook}}"><img class="img-responsive" src="images/social_fbicon.png" />
 							<span>Facebook</span>
 							</a>
-						</div>
+						</div> -->
 					</div>
 				</section>				
 				<section class="fullwidth footer1">
@@ -102,7 +112,7 @@
 								<div class="footer1_sociallink">
 									<a target="_blank" href="@{{settings.social.twitter}}"><img class="img-responsive" src="images/footer1_twitter.png" /></a>
 									<a target="_blank" href="@{{settings.social.facebook}}"><img class="img-responsive" src="images/footer1_fb.png" /></a>
-									<a target="_blank" href="@{{settings.social.googleplus}}"><img class="img-responsive" src="images/footergoogle.png" /></a>
+									<!-- <a target="_blank" href="@{{settings.social.googleplus}}"><img class="img-responsive" src="images/footergoogle.png" /></a> -->
 								</div>
 							</div>
 							<div class="col-xs-12 col-md-2">
@@ -135,6 +145,8 @@
 									</ul>
 								</div>
 							</div>
+							
+
 							<div class="col-xs-12 col-md-2 ">
 								<div class="footer1_title">Connect with us</div>
 								<div class="footer1_subtitle">
@@ -196,7 +208,7 @@
 					<div class="container ">
 						<div class="footer2_btmcvr">
 							<div class="footer2_madetxt">Made with <img class="img-responsive" src="images/footerhearicon.png" /> in SG</div>
-							<div class="footer2_copytxt">Copyright &copy; <?php echo date('Y');?> AlcoholDelivery.com</div>
+							<div class="footer2_copytxt">Copyright &copy; <?php echo date('Y');?> AlcoholDelivery.com.sg</div>
 						</div>
 					</div>
 		        </div>
@@ -229,7 +241,7 @@
 
     <script src="http://cdnjs.cloudflare.com/ajax/libs/SVG-Morpheus/0.1.8/svg-morpheus.js"></script>
 	
-    
+    <script type="text/javascript" src="{{asset('js/morpher.js')}}"></script>
 
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAO1xAu1wBu7NZOqNBn9aoYg-RVstm60jc&libraries=places"></script>
     <script type="text/javascript" src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.js"></script>

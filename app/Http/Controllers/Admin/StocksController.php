@@ -110,6 +110,7 @@ class StocksController extends Controller
         $purchaseOrders = array();
 
         $responses = array();
+        $supplierId = '';
         foreach ($stockList as $i => $stock) {
             if($stock['totalQty'] > $stock['purchaseOrder']) {
                 $productTrade = Products::raw()->aggregate([
@@ -162,7 +163,7 @@ class StocksController extends Controller
                             'updateTime' => new MongoDate()
                         ]
                     ]
-                ];
+                ];                                
 
                 $query2 = [
                     'find' => [
@@ -189,6 +190,12 @@ class StocksController extends Controller
                         'upsert' => true
                     ]
                 ];
+
+                //ADD ADVANCE ORDER IDS TO UPDATE THEM ON PO RECEIVE               
+                if(isset($stock['advanceOrderId']) && !empty($stock['advanceOrderId'])){
+                    $query1['update']['$addToSet']['advanceOrderId'] = ['$each'=>$stock['advanceOrderId']];
+                    $query2['update']['$addToSet']['advanceOrderId'] = ['$each'=>$stock['advanceOrderId']];
+                }
 
                 try{
                     $response = PurchaseOrder::raw()->update($query1['find'], $query1['update']);

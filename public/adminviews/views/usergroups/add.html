@@ -1,0 +1,52 @@
+<div class="row" ng-controller="UsergroupsFormController">
+	<div class="col-md-12">
+		<form role="form" name='packageForm' ng-submit="store()" required="false">
+		<div class="portlet light">			
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-user"></i>{{usergroups._id?'Edit':'Add New'}}
+				</div>
+				<div class="actions btn-set">					
+					<button ng-disabled="loading" class="btn green" type="submit"><i class="fa fa-check"></i> {{usergroups._id?'Update':'Save'}}</button>
+				</div>
+			</div>
+			<div class="portlet-body mbody">
+				<div class="form-horizontal">							
+					<div class="form-group" ng:class="{'has-error':errors.first_name[0]}">
+						<label class="col-md-2 control-label">User Group Name: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<input type="text" class="form-control" ng-model="usergroups.name" placeholder="Group Name">
+							<span class="help-block" ng-bind="errors.name[0]"></span>
+						</div>
+					</div>
+					<div class="form-group" ng:class="{'has-error':errors.storeId[0]}">
+						<label class="col-md-2 control-label">Access Permission: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<select  class="table-group-action-input form-control input-medium" ng-model="usergroups.access_list" multiple="multiple" required="" >
+								<option ng-repeat="optionList in pagelistOptions" value="{{optionList._id}}">{{optionList.page_url}}</option>
+							</select>
+							<span class="help-block" ng-bind="errors.access_list[0]"></span>
+						</div>
+					</div>						
+					<div class="form-group" ng:class="{'has-error':errors.status[0]}">
+						<label class="col-md-2 control-label">Modify Permission: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-10">
+							<select class="table-group-action-input form-control input-medium" ng-model="usergroups.modify_list" multiple="multiple"  required="">
+								<!-- <option value="">Select</option> -->
+								<option ng-repeat="optionList in pagelistOptions" value="{{optionList._id}}">{{optionList.page_url}}</option>
+							</select>
+							<span class="help-block" ng-bind="errors.modify_list[0]"></span>
+						</div>
+					</div>
+				</div>																						
+			</div>			
+		</div>
+		</form>
+	</div>		
+</div>

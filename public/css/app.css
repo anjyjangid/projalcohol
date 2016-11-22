@@ -731,7 +731,7 @@ body.loadingpayment .loader{
 	display: flex;
 	justify-content: center; /* align horizontal */
 	align-items: center; /* align vertical */
-	background-image: url('../images/product-default.png');
+	background-image: url('../img/poslogo.png');
 	background-position: center 40%;
 	background-repeat: no-repeat;
 } 
@@ -1172,4 +1172,15 @@ button.detailwishbut{
 .detailwish .wishlist{
 	left: 15px;
 	min-width: auto;
+}
+
+.swal2-modal.swal-wide.show-swal2 {
+    width: 50% !important;
+    margin-right: auto !important;
+    left: 25%;
+    margin-left: auto !important;
+}
+
+.ldmsg{
+	z-index: 80000;position: fixed;bottom: 30%;width: 100%;	
 }

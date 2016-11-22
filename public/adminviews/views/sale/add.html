@@ -62,14 +62,16 @@
 										</div>
 										<div>
 											<span class="btn default btn-file">
-												<span class="fileinput-new">{{ sale.coverImage ? 'Change':'Select' }}</span>
+												<span class="fileinput-new">{{ (sale.coverImage && sale.coverImage.source) ? 'Change':'Select' }}</span>
 												<span class="fileinput-exists">Change</span>
 												<input type="file" placeholder="thumbnail" class="form-control" file-model="sale.image.thumb"/>
 												</span>												
 											</span>	
+											<button ng-if="sale.coverImage && sale.coverImage.source" type="button" class="btn default" ng-click="removeSaleImage()"><span class="fa fa-trash"></span></button>
 										</div>
 									</div>
 									<span class="help-block" ng-bind="errors['coverImage.thumb'][0]"></span>
+									<!-- <pre>{{sale|json}}</pre> -->
 								</div>
 							</div>											
 
