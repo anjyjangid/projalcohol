@@ -1842,89 +1842,93 @@ class Cart extends Moloquent
 				if(isset($cartData->coupon) && $cartData->coupon){
 					$couponData = Coupon::where(['_id' => $cartData->coupon, 'status'=>1])->first();
 
-					$coupon = $couponData->toArray();
+					if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date)>= time()){
+						$coupon = $couponData->toArray();
 
-					if (isset($coupon) && $coupon['_id']) {
-						$cDiscount = $coupon['discount'];
-						$cTotal = $coupon['total'];
-						$discountTotal = 0;
+						if (isset($coupon) && $coupon['_id']) {
+							$cDiscount = $coupon['discount'];
+							$cTotal = $coupon['total'];
+							$discountTotal = 0;
 
-						if(!$cTotal || ($cTotal && $cTotal <= $subtotal) ){
+							if(!$cTotal || ($cTotal && $cTotal <= $subtotal) ){
 
-							foreach($order['products'] as $key=>$nOrder){
-								$quantity = $nOrder['qtyfinal'];
-								$hasCategory = 0;
-								$unitPrice = $nOrder['unitprice'];
-								$discountedUnitPrice = $nOrder['unitprice'];
+								foreach($order['products'] as $key=>$nOrder){
+									$quantity = $nOrder['qtyfinal'];
+									$hasCategory = 0;
+									$unitPrice = $nOrder['unitprice'];
+									$discountedUnitPrice = $nOrder['unitprice'];
 
-								$prodDetail = $proDetails[(string)$nOrder['_id']];
+									$prodDetail = $proDetails[(string)$nOrder['_id']];
 
 
-								if(!empty($coupon['products'])){
-									if(!in_array((string)$nOrder['_id'], $coupon['products'])){
-										continue;
-									}
-								}
-
-								if(!empty($coupon['categories'])){
-
-									foreach ($prodDetail['categories'] as $catVal) {
-										if(!in_array((string)$catVal, $coupon['categories'])){
-											$hasCategory = 1;
+									if(!empty($coupon['products'])){
+										if(!in_array((string)$nOrder['_id'], $coupon['products'])){
+											continue;
 										}
 									}
 
-									if(!$hasCategory)
-										continue;
-								}
+									if(!empty($coupon['categories'])){
 
-								if($coupon['discount_status']==1){
-									$pAmount = $unitPrice*$quantity;
+										foreach ($prodDetail['categories'] as $catVal) {
+											if(!in_array((string)$catVal, $coupon['categories'])){
+												$hasCategory = 1;
+											}
+										}
+
+										if(!$hasCategory)
+											continue;
+									}
+
+									if($coupon['discount_status']==1){
+										$pAmount = $unitPrice*$quantity;
+									}else{
+										$pAmount = $discountedUnitPrice*$quantity;
+									}
+
+									if($coupon['type']==1){
+										$discountAmount = $pAmount - $cDiscount;
+									}else{
+										$discountAmount = $pAmount - (($pAmount*$cDiscount)/100);
+									}
+
+									if($coupon['discount_status']==1 && $discountAmount > $discountedUnitPrice*$quantity){
+										$discountAmount = $discountedUnitPrice*$quantity;
+									}
+
+									$discountTotal +=  $pAmount - $discountAmount;
+
+									if($discountAmount)
+										$order['products'][$key]['price'] = $discountAmount;
+								}
+							
+								$subtotal = $subtotal - $discountTotal;
+
+
+								//UPDATE COUPON COUNT AND COUPON LIST
+								$user = Auth::user('user');
+								$userId = new MongoId($user->_id);
+
+								$newList = array('orderId'=> 100, 'userId'=> $userId);
+
+								if(!isset($coupon['used_count'])){
+									$used_count = 0;
 								}else{
-									$pAmount = $discountedUnitPrice*$quantity;
+									$used_count = $coupon['used_count'];
 								}
 
-								if($coupon['type']==1){
-									$discountAmount = $pAmount - $cDiscount;
+								if(isset($couponData->used_list)){
+									$oldList = $coupon['used_list'];
 								}else{
-									$discountAmount = $pAmount - (($pAmount*$cDiscount)/100);
+									$oldList = array();
 								}
 
-								if($coupon['discount_status']==1 && $discountAmount > $discountedUnitPrice*$quantity){
-									$discountAmount = $discountedUnitPrice*$quantity;
+								array_push($oldList, $newList);
+
+								if($couponData){
+									$couponData->used_count = $used_count + 1;
+									$couponData->used_list = $oldList;
+									$couponData->save();
 								}
-
-								$discountTotal +=  $pAmount - $discountAmount;
-
-								if($discountAmount)
-									$order['products'][$key]['price'] = $discountAmount;
-							}
-						
-							$subtotal = $subtotal - $discountTotal;
-
-
-							//UPDATE COUPON COUNT AND COUPON LIST
-
-							$newList = array('orderId'=> 2, 'userId'=>1);
-
-							if(!isset($coupon['used_count'])){
-								$used_count = 0;
-							}else{
-								$used_count = $coupon['used_count'];
-							}
-
-							if(isset($couponData->used_list)){
-								$oldList = $coupon['used_list'];
-							}else{
-								$oldList = array();
-							}
-
-							array_push($oldList, $newList);
-
-							if($couponData){
-								$couponData->used_count = $used_count + 1;
-								$couponData->used_list = $oldList;
-								$couponData->save();
 							}
 						}
 					}

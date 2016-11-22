@@ -69,6 +69,8 @@ MetronicApp.controller('CouponAddController',['$rootScope','$scope','$http','$st
 	};
 
 	$scope.coupon;
+	$scope.coupon.discount_status = 0;
+	$scope.coupon.status = 1;
 
 	if($stateParams.couponId){
 

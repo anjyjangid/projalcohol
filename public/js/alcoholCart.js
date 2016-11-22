@@ -2616,7 +2616,6 @@ AlcoholDelivery.service('alcoholCart', [
 			var cTotal = coupon.total;
 
 			var productsList = _self.getProducts();
-			//console.log(productsList);
 			var cartTotal = this.getSubTotal();
 			var discountTotal = 0;
 
@@ -2630,7 +2629,6 @@ AlcoholDelivery.service('alcoholCart', [
 			}
 
 			this.$cart.couponDiscount = discountTotal;
-			//console.log(this.$cart);
 		}
 
 		this.removeCoupon = function(){
