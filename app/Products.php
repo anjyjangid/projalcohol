@@ -980,7 +980,6 @@ class Products extends Eloquent
 	
 	public function fetchDontMissProducts($params){
 
-		$proInCartIds = $params['id'];
 		$quantity = $params['quantity'];
 
 		$globalPricing = Setting::where("_id",'=',"pricing")
@@ -1008,7 +1007,7 @@ class Products extends Eloquent
 			$match = [ '$nin' => $params['id'] ];
 		}
 
-
+		$proInCartIds = $params['id'];
 
 		try {
 
@@ -1046,6 +1045,7 @@ class Products extends Eloquent
 						],
 						[
 							'$project'=> [
+								"_id" => '$dontMiss._id',
 								"parentCat" => ['$arrayElemAt' => [ '$dontMiss.categoriesObject', 0 ]],
 								"subCat" => ['$arrayElemAt' => [ '$dontMiss.categoriesObject', 1 ]],
 

@@ -21,7 +21,7 @@
         <textarea type="text" class="checkoutrightpleasediv" ng-model="smoke.detail" placeholder="Please provide details. (Brand, Quantity)" rows="5"></textarea>
 
         <div class="checkoutrighbuttonouter">
-          <button class="checkoutrighbuttoncancel" ng-click="alcoholCart.removeSmoke()">Cancel</button>
+          <button class="checkoutrighbuttoncancel" ng-click="alcoholCart.setSmokeStatus(false)">Cancel</button>
           <button class="checkoutrighbuttonadd" ng-click="alcoholCart.addSmoke(smoke.detail)">Add</button>
         </div>
         

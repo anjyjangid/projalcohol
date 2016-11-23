@@ -131,7 +131,6 @@ class Cart extends Moloquent
 			"user" => null,
 		];
 
-
 		$cart = self::setServices($cart);
 		
 		try{
@@ -587,7 +586,11 @@ class Cart extends Moloquent
 
 	}
 
-	private function isSingleProductSale($sale){
+	private function isSingleProductSale($sale = false){
+
+		if($sale===false){
+			return false;
+		}
 
 		if($sale['conditionQuantity']==1 && empty($sale['actionProductId'])){
 				return true;
@@ -1651,6 +1654,7 @@ class Cart extends Moloquent
 		// Set loyalty cards start //
 
 		// Set Gift packaging start //
+
 		if(isset($this->gifts)){
 
 			$giftsDetail = [];
@@ -1695,6 +1699,7 @@ class Cart extends Moloquent
 			}
 
 		}
+
 		// Set Gift packaging ends //
 
 
@@ -1727,8 +1732,9 @@ class Cart extends Moloquent
 
 			foreach($this->products as $key=>$product){
 
-				$proDetail = $proDetails[$key];
+				$isSingleSalePro = $this->isSingleProductSale($product['sale']);
 
+				$proDetail = $proDetails[$key];
 
 				//$oProduct = $proDetail['common'];
 				$oProduct = [];
@@ -1760,6 +1766,7 @@ class Cart extends Moloquent
 							"nonChilled" => $qtyNonChilled,
 							"total" => $qtyTotal
 						];
+				
 
 				$remainingQty = $product['remainingQty'];
 
@@ -1780,7 +1787,7 @@ class Cart extends Moloquent
 					$chilledRemain = $stillRemain;
 				}
 
-				
+
 
 				$oProduct["afterSale"] = [
 							"chilled" => $chilledRemain,
@@ -1791,40 +1798,52 @@ class Cart extends Moloquent
 
 				$price = 0;
 
-				if($oProduct['qtyfinal']>1){
+				if(!$isSingleSalePro){
+					if($oProduct['qtyfinal']>1){
 
-					$originalPrice = $proDetail['price'];
-					foreach ($proDetail['express_delivery_bulk']['bulk'] as $key => $bulk) {
+						$originalPrice = $proDetail['price'];
+						foreach ($proDetail['express_delivery_bulk']['bulk'] as $key => $bulk) {
 
-					if($oProduct['qtyfinal'] >= $bulk['from_qty'] && $oProduct['qtyfinal']<=$bulk['to_qty']){
+						if($oProduct['qtyfinal'] >= $bulk['from_qty'] && $oProduct['qtyfinal']<=$bulk['to_qty']){
 
-						if($bulk['type']==1){
+							if($bulk['type']==1){
 
-							$price = $oProduct['qtyfinal'] * ($originalPrice + ($originalPrice * $bulk['value']/100));
+								$price = $oProduct['qtyfinal'] * ($originalPrice + ($originalPrice * $bulk['value']/100));
 
-						}else{
+							}else{
 
-							$price = $oProduct['qtyfinal'] * ($originalPrice + $bulk['value']);
+								$price = $oProduct['qtyfinal'] * ($originalPrice + $bulk['value']);
+
+							}
+							
+							$price = number_format($price,2);
 
 						}
-						
-						$price = number_format($price,2);
-
-
-
 
 					}
 
-				}
+					}elseif($oProduct['qtyfinal']==1){
 
-				}elseif($oProduct['qtyfinal']==1){
+						$price = $oProduct['unitprice'];
+
+					}
+				}else{
 
 					$price = $oProduct['unitprice'];
+					$discountValue = $product['sale']['discountValue'];
 
+					if($product['sale']['discountType']===2){ //2 is for % discount
+
+						$price = $oProduct['qtyfinal'] * ($price - ($price * $discountValue/100));
+
+					}else{
+						
+						$price = $oProduct['qtyfinal'] * ($price - $discountValue);	
+
+					}
 				}
 
 				$oProduct['price'] = $price;
-
 				if($oProduct['qtyfinal']>0){
 					$oProduct['unitprice'] = $price/$oProduct['qtyfinal'];
 				}

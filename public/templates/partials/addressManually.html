@@ -1,16 +1,17 @@
 <md-dialog aria-label="Address manually" flex="50">
-  <form>
-    <md-toolbar>
-      <div class="md-toolbar-tools alcohal_addadress_header">
-        <div class="alcohal_addadress_headercurmain">
-          <div ng-if="!update" class="alcohal_addadress_headercurclecvr">
-            <div class="alcohal_addadress_headercurcle">1</div>
-          </div>
-          <div ng-if="update" class="alcohal_addadress_headertitle">Edit your Delivery Address</div>
-          <div ng-if="!update" class="alcohal_addadress_headertitle">Add address manually</div>
+  <md-toolbar>
+    <div class="md-toolbar-tools alcohal_addadress_header">
+      <div class="alcohal_addadress_headercurmain">
+        <div ng-if="!update" class="alcohal_addadress_headercurclecvr">
+          <div class="alcohal_addadress_headercurcle">1</div>
         </div>
-        <span flex></span>  <md-button class="md-icon-button" ng-click="hide()"> &times; </md-button></div>
-    </md-toolbar>
+        <div ng-if="update" class="alcohal_addadress_headertitle">Edit your Delivery Address</div>
+        <div ng-if="!update" class="alcohal_addadress_headertitle">Add address manually</div>
+      </div>
+      <span flex></span>  <md-button class="md-icon-button" ng-click="hide()"> &times; </md-button></div>
+  </md-toolbar>
+  <form>
+  <div class="inner-form">
     <md-dialog-content>
       <div class="md-dialog-content alcohaladdadrebody">
         <div class="alcohlinputextcvr">
@@ -70,7 +71,7 @@
         </div>
       </div>
     </md-dialog-content>
-    <md-dialog-actions layout="row">
+    <md-dialog-actions layout="row" class="modal-uifooter">
       <div class="modal-footer alcohal_addadressfooter">
         <div ng-if="!update" class="alcohal_adress2fotter" ng-click="hide()"> 
           <img src="images/order_history2backpic.png"> <span>Cancel</span> 
@@ -83,5 +84,6 @@
         </div>
       </div>
     </md-dialog-actions>
+  </div>  
   </form>
 </md-dialog>

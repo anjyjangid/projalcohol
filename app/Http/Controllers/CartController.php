@@ -1838,7 +1838,7 @@ jprd($product);
 	public function confirmorder(Request $request,$cartKey = null){
 
 		$user = Auth::user('user');
-		//$user = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
+		$user = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
 
 		$userObj = User::find($user->_id);
 

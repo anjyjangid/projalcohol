@@ -10,6 +10,7 @@
     </div>
     <div class="order-fetching" ng-if="processinggift"></div>
   </md-toolbar>
+  <div class="inner-form">
   <md-dialog-content>        
     <div class="md-dialog-content gift-packgng-bodydiv">
       <a ng-repeat="option in giftcategories.types" ng-click="hide()" 
@@ -26,4 +27,5 @@
       </a>
     </div>
   </md-dialog-content>
+  </div>
 </md-dialog>

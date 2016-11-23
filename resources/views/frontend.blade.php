@@ -76,15 +76,23 @@
 				  js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.8";
 				  fjs.parentNode.insertBefore(js, fjs);
 				}(document, 'script', 'facebook-jssdk'));</script>
-				<section class="fullwidth social_block">
+				<section class="fullwidth social_block" style="padding: 10px 0px;">
 					<div class="container">
-						<div class="socilblok_folowtxt">
+						<div align="center">
+						<div class="occassion_sale ng-scope" style="font-size: 40px;line-height: 34px; padding: 0px; color: #fff;">
+							Your friends like us too.. 
+						</div>						
+						<div id="fboverlay" style="margin-top: 10px; color: #fff;" class="fb-like" data-href="https://www.facebook.com/alcoholdelivery.com.sg/" data-layout="standard" data-action="like" data-size="large" data-show-faces="true" data-share="true" >
+							
+						</div>
+						</div>
+						<!-- <div class="socilblok_folowtxt">
 							<div class="socilblok_folowtxt1">Follow and like us for latest deals and updates:
 							</div>
 						</div>
 						<div class="socilblok_twtr" style="margin-left: 20px;">
 						<div class="fb-like" data-href="https://www.facebook.com/alcoholdelivery.com.sg/" data-layout="standard" data-action="like" data-size="large" data-show-faces="true" data-share="true" ></div>
-						</div>
+						</div> -->
 						<!-- <div class="socilblok_twtr">
 							<a target="_blank" href="@{{settings.social.twitter}}"><img class="img-responsive" src="images/socl_itwtr.png" />
 							<span>Twitter</span>

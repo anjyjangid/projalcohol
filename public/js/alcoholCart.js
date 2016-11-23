@@ -8,7 +8,7 @@ AlcoholDelivery.service('alcoholCart', [
 			alcoholCartSale, alcoholCartCreditCard, UserService) {
 
 	var _self = this;
-
+	this.expressDisable = false;
 	this.init = function(){
 		
 		this.$cart = {
@@ -700,6 +700,33 @@ AlcoholDelivery.service('alcoholCart', [
 
 	};
 
+	this.resetAsPerRule = function(){
+		
+		if(this.isAnyGiftPackagingInCart()){
+			this.disableExpressDelivery(true);
+		}else{
+			this.disableExpressDelivery(false);
+		}
+
+	}
+
+	this.isAnyGiftPackagingInCart = function(){
+		
+		var gifts = this.getGifts();
+		
+		for(i=0;i<gifts.length;i++){
+
+			var gift = gifts[i];		
+			if(gift.isContainer()===true){
+				return true;
+			}
+
+		}
+
+		return false;
+
+	}
+
 	this.isEligibleForPromotion = function(promoId){
 
 		var cartSubTotal = this.getSubTotal();
@@ -1240,7 +1267,9 @@ AlcoholDelivery.service('alcoholCart', [
 			
 			var totalWithoutPromotion = total;
 			this.nonEligiblePromotionsCheck = $timeout(function() {
+				
 				_self.removeNonEligiblePromotions(totalWithoutPromotion);
+				_self.resetAsPerRule();
 			},1000,false)
 
 			
@@ -1826,7 +1855,7 @@ AlcoholDelivery.service('alcoholCart', [
 		this.removeSmoke = function(){
 
 			this.$cart.service.smoke.detail = "";
-
+			
 			$rootScope.$broadcast('alcoholCart:updated',{msg:"Smoke removed from cart"});
 
 			this.deployCart();
@@ -1885,6 +1914,20 @@ AlcoholDelivery.service('alcoholCart', [
 
 		};	
 
+		this.disableExpressDelivery = function(status){
+
+			if(typeof status !== "boolean"){
+				status = true;
+			}
+
+			if(status){
+				this.$cart.service.express.status = false;
+			}
+
+			this.expressDisable = status;
+
+		}
+
 		this.setDeliveryType = function(status){
 			
 			var _self = this;
@@ -1893,7 +1936,7 @@ AlcoholDelivery.service('alcoholCart', [
 				this.$cart.delivery.type = status;
 
 				if(status==1){
-					this.$cart.service.express.status = false;	
+					this.$cart.service.express.status = false;
 				}
 
 			}
@@ -2934,16 +2977,19 @@ AlcoholDelivery.service('cartValidation',[
 		return true;
 	}
 
+	
+
 	this.init = function(toState, fromState) {
 		if(!toState) {
 			toState = $state.current;
 			fromState = $state.previous;
 		}
 
+
 		if(!/^mainLayout\.checkout\..+$/.test(toState.name)) return true;
 
-		// console.log(toState.name, alcoholCart);
-
+		alcoholCart.resetAsPerRule();
+		
 		var cart = alcoholCart.$cart
 		  , states = [
 				'mainLayout.checkout.cart',
