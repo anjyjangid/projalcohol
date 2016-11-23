@@ -201,10 +201,11 @@ AlcoholDelivery.directive('sideBar', function() {
 					controller: function(){},
 					templateUrl: '/templates/partials/login.html',
 					parent: angular.element(document.body),
-					targetEvent: elementWrapper,
+					targetEvent: ev,
 					clickOutsideToClose:true,		
 					fullscreen:true
-				});
+				});			
+
 			}
 
 			$scope.loginSubmit = function(){
@@ -318,7 +319,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		/*var json = {"images":[{"points":[{"x":31,"y":27},{"x":112,"y":-5},{"x":171,"y":76},{"x":120,"y":14},{"x":70,"y":5},{"x":31,"y":76},{"x":0,"y":39},{"x":0,"y":76},{"x":171,"y":51}],"src":"../images/ad_logo.png","x":0,"y":0},{"points":[{"x":1,"y":17},{"x":52,"y":0},{"x":15,"y":34},{"x":51,"y":11},{"x":27,"y":0},{"x":5,"y":43},{"x":-7,"y":17},{"x":-8,"y":42},{"x":-16,"y":53}],"src":"../images/logo-small.png","x":60,"y":23}],"triangles":[[1,3,4],[0,3,4],[0,3,6],[6,3,7],[5,3,7],[2,5,8],[3,5,8]]};
 		var morpher = new Morpher(json);
 		morpher.set([1, 0]);
-		angular.element('#myLogo').append(morpher.canvas);*/
+		angular.element('#icon').append(morpher.canvas);*/
 
 		angular.element($window).bind("scroll", function(e) {
 

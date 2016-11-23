@@ -1,16 +1,17 @@
 <md-dialog aria-label="Add a New Delivery Address" layout="column" flex="50">
-	<form name="addressForm">
-		<md-toolbar ng-if="address.step==1">
-			<div class="md-toolbar-tools alcohal_addadress_header">
-				<div class="alcohal_addadress_headercurmain">            
-					<div class="alcohal_addadress_headertitle"><span>Add a New Delivery Address</span>
-					 <div class="alcohal_addadress_headercurcle">1</div>
-					</div>
+	<md-toolbar ng-if="address.step==1">
+		<div class="md-toolbar-tools alcohal_addadress_header">
+			<div class="alcohal_addadress_headercurmain">            
+				<div class="alcohal_addadress_headertitle"><span>Add a New Delivery Address</span>
+				 <div class="alcohal_addadress_headercurcle">1</div>
 				</div>
-				<span flex></span>
-				<md-button class="md-icon-button" ng-click="hide()" show-sm show-xs hide-lg hide-xl> &times; </md-button>
 			</div>
-		</md-toolbar>
+			<span flex></span>
+			<md-button class="md-icon-button" ng-click="hide()" show-sm show-xs hide-lg hide-xl> &times; </md-button>
+		</div>
+	</md-toolbar>
+	<form name="addressForm">
+	<div class="inner-form">
 		<md-dialog-content ng-if="address.step==1">
 			<div class="md-dialog-content alcohaladdadrebody new-cover">
 				<div class="">
@@ -56,7 +57,7 @@
 				</div>
 			</div>
 		</md-dialog-content>
-		<md-dialog-actions layout="row" ng-if="address.step==1">
+		<md-dialog-actions layout="row" ng-if="address.step==1" class="modal-uifooter">
 			<div class="modal-footer alcohal_addadressfooter">
 				<div class="alcohalosavebntcvr">
 					<button ng-disabled="!addressData.PostalCode" class="adresssvaebtn" type="button" ng-click="setMapAddress()">SELECT THIS ADDRESS<span> <img src="images/alcholshoporderarrow.png"></span></button>
@@ -101,7 +102,7 @@
 				</div>
 			</div>
 		</md-dialog-content>
-		<md-dialog-actions layout="row" ng-if="address.step==2">
+		<md-dialog-actions layout="row" ng-if="address.step==2" class="modal-uifooter">
 			<div class="modal-footer alcohal_addadressfooter">
 				<div class="alcohal_adress2fotter" ng-click="changeAddress()"> <img src="images/order_history2backpic.png"> <span>Change address</span> </div>
 				<div class="alcohalosavebntcvr">
@@ -109,5 +110,6 @@
 				</div>
 			</div>
 		</md-dialog-actions>
+	</div>	
 	</form>
 </md-dialog>

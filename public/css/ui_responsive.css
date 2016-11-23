@@ -1383,6 +1383,7 @@ body.menu-slider.in {
     top: 0 !important;
 	 transform: inherit !important; 
 }
+
 @media (min-width : 1024px) and (max-width : 1200px) {
   .christmas-mainouter.col-md-8 {
 	  padding-left: 0;
@@ -1440,13 +1441,13 @@ body.menu-slider.in {
   .modal-dialog.alcohal_addadressmain {
 	  width: 100%;
   }
-  md-dialog {
+  /*md-dialog {
 	  max-height: 90%;
 	  max-width: 90%;
 	  overflow-y: auto;
 	  overflow-x: hidden;
 	  opacity: 1;
-  }
+  }*/
   .pushy.pushy-left {
 	  display: none
   }
@@ -2080,13 +2081,13 @@ body.menu-slider.in {
   .modal-dialog.alcohal_addadressmain {
 	  width: 100%;
   }
-  md-dialog {
+  /*md-dialog {
 	  max-height: 90%;
 	  max-width: 90%;
 	  overflow-y: auto;
 	  overflow-x: hidden;
 	  opacity: 1;
-  }
+  }*/
   .gift-item-cover {
 	  display: inline-block;
 	  float: none;
@@ -2513,12 +2514,12 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 .checkoutrighbuttoncancel{
 	width:40%;
 }
-md-dialog.md-dialog-fullscreen{
+/*md-dialog.md-dialog-fullscreen{
 	min-height:inherit;
-}
-md-dialog.md-dialog-fullscreen{
+}*/
+/*md-dialog.md-dialog-fullscreen{
 	min-width:70%;
-}
+}*/
 .no-image.prod_pic{
 	background-size:auto;
 }
@@ -2815,13 +2816,13 @@ md-dialog.md-dialog-fullscreen{
 	  width: 100%;
 	  margin-top: 0;
   }
-  md-dialog {
+  /*md-dialog {
 	  max-height: 90%;
 	  max-width: 90%;
 	  overflow-y: auto;
 	  overflow-x: hidden;
 	  opacity: 1;
-  }
+  }*/
   .alcohal_adress2fotter {
 	  width: 68%
   }
@@ -3293,14 +3294,14 @@ md-dialog.md-dialog-fullscreen{
 	  left: 0
   }
   .alcohal_addadress_headertitle {
-	  font-size: 22px
+	  font-size: 18px
   }
   .alcohalorderhisttitle {
 	  font-size: 22px
   }
-  .alcohal_addadress_headercurcle {
+ /* .alcohal_addadress_headercurcle {
 	  margin-top: -4px
-  }
+  }*/
  
   
   .single_slider_product .owl-controls {
@@ -3522,7 +3523,7 @@ md-dialog.md-dialog-fullscreen{
 
 
 .navbar-default .navbar-nav li a{
-	font-size: 18px;
+	font-size: 17px;
 	padding: 10px 0;
 }
 
@@ -3685,7 +3686,8 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 .searchtop.searchtop100 .search_icon{
 	padding:0px 0px !important;
 	left:0px !important;
-	width:30px;
+	width:25px;
+	background-position: -315px 0;	
 	
 }
 .comboproductdetailitems{
@@ -3705,9 +3707,9 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 .md-dialog-container, md-dialog {
 	z-index:99999; 
 }
-.navbar-fixed-top.navbar-shrink .logos-inner-cover{
+/*.navbar-fixed-top.navbar-shrink .logos-inner-cover{
 	display:unset;
-}
+}*/
 md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	min-width:220px;
 }
@@ -3785,9 +3787,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 .modal-footer.alcohalfotter{
 	padding:10px 15px;
 }
-md-dialog.md-dialog-fullscreen{
-	min-height:inherit;
-}
+
 .no-image.prod_pic{
 	background-size:auto;
 }
@@ -3833,8 +3833,58 @@ md-dialog.md-dialog-fullscreen{
 	float:none;
 	display:inline-block;
 }
+
+
+.mob-popup-footer{
+	position: absolute;
+	bottom: 0;
 }
 
+
+
+.modal-uifooter{
+	width: 100%;
+	padding: 0px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+
+.md-dialog-container{
+	height: 100% !important;
+}
+
+.inner-form{
+	    width: 100%;
+    float: left;
+    height: 100%;
+    min-height: 320px;
+}
+
+.modal-footer.alcohalfotter {
+    border-radius: 0 0 0px 0px;
+}
+
+.register_checktext{
+	width: 100%;
+	text-align: justify;
+}
+
+
+
+#icon {
+    height: 65px !important;
+    margin: auto !important;
+    width: auto !important;
+}
+
+
+
+md-dialog .md-dialog-content{
+	padding-bottom: 60px !important;
+}
+
+}
 @media only screen and (width : 640px) {
   .alcohal_addadress_headertitle {
 	  font-size: 23px
@@ -4129,13 +4179,13 @@ md-dialog.md-dialog-fullscreen{
 	  width: 100%;
 	  margin-top: 0;
   }
-  md-dialog {
+  /*md-dialog {
 	  max-height: 90%;
 	  max-width: 90%;
 	  overflow-y: auto;
 	  overflow-x: hidden;
 	  opacity: 1;
-  }
+  }*/
   .alcohlinputextcvr {
 	  margin-bottom: 0
   }
@@ -4172,11 +4222,11 @@ md-dialog.md-dialog-fullscreen{
 	  margin-bottom: 0;
 	  max-height: none;
   }
-  .layout-row {
+  /*.layout-row {
 	  padding: 0;
 	  padding-bottom: 20px;
 	  padding-top: 15px;
-  }
+  }*/
   .alcohal_addadress_headertitle {
 	  font-size: 23px
   }
@@ -4198,10 +4248,10 @@ md-dialog.md-dialog-fullscreen{
 	  left: 7px;
 	  top: 0;
   }
-  .layout-row {
+  /*.layout-row {
 	  padding: 0;
 	  height: 40px;
-  }
+  }*/
   .search_icon {
 	  margin-right: 0
   }
@@ -4215,12 +4265,12 @@ md-dialog.md-dialog-fullscreen{
 	  margin: 0;
 	  margin-left: 10px
   }
-  .layout, .layout-column, .layout-row {
-  /*width:92.3%*/
+  /*.layout, .layout-column, .layout-row {
+  width:92.3%
   }
   .layout-row {
 	  width: 95%;
-  }
+  }*/
   .top-logo-sideacnt-cover {
 	  padding: 0
   }
@@ -4474,16 +4524,16 @@ md-dialog.md-dialog-fullscreen{
 			padding: 54px 24px 24px;
 		}*/
   .alcohal_addadress_headertitle span {
-	  width: 82%;
+	  /*width: 82%;
 	  display: inline-block;
-	  font-size: 15px;
+	  font-size: 15px;*/
   }
   .alcohal_addadress_headertitle {
 	  font-size: 18px
   }
-  .alcohal_addadress_headercurcle {
+  /*.alcohal_addadress_headercurcle {
 	  margin-top: -8px;
-  }
+  }*/
   .alcohalorderhisttitle {
 	  font-size: 18px
   }
@@ -4719,7 +4769,7 @@ md-dialog.md-dialog-fullscreen{
 	right:10px;
 }
 .alcohal_addadress_headertitle {
-    font-size: 16px;
+    font-size: 18px;
 	
 }
  

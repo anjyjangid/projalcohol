@@ -1112,6 +1112,7 @@ AlcoholDelivery.run([
 		$anchorScroll();
 
 		angular.element('#wrapper').removeClass('toggled');
+		angular.element('body').removeClass(' hidden-scroll');
 
 
 		if($rootScope.isAppInitialized && !cartValidation.init(toState, fromState))
