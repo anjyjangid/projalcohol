@@ -1270,7 +1270,12 @@ AlcoholDelivery.service('alcoholCart', [
 				
 				_self.removeNonEligiblePromotions(totalWithoutPromotion);
 				_self.resetAsPerRule();
-			},1000,false)
+
+				if(typeof(_self.$cart.couponData) !== "undefined"){
+					_self.setCouponPrice(_self.$cart.couponData);
+				}
+
+			}, 700, false)
 
 			
 			angular.forEach(cart.promotions, function (promotion) {

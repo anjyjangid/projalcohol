@@ -356,7 +356,16 @@ angular.module('AlcoholCartFactories', [])
 				couponAmount = 0;
 			}
 
-			if(!cDiscountStatus && discountAmount < this.discountedUnitPrice*quantity){
+			/*if(!cDiscountStatus && discountAmount < this.discountedUnitPrice*quantity){
+				var diffAmt = this.discountedUnitPrice*quantity - discountAmount;
+
+				couponAmount = 0;
+				if(diffAmt>0){
+					couponAmount = diffAmt;
+				}
+			}*/
+
+			if(cDiscountStatus==1 && discountAmount < this.discountedUnitPrice*quantity){
 				var diffAmt = this.discountedUnitPrice*quantity - discountAmount;
 
 				couponAmount = 0;
