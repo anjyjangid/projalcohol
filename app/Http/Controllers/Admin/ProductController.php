@@ -635,6 +635,25 @@ class ProductController extends Controller
 
 	public function getTest(Request $request){
 
+		//57df7a9d5ca2d6978dceb0b6
+
+		DB::collection('test')->raw()->update([
+			"_id" => new MongoId('57df7a9d5ca2d6978dceb0b6'),
+			'proLog._id' => new MongoId('58342e0eb190ecb50d8b4567')
+        ], [
+            '$inc' => [
+                'proLog.$.received' => 3
+            ]
+        ]);
+
+		/*DB::collection('test')->raw()->update([
+                        "_id" => new MongoId('57df7a9d5ca2d6978dceb0b6'),                         
+                    ], [
+                        '$inc' => [
+                            'quantity' => 1
+                        ]
+                    ]);*/
+
 		$model = \AlcoholDelivery\PurchaseOrder::find('582d8af76e245f41af986a20');
 
         if($model){

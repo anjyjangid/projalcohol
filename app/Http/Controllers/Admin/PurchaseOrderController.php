@@ -231,19 +231,45 @@ class PurchaseOrderController extends Controller
             $isComplete = true;
             $received = false;
 
+            //CURRENT USER 
             $user = Auth::user('admin');
-            $userStoreId = $user->storeId;
+            
+            //LOG ARRAY
             $inventoryLog = [];
+
+            //ADD LOG AND PREPARE ARRAY OF RECEIVED ITEMS BY KEY as ID AND VALUE as QTY
+            $received = [];
+            foreach ($products as $key => $product) {
+                $productId = (string)$product['_id']['$id'];
+
+                //PREPARE TRANSACTION OF PRODUCT FOR THE STORE                
+                if(isset($product['add']) && $product['add']>0){
+                    $inventoryLog[] = [
+                        'productId' => new MongoId($productId),
+                        //'orderId' => new MongoId($key),
+                        'storeId' => new MongoId($user->storeId),
+                        'purchaseOrderId' => new MongoId($id),
+                        'actionUserId' => new MongoId($user->_id),
+                        'quantity' => $product['add'],
+                        'type' => 1,
+                        'created_at' => new MongoDate(strtotime(date('Y-m-d H:i:s')))
+                    ];
+                }
+                
+                $received[$productId] = $product;
+            }
+
             //IF ADVANCE ORDER ARE ASSOCIATED WITH PO THEN PROCESS THEM FIRST
             if(!empty($advanceOrders)){
-                //$this->processAdvanceOrder($advanceOrders,$products,$inventoryLog,$user,$id);
+                $this->processAdvanceOrder($advanceOrders,$received,$inventoryLog,$user,$id);
             }
 
             foreach ($products as $i => $product) {
                 if(!isset($product['received']))
                     $products[$i]['received'] = 0;
 
-                $products[$i]['_id'] = new MongoId($product['_id']['$id']);
+                $productId = (string)$product['_id']['$id'];
+                $products[$i]['_id'] = new MongoId($productId);
 
                 if(isset($product['add']) && $product['add']>0){
                     $products[$i]['received'] += $product['add'];
@@ -251,19 +277,22 @@ class PurchaseOrderController extends Controller
 
                     $hasUpdate = true;
 
-                    Stocks::raw()->update(["productId" => $product['_id']['$id'], "storeId" => $userStoreId], ['$inc' => ['quantity' => $product['add']]]);
-                    Products::raw()->update(["_id" => $products[$i]['_id']], ['$inc' => ['quantity' => $product['add']]]);
+                    Stocks::raw()->update([
+                        "productId" => $product['_id']['$id'], 
+                        "storeId" => $userStoreId
+                    ], [
+                        '$inc' => [
+                            'quantity' => $received[$productId]['add']
+                        ]
+                    ]);
 
-                    //PREPARE TRANSACTION OF PRODUCT FOR THE STORE
-                    $inventoryLog[] = [
-                        'productId' => new MongoId($product['_id']['$id']),
-                        'purchaseOrderId' => new MongoId($id),
-                        'storeId' => new MongoId($userStoreId),
-                        'actionUserId' => new MongoId($user->_id),
-                        'quantity' => $product['add'],
-                        'type' => 1,
-                        'created_at' => new MongoDate(strtotime(date('Y-m-d H:i:s')))
-                    ];                    
+                    Products::raw()->update([
+                        "_id" => $products[$i]['_id']
+                    ], [
+                        '$inc' => [
+                            'quantity' => $received[$productId]['add']
+                        ]
+                    ]);                    
                 }
 
                 unset($products[$i]['add']);
@@ -319,28 +348,7 @@ class PurchaseOrderController extends Controller
     * array $products
     * array $inventoryLog
     */
-    private function processAdvanceOrder($advanceOrders,&$products,&$inventoryLog,$user,$id){
-
-        $userStoreId = $user->storeId;
-        
-        $received = [];
-        foreach ($products as $key => $product) {
-            $productId = (string)$product['_id']['$id'];
-
-            //PREPARE TRANSACTION OF PRODUCT FOR THE STORE
-            $inventoryLogVal = [
-                'productId' => new MongoId($productId),
-                'orderId' => new MongoId($key),
-                'storeId' => new MongoId($userStoreId),
-                'purchaseOrderId' => new MongoId($id),
-                'actionUserId' => new MongoId($user->_id),
-                'quantity' => $productsLog['quantity'],
-                'type' => 1,
-                'created_at' => new MongoDate(strtotime(date('Y-m-d H:i:s')))
-            ];
-
-            $received[$productId] = $product['add'];
-        }
+    private function processAdvanceOrder($advanceOrders,&$received,&$inventoryLog,$user,$id){
 
         $taken = [];
         $orderProcessed = [];
@@ -350,70 +358,56 @@ class PurchaseOrderController extends Controller
                 foreach ($advanceOrder->productsLog as $pkey => $productsLog) {
                     
                     //IF THE ORDER IS ALREADY DISCARDED THEN SKIP THE LOOP
-                    if(isset($orderProcessed[$key]) && $orderProcessed[$key] == 0) continue;
+                    //if(isset($orderProcessed[$key]) && $orderProcessed[$key] == 0) continue;
                     
                     $vkey = (string)$productsLog['_id'];
                     $vvalue = $productsLog['quantity'];
 
-                    if(isset($received[$vkey]) && $received[$vkey]>=$vvalue){
-                        $received[$vkey] -= $vvalue;
-                        $taken[$key][$vkey] = $vvalue;
-                        $orderProcessed[$key] = 1;
-                    }else{
-                        if(isset($taken[$key])){
-                            foreach($taken[$key] as $tkey => &$tvalue) {
-                                $received[$tkey] += $tvalue;
-                                $tvalue = 0;
-                            }
-                        }
-                        $orderProcessed[$key] = 0;
+                    $requiredQty = $productsLog['quantity'];
+
+                    //UPDATE REQ IF RECEIVED IS SET PREVIOUSLY
+                    if(isset($productsLog['received'])){
+                        $requiredQty = $productsLog['quantity']-$productsLog['received'];                        
                     }
-                }
-            }
-        }
 
-        //UPDATE REMAINING QTY FOR 1 HR AFTER DEDUCTING QTY FOR ADVANCE ORDER FOR EACH PRODUCT
-        foreach ($products as $key => $product) {
-            $productId = (string)$product['_id']['$id'];
-            $product['add'] = $received[$productId];
-        }
-
-        //PREPARE ADVANCE ORDER WITH INVENTORY LOG
-        foreach ($advanceOrders as $akey => $advanceOrder) {
-            $key = (string)$advanceOrder['_id'];
-            //ORDER COMPLETE
-            if(isset($orderProcessed[$key]) && $orderProcessed[$key]==1){                
-                if(isset($advanceOrder->productsLog)){
-                    foreach ($advanceOrder->productsLog as $pkey => $productsLog) {
+                    if(isset($received[$vkey]['add']) && $received[$vkey]['add']!=0 && $requiredQty!=0){
                         
-                        //PREPARE TRANSACTION OF PRODUCT FOR THE STORE
-                        $inventoryLogVal = [
-                            'productId' => new MongoId($productsLog['_id']),
+                        //IN CASE IF REQ IS LESS THAN RECEIVED THEN MAKE REQ = RECEIVED
+                        if($requiredQty > $received[$vkey]['add']){
+                            $requiredQty = $received[$vkey]['add'];
+                        }
+
+                        //UPDATE THE VALUE OF RECEIVED QTY 
+                        $received[$vkey]['add'] -= $requiredQty;
+                        
+                        $taken[$key][$vkey] = $requiredQty;
+                        $orderProcessed[$key] = 1;
+
+                        //ADD INVENTORY LOG FOR ADVANCE ORDER
+                        $inventoryLog[] = [
+                            'productId' => new MongoId($vkey),
                             'orderId' => new MongoId($key),
-                            'storeId' => new MongoId($userStoreId),
+                            'storeId' => new MongoId($user->storeId),
                             'purchaseOrderId' => new MongoId($id),
                             'actionUserId' => new MongoId($user->_id),
-                            'quantity' => $productsLog['quantity'],
-                            'type' => 1,
+                            'quantity' => $requiredQty,
+                            'type' => 0,
                             'created_at' => new MongoDate(strtotime(date('Y-m-d H:i:s')))
                         ];
 
-                        //IN TRANSACTION
-                        $inventoryLog[] = $inventoryLogVal;
+                        //UPDATE RESPECTIVE ADVANCE ORDER FOR RECEIVED QTY PRODUCT WISE
+                        Orders::raw()->update([
+                            "_id" => new MongoId($key),
+                            'productsLog._id' => new MongoId($vkey)
+                        ], [
+                            '$inc' => [
+                                'productsLog.$.received' => $requiredQty
+                            ]
+                        ]);
 
-                        //CHANGE TYPE
-                        $inventoryLogVal['type'] = 0;
-
-                        //OUT TRANSACTION
-                        $inventoryLog[] = $inventoryLogVal;                        
                     }
                 }
-                //READY ORDER FOR PRINT
-                $advanceOrder->doStatus = 1;
-                $advanceOrder->save();
-            }else{
-                //LOGIN FOR ORDER NOT COMPLETED AFTER PO RECEIVED
             }
-        }
+        }               
     }
 }
