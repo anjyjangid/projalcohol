@@ -1383,6 +1383,7 @@ body.menu-slider.in {
     top: 0 !important;
 	 transform: inherit !important; 
 }
+
 @media (min-width : 1024px) and (max-width : 1200px) {
   .christmas-mainouter.col-md-8 {
 	  padding-left: 0;
@@ -1440,13 +1441,13 @@ body.menu-slider.in {
   .modal-dialog.alcohal_addadressmain {
 	  width: 100%;
   }
-  md-dialog {
+  /*md-dialog {
 	  max-height: 90%;
 	  max-width: 90%;
 	  overflow-y: auto;
 	  overflow-x: hidden;
 	  opacity: 1;
-  }
+  }*/
   .pushy.pushy-left {
 	  display: none
   }
@@ -1492,7 +1493,8 @@ body.menu-slider.in {
   }
   .ro_desc {
 	  width: 66%;
-	  padding: 0
+	  padding: 0;
+	  font-size:11px;
   }
   .ro_items {
 	  padding: 0
@@ -1500,22 +1502,11 @@ body.menu-slider.in {
   .viewbtns {
 	  width: 68px
   }
-  .addbtn {
-	  cursor: pointer;
-	  float: left;
-	  margin-bottom: 10px;
-	  text-align: center;
-	  width: 100%;
-  }
+ 
   .addbtn img {
 	  display: inline-block
   }
-  .repeatbtn {
-	  float: left;
-	  margin-bottom: 10px;
-	  text-align: center;
-	  width: 100%;
-  }
+  
   .repeatbtn img {
 	  display: inline-block
   }
@@ -1583,7 +1574,11 @@ body.menu-slider.in {
 	  margin-bottom: 33px;
   }
   .comboproductitems {
-	  width: 50%
+	  width: 100%
+  }
+   .product-listcover2 .comboproductitems{
+	  width:33.33%;
+	  margin:30px 0px;
   }
   .prod_desc.ng-binding {
 	  height: 40px;
@@ -1751,6 +1746,46 @@ body.menu-slider.in {
 .checkoutmiddletable table td{
 	padding-left:6px !important;
 	padding-right:7px !important;
+}
+.salediv{
+	text-align:left !important;
+}
+.checkoutrighbuttonadd{
+	width:52px;
+}
+.checkoutrighbuttoncancel{
+	width:50px;
+}
+
+.occassion_sale{
+	font-size:120px;
+}
+.flex-40, .layout-row > .flex-40 {
+    max-height: 100%;
+    max-width: 50%;
+}
+.repeatbtn{
+	float:left;
+	margin-bottom:10px;
+}
+.no-image.prod_pic{
+	background-size:auto;
+}
+.productdetailbrudcumcover iframe{
+	width:100%;
+	
+}
+.comboproductdetailitems{
+	width:25%;
+}
+.adresfloortxtcvr{
+	width: 45%;
+}
+.adressunit{
+	width: 44%;
+}
+.alcohal_adress2fotter{
+	width:72%;
 }
 }
 @media (min-width : 768px) and (max-width : 1023px) {
@@ -2046,13 +2081,13 @@ body.menu-slider.in {
   .modal-dialog.alcohal_addadressmain {
 	  width: 100%;
   }
-  md-dialog {
+  /*md-dialog {
 	  max-height: 90%;
 	  max-width: 90%;
 	  overflow-y: auto;
 	  overflow-x: hidden;
 	  opacity: 1;
-  }
+  }*/
   .gift-item-cover {
 	  display: inline-block;
 	  float: none;
@@ -2068,7 +2103,7 @@ body.menu-slider.in {
 	  display: block
   }
   .dropdown.cart-icon-set span {
-	  display: inline-block;
+	  display: inline-block !important;
   }
   .rgrhtdiv {
 	 
@@ -2217,7 +2252,11 @@ body.menu-slider.in {
 	  margin-bottom: 33px;
   }
   .comboproductitems {
-	  width: 50%
+	  width: 100%
+  }
+  .product-listcover2 .comboproductitems{
+	  width:33.33%;
+	  margin:30px 0px;
   }
   .prod_desc.ng-binding {
 	  height: 40px;
@@ -2451,7 +2490,7 @@ body.menu-slider.in {
     width: 60px;
 }
 .comboproductdetailitems{
-	width:26%;
+	width:30%;
 }
 .checkoutmiddletable table td{
 	padding-left:8px !important;
@@ -2459,6 +2498,53 @@ body.menu-slider.in {
 }
 .thumbnail.cocktail-products-div{
 	width:95%;
+}
+.chekoutstep5-table .col-md-3.ng-scope{
+	width:25%;
+}
+md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
+	font-size:13px !important; 
+}
+.salediv{
+	text-align:left !important;
+}
+.checkoutrighbuttonadd{
+	width:40%;
+}
+.checkoutrighbuttoncancel{
+	width:40%;
+}
+/*md-dialog.md-dialog-fullscreen{
+	min-height:inherit;
+}*/
+/*md-dialog.md-dialog-fullscreen{
+	min-width:70%;
+}*/
+.no-image.prod_pic{
+	background-size:auto;
+}
+.productdetailbrudcumcover iframe{
+	width:100%;
+	
+}
+.prddetailchilledcover{
+	margin-top:60px;
+}
+.has-sale-div .prddetailtitle{
+	width:100%;
+}
+ .has-sale-div .prddetailsubexttitle{
+	width:50%;
+}
+
+.adresfloortxtcvr{
+	width: 45%;
+}
+.adressunit{
+	width: 44%;
+}
+.alcohal_adress2fotter{
+	width:72%;
 }
 }
 @media only screen and (max-width : 767px) {
@@ -2645,8 +2731,12 @@ body.menu-slider.in {
   
  
   .leftphone {
-	  max-width: 100%
+	  max-width: 100%;
+	  display:inline-block;
   }
+  .col-md-4.phone-img-responsive {
+    text-align: center;
+}
   .onthego_block {
 	  background-size: cover
   }
@@ -2726,13 +2816,13 @@ body.menu-slider.in {
 	  width: 100%;
 	  margin-top: 0;
   }
-  md-dialog {
+  /*md-dialog {
 	  max-height: 90%;
 	  max-width: 90%;
 	  overflow-y: auto;
 	  overflow-x: hidden;
 	  opacity: 1;
-  }
+  }*/
   .alcohal_adress2fotter {
 	  width: 68%
   }
@@ -2828,8 +2918,11 @@ body.menu-slider.in {
 	  padding-left: 0;
   }
   .history-title-padding {
-	  padding-left: 13px;
+	 
   }
+  .titlecreidt {
+    margin-bottom: 10px;
+}
   .balancetexxt2 {
 	  margin-bottom: 0
   }
@@ -2839,7 +2932,7 @@ body.menu-slider.in {
   .change_form .registeremailcvr.paswrd-width-set5 {
 	  float: left;
 	  margin-right: 10px;
-	  width: 48.5%;
+	 
   }
   .change_form .registeremailcvr.paswrd-width-set5:nth-child(2) {
 	  margin-right: 0
@@ -3161,7 +3254,11 @@ body.menu-slider.in {
   }
   .productinner_leftslide.left-main-outerdiv {
 	  width: 100%;
+	  padding:0px 15px;
   }
+  .productslide_normaltext{
+	  white-space:normal;
+	 }
   /*.left-main-outerdiv .productslide_heading.ng-binding {
 	  font-size: 17px;
 	  height: 47px;
@@ -3197,14 +3294,14 @@ body.menu-slider.in {
 	  left: 0
   }
   .alcohal_addadress_headertitle {
-	  font-size: 22px
+	  font-size: 18px
   }
   .alcohalorderhisttitle {
 	  font-size: 22px
   }
-  .alcohal_addadress_headercurcle {
-	  margin-top: 4px
-  }
+ /* .alcohal_addadress_headercurcle {
+	  margin-top: -4px
+  }*/
  
   
   .single_slider_product .owl-controls {
@@ -3243,7 +3340,7 @@ body.menu-slider.in {
 	  padding-left: 4px;
   }
   .left-party-content {
-	  width: 48.8%
+	  width:100%
   }
   .media-body.cockatil-bodycover {
 	  padding-left: 0;
@@ -3426,7 +3523,7 @@ body.menu-slider.in {
 
 
 .navbar-default .navbar-nav li a{
-	font-size: 18px;
+	font-size: 17px;
 	padding: 10px 0;
 }
 
@@ -3565,7 +3662,7 @@ font-size:18px;
 	float:left !important; 
 }
 md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
-	font-size:14px !important;
+	font-size:13px !important;
 	text-align:left !important;
 }
 
@@ -3589,7 +3686,8 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 .searchtop.searchtop100 .search_icon{
 	padding:0px 0px !important;
 	left:0px !important;
-	width:30px;
+	width:25px;
+	background-position: -315px 0;	
 	
 }
 .comboproductdetailitems{
@@ -3599,7 +3697,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	width:100%;
 }
 .tag-purple-new-pos{
-	position:static;
+	right:4px;
 	float:right;
 }
 .repeatbtn{
@@ -3609,9 +3707,9 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 .md-dialog-container, md-dialog {
 	z-index:99999; 
 }
-.navbar-fixed-top.navbar-shrink .logos-inner-cover{
+/*.navbar-fixed-top.navbar-shrink .logos-inner-cover{
 	display:unset;
-}
+}*/
 md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	min-width:220px;
 }
@@ -3632,7 +3730,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	
 }
 .prddetailnormaltext{
-	width:50%;
+	width:100%;
 }
 .checkoutmiddlevlauediv{
 	width:43%;
@@ -3640,6 +3738,152 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 .productdetailtitle{
 	font-size:20px;
 }
+.img-responsive-h{
+	margin:inherit !important;
+}
+.chekoutstep5-table .col-md-3.ng-scope{
+	width:25%;
+}
+.order-history{
+	width:100%;
+	float:left;
+}
+.order-history {
+    font-size: 14px;
+}
+.prod-in-slider .owl-item .proHoverEffect{
+	width:95%;
+	padding: 10px 10px !important;
+}
+.comboproductitems,.comboproductitems:hover {
+    margin: 10px 0px !important;
+    padding: 10px 10px !important;
+    width: 98%;
+	
+	 border: 1px solid #d6dce0;
+    box-shadow: none !important;
+    transition: all 0.5s ease 0s;
+}
+.owl-carousel .owl-item:nth-of-type(2n+2) .comboproductitems{
+	float:right;
+}
+.adresfloortxtcvr{
+	width: 45%;
+}
+.adressunit{
+	width: 44%;
+}
+.checkoutrighbuttonadd{
+	width:40%;
+}
+.checkoutrighbuttoncancel{
+	width:40%;
+}
+.alcohalfootersign{
+	font-size: 14px;
+    font-weight: 600;
+    padding: 6px 49px;
+}
+.modal-footer.alcohalfotter{
+	padding:10px 15px;
+}
+
+.no-image.prod_pic{
+	background-size:auto;
+}
+.owluperpartcover .owl-item{
+	text-align:center
+}
+.owluperpartcover .owl-item img{
+	display:inline-block;
+}
+.productdetailbrudcumcover{
+	padding:15px;
+}
+.cocktaildetail-cover .media-left{
+	width:100%;
+	padding-right:0px;
+	height:inherit;
+}
+.cocktail-cartbtn{
+	text-align:center;
+}
+.btn.product_addcart.addcart-detail{
+	float: none;
+    margin-bottom: 10px;
+    margin-left: 0;
+    margin-top: 10px;
+}
+.productdetailbrudcumcover iframe{
+	width:100%;
+	height:auto;
+}
+.product-detail-right-set{
+	position:static;
+}
+.productaddedpopup {
+    left: inherit;
+    right: 0;
+}
+.productaddedpopup::before{
+	left: inherit;
+    right: 35px;
+}
+.alcohalpopuptext{
+	float:none;
+	display:inline-block;
+}
+
+
+.mob-popup-footer{
+	position: absolute;
+	bottom: 0;
+}
+
+
+
+.modal-uifooter{
+	width: 100%;
+	padding: 0px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+
+.md-dialog-container{
+	height: 100% !important;
+}
+
+.inner-form{
+	    width: 100%;
+    float: left;
+    height: 100%;
+    min-height: 320px;
+}
+
+.modal-footer.alcohalfotter {
+    border-radius: 0 0 0px 0px;
+}
+
+.register_checktext{
+	width: 100%;
+	text-align: justify;
+}
+
+
+
+#icon {
+    height: 65px !important;
+    margin: auto !important;
+    width: auto !important;
+}
+
+
+
+md-dialog .md-dialog-content{
+	padding-bottom: 60px !important;
+}
+
 }
 @media only screen and (width : 640px) {
   .alcohal_addadress_headertitle {
@@ -3935,13 +4179,13 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	  width: 100%;
 	  margin-top: 0;
   }
-  md-dialog {
+  /*md-dialog {
 	  max-height: 90%;
 	  max-width: 90%;
 	  overflow-y: auto;
 	  overflow-x: hidden;
 	  opacity: 1;
-  }
+  }*/
   .alcohlinputextcvr {
 	  margin-bottom: 0
   }
@@ -3978,11 +4222,11 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	  margin-bottom: 0;
 	  max-height: none;
   }
-  .layout-row {
+  /*.layout-row {
 	  padding: 0;
 	  padding-bottom: 20px;
 	  padding-top: 15px;
-  }
+  }*/
   .alcohal_addadress_headertitle {
 	  font-size: 23px
   }
@@ -4004,10 +4248,10 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	  left: 7px;
 	  top: 0;
   }
-  .layout-row {
+  /*.layout-row {
 	  padding: 0;
 	  height: 40px;
-  }
+  }*/
   .search_icon {
 	  margin-right: 0
   }
@@ -4021,12 +4265,12 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	  margin: 0;
 	  margin-left: 10px
   }
-  .layout, .layout-column, .layout-row {
-  /*width:92.3%*/
+  /*.layout, .layout-column, .layout-row {
+  width:92.3%
   }
   .layout-row {
 	  width: 95%;
-  }
+  }*/
   .top-logo-sideacnt-cover {
 	  padding: 0
   }
@@ -4239,7 +4483,11 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
   }
   .productinner_leftslide.left-main-outerdiv {
 	  width: 100%;
+	  padding:0px 15px;
   }
+  .productslide_normaltext{
+	  white-space:normal;
+	 }
   .btn.product_addcart.addcart-margin-responsive {
 	  margin-top: 0
   }
@@ -4276,15 +4524,16 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 			padding: 54px 24px 24px;
 		}*/
   .alcohal_addadress_headertitle span {
-	  width: 80%;
+	  /*width: 82%;
 	  display: inline-block;
+	  font-size: 15px;*/
   }
   .alcohal_addadress_headertitle {
 	  font-size: 18px
   }
-  .alcohal_addadress_headercurcle {
-	  margin-top: 12px;
-  }
+  /*.alcohal_addadress_headercurcle {
+	  margin-top: -8px;
+  }*/
   .alcohalorderhisttitle {
 	  font-size: 18px
   }
@@ -4298,8 +4547,8 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	  width: 54px;
   }
   .product-detail-right-set {
-	  padding-left: 10px;
-	  padding-right: 10px;
+	  padding-left: 15px;
+	  padding-right: 15px;
   }
   .prdquanbulkboxtwo {
 	  width: 64px
@@ -4517,10 +4766,11 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 }
 .productaddedpopup::before{
 	left:inherit;
-	right:42px;
+	right:10px;
 }
 .alcohal_addadress_headertitle {
-    font-size: 16px;
+    font-size: 18px;
+	
 }
  
 .currentorderpopup::before{
@@ -4529,6 +4779,20 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 .thumbnail.cocktail-products-div{
 	width:100%;
 	
+}
+.prod-in-slider .owl-item .proHoverEffect{
+	width:100%;
+	margin:10px 0px !important;
+	padding: 10px 15px !important;
+}
+.comboproductitems,.comboproductitems:hover {
+    margin: 10px 0 !important;
+    padding: 10px 15px !important;
+    width: 100%;
+	
+	 border: 1px solid #d6dce0;
+    box-shadow: none !important;
+    transition: all 0.5s ease 0s;
 }
 }
 @media only screen and (max-width : 479px) {
@@ -4546,4 +4810,13 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
     width: 145px;
 }
 
+.party-detail-heading{
+	font-size:20px;
+}
+.alcohal_adress2fotter{
+	font-size:12px;
+}
+.additempopuppinkboxrightinner a,.additempopuppinkboxrightinner a:hover,.additempopuppinkboxrightinner a:focus{
+	padding:0px !important;
+}
 }

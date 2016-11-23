@@ -234,7 +234,7 @@ ui-sref {
 	right: 0%;
 }
 .search_icon {
-	background: url(../images/search-icon.png) no-repeat center 41px;
+	background: url(../images/search.svg) no-repeat center 41px;
 	width: 21px;
 	height: 21px;
 	float: left;
@@ -291,11 +291,12 @@ ui-sref {
 	opacity: 0.7;
 }
 .cart_icon {
-	background: url(../images/cart-icon-new.png) no-repeat center 41px;
+	background: url(../images/cart.svg) no-repeat center 41px;
 	width: 23px;
 	height: 20px;
 	min-height: 100px;
 	min-width: 41px;
+	background-size:24px;
 	cursor: default;
 }
 /*.cart_icon:hover {
@@ -1285,7 +1286,7 @@ ui-sref {
 	font-size: 14px;
 	font-family: 'Work Sans', sans-serif;
 	color: #454545;
-	padding-top: 14px;
+	padding-top: 6px;
 }
 .alcohallogin_forgettxt a {
 	color: #454545;
@@ -2018,9 +2019,15 @@ ui-sref {
 	margin-bottom: 0 !important;
 }
 .comboproductitems {
-	margin-top: 30px;
-	margin-bottom: 0px;
 	padding: 10px;
+	
+	display: inline-block;
+    margin: 30px 5px 0px;
+   
+}
+.comboproductitems:hover {
+    box-shadow: 0 0 10px 5px #d6dce0;
+    transition: all 0.5s ease 0s;
 }
 .comboproductitems .prod_desc {
 	font-size: 13px;
@@ -3829,8 +3836,7 @@ ui-sref {
 .alcohal_addadressfooter {
 	background: #efefef none repeat scroll 0 0;
 	float: left;
-	padding-right: 18px;
-	padding-top: 11px;
+	padding:10px 15px;
 	width: 100%;
 }
 .alcohal_addadress_headercurcle {
@@ -3866,7 +3872,7 @@ ui-sref {
 	margin-top: 0;
 	position: relative;
 	text-align: center;
-	top: 8px;
+	top: 0px;
 	vertical-align: middle;
 	width: 27px;
 }
@@ -5030,11 +5036,11 @@ ui-sref {
 #smokeneedpanel td.active {
 	color: #ffc412;
 }
-md-dialog {
+/*md-dialog {
 	max-height: none;
 	overflow: initial;
 	opacity: 1;
-}
+}*/
 md-backdrop.md-dialog-backdrop {
 	z-index: 80000;
 }
@@ -5292,11 +5298,11 @@ ul.menuulpadding li ul li:hover{
 .signuplogin ul li:nth-child(4) a:hover, .signuplogin ul li:nth-child(4) a:focus, .signuplogin ul li:nth-child(4) a:active, .signuplogin ul li:nth-child(4) a {
 	background-color: transparent;
 }
-.layout-row {
+/*.layout-row {
 	box-shadow: none;
 	width: 98.5%;
 	margin: auto;
-}
+}*/
 .btm10.ng-scope {
 	width: 100%;
 	display: inline-block;
@@ -5305,11 +5311,11 @@ ul.menuulpadding li ul li:hover{
 .col-md-10.top-logo-sideacnt-cover.text-center {
 	padding: 0;
 }
-md-dialog .md-actions, md-dialog md-dialog-actions {
+/*md-dialog .md-actions, md-dialog md-dialog-actions {
 	width: 100% !important;
 	padding-left: 0;
 	padding-right: 0
-}
+}*/
 .layout-row input {
 	color: #2c2011
 }
@@ -5374,15 +5380,15 @@ md-dialog .md-actions, md-dialog md-dialog-actions {
 	display: inline-block
 }
 .navbar.navbar-default.navbar-fixed-top {
-	transition: all 0.2s ease 0s;
-	-moz-transition: all 0.2s ease 0s;
-	-web-transition: all 0.2s ease 0s;
+	transition: all 0.3s ease 0s;
+	-moz-transition: all 0.3s ease 0s;
+	-web-transition: all 0.3s ease 0s;
 	padding: 0;
 }
 .navbar.navbar-default.navbar-fixed-top.navbar-shrink {
-	transition: all 0.2s ease 0s;
-	-moz-transition: all 0.2s ease 0s;
-	-web-transition: all 0.2s ease 0s;
+	transition: all 0.3s ease 0s;
+	-moz-transition: all 0.3s ease 0s;
+	-web-transition: all 0.3s ease 0s;
 	padding: 0;
 }
 .navbar-fixed-top.navbar-shrink .logos-inner-cover {
@@ -5470,13 +5476,13 @@ md-dialog .md-actions, md-dialog md-dialog-actions {
 	width: 100%;
 }
 .navbar-fixed-top.navbar-shrink .cart_icon {
-	background: rgba(0, 0, 0, 0) url("../images/cart-icon-new.png") no-repeat scroll center 25px;
+	background: rgba(0, 0, 0, 0) url("../images/cart.svg") no-repeat scroll center 25px;
 }
 .navbar-fixed-top.navbar-shrink .search_icon {
-	background: rgba(0, 0, 0, 0) url("../images/search-icon.png") no-repeat scroll center 25px;
+	background: rgba(0, 0, 0, 0) url("../images/search.svg") no-repeat scroll center 25px;
 }
 .navbar-fixed-top.navbar-shrink .searchtop.searchtop100 .search_icon {
-	background: rgba(0, 0, 0, 0) url("../images/search-icon.png") no-repeat scroll center 0;
+	background: rgba(0, 0, 0, 0) url("../images/search.svg") no-repeat scroll center 0;
 }
 .logoss {
 	display: inline-block;
@@ -6060,9 +6066,9 @@ md-checkbox.md-default-theme.md-checked .md-icon::after, md-checkbox.md-checked 
 	float: none !important
 }
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-  md-dialog {
+  /*md-dialog {
 	  margin: inherit;
-  }
+  }*/
 }
 md-radio-button.md-default-theme.md-checked .md-off, md-radio-button.md-checked .md-off{
 	border-color: rgba(170, 0, 255, 0.87) !important;
@@ -6695,4 +6701,7 @@ button:hover{
 	left:0px;
 	right:0px;
 	margin:auto;
+}
+#toastBounds{
+	margin-top:10px;
 }

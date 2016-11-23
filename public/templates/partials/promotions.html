@@ -14,7 +14,9 @@
 							
 						navigation : false,
 						pagination : false,
-						items : 4
+						items : 3,
+                        itemsDesktopSmall : [1199,3],
+                        itemsTablet : [768,3]
 
 				}">
 		      <div owl-carousel-item="" ng-repeat="product in promotion.products" class="">		        	
@@ -25,7 +27,7 @@
 	</div> -->
 
 	<div class="checkout-product"  ng-class="{notEligible:!promotion.eligible.already}">
-		<div class="row">			
+		<div class="new">			
 			<data-owl-carousel class="owl-carousel owl-theme" data-options="{
 							
 						navigation : false,

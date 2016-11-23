@@ -226,33 +226,36 @@ class CartController extends Controller
 		if(isset($cart['coupon']) && $cart['coupon']){
 			$couponData = Coupon::where(['_id' => $cart['coupon'], 'status'=>1])->first();
 
-			unset($couponData->start_date);
-			unset($couponData->end_date);
-			unset($couponData->csvImport);
-			unset($couponData->name);
-			unset($couponData->updated_at);
-			unset($couponData->_id);
-			unset($couponData->status);
-			unset($couponData->coupon_uses);
-			unset($couponData->customer_uses);
+			if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date)>= time()){
 
-			if(!empty($couponData->products)){
-				foreach ($couponData->products as $pValue) {
-					$getObj = get_object_vars($pValue);
-					$productList[] = $getObj['$id'];
+				unset($couponData->start_date);
+				unset($couponData->end_date);
+				unset($couponData->csvImport);
+				unset($couponData->name);
+				unset($couponData->updated_at);
+				unset($couponData->_id);
+				unset($couponData->status);
+				unset($couponData->coupon_uses);
+				unset($couponData->customer_uses);
+
+				if(!empty($couponData->products)){
+					foreach ($couponData->products as $pValue) {
+						$getObj = get_object_vars($pValue);
+						$productList[] = $getObj['$id'];
+					}
+					$couponData->products = $productList;
 				}
-				$couponData->products = $productList;
+
+				if(!empty($couponData->categories)){
+					foreach ($couponData->categories as $pValue) {
+						$getObj = get_object_vars($pValue);
+						$catList[] = $getObj['$id'];
+					}
+					$couponData->categories = $catList;
+				}			
+
+				$cart['couponData'] = $couponData->toArray();
 			}
-
-			if(!empty($couponData->categories)){
-				foreach ($couponData->categories as $pValue) {
-					$getObj = get_object_vars($pValue);
-					$catList[] = $getObj['$id'];
-				}
-				$couponData->categories = $catList;
-			}			
-
-			$cart['couponData'] = $couponData->toArray();
 		}
 
 		$productsIdInCart = array_merge(array_keys((array)$cart['products']),array_keys((array)$cart['loyalty']));
@@ -1832,7 +1835,7 @@ jprd($product);
 	public function confirmorder(Request $request,$cartKey = null){
 
 		$user = Auth::user('user');
-		//$user = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
+		$user = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
 
 		$userObj = User::find($user->_id);
 

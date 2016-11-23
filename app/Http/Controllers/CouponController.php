@@ -9,6 +9,7 @@ use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Coupon;
 use AlcoholDelivery\Cart;
 
+use Illuminate\Support\Facades\Auth;
 use MongoId;
 
 class CouponController extends Controller
@@ -40,13 +41,15 @@ class CouponController extends Controller
 
         if(isset($params['coupon'])){
             $couponData = Coupon::where('code', 'regexp', '/^'.$params['coupon'].'$/i')->where(['status'=>1])->first();
-        }        
+        }
 
         if(isset($couponData->_id)){
+            $user = Auth::user('user');
+            $userId = new MongoId($user->_id);
+
             if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date)>= time()){
                 
                 $userCouponCnt = 0;
-                $userId = 1;
 
                 //CHECK COUPON USED BY USER
                 if($couponData->customer_uses){

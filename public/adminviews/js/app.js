@@ -2773,7 +2773,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         	data:{
         		pageTitle:'User Groups',
         		breadCrumb:[
-        		{title:'User Groups','uisref':'#'}
+        		{title:'User Groups','uisref':'userLayout.usergroups.list'},
+        		{title:'Add','uisref':'#'}
         		]
         	},
         	resolve: {

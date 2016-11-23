@@ -131,7 +131,6 @@ class Cart extends Moloquent
 			"user" => null,
 		];
 
-
 		$cart = self::setServices($cart);
 		
 		try{
@@ -587,7 +586,11 @@ class Cart extends Moloquent
 
 	}
 
-	private function isSingleProductSale($sale){
+	private function isSingleProductSale($sale = false){
+
+		if($sale===false){
+			return false;
+		}
 
 		if($sale['conditionQuantity']==1 && empty($sale['actionProductId'])){
 				return true;
@@ -1651,6 +1654,7 @@ class Cart extends Moloquent
 		// Set loyalty cards start //
 
 		// Set Gift packaging start //
+
 		if(isset($this->gifts)){
 
 			$giftsDetail = [];
@@ -1695,6 +1699,7 @@ class Cart extends Moloquent
 			}
 
 		}
+
 		// Set Gift packaging ends //
 
 
@@ -1727,8 +1732,9 @@ class Cart extends Moloquent
 
 			foreach($this->products as $key=>$product){
 
-				$proDetail = $proDetails[$key];
+				$isSingleSalePro = $this->isSingleProductSale($product['sale']);
 
+				$proDetail = $proDetails[$key];
 
 				//$oProduct = $proDetail['common'];
 				$oProduct = [];
@@ -1760,6 +1766,7 @@ class Cart extends Moloquent
 							"nonChilled" => $qtyNonChilled,
 							"total" => $qtyTotal
 						];
+				
 
 				$remainingQty = $product['remainingQty'];
 
@@ -1780,7 +1787,7 @@ class Cart extends Moloquent
 					$chilledRemain = $stillRemain;
 				}
 
-				
+
 
 				$oProduct["afterSale"] = [
 							"chilled" => $chilledRemain,
@@ -1791,40 +1798,52 @@ class Cart extends Moloquent
 
 				$price = 0;
 
-				if($oProduct['qtyfinal']>1){
+				if(!$isSingleSalePro){
+					if($oProduct['qtyfinal']>1){
 
-					$originalPrice = $proDetail['price'];
-					foreach ($proDetail['express_delivery_bulk']['bulk'] as $key => $bulk) {
+						$originalPrice = $proDetail['price'];
+						foreach ($proDetail['express_delivery_bulk']['bulk'] as $key => $bulk) {
 
-					if($oProduct['qtyfinal'] >= $bulk['from_qty'] && $oProduct['qtyfinal']<=$bulk['to_qty']){
+						if($oProduct['qtyfinal'] >= $bulk['from_qty'] && $oProduct['qtyfinal']<=$bulk['to_qty']){
 
-						if($bulk['type']==1){
+							if($bulk['type']==1){
 
-							$price = $oProduct['qtyfinal'] * ($originalPrice + ($originalPrice * $bulk['value']/100));
+								$price = $oProduct['qtyfinal'] * ($originalPrice + ($originalPrice * $bulk['value']/100));
 
-						}else{
+							}else{
 
-							$price = $oProduct['qtyfinal'] * ($originalPrice + $bulk['value']);
+								$price = $oProduct['qtyfinal'] * ($originalPrice + $bulk['value']);
+
+							}
+							
+							$price = number_format($price,2);
 
 						}
-						
-						$price = number_format($price,2);
-
-
-
 
 					}
 
-				}
+					}elseif($oProduct['qtyfinal']==1){
 
-				}elseif($oProduct['qtyfinal']==1){
+						$price = $oProduct['unitprice'];
+
+					}
+				}else{
 
 					$price = $oProduct['unitprice'];
+					$discountValue = $product['sale']['discountValue'];
 
+					if($product['sale']['discountType']===2){ //2 is for % discount
+
+						$price = $oProduct['qtyfinal'] * ($price - ($price * $discountValue/100));
+
+					}else{
+						
+						$price = $oProduct['qtyfinal'] * ($price - $discountValue);	
+
+					}
 				}
 
 				$oProduct['price'] = $price;
-
 				if($oProduct['qtyfinal']>0){
 					$oProduct['unitprice'] = $price/$oProduct['qtyfinal'];
 				}
@@ -1842,89 +1861,93 @@ class Cart extends Moloquent
 				if(isset($cartData->coupon) && $cartData->coupon){
 					$couponData = Coupon::where(['_id' => $cartData->coupon, 'status'=>1])->first();
 
-					$coupon = $couponData->toArray();
+					if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date)>= time()){
+						$coupon = $couponData->toArray();
 
-					if (isset($coupon) && $coupon['_id']) {
-						$cDiscount = $coupon['discount'];
-						$cTotal = $coupon['total'];
-						$discountTotal = 0;
+						if (isset($coupon) && $coupon['_id']) {
+							$cDiscount = $coupon['discount'];
+							$cTotal = $coupon['total'];
+							$discountTotal = 0;
 
-						if(!$cTotal || ($cTotal && $cTotal <= $subtotal) ){
+							if(!$cTotal || ($cTotal && $cTotal <= $subtotal) ){
 
-							foreach($order['products'] as $key=>$nOrder){
-								$quantity = $nOrder['qtyfinal'];
-								$hasCategory = 0;
-								$unitPrice = $nOrder['unitprice'];
-								$discountedUnitPrice = $nOrder['unitprice'];
+								foreach($order['products'] as $key=>$nOrder){
+									$quantity = $nOrder['qtyfinal'];
+									$hasCategory = 0;
+									$unitPrice = $nOrder['unitprice'];
+									$discountedUnitPrice = $nOrder['unitprice'];
 
-								$prodDetail = $proDetails[(string)$nOrder['_id']];
+									$prodDetail = $proDetails[(string)$nOrder['_id']];
 
 
-								if(!empty($coupon['products'])){
-									if(!in_array((string)$nOrder['_id'], $coupon['products'])){
-										continue;
-									}
-								}
-
-								if(!empty($coupon['categories'])){
-
-									foreach ($prodDetail['categories'] as $catVal) {
-										if(!in_array((string)$catVal, $coupon['categories'])){
-											$hasCategory = 1;
+									if(!empty($coupon['products'])){
+										if(!in_array((string)$nOrder['_id'], $coupon['products'])){
+											continue;
 										}
 									}
 
-									if(!$hasCategory)
-										continue;
-								}
+									if(!empty($coupon['categories'])){
 
-								if($coupon['discount_status']==1){
-									$pAmount = $unitPrice*$quantity;
+										foreach ($prodDetail['categories'] as $catVal) {
+											if(!in_array((string)$catVal, $coupon['categories'])){
+												$hasCategory = 1;
+											}
+										}
+
+										if(!$hasCategory)
+											continue;
+									}
+
+									if($coupon['discount_status']==1){
+										$pAmount = $unitPrice*$quantity;
+									}else{
+										$pAmount = $discountedUnitPrice*$quantity;
+									}
+
+									if($coupon['type']==1){
+										$discountAmount = $pAmount - $cDiscount;
+									}else{
+										$discountAmount = $pAmount - (($pAmount*$cDiscount)/100);
+									}
+
+									if($coupon['discount_status']==1 && $discountAmount > $discountedUnitPrice*$quantity){
+										$discountAmount = $discountedUnitPrice*$quantity;
+									}
+
+									$discountTotal +=  $pAmount - $discountAmount;
+
+									if($discountAmount)
+										$order['products'][$key]['price'] = $discountAmount;
+								}
+							
+								$subtotal = $subtotal - $discountTotal;
+
+
+								//UPDATE COUPON COUNT AND COUPON LIST
+								$user = Auth::user('user');
+								$userId = new MongoId($user->_id);
+
+								$newList = array('orderId'=> 100, 'userId'=> $userId);
+
+								if(!isset($coupon['used_count'])){
+									$used_count = 0;
 								}else{
-									$pAmount = $discountedUnitPrice*$quantity;
+									$used_count = $coupon['used_count'];
 								}
 
-								if($coupon['type']==1){
-									$discountAmount = $pAmount - $cDiscount;
+								if(isset($couponData->used_list)){
+									$oldList = $coupon['used_list'];
 								}else{
-									$discountAmount = $pAmount - (($pAmount*$cDiscount)/100);
+									$oldList = array();
 								}
 
-								if($coupon['discount_status']==1 && $discountAmount > $discountedUnitPrice*$quantity){
-									$discountAmount = $discountedUnitPrice*$quantity;
+								array_push($oldList, $newList);
+
+								if($couponData){
+									$couponData->used_count = $used_count + 1;
+									$couponData->used_list = $oldList;
+									$couponData->save();
 								}
-
-								$discountTotal +=  $pAmount - $discountAmount;
-
-								if($discountAmount)
-									$order['products'][$key]['price'] = $discountAmount;
-							}
-						
-							$subtotal = $subtotal - $discountTotal;
-
-
-							//UPDATE COUPON COUNT AND COUPON LIST
-
-							$newList = array('orderId'=> 2, 'userId'=>1);
-
-							if(!isset($coupon['used_count'])){
-								$used_count = 0;
-							}else{
-								$used_count = $coupon['used_count'];
-							}
-
-							if(isset($couponData->used_list)){
-								$oldList = $coupon['used_list'];
-							}else{
-								$oldList = array();
-							}
-
-							array_push($oldList, $newList);
-
-							if($couponData){
-								$couponData->used_count = $used_count + 1;
-								$couponData->used_list = $oldList;
-								$couponData->save();
 							}
 						}
 					}
