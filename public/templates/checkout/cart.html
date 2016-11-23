@@ -508,12 +508,15 @@
 
 		<button class="checkouterwantbutton" ng-class="{selected:cart.delivery.type==0}" ng-click="alcoholCart.setDeliveryType(0)">I want this order Now!</button>
 
-		<span>(Standard 1 hour delivery)</span>
-		
+		<span>
+			<small ng-class="{'strike-txt-only':alcoholCart.expressDisable}">(Standard 1 hour delivery)</small>
+			<small ng-if="alcoholCart.expressDisable"><br/>(Standard 2-3 hour delivery)</small>
+		</span>
+
 	</div>
 
-	<div class="checkouterexprienceouter" ng-show="cart.delivery.type==0">
-
+	<div class="checkouterexprienceouter pos-realtive" ng-show="cart.delivery.type==0" ng-class="{'disabled':alcoholCart.expressDisable}">
+		<span id="express-disable-note">Express delivery is not available if cart contain any gift packaging product</span>
 		<div class="checkouterexpressdivleft checkbox-gray-top-first">
 			<md-switch aria-label="express" ng-model="cart.service.express.status" ng-change="alcoholCart.setExpressStatus(cart.service.express.status)"></md-switch>
 
