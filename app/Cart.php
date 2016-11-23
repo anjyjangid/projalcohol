@@ -1842,7 +1842,7 @@ class Cart extends Moloquent
 				if(isset($cartData->coupon) && $cartData->coupon){
 					$couponData = Coupon::where(['_id' => $cartData->coupon, 'status'=>1])->first();
 
-					if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date)>= time()){
+					if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date. ' + 1 days')>= time()){
 						$coupon = $couponData->toArray();
 
 						if (isset($coupon) && $coupon['_id']) {

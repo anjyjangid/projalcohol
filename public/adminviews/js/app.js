@@ -448,7 +448,7 @@ MetronicApp.controller('HeaderController', ['$scope','$http', '$rootScope','Admi
 }]);
 
 /* Setup Layout Part - Sidebar */
-MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope,$filter) {
+MetronicApp.controller('SidebarController', ['$scope','$filter', '$http', 'AdminUserService', function($scope,$filter, $http, AdminUserService) {
 
 	$scope.$on('$includeContentLoaded', function() {
 		Layout.initSidebar(); // init sidebar
@@ -531,7 +531,6 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 		{
 			label:'Products',
 			icon:'icon-handbag',
-			//uisref:'userLayout.products.list',
 			id:'sidebar_menu_link_products',
 			access : ['admin'],
 			subItems:[
@@ -743,7 +742,105 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', function($scope
 		}
 
 	];
+
+var userType = AdminUserService.getUserType();
+//console.log(userType);
+
+var user_group_id = userType; //"582ef6d094a9b7a2318b4570"; //Sub admin
+
+if(user_group_id){
+
+	var menuArr = [];
+	var menuVal = [];
+	var parentMenu = [];
+	var parentIdArr = [];
+
+	angular.forEach(menuOptions, function(value, key){
+		parentIdArr.push(value.id);
+
+		if(typeof(menuOptions[key].uisref) !== "undefined"){
+			menuArr.push(value.uisref);
+			value.parentId = 0;
+			menuVal[value.uisref] = value;
+		}else{
+			var parentLabel = {};
+			parentLabel.label = value.label;
+			parentLabel.icon = value.icon;
+			parentLabel.id = value.id;
+			parentMenu[value.id] = parentLabel;
+
+			var subMenu = menuOptions[key].subItems;
+
+			angular.forEach(subMenu, function(value1, key1){
+				menuArr.push(value1.uisref);
+				value1.parentId = value.id;
+				menuVal[value1.uisref] = value1;
+			});
+		}
+	});
+
+	var newMenu 	= [];
+	var prId 			= [];
+	var menuObj 	= [];
+	var finalMenu = [];
+
+	$http.get("/adminapi/usergroup/usergroupid/"+ user_group_id).success(function(response){
+		var user_states = response.access_list.concat(response.modify_list);
+
+		angular.forEach(menuArr, function(value, key){
+			var mId = $filter('filter')(user_states, value);
+
+			if(typeof(mId[0]) !== "undefined" && mId[0]){
+
+				var url_state = menuVal[mId[0]].parentId;
+				var mainParentId = url_state;
+
+				if(!url_state)
+					mainParentId = menuVal[mId[0]].id
+
+				if(typeof(menuObj[mainParentId]) !== "undefined")
+					menuObj[mainParentId] = menuObj[mainParentId] +', '+mId[0];
+				else
+					menuObj[mainParentId] = mId[0];
+			}
+		});
+		
+		angular.forEach(parentIdArr, function(value, key){
+
+			if(typeof(menuObj[value]) !== "undefined"){
+				var stateArr = menuObj[value].split(', ');
+
+				if(typeof(parentMenu[value]) !== "undefined"){
+
+					var menuN = {};
+					var subd 	= [];
+					
+					menuN.label = parentMenu[value].label;
+					menuN.id = parentMenu[value].id;
+					menuN.icon = parentMenu[value].icon;
+					
+					angular.forEach(stateArr, function(value1, key1){
+						if(typeof(menuVal[value1]) !== "undefined"){
+							subd.push(menuVal[value1]);
+							menuN.subItems = subd;
+						}
+					});
+
+					finalMenu.push(menuN);
+
+				}else{
+					finalMenu.push(menuVal[menuObj[value]]);
+				}
+			}
+		});
+
+		$scope.menuOptions = finalMenu;
+	});	
+}else{
 	$scope.menuOptions = menuOptions;
+}
+
+	//$scope.menuOptions = menuOptions;
 	//$scope.menuOptions = $filter('accessValidate')(menuOptions);
 
 }]);
@@ -797,6 +894,18 @@ MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", "$r
 		var currentUser = this.getUser();
 		return currentUser.role==2?'subadmin':'admin';
 
+	}
+
+	this.getUserType = function(){
+
+		var currentUser = this.getUser();
+		if(typeof(currentUser.user_type) !== "undefined" && currentUser.user_type){
+			return currentUser.user_type;
+		}else{
+			return 0;
+		}
+
+		//return currentUser.role==2?'subadmin':'admin';
 	}
 
 	this.storeUser = function(data){

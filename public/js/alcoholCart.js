@@ -2679,17 +2679,22 @@ AlcoholDelivery.service('alcoholCart', [
 		}
 
 		this.getCouponDiscount = function(){
-			if(typeof(_self.$cart.couponDiscount) !== "undefined")
-				return this.$cart.couponDiscount;
+			if(typeof(this.$cart.couponDiscount) !== "undefined"){
+
+				if(!isNaN(this.$cart.couponDiscount))
+					return this.$cart.couponDiscount;
+
+				return 0;	
+			}
 
 			return 0;
 		}
 
 		this.getCouponCode = function(){
-			if(typeof(_self.$cart.couponData) !== "undefined"){
-				return _self.$cart.couponData.code;
+			if(typeof(this.$cart.couponData) !== "undefined"){
+				return this.$cart.couponData.code;
 			}else{
-				return;
+				return 0;
 			}
 		}
 

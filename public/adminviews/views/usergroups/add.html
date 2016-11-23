@@ -26,8 +26,8 @@
 						* </span>
 						</label>
 						<div class="col-md-10">
-							<select  class="table-group-action-input form-control input-medium" ng-model="usergroups.access_list" multiple="multiple" required="" >
-								<option ng-repeat="optionList in pagelistOptions" value="{{optionList._id}}">{{optionList.page_url}}</option>
+							<select  class="table-group-action-input form-control input-medium" ng-model="usergroups.access_list" multiple="multiple" required="" size="10" >
+								<option ng-repeat="optionList in pagelistOptions" value="{{optionList.page_state}}">{{optionList.page_url}}</option>
 							</select>
 							<span class="help-block" ng-bind="errors.access_list[0]"></span>
 						</div>
@@ -37,9 +37,9 @@
 						* </span>
 						</label>
 						<div class="col-md-10">
-							<select class="table-group-action-input form-control input-medium" ng-model="usergroups.modify_list" multiple="multiple"  required="">
+							<select class="table-group-action-input form-control input-medium" ng-model="usergroups.modify_list" multiple="multiple"  required="" size="10" >
 								<!-- <option value="">Select</option> -->
-								<option ng-repeat="optionList in pagelistOptions" value="{{optionList._id}}">{{optionList.page_url}}</option>
+								<option ng-repeat="optionList in pagelistOptions" value="{{optionList.page_state}}">{{optionList.page_url}}</option>
 							</select>
 							<span class="help-block" ng-bind="errors.modify_list[0]"></span>
 						</div>
