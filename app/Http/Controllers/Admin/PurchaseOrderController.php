@@ -212,7 +212,9 @@ class PurchaseOrderController extends Controller
         $advanceOrders = [];
         if($model){
             if(isset($model->advanceOrderId)){
-                $advanceOrders = Orders::whereRaw(['_id'=>['$in'=>$model->advanceOrderId],'doStatus'=>0])->get();
+                $advanceOrders = Orders::whereRaw(['_id'=>['$in'=>$model->advanceOrderId],'doStatus'=>0])
+                ->orderBy('_id','asc')
+                ->get();
             }
         }
 
@@ -277,22 +279,24 @@ class PurchaseOrderController extends Controller
 
                     $hasUpdate = true;
 
-                    Stocks::raw()->update([
-                        "productId" => $product['_id']['$id'], 
-                        "storeId" => $userStoreId
-                    ], [
-                        '$inc' => [
-                            'quantity' => $received[$productId]['add']
-                        ]
-                    ]);
+                    if(isset($received[$productId]['add']) && $received[$productId]['add']>0){
+                        Stocks::raw()->update([
+                            "productId" => $product['_id']['$id'], 
+                            "storeId" => $user->storeId
+                        ], [
+                            '$inc' => [
+                                'quantity' => $received[$productId]['add']
+                            ]
+                        ]);
 
-                    Products::raw()->update([
-                        "_id" => $products[$i]['_id']
-                    ], [
-                        '$inc' => [
-                            'quantity' => $received[$productId]['add']
-                        ]
-                    ]);                    
+                        Products::raw()->update([
+                            "_id" => $products[$i]['_id']
+                        ], [
+                            '$inc' => [
+                                'quantity' => $received[$productId]['add']
+                            ]
+                        ]);                    
+                    }
                 }
 
                 unset($products[$i]['add']);
@@ -352,8 +356,10 @@ class PurchaseOrderController extends Controller
 
         $taken = [];
         $orderProcessed = [];
+        $advanceOrderIds = [];
         foreach ($advanceOrders as $akey => $advanceOrder) {
             $key = (string)$advanceOrder['_id'];
+            $advanceOrderIds[] = new MongoId($advanceOrder['_id']);
             if(isset($advanceOrder->productsLog)){
                 foreach ($advanceOrder->productsLog as $pkey => $productsLog) {
                     
@@ -409,5 +415,60 @@ class PurchaseOrderController extends Controller
                 }
             }
         }               
+
+        //CHECK ALL RESPECTIVE ADVANCE ORDER FOR COMPLETION
+        if($advanceOrderIds){
+
+            $completedOrdersForCurrentPo = Orders::raw()->aggregate(
+                [
+                    '$match' => [
+                        '_id' => ['$in' => $advanceOrderIds]
+                    ]
+                ],
+                [
+                    '$unwind' => [
+                        'path' => '$productsLog',
+                        'preserveNullAndEmptyArrays' => true
+                    ]
+                ],          
+                [
+                    '$project' => [                                                     
+                        'completed' => [
+                            '$subtract'=>[
+                                '$productsLog.quantity',
+                                ['$cond' => ['$productsLog.received','$productsLog.received',0]]
+                        ]]
+                    ]
+                ],
+                [
+                    '$group' => [
+                        '_id' => '$_id',
+                        'pending' => ['$sum'=>'$completed'],                    
+                    ]
+                ],
+                [
+                    '$match' => [
+                        'pending' => 0
+                    ]
+                ]   
+            );
+
+            //UPDATE ALL ADVANCE ORDER WHOSE REQ QTY IS FULLFILLED FOR ALL PRODUCTS IN THE CURRENT PO
+            if(isset($completedOrdersForCurrentPo['result']) && !empty($completedOrdersForCurrentPo['result'])){
+                $doCompletedOrderIds = [];
+                foreach ($completedOrdersForCurrentPo['result'] as $key => $value) {
+                    $doCompletedOrderIds[] = new MongoId($value['_id']);
+                }
+                if($doCompletedOrderIds){
+                    Orders::raw()->update(
+                        ['_id' => ['$in' => $doCompletedOrderIds]],
+                        ['$set' => ['doStatus' => 1]],
+                        ['multiple' => true]
+                    );
+                }
+            }
+
+        }
+
     }
 }
