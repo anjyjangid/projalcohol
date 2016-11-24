@@ -110,12 +110,12 @@ class Stocks extends Eloquent
         ];
 
         if(isset($params['filter']['from']) && isset($params['filter']['to'])) {
-            $project['advanceOrder']['$filter']['cond']['$and'][] = [
+            /*$project['advanceOrder']['$filter']['cond']['$and'][] = [
                 '$gte' => [
                     '$$order.timeslot.datekey',
                     strtotime($params['filter']['from'])
                 ]
-            ];
+            ];*/
             $project['advanceOrder']['$filter']['cond']['$and'][] = [
                 '$lte' => [
                     '$$order.timeslot.datekey',
@@ -204,7 +204,20 @@ class Stocks extends Eloquent
             'storeMaxQty' => ['$first'=>'$storeMaxQty'],
             'storeThreshold' => ['$first'=>'$storeThreshold'],
             'advanceOrderId' => ['$push'=>'$advanceOrderId'],
-            'qtyAdvance' => ['$sum'=>'$advanceProductLog.quantity']
+            'qtyAdvance' => [
+                '$sum'=>[
+                    '$subtract'=>[
+                        '$advanceProductLog.quantity',
+                        [
+                            '$cond'=>[
+                                '$advanceProductLog.received',
+                                '$advanceProductLog.received',
+                                0
+                            ]
+                        ]
+                    ]
+                ]
+            ]
         ];
 
         //UPDATE THIS FIELD IN CASE CURRENT STORE LOGIN IS NOT MAIN STORE
