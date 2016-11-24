@@ -23,7 +23,7 @@ MetronicApp.controller('UsergroupsFormController',['$rootScope', '$scope', '$tim
     });
 
     if($stateParams.id){
-        $http.get("/adminapi/usergroup/usergroupid/"+$stateParams.id).success(function(response){           
+        $http.get("/adminapi/usergroup/usergroupid/"+$stateParams.id).success(function(response){
             $scope.usergroups = response;
         });
     }   

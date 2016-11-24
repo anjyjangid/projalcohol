@@ -47,7 +47,7 @@ class CouponController extends Controller
             $user = Auth::user('user');
             $userId = new MongoId($user->_id);
 
-            if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date)>= time()){
+            if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date. ' + 1 days')>= time()){
                 
                 $userCouponCnt = 0;
 

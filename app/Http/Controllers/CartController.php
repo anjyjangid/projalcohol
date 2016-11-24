@@ -226,36 +226,39 @@ class CartController extends Controller
 		if(isset($cart['coupon']) && $cart['coupon']){
 			$couponData = Coupon::where(['_id' => $cart['coupon'], 'status'=>1])->first();
 
-			if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date)>= time()){
+			if(isset($couponData->_id) && $couponData->_id){
+				if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date. ' + 1 days')>= time()){
 
-				unset($couponData->start_date);
-				unset($couponData->end_date);
-				unset($couponData->csvImport);
-				unset($couponData->name);
-				unset($couponData->updated_at);
-				unset($couponData->_id);
-				unset($couponData->status);
-				unset($couponData->coupon_uses);
-				unset($couponData->customer_uses);
+					unset($couponData->start_date);
+					unset($couponData->end_date);
+					unset($couponData->csvImport);
+					unset($couponData->name);
+					unset($couponData->updated_at);
+					unset($couponData->_id);
+					unset($couponData->status);
+					unset($couponData->coupon_uses);
+					unset($couponData->customer_uses);
 
-				if(!empty($couponData->products)){
-					foreach ($couponData->products as $pValue) {
-						$getObj = get_object_vars($pValue);
-						$productList[] = $getObj['$id'];
+					if(!empty($couponData->products)){
+						foreach ($couponData->products as $pValue) {
+							$getObj = get_object_vars($pValue);
+							$productList[] = $getObj['$id'];
+						}
+						$couponData->products = $productList;
 					}
-					$couponData->products = $productList;
+
+					if(!empty($couponData->categories)){
+						foreach ($couponData->categories as $pValue) {
+							$getObj = get_object_vars($pValue);
+							$catList[] = $getObj['$id'];
+						}
+						$couponData->categories = $catList;
+					}			
+
+					$cart['couponData'] = $couponData->toArray();
 				}
-
-				if(!empty($couponData->categories)){
-					foreach ($couponData->categories as $pValue) {
-						$getObj = get_object_vars($pValue);
-						$catList[] = $getObj['$id'];
-					}
-					$couponData->categories = $catList;
-				}			
-
-				$cart['couponData'] = $couponData->toArray();
 			}
+
 		}
 
 		$productsIdInCart = array_merge(array_keys((array)$cart['products']),array_keys((array)$cart['loyalty']));
