@@ -967,8 +967,10 @@ MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", "$r
 	}
 
 	this.storeUser = function(data){
+		this.removeUser();
 		var deferred = $q.defer();
 		store.set('AdminUserData',data);
+		currentUser = data;
 		$rootScope.user = data;
 		$rootScope.user.name = data.first_name+' '+data.last_name;
 		deferred.resolve(data);
@@ -2990,6 +2992,19 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         		authenticate: authenticate,
         	}
         })
+        .state("userLayout.usergroups.permissiondenied", {
+        	url: "/usergroups/permission_denied",
+        	templateUrl: "adminviews/views/usergroups/permission_denied.html",
+        	data:{
+        		pageTitle:'Permission Denied',
+        		breadCrumb:[
+        		//{title:'User Groups','uisref':'userLayout.usergroups.list'}
+        		]
+        	},
+        	resolve: {
+        		authenticate: authenticate,
+        	}
+        })
         ;
 
         function authenticate($q, AdminUserService, $state, $timeout, $location) {
@@ -3135,48 +3150,33 @@ MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "st
 		AdminUserService.chkUser().then(function(userdata){
 			//USER IS LOOGED IN
 
-			//$rootScope.userAccessStates = user_states;
+				var userType = AdminUserService.getUserType(); //"582ef6d094a9b7a2318b4570"
 
-				var userType = AdminUserService.getUserType();
-
-				//var user_group_id = "582ef6d094a9b7a2318b4570"; //userType;
 				if(userType){
-					var hashIndex = current.indexOf('#');
-		    	var oldRoute = current.substr(hashIndex + 2);
-
-		    	console.log($state.current.name, $rootScope.oldRoute);
+					/*var hashIndex = current.indexOf('#');
+		    	var oldRoute = current.substr(hashIndex + 2);*/
 
 		    	if($state.current.name!='userLayout.dashboard'){
 
 		    		if( typeof($rootScope.userAccessStates) !== "undefined" && $rootScope.userAccessStates){
 
-		    			if($state.current.name && typeof($rootScope.oldRoute) !== "undefined" && $rootScope.oldRoute){
-
+		    			//if($state.current.name && typeof($rootScope.oldRoute) !== "undefined" && $rootScope.oldRoute)
+		    			if($state.current.name)
+		    			{
 		    				var mId = $filter('filter')($rootScope.userAccessStates, $state.current.name);
-		    				console.log(mId);
 
 		    				if(typeof(mId[0]) === "undefined" || !mId[0]){
-		    					if($rootScope.oldRoute)
+		    					/*if($rootScope.oldRoute)
 		    						$location.path($rootScope.oldRoute);
 		    					else
-		    						$location.path("/dashboard");
+		    						$location.path("/dashboard");*/
+		    						$location.path("/usergroups/permission_denied");
 		    				}
 		    			}
 		    		}
 					}
 
-					/*
-						Metronic.alert({
-							type: 'danger',
-							icon: 'warning',
-							message: "You can't access this page",
-							container: '#info-message',
-							place: 'prepend',
-							closeInSeconds: 3
-						});
-					*/
-
-					$rootScope.oldRoute = oldRoute;
+					//$rootScope.oldRoute = oldRoute;
 				}
 			
 		},function(){
@@ -3188,8 +3188,6 @@ MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "st
     });
 
 	$rootScope.$state = $state; // state to be accessed from view
-
-
 
 }]);
 

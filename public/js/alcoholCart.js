@@ -2671,12 +2671,17 @@ AlcoholDelivery.service('alcoholCart', [
 			var discountTotal = 0;
 
 			if(!cTotal || (cTotal && cTotal <= cartTotal) ){
-			
-				angular.forEach(productsList, function (item) {
-					//item.setPrice(item);
-					var discountAmt = item.setCoupon(coupon);
-					discountTotal += discountAmt;
-				});
+				if(Object.keys(productsList).length){
+					angular.forEach(productsList, function (item) {
+						//item.setPrice(item);
+						var discountAmt = item.setCoupon(coupon);
+						discountTotal += discountAmt;
+					});
+				}else{
+					if(typeof(this.$cart.couponData) !== "undefined"){
+						this.removeCoupon();
+					}
+				}
 			}
 
 			this.$cart.couponDiscount = discountTotal;
@@ -2694,6 +2699,7 @@ AlcoholDelivery.service('alcoholCart', [
 				/*angular.forEach(productsList, function (item) {
 					item.setPrice(item);
 				});*/
+				
 				delete _self.$cart.couponData;
 
 			}).error(function(){

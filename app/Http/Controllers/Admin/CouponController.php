@@ -308,6 +308,7 @@ class CouponController extends Controller
 						'start_date'=>$line[7],
 						'end_date'=>$line[8],
 						'status'=>$line[9]=='0'?0:1,
+						'discount_status'=>$line[10]=='0'?0:1,
 						'csvImport'=>true
 					];
 
