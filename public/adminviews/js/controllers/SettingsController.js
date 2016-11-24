@@ -43,18 +43,20 @@ MetronicApp.controller('SettingsController',[
 
 MetronicApp.controller('SettingFormController',['$rootScope', '$scope', '$timeout','$http','$state','settingsModel', function($rootScope, $scope, $timeout,$http,$state,settingsModel) {
 
-	$scope.update = function(){
+	$scope.update = function(checkPostal){
 		var data = $scope.settings;
-		$scope.invalidPostalCode = false;
 		$scope.errors = {};
-		for(var i in data.express_delivery.applicablePostalCodes){
-			if(data.express_delivery.applicablePostalCodes[i].length!=2 || Number.isNaN(parseInt(data.express_delivery.applicablePostalCodes[i]))){
-				$scope.invalidPostalCode = true;
+		if(checkPostal){
+			$scope.invalidPostalCode = false;
+			for(var i in data.express_delivery.applicablePostalCodes){
+				if(data.express_delivery.applicablePostalCodes[i].length!=2 || Number.isNaN(parseInt(data.express_delivery.applicablePostalCodes[i]))){
+					$scope.invalidPostalCode = true;
+				}
 			}
-		}
-		if($scope.invalidPostalCode){
-			Metronic.alert({type: 'danger',icon: 'warning',message: 'Please fill proper postal codes.',container: '.portlet-body',place: 'prepend',closeInSeconds: 3});
-			return false;
+			if($scope.invalidPostalCode){
+				Metronic.alert({type: 'danger',icon: 'warning',message: 'Please fill proper postal codes.',container: '.portlet-body',place: 'prepend',closeInSeconds: 3});
+				return false;
+			}
 		}
 		//POST DATA WITH FILES
 		settingsModel.updateSetting($state.$current.data.key,data).success(function(response){

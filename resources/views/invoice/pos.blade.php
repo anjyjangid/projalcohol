@@ -156,8 +156,7 @@
                                 </td>                            
                               </tr>
                             <?php }?>
-                          <?php }?>
-                                                                            
+                          <?php }?>                                                                            
                           <tr class="bottomborder">                      
                             <td colspan="4" align="left" nowrap="nowrap"></td>
                           </tr>
@@ -228,13 +227,16 @@
                     <tr><td>&nbsp;</td></tr>
                     <tr>
                       <td colspan="4">
-                        <?php if($order['delivery']['leaveatdoor'] || $order['delivery']['instructions']){?>
-                        <strong><u>Delivery instructions</u></strong>
+                        <?php if($order['delivery']['leaveatdoor'] || $order['delivery']['instructions'] || $address['instruction']){?>
+                        <strong><u>Delivery/Special Instructions</u></strong>
                         <?php if($order['delivery']['leaveatdoor']){?>
-                        <div>Leave this order at my doorstep.</div>
+                        <div>- Leave this order at my doorstep.</div>
                         <?php }?>
                         <?php if($order['delivery']['instructions']){?>                        
-                        <div>{{ $order['delivery']['instructions'] }}</div>
+                        <div>- {{ $order['delivery']['instructions'] }}</div>
+                        <?php }?>
+                        <?php if($address['instruction']){?>                        
+                        <div>- {{ $address['instruction'] }}</div>
                         <?php }?>
                         <div>&nbsp;</div>
                         <?php }?>

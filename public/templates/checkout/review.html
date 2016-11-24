@@ -207,11 +207,26 @@
 
 										<div class="checkouter-td-right-text">
 											<div class="orhistry2_td2proctext1">{{package._name}}</div>
-											<div class="orhistry2_td2proctext2">{{package.original.description}}</div>
+											<div class="orhistry2_td2proctext2">{{package.original.subTitle}}</div>
 											<div class="orhistry2_td2proctext1">{{package.original.packagePrice | pricingTxt}}</div>
 											<div class="orhistry2_td2proctext2">unit Price</div>
 										</div> 
 									</div>
+
+									<div ng-repeat="(key, packageItem) in package.original.packageItems" ng-if="package.original.type==1">
+										<span class="orhistry2_td2proctext2" >{{packageItem.title}} - </span> 
+										<span class="orhistry2_td2proctext2" ng-if="packageproduct.cartquantity" ng-repeat="packageproduct in packageItem.products">
+											{{packageproduct.cartquantity}}x {{packageproduct.name}}
+										</span>
+									</div>
+
+									<div ng-repeat="(key, packageItem) in package.original.packageItems" ng-if="package.original.type==2">
+										<span class="orhistry2_td2proctext2" >Ingredient # {{$index+1}} - </span> 
+										<span class="orhistry2_td2proctext2" ng-if="packageproduct.cartquantity" ng-repeat="packageproduct in packageItem.products">
+											{{packageproduct.cartquantity}}x {{packageproduct.name}}
+										</span>
+									</div>
+
 								</td>
 								<td></td>
 								<td>

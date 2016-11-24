@@ -1017,7 +1017,7 @@ function ($q, $rootScope, $log, $location) {
     }
 
     function updateStatus() {
-        $rootScope.loading = isLoading();
+        $rootScope.loading = isLoading();        
     }
 
     return {

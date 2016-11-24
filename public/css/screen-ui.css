@@ -2022,7 +2022,7 @@ ui-sref {
 	padding: 10px;
 	
 	display: inline-block;
-    margin: 30px 5px 0px;
+    margin: 30px 0px 0px;
    
 }
 .comboproductitems:hover {
@@ -2226,7 +2226,7 @@ ui-sref {
 .checkoutmiddletable .orhistry2_td2procdtcvr > span {
 	margin-top: 5px;
 	display: inline-block;
-	width: 70px;
+	width: 60px;
 	height: 70px;
 }
 .checkoutmiddletabledeleteimg, .checkoutmiddletabledeleteimg:hover, .checkoutmiddletabledeleteimg:focus {
@@ -2267,7 +2267,7 @@ ui-sref {
 	top: 2px;
 	height: 17px !important;
 }
-.checkoutmiddletable table td {
+.checkoutmiddletable table td:not('.childtd') {
 	vertical-align: middle !important;
 	padding: 20px 8px !important;
 }
@@ -6658,7 +6658,7 @@ button:hover{
 .chekoutstep5-table .checkoutstep5-left-first{
 	padding:0px;
 }
-.chekoutstep5-table table td{
+.chekoutstep5-table table td:not('.childtd'){
 	padding: 14px 10px 13px !important;
 }
 .chekoutstep5-table .checkoutstep5-left-first-left{
@@ -6703,5 +6703,5 @@ button:hover{
 	margin:auto;
 }
 #toastBounds{
-	margin-top:10px;
+	/*margin-top:10px;*/
 }
