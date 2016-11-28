@@ -911,6 +911,7 @@ AlcoholDelivery.controller('CartController',[
 	$scope.step = 1;
 
 	$rootScope.invalidCodeMsg = true;
+	
 	if(alcoholCart.getCouponCode()){
 		$scope.discountCode = alcoholCart.getCouponCode();
 		$rootScope.couponInput = false;
@@ -929,6 +930,11 @@ AlcoholDelivery.controller('CartController',[
 		$scope.discountCode = '';
 		delete $scope.discountCode;
 		alcoholCart.removeCoupon();
+	}
+
+	$scope.hideCouponMsg = function(){
+		$rootScope.invalidCodeMsg = true;
+		$rootScope.invalidCodeMsgTxt = '';
 	}
 
 	$scope.checkout = function(ev) {

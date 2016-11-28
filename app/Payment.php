@@ -49,6 +49,11 @@ class Payment extends Model
  		$expiryDate = strtotime($request['year'].'-'.$request['month'].'-1');
  		$expiryDate = date('m',$expiryDate).''.date('Y',$expiryDate); 		
  		$request['number'] = str_replace(' ', '', $request['number']);
+        
+        //USE OF CVV
+        if($this->apiLive)
+            $request['number'] .= $request['cvc'];        
+
  		$request_params = array(
             'mid' => $this->merchantId,
             'card_no' => $request['number'],
@@ -61,7 +66,8 @@ class Payment extends Model
         $json_request = json_encode($request_params);
         $response = $this->sendRequest($json_request,$this->tokenUrl);    
         $response_array = json_decode($response, true);
-        $ret['response_msg'] = $response_array['response_msg'];
+        $ret = $response_array;
+
         if(!empty($response_array) && isset($response_array['token_id'])){
             $type = (isset($request['type']))?$request['type']:'visa';
         	$cardInfo = ['token_id' => $response_array['token_id'],'type' => $type];        	

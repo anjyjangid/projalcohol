@@ -59,6 +59,11 @@
 	</head>
 
 	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}">		    	    	     	
+    	<div ng-spinner-bar class="page-spinner-bar">
+			<div class="bounce1"></div>
+			<div class="bounce2"></div>
+			<div class="bounce3"></div>
+		</div>		
     	<div class="loader"></div>
     	<div ng-bind="loadingmsg" ng-show="loadingmsg" class="ldmsg" align="center"></div>
     	<div id="wrapper">     	    		    		
@@ -66,8 +71,10 @@
 	        <div id="page-content-wrapper">    	
 	    
              	<top-menu></top-menu>          
-        
+        		
+
 	    		<div ui-view class="ancontainer"></div>
+
 	    		<div id="fb-root"></div>
 				<script>(function(d, s, id) {
 				  var js, fjs = d.getElementsByTagName(s)[0];
@@ -76,6 +83,7 @@
 				  js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.8";
 				  fjs.parentNode.insertBefore(js, fjs);
 				}(document, 'script', 'facebook-jssdk'));</script>
+				<div id="sectionarea" class="hide">
 				<section class="fullwidth social_block" style="padding: 10px 0px;">
 					<div class="container">
 						<div align="center">
@@ -221,9 +229,9 @@
 					</div>
 		        </div>
 				</section>		
+				</div>
 			</div>
-		</div>
-		
+		</div>		
 	</body>
 
 	<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>

@@ -36,31 +36,42 @@
                             </div>
                         </md-radio-button>
                         <div class="addcardform" ng-show="payment.card=='newcard'">
-                            <div class="row">
+                            <!-- <pre>
+                                {{payment|json}}
+                            </pre> -->
+                            <div class="row">                                
                                 <form ng-model="payment.creditCard" name="profileFrm" class="" ng-submit="addnewcard()" validate-card>        
                                     <div class="order-fetching" ng-if="processingcard"></div>
-                                    <div class="col-xs-12">
+                                    <div class="col-md-8">
                                         <div class="form-group" ng:class="{'has-error':errors.number[0]}">
                                             <label>Card Number</label>
-                                            <input type="text" ng-model="payment.creditCard.number" placeholder="Card Number" format-card class="form-control">
+                                            <div class="input-group">
+                                                <input id="cardnumberinput" type="text" ng-model="payment.creditCard.number" placeholder="Card Number" format-card class="form-control">
+                                                <div class="mobileinput input-group-addon cardpreview">
+                                                    <span ng:class="payment.creditCard.type" class="newcardicons pull-left"></span>
+                                                </div>
+                                            </div>
                                             <span class="help-block">{{errors.number[0]}}</span>
                                         </div>
-                                    </div>    
-                                    <!-- <div class="col-xs-4">
+                                    </div>  
+                                    <!-- <div class="col-md-2 selectedcard">                                        
+                                        <span ng:class="payment.creditCard.type" class="newcardicons pull-left"></span>
+                                    </div> -->
+                                    <div class="col-md-4">
                                         <div class="form-group" ng:class="{'has-error':errors.cvc[0]}">
-                                            <label>CVV</label>
-                                            <input type="password" ng-model="payment.creditCard.cvc" placeholder="CVV" class="form-control">
+                                            <label>CCV/CVV</label>
+                                            <input type="password" ng-model="payment.creditCard.cvc" placeholder="CCV/CVV" class="form-control">
                                             <span class="help-block">{{errors.cvc[0]}}</span>
                                         </div>        
-                                    </div> -->
-                                    <div class="col-xs-6">
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
                                         <div class="form-group" ng:class="{'has-error':errors.name[0]}">
                                             <label>Name on card</label>
                                             <input type="text" ng-model="payment.creditCard.name" placeholder="Name on card" class="form-control">
                                             <span class="help-block">{{errors.name[0]}}</span>
                                         </div>
                                     </div>
-                                    <div class="col-xs-3">
+                                    <div class="col-md-3">
                                         <div class="form-group" ng:class="{'has-error':errors.month[0]}">
                                             <label>Exp. date</label>
                                             <select class="form-control" ng-options="y for y in months" ng-model="payment.creditCard.month">
@@ -70,9 +81,9 @@
                                             <span class="help-block">{{errors.month[0]}}</span>
                                         </div>        
                                     </div>
-                                    <div class="col-xs-3">        
+                                    <div class="col-md-3">        
                                         <div class="form-group" ng:class="{'has-error':errors.year[0] || errors.month[0]}">
-                                            <label>&nbsp;</label>
+                                            <label class="hidden-sm hidden-xs">&nbsp;</label>
                                             <select class="form-control" ng-options="y for y in years" ng-model="payment.creditCard.year">
                                                 <option value="">Year</option>
                                             </select>
@@ -80,11 +91,11 @@
                                             <span class="help-block">{{errors.year[0]}}</span>
                                         </div>
                                     </div>           
-                                    <div ng-hide="paymentmode" class="col-xs-12">
+                                    <div ng-hide="paymentmode" class="col-md-12">
                                         <button class="btn" type="submit"> Add </button> 
                                         <button class="btn" type="button" ng-click="payment.card = ''" > Cancel </button> 
                                     </div>
-                                    <div ng-show="paymentmode" class="col-xs-12">
+                                    <div ng-show="paymentmode" class="col-md-12">
                                         <md-checkbox ng-model="payment.savecard" aria-label="leaveatdoor-checkbox">
                                             Save for future payments
                                         </md-checkbox>

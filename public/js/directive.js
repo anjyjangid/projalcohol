@@ -238,6 +238,8 @@ AlcoholDelivery.directive('sideBar', function() {
 		    $scope.visitLink = function(slug){
 		    	$state.go('cmsLayout.pages',{slug:slug,target:'_blank'});
 		    }
+
+		    
 		}
 	};
 })
@@ -1575,4 +1577,45 @@ AlcoholDelivery.directive('sideBar', function() {
 			}
 		}
 	};
-});
+})
+.directive('ngSpinnerBar', ['$rootScope',
+	function($rootScope) {
+		return {
+			link: function(scope, element, attrs) {
+				// by defult hide the spinner bar
+				element.addClass('hide'); // hide spinner bar by default
+
+				
+
+				// display the spinner bar whenever the route changes(the content part started loading)
+				$rootScope.$on('$stateChangeStart', function() {
+					element.removeClass('hide'); // show spinner bar
+					//$('#sectionarea').addClass('hide');
+				});
+
+				// hide the spinner bar on rounte change success(after the content loaded)
+				$rootScope.$on('$stateChangeSuccess', function() {
+					element.addClass('hide'); // hide spinner bar
+					$('#sectionarea').removeClass('hide');
+					//$('body').removeClass('page-on-load'); // remove page loading indicator
+					// auto scorll to page top
+					setTimeout(function () {
+						$('body').scrollTop(); // scroll to the top on content load
+					}, 0);     
+				});
+
+				// handle errors
+				$rootScope.$on('$stateNotFound', function() {
+					element.addClass('hide'); // hide spinner bar
+					$('#sectionarea').removeClass('hide');
+				});
+
+				// handle errors
+				$rootScope.$on('$stateChangeError', function() {
+					element.addClass('hide'); // hide spinner bar
+					$('#sectionarea').removeClass('hide');
+				});
+			}
+		};
+	}
+]);

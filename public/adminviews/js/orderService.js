@@ -159,7 +159,7 @@ MetronicApp
 			_self.setAllSales(sales);
 			
 
-			if(resProduct.product.change!==0){
+			/*if(resProduct.product.change!==0){
 
 				if(resProduct.product.change>0){
 					$rootScope.$broadcast('alcoholCart:updated',{msg:"Items added to cart",quantity:Math.abs(resProduct.product.change)});
@@ -167,7 +167,7 @@ MetronicApp
 					$rootScope.$broadcast('alcoholCart:updated',{msg:"Items removed from cart",quantity:Math.abs(resProduct.product.change)});
 				}
 				
-			}
+			}*/
 
 			_self.validateContainerGift();
 
@@ -177,7 +177,75 @@ MetronicApp
 
 		return defer.promise;
 
-	};	
+	};
+
+	this.setAllProductsRemainingQty = function(data){
+		_self = this;
+		angular.forEach(data, function (value,key) {
+
+			var p = _self.getProductById(key);
+
+			if(p!==false){
+				p.setRemainingQty(value);
+			}
+
+		})
+	}
+
+	this.setAllSales = function (sales) {
+
+		var _self = this;
+		_self.$cart.sales = [];
+		angular.forEach(sales, function (sale,index) {
+
+			var id = sale._id.$id;
+
+			var isExist = _self.getSaleById(id);
+
+			if(isExist === false){
+
+				var saleDetail = "";
+
+				angular.forEach(sale.products, function(sPro){
+
+					var temp = _self.getProductById(sPro._id);
+					
+					sPro.product = {
+						name : temp.product.name,
+						slug : temp.product.slug,
+						chilled : temp.product.chilled,
+						price : temp.unitPrice,
+						image : $filter('getProductThumb')(temp.product.imageFiles)
+					}
+
+					saleDetail = temp.sale;
+				});
+				
+				angular.forEach(sale.action, function(sPro){
+
+					var temp = _self.getProductById(sPro._id);
+
+					sPro.product = {
+						name : temp.product.name,
+						slug : temp.product.slug,
+						chilled : temp.product.chilled,
+						price : temp.unitPrice,
+						image : $filter('getProductThumb')(temp.product.imageFiles)
+					}
+
+				});	
+
+				var newSale = new alcoholCartSale(sale,saleDetail);
+				_self.$cart.sales.push(newSale);
+
+			}else{
+
+			}
+
+
+		});
+
+	}
 
 	this.addGiftCard = function(giftData){
 
@@ -188,9 +256,7 @@ MetronicApp
 			var giftCard = new alcoholCartGiftCard(giftData);
 			this.$cart.giftCards.push(giftCard);
 
-		}
-
-
+		}		
 	};
 	
 	this.addPackage = function (id,detail) {
@@ -215,11 +281,8 @@ MetronicApp
 					};
 
 					products.push(tempPro);
-
 				}
-
 			})
-
 		});		
 
 		$http.post("/cart/package/"+deliveryKey, {
@@ -243,10 +306,9 @@ MetronicApp
 
 	    	_self.$cart.packages.push(newPackage);
 
-	    	$rootScope.$broadcast('alcoholCart:updated',{msg:"Package added to cart",quantity:detail.packageQuantity});
+	    	//$rootScope.$broadcast('alcoholCart:updated',{msg:"Package added to cart",quantity:detail.packageQuantity});
 	    	
-			d.resolve(response);
-			
+			d.resolve(response);			
 		});
 
 		return d.promise;		
@@ -366,6 +428,132 @@ MetronicApp
 		return build;
 	};
 
+	this.getSaleById = function(saleId){
+		
+		var sales = this.getCart().sales;
+		var build = false;
+
+		angular.forEach(sales, function (sale) {
+			if  (sale._id.$id === saleId) {
+				build = sale;
+			}
+		});
+		return build;
+
+	}
+
+	this.validateContainerGift = function(){
+
+		var cGifts = this.getGifts();
+		var proInCartCount = this.getProductsCountInCart();
+		
+		angular.forEach(cGifts,function(cGift,i){
+
+			angular.forEach(cGift.products,function(product,index){
+
+				var key = product.getId();
+				
+				if(typeof proInCartCount[key] !== 'undefined'){
+
+					var qtyInCart = proInCartCount[key];
+					var qtyInGift = product.getQuantity();
+
+					if(qtyInCart > 0){
+
+						if(qtyInCart<qtyInGift){							
+							product.setQuantity(qtyInCart);
+						}
+						proInCartCount[key]-=qtyInGift;
+
+						return;
+					}
+				}
+
+				cGifts[i].products.splice(index, 1)[0]
+
+			})
+
+			if(typeof cGifts[i].products!=="undefined" && cGifts[i].products.length<1){
+				cGifts.splice(i, 1)[0]
+			}
+
+		})
+
+	}
+
+	this.setPromotionsInCart = function(){
+
+		_oCart = this;
+		angular.forEach(promotionsService.$promotions,function(promotion){
+
+			if(_oCart.getPromotionById(promotion._id)!==false ){
+				promotion.inCart = true;
+			}else{
+				promotion.inCart = false;
+			}
+		
+		});	
+
+	}
+
+	this.getProductsCountInCart = function(){
+
+		var products = this.getProducts();
+		var promotions = this.getPromotions();
+		var loyalty = this.getLoyaltyProducts();
+
+		var prosInCart = {};
+
+		angular.forEach(products, function(product, key) {
+			prosInCart[key] = product.getQuantity();
+		});
+	
+		angular.forEach(loyalty, function(product, key) {
+
+			if(typeof prosInCart[key] === 'undefined'){
+
+				prosInCart[key] = product.getQuantity();
+
+			}else{
+
+				prosInCart[key] = parseInt(prosInCart[key]) + parseInt(product.getQuantity());
+
+			}
+		});
+		
+		return prosInCart;
+
+	}
+
+	this.getPromotions = function(){
+		return this.getCart().promotions;
+	};
+
+	this.getLoyaltyProducts = function(){
+		return this.getCart().loyalty || {};
+	};
+
+	this.getPackageByUniqueId = function(packageUniqueId){
+
+		var packages = this.getCart().packages;
+		var build = false;
+		
+		angular.forEach(packages, function (package) {
+			if  (package.getUniqueId() === packageUniqueId) {
+				build = package;
+			}
+		});
+		return build;
+
+	};
+
+	this.getGifts = function(){
+
+			var gifts = this.getCart().gifts || [];
+			
+			return gifts;
+		}
+
 	this.getProducts = function(){
 		return this.getCart().products;
 	};
@@ -449,6 +637,19 @@ MetronicApp
 		angular.forEach(cart.packages, function (package) {
 			total += parseFloat(package.getTotal());
 		});
+
+		angular.forEach(cart.giftCards, function (giftCard) {
+			total += parseFloat(giftCard.getPrice());
+		});
+		
+		angular.forEach(cart.gifts, function (gifts) {
+			total += parseFloat(gifts.gsPrice());
+		});
+
+		angular.forEach(cart.sales, function (sale) {
+			total += parseFloat(sale.getPrice());
+		});
+		
 
 		return +parseFloat(total).toFixed(2);
 
@@ -661,11 +862,11 @@ MetronicApp
 
 .service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToast', 'alcoholCart', function ($rootScope, $q, $http, $mdToast, alcoholCart) {
 
-	this.addUpdateGiftCard = function(gift){
+	this.addUpdateGiftCard = function(gift, cartId){
 
 		var defer = $q.defer();
 
-		$http.post("/cart/giftcard",{
+		$http.post("/cart/giftcard/"+cartId,{
 			type: 'giftcard',
 			id:gift._id,
 			recipient : gift.recipient

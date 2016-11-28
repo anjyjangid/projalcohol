@@ -1,2 +1,2 @@
-coupon code*,name*,type(%),discount*,cart total,max user(UL),max uses(UL),start date*,end date*,Status(1)
-EXAMPLE,skipping this row,% or $,10,,,1,11/17/2016,12/17/2016,0 or 1
+coupon code*,name*,type(%),discount*,cart total,max user(UL),max uses(UL),start date*,end date*,Status(1),Apply Discount On
+EXAMPLE,skipping this row,% or $,10,,,1,11/17/2016,12/17/2016,0 or 1,"0 – sale, 1 – Original Price"

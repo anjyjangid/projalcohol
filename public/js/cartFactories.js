@@ -316,6 +316,8 @@ angular.module('AlcoholCartFactories', [])
 		var hasCategory = 0;
 		var quantity = this.remainingQty;
 		var couponAmount = 0;
+		var couponMessage = '';
+		var returnVal = {};
 
 		if(typeof cProducts !== "undefined"){
 			if (cProducts.length > 0) {
@@ -355,7 +357,16 @@ angular.module('AlcoholCartFactories', [])
 				couponAmount = 0;
 			}
 
-			if(!cDiscountStatus && discountAmount < this.discountedUnitPrice*quantity){
+			/*if(!cDiscountStatus && discountAmount < this.discountedUnitPrice*quantity){
+				var diffAmt = this.discountedUnitPrice*quantity - discountAmount;
+
+				couponAmount = 0;
+				if(diffAmt>0){
+					couponAmount = diffAmt;
+				}
+			}*/
+
+			if(cDiscountStatus==1 && discountAmount < this.discountedUnitPrice*quantity){
 				var diffAmt = this.discountedUnitPrice*quantity - discountAmount;
 
 				couponAmount = 0;
@@ -365,12 +376,19 @@ angular.module('AlcoholCartFactories', [])
 			}
 
 			this.couponDiscount = couponAmount.toFixed(2);
+			this.couponMessage = couponMessage;
 
 			/*this.discountedUnitPrice = parseFloat((discountAmount/quantity).toFixed(2));
 			this.price = discountAmount.toFixed(2);*/
+		}else{
+			couponMessage = 'Coupon is not valid on these products.';
+			this.couponMessage = couponMessage;
 		}
 
-		return couponAmount.toFixed(2);		
+		returnVal.couponMessage = this.couponMessage;
+		returnVal.couponAmount = couponAmount.toFixed(2);
+
+		return returnVal;		
 	}
 
 	item.prototype.getPrice = function(){
