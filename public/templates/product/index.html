@@ -1,4 +1,5 @@
 <div ui-view="featured"></div>
+<div ng:class="{'isloading':loading}"></div>
 <div class="combo_slider combo_sliderProduct">
   <div class="productbeerfiltertopcover">
     <div class="productbeerfiltertoptitle text-capitalize">{{categoriesList[0].cat_title}}</div>
@@ -7,21 +8,30 @@
       <div class="col-xs-12 col-sm-3 col-md-3 text-capitalize" ng-repeat="childCat in categoriesList[0].children"> <a ui-sref="mainLayout.category.subCatProducts({categorySlug:categoriesList[0].slug,subcategorySlug:childCat.slug})" ng-class="{'active':AppController.subCategory==childCat.slug}">{{childCat.cat_title}}</a> </div>
     </div>
   </div>
+  
   <div class="tabbable"> <!-- Only required for left/right tabs -->
     <div class="fullwidth">
       <ul class="nav nav-tabs productcomboul">
         <li ng-class="{active:AppController.toggle=='all'}"><a href="javascript:void(0)" ng-click="$broadcast('filterproduct', {toggle: 'all'})" data-toggle="tab">All</a></li>
         <li ng-class="{active:AppController.toggle=='new'}"><a href="javascript:void(0)" ng-click="$broadcast('filterproduct', {toggle: 'new'})" data-toggle="tab">New</a></li>
-        <li ng-class="{active:AppController.toggle=='in-stock'}"><a href="javascript:void(0)" ng-click="$broadcast('filterproduct', {toggle: 'in-stock'})" data-toggle="tab">In Stock</a></li>
+        <!-- <li ng-class="{active:AppController.toggle=='in-stock'}"><a href="javascript:void(0)" ng-click="$broadcast('filterproduct', {toggle: 'in-stock'})" data-toggle="tab">In Stock</a></li> -->
+        <li ng-class="{active:AppController.toggle=='on-sale'}"><a href="javascript:void(0)" ng-click="$broadcast('filterproduct', {toggle: 'on-sale'})" data-toggle="tab">On Sale</a></li>
         <div class="sortby-divmain">
           <div class="dropdown productdropdownbtn" uib-dropdown>
             <button class="btn dropdown-toggle" type="button" id="dropdownMenu1" uib-dropdown-toggle aria-haspopup="true" aria-expanded="true">
             <span ng-bind="currentSort.label"></span>
-            <span class="caret"></span> </button>
+            <span class="caret"></span> 
+            </button>
             
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" uib-dropdown-menu>
               <li ng-repeat="soptions in sortOptions">
-                <a href="javascript:void(0)" ng-click="$broadcast('filterproduct', {sort: soptions.value})">{{soptions.label}}</a>
+                <!-- <a href="javascript:void(0)" ng-click="filterList(soptions.value)">{{soptions.label}}</a> -->
+                <a href="javascript:;" ng-if="!AppController.subCategory" ng-click="filterList('mainLayout.category.products',{categorySlug:AppController.category,toggle:AppController.filter,sort:soptions.value})">
+                  {{soptions.label}}
+                </a>
+                <a href="javascript:;" ng-if="AppController.subCategory" ng-click="filterList('mainLayout.category.subCatProducts',{categorySlug:AppController.category,subcategorySlug:AppController.subCategory,toggle:AppController.filter,sort:soptions.value})">
+                  {{soptions.label}}
+                </a>                
               </li>
               <!-- <li><a href="javascript:void(0)" ng-click="$broadcast('filterproduct', {sort: 'price_asc'})">Price Ascending</a></li>
               <li><a href="javascript:void(0)" ng-click="$broadcast('filterproduct', {sort: 'price_desc'})">Price Descending</a></li> -->
@@ -29,8 +39,7 @@
           </div>
         </div>
       </ul>
-    </div>    
-    <!-- <div ng:class="{'isloading':loading}"></div> -->
+    </div>           
     <div ui-view="content" class="product-listcover2"> </div>    
   </div>
 </div>

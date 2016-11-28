@@ -163,10 +163,9 @@
 		        	Add this item to my Wish List and we will notify you when it goes on sale
 		        </md-tooltip>
 		    </div>
-		    <div class="pull-right m-top-15" ng-if="product.isLoyalty">
-		    	 <small>
-		    	 <i ng-if="product.loyaltyValueType == 0">{{product.loyaltyValuePoint}} </i> 
-		    	 <i ng-if="product.loyaltyValueType == 1">{{product.loyaltyValuePoint}} + {{product.loyaltyValuePrice | pricingTxt}} </i> 
+		    <div class="pull-right m-top-15" ng-if="product.loyalty">
+		    	 <small>		    	 
+		    	 <i>{{product.getLoyaltyValue()}}</i> 
 		    	 <i>Loyalty Points</i>		    	 
 		    	 </small>
 		    </div>

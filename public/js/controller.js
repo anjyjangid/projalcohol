@@ -148,7 +148,9 @@ AlcoholDelivery.controller('AppController',
 	};
 
 	$scope.sortOptions = [
-		{value:'',label:'Popularity'},
+		//{value:'',label:'Popularity'},
+		{value:'name_asc',label:'Alphabetical A-Z'},
+		{value:'created_asc',label:'Recently Added'},
 		{value:'price_asc',label:'Price - Low to High'},
 		{value:'price_desc',label:'Price - High to Low'},		
 	];
@@ -176,7 +178,7 @@ AlcoholDelivery.controller('ProductsController', [
 
 	if(typeof $stateParams.toggle==="undefined"){$stateParams.toggle="all";}
 
-	$scope.currentSort = $filter('filter')($scope.sortOptions,{value:$stateParams.sort})[0];
+	//$scope.currentSort = $filter('filter')($scope.sortOptions,{value:$stateParams.sort})[0];
 
 	var data = {
 		category:$category,
@@ -238,6 +240,7 @@ AlcoholDelivery.controller('ProductsController', [
 			parent:$category,
 			filter : $stateParams.toggle,
 			sort: $stateParams.sort,
+			productList:1
 
 		}).then(function(response) {
 			
@@ -250,7 +253,7 @@ AlcoholDelivery.controller('ProductsController', [
 
 	$scope.$on('filterproduct', function(event, obj) {
 
-		$state.$current.self.reloadOnSearch = false;
+		$state.$current.self.reloadOnSearch = false;		
 
 		if($scope.AppController.subCategory==''){
 
@@ -284,9 +287,9 @@ AlcoholDelivery.controller('ProductsController', [
 
         	$scope.fetchproducts();
 
-    })
+    });
 
-	$scope.fetchproducts();
+	$scope.fetchproducts();	
 
 }]);
 

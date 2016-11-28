@@ -95,8 +95,9 @@ ui-sref {
 	height: 20px;
 }
 .navbar-default .navbar-nav li a {
-	padding: 10px 0px;
+	padding: 5px 0px;
 	color: #363535;
+	font-size: 12px;
 }
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
 	background-color: transparent;
@@ -141,7 +142,7 @@ ui-sref {
 }
 .modify .dropdown-menu li a {
 	color: #363535;
-	font-size: 13px;
+	font-size: 12px;
 	padding: 8px 8px;
 	line-height: 18px;
 }
@@ -297,7 +298,7 @@ ui-sref {
 	min-height: 100px;
 	min-width: 41px;
 	background-size:24px;
-	cursor: default;
+	cursor: pointer;
 }
 /*.cart_icon:hover {
 	background: #e1b11f url(../images/sprite.png) no-repeat -340px 33px !important;
@@ -2267,7 +2268,7 @@ ui-sref {
 	top: 2px;
 	height: 17px !important;
 }
-.checkoutmiddletable table td:not('.childtd') {
+.checkoutmiddletable table td:not([class]) {
 	vertical-align: middle !important;
 	padding: 20px 8px !important;
 }
@@ -4812,6 +4813,7 @@ ui-sref {
 	-webkit-box-shadow: 0px 29px 60px 0px rgba(86,111,140,0.6);
 	-moz-box-shadow: 0px 29px 60px 0px rgba(86,111,140,0.6);
 	box-shadow: 0px 29px 60px 0px rgba(86,111,140,0.6);
+	cursor: default;
 }
 .currentorderpopup:before {
 	background: #aa00ff none repeat scroll 0 0;
@@ -5424,6 +5426,7 @@ ul.menuulpadding li ul li:hover{
 	display: table;
 	float: right;
 	vertical-align: middle;
+	cursor: pointer;
 }
 .navbar-fixed-top .main-header-botm-cover {
 	height: 100px;
@@ -5456,6 +5459,7 @@ ul.menuulpadding li ul li:hover{
 	float: right;
 	height: 70px;
 	vertical-align: middle;
+	cursor: pointer;
 }
 .navbar-fixed-top.navbar-shrink .main-header-botm-cover {
 	height: 70px;

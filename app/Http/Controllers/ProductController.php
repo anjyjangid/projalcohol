@@ -22,6 +22,8 @@ class ProductController extends Controller
 
 	public function getproduct(Request $request){
 
+		
+
 		$params = $request->all();
 		
 		$products = new Products;
@@ -63,20 +65,19 @@ class ProductController extends Controller
 
 		}
 
+		$sort = 'created_at';
+		$sortDir = 'desc';
 
 		if(isset($params['sort']) && !empty($params['sort'])){
-
-
 			$sortArr = explode("_", $params['sort']);                    
 			$sort = array_pop($sortArr);
 			$sortDir = $sort=='asc'?$sort:'desc';
-			$sort = array_pop($sortArr);
-
-			if($sort=='price'){
-				$products = $products->orderBy($sort, $sortDir);
-			}
+			$sort = array_pop($sortArr);			
 		}
 
+		if($sort=='price' || $sort=='created_at'){			
+			$products = $products->orderBy($sort, $sortDir);
+		}
 
 		if(isset($params['limit']) && !empty($params['limit'])){
 
@@ -177,6 +178,7 @@ class ProductController extends Controller
 
 	public function fetchProducts(Request $request){
 
+		
 		$params = $request->all();
 
 		$product = new Products;
