@@ -264,6 +264,7 @@ angular.module('AlcoholCartFactories', [])
 		price = parseFloat(price.toFixed(2));
 
 		this.unitPrice = price;
+		this.discountedUnitPrice = price;
 
 		if(this.isSingleSale){
 
@@ -282,22 +283,20 @@ angular.module('AlcoholCartFactories', [])
 
 				if(bulk.type==1){
 
-					price = quantity * (originalPrice + (originalPrice * bulk.value/100));
+					price = originalPrice + (originalPrice * bulk.value/100);
 
 				}else{
 
-					price = quantity * (originalPrice + bulk.value);
+					price = originalPrice + bulk.value;
 
 				}
 
-				price = parseFloat(price.toFixed(2));
+				this.discountedUnitPrice = price.toFixed(2);
+
+				price = parseFloat(this.discountedUnitPrice * quantity);
 			}
 
-		}
-
-		if(quantity>0){
-			this.discountedUnitPrice = parseFloat((price/quantity).toFixed(2));	
-		}
+		}	
 
 		return this.price = price;
 
@@ -317,6 +316,8 @@ angular.module('AlcoholCartFactories', [])
 		var hasCategory = 0;
 		var quantity = this.remainingQty;
 		var couponAmount = 0;
+		var couponMessage = '';
+		var returnVal = {};
 
 		if(typeof cProducts !== "undefined"){
 			if (cProducts.length > 0) {
@@ -375,12 +376,19 @@ angular.module('AlcoholCartFactories', [])
 			}
 
 			this.couponDiscount = couponAmount.toFixed(2);
+			this.couponMessage = couponMessage;
 
 			/*this.discountedUnitPrice = parseFloat((discountAmount/quantity).toFixed(2));
 			this.price = discountAmount.toFixed(2);*/
+		}else{
+			couponMessage = 'Coupon is not valid on these products.';
+			this.couponMessage = couponMessage;
 		}
 
-		return couponAmount.toFixed(2);		
+		returnVal.couponMessage = this.couponMessage;
+		returnVal.couponAmount = couponAmount.toFixed(2);
+
+		return returnVal;		
 	}
 
 	item.prototype.getPrice = function(){
@@ -471,7 +479,7 @@ angular.module('AlcoholCartFactories', [])
 
 		if(sale && sale.conditionQuantity==1 && sale.actionProductId.length==0){
 			this.isSingleSale = true;
-		}		
+		}
 	};
 
 	item.prototype.toObject = function() {
@@ -801,7 +809,7 @@ angular.module('AlcoholCartFactories', [])
 		this.setUnitPrice(unitPrice);
 
 		var quantity = this.getQuantity();
-			console.log(quantity);
+
 		price = quantity * unitPrice;
 		price = parseFloat(price.toFixed(2));
 

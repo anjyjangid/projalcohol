@@ -440,9 +440,10 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 				$scope.gift = result;
 				$scope.gift.recipient = {price:$scope.gift.cards[0].value,quantity:1};
 				$scope.processing = false;
+
 				$scope.addCard = function(){
 					$scope.processing = true;
-					alcoholGifting.addUpdateGiftCard($scope.gift).then(
+					alcoholGifting.addUpdateGiftCard($scope.gift, alcoholCart.getCart()._id).then(
 						function(successRes){
 							$mdDialog.cancel();
 						},

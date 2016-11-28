@@ -22,10 +22,10 @@ class SuggestionController extends Controller
 	 */
 	public function getDontmiss(Request $request)
 	{
-
 		$cartKey = $request->session()->get('deliverykey');
 		
 		$cart = Cart::findUpdated($cartKey);
+
 		$productWithCount = $cart->getProductIncartCount();
 		$proInCartIds = array_keys($productWithCount);
 
@@ -41,64 +41,6 @@ class SuggestionController extends Controller
 		$product = new Products;
 
 		$result = $product->fetchDontMissProducts(["id"=>$proInCartIds,"quantity"=>$quantity]);
-
-		// $result = DB::collection('dontmiss')->raw(function($collection) use($quantity,$proInCartIds)
-		// 	{
-		// 			return $collection->aggregate([
-		// 					[
-		// 						'$unwind' => '$products'
-		// 					],
-		// 					[
-		// 						'$match' => [
-		// 							'products' => [
-		// 								'$nin' => $proInCartIds
-		// 							]
-		// 						]
-		// 					],
-		// 					[
-		// 						'$lookup' => [
-
-		// 							'from'=>'products',
-		// 							'localField'=>'products',
-		// 							'foreignField'=>'_id',
-		// 							'as'=>'dontMiss'
-
-		// 						]
-		// 					],
-		// 					[
-		// 						'$unwind' => '$dontMiss'
-		// 					],
-
-		// 					[
-		// 						'$match' => [
-		// 							'dontMiss.status' => 1									
-		// 						]
-		// 					],
-		// 					[
-		// 						'$sample' => [
-		// 							'size' => $quantity
-		// 						] 
-		// 					],
-
-		// 					[
-		// 						'$group' => [
-		// 							'_id' => '$_id',									
-		// 							'dontMiss' => [
-		// 								'$push' => '$dontMiss'
-		// 							]
-		// 						]
-		// 					],
-		// 					// [
-		// 					// 	'$project' => [	
-									
-		// 					// 		'dontMiss._id' => 1,
-									
-		// 					// 	]
-		// 					// ]
-
-							
-		// 			]);
-		// 	});
 
 		if($result['success']){
 

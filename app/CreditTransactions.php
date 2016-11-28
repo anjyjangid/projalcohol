@@ -92,6 +92,18 @@ class CreditTransactions extends Moloquent
 					"user" => new mongoId($user->_id)
 				];
 
+		$totalInAcc = 0;
+		$recentEarned = 0;
+
+		if(isset($user->credits['total'])){
+			$totalInAcc = $user->credits['total'];
+		}
+
+		if(isset($user->credits['recent']['earned'])){
+			$recentEarned = $user->credits['recent']['earned'];
+		}
+
+
 		switch ($type) {
 
 			case 'credit':
@@ -107,26 +119,39 @@ class CreditTransactions extends Moloquent
 						break;
 				}
 
+				$user->__set('credits', [
+
+					'total'=> $totalInAcc + $tData['credit'],
+					'recent' => [
+						'earned'=>$tData['credit']
+					]
+
+				]);
+
 				break;
 			
 			default:
-				# code...
+				switch ($creditObj['method']) {
+					case 'order':
+						$creditObj['shortComment'] = 'Used in order';
+						$creditObj['comment'] = 'You have used this credits to pay for an order';
+						break;
+					
+					default:
+						# code...
+						break;
+				}
+
+				$user->__set('credits', [
+
+					'total'=> $totalInAcc - $tData['credit'],
+					'recent' => [
+						'earned'=>$recentEarned
+					]
+
+				]);
 				break;
 		}
-
-		$totalInAcc = 0;
-		if(isset($user->credits['total'])){
-			$totalInAcc = $user->credits['total'];
-		}
-
-		$user->__set('credits', [
-
-			'total'=> $totalInAcc + $tData['credit'],
-			'recent' => [
-				'earned'=>$tData['credit']
-			]
-
-		]);
 
 		try{
 

@@ -80,12 +80,15 @@
 							</div>
 							<div class="checkoutstep5right-middle-first">
 								<div class="checkoutstep5right-middle-title" >Discount (Non-Chilled) <span class=""><img src="images/questionimg.png"></span></div>
-								<div class="checkboxtotaldiv-text-font-size" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount() | currency:settings.general.currency:2}}</div>
+								<div class="checkboxtotaldiv-text-font-size" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount('nonchilled') | currency:settings.general.currency:2}}</div>
 							</div>
 							<div class="checkoutstep5right-middle-first" ng-show="alcoholCart.getCouponDiscount()">
 								<div class="checkoutstep5right-middle-title" >Coupon Discount <span class=""><img src="images/questionimg.png"></span></div>
 								<div class="checkboxtotaldiv-text-font-size" ng-class="">-{{alcoholCart.getCouponDiscount() | currency:settings.general.currency:2}}</div>
 							</div>
+							<use-credits></use-credits>
+							
+
 						</div>
 						<div class="checkoutstep5right-buttom">
 							<div class="checkoutstep5right-bottom-title">Total</div>
@@ -196,12 +199,12 @@
 
 							<tr ng-repeat="(key, package) in alcoholCart.getPackages()">
 
-								<td width="52%">
-
+								<td width="52%">	
+									<!-- <pre>{{package.original.packageItems|json}}</pre> -->
 									<div class="orhistry2_td2procdtcvr">
 										<span>
-											<a ui-sref="mainLayout.packages({type:package.original.type==2?'cocktail':'party'})">
-												<img err-pro-src="" ng-src="packages/i/{{package.original.coverImage.source}}" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive" />
+											<a ui-sref="mainLayout.packagedetail({type:package.original.type==2?'cocktail':'party',id:package._id,uid:package._uniqueId})">
+												<img err-pro-src="" ng-src="packages/i/{{package.original.coverImage.source}}" src="asset/i/defaultImage.png" alt="" class="img-responsive" />
 											</a>
 										</span>
 
@@ -226,7 +229,11 @@
 											{{packageproduct.cartquantity}}x {{packageproduct.name}}
 										</span>
 									</div>
+<<<<<<< HEAD
+									
+=======
 
+>>>>>>> 896e344432729f62b27f608bfdeb5361e8d4c1db
 								</td>
 								<td></td>
 								<td>

@@ -76,32 +76,30 @@
 				</button>
 			</div> -->
 			
-			<div class="prddetailchilledcover text-noselect" ng-if="product.chilled && (product.quantity>0 || product.outOfStockType == 2)" >
+			<div class="prddetailchilledcover text-noselect" ng-if="product.chilled && (product.quantity>0 || product.outOfStockType == 2)">
 				<div class="prodchilled-btn" ng-class="{'active':product.servechilled}" ng-click="product.servechilled=1">
 					<span>Chilled</span>
 					<div class="-icon"></div>
 				</div>
 				
-				<div class="prodnonchilled-btn" ng-class="{'active':!product.servechilled}" ng-click="product.servechilled=0">
+				<div class="prodnonchilled-btn" ng-class="{'active':!product.servechilled}" ng-click="nonChilledFocus()">
 					<span>Non-Chilled</span>
 					<div class="-icon"></div>
 				</div>
 			</div>
 			<div class="prdquantitybulkcover text-noselect" ng-if="product.quantity>0 || product.outOfStockType == 2">
 				<div class="checkoutmiddlevlauediv">
-						<div class="pardqantitytexthead">Quantity</div>
+					<div class="pardqantitytexthead">Quantity</div>
 
-						<div ng-if="product.servechilled" ng-class="{added:product.qChilled>0}">
-							<input type="text" value="product.qChilled" ng-model="product.qChilled" min="0" mquantity="product.chilledMaxQuantity" ng-touch-spin>
-						</div>
+					<div ng-if="product.servechilled" ng-class="{added:product.qChilled>0}">
+						<input type="text" value="product.qChilled" ng-model="product.qChilled" min="0" mquantity="product.chilledMaxQuantity" ng-touch-spin>
+					</div>
 
-						<div ng-if="!product.servechilled" ng-class="{added:product.qNChilled>0}">
-							<input type="text" value="product.qNChilled" ng-model="product.qNChilled" min="0" mquantity	="product.nonChilledMaxQuantity" ng-touch-spin>
-						</div>
-
-
+					<div ng-if="!product.servechilled" ng-class="{added:product.qNChilled>0}">
+						<input type="text" value="product.qNChilled" ng-model="product.qNChilled" min="0" mquantity	="product.nonChilledMaxQuantity" ng-touch-spin>
+					</div>
 				</div>
-				<div class="prdquantitybulkcoverbulk" ng-if="!viaLoyaltyStore">
+				<div class="prdquantitybulkcoverbulk" ng-if="!viaLoyaltyStore && product.bulkApplicable">
 
 					<div class="pardqantitytexthead">Bulk Quantity Discounts Chart (Piece)</div>
 					
@@ -121,10 +119,10 @@
 				</div>
 			</div>
 			<div class="prddetailtotalamount">Unit Price</div>
-
+			
 			<div class="prddetailpricedicnt" ng-if="!viaLoyaltyStore">
-				{{product.salePrice | pricingTxt}}
-				<span ng-if="product.price != product.salePrice">{{product.price | pricingTxt}}</span>
+				{{product.getCurrentUnitPrice() | pricingTxt}}
+				<span ng-if="product.getCurrentUnitPrice() != product.unitPrice">{{product.unitPrice | pricingTxt}}</span>
 			</div>
 			
 
@@ -141,7 +139,7 @@
 			<div class="prddetailinstock" ng-if="product.quantity<1 && product.outOfStockType == 1">
 				<span class="text-danger">Out of Stock</span>
 			</div>
-
+			
 			<div class="productslide_addbutton">
 				<div class="cartbtn" ng-if="product.quantity>0 || product.outOfStockType == 2">
 					<div class="addcart only-button prod_addtocart" ng-click="addtocart()" ng-if="!product.isInCart || product.getTotalQtyInCart()<1"><span></span>add to cart</div>
@@ -172,4 +170,5 @@
 	</div>
 </div>
 </div>
+
 <div ui-view="alsoboughtthis"></div>

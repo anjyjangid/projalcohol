@@ -506,17 +506,21 @@ md-toast.promo-notqualified-toast:before {
 	}
 
 	.m-top-10{
-		margin-top: 10px
+		margin-top: 20px
 	}
 	.m-top-20{
-		margin-top: 10px
+		margin-top: 20px
 	}
 
 	.m-bottom-10{
-		margin-bottom: 20px
+		margin-bottom: 10px
 	}
 	.m-bottom-20{
 		margin-bottom: 20px
+	}
+
+	.m-bottom-50{
+		margin-bottom: 50px
 	}
 
 
@@ -1220,6 +1224,27 @@ button.detailwishbut{
     font-weight: bold;
     text-decoration: underline;
 }
+
+
+.bootstrap-touchspin.vertical span.addmore-count{
+
+}
+
+.table-responsive{
+	overflow-x:visible;
+}
+
+#credits-input{
+	width: 38px;
+    padding: 2px 5px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    box-shadow: 0px 0px 0px 1px;
+}
+
+.negative-field:before{
+	content: "- ";
+    font-size: 1.3em;
 
 /***
 UI Loading

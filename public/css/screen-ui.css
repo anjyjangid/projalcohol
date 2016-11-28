@@ -2498,7 +2498,8 @@ ui-sref {
 	color: #666666;
 	font-size: 14px;
 	vertical-align: middle;
-	margin-top: 50px;
+	/*margin-top: 50px; Commented by AP*/
+
 	text-transform: uppercase;
 }
 .innerpagemargintop {
