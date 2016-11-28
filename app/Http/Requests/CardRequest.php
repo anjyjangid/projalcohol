@@ -37,7 +37,7 @@ class CardRequest extends Request
 
         return [
             'number' => 'required',
-            //'cvc' => 'required|numeric',            
+            'cvc' => 'required|numeric|digits_between:3,4',            
             'name' => 'required|max:45|min:3',
             'month' => $validMonth,//'required|numeric|between:1,12',
             'year' => $validYear//'required|numeric',            
