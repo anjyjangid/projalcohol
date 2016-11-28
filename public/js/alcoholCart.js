@@ -2669,31 +2669,53 @@ AlcoholDelivery.service('alcoholCart', [
 			var productsList = _self.getProducts();
 			var cartTotal = this.getSubTotal();
 			var discountTotal = 0;
+			var discountMessage = '';
+			this.$cart.couponMessage = '';
 
 			if(!cTotal || (cTotal && cTotal <= cartTotal) ){
 				if(Object.keys(productsList).length){
 					angular.forEach(productsList, function (item) {
-						//item.setPrice(item);
 						var discountAmt = item.setCoupon(coupon);
-						discountTotal += discountAmt;
+						discountTotal += discountAmt.couponAmount;
+
+						if(discountAmt.couponMessage)
+							discountMessage = discountAmt.couponMessage;
 					});
+
+					if(!discountTotal && discountMessage)
+						this.$cart.couponMessage = discountMessage;
+
 				}else{
 					if(typeof(this.$cart.couponData) !== "undefined"){
 						this.removeCoupon();
 					}
 				}
+			}else{
+				this.$cart.couponMessage = 'Minimum amount should be '+cTotal+' to use this coupon.';
 			}
 
+			//if(this.$cart.couponMessage){
+				this.setCouponMessage(this.$cart.couponMessage, 1);
+				/*$rootScope.invalidCodeMsg = false;
+				$rootScope.invalidCodeMsgTxt = this.$cart.couponMessage;*/
+			//}
+
+			//console.log(this.$cart.couponMessage);
 			this.$cart.couponDiscount = discountTotal;
 		}
 
-		this.removeCoupon = function(){
+		this.removeCoupon = function(res){
 			var _self = this;
 			var productsList = this.getProducts();
 
 			$rootScope.couponInput = true;
 			$rootScope.couponOutput = false;
 			this.$cart.couponDiscount = 0;
+			this.$cart.couponMessage = '';
+
+			if(typeof(res) == "undefined"){
+				this.setCouponMessage(this.$cart.couponMessage, 2);
+			}
 
 			$http.post("checkCoupon", {params: {cart: _self.getCartKey(), removeCoupon: 1}}).success(function(result){
 				/*angular.forEach(productsList, function (item) {
@@ -2712,20 +2734,22 @@ AlcoholDelivery.service('alcoholCart', [
 			var _self = this;
 			var cartKey = cartKey;
 			var couponCode = discountCode;
+			if(!UserService.getIfUser())
+				return $rootScope.$broadcast('showLogin');
 
 			$http.post("checkCoupon", {params: {cart: cartKey, coupon: couponCode}}).success(function(result){
 				if(result.errorCode==1 || result.errorCode==2){
 					_self.removeCoupon();
 					$rootScope.invalidCodeMsg = false;
 					$rootScope.invalidCodeMsgTxt = result.msg;
-					$rootScope.couponInput = true;
-					$rootScope.couponOutput = false;
+					//$rootScope.couponInput = true;
+					//$rootScope.couponOutput = false;
 				}else{
 					$rootScope.invalidCodeMsg = true;
 					_self.$cart.couponData = result.coupon;
 					_self.setCouponPrice(result.coupon);
-					$rootScope.couponInput = false;
-					$rootScope.couponOutput = true;
+					/*$rootScope.couponInput = false;
+					$rootScope.couponOutput = true;*/
 				}
 
 			}).error(function(){
@@ -2749,6 +2773,24 @@ AlcoholDelivery.service('alcoholCart', [
 				return this.$cart.couponData.code;
 			}else{
 				return 0;
+			}
+		}
+
+		this.setCouponMessage = function(msg, type){
+			if(typeof(msg) !== "undefined"){
+				if(msg){
+					$rootScope.invalidCodeMsg = false;
+					$rootScope.invalidCodeMsgTxt = msg;
+					this.removeCoupon(1);
+				}else{
+					$rootScope.invalidCodeMsg = true;
+					$rootScope.invalidCodeMsgTxt = '';
+
+					if(type==1){
+						$rootScope.couponInput = false;
+						$rootScope.couponOutput = true;
+					}					
+				}				
 			}
 		}
 

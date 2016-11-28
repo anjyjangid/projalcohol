@@ -66,7 +66,7 @@ class CouponController extends Controller
                     
                     if(isset($couponData1['result'][0]))
                         $userCouponCnt = $couponData1['result'][0]['number'];
-                }                
+                }
                 
                 if((isset($couponData->used_count) && $couponData->coupon_uses && $couponData->coupon_uses <= $couponData->used_count) || ( $userCouponCnt && $couponData->customer_uses <= $userCouponCnt) ){
                     $errorCode = 2;
@@ -84,7 +84,6 @@ class CouponController extends Controller
                     unset($couponData->name);
                     unset($couponData->updated_at);
                     unset($couponData->_id);
-                    unset($couponData->code);
                     unset($couponData->status);
                     unset($couponData->coupon_uses);
                     unset($couponData->customer_uses);
