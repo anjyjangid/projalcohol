@@ -321,8 +321,14 @@ class Products extends Eloquent
 		}
 		
 		$sortParam = [
-			'$sort' => [ 'created_at' => 1 ]
+			'$sort' => [ 'created_at' => -1 ]
 		];
+
+		if(isset($params['productList']) && $params['productList']==1){
+			$sortParam = [
+				'$sort' => [ 'name' => 1 ]
+			];			
+		}
 
 		$skip = [
 			'$skip' => 0
@@ -355,6 +361,10 @@ class Products extends Eloquent
 
 			if($params['filter']=="in-stock"){
 				$match['$match']['quantity'] = ['$gt'=>0];
+			}
+
+			if($params['filter']=="on-sale"){
+				//$match['$match']['quantity'] = ['$gt'=>0];
 			}
 
 		}
@@ -392,11 +402,15 @@ class Products extends Eloquent
 			];
 
 			$sortArr = explode("_", $params['sort']);                    
-			$sort = array_pop($sortArr);
-			$sortDir = $sort=='asc'?1:-1;
-			$sort = array_pop($sortArr);
+			$sortDir = array_pop($sortArr);
+			$sortDir = $sortDir=='asc'?1:-1;
+			$sortby = array_pop($sortArr);
 
-			$sortParam['$sort'][$sort] = (int)$sortDir;
+			if($sortby == 'new'){
+				$sortby = 'created_at';
+			}
+
+			$sortParam['$sort'][$sortby] = (int)$sortDir;
 			
 		}
 
@@ -522,6 +536,8 @@ class Products extends Eloquent
 							'loyaltyValueType' => 1,
 							'loyaltyValuePoint' => 1,
 							'loyaltyValuePrice' => 1,
+							'loyaltyType'=>1,
+							'loyalty'=>1,
 							'imageFiles' => 1,
 							'name' => 1,
 							'slug' => 1,
@@ -668,6 +684,11 @@ class Products extends Eloquent
 					//jprd($query);
 				}
 
+			}
+
+			//NEW SALE FILTER
+			if(isset($params['filter']) && $params['filter']=="on-sale"){
+				$query[]['$match'] = ['proSales' => ['$exists'=>true,'$not' => ['$size'=>0]]];
 			}
 
 			//dd($query);

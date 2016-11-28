@@ -8,8 +8,10 @@
 			<ul class="nav nav-tabs productcomboul">
 				<li ng-class="{active:filter==null}"><a ui-sref="mainLayout.search({keyword:keyword,filter:null})" data-toggle="tab">All</a></li>
 				<li ng-class="{active:filter=='new'}"><a ui-sref="mainLayout.search({keyword:keyword,filter:'new'})" data-toggle="tab">New</a></li>
-				<li ng-class="{active:filter=='in-stock'}"><a ui-sref="mainLayout.search({keyword:keyword,filter:'in-stock'})" data-toggle="tab">In Stock</a></li>      
-
+				<!-- <li ng-class="{active:filter=='in-stock'}"><a ui-sref="mainLayout.search({keyword:keyword,filter:'in-stock'})" data-toggle="tab">In Stock</a></li> -->      
+				<li ng-class="{active:filter=='on-sale'}">
+					<a ui-sref="mainLayout.search({keyword:keyword,filter:'on-sale'})" data-toggle="tab">On Sale</a>
+				</li>
 				<div class="dropdown productdropdownbtn" uib-dropdown>
 				  <button class="btn dropdown-toggle" type="button" id="dropdownMenu1" uib-dropdown-toggle aria-haspopup="true" aria-expanded="true">
 				    <span ng-bind="currentSort.label"></span>

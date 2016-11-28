@@ -123,7 +123,7 @@ AlcoholDelivery.filter('pricingTxt', function(currencyFilter,$rootScope) {
 				freeTxt = false;
 			}
 
-			return (price || freeTxt!==true)?currencyFilter(price,$rootScope.settings.general.currency,2):'free';
+			return (price || freeTxt!==true)?currencyFilter(price,$rootScope.settings.general.currency,2):'FREE';
 		}
 });
 
@@ -420,7 +420,8 @@ AlcoholDelivery.factory('ScrollPagination', function($http,ProductService) {
 		limit:this.take,
 		filter:this.filter,
 		sort:this.sortby,
-		keyword:this.keyword
+		keyword:this.keyword,
+		productList:1
 
 	}).then(function(items){
 
@@ -626,14 +627,37 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						controller:function(sweetAlert,$location,$stateParams){
 
 							var title = '';
-							var type = 'error';
-							var msg = 'Invalid or expired verification link.';
+							var type = 'success';
+							var msg = 'Your email is already verified.';
 							if($stateParams.status == 1){
-								title = 'Congratulation!';
-								type = 'success';
+								title = 'Congratulations!';
+								//type = 'success';
 								msg = 'Your email has been verified successfully, you can login with your registered email & password.';	
 							}							
 
+							sweetAlert.swal({
+								type:type,
+								title: title,
+								text : msg,
+								timer: 0,
+								closeOnConfirm: true
+							});
+
+							$location.url('/').replace();
+
+						}
+				})
+
+				.state('mainLayout.expiredlink', {
+
+						url: "/resetexpired",
+						//templateUrl: "/templates/index/home.html",
+						controller:function(sweetAlert,$location,$stateParams){
+
+							var title = '';
+							var type = 'error';
+							var msg = 'Invalid or expired reset password link.';
+							
 							sweetAlert.swal({
 								type:type,
 								title: title,
@@ -892,13 +916,26 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 							'' : {
 								templateUrl : '/templates/product/index.html',
+								controller:function($scope,$stateParams,$filter,$state,$anchorScroll){
+									
+									$scope.filterList = function(rstate,obj){
+										$state.go(rstate,obj,
+							            {reload: false, location: 'replace'});
+										
+										$scope.currentSort = $filter('filter')($scope.sortOptions,{value:obj.sort})[0];
+									}
+
+									$scope.currentSort = $filter('filter')($scope.sortOptions,{value:$stateParams.sort})[0];
+									
+								},
+								//reloadOnSearch : false,								
 							},
 							'rightPanel' : {
 
 								templateUrl : "/templates/partials/rightBarRecentOrder.html",
 								controller : "RepeatOrderController",
 
-							},
+							},							
 							// 'left' : {
 							// 	templateUrl : 'app/public/left.html',
 							// 	controller : 'DashboardController'
@@ -918,7 +955,8 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							},
 							'featured' : {
 								templateUrl : '/templates/product/featured.html',
-								controller: "ProductsFeaturedController",
+								controller: "ProductsFeaturedController",								
+
 							},
 
 						},
@@ -927,10 +965,10 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 				.state('mainLayout.category.subCatProducts', {
 						url: "/{categorySlug}/{subcategorySlug}?{toggle:string}&{sort:string}",
-						// params: {
-					 //    	toggle: 'all',
-					 //    	sort: 'latest'
-					 //  	},
+						/*params: {
+					    	toggle: 'all',
+					    	sort: 'latest'
+					  	},*/
 						views : {
 
 							'content' : {
@@ -940,6 +978,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							'featured' : {
 								templateUrl : '/templates/product/featured.html',
 								controller: "ProductsFeaturedController",
+								//reloadOnSearch : false,
 							},
 
 						},
@@ -1109,7 +1148,8 @@ AlcoholDelivery.run([
 
 		var regex = new RegExp('^accountLayout', 'i');
 
-		$anchorScroll();
+		if(toState != fromState)
+			$anchorScroll();
 
 		angular.element('#wrapper').removeClass('toggled');
 		angular.element('body').removeClass(' hidden-scroll');

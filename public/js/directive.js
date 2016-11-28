@@ -45,6 +45,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.login = {};
 			$scope.forgot = {};
 			$scope.reset = {};
+			$scope.resend = {};
 
 			$scope.signupSubmit = function() {
 				$scope.signup.errors = {};
@@ -53,7 +54,7 @@ AlcoholDelivery.directive('sideBar', function() {
 					$scope.user.name = response.email;
 	                sweetAlert.swal({
 						type:'success',
-						title: "Congratulation!",
+						title: "Congratulations!",
 						text : "Account Created successfully. Please check your mail to verify your account",
 						timer: 10000
 					});
@@ -239,7 +240,33 @@ AlcoholDelivery.directive('sideBar', function() {
 		    	$state.go('cmsLayout.pages',{slug:slug,target:'_blank'});
 		    }
 
-		    
+		    $scope.resendverification = function(){
+		    	$mdDialog.show({
+					scope: $scope.$new(),
+					controller: function(){},
+					templateUrl: '/templates/partials/resendverification.html',
+					parent: angular.element(document.body),
+					//targetEvent: ev,
+					clickOutsideToClose:true,		
+					fullscreen:true
+				});
+		    }
+
+		    $scope.resendSubmit = function(){
+		    	$scope.resend.errors = {};
+				$http.post('/user/resendverification',$scope.resend).success(function(response){
+					$scope.resend = {};
+					sweetAlert.swal({
+						type:'success',
+						//title: "Congratulation!",
+						text : response.message,
+						timer: 10000
+					});
+	                $mdDialog.hide();
+				}).error(function(data, status, headers) {
+					$scope.resend.errors = data;
+		        });
+		    }
 		}
 	};
 })
@@ -1094,15 +1121,22 @@ AlcoholDelivery.directive('sideBar', function() {
 			};
 
 			$scope.addDays = function(days,mins){
-				var old = days;				
-				//CHECK UNTILL THE DAY IS NOT HOLIDAY OR WEEKDAYOFF
-				while($scope.isHoliday(days)){
-					days+=1;
+				var old = days;		
+				var init = 0;
+				var daystoadd = 0;						
+				//CALCULATE DAYS TO BE ADDED IN CURRENT DATE, SKIPING ALL PUBLIC HOLIDAYS
+				while(init<days){
+					daystoadd+=1;
+					//SKIP THE DAY IF IT IS A HOLIDAY 
+					if(!$scope.isHoliday(daystoadd))
+						init = init + 1;
+
 				}
+				//console.log('DAYS TO ADD : '+daystoadd);
 				var curDate = new Date();
 				curDate.setTime($rootScope.settings.today);
 				curDate.setHours(0,0,0,0);
-				curDate.setDate(curDate.getDate() + days);
+				curDate.setDate(curDate.getDate() + daystoadd);
 				return curDate.setMinutes(mins);
 			};
 

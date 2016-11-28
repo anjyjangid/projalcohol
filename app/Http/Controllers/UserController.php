@@ -35,16 +35,18 @@ class UserController extends Controller
 		];
 
 		$invalidcredentials = false;
+		$reverification = 0;
 
 		// if the credentials are wrong
 		if (!Auth::attempt('user',$credentials)) {
 			$invalidcredentials = 'Username password does not match';            
 		}
 
-		if(Auth::user('user') && Auth::user('user')->verified!=1){
-			$invalidcredentials = 'You need to verify your email. We have sent a verification email, please check your email.';	
-			$email = new Email('welcome');
-			$email->sendEmail(Auth::user('user'));
+		$user = Auth::user('user');
+
+		if($user && $user->verified!=1){
+			$invalidcredentials = 'You need to verify your email. Click below link to resend verification email';
+			$reverification = 1;			
 			Auth::logout();
 		}
 		
@@ -53,12 +55,14 @@ class UserController extends Controller
 			if($invalidcredentials){
 				$validator->errors()->add('email',$invalidcredentials);
 				$validator->errors()->add('password',' ');
+				if($reverification == 1)
+					$validator->errors()->add('reverification',$reverification);
 			}
 
 			return response($validator->errors(), 422);
 		}
 
-		return response(Auth::user('user'), 200);
+		return response($user, 200);
 	}
 
 	/**
@@ -547,5 +551,38 @@ class UserController extends Controller
 	 */
 	public function getCredits(){
 
+	}
+
+	public function postResendverification(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			'email' => 'required|email',			          
+		]);	
+
+		//IF EMAIL is not valid
+		if ($validator->fails()){
+			return response($validator->errors(), 422);
+		}	
+		// setting the credentials array
+		$credentials = [
+			'email' => strtolower($request->input('email')),			
+		];		
+		
+		$user = User::where($credentials)->first();
+		
+		if($user){
+			if($user->verified!=1){
+				$email = new Email('welcome');
+				$email->sendEmail($user);
+				return response(['message' => 'Verification email has been sent successfully. Please check your mail to verify your account'], 200);
+			}else{
+				$validator->errors()->add('email',['The email you have entered is already verified.']);	
+			}
+		}else{			
+			$validator->errors()->add('email',['It seems that the email you have entered is not registered with us.']);
+			
+		}	
+
+		return response($validator->errors(), 422);
 	}
 }

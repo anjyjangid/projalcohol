@@ -522,7 +522,7 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct','CreditC
 
 			type : 0, //0=>store,1=>loyalty,2=>promotion,3=>package
 			filter : null,
-			sort : 'new_asc',
+			sort : 'new_desc',
 			parent : null,
 
 		}
@@ -656,7 +656,7 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct','CreditC
 		var defaultParams = {
 
 			filter : null,
-			sort : 'new_asc',
+			sort : 'new_desc',
 
 		}
 
@@ -1094,6 +1094,8 @@ AlcoholDelivery.factory('AlcoholProduct',[
 		this.loyaltyValueType = p.loyaltyValueType;
 		this.loyaltyValuePoint = p.loyaltyValuePoint;
 		this.loyaltyValuePrice = p.loyaltyValuePrice;
+		this.loyalty = p.loyalty;
+		this.loyaltyType = p.loyaltyType;
 
 	}
 
@@ -1291,20 +1293,30 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 		},1500)
 
-	return defer.promise;
+		return defer.promise;
 		};
 
-		product.prototype.hrefDetail = function(){
-			$state.go('mainLayout.product', {'product': this.slug});
-		};
+	product.prototype.hrefDetail = function(){
+		$state.go('mainLayout.product', {'product': this.slug});
+	};
 
-		product.prototype.setParentDetail = function(p){
-			this.parentCategory = p;
-		};
+	product.prototype.setParentDetail = function(p){
+		this.parentCategory = p;
+	};
 
-		product.prototype.setChildDetail = function(p){
-			this.childCategory = p;
-		};
+	product.prototype.setChildDetail = function(p){
+		this.childCategory = p;
+	};
+
+	product.prototype.getLoyaltyValue = function(){
+		var lv = parseFloat(this.loyalty);
+		if(this.loyaltyType == 0){
+			lv = parseFloat(this.price) * parseFloat(this.loyalty)/100;
+		}
+		return lv.toFixed(2);
+	};
+
+
 
 	return product;
 

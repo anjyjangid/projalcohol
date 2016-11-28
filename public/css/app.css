@@ -86,8 +86,8 @@ button:disabled {
 }
 .fade.ng-enter
 ,.fade.ng-leave {
-	/*-webkit-transition: all 1s ease;
-	transition: all 1s ease;*/    
+	-webkit-transition: all 1s ease;
+	transition: all 1s ease;    
 	-webkit-animation: fadeInUp .5s;
 	animation: fadeInUp .5s;    
 }
@@ -231,11 +231,12 @@ button:disabled {
   background: url('../img/loading.gif');
   background-repeat: no-repeat;
   background-position: center center; 
-  /*height: calc(100vh - 85px);
+  height: calc(100vh - 85px);
   height: -moz-calc(100vh - 85px);
-  height: -webkit-calc(100vh - 85px);*/
-  min-height: 400px;
-  width: 100%;  
+  height: -webkit-calc(100vh - 85px);
+  min-height: 300px;
+  width: 100%; 
+  float: left; 
   /*background: #FFF;
   border:1px solid #dfe2e4;
   border-top:none;
@@ -1396,5 +1397,8 @@ td.childtd {
 
 .childtd table tr:first-child td{
 	border-top: 0 none;
+}
 
+.cart-table td{
+	vertical-align: middle;
 }

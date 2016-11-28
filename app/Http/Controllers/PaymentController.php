@@ -103,8 +103,8 @@ class PaymentController extends Controller
             if($response['success'] == true){
                 return response($response,200);                
             }else{
-                /*return response(['number'=>['Error adding card, please try again or verify your card details.']],422);*/
-                return response(['number'=>[$response['response_msg']]],422);
+                return response(['number'=>['Error adding card, please try again or verify your card details.']],422);
+                //return response(['number'=>[$response['response_msg']]],422);
             }
         }else{
             return response('Unauthorized.', 401);
