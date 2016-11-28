@@ -2025,7 +2025,7 @@ class Cart extends Moloquent
 			$discountExemption+=$order['discount']['nonchilled']['exemption'];
 		}
 
-		if($order['discount']['credits']){
+		if(isset($order['discount']['credits']) && $order['discount']['credits']>0){
 			$discountExemption+=$order['discount']['credits'];
 		}
 

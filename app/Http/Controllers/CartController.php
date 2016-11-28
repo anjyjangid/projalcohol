@@ -1784,7 +1784,7 @@ jprd($product);
 
 		$user = Auth::user('user');
 
-		//$user = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
+		$user = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
 
 		$userObj = User::find($user->_id);
 
@@ -1802,7 +1802,8 @@ jprd($product);
 
 		}
 
-		$cart = Cart::findUpdated($cartKey);
+		//$cart = Cart::findUpdated($cartKey);
+		$cart = Cart::find($cartKey);
 
 		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){
 
@@ -1820,8 +1821,6 @@ jprd($product);
 		}
 
 		$cartArr = $cart->toArray();		
-
-		
 
 		$cartArr['user'] = new MongoId($user->_id);
 
@@ -1841,6 +1840,8 @@ jprd($product);
 			$order = Orders::create($orderObj);
 
 			$cart->delete();
+
+			$process = $order->processGiftCards();			
 
 			$reference = $order->reference;
 
