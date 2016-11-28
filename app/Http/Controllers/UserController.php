@@ -244,13 +244,44 @@ class UserController extends Controller
 
 		$userLogged = Auth::user('user');
 
-		if(!empty($userLogged)){
-			
-			$userLogged = User::find($userLogged->_id);
+		if(!empty($userLogged)){			
+
+			$userLogged = DB::collection('user')->raw(function($collection) use ($userLogged){
+					$output = $collection->aggregate([
+								[
+									'$match' => [
+										'_id' => new mongoId($userLogged->_id),
+										'status' => 1,
+										'verified' => 1
+									]
+								],
+								[
+									'$project' => [
+													'_id' =>1,
+													'email' => 1,
+													'address' => 1,
+													'name' => 1,
+													'password' => 1,
+													'mobile_number' => 1,
+													'loyaltyPoints' => 1,
+													'credits' => '$credits.total',
+												]
+								]
+							]);
+
+						if(isset($output['result'][0])){
+							return $output['result'][0];
+						}
+
+						return false;
+					});
+
 			$userLogged["auth"] = true;
 			$userLogged['loginfb'] = false;
 			if($userLogged['password']=="")
 				$userLogged['loginfb'] = true;
+			unset($userLogged['password']);
+
 		}
 		else{
 			$userLogged = ["auth"=>false];

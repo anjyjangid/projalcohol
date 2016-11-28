@@ -35,6 +35,7 @@
 	  <tbody>
 		<tr ng-repeat="credit in credits">
 		  <td>
+
 			<div class="mainfirsttddiv">
 			  <div class="arowpicdiv"><a href="#"><img src="images/upload_picn.png"/></a></div>
 			  <div class="textfistrdivmain">
@@ -44,8 +45,14 @@
 			  </div>
 			</div>
 		  </td>
-		  <td><div class="fig_txtup">{{credit.credit | pricingTxt}}</div></td>
-		  <td><div class="fig_txtup">-</div></td>
+		  
+			<td ng-if="credit.type==1"><div class="fig_txtup">{{credit.credit | pricingTxt}}</div></td>
+			<td ng-if="credit.type==1"><div class="fig_txtup">-</div></td>
+
+			<td ng-if="credit.type==0"><div class="fig_txtup">-</div></td>
+			<td ng-if="credit.type==0"><div class="fig_txtup">{{credit.credit | pricingTxt}}</div></td>
+
+
 		  <td><div class="cometdivtextpar">{{credit.comment}}</div></td>
 		</tr>
 		

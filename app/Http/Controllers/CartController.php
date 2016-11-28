@@ -186,9 +186,7 @@ class CartController extends Controller
 
 	public function show(Request $request,$id){
 
-		$cart = Cart::findUpdated($id);		
-
-		$user = Auth::user('user');
+		$cart = Cart::findUpdated($id);
 
 		if(empty($cart)){
 
@@ -1267,58 +1265,11 @@ jprd($product);
 		
 		$cartKey = $this->deliverykey;
 
-		// $cart = Cart::where("_id",$cartKey)
-		//			->where("gifts._uid",new mongoId($giftUid))
-		//			->where("gifts.products._id",$productId)
-		//			->where("gifts.products.state",$state)
-		//			->get(['gifts']);
-
-		// ->update(["gifts.products.$._id"=>false]);
-
 		$cart = Cart::where("_id",$cartKey)
 						->where("gifts._uid",new mongoId($giftUid))
 						->where("gifts.products.quantity",3) //$productId
 						->where("gifts.products.state",$state)
 						->update(["gifts.0.products.$.chilled"=>"asdasdasasadads"]);
-
-
-		// $cart = DB::collection('cart')->raw(function($collection)
-		// 	{
-		// 			return $collection->update(array(
-		// 					array(
-		// 							'$project' => array(
-		// 									'name'=>'$name',
-		// 									'quantity'=>'$quantity',
-		// 									'maxQuantity'=>'$maxQuantity',
-		// 									'threshold'=>'$threshold',
-		// 									'sum' => array(
-		// 											'$subtract' => array(
-		// 												'$maxQuantity',
-		// 												'$quantity'
-		// 											)
-		// 									),                      
-		// 							),                  
-		// 					),
-		// 					array(
-		// 							'$sort' => array('sum'=>-1)
-		// 					),
-		// 					array(
-		// 							'$skip' => 0
-		// 					),
-		// 					array(
-		// 							'$limit' => 5
-		// 					)
-		// 					array(
-		// 							'$match' => array(
-		// 								'sum' => 70
-		// 							)
-		// 					)   
-		// 			));
-		// 	});
-
-		
-
-		
 
 		$product = $cart->products[$productId];
 
@@ -1766,16 +1717,10 @@ jprd($product);
 	}
 	
 
-	public function deleteCard($cardUId,Request $request){
-
-		$cartKey = $this->deliverykey;
+	public function deleteCard($cartKey,$cardUId,Request $request){
 
 		$cart = Cart::find($cartKey);
-
-		if(empty($cart)){
-			return response(array("success"=>false,"message"=>"cart not found"),400);
-		}
-
+				
 		$giftCards = $cart->giftCards;
 
 		if(empty($giftCards)){
@@ -1838,7 +1783,8 @@ jprd($product);
 	public function confirmorder(Request $request,$cartKey = null){
 
 		$user = Auth::user('user');
-		$user = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
+
+		//$user = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
 
 		$userObj = User::find($user->_id);
 
@@ -1857,7 +1803,6 @@ jprd($product);
 		}
 
 		$cart = Cart::findUpdated($cartKey);
-		
 
 		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){
 
@@ -1876,33 +1821,49 @@ jprd($product);
 
 		$cartArr = $cart->toArray();		
 
-		//PREPARE PAYMENT FORM DATA
-		if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD'){
-
-			$payment = new Payment();
-			$payment = $payment->prepareform($cartArr,$user);
-			return response($payment,200);
-
-		}
+		
 
 		$cartArr['user'] = new MongoId($user->_id);
 
 		try {
-			
 
 			$orderObj = $cart->cartToOrder($cartKey);
 			
+			//PREPARE PAYMENT FORM DATA
+			if(!$request->isMethod('get') && $orderObj['payment']['method'] == 'CARD' && $orderObj['payment']['total']>0){
+
+				$payment = new Payment();
+				$payment = $payment->prepareform($cartArr,$user);
+				return response($payment,200);
+
+			}
+
 			$order = Orders::create($orderObj);
 
 			$cart->delete();
 
 			$reference = $order->reference;
 
+			if(isset($order->discount['credits']) && $order->discount['credits']>0){
+
+				$creditsUsed = $order->discount['credits'];
+				$creditObj = [
+								"credit"=>$creditsUsed,
+								"method"=>"order",
+								"reference" => $reference,
+								"user" => new mongoId($user->_id),
+								"comment"=> "You have used this credits with an order"
+							];
+
+				CreditTransactions::transaction('debit',$creditObj,$userObj);
+
+			}
+
 			if(isset($order->creditsFromLoyalty) && $order->creditsFromLoyalty>0){
 
 				$creditsFromLoyalty = $order['creditsFromLoyalty'];				
 				
-				$creditObj = [								
+				$creditObj = [
 								"credit"=>$creditsFromLoyalty,
 								"method"=>"order",
 								"reference" => $reference,

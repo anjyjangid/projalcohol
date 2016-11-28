@@ -154,7 +154,11 @@ class Cart extends Moloquent
 
 	public static function findUpdated($id){
 
-		$cart = self::find($id);
+		$user = Auth::user('user');
+		
+		$userId = isset($user->_id)?$user->_id:(string)new mongoId();
+
+		$cart = self::where("user",new mongoId($userId))->where("_id",new mongoId($id))->first();
 
 		if(empty($cart)){
 			return false;
@@ -2019,6 +2023,10 @@ class Cart extends Moloquent
 
 		if($order['discount']['nonchilled']['status']){
 			$discountExemption+=$order['discount']['nonchilled']['exemption'];
+		}
+
+		if($order['discount']['credits']){
+			$discountExemption+=$order['discount']['credits'];
 		}
 
 		$total+=$serviceCharges;

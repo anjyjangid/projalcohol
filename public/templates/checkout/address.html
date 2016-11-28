@@ -1,36 +1,34 @@
-	<div class="shiping_add_box">
+<div class="shiping_add_box">
 	<div class="cover_div_addsboxs">
-	<div class="addressbook-btmpannelcover cartaddresses" delivery="delivery" user-addresses></div>
+		<div class="addressbook-btmpannelcover cartaddresses" delivery="delivery" user-addresses></div>
 	
-	 <div class="specil_intertion_div">
-		<div class="div_specil_intertion_title">Special Instructions</div>
-		<div class="cover_secilinform">
-			
-			<div class="alcohlinputext2" ng:class="{'has-error':errors.contact[0]}">
+		<div class="specil_intertion_div">
+			<div class="div_specil_intertion_title">Special Instructions</div>
+			<div class="cover_secilinform">
+				<div class="alcohlinputext2" ng:class="{'has-error':errors.contact[0]}">
 
-				<label>Contact Number<span>*</span></label>
+					<label>Contact Number<span>*</span></label>
 
-				<div class="input-group">
-					<div class="mobileinput input-group-addon">+65</div>
-					<input type="text" class="form-control alcohalpopuptext2" ng-model="delivery.contact" ng-minlength="8" ng-maxlength="8" maxlength="8">
+					<div class="input-group">
+						<div class="mobileinput input-group-addon">+65</div>
+						<input type="text" class="form-control alcohalpopuptext2" ng-model="delivery.contact" ng-minlength="8" ng-maxlength="8" maxlength="8">
+					</div>
+					<span class="help-block" ng-bind="errors.contact"></span>
+
 				</div>
-				<span class="help-block" ng-bind="errors.contact"></span>
-
+				<div class="alcohlinputextarea12">
+					<label>Any Special Instructions (optional)</label>
+					<textarea class="alcohlinputextareaa2" placeholder="" maxlength="160" ng-model="delivery.instructions"></textarea>
+				</div>
+				<div class="alcohlchekboxdiv12">						 
+					<md-checkbox ng-model="delivery.leaveatdoor" aria-label="leaveatdoor-checkbox"></md-checkbox>
+					<label for="c1"><span></span>Leave this order at my doorstep.</label>
+					<div class="gry_itlic_text">We’ll leave your items at your doorstep without contacting you. To be eligible, we must have unrestricted access to your doorstep.</div>
+				</div>
 			</div>
-		 <div class="alcohlinputextarea12">
-			<label>Any Special Instructions (optional)</label>
-			<textarea class="alcohlinputextareaa2" placeholder="" maxlength="160" ng-model="delivery.instructions"></textarea>
-		 </div>
-		 <div class="alcohlchekboxdiv12">						 
-				 <md-checkbox ng-model="delivery.leaveatdoor" aria-label="leaveatdoor-checkbox"></md-checkbox>
-				 <label for="c1"><span></span>Leave this order at my doorstep.</label>
-				 <div class="gry_itlic_text">We’ll leave your items at your doorstep without contacting you. To be eligible, we must have unrestricted access to your doorstep.</div>
-		 </div>
-		 
 		</div>
-	 </div>
 	</div>
- </div>            
+</div>            
 
 <div class="checkouterlastdiv">
 	<div class="checkouterbackouter2"> 
@@ -38,7 +36,3 @@
 		<button class="checkoutcheckoutnowbutton2" ng-click="addressCheckout()">Next<span><img src="images/leftarrowpic.png"></span></button>
 	</div>
 </div>
-
-<!-- <pre>
-	{{delivery|json}}
-</pre> -->
