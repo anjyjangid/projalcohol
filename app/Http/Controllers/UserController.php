@@ -5,10 +5,14 @@ namespace AlcoholDelivery\Http\Controllers;
 use AlcoholDelivery\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use AlcoholDelivery\Categories as Categories;
+use AlcoholDelivery\Categories;
 use AlcoholDelivery\Email;
-use AlcoholDelivery\User as User;
-use AlcoholDelivery\Orders as Orders;
+use AlcoholDelivery\User;
+use AlcoholDelivery\Orders;
+
+use AlcoholDelivery\CreditTransactions;
+use AlcoholDelivery\ErrorLog;
+
 use mongoId;
 use MongoDate;
 use DB;
@@ -440,16 +444,17 @@ class UserController extends Controller
 
 		$userId = $this->user->_id;
 
-		$orderObj = Orders::where('giftCards._uid',new mongoId($cardKey))->where("giftCards.claimed",null)->first(['user','giftCards']);
+		$orderObj = Orders::where('giftCards._uid',new mongoId($cardKey))
+							->where("giftCards.claimed",null)
+							->first(['user','giftCards','reference']);
 
 		if(empty($orderObj)) {
 
-			$response['message'] = "invalid request";
+			$response['message'] = "Already claimed";
 			return response($response,422);
 		}
 
 		$orderDetail = $orderObj->toArray();
-
 		
 		$giftCards = $orderDetail['giftCards'];
 
@@ -469,32 +474,55 @@ class UserController extends Controller
 		}
 
 		$sender = User::where("_id",$orderDetail['user'])->first(["email","name"]);
-		
-		$creditDetail = [
-							"type" => "credit",
+
+		$reference = $orderDetail['reference'];
+		$giftCredits = (float)((int)$currGiftCard['recipient']['quantity'] * (float)$currGiftCard['recipient']['price']);
+
+		$creditObj = [
+						"credit"=>$giftCredits,
+						"method"=>"giftcard",
+						"reference" => $reference,
+						"user" => new mongoId($this->user->_id),
+						"comment"=> "You have earned this points as gift",
+						"extra" => [
+
 							"unitprice" => (float)$currGiftCard['recipient']['price'],
 							"quantity" => $currGiftCard['recipient']['quantity'],
-							"price" => (float)((int)$currGiftCard['recipient']['quantity'] * (float)$currGiftCard['recipient']['price']),
-
-							"reason" => [
-								"type" => "giftcard",								
-								"sender" => [
+							"sender" => [
 									"_id" => new mongoId($sender['_id']),
 									"email" => $sender['email'],
 									"name" => $sender['name']
 								],
-								"comment" => "You have earned this points as gift"
-							],
-							
-							"recipient" => $currGiftCard['recipient'],
-							"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+						]
+					];
 
-						];
+		
+		// $creditDetail = [
+		// 					"type" => "credit",
+		// 					"unitprice" => (float)$currGiftCard['recipient']['price'],
+		// 					"quantity" => $currGiftCard['recipient']['quantity'],
+		// 					"price" => (float)((int)$currGiftCard['recipient']['quantity'] * (float)$currGiftCard['recipient']['price']),
+
+		// 					"reason" => [
+		// 						"type" => "giftcard",								
+		// 						"sender" => [
+		// 							"_id" => new mongoId($sender['_id']),
+		// 							"email" => $sender['email'],
+		// 							"name" => $sender['name']
+		// 						],
+		// 						"comment" => "You have earned this points as gift"
+		// 					],
+							
+		// 					"recipient" => $currGiftCard['recipient'],
+		// 					"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+
+		// 				];
 
 		try{
 
-			$isUpdated = User::where('_id', $userId)->increment('credits', (float)$creditDetail['price']);
-			$isUpdated = User::where('_id', $userId)->push('creditsSummary', $creditDetail);
+			CreditTransactions::transaction('credit',$creditObj,$this->user->_id);
+			// $isUpdated = User::where('_id', $userId)->increment('credits', (float)$creditDetail['price']);
+			// $isUpdated = User::where('_id', $userId)->push('creditsSummary', $creditDetail);
 
 			$orderObj->giftCards = $giftCards;
 			$orderObj->save();
@@ -504,8 +532,12 @@ class UserController extends Controller
 
 		}catch(\Exception $e){
 
-			$response['message'] = $e->getMessage();
-			return response($response,400);
+			ErrorLog::create('emergency',[
+					'error'=>$e,
+					'message'=> 'Claim Gift Card'
+				]);
+
+			return response(["message"=>'Something went wrong'],400);
 
 		}
 		

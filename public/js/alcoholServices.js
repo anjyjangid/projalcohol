@@ -401,7 +401,7 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 
 }]);
 
-AlcoholDelivery.service("ClaimGiftCard",['$http', '$q', 'UserService', '$mdToast', function ($http, $q, UserService, $mdToast) {
+AlcoholDelivery.service("ClaimGiftCard",['$http', '$q', 'UserService', '$rootScope', function ($http, $q, UserService, $rootScope) {
 
 	return {
 
@@ -423,15 +423,9 @@ AlcoholDelivery.service("ClaimGiftCard",['$http', '$q', 'UserService', '$mdToast
 					);
 				}
 				else{
-					$mdToast.show(
 
-						$mdToast.simple()
-							.textContent("Please login or signup to claim gift card")
-							.highlightAction(false)
-							.position("top right fixed")
-							.hideDelay(4000)
-					);
-
+					$rootScope.$broadcast('alcoholCart:notify',"Please login or signup to claim gift card",3000);
+					
 					reject();
 				}
 
@@ -463,22 +457,15 @@ AlcoholDelivery.service("ClaimGiftCard",['$http', '$q', 'UserService', '$mdToast
 				$http.post("user/giftcard/"+response.token,{}).then(
 
 					function(successRes){
-
-						$mdToast.simple()
-									.textContent("Hurry! credits added to your account")
-									.highlightAction(false)
-									.position("top right fixed")
-									.hideDelay(4000)
+						
+						$rootScope.$broadcast('alcoholWishlist:change', {message:'Hurry! credits added to your account'});
 
 						resolve(successRes.data);
 					},
 					function(rejectRes){
+
 						setTimeout(function() {
-							$mdToast.simple()
-									.textContent("rejectRes.message")
-									.highlightAction(false)
-									.position("top right fixed")
-									.hideDelay(4000)
+							$rootScope.$broadcast('alcoholWishlist:change', {message:rejectRes.data.message});
 						}, 1000);
 
 						reject(rejectRes);

@@ -204,13 +204,19 @@ class Orders extends Moloquent
 
 	}
 
-	public function processGiftCards($order){
+	public function processGiftCards(){
 
-		foreach ($order->giftCards as $key => $card){
+		$user = Users::find($this->user);
+
+		if(!isset($this->giftCards) || !is_array($this->giftCards)){
+			return ['success'=>true];
+		}
+
+		foreach ($this->giftCards as $key => $card){
 
 			$email = new Email('giftcard');
 
-			$data['sender'] = $order->user;
+			$data['sender'] = $user;
 			$data['key'] = $card['_uid'];
 			$data['beneficiary'] = $card['recipient'];
 			

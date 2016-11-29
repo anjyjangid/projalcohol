@@ -39,7 +39,8 @@ class CreditTransactions extends Moloquent
 						'method', // 0=>'Order',1=>
 						'reference',
 						'user',
-						'comment'
+						'comment',
+						'extra' // this contain all extra detail we need to parse this transaction on view side
 					];
     
     public function getCredits($userId,$params = []){
@@ -92,6 +93,10 @@ class CreditTransactions extends Moloquent
 					"user" => new mongoId($user->_id)
 				];
 
+		if(isset($tData['extra'])){
+			$creditObj['extra'] = $tData['extra'];
+		}
+
 		$totalInAcc = 0;
 		$recentEarned = 0;
 
@@ -112,6 +117,10 @@ class CreditTransactions extends Moloquent
 					case 'order':
 						$creditObj['shortComment'] = 'Earned In loyalty Exchange';
 						$creditObj['comment'] = 'You have earned this credits in exchange of loyalty points';
+						break;
+					case 'giftcard':
+						$creditObj['shortComment'] = 'Earned As Gift';
+						$creditObj['comment'] = 'You have earned this credits as gift';
 						break;
 					
 					default:
