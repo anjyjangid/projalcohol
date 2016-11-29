@@ -56,7 +56,7 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::controller('dealer', 'Admin\DealerController');
 
 	Route::resource('category', 'Admin\CategoryController',['only'=>['store','update']]);
-	Route::controller('category', 'Admin\CategoryController');	
+	Route::controller('category', 'Admin\CategoryController');
 
 	Route::resource('setting', 'Admin\SettingController',['only'=>'update']);
 	Route::controller('setting', 'Admin\SettingController');
@@ -208,7 +208,7 @@ Route::group(['prefix' => 'cart'], function () {
 
 	Route::delete('promotion/{key}','CartController@deletePromotion');
 
-	Route::delete('card/{key}','CartController@deleteCard');
+	Route::delete('card/{cartKey}/{key}','CartController@deleteCard');
 
 	Route::delete('sale/{cartKey}/{saleId}','CartController@deleteSale');
 
@@ -232,7 +232,6 @@ Route::group(['prefix' => 'cart'], function () {
 	Route::delete('loyaltycard/{cartKey}/{key}','CartController@deleteLoyaltyCard');
 	
 	Route::put('chilled/loyalty/{cartkey}','CartController@updateLoyaltyChilledStatus');
-	
 
 });
 

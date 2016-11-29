@@ -26,9 +26,6 @@
 								<th width="25%">
 									Name
 								</th>
-								<th width="25%">
-									Status
-								</th>
 								<th width="20%">
 									Action
 								</th>
@@ -37,13 +34,6 @@
 								<td></td>
 								<td>
 									<input type="text" class="form-control form-filter input-sm" name="name">
-								</td>
-								<td>
-									<select name="status" class="form-control form-filter input-sm">
-										<option value="">Select...</option>
-										<option value="1">Active</option>
-										<option value="0">In-active</option>
-									</select>
 								</td>
 								<td>
 									<div class="margin-bottom-5">
@@ -91,15 +81,6 @@
 		            },{	 
 	                	data:"name",
 		                orderable:true
-		            },{
-		            	mData: null,
-		            	mRender: function(data, type, full) {
-	                    	var bClass = (data.status==0)?'warning':'success';
-                        var bLabel = (data.status==0)?'In Active':'Active';
-                        var revertStatus = (data.status==0)?1:0;
-                        return '<a href="javascript:void(0)"><span ng-click=changeStatus("'+data._id.$id+'") id="'+data._id.$id+'" data-table="admin" data-status="'+revertStatus+'" class="label label-sm label-'+bClass+'">'+bLabel+'</span></a>';
-	                    },
-		                orderable:false
 		            },{
 		            	mData: null,
 		            	mRender: function(data, type, full) {

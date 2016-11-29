@@ -401,7 +401,7 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 
 }]);
 
-AlcoholDelivery.service("ClaimGiftCard",['$http', '$q', 'UserService', '$mdToast', function ($http, $q, UserService, $mdToast) {
+AlcoholDelivery.service("ClaimGiftCard",['$http', '$q', 'UserService', '$rootScope', function ($http, $q, UserService, $rootScope) {
 
 	return {
 
@@ -423,15 +423,9 @@ AlcoholDelivery.service("ClaimGiftCard",['$http', '$q', 'UserService', '$mdToast
 					);
 				}
 				else{
-					$mdToast.show(
 
-						$mdToast.simple()
-							.textContent("Please login or signup to claim gift card")
-							.highlightAction(false)
-							.position("top right fixed")
-							.hideDelay(4000)
-					);
-
+					$rootScope.$broadcast('alcoholCart:notify',"Please login or signup to claim gift card",3000);
+					
 					reject();
 				}
 
@@ -463,22 +457,15 @@ AlcoholDelivery.service("ClaimGiftCard",['$http', '$q', 'UserService', '$mdToast
 				$http.post("user/giftcard/"+response.token,{}).then(
 
 					function(successRes){
-
-						$mdToast.simple()
-									.textContent("Hurry! credits added to your account")
-									.highlightAction(false)
-									.position("top right fixed")
-									.hideDelay(4000)
+						
+						$rootScope.$broadcast('alcoholWishlist:change', {message:'Hurry! credits added to your account'});
 
 						resolve(successRes.data);
 					},
 					function(rejectRes){
+
 						setTimeout(function() {
-							$mdToast.simple()
-									.textContent("rejectRes.message")
-									.highlightAction(false)
-									.position("top right fixed")
-									.hideDelay(4000)
+							$rootScope.$broadcast('alcoholWishlist:change', {message:rejectRes.data.message});
 						}, 1000);
 
 						reject(rejectRes);
@@ -535,7 +522,7 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct','CreditC
 
 			type : 0, //0=>store,1=>loyalty,2=>promotion,3=>package
 			filter : null,
-			sort : 'new_asc',
+			sort : 'new_desc',
 			parent : null,
 
 		}
@@ -669,7 +656,7 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct','CreditC
 		var defaultParams = {
 
 			filter : null,
-			sort : 'new_asc',
+			sort : 'new_desc',
 
 		}
 
@@ -728,7 +715,6 @@ AlcoholDelivery.factory('AlcoholProduct',[
 			}
 
 			if(angular.isDefined(product.proSales) && angular.isObject(product.proSales)){
-
 				this.setSale(product);
 			}
 
@@ -813,14 +799,16 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 		var pSale = p.proSales;
 
-
 		this.sale = {
 			quantity : pSale.conditionQuantity,
 			type : pSale.actionType,
 			title : pSale.listingTitle,
 			detailTitle : pSale.detailTitle,
-			actionProductId:pSale.actionProductId			
+			actionProductId:pSale.actionProductId,
+			imageLink:pSale.imageLink			
 		};
+
+		this.sale.isSingle = (pSale.conditionQuantity==1 && pSale.actionProductId.length==0)?true:false;
 
 		if(angular.isDefined(pSale.coverImage))
 			this.sale.coverImage = pSale.coverImage.source;
@@ -840,7 +828,6 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 		var saleProduct = "";
 
-
 		if(angular.isDefined(pSale.saleProduct) && pSale.saleProduct.length){
 			saleProduct = pSale.saleProduct.pop();
 		}else{
@@ -855,6 +842,10 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 	}
 
+	/**
+	*	function to get total quantity is set for current product object
+	*	return SUM of chilled and non chilled quantity
+	**/
 	product.prototype.getTotalQty = function(){
 		return parseInt(this.qChilled) + parseInt(this.qNChilled);
 	}
@@ -869,6 +860,8 @@ AlcoholDelivery.factory('AlcoholProduct',[
 		return 0;
 
 	}
+
+
 
 	product.prototype.setAddBtnState = function(p){
 
@@ -974,6 +967,7 @@ AlcoholDelivery.factory('AlcoholProduct',[
 	}
 
 	product.prototype.setPrice = function(p){
+
 		var _product = this;
 
 		switch(this.type){
@@ -992,6 +986,7 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 			break;
 			default:{
+
 				if (p.price){
 
 					var basePrice = parseFloat(p.price)/1;
@@ -1013,35 +1008,40 @@ AlcoholDelivery.factory('AlcoholProduct',[
 					this.unitPrice = parseFloat(unitPrice.toFixed(2));
 
 					var bulkArr = this.bulkPricing;
-					var quantity = 1;
+					var quantity = this.getTotalQty();
 					var price = unitPrice;
-
-					angular.forEach(bulkArr, function(bulk,key){
-
-						if(bulk.type==1){
-							bulk.price = basePrice + (basePrice * bulk.value/100);
-						}else{
-							bulk.price = basePrice + bulk.value;
-						}
-
-						bulk.price = bulk.price.toFixed(2);
-
-					})
 
 					this.discountedUnitPrice = price/quantity;
 
 					this.price = price;
-					this.salePrice = price;
+					
+					this.bulkApplicable = false;
 
-					//PRODUCT HAS SALE ON ITSELF CONDITION
-					if(this.sale && this.sale.type == 2 && this.sale.quantity == 1 && this.sale.actionProductId.length == 0){
+					if(this.sale && this.sale.isSingle){
+
 						if(this.sale.discount.type == 1){//FIXED AMOUNT SALE
-							this.salePrice = this.price - this.sale.discount.value;
+							this.price = this.price - this.sale.discount.value;
 						}
 						if(this.sale.discount.type == 2){//% AMOUNT SALE
-							this.salePrice = this.price - (this.price * this.sale.discount.value/100);
+							this.price = this.price - (this.price * this.sale.discount.value/100);
 						}
-						this.salePrice = this.salePrice.toFixed(2);
+						this.price = this.price.toFixed(2);
+
+					}else{
+
+						this.bulkApplicable = true;
+						angular.forEach(bulkArr, function(bulk,key){
+
+							if(bulk.type==1){
+								bulk.price = basePrice + (basePrice * bulk.value/100);
+							}else{
+								bulk.price = basePrice + bulk.value;
+							}
+
+							bulk.price = bulk.price.toFixed(2);
+
+						})
+
 					}
 
 				}
@@ -1052,9 +1052,29 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 		}
 
-
-
 	};
+
+	product.prototype.getCurrentUnitPrice = function () {
+
+		var price = this.price;
+
+		if(this.bulkApplicable){
+
+			var qty = this.getTotalQty();
+			var bulkArr = this.bulkPricing;
+
+			angular.forEach(bulkArr, function(bulk){
+
+				if(qty>=bulk.from_qty && qty<=bulk.to_qty){
+
+					price = bulk.price;
+				}
+
+			})
+		}
+		return price.toFixed(2);
+
+	}
 
 	product.prototype.setDefaults = function(p){
 
@@ -1075,6 +1095,8 @@ AlcoholDelivery.factory('AlcoholProduct',[
 		this.loyaltyValueType = p.loyaltyValueType;
 		this.loyaltyValuePoint = p.loyaltyValuePoint;
 		this.loyaltyValuePrice = p.loyaltyValuePrice;
+		this.loyalty = p.loyalty;
+		this.loyaltyType = p.loyaltyType;
 
 	}
 
@@ -1272,20 +1294,30 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 		},1500)
 
-	return defer.promise;
+		return defer.promise;
 		};
 
-		product.prototype.hrefDetail = function(){
-			$state.go('mainLayout.product', {'product': this.slug});
-		};
+	product.prototype.hrefDetail = function(){
+		$state.go('mainLayout.product', {'product': this.slug});
+	};
 
-		product.prototype.setParentDetail = function(p){
-			this.parentCategory = p;
-		};
+	product.prototype.setParentDetail = function(p){
+		this.parentCategory = p;
+	};
 
-		product.prototype.setChildDetail = function(p){
-			this.childCategory = p;
-		};
+	product.prototype.setChildDetail = function(p){
+		this.childCategory = p;
+	};
+
+	product.prototype.getLoyaltyValue = function(){
+		var lv = parseFloat(this.loyalty);
+		if(this.loyaltyType == 0){
+			lv = parseFloat(this.price) * parseFloat(this.loyalty)/100;
+		}
+		return lv.toFixed(2);
+	};
+
+
 
 	return product;
 

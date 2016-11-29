@@ -31,7 +31,7 @@
 							<div class="checkouter-td-right-text">
 								<div class="orhistry2_td2proctext1">{{cartproduct.product.name}}</div>
 								<div class="orhistry2_td2proctext2">{{cartproduct.product.shortDescription}}</div>
-								<div class="orhistry2_td2proctext1">{{cartproduct.unitPrice | pricingTxt}}</div>
+								<div class="orhistry2_td2proctext1">{{cartproduct.discountedUnitPrice | pricingTxt}}</div>
 								<div class="orhistry2_td2proctext2">unit Price</div>
 							</div> 
 
@@ -207,7 +207,7 @@
 						<div class="orderhistry2price">{{giftCard.getPrice() | pricingTxt}}</div>
 					</td>
 					<td> 
-						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removeCard(giftCard._uniqueId,true)"><i class="glyphicon glyphicon-trash"></i></a>
+						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removeCard(giftCard.getUniqueId(),true)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>				
 
@@ -294,10 +294,9 @@
 					</td>
 				</tr>
 
-				<tr ng-repeat="(key, promotion) in alcoholCart.getPromotions()">
+				<tr ng-repeat="(key, promotion) in alcoholCart.getPromotions()" id="promo-{{promotion._price}}">
 
 					<td width="52%">
-
 						<div class="orhistry2_td2procdtcvr">
 							<span>
 								<a ui-sref="mainLayout.product({product:promotion.product.slug})">
@@ -503,7 +502,7 @@
 <div ui-view="promotions"></div>
 <!-- Promotion view Ends-->
 
-<div class="checkouterwantbuttonouter">
+<div class="checkouterwantbuttonouter" ng-if="alcoholCart.deliveryApplicable">
 	<div class="checkouterwantfirst">
 
 		<button class="checkouterwantbutton" ng-class="{selected:cart.delivery.type==0}" ng-click="alcoholCart.setDeliveryType(0)">I want this order Now!</button>
@@ -527,15 +526,15 @@
 			<div class="checkouterexpresstext">{{cart.service.express.charges | pricingTxt}} surcharge applies. <a ui-sref="cmsLayout.terms-conditions">Terms &amp; Conditions</a> applies.</div>	
 		</div>
 	</div>
-</div>
 
-
-
-<div class="checkouterlastdiv">
-	<div class="checkouterwantfirst">
+	<div class="checkouterwantfirst m-top-20 m-bottom-50">
 		<button class="checkouterwantbutton" ng-class="{selected:cart.delivery.type==1}" ng-click="alcoholCart.setDeliveryType(1)">I want this order Later!</button>
 		<span>(Scheduled delivery)</span>
 	</div>
+
+</div>
+
+<div class="checkouterlastdiv">
 	<div class="checkouterbackouter">
 		<a class="checkouterback" ui-sref="mainLayout.index"><span><img src="images/order_history2backpic.png"></span>back to shopping</a>
 		<button class="checkoutcheckoutnowbutton" ng-click="checkout($event)">Checkout Now</button>

@@ -45,6 +45,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.login = {};
 			$scope.forgot = {};
 			$scope.reset = {};
+			$scope.resend = {};
 
 			$scope.signupSubmit = function() {
 				$scope.signup.errors = {};
@@ -53,7 +54,7 @@ AlcoholDelivery.directive('sideBar', function() {
 					$scope.user.name = response.email;
 	                sweetAlert.swal({
 						type:'success',
-						title: "Congratulation!",
+						title: "Congratulations!",
 						text : "Account Created successfully. Please check your mail to verify your account",
 						timer: 10000
 					});
@@ -239,7 +240,33 @@ AlcoholDelivery.directive('sideBar', function() {
 		    	$state.go('cmsLayout.pages',{slug:slug,target:'_blank'});
 		    }
 
-		    
+		    $scope.resendverification = function(){
+		    	$mdDialog.show({
+					scope: $scope.$new(),
+					controller: function(){},
+					templateUrl: '/templates/partials/resendverification.html',
+					parent: angular.element(document.body),
+					//targetEvent: ev,
+					clickOutsideToClose:true,		
+					fullscreen:true
+				});
+		    }
+
+		    $scope.resendSubmit = function(){
+		    	$scope.resend.errors = {};
+				$http.post('/user/resendverification',$scope.resend).success(function(response){
+					$scope.resend = {};
+					sweetAlert.swal({
+						type:'success',
+						//title: "Congratulation!",
+						text : response.message,
+						timer: 10000
+					});
+	                $mdDialog.hide();
+				}).error(function(data, status, headers) {
+					$scope.resend.errors = data;
+		        });
+		    }
 		}
 	};
 })
@@ -398,12 +425,26 @@ AlcoholDelivery.directive('sideBar', function() {
       link: function (scope, element, attr, ctrl) {
         function inputValue(val) {
           if (val) {
+          	
             var digits = val.replace(/[^0-9]/g, '');
+
+			if(attr.max){
+				var max = parseFloat(attr.max);
+				if(digits>max){
+
+					var newVal = ctrl.$modelValue || 0;
+					newVal = newVal.toString();
+					ctrl.$setViewValue(newVal);
+              		ctrl.$render();
+              		return parseInt(newVal,10);
+				}
+			}
 
             if (digits !== val) {
               ctrl.$setViewValue(digits);
               ctrl.$render();
             }
+
             return parseInt(digits,10);
           }
           return undefined;
@@ -412,6 +453,46 @@ AlcoholDelivery.directive('sideBar', function() {
       }
     };
 })
+
+.directive('useCredits',['UserService', 'alcoholCart',function(UserService, alcoholCart){
+	return {
+		restrict :'E',
+		require : '?ngModel',
+		replace : true,
+		link : function ($scope, element, attr, ctrl) {
+
+			var userData = UserService.currentUser;
+			var uCredits = userData.credits;
+			if(!(uCredits>0)){
+				$scope.render = false;
+			}else{
+
+				var cartTotal = alcoholCart.getCartTotal()
+				$scope.render = true;
+
+				if(uCredits>cartTotal){
+					$scope.credit = cartTotal;
+					
+				}else{
+					$scope.credit = uCredits;
+				}
+				$scope.maxCredits = $scope.credit;
+
+			}
+
+			$scope.$watch("credit",function(newVal,oldVal){
+				alcoholCart.setCreditDiscount(newVal);
+			});
+
+		},
+		template : '<div class="checkoutstep5right-middle-first" ng-if="render">'+
+						'<div class="checkoutstep5right-middle-title" >Discount (Credits) <span class=""><img src="images/questionimg.png"></span></div>'+
+						'<div class="checkboxtotaldiv-text-font-size negative-field" ng-class="">'+
+							'<input type="text" id="credits-input" max="{{maxCredits}}" only-digits ng-model="$parent.credit">'+
+						'</div>'+
+					'</div>'
+	}
+}])
 
 .directive('ngTouchSpin', ['$timeout', '$interval', function($timeout, $interval) {
 	'use strict';
@@ -539,7 +620,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			};
 
 		},
-		template:
+		template: 
 		// '<div class="input-group bootstrap-touchspin">'+
 
 		// '	<span class="input-group-addon bootstrap-touchspin-prefix" ng-show="prefix" ng-bind="prefix"></span>'+
@@ -564,6 +645,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		'  </span>' +
 		'  <span class="input-group-addon bootstrap-touchspin-prefix" ng-show="prefix" ng-bind="prefix"></span>' +
 		'  <span class="addmore-count" ng-bind="remainQty || val"></span>'+
+		//'  <input only-digits type="text" class="addmore-count" ng-model="val">'+
 		// '  <input type="text" ng-model="val" class="form-control addmore-count" ng-blur="checkValue()" disabled>' +
 		'  <span class="input-group-addon" ng-show="postfix" ng-bind="postfix"></span>' +
 		'  <span class="input-group-btn" ng-if="verticalButtons">' +
@@ -1039,15 +1121,22 @@ AlcoholDelivery.directive('sideBar', function() {
 			};
 
 			$scope.addDays = function(days,mins){
-				var old = days;				
-				//CHECK UNTILL THE DAY IS NOT HOLIDAY OR WEEKDAYOFF
-				while($scope.isHoliday(days)){
-					days+=1;
+				var old = days;		
+				var init = 0;
+				var daystoadd = 0;						
+				//CALCULATE DAYS TO BE ADDED IN CURRENT DATE, SKIPING ALL PUBLIC HOLIDAYS
+				while(init<days){
+					daystoadd+=1;
+					//SKIP THE DAY IF IT IS A HOLIDAY 
+					if(!$scope.isHoliday(daystoadd))
+						init = init + 1;
+
 				}
+				//console.log('DAYS TO ADD : '+daystoadd);
 				var curDate = new Date();
 				curDate.setTime($rootScope.settings.today);
 				curDate.setHours(0,0,0,0);
-				curDate.setDate(curDate.getDate() + days);
+				curDate.setDate(curDate.getDate() + daystoadd);
 				return curDate.setMinutes(mins);
 			};
 
@@ -1269,8 +1358,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		restrict: 'A',
 		templateUrl: '/templates/account/navLeft.html',
 		controller: function($scope,UserService){
-	    	$scope.user = UserService.getIfUser();
-	    	$scope.user.userCredits = 0;
+	    	$scope.user = UserService.getIfUser();	    	
 		}
 	};
 })

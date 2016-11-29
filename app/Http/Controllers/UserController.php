@@ -5,10 +5,14 @@ namespace AlcoholDelivery\Http\Controllers;
 use AlcoholDelivery\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use AlcoholDelivery\Categories as Categories;
+use AlcoholDelivery\Categories;
 use AlcoholDelivery\Email;
-use AlcoholDelivery\User as User;
-use AlcoholDelivery\Orders as Orders;
+use AlcoholDelivery\User;
+use AlcoholDelivery\Orders;
+
+use AlcoholDelivery\CreditTransactions;
+use AlcoholDelivery\ErrorLog;
+
 use mongoId;
 use MongoDate;
 use DB;
@@ -31,16 +35,18 @@ class UserController extends Controller
 		];
 
 		$invalidcredentials = false;
+		$reverification = 0;
 
 		// if the credentials are wrong
 		if (!Auth::attempt('user',$credentials)) {
 			$invalidcredentials = 'Username password does not match';            
 		}
 
-		if(Auth::user('user') && Auth::user('user')->verified!=1){
-			$invalidcredentials = 'You need to verify your email. We have sent a verification email, please check your email.';	
-			$email = new Email('welcome');
-			$email->sendEmail(Auth::user('user'));
+		$user = Auth::user('user');
+
+		if($user && $user->verified!=1){
+			$invalidcredentials = 'You need to verify your email. Click below link to resend verification email';
+			$reverification = 1;			
 			Auth::logout();
 		}
 		
@@ -49,12 +55,14 @@ class UserController extends Controller
 			if($invalidcredentials){
 				$validator->errors()->add('email',$invalidcredentials);
 				$validator->errors()->add('password',' ');
+				if($reverification == 1)
+					$validator->errors()->add('reverification',$reverification);
 			}
 
 			return response($validator->errors(), 422);
 		}
 
-		return response(Auth::user('user'), 200);
+		return response($user, 200);
 	}
 
 	/**
@@ -244,13 +252,44 @@ class UserController extends Controller
 
 		$userLogged = Auth::user('user');
 
-		if(!empty($userLogged)){
-			
-			$userLogged = User::find($userLogged->_id);
+		if(!empty($userLogged)){			
+
+			$userLogged = DB::collection('user')->raw(function($collection) use ($userLogged){
+					$output = $collection->aggregate([
+								[
+									'$match' => [
+										'_id' => new mongoId($userLogged->_id),
+										'status' => 1,
+										'verified' => 1
+									]
+								],
+								[
+									'$project' => [
+													'_id' =>1,
+													'email' => 1,
+													'address' => 1,
+													'name' => 1,
+													'password' => 1,
+													'mobile_number' => 1,
+													'loyaltyPoints' => 1,
+													'credits' => '$credits.total',
+												]
+								]
+							]);
+
+						if(isset($output['result'][0])){
+							return $output['result'][0];
+						}
+
+						return false;
+					});
+
 			$userLogged["auth"] = true;
 			$userLogged['loginfb'] = false;
 			if($userLogged['password']=="")
 				$userLogged['loginfb'] = true;
+			unset($userLogged['password']);
+
 		}
 		else{
 			$userLogged = ["auth"=>false];
@@ -405,16 +444,17 @@ class UserController extends Controller
 
 		$userId = $this->user->_id;
 
-		$orderObj = Orders::where('giftCards._uid',new mongoId($cardKey))->where("giftCards.claimed",null)->first(['user','giftCards']);
+		$orderObj = Orders::where('giftCards._uid',new mongoId($cardKey))
+							->where("giftCards.claimed",null)
+							->first(['user','giftCards','reference']);
 
 		if(empty($orderObj)) {
 
-			$response['message'] = "invalid request";
+			$response['message'] = "Already claimed";
 			return response($response,422);
 		}
 
 		$orderDetail = $orderObj->toArray();
-
 		
 		$giftCards = $orderDetail['giftCards'];
 
@@ -434,32 +474,55 @@ class UserController extends Controller
 		}
 
 		$sender = User::where("_id",$orderDetail['user'])->first(["email","name"]);
-		
-		$creditDetail = [
-							"type" => "credit",
+
+		$reference = $orderDetail['reference'];
+		$giftCredits = (float)((int)$currGiftCard['recipient']['quantity'] * (float)$currGiftCard['recipient']['price']);
+
+		$creditObj = [
+						"credit"=>$giftCredits,
+						"method"=>"giftcard",
+						"reference" => $reference,
+						"user" => new mongoId($this->user->_id),
+						"comment"=> "You have earned this points as gift",
+						"extra" => [
+
 							"unitprice" => (float)$currGiftCard['recipient']['price'],
 							"quantity" => $currGiftCard['recipient']['quantity'],
-							"price" => (float)((int)$currGiftCard['recipient']['quantity'] * (float)$currGiftCard['recipient']['price']),
-
-							"reason" => [
-								"type" => "giftcard",								
-								"sender" => [
+							"sender" => [
 									"_id" => new mongoId($sender['_id']),
 									"email" => $sender['email'],
 									"name" => $sender['name']
 								],
-								"comment" => "You have earned this points as gift"
-							],
-							
-							"recipient" => $currGiftCard['recipient'],
-							"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+						]
+					];
 
-						];
+		
+		// $creditDetail = [
+		// 					"type" => "credit",
+		// 					"unitprice" => (float)$currGiftCard['recipient']['price'],
+		// 					"quantity" => $currGiftCard['recipient']['quantity'],
+		// 					"price" => (float)((int)$currGiftCard['recipient']['quantity'] * (float)$currGiftCard['recipient']['price']),
+
+		// 					"reason" => [
+		// 						"type" => "giftcard",								
+		// 						"sender" => [
+		// 							"_id" => new mongoId($sender['_id']),
+		// 							"email" => $sender['email'],
+		// 							"name" => $sender['name']
+		// 						],
+		// 						"comment" => "You have earned this points as gift"
+		// 					],
+							
+		// 					"recipient" => $currGiftCard['recipient'],
+		// 					"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+
+		// 				];
 
 		try{
 
-			$isUpdated = User::where('_id', $userId)->increment('credits', (float)$creditDetail['price']);
-			$isUpdated = User::where('_id', $userId)->push('creditsSummary', $creditDetail);
+			CreditTransactions::transaction('credit',$creditObj,$this->user->_id);
+			// $isUpdated = User::where('_id', $userId)->increment('credits', (float)$creditDetail['price']);
+			// $isUpdated = User::where('_id', $userId)->push('creditsSummary', $creditDetail);
 
 			$orderObj->giftCards = $giftCards;
 			$orderObj->save();
@@ -469,8 +532,12 @@ class UserController extends Controller
 
 		}catch(\Exception $e){
 
-			$response['message'] = $e->getMessage();
-			return response($response,400);
+			ErrorLog::create('emergency',[
+					'error'=>$e,
+					'message'=> 'Claim Gift Card'
+				]);
+
+			return response(["message"=>'Something went wrong'],400);
 
 		}
 		
@@ -484,5 +551,38 @@ class UserController extends Controller
 	 */
 	public function getCredits(){
 
+	}
+
+	public function postResendverification(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			'email' => 'required|email',			          
+		]);	
+
+		//IF EMAIL is not valid
+		if ($validator->fails()){
+			return response($validator->errors(), 422);
+		}	
+		// setting the credentials array
+		$credentials = [
+			'email' => strtolower($request->input('email')),			
+		];		
+		
+		$user = User::where($credentials)->first();
+		
+		if($user){
+			if($user->verified!=1){
+				$email = new Email('welcome');
+				$email->sendEmail($user);
+				return response(['message' => 'Verification email has been sent successfully. Please check your mail to verify your account'], 200);
+			}else{
+				$validator->errors()->add('email',['The email you have entered is already verified.']);	
+			}
+		}else{			
+			$validator->errors()->add('email',['It seems that the email you have entered is not registered with us.']);
+			
+		}	
+
+		return response($validator->errors(), 422);
 	}
 }
