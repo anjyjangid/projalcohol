@@ -109,6 +109,8 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 
 	Route::post('address/{id}','AddressController@store');
 	// Route::controller('address', 'AddressController');
+
+	Route::post('checkCoupon','CouponController@checkCoupon');
 });
 
 Route::group(['prefix' => 'admin'], function () {					

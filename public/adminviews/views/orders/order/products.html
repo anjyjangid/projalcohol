@@ -7,13 +7,13 @@
 <a href="#" ng-click="package($event)" class="icon-btn">
 	<i class="fa fa-barcode"></i>
 	<div>Package</div>
-	<span class="badge badge-success">0</span>
+	<span class="badge badge-success" ng-bind="alcoholCart.getTotalPackages()"></span>
 </a>
 
 <a href="#" ng-click="giftcard($event,key)"  class="icon-btn">
 	<i class="fa fa-plus"></i>
 	<div>Gift Cards</div>
-	<span class="badge badge-success">0</span>
+	<span class="badge badge-success" ng-bind="alcoholCart.getTotalGifts()"></span>
 </a>
 
 <div>
@@ -24,19 +24,21 @@
 				<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0">
 
 					<td width="40%">
-
-						<span ng-if="cartproduct.isAvail()" class="cart-alert">!
-						<md-tooltip class="cart-alert-tooltip" md-direction="top">Sorry! This item is either out of stock, or unavailable for the quantity or delivery time selected.</md-tooltip>
-						</span>
-
 						<div>
-							<span class="cursor-pointer">
-								<a ui-sref="mainLayout.product({product:cartproduct.product.slug})" title="View Product">
-									<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="" width="40"/>
-								</a>
+							<span ng-if="cartproduct.isAvail()" class="cart-alert">!
+							<md-tooltip class="cart-alert-tooltip" md-direction="top">Sorry! This item is either out of stock, or unavailable for the quantity or delivery time selected.</md-tooltip>
 							</span>
-
-							<div>
+						</div>
+						
+						<div>
+							<div class="col-md-2">
+								<span class="cursor-pointer">
+									<a ui-sref="mainLayout.product({product:cartproduct.product.slug})" title="View Product">
+										<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="" width="40"/>
+									</a>
+								</span>
+							</div>
+							<div class="col-md-10">
 								<div><b>{{cartproduct.product.name}}</b></div>
 								<div>{{cartproduct.product.shortDescription}}</div>
 								<div><b>{{cartproduct.unitPrice | pricingTxt}}</b></div>
@@ -88,17 +90,46 @@
 					<td>
 						<div>Price : <b>{{giftCard.recipient.price * giftCard.recipient.quantity | pricingTxt}}</b></div>
 					</td>
-					<td>						
+					<td>
 						<a href="#" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removeCard(giftCard.getUniqueId(),true)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>
+				<tr ng-repeat-end></tr>
 
+				<tr ng-repeat="(key, package) in alcoholCart.getPackages()">
+
+					<td width="52%">
+						<div class="orhistry2_td2procdtcvr">
+							<div class="col-md-2">
+								<span>
+									<a ui-sref="mainLayout.packagedetail({type:package.original.type==2?'cocktail':'party',id:package._id,uid:package._uniqueId})">
+										<img err-pro-src="" ng-src="packages/i/{{package.original.coverImage.source}}" src="asset/i/defaultImage.png" alt="" class="img-responsive" />
+									</a>
+								</span>
+							</div>
+
+							<div class="col-md-10">
+								<div>{{package._name}}</div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div><b></b></div>
+					</td>
+					<td>
+						
+					</td>
+					<td>
+						<div><b>{{package._price | pricingTxt}}</b></div>
+					</td>
+					<td>
+						<a href="#" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removePackage(package._uniqueId,true)"><i class="glyphicon glyphicon-trash"></i></a>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 	</div>
 </div>
-
-
 
 <!-- Product Modal -->
 <div id="productModal" class="modal fade" role="dialog">

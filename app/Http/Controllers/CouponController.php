@@ -44,8 +44,19 @@ class CouponController extends Controller
         }
 
         if(isset($couponData->_id)){
-            $user = Auth::user('user');
-            $userId = new MongoId($user->_id);
+            $userId = '';
+
+            if(isset($params['cart'])){
+                $cart = Cart::find($params['cart']);
+
+                if($cart->user)
+                    $userId = $cart->user;
+            }
+
+            if(!$userId){
+                $user = Auth::user('user');
+                $userId = new MongoId($user->_id);
+            }
 
             if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date. ' + 1 days')>= time()){
                 
