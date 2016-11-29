@@ -227,7 +227,7 @@
                     <tr><td>&nbsp;</td></tr>
                     <tr>
                       <td colspan="4">
-                        <?php if($order['delivery']['leaveatdoor'] || $order['delivery']['instructions'] || $address['instruction']){?>
+                        <?php if($order['delivery']['leaveatdoor'] || $order['delivery']['instructions'] || isset($address['instruction'])){?>
                         <strong><u>Delivery/Special Instructions</u></strong>
                         <?php if($order['delivery']['leaveatdoor']){?>
                         <div>- Leave this order at my doorstep.</div>
@@ -235,7 +235,7 @@
                         <?php if($order['delivery']['instructions']){?>                        
                         <div>- {{ $order['delivery']['instructions'] }}</div>
                         <?php }?>
-                        <?php if($address['instruction']){?>                        
+                        <?php if(isset($address['instruction'])){?>                        
                         <div>- {{ $address['instruction'] }}</div>
                         <?php }?>
                         <div>&nbsp;</div>

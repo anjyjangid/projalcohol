@@ -818,6 +818,7 @@ AlcoholDelivery.factory('AlcoholProduct',[
 			title : pSale.listingTitle,
 			detailTitle : pSale.detailTitle,
 			actionProductId:pSale.actionProductId,
+			imageLink:pSale.imageLink			
 		};
 
 		this.sale.isSingle = (pSale.conditionQuantity==1 && pSale.actionProductId.length==0)?true:false;

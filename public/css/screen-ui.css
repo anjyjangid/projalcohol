@@ -6663,7 +6663,7 @@ button:hover{
 .chekoutstep5-table .checkoutstep5-left-first{
 	padding:0px;
 }
-.chekoutstep5-table table td:not('.childtd'){
+.chekoutstep5-table table td:not([class="childtd"]){
 	padding: 14px 10px 13px !important;
 }
 .chekoutstep5-table .checkoutstep5-left-first-left{
@@ -6709,4 +6709,12 @@ button:hover{
 }
 #toastBounds{
 	/*margin-top:10px;*/
+}
+td.childtd{
+	padding:0px !important;
+	border-bottom:1px solid #ddd !important;
+	border-top:0 none !important;
+}
+td.childtd:last-child{
+	border: 0 none !important;
 }

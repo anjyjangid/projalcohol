@@ -1983,6 +1983,7 @@ class Cart extends Moloquent
 			$order['delivery']['deliveryDate'] = date('Y-m-d',$order['timeslot']['datekey']);
 			$order['delivery']['deliveryDateTime'] = date('Y-m-d H:i:s',$order['timeslot']['datekey']);
 			$order['delivery']['deliveryTimeRange'] = $order['timeslot']['slotslug'];
+			$order['delivery']['deliveryDateObj'] = new MongoDate($order['timeslot']['datekey']);
 		}else{
 
 			$orderDateTime = strtotime('+60 minutes',$created_at);
@@ -1993,6 +1994,7 @@ class Cart extends Moloquent
 			$order['delivery']['deliveryDate'] = date('Y-m-d',$orderDateTime);
 			$order['delivery']['deliveryDateTime'] = date('Y-m-d H:i:s',$orderDateTime);
 			$order['delivery']['deliveryTimeRange'] = '';
+			$order['delivery']['deliveryDateObj'] = new MongoDate($orderDateTime);
 		}
 		
 		$lpEarned = $this->setLoyaltyPointEarned();

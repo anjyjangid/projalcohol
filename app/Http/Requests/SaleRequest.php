@@ -31,7 +31,8 @@ class SaleRequest extends Request
         $rules = [
             'type' => 'required',
             'listingTitle' => 'required|max:10',
-            'detailTitle' => 'required|max:200',            
+            'detailTitle' => 'required|max:200',
+            'imageLink' => 'url'
         ];
 
         if(empty($input['saleProductId']) && empty($input['saleCategoryId'])){

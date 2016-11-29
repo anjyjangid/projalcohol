@@ -75,6 +75,15 @@
 								</div>
 							</div>											
 
+							<div class="form-group" ng:class="{'has-error':errors.imageLink[0]}">
+								<label class="col-md-2 control-label">Image Link: <!-- <span class="required">
+								* </span> -->
+								</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control" ng-model="sale.imageLink" placeholder="http://example.com">
+									<span class="help-block" ng-bind="errors.imageLink[0]"></span>
+								</div>
+							</div>
 						</div>
 					</tab>
 					<tab>
