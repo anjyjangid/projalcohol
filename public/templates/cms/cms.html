@@ -2,7 +2,7 @@
 	<h3>{{cmsData.title}}</h3>				
 	<div class="row">
 		<div class="{{(cmsData.hasForm)?'col-md-6':'col-md-12'}}">	
-			<div ng-bind-html="cmsData.content"></div>
+			<div ng-bind-html="trustedHtml(cmsData.content)"></div>
 		</div>
 		<div class="col-md-6" ng-if="cmsData.hasForm">
 			<form ng-submit="submitQuery();" ng-hide="querySent">

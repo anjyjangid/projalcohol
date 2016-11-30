@@ -11,6 +11,10 @@
  */
 
 /*TO VIEW MAIL TEMPLATE*/
+Route::get('_escaped_fragment_={categoryslug?}{productslug?}',function($categoryslug = '', $productslug = ''){
+	return 'working';
+});
+
 Route::get('/printjob/{reference}', 'OrderController@getOrderdetail');
 
 Route::get('/morphing', function(){
@@ -317,43 +321,29 @@ Route::resource('gift', 'GiftController',['only'=>['show']]);
 
 Route::controller('payment', 'PaymentController');
 
-//CUSTOM REDIRECTS
-
-/*Route::get('/events', function(){
-	return redirect('/#/site/event-planner');
-});
-
-Route::get('/menu', function(){
-	return redirect('/#/beer');
-});
-
-Route::get('/how_to_order', function(){
-	return redirect('/#/site/terms-of-service');
-});*/
-
-/*Route::any( '{catchall}', function ( $page ) {
-    return view('frontend');
-} )->where('catchall', '(.*)');*/
-
 //ROUTE TO CATCH OLD URLS HAIVING UNDERSCORE IN IT
+
 Route::get( '{categoryslug}/{productslug?}', function ( $categoryslug, $productslug = '') {
+	
+	$fixPagesLinks = [
+		'events' => 'site/event-planner',
+		'menu' => 'beer',
+		'how_to_order' => 'site/terms-of-service'
+	];
+	
 	$route = '';	
-	if($categoryslug == 'events'){
-		$route = 'site/event-planner';
+
+	if(isset($fixPagesLinks[$categoryslug])){
+		$route = $fixPagesLinks[$categoryslug];
 	}
-	if($categoryslug == 'menu'){
-		$route = 'beer';
-	}
-	if($categoryslug == 'how_to_order'){
-		$route = 'site/terms-of-service';
-	}
+
 	if($categoryslug && $route==''){
 		$s = str_replace('_', '-', $categoryslug);
 	    $s = preg_replace('/[^A-Za-z0-9\-]/', '', $s);
 	    $s = trim(preg_replace('/-+/', '-', $s));
 		$s = strtolower($s);
 		$route = $s;
-	}    
+	}
     if($productslug!=''){
 	    $s = str_replace('_', '-', $productslug);
 	    $s = preg_replace('/[^A-Za-z0-9\-]/', '', $s);
@@ -361,5 +351,9 @@ Route::get( '{categoryslug}/{productslug?}', function ( $categoryslug, $products
 		$s = strtolower($s);    		
 		$route = 'product/'.$s;
 	}
-	return redirect('/#/'.$route);	
+	
+	return redirect('/#/'.$route,301);
+
 } )->where(['categoryslug'=>'^[a-zA-Z0-9_]*$','productslug'=>'^[a-zA-Z0-9_]*$']);
+
+
