@@ -1,14 +1,21 @@
 <div class="checkoutstepthree_showdate">Review Cart</div>
 <div class="row">
 	<div class="col-sm-6">
-		Coupon Code :
+		<div class="form-group form-inline" ng-show="couponInput">
+		   <input type="text" class="form-control" name="discountCode" ng-model="discountCode" value="{{alcoholCart.getCouponCode()}}" placeholder="Coupon Code" ng-focus="hideCouponMsg()" >
+		   <span class="form-inline">
+		        <button ng-click="checkCoupon(discountCode)" class="btn btn-success">Apply</button>
+		   </span>
+		</div>
+		<div class="form-group" ng-show="couponOutput">
+			<span>"{{discountCode}}" Coupon Applied </span>  <button ng-click="removeCoupon()" class="btn btn-success">Remove</button>
+		</div>
+		<div class="error text-danger" ng-hide="invalidCodeMsg">{{invalidCodeMsgTxt}}</div>
 		
 	</div>
 	<div class="col-sm-6">
 		<div class="checkboxtotaldiv">
-			
 			<div class="checkboxtotaldiv-middle">
-
 				<div class="checkboxtotaldiv-middle-first">
 					<div class="checkboxtotaldiv-title">Subtotal</div>
 					<div class="checkboxtotaldiv-text">{{alcoholCart.getSubTotal() | pricingTxt}}</div>
@@ -33,6 +40,14 @@
 
 					<div class="checkboxtotaldiv-text" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount() | pricingTxt}}</div>
 				</div>
+				<div class="checkboxtotaldiv-middle-first" ng-show="alcoholCart.getCouponDiscount()">
+				
+				<div class="checkboxtotaldiv-title">Coupon Discount <span class="">
+					<img src="images/questionimg.png"></span>
+				</div>
+
+				<div class="checkboxtotaldiv-text" ng-class="">-{{alcoholCart.getCouponDiscount() | pricingTxt}}</div>
+			</div>
 			</div>
 			<div class="checkboxtotaldiv-buttom">
 				<div class="checkboxtotaldiv-title">Total</div>

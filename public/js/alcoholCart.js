@@ -1352,8 +1352,7 @@ AlcoholDelivery.service('alcoholCart', [
 				_self.removeNonEligiblePromotions(totalWithoutPromotion);				
 				_self.resetAsPerRule();
 
-
-				if(typeof(_self.$cart.couponData) !== "undefined"){
+				if(typeof(_self.$cart.couponData) !== "undefined" && UserService.getIfUser() ){
 					_self.setCouponPrice(_self.$cart.couponData);
 				}
 
@@ -2787,13 +2786,8 @@ AlcoholDelivery.service('alcoholCart', [
 				this.$cart.couponMessage = 'Minimum amount should be '+cTotal+' to use this coupon.';
 			}
 
-			//if(this.$cart.couponMessage){
-				this.setCouponMessage(this.$cart.couponMessage, 1);
-				/*$rootScope.invalidCodeMsg = false;
-				$rootScope.invalidCodeMsgTxt = this.$cart.couponMessage;*/
-			//}
+			this.setCouponMessage(this.$cart.couponMessage, 1);
 
-			//console.log(this.$cart.couponMessage);
 			this.$cart.couponDiscount = discountTotal;
 		}
 
@@ -2841,8 +2835,6 @@ AlcoholDelivery.service('alcoholCart', [
 					$rootScope.invalidCodeMsg = true;
 					_self.$cart.couponData = result.coupon;
 					_self.setCouponPrice(result.coupon);
-					/*$rootScope.couponInput = false;
-					$rootScope.couponOutput = true;*/
 				}
 
 			}).error(function(){
