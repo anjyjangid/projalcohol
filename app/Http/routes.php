@@ -11,6 +11,10 @@
  */
 
 /*TO VIEW MAIL TEMPLATE*/
+Route::get('_escaped_fragment_={categoryslug?}{productslug?}',function($categoryslug = '', $productslug = ''){
+	return 'working';
+});
+
 Route::get('/printjob/{reference}', 'OrderController@getOrderdetail');
 
 Route::get('/morphing', function(){
@@ -109,6 +113,8 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 
 	Route::post('address/{id}','AddressController@store');
 	// Route::controller('address', 'AddressController');
+
+	Route::post('checkCoupon','CouponController@checkCoupon');
 });
 
 Route::group(['prefix' => 'admin'], function () {
@@ -124,6 +130,8 @@ Route::group(['prefix' => 'admin'], function () {
 Route::get('/', function () {	    
     return view('frontend');
 });
+
+/**/
 
 Route::controller('/auth', 'Auth\AuthController');
 
@@ -254,8 +262,11 @@ Route::controller('loyaltystore', 'LoyaltyStoreController');
 /*PRODUCT IMAGE ROUTUING*/
 Route::get('products/i/{folder}/{filename}', function ($folder,$filename)
 {
+
 	if(!file_exists(storage_path('products/') .$folder. '/' . $filename)){
-		$filename = "product-default.jpg";
+		
+		return Image::make(public_path('images').'/product-default.jpg')->response();
+		//$filename = "product-default.jpg";
 	}
     
     return Image::make(storage_path('products/') .$folder. '/' . $filename)->response();
@@ -281,10 +292,9 @@ Route::get('{storageFolder}/i/{filename}', function ($storageFolder,$filename)
 	* giftcategory
 	* company
 	*
-	*/
-
+	*/	
 	if(!file_exists(storage_path($storageFolder) . '/' . $filename)){
-		$filename = "product-default.jpg";
+		return Image::make(public_path('images').'/product-default.jpg')->response();		
 	}
 	
     return Image::make(storage_path($storageFolder) . '/' . $filename)->response();
@@ -305,3 +315,40 @@ Route::resource('giftcategory', 'GiftCategoryController',['only'=>['index','show
 Route::resource('gift', 'GiftController',['only'=>['show']]);
 
 Route::controller('payment', 'PaymentController');
+
+//ROUTE TO CATCH OLD URLS HAIVING UNDERSCORE IN IT
+
+Route::get( '{categoryslug}/{productslug?}', function ( $categoryslug, $productslug = '') {
+	
+	$fixPagesLinks = [
+		'events' => 'site/event-planner',
+		'menu' => 'beer',
+		'how_to_order' => 'site/terms-of-service'
+	];
+	
+	$route = '';	
+
+	if(isset($fixPagesLinks[$categoryslug])){
+		$route = $fixPagesLinks[$categoryslug];
+	}
+
+	if($categoryslug && $route==''){
+		$s = str_replace('_', '-', $categoryslug);
+	    $s = preg_replace('/[^A-Za-z0-9\-]/', '', $s);
+	    $s = trim(preg_replace('/-+/', '-', $s));
+		$s = strtolower($s);
+		$route = $s;
+	}
+    if($productslug!=''){
+	    $s = str_replace('_', '-', $productslug);
+	    $s = preg_replace('/[^A-Za-z0-9\-]/', '', $s);
+	    $s = trim(preg_replace('/-+/', '-', $s));
+		$s = strtolower($s);    		
+		$route = 'product/'.$s;
+	}
+	
+	return redirect('/#/'.$route,301);
+
+} )->where(['categoryslug'=>'^[a-zA-Z0-9_]*$','productslug'=>'^[a-zA-Z0-9_]*$']);
+
+

@@ -17,6 +17,7 @@ class Sale extends Eloquent
         'listingTitle',
         'detailTitle',
         'coverImage',
+        'imageLink',
         //'status',        
         'saleProductId',
         'saleProductObjectId',

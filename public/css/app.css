@@ -1,3 +1,4 @@
+
 #icon {
   width: 171px;
   height: 76px;
@@ -37,7 +38,6 @@ button:disabled {
 	max-height: 100% !important;
 	margin: auto;
 }
-
 
 .ro_pic .img-responsive-h{
 	max-height: 46px;
@@ -84,6 +84,7 @@ button:disabled {
 	height: 100%;*/
 	opacity: 1;
 }
+
 .fade.ng-enter
 ,.fade.ng-leave {
 	-webkit-transition: all 1s ease;
@@ -111,6 +112,7 @@ button:disabled {
 	width: 100%;
 	height: 100%;*/
 }
+
 .slide.ng-enter,
 .slide.ng-leave {
 	-webkit-transition: all 1s ease;
@@ -942,6 +944,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
     border-right: 13px solid #aa00ff;
 }*/
 
+
 .salediscount:after{
 	content: "";
     position: absolute;
@@ -1247,9 +1250,6 @@ button.detailwishbut{
     font-size: 1.3em;
 }
 
-/***
-UI Loading
-***/
 .loading-message {
   display: inline-block;
   min-width: 125px;
@@ -1352,7 +1352,6 @@ UI Loading
   display: inline-block;
   -webkit-animation: bounceDelay 1.4s infinite ease-in-out;
   animation: bounceDelay 1.4s infinite ease-in-out;
-  /* Prevent first frame from flickering when animation starts */
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
 }
@@ -1386,11 +1385,7 @@ UI Loading
     -webkit-transform: scale(1);
   }
 }
-.cardpreview{
-	padding: 0px 4px 0px 4px;
-	background: none;
-	border:0 none;
-}
+
 
 td.childtd {
 	padding: 10px 0px !important;
@@ -1402,4 +1397,10 @@ td.childtd {
 
 .cart-table td{
 	vertical-align: middle;
+}
+
+.cardpreview{
+	padding: 0px 4px 0px 4px;
+	background: none !important;
+	border:0 none;
 }

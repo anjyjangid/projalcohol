@@ -1,6 +1,6 @@
 MetronicApp
-.service('alcoholCart',['$http', '$q', 'alcoholCartItem', 'alcoholCartPackage', 'alcoholCartGiftCard'
-, function($http, $q, alcoholCartItem, alcoholCartPackage, alcoholCartGiftCard){
+.service('alcoholCart',['$http', '$q', 'alcoholCartItem', 'alcoholCartPackage', 'alcoholCartGiftCard', '$rootScope'
+, function($http, $q, alcoholCartItem, alcoholCartPackage, alcoholCartGiftCard, $rootScope){
 
 	this.init = function(){
 
@@ -304,9 +304,9 @@ MetronicApp
 
 			var newPackage = new alcoholCartPackage(id, response.key, detail);
 
-	    	_self.$cart.packages.push(newPackage);
+	    _self.$cart.packages.push(newPackage);
 
-	    	//$rootScope.$broadcast('alcoholCart:updated',{msg:"Package added to cart",quantity:detail.packageQuantity});
+	    //$rootScope.$broadcast('alcoholCart:updated',{msg:"Package added to cart",quantity:detail.packageQuantity});
 	    	
 			d.resolve(response);			
 		});
@@ -350,7 +350,7 @@ MetronicApp
 		});
 	};
 
-	this.removePackage = function (id,fromServerSide) {
+	/*this.removePackage = function (id,fromServerSide) {
 
 		var locPackage;
 		var cart = this.getCart();
@@ -364,8 +364,41 @@ MetronicApp
 			}
 		});
 
-		$rootScope.$broadcast('alcoholCart:itemRemoved', locPackage);
+		//$rootScope.$broadcast('alcoholCart:itemRemoved', locPackage);
 
+	};*/
+
+	this.removePackage = function (id,fromServerSide) {
+
+		var defer = $q.defer();
+		var locPackage;
+		var cart = this.getCart();
+		var deliveryKey = this.getCartKey();
+		var _self = this;
+
+		$http.delete("cart/package/"+id+'/'+deliveryKey).then(
+
+			function(response){
+
+				angular.forEach(cart.packages, function (package, index) {
+
+					if(package.getUniqueId() === id) {
+
+						var locPackage = cart.packages.splice(index, 1)[0] || {};
+
+						//$rootScope.$broadcast('alcoholCart:updated',{msg:"Package Removed from cart",quantity:1});
+					}
+				});	
+
+				defer.resolve(response);
+			},
+			function(errorRes){
+
+				defer.reject(errorRes);
+			}
+		);
+	
+		return defer.promise;	
 	};
 
 	this.removeCard = function (id,fromServerSide) {
@@ -566,7 +599,6 @@ MetronicApp
 		return this.getCart().packages;
 	};
 
-
 	this.getTotalItems = function(){
 
 		var count = 0;
@@ -576,25 +608,10 @@ MetronicApp
 		});
 
 		return count;
-
 	};
-
 
 	this.getCart = function(){
 		return this.$cart;
-	};
-
-
-	this.getTotalItems = function(){
-
-		var count = 0;
-		var items = this.getProducts();
-		angular.forEach(items, function (item) {
-			count += item.getQuantity();
-		});
-
-		return count;
-
 	};
 
 	this.resetTimeslot = function(){
@@ -610,6 +627,11 @@ MetronicApp
 	this.getTotalPackages = function () {
 
 		return this.getCart().packages.length
+	};
+
+	this.getTotalGifts = function () {
+
+		return this.getCart().giftCards.length
 	};
 
 	this.getTotalUniqueItems = function () {
@@ -673,6 +695,7 @@ MetronicApp
 
 		cartTotal-= parseFloat(this.getDiscount());
 
+		cartTotal-= parseFloat(this.getCouponDiscount());
 
 		return +parseFloat(cartTotal).toFixed(2);
 
@@ -857,6 +880,122 @@ MetronicApp
 		});
 
 	}
+
+	this.setCouponPrice = function(coupon){
+
+			var _self = this;
+			var cTotal = coupon.total;
+
+			var productsList = _self.getProducts();
+			var cartTotal = this.getSubTotal();
+			var discountTotal = 0;
+			var discountMessage = '';
+			this.$cart.couponMessage = '';
+
+			if(!cTotal || (cTotal && cTotal <= cartTotal) ){
+				if(Object.keys(productsList).length){
+					angular.forEach(productsList, function (item) {
+						var discountAmt = item.setCoupon(coupon);
+						discountTotal += discountAmt.couponAmount;
+
+						if(discountAmt.couponMessage)
+							discountMessage = discountAmt.couponMessage;
+					});
+
+					if(!discountTotal && discountMessage)
+						this.$cart.couponMessage = discountMessage;
+
+				}else{
+					if(typeof(this.$cart.couponData) !== "undefined"){
+						this.removeCoupon();
+					}
+				}
+			}else{
+				this.$cart.couponMessage = 'Minimum amount should be '+cTotal+' to use this coupon.';
+			}
+
+			this.setCouponMessage(this.$cart.couponMessage, 1);
+
+			this.$cart.couponDiscount = discountTotal;
+		}
+
+		this.removeCoupon = function(res){
+			var _self = this;
+			var productsList = this.getProducts();
+
+			$rootScope.couponInput = true;
+			$rootScope.couponOutput = false;
+			this.$cart.couponDiscount = 0;
+			this.$cart.couponMessage = '';
+
+			if(typeof(res) == "undefined"){
+				this.setCouponMessage(this.$cart.couponMessage, 2);
+			}
+
+			$http.post("adminapi/checkCoupon", {params: {cart: _self.getCartKey(), removeCoupon: 1}}).success(function(result){
+				delete _self.$cart.couponData;
+			}).error(function(){
+
+			});	
+		}
+
+		this.checkCoupon = function(discountCode, cartKey){
+			var _self = this;
+			var cartKey = cartKey;
+			var couponCode = discountCode;
+
+			$http.post("adminapi/checkCoupon", {params: {cart: cartKey, coupon: couponCode}}).success(function(result){
+				if(result.errorCode==1 || result.errorCode==2){
+					_self.removeCoupon();
+					$rootScope.invalidCodeMsg = false;
+					$rootScope.invalidCodeMsgTxt = result.msg;
+				}else{
+					$rootScope.invalidCodeMsg = true;
+					_self.$cart.couponData = result.coupon;
+					_self.setCouponPrice(result.coupon);
+				}
+
+			}).error(function(){
+			});
+		}
+
+		this.getCouponDiscount = function(){
+			if(typeof(this.$cart.couponDiscount) !== "undefined"){
+
+				if(!isNaN(this.$cart.couponDiscount))
+					return this.$cart.couponDiscount;
+
+				return 0;	
+			}
+
+			return 0;
+		}
+
+		this.getCouponCode = function(){
+			if(typeof(this.$cart.couponData) !== "undefined"){
+				return this.$cart.couponData.code;
+			}else{
+				return '';
+			}
+		}
+
+		this.setCouponMessage = function(msg, type){
+			if(typeof(msg) !== "undefined"){
+				if(msg){
+					$rootScope.invalidCodeMsg = false;
+					$rootScope.invalidCodeMsgTxt = msg;
+					this.removeCoupon(1);
+				}else{
+					$rootScope.invalidCodeMsg = true;
+					$rootScope.invalidCodeMsgTxt = '';
+
+					if(type==1){
+						$rootScope.couponInput = false;
+						$rootScope.couponOutput = true;
+					}					
+				}				
+			}
+		}
 
 }])
 

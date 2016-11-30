@@ -57,8 +57,8 @@ MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout'
 
 }]);
 
-MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', 'alcoholCart', '$modal', '$filter'
-, function($scope, $http, $timeout, alcoholCart, $modal, $filter){
+MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', 'alcoholCart', '$modal', '$filter', '$rootScope'
+, function($scope, $http, $timeout, alcoholCart, $modal, $filter, $rootScope){
 	angular.alcoholCart = alcoholCart;
 
 	$scope.cart = alcoholCart.getCart();
@@ -187,8 +187,36 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 		delete ob[prop];
 	}
+
+	$rootScope.invalidCodeMsg = true;
+
+	if(alcoholCart.getCouponCode()){
+		$scope.discountCode = alcoholCart.getCouponCode();
+		$rootScope.couponInput = false;
+		$rootScope.couponOutput = true;
+	}else{
+		$rootScope.couponInput = true;
+		$rootScope.couponOutput = false;
+	}
+
+	$scope.checkCoupon = function(discountCode){
+		$scope.discountCode = discountCode;
+		alcoholCart.checkCoupon(discountCode, alcoholCart.getCartKey());
+	}
+
+	$scope.removeCoupon = function(){
+		$scope.discountCode = '';
+		delete $scope.discountCode;
+		alcoholCart.removeCoupon();
+	}
+
+	$scope.hideCouponMsg = function(){
+		$rootScope.invalidCodeMsg = true;
+		$rootScope.invalidCodeMsgTxt = '';
+	}
 		
 }])
+
 .controller('NewAddressModel',[ '$scope', '$modalInstance', 'NgMap', '$http', 'detail'
 , function($scope, $modalInstance, NgMap, $http, detail) {
 	$scope.cancel = $modalInstance.dismiss;
