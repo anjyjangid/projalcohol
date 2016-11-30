@@ -403,16 +403,18 @@ class UserController extends Controller
 			}
 							
 			$order = $order->orderBy("created_at","desc")
-						   ->first(["products","packages","updated_at","reference"]);
+							->first(["products","updated_at","reference"]);
 
 			if(empty($order)){
 				return response(["message"=>"Order not found"],200);
 			}
 
 			$order = $order->toArray();
+			
 
 			$products = $ordersModel->getProducts([$order],false);
 			$order = $ordersModel->mergeProducts([$order],$products);
+			
 			$order = $order[0];
 
 		} catch(\Exception $e){

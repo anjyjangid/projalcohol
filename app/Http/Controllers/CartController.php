@@ -1862,7 +1862,7 @@ jprd($product);
 
 			if(isset($order->creditsFromLoyalty) && $order->creditsFromLoyalty>0){
 
-				$creditsFromLoyalty = $order['creditsFromLoyalty'];				
+				$creditsFromLoyalty = $order['creditsFromLoyalty'];
 				
 				$creditObj = [
 								"credit"=>$creditsFromLoyalty,
@@ -2188,10 +2188,9 @@ jprd($product);
 
 	}
 
-	public function putBulk(Request $request){
+	public function putBulk($cartKey,Request $request){
 		
 		$params = $request->all();
-		$cartKey = $params['cartKey'];//$request->session()->get('deliverykey');
 
 		$cart = Cart::find($cartKey);
 
@@ -2202,91 +2201,114 @@ jprd($product);
 			$productKeys = [];
 
 			$params['products'] = valueToKey($params['products'],"id");
-
-			foreach($params['products'] as $key=>$product){
-
-				array_push($productKeys, $key);
-
-			}
+			$productKeys = array_keys($params['products']);
 
 			$productObj = new Products;
 
-			$products = $productObj->getProducts(
-											array(
-												"id"=>$productKeys,
-												"with"=>array(
-													"discounts"
-												)
-											)
-										);
+			$products = $productObj->fetchProduct([
+						"id"=>$productKeys,
+					]);
+
+			if($products['success']===false && empty($products['product'])){
+
+				$response['message'] = "Products not found";
+				$response['action'] = "refresh";
+				return response($response,405);
+
+			}else{
+				$products = $products['product'];
+			}
+
+			// $products = $productObj->getProducts(
+			// 								array(
+			// 									"id"=>$productKeys,
+			// 									"with"=>array(
+			// 										"discounts"
+			// 									)
+			// 								)
+			// 							);
+
 
 			$updatedData = [
 				"products"=>[]				
 			];
 
 			foreach($products as $product){
+				
+				$proIdToUpdate = (string)$product['_id'];
 
-				$proPutValues = $params['products'][$product['_id']];
+				$proPutValues = $params['products'][$proIdToUpdate];
 
-				$updateProData = array(
+				$productInCart = isset($cartProducts[$proIdToUpdate])?$cartProducts[$proIdToUpdate]:false;
 
-							// "maxQuantity"=>$product['maxQuantity'],
-							"chilled"=>array(
-								"quantity"=>0,
-								"status"=>"chilled",
-							),
-							"nonchilled"=>array(
-								"quantity"=>0,
-								"status"=>"nonchilled",
-							),
-							"quantity"=>0,
-							"lastServedChilled" => (bool)$proPutValues['chilled']
-						);
+				$chilledQty = (int)$proPutValues['quantity']['chilled'];
+				$nonChilledQty = (int)$proPutValues['quantity']['nonChilled'];
 
-				if(isset($cartProducts[$product['_id']])){
+				$newQty = $chilledQty + $nonChilledQty;
 
-					$cartPro = $cartProducts[$product['_id']];
+				if($productInCart!==false){
 
-					if((bool)$proPutValues['chilled']){
-
-						$updateProData['chilled']['quantity'] = (int)$cartPro['chilled']['quantity'] + (int)$proPutValues['quantity'];
-
-					}else{
-
-						$updateProData['nonchilled']['quantity'] = (int)$cartPro['nonchilled']['quantity'] + (int)$proPutValues['quantity'];
-					}	
-
-				}else{
-					
-					if((bool)$proPutValues['chilled']){
-
-						$updateProData['chilled']['quantity'] = (int)$proPutValues['quantity'];
-
-					}else{
-
-						$updateProData['nonchilled']['quantity'] = (int)$proPutValues['quantity'];
-
-					}				
+					$chilledQty+= (int)$productInCart['chilled']['quantity'];
+					$nonChilledQty+= (int)$productInCart['nonchilled']['quantity'];
 
 				}
 
-				$updateProData['quantity'] = (int)$updateProData['chilled']['quantity'] + (int)$updateProData['nonchilled']['quantity'];
+				$totalQty = $chilledQty + $nonChilledQty;
+				
+				$updateProData = array(
 
-				$cartProducts[$product['_id']] = $updateProData;
+					"chilled"=>array(
+						"quantity"=>$chilledQty,
+						"status"=>"chilled",
+					),
+					"nonchilled"=>array(
+						"quantity"=>$nonChilledQty,
+						"status"=>"nonchilled",
+					),
+					"quantity"=>$totalQty,
+					"lastServedChilled" => true,
+					"sale"=>isset($product['proSales'])?$product['proSales']:false
+
+				);
+				$updateProData['remainingQty']= $newQty;
+				if($productInCart!==false){
+
+					$updateProData['chilled']['status'] = $productInCart['chilled']['status'];
+					$updateProData['nonchilled']['status'] = $productInCart['nonchilled']['status'];
+					$updateProData['lastServedChilled'] = $productInCart['lastServedChilled'];
+					$updateProData['remainingQty']+= $productInCart['remainingQty'];
+
+				}			
+
+				$cartProducts[$proIdToUpdate] = $updateProData;
 				$updateProData['product'] = $product; //product original detail required in cart
 
 				array_push($updatedData['products'],$updateProData);
 
 			}
-		
 
 			try{
 
 				$cart->products = $cartProducts;
+				$cart->createAllPossibleSales();
 
-				$cart->save();
+				$latestUpdate = [];
+				foreach($updatedData['products'] as &$cProduct){
 
-				return response(["success"=>true,"message"=>"cart updated successfully","data"=>$updatedData],200);
+					$key = (string)$cProduct['product']['_id'];
+					$cProduct['remainingQty'] = $cart->products[$key]['remainingQty'];
+
+				}
+
+				//$cart->save();
+
+				$response = [
+					'message'=>'cart updated successfully',
+					'sales' => $cart->sales,
+					'products' => $updatedData['products']
+				];
+				
+				return response($response,200);
 
 			}catch(\Exception $e){
 

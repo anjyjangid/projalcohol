@@ -1245,6 +1245,7 @@ button.detailwishbut{
 .negative-field:before{
 	content: "- ";
     font-size: 1.3em;
+}
 
 /***
 UI Loading

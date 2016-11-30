@@ -111,7 +111,7 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	// Route::controller('address', 'AddressController');
 });
 
-Route::group(['prefix' => 'admin'], function () {					
+Route::group(['prefix' => 'admin'], function () {
 	Route::any('{catchall}', function ( $page ) {
 	    return view('backend');    
 	} )->where('catchall', '(.*)');
@@ -140,9 +140,6 @@ Route::get('/search', 'ProductController@getproduct');
 Route::get('/getproductdetail', 'ProductController@getproductdetail');
 
 Route::get('/product/alsobought/{productSlug}', 'ProductController@getAlsobought');
-
-
-
 
 Route::controller('/password', 'Auth\PasswordController');
  
@@ -198,7 +195,7 @@ Route::group(['prefix' => 'cart'], function () {
 	
 	Route::put('promotion/{cartkey}','CartController@putPromotion');
 
-	Route::put('bulk','CartController@putBulk');
+	Route::put('bulk/{cartkey}','CartController@putBulk');
 
 	Route::post('repeatlast','CartController@postRepeatlast');
 
@@ -244,8 +241,6 @@ Route::get('/order/summary/{id}','OrderController@getSummary');
 Route::get('/order/orders','OrderController@getOrders');
 Route::get('/order/{order}','OrderController@show');
 Route::post('/order/{id}','OrderController@update');
-
-
 
 Route::resource('package', 'PackageController',['only'=>['*']]);
 Route::controller('package', 'PackageController');

@@ -1336,7 +1336,7 @@ ui-sref {
 }
 .alcohal_orderhistorytxtcvr {
 	margin: 0 auto;
-	width: 78%;
+	/*width: 78%;*/ 
 	max-width: 490px;
 }
 .alcohal_orderhistorybodytxt {
