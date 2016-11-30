@@ -87,6 +87,9 @@ class PrintJob extends Command
                     if($resarray['status']==true) {                                
                         $successPrint += 1;
                         $this->logtofile("Order#".$value['reference']." has been sent to printer and should print shortly.");
+                        //UPDATE STATUS AS PRINTED
+                        $value->doStatus = 2;
+                        $value->save();
                     }else{
                         $failPrint += 1;
                         $this->logtofile("An error occured while printing order#".$value['reference']." the doc. Error code:".$resarray['errorcode']." Message:".$resarray['errormessage']);

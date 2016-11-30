@@ -634,7 +634,6 @@ class ProductController extends Controller
 	}
 
 	public function getTest(Request $request){
-
 		
 
 		/*DB::collection('orders')->raw()->update([
@@ -644,8 +643,10 @@ class ProductController extends Controller
             '$unset' => ['productsLog.$.received' => 1],
             '$set' => ['doStatus' => 0]
         ],['multiple' => true]);*/
-
-        return 1;
+        
+        $yourDate = new \MongoDate();
+        echo date('Y-M-d h:i:s', $yourDate->sec);
+        //return ;
 
 		
 

@@ -125,6 +125,8 @@ Route::get('/', function () {
     return view('frontend');
 });
 
+/**/
+
 Route::controller('/auth', 'Auth\AuthController');
 
 Route::controller('/super', 'SuperController');
@@ -259,8 +261,11 @@ Route::controller('loyaltystore', 'LoyaltyStoreController');
 /*PRODUCT IMAGE ROUTUING*/
 Route::get('products/i/{folder}/{filename}', function ($folder,$filename)
 {
+
 	if(!file_exists(storage_path('products/') .$folder. '/' . $filename)){
-		$filename = "product-default.jpg";
+		
+		return Image::make(public_path('images').'/product-default.jpg')->response();
+		//$filename = "product-default.jpg";
 	}
     
     return Image::make(storage_path('products/') .$folder. '/' . $filename)->response();
@@ -286,10 +291,9 @@ Route::get('{storageFolder}/i/{filename}', function ($storageFolder,$filename)
 	* giftcategory
 	* company
 	*
-	*/
-
+	*/	
 	if(!file_exists(storage_path($storageFolder) . '/' . $filename)){
-		$filename = "product-default.jpg";
+		return Image::make(public_path('images').'/product-default.jpg')->response();		
 	}
 	
     return Image::make(storage_path($storageFolder) . '/' . $filename)->response();
@@ -310,3 +314,50 @@ Route::resource('giftcategory', 'GiftCategoryController',['only'=>['index','show
 Route::resource('gift', 'GiftController',['only'=>['show']]);
 
 Route::controller('payment', 'PaymentController');
+
+//CUSTOM REDIRECTS
+
+/*Route::get('/events', function(){
+	return redirect('/#/site/event-planner');
+});
+
+Route::get('/menu', function(){
+	return redirect('/#/beer');
+});
+
+Route::get('/how_to_order', function(){
+	return redirect('/#/site/terms-of-service');
+});*/
+
+/*Route::any( '{catchall}', function ( $page ) {
+    return view('frontend');
+} )->where('catchall', '(.*)');*/
+
+//ROUTE TO CATCH OLD URLS HAIVING UNDERSCORE IN IT
+Route::get( '{categoryslug}/{productslug?}', function ( $categoryslug, $productslug = '') {
+	$route = '';	
+	if($categoryslug == 'events'){
+		$route = 'site/event-planner';
+	}
+	if($categoryslug == 'menu'){
+		$route = 'beer';
+	}
+	if($categoryslug == 'how_to_order'){
+		$route = 'site/terms-of-service';
+	}
+	if($categoryslug && $route==''){
+		$s = str_replace('_', '-', $categoryslug);
+	    $s = preg_replace('/[^A-Za-z0-9\-]/', '', $s);
+	    $s = trim(preg_replace('/-+/', '-', $s));
+		$s = strtolower($s);
+		$route = $s;
+	}    
+    if($productslug!=''){
+	    $s = str_replace('_', '-', $productslug);
+	    $s = preg_replace('/[^A-Za-z0-9\-]/', '', $s);
+	    $s = trim(preg_replace('/-+/', '-', $s));
+		$s = strtolower($s);    		
+		$route = 'product/'.$s;
+	}
+	return redirect('/#/'.$route);	
+} )->where(['categoryslug'=>'^[a-zA-Z0-9_]*$','productslug'=>'^[a-zA-Z0-9_]*$']);
