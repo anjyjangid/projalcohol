@@ -189,7 +189,7 @@ class Orders extends Moloquent
 	public function getOrdersToRepeat($userId){
 
 		$fields = ["products","packages","updated_at","reference"];
-		$orders = $this::where("user",new MongoId($userId))->orderBy('created_at', 'desc')->get($fields);
+		$orders = $this::where("user",new MongoId($userId))->whereNotNull("products")->orderBy('created_at', 'desc')->get($fields);
 		return $orders;
 		
 	}

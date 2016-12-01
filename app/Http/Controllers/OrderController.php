@@ -92,7 +92,11 @@ class OrderController extends Controller
 		$orders = DB::collection('orders')->raw(function($collection) use($user){
 			return $collection->aggregate(array(
 				array(
-					'$match'=> array('user'=> new MongoId($user->_id))
+					'$match'=> array(
+						'user'=> new MongoId($user->_id),
+						'products' => array('$exists'=>true),
+						'products' => array('$ne'=>null)
+					)
 				),
 				/*array(
 					'$limit' => 10

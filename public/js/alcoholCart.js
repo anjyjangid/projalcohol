@@ -1,11 +1,11 @@
 AlcoholDelivery.service('alcoholCart', [
-			'$log','$rootScope', '$window', '$http', '$q', '$mdToast', '$filter', 
+			'$log','$rootScope', '$window', '$document', '$http', '$state', '$q', '$mdToast', '$filter', 
 			'$timeout', '$interval','sweetAlert', 
 			'alcoholCartItem', 'alcoholCartLoyaltyItem', 
 			'alcoholCartPackage','promotionsService','alcoholCartPromotion', 
 			'alcoholCartGiftCard', 'alcoholCartGift', 
 			'alcoholCartSale', 'alcoholCartCreditCard','UserService'
-	,function ($log, $rootScope, $window, $http, $q, $mdToast, $filter, 
+	,function ($log, $rootScope, $window, $document, $http, $state, $q, $mdToast, $filter, 
 			$timeout, $interval, sweetAlert, 
 			alcoholCartItem, alcoholCartLoyaltyItem, 
 			alcoholCartPackage, promotionsService, alcoholCartPromotion, 
@@ -1416,10 +1416,19 @@ AlcoholDelivery.service('alcoholCart', [
 
 		};
 
+		this.getDelivery = function(){
+			return this.$cart.service.delivery;
+		}
+
+		this.isDeliveryAdvance = function () {
+
+			return this.$cart.delivery.type==1;
+
+		}
+
 		this.getRemainToFreeDelivery = function(type){
 
-
-			var delivery = this.$cart.service.delivery;
+			var delivery = this.getDelivery();
 
 			var subTotal = parseFloat(this.getSubTotal());
 
@@ -1441,19 +1450,20 @@ AlcoholDelivery.service('alcoholCart', [
 
 		this.setDeliveryCharges =function(){
 			
-			var delivery = this.$cart.service.delivery;
+			var delivery = this.getDelivery();
 
 			var subTotal = parseFloat(this.getSubTotal());
 
 			if(subTotal>=parseFloat(delivery.mincart)){
-				
-				this.$cart.service.delivery.free = true;
+				//this.$cart.service.delivery
+
+				delivery.free = true;
 				this.$cart.delivery.charges = 0;				
 
 			}else{
 
-				this.$cart.service.delivery.free = false;
-				this.$cart.delivery.charges = parseFloat(this.$cart.service.delivery.charges).toFixed(2);				
+				delivery.free = false;
+				this.$cart.delivery.charges = parseFloat(delivery.charges).toFixed(2);				
 
 			}
 			
@@ -1900,6 +1910,38 @@ AlcoholDelivery.service('alcoholCart', [
 			});
 
 		}
+
+		this.reSet = function () {
+			$state.go("mainLayout.checkout.cart", {}, {reload: true});
+		}
+
+		this.getSmokeStatus = function(){
+
+			try {
+				return this.$cart.service.smoke.status;
+			}
+			catch ( e ) {
+				this.reSet();
+			}
+
+		}
+
+		this.getSmokeDetail = function(){
+
+			try {
+
+				if(!this.$cart.service.smoke.detail){
+					return false;
+				}
+				return this.$cart.service.smoke.detail;
+			}
+			catch ( e ) {
+				this.reSet();
+			}
+
+
+		}
+
 
 		this.setSmokeStatus = function(status){
 
@@ -2765,6 +2807,64 @@ AlcoholDelivery.service('alcoholCart', [
 		this.deliveryValidate = function(){return false;}
 		this.paymentValidate = function(){return false;}
 		this.reviewValidate = function(){return false;}
+		this.validateSmoke = function(){
+
+			var isSmokeRequired = this.getSmokeStatus();			
+
+			if(isSmokeRequired){				
+
+				var isDeliveryAdvance = this.isDeliveryAdvance();
+
+				if(!isDeliveryAdvance){
+
+					sweetAlert.swal({
+								type:'info',
+								title: "Sorry !",
+								text : "Smoke is only deliver in Scheduled delivery, Remove it or change delivery type",
+								timer: 4000,
+								showConfirmButton:false								
+							});
+
+					return false;
+				}
+
+				var isDetailProvided = this.getSmokeDetail();
+				
+				if(isDetailProvided===false){
+
+					var ele = $("#smokedetail");
+					$('html, body').stop().animate({
+						scrollTop: ele.offset().top - 200
+					}, 1000,
+
+					function(){
+						$(ele).pulsate({
+							color: "#ffc412",
+							repeat: 3,
+							glow: true
+						});
+					});
+					return false;
+				}
+
+			}
+
+			return true;
+
+		}
+		this.checkoutValidate = function(){
+
+			var d = $q.defer();
+
+			var isValid = this.validateSmoke();
+			if(isValid){
+				d.resolve("every thing all right");
+			}else{
+				d.reject("foo");
+			}
+			
+			return d.promise;
+		}
 
 		this.stepCheckout = function(step){
 			$anchorScroll();
@@ -2857,6 +2957,7 @@ AlcoholDelivery.service('alcoholCart', [
 			}).error(function(){
 			});
 		}
+
 
 		this.getCouponDiscount = function(){
 			if(typeof(this.$cart.couponDiscount) !== "undefined"){
