@@ -136,7 +136,7 @@ class Notification extends Command
                         
                         $productList .= '
                         <td style="border:0px solid #ccc; width:33%;">
-                            <a href="'.url().'/#/product/'.$pvalue['slug'].'" style="text-decoration:none;color:#37474f;font-size:12px;">
+                            <a href="'.url().'/product/'.$pvalue['slug'].'" style="text-decoration:none;color:#37474f;font-size:12px;">
                                 <div align="center" style="min-height:153px;">
                                     <img style="max-width:100%;max-height:153px;" alt="'.$pvalue['name'].'" border="0" src="'.url().'/products/i/200/'.$pvalue['pImg'].'">
                                 </div>

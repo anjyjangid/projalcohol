@@ -1810,7 +1810,7 @@ jprd($product);
 			$order = Orders::where(['reference' => $request->get('order_number')])->first();
 
 			if($order)
-				return redirect('/#/orderplaced/'.$order['_id']);
+				return redirect('/orderplaced/'.$order['_id']);
 		}
 
 		if(empty($cart)){
@@ -1941,7 +1941,7 @@ jprd($product);
             $mailSent = $emailTemplate->sendEmail($mailData);
 
 			if($request->isMethod('get')){
-				return redirect('/#/orderplaced/'.$order['_id']);
+				return redirect('/orderplaced/'.$order['_id']);
 			}
 
 			return response(array("success"=>true,"message"=>"Order Placed Successfully","order"=>$order['_id']));

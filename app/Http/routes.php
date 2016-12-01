@@ -151,8 +151,6 @@ Route::group(['prefix' => 'api'], function () {
 	Route::get('/product/alsobought/{productSlug}', 'ProductController@getAlsobought');
 
 	Route::controller('/password', 'Auth\PasswordController');
-	 
-	Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
 
 	Route::get('reset/{key}', 'Auth\PasswordController@reset');
 
@@ -160,7 +158,7 @@ Route::group(['prefix' => 'api'], function () {
  
 	Route::put('confirmorder/{cartKey}','CartController@confirmorder');
 
-	Route::get('confirmorder','CartController@confirmorder');
+	
 
 	Route::get('freezcart','CartController@freezcart');
 
@@ -305,43 +303,90 @@ Route::get('{storageFolder}/i/{filename}', function ($storageFolder,$filename){
     return Image::make(storage_path($storageFolder) . '/' . $filename)->response();
 });
 
-//ROUTE TO CATCH OLD URLS HAIVING UNDERSCORE IN IT
 
+//EXTERNAL URL LIST
+Route::get('confirmorder','CartController@confirmorder');
+Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
+
+$fixPagesLinks = [
+	'events' => 'site/event-planner',
+	'menu' => 'beer',
+	'how_to_order' => 'site/terms-of-service'
+];
+
+//FIX LINKS ROUTE
+foreach ($fixPagesLinks as $route => $url) {
+	Route::get($route,function() use($url){		
+		return redirect('/'.$url,301);
+	});
+}
+
+//ROUTE IF CATEGORY OR PRODUCT NAME IS FOUND LIKE red_wine will be redirected to red-wine
+Route::get('{categoryslug}', function ( $categoryslug, $productslug = '') {
+
+	$s = str_replace('_', '-', $categoryslug);
+    $s = preg_replace('/[^A-Za-z0-9\-]/', '', $s);
+    $s = trim(preg_replace('/-+/', '-', $s));
+	$s = strtolower($s);
+	return redirect('/'.$s,301);
+
+})->where(['categoryslug'=>'^[\w]+_[\w]+$']);
+
+Route::get('{categoryslug}/{productslug}', function ( $categoryslug, $productslug) {
+
+	$s = str_replace('_', '-', $productslug);
+    $s = preg_replace('/[^A-Za-z0-9\-]/', '', $s);
+    $s = trim(preg_replace('/-+/', '-', $s));
+	$s = strtolower($s);
+	return redirect('/product/'.$s,301);
+
+})->where(['productslug'=>'^[\w]+_[\w]+$']);
+
+Route::get('updatesitemap', function(){
+
+    // create new sitemap object
+    $sitemap = App::make("sitemap");
+    // add items to the sitemap (url, date, priority, freq)
+    //$sitemap->add(URL::to(), '2012-08-25T20:10:00+02:00', '1.0', 'daily');
+    //$sitemap->add(URL::to('page'), '2012-08-26T12:30:00+02:00', '0.9', 'monthly');
+
+    // get all posts from db
+    $categories = DB::collection('categories')->orderBy('created_at', 'desc')->get();
+    
+    // add every post to the sitemap
+    if($categories){
+    	foreach ($categories as $category){
+	        $sitemap->add(url().'/'.$category['slug']);
+	    }
+	}
+
+	$pages = DB::collection('pages')->orderBy('created_at', 'desc')->get();
+    
+    // add every post to the sitemap
+    if($pages){
+    	foreach ($pages as $page){
+	        $sitemap->add(url('site').'/'.$page['slug']);
+	    }
+	}
+    
+    // get all posts from db
+    $posts = DB::collection('products')->orderBy('created_at', 'desc')->get();
+    
+    // add every post to the sitemap
+    if($posts){
+    	foreach ($posts as $post){
+	        $sitemap->add(url('/product').'/'.$post['slug']);
+	    }
+	}	
+
+    // generate your sitemap (format, filename)
+    $sitemap->store('xml','sitemap');
+    return $sitemap->render('xml');
+    // this will generate file mysitemap.xml to your public folder
+
+});
+
+//FINAL ROUTE FOR FRONTEND
 Route::any('{catchall}', function ( $page ) {
     return view('frontend');
 } )->where('catchall', '(.*)');
-
-Route::get( '{categoryslug}/{productslug?}', function ( $categoryslug, $productslug = '') {
-	
-	$fixPagesLinks = [
-		'events' => 'site/event-planner',
-		'menu' => 'beer',
-		'how_to_order' => 'site/terms-of-service'
-	];
-	
-	$route = '';	
-
-	if(isset($fixPagesLinks[$categoryslug])){
-		$route = $fixPagesLinks[$categoryslug];
-	}
-
-	if($categoryslug && $route==''){
-		$s = str_replace(['_','-'], '-', $categoryslug);
-	    $s = preg_replace('/[^A-Za-z0-9\-]/', '', $s);
-	    $s = trim(preg_replace('/-+/', '-', $s));
-		$s = strtolower($s);
-		$route = $s;
-	}
-    if($productslug!=''){
-	    $s = str_replace(['_','-'], '-', $productslug);
-	    $s = preg_replace('/[^A-Za-z0-9\-]/', '', $s);
-	    $s = trim(preg_replace('/-+/', '-', $s));
-		$s = strtolower($s);    		
-		$route = 'product/'.$s;
-	}
-	
-	return redirect('/#/'.$route,301);
-
-} )->where(['categoryslug'=>'^[a-zA-Z0-9_-]*$','productslug'=>'^[a-zA-Z0-9_-]*$']);
-
-

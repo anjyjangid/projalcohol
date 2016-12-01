@@ -154,6 +154,7 @@ return [
         AlcoholDelivery\Providers\RouteServiceProvider::class,        
         
         'Intervention\Image\ImageServiceProvider',
+        Roumen\Sitemap\SitemapServiceProvider::class,
         //'Nutsweb\LaravelPrerender\LaravelPrerenderServiceProvider',
     ],
 

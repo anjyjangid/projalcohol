@@ -21,7 +21,7 @@
 						<td width="52%">
 							<div ng-if="cartproduct.category == 'saleproduct' && cartproduct.products.length">
 								<div class="col-md-3" ng-repeat="packageproducts in cartproduct.products">
-									<span class="cursor-pointer">
+									<span class="cursor-pointer">										
 										<a ui-sref="mainLayout.product({product:packageproducts.slug})" title="View Product">
 											<img alt="{{packageproducts.name}}" err-pro-src="" ng-src="products/i/200/{{packageproducts.coverImage}}" class="img-responsive img-responsive-h "/>
 										</a>

@@ -112,7 +112,7 @@ class Email extends Moloquent
 				if(isset($data['isAdmin'])){
 					$this->recipient_info["replace"]["{reset_link}"] =url()."/admin#/resetpassword/".$data['email_key'];
 				}else{
-					$this->recipient_info["replace"]["{reset_link}"] =url()."/reset/".$data['email_key'];	
+					$this->recipient_info["replace"]["{reset_link}"] =url()."/api/reset/".$data['email_key'];	
 				}
 
 				
@@ -188,7 +188,7 @@ class Email extends Moloquent
 								
 				$this->recipient_info["receiver"]['email'] = $data['email'];			
 
-				$this->recipient_info["replace"]["{invitation_link}"] = url()."/#/acceptinvitation/".$data['id'];
+				$this->recipient_info["replace"]["{invitation_link}"] = url()."/acceptinvitation/".$data['id'];
 				$this->recipient_info["replace"]["{sender_name}"] = $data['sender_name'];				
 				$this->recipient_info["replace"]["{user_name}"] = $data['email'];				
 
@@ -200,7 +200,7 @@ class Email extends Moloquent
 								
 				$this->recipient_info["receiver"]['email'] = $data['beneficiary']['email'];
 
-				$this->recipient_info["replace"]["{giftcard_link}"] = url()."/#/getgift/".$data['key'];
+				$this->recipient_info["replace"]["{giftcard_link}"] = url()."/getgift/".$data['key'];
 				$this->recipient_info["replace"]["{sender_name}"] = $data['sender']['name'];
 				$this->recipient_info["replace"]["{sender_message}"] = $data['beneficiary']['message'];
 				$this->recipient_info["replace"]["{beneficiary_title}"] = $data['beneficiary']['name'];
