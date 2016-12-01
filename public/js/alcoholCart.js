@@ -776,8 +776,14 @@ AlcoholDelivery.service('alcoholCart', [
 
 		var isExist = Object.keys(pros).length;
 
-		if(isExist>0)
+		if(isExist>0){
 			return true;		
+		}else{
+			var packages = this.getPackages();
+			if(packages.length>0){
+				return true;
+			}
+		}
 		return false
 
 	}
