@@ -1478,7 +1478,6 @@ jprd($product);
 		$products = $cart->products;
 		$product = $products[$proId];
 		
-
 		if(empty($product)){
 
 			return response(["message"=>"Invalid delete request","action"=>"refresh"],400);
@@ -2300,7 +2299,7 @@ jprd($product);
 
 				}
 
-				//$cart->save();
+				$cart->save();
 
 				$response = [
 					'message'=>'cart updated successfully',
@@ -2323,7 +2322,8 @@ jprd($product);
 	public function postRepeatlast(Request $request){
 		
 		$userLogged = Auth::user('user');
-
+return response(["under process"],400);
+		$userLogged = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
 		if(empty($userLogged)){
 			
 			$return['message'] = 'login required';
@@ -2331,8 +2331,8 @@ jprd($product);
 			return response($return,401);
 		}
 
-		$params = Orders::where("user",new mongoId($userLogged->_id))->orderBy("created_at","desc")->first(["products","packages","updated_at","reference"]);			
-
+		$params = Orders::where("user",new mongoId($userLogged->_id))->whereNotNull("products")->orderBy("created_at","desc")->first(["products.quantity","updated_at","reference"]);
+prd($params->toArray());
 		$cartKey = $request->get('cartKey');
 		$cart = Cart::find($cartKey);
 		$cartProducts = $cart->products;

@@ -397,9 +397,11 @@ class UserController extends Controller
 			$ordersModel = new Orders;
 
 			$order = $ordersModel
-							->where("user",new mongoId($userLogged->_id));
+							->where("user",new mongoId($userLogged->_id))
+							->whereNotNull("products");
 
 			if($reference){
+
 				$order = $order->where("reference",$reference);
 			}
 							

@@ -1293,10 +1293,27 @@ AlcoholDelivery.controller('CartAddressController',[
 		if($scope.delivery.address==="" || $scope.delivery.address===null){
 
 			sweetAlert.swal({
+				
 					type:'error',
 					title: "Please select an address",
-					timer: 2000
-				});
+					closeOnConfirm: true
+
+				}).then(
+
+					function () {
+
+						var ele = $("#checkout-middle");
+						$('html, body').stop().animate({
+							scrollTop: ele.offset().top - 200
+						}, 1000);
+
+					},function () {
+
+					}
+				);
+
+			
+
 			return false;
 		}
 
@@ -1608,64 +1625,67 @@ AlcoholDelivery.controller('CartReviewController',[
 	$scope.slotslug = $scope.$parent.cart.timeslot.slotslug;
 
 	$scope.orderConfirm = function(){
+		alcoholCart.checkoutValidate().then(
+			function (successRes) {
+				alcoholCart.freezCart().then(
+					function(result){
 
-	    alcoholCart.freezCart().then(
-			function(result){
+						var cartKey = alcoholCart.getCartKey();
 
-				var cartKey = alcoholCart.getCartKey();
+						$http.put("confirmorder/"+cartKey, {} ,{
 
-				$http.put("confirmorder/"+cartKey, {} ,{
+						}).error(function(response, status, headers) {
 
-				}).error(function(response, status, headers) {
+								sweetAlert.swal({
+									type:'error',
+									title: 'Oops...',
+									text:response.message,
+									timer: 2000
+								});
 
-						sweetAlert.swal({
-							type:'error',
-							title: 'Oops...',
-							text:response.message,
-							timer: 2000
-						});
+				        }).success(function(response) {
 
-		        }).success(function(response) {
+					        	if($scope.cart.payment.method == 'CARD'){
+					        		var payurl = $sce.trustAsResourceUrl(response.formAction);
+						            $rootScope.$broadcast('gateway.redirect', {
+						                url: payurl,
+						                method: 'POST',
+						                params: response.formData
+						            });
+					        		return;
+					        	}
 
-			        	if($scope.cart.payment.method == 'CARD'){
-			        		var payurl = $sce.trustAsResourceUrl(response.formAction);
-				            $rootScope.$broadcast('gateway.redirect', {
-				                url: payurl,
-				                method: 'POST',
-				                params: response.formData
-				            });
-			        		return;
-			        	}
+					            if(!response.success){
 
-			            if(!response.success){
+					            	sweetAlert.swal({
+										type:'error',
+										title: 'Oops...',
+										text:response.message,
+										timer: 2000
+									});
 
-			            	sweetAlert.swal({
-								type:'error',
-								title: 'Oops...',
-								text:response.message,
-								timer: 2000
-							});
+					            }
 
-			            }
+								sweetAlert.swal({
+									type:'success',
+									title: response.message,
+									timer: 1000
+								});
 
-			            sweetAlert.swal({
-							type:'success',
-							title: response.message,
-							timer: 1000
-						});
+								store.orderPlaced();
 
-			            store.orderPlaced();
+								$state.go('orderplaced',{order:response.order},{reload: false, location: 'replace'});
 
-		            	$state.go('orderplaced',{order:response.order},{reload: false, location: 'replace'});
+						})
+					},
+					function(errorRes){
+						console.log(errorRes);
+					}
 
-		        })
+				)
 			},
-			function(errorRes){
-				console.log(errorRes);
-			}
-
-		)
-
+			function (errorRes) {}
+		);
 	}
 
 }]);

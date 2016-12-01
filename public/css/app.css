@@ -1404,3 +1404,11 @@ td.childtd {
 	background: none !important;
 	border:0 none;
 }
+
+#review-table .prod_chilled_icon {
+	cursor: default;
+	margin: 0px;
+}
+.checkboxtotaldiv-text-font-size{
+	position: static;
+}
