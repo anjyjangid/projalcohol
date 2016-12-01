@@ -19,10 +19,10 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'infinite-scroll'
 ]).config(['$locationProvider','$mdThemingProvider', function($location,$mdThemingProvider) {
 
-	/*$location.html5Mode({
+	$location.html5Mode({
 		enabled: true,
 		requireBase: false
-	});*/
+	});
 
 	// $location.hashPrefix('!');
 
@@ -1063,6 +1063,11 @@ function ($q, $rootScope, $log, $location) {
         request: function (config) {
             xhrCreations++;
             updateStatus();
+            var urlStr = config.url;
+            if(urlStr.indexOf('templates') == -1){
+	            if(urlStr.charAt(0) == '/') urlStr = urlStr.substr(1);
+	            	config.url = 'api/'+urlStr;
+	        }	        	
             return config;
         },
         requestError: function (rejection) {

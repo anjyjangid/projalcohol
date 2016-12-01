@@ -1511,7 +1511,8 @@ class Cart extends Moloquent
 					'subTitle' => $oPDetail['subTitle'],
 					'description' => $oPDetail['description'],
 					'coverImage' => $oPDetail['coverImage']['source'],
-					'price' => $package['packagePrice'] * $package['packageQuantity']
+					'price' => $package['packagePrice'] * $package['packageQuantity'],
+					//'packageItems' => $oPDetail['packageItems']
 				];
 
 				$oPackage = array_merge($package,$oPackage);

@@ -11,9 +11,8 @@
  */
 
 /*TO VIEW MAIL TEMPLATE*/
-Route::get('_escaped_fragment_={categoryslug?}{productslug?}',function($categoryslug = '', $productslug = ''){
-	return 'working';
-});
+
+
 
 Route::get('/printjob/{reference}', 'OrderController@getOrderdetail');
 
@@ -133,140 +132,140 @@ Route::get('/', function () {
 
 /**/
 
-Route::controller('/auth', 'Auth\AuthController');
+Route::group(['prefix' => 'api'], function () {
 
-Route::controller('/super', 'SuperController');
+	Route::controller('/auth', 'Auth\AuthController');
 
-Route::controller('/category', 'CategoryController');
+	Route::controller('/super', 'SuperController');
 
-Route::get('/getproduct', 'ProductController@getproduct');
+	Route::controller('/category', 'CategoryController');
 
-Route::get('/fetchProducts', 'ProductController@fetchProducts');
+	Route::get('/getproduct', 'ProductController@getproduct');
 
-Route::get('/search', 'ProductController@getproduct');
+	Route::get('/fetchProducts', 'ProductController@fetchProducts');
 
-Route::get('/getproductdetail', 'ProductController@getproductdetail');
+	Route::get('/search', 'ProductController@getproduct');
 
-Route::get('/product/alsobought/{productSlug}', 'ProductController@getAlsobought');
+	Route::get('/getproductdetail', 'ProductController@getproductdetail');
 
+	Route::get('/product/alsobought/{productSlug}', 'ProductController@getAlsobought');
 
+	Route::controller('/password', 'Auth\PasswordController');
+	 
+	Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
 
+	Route::get('reset/{key}', 'Auth\PasswordController@reset');
 
-Route::controller('/password', 'Auth\PasswordController');
- 
-Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
+	Route::put('deploycart/{cartKey}','CartController@deploycart');
 
-Route::get('reset/{key}', 'Auth\PasswordController@reset');
+	Route::put('confirmorder/{cartKey}','CartController@confirmorder');
 
-Route::put('deploycart/{cartKey}','CartController@deploycart');
+	Route::get('confirmorder','CartController@confirmorder');
 
-Route::put('confirmorder/{cartKey}','CartController@confirmorder');
+	Route::get('freezcart','CartController@freezcart');
 
-Route::get('confirmorder','CartController@confirmorder');
+	Route::group(['middleware' => 'auth'], function () {
 
-Route::get('freezcart','CartController@freezcart');
+		Route::controller('loyalty', 'LoyaltyController');
+		Route::resource('loyalty', 'LoyaltyController');
 
-Route::group(['middleware' => 'auth'], function () {
+		Route::controller('credits', 'CreditsController');
+		Route::resource('credits', 'CreditsController');
 
-	Route::controller('loyalty', 'LoyaltyController');
-	Route::resource('loyalty', 'LoyaltyController');
+		Route::resource('address', 'AddressController');
 
-	Route::controller('credits', 'CreditsController');
-	Route::resource('credits', 'CreditsController');
+		Route::controller('coupon', 'CouponController');
 
-	Route::resource('address', 'AddressController');
+		Route::post('checkCoupon','CouponController@checkCoupon');
 
-	Route::controller('coupon', 'CouponController');
+	});
 
-	Route::post('checkCoupon','CouponController@checkCoupon');
+	Route::group(['prefix' => 'cart'], function () {
+
+		Route::get('deliverykey','CartController@getDeliverykey');
+
+		Route::get('services','CartController@getServices');	
+
+		Route::get('timeslots/{date}','CartController@getTimeslots');
+
+		Route::get('availability/{cartkey}','CartController@availability');
+
+		Route::put('merge/{cartKey}','CartController@mergecarts');
+
+		Route::put('chilledstatus/{cartkey}','CartController@updateProductChilledStatus');
+
+		Route::put('promoChilledStatus/{cartkey}','CartController@updatePromoChilledStatus');
+		
+		Route::post('package/{cartKey}','CartController@postPackage');
+
+		Route::put('package/{uid}/{cartKey}','CartController@putPackage');
+
+		Route::delete('package/{key}/{cartKey}','CartController@deletePackage');
+		
+		Route::put('promotion/{cartkey}','CartController@putPromotion');
+
+		Route::put('bulk','CartController@putBulk');
+
+		Route::post('repeatlast','CartController@postRepeatlast');
+
+		Route::delete('product/{cartKey}/{key}/{type}','CartController@deleteProduct');
+
+		Route::delete('promotion/{key}','CartController@deletePromotion');
+
+		Route::delete('card/{cartKey}/{key}','CartController@deleteCard');
+
+		Route::delete('sale/{cartKey}/{saleId}','CartController@deleteSale');
+
+		Route::put('sale/chilled/{cartKey}','CartController@putSaleChilledStatus');
+
+		Route::delete('gift/{key}/{cartKey}','CartController@deleteGift');
+
+		Route::put('gift/{cartKey}','CartController@putGift');
+		
+		Route::post('giftcard/{cartKey}','CartController@postGiftcard');
+
+		Route::put('giftcard/{uid}','CartController@putGiftcard');
+
+		Route::put('gift/product/chilledtoggle/{giftUid}','CartController@putGiftProductChilledStatus');
+
+		Route::put('loyalty/{cartKey}','CartController@putLoyalty');
+
+		Route::put('loyalty/credit/{cartKey}','CartController@putCreditCertificate');
+		
+		Route::delete('loyalty/{cartKey}/{key}/{type}','CartController@deleteLoyaltyProduct');
+		Route::delete('loyaltycard/{cartKey}/{key}','CartController@deleteLoyaltyCard');
+		
+		Route::put('chilled/loyalty/{cartkey}','CartController@updateLoyaltyChilledStatus');
+
+	});
+
+	Route::controller('suggestion', 'SuggestionController');
+	Route::resource('cart', 'CartController');
+	Route::resource('wishlist', 'WishlistController');
+	Route::get('/order/summary/{id}','OrderController@getSummary');
+	Route::get('/order/orders','OrderController@getOrders');
+	Route::get('/order/{order}','OrderController@show');
+	Route::post('/order/{id}','OrderController@update');
+	Route::resource('package', 'PackageController',['only'=>['*']]);
+	Route::controller('package', 'PackageController');
+	Route::resource('site', 'SiteController',['only'=>['*']]);
+	Route::controller('site', 'SiteController');
+	Route::resource('loyaltystore', 'LoyaltyStoreController',['only'=>['index']]);
+	Route::controller('loyaltystore', 'LoyaltyStoreController');
+	Route::get('/check', 'UserController@check');
+	Route::post('/auth', 'UserController@checkAuth');
+	Route::get('/loggedUser', 'UserController@loggedUser');
+	Route::put('/profile', 'UserController@update');
+	Route::put('/password', 'UserController@updatepassword');
+	Route::controller('user', 'UserController');
+	Route::controller('giftcategory', 'GiftCategoryController');
+	Route::resource('giftcategory', 'GiftCategoryController',['only'=>['index','show']]);
+	Route::resource('gift', 'GiftController',['only'=>['show']]);
+	Route::controller('payment', 'PaymentController');
 
 });
-
-Route::group(['prefix' => 'cart'], function () {
-
-	Route::get('deliverykey','CartController@getDeliverykey');
-
-	Route::get('services','CartController@getServices');	
-
-	Route::get('timeslots/{date}','CartController@getTimeslots');
-
-	Route::get('availability/{cartkey}','CartController@availability');
-
-	Route::put('merge/{cartKey}','CartController@mergecarts');
-
-	Route::put('chilledstatus/{cartkey}','CartController@updateProductChilledStatus');
-
-	Route::put('promoChilledStatus/{cartkey}','CartController@updatePromoChilledStatus');
-	
-	Route::post('package/{cartKey}','CartController@postPackage');
-
-	Route::put('package/{uid}/{cartKey}','CartController@putPackage');
-
-	Route::delete('package/{key}/{cartKey}','CartController@deletePackage');
-	
-	Route::put('promotion/{cartkey}','CartController@putPromotion');
-
-	Route::put('bulk','CartController@putBulk');
-
-	Route::post('repeatlast','CartController@postRepeatlast');
-
-	Route::delete('product/{cartKey}/{key}/{type}','CartController@deleteProduct');
-
-	Route::delete('promotion/{key}','CartController@deletePromotion');
-
-	Route::delete('card/{cartKey}/{key}','CartController@deleteCard');
-
-	Route::delete('sale/{cartKey}/{saleId}','CartController@deleteSale');
-
-	Route::put('sale/chilled/{cartKey}','CartController@putSaleChilledStatus');
-
-	Route::delete('gift/{key}/{cartKey}','CartController@deleteGift');
-
-	Route::put('gift/{cartKey}','CartController@putGift');
-	
-	Route::post('giftcard/{cartKey}','CartController@postGiftcard');
-
-	Route::put('giftcard/{uid}','CartController@putGiftcard');
-
-	Route::put('gift/product/chilledtoggle/{giftUid}','CartController@putGiftProductChilledStatus');
-
-	Route::put('loyalty/{cartKey}','CartController@putLoyalty');
-
-	Route::put('loyalty/credit/{cartKey}','CartController@putCreditCertificate');
-	
-	Route::delete('loyalty/{cartKey}/{key}/{type}','CartController@deleteLoyaltyProduct');
-	Route::delete('loyaltycard/{cartKey}/{key}','CartController@deleteLoyaltyCard');
-	
-	Route::put('chilled/loyalty/{cartkey}','CartController@updateLoyaltyChilledStatus');
-
-});
-
-
-Route::controller('suggestion', 'SuggestionController');
-
-Route::resource('cart', 'CartController');
-
-Route::resource('wishlist', 'WishlistController');
-
-Route::get('/order/summary/{id}','OrderController@getSummary');
-Route::get('/order/orders','OrderController@getOrders');
-Route::get('/order/{order}','OrderController@show');
-Route::post('/order/{id}','OrderController@update');
-
-
-
-Route::resource('package', 'PackageController',['only'=>['*']]);
-Route::controller('package', 'PackageController');
-
-Route::resource('site', 'SiteController',['only'=>['*']]);
-Route::controller('site', 'SiteController');
-
-Route::resource('loyaltystore', 'LoyaltyStoreController',['only'=>['index']]);
-Route::controller('loyaltystore', 'LoyaltyStoreController');
-
 /*PRODUCT IMAGE ROUTUING*/
-Route::get('products/i/{folder}/{filename}', function ($folder,$filename)
-{
+Route::get('products/i/{folder}/{filename}', function ($folder,$filename){
 
 	if(!file_exists(storage_path('products/') .$folder. '/' . $filename)){
 		
@@ -279,14 +278,12 @@ Route::get('products/i/{folder}/{filename}', function ($folder,$filename)
 });
 
 //ASSET IMAGE ROUTES
-Route::get('asset/i/{filename}', function ($filename)
-{
+Route::get('asset/i/{filename}', function ($filename){
     return Image::make(public_path('img') . '/' . $filename)->response();
 });
 
 //COMMON IMAGE ROUTES 
-Route::get('{storageFolder}/i/{filename}', function ($storageFolder,$filename)
-{
+Route::get('{storageFolder}/i/{filename}', function ($storageFolder,$filename){
 	/*
 	* $storageFolder possible values
 	* 
@@ -305,23 +302,11 @@ Route::get('{storageFolder}/i/{filename}', function ($storageFolder,$filename)
     return Image::make(storage_path($storageFolder) . '/' . $filename)->response();
 });
 
-
-
-Route::get('/check', 'UserController@check');
-Route::post('/auth', 'UserController@checkAuth');
-Route::get('/loggedUser', 'UserController@loggedUser');
-Route::put('/profile', 'UserController@update');
-Route::put('/password', 'UserController@updatepassword');
-Route::controller('user', 'UserController');
-
-Route::controller('giftcategory', 'GiftCategoryController');
-Route::resource('giftcategory', 'GiftCategoryController',['only'=>['index','show']]);
-
-Route::resource('gift', 'GiftController',['only'=>['show']]);
-
-Route::controller('payment', 'PaymentController');
-
 //ROUTE TO CATCH OLD URLS HAIVING UNDERSCORE IN IT
+
+Route::any('{catchall}', function ( $page ) {
+    return view('frontend');
+} )->where('catchall', '(.*)');
 
 Route::get( '{categoryslug}/{productslug?}', function ( $categoryslug, $productslug = '') {
 	
@@ -338,14 +323,14 @@ Route::get( '{categoryslug}/{productslug?}', function ( $categoryslug, $products
 	}
 
 	if($categoryslug && $route==''){
-		$s = str_replace('_', '-', $categoryslug);
+		$s = str_replace(['_','-'], '-', $categoryslug);
 	    $s = preg_replace('/[^A-Za-z0-9\-]/', '', $s);
 	    $s = trim(preg_replace('/-+/', '-', $s));
 		$s = strtolower($s);
 		$route = $s;
 	}
     if($productslug!=''){
-	    $s = str_replace('_', '-', $productslug);
+	    $s = str_replace(['_','-'], '-', $productslug);
 	    $s = preg_replace('/[^A-Za-z0-9\-]/', '', $s);
 	    $s = trim(preg_replace('/-+/', '-', $s));
 		$s = strtolower($s);    		
@@ -354,6 +339,6 @@ Route::get( '{categoryslug}/{productslug?}', function ( $categoryslug, $products
 	
 	return redirect('/#/'.$route,301);
 
-} )->where(['categoryslug'=>'^[a-zA-Z0-9_]*$','productslug'=>'^[a-zA-Z0-9_]*$']);
+} )->where(['categoryslug'=>'^[a-zA-Z0-9_-]*$','productslug'=>'^[a-zA-Z0-9_-]*$']);
 
 
