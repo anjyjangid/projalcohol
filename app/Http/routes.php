@@ -116,7 +116,7 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::post('checkCoupon','CouponController@checkCoupon');
 });
 
-Route::group(['prefix' => 'admin'], function () {					
+Route::group(['prefix' => 'admin'], function () {
 	Route::any('{catchall}', function ( $page ) {
 	    return view('backend');    
 	} )->where('catchall', '(.*)');
@@ -157,7 +157,7 @@ Route::group(['prefix' => 'api'], function () {
 	Route::get('reset/{key}', 'Auth\PasswordController@reset');
 
 	Route::put('deploycart/{cartKey}','CartController@deploycart');
-
+ 
 	Route::put('confirmorder/{cartKey}','CartController@confirmorder');
 
 	Route::get('confirmorder','CartController@confirmorder');
@@ -209,6 +209,8 @@ Route::group(['prefix' => 'api'], function () {
 		Route::post('repeatlast','CartController@postRepeatlast');
 
 		Route::delete('product/{cartKey}/{key}/{type}','CartController@deleteProduct');
+	
+		Route::put('bulk/{cartkey}','CartController@putBulk');
 
 		Route::delete('promotion/{key}','CartController@deletePromotion');
 
@@ -264,6 +266,7 @@ Route::group(['prefix' => 'api'], function () {
 	Route::controller('payment', 'PaymentController');
 
 });
+
 /*PRODUCT IMAGE ROUTUING*/
 Route::get('products/i/{folder}/{filename}', function ($folder,$filename){
 

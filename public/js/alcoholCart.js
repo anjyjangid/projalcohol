@@ -356,37 +356,48 @@ AlcoholDelivery.service('alcoholCart', [
 	this.addBulk = function(products){
 
 		var defer = $q.defer();
+		var cartKey = this.getCartKey();
 		var _self = this;
-		$http.put('cart/bulk',angular.extend({ cartKey: _self.getCartKey() }, products))
+
+		$http.put('cart/bulk/'+cartKey,products)
 				.success(function(response){
 
-					if(response.success){					
+					var sales = response.sales;
 
-						angular.forEach(response.data.products, function (product, index) {
-							
-							var id = product.product._id;
-							var inCart = _self.getProductById(id);
+					angular.forEach(response.products, function (resProduct, index) {
+						
+						var id = mongoIdToStr(resProduct.product._id);
 
-							if(inCart){
+						var inCart = _self.getProductById(id);
 
-								inCart.setRQuantity(product.chilled.quantity,product.nonchilled.quantity);
-								inCart.setTQuantity(product.quantity);
-								inCart.setPrice(product);
+						if(inCart){
+
+							if(resProduct.quantity==0){
+
+								_self.removeItemById(id);
 
 							}else{
-								
-					    		var newItem = new alcoholCartItem(id, product);
-								_self.$cart.products[id] = newItem;
-								
-							}
 
-						});
+								inCart.setRQuantity(resProduct.chilled.quantity,resProduct.nonchilled.quantity);
+								inCart.setTQuantity(resProduct.remainingQty);
+								inCart.setRemainingQty(resProduct.remainingQty);
+								inCart.setPrice(resProduct);
 
-						defer.resolve("added success fully");
+							}									
 
-					}
+						}else{				
+							
+				    		var newItem = new alcoholCartItem(id, resProduct);
+							_self.$cart.products[id] = newItem;
+							
+						}
 
-					defer.reject("something went wrong");
+					});
+
+					//_self.setAllProductsRemainingQty(proRemaining);
+					_self.setAllSales(sales);
+
+					defer.resolve("added success fully");
 
 				})
 				.error(function(data, status, headers){
@@ -765,8 +776,14 @@ AlcoholDelivery.service('alcoholCart', [
 
 		var isExist = Object.keys(pros).length;
 
-		if(isExist>0)
+		if(isExist>0){
 			return true;		
+		}else{
+			var packages = this.getPackages();
+			if(packages.length>0){
+				return true;
+			}
+		}
 		return false
 
 	}

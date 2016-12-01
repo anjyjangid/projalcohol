@@ -1097,6 +1097,10 @@ function ($q, $rootScope, $log, $location) {
 				//$location.url('/404').replace();
 			};
 
+			if(rejection.status == 405){ //405 => method not allowed
+				//$location.url('/404').replace();
+			};
+
             return $q.reject(rejection);
         }
     };

@@ -5,15 +5,15 @@
 		
 		<div class="order-fetching" ng-if="fetching || processAdding"></div>
 
-		<div class="ro_items" ng-class="{'itemselect':product.selected}" ng-repeat="product in lastorder.products" title="{{product.original.shortDescription}}">
+		<div class="ro_items" ng-class="{'itemselect':product.selected}" ng-repeat="product in lastorder.products" title="{{product.shortDescription}}">
 
 			<div class="chk_unchk">
-				<md-checkbox ng-model="product.selected" aria-label="{{product.original.name}}"></md-checkbox>			
+				<md-checkbox ng-model="product.selected" aria-label="{{product.name}}"></md-checkbox>			
 			</div>
 			<div class="ro_pic">				
-				<img ng-src="products/i/200/{{product.original.imageFiles | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
+				<img ng-src="products/i/200/{{product.imageFiles | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
 			</div>
-			<div class="ro_desc">{{product.original.name | truncate:35}}</div>
+			<div class="ro_desc">{{product.name | truncate:35}}</div>
 		</div>
 
 	</div>

@@ -1815,8 +1815,8 @@ angular.SocialSharing = SocialSharingService;
 }]);
 
 AlcoholDelivery.controller('RepeatOrderController',[
-			'$scope','$rootScope','$http','$mdDialog','UserService','alcoholCart','sweetAlert',
-	function($scope,$rootScope,$http,$mdDialog,UserService,alcoholCart,sweetAlert){
+			'$scope','$rootScope','$http','$mdDialog','UserService','alcoholCart','sweetAlert', 'ProductService',
+	function($scope,$rootScope,$http,$mdDialog,UserService,alcoholCart,sweetAlert, ProductService){
 
 	$scope.user = UserService.getIfUser();
 	$scope.lastorder = {};
@@ -1844,7 +1844,27 @@ AlcoholDelivery.controller('RepeatOrderController',[
 				function(response){
 
 					if(response.data.order){
+
+						var products = ProductService.prepareProductObjs(response.data.order.products);
+
+						angular.forEach(products,function(product){
+
+							angular.forEach(response.data.order.products,function(oPro){
+								
+								if(product._id===oPro._id.$id){
+
+									product.qChilled = oPro.orderQty.chilled;
+									product.qNChilled = oPro.orderQty.nonChilled;
+
+								}
+							});
+
+						})
+
+						response.data.order.products = products;
+
 						$scope.lastorder = response.data.order;
+						
 						$scope.fetching = false;
 						$scope.error = false;
 					}
@@ -1910,15 +1930,19 @@ AlcoholDelivery.controller('RepeatOrderController',[
 		var selected = {
 			products : []
 		};
+
 		angular.forEach($scope.lastorder.products, function(product) {
 
-			if(product.selected){
-				var selPro = {
-					id : product.original._id,
-					quantity : 1,
-					chilled : product.lastServedChilled
-				};
+			var selPro = {
+							id : product._id,
+							quantity : {
+								chilled : product.qChilled,
+								nonChilled : product.qNChilled
+							}
+							
+						};			
 
+			if((selPro.quantity.chilled+selPro.quantity.nonChilled)>0){
 				selected.products.push(selPro);
 			}
 
@@ -1946,6 +1970,10 @@ AlcoholDelivery.controller('RepeatOrderController',[
 
 			).finally(function(){
 
+				angular.forEach($scope.lastorder.products, function(product) {
+					product.selected = false;
+				});
+
 				$scope.processAdding = false;
 
 			});
@@ -1966,8 +1994,8 @@ AlcoholDelivery.controller('RepeatOrderController',[
 }]);
 
 AlcoholDelivery.controller('ShopFromPreviousController',[
-			'$scope','$rootScope','$http','$mdDialog','$timeout','alcoholCart','sweetAlert',
-	function($scope,$rootScope,$http,$mdDialog,$timeout,alcoholCart,sweetAlert){
+			'$scope','$rootScope','$http','$mdDialog','$timeout','alcoholCart','sweetAlert','ProductService',
+	function($scope,$rootScope,$http,$mdDialog,$timeout,alcoholCart,sweetAlert,ProductService){
 
 	$scope.orders = {};
 	$scope.order = {};
@@ -1977,7 +2005,8 @@ AlcoholDelivery.controller('ShopFromPreviousController',[
 
 	$scope.selectAll = function(selected) {
 		$scope.order.products.forEach(function(product){
-			product.selected = selected;
+			product['qChilledSelected'] = selected;
+			product['qNChilledSelected'] = selected;
 		})
 	}
 
@@ -2039,7 +2068,27 @@ AlcoholDelivery.controller('ShopFromPreviousController',[
 
 			function(response){
 
+				var products = ProductService.prepareProductObjs(response.data.order.products);
+
+				angular.forEach(products,function(product){
+
+					angular.forEach(response.data.order.products,function(oPro){
+						
+						if(product._id===oPro._id.$id){
+
+							product.qChilled = oPro.orderQty.chilled;
+							product.qNChilled = oPro.orderQty.nonChilled;
+							product.qChilledState = true;
+							product.qNChilledState = false;
+						}
+					});
+
+				})
+
+				response.data.order.products = products;
+
 				$scope.order = response.data.order;
+				
 				$timeout(function(){
 					$scope.fetchingOrder = false;
 				},1500);
@@ -2067,13 +2116,32 @@ AlcoholDelivery.controller('ShopFromPreviousController',[
 
 		angular.forEach($scope.order.products, function(product) {
 
-			if(product.selected){
-				var selPro = {
-					id : product.original._id,
-					quantity : product.quantity,
-					chilled : product.lastServedChilled
-				};
+			states = ['qChilled','qNChilled'];
 
+			var selPro = {
+							id : product._id,
+							quantity : {
+								chilled : 0,
+								nonChilled : 0
+							}
+							
+						};
+
+			angular.forEach(states,function(state){
+
+				if(product[state+'Selected'] && product[state]>0){
+
+					var isChilled = product[state+'State'];
+					if(isChilled){
+						selPro.quantity.chilled+=product[state];
+					}else{
+						selPro.quantity.nonChilled+=product[state];
+					}					
+				}
+
+			})
+
+			if((selPro.quantity.chilled+selPro.quantity.nonChilled)>0){
 				selected.products.push(selPro);
 			}
 

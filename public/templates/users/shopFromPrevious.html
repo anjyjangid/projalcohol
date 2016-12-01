@@ -44,7 +44,7 @@
 		<div ng-if="fetchingOrder" id="prevOrderFetchLoading"></div>
 
 		<div ng-if="!fetchingOrder">
-		<div class="alcohal_orderhistory2bodytext1"> Order: {{order.reference}} (16 items) </div>
+		<div class="alcohal_orderhistory2bodytext1"> Order: {{order.reference}} ({{order.products.length}} items) </div>
 		<div class="alcohal_orderhistory2bodytext2"> Delivered on: {{order.reference}} </div>
 		<div class="alcohal_ordehisty2selctboxcvr">
 			<!-- <input type="checkbox" class="orderhistysect_check" name="cc" id="b1"> -->
@@ -65,10 +65,13 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="product in order.products">
+					
+					<tr ng-repeat-start="product in order.products"></tr>
+					<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="product[type]>0">
+
 						<td>
 							<div class="cheklble">
-								<md-checkbox ng-model="product.selected" ng-change="product.selected?0:$parent.allSelected=false" aria-label="Checkbox 1"></md-checkbox>			
+								<md-checkbox ng-model="product[type+'Selected']" ng-change="product[type+'Selected']?0:$parent.allSelected=false" aria-label="select product"></md-checkbox>			
 							</div>
 							
 						</td>
@@ -76,40 +79,47 @@
 							<div class="orhistry2_td2procdtcvr"> 
 								
 								<span class="cursor-pointer">
-									<a ui-sref="mainLayout.product({product:product.original.slug})" title="View Product">
-										<img ng-src="products/i/200/{{product.original.imageFiles | getProductThumb}}" alt="Product Icon" class="img-responsive img-responsive-h" />
+									<a ui-sref="mainLayout.product({product:product.slug})" title="View Product">
+										<img ng-src="products/i/200/{{product.imageFiles | getProductThumb}}" alt="Product Icon" class="img-responsive img-responsive-h" />
 									</a>
 								</span>
 
 								<div class="checkouter-td-right-text">
-									<div class="orhistry2_td2proctext1">{{product.original.name}}</div>
-									<div class="orhistry2_td2proctext2">{{product.original.shortDescription}}</div>
+									<div class="orhistry2_td2proctext1">{{product.name}}</div>
+									<div class="orhistry2_td2proctext2">{{product.shortDescription}}</div>
+
+									<div class="orhistry2_td2proctext1">{{product.getCurrentUnitPrice() | pricingTxt}}</div>
+									<div class="orhistry2_td2proctext2">unit Price</div>
+
 								</div>
 							</div>
+							<div class="sale-tag-txt -cart" ng-if="product.sale.isSingle">{{product.sale.detailTitle}}</div>
 						</td>
-						<td>
+						<td width="131">
 							
-							<div class="prod_chilled" ng-class="{
-															notchilled:!product.lastServedChilled,
-															invisible:!product.original.chilled,
-														}"
-														ng-click="product.lastServedChilled=!product.lastServedChilled"
-														>
-								<span>Chilled</span>
-								<div class="prod_chilled_icon"></div>
+							<div 
+								class="prod_chilled" 
+								ng-if="product.chilled" 
+								ng-class="{notchilled:!product[type+'State']}" 
+								ng-click="product[type+'State']=!product[type+'State']"
+							>
+							<span>Chilled</span>
+							<div class="prod_chilled_icon"></div>
 							</div>
-						</td>
-						<td>
-							<div class="alcohocal_ordrhistryincrmnetdrcrmnt2cvr">													
 
-								<input type="text" ng-model="product.qtytoadd" value="product.quantity" min="0" mquantity="product.original.maxQuantity" ng-touch-spin>
-								
+						</td>
+						<td width="70">
+							<div class="alcohocal_ordrhistryincrmnetdrcrmnt2cvr full-width">
+
+								<input ng-touch-spin type="text" ng-model="product[type]" value="product[type]" min="1" >
+
 							</div>
 						</td>
-						<td>
-							<div class="orderhistry2price">{{product.original.price | pricingTxt}}</div>
+						<td>							
+							<div class="orderhistry2price">{{product.getCurrentUnitPrice() * product[type] | pricingTxt}}</div>
 						</td>
 					</tr>
+					<tr ng-repeat-end></tr>
 					
 				</tbody>
 			</table>

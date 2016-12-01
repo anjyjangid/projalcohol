@@ -113,27 +113,30 @@ class Orders extends Moloquent
 
 		$productsModel = new Products;
 		$productKeys = array_unique($productKeys);
+		
+		$products = $productsModel->fetchProduct(["id"=>$productKeys]);
 
-		$products = $productsModel->getProducts(
-											array(
-												"id"=>$productKeys,
-												"with"=>array(
-													"discounts"
-												)
-											)
-										);
+		// $products = $productsModel->getProducts(
+		// 									array(
+		// 										"id"=>$productKeys,
+		// 										"with"=>array(
+		// 											"discounts"
+		// 										)
+		// 									)
+		// 								);
 
-		if(!empty($products)){
+		if($products['success'] && !empty($products['product'])){
+			$products = $products['product'];
 
 			foreach($products as $key=>$product){
 
-				$products[$product['_id']] = $product;
+				$products[(string)$product['_id']] = $product;
 				unset($products[$key]);
 
 			}
 
 		}
-
+		
 		return $products;
 
 	}
@@ -145,7 +148,17 @@ class Orders extends Moloquent
 			foreach($order['products'] as $proKey=>&$product){
 
 				if(isset($products[(string)$product['_id']])){
-					$product['original'] = $products[(string)$product['_id']];
+
+					$tempProduct = $product;
+
+					$product = $products[(string)$product['_id']];
+
+					$product["orderQty"]=[
+
+							'chilled'=>$tempProduct['afterSale']['chilled'],
+							'nonChilled'=>$tempProduct['afterSale']['nonChilled']
+						];
+					
 				}else{
 					unset($orders[$key]['products'][$proKey]);
 				}

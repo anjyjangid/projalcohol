@@ -23,7 +23,7 @@
 
 						<div class="orhistry2_td2procdtcvr">
 						<span class="cursor-pointer">
-							<a ui-sref="mainLayout.product({product:cartproduct.product.slug})" title="View Product">
+							<a ui-sref="mainLayout.product({product:cartproduct.product.slug})" title="{{::cartproduct.getName()}}">
 								<img err-pro-src="" ng-src="products/i/200/{{cartproduct.product.imageFiles | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
 							</a>
 						</span>
@@ -83,7 +83,7 @@
 
 								<li class="cursor-pointer" ng-repeat="a in sPro.productQtyArr">
 
-									<a ui-sref="mainLayout.product({product:sPro.product.slug})" title="View Product">
+									<a ui-sref="mainLayout.product({product:sPro.product.slug})" title="{{::sPro.product.name}}">
 										<img err-pro-src="" ng-src="products/i/200/{{sPro.product.image}}" alt="" class="img-responsive img-responsive-h" />
 									</a>
 									
@@ -95,7 +95,7 @@
 							</li>
 							<div ng-repeat-start="sPro in sale.action" ng-hide="true"></div>
 								<li class="cursor-pointer" ng-repeat="a in sPro.productQtyArr">
-									<a ui-sref="mainLayout.product({product:sPro.product.slug})" title="View Product">
+									<a ui-sref="mainLayout.product({product:sPro.product.slug})" title="{{::sPro.product.name}}">
 										<img err-pro-src="" ng-src="products/i/200/{{sPro.product.image}}" alt="" class="img-responsive img-responsive-h" />
 									</a>																		
 								</li>

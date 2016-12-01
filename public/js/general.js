@@ -26,6 +26,14 @@ function GOM(obj)
 	return res;
 }
 
+function mongoIdToStr(id){
+
+	if(typeof id.$id !== 'undefined'){ 
+		id = id.$id
+	}
+
+	return id;
+}
 
 Number.prototype.toFixed = function(digits) {
 	return Math.round(this * Math.pow(10, digits))/Math.pow(10, digits);
@@ -44,3 +52,4 @@ String.prototype.toFixed = function(digits) {
 
 	return Math.round(value * Math.pow(10, digits))/Math.pow(10, digits);
 }
+
