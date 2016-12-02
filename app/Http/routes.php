@@ -311,7 +311,7 @@ Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
 $fixPagesLinks = [
 	'events' => 'site/event-planner',
 	'menu' => 'beer',
-	'how_to_order' => 'site/terms-of-service'
+	'how_to_order' => 'site/how-to-order'
 ];
 
 //FIX LINKS ROUTE

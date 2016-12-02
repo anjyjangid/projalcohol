@@ -148,7 +148,7 @@ class CmsController extends Controller
 
         $columns = ['_id','smallTitle','description'];
 
-        $project = ['title'=>1,'description'=>1];
+        $project = ['title'=>1,'description'=>1,'slug'=>1];
 
         $project['smallTitle'] = ['$toLower' => '$title'];
 
