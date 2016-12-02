@@ -312,7 +312,7 @@ Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
 $fixPagesLinks = [
 	'events' => 'site/event-planner',
 	'menu' => 'beer',
-	'how_to_order' => 'site/terms-of-service'
+	'how_to_order' => 'site/how-to-order'
 ];
 
 //FIX LINKS ROUTE
@@ -343,7 +343,7 @@ Route::get('{categoryslug}/{productslug}', function ( $categoryslug, $productslu
 
 })->where(['productslug'=>'^[\w]+_[\w]+$']);
 
-Route::get('updatesitemap', function(){
+Route::get('sitemap.xml', function(){
 
     // create new sitemap object
     $sitemap = App::make("sitemap");
@@ -381,7 +381,7 @@ Route::get('updatesitemap', function(){
 	}	
 
     // generate your sitemap (format, filename)
-    $sitemap->store('xml','sitemap');
+    //$sitemap->store('xml','sitemap');
     return $sitemap->render('xml');
     // this will generate file mysitemap.xml to your public folder
 
