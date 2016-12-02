@@ -617,7 +617,6 @@ AlcoholDelivery.controller('PasswordController',['$scope','$rootScope','$state',
 AlcoholDelivery.controller('OrdersController',['$scope','$rootScope','$state','$http','sweetAlert','UserService'
 , function($scope,$rootScope,$state,$http,sweetAlert,UserService){
 
-
 	$scope.orders = [];
 
     $http.get("order/orders")
@@ -2030,7 +2029,7 @@ AlcoholDelivery.controller('ShopFromPreviousController',[
 		})
 	}
 
-	$http.get("order/orders").then(
+	$http.get("order/to-repeat").then(
 
 		function(response){
 

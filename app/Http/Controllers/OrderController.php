@@ -94,8 +94,8 @@ class OrderController extends Controller
 				array(
 					'$match'=> array(
 						'user'=> new MongoId($user->_id),
-						'products' => array('$exists'=>true),
-						'products' => array('$ne'=>null)
+						// 'products' => array('$exists'=>true),
+						// 'products' => array('$ne'=>null)
 					)
 				),
 				/*array(
@@ -133,8 +133,52 @@ class OrderController extends Controller
 		return response($orders['result'],200);
 	}
 
-	public function getTorepeat($id){
+	public function getToRepeat(){
 
+		$user = Auth::user('user');
+
+		$orders = DB::collection('orders')->raw(function($collection) use($user){
+			return $collection->aggregate(array(
+				array(
+					'$match'=> array(
+						'user'=> new MongoId($user->_id),
+						'products' => array('$exists'=>true),
+						'products' => array('$ne'=>null)
+					)
+				),
+				/*array(
+					'$limit' => 10
+				),*/
+				array(
+					'$skip' => 0
+				),
+				array(
+					'$project' => array(
+						'_id'=>1,
+						'reference'=>1,
+						'service'=>1,
+						'delivery.type'=>1,
+						'nonchilled'=>1,
+						'total'=>1,
+						'quantity' => array(
+							'$size' => '$products'
+						),
+						'created_at'=>1,
+						'timeslot'=>1,
+						'rate'=>1,
+						//'productsLog' => 1,
+						'quantity' => array(
+							'$sum' => '$productsLog.quantity'
+						),
+					),
+				),
+				array(
+					'$sort' => array('created_at'=> -1)
+				)
+			));
+		});
+
+		return response($orders['result'],200);
 	}
 
 	public function getOrderdetail(Request $request,$reference){

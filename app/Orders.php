@@ -155,8 +155,8 @@ class Orders extends Moloquent
 
 					$product["orderQty"]=[
 
-							'chilled'=>$tempProduct['afterSale']['chilled'],
-							'nonChilled'=>$tempProduct['afterSale']['nonChilled']
+							'chilled'=>$tempProduct['quantity']['chilled'],
+							'nonChilled'=>$tempProduct['quantity']['nonChilled']
 						];
 					
 				}else{
