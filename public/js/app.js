@@ -1064,7 +1064,7 @@ function ($q, $rootScope, $log, $location) {
             xhrCreations++;
             updateStatus();
             var urlStr = config.url;
-            if(urlStr.indexOf('templates') == -1){
+            if(urlStr.indexOf('templates') == -1 && urlStr.indexOf('template') == -1){
 	            if(urlStr.charAt(0) == '/') urlStr = urlStr.substr(1);
 	            	config.url = 'api/'+urlStr;
 	        }	        	

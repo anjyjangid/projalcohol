@@ -244,6 +244,7 @@ Route::group(['prefix' => 'api'], function () {
 	Route::resource('wishlist', 'WishlistController');
 	Route::get('/order/summary/{id}','OrderController@getSummary');
 	Route::get('/order/orders','OrderController@getOrders');
+	Route::get('/order/to-repeat','OrderController@getToRepeat');
 	Route::get('/order/{order}','OrderController@show');
 	Route::post('/order/{id}','OrderController@update');
 	Route::resource('package', 'PackageController',['only'=>['*']]);
