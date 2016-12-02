@@ -1405,7 +1405,8 @@ td.childtd {
 	border:0 none;
 }
 
-#review-table .prod_chilled_icon {
+#review-table .prod_chilled_icon, 
+#review-table .prod_chilled{
 	cursor: default;
 	margin: 0px;
 }
