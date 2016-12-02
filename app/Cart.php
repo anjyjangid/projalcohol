@@ -42,7 +42,7 @@ class Cart extends Moloquent
 						'giftCards',
 						'nonchilled',
 						'delivery',
-	 					'service',
+						'service',
 						'discount',
 						'timeslot',
 						'payment',
@@ -1506,13 +1506,31 @@ class Cart extends Moloquent
 
 				$oPDetail = $packagesInCart[(string)$package['_id']];
 				
+				$proDetail = [];
+
+				foreach ($package['products'] as $pkey => $pvalue) {
+					$proDetail[(string)$pvalue['_id']] = $pvalue['quantity'];
+				}
+
+				$packageItems = [];
+
+				foreach ($oPDetail['packageItems'] as $oPackagekey => &$oPackagevalue) {
+					foreach ($oPackagevalue['products'] as $pKey => &$provalue) {
+						if(isset($proDetail[$provalue['_id']])){
+							$provalue['quantity'] = $proDetail[$provalue['_id']];							
+						}else{
+							unset($oPDetail['packageItems'][$oPackagekey]['products'][$pKey]);
+						}
+					}
+				}
+
 				$oPackage = [
 					'title' => $oPDetail['title'],
 					'subTitle' => $oPDetail['subTitle'],
 					'description' => $oPDetail['description'],
 					'coverImage' => $oPDetail['coverImage']['source'],
 					'price' => $package['packagePrice'] * $package['packageQuantity'],
-					//'packageItems' => $oPDetail['packageItems']
+					'packageItems' => $oPDetail['packageItems']
 				];
 
 				$oPackage = array_merge($package,$oPackage);

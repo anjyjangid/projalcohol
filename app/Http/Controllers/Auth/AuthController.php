@@ -159,7 +159,7 @@ class AuthController extends Controller
 		$user = User::where("email_key","=",$key)->first();
 
 		if(empty($user->_id)){
-			return redirect('/#/mailverified/0');
+			return redirect('/mailverified/0');
 		}
 		
 		$user->status = 1;
@@ -167,7 +167,7 @@ class AuthController extends Controller
 		$user->save();
 		$user->unset("email_key");
 
-		return redirect('/#/mailverified/1');
+		return redirect('/mailverified/1');
 	}
 
 	

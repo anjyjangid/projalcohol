@@ -78,16 +78,16 @@ class PasswordController extends Controller
     public function reset($token = null)
     {
         if (is_null($token)) {
-            return redirect('/#/resetexpired');
+            return redirect('/resetexpired');
         }
 
         $user = User::where("email_key","=",$token)->first();
 
         if(empty($user->_id)){
-			return redirect('/#/resetexpired');
+			return redirect('/resetexpired');
 		}
 
-		return redirect('/#/reset/'.$token);
+		return redirect('/resetpassword/'.$token);
         
     }
 

@@ -672,7 +672,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('cmsLayout.reset', {
-						url: "/reset/{token}",
+						url: "/resetpassword/{token}",
 						templateUrl: "/templates/partials/resetpassword.html",
 						controller:function($rootScope,$stateParams,$scope,$http,$timeout,$mdDialog,sweetAlert,$location){
 
