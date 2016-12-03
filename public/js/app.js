@@ -1157,8 +1157,9 @@ AlcoholDelivery.run([
 
 		var regex = new RegExp('^accountLayout', 'i');
 
-		if(toState != fromState)
+		if(toState != fromState){			
 			$anchorScroll();
+		}
 
 		angular.element('#wrapper').removeClass('toggled');
 		angular.element('body').removeClass(' hidden-scroll');

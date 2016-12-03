@@ -142,7 +142,7 @@ return [
         Jenssegers\Mongodb\MongodbServiceProvider::class,
 
         /*HTML AND FORM EXTENSION*/
-       // 'Collective\Html\HtmlServiceProvider',
+       //'Collective\Html\HtmlServiceProvider',
 
 
         /*
@@ -155,7 +155,7 @@ return [
         
         'Intervention\Image\ImageServiceProvider',
         Roumen\Sitemap\SitemapServiceProvider::class,
-        //'Nutsweb\LaravelPrerender\LaravelPrerenderServiceProvider',
+        'Nutsweb\LaravelPrerender\LaravelPrerenderServiceProvider',
     ],
 
     /*

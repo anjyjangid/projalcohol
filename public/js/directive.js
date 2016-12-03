@@ -107,7 +107,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			//FACEBOOK LOGIN
 			$scope.loginToggle = function() {
 				$fblogin({
-					fbId: '273669936304095',
+					fbId: $rootScope.settings.fbid,
 					permissions: 'email,user_birthday',
 					fields: 'first_name,last_name,locale,email,birthday'
 				})

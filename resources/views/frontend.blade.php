@@ -3,17 +3,27 @@
 	<head>
 		<base href="/">
 		<meta charset="utf-8">
-
 		<meta name="fragment" content="!">
-
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-		
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />		
 		<meta name="title" content="@{{meta.title}}">
-
 		<meta name="description" content="@{{meta.description}}">
-
 		<meta name="keywords" content="@{{meta.keyword}}">
 
+		<!--TWITTER META-->
+		<meta name="twitter:card" content="summary">
+		<meta name="twitter:site" content="@{{meta.site_name}}">
+		<meta name="twitter:title" content="@{{meta.title}}">
+		<meta name="twitter:description" content="@{{meta.description}}" />
+		<meta name="twitter:creator" content="@{{meta.site_name}}">
+		<meta name="twitter:image:src" content="@{{meta.img}}" />
+	    <!--FACEBOOK/OTHER META -->
+		<meta property="fb:app_id" content="@{{meta.fbid}}" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="@{{meta.title}}" />
+		<meta property="og:image" content="@{{meta.img}}" />
+		<meta property="og:site_name" content="@{{meta.site_name}}" />
+		<meta property="og:description" content="@{{meta.description}}" />
+		<meta property="og:url" content="{{url()}}" />
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		

@@ -9,6 +9,12 @@ MetronicApp.controller('OrdersController',['$rootScope', '$scope', '$timeout','$
     $rootScope.settings.layout.pageBodySolid = false;
     $rootScope.settings.layout.pageSidebarClosed = false;
 
+    $scope.updateStatus = function(status){
+
+    	
+
+    }
+
 }]);
 
 MetronicApp.controller('OrderUpdateController',['$rootScope', '$scope', '$timeout','$http','$stateParams','orderModel', function($rootScope, $scope, $timeout,$http,$stateParams,orderModel) {
