@@ -239,6 +239,8 @@ html{font-family:sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:1
     -webkit-transform:rotate(300deg);
     text-transform: uppercase;    
     font-weight: bold;
+    margin: 0px;
+    line-height: normal;
 }
 /*# sourceMappingURL=bootstrap.css.map */
 

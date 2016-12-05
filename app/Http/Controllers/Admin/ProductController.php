@@ -644,6 +644,8 @@ class ProductController extends Controller
             '$set' => ['doStatus' => 0]
         ],['multiple' => true]);*/
         
+        return date('Y-m-d h:i:s',strtotime('+8 hours'));
+
         $yourDate = new \MongoDate();
         echo date('Y-M-d h:i:s', $yourDate->sec);
         //return ;

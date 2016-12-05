@@ -315,10 +315,8 @@ class Orders extends Moloquent
 
 				foreach ($value['products'] as $pkey => $pvalue) {
 					$productId = (string)$pvalue['_id'];
-					$product = $productInfo[$productId];						
-					
+					$product = $productInfo[$productId];											
 					$chillstatus = ($product['chilled'] && $value['chilled'])?true:false;
-
 					$saleProduct[] = [
 						'_id' => $pvalue['_id'],
 						'name' => $product['name'],
@@ -331,6 +329,26 @@ class Orders extends Moloquent
 						'quantity' => $pvalue['quantity'],
 						'category' => 'saleproduct'							
 					];
+				}
+
+				if(isset($value['action']) && !empty($value['action'])){
+					foreach ($value['action'] as $pkey => $pvalue) {
+						$productId = (string)$pvalue['_id'];
+						$product = $productInfo[$productId];											
+						$chillstatus = ($product['chilled'] && $value['chilled'])?true:false;
+						$saleProduct[] = [
+							'_id' => $pvalue['_id'],
+							'name' => $product['name'],
+							'slug' => $product['slug'],
+							'coverImage' => @$product['coverImage'],
+							'description' => $product['description'],
+							'shortDescription' => $product['shortDescription'],
+							'sku' => $product['sku'],
+							'chilled' => $chillstatus,
+							'quantity' => $pvalue['quantity'],
+							'category' => 'saleproduct'							
+						];
+					}
 				}
 				
 				$particulars[] = [

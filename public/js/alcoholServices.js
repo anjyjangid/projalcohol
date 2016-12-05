@@ -1097,6 +1097,10 @@ AlcoholDelivery.factory('AlcoholProduct',[
 		this.loyaltyValuePrice = p.loyaltyValuePrice;
 		this.loyalty = p.loyalty;
 		this.loyaltyType = p.loyaltyType;
+		
+		this.metaTitle = p.metaTitle;
+		this.metaDescription = p.metaDescription;
+		this.metaKeywords = p.metaKeywords;
 
 	}
 

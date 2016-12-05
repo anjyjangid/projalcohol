@@ -7,7 +7,10 @@ AlcoholDelivery.controller('AppController',
 		if(typeof meta.title == 'undefined') return;
 
 		var title = $filter('ucwords')(meta.title)+ ' - '+$rootScope.settings.general.site_name;
-		$rootScope.meta = {
+		$rootScope.meta = {        	
+        	fbid:$rootScope.settings.fbid,
+        	site_name:$rootScope.settings.general.site_name,
+        	img:'/img/poslogo.png',
         	title:title,
         	description:meta.description,
         	keyword:meta.keyword,
@@ -26,6 +29,7 @@ AlcoholDelivery.controller('AppController',
 
 	$http.get("/super/settings/").success(function(response){
     	$rootScope.settings = response;
+    	$rootScope.settings.fbid = '1269828463077215';
     });
 
 

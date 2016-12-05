@@ -61,11 +61,12 @@
                                     </select>                        
                                 </td>								
 								<td>
-									<select name="status" class="form-control form-filter input-sm">
+									<select name="doStatus" class="form-control form-filter input-sm">
 										<option value="">All</option>
-										<option value="0">Under Process</option>										
+										<option value="0">Under Process</option>	
 										<option value="1">Dispatch</option>
                                         <option value="2">Delivered</option>
+                                        <option value="3">Cancelled</option>
 									</select>
 								</td>
 								<td>
@@ -224,13 +225,15 @@
                         mData: null,
                         sClass: "center",
                         mRender: function(data, type, full) {
-                            var status = data.status; 
+                            var status = data.doStatus; 
                             if(status == 0){
                                 return '<span class="label label-sm label-warning">Under Process</span>';
                             }else if(status == 1){
-                                return '<span class="label label-sm label-danger">Dispatch</span>';
+                                return '<span class="label label-sm label-info">Dispatch</span>';
                             }else if(status == 2){
                                 return '<span class="label label-sm label-success">Delivered</span>';
+                            }else if(status == 3){
+                                return '<span class="label label-sm label-danger">Cancelled</span>';
                             }                       
                         },                  
                         orderable:true

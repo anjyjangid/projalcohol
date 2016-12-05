@@ -555,7 +555,10 @@ class Products extends Eloquent
 							'childCategory' => 1,
 							'status' => 1,
 							'created_at' => 1,
-							'isFeatured' => 1
+							'isFeatured' => 1,
+							'metaTitle'=>1,
+							'metaDescription'=>1,
+							'metaKeywords'=>1
 						]
 		];
 
@@ -633,7 +636,10 @@ class Products extends Eloquent
 								'created_at' => 1,
 								'isFeatured' => 1,
 								'isLoyalty' => 1,
-								'categoriesObject' => 1
+								'categoriesObject' => 1,
+								'metaTitle'=>1,
+								'metaDescription'=>1,
+								'metaKeywords'=>1
 							]
 					];
 
@@ -773,7 +779,10 @@ class Products extends Eloquent
 								'loyaltyValuePoint' => 1,
 								'loyaltyValuePrice' => 1,
 								'loyaltyType'=>1,
-								'loyalty'=>1
+								'loyalty'=>1,
+								'metaTitle'=>1,
+								'metaDescription'=>1,
+								'metaKeywords'=>1
 							]
 						],
 						[
@@ -833,6 +842,9 @@ class Products extends Eloquent
 								'loyaltyValuePrice' => 1,
 								'loyaltyType'=>1,
 								'loyalty'=>1,
+								'metaTitle'=>1,
+								'metaDescription'=>1,
+								'metaKeywords'=>1,
 
 								'regular_express_delivery' => [
 									'$ifNull' => [ '$regular_express_delivery',
@@ -923,7 +935,10 @@ class Products extends Eloquent
 								'loyaltyValuePoint' => 1,
 								'loyaltyValuePrice' => 1,
 								'loyaltyType'=>1,
-								'loyalty'=>1
+								'loyalty'=>1,
+								'metaTitle'=>1,
+								'metaDescription'=>1,
+								'metaKeywords'=>1
 							]
 						],
 						[
@@ -958,7 +973,10 @@ class Products extends Eloquent
 								'loyaltyValuePoint' => 1,
 								'loyaltyValuePrice' => 1,
 								'loyaltyType'=>1,
-								'loyalty'=>1
+								'loyalty'=>1,
+								'metaTitle'=>1,
+								'metaDescription'=>1,
+								'metaKeywords'=>1
 							]
 						]
 
