@@ -50,7 +50,16 @@
 
 					</td>
 					<td>
-						<span ng-bind="type=='qChilled'?'Chilled':'Not Chilled'"></span>
+						<div class="prod_chilled" ng-class="{
+						notchilled:!cartproduct[type+'Status'] || cart.nonchilled,
+						invisible:!cartproduct.product.chilled ,
+
+						}"
+						ng-click="alcoholCart.updateChilledStatus(cartproduct._id,type)">
+						<span>Chilled</span>
+						<div class="prod_chilled_icon"></div>
+						</div>
+						
 					</td>
 					<td width="150">
 						
@@ -103,7 +112,7 @@
 					<td>
 						<div class="orderhistry2price"><span class="strike-txt-only">{{sale.strikePrice | pricingTxt}}</span><br>{{sale.price | pricingTxt}}</div>
 					</td>
-					<td> 
+					<td>
 						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="removeSale(sale)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>

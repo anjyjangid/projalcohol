@@ -220,6 +220,30 @@ MetronicApp
 
 		}
 
+	this.updateChilledStatus = function(id,type){
+		
+		if(this.$cart.nonchilled)return false; // unable to change product chilled status if whole cart set as nonchilled
+
+		var product = this.getProductById(id);
+
+		product[type+'Status'] = !product[type+'Status'];
+					
+		var deliveryKey = this.getCartKey();
+
+		$http.put("api/cart/chilledstatus/"+deliveryKey, {
+				"id":id,
+				"chilled":product.qChilledStatus,
+				"nonchilled":product.qNChilledStatus
+			},{
+
+		}).error(function(data, status, headers) {
+
+		}).success(function(response) {
+
+		});
+
+	}
+
 	this.addGiftCard = function(giftData){
 
 		var isFound = this.getGiftCardByUniqueId(giftData._uid);

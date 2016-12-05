@@ -395,7 +395,7 @@ angular.module('AlcoholCartFactories', [])
 	};
 
 	item.prototype.setRQuantity = function(cQuantity,ncQuantity){
-
+		
 		this.qChilled = parseInt(cQuantity);
 		this.qNChilled = parseInt(ncQuantity);
 

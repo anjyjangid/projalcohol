@@ -1118,6 +1118,9 @@ AlcoholDelivery.factory('AlcoholProduct',[
 
 		_product.proUpdateTimeOut = $timeout(function(){
 
+			_product.qChilled = _product.qChilled | 0;
+			_product.qNChilled = _product.qNChilled | 0;
+
 			var quantity = {
 					chilled : parseInt(_product.qChilled),
 					nonChilled : parseInt(_product.qNChilled)
