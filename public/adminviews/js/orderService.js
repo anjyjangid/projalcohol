@@ -104,6 +104,7 @@ MetronicApp
 
 			_self.setAllProductsRemainingQty(proRemaining);
 			_self.setAllSales(sales);
+
 			
 
 			if(resProduct.product.change!==0){
@@ -193,6 +194,31 @@ MetronicApp
 		});
 
 	}
+
+	this.saleChilled = function(saleObj){
+			
+			if(this.$cart.nonchilled)return false; // unable to change product chilled status if whole cart set as nonchilled
+
+			var saleId = saleObj.getId();
+			saleId = saleId.$id;
+
+			saleObj.chilled = !saleObj.chilled;
+
+			var chilled = saleObj.chilled;
+			var deliveryKey = this.getCartKey();
+
+			$http.put("api/cart/sale/chilled/"+deliveryKey, {
+					"id":saleId,
+					"chilled":chilled,					
+				},{
+
+			}).error(function(data, status, headers) {
+
+			}).success(function(response) {
+
+			});
+
+		}
 
 	this.addGiftCard = function(giftData){
 
@@ -388,6 +414,121 @@ MetronicApp
 		return d.promise;
 
 	};
+
+	this.removeSale = function (id) {
+
+		var defer = $q.defer();
+		var locSale;
+		var cart = this.getCart();
+		var deliveryKey = this.getCartKey();
+		var _self = this;
+
+		$http.delete("api/cart/sale/"+deliveryKey+'/'+id).then(
+
+			function(response){
+				
+				response = response.data;
+				
+				_self.removeSaleAndSetProducts(id);
+
+				_self.validateContainerGift();
+				$rootScope.$broadcast('alcoholCart:saleRemoved', locSale);
+
+				defer.resolve(response);
+
+			},
+			function(errorRes){
+
+				defer.reject(errorRes);
+
+			}
+		);
+
+		return defer.promise;		
+		
+	};
+
+	this.removeSaleAndSetProducts = function(id){
+
+		var item;
+		var cart = this.getCart();
+		var _self = this;
+
+		angular.forEach(cart.sales, function (sale, index) {
+
+			if(sale.getId().$id === id) {
+				 
+				sale['action'] = sale['action'] || [];
+
+				var products = [].concat(sale['products'] , sale['action'])
+
+				var toRemove = {};
+
+				angular.forEach(products, function(sPro){
+
+					if(!angular.isDefined(toRemove[sPro._id])){
+						toRemove[sPro._id] = 0;
+					}
+
+					toRemove[sPro._id]+= sPro.quantity;
+
+				});
+
+				angular.forEach(toRemove, function( value, key ) {
+
+					var product = _self.getProductById(key);
+
+					var qtyChilled = parseInt(product.qChilled);
+					var qtyNonChilled = parseInt(product.qNChilled);
+
+					if(qtyChilled>value){
+
+						qtyChilled-=value;
+						value = 0;
+
+					}else{
+
+						value-= qtyChilled;
+						qtyChilled=0;
+
+					}
+
+					if(value > 0){							
+
+						if(qtyNonChilled>value){
+
+							qtyNonChilled-=value;
+							value = 0;
+
+						}else{
+
+							value-= qtyNonChilled;
+							qtyNonChilled=0;
+
+						}
+
+					}
+
+					var totalProQty = qtyChilled+qtyNonChilled;
+					
+					if(totalProQty<1){
+						_self.removeItemById(product.getId());
+					}else{
+						product.setRQuantity(qtyChilled,qtyNonChilled);
+					}
+
+				});
+
+				var locPackage = cart.sales.splice(index, 1)[0] || {};
+				item = sale || {};
+
+			}
+
+		});			
+
+		$rootScope.$broadcast('alcoholCart:updated',{msg:"Sale Removed from cart"});
+		
+	}
 
 	this.getCartKey = function(){
 

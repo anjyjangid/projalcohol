@@ -512,7 +512,6 @@ class CartController extends Controller
 
 		$cart->createAllPossibleSales();
 
-
 		$proRemaining = [];
 		foreach($cart->products as $key=>$cProduct){
 			$proRemaining[$key] = $cProduct['remainingQty'];

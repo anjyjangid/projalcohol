@@ -910,7 +910,7 @@ AlcoholDelivery.controller('CartController',[
 	}
 
 	$scope.packageUTOut = [];
-	$scope.proUpdateTimeOut = [];
+	$scope.proUpdateTimeOut = {};
 	$scope.lproUpdateTimeOut = [];
 	$scope.lproCardUpdateTimeOut = [];
 
@@ -1083,22 +1083,31 @@ AlcoholDelivery.controller('CartController',[
 		return isChilled;
 	}
 
-	$scope.addtocart = function(key,type){
+	$scope.addtocart = function(key,type,direction){
 
-		var proObj = alcoholCart.getProductById(key);
+		var proObj = $scope.cart.products[key];
 
-		if(proUpdateTimeOut[key]){
-			$timeout.cancel(proUpdateTimeOut[key]);
+		if(angular.isDefined($scope.proUpdateTimeOut[key])){
+			$timeout.cancel($scope.proUpdateTimeOut[key]);
 		}
-		proUpdateTimeOut[key] = $timeout(function() {
 
-			alcoholCart.addProduct(key, {
-				chilled: parseInt(proObj.qChilled),
-				nonChilled: parseInt(proObj.qNChilled)
-			}, type=='qChilled');
+		$scope.proUpdateTimeOut[key] = $timeout(function(){
 
-		},600);
+			var quantity = {
+				chilled : parseInt(proObj.qChilled),
+				nonChilled : parseInt(proObj.qNChilled)
+			}
+			alcoholCart.addItem(key,quantity,proObj.servedAs).then(
+				function(response){
+					$scope.isInCart = true;
+				},
+				function(errRes){
 
+				}
+
+			);
+
+		},1500)
 	};
 
 	$scope.updateLoyaltyProduct = function(key,type,direction){

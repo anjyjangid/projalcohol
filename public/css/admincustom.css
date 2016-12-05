@@ -762,3 +762,47 @@ tr.proSelected {
 /**************************************
 * Sale products on cart page css ends *
 ***************************************/
+.prod_chilled:focus {
+    outline: none;
+}
+
+.prod_chilled {
+	width: 100%;
+	min-width: 80px;
+	float: left;
+	margin-bottom: 15px;
+	cursor: pointer;
+	overflow: hidden;	
+}
+.cart-table .prod_chilled {
+	margin-bottom: 0px;
+}
+.prod_chilled_icon {
+	float: right !important;
+	background: url(../images/sprite.png) no-repeat -444px 0px;
+	min-width: 24px;
+	min-height: 24px;
+	margin-right: 6px;
+	margin-top: -2px;
+}
+.prod_chilled.notchilled .prod_chilled_icon {
+	background: url(../images/sprite.png) no-repeat -410px 0px;
+	min-width: 24px;
+	min-height: 24px;
+	margin-right: 0;
+}
+.prod_chilled span {
+	float: right;
+	display: inline-block;
+	width: 48px;
+	-webkit-transition: width 0.3s; /* Safari */
+	transition: width 0.3s;
+}
+.prod_chilled.notchilled span {
+	width: 0px;
+	overflow: hidden;
+	;
+}
+.prod_chilled span {
+	color: #aa00ff;
+}

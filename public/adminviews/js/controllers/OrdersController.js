@@ -420,6 +420,22 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		},1500)
 	};
 
+	$scope.removeSale = function(saleObj){
+
+		var id = saleObj.getId();
+		id = id.$id;
+
+		alcoholCart.removeSale(id).then(
+
+			function(response){
+
+			},
+			function(errRes){
+
+			}
+		);
+	}
+	
 	$scope.remove = function(key,type){
 		alcoholCart.addProduct(key, {
 			chilled: type=='qChilled'?0:parseInt($scope.cart.products[key].qChilled),

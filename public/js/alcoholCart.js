@@ -22,7 +22,7 @@ AlcoholDelivery.service('alcoholCart', [
 		this.$cart = {
 			
 			products : {},
-			sales : [],			
+			sales : [],
 			loyalty : {},
 			loyaltyCards : {},
 			packages : [],
@@ -1733,7 +1733,6 @@ AlcoholDelivery.service('alcoholCart', [
 			return defer.promise;		
 			
 		};
-
 		
 
 		this.removeSale = function (id) {
@@ -1786,7 +1785,13 @@ AlcoholDelivery.service('alcoholCart', [
 					var toRemove = {};
 
 					angular.forEach(products, function(sPro){
-						toRemove[sPro._id] = sPro.quantity;
+
+						if(!angular.isDefined(toRemove[sPro._id])){
+							toRemove[sPro._id] = 0;
+						}
+
+						toRemove[sPro._id]+= sPro.quantity;
+
 					});
 
 					angular.forEach(toRemove, function( value, key ) {
@@ -2529,7 +2534,6 @@ AlcoholDelivery.service('alcoholCart', [
 			storedCart.giftCards = [];
 			storedCart.gifts = [];
 			storedCart.sales = [];
-
 
 			angular.merge(_self.$cart,storedCart);
 
