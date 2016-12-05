@@ -77,15 +77,23 @@
 								<div>Email: <b>{{giftCard.recipient.email}}</b></div>
 								<div>Card: <b>{{giftCard.recipient.price}}</b></div>
 								<div ng-if="giftCard.recipient.mobile">Mobile: <b>{{giftCard.recipient.mobile}}</b></div>
+								<div >Message: <b class="split-txt">{{giftCard.recipient.message}}</b></div>
 								
 							</div> 
 						</div>
 					</td>
 					<td>
-						<div>Message: <b>{{giftCard.recipient.message}}</b></div>
+						
 					</td>
 					<td>
 						
+					</td>
+					<td width="150">
+						<div class="checkoutmiddlevlauediv">
+
+							<input type="text" ng-model="giftCard.recipient.quantity" value="giftCard.recipient.quantity" min="0" mquantity="100" ng-touch-spin on-increment="updateGiftCard(giftCard.getUniqueId())" on-decrement="updateGiftCard(giftCard.getUniqueId())">
+
+						</div>
 					</td>
 					<td>
 						<div>Price : <b>{{giftCard.recipient.price * giftCard.recipient.quantity | pricingTxt}}</b></div>

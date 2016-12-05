@@ -711,3 +711,11 @@ tr.proSelected {
     border-right: 2px solid #26a69a;
     border-left: 2px solid #26a69a;
 }
+
+.gift-card-rightcover {
+    padding-left: 15px;
+}
+
+.split-txt{
+	word-break: break-all;
+}

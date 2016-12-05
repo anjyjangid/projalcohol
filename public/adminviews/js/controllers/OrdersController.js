@@ -138,7 +138,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	}
 
 	$scope.qualifyFor = function(section){
-
+		return true;
 		if(!$scope.cart || !$scope.cart[$scope.cart.orderType] || !$scope.cart[$scope.cart.orderType]._id){
 			return false;
 		}
@@ -281,9 +281,15 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	// Google map auto complete code ends //
 }])
 
-.controller('OrderProductsController',['$scope', '$http', '$timeout', '$mdDialog', 'alcoholCart', 'categoriesService', 'productFactory', 'AlcoholProduct', '$q', '$modal'
-, function($scope, $http, $timeout, $mdDialog, alcoholCart, categoriesService, productFactory, AlcoholProduct, $q, $modal){
+.controller('OrderProductsController',[
+				'$scope', '$http', '$timeout', '$mdDialog', 'alcoholCart', 
+				'categoriesService', 'productFactory', 'alcoholGifting',
+				'AlcoholProduct', '$q', '$modal'
+	, function($scope, $http, $timeout, $mdDialog, alcoholCart, 
+				categoriesService, productFactory, alcoholGifting,
+				AlcoholProduct, $q, $modal){
 
+	var giftCardUpdateTimeOut = {};
 	$scope.alcoholCart = alcoholCart;
 	$scope.categories = {};
 	$scope.selectedproduct = "";
@@ -294,10 +300,12 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		parent : '',
 		sub : ''
 	};
+
 	$scope.$watch("catSelected",function(){
 		$scope.itemlist = [];
 		$scope.productquery = '';
 	},true);
+
 	$scope.itemlist = [];
 	categoriesService.init().then(
 		function(parentChildCategories){
@@ -383,7 +391,9 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 			nonChilled: type!='qChilled'?0:parseInt($scope.cart.products[key].qNChilled)
 		}, type=='qChilled');
 	};
+
 	$scope.giftcard = function(ev,key) {
+
 		$mdDialog.show({
 				controller: "OrderGiftCardController",
 				templateUrl: '/adminviews/views/orders/order/giftCard.html',
@@ -396,13 +406,28 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 			});
 	}
 	$scope.package = function(ev) {
+
 		$modal.open({
 			controller: "OrderPackageController",
 			templateUrl: '/adminviews/views/orders/order/searchpackage.html',
 		}).result
 		.then(function(answer) {
 		});
+
+
 	}
+
+	$scope.updateGiftCard = function(uid){
+
+		if(giftCardUpdateTimeOut[uid]){
+			$timeout.cancel(giftCardUpdateTimeOut[uid]);
+		}
+		giftCardUpdateTimeOut[uid] = $timeout(function() {
+			alcoholGifting.updateGiftCard(uid);
+		},600)
+		
+	}
+
 }])
 
 .controller('OrderProductDetailController',['$scope', '$http', 'alcoholCart', 'categoriesService', 'productFactory',function($scope, $http, alcoholCart, categoriesService, productFactory){
@@ -410,21 +435,6 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 }])
 
 .controller('OrderPackageController',['$scope', '$http', '$mdDialog', 'alcoholCart', 'categoriesService',function($scope, $http, $mdDialog, alcoholCart, categoriesService){
-	$scope.categories = [
-		{
-			key : "",
-			title : "All"
-		},
-		{
-			key : "party",
-			title : "Party"
-		},
-		{
-			key : "cocktail",
-			title : "Cocktail"
-		}
-	];
-	$scope.catSelected = $scope.categories[0];
 
 	$scope.cart = alcoholCart.getCart();
 	$scope.alcoholCart = alcoholCart;
@@ -440,7 +450,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	$scope.selected = {};
 	$scope.fetchList = function(type) {
 		if(!$scope.packages[type])
-			$http.get('/package/packages/'+type)
+			$http.get('api/package/packages/'+type)
 			.then(function(res){
 				$scope.packages[type] = res.data;
 				$scope.selected.package = res.data[0];
@@ -450,6 +460,242 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 		$scope.packageType=type;
 	};
+
+}])
+
+.controller('PackageDetailController',
+	['$q','$scope', '$rootScope','$state','$http','$stateParams','$location','$timeout','$anchorScroll','alcoholCart','sweetAlert', '$sce',
+	function($q, $scope, $rootScope,$state,$http,$stateParams,$location,$timeout,$anchorScroll,alcoholCart,sweetAlert,$sce){
+
+	$scope.errors = [];
+
+	$scope.processing = false;
+
+	$scope.btnText = "ADD TO CART";
+
+	$scope.packages = [];
+
+
+	$scope.updatePackage = function(){
+
+		var discountAmount = 0;
+		var originalAmount = 0;
+		angular.forEach($scope.packages.packageItems, function(pkgItem, pkgkey) {
+			var lineofproductadded = [];
+			angular.forEach(pkgItem.products, function(value, key) {
+				var quantityadded = parseInt(value.cartquantity);
+				if(quantityadded > 0)
+					lineofproductadded.push(quantityadded+' x '+value.name);
+
+				discountAmount += parseFloat(value.cprice)*parseInt(quantityadded);
+				originalAmount += parseFloat(value.sprice)*parseInt(quantityadded);
+			});
+			$scope.packages.packageItems[pkgkey].selectedProducts = lineofproductadded.join(', ');
+		});
+
+		$scope.packages.packagePrice = discountAmount.toFixed(2);
+		$scope.packages.packageSavings = parseFloat(originalAmount-discountAmount).toFixed(2);
+
+	}
+	
+	$http.get('api/package/packagedetail/'+$stateParams.type+'/'+$stateParams.id).success(function(response){
+
+		delete response.productlist;
+
+		$scope.packages = response;
+
+		if($stateParams.uid!==''){
+
+			var isInCart = alcoholCart.getPackageByUniqueId($stateParams.uid);
+
+			if(isInCart){
+
+				$scope.btnText = "UPDATE CART";
+
+				var packageProInCartCount = isInCart.getProductsCount();
+				
+				angular.forEach($scope.packages.packageItems,function(pRow){
+
+					angular.forEach(pRow.products,function(product){
+
+						var inCartProQty = packageProInCartCount[product._id];
+
+						product.customizequantity = 0;
+						product.cartquantity = 0;
+						if(typeof inCartProQty !== 'undefined'){
+							product.customizequantity = inCartProQty;
+							product.cartquantity = inCartProQty;
+						}
+
+					})
+
+				})
+
+				$scope.packages.packageQuantity = isInCart.getQuantity();
+
+				$scope.packages.isInCart = isInCart;
+
+				$scope.updatePackage();
+			}
+
+		}else{
+
+			$scope.packages.isInCart = false;
+
+		}
+
+		var mdata = {
+			title:$scope.packages.metaTitle,
+			description:$scope.packages.metaDescription,
+			keyword:$scope.packages.metaKeywords
+		};
+		
+
+	});
+
+	$scope.expandCallback = function (index, id) {
+		/*$timeout(function() {
+			$anchorScroll(id);
+		});*/
+	};
+	$scope.hasErrors = false;
+	//PARTY PACKAGE CUSTOMISATION FUNCTION
+	$scope.collapseCallback = function (index, id) {
+
+		var totalseleted = 0;
+		var packageItems = angular.copy($scope.packages.packageItems[index]);
+		var maxQuantity = parseInt(packageItems.quantity);
+		var packageUpdate = true;
+
+		var outerloopPromises = angular.forEach($scope.packages.packageItems, function(pkgItem, pkgKey) {
+
+			var totalseleted = 0;
+			var maxQuantity = parseInt(pkgItem.quantity);
+
+			angular.forEach(pkgItem.products, function(value, key) {
+				totalseleted+=parseInt(value.customizequantity);
+			});
+
+			if(totalseleted!=maxQuantity){
+				$scope.errors[pkgKey] = 'You must select total of '+maxQuantity+' items.';
+			}else{
+				delete $scope.errors[pkgKey];
+			}
+
+		});
+
+		if(typeof $scope.errors[index] == 'undefined'){
+			//ADD IN CARTQUATITY IF THERE IS NO ERROR
+			angular.forEach($scope.packages.packageItems[index].products, function(inPkgItem, inPkgKey) {
+
+				$scope.packages.packageItems[index].products[inPkgKey].cartquantity = parseInt(inPkgItem.customizequantity);
+
+			});
+			$scope.updatePackage();
+		}else{
+			$scope.accordionA.toggle(index);
+		}
+
+	};
+
+	$scope.customizeCocktail = function(pkgKey, proKey){
+
+		angular.forEach($scope.packages.packageItems[pkgKey].products, function(item, key) {
+			if(key == proKey){
+				item.cartquantity = 1;
+			}else{
+				item.cartquantity = 0;
+			}
+		});
+		$scope.updatePackage();
+	};
+
+	$scope.addPackage = function(){
+
+		var c = Object.keys($scope.errors).length;
+		if(c!=0){
+			alert('Please verify your selection.');
+			return;
+		}
+
+		$scope.processing = true;
+
+		if($scope.packages.isInCart===false){
+		alcoholCart.addPackage($stateParams.id,$scope.packages)
+			.then(function(response) {
+
+				$scope.packages.unique = response.key;
+				$scope.processing = false;
+
+				$scope.btnText = "UPDATE CART";
+
+				$location.path($location.path()+response.key).replace();
+				
+
+			}, function(error) {
+
+				console.error(error);
+				$scope.processing = false;
+
+			});
+		}else{
+
+			alcoholCart.updatePackage($stateParams.uid,$scope.packages)
+			.then(function(response) {
+
+				
+				$scope.processing = false;
+				
+
+			}, function(error) {
+
+				console.error(error);
+				$scope.processing = false;
+
+			});
+
+		}
+
+	}
+
+	$scope.validateByIndex = function(index){
+		var totalseleted = 0;
+		var packageItems = angular.copy($scope.packages.packageItems[index]);
+		var maxQuantity = parseInt(packageItems.quantity);
+		var packageUpdate = true;
+
+		var apromise = angular.forEach($scope.packages.packageItems, function(pkgItem, pkgKey) {
+
+			var totalseleted = 0;
+			var maxQuantity = parseInt(pkgItem.quantity);
+
+			angular.forEach(pkgItem.products, function(value, key) {
+				totalseleted+=parseInt(value.customizequantity);
+			});
+
+			if(totalseleted!=maxQuantity){
+				$scope.errors[pkgKey] = 'You must select total of '+maxQuantity+' items.';
+			}else{
+				delete $scope.errors[pkgKey];
+			}
+
+		});
+
+		if(typeof $scope.errors[index] == 'undefined'){
+			//ADD IN CARTQUATITY IF THERE IS NO ERROR
+
+			angular.forEach($scope.packages.packageItems[index].products, function(inPkgItem, inPkgKey) {
+
+				$scope.packages.packageItems[index].products[inPkgKey].cartquantity = parseInt(inPkgItem.customizequantity);
+
+			});
+			$scope.updatePackage();
+		}
+	}
+
+	$scope.toTrustedHTML = function( html ){
+		return $sce.trustAsHtml( html );
+	}
 
 }])
 
@@ -463,7 +709,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		$scope.btnText = 'add to cart';
 		$scope.processing = true;
 		$scope.gift = {}
-		$http.get('/giftcategory/giftcard')
+		$http.get('api/giftcategory/giftcard')
 			.success(function(result){
 				$scope.gift = result;
 				$scope.gift.recipient = {price:$scope.gift.cards[0].value,quantity:1};

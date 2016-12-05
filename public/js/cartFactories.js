@@ -13,7 +13,6 @@ angular.module('AlcoholCartFactories', [])
 
 	}
 
-
 	saleObj.prototype.setParams = function(sale){
 
 		_self = this;
@@ -938,7 +937,7 @@ angular.module('AlcoholCartFactories', [])
 		return this.recipient;
 	}
 
-
+	
 
 	giftCard.prototype.remove = function(){
 

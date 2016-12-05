@@ -405,7 +405,7 @@ MetronicApp
 
 		var locPackage;
 		var cart = this.getCart();
-
+		var cartKey = this.getCartKey();
 		var d = $q.defer();
 
 		angular.forEach(cart.giftCards, function (giftcard, index) {
@@ -414,7 +414,7 @@ MetronicApp
 
 				if(typeof fromServerSide !== 'undefined' && fromServerSide){
 
-					$http.delete("cart/card/"+id).then(
+					$http.delete("api/cart/card/"+cartKey+'/'+id).then(
 
 						function(successRes){
 
@@ -557,6 +557,20 @@ MetronicApp
 		return prosInCart;
 
 	}
+
+	this.getGiftCardByUid = function (uId){
+
+			var cards = this.getCart().giftCards;
+			var build = false;
+
+			angular.forEach(cards, function (card) {
+				
+				if (card.getUniqueId() == uId) {
+					build = card;
+				}
+			});
+			return build;
+		};
 
 	this.getPromotions = function(){
 		return this.getCart().promotions;
@@ -878,7 +892,6 @@ MetronicApp
 		.success(function(newCartRes){
 			_self.$restore(newCartRes.cart);
 		});
-
 	}
 
 	this.setCouponPrice = function(coupon){
@@ -1005,7 +1018,7 @@ MetronicApp
 
 		var defer = $q.defer();
 
-		$http.post("/cart/giftcard/"+cartId,{
+		$http.post("api/cart/giftcard/"+cartId,{
 			type: 'giftcard',
 			id:gift._id,
 			recipient : gift.recipient
@@ -1015,6 +1028,43 @@ MetronicApp
 
 				alcoholCart.addGiftCard(successRes.data.data);
 
+				defer.resolve(successRes);
+
+			},
+			function(errorRes){
+				defer.reject(errorRes);
+			}
+
+		)
+
+		return defer.promise;
+	}
+
+	this.updateGiftCard = function(uid){
+
+		var giftObj = alcoholCart.getGiftCardByUid(uid);
+
+		if(giftObj===false){
+			return false;
+		}
+
+		if(giftObj.recipient.quantity<1){
+			alcoholCart.removeCard(uid,true);
+			return false;
+		}
+
+		recipient = giftObj.getRecipient();
+
+		var defer = $q.defer();
+
+		$http.put("api/cart/giftcard/"+uid,{
+			type: 'giftcard',
+			recipient : recipient
+		}).then(
+
+			function(successRes){
+
+				$rootScope.$broadcast('alcoholCart:updated',{msg:"Gift Card Updated"});
 				defer.resolve(successRes);
 
 			},
@@ -1038,7 +1088,7 @@ MetronicApp
 			return $q(function(resolve,reject){
 
 				$http.get("/adminapi/order").success(function(response){
-					console.log(response);
+
 					if(!response.isUnprocessed){
 
 						alcoholCart.newCart()
@@ -1068,11 +1118,11 @@ MetronicApp
 		var _self = this;
 		var d = $q.defer();
 
-		$http.get("category/pricing").success(function(response){
+		$http.get("api/category/pricing").success(function(response){
 			_self.categoryPricing = response;
 		});
 
-		$http.get("/super/category").success(function(response){
+		$http.get("api/super/category").success(function(response){
 
 			_self.categories = response;			
 

@@ -15,38 +15,25 @@
 				<div class="media-left">
 				
 					<img class="img-responsive img-responsive-h" ng-src="packages/i/{{packages.coverImage.source}}" err-src=""/ >
-				
+
 			  	</div>
 				<div class="media-body party-detail-contentcover">
 					<h4 class="media-heading party-detail-heading">{{::packages.title}}</h4>
 					<p class="party-detail-btm-title">{{::packages.subTitle}}</p>
-					<p class="party-product-desc">{{::packages.description}}</p>    										
-					<!-- <p class="packtiti-rightset packag-amnt-divcolr">Package Amount</p>
-			    	<h3 class="amntrupee-clsdetail">${{packages.packagePrice}}</h3>
-                
-			    	<p class="packtiti-rightset">Savings</p>
-			    	<p class="packtiti-rightset amnt-savingclr">${{packages.packageSavings}}</p>
-					<div class="checkoutmiddlevlauediv ">
-			    		<div class="pardqantitytexthead party-qtn-titl">Quantity</div>
-						<input type="text" value="packages.packageQuantity" ng-model="packages.packageQuantity" min="1" max="10" ng-touch-spin>
-					</div>
-			    	<div class="quantiy-party-detail add-cart-btm">
-			    		
-			    		<a class="btn product_addcart addcart-detail" ng-if="!processing" ng-click="addPackage()"><img src="images/cart-icon.png" />{{btnText}}</a>
-	    				<a class="btn product_addcart addcart-detail" ng-if="processing"><i class="fa fa-spinner fa-spin"></i> {{btnText}}</a>	
-			    	</div> -->
+					<p class="party-product-desc">{{::packages.description}}</p>
 				</div>
 			</div>
-			<div class="row">	
+
+			<div class="row">
 				<div class="party-detail-btmtitl4"><h3>Customise your own package</h3></div>
-				<div class="col-md-8 party-alcholcover ">		
-					<v-accordion id="accordionA" class="vAccordion--default" control="accordionA" multiple onexpand="expandCallback(index, id)" oncollapse="collapseCallback(index, id)">        
+				<div class="col-md-8 party-alcholcover">
+					<v-accordion id="accordionA" class="vAccordion--default" control="accordionA" multiple onexpand="expandCallback(index, id)" oncollapse="collapseCallback(index, id)">
 				        <v-pane id="{{$index}}" ng-repeat="packageItem in packages.packageItems">
 			                <v-pane-header id="{{$index}}-header"  aria-controls="{{ ::subpane.id }}-header" class="byz">
 				                <div class="ttile-divcover party-deatil-pading5">
 				                  <h5  class="custmize-contntset ">{{ ::packageItem.title }}</h5>
 				                  <span ng-bind="packageItem.selectedProducts"></span>
-				                </div>		                
+				                </div>
 			                </v-pane-header>
 			                <v-pane-content id="{{$index}}-content" aria-labelledby="{{ ::subpane.id }}-content">
 			                  	<div class="alert alert-danger" ng-show="errors[$index]" ng-bind="errors[$index]"></div>

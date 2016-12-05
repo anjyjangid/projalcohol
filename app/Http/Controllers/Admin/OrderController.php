@@ -52,7 +52,7 @@ class OrderController extends Controller
 		try{
 
 			$cartObj = new CartAdmin;
-			
+
 			$cart = $cartObj->getLastUnProcessed(new MongoId($user->_id));
 
 			if(empty($cart)){
@@ -66,8 +66,8 @@ class OrderController extends Controller
 
 				$cart = $cart->toArray();
 				
+				
 				$productsIdInCart = array_keys((array)$cart['products']);
-
 
 				$productObj = new Products;
 

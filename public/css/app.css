@@ -1413,3 +1413,7 @@ td.childtd {
 .checkboxtotaldiv-text-font-size{
 	position: static;
 }
+
+.split-txt{
+	word-break: break-all;
+}

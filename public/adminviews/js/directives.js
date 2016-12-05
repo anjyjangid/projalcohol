@@ -41,8 +41,42 @@ MetronicApp.directive('ngSpinnerBar', ['$rootScope',
 	}
 ])
 
+.directive('packageDetail',[function(){
 
-MetronicApp.directive('ngTouchSpin', ['$timeout', '$interval', function($timeout, $interval) {
+	return {		
+		restrict : "E",
+		replace: true,
+		templateUrl: function(elem, attr){
+			return '/adminviews/views/orders/order/partydetail.html';
+		},
+		replace : true,
+		scope: {
+			type:'=',
+			id:'=',
+		},
+		link: function (scope, element, attrs, ngModel) {
+
+			scope.$watch('scope',function(newValue,oldValue){
+				console.log(newValue);
+				if(newValue!=oldValue){
+					reset();
+				}
+
+			},true);
+
+
+			function reset(){
+
+console.log("asdasd");
+
+			}
+		}
+		// controller: "PackageDetailController"
+	};
+
+}])
+
+.directive('ngTouchSpin', ['$timeout', '$interval', function($timeout, $interval) {
 	'use strict';
 
 	var setScopeValues = function (scope, attrs) {
