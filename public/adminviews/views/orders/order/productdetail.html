@@ -29,7 +29,7 @@
 					</div>
 
 				</div>
-				<div class="prdquantitybulkcoverbulk" ng-if="!viaLoyaltyStore">
+				<div class="prdquantitybulkcoverbulk">
 
 					<div class="pardqantitytexthead">Bulk Quantity Discounts Chart (Piece)</div>
 					
@@ -40,7 +40,7 @@
 						<div class="prdquanbulkboxtwo" ng-repeat="bulkBlock in product.bulkPricing" ng-class="{'prdquanbulkActive':product.getTotalQty()>=bulkBlock.from_qty && product.getTotalQty()<=bulkBlock.to_qty}">
 							
 							{{bulkBlock.from_qty}}<span ng-if="bulkBlock.to_qty!=99999">-{{bulkBlock.to_qty}}</span><span ng-if="bulkBlock.to_qty==99999">+</span>
-							<br />${{bulkBlock.price}}
+							<br />{{bulkBlock.price | pricingTxt}}
 
 						</div>
 
@@ -50,8 +50,7 @@
 			</div>
 			<div class="prddetailtotalamount">Total Cost</div>
 			<div class="prddetailpricedicnt">
-				{{product.salePrice | pricingTxt}}
-				<span ng-if="product.price != product.salePrice">{{product.price | pricingTxt}}</span>
+				{{(product.getCurrentUnitPrice() * product.getTotalQty()) | pricingTxt}}
 			</div>
 
 			<div class="prddetailinstock" ng-if="product.quantity || product.outOfStockType == 2">

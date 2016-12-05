@@ -351,7 +351,18 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 				.success(function(response) {
 
 					angular.forEach(response, function(value, key){
-						response[key] = new AlcoholProduct(value);
+						var proObj = new AlcoholProduct(value);
+
+						if(!proObj.isInCart){
+							if(proObj.chilled){
+								proObj.qChilled = 1;
+							}else{
+								proObj.qNChilled = 1;
+							}
+						}
+
+						response[key] = proObj;
+
 					});
 
 					if(angular.isDefined(response[0])){
@@ -379,18 +390,36 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 			return item;
 		});
 	}
-	var proUpdateTimeOut = {};
+
+	$scope.proUpdateTimeOut = {};
+	
 	$scope.addtocart = function(key,type){
-		if(proUpdateTimeOut[key]){
-			$timeout.cancel(proUpdateTimeOut[key]);
+
+		var proObj = alcoholCart.getProductById(key);
+
+		if(angular.isDefined($scope.proUpdateTimeOut[key])){
+			$timeout.cancel($scope.proUpdateTimeOut[key]);
 		}
-		proUpdateTimeOut[key] = $timeout(function() {
-			alcoholCart.addProduct(key, {
-				chilled: parseInt($scope.cart.products[key].qChilled),
-				nonChilled: parseInt($scope.cart.products[key].qNChilled)
-			}, type=='qChilled');
-		},600);
+
+		$scope.proUpdateTimeOut[key] = $timeout(function(){
+
+			var quantity = {
+				chilled : parseInt(proObj.qChilled),
+				nonChilled : parseInt(proObj.qNChilled)
+			}
+			alcoholCart.addProduct(key,quantity,proObj.servedAs).then(
+				function(response){
+					$scope.isInCart = true;
+				},
+				function(errRes){
+
+				}
+
+			);
+
+		},1500)
 	};
+
 	$scope.remove = function(key,type){
 		alcoholCart.addProduct(key, {
 			chilled: type=='qChilled'?0:parseInt($scope.cart.products[key].qChilled),

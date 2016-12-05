@@ -100,7 +100,8 @@ console.log("asdasd");
 			'myincrement': '&onIncrement',
 			'mydecrement': '&onDecrement',
 			'val': "=value",
-			'max': "=mquantity"
+			'max': "=mquantity",
+			'remainQty' : "=?remain"
 		},
 		replace: true,
 		link: function (scope, element, attrs, ngModel) {
@@ -112,6 +113,12 @@ console.log("asdasd");
 			ngModel.$setViewValue(scope.val);
 
 			scope.decrement = function () {
+
+				if(typeof scope.remainQty !== 'undefined'){
+					scope.remainQty--;
+				}
+
+
 				oldval = scope.val;
 				var value = parseFloat(parseFloat(Number(scope.val)) - parseFloat(scope.step)).toFixed(scope.decimals);
 
@@ -128,6 +135,10 @@ console.log("asdasd");
 			};
 
 			scope.increment = function () {
+
+				if(typeof scope.remainQty !== 'undefined'){
+					scope.remainQty++;
+				}
 				oldval = scope.val;
 				var value = parseFloat(parseFloat(Number(scope.val)) + parseFloat(scope.step)).toFixed(scope.decimals);
 
@@ -198,7 +209,7 @@ console.log("asdasd");
 		'		<i class="fa fa-minus"></i>'+
 		'		</button>'+
 		'	</div>'+		
-		'	<span class="spinner-input form-control" ng-bind="val"></span>'+
+		'	<span class="spinner-input form-control" ng-bind="remainQty || val"></span>'+
 		'	<div class="spinner-buttons input-group-btn">'+
 		'		<button ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()" type="button" class="btn spinner-up blue"><span class="md-click-circle md-click-animate"></span>'+
 		'		<i class="fa fa-plus"></i>'+

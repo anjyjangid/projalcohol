@@ -158,7 +158,15 @@ class Cart extends Moloquent
 		
 		$userId = isset($user->_id)?$user->_id:(string)new mongoId();
 
-		$cart = self::where("user",new mongoId($userId))->where("_id",new mongoId($id))->first();
+		$cart = self::where("_id",new mongoId($id));
+
+		if(isset($user->_id)){
+			$cart = $cart->where("user",new mongoId($userId));
+		}else{
+			$cart = $cart->whereNull("user");
+		}
+
+		$cart = $cart->first();
 
 		if(empty($cart)){
 			return false;

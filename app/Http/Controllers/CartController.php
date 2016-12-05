@@ -188,6 +188,7 @@ class CartController extends Controller
 
 		$cart = Cart::findUpdated($id);
 
+
 		if(empty($cart)){
 
 			$cartObj = new Cart;

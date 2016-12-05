@@ -295,6 +295,7 @@ ul.userlist li{
 }
 .productdetailcovermainbgimg .checkoutmiddlevlauediv {
 	margin-top: 0px;
+	max-width: 130px;
 }
 .combo_slider .tabsright .item {
 	font-size: 0.9em;
@@ -719,3 +720,45 @@ tr.proSelected {
 .split-txt{
 	word-break: break-all;
 }
+
+
+/****************************************
+* Sale products on cart page css starts *
+*****************************************/
+
+.sale-pro-list li{
+	width: 60px;
+    height: 60px;
+    /*border: 1px solid #ccc;*/
+    margin: 0 4px;
+    padding: 5px;
+}
+
+.sale-pro-list li.sale-action-add-icon table {
+    height: 100%;
+    vertical-align: middle;
+    font-size: 1.5em;
+}
+
+.sale-pro-list li.sale-action-add-icon table td{
+	padding: 0 !important;
+}
+
+.sale-pro-list li.sale-action-add-icon {
+    display: inline-block;
+    vertical-align: top;
+    width: auto;
+}
+
+.strike-txt,.strike-txt-only{
+    text-decoration: line-through;
+}
+
+.cart-table .strike-txt{
+	padding: 0 10px;
+	font-weight: bold;
+}
+
+/**************************************
+* Sale products on cart page css ends *
+***************************************/

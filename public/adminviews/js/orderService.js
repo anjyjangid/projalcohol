@@ -1,12 +1,13 @@
 MetronicApp
-.service('alcoholCart',['$http', '$q', 'alcoholCartItem', 'alcoholCartPackage', 'alcoholCartGiftCard', '$rootScope'
-, function($http, $q, alcoholCartItem, alcoholCartPackage, alcoholCartGiftCard, $rootScope){
+.service('alcoholCart',['$http', '$q', '$filter', 'alcoholCartItem', 'cartSale', 'alcoholCartPackage', 'alcoholCartGiftCard', '$rootScope'
+, function($http, $q, $filter, alcoholCartItem, cartSale, alcoholCartPackage, alcoholCartGiftCard, $rootScope){
 
 	this.init = function(){
 
 		this.$cart = {
 
 			products : {},
+			sales : [],
 			packages : [],
 			giftCards : [],
 			nonchilled : false,
@@ -52,61 +53,7 @@ MetronicApp
 
 	}
 
-	// this.addProduct = function (id, quantity, serveAs) {
-
-	// 	var defer = $q.defer();
-
-	// 	var inCart = this.getProductById(id);
-	// 	var _self = this;
-	// 	var deliveryKey = _self.getCartKey();
-
-	// 	$http.put("/cart/"+deliveryKey, {
-	// 		"id":id,
-	// 		"quantity":quantity,
-	// 		"chilled":serveAs,
-	// 		"type":"product",
-	// 	},{})
-	// 	.error(function(data, status, headers) {
-
-	// 		defer.reject(data);
-
-	// 	})
-	// 	.success(function(response) {
-
-	// 		var resProduct = response.product;
-
-	// 		if(inCart){
-
-	// 			if(resProduct.quantity==0){
-
-	// 				_self.removeItemById(id);
-
-	// 			}else{
-
-	// 				inCart.setRQuantity(resProduct.chilled.quantity,resProduct.nonchilled.quantity);
-	// 				inCart.setTQuantity(resProduct.quantity);
-	// 				inCart.setPrice(resProduct);
-
-	// 				inCart.setRMaxQuantity(resProduct);
-	// 			}
-
-	// 		}else{
-
-	// 			var newItem = new alcoholCartItem(id, resProduct);
-	// 			_self.$cart.products[id] = newItem;
-
-	// 		}
-
-	// 		defer.resolve(response);
-
-	// 	});
-
-	// 	return defer.promise
-	// };
-
-
 	this.addProduct = function (id, quantity, serveAs) {
-
 
 		var defer = $q.defer();
 
@@ -114,9 +61,9 @@ MetronicApp
 		var _self = this;
 		var deliveryKey = _self.getCartKey();
 
-		if(typeof id.$id !== 'undefined'){ id = id.$id}
+		id = mongoIdToStr(id);
 
-		$http.put("/cart/"+deliveryKey, {
+		$http.put("api/cart/"+deliveryKey, {
 			"id":id,
 			"quantity":quantity,
 			"chilled":serveAs,
@@ -143,8 +90,8 @@ MetronicApp
 
 					inCart.setRQuantity(resProduct.chilled.quantity,resProduct.nonchilled.quantity);
 					inCart.setTQuantity(resProduct.remainingQty);
-					inCart.setPrice(resProduct);						
 					inCart.setRemainingQty(resProduct.remainingQty);
+					inCart.setPrice(resProduct);
 
 				}									
 
@@ -159,7 +106,7 @@ MetronicApp
 			_self.setAllSales(sales);
 			
 
-			/*if(resProduct.product.change!==0){
+			if(resProduct.product.change!==0){
 
 				if(resProduct.product.change>0){
 					$rootScope.$broadcast('alcoholCart:updated',{msg:"Items added to cart",quantity:Math.abs(resProduct.product.change)});
@@ -167,7 +114,7 @@ MetronicApp
 					$rootScope.$broadcast('alcoholCart:updated',{msg:"Items removed from cart",quantity:Math.abs(resProduct.product.change)});
 				}
 				
-			}*/
+			}
 
 			_self.validateContainerGift();
 
@@ -235,7 +182,7 @@ MetronicApp
 
 				});	
 
-				var newSale = new alcoholCartSale(sale,saleDetail);
+				var newSale = new cartSale(sale,saleDetail);
 				_self.$cart.sales.push(newSale);
 
 			}else{
@@ -285,7 +232,7 @@ MetronicApp
 			})
 		});		
 
-		$http.post("/cart/package/"+deliveryKey, {
+		$http.post("api/cart/package/"+deliveryKey, {
 				"id":id,
 				"products":products,
 				"quantity" : parseInt(detail.packageQuantity),
@@ -376,7 +323,7 @@ MetronicApp
 		var deliveryKey = this.getCartKey();
 		var _self = this;
 
-		$http.delete("cart/package/"+id+'/'+deliveryKey).then(
+		$http.delete("api/cart/package/"+id+'/'+deliveryKey).then(
 
 			function(response){
 
@@ -605,6 +552,10 @@ MetronicApp
 		return this.getCart().products;
 	};
 
+	this.getSales = function(){
+		return this.getCart().sales  || [];
+	}
+		
 	this.getGiftCards = function(){
 		return this.getCart().giftCards;
 	};
@@ -824,6 +775,49 @@ MetronicApp
 
 			delete storedCart.products;
 
+		}
+
+		if(typeof storedCart.sales !== 'undefined'){
+
+			angular.forEach(storedCart.sales, function (sale,key) {
+
+				var saleDetail = "";
+
+				angular.forEach(sale.products, function(sPro){
+
+					var temp = _self.getProductById(sPro._id);
+					
+					sPro.product = {
+						name : temp.product.name,
+						slug : temp.product.slug,
+						chilled : temp.product.chilled,
+						price : temp.unitPrice,
+						image : $filter('getProductThumb')(temp.product.imageFiles)
+					}
+
+					saleDetail = temp.sale;
+				});
+				
+				angular.forEach(sale.action, function(sPro){
+
+					var temp = _self.getProductById(sPro._id);
+
+					sPro.product = {
+						name : temp.product.name,
+						slug : temp.product.slug,
+						chilled : temp.product.chilled,
+						price : temp.unitPrice,
+						image : $filter('getProductThumb')(temp.product.imageFiles)
+					}
+
+				});				
+
+				var newSale = new cartSale(sale,saleDetail);
+				_self.$cart.sales.push(newSale);
+
+			});
+
+			delete storedCart.sales;
 		}
 
 		if(typeof storedCart.giftCards !== 'undefined'){
@@ -1418,9 +1412,9 @@ MetronicApp
 	function($rootScope,$state,$filter, $log, $timeout, $q, catPricing, alcoholCart){
 
 	var product = function(product){
-
-		this._id = product._id.$id || product._id;		
-
+	
+		this._id = mongoIdToStr(product._id);
+	
 		this.setPricingParams(
 			product.categories,
 			product.express_delivery_bulk,
@@ -1432,7 +1426,6 @@ MetronicApp
 		}
 
 		if(angular.isDefined(product.proSales) && angular.isObject(product.proSales)){
-
 			this.setSale(product);
 		}
 
@@ -1496,14 +1489,16 @@ MetronicApp
 
 		var pSale = p.proSales;
 
-
 		this.sale = {
 			quantity : pSale.conditionQuantity,
 			type : pSale.actionType,
 			title : pSale.listingTitle,
 			detailTitle : pSale.detailTitle,
-			actionProductId:pSale.actionProductId			
+			actionProductId:pSale.actionProductId,
+			imageLink:pSale.imageLink			
 		};
+
+		this.sale.isSingle = (pSale.conditionQuantity==1 && pSale.actionProductId.length==0)?true:false;
 
 		if(angular.isDefined(pSale.coverImage))
 			this.sale.coverImage = pSale.coverImage.source;
@@ -1523,7 +1518,6 @@ MetronicApp
 
 		var saleProduct = "";
 
-
 		if(angular.isDefined(pSale.saleProduct) && pSale.saleProduct.length){
 			saleProduct = pSale.saleProduct.pop();
 		}else{
@@ -1538,6 +1532,10 @@ MetronicApp
 
 	}
 
+	/**
+	*	function to get total quantity is set for current product object
+	*	return SUM of chilled and non chilled quantity
+	**/
 	product.prototype.getTotalQty = function(){
 		return parseInt(this.qChilled) + parseInt(this.qNChilled);
 	}
@@ -1609,7 +1607,19 @@ MetronicApp
 	product.prototype.setDetailLink = function(){
 
 		var href = "javascript:void(0)";
-		
+		switch(this.type){
+
+			case 1:{
+				href = mainLayout.product({product:productInfo.slug})
+			}
+			break;
+			case 1:{
+
+			}
+			break;
+
+		}
+
 		this.href = href;
 
 		return href;
@@ -1645,68 +1655,95 @@ MetronicApp
 	}
 
 	product.prototype.setPrice = function(p){
+
 		var _product = this;
 
 		if (p.price){
 
-					var basePrice = parseFloat(p.price)/1;
-					var unitPrice = basePrice;
+			var basePrice = parseFloat(p.price)/1;
+			var unitPrice = basePrice;
 
-					var singlePricing = this.singlePricing;
-					singlePricing.type = parseInt(singlePricing.type);
+			var singlePricing = this.singlePricing;
+			singlePricing.type = parseInt(singlePricing.type);
 
-					if(singlePricing.type===1){
+			if(singlePricing.type===1){
 
-						unitPrice +=  parseFloat(basePrice * singlePricing.value/100);
+				unitPrice +=  parseFloat(basePrice * singlePricing.value/100);
 
+			}else{
+
+				unitPrice += parseFloat(singlePricing.value);
+
+			}
+
+			this.unitPrice = parseFloat(unitPrice.toFixed(2));
+
+			var bulkArr = this.bulkPricing;
+			var quantity = this.getTotalQty();
+			var price = unitPrice;
+
+			this.discountedUnitPrice = price/quantity;
+
+			this.price = price;
+			
+			this.bulkApplicable = false;
+
+			if(this.sale && this.sale.isSingle){
+
+				if(this.sale.discount.type == 1){//FIXED AMOUNT SALE
+					this.price = this.price - this.sale.discount.value;
+				}
+				if(this.sale.discount.type == 2){//% AMOUNT SALE
+					this.price = this.price - (this.price * this.sale.discount.value/100);
+				}
+				this.price = this.price.toFixed(2);
+
+			}else{
+
+				this.bulkApplicable = true;
+				angular.forEach(bulkArr, function(bulk,key){
+
+					if(bulk.type==1){
+						bulk.price = basePrice + (basePrice * bulk.value/100);
 					}else{
-
-						unitPrice += parseFloat(singlePricing.value);
-
+						bulk.price = basePrice + bulk.value;
 					}
 
-					this.unitPrice = parseFloat(unitPrice.toFixed(2));
+					bulk.price = bulk.price.toFixed(2);
 
-					var bulkArr = this.bulkPricing;
-					var quantity = 1;
-					var price = unitPrice;
+				})
 
-					angular.forEach(bulkArr, function(bulk,key){
+			}
 
-						if(bulk.type==1){
-							bulk.price = basePrice + (basePrice * bulk.value/100);
-						}else{
-							bulk.price = basePrice + bulk.value;
-						}
-
-						bulk.price = bulk.price.toFixed(2);
-
-					})
-
-					this.discountedUnitPrice = price/quantity;
-
-					this.price = price;
-					this.salePrice = price;
-
-					//PRODUCT HAS SALE ON ITSELF CONDITION
-					if(this.sale && this.sale.type == 2 && this.sale.quantity == 1 && this.sale.actionProductId.length == 0){
-						if(this.sale.discount.type == 1){//FIXED AMOUNT SALE
-							this.salePrice = this.price - this.sale.discount.value;
-						}
-						if(this.sale.discount.type == 2){//% AMOUNT SALE
-							this.salePrice = this.price - (this.price * this.sale.discount.value/100);
-						}
-						this.salePrice = this.salePrice.toFixed(2);
-					}
-
-				}
-				else {
-					$log.error('Each Product Required Price');
-				}
-
-
+		}
+		else {
+			$log.error('Each Product Required Price');
+		}
+	
 
 	};
+
+	product.prototype.getCurrentUnitPrice = function () {
+
+		var price = this.price;
+
+		if(this.bulkApplicable){
+
+			var qty = this.getTotalQty();
+			var bulkArr = this.bulkPricing;
+
+			angular.forEach(bulkArr, function(bulk){
+
+				if(qty>=bulk.from_qty && qty<=bulk.to_qty){
+
+					price = bulk.price;
+				}
+
+			})
+		}
+		return price.toFixed(2);
+
+	}
 
 	product.prototype.setDefaults = function(p){
 
@@ -1722,6 +1759,17 @@ MetronicApp
 		this.shortDescription = p.shortDescription;
 		this.sku = p.sku;
 		this.slug = p.slug;
+
+		this.isLoyalty = p.isLoyalty;
+		this.loyaltyValueType = p.loyaltyValueType;
+		this.loyaltyValuePoint = p.loyaltyValuePoint;
+		this.loyaltyValuePrice = p.loyaltyValuePrice;
+		this.loyalty = p.loyalty;
+		this.loyaltyType = p.loyaltyType;
+		
+		this.metaTitle = p.metaTitle;
+		this.metaDescription = p.metaDescription;
+		this.metaKeywords = p.metaKeywords;
 
 	}
 
@@ -1744,172 +1792,72 @@ MetronicApp
 					nonChilled : parseInt(_product.qNChilled)
 				}
 
-			if(_product.isLoyaltyStoreProduct){
+			alcoholCart.addProduct(_product._id,quantity,_product.servechilled).then(
 
-				if(_product.notSufficient){
+				function(successRes){
 
-					defer.reject({'notSufficient':true});
-
-				}
-
-				alcoholCart.setLoyaltyPointsInCart();
-
-				alcoholCart.addLoyaltyProduct(_product._id,quantity,_product.servechilled).then(
-
-					function(successRes){
+					if(successRes.success){
 
 						switch(successRes.code){
-								case 100:
+							case 100:
 
-									$timeout(function(){
-										$mdToast.show({
-											controller:function($scope){
+								$timeout(function(){
+								$mdToast.show({
+									controller:function($scope){
 
-												$scope.qChilled = 0;
-												$scope.qNchilled = 0;
+										$scope.qChilled = 0;
+										$scope.qNchilled = 0;
 
-												$scope.closeToast = function(){
-													$mdToast.hide();
-												}
-											},
-											templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
-											parent : $element,
-											position: 'top center',
-											hideDelay:10000
-										});
-									},1000);
+										$scope.closeToast = function(){
+											$mdToast.hide();
+										}
+									},
+									templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+									parent : $element,
+									position: 'top center',
+									hideDelay:10000
+								});
+								},1000);
 
-								break;
-								case 101:
+							break;
+							case 101:
 
-									$timeout(function(){
+								$timeout(function(){
+								$mdToast.show({
+									controller:function($scope){
 
-										$mdToast.show({
-											controller:function($scope){
+										$scope.qChilled = 0;
+										$scope.qNchilled = 0;
 
-												$scope.qChilled = 0;
-												$scope.qNchilled = 0;
+										$scope.closeToast = function(){
+											$mdToast.hide();
+										}
+									},
+									templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+									parent : $element,
+									position: 'top center',
+									hideDelay:10000
+								});
+								},1000);
 
-												$scope.closeToast = function(){
-													$mdToast.hide();
-												}
-											},
-											templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
-											parent : $element,
-											position: 'top center',
-											hideDelay:10000
-										});
-
-									},1000);
-
-								break;
-
-							}
-
-					},
-					function(errorRes){
-
-						if(errorRes.code){
-
-							var code = parseInt(errorRes.code);
-
-							switch(code){
-
-								case 401:{
-
-									$rootScope.$broadcast('showLogin');
-
-								}
-								break;
-
-							}
+							break;
 
 						}
 
-						if(errorRes.quantity){
-
-							_product.qChilled = errorRes.quantity.chilled | 0;
-							_product.qNchilled = errorRes.quantity.nonchilled | 0;
-
-						}else{
-
-							_product.qChilled = 0;
-							_product.qNchilled = 0;
-
+						if(_product.isInCart===false){
+							_product.isInCart = alcoholCart.getProductById(_product._id);
 						}
+
 
 					}
 
-				);
+				},
+				function(errorRes){
+					//
+				}
 
-			}else{
-
-				alcoholCart.addProduct(_product._id,quantity,_product.servechilled).then(
-
-					function(successRes){
-
-						if(successRes.success){
-
-							switch(successRes.code){
-								case 100:
-
-									$timeout(function(){
-									$mdToast.show({
-										controller:function($scope){
-
-											$scope.qChilled = 0;
-											$scope.qNchilled = 0;
-
-											$scope.closeToast = function(){
-												$mdToast.hide();
-											}
-										},
-										templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
-										parent : $element,
-										position: 'top center',
-										hideDelay:10000
-									});
-									},1000);
-
-								break;
-								case 101:
-
-									$timeout(function(){
-									$mdToast.show({
-										controller:function($scope){
-
-											$scope.qChilled = 0;
-											$scope.qNchilled = 0;
-
-											$scope.closeToast = function(){
-												$mdToast.hide();
-											}
-										},
-										templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
-										parent : $element,
-										position: 'top center',
-										hideDelay:10000
-									});
-									},1000);
-
-								break;
-
-							}
-
-							if(_product.isInCart===false){
-								_product.isInCart = alcoholCart.getProductById(_product._id);
-							}
-
-
-						}
-
-					},
-					function(errorRes){
-						//
-					}
-
-				);
-			}
+			);
+		
 
 			if(_product.quantitycustom==0){
 				$scope.isInCart = false;
@@ -1922,10 +1870,169 @@ MetronicApp
 		return defer.promise;
 		};
 
-		product.prototype.hrefDetail = function(){
-			$state.go('mainLayout.product', {'product': this.slug});
-		};
+	product.prototype.hrefDetail = function(){
+		$state.go('mainLayout.product', {'product': this.slug});
+	};
+
+	product.prototype.setParentDetail = function(p){
+		this.parentCategory = p;
+	};
+
+	product.prototype.setChildDetail = function(p){
+		this.childCategory = p;
+	};
+
+	product.prototype.getLoyaltyValue = function(){
+		var lv = parseFloat(this.loyalty);
+		if(this.loyaltyType == 0){
+			lv = parseFloat(this.price) * parseFloat(this.loyalty)/100;
+		}
+		return lv.toFixed(2);
+	};
+
+
 
 	return product;
+
+}])
+
+.factory('cartSale', ['$log', function ($log){
+
+	var saleObj = function (sale,detail) {
+
+		this.setParams(sale);
+
+		this.setSaleDetail(detail);
+
+		this.setPrices(detail);
+
+		this.setProductsQtyArr();
+
+	}
+
+	saleObj.prototype.setParams = function(sale){
+
+		_self = this;
+
+		angular.forEach(sale, function (value,key) {
+			_self[key] = value;
+		});
+
+	};
+
+
+	saleObj.prototype.setSaleDetail = function(detail){
+
+		this.title = {
+			small : detail.listingTitle,
+			long : detail.detailTitle
+		}
+
+	};
+
+	saleObj.prototype.setProductsQtyArr = function(){
+
+		angular.forEach(this.products, function (pro) {
+			
+			pro.productQtyArr = new Array();
+
+			for (i = 0; i < pro.quantity; i++) { 
+				pro.productQtyArr.push(i)
+			}
+			
+			
+		});
+
+		angular.forEach(this.action, function (pro) {
+
+			pro.productQtyArr = new Array();
+
+			for (i = 0; i < pro.quantity; i++) { 
+				pro.productQtyArr.push(i)
+			}
+
+		});
+
+	}
+
+	saleObj.prototype.setPrices = function(detail){
+		
+		var price = 0;
+		var actionProPrice = 0;
+
+		angular.forEach(this.products, function (pro) {
+
+			price = price + (parseFloat(pro.product.price) * pro.quantity);
+
+		});
+
+		angular.forEach(this.action, function (pro) {
+
+			var tempP = parseFloat(pro.product.price) * pro.quantity;
+			actionProPrice+= tempP;
+			price+= tempP
+
+		});
+
+		strikePrice = price.toFixed(2);
+
+		this.strikePrice = strikePrice;
+
+		var currPrice = 0;
+
+		if(detail.actionType == 1){
+
+			 var qty = detail.giftQuantity;
+			 currPrice = parseFloat(price) - parseFloat(actionProPrice);
+			 
+		}else{
+
+			if(detail.discountType==1){
+
+				if(detail.actionProductId.length>0){
+
+					currPrice = price - detail.discountValue;
+					//currPrice = price - currPrice;
+
+				}else{
+
+					currPrice = price - detail.discountValue;
+
+				}
+
+
+			}else{
+
+				if(detail.actionProductId.length>0){
+
+					currPrice = price - (actionProPrice * detail.discountValue / 100);
+
+				}else{
+
+					currPrice = price - (price * detail.discountValue / 100);
+
+				}
+
+			}
+
+		}
+		this.totalDiscount = (parseFloat(price) - parseFloat(currPrice)).toFixed(2);
+		this.price = currPrice.toFixed(2);
+
+		
+
+	};
+
+	saleObj.prototype.getPrice = function(){
+		return parseFloat(this.price);
+	}
+
+	saleObj.prototype.getId = function(){
+		return this._id;
+	};
+
+
+
+	return saleObj;
 
 }]);
