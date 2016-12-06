@@ -1545,7 +1545,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
 				"" : {
 					templateUrl: "adminviews/views/orders/order/index.html",
-					controller : "OrderCreateControllerOrderCreateController",
+					controller : "OrderCreateController",
 				},
 				"products@userLayout.orders.consumer" : {
 					templateUrl: "adminviews/views/orders/order/products.html",
