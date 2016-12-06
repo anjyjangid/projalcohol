@@ -479,6 +479,7 @@ AlcoholDelivery.controller('ProductDetailController', [
 		function(response){
 
 			$scope.product = response;
+			console.log($scope.product);
 
 			if(!$scope.product.isInCart){
 

@@ -178,7 +178,6 @@ angular.module('AlcoholCartFactories', [])
 	};
 
 	item.prototype.setChilledAllowed = function(chillAllowed){
-
 		return this.chillAllowed = chillAllowed;
 	}
 
@@ -1561,10 +1560,11 @@ angular.module('AlcoholCartFactories', [])
 
 		var categoryKey = [];
 		var catData = [];
+
 		angular.copy(categories,categoryKey);
 
 		categoryKey = categoryKey.pop();
-		catData = catPricing.categoryPricing[categoryKey];
+		catData = angular.copy(catPricing.categoryPricing[categoryKey]);
 
 		if(typeof catData==='undefined'){
 			this.error = true;

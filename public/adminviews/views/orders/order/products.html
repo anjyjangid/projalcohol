@@ -16,8 +16,8 @@
 	<span class="badge badge-success" ng-bind="alcoholCart.getTotalGifts()"></span>
 </a>
 
-<a href="#" ng-click="giftcard($event,key)"  class="pull-right">
-	asdas
+<a href="javascript:void(0)" class="cart-nonchilled-btn-cover icon-btn">
+	<md-switch aria-label="cart.nonchilled" ng-model="cart.nonchilled" ng-change="alcoholCart.setCartChilled(cart.nonchilled)">SAVE {{cart.discount.nonchilled.exemption | pricingTxt}} by choosing to have your drinks delivered Non-Chilled.</md-switch>
 </a>
 
 <div>

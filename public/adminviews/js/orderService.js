@@ -1,6 +1,6 @@
 MetronicApp
-.service('alcoholCart',['$http', '$q', '$filter', 'alcoholCartItem', 'cartSale', 'alcoholCartPackage', 'alcoholCartGiftCard', '$rootScope'
-, function($http, $q, $filter, alcoholCartItem, cartSale, alcoholCartPackage, alcoholCartGiftCard, $rootScope){
+.service('alcoholCart',['$http', '$q', '$filter', 'sweetAlert', 'alcoholCartItem', 'cartSale', 'alcoholCartPackage', 'alcoholCartGiftCard', '$rootScope'
+, function($http, $q, $filter, sweetAlert, alcoholCartItem, cartSale, alcoholCartPackage, alcoholCartGiftCard, $rootScope){
 
 	this.init = function(){
 
@@ -893,14 +893,60 @@ MetronicApp
 
 	this.setCartChilled = function(status){
 
-		if(typeof status !=="undefined"){
+			var isEligible = this.isEligibleNonChilled();
+			
+			if(!isEligible){
 
-			this.$cart.nonchilled = status;
-			this.$cart.discount.nonchilled.status = status;
+				sweetAlert.swal({
+								type:'warning',
+								title: "There are no chilled items in cart.",
+								text : "Chilled items are usually beers, champagnes and white wines",
+								customClass: 'swal-wide'
+							}).done();				
+
+				return false;
+			}
+
+			if(typeof status !=="undefined"){
+
+				this.$cart.nonchilled = status;
+				this.$cart.discount.nonchilled.status = status;				
+			}
+
+			this.deployCart().then(
+				function(res){
+
+					if(!status){
+						$rootScope.$broadcast('alcoholCart:notify',"Non-Chilled condition deactivated");
+					}else{
+						$rootScope.$broadcast('alcoholCart:notify',"Non-Chilled condition activated");
+					}
+
+				}
+			);
+		
 		}
 
-		this.deployCart();
+	this.isEligibleNonChilled = function(){
 
+		var products = this.getProducts();
+		
+		var isEligible = false;
+		angular.forEach(products, function (item,key) {
+			if(item.getChilledAllowed()){
+				
+				isEligible = true;
+				return false;
+			}
+			if(isEligible)
+				return false;
+
+		});
+
+		if(!isEligible)
+		this.$cart.nonchilled = false;
+		return isEligible;
+		
 	}
 
 	this.setDiscount = function(){
@@ -917,8 +963,26 @@ MetronicApp
 
 	}
 
-	this.getDiscount = function(){
-		return this.setDiscount();
+	this.getDiscount = function(type){
+
+		var discount = 0, nonChilledDiscount = 0;
+
+		this.isEligibleNonChilled();
+
+		if(this.$cart.nonchilled){
+
+			nonChilledDiscount = parseFloat(this.$cart.discount.nonchilled.exemption);
+
+			discount+=nonChilledDiscount;
+
+		}
+
+		if(type==='nonchilled'){
+				
+			return nonChilledDiscount.toFixed(2);
+		}
+
+		return +parseFloat(discount).toFixed(2);
 	}
 
 	this.setAllServicesCharges = function(){
