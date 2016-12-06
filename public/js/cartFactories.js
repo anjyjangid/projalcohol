@@ -239,7 +239,17 @@ angular.module('AlcoholCartFactories', [])
 
 	item.prototype.setPrice = function(product){
 
-		var original = product.product;
+		if(!angular.isDefined(product)){
+
+			if(!angular.isDefined(this.product)){			
+				var original = this.product;
+			}else{
+				console.log("Product original detail is missing");
+			}
+
+		}else{
+			var original = product.product;
+		}
 
 		var originalPrice = parseFloat(original.price);
 
