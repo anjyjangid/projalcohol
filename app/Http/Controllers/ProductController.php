@@ -201,8 +201,6 @@ class ProductController extends Controller
 
 		$product = $productObj->fetchProducts($params);
 
-		// $product = Products::where("slug","=",$params['product'])->first();
-
 		if(!empty($product['products'])){
 			return response($product['products'][0],200);
 		}

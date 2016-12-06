@@ -806,3 +806,18 @@ tr.proSelected {
 .prod_chilled span {
 	color: #aa00ff;
 }
+
+.swal2-modal.swal-wide.show-swal2 {
+    width: 50% !important;
+    margin-right: auto !important;
+    left: 25%;
+    margin-left: auto !important;
+}
+
+.cart-nonchilled-btn-cover{
+	background: #fafafa;
+	padding: 0 7px;
+	text-align: center;
+	display: inline-block;
+	float: right;
+}

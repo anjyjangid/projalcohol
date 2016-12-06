@@ -32,7 +32,22 @@ class Email extends Moloquent
 		}
 		$this->type = $type;
 
-		$this->template = EmailTemplate::find($type);
+		$mailSubject = '';
+		$mailContent = '<div style="font-size: 14px; padding: 10px 15px; background-image: initial; background-attachment: initial;background-color: #1CAF9A; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">
+		<div style="width:63%;display:inline-block;font-size: 19px;color: #FFF;">Dear {user_name}</div>
+		</div>
+
+		<div style="font-size: 14px; padding: 15px 10px; line-height: 20px; color: rgb(66, 65, 67); background-image: initial; background-attachment: initial; background-color: rgb(255, 255, 255); background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">
+		<p>{message}</p>
+		<p>&nbsp;</p>
+		</div>';
+		
+		if($type != 'customtemplate'){
+			$this->template = EmailTemplate::find($type);
+
+			$mailSubject = $this->template->subject;
+			$mailContent = $this->template->content;
+		}
 		
 
 		$settings = DB::collection('settings')->whereIn('_id',['general','social','email'])->get();
@@ -54,7 +69,7 @@ class Email extends Moloquent
 				"name" =>"",
 				"email" =>""
 			),
-			"subject" => $this->template->subject,
+			"subject" => $mailSubject,
 			"replace" => array(
 				"{website_link}" => $siteUrl,				
 				"{site_title}" => $config['general']['site_title']['value'],
@@ -65,7 +80,7 @@ class Email extends Moloquent
 				"{social_twitter}" => $config['social']['twitter']['value'],
 				"{copyright_year}" => date("Y")
 			),
-			"message" => $this->template->content
+			"message" => $mailContent
 		);
 
 	}
@@ -250,6 +265,15 @@ class Email extends Moloquent
 				
 			break ;
 
+			case 'customtemplate':
+								
+				$this->recipient_info["receiver"]['email'] = $data['email'];
+				$this->recipient_info["replace"]["{user_name}"] = isset($data['name'])?$data['name']:$data['email'];
+				$this->recipient_info["replace"]["{message}"] = $data['message'];
+				$this->recipient_info["message"] = str_ireplace(array_keys($this->recipient_info["replace"]),array_values($this->recipient_info["replace"]),$this->recipient_info["message"]);
+				$this->recipient_info["subject"] = $data['subject'];
+			break ;
+
 			
 			default:return  (object)array("error"=>true , "success"=>false , "message"=>" Please Define Proper Type for  Email");
 									
@@ -317,6 +341,6 @@ class Email extends Moloquent
         $result = $res->getBody();
         $result = json_decode($result);         
         return (isset($result->{'status'}) && $result->{'status'}=='success_ok');
-	 }
+	 }	 
 					
 }

@@ -122,6 +122,7 @@ class OrderController extends Controller
 						'quantity' => array(
 							'$sum' => '$productsLog.quantity'
 						),
+						'doStatus' => 1
 					),
 				),
 				array(

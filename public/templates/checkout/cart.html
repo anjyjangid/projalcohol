@@ -29,14 +29,14 @@
 						</span>
 
 							<div class="checkouter-td-right-text">
-								<div class="orhistry2_td2proctext1">{{cartproduct.product.name}}</div>
-								<div class="orhistry2_td2proctext2">{{cartproduct.product.shortDescription}}</div>
+								<div class="orhistry2_td2proctext1">{{::cartproduct.product.name}}</div>
+								<div class="orhistry2_td2proctext2">{{::cartproduct.product.shortDescription}}</div>
 								<div class="orhistry2_td2proctext1">{{cartproduct.discountedUnitPrice | pricingTxt}}</div>
 								<div class="orhistry2_td2proctext2">unit Price</div>
 							</div> 
 
 						</div>
-						<div class="sale-tag-txt -cart" ng-if="cartproduct.isSingleSale">{{cartproduct.sale.detailTitle}}</div>
+						<div class="sale-tag-txt -cart" ng-if="cartproduct.isSingleSale">{{::cartproduct.sale.detailTitle}}</div>
 
 					</td>
 					<td width="131px">

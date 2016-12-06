@@ -734,7 +734,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('cmsLayout.pages', {
-					url: "/site/{slug}",
+					url: "/pages/{slug}",
 					templateUrl:"/templates/cms/cms.html",
 					controller:'CmsController'
 				})

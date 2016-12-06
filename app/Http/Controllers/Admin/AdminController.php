@@ -337,6 +337,8 @@ class AdminController extends Controller
 
     public function postNotify(Request $request){
         
+        //sleep(10);
+
         $data = $request->all();  
 
         if($data['sms']==0 && $data['mail']==0){
