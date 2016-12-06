@@ -1,8 +1,9 @@
 <div class="prod_addtocart">
 
 	<!-- Add to cart button to add chilled product start -->
-	<div class="cartbtn" ng-show="product.servechilled">
 	
+	<div class="cartbtn" ng-show="product.servechilled">
+
 		<div class="addcart" ng-click="activeAddToCart()" ng-if="(product.qChilled<1 && !addMoreCustom) || (!addMoreCustom && !product.qChilled)" role="button" tabindex="0"><span></span>add to cart</div>
 
 		<div class="addmore" ng-class="{fadeshow:product.qChilled>0 && !addMoreCustom}" ng-show="product.qChilled>0 && !addMoreCustom">

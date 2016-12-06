@@ -188,6 +188,7 @@ class CartController extends Controller
 
 		$cart = Cart::findUpdated($id);
 
+
 		if(empty($cart)){
 
 			$cartObj = new Cart;
@@ -510,7 +511,6 @@ class CartController extends Controller
 		}
 
 		$cart->createAllPossibleSales();
-
 
 		$proRemaining = [];
 		foreach($cart->products as $key=>$cProduct){

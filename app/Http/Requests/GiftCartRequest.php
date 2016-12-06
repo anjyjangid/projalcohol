@@ -66,6 +66,7 @@ class GiftCartRequest extends Request
 		$messagesCommon = [
 					'required' => 'This field is required',
 					'recipient.message.max'=> 'message must be less than or equal to 200 characters',
+					'recipient.message.required'=> 'Please provide message for recipent'
 				];
 
 		switch($input['type']){
@@ -73,7 +74,10 @@ class GiftCartRequest extends Request
 			case 'giftcard':
 
 				$messages = [										
-					'recipient.mobile.required_if'=> 'To send SMS please provide mobile number'					
+					'recipient.mobile.required_if'=> 'To send SMS please provide mobile number',
+					'recipient.mobile.digits' => 'The mobile number must be 8 digits.',
+					'recipient.email.required'=> ' Please provide email-address of gift receipent',
+					'recipient.email.email'=> ' Please provide valid email-address of gift receipent'
 				];
 
 			break;

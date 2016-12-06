@@ -39,7 +39,8 @@ class CartAdmin extends Moloquent
 							'status',
 							'user',
 							'orderType',
-							'generatedBy'
+							'generatedBy',
+							'reference'
 						];
 	
 
@@ -47,8 +48,9 @@ class CartAdmin extends Moloquent
 
 		$cart = self::where('generatedBy',$adminId)->orderBy('updated_at', 'desc')->first();
 
-		$cart->addresses = [];
 		if(!empty($cart->user)){
+
+			$cart->addresses = [];
 
 			$userId = (string)$cart->user;
 			$user = User::find($userId);

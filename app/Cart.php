@@ -158,7 +158,15 @@ class Cart extends Moloquent
 		
 		$userId = isset($user->_id)?$user->_id:(string)new mongoId();
 
-		$cart = self::where("user",new mongoId($userId))->where("_id",new mongoId($id))->first();
+		$cart = self::where("_id",new mongoId($id));
+
+		if(isset($user->_id)){
+			$cart = $cart->where("user",new mongoId($userId));
+		}else{
+			$cart = $cart->whereNull("user");
+		}
+
+		$cart = $cart->first();
 
 		if(empty($cart)){
 			return false;
@@ -494,6 +502,7 @@ class Cart extends Moloquent
 			
 			if(isset($product['sale']) && !$this->isSingleProductSale($product['sale']) && $product['remainingQty']>0){
 
+
 				$isAble = $this->canCreateSale($productId,$proId,$qty,$updateParams['sale']);
 
 				if($isAble===false){
@@ -784,7 +793,7 @@ class Cart extends Moloquent
 		$products = $this->products;
 		$sales = isset($this->sales)?$this->sales:[];
 
-		foreach ($products as $key => $product) {			
+		foreach ($products as $key => $product) {
 
 			if((isset($product['remainingQty']) && $product['remainingQty'] < 1) || !isset($product['sale']) || empty($product['sale']) || $this->isSingleProductSale($product['sale'])) {
 				continue;
@@ -793,13 +802,13 @@ class Cart extends Moloquent
 			$sale = $product['sale'];
 
 			$isAble = true;
-			
+		
 			while($isAble && $product['remainingQty']>0){
 				
 				$unManipulatedProducts = $products;
 
-				$productToCreateSale = $this->getProductToCreateSale($products,$sale['_id'],$sale['conditionQuantity']);				
-
+				$productToCreateSale = $this->getProductToCreateSale($products,$sale['_id'],$sale['conditionQuantity']);
+				
 				if($productToCreateSale === false){
 					$isAble = false;
 					$products = $unManipulatedProducts;
@@ -843,6 +852,8 @@ class Cart extends Moloquent
 
 						}
 
+						$products[$conditionProductId] = $actionPro;
+
 					}				
 
 					if($actionQty>0){
@@ -865,7 +876,7 @@ class Cart extends Moloquent
 
 					switch($key){
 
-						case 'action': {							
+						case 'action': {
 
 							foreach($saleProQty as $actionProKey=>$actionProQty){
 								
@@ -876,7 +887,7 @@ class Cart extends Moloquent
 
 								];
 
-							}							
+							}
 
 						}
 						break;
@@ -894,13 +905,11 @@ class Cart extends Moloquent
 
 				}
 
-				
 				$sales[] = $saleObj;
 			}
-			
-			
-		}		
-			
+
+		}
+
 		$this->__set("products",$products);
 
 		$this->__set("sales",$sales);
@@ -1031,7 +1040,13 @@ class Cart extends Moloquent
 		$products = array_merge($sale['products'],$sale['action']);
 		$toRemove = [];
 		foreach ($products as $value) {
-			$toRemove[$value['_id']] = $value['quantity'];
+
+			if(!isset($toRemove[$value['_id']])){
+				$toRemove[$value['_id']] = 0;
+			}
+
+			$toRemove[$value['_id']]+= $value['quantity'];
+
 		}
 
 		$saleProducts = $this->products;

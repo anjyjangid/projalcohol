@@ -1,4 +1,4 @@
-<a href="#" data-toggle="modal" data-target="#productModal" class="icon-btn" ng-click="productquery=''">
+<a href="#" data-toggle="modal" data-target="#productModal" class="icon-btn" ng-click="productquery='';products={}">
 	<i class="fa fa-barcode"></i>
 	<div>Products</div>
 	<span class="badge badge-success" ng-bind="alcoholCart.getTotalItems()"></span>
@@ -16,12 +16,17 @@
 	<span class="badge badge-success" ng-bind="alcoholCart.getTotalGifts()"></span>
 </a>
 
+<a href="javascript:void(0)" class="cart-nonchilled-btn-cover icon-btn">
+	<md-switch aria-label="cart.nonchilled" ng-model="cart.nonchilled" ng-change="alcoholCart.setCartChilled(cart.nonchilled)">SAVE {{cart.discount.nonchilled.exemption | pricingTxt}} by choosing to have your drinks delivered Non-Chilled.</md-switch>
+</a>
+
 <div>
 	<div class="table-responsive">
+	
 		<table class="table cart-table">		
 			<tbody>
 				<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getProducts()"></tr>
-				<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0">
+				<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0 && cartproduct['remain'+type]>0">
 
 					<td width="40%">
 						<div>
@@ -39,9 +44,9 @@
 								</span>
 							</div>
 							<div class="col-md-10">
-								<div><b>{{cartproduct.product.name}}</b></div>
-								<div>{{cartproduct.product.shortDescription}}</div>
-								<div><b>{{cartproduct.unitPrice | pricingTxt}}</b></div>
+								<div><b>{{::cartproduct.product.name}}</b></div>
+								<div>{{::cartproduct.product.shortDescription}}</div>
+								<div><b>{{cartproduct.discountedUnitPrice | pricingTxt}}</b></div>
 								<div>unit Price</div>
 							</div> 
 
@@ -49,23 +54,72 @@
 
 					</td>
 					<td>
-						<span ng-bind="type=='qChilled'?'Chilled':'Not Chilled'"></span>
+						<div class="prod_chilled" ng-class="{
+						notchilled:!cartproduct[type+'Status'] || cart.nonchilled,
+						invisible:!cartproduct.product.chilled ,
+
+						}"
+						ng-click="alcoholCart.updateChilledStatus(cartproduct._id,type)">
+						<span>Chilled</span>
+						<div class="prod_chilled_icon"></div>
+						</div>
+						
 					</td>
 					<td width="150">
+						
 						<div class="checkoutmiddlevlauediv">
 
-							<input type="text" ng-model="cartproduct[type]" value="cartproduct[type]" min="0" mquantity="cartproduct[type+'Max']" ng-touch-spin on-increment="addtocart(cartproduct.product._id,type)" on-decrement="addtocart(cartproduct.product._id,type)">
+							<input type="text" ng-model="cartproduct[type]" value="cartproduct[type]" min="0" remain="cartproduct['remain'+type]" mquantity="cartproduct[type+'Max']" ng-touch-spin on-increment="addtocart(cartproduct.getId(),type)" on-decrement="addtocart(cartproduct.getId(),type)">
 
 						</div>
+
 					</td>
 					<td width="100">
-						<div class="orderhistry2price"><b>{{cartproduct.discountedUnitPrice * cartproduct[type] | pricingTxt}}</b></div>
+						<div class="orderhistry2price"><b>{{cartproduct.discountedUnitPrice * cartproduct['remain'+type] | pricingTxt}}</b></div>
 					</td>
 					<td width="100"> 
 						<a href="#" class="checkoutmiddletabledeleteimg" ng-click="remove(key,type, cartproduct[type])"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>
 				<tr ng-repeat-end></tr>
+
+				<tr ng-repeat="sale in alcoholCart.getSales()">
+					<td width="52%">
+						<ul class="orhistry2_td2procdtcvr list-inline sale-pro-list">
+							<div ng-repeat-start="sPro in sale.products" ng-hide="true"></div>
+								<li class="cursor-pointer" ng-repeat="a in sPro.productQtyArr">
+									<a ui-sref="mainLayout.product({product:sPro.product.slug})" title="{{::sPro.product.name}}">
+										<img err-pro-src="" ng-src="products/i/200/{{sPro.product.image}}" alt="" class="img-responsive img-responsive-h" />
+									</a>
+								</li>
+							<div ng-repeat-end ng-hide="true"></div>
+							<li ng-if="sale.action.length" class="sale-action-add-icon">
+								<table><tr><td>+</td></tr></table>
+							</li>
+							<div ng-repeat-start="sPro in sale.action" ng-hide="true"></div>
+								<li class="cursor-pointer" ng-repeat="a in sPro.productQtyArr">
+									<a ui-sref="mainLayout.product({product:sPro.product.slug})" title="{{::sPro.product.name}}">
+										<img err-pro-src="" ng-src="products/i/200/{{sPro.product.image}}" alt="" class="img-responsive img-responsive-h" />
+									</a>																		
+								</li>
+							<div ng-repeat-end ng-hide="true"></div>
+						</ul>
+						<div class="sale-tag-txt -cart">{{sale.title.long}}</div><span class="strike-txt">{{sale.strikePrice | pricingTxt}}</span>
+					</td>
+					<td width="131px">
+						<div class="prod_chilled" ng-class="{notchilled:!sale.chilled || cart.nonchilled}" ng-click="alcoholCart.saleChilled(sale)">
+						<span>Chilled</span>
+						<div class="prod_chilled_icon"></div>
+						</div>
+					</td>
+					<td></td>
+					<td>
+						<div class="orderhistry2price"><span class="strike-txt-only">{{sale.strikePrice | pricingTxt}}</span><br>{{sale.price | pricingTxt}}</div>
+					</td>
+					<td>
+						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="removeSale(sale)"><i class="glyphicon glyphicon-trash"></i></a>
+					</td>
+				</tr>
 
 				<tr ng-repeat="(key, giftCard) in alcoholCart.getGiftCards()">
 
@@ -77,15 +131,23 @@
 								<div>Email: <b>{{giftCard.recipient.email}}</b></div>
 								<div>Card: <b>{{giftCard.recipient.price}}</b></div>
 								<div ng-if="giftCard.recipient.mobile">Mobile: <b>{{giftCard.recipient.mobile}}</b></div>
+								<div >Message: <b class="split-txt">{{giftCard.recipient.message}}</b></div>
 								
 							</div> 
 						</div>
 					</td>
 					<td>
-						<div>Message: <b>{{giftCard.recipient.message}}</b></div>
+						
 					</td>
 					<td>
 						
+					</td>
+					<td width="150">
+						<div class="checkoutmiddlevlauediv">
+
+							<input type="text" ng-model="giftCard.recipient.quantity" value="giftCard.recipient.quantity" min="0" mquantity="100" ng-touch-spin on-increment="updateGiftCard(giftCard.getUniqueId())" on-decrement="updateGiftCard(giftCard.getUniqueId())">
+
+						</div>
 					</td>
 					<td>
 						<div>Price : <b>{{giftCard.recipient.price * giftCard.recipient.quantity | pricingTxt}}</b></div>
@@ -126,6 +188,7 @@
 						<a href="#" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removePackage(package._uniqueId,true)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>
+
 			</tbody>
 		</table>
 	</div>

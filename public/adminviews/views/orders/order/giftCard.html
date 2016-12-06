@@ -21,7 +21,7 @@
 						
 						<div>
 							<span>Select an amount between $50 - $500</span>
-							<button ng:class="{'btn-success':gift.recipient.price == slots.value}" class="btn default btn-cls-gift" ng-repeat="slots in gift.cards" ng-click="gift.recipient.price = slots.value">
+							<button ng:class="{'btn-success':gift.recipient.price == slots.value}" class="btn  btn-cls-gift" ng-repeat="slots in gift.cards" ng-click="gift.recipient.price = slots.value">
 								{{slots.value | pricingTxt}}
 							</button>
 						</div>
@@ -36,7 +36,7 @@
 								<div class="form-group" ng:class="{'has-error':errors['recipient.email'][0]}">
 
 									<input type="text" placeholder="recipient's email" ng-model="gift.recipient.email" class="alcohalrestertextbox form-control" ng-change="errors['recipient.email'][0]=''">
-									<!-- <span class="help-block" ng-bind="errors['recipient.email'][0]"></span> -->
+									<span class="help-block" ng-bind="errors['recipient.email'][0]"></span>
 								</div>
 							</div>
 						</div>
@@ -47,6 +47,7 @@
 
 									<label class="full-width">Message <span class="max-char-color pull-right" align="right"> Max. characters : 200</span></label>
 									<textarea maxlength="200" ng-model="gift.recipient.message" class="alcohalrestertextbox form-control" ng-change="errors['recipient.message'][0]=''"></textarea>
+									<span class="help-block" ng-bind="errors['recipient.message'][0]"></span>
 									<span ng-class="max-char-color" ng-show="gift.recipient.message.length>0">
 										left : {{200 - gift.recipient.message.length}}
 									</span>
@@ -56,9 +57,14 @@
 										<span class="mobile-sms-width"> Mobile SMS</span>
 									</md-checkbox>
 
-									<div ng-if="gift.recipient.sms == 1" class="form-group" ng:class="{'has-error': errors['recipient.email'][0]}" >
-										<input type="text" placeholder="Phone number" ng-model="gift.recipient.mobile" class="alcohalrestertextbox form-control">
+
+									<div ng-if="gift.recipient.sms == 1" class="form-group" ng:class="{'has-error': errors['recipient.mobile'][0]}" >
+										<div class="input-group">
+											<div class="mobileinput input-group-addon">+65</div>
+											<input type="text" placeholder="Phone number" ng-model="gift.recipient.mobile" class="alcohalrestertextbox form-control" aria-invalid="false" style="">
+										</div>
 										<span class="help-block" ng-bind="errors['recipient.mobile'][0]"></span>
+
 									</div>
 								</div>
 								<p class="packtiti-rightset packag-amnt-divcolr">Price</p>

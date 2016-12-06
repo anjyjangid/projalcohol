@@ -29,14 +29,14 @@
 						</span>
 
 							<div class="checkouter-td-right-text">
-								<div class="orhistry2_td2proctext1">{{cartproduct.product.name}}</div>
-								<div class="orhistry2_td2proctext2">{{cartproduct.product.shortDescription}}</div>
+								<div class="orhistry2_td2proctext1">{{::cartproduct.product.name}}</div>
+								<div class="orhistry2_td2proctext2">{{::cartproduct.product.shortDescription}}</div>
 								<div class="orhistry2_td2proctext1">{{cartproduct.discountedUnitPrice | pricingTxt}}</div>
 								<div class="orhistry2_td2proctext2">unit Price</div>
 							</div> 
 
 						</div>
-						<div class="sale-tag-txt -cart" ng-if="cartproduct.isSingleSale">{{cartproduct.sale.detailTitle}}</div>
+						<div class="sale-tag-txt -cart" ng-if="cartproduct.isSingleSale">{{::cartproduct.sale.detailTitle}}</div>
 
 					</td>
 					<td width="131px">
@@ -94,7 +94,7 @@
 								</li>
 							<div ng-repeat-end ng-hide="true"></div>
 						</ul>
-						<div class="sale-tag-txt -cart">{{sale.title.long}}</div><span class="strike-txt">{{sale.strikePrice}}</span>
+						<div class="sale-tag-txt -cart">{{sale.title.long}}</div><span class="strike-txt">{{sale.strikePrice | pricingTxt}}</span>
 					</td>
 					<td width="131px">
 						<div class="prod_chilled" ng-class="{notchilled:!sale.chilled || cart.nonchilled}" ng-click="alcoholCart.saleChilled(sale)">
@@ -174,7 +174,7 @@
 
 							<div class="checkouter-td-right-text">
 								<div class="orhistry2_td2proctext1">{{giftCard.recipient.name}}</div>
-								<div class="orhistry2_td2proctext2">{{giftCard.recipient.message}}</div>
+								<div class="orhistry2_td2proctext2 split-txt">{{giftCard.recipient.message}}</div>
 								<div class="orhistry2_td2proctext1">{{giftCard.recipient.price | pricingTxt}}</div>
 								<div class="orhistry2_td2proctext2">unit Price</div>
 							</div> 

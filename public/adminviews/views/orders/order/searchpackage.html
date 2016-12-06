@@ -1,8 +1,8 @@
-<div class=" modal-lg">
+<div class="modal-lg">
 	<div class="modal-content">
 		<div class="modal-header">
-			<button type="button" class="close" ng-click="cancel()">&times;</button>
-			<h4 class="modal-title">Search Package</h4>
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">Package</h4>
 		</div>
 
 		<div class="modal-body">
@@ -31,30 +31,9 @@
 					</table>
 				</div>
 				<div class="col-sm-8">
-					<div class="row" ng-if="selected.package && packageType=='party'" ng-init="p=selected.package">
-						<div class="col-sm-6">
-							<img class="img-responsive" err-src="asset/i/defaultImage.png" ng-src="products/i/{{p.coverImage.source | getProductThumb}}">
-							<br>
-							<p class="caption" ng-bind="p.description"></p>
-						</div>
-						<div class="col-sm-6">
-							<h2 ng-bind="p.title"></h2>
-							<p class="lead" ng-bind="p.subTitle"></p>
-							<p>
-								Package Amount<br>
-								<span class="h2 strong">${{p.packagePrice}}</span>
-							</p>
-							<p class="text-success">
-								Savings<br>
-								<span class="h2 strong">${{p.packageSavings}}</span>
-							</p>
-							<div class="form-group">
-								<label>Quantity</label>
-								<input type="number" ng-model="p.packageQuantity" min="0" class="form-control" ng-init="p.packageQuantity=1">
-							</div>
-							<button class="btn btn-primary" ng-click="alcoholCart.addPackage(p._id, p)">Add to Cart</button>
-						</div>
-					</div>
+					<package-detail package="selected.package" id="selected.package._id"></package-detail>
+							<pre>{{selected | json}}</pre>
+										
 				</div>
 			</div>
 		</div>

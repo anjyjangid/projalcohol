@@ -624,7 +624,6 @@ class ProductController extends Controller
 		
 		if(!empty($result['products'])){
 
-
 			foreach ($result as $key => &$product) {
 				$product['_id'] = (string)$product['_id'];
 			}

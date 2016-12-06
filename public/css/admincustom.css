@@ -295,6 +295,7 @@ ul.userlist li{
 }
 .productdetailcovermainbgimg .checkoutmiddlevlauediv {
 	margin-top: 0px;
+	max-width: 130px;
 }
 .combo_slider .tabsright .item {
 	font-size: 0.9em;
@@ -710,4 +711,113 @@ md-radio-button:focus, .paymenttype:focus, .single-slot:focus {
 tr.proSelected {
     border-right: 2px solid #26a69a;
     border-left: 2px solid #26a69a;
+}
+
+.gift-card-rightcover {
+    padding-left: 15px;
+}
+
+.split-txt{
+	word-break: break-all;
+}
+
+
+/****************************************
+* Sale products on cart page css starts *
+*****************************************/
+
+.sale-pro-list li{
+	width: 60px;
+    height: 60px;
+    /*border: 1px solid #ccc;*/
+    margin: 0 4px;
+    padding: 5px;
+}
+
+.sale-pro-list li.sale-action-add-icon table {
+    height: 100%;
+    vertical-align: middle;
+    font-size: 1.5em;
+}
+
+.sale-pro-list li.sale-action-add-icon table td{
+	padding: 0 !important;
+}
+
+.sale-pro-list li.sale-action-add-icon {
+    display: inline-block;
+    vertical-align: top;
+    width: auto;
+}
+
+.strike-txt,.strike-txt-only{
+    text-decoration: line-through;
+}
+
+.cart-table .strike-txt{
+	padding: 0 10px;
+	font-weight: bold;
+}
+
+/**************************************
+* Sale products on cart page css ends *
+***************************************/
+.prod_chilled:focus {
+    outline: none;
+}
+
+.prod_chilled {
+	width: 100%;
+	min-width: 80px;
+	float: left;
+	margin-bottom: 15px;
+	cursor: pointer;
+	overflow: hidden;	
+}
+.cart-table .prod_chilled {
+	margin-bottom: 0px;
+}
+.prod_chilled_icon {
+	float: right !important;
+	background: url(../images/sprite.png) no-repeat -444px 0px;
+	min-width: 24px;
+	min-height: 24px;
+	margin-right: 6px;
+	margin-top: -2px;
+}
+.prod_chilled.notchilled .prod_chilled_icon {
+	background: url(../images/sprite.png) no-repeat -410px 0px;
+	min-width: 24px;
+	min-height: 24px;
+	margin-right: 0;
+}
+.prod_chilled span {
+	float: right;
+	display: inline-block;
+	width: 48px;
+	-webkit-transition: width 0.3s; /* Safari */
+	transition: width 0.3s;
+}
+.prod_chilled.notchilled span {
+	width: 0px;
+	overflow: hidden;
+	;
+}
+.prod_chilled span {
+	color: #aa00ff;
+}
+
+.swal2-modal.swal-wide.show-swal2 {
+    width: 50% !important;
+    margin-right: auto !important;
+    left: 25%;
+    margin-left: auto !important;
+}
+
+.cart-nonchilled-btn-cover{
+	background: #fafafa;
+	padding: 0 7px;
+	text-align: center;
+	display: inline-block;
+	float: right;
 }

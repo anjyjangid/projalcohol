@@ -493,7 +493,8 @@ AlcoholDelivery.controller('ProductDetailController', [
 
 		function(response){
 
-			$scope.product = response;				
+			$scope.product = response;
+			console.log($scope.product);
 
 			if(!$scope.product.isInCart){
 
@@ -925,7 +926,7 @@ AlcoholDelivery.controller('CartController',[
 	}
 
 	$scope.packageUTOut = [];
-	$scope.proUpdateTimeOut = [];
+	$scope.proUpdateTimeOut = {};
 	$scope.lproUpdateTimeOut = [];
 	$scope.lproCardUpdateTimeOut = [];
 
@@ -2423,7 +2424,7 @@ AlcoholDelivery.controller('PackageDetailController',
 
 		if($stateParams.uid!==''){
 
-			var isInCart = alcoholCart.getPackageByUniqueId($stateParams.uid);			
+			var isInCart = alcoholCart.getPackageByUniqueId($stateParams.uid);
 
 			if(isInCart){
 
@@ -2501,7 +2502,6 @@ AlcoholDelivery.controller('PackageDetailController',
 
 		});
 
-
 		if(typeof $scope.errors[index] == 'undefined'){
 			//ADD IN CARTQUATITY IF THERE IS NO ERROR
 			angular.forEach($scope.packages.packageItems[index].products, function(inPkgItem, inPkgKey) {
@@ -2527,8 +2527,6 @@ AlcoholDelivery.controller('PackageDetailController',
 		});
 		$scope.updatePackage();
 	};
-
-	
 
 	$scope.addPackage = function(){
 
@@ -2614,13 +2612,8 @@ AlcoholDelivery.controller('PackageDetailController',
 	}
 
 	$scope.toTrustedHTML = function( html ){
-	    return $sce.trustAsHtml( html );
+		return $sce.trustAsHtml( html );
 	}
-
-	/*$scope.$on('accordionA:onReady', function () {	  
-	  $scope.accordionA.toggle(0);
-	});*/
-
 
 }]);
 

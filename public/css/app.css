@@ -40,7 +40,7 @@ button:disabled {
 }
 
 .ro_pic .img-responsive-h{
-	max-height: 46px;
+	max-height: 46px !important;
 }
 
 .navbar .make-active {
@@ -1412,4 +1412,8 @@ td.childtd {
 }
 .checkboxtotaldiv-text-font-size{
 	position: static;
+}
+
+.split-txt{
+	word-break: break-all;
 }

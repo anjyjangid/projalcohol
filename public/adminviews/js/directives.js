@@ -41,8 +41,42 @@ MetronicApp.directive('ngSpinnerBar', ['$rootScope',
 	}
 ])
 
+.directive('packageDetail',[function(){
 
-MetronicApp.directive('ngTouchSpin', ['$timeout', '$interval', function($timeout, $interval) {
+	return {		
+		restrict : "E",
+		replace: true,
+		templateUrl: function(elem, attr){
+			return '/adminviews/views/orders/order/partydetail.html';
+		},
+		replace : true,
+		scope: {
+			type:'=',
+			id:'=',
+		},
+		link: function (scope, element, attrs, ngModel) {
+
+			scope.$watch('scope',function(newValue,oldValue){
+				console.log(newValue);
+				if(newValue!=oldValue){
+					reset();
+				}
+
+			},true);
+
+
+			function reset(){
+
+console.log("asdasd");
+
+			}
+		}
+		// controller: "PackageDetailController"
+	};
+
+}])
+
+.directive('ngTouchSpin', ['$timeout', '$interval', function($timeout, $interval) {
 	'use strict';
 
 	var setScopeValues = function (scope, attrs) {
@@ -66,7 +100,8 @@ MetronicApp.directive('ngTouchSpin', ['$timeout', '$interval', function($timeout
 			'myincrement': '&onIncrement',
 			'mydecrement': '&onDecrement',
 			'val': "=value",
-			'max': "=mquantity"
+			'max': "=mquantity",
+			'remainQty' : "=?remain"
 		},
 		replace: true,
 		link: function (scope, element, attrs, ngModel) {
@@ -78,6 +113,12 @@ MetronicApp.directive('ngTouchSpin', ['$timeout', '$interval', function($timeout
 			ngModel.$setViewValue(scope.val);
 
 			scope.decrement = function () {
+
+				if(typeof scope.remainQty !== 'undefined'){
+					scope.remainQty--;
+				}
+
+
 				oldval = scope.val;
 				var value = parseFloat(parseFloat(Number(scope.val)) - parseFloat(scope.step)).toFixed(scope.decimals);
 
@@ -94,6 +135,10 @@ MetronicApp.directive('ngTouchSpin', ['$timeout', '$interval', function($timeout
 			};
 
 			scope.increment = function () {
+
+				if(typeof scope.remainQty !== 'undefined'){
+					scope.remainQty++;
+				}
 				oldval = scope.val;
 				var value = parseFloat(parseFloat(Number(scope.val)) + parseFloat(scope.step)).toFixed(scope.decimals);
 
@@ -164,7 +209,7 @@ MetronicApp.directive('ngTouchSpin', ['$timeout', '$interval', function($timeout
 		'		<i class="fa fa-minus"></i>'+
 		'		</button>'+
 		'	</div>'+		
-		'	<span class="spinner-input form-control" ng-bind="val"></span>'+
+		'	<span class="spinner-input form-control" ng-bind="remainQty || val"></span>'+
 		'	<div class="spinner-buttons input-group-btn">'+
 		'		<button ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()" type="button" class="btn spinner-up blue"><span class="md-click-circle md-click-animate"></span>'+
 		'		<i class="fa fa-plus"></i>'+
