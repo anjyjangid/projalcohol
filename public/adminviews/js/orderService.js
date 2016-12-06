@@ -193,6 +193,7 @@ MetronicApp
 
 		});
 
+		this.resetProductsPrice();
 
 	}
 
