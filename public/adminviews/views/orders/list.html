@@ -63,10 +63,7 @@
 								<td>
 									<select name="doStatus" class="form-control form-filter input-sm">
 										<option value="">All</option>
-										<option value="0">Under Process</option>	
-										<option value="1">Dispatch</option>
-                                        <option value="2">Delivered</option>
-                                        <option value="3">Cancelled</option>
+                                        <option ng-repeat="obj in orderstatus" value="{{obj.value}}">{{obj.label}}</option>
 									</select>
 								</td>
 								<td>
@@ -89,14 +86,17 @@
 <!-- END MAIN CONTENT -->
 <!-- BEGIN MAIN JS -->
 
-<div data-replace="true" tabindex="-1" class="modal fade modal-scroll" id="notify" style="display: none;">
+<div data-replace="true" tabindex="-1" class="modal fade modal-scroll" id="notify" data-backdrop="static" data-keyboard="false" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header" ng-show="notify.loading">
+                <h1 align="center">Please Wait...</h1>
+            </div>
+            <div class="modal-header" ng-hide="notify.loading">
                 <button aria-hidden="true" data-dismiss="modal" class="close" type="button"></button>
                 <h4 class="modal-title"><i class="glyphicon glyphicon-comment"></i> Notify user</h4>
             </div>
-            <div class="modal-body">                
+            <div class="modal-body" ng-hide="notify.loading">                
                 <div class="portlet-body form">
                     <form role="form" class="form-horizontal" ng-submit="sendNotification()">
                         <div class="form-body">                                 
@@ -144,6 +144,8 @@
         </div>
     </div>
 </div>
+
+<div order-status></div>
 
 <script>
 	
@@ -225,16 +227,17 @@
                         mData: null,
                         sClass: "center",
                         mRender: function(data, type, full) {
-                            var status = data.doStatus; 
-                            if(status == 0){
+                            var status = data.doStatus;                            
+                            return '<div ng-bind-html="showStatus('+status+')"></div>'; 
+                            /*if(status == 0){
                                 return '<span class="label label-sm label-warning">Under Process</span>';
                             }else if(status == 1){
-                                return '<span class="label label-sm label-info">Dispatch</span>';
+                                return '<span class="label label-sm label-info">Ready</span>';
                             }else if(status == 2){
                                 return '<span class="label label-sm label-success">Delivered</span>';
                             }else if(status == 3){
                                 return '<span class="label label-sm label-danger">Cancelled</span>';
-                            }                       
+                            }*/                       
                         },                  
                         orderable:true
                     },
@@ -244,7 +247,8 @@
                         mRender: function(data, type, full) {
                             var OId = data._id.$id;
                             var consumerContact = (typeof data.consumer.mobile_number != 'undefined')?data.consumer.mobile_number:0;
-                            return '<a title="View Detail" ui-sref=userLayout.orders.show({order:"'+OId+'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a> <a title="Notify user" ng-click=notifyUser("'+OId+'",'+consumerContact+') class="btn btn-xs default"><i class="glyphicon glyphicon-comment"></i></a><a class="btn btn-xs default" title="Print Invoice" target="_blank" href="/printjob/'+data.reference+'"><i class="fa fa-print"></i></a>';
+                            return '<a title="View Detail" ui-sref=userLayout.orders.show({order:"'+OId+'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a> <a class="btn btn-xs default" title="Print Invoice" target="_blank" href="/printjob/'+data.reference+'"><i class="fa fa-print"></i></a><button type="button" ng-click=statusForm({id:"'+OId+'",doStatus:'+data.doStatus+',reference:"'+data.reference+'"}) class="btn btn-xs default" title="Edit Order"><i class="fa fa-cog"></i></button>';
+                            //<a title="Notify user" ng-click=notifyUser("'+OId+'",'+consumerContact+') class="btn btn-xs default"><i class="glyphicon glyphicon-comment"></i></a>
                         },                  
                         orderable:false                     
                     }

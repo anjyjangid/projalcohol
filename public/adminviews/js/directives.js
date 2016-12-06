@@ -570,6 +570,7 @@ MetronicApp.directive('orderProductDetail', function() {
 });
 
 
+
 /*AngularJS Credit Card Payment Service*/
 angular.module('ngPayments', [])
   .factory('$payments', function() {
@@ -869,3 +870,33 @@ angular.module('ngPayments', [])
         }
     }
   }]);
+
+MetronicApp.directive('orderStatus', function(){
+
+	return {		
+		restrict: 'A',
+		templateUrl: '/adminviews/views/orders/status.html',
+		controller: function($scope,$rootScope,$http,$window){
+			
+			$scope.updateOrder = function(){
+				$scope.savingData = true;
+				$scope.orderform.errors = {};
+				$http.post('adminapi/order/updatestatus',$scope.orderform)
+				.then(function(res){
+					$('#statusupdate').modal('hide');
+					if(typeof orderGrid !== 'undefined')
+						orderGrid.getDataTable().ajax.reload();
+					else
+						$window.location.reload();
+				})
+				.catch(function(err){
+					$scope.orderform.errors = err.data;
+				})
+				.finally(function(){
+					$scope.savingData = false;					
+				})
+			}
+		}
+	}
+});		
+
