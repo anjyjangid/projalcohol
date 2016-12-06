@@ -210,6 +210,17 @@ AlcoholDelivery.service('alcoholCart', [
 
 		});
 
+		this.resetProductsPrice();
+
+	}
+
+	this.resetProductsPrice = function (){
+
+		var products = this.getProducts();
+		angular.forEach(products, function(product, key) {
+			product.setPrice();
+		});
+
 	}
 
 	this.addLoyaltyProduct = function (id, quantity, serveAs) {
@@ -1538,7 +1549,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 			return defer.promise;		
 			
-		};		
+		};
 
 		this.removeItemById = function (id,notify) {
 
