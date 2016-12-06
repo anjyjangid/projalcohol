@@ -193,6 +193,16 @@ MetronicApp
 
 		});
 
+
+	}
+
+	this.resetProductsPrice = function (){
+
+		var products = this.getProducts();
+		angular.forEach(products, function(product, key) {
+			product.setPrice();
+		});
+
 	}
 
 	this.saleChilled = function(saleObj){
@@ -1458,7 +1468,11 @@ MetronicApp
 
 	product.prototype.setPrice = function(product){
 
-		var originalPrice = parseFloat(product.price);
+		if(angular.isDefined(product)){
+			var originalPrice = parseFloat(this.product.price);
+		}else{
+			var originalPrice = parseFloat(product.price);
+		}
 
 		var unitPrice = originalPrice;
 

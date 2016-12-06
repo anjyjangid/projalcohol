@@ -1201,6 +1201,24 @@ angular.module('AlcoholCartFactories', [])
 
 }])
 
+.factory('GiftingProduct',['$filter',function($filter){
+
+	var giftProduct = function(id, quantity, title, images, slug, state){
+
+		this._id = id;
+		this._quantity = parseInt(quantity);
+		this._maxQuantity = parseInt(quantity);
+		this._title = title;
+		this._image = $filter('getProductThumb')(images);
+		this._slug = slug;
+		this._inGift = 0;
+		this._stateChilled = state;
+
+	}
+	return giftProduct;
+
+}])
+
 .factory('alcoholCartPromotion',['$log','$filter',function($log,$filter){
 
 	var oPromotion = function(promotion,product,chilled){
@@ -1282,3 +1300,825 @@ angular.module('AlcoholCartFactories', [])
 	return oPromotion;
 
 }])
+
+.factory('AlcoholProduct',[
+			'$rootScope','$state','$filter','$log','$timeout','$q','catPricing','alcoholCart','UserService',
+	function($rootScope,$state,$filter, $log, $timeout, $q, catPricing, alcoholCart, UserService){
+
+	var product = function(type,product){
+	
+		this._id = product._id.$id || product._id;
+
+		this.type = type;
+
+		if(this.type == 0){
+
+			this.setPricingParams(
+				product.categories,
+				product.express_delivery_bulk,
+				product.regular_express_delivery
+			);
+
+			if(angular.isDefined(product.nameSales) && angular.isArray(product.nameSales) && product.nameSales.length){
+				this.setNameSale(product);
+			}
+
+			if(angular.isDefined(product.proSales) && angular.isObject(product.proSales)){
+				this.setSale(product);
+			}
+
+			if(angular.isDefined(product.parentCategory)){
+				this.setParentDetail(product.parentCategory);
+			}
+
+			if(angular.isDefined(product.childCategory)){
+				this.setChildDetail(product.childCategory);
+			}			
+
+		}
+
+		this.setSettings(product);
+
+		this.setPrice(product); // must before setAddBtnState
+
+		this.setAddBtnState(product);
+
+		if(this.error === true){
+			return false;
+		}
+
+		this.setDefaults(product);
+
+		if(product.wishlist){
+		//if wishlist product passed
+			this.wishlist = product.wishlist;
+		}
+		//this.setDetailLink();
+
+	}
+
+	
+
+	product.prototype.setSettings = function(p){
+
+		switch(this.type){
+
+			case 1:{
+				this.isLoyaltyStoreProduct = true;
+				var isInCart = alcoholCart.getLoyaltyProductById(this._id);
+			}
+			break;
+
+			default : {
+				var isInCart = alcoholCart.getProductById(this._id);
+			}
+		}
+
+		this.isInCart = false;
+		this.servechilled=p.chilled;
+		this.qChilled = 0;
+		this.qNChilled = 0;
+
+		if(isInCart!==false){
+
+			this.isInCart = true;
+			this.servechilled = isInCart.getLastServedAs();
+			this.qChilled = isInCart.getRQuantity('chilled');
+			this.qNChilled = isInCart.getRQuantity('nonchilled');
+
+		}
+
+		this.tquantity = this.qChilled + this.qNChilled;
+
+	}
+
+	product.prototype.setNameSale = function(p){
+
+		var nameSale = p.nameSales.pop();
+
+		this.nameSale = nameSale.listingTitle;
+		this.nameDetailSale = nameSale.detailTitle;
+
+		if(angular.isDefined(nameSale.coverImage))
+			this.saleImage = nameSale.coverImage.source;
+
+	}
+
+	product.prototype.setSale = function(p){
+
+		var pSale = p.proSales;
+
+		this.sale = {
+			quantity : pSale.conditionQuantity,
+			type : pSale.actionType,
+			title : pSale.listingTitle,
+			detailTitle : pSale.detailTitle,
+			actionProductId:pSale.actionProductId,
+			imageLink:pSale.imageLink			
+		};
+
+		this.sale.isSingle = (pSale.conditionQuantity==1 && pSale.actionProductId.length==0)?true:false;
+
+		if(angular.isDefined(pSale.coverImage))
+			this.sale.coverImage = pSale.coverImage.source;
+
+		if(pSale.actionType==2){
+			this.sale.discount = {
+				value : pSale.discountValue,
+				type : pSale.discountType
+			}
+		}
+
+		if(pSale.actionType==1){
+			this.sale.discount = {
+				quantity : pSale.giftQuantity
+			}
+		}
+
+		var saleProduct = "";
+
+		if(angular.isDefined(pSale.saleProduct) && pSale.saleProduct.length){
+			saleProduct = pSale.saleProduct.pop();
+		}else{
+			saleProduct = p;
+		}
+
+		this.sale.discount.product = {
+			name : saleProduct.name,
+			imageFiles : saleProduct.imageFiles,
+			slug : saleProduct.slug
+		}
+
+	}
+
+	/**
+	*	function to get total quantity is set for current product object
+	*	return SUM of chilled and non chilled quantity
+	**/
+	product.prototype.getTotalQty = function(){
+		return parseInt(this.qChilled) + parseInt(this.qNChilled);
+	}
+
+	product.prototype.getTotalQtyInCart = function(){
+
+		var isInCart = alcoholCart.getProductById(this._id);
+
+		if(isInCart!==false)
+		return isInCart.getRQuantity('chilled') + isInCart.getRQuantity('nonchilled');
+
+		return 0;
+
+	}
+
+
+
+	product.prototype.setAddBtnState = function(p){
+
+		if( typeof p === 'undefined' ){
+			var p = this;
+		}
+
+		var productAvailQty = parseInt(p.quantity);
+
+		this.addBtnAllowed = true;
+
+		if(productAvailQty<1){
+
+			if(p.outOfStockType===1){
+
+				this.addBtnAllowed = false;
+
+			}
+
+		}
+
+		switch(this.type){
+
+			case 1:{
+
+				var notSufficient = false;
+
+				var userData = UserService.getIfUser();
+
+				if(userData!==false){
+
+					var userloyaltyPoints = userData.loyaltyPoints || 0;
+
+					var pointsInCart = alcoholCart.getLoyaltyPointsInCart();				  				   
+
+					var userloyaltyPointsDue = userloyaltyPoints - pointsInCart;
+
+					var point = parseFloat(userloyaltyPointsDue);
+
+					var pointsRequired = this.loyaltyValue.point;
+
+					if(point < pointsRequired && !this.isInCart){
+						notSufficient = true;
+					}
+				}
+
+				this.notSufficient = notSufficient;
+
+			}
+			break;
+		}
+
+	}
+
+	product.prototype.setDetailLink = function(){
+
+		var href = "javascript:void(0)";
+		switch(this.type){
+
+			case 1:{
+				href = mainLayout.product({product:productInfo.slug})
+			}
+			break;
+			case 1:{
+
+			}
+			break;
+
+		}
+
+		this.href = href;
+
+		return href;
+
+	}
+
+	product.prototype.setPricingParams = function(categories,bulkPricing,singlePricing){
+
+		var categoryKey = [];
+		var catData = [];
+		angular.copy(categories,categoryKey);
+
+		categoryKey = categoryKey.pop();
+		catData = catPricing.categoryPricing[categoryKey];
+
+		if(typeof catData==='undefined'){
+			this.error = true;
+			return false;
+		}
+
+		if(typeof bulkPricing === 'undefined'){
+			this.bulkPricing = catData.express_delivery_bulk.bulk
+		}else{
+			this.bulkPricing = bulkPricing.bulk;
+		}
+
+		if(typeof singlePricing === 'undefined'){
+			this.singlePricing = catData.regular_express_delivery
+		}else{
+			this.singlePricing = singlePricing;
+		}
+
+	}
+
+	product.prototype.setPrice = function(p){
+
+		var _product = this;
+
+		switch(this.type){
+			case 1:
+				if(typeof p.loyaltyValueType !== 'undefined'){
+
+					_product.loyaltyValue = {
+						type : parseInt(p.loyaltyValueType),
+						point : p.loyaltyValuePoint || 0,
+						price : p.loyaltyValuePrice || 0,
+					};
+
+				}
+			break;
+			case 2:
+
+			break;
+			default:{
+
+				if (p.price){
+
+					var basePrice = parseFloat(p.price)/1;
+					var unitPrice = basePrice;
+
+					var singlePricing = this.singlePricing;
+					singlePricing.type = parseInt(singlePricing.type);
+
+					if(singlePricing.type===1){
+
+						unitPrice +=  parseFloat(basePrice * singlePricing.value/100);
+
+					}else{
+
+						unitPrice += parseFloat(singlePricing.value);
+
+					}
+
+					this.unitPrice = parseFloat(unitPrice.toFixed(2));
+
+					var bulkArr = this.bulkPricing;
+					var quantity = this.getTotalQty();
+					var price = unitPrice;
+
+					this.discountedUnitPrice = price/quantity;
+
+					this.price = price;
+					
+					this.bulkApplicable = false;
+
+					if(this.sale && this.sale.isSingle){
+
+						if(this.sale.discount.type == 1){//FIXED AMOUNT SALE
+							this.price = this.price - this.sale.discount.value;
+						}
+						if(this.sale.discount.type == 2){//% AMOUNT SALE
+							this.price = this.price - (this.price * this.sale.discount.value/100);
+						}
+						this.price = this.price.toFixed(2);
+
+					}else{
+
+						this.bulkApplicable = true;
+						angular.forEach(bulkArr, function(bulk,key){
+
+							if(bulk.type==1){
+								bulk.price = basePrice + (basePrice * bulk.value/100);
+							}else{
+								bulk.price = basePrice + bulk.value;
+							}
+
+							bulk.price = bulk.price.toFixed(2);
+
+						})
+
+					}
+
+				}
+				else {
+					$log.error('Each Product Required Price');
+				}
+			}
+
+		}
+
+	};
+
+	product.prototype.getCurrentUnitPrice = function () {
+
+		var price = this.price;
+
+		if(this.bulkApplicable){
+
+			var qty = this.getTotalQty();
+			var bulkArr = this.bulkPricing;
+
+			angular.forEach(bulkArr, function(bulk){
+
+				if(qty>=bulk.from_qty && qty<=bulk.to_qty){
+
+					price = bulk.price;
+				}
+
+			})
+		}
+		return price.toFixed(2);
+
+	}
+
+	product.prototype.setDefaults = function(p){
+
+		this.availabilityDays = p.availabilityDays;
+		this.availabilityTime = p.availabilityTime;
+		this.categories = p.categories;
+		this.chilled = p.chilled;
+		this.description = p.description;
+		this.imageFiles = p.imageFiles;
+		this.name = p.name;
+		this.outOfStockType = p.outOfStockType;
+		this.quantity = p.quantity;
+		this.shortDescription = p.shortDescription;
+		this.sku = p.sku;
+		this.slug = p.slug;
+
+		this.isLoyalty = p.isLoyalty;
+		this.loyaltyValueType = p.loyaltyValueType;
+		this.loyaltyValuePoint = p.loyaltyValuePoint;
+		this.loyaltyValuePrice = p.loyaltyValuePrice;
+		this.loyalty = p.loyalty;
+		this.loyaltyType = p.loyaltyType;
+		
+		this.metaTitle = p.metaTitle;
+		this.metaDescription = p.metaDescription;
+		this.metaKeywords = p.metaKeywords;
+
+	}
+
+	product.prototype.addToCart = function() {
+
+		var _product = this;
+
+		var defer = $q.defer();
+
+		if(typeof _product.proUpdateTimeOut!=="undefined"){
+
+			$timeout.cancel(_product.proUpdateTimeOut);
+
+		}
+
+		_product.proUpdateTimeOut = $timeout(function(){
+
+			_product.qChilled = _product.qChilled | 0;
+			_product.qNChilled = _product.qNChilled | 0;
+
+			var quantity = {
+					chilled : parseInt(_product.qChilled),
+					nonChilled : parseInt(_product.qNChilled)
+				}
+
+			if(_product.isLoyaltyStoreProduct){
+
+				if(_product.notSufficient){
+
+					defer.reject({'notSufficient':true});
+
+				}
+
+				alcoholCart.setLoyaltyPointsInCart();
+
+				alcoholCart.addLoyaltyProduct(_product._id,quantity,_product.servechilled).then(
+
+					function(successRes){
+
+						switch(successRes.code){
+								case 100:
+
+									$timeout(function(){
+										$mdToast.show({
+											controller:function($scope){
+
+												$scope.qChilled = 0;
+												$scope.qNchilled = 0;
+
+												$scope.closeToast = function(){
+													$mdToast.hide();
+												}
+											},
+											templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+											parent : $element,
+											position: 'top center',
+											hideDelay:10000
+										});
+									},1000);
+
+								break;
+								case 101:
+
+									$timeout(function(){
+
+										$mdToast.show({
+											controller:function($scope){
+
+												$scope.qChilled = 0;
+												$scope.qNchilled = 0;
+
+												$scope.closeToast = function(){
+													$mdToast.hide();
+												}
+											},
+											templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+											parent : $element,
+											position: 'top center',
+											hideDelay:10000
+										});
+
+									},1000);
+
+								break;
+
+							}
+
+					},
+					function(errorRes){
+
+						if(errorRes.code){
+
+							var code = parseInt(errorRes.code);
+
+							switch(code){
+
+								case 401:{
+
+									$rootScope.$broadcast('showLogin');
+
+								}
+								break;
+
+							}
+
+						}
+
+						if(errorRes.quantity){
+
+							_product.qChilled = errorRes.quantity.chilled | 0;
+							_product.qNchilled = errorRes.quantity.nonchilled | 0;
+
+						}else{
+
+							_product.qChilled = 0;
+							_product.qNchilled = 0;
+
+						}
+
+					}
+
+				);
+
+			}else{
+
+				alcoholCart.addItem(_product._id,quantity,_product.servechilled).then(
+
+					function(successRes){
+
+						if(successRes.success){
+
+							switch(successRes.code){
+								case 100:
+
+									$timeout(function(){
+									$mdToast.show({
+										controller:function($scope){
+
+											$scope.qChilled = 0;
+											$scope.qNchilled = 0;
+
+											$scope.closeToast = function(){
+												$mdToast.hide();
+											}
+										},
+										templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+										parent : $element,
+										position: 'top center',
+										hideDelay:10000
+									});
+									},1000);
+
+								break;
+								case 101:
+
+									$timeout(function(){
+									$mdToast.show({
+										controller:function($scope){
+
+											$scope.qChilled = 0;
+											$scope.qNchilled = 0;
+
+											$scope.closeToast = function(){
+												$mdToast.hide();
+											}
+										},
+										templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+										parent : $element,
+										position: 'top center',
+										hideDelay:10000
+									});
+									},1000);
+
+								break;
+
+							}
+
+							if(_product.isInCart===false){
+								_product.isInCart = alcoholCart.getProductById(_product._id);
+							}
+
+
+						}
+
+					},
+					function(errorRes){
+						//
+					}
+
+				);
+			}
+
+			if(_product.quantitycustom==0){
+				$scope.isInCart = false;
+				$scope.addMoreCustom = false;
+				this.quantitycustom = 1;
+			}
+
+		},1500)
+
+		return defer.promise;
+		};
+
+	product.prototype.hrefDetail = function(){
+		$state.go('mainLayout.product', {'product': this.slug});
+	};
+
+	product.prototype.setParentDetail = function(p){
+		this.parentCategory = p;
+	};
+
+	product.prototype.setChildDetail = function(p){
+		this.childCategory = p;
+	};
+
+	product.prototype.getLoyaltyValue = function(){
+		var lv = parseFloat(this.loyalty);
+		if(this.loyaltyType == 0){
+			lv = parseFloat(this.price) * parseFloat(this.loyalty)/100;
+		}
+		return lv.toFixed(2);
+	};
+
+
+
+	return product;
+
+}])
+
+.factory('CreditCertificate',[
+			'alcoholCart','$q', '$timeout', 'UserService',
+	function(alcoholCart, $q, $timeout, UserService){
+
+	var certificate = function(data){
+
+		this.setQuantity(data);
+		this.setLoyalty(data.loyalty);
+		this.setValue(data.value);
+		this.setCommonSetings();
+		this.setAddBtnState();
+
+	}
+
+	certificate.prototype.setQuantity = function(credit){
+
+		isInCart = alcoholCart.getLoyaltyCardByValue(credit.value);
+
+		if(isInCart===false){
+			this.qNChilled = 0;
+		}else{
+			this.qNChilled = isInCart.quantity;
+		}
+
+	};
+
+	certificate.prototype.getQuantity = function(){
+
+		return parseInt(this.qNChilled);
+
+	}
+
+	certificate.prototype.setCommonSetings = function(){
+
+		this.servechilled = false;
+		this.isLoyaltyStoreProduct = true;
+
+	}
+
+	certificate.prototype.setLoyalty = function(loyalty){
+
+		if (loyalty)  this.loyalty = parseInt(loyalty);
+		else {
+			$log.error('Loyalty must be provided');
+		}
+
+	};
+
+	certificate.prototype.setValue = function(value){
+
+		if (value)  this.value = parseFloat(value);
+		else {
+			$log.error('Value must be provided');
+		}
+
+	};
+
+	certificate.prototype.addToCart = function(){
+
+		var defer = $q.defer();
+
+		var _certificate = this;
+
+
+		if(typeof _certificate.updateTimeOut!=="undefined"){
+
+			$timeout.cancel(_certificate.updateTimeOut);
+
+		}
+
+		_certificate.updateTimeOut = $timeout(function(){
+
+			if(_certificate.notSufficient){
+
+				defer.reject({'notSufficient':true});
+
+			}
+
+			alcoholCart.addCreditCertificate(_certificate.value,_certificate.qNChilled).then(
+
+				function(successRes){
+
+					switch(successRes.code){
+							case 100:
+
+								$timeout(function(){
+									$mdToast.show({
+										controller:function($scope){
+
+											$scope.qChilled = 0;
+											$scope.qNchilled = 0;
+
+											$scope.closeToast = function(){
+												$mdToast.hide();
+											}
+										},
+										templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+										parent : $element,
+										position: 'top center',
+										hideDelay:10000
+									});
+								},1000);
+
+							break;
+							case 101:
+
+								$timeout(function(){
+
+									$mdToast.show({
+										controller:function($scope){
+
+											$scope.qChilled = 0;
+											$scope.qNchilled = 0;
+
+											$scope.closeToast = function(){
+												$mdToast.hide();
+											}
+										},
+										templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+										parent : $element,
+										position: 'top center',
+										hideDelay:10000
+									});
+
+								},1000);
+
+							break;
+
+						}
+
+					_certificate.qNChilled = successRes.data.card.quantity || 0;
+
+				},
+				function(errorRes){
+
+					_certificate.qNChilled = errorRes.quantity || 0;
+				}
+
+			);
+		},500)
+
+		return defer.promise;
+	};
+
+	certificate.prototype.setAddBtnState = function(p){
+
+		if( typeof p === 'undefined' ){
+			var p = this;
+		}
+
+		var productAvailQty = p.getQuantity();
+
+		this.addBtnAllowed = true;
+
+		var notSufficient = false;
+
+		var user = UserService.getIfUser();
+
+		if(user!==false){
+
+			var userloyaltyPoints = user.loyaltyPoints || 0;
+
+			var pointsInCart = alcoholCart.getLoyaltyPointsInCart() || 0;
+
+			var userloyaltyPointsDue = userloyaltyPoints - pointsInCart;
+
+			var point = parseFloat(userloyaltyPointsDue);
+
+			var pointsRequired = parseInt(this.value);
+
+			if(point < pointsRequired && !this.isInCart){
+				notSufficient = true;
+			}
+
+		}
+
+		this.notSufficient = notSufficient;
+
+	}
+
+	return certificate;
+
+}]);
