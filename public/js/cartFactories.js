@@ -241,7 +241,7 @@ angular.module('AlcoholCartFactories', [])
 
 		if(!angular.isDefined(product)){
 
-			if(!angular.isDefined(this.product)){			
+			if(angular.isDefined(this.product)){			
 				var original = this.product;
 			}else{
 				console.log("Product original detail is missing");
