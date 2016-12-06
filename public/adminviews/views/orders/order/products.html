@@ -1,4 +1,4 @@
-<a href="#" data-toggle="modal" data-target="#productModal" class="icon-btn" ng-click="productquery=''">
+<a href="#" data-toggle="modal" data-target="#productModal" class="icon-btn" ng-click="productquery='';products={}">
 	<i class="fa fa-barcode"></i>
 	<div>Products</div>
 	<span class="badge badge-success" ng-bind="alcoholCart.getTotalItems()"></span>
@@ -44,9 +44,9 @@
 								</span>
 							</div>
 							<div class="col-md-10">
-								<div><b>{{cartproduct.product.name}}</b></div>
-								<div>{{cartproduct.product.shortDescription}}</div>
-								<div><b>{{cartproduct.unitPrice | pricingTxt}}</b></div>
+								<div><b>{{::cartproduct.product.name}}</b></div>
+								<div>{{::cartproduct.product.shortDescription}}</div>
+								<div><b>{{cartproduct.discountedUnitPrice | pricingTxt}}</b></div>
 								<div>unit Price</div>
 							</div> 
 

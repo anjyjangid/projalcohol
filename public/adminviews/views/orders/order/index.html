@@ -296,6 +296,21 @@
 
 		<div class="portlet box blue">
 			<div class="portlet-title">
+				<div class="caption">Payment</div>
+				<div class="tools hidden-xs">
+					<a href="javascript:;" class="collapse"></a>
+				</div>
+			</div>
+			<div class="portlet-body form">
+				<div class="form-body" ng-if="qualifyFor('payment')">
+					<div class="clearfix" ui-view="payment"></div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="portlet box blue">
+			<div class="portlet-title">
 				<div class="caption">Review</div>
 				<div class="tools hidden-xs">
 					<a href="javascript:;" class="collapse"></a>
@@ -307,21 +322,6 @@
 				</div>
 			</div>
 		</div>
-
-		<div class="portlet box blue">
-			<div class="portlet-title">
-				<div class="caption">Payment</div>
-				<!-- <div class="tools hidden-xs">
-					<a href="javascript:;" class="collapse"></a>
-				</div> -->
-			</div>
-			<div class="portlet-body form">
-				<div class="form-body" ng-if="qualifyFor('payment')">
-					<div class="clearfix" ui-view="payment"></div>
-				</div>
-			</div>
-		</div>
-
 
 		<div class="form-actions">
 			<button type="submit" class="btn blue">Submit</button>

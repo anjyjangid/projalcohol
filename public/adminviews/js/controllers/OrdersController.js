@@ -437,10 +437,16 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	}
 	
 	$scope.remove = function(key,type){
-		alcoholCart.addProduct(key, {
-			chilled: type=='qChilled'?0:parseInt($scope.cart.products[key].qChilled),
-			nonChilled: type!='qChilled'?0:parseInt($scope.cart.products[key].qNChilled)
-		}, type=='qChilled');
+
+		if(type=='qChilled'){
+
+			alcoholCart.removeProduct(key,true);
+
+		}else{
+
+			alcoholCart.removeProduct(key,false);
+
+		}
 	};
 
 	$scope.giftcard = function(ev,key) {
@@ -839,7 +845,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		$scope.monthName = $scope.monthsName[$scope.myDate.getMonth()];
 		$scope.daySlug = $scope.weekName+', '+$scope.day+' '+$scope.monthName+', '+$scope.year;
 		$scope.currDate = $scope.myDate.getFullYear()+'-'+($scope.myDate.getMonth()+1)+'-'+$scope.myDate.getDate();
-		$http.get("cart/timeslots/"+$scope.currDate).success(function(response){
+		$http.get("api/cart/timeslots/"+$scope.currDate).success(function(response){
 			var arr = [];
 
 			for(var i in response){

@@ -333,7 +333,58 @@ MetronicApp
 		return cards;
 	}
 
-	this.removeItemById = function (id) {
+	this.removeProduct = function (id,chilled) {
+
+		var defer = $q.defer();
+		var deliveryKey = this.getCartKey();
+		var _self = this;
+
+		$http.delete("api/cart/product/"+deliveryKey+'/'+id+'/'+chilled).then(
+
+			function(response){
+
+				response = response.data;
+
+				var inCart = _self.getProductById(id);
+
+				if(response.removeCode==200){
+
+					var resProduct = response.product;
+
+					inCart.setRQuantity(resProduct.chilled.quantity,resProduct.nonchilled.quantity);
+					inCart.setTQuantity(resProduct.quantity);
+					inCart.setRemainingQty(resProduct.remainingQty);
+
+				}else{
+					_self.removeItemById(id);
+				}
+
+				if(response.change>0){
+					
+					$rootScope.$broadcast('alcoholCart:updated',{msg:"Items removed from cart",quantity:Math.abs(response.change)});
+					
+				}
+
+				if(typeof(_self.$cart.couponData) !== "undefined"){
+					_self.setCouponPrice(_self.$cart.couponData);
+				}
+				_self.validateContainerGift();
+
+				defer.resolve(response);
+
+			},
+			function(errorRes){
+
+				defer.reject(errorRes);
+
+			}
+		);
+
+		return defer.promise;		
+		
+	};
+
+	this.removeItemById = function (id,notify) {
 
 		var item;
 		var cart = this.getCart();
@@ -345,25 +396,15 @@ MetronicApp
 
 			}
 		});
+
+		var showNotification = notify || true;
+
+		if(showNotification){
+			$rootScope.$broadcast('alcoholCart:itemRemoved', item);
+		}
+		
 	};
 
-	/*this.removePackage = function (id,fromServerSide) {
-
-		var locPackage;
-		var cart = this.getCart();
-
-		angular.forEach(cart.packages, function (package, index) {
-
-			if(package.getUniqueId() === id) {
-
-				var locPackage = cart.packages.splice(index, 1)[0] || {};
-
-			}
-		});
-
-		//$rootScope.$broadcast('alcoholCart:itemRemoved', locPackage);
-
-	};*/
 
 	this.removePackage = function (id,fromServerSide) {
 
