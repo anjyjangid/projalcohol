@@ -53,6 +53,12 @@ MetronicApp
 
 	}
 
+	this.getUser = function () {
+
+		return this.$cart[this.$cart.orderType];
+
+	}
+
 	this.addProduct = function (id, quantity, serveAs) {
 
 		var defer = $q.defer();
@@ -830,30 +836,28 @@ MetronicApp
 	};
 
 	this.setSubTotal =function(){
-
+		
 		var total = 0;
 		var cart = this.getCart();
 
 		angular.forEach(cart.products, function (product) {
-			total += parseFloat(product.getTotal());
+			if(product.getQuantity()>0){
+				total += parseFloat(product.getRemainQtyPrice());
+			}
 		});
 
 		angular.forEach(cart.packages, function (package) {
 			total += parseFloat(package.getTotal());
-		});
+		});		
 
+		
 		angular.forEach(cart.giftCards, function (giftCard) {
 			total += parseFloat(giftCard.getPrice());
-		});
-		
-		angular.forEach(cart.gifts, function (gifts) {
-			total += parseFloat(gifts.gsPrice());
 		});
 
 		angular.forEach(cart.sales, function (sale) {
 			total += parseFloat(sale.getPrice());
 		});
-		
 
 		return +parseFloat(total).toFixed(2);
 
