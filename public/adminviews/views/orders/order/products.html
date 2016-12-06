@@ -1,14 +1,14 @@
-<a href="#" data-toggle="modal" data-target="#productModal" class="icon-btn" ng-click="productquery=''">
+<a href="#" data-toggle="modal" data-target="#productModal" class="icon-btn" ng-click="productquery='';products={}">
 	<i class="fa fa-barcode"></i>
 	<div>Products</div>
 	<span class="badge badge-success" ng-bind="alcoholCart.getTotalItems()"></span>
 </a>
 
-<a href="#" ng-click="package($event)" class="icon-btn">
+<!-- <a href="#" ng-click="package($event)" class="icon-btn">
 	<i class="fa fa-barcode"></i>
 	<div>Package</div>
 	<span class="badge badge-success" ng-bind="alcoholCart.getTotalPackages()"></span>
-</a>
+</a> -->
 
 <a href="#" ng-click="giftcard($event,key)"  class="icon-btn">
 	<i class="fa fa-plus"></i>
@@ -16,10 +16,13 @@
 	<span class="badge badge-success" ng-bind="alcoholCart.getTotalGifts()"></span>
 </a>
 
-<div>
-	<div class="table-responsive">
+<a href="javascript:void(0)" class="cart-nonchilled-btn-cover icon-btn">
+	<md-switch aria-label="cart.nonchilled" ng-model="cart.nonchilled" ng-change="alcoholCart.setCartChilled(cart.nonchilled)">SAVE {{cart.discount.nonchilled.exemption | pricingTxt}} by choosing to have drinks delivered Non-Chilled.</md-switch>
+</a>
+
+	<div class="table-responsive" ng-if="alcoholCart.getTotalUniqueItems()">
 	
-		<table class="table cart-table">		
+		<table class="table cart-table">
 			<tbody>
 				<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getProducts()"></tr>
 				<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0 && cartproduct['remain'+type]>0">
@@ -40,9 +43,9 @@
 								</span>
 							</div>
 							<div class="col-md-10">
-								<div><b>{{cartproduct.product.name}}</b></div>
-								<div>{{cartproduct.product.shortDescription}}</div>
-								<div><b>{{cartproduct.unitPrice | pricingTxt}}</b></div>
+								<div><b>{{::cartproduct.product.name}}</b></div>
+								<div>{{::cartproduct.product.shortDescription}}</div>
+								<div><b>{{cartproduct.discountedUnitPrice | pricingTxt}}</b></div>
 								<div>unit Price</div>
 							</div> 
 
@@ -50,7 +53,16 @@
 
 					</td>
 					<td>
-						<span ng-bind="type=='qChilled'?'Chilled':'Not Chilled'"></span>
+						<div class="prod_chilled" ng-class="{
+						notchilled:!cartproduct[type+'Status'] || cart.nonchilled,
+						invisible:!cartproduct.product.chilled ,
+
+						}"
+						ng-click="alcoholCart.updateChilledStatus(cartproduct._id,type)">
+						<span>Chilled</span>
+						<div class="prod_chilled_icon"></div>
+						</div>
+						
 					</td>
 					<td width="150">
 						
@@ -62,7 +74,7 @@
 
 					</td>
 					<td width="100">
-						<div class="orderhistry2price"><b>{{cartproduct.discountedUnitPrice * cartproduct[type] | pricingTxt}}</b></div>
+						<div class="orderhistry2price"><b>{{cartproduct.discountedUnitPrice * cartproduct['remain'+type] | pricingTxt}}</b></div>
 					</td>
 					<td width="100"> 
 						<a href="#" class="checkoutmiddletabledeleteimg" ng-click="remove(key,type, cartproduct[type])"><i class="glyphicon glyphicon-trash"></i></a>
@@ -103,7 +115,7 @@
 					<td>
 						<div class="orderhistry2price"><span class="strike-txt-only">{{sale.strikePrice | pricingTxt}}</span><br>{{sale.price | pricingTxt}}</div>
 					</td>
-					<td> 
+					<td>
 						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="removeSale(sale)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>
@@ -179,7 +191,10 @@
 			</tbody>
 		</table>
 	</div>
-</div>
+
+<div ng-if="!alcoholCart.getTotalUniqueItems()" class="emptycart">
+	<div>There is nothing in your cart</div>
+</div>	
 
 <!-- Product Modal -->
 <div id="productModal" class="modal fade" role="dialog">

@@ -1,6 +1,6 @@
 MetronicApp
-.service('alcoholCart',['$http', '$q', '$filter', 'alcoholCartItem', 'cartSale', 'alcoholCartPackage', 'alcoholCartGiftCard', '$rootScope'
-, function($http, $q, $filter, alcoholCartItem, cartSale, alcoholCartPackage, alcoholCartGiftCard, $rootScope){
+.service('alcoholCart',['$http', '$q', '$filter', 'sweetAlert', 'alcoholCartItem', 'cartSale', 'alcoholCartPackage', 'alcoholCartGiftCard', '$rootScope'
+, function($http, $q, $filter, sweetAlert, alcoholCartItem, cartSale, alcoholCartPackage, alcoholCartGiftCard, $rootScope){
 
 	this.init = function(){
 
@@ -50,6 +50,12 @@ MetronicApp
 					slotslug:""
 				},
 		};
+
+	}
+
+	this.getUser = function () {
+
+		return this.$cart[this.$cart.orderType];
 
 	}
 
@@ -193,6 +199,17 @@ MetronicApp
 
 		});
 
+		this.resetProductsPrice();
+
+	}
+
+	this.resetProductsPrice = function (){
+
+		var products = this.getProducts();
+		angular.forEach(products, function(product, key) {
+			product.setPrice();
+		});
+
 	}
 
 	this.saleChilled = function(saleObj){
@@ -219,6 +236,30 @@ MetronicApp
 			});
 
 		}
+
+	this.updateChilledStatus = function(id,type){
+		
+		if(this.$cart.nonchilled)return false; // unable to change product chilled status if whole cart set as nonchilled
+
+		var product = this.getProductById(id);
+
+		product[type+'Status'] = !product[type+'Status'];
+					
+		var deliveryKey = this.getCartKey();
+
+		$http.put("api/cart/chilledstatus/"+deliveryKey, {
+				"id":id,
+				"chilled":product.qChilledStatus,
+				"nonchilled":product.qNChilledStatus
+			},{
+
+		}).error(function(data, status, headers) {
+
+		}).success(function(response) {
+
+		});
+
+	}
 
 	this.addGiftCard = function(giftData){
 
@@ -309,7 +350,58 @@ MetronicApp
 		return cards;
 	}
 
-	this.removeItemById = function (id) {
+	this.removeProduct = function (id,chilled) {
+
+		var defer = $q.defer();
+		var deliveryKey = this.getCartKey();
+		var _self = this;
+
+		$http.delete("api/cart/product/"+deliveryKey+'/'+id+'/'+chilled).then(
+
+			function(response){
+
+				response = response.data;
+
+				var inCart = _self.getProductById(id);
+
+				if(response.removeCode==200){
+
+					var resProduct = response.product;
+
+					inCart.setRQuantity(resProduct.chilled.quantity,resProduct.nonchilled.quantity);
+					inCart.setTQuantity(resProduct.quantity);
+					inCart.setRemainingQty(resProduct.remainingQty);
+
+				}else{
+					_self.removeItemById(id);
+				}
+
+				if(response.change>0){
+					
+					$rootScope.$broadcast('alcoholCart:updated',{msg:"Items removed from cart",quantity:Math.abs(response.change)});
+					
+				}
+
+				if(typeof(_self.$cart.couponData) !== "undefined"){
+					_self.setCouponPrice(_self.$cart.couponData);
+				}
+				_self.validateContainerGift();
+
+				defer.resolve(response);
+
+			},
+			function(errorRes){
+
+				defer.reject(errorRes);
+
+			}
+		);
+
+		return defer.promise;		
+		
+	};
+
+	this.removeItemById = function (id,notify) {
 
 		var item;
 		var cart = this.getCart();
@@ -321,25 +413,15 @@ MetronicApp
 
 			}
 		});
+
+		var showNotification = notify || true;
+
+		if(showNotification){
+			$rootScope.$broadcast('alcoholCart:itemRemoved', item);
+		}
+		
 	};
 
-	/*this.removePackage = function (id,fromServerSide) {
-
-		var locPackage;
-		var cart = this.getCart();
-
-		angular.forEach(cart.packages, function (package, index) {
-
-			if(package.getUniqueId() === id) {
-
-				var locPackage = cart.packages.splice(index, 1)[0] || {};
-
-			}
-		});
-
-		//$rootScope.$broadcast('alcoholCart:itemRemoved', locPackage);
-
-	};*/
 
 	this.removePackage = function (id,fromServerSide) {
 
@@ -754,30 +836,28 @@ MetronicApp
 	};
 
 	this.setSubTotal =function(){
-
+		
 		var total = 0;
 		var cart = this.getCart();
 
 		angular.forEach(cart.products, function (product) {
-			total += parseFloat(product.getTotal());
+			if(product.getQuantity()>0){
+				total += parseFloat(product.getRemainQtyPrice());
+			}
 		});
 
 		angular.forEach(cart.packages, function (package) {
 			total += parseFloat(package.getTotal());
-		});
+		});		
 
+		
 		angular.forEach(cart.giftCards, function (giftCard) {
 			total += parseFloat(giftCard.getPrice());
-		});
-		
-		angular.forEach(cart.gifts, function (gifts) {
-			total += parseFloat(gifts.gsPrice());
 		});
 
 		angular.forEach(cart.sales, function (sale) {
 			total += parseFloat(sale.getPrice());
 		});
-		
 
 		return +parseFloat(total).toFixed(2);
 
@@ -817,14 +897,60 @@ MetronicApp
 
 	this.setCartChilled = function(status){
 
-		if(typeof status !=="undefined"){
+			var isEligible = this.isEligibleNonChilled();
+			
+			if(!isEligible){
 
-			this.$cart.nonchilled = status;
-			this.$cart.discount.nonchilled.status = status;
+				sweetAlert.swal({
+								type:'warning',
+								title: "There are no chilled items in cart.",
+								text : "Chilled items are usually beers, champagnes and white wines",
+								customClass: 'swal-wide'
+							}).done();				
+
+				return false;
+			}
+
+			if(typeof status !=="undefined"){
+
+				this.$cart.nonchilled = status;
+				this.$cart.discount.nonchilled.status = status;				
+			}
+
+			this.deployCart().then(
+				function(res){
+
+					if(!status){
+						$rootScope.$broadcast('alcoholCart:notify',"Non-Chilled condition deactivated");
+					}else{
+						$rootScope.$broadcast('alcoholCart:notify',"Non-Chilled condition activated");
+					}
+
+				}
+			);
+		
 		}
 
-		this.deployCart();
+	this.isEligibleNonChilled = function(){
 
+		var products = this.getProducts();
+		
+		var isEligible = false;
+		angular.forEach(products, function (item,key) {
+			if(item.getChilledAllowed()){
+				
+				isEligible = true;
+				return false;
+			}
+			if(isEligible)
+				return false;
+
+		});
+
+		if(!isEligible)
+		this.$cart.nonchilled = false;
+		return isEligible;
+		
 	}
 
 	this.setDiscount = function(){
@@ -841,8 +967,26 @@ MetronicApp
 
 	}
 
-	this.getDiscount = function(){
-		return this.setDiscount();
+	this.getDiscount = function(type){
+
+		var discount = 0, nonChilledDiscount = 0;
+
+		this.isEligibleNonChilled();
+
+		if(this.$cart.nonchilled){
+
+			nonChilledDiscount = parseFloat(this.$cart.discount.nonchilled.exemption);
+
+			discount+=nonChilledDiscount;
+
+		}
+
+		if(type==='nonchilled'){
+				
+			return nonChilledDiscount.toFixed(2);
+		}
+
+		return +parseFloat(discount).toFixed(2);
 	}
 
 	this.setAllServicesCharges = function(){
@@ -1393,7 +1537,11 @@ MetronicApp
 
 	product.prototype.setPrice = function(product){
 
-		var originalPrice = parseFloat(product.price);
+		if(angular.isDefined(product)){
+			var originalPrice = parseFloat(this.product.price);
+		}else{
+			var originalPrice = parseFloat(product.price);
+		}
 
 		var unitPrice = originalPrice;
 

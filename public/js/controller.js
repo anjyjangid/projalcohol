@@ -159,6 +159,21 @@ AlcoholDelivery.controller('AppController',
 		{value:'price_desc',label:'Price - High to Low'},		
 	];
 
+	$scope.orderstatus = [
+    	{value:0,label:'Under Process',class:'warning',update:false},
+    	{value:1,label:'Ready',class:'info',update:false},
+    	{value:2,label:'Delivered',class:'success',update:true},
+    	{value:3,label:'Cancelled',class:'danger',update:true},
+    ];
+
+    $scope.getOrderstatus = function(status){
+    	var fil = $filter('filter')($scope.orderstatus,{value:status});
+    	if(fil)
+    		return fil[0].label;
+    	else
+    		return '';
+    }
+
 }]);
 
 AlcoholDelivery.controller('ProductsController', [
@@ -479,6 +494,7 @@ AlcoholDelivery.controller('ProductDetailController', [
 		function(response){
 
 			$scope.product = response;
+			console.log($scope.product);
 
 			if(!$scope.product.isInCart){
 

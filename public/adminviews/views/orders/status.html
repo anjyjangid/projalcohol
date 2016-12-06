@@ -1,0 +1,98 @@
+<div data-replace="true" tabindex="-1" class="modal fade modal-scroll" id="statusupdate" data-backdrop="static" data-keyboard="false" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" ng-show="savingData">
+                <h1 align="center">Please Wait...</h1>
+            </div>
+            <div class="modal-header" ng-hide="savingData">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button"></button>
+                <h4 class="modal-title">Order <b>#{{orderform.reference}}</b></h4>
+            </div>
+            <div class="modal-body" ng-hide="savingData">                
+                <div class="portlet-body form">                    
+                    <!-- <pre>
+                        {{orderform|json}}
+                    </pre>                     -->
+                    <form role="form" class="form-horizontal" ng-submit="updateOrder()">
+                        <div class="form-body">                                 
+                            <div class="form-group" ng:class="{'has-error':orderform.errors.doStatus[0]}">
+                                <label class="col-md-3 control-label">Status</label>
+                                <div class="col-md-9">
+                                    <select class="form-control" ng-options="obj.value as obj.label for obj in orderstatus" ng-model="orderform.doStatus">
+                                    </select>                                    
+                                    <span class="help-block" ng-bind="orderform.errors.doStatus[0]"></span>
+                                </div>
+                            </div>
+                            <!-- <div class="form-group" ng:class="{'has-error':orderform.errors.reason[0]}" ng-show="orderform.doStatus == 3">
+                                <label class="col-md-3 control-label">Reason</label>
+                                <div class="col-md-9">
+                                    <textarea class="form-control" ng-model="orderform.reason"></textarea>
+                                    <span class="help-block" ng-bind="orderform.errors.reason[0]"></span>
+                                </div>
+                            </div> -->
+                            <div class="form-group" ng-show="orderform.doStatus!=0">
+                                <label class="col-md-3 control-label">Notify user?</label>
+                                <div class="col-md-9">
+                                    <div class="radio-list">
+                                        <label class="radio-inline">
+                                        <input plugin-uniform ng-model="orderform.notify" type="radio" value="1" name="chilled"> Yes </label>
+                                        <label class="radio-inline">
+                                        <input plugin-uniform ng-model="orderform.notify" type="radio" value="0" name="chilled"> No </label>
+                                    </div>                                    
+                                </div>
+                            </div>
+                            <div class="form-group" ng:class="{'has-error':orderform.errors.checkone[0]}" ng-show="orderform.notify == 1 && orderform.doStatus!=0">
+                                <label class="col-md-3 control-label">Notify by</label>
+                                <div class="col-md-9">
+                                    <div class="checkbox-list">
+                                        <label class="pull-left control-label">
+                                            <input ng-model="orderform.notifysms" ng-true-value="1" ng-false-value="0" type="checkbox" plugin-uniform> SMS
+                                        </label>
+                                        <label class="pull-left control-label">
+                                            <input ng-model="orderform.notifymail" ng-true-value="1" ng-false-value="0" type="checkbox" plugin-uniform> Mail
+                                        </label>
+                                    </div>                                      
+                                    <span style="clear: left;" class="help-block" ng-bind="orderform.errors.checkone[0]"></span>
+                                </div>
+                            </div>
+                            <div class="form-group" ng:class="{'has-error':orderform.errors.notifytime[0]}" ng-show="orderform.notify == 1 && orderform.doStatus == 1 && orderform.doStatus!=0">
+                                <label class="col-md-3 control-label">Select time</label>
+                                <div class="col-md-9">
+                                    <select class="form-control" ng-model="orderform.notifytime">
+                                        <option value="30">30mins</option>
+                                        <option value="45">45mins</option>
+                                        <option value="60">60mins</option>
+                                        <option value="75">75mins</option>
+                                        <option value="90">90mins</option>
+                                        <option value="120">120mins</option>
+                                    </select>
+                                    <span class="help-block">Estimated time of delivery</span>
+                                    <span class="help-block" ng-bind="orderform.errors.notifytime[0]"></span>
+                                </div>
+                            </div>                        
+                            <div class="form-group" ng:class="{'has-error':orderform.errors.message[0]}" ng-show="orderform.notify == 1 && orderform.doStatus!=0">
+                                <label class="col-md-3 control-label">Message</label>
+                                <div class="col-md-9">
+                                    <textarea rows="5" class="form-control" ng-model="orderform.message" ng-trim="false"></textarea>
+                                    <span class="help-block pull-right">{{orderform.message.length}} / 160</span>
+                                    <span class="help-block">For SMS use 160 characters per message</span>
+                                    <span class="help-block" ng-bind="orderform.errors.message[0]"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <button ng-disabled="form.loading" class="btn green" type="submit">
+                                        Submit
+                                    </button>
+                                    <button class="btn default" type="button" data-dismiss="modal">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>  
+            </div>          
+        </div>
+    </div>
+</div>

@@ -366,7 +366,7 @@ Route::get('sitemap.xml', function(){
     // add every post to the sitemap
     if($pages){
     	foreach ($pages as $page){
-	        $sitemap->add(url('site').'/'.$page['slug']);
+	        $sitemap->add(url('pages').'/'.$page['slug']);
 	    }
 	}
     

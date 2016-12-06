@@ -4,24 +4,28 @@
 		<div class="portlet">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="fa fa-shopping-cart"></i>Order #{{order.reference}} <span class="hidden-480">
+					<i class="fa fa-shopping-cart"></i>Order #{{order.reference}}<span class="hidden-480">
 					| {{order.dateslug}} </span>
 				</div>
 				<div class="actions">
 					<a class="btn default yellow-stripe" target="_blank" href="/printjob/{{order.reference}}">
 						<i class="fa fa-print"></i>
 						<span class="hidden-480">Print </span>
-					</a>
-					
+					</a>					
+				</div>
+				<div class="actions">
+					<button ng-click=statusForm({id:order._id,doStatus:order.doStatus,reference:order.reference}) class="btn default yellow-stripe">
+						<i class="fa fa-cog"></i>
+						<span class="hidden-480">Edit </span>
+					</button>					
 				</div>
 				<div class="actions">
 					<a ui-sref="userLayout.orders.list" class="btn default yellow-stripe">
 					<i class="fa fa-angle-left"></i>
 					<span class="hidden-480">
 					Back </span>
-					</a>
-					
-				</div>
+					</a>					
+				</div>				
 			</div>
 			<div class="portlet-body">
 				<div class="tabbable">
@@ -58,11 +62,11 @@
 												<div class="col-md-5 name">
 													 Order Status:
 												</div>
-												<div class="col-md-7 value">
+												<div class="col-md-7 value" ng-bind-html="showStatus(order.doStatus)">
 													
-													<span class="label label-success" ng-if="order.status==0">Under Process</span>
+													<!-- <span class="label label-success" ng-if="order.status==0">Under Process</span>
 													<span class="label label-success" ng-if="order.status==1">Dispatch</span>
-													<span class="label label-success" ng-if="order.status==2">Delivered</span>
+													<span class="label label-success" ng-if="order.status==2">Delivered</span> -->
 
 												</div>
 											</div>
@@ -307,3 +311,4 @@
 		<!-- End: life time stats -->
 	</div>
 </div>
+<div order-status></div>

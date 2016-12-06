@@ -237,7 +237,7 @@
 																<h5>{{ pcprod.name }} New Product</h5>
 																<div>
 																	<h5>Before Price : <b>{{pcprod.sprice}}</b></h5>
-																	<input min="1" type="number" placeholder="After Price" step="any" class="form-control" ng-model="pcprod.cprice">
+																	<input min="0.1" type="number" placeholder="After Price" step="any" class="form-control" ng-model="pcprod.cprice">
 																	<span class="help-block" ng-bind="errors['packageItems.'+pckey+'.products.'+$index+'.cprice'][0]"></span>
 																
 																	<a class="btn btn-sm btn-block btn-default" ng-click="removeItem(pckey,$index,pcprod._id)"><i class="fa fa-trash"></i> Remove</a>

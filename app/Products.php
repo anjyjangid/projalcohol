@@ -295,7 +295,6 @@ class Products extends Eloquent
 					]
 				];
 
-
 		if(isset($params['product'])){
 			
 			$match['$match']['slug'] = $params['product'];
@@ -713,7 +712,7 @@ class Products extends Eloquent
 	}
 
 	public function fetchProduct($params){
-
+		
 		$globalPricing = Setting::where("_id",'=',"pricing")
 									->first([
 										'settings.regular_express_delivery',
