@@ -22,6 +22,7 @@ use DB;
 use AlcoholDelivery\Orders as Orders;
 use AlcoholDelivery\CartAdmin as CartAdmin;
 use AlcoholDelivery\User as User;
+use AlcoholDelivery\Email;
 
 class OrderController extends Controller
 {
@@ -482,5 +483,152 @@ class OrderController extends Controller
 	    prd('Method Missing');
 	}
 
+	public function postUpdatestatus(Request $request){
+		
+		$data = $request->all();
 
+		$valid = [];
+		$valid['doStatus'] = 'required';	
+
+		$data['notify'] = (int)$data['notify'];
+		
+		if(isset($data['notify']) && $data['notify'] == 1){			
+			if($data['notifysms'] == 0 && $data['notifymail'] == 0){
+				$valid['checkone'] = 'required';
+			}			
+			$valid['notifytime'] = 'required';
+			$valid['message'] = 'required';
+		}
+
+
+		$validator = Validator::make($data, $valid,[
+			'checkone.required' => 'Please select atleast 1 option.',
+			'required_if' => 'This field is required'
+		]);
+
+		if ($validator->fails()) {
+            return response($validator->errors(), 422);
+        }else{
+
+        	$order = Orders::find($data['id']);
+
+        	//ORDER STATUS IS UPDATED
+        	if($order['doStatus'] != $data['doStatus']){				
+
+				$error = true;
+				//IF CHANGE FROM READY OR UNDER PROCESS
+				if($order['doStatus'] == 0 || $order['doStatus'] == 1){
+					//DELIVERED
+					if($data['doStatus'] == 2 && $order['doStatus'] == 1){
+						$order->delivered_at = new MongoDate();
+						$order->doStatus = 2;
+						$order->save();
+						$error = false;
+					}
+
+					//CANCELLED
+					if($data['doStatus'] == 3){
+
+						//IF ORDER IS READY STATE & CANCELLED THEN ROLLBACK INVENTORY
+						if($order['doStatus'] == 1){
+							
+							//ROLL BACK THE INVENTORY INTO STOCK AND PRODUCT
+							$inventorylog = DB::collection('inventoryLog')->where([
+								'orderId' => $data['id'],
+								'type' => 0
+							]);
+							$newLog = [];							
+							if($inventorylog){
+								foreach ($inventorylog as $key => $value) {
+									$value['type'] = 1;
+									$newLog[] = $value;
+
+									//STOCK UPDATE STORE WISE
+									DB::collection('stocks')->raw()->update(
+										['storeObjId' => $value['storeId'],'productObjId' => $value['productId']],
+										[
+											'$inc' => [
+				                                'quantity' => $value['quantity']
+				                            ]
+										]
+									);
+
+									//UPDATE PRODUCT QTY
+									DB::collection('products')->raw()->update(
+										['_id' => $value['productId']],
+										[
+											'$inc' => [
+				                                'quantity' => $value['quantity']
+				                            ]
+										]
+									);
+								}
+							}
+							if($newLog){
+								$r = DB::collection('inventoryLog')->insert($newLog);
+							}
+
+						}
+
+						$order->cancelled_at = new MongoDate();
+						$order->doStatus = 3;
+						$order->save();
+						$error = false;
+					}
+				}
+				
+				if($error){
+					$orderStatus = [
+						0 => 'Under Process',
+						1 => 'Ready',
+						2 => 'Delivered',
+						3 => 'Cancelled'
+					];
+					$emsg = 'Cannot update order from '.$orderStatus[$order['doStatus']].' to '.$orderStatus[$data['doStatus']].'.';
+					return response(['doStatus'=>[$emsg]],422);
+				}
+
+        	}	
+
+        	if($order && $data['notify'] == 1){
+	           	
+	           	$mailsent = 0;
+	           	$smssent = 0;
+
+	            $user = User::find((string)$order['user'])->toArray();
+	            
+	            if($data['notifymail'] == 1){
+
+	                $mail = new Email('customtemplate');
+	                
+	                $subjectType = [
+	                	0 => 'Order under process!',
+	                	1 => 'Your order is on the way!',
+	                	2 => 'Your order is delivered!',
+	                	3 => 'Your order is cancelled',
+	                ];	
+
+	                $mdata = [
+	                	'email' => $user['email'],
+	                	'name' => (isset($user['name']) && $user['name']!='')?$user['name']:'',
+	                	'message' => $data['message'],
+	                	'subject' => $subjectType[$data['doStatus']]
+	                ];
+
+	                $mailsent = $mail->sendEmail($mdata);
+	            }
+	            
+	            if(isset($user['mobile_number']) && $data['notifysms'] == 1){
+	                $msgtxt = $data['message'];
+
+	                /*$msgtxt = str_ireplace(['{site_title}','{order_number}','{time_of_delivery}'],[config('app.appName'),$order->reference,$data['time']],$msgtxt);*/
+
+	                $smssent = Email::sendSms($user['mobile_number'],$msgtxt);
+	            }
+	            return response(['message'=>'Notification sent successfully.','mailsent'=>$mailsent,'smssent'=>$smssent],200);
+	        }
+
+        	return response(['status updated'], 200);
+        }
+	}
 }
