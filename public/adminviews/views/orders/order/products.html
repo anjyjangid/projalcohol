@@ -16,6 +16,10 @@
 	<span class="badge badge-success" ng-bind="alcoholCart.getTotalGifts()"></span>
 </a>
 
+<a href="#" ng-click="giftcard($event,key)"  class="pull-right">
+	asdas
+</a>
+
 <div>
 	<div class="table-responsive">
 	
@@ -71,7 +75,7 @@
 
 					</td>
 					<td width="100">
-						<div class="orderhistry2price"><b>{{cartproduct.discountedUnitPrice * cartproduct[type] | pricingTxt}}</b></div>
+						<div class="orderhistry2price"><b>{{cartproduct.discountedUnitPrice * cartproduct['remain'+type] | pricingTxt}}</b></div>
 					</td>
 					<td width="100"> 
 						<a href="#" class="checkoutmiddletabledeleteimg" ng-click="remove(key,type, cartproduct[type])"><i class="glyphicon glyphicon-trash"></i></a>
