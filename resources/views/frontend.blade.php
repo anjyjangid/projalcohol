@@ -7,6 +7,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />		
 		<meta name="title" content="@{{meta.title}}">
 		<meta name="description" content="@{{meta.description}}">
+		<meta name="image" content="{{url()}}@{{meta.img}}">
 		<meta name="keywords" content="@{{meta.keyword}}">
 
 		<!--TWITTER META-->
@@ -15,7 +16,7 @@
 		<meta name="twitter:title" content="@{{meta.title}}">
 		<meta name="twitter:description" content="@{{meta.description}}" />
 		<meta name="twitter:creator" content="@{{meta.site_name}}">
-		<meta name="twitter:image:src" content="@{{meta.img}}" />
+		<meta name="twitter:image:src" content="{{url()}}@{{meta.img}}" />
 	    <!--FACEBOOK/OTHER META -->
 		<meta property="fb:app_id" content="@{{meta.fbid}}" />
 		<meta property="og:type" content="website" />
