@@ -977,22 +977,21 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	return {
 		scope :{
 			paymentmode: '=paymentmode',
-			payment:'=payment',
-			savedCards: '=savedcards'
+			payment:'=payment'
 		},
 		restrict: 'A',
-		templateUrl: '/adminviews/views/orders/order/addcard.html',
-		controller: function($scope,$rootScope,$http,$state,sweetAlert,alcoholCart){//,$payments
+		templateUrl: '/templates/partials/addcard.html',
+		controller: function($scope,$rootScope,$http,$state,$payments,sweetAlert,alcoholCart){
 
 			$scope.$on('addcardsubmit', function() {
 	            $scope.addnewcard();
 	        });
 
-	    	// $scope.userdata = {};
+	    	$scope.userdata = alcoholCart.getUser();
 
-		    // $scope.verified = function () {
-		    // 	return $payments.verified();
-		    // }
+		    $scope.verified = function () {
+		    	return $payments.verified();
+		    }
 
 		    $scope.addnewcard = function(){
 		    	if($scope.paymentmode){
@@ -1000,7 +999,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		    	}
 		    	$scope.processingcard = true;
 		    	$scope.errors = [];
-				$http.post('/payment/addcard',$scope.payment.creditCard).success(function(rdata){
+				$http.post('api/payment/addcard',$scope.payment.creditCard).success(function(rdata){
 
 					if($scope.paymentmode){
 						$scope.payment.creditCard = rdata.card;
@@ -1013,8 +1012,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 					}else{
 						$scope.payment.card = '';
-						// $scope.userdata = rdata.user;
-						$scope.savedCards = rdata.user.savedCards;
+						$scope.userdata = rdata.user;
 						$scope.payment.creditCard = {};
 					}
 
@@ -1023,6 +1021,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 					$scope.errors = errors;
 					$scope.processingcard = false;
 				});
+
 			}
 
 			$scope.removeCard = function(card){
@@ -1036,8 +1035,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 				  confirmButtonText: 'Yes, delete it!'
 				}).then(function() {
 					$http.post('/payment/removecard',card).success(function(rdata){
-						// $scope.userdata = rdata.user;
-						$scope.savedCards = rdata.user.savedCards;
+						$scope.userdata = rdata.user;
 						$scope.payment.card = '';
 					}).error(function(errors){
 						sweetAlert.swal({
@@ -1052,6 +1050,48 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 				$scope.payment.creditCard = card;
 			}
 
+			var offset = 0; 
+			var range = 10;
+			var currentYear = new Date().getFullYear();			
+			$scope.years = [];
+            for (var i = (offset*1); i < (range*1) + 1; i++){
+                $scope.years.push(currentYear + i);
+            }
+
+            $scope.months = [];
+            for (var i = 0; i < 12; i++){
+                $scope.months.push(1 + i);
+            }
+			/*$scope.testCard = [
+		        {
+		          token_id:"2992471298821111",
+		          type: 'maestro',
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'dinersclub',
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'laser',
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'jcb',
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'unionpay',
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'discover',
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'mastercard',
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'amex',
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'visa',
+		        }
+		      ];*/
 		}
 	};
 })

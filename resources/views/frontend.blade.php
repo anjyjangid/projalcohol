@@ -20,7 +20,7 @@
 		<meta property="fb:app_id" content="@{{meta.fbid}}" />
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content="@{{meta.title}}" />
-		<meta property="og:image" content="@{{meta.img}}" />
+		<meta property="og:image" content="{{url()}}@{{meta.img}}" />
 		<meta property="og:site_name" content="@{{meta.site_name}}" />
 		<meta property="og:description" content="@{{meta.description}}" />
 		<meta property="og:url" content="{{url()}}" />
