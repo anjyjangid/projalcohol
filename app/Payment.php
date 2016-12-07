@@ -51,7 +51,7 @@ class Payment extends Model
  		$request['number'] = str_replace(' ', '', $request['number']);
         
         //USE OF CVV
-        if($this->apiLive)
+        if(false)//if($this->apiLive)
             $request['number'] .= $request['cvc'];        
 
  		$request_params = array(

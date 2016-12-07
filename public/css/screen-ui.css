@@ -52,7 +52,8 @@ ui-sref {
 .header {
 	background: url(../images/bg.jpg) no-repeat center top;
 	min-height: 690px;
-	background-size: 100% 690px;
+	/*background-size: 100% 690px;*/
+	background-size: 100%;
 	/*padding-top:15px;*/
 	margin-bottom: 20px;
 }
@@ -386,21 +387,23 @@ ui-sref {
 .occassion_sale {
 	width: 100%;
 	float: left;
-	font-size: 148px;
+	/*font-size: 148px;*/
+	font-size: 110px;
 	color: #ef5350;
 	font-family: 'sugarbushregular';
 	text-align: center;
-	padding-top: 30px;
+	/*padding-top: 30px;*/
 	line-height: 120px;
 }
 .occassion_date {
 	width: 100%;
 	float: left;
-	font-size: 20px;
+	font-size: 26px;
 	color: #ef5350;
 	text-align: center;
-	text-transform: uppercase;
+	/*text-transform: uppercase;*/
 	letter-spacing: 3px;
+	font-weight: bold;
 }
 .occassion_descrip {
 	width: 100%;
@@ -414,7 +417,8 @@ ui-sref {
 	width: 100%;
 	float: left;
 	text-align: center;
-	margin-top: 60px;
+	/*margin-top: 60px;*/
+	margin-top: 35px;
 	margin-bottom: 42px;
 }
 .registernowbtn a, .registernowbtn a:hover, .registernowbtn a:focus {
