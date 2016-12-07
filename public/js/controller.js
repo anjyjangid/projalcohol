@@ -10,7 +10,7 @@ AlcoholDelivery.controller('AppController',
 		$rootScope.meta = {        	
         	fbid:$rootScope.settings.fbid,
         	site_name:$rootScope.settings.general.site_name,
-        	img:'/img/poslogo.png',
+        	img:'/img/metalogo.png',
         	title:title,
         	description:meta.description,
         	keyword:meta.keyword,
