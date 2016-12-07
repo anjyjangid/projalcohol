@@ -25,7 +25,7 @@ class Payment extends Model
  	{
  		if((bool)$this->apiLive === true){  
  			//LIVE
- 			$this->tokenUrl = 'https://connect.reddotpayment.com/service/tokenization-api/create'; 			
+ 			$this->tokenUrl = 'https://secure.reddotpayment.com/service/tokenization-api/create';//'https://connect.reddotpayment.com/service/tokenization-api/create'; 			
 			$this->notificationUrl = '';
  			$this->secretKey = 'oUGgs0nAa6E99EVEgjJZiPWzJctqhNzIAsfHgnSMlrKZM71gKfBIt44i19Wrgl3sjjWrKnJI9QDD4LaoNQrVDV3oeb1czTTkGLI88u3WAavFiKpDuu41K2Nxa7np4fpb'; 			
  			$this->merchantId = '0000021925';
@@ -82,6 +82,7 @@ class Payment extends Model
         }else{
         	$ret['success'] = false;
         }
+    
         return $ret;
  	}
 
