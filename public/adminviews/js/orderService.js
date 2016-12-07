@@ -1173,35 +1173,91 @@ MetronicApp
 		});
 	}
 
+
+	this.checkoutValidate = function(){
+
+		var d = $q.defer();
+
+		var isValid = true;
+		if(isValid){
+			d.resolve("every thing all right");
+		}else{
+			d.reject("foo");
+		}
+		
+		return d.promise;
+	}
+
+	this.freezCart = function(){
+
+			var d = $q.defer();
+
+			this.deployCart().then(
+				
+				function(successRes){
+
+					$http.get("freezcart").error(function(data, status, headers) {
+
+			        	d.reject(data);
+
+			        }).success(function(response) {	        		      
+
+			        	d.resolve(response);
+
+			        });	
+				},
+				function(errorRes){}
+			);
+
+			return d.promise;
+
+		}
+
 	this.setCouponPrice = function(coupon){
 
 			var _self = this;
 			var cTotal = coupon.total;
 
-			var productsList = _self.getProducts();
+			var isProductOriented = (coupon.products.length + coupon.categories.length)?true:false;
 			var cartTotal = this.getSubTotal();
 			var discountTotal = 0;
 			var discountMessage = '';
 			this.$cart.couponMessage = '';
 
 			if(!cTotal || (cTotal && cTotal <= cartTotal) ){
-				if(Object.keys(productsList).length){
-					angular.forEach(productsList, function (item) {
-						var discountAmt = item.setCoupon(coupon);
-						discountTotal += discountAmt.couponAmount;
 
-						if(discountAmt.couponMessage)
-							discountMessage = discountAmt.couponMessage;
-					});
+				if(isProductOriented){
 
-					if(!discountTotal && discountMessage)
-						this.$cart.couponMessage = discountMessage;
+					var productsList = _self.getProducts();
+					if(Object.keys(productsList).length){
+
+						angular.forEach(productsList, function (item) {
+							var discountAmt = item.setCoupon(coupon);
+							discountTotal += discountAmt.couponAmount;
+
+							if(discountAmt.couponMessage)
+								discountMessage = discountAmt.couponMessage;
+						});
+
+						if(!discountTotal && discountMessage)
+							this.$cart.couponMessage = discountMessage;
+
+					}else{
+						if(typeof(this.$cart.couponData) !== "undefined"){
+							this.removeCoupon();
+						}
+					}
 
 				}else{
-					if(typeof(this.$cart.couponData) !== "undefined"){
-						this.removeCoupon();
+
+					if(coupon.type==1){
+						discountTotal = coupon.discount;
+					}else{
+						discountTotal = cartTotal*(coupon.discount/100);
 					}
+					
 				}
+
 			}else{
 				this.$cart.couponMessage = 'Minimum amount should be '+cTotal+' to use this coupon.';
 			}
@@ -1236,19 +1292,25 @@ MetronicApp
 			var cartKey = cartKey;
 			var couponCode = discountCode;
 
-			$http.post("adminapi/checkCoupon", {params: {cart: cartKey, coupon: couponCode}}).success(function(result){
-				if(result.errorCode==1 || result.errorCode==2){
-					_self.removeCoupon();
-					$rootScope.invalidCodeMsg = false;
-					$rootScope.invalidCodeMsgTxt = result.msg;
-				}else{
+			$http.post("adminapi/checkCoupon", {params: {cart: cartKey, coupon: couponCode}})
+				.success(function(result){
+
+					if(result.errorCode==1 || result.errorCode==2){
+
+						_self.removeCoupon();
+						$rootScope.invalidCodeMsg = false;
+						$rootScope.invalidCodeMsgTxt = result.msg;
+						return false;
+					}
+
 					$rootScope.invalidCodeMsg = true;
 					_self.$cart.couponData = result.coupon;
 					_self.setCouponPrice(result.coupon);
-				}
+					
 
-			}).error(function(){
-			});
+				}).error(function(){
+
+				});
 		}
 
 		this.getCouponDiscount = function(){

@@ -67,7 +67,7 @@ MetronicApp.controller('StoreFormController',[
 	}
 
 	$scope.searchLocation = function(q){
-		return $http.get('/site/search-location', {params: {q}})
+		return $http.get('api/site/search-location', {params: {q}})
 		.then(function(res){			
 			return res.data;
 		});

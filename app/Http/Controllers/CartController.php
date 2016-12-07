@@ -48,7 +48,7 @@ class CartController extends Controller
 
 	public function __construct(Request $request)
 	{
-
+		
 		$user = Auth::user('admin');
 		if(!empty($user)){
 			$this->deliverykey = session()->get('deliverykeyAdmin');
@@ -1801,8 +1801,8 @@ jprd($product);
 
 		}
 
-		//$cart = Cart::findUpdated($cartKey);
-		$cart = Cart::find($cartKey);
+		$cart = Cart::findUpdated($cartKey);
+		//$cart = Cart::find($cartKey);
 
 		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){
 

@@ -152,21 +152,29 @@ class Cart extends Moloquent
 
 	}
 
-	public static function findUpdated($id){
+	public static function findUpdated($id,$admin = false){
 
-		$user = Auth::user('user');
-		
-		$userId = isset($user->_id)?$user->_id:(string)new mongoId();
+		if(!$admin){
 
-		$cart = self::where("_id",new mongoId($id));
+			$user = Auth::user('user');
+			
+			$userId = isset($user->_id)?$user->_id:(string)new mongoId();
 
-		if(isset($user->_id)){
-			$cart = $cart->where("user",new mongoId($userId));
+			$cart = self::where("_id",new mongoId($id));
+
+			if(isset($user->_id)){
+				$cart = $cart->where("user",new mongoId($userId));
+			}else{
+				$cart = $cart->whereNull("user");
+			}
+
+			$cart = $cart->first();
+
 		}else{
-			$cart = $cart->whereNull("user");
-		}
 
-		$cart = $cart->first();
+			$cart = self::where("_id",new mongoId($id))->first();
+
+		}
 
 		if(empty($cart)){
 			return false;
@@ -194,17 +202,6 @@ class Cart extends Moloquent
 		$cartDiscount = $cart->discount;							
 		$cartDiscount['nonchilled']['exemption'] = $services['non_chilled_delivery']['value'];
 		$cart->discount = $cartDiscount;
-
-
-		// code to apply filters so invalid data dosen't get fetch//
-
-		// foreach ($cart->products as $key => $product) {
-
-		// 	if($product['quantity']<0){
-		// 		unset($cart['products'][$key]);
-		// 	}
-
-		// }
 
 		try{
 
@@ -1291,12 +1288,20 @@ class Cart extends Moloquent
 
 	}
 
-	public function cartToOrder($cartKey=null){
+	
+	/**
+	 * function to convert cart data to a order
+	 *
+	 * @var $cartKey // as denotes from name its a key of cart wants to convert
+	 * @var $interface (wi=>1,eci=>2,bi=>3) // define order placed from which interface
+	 *
+	 */
+	public function cartToOrder($cartKey=null,$interface=1){
 
 		$productsInCartCount = $this->getProductIncartCount();
 
 		$order = [
-			'interface'=>1			
+			'interface'=>$interface
 		];
 
 		$total = 0;
@@ -1893,112 +1898,130 @@ class Cart extends Moloquent
 
 			}
 
-			//SET COUPON IF COUPON CODE IS APPLIED
+		}		
+		// Set Products ends //
 
-			if($cartKey){
-				$cartData = Cart::where(['_id' => $cartKey])->first();
+		//SET COUPON IF COUPON CODE IS APPLIED
 
-				if(isset($cartData->coupon) && $cartData->coupon){
-					$couponData = Coupon::where(['_id' => $cartData->coupon, 'status'=>1])->first();
+		if(isset($this->coupon) && $this->coupon){
 
-					if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date. ' + 1 days')>= time()){
-						$coupon = $couponData->toArray();
+			$couponData = Coupon::where(['_id' => $this->coupon, 'status'=>1])->first();
 
-						if (isset($coupon) && $coupon['_id']) {
-							$cDiscount = $coupon['discount'];
-							$cTotal = $coupon['total'];
-							$discountTotal = 0;
+			if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date. ' + 1 days')>= time()){
+				$coupon = $couponData->toArray();
 
-							if(!$cTotal || ($cTotal && $cTotal <= $subtotal) ){
+				if (isset($coupon) && $coupon['_id']) {
+					$cDiscount = $coupon['discount'];
+					$cTotal = $coupon['total'];
+					$couponDiscount = 0;
 
-								foreach($order['products'] as $key=>$nOrder){
-									$quantity = $nOrder['qtyfinal'];
-									$hasCategory = 0;
-									$unitPrice = $nOrder['unitprice'];
-									$discountedUnitPrice = $nOrder['unitprice'];
+					$isProductOriented = (count($coupon['products']) + count($coupon['categories']))?true:false;
 
-									$prodDetail = $proDetails[(string)$nOrder['_id']];
+					if(!$cTotal || ($cTotal && $cTotal <= $subtotal) ){
 
+						if($isProductOriented){
+							foreach($order['products'] as $key=>$nOrder){
 
-									if(!empty($coupon['products'])){
-										if(!in_array((string)$nOrder['_id'], $coupon['products'])){
-											continue;
-										}
-									}
+							$quantity = $nOrder['qtyfinal'];
+							$hasCategory = 0;
+							$unitPrice = $nOrder['unitprice'];
+							$discountedUnitPrice = $nOrder['unitprice'];
 
-									if(!empty($coupon['categories'])){
+							$prodDetail = $proDetails[(string)$nOrder['_id']];
 
-										foreach ($prodDetail['categories'] as $catVal) {
-											if(!in_array((string)$catVal, $coupon['categories'])){
-												$hasCategory = 1;
-											}
-										}
-
-										if(!$hasCategory)
-											continue;
-									}
-
-									if($coupon['discount_status']==1){
-										$pAmount = $unitPrice*$quantity;
-									}else{
-										$pAmount = $discountedUnitPrice*$quantity;
-									}
-
-									if($coupon['type']==1){
-										$discountAmount = $pAmount - $cDiscount;
-									}else{
-										$discountAmount = $pAmount - (($pAmount*$cDiscount)/100);
-									}
-
-									if($coupon['discount_status']==1 && $discountAmount > $discountedUnitPrice*$quantity){
-										$discountAmount = $discountedUnitPrice*$quantity;
-									}
-
-									$discountTotal +=  $pAmount - $discountAmount;
-
-									if($discountAmount)
-										$order['products'][$key]['price'] = $discountAmount;
-								}
-							
-								$subtotal = $subtotal - $discountTotal;
-
-
-								//UPDATE COUPON COUNT AND COUPON LIST
-								$user = Auth::user('user');
-								$userId = new MongoId($user->_id);
-
-								$newList = array('orderId'=> 100, 'userId'=> $userId);
-
-								if(!isset($coupon['used_count'])){
-									$used_count = 0;
-								}else{
-									$used_count = $coupon['used_count'];
-								}
-
-								if(isset($couponData->used_list)){
-									$oldList = $coupon['used_list'];
-								}else{
-									$oldList = array();
-								}
-
-								array_push($oldList, $newList);
-
-								if($couponData){
-									$couponData->used_count = $used_count + 1;
-									$couponData->used_list = $oldList;
-									$couponData->save();
+							if(!empty($coupon['products'])){
+								if(!in_array((string)$nOrder['_id'], $coupon['products'])){
+									continue;
 								}
 							}
+
+							if(!empty($coupon['categories'])){
+
+								foreach ($prodDetail['categories'] as $catVal) {
+									if(!in_array((string)$catVal, $coupon['categories'])){
+										$hasCategory = 1;
+									}
+								}
+
+								if(!$hasCategory)
+									continue;
+							}
+
+							if($coupon['discount_status']==1){
+								$pAmount = $unitPrice*$quantity;
+							}else{
+								$pAmount = $discountedUnitPrice*$quantity;
+							}
+
+							if($coupon['type']==1){
+								$discountAmount = $pAmount - $cDiscount;
+							}else{
+								$discountAmount = $pAmount - (($pAmount*$cDiscount)/100);
+							}
+
+							if($coupon['discount_status']==1 && $discountAmount > $discountedUnitPrice*$quantity){
+								$discountAmount = $discountedUnitPrice*$quantity;
+							}
+
+							$couponDiscount +=  $pAmount - $discountAmount;
+
+							if($discountAmount)
+								$order['products'][$key]['price'] = $discountAmount;
+						}
+						}else{
+
+							if($coupon['type']==1){
+								$couponDiscount = $coupon['discount'];
+							}else{
+								$couponDiscount = $subtotal*($coupon['discount']/100);
+							}
+
+						}
+
+						$order['coupon'] = [
+
+							"code" => $coupon['code'],
+							"name" => $coupon['name'],
+							"type" => $coupon['type'],
+							"discount" => $coupon['discount'],
+							"total" => $coupon['total'],
+							"start_date" => $coupon['start_date'],
+							"end_date" => $coupon['end_date'],
+							"totalDiscount" => $couponDiscount
+
+						];
+
+						//UPDATE COUPON COUNT AND COUPON LIST
+
+						$newList = array('orderId'=> $this->reference, 'userId'=> $this->user);
+
+						if(!isset($coupon['used_count'])){
+							$used_count = 0;
+						}else{
+							$used_count = $coupon['used_count'];
+						}
+
+						if(isset($couponData->used_list)){
+							$oldList = $coupon['used_list'];
+						}else{
+							$oldList = array();
+						}
+
+						array_push($oldList, $newList);
+
+						if($couponData){
+							$couponData->used_count = $used_count + 1;
+							$couponData->used_list = $oldList;
+							$couponData->save();
 						}
 					}
 				}
 			}
-
-			//prd($order);
-
 		}
-		
-		// Set Products ends //
+
+		if($interface==2){
+			$order['generatedBy'] = $this->generatedBy;
+		}
 
 		$created_at = strtotime('now');		
 		$order['created_at'] = new MongoDate($created_at);
@@ -2032,7 +2055,7 @@ class Cart extends Moloquent
 			$order['delivery']['deliveryTimeRange'] = '';
 			$order['delivery']['deliveryDateObj'] = new MongoDate($orderDateTime);
 		}
-		
+
 		$lpEarned = $this->setLoyaltyPointEarned();
 		$order['loyaltyPointEarned'] = $lpEarned;
 
@@ -2066,6 +2089,13 @@ class Cart extends Moloquent
 		if(isset($order['discount']['credits']) && $order['discount']['credits']>0){
 			$discountExemption+=$order['discount']['credits'];
 		}
+
+		if(isset($order['coupon']) && $order['coupon']['totalDiscount']>0){
+
+			$order['discount']['coupon'] = $order['coupon']['totalDiscount'];
+			$discountExemption+=round($order['coupon']['totalDiscount'],2);
+		}
+
 
 		$total+=$serviceCharges;
 		$total-=$discountExemption;

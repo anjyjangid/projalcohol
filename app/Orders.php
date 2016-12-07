@@ -51,7 +51,8 @@ class Orders extends Moloquent
 							'doStatus',
 							'interface',
 							'delivered_at',
-							'cancelled_at'
+							'cancelled_at',
+							'generatedBy'
 						];
 
 	public function getOrders($where = [], $extra = []){

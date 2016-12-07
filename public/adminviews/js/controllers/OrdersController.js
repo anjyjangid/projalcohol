@@ -144,7 +144,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	}
 
 	$scope.qualifyFor = function(section){
-		return true;
+		
 		if(!$scope.cart || !$scope.cart[$scope.cart.orderType] || !$scope.cart[$scope.cart.orderType]._id){
 			return false;
 		}
@@ -220,6 +220,76 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		$rootScope.invalidCodeMsg = true;
 		$rootScope.invalidCodeMsgTxt = '';
 	}
+
+
+	$scope.orderConfirm = function(){
+		
+		alcoholCart.checkoutValidate().then(
+
+			function (successRes) {
+
+				alcoholCart.freezCart().then(
+
+					function(result){
+
+						var cartKey = alcoholCart.getCartKey();
+
+						$http.put("adminapi/order/confirmorder/"+cartKey, {} ,{
+
+						}).error(function(response, status, headers) {
+
+								sweetAlert.swal({
+									type:'error',
+									title: 'Oops...',
+									text:response.message,
+									timer: 2000
+								});
+
+				        }).success(function(response) {
+
+					        	if($scope.cart.payment.method == 'CARD'){
+					        		var payurl = $sce.trustAsResourceUrl(response.formAction);
+						            $rootScope.$broadcast('gateway.redirect', {
+						                url: payurl,
+						                method: 'POST',
+						                params: response.formData
+						            });
+					        		return;
+					        	}
+
+					            if(!response.success){
+
+					            	sweetAlert.swal({
+										type:'error',
+										title: 'Oops...',
+										text:response.message,
+										timer: 2000
+									});
+
+					            }
+
+								sweetAlert.swal({
+									type:'success',
+									title: response.message,
+									timer: 1000
+								});
+
+								store.orderPlaced();
+
+								$state.go('orderplaced',{order:response.order},{reload: false, location: 'replace'});
+
+						})
+					},
+					function(errorRes){
+						console.log(errorRes);
+					}
+
+				)
+			},
+			function (errorRes) {}
+		);
+	}
+
 		
 }])
 
@@ -232,7 +302,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	$scope.address;
 
 	$scope.searchLocation = function(q){
-		return $http.get('/site/search-location', {params: {q}})
+		return $http.get('api/site/search-location', {params: {q}})
 		.then(function(res){
 			return res.data;
 		});
@@ -790,7 +860,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 }])
 
-.controller('OrderDeliveryController',['$scope', '$http', 'alcoholCart',function($scope, $http, alcoholCart){
+.controller('OrderDeliveryController',['$scope', '$http', '$timeout', 'alcoholCart',function($scope, $http, $timeout, alcoholCart){
 
 	$scope.alcoholCart = alcoholCart;
 	$scope.timeslot = alcoholCart.$cart.timeslot;
@@ -845,7 +915,9 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		$scope.monthName = $scope.monthsName[$scope.myDate.getMonth()];
 		$scope.daySlug = $scope.weekName+', '+$scope.day+' '+$scope.monthName+', '+$scope.year;
 		$scope.currDate = $scope.myDate.getFullYear()+'-'+($scope.myDate.getMonth()+1)+'-'+$scope.myDate.getDate();
+		$scope.loadingSlots = true;
 		$http.get("api/cart/timeslots/"+$scope.currDate).success(function(response){
+
 			var arr = [];
 
 			for(var i in response){
@@ -853,7 +925,12 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 			}
 
 			$scope.timeslots = arr;
-	    });
+
+		}).finally(function() {
+			$timeout(function() {
+				$scope.loadingSlots = false;
+			},1000);
+		});
 	}
 	$scope.timerange = {
 		"0":'12am',
@@ -970,6 +1047,8 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 .controller('OrderReviewController',['$scope', '$http', 'alcoholCart',function($scope, $http, alcoholCart){
 	$scope.alcoholCart = alcoholCart;
+
+
 }])
 
 .directive('userCards', function(){
