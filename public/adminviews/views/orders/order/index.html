@@ -103,7 +103,7 @@
 							</div>
 							</div>
 						</tab>
-						<tab select="cart.orderType='business'" heading="Business">
+						<!-- <tab select="cart.orderType='business'" heading="Business">
 							<div class="row">
 							<div class="col-sm-6 form-horizontal">
 								<h2>Business Client</h2>
@@ -178,17 +178,12 @@
 											<span class="glyphicon glyphicon-plus"></span>
 											Add new Address
 										</button>
-										<!-- <a class="thumbnail" ng-click="newAddress()">
-											<div class="caption">
-												<span class="glyphicon glyphicon-plus"></span>
-												Add new Address
-											</div>
-										</a> -->
+										
 									</div>
 								</div>
 							</div>
 							</div>
-						</tab>
+						</tab> -->
 					</tabset>
 					<p ng-hide="qualifyFor('address')" class="text-danger">Please Save the user to select address</p>
 					<div class="row" ng-show="qualifyFor('address')">
@@ -270,9 +265,9 @@
 		<div class="portlet box blue">
 			<div class="portlet-title">
 				<div class="caption">Products</div>
-				<!-- <div class="tools hidden-xs">
+				<div class="tools hidden-xs">
 					<a href="javascript:;" class="collapse"></a>
-				</div> -->
+				</div>
 			</div>
 			<div class="portlet-body form">
 				<div class="form-body" ng-if="qualifyFor('products')">
@@ -324,7 +319,7 @@
 		</div>
 
 		<div class="form-actions">
-			<button type="submit" class="btn blue">Submit</button>
+			<button type="button" ng-click="orderConfirm()" ng-disabled="!alcoholCart.getTotalUniqueItems()" class="btn blue">Submit</button>
 			<button type="button" class="btn default" ng-click="newCart()">Cancel order</button>
 		</div>
 	</div>

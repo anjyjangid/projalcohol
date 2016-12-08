@@ -8,6 +8,8 @@ use AlcoholDelivery\User;
 use AlcoholDelivery\Setting;
 use AlcoholDelivery\Products;
 
+use mongoId;
+
 class CartAdmin extends Moloquent
 {
 	protected $primaryKey = "_id";
@@ -165,6 +167,50 @@ class CartAdmin extends Moloquent
 
 	}
 
+	public static function findUpdated($id){
+
+		$cart = self::where("_id",new mongoId($id))->first();		
+
+		if(empty($cart)){
+			return false;
+		}
+
+		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.express_delivery.applicablePostalCodes','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value'])->first();
+
+		$services = $services['settings'];
+
+		$cartServices = $cart->service;
+
+		$cartServices["express"]["charges"] = $services['express_delivery']['value'];
+
+		$cartServices["smoke"]["charges"] = $services['cigratte_services']['value'];
+		
+
+		$cartServices["delivery"] = [
+								"free" => false,
+								"charges" => $services['non_free_delivery']['value'],
+								"mincart" => $services['minimum_cart_value']['value'],
+							];
+
+		$cart->service = $cartServices;							
+		$cart->applicablePostalCodes = $services['express_delivery']['applicablePostalCodes'];
+		$cartDiscount = $cart->discount;							
+		$cartDiscount['nonchilled']['exemption'] = $services['non_chilled_delivery']['value'];
+		$cart->discount = $cartDiscount;
+
+		try{
+
+			$cart->save();			
+			return $cart;
+
+		}catch(\Exception $e){
+
+			return false;
+
+		}
+
+	}
+
 	public function setServices($cart){
 
 		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value'])->first();
@@ -186,6 +232,19 @@ class CartAdmin extends Moloquent
 		return $cart;
 
 	}
+
 	
+	public function setReference(){
+
+		$offset = strtotime('+8 hours'); //ADD OFFSET SO TIME WILL BE EQUAL TO SINGAPORE TIMEZONE 
+		//$this->updated_at
+		$reference = "ADSG";
+		$reference.= ((int)date("ymd",$offset) - 123456);			
+		$reference.="O";			
+		$reference.= (string)date("Hi",$offset);
+
+		$this->reference = $reference;
+		
+	}
 
 }

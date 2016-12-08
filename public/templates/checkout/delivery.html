@@ -10,7 +10,7 @@
 </div>
 <div class="checkoutstepthree_dayfordelivery">Please choose a timeslot from below</div>
 
-<div id="timeslots">
+<div id="timeslots" class="pos-realtive" ng-class="{loadingSlots:loadingSlots}">
 	<div class="slots-bunch" ng-repeat="(key, slotbunch)  in timeslots" ng-class="{active:timeslot.datekey==slotbunch.datekey}">
 		<div class="slots-bunch-title">
 			<div class="week-stamp">{{key}}</div>

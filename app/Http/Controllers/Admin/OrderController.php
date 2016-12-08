@@ -11,19 +11,24 @@ use AlcoholDelivery\Http\Controllers\Controller;
 
 use Illuminate\Support\Facades\Auth;
 
+use AlcoholDelivery\Orders;
+use AlcoholDelivery\Products;
+use AlcoholDelivery\CartAdmin as CartAdmin;
+use AlcoholDelivery\Cart;
+use AlcoholDelivery\Coupon;
+use AlcoholDelivery\User;
+use AlcoholDelivery\Email;
+use AlcoholDelivery\Payment;
+use AlcoholDelivery\ErrorLog;
+use AlcoholDelivery\CreditTransactions;
+
 use Storage;
 use Validator;
-use AlcoholDelivery\Products as Products;
+
 use MongoId;
 use MongoDate;
 use DB;
 
-
-use AlcoholDelivery\Orders as Orders;
-use AlcoholDelivery\CartAdmin as CartAdmin;
-use AlcoholDelivery\User as User;
-use AlcoholDelivery\Email;
-use AlcoholDelivery\CreditTransactions;
 
 class OrderController extends Controller
 {
@@ -106,6 +111,38 @@ class OrderController extends Controller
 
 		}
 		
+		return response($response,200);
+
+	}
+
+	public function getRemoveUnProcessed(Request $request){
+
+		$user = Auth::user('admin');
+
+		$response = [
+			'cart' => []
+		];
+		
+		try{
+
+			$cartObj = new CartAdmin;
+			$userId = new MongoId($user->_id);
+			$cart = $cartObj->getLastUnProcessed($userId);
+
+			if(!empty($cart)){
+
+				$result = $cartObj->deleteLastUnProcessed($userId);
+
+			}
+
+		}catch(Exception $e){
+
+			$response["message"] = $e->getMessage();
+
+			return response($response,400);
+
+		}
+
 		return response($response,200);
 
 	}
@@ -328,7 +365,7 @@ class OrderController extends Controller
 		}
 
 		//SET CART REFERENCE FOR ORDER ID
-		//$cart->setReference();
+		$cart->setReference();
 
 		try {
 
@@ -700,5 +737,142 @@ class OrderController extends Controller
 
         	return response(['status updated'], 200);
         }
+	}
+
+
+	public function getConfirmorder(Request $request,$cartKey = null){
+
+		$creator = Auth::user('admin');
+		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
+
+		if($cartKey == null){
+
+			$cartKey = $request->get('merchant_data1');
+
+		}
+
+		$cart = Cart::findUpdated($cartKey,$creator->_id);
+
+		if(!isset($cart->reference)){
+			$cart->setReference();
+		}
+		
+
+		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){
+
+			$order = Orders::where(['reference' => $request->get('order_number')])->first();
+
+			if($order)
+				return redirect('/orderplaced/'.$order['_id']);
+		}
+
+		if(empty($cart)){
+			if($request->isMethod('get'))
+				return redirect('/');	
+			else	
+				return response(["success"=>false,"message"=>"cart not found"],405); //405 => method not allowed
+		}
+
+		$cartArr = $cart->toArray();
+
+		$userObj = User::find($cartArr['user']);		
+
+		$cartArr['user'] = new MongoId($cartArr['user']);
+
+
+		try {
+
+			$orderObj = $cart->cartToOrder($cartKey,'2');
+			
+			//PREPARE PAYMENT FORM DATA
+			if(!$request->isMethod('get') && $orderObj['payment']['method'] == 'CARD' && $orderObj['payment']['total']>0){
+
+				$payment = new Payment();
+				$payment = $payment->prepareform($cartArr,$user);
+				return response($payment,200);
+
+			}
+
+			$order = Orders::create($orderObj);
+				
+
+			if(isset($order->coupon)){
+
+				$cRedeem = [
+					"coupon" => $order->coupon['_id'],
+					"reference"=>$order->reference,
+					"user" => $order->user
+				];
+				$coupon = new coupon;
+				$coupon->redeemed($cRedeem);
+
+			}
+			
+			$cart->delete();
+
+			$process = $order->processGiftCards();			
+
+			$reference = $order->reference;
+
+			$loyaltyPoints = $order['loyaltyPointEarned'];
+			if($loyaltyPoints>0){
+
+				$userObj->increment('loyaltyPoints', $loyaltyPoints);
+
+				$userObj->push('loyalty', 
+									[
+										"type"=>"credit",
+										"points"=>$loyaltyPoints,
+										"reason"=>[
+											"type"=>"order",
+											"key" => $reference,
+											"comment"=> "You have earned this points by making a purchase"
+										],
+										"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+									]
+								);
+			}
+			
+			//SAVE CARD IF USER CHECKED SAVE CARD FOR FUTURE PAYMENTS
+			if($cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['card'] == 'newcard' && $cartArr['payment']['savecard']){
+				$cardInfo = $cartArr['payment']['creditCard'];
+		        // $user = User::find($user->_id);
+		        $userObj->push('savedCards',$cardInfo,true);
+
+			}
+
+			//Update inventory if order is 1 hour delivery
+			if($order['delivery']['type'] == 0){
+				$model = new Products();
+				$model->updateInventory($order);
+			}
+
+			//CONFIRMATION EMAIL 
+			$emailTemplate = new Email('orderconfirm');
+			$mailData = [
+                'email' => strtolower($userObj->email),
+                'user_name' => ($userObj->name)?$userObj->name:$userObj->email,
+                'order_number' => $reference
+            ];
+
+            $mailSent = $emailTemplate->sendEmail($mailData);
+
+			if($request->isMethod('get')){
+				return redirect('admin#/orders/show/'.$order['_id']);
+			}
+
+			return response(["message"=>"Order Placed Successfully","order"=>$order['_id']],200);
+
+		} catch(\Exception $e){
+			
+			ErrorLog::create('emergency',[
+					'error'=>$e,
+					'message'=> 'Cart Confirm'
+				]);
+
+		}
+
+		return response(["message"=>'Something went wrong'],400);
+		
 	}
 }

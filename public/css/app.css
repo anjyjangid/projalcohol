@@ -1417,3 +1417,13 @@ td.childtd {
 .split-txt{
 	word-break: break-all;
 }
+
+#timeslots.loadingSlots:after {
+    content: "";
+    width: 100%;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    left: 0;
+    cursor: no-drop;
+}
