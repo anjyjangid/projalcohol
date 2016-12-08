@@ -143,7 +143,7 @@ class Cart extends Moloquent
 
 
 			return (object)array("success"=>true,"message"=>"cart generated succesfully","cart"=>$cart);
-
+			
 		}catch(Exception $e){
 
 			return (object)array("success"=>false,"message"=>$e->getMessage());
@@ -1726,8 +1726,6 @@ class Cart extends Moloquent
 				$gift['description'] = $gDetail['description'];
 				$gift['image'] = $gDetail['coverImage']['source'];
 
-				
-
 				$subtotal+=$gift['price'];
 
 				if($gift['type']==1){
@@ -1913,61 +1911,85 @@ class Cart extends Moloquent
 				if (isset($coupon) && $coupon['_id']) {
 					$cDiscount = $coupon['discount'];
 					$cTotal = $coupon['total'];
+					$couponDisAmt = 0;
 					$couponDiscount = 0;
-
 					$isProductOriented = (count($coupon['products']) + count($coupon['categories']))?true:false;
 
 					if(!$cTotal || ($cTotal && $cTotal <= $subtotal) ){
 
 						if($isProductOriented){
+
 							foreach($order['products'] as $key=>$nOrder){
 
-							$quantity = $nOrder['qtyfinal'];
-							$hasCategory = 0;
-							$unitPrice = $nOrder['unitprice'];
-							$discountedUnitPrice = $nOrder['unitprice'];
+								$quantity = $nOrder['qtyfinal'];
+								$hasCategory = 0;
+								$unitPrice = $nOrder['unitprice'];
+								$discountedUnitPrice = $nOrder['unitprice'];
 
-							$prodDetail = $proDetails[(string)$nOrder['_id']];
+								$prodDetail = $proDetails[(string)$nOrder['_id']];
 
-							if(!empty($coupon['products'])){
-								if(!in_array((string)$nOrder['_id'], $coupon['products'])){
-									continue;
-								}
-							}
-
-							if(!empty($coupon['categories'])){
-
-								foreach ($prodDetail['categories'] as $catVal) {
-									if(!in_array((string)$catVal, $coupon['categories'])){
-										$hasCategory = 1;
+								if(!empty($coupon['products'])){
+									if(!in_array((string)$nOrder['_id'], $coupon['products'])){
+										continue;
 									}
 								}
 
-								if(!$hasCategory)
-									continue;
+								if(!empty($coupon['categories'])){
+
+									foreach ($prodDetail['categories'] as $catVal) {
+										if(!in_array((string)$catVal, $coupon['categories'])){
+											$hasCategory = 1;
+										}
+									}
+
+									if(!$hasCategory)
+										continue;
+								}
+
+								if($coupon['discount_status']==1){
+									$pAmount = $unitPrice*$quantity;
+								}else{
+									$pAmount = $discountedUnitPrice*$quantity;
+								}
+
+								if($coupon['type']==1){
+									$couponDisAmt = $cDiscount * $quantity;
+								}else{
+									$couponDisAmt = ($pAmount*$cDiscount)/100;
+								}
+
+								//In case coupon dis is more than product price
+								if($discountAmount>$pAmount){
+									$couponDisAmt = $pAmount;
+								}
+
+								$amtAfterCouponDis = $pAmount - $couponDisAmt;
+
+
+								if($coupon['discount_status']==1){ // 1 is set to check discount from other sources like single sale NOTE single sale :)
+
+									$proAmtAfterOtherDiscount =  $discountedUnitPrice*$quantity;
+
+									if($amtAfterCouponDis > $proAmtAfterOtherDiscount){
+										
+										$couponDisAmt = 0; // if discount from other sources is more than coupon don't apply coupon discount
+
+									}else{
+
+										$diffAmt = $proAmtAfterOtherDiscount - $amtAfterCouponDis;
+
+										$couponDisAmt = 0;
+										if($diffAmt>0){
+											$couponDisAmt = $diffAmt;
+										}
+									}
+
+								}
+
+								$order['products'][$key]['discount'] = $couponDisAmt;
+								$couponDiscount+=$couponDisAmt;
+
 							}
-
-							if($coupon['discount_status']==1){
-								$pAmount = $unitPrice*$quantity;
-							}else{
-								$pAmount = $discountedUnitPrice*$quantity;
-							}
-
-							if($coupon['type']==1){
-								$discountAmount = $pAmount - $cDiscount;
-							}else{
-								$discountAmount = $pAmount - (($pAmount*$cDiscount)/100);
-							}
-
-							if($coupon['discount_status']==1 && $discountAmount > $discountedUnitPrice*$quantity){
-								$discountAmount = $discountedUnitPrice*$quantity;
-							}
-
-							$couponDiscount +=  $pAmount - $discountAmount;
-
-							if($discountAmount)
-								$order['products'][$key]['price'] = $discountAmount;
-						}
 						}else{
 
 							if($coupon['type']==1){
@@ -1979,7 +2001,7 @@ class Cart extends Moloquent
 						}
 
 						$order['coupon'] = [
-
+							"_id" => $this->coupon,
 							"code" => $coupon['code'],
 							"name" => $coupon['name'],
 							"type" => $coupon['type'],
@@ -1991,29 +2013,6 @@ class Cart extends Moloquent
 
 						];
 
-						//UPDATE COUPON COUNT AND COUPON LIST
-
-						$newList = array('orderId'=> $this->reference, 'userId'=> $this->user);
-
-						if(!isset($coupon['used_count'])){
-							$used_count = 0;
-						}else{
-							$used_count = $coupon['used_count'];
-						}
-
-						if(isset($couponData->used_list)){
-							$oldList = $coupon['used_list'];
-						}else{
-							$oldList = array();
-						}
-
-						array_push($oldList, $newList);
-
-						if($couponData){
-							$couponData->used_count = $used_count + 1;
-							$couponData->used_list = $oldList;
-							$couponData->save();
-						}
 					}
 				}
 			}
@@ -2108,7 +2107,7 @@ class Cart extends Moloquent
 			'total'=> round($total,2),
 			'method' => $this->payment['method']
 		];
-
+prd($order);
 		return $order;
 
 	}

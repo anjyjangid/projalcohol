@@ -63,10 +63,11 @@ MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout'
 
 }]);
 
-MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', 'alcoholCart', '$modal', '$filter', '$rootScope'
-, function($scope, $http, $timeout, alcoholCart, $modal, $filter, $rootScope){
+MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$timeout', 'alcoholCart', '$modal', '$filter', '$rootScope', 'sweetAlert'
+, function($scope, $state, $http, $timeout, alcoholCart, $modal, $filter, $rootScope, sweetAlert){
 	angular.alcoholCart = alcoholCart;
 
+	$scope.alcoholCart = alcoholCart;
 	$scope.cart = alcoholCart.getCart();
 
 	// $scope.cart.orderType = "consumer";
@@ -257,40 +258,66 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 					        		return;
 					        	}
 
-					            if(!response.success){
-
-					            	sweetAlert.swal({
-										type:'error',
-										title: 'Oops...',
-										text:response.message,
-										timer: 2000
-									});
-
-					            }
-
 								sweetAlert.swal({
 									type:'success',
 									title: response.message,
 									timer: 1000
 								});
 
-								store.orderPlaced();
-
-								$state.go('orderplaced',{order:response.order},{reload: false, location: 'replace'});
+								$state.go('userLayout.orders.show',{order:response.order},{reload: false, location: 'replace'});
 
 						})
 					},
 					function(errorRes){
-						console.log(errorRes);
+						sweetAlert.swal({
+										type:'error',
+										title: 'Oops...',
+										text:errorRes.message,
+										timer: 2000
+									});
+						
 					}
 
 				)
 			},
-			function (errorRes) {}
+			function (errorRes) {
+				$state.go("userLayout.orders.consumer", {}, {reload: true});
+			}
 		);
 	}
 
+	$scope.newCart = function() {
 		
+		sweetAlert.swal({
+
+				  title: 'Are you sure?',
+				  text: "You won't be able to revert this!",
+				  type: 'warning',
+				  showCancelButton: true,
+				  confirmButtonColor: '#3085d6',
+				  cancelButtonColor: '#d33',
+				  confirmButtonText: 'Yes, cancel it!'
+
+				}).then(function() {
+
+					$http.get("/adminapi/order/remove-un-processed")
+					.success(function(rdata){
+
+						$state.go("userLayout.orders.consumer", {}, {reload: true});
+
+					}).error(function(errors){
+
+						sweetAlert.swal({
+							type:'error',
+							text:errors,
+						});
+
+					});
+				});
+
+	}
+
+
 }])
 
 .controller('NewAddressModel',[ '$scope', '$modalInstance', 'NgMap', '$http', 'detail'
@@ -311,13 +338,16 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	$scope.locationSelect = function(location) {
 		$scope.address = location;
 
-		var point = new google.maps.LatLng(parseFloat(location.LAT),parseFloat(location.LNG));
-
-		$scope.map.setCenter(point);
-		$scope.marker.setPosition(point);
+		if(location){
+			lat = item.LAT;
+			long = item.LNG;
+			zoom = 18;
+			var addressData = angular.copy($scope.addressData.SEARCHTEXT);
+			$scope.addressData = angular.copy(item);
+			$scope.addressData.SEARCHTEXT = addressData;
+			$scope.locateMap(lat,long,zoom,item);
+		}
 	}
-
-	console.log(detail);
 
 	$scope.save = function(){
 		$scope.savingData = true;

@@ -2085,6 +2085,7 @@ jprd($product);
 		// 	return response(["success"=>false,"message"=>"Cart is already freezed"],405); //405 => method not allowed
 
 		// }
+
 		$cart->freeze = true;
 
 		$cart->save();
