@@ -450,6 +450,7 @@ AlcoholDelivery.service("ClaimGiftCard",['$http', '$q', 'UserService', '$rootSco
 
 				if(!token){
 					reject(response);
+					return false;
 				}
 
 				response.token = token;

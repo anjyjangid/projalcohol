@@ -1826,7 +1826,7 @@ body.menu-slider.in {
   .occassion_sale {
 	  float: left;
 	  font-size: 100px;
-	  line-height: 0;
+	  line-height: normal;
 	  padding-bottom: 40px;
 	  padding-top: 60px;
   }
@@ -2575,7 +2575,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
   .occassion_sale {
 	  font-size: 70px;
 	  float: left;
-	  line-height: 0;
+	  line-height: normal;
 	  padding-bottom: 25px;
 	  padding-top: 40px;
   }
@@ -3934,7 +3934,7 @@ md-dialog .md-dialog-content{
   .occassion_sale {
 	  font-size: 70px;
 	  float: left;
-	  line-height: 0;
+	  line-height: normal;
 	  padding-bottom: 20px;
 	  padding-top: 25px;
   }

@@ -1379,8 +1379,8 @@ AlcoholDelivery.controller('CartAddressController',[
 }]);
 
 AlcoholDelivery.controller('CartDeliveryController',[
-	'$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$interval', 'alcoholCart', 'sweetAlert', '$filter'
-	, function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $interval, alcoholCart, sweetAlert, $filter){
+	'$scope','$rootScope','$state','$http','$q', '$mdDialog', '$mdMedia','$interval', '$timeout', 'alcoholCart', 'sweetAlert', '$filter'
+	, function($scope, $rootScope, $state, $http, $q, $mdDialog, $mdMedia, $interval, $timeout, alcoholCart, sweetAlert, $filter){
 
 	$scope.alcoholCart = alcoholCart;
 
@@ -1389,7 +1389,9 @@ AlcoholDelivery.controller('CartDeliveryController',[
 	$scope.localDate = new Date();
 
 	if($scope.timeslot.slug){
+
 		$scope.myDate = new Date($scope.timeslot.slug);
+
 	}else{
 		$scope.myDate = new Date();
 		$scope.myDate.setDate($scope.myDate.getDate()+1);
@@ -1417,14 +1419,21 @@ AlcoholDelivery.controller('CartDeliveryController',[
 			}
 		);
 
-	$scope.dateChangeAction = function(){	
+	$scope.dateChangeAction = function(){
+
 		$scope.daySlug = $filter('dateSuffix')($scope.myDate);
 		$scope.currDate = $filter('date')($scope.myDate,'yyyy-MM-dd');		
+		$scope.loadingSlots = true;
+
 		$http.get("cart/timeslots/"+$scope.currDate).success(function(response){
 			$scope.timeslots = response;
-	    });
-	}
+	    }).finally(function() {
+	    	$timeout(function() {
+	    		$scope.loadingSlots = false;
+	    	},1000);
+		});
 
+	}
 
 	$scope.timerange = {
 		"0":'12am',

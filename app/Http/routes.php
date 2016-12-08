@@ -155,10 +155,6 @@ Route::group(['prefix' => 'api'], function () {
 	Route::get('reset/{key}', 'Auth\PasswordController@reset');
 
 	Route::put('deploycart/{cartKey}','CartController@deploycart');
- 
-	Route::put('confirmorder/{cartKey}','CartController@confirmorder');
-
-	
 
 	Route::get('freezcart','CartController@freezcart');
 
@@ -174,6 +170,8 @@ Route::group(['prefix' => 'api'], function () {
 
 		Route::controller('coupon', 'CouponController');
 
+		Route::put('confirmorder/{cartKey}','CartController@confirmorder');
+		
 		Route::post('checkCoupon','CouponController@checkCoupon');
 
 	});

@@ -18,9 +18,9 @@
         </ul>
     </li>                  
     <!-- SHOW IN MOBILE ONLY -->
-	<li ng-class="{'active':$state.current.url=='/'}">
+	<!-- <li ng-class="{'active':$state.current.url=='/'}">
 		<a ui-sref="mainLayout.index">On Sale! <span class="sr-only">(current)</span></a>
-	</li>	
+	</li>	 -->
 	<li ng-class="{'active':AppController.category==c.slug}" class="dropdown" ng-repeat="c in childOf(categories)" ng-mouseover="showPersonSubMenu=true" ng-mouseleave="showPersonSubMenu=false" hover-class="open">
 	<div class="hide">
 		{{childCategories = childOf(categories,c._id)}}
