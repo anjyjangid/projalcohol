@@ -50,6 +50,7 @@ class Orders extends Moloquent
 							'productsLog',
 							'doStatus',
 							'interface',
+							'coupon',
 							'delivered_at',
 							'cancelled_at',
 							'generatedBy'

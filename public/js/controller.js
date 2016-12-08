@@ -1295,8 +1295,9 @@ AlcoholDelivery.controller('CartAddressController',[
 	
 	$scope.user = UserService.getIfUser();
 
-	if(typeof $scope.user.mobile_number != 'undefined'){
-		$scope.delivery.contact = $scope.user.mobile_number;
+	if($scope.delivery.contact==''){
+		if(typeof $scope.user.mobile_number != 'undefined')
+			$scope.delivery.contact = $scope.user.mobile_number;		
 	}
 
 	/*$scope.setSelectedAddress = function(key){
@@ -1629,9 +1630,9 @@ AlcoholDelivery.controller('CartPaymentController',[
 
 AlcoholDelivery.controller('CartReviewController',[
 			'$scope','$rootScope','$http','$q','$state', '$mdDialog', 
-			'$mdMedia', '$interval', 'alcoholCart','store','sweetAlert', '$sce', '$filter'
+			'$mdMedia', '$interval', 'alcoholCart','store','sweetAlert', '$sce', '$filter','$stateParams'
 	, function($scope, $rootScope, $http, $q, $state, $mdDialog, 
-			$mdMedia, $interval, alcoholCart, store, sweetAlert, $sce, $filter){
+			$mdMedia, $interval, alcoholCart, store, sweetAlert, $sce, $filter,$stateParams){
 
 	$scope.card = {
 		formAction:'',
@@ -1653,8 +1654,11 @@ AlcoholDelivery.controller('CartReviewController',[
 	$scope.slotslug = $scope.$parent.cart.timeslot.slotslug;
 
 	$scope.orderConfirm = function(){
+
 		alcoholCart.checkoutValidate().then(
+
 			function (successRes) {
+				
 				alcoholCart.freezCart().then(
 					function(result){
 
@@ -1712,8 +1716,16 @@ AlcoholDelivery.controller('CartReviewController',[
 
 				)
 			},
-			function (errorRes) {}
+			function (errorRes) {
+				$state.go("mainLayout.checkout.cart", {}, {reload: true});
+			}
+
 		);
+	}
+
+	if($stateParams.pstatus){
+		$scope.paymenterror = 'Payment failed';
+		$scope.paymentstatus = $stateParams.pstatus;
 	}
 
 }]);

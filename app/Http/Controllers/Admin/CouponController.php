@@ -59,6 +59,9 @@ class CouponController extends Controller
 
 		try {
 
+			$inputs['used_count'] = 0;
+			$inputs['used_list'] = [];
+			
 			Coupon::create($inputs);
 
 		} catch(\Exception $e){

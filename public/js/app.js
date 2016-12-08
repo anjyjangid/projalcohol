@@ -608,7 +608,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('mainLayout.checkout.review', {
-						url: "/cart/review",
+						url: "/cart/review?{pstatus:string}",
 						params: {err:false},
 						templateUrl : "/templates/checkout/review.html",
 						controller:"CartReviewController",
