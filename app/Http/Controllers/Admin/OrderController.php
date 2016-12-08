@@ -23,6 +23,7 @@ use AlcoholDelivery\Orders as Orders;
 use AlcoholDelivery\CartAdmin as CartAdmin;
 use AlcoholDelivery\User as User;
 use AlcoholDelivery\Email;
+use AlcoholDelivery\CreditTransactions;
 
 class OrderController extends Controller
 {
@@ -531,16 +532,21 @@ class OrderController extends Controller
 
 						//IF ORDER IS READY STATE & CANCELLED THEN ROLLBACK INVENTORY
 						if($order['doStatus'] == 1){
-							
+
 							//ROLL BACK THE INVENTORY INTO STOCK AND PRODUCT
 							$inventorylog = DB::collection('inventoryLog')->where([
-								'orderId' => $data['id'],
+								'orderId' => new MongoId($data['id']),
 								'type' => 0
-							]);
-							$newLog = [];							
+							])->get();
+
+							$newLog = [];			
+
 							if($inventorylog){
+								//return response($inventorylog);
 								foreach ($inventorylog as $key => $value) {
+
 									$value['type'] = 1;
+									$value['_id'] = new MongoId();
 									$newLog[] = $value;
 
 									//STOCK UPDATE STORE WISE
@@ -562,10 +568,74 @@ class OrderController extends Controller
 				                            ]
 										]
 									);
+
+									
 								}
 							}
+
 							if($newLog){
 								$r = DB::collection('inventoryLog')->insert($newLog);
+							}
+
+							
+							//UPDATE USER TRANSACTIONS
+							$userObj = User::find($order['user']);
+
+							//DEDUCT LOYALTY FROM USER ACCOUNT
+							if(isset($order['loyaltyPointEarned']) && $order['loyaltyPointEarned'] > 0){
+								
+								if($userObj->loyaltyPoints < $order['loyaltyPointEarned']){
+									$decrement = $userObj['loyaltyPoints'];
+								}else{
+									$decrement = $order['loyaltyPointEarned'];
+								}
+								
+								$userObj->decrement('loyaltyPoints', $decrement);
+
+								$userObj->push('loyalty', 
+									[
+										"type"=>"debit",
+										"points"=>$order['loyaltyPointEarned'],
+										"reason"=>[
+											"type"=>"order",
+											"key" => $order['reference'],
+											"comment"=> "Your order has been cancelled."
+										],
+										"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+									]
+								);								
+							}
+
+							//DEDUCT CREDITS ADDED FROM LOYALTY CREDITS
+							if(isset($order['creditsFromLoyalty']) && $order['creditsFromLoyalty'] > 0){
+								
+								$creditsFromLoyalty = $order['creditsFromLoyalty'];
+				
+								$creditObj = [
+												"credit"=>$creditsFromLoyalty,
+												"method"=>"order",
+												"reference" => $order['reference'],
+												"user" => new mongoId($userObj->_id),
+												"comment"=> "Your order has been cancelled."
+											];
+								
+								CreditTransactions::transaction('debit',$creditObj,$userObj);
+							}
+
+							//ROLL BACK CREDITS USED IN CART
+							if(isset($order->discount['credits']) && $order->discount['credits']>0){
+
+								$creditsUsed = $order->discount['credits'];
+								$creditObj = [
+												"credit"=>$creditsUsed,
+												"method"=>"order",
+												"reference" => $order['reference'],
+												"user" => new mongoId($userObj->_id),
+												"comment"=> "Your order has been cancelled."
+											];
+
+								CreditTransactions::transaction('credits',$creditObj,$userObj);
+
 							}
 
 						}
@@ -585,7 +655,7 @@ class OrderController extends Controller
 						3 => 'Cancelled'
 					];
 					$emsg = 'Cannot update order from '.$orderStatus[$order['doStatus']].' to '.$orderStatus[$data['doStatus']].'.';
-					return response(['doStatus'=>[$emsg]],422);
+					return response(['doStatus'=>[$emsg],'data'=>$inventorylog],422);
 				}
 
         	}	

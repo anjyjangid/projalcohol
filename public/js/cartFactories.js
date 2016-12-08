@@ -143,7 +143,7 @@ angular.module('AlcoholCartFactories', [])
 .factory('alcoholCartItem', ['$rootScope', '$log', '$filter', function ($rootScope, $log, $filter){
 
 	var item = function (id, data) {
-
+		
 		try{
 			this.setId(id);
 			this.setChilledAllowed(data.product.chilled);
@@ -280,33 +280,40 @@ angular.module('AlcoholCartFactories', [])
 			return false;
 
 		}
+		
+		//IF BULK IS DISABLE
+		if(original.bulkDisable == 0){
 
-		var bulkArr = original.express_delivery_bulk.bulk;
+			var bulkArr = original.express_delivery_bulk.bulk;
 
-		for(i=0;i<bulkArr.length;i++){
+			for(i=0;i<bulkArr.length;i++){
 
-			var bulk = bulkArr[i];
+				var bulk = bulkArr[i];
 
-			if(quantity >= bulk.from_qty && quantity<=bulk.to_qty){
+				if(quantity >= bulk.from_qty && quantity<=bulk.to_qty){
 
-				if(bulk.type==1){
+					if(bulk.type==1){
 
-					price = originalPrice + (originalPrice * bulk.value/100);
+						price = originalPrice + (originalPrice * bulk.value/100);
 
-				}else{
+					}else{
 
-					price = originalPrice + bulk.value;
+						price = originalPrice + bulk.value;
 
+					}
+
+					this.discountedUnitPrice = price.toFixed(2);
+
+					price = parseFloat(this.discountedUnitPrice * quantity);
 				}
 
-				this.discountedUnitPrice = price.toFixed(2);
+			}	
 
-				price = parseFloat(this.discountedUnitPrice * quantity);
-			}
+			return this.price = price;
 
-		}	
+		}
 
-		return this.price = price;
+		return this.price = parseFloat(price * quantity);
 
 	};
 
@@ -1397,8 +1404,8 @@ angular.module('AlcoholCartFactories', [])
 
 		}
 
-		this.tquantity = this.qChilled + this.qNChilled;
-
+		this.tquantity = this.qChilled + this.qNChilled;		
+		this.bulkDisable = p.bulkDisable;
 	}
 
 	product.prototype.setNameSale = function(p){
@@ -1634,7 +1641,7 @@ angular.module('AlcoholCartFactories', [])
 
 					this.price = price;
 					
-					this.bulkApplicable = false;
+					this.bulkApplicable = false;					
 
 					if(this.sale && this.sale.isSingle){
 
@@ -1648,18 +1655,23 @@ angular.module('AlcoholCartFactories', [])
 
 					}else{
 
-						this.bulkApplicable = true;
-						angular.forEach(bulkArr, function(bulk,key){
+						//CHECK IF BULK IS ENABLE FOR THE PRODUCT
+						if(this.bulkDisable == 0){
+							
+							this.bulkApplicable = true;
+							
+							angular.forEach(bulkArr, function(bulk,key){
 
-							if(bulk.type==1){
-								bulk.price = basePrice + (basePrice * bulk.value/100);
-							}else{
-								bulk.price = basePrice + bulk.value;
-							}
+								if(bulk.type==1){
+									bulk.price = basePrice + (basePrice * bulk.value/100);
+								}else{
+									bulk.price = basePrice + bulk.value;
+								}
 
-							bulk.price = bulk.price.toFixed(2);
+								bulk.price = bulk.price.toFixed(2);
 
-						})
+							})
+						}
 
 					}
 
@@ -1720,6 +1732,7 @@ angular.module('AlcoholCartFactories', [])
 		this.metaTitle = p.metaTitle;
 		this.metaDescription = p.metaDescription;
 		this.metaKeywords = p.metaKeywords;
+		
 
 	}
 

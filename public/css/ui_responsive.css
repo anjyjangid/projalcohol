@@ -777,6 +777,7 @@
 	width: 100%;
 	display: inline-block;
 	line-height: 1.7;
+	white-space: pre-line;
 }
 .paddingrmvcls-cocktail {
 	padding-left: 0
