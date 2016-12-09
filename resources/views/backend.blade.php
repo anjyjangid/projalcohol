@@ -58,6 +58,8 @@ License: You must have a valid license purchased only from themeforest(the above
 <link href="{{ asset('css/admincustom.css') }}" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
 <link rel="shortcut icon" href="images/favicon.ico"/>
+
+<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/v-accordion/dist/v-accordion.css') }}">
 </head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->
@@ -206,6 +208,7 @@ License: You must have a valid license purchased only from themeforest(the above
 	    
 		
 	</script>
+	<script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>   
 	<!-- END JAVASCRIPTS -->
 </body>
 <!-- END BODY -->

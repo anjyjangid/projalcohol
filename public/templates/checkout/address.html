@@ -8,21 +8,28 @@
 				<div class="alcohlinputext2" ng:class="{'has-error':errors.contact[0]}">
 
 					<label>Contact Number<span>*</span></label>
-
+					<pre>{{cartFrm.deliveryContact | json}}</pre>
 					<div class="input-group">
 						<div class="mobileinput input-group-addon">+65</div>
-						<input type="text" class="form-control alcohalpopuptext2" ng-model="delivery.contact" ng-minlength="8" ng-maxlength="8" maxlength="8">
+						<input type="text" class="form-control alcohalpopuptext2" name="deliveryContact" id="deliveryContact" required ng-model="delivery.contact" ng-minlength="8" ng-maxlength="8" maxlength="8">
 					</div>
-					<span class="help-block" ng-bind="errors.contact"></span>
 
+					<div ng-if="cartFrm.deliveryContact.$touched">
+						<span class="help-block" ng-if="cartFrm.deliveryContact.$error.required">Please enter contact person number</span>
+						<span class="help-block" ng-if="cartFrm.deliveryContact.$error.minlength">Contact number should be 8 digit long</span>
+					</div>
+
+
+				</div>
+				<div class="alcohlchekboxdiv12" ng-if="newNumber">
+					<label for="deliveryNewDefault"><md-checkbox ng-model="delivery.newDefault" aria-label="leaveatdoor-checkbox">Make it default contact number</md-checkbox></label>
 				</div>
 				<div class="alcohlinputextarea12">
 					<label>Any Special Instructions (optional)</label>
 					<textarea class="alcohlinputextareaa2" placeholder="" maxlength="160" ng-model="delivery.instructions"></textarea>
 				</div>
-				<div class="alcohlchekboxdiv12">						 
-					<md-checkbox ng-model="delivery.leaveatdoor" aria-label="leaveatdoor-checkbox"></md-checkbox>
-					<label for="c1"><span></span>Leave this order at my doorstep.</label>
+				<div class="alcohlchekboxdiv12">
+					<label><md-checkbox ng-model="delivery.leaveatdoor" aria-label="leaveatdoor-checkbox">Leave this order at my doorstep.</md-checkbox></label>
 					<div class="gry_itlic_text">We’ll leave your items at your doorstep without contacting you. To be eligible, we must have unrestricted access to your doorstep.</div>
 				</div>
 			</div>

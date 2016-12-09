@@ -1295,9 +1295,8 @@ AlcoholDelivery.controller('CartAddressController',[
 	
 	$scope.user = UserService.getIfUser();
 
-	if($scope.delivery.contact==''){
-		if(typeof $scope.user.mobile_number != 'undefined')
-			$scope.delivery.contact = $scope.user.mobile_number;		
+	if($scope.delivery.contact=="" && typeof $scope.user.mobile_number != 'undefined'){
+		$scope.delivery.contact = $scope.user.mobile_number;
 	}
 
 	/*$scope.setSelectedAddress = function(key){
@@ -1307,6 +1306,17 @@ AlcoholDelivery.controller('CartAddressController',[
 		$scope.delivery.address.detail = $scope.addresses[key];
 
 	}*/
+
+	$scope.$watch('delivery.contact',
+			function(newValue, oldValue) {
+
+				if($scope.cartFrm.deliveryContact.$valid && $scope.user.mobile_number!==newValue){
+					$scope.newNumber = true;
+				}else{
+					$scope.newNumber = false;
+				}
+			}
+		);
 
 	$scope.addressCheckout = function(){
 
@@ -1337,15 +1347,27 @@ AlcoholDelivery.controller('CartAddressController',[
 			return false;
 		}
 
-		//$scope.delivery.contact = parseInt($scope.delivery.contact);
+		var deliveryContactErrors = $scope.cartFrm.deliveryContact;
+		if(deliveryContactErrors.$invalid){
 
-		if($scope.delivery.contact===""  || $scope.delivery.contact===null/* || isNaN($scope.delivery.contact)*/){
+			if(deliveryContactErrors.$error.required){
+				$scope.errors.contact = "Please enter contact person number";
+			}
 
-			$scope.errors.contact = "Please enter contact person number";
+			if(deliveryContactErrors.$error.minlength){
+				$scope.errors.contact = "Contact number should be 8 digit long";
+			}
+
+			var ele = $("#deliveryContact");
+			$('html, body').stop().animate({
+				scrollTop: ele.offset().top - 200
+			}, 1000);
+			$(ele).focus();
 
 			return false;
+
 		}
-		
+
 		if(alcoholCart.getExpressStatus()){
 			var deliveryPostalCode = $scope.delivery.address.detail.PostalCode.substr(0,2);
 			if(alcoholCart.getApplicablePostalCodes().indexOf(deliveryPostalCode)==-1){
@@ -1654,14 +1676,13 @@ AlcoholDelivery.controller('CartReviewController',[
 	$scope.slotslug = $scope.$parent.cart.timeslot.slotslug;
 
 	$scope.orderConfirm = function(){
-
-		alcoholCart.checkoutValidate().then(
-
+		
+		alcoholCart.checkoutValidate().then(			
 			function (successRes) {
-				
+
 				alcoholCart.freezCart().then(
 					function(result){
-
+						
 						var cartKey = alcoholCart.getCartKey();
 
 						$http.put("confirmorder/"+cartKey, {} ,{
@@ -1716,7 +1737,7 @@ AlcoholDelivery.controller('CartReviewController',[
 
 				)
 			},
-			function (errorRes) {
+			function (errorRes) {								
 				$state.go("mainLayout.checkout.cart", {}, {reload: true});
 			}
 

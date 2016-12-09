@@ -16,123 +16,161 @@ use MongoId;
 use GuzzleHttp\Client;
 use DB;
 class User extends Eloquent implements AuthenticatableContract,
-                                    AuthorizableContract,
-                                    CanResetPasswordContract
+									AuthorizableContract,
+									CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, CanResetPassword;
+	use Authenticatable, Authorizable, CanResetPassword;
 
-    
-    protected $collection = 'user';
+	
+	protected $collection = 'user';
 
-    /**
-     * The database table used by the model.
-     *
-     * @var string
-     */
-    //protected $table = 'users';
+	/**
+	 * The database table used by the model.
+	 *
+	 * @var string
+	 */
+	//protected $table = 'users';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'fbid',
-        'mobile_number',
-        'email_key',
-        'status',
-        'verified',
-        'productAddedNotification',
-        'savedCards'
-    ];
+	/**
+	 * The attributes that are mass assignable.
+	 *
+	 * @var array
+	 */
+	protected $fillable = [
+		'name',
+		'email',
+		'password',
+		'fbid',
+		'mobile_number',
+		'alternate_number',
+		'email_key',
+		'status',
+		'verified',
+		'productAddedNotification',
+		'savedCards'
+	];
 
-    public function getFields(){
-        $fields = $this->fillable;
-        $ret = [];
-        foreach ($fields as $key => $value) {
-            $ret[$value] = '$'.$value;
-        }
+	public function getFields(){
+		$fields = $this->fillable;
+		$ret = [];
+		foreach ($fields as $key => $value) {
+			$ret[$value] = '$'.$value;
+		}
 
-        return $ret;
-    }
+		return $ret;
+	}
 
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    protected $hidden = ['password', 'remember_token'];
+	/**
+	 * The attributes excluded from the model's JSON form.
+	 *
+	 * @var array
+	 */
+	protected $hidden = ['password', 'remember_token'];
 
-    // ykb 28-apr-2016 //
-    public function getCustomers($params = array()){
+	// ykb 28-apr-2016 //
+	public function getCustomers($params = array()){
 
-        $customer = $this->where('_id','=', $params['key']);
+		$customer = $this->where('_id','=', $params['key']);
 
-        if(isset($params['multiple']) && $params['multiple']){
-            $customer = $customer->get();
-        }else{
-            $customer = $customer->first();
-        }
-        
-        return $customer;
+		if(isset($params['multiple']) && $params['multiple']){
+			$customer = $customer->get();
+		}else{
+			$customer = $customer->first();
+		}
+		
+		return $customer;
 
-    }      
+	}      
 
-    public static function searchLocation($searchVal,$live = false){             
-        
-        $token = '';
+	public static function searchLocation($searchVal,$live = false){
+		
+		$token = '';
 
-        $cTimestamp = (int)strtotime(date('Y-m-d'));
+		$cTimestamp = (int)strtotime(date('Y-m-d'));
 
-        $getToken = DB::collection('settings')->where('_id', 'mapSearch')->where('validity', $cTimestamp)->first();
+		$getToken = DB::collection('settings')->where('_id', 'mapSearch')->where('validity', $cTimestamp)->first();
 
-        if($getToken){
-            $token = $getToken['token'];
-        }else{
+		if($getToken){
+			$token = $getToken['token'];
+		}else{
 
-            $accessKEY = 'vPBfQM5FomGus4Wx/0jfJcOcuoAHJPlR9LWiFrvt6BQFxSvcqeNC1dpYT5AA81WHIKKMzVnUP2c4OQEpmLtXaaYuuy2aaKF0w+unBoHjxYKh0zu0V8StFlU3iVTlLyOe|3Aq1GbPZzAY=';
+			$accessKEY = 'vPBfQM5FomGus4Wx/0jfJcOcuoAHJPlR9LWiFrvt6BQFxSvcqeNC1dpYT5AA81WHIKKMzVnUP2c4OQEpmLtXaaYuuy2aaKF0w+unBoHjxYKh0zu0V8StFlU3iVTlLyOe|3Aq1GbPZzAY=';
 
-            $fetchToken = json_decode(file_get_contents('http://www.onemap.sg/API/services.svc/getToken?accessKEY='.$accessKEY), true);
+			$fetchToken = json_decode(file_get_contents('http://www.onemap.sg/API/services.svc/getToken?accessKEY='.$accessKEY), true);
 
-            if(isset($fetchToken['GetToken'][0]['NewToken'])){
-                $token = $fetchToken['GetToken'][0]['NewToken'];
-                DB::collection('settings')->raw()->update(['_id'=>'mapSearch'],['$set'=>['validity'=>$cTimestamp,'token'=>$token]],['upsert'=>true,'multi'=>false]);    
-            }
-            
-        }
+			if(isset($fetchToken['GetToken'][0]['NewToken'])){
+				$token = $fetchToken['GetToken'][0]['NewToken'];
+				DB::collection('settings')->raw()->update(['_id'=>'mapSearch'],['$set'=>['validity'=>$cTimestamp,'token'=>$token]],['upsert'=>true,'multi'=>false]);    
+			}
+			
+		}
 
-        $searchVal = urlencode($searchVal);
+		$searchVal = urlencode($searchVal);
 
-        /*$json = json_decode(file_get_contents('http://www.onemap.sg/API/services.svc/basicSearch?token='.$token.'&wc=SEARCHVAL%20LIKE%20%27$'.$searchVal.'$%27&returnGeom=0&rset=1&getAddrDetl=Y'), true);
+		/*$json = json_decode(file_get_contents('http://www.onemap.sg/API/services.svc/basicSearch?token='.$token.'&wc=SEARCHVAL%20LIKE%20%27$'.$searchVal.'$%27&returnGeom=0&rset=1&getAddrDetl=Y'), true);
 
-        $json2 = json_decode(file_get_contents('http://www.onemap.sg/APIV2/services.svc/basicSearchV2?token='.$token.'&wc=SEARCHVAL%20LIKE%20%27$'.$searchVal.'$%27&returnGeom=0&rset=1&projSys=WGS84'), true);*/
+		$json2 = json_decode(file_get_contents('http://www.onemap.sg/APIV2/services.svc/basicSearchV2?token='.$token.'&wc=SEARCHVAL%20LIKE%20%27$'.$searchVal.'$%27&returnGeom=0&rset=1&projSys=WGS84'), true);*/
 
-        $json = json_decode(file_get_contents('http://www.onemap.sg/API/services.svc/basicSearch?token='.$token.'&searchVal='.$searchVal.'&returnGeom=0&rset=1&getAddrDetl=Y'), true);
+		$json = json_decode(file_get_contents('http://www.onemap.sg/API/services.svc/basicSearch?token='.$token.'&searchVal='.$searchVal.'&returnGeom=0&rset=1&getAddrDetl=Y'), true);
 
-        $json2 = json_decode(file_get_contents('http://www.onemap.sg/APIV2/services.svc/basicSearchV2?token='.$token.'&searchVal='.$searchVal.'&returnGeom=0&rset=1&projSys=WGS84'), true);
+		$json2 = json_decode(file_get_contents('http://www.onemap.sg/APIV2/services.svc/basicSearchV2?token='.$token.'&searchVal='.$searchVal.'&returnGeom=0&rset=1&projSys=WGS84'), true);
 
-        $response = [];
+		$response = [];
 
-        if(isset($json['SearchResults']) && isset($json['SearchResults'][0]['PageCount'])){
-            foreach ($json['SearchResults'] as $key => $value) {                
-                if(isset($value['PageCount'])) continue;
+		if(isset($json['SearchResults']) && isset($json['SearchResults'][0]['PageCount'])){
+			foreach ($json['SearchResults'] as $key => $value) {                
+				if(isset($value['PageCount'])) continue;
 
-                if(isset($value['PostalCode']) && trim($value['PostalCode']) == '') continue;
-                
-                $value['LAT'] = $json2['SearchResults'][$key]['Y'];
-                $value['LNG'] = $json2['SearchResults'][$key]['X'];
-                $response[] = $value;
-            } 
+				if(isset($value['PostalCode']) && trim($value['PostalCode']) == '') continue;
+				
+				$value['LAT'] = $json2['SearchResults'][$key]['Y'];
+				$value['LNG'] = $json2['SearchResults'][$key]['X'];
+				$response[] = $value;
+			} 
 
-            if(isset($response[0]['ErrorMessage'])){
-              $response = [];  
-            }          
-        }
+			if(isset($response[0]['ErrorMessage'])){
+			  $response = [];  
+			}          
+		}
 
-        return $response;    
-     }
-    
+		return $response;    
+	 }
+
+	public function setContact ($number,$isDefault=false) {
+
+		if($isDefault){
+
+			$this->__set('mobile_number',$number);
+
+		}else{
+
+			$alternateNum = is_array($this->alternate_number)?$this->alternate_number:[];
+
+			if(!in_array($number,$alternateNum)){
+
+				$this->__set('alternate_number',array_merge($alternateNum, [$number]));
+
+			}
+
+		}
+
+		try{
+
+			$this->save();
+			return ["success"=>true,"message"=>'contact saved'];
+
+		}catch(\Exception $e){
+
+			ErrorLog::create('emergency',[
+					'error'=>$e,
+					'message'=> 'User set contact'
+				]);
+
+			return ["success"=>false,"message"=>"unable to save contact"];
+
+		}
+
+		
+	}
+	
 }
