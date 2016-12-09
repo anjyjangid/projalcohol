@@ -896,3 +896,44 @@ tr.proSelected {
 .cocktail-detail-width{
 	outline: none;
 }
+.div_specil_intertion_title {
+    width: 100%;
+    float: left;
+    font-size: 20px;
+    font-family: "Work Sans";
+    color: #222;
+    font-weight: 400;
+    text-transform: capitalize;
+    margin-bottom: 20px;
+}
+
+.alcohlinputextareaa2 {
+    border: 1px solid #d7d7d7;
+    border-radius: 5px;
+    float: left;
+    font-size: 13px;
+    height: 81px;
+    padding: 5px 10px;
+    resize: none;
+    width: 100%;
+}
+.full-width{
+	width: 100%;
+}
+
+.help-block {
+    color: rgba(245,1,30,1);
+}
+
+#delivery-instruction{
+	border: 1px solid #d7d7d7;
+    border-radius: 5px;
+    float: left;
+    font-size: 13px;
+    height: 81px;
+    padding: 5px 10px;
+    resize: none;
+}
+.m-top-15{
+	margin-top: 15px;
+}

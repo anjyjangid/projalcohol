@@ -191,7 +191,6 @@ class CartController extends Controller
 
 		$cart = Cart::findUpdated($id);
 
-
 		if(empty($cart)){
 
 			$cartObj = new Cart;
@@ -201,6 +200,7 @@ class CartController extends Controller
 			if($isCreated->success){
 
 				$cart = $isCreated->cart;
+				return response(["sucess"=>true,"cart"=>$cart],200);
 
 			}else{
 
@@ -214,7 +214,7 @@ class CartController extends Controller
 		}
 
 		$isMerged = $this->mergecarts($cart['_id']);
-		
+
 		if($isMerged->success){
 
 			$cart = $isMerged->cart;
@@ -352,7 +352,7 @@ class CartController extends Controller
 		}
 		// package validate and manage end
 
-		$request->session()->put('deliverykey', $cart['_id']);
+		// $request->session()->put('deliverykey', $cart['_id']);
 
 		return response(["sucess"=>true,"cart"=>$cart],200);
 
@@ -1072,7 +1072,7 @@ class CartController extends Controller
 
 		if(isset($user->_id)){
 
-			$userCart = Cart::where("user","=",new MongoId($user->_id))->where("_id","!=",new MongoId($cartKey))->first();
+			$userCart = Cart::where("user","=",new MongoId($user->_id))->where("_id","!=",new MongoId($cartKey))->whereNull("generatedBy")->first();
 
 			$sessionCart = Cart::find($cartKey);
 
@@ -1745,9 +1745,8 @@ jprd($product);
 
 	}
 
-	public function deletePromotion($promoId,Request $request){
+	public function deletePromotion($cartKey,$promoId,Request $request){
 
-		$cartKey = $request->session()->get('deliverykey');
 		$cart = Cart::find($cartKey);
 
 		if(empty($cart)){
@@ -1785,16 +1784,15 @@ jprd($product);
 	public function confirmorder(Request $request,$cartKey = null){
 
 		$user = Auth::user('user');
-		
+
+		// $user = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
+
 		$userObj = User::find($user->_id);
 
-		if(empty($userObj)){
-			return response(['message'=>"Un-Authorised login"],401);
-		}
-		
-		if($cartKey == null){
+		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
+
+		if($cartKey == null)
 			$cartKey = $request->get('merchant_data1');
-		}		
 		
 		$cart = Cart::findUpdated($cartKey);
 
@@ -1818,6 +1816,11 @@ jprd($product);
 		$cartArr['user'] = new MongoId($user->_id);
 
 		try {			
+
+			$orderObj = $cart->cartToOrder($cartKey);
+
+			$userObj->setContact($orderObj['delivery']['contact']);
+
 			//PREPARE PAYMENT FORM DATA
 			if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){
 				$payment = new Payment();
@@ -2093,9 +2096,7 @@ jprd($product);
 
 	}
 
-	public function freezcart(Request $request){
-
-		$cartKey = $request->session()->get('deliverykey');
+	public function freezcart($cartKey,Request $request){
 
 		$cartObj = new Cart;
 

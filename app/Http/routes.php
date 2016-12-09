@@ -156,7 +156,7 @@ Route::group(['prefix' => 'api'], function () {
 
 	Route::put('deploycart/{cartKey}','CartController@deploycart');
 
-	Route::get('freezcart','CartController@freezcart');
+	Route::get('freezcart/{cartKey}','CartController@freezcart');
 
 	Route::group(['middleware' => 'auth'], function () {
 
@@ -169,13 +169,12 @@ Route::group(['prefix' => 'api'], function () {
 		Route::resource('address', 'AddressController');
 
 		Route::controller('coupon', 'CouponController');
-
+		
 		Route::put('confirmorder/{cartKey}','CartController@confirmorder');
 		
 		Route::post('checkCoupon','CouponController@checkCoupon');
 
 	});
-
 	Route::group(['prefix' => 'cart'], function () {
 
 		Route::get('deliverykey','CartController@getDeliverykey');
@@ -208,7 +207,7 @@ Route::group(['prefix' => 'api'], function () {
 	
 		Route::put('bulk/{cartkey}','CartController@putBulk');
 
-		Route::delete('promotion/{key}','CartController@deletePromotion');
+		Route::delete('promotion/{cartKey}/{key}','CartController@deletePromotion');
 
 		Route::delete('card/{cartKey}/{key}','CartController@deleteCard');
 

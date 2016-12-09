@@ -78,7 +78,13 @@ class CustomerController extends Controller
 		$columns = ['name','email','mobile_number'];
 
 		if(isset($params['q']) && !empty(trim($params['q']))) {
+
 			$users = $users->where($col,'regexp', "/.*".$params['q']."/i");
+
+			if($col == 'mobile_number'){
+				$users = $users->where('alternate_number','regexp', "/.*".$params['q']."/i");
+			}
+
 			return response($users->get($columns));
 		}
 	
