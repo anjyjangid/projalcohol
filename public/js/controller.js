@@ -1652,9 +1652,9 @@ AlcoholDelivery.controller('CartPaymentController',[
 
 AlcoholDelivery.controller('CartReviewController',[
 			'$scope','$rootScope','$http','$q','$state', '$mdDialog', 
-			'$mdMedia', '$interval', 'alcoholCart','store','sweetAlert', '$sce', '$filter'
+			'$mdMedia', '$interval', 'alcoholCart','store','sweetAlert', '$sce', '$filter','$stateParams'
 	, function($scope, $rootScope, $http, $q, $state, $mdDialog, 
-			$mdMedia, $interval, alcoholCart, store, sweetAlert, $sce, $filter){
+			$mdMedia, $interval, alcoholCart, store, sweetAlert, $sce, $filter,$stateParams){
 
 	$scope.card = {
 		formAction:'',
@@ -1743,6 +1743,11 @@ AlcoholDelivery.controller('CartReviewController',[
 			}
 
 		);
+	}
+
+	if($stateParams.pstatus){
+		$scope.paymenterror = 'Payment failed';
+		$scope.paymentstatus = $stateParams.pstatus;
 	}
 
 }]);

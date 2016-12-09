@@ -35,6 +35,9 @@ use stdClass;
 
 use AlcoholDelivery\Payment;
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 class CartController extends Controller
 {
 
@@ -1788,18 +1791,13 @@ jprd($product);
 
 		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
 
-		if($cartKey == null){
-
+		if($cartKey == null)
 			$cartKey = $request->get('merchant_data1');
-
-		}
-
-		$cart = Cart::findUpdated($cartKey);	
+		
+		$cart = Cart::findUpdated($cartKey);
 
 		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){
-
 			$order = Orders::where(['reference' => $request->get('order_number')])->first();
-
 			if($order)
 				return redirect('/orderplaced/'.$order['_id']);
 		}
@@ -1815,7 +1813,7 @@ jprd($product);
 
 		$cartArr['user'] = new MongoId($user->_id);
 
-		try {
+		try {			
 
 			$orderObj = $cart->cartToOrder($cartKey);
 
@@ -1823,13 +1821,26 @@ jprd($product);
 
 			//PREPARE PAYMENT FORM DATA
 			if(!$request->isMethod('get') && $orderObj['payment']['method'] == 'CARD' && $orderObj['payment']['total']>0){
-
 				$payment = new Payment();
-				$payment = $payment->prepareform($cartArr,$user);
-				return response($payment,200);
+				$paymentres = $payment->prepareform($cartArr,$user);
+				return response($paymentres,200);
 
 			}
 
+			//CHECK FOR PAYMENT RESULT
+			if($request->isMethod('get') && $orderObj['payment']['method'] == 'CARD'){
+				$rdata = $request->all();
+				//VALIDATE RESPONSE SO IT IS VALID OR NOT
+				$payment = new Payment();				
+				if(!$payment->validateresponse($rdata) || ($rdata['result']!='Paid')){					
+					$this->logtofile($rdata);
+					return redirect('/cart/review?pstatus='.$rdata['result']);
+				}else{
+					$this->logtofile($rdata);
+				}
+			}
+
+			//CREATE ORDER 
 			$order = Orders::create($orderObj);
 
 			$cart->delete();
@@ -1889,6 +1900,7 @@ jprd($product);
 			}
 
 			$loyaltyPoints = $order['loyaltyPointEarned'];
+
 			if($loyaltyPoints>0){
 
 				$userObj->increment('loyaltyPoints', $loyaltyPoints);
@@ -1941,7 +1953,7 @@ jprd($product);
 
 		} catch(\Exception $e){
 
-			ErrorLog::create('emergency',[
+				ErrorLog::create('emergency',[
 					'error'=>$e,
 					'message'=> 'Cart Confirm'
 				]);
@@ -2535,4 +2547,15 @@ return response(["under process"],400);
 	{
 		jprd("Missing");
 	}
+
+	function logtofile($message){
+        //if($this->enableLog){
+            $view_log = new Logger('Payment Logs');
+            $view_log->pushHandler(new StreamHandler(storage_path().'/logs/payment.log', Logger::INFO));
+            if(is_array($message)){
+            	$message = json_encode($message);
+            }
+            $view_log->addInfo($message);
+        //}
+    }
 }

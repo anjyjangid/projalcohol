@@ -169,13 +169,12 @@ Route::group(['prefix' => 'api'], function () {
 		Route::resource('address', 'AddressController');
 
 		Route::controller('coupon', 'CouponController');
-
 		
+		Route::put('confirmorder/{cartKey}','CartController@confirmorder');
 		
 		Route::post('checkCoupon','CouponController@checkCoupon');
 
 	});
-Route::put('confirmorder/{cartKey}','CartController@confirmorder');
 	Route::group(['prefix' => 'cart'], function () {
 
 		Route::get('deliverykey','CartController@getDeliverykey');
