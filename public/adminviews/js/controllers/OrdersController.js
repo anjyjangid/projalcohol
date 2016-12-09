@@ -91,6 +91,17 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 		})
 	}
 
+	$scope.$watch('cart.delivery.contact',
+			function(newValue, oldValue) {
+			
+				if(newValue!=null && $scope.cartFrm.deliveryContact.$valid && $scope.cart.consumer.mobile_number!==newValue){
+					$scope.newNumber = true;
+				}else{
+					$scope.newNumber = false;
+				}
+			}
+		);
+
 	$scope.customerSelect = function(customer) {
 
 		delete $scope.cart['consumer'];

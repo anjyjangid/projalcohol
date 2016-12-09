@@ -714,7 +714,9 @@ class OrderController extends Controller
 		try {
 
 			$orderObj = $cart->cartToOrder($cartKey,'2');
-			
+
+			$userObj->setContact($orderObj['delivery']['contact']);
+
 			//PREPARE PAYMENT FORM DATA
 			if(!$request->isMethod('get') && $orderObj['payment']['method'] == 'CARD' && $orderObj['payment']['total']>0){
 

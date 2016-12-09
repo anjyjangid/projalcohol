@@ -4,10 +4,10 @@ namespace AlcoholDelivery;
 
 use Moloquent;
 
-use AlcoholDelivery\Setting as Setting;
-use AlcoholDelivery\Products as Products;
-use AlcoholDelivery\Packages as Packages;
-use AlcoholDelivery\Credits as Credits;
+use AlcoholDelivery\Setting;
+use AlcoholDelivery\Products;
+use AlcoholDelivery\Packages;
+use AlcoholDelivery\Credits;
 use AlcoholDelivery\Promotion;
 use AlcoholDelivery\Gift;
 
@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use stdClass;
 use MongoId;
 use MongoDate;
+use Route;
 
 class Cart extends Moloquent
 {
@@ -131,6 +132,15 @@ class Cart extends Moloquent
 			"user" => null,
 		];
 
+
+		$user = Auth::user('user');
+
+		if(!empty($user)){
+
+			$cart['user'] = new mongoId($user->_id);
+
+		}
+
 		$cart = self::setServices($cart);
 		
 		try{
@@ -148,7 +158,7 @@ class Cart extends Moloquent
 
 			return (object)array("success"=>false,"message"=>$e->getMessage());
 
-		}		
+		}
 
 	}
 
@@ -157,10 +167,10 @@ class Cart extends Moloquent
 		if(!$admin){
 
 			$user = Auth::user('user');
-			
+			// $user = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
 			$userId = isset($user->_id)?$user->_id:(string)new mongoId();
 
-			$cart = self::where("_id",new mongoId($id));
+			$cart = self::where("_id",new mongoId($id))->whereNull("generatedBy");
 
 			if(isset($user->_id)){
 				$cart = $cart->where("user",new mongoId($userId));
@@ -169,6 +179,7 @@ class Cart extends Moloquent
 			}
 
 			$cart = $cart->first();
+
 
 		}else{
 
@@ -2107,7 +2118,7 @@ class Cart extends Moloquent
 			'total'=> round($total,2),
 			'method' => $this->payment['method']
 		];
-prd($order);
+
 		return $order;
 
 	}

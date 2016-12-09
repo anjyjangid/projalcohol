@@ -1881,12 +1881,13 @@ AlcoholDelivery.service('alcoholCart', [
 			var cart = this.getCart();
 			var _self = this;
 			var d = $q.defer();
+			var deliveryKey = this.getCartKey();
 
 			angular.forEach(cart.promotions, function (promotion, index) {
 
 				if(promotion._id === id) {
 
-					$http.delete("cart/promotion/"+id).then(
+					$http.delete("cart/promotion/"+deliveryKey+"/"+id).then(
 
 						function(successRes){
 							
@@ -2742,12 +2743,13 @@ AlcoholDelivery.service('alcoholCart', [
 		this.freezCart = function(){
 
 			var d = $q.defer();
-
+			var _self = this;
 			this.deployCart().then(
 				
 				function(successRes){
 
-					$http.get("freezcart").error(function(data, status, headers) {
+					var deliverykey = _self.getCartKey();
+					$http.get("freezcart/"+deliverykey).error(function(data, status, headers) {
 
 			        	d.reject(data);
 
@@ -3350,12 +3352,17 @@ AlcoholDelivery.service('cartValidation',[
 			if(typeof cart.delivery == 'undefined' ||
 				typeof cart.delivery.address == 'undefined' ||
 				typeof cart.delivery.address.detail == 'undefined' ||
-				typeof cart.delivery.address.key == 'undefined' ||
-				typeof cart.delivery.contact== 'undefined'
+				typeof cart.delivery.address.key == 'undefined'
 			){
 				$state.go(states[1], {err: "Please select a delivery address!"}, {reload: true});
 				return false;
 			}
+
+			if(!angular.isDefined(cart.delivery.contact)){
+				$state.go(states[1], {err: "Please Provide Contact Number!"});
+				return false;
+			}
+
 		}
 
 		if(step == 2 && cart.delivery.type != 1){
