@@ -129,6 +129,7 @@ class Cart extends Moloquent
 			"nonchilled" => false,
 			"status" => 0,
 			"user" => null,
+			
 		];
 
 		$cart = self::setServices($cart);
@@ -2107,7 +2108,7 @@ class Cart extends Moloquent
 			'total'=> round($total,2),
 			'method' => $this->payment['method']
 		];
-prd($order);
+		//prd($order);
 		return $order;
 
 	}

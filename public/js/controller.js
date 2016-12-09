@@ -1654,14 +1654,13 @@ AlcoholDelivery.controller('CartReviewController',[
 	$scope.slotslug = $scope.$parent.cart.timeslot.slotslug;
 
 	$scope.orderConfirm = function(){
-
-		alcoholCart.checkoutValidate().then(
-
+		
+		alcoholCart.checkoutValidate().then(			
 			function (successRes) {
 				
 				alcoholCart.freezCart().then(
 					function(result){
-
+						
 						var cartKey = alcoholCart.getCartKey();
 
 						$http.put("confirmorder/"+cartKey, {} ,{
@@ -1716,7 +1715,7 @@ AlcoholDelivery.controller('CartReviewController',[
 
 				)
 			},
-			function (errorRes) {
+			function (errorRes) {								
 				$state.go("mainLayout.checkout.cart", {}, {reload: true});
 			}
 

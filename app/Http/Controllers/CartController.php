@@ -1804,6 +1804,8 @@ jprd($product);
 				return redirect('/orderplaced/'.$order['_id']);
 		}
 
+		
+
 		if(empty($cart)){
 			if($request->isMethod('get'))
 				return redirect('/');	
@@ -1816,30 +1818,40 @@ jprd($product);
 		$cartArr['user'] = new MongoId($user->_id);
 
 		try {			
-
-			$orderObj = $cart->cartToOrder($cartKey);
-			
 			//PREPARE PAYMENT FORM DATA
-			if(!$request->isMethod('get') && $orderObj['payment']['method'] == 'CARD' && $orderObj['payment']['total']>0){
+			if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){
 				$payment = new Payment();
 				$paymentres = $payment->prepareform($cartArr,$user);
 				return response($paymentres,200);
-
 			}
 
 			//CHECK FOR PAYMENT RESULT
-			if($request->isMethod('get') && $orderObj['payment']['method'] == 'CARD'){
+			if($request->isMethod('get') && $cartArr['payment']['method'] == 'CARD'){
 				$rdata = $request->all();
 				//VALIDATE RESPONSE SO IT IS VALID OR NOT
 				$payment = new Payment();				
+				$failed = false;
 				if(!$payment->validateresponse($rdata) || ($rdata['result']!='Paid')){					
-					$this->logtofile($rdata);
-					return redirect('/cart/review?pstatus='.$rdata['result']);
-				}else{
-					$this->logtofile($rdata);
+					$failed = true;										
+				}
+
+				unset($rdata['signature']);					
+
+				$paymentres = ['paymentres' => $rdata];
+
+				$cart->payment = array_merge($cartArr['payment'],$paymentres);
+
+				$cart->save();
+
+				$this->logtofile($rdata);
+
+				if($failed){
+					return redirect('/cart/payment');
 				}
 			}
 
+			//FORMAT CART TO ORDER
+			$orderObj = $cart->cartToOrder($cartKey);
 			//CREATE ORDER 
 			$order = Orders::create($orderObj);
 
@@ -2046,6 +2058,10 @@ jprd($product);
 
 		if(isset($params['payment'])){
 			$cart->payment = $params['payment'];
+			//RESET PAYMENT RESPONSE
+			$paymentinfo = $cart->payment; 
+			unset($paymentinfo['paymentres']);
+			$cart->payment = $paymentinfo;
 		}
 
 		if(isset($params['discount'])){

@@ -842,3 +842,57 @@ tr.proSelected {
 	background: none !important;
 	border:0 none;
 }
+
+.is-expanded v-pane-content {
+	overflow: visible !important;
+	max-height: 100% !important;
+}
+
+.detail-productdiv > img {    
+    margin: 0;    
+    display: inline-block;
+    max-width: 100%;
+}
+.productdetailbrudcumcover img {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.img-responsive-h {
+    max-height: 100% !important;
+    margin: auto;
+}
+
+.detail-productdiv {
+    height: 111px;
+    margin: 0 auto;
+    width: 111px;
+    text-align: center;
+}
+
+.btm-contetnrecipie span {
+    width: 100%;
+    display: inline-block;
+    line-height: 1.7;
+    white-space: pre-line;
+}
+
+.cocktaildetail-cover .media-left {
+    width: 200px;
+    height: 200px;
+    float: left;        
+}
+
+.thumbnailheightset {
+    min-height: 230px;
+    padding-bottom: 18px;
+    padding-top: 0;
+}
+
+.selectedproductcart {
+    border: 1px solid #8c00d3;
+    box-shadow: 3px 3px 3px 3px #e5c8f6;
+}
+
+.cocktail-detail-width{
+	outline: none;
+}

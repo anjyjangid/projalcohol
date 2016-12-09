@@ -1,3 +1,6 @@
+<div ng-if="cart.payment.paymentres && cart.payment.paymentres.result!='Paid'" class="alert alert-danger">
+  <strong>Payment {{cart.payment.paymentres.result}}</strong> 
+</div>
 <div class="div_pleas_chose_time_text">Please choose a payment method from below</div>
 <div class="cover_creadetcard_cashdiv">
 	<div class="cover_cashdiv_left paymenttype" ng-click="payment.method='COD'" ng-class="{active:payment.method=='COD'}">

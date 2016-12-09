@@ -44,20 +44,28 @@ MetronicApp.directive('ngSpinnerBar', ['$rootScope',
 .directive('packageDetail',[function(){
 
 	return {		
-		restrict : "E",
+		restrict : "AE",
 		replace: true,
-		templateUrl: function(elem, attr){
-			return '/adminviews/views/orders/order/partydetail.html';
+		scope:{
+			package:'='			
 		},
-		replace : true,
-		scope: {
+		/*templateUrl:function(element, attrs){
+			console.log(attrs);
+			return '/adminviews/views/orders/order/partydetail.html';
+		},*/
+		link: function (scope, element, attrs, ngModel) {			
+			scope.template = '/adminviews/views/orders/order/partydetail.html';
+		},	
+		template: "<div ng-include='template'></div>"	
+		/*scope: {
 			type:'=',
 			id:'=',
-		},
-		link: function (scope, element, attrs, ngModel) {
-
+			package:'='
+		},*/
+		/*link: function (scope, element, attrs, ngModel) {
+			
 			scope.$watch('scope',function(newValue,oldValue){
-				console.log(newValue);
+				//console.log(newValue);
 				if(newValue!=oldValue){
 					reset();
 				}
@@ -67,10 +75,10 @@ MetronicApp.directive('ngSpinnerBar', ['$rootScope',
 
 			function reset(){
 
-console.log("asdasd");
+				console.log("asdasd");
 
 			}
-		}
+		}*/
 		// controller: "PackageDetailController"
 	};
 
