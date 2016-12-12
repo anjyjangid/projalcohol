@@ -65,21 +65,12 @@ AlcoholDelivery.controller('AppController',
 
 	$scope.featuredProducts = function(){
 
-		// $http({
-
-		// 	url: "/getproduct/",
-		// 	method: "GET",
-		// 	params: {
-		// 		type:"featured",
-		// 	}
-
-		// })
-
 		ProductService.getProducts({
 
 			filter : 'featured',
 
 		}).then(
+
 			function(response){
 
 				for(key in $scope.parentCategories){
@@ -208,10 +199,10 @@ AlcoholDelivery.controller('ProductsController', [
 	$scope.AppController.subCategory = "";
 	$scope.AppController.showpackage = false;
 
-	$category = $stateParams.categorySlug;
-
+	var parentCategory = $stateParams.categorySlug;
+	var subCategory = "";
 	if(typeof $stateParams.subcategorySlug!=='undefined'){
-		$category = $stateParams.subcategorySlug;
+		var subCategory = $stateParams.subcategorySlug;
 		$scope.AppController.subCategory = $stateParams.subcategorySlug;
 	}
 
@@ -220,7 +211,7 @@ AlcoholDelivery.controller('ProductsController', [
 	//$scope.currentSort = $filter('filter')($scope.sortOptions,{value:$stateParams.sort})[0];
 
 	var data = {
-		category:$category,
+		category:parentCategory,
 		type : $stateParams.toggle,
 		sort: $stateParams.sort,
 	}
@@ -270,13 +261,12 @@ AlcoholDelivery.controller('ProductsController', [
 
 
 
-	$scope.fetchproducts = function(){
-
-		// $http.get("/search", config)
+	$scope.fetchproducts = function(){		
 
 		ProductService.getProducts({
 
-			parent:$category,
+			parent:parentCategory,
+			subParent: subCategory,
 			filter : $stateParams.toggle,
 			sort: $stateParams.sort,
 			productList:1
@@ -332,7 +322,9 @@ AlcoholDelivery.controller('ProductsController', [
 
 }]);
 
-AlcoholDelivery.controller('ProductsFeaturedController', ['$scope', '$rootScope','$state','$http','$stateParams', function($scope, $rootScope,$state,$http,$stateParams){
+AlcoholDelivery.controller('ProductsFeaturedController', [
+			'$scope', '$rootScope','$state','$http','$stateParams', 'ProductService', 
+	function($scope, $rootScope, $state, $http, $stateParams, ProductService){
 
 	$scope.ProductsFeaturedController = {};
 
@@ -340,29 +332,49 @@ AlcoholDelivery.controller('ProductsFeaturedController', ['$scope', '$rootScope'
 
 	$scope.category = $stateParams.categorySlug;
 
-	$category = $stateParams.categorySlug;
-
+	var parentSlug = $stateParams.categorySlug;
+	var childSlug = "";
 	if(typeof $stateParams.subcategorySlug!=='undefined'){
-		$category = $stateParams.subcategorySlug;
+		var childSlug = $stateParams.subcategorySlug;
 	}
 
 	$scope.loadingfeatured = true;
 
-	$http.get("/search",{
+	ProductService.getProducts({
 
-				params:{
+		filter : 'featured',
+		parent : parentSlug,
+		subParent : childSlug
 
-					category:$category,
-					type:'featured',
-					limit:10,
-					offset:0
+	}).then(
 
-				}
+		function(response){
 
-		}).success(function(response){
-		$scope.featured = response;
-		$scope.loadingfeatured = false;
-	});
+			$scope.featured = response;
+			$scope.loadingfeatured = false;
+			
+		},
+		function(erroRes){}
+
+	);
+	// $http.get("/search",{
+
+	// 			params:{
+
+	// 				category:slug,
+	// 				type:'featured',
+	// 				limit:10,
+	// 				offset:0
+
+	// 			}
+
+	// 	}).success(function(response){
+
+	// 		var products = ProductService.prepareProductObjs(response);
+
+	// 		$scope.featured = products;
+	// 		$scope.loadingfeatured = false;
+	// });
 
 
 
