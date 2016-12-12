@@ -292,6 +292,17 @@
 															{{ serviceCharge | pricingTxt }}
 														</td>
 													</tr>
+													<tr ng-if="order.discount.nonchilled.status">
+														<td colspan="4" align="right">Discount (Non-chilled)</td>
+														<td align="right">&minus;{{order.discount.nonchilled.exemption | pricingTxt}}</td>
+													</tr>
+													<tr ng-if="order.discount.coupon">
+														<td colspan="4" align="right">Coupon Discount</td>
+														<td align="right">															
+															<span ng-if="order.payment.totalValue < order.discount.coupon">&minus;{{(order.payment.totalValue) | pricingTxt}}</span>
+												<span ng-if="order.payment.totalValue >= order.discount.coupon">&minus;{{order.discount.coupon | pricingTxt}}</span>																											
+														</td>
+													</tr>
 													<tr>
 														<td colspan="4" align="right"><h4>Total</h4></td>
 														<td align="right"><h4>{{order.payment.total | pricingTxt}}</h4></td>

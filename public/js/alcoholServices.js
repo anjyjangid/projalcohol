@@ -570,11 +570,11 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct','CreditC
 		return defer.promise;
 	}
 
-	this.getDontMiss = function(){
+	this.getDontMiss = function(cartKey){
 
 		var defer = $q.defer();
 
-		$http.get("suggestion/dontmiss").then(
+		$http.get("suggestion/dontmiss/"+cartKey).then(
 
 			function(response){
 

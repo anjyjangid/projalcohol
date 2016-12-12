@@ -1044,8 +1044,8 @@ function validateCheckout($q, $state, $timeout, $location, store, alcoholWishlis
 
 
 AlcoholDelivery.service('LoadingInterceptor', [
-'$q', '$rootScope', '$log', '$location',
-function ($q, $rootScope, $log, $location) {
+'$q', '$rootScope', '$log', '$location', '$window',
+function ($q, $rootScope, $log, $location, $window) {
     'use strict';
 
     var xhrCreations = 0;
@@ -1098,7 +1098,7 @@ function ($q, $rootScope, $log, $location) {
 			};
 
 			if(rejection.status == 405){ //405 => method not allowed
-				//$location.url('/404').replace();
+				$window.location.reload();
 			};
 
             return $q.reject(rejection);

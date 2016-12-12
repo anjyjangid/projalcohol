@@ -2107,9 +2107,13 @@ class Cart extends Moloquent
 			$discountExemption+=round($order['coupon']['totalDiscount'],2);
 		}
 
-
 		$total+=$serviceCharges;
 		$total-=$discountExemption;
+
+		//SET TOTAL AS ZERO IF IT IS NEGATIVE 
+		if($total < 0){
+			$total = 0;
+		}
 
 		$order['payment'] = [
 			'subtotal' => round($subtotal,2),
@@ -2117,8 +2121,12 @@ class Cart extends Moloquent
 			'service'=> round($serviceCharges,2),
 			'discount'=> round($discountExemption,2),
 			'total'=> round($total,2),
-			'method' => $this->payment['method']
+			'method' => $this->payment['method'],			
 		];
+
+		$totalValue = $order['payment']['subtotal'] + $order['payment']['service'];
+
+		$order['payment']['totalValue'] = round($totalValue,2);
 
 		return $order;
 

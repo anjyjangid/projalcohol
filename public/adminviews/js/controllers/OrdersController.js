@@ -123,7 +123,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 		.then(function(res){
 			
 			$scope.cart.addresses = res.data.address;
-			$scope.cart.savedCards = res.data.savedCards;
+			$scope.cart.user.savedCards = res.data.savedCards;
 		});
 	}
 
