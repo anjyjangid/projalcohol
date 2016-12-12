@@ -1851,7 +1851,15 @@ jprd($product);
 
 			//FORMAT CART TO ORDER
 			$orderObj = $cart->cartToOrder($cartKey);
-			$userObj->setContact($orderObj['delivery']['contact']);
+
+			$defaultContact = true;
+			if(!isset($orderObj['delivery']['newDefault']) || $orderObj['delivery']['newDefault']!==true){
+				$defaultContact = false;
+			}
+			$userObj->setContact($orderObj['delivery']['contact'],$defaultContact);
+			
+			//CREATE ORDER 
+			$order = Orders::create($orderObj);
 
 			//CREATE ORDER FROM CART & REMOVE CART
 			$order = Orders::create($orderObj);
