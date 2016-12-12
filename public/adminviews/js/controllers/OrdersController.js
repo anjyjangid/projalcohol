@@ -63,10 +63,11 @@ MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout'
 
 }]);
 
-MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', 'alcoholCart', '$modal', '$filter', '$rootScope'
-, function($scope, $http, $timeout, alcoholCart, $modal, $filter, $rootScope){
+MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$timeout', 'alcoholCart', '$modal', '$filter', '$rootScope', 'sweetAlert'
+, function($scope, $state, $http, $timeout, alcoholCart, $modal, $filter, $rootScope, sweetAlert){
 	angular.alcoholCart = alcoholCart;
 
+	$scope.alcoholCart = alcoholCart;
 	$scope.cart = alcoholCart.getCart();
 
 	// $scope.cart.orderType = "consumer";
@@ -90,6 +91,17 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		})
 	}
 
+	$scope.$watch('cart.delivery.contact',
+			function(newValue, oldValue) {
+			
+				if(newValue!=null && $scope.cartFrm.deliveryContact.$valid && $scope.cart.consumer.mobile_number!==newValue){
+					$scope.newNumber = true;
+				}else{
+					$scope.newNumber = false;
+				}
+			}
+		);
+
 	$scope.customerSelect = function(customer) {
 
 		delete $scope.cart['consumer'];
@@ -111,7 +123,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		.then(function(res){
 			
 			$scope.cart.addresses = res.data.address;
-			$scope.cart.savedCards = res.data.savedCards;
+			$scope.cart.user.savedCards = res.data.savedCards;
 		});
 	}
 
@@ -144,7 +156,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	}
 
 	$scope.qualifyFor = function(section){
-		return true;
+		
 		if(!$scope.cart || !$scope.cart[$scope.cart.orderType] || !$scope.cart[$scope.cart.orderType]._id){
 			return false;
 		}
@@ -220,7 +232,103 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		$rootScope.invalidCodeMsg = true;
 		$rootScope.invalidCodeMsgTxt = '';
 	}
+
+
+	$scope.orderConfirm = function(){
 		
+		alcoholCart.checkoutValidate().then(
+
+			function (successRes) {
+
+				alcoholCart.freezCart().then(
+
+					function(result){
+
+						var cartKey = alcoholCart.getCartKey();
+
+						$http.put("adminapi/order/confirmorder/"+cartKey, {} ,{
+
+						}).error(function(response, status, headers) {
+
+								sweetAlert.swal({
+									type:'error',
+									title: 'Oops...',
+									text:response.message,
+									timer: 2000
+								});
+
+				        }).success(function(response) {
+
+					        	if($scope.cart.payment.method == 'CARD'){
+					        		var payurl = $sce.trustAsResourceUrl(response.formAction);
+						            $rootScope.$broadcast('gateway.redirect', {
+						                url: payurl,
+						                method: 'POST',
+						                params: response.formData
+						            });
+					        		return;
+					        	}
+
+								sweetAlert.swal({
+									type:'success',
+									title: response.message,
+									timer: 1000
+								});
+
+								$state.go('userLayout.orders.show',{order:response.order},{reload: false, location: 'replace'});
+
+						})
+					},
+					function(errorRes){
+						sweetAlert.swal({
+										type:'error',
+										title: 'Oops...',
+										text:errorRes.message,
+										timer: 2000
+									});
+						
+					}
+
+				)
+			},
+			function (errorRes) {
+				$state.go("userLayout.orders.consumer", {}, {reload: true});
+			}
+		);
+	}
+
+	$scope.newCart = function() {
+		
+		sweetAlert.swal({
+
+				  title: 'Are you sure?',
+				  text: "You won't be able to revert this!",
+				  type: 'warning',
+				  showCancelButton: true,
+				  confirmButtonColor: '#3085d6',
+				  cancelButtonColor: '#d33',
+				  confirmButtonText: 'Yes, cancel it!'
+
+				}).then(function() {
+
+					$http.get("/adminapi/order/remove-un-processed")
+					.success(function(rdata){
+
+						$state.go("userLayout.orders.consumer", {}, {reload: true});
+
+					}).error(function(errors){
+
+						sweetAlert.swal({
+							type:'error',
+							text:errors,
+						});
+
+					});
+				});
+
+	}
+
+
 }])
 
 .controller('NewAddressModel',[ '$scope', '$modalInstance', 'NgMap', '$http', 'detail'
@@ -232,7 +340,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	$scope.address;
 
 	$scope.searchLocation = function(q){
-		return $http.get('/site/search-location', {params: {q}})
+		return $http.get('api/site/search-location', {params: {q}})
 		.then(function(res){
 			return res.data;
 		});
@@ -241,13 +349,16 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	$scope.locationSelect = function(location) {
 		$scope.address = location;
 
-		var point = new google.maps.LatLng(parseFloat(location.LAT),parseFloat(location.LNG));
-
-		$scope.map.setCenter(point);
-		$scope.marker.setPosition(point);
+		if(location){
+			lat = item.LAT;
+			long = item.LNG;
+			zoom = 18;
+			var addressData = angular.copy($scope.addressData.SEARCHTEXT);
+			$scope.addressData = angular.copy(item);
+			$scope.addressData.SEARCHTEXT = addressData;
+			$scope.locateMap(lat,long,zoom,item);
+		}
 	}
-
-	console.log(detail);
 
 	$scope.save = function(){
 		$scope.savingData = true;
@@ -465,10 +576,12 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	$scope.package = function(ev) {
 
 		$modal.open({
+			size:'lg',
 			controller: "OrderPackageController",
 			templateUrl: '/adminviews/views/orders/order/searchpackage.html',
 		}).result
 		.then(function(answer) {
+			
 		});
 
 
@@ -491,32 +604,211 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 }])
 
-.controller('OrderPackageController',['$scope', '$http', '$mdDialog', 'alcoholCart', 'categoriesService',function($scope, $http, $mdDialog, alcoholCart, categoriesService){
+.controller('OrderPackageController',[
+	'$scope', '$http', '$mdDialog', '$compile', '$sce','alcoholCart', 'categoriesService','sweetAlert','$stateParams','$location','$modalInstance',
+	function($scope, $http, $mdDialog, $compile, $sce, alcoholCart, categoriesService,sweetAlert,$stateParams,$location,$modalInstance){
 
 	$scope.cart = alcoholCart.getCart();
 	$scope.alcoholCart = alcoholCart;
 
-	$scope.hide = function() {
-		$mdDialog.hide();
-	};
-	$scope.cancel = function() {
-		$mdDialog.cancel();
+	$scope.hidemodal = function() {
+		$modalInstance.close();
 	};
 
-	$scope.packages = {};
+	$scope.errors = [];
+
+	$scope.processing = false;
+
+	$scope.btnText = "ADD TO CART";	
+
+	$scope.allPackages = {};
 	$scope.selected = {};
 	$scope.fetchList = function(type) {
-		if(!$scope.packages[type])
+		if(!$scope.allPackages[type])
 			$http.get('api/package/packages/'+type)
 			.then(function(res){
-				$scope.packages[type] = res.data;
+				$scope.allPackages[type] = res.data;
 				$scope.selected.package = res.data[0];
 			})
 		else
-			$scope.selected.package = $scope.packages[type][0];
+			$scope.selected.package = $scope.allPackages[type][0];
 
 		$scope.packageType=type;
 	};
+
+	$scope.collapseCallback = function (index, id) {
+		
+		var totalseleted = 0;
+		var packageItems = angular.copy($scope.selected.package.packageItems[index]);
+		var maxQuantity = parseInt(packageItems.quantity);
+		var packageUpdate = true;
+
+		var outerloopPromises = angular.forEach($scope.selected.package.packageItems, function(pkgItem, pkgKey) {
+			
+			var totalseleted = 0;
+			var maxQuantity = parseInt(pkgItem.quantity);
+
+			angular.forEach(pkgItem.products, function(value, key) {
+				totalseleted+=parseInt(value.customizequantity);
+			});
+
+			if(totalseleted!=maxQuantity){
+				$scope.errors[pkgKey] = 'You must select total of '+maxQuantity+' items.';
+			}else{
+				delete $scope.errors[pkgKey];
+			}
+
+		});
+
+		if(typeof $scope.errors[index] == 'undefined'){
+			//ADD IN CARTQUATITY IF THERE IS NO ERROR
+			angular.forEach($scope.selected.package.packageItems[index].products, function(inPkgItem, inPkgKey) {
+
+				$scope.selected.package.packageItems[index].products[inPkgKey].cartquantity = parseInt(inPkgItem.customizequantity);
+
+			});
+			$scope.updatePackage();
+		}else{			
+			$scope.accordion.toggle(index);
+		}
+
+	};
+
+	$scope.updatePackage = function(){
+
+		var discountAmount = 0;
+		var originalAmount = 0;
+		angular.forEach($scope.selected.package.packageItems, function(pkgItem, pkgkey) {
+			var lineofproductadded = [];
+			angular.forEach(pkgItem.products, function(value, key) {
+				var quantityadded = parseInt(value.cartquantity);
+				if(quantityadded > 0)
+					lineofproductadded.push(quantityadded+' x '+value.name);
+
+				discountAmount += parseFloat(value.cprice)*parseInt(quantityadded);
+				originalAmount += parseFloat(value.sprice)*parseInt(quantityadded);
+			});
+			$scope.selected.package.packageItems[pkgkey].selectedProducts = lineofproductadded.join(', ');
+		});
+
+		$scope.selected.package.packagePrice = discountAmount.toFixed(2);
+		$scope.selected.package.packageSavings = parseFloat(originalAmount-discountAmount).toFixed(2);
+
+	}
+
+	$scope.validateByIndex = function(index){
+		var totalseleted = 0;
+		var packageItems = angular.copy($scope.selected.package.packageItems[index]);
+		var maxQuantity = parseInt(packageItems.quantity);
+		var packageUpdate = true;
+
+		var apromise = angular.forEach($scope.selected.package.packageItems, function(pkgItem, pkgKey) {
+
+			var totalseleted = 0;
+			var maxQuantity = parseInt(pkgItem.quantity);
+
+			angular.forEach(pkgItem.products, function(value, key) {
+				totalseleted+=parseInt(value.customizequantity);
+			});
+
+			if(totalseleted!=maxQuantity){
+				$scope.errors[pkgKey] = 'You must select total of '+maxQuantity+' items.';
+			}else{
+				delete $scope.errors[pkgKey];
+			}
+
+		});
+
+		if(typeof $scope.errors[index] == 'undefined'){
+			//ADD IN CARTQUATITY IF THERE IS NO ERROR
+
+			angular.forEach($scope.selected.package.packageItems[index].products, function(inPkgItem, inPkgKey) {
+
+				$scope.selected.package.packageItems[index].products[inPkgKey].cartquantity = parseInt(inPkgItem.customizequantity);
+
+			});
+			$scope.updatePackage();
+		}
+	}
+
+	$scope.toTrustedHTML = function( html ){
+		return $sce.trustAsHtml( html );
+	}
+
+	$scope.expandCallback = function (index, id) {
+		/*$timeout(function() {
+			$anchorScroll(id);
+		});*/
+	};	
+
+	$scope.customizeCocktail = function(pkgKey, proKey){
+
+		angular.forEach($scope.selected.package.packageItems[pkgKey].products, function(item, key) {
+			if(key == proKey){
+				item.cartquantity = 1;
+			}else{
+				item.cartquantity = 0;
+			}
+		});
+		$scope.updatePackage();
+	};
+
+	$scope.addPackage = function(){
+
+		var c = Object.keys($scope.errors).length;
+		if(c!=0){
+			/*sweetAlert.swal({
+				type:'error',
+				title: 'Wait...',
+				text:"Please verify your selection.",
+				timer: 2000
+			});*/
+			alert("Please verify your selection.");
+			
+			return;
+		}
+
+		$scope.processing = true;
+
+		//if($scope.selected.package.isInCart===false){
+			alcoholCart.addPackage($scope.selected.package._id,$scope.selected.package)
+			.then(function(response) {
+
+				$scope.selected.package.unique = response.key;
+				$scope.processing = false;
+
+				$scope.btnText = "UPDATE CART";
+
+				$scope.hidemodal();
+
+				//$location.path($location.path()+response.key).replace();
+				
+
+			}, function(error) {
+
+				console.error(error);
+				$scope.processing = false;
+
+			});
+		/*}else{
+
+			alcoholCart.updatePackage($scope.selected.package._id,$scope.selected.package)
+			.then(function(response) {
+
+				
+				$scope.processing = false;
+				
+
+			}, function(error) {
+
+				console.error(error);
+				$scope.processing = false;
+
+			});
+
+		}*/
+
+	}	
 
 }])
 
@@ -655,6 +947,8 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 	};
 
+
+
 	$scope.customizeCocktail = function(pkgKey, proKey){
 
 		angular.forEach($scope.packages.packageItems[pkgKey].products, function(item, key) {
@@ -678,7 +972,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		$scope.processing = true;
 
 		if($scope.packages.isInCart===false){
-		alcoholCart.addPackage($stateParams.id,$scope.packages)
+			alcoholCart.addPackage($stateParams.id,$scope.packages)
 			.then(function(response) {
 
 				$scope.packages.unique = response.key;
@@ -790,7 +1084,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 }])
 
-.controller('OrderDeliveryController',['$scope', '$http', 'alcoholCart',function($scope, $http, alcoholCart){
+.controller('OrderDeliveryController',['$scope', '$http', '$timeout', 'alcoholCart',function($scope, $http, $timeout, alcoholCart){
 
 	$scope.alcoholCart = alcoholCart;
 	$scope.timeslot = alcoholCart.$cart.timeslot;
@@ -845,7 +1139,9 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		$scope.monthName = $scope.monthsName[$scope.myDate.getMonth()];
 		$scope.daySlug = $scope.weekName+', '+$scope.day+' '+$scope.monthName+', '+$scope.year;
 		$scope.currDate = $scope.myDate.getFullYear()+'-'+($scope.myDate.getMonth()+1)+'-'+$scope.myDate.getDate();
+		$scope.loadingSlots = true;
 		$http.get("api/cart/timeslots/"+$scope.currDate).success(function(response){
+
 			var arr = [];
 
 			for(var i in response){
@@ -853,7 +1149,12 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 			}
 
 			$scope.timeslots = arr;
-	    });
+
+		}).finally(function() {
+			$timeout(function() {
+				$scope.loadingSlots = false;
+			},1000);
+		});
 	}
 	$scope.timerange = {
 		"0":'12am',
@@ -970,6 +1271,8 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 .controller('OrderReviewController',['$scope', '$http', 'alcoholCart',function($scope, $http, alcoholCart){
 	$scope.alcoholCart = alcoholCart;
+
+
 }])
 
 .directive('userCards', function(){

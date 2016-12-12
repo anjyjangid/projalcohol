@@ -3,7 +3,7 @@
         <md-radio-group ng-model="payment.card" ng:class="{'hideselector':!paymentmode}">
         <table class="table wislistborbtm" id="cardtable">
             <tbody>
-                    
+                
                 <tr ng-repeat="card in userdata.savedCards">
                     <td>
                         <md-radio-button value="{{card.token_id}}" ng-click="changeCard(card)" class="paymentselector">

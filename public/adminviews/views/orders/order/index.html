@@ -1,4 +1,7 @@
-<div class="row">
+<div ng-if="cart.payment.paymentres && cart.payment.paymentres.result!='Paid'" class="alert alert-danger">
+  Card is rejected by the bank. Please check with your bank or re-enter card details
+</div>
+<div class="row" ng-form="cartFrm">
 	<div class="col-md-12">
 		<div class="portlet box blue">
 			<div class="portlet-title">
@@ -103,7 +106,7 @@
 							</div>
 							</div>
 						</tab>
-						<tab select="cart.orderType='business'" heading="Business">
+						<!-- <tab select="cart.orderType='business'" heading="Business">
 							<div class="row">
 							<div class="col-sm-6 form-horizontal">
 								<h2>Business Client</h2>
@@ -178,101 +181,146 @@
 											<span class="glyphicon glyphicon-plus"></span>
 											Add new Address
 										</button>
-										<!-- <a class="thumbnail" ng-click="newAddress()">
-											<div class="caption">
-												<span class="glyphicon glyphicon-plus"></span>
-												Add new Address
-											</div>
-										</a> -->
+										
 									</div>
 								</div>
 							</div>
 							</div>
-						</tab>
+						</tab> -->
 					</tabset>
 					<p ng-hide="qualifyFor('address')" class="text-danger">Please Save the user to select address</p>
 					<div class="row" ng-show="qualifyFor('address')">
-					<div class="col-sm-6">
-						<h3>Delivery Address</h3>
-						<div class="row">
-							<div class="col-lg-6" ng-repeat-start="address in cart.addresses | limitTo:(showall?cart.addresses.length:3)">
-								<a class="thumbnail" ng-class="{'active':cart.selectedAddress==$index}" ng-click="cart.selectedAddress=$index">
-									<div class="caption">
-										<h4>{{address.firstname+' '+address.lastname}}</h4>
-										{{address.SEARCHVAL}}<br>
-										<span ng-if="address.FLOOR&&address.UNIT">{{'#'+address.FLOOR+' - '+address.UNIT}}<br></span>
-										Singapore - {{address.PostalCode}}
-									</div>
-								</a>
-							</div>
-							<div ng-repeat-end class="clearfix visible-lg-block" ng-if="$index%2==1"></div>
+						<div class="col-sm-6">
+							<h3>Delivery Address</h3>
+							<div class="row">
+								<div class="col-lg-6" ng-repeat-start="address in cart.addresses | limitTo:(showall?cart.addresses.length:3)">
+									<a class="thumbnail" ng-class="{'active':cart.selectedAddress==$index}" ng-click="cart.selectedAddress=$index">
+										<div class="caption">
+											<h4>{{address.firstname+' '+address.lastname}}</h4>
+											{{address.SEARCHVAL}}<br>
+											<span ng-if="address.FLOOR&&address.UNIT">{{'#'+address.FLOOR+' - '+address.UNIT}}<br></span>
+											Singapore - {{address.PostalCode}}
+										</div>
+									</a>
+								</div>
+								<div ng-repeat-end class="clearfix visible-lg-block" ng-if="$index%2==1"></div>
 
-							<div class="col-lg-6">
-								<p ng-show="cart.addresses.length>3">
-									<button class="btn btn-default" ng-click="showall=!showall">
-										Show {{showall?'less':('all ('+cart.addresses.length+')')}}
-									</button>
-								</p>
-								<button class="btn btn-primary" ng-click="newAddress()">
-									<span class="glyphicon glyphicon-plus"></span>
-									Add new Address
-								</button>
-								<!-- <a class="thumbnail" ng-click="newAddress()">
-									<div class="caption">
+								<div class="col-lg-6">
+									<p ng-show="cart.addresses.length>3">
+										<button class="btn btn-default" ng-click="showall=!showall">
+											Show {{showall?'less':('all ('+cart.addresses.length+')')}}
+										</button>
+									</p>
+									<button class="btn btn-primary" ng-click="newAddress()">
 										<span class="glyphicon glyphicon-plus"></span>
 										Add new Address
-									</div>
-								</a> -->
-							</div>
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<h3>Delivery Type</h3>
-						<div class="form-group" ng-class="{'has-warning':errors['cart.delivery.type'][0]}">
-							<label class="control-label col-md-4">Delivery Method <span class="required">*</span></label>
-							<div class="col-md-8 input-group">
-							<div class="input-icon right">
-								<i class="fa fa-warning tooltips" data-original-title="{{errors['cart.delivery.type'][0]}}" data-container="body" ng-if="errors['cart.delivery.type'][0]"></i>
-								<select class="form-control" ng-model="cart.delivery.type">
-									<option value="0">Advance</option>
-									<option value="1">Standard 1 hour delivery</option>
-								</select>
-							</div>
-							</div>
-						</div>
-						<div class="form-group" ng-show="cart.delivery.type == 1">
-							<label class="control-label col-md-4">Express 30 minute delivery <span class="required">*</span></label>
-							<div class="col-md-8 input-group">
-								<div class="btn-group">
-									<label
-										class="btn btn-info"
-										ng-model="cart.service.express.status"
-										btn-radio="false">
-										<span ng-class="{'fa fa-check':!cart.service.express.status}"></span>
-										No
-									</label>
-									<label
-										class="btn btn-info"
-										ng-model="cart.service.express.status"
-										btn-radio="true">
-										<span ng-class="{'fa fa-check':cart.service.express.status}"></span>
-										Yes
-									</label>
+									</button>
+									<!-- <a class="thumbnail" ng-click="newAddress()">
+										<div class="caption">
+											<span class="glyphicon glyphicon-plus"></span>
+											Add new Address
+										</div>
+									</a> -->
 								</div>
 							</div>
 						</div>
-						<!-- <ng-map style="width: 100%;height: 400px"></ng-map> -->
+						<div class="col-sm-6">
+							<h3>Delivery Type</h3>
+							<div class="form-group" ng-class="{'has-warning':errors['cart.delivery.type'][0]}">
+								<label class="control-label col-md-4">Delivery Method <span class="required">*</span></label>
+								<div class="col-md-8 input-group">
+								<div class="input-icon right">
+									<i class="fa fa-warning tooltips" data-original-title="{{errors['cart.delivery.type'][0]}}" data-container="body" ng-if="errors['cart.delivery.type'][0]"></i>
+									<select class="form-control" ng-model="cart.delivery.type">
+										<option value="0">Advance</option>
+										<option value="1">Standard 1 hour delivery</option>
+									</select>
+								</div>
+								</div>
+							</div>
+							<div class="form-group" ng-show="cart.delivery.type == 1">
+								<label class="control-label col-md-4">Express 30 minute delivery <span class="required">*</span></label>
+								<div class="col-md-8 input-group">
+									<div class="btn-group">
+										<label
+											class="btn btn-info"
+											ng-model="cart.service.express.status"
+											btn-radio="false">
+											<span ng-class="{'fa fa-check':!cart.service.express.status}"></span>
+											No
+										</label>
+										<label
+											class="btn btn-info"
+											ng-model="cart.service.express.status"
+											btn-radio="true">
+											<span ng-class="{'fa fa-check':cart.service.express.status}"></span>
+											Yes
+										</label>
+									</div>
+								</div>
+							</div>
+							<!-- <ng-map style="width: 100%;height: 400px"></ng-map> -->
+						</div>
 					</div>
+					<hr>
+					<div class="row">
+						<div class="col-sm-6">
+							<h2>Special Instructions</h2>
+							<div class="form-group row">
+								<label class="control-label col-md-12">Contact Number <span class="required">*</span></label>
+								<div class="col-md-12">
+									
+									<div class="input-group">
+										<div class="mobileinput input-group-addon">+65</div>
+										<input type="text" class="form-control alcohalpopuptext2" name="deliveryContact" id="deliveryContact" required ng-model="cart.delivery.contact" ng-minlength="8" ng-maxlength="8" maxlength="8">
+									</div>
+
+									<div ng-if="cartFrm.deliveryContact.$touched">
+										<span class="help-block" ng-if="cartFrm.deliveryContact.$error.required">Please enter contact person number</span>
+										<span class="help-block" ng-if="cartFrm.deliveryContact.$error.minlength">Contact number should be 8 digit long</span>
+									</div>
+
+									<div class="m-top-15" ng-if="newNumber">
+										<label for="deliveryNewDefault"><md-checkbox ng-model="cart.delivery.newDefault" aria-label="leaveatdoor-checkbox">Make it default contact number</md-checkbox></label>
+									</div>
+
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label class="control-label col-md-12">Any Special Instructions (optional)</label>
+								<div class="col-md-12">
+									
+									<textarea id="delivery-instruction" class="full-width" placeholder="" maxlength="160" ng-model="cart.delivery.instructions"></textarea>
+									
+
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<div class="col-md-12">
+									
+									<label><md-checkbox ng-model="cart.delivery.leaveatdoor" aria-label="leaveatdoor-checkbox">Leave this order at my doorstep.</md-checkbox></label>
+									<div class="gry_itlic_text">We’ll leave your items at your doorstep without contacting you. To be eligible, we must have unrestricted access to your doorstep.</div>
+
+								</div>
+							</div>
+
+							
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+
+		
+
 		<div class="portlet box blue">
 			<div class="portlet-title">
 				<div class="caption">Products</div>
-				<!-- <div class="tools hidden-xs">
+				<div class="tools hidden-xs">
 					<a href="javascript:;" class="collapse"></a>
-				</div> -->
+				</div>
 			</div>
 			<div class="portlet-body form">
 				<div class="form-body" ng-if="qualifyFor('products')">
@@ -324,7 +372,7 @@
 		</div>
 
 		<div class="form-actions">
-			<button type="submit" class="btn blue">Submit</button>
+			<button type="button" ng-click="orderConfirm()" ng-disabled="!alcoholCart.getTotalUniqueItems()" class="btn blue">Submit</button>
 			<button type="button" class="btn default" ng-click="newCart()">Cancel order</button>
 		</div>
 	</div>

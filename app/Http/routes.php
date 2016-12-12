@@ -31,6 +31,10 @@ Route::group(['prefix' => 'adminapi'], function () {
 
 Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	
+	Route::put('order/confirmorder/{cartKey}','Admin\OrderController@confirmorder');
+	
+	Route::get('order/confirmorder','Admin\OrderController@confirmorder');	
+
 	Route::resource('order', 'Admin\OrderController',['except'=>'show']);
 	Route::controller('order', 'Admin\OrderController');
 
@@ -114,6 +118,9 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	// Route::controller('address', 'AddressController');
 
 	Route::post('checkCoupon','CouponController@checkCoupon');
+	
+	
+
 });
 
 Route::group(['prefix' => 'admin'], function () {
@@ -155,12 +162,8 @@ Route::group(['prefix' => 'api'], function () {
 	Route::get('reset/{key}', 'Auth\PasswordController@reset');
 
 	Route::put('deploycart/{cartKey}','CartController@deploycart');
- 
-	Route::put('confirmorder/{cartKey}','CartController@confirmorder');
 
-	
-
-	Route::get('freezcart','CartController@freezcart');
+	Route::get('freezcart/{cartKey}','CartController@freezcart');
 
 	Route::group(['middleware' => 'auth'], function () {
 
@@ -173,11 +176,12 @@ Route::group(['prefix' => 'api'], function () {
 		Route::resource('address', 'AddressController');
 
 		Route::controller('coupon', 'CouponController');
-
+		
+		Route::put('confirmorder/{cartKey}','CartController@confirmorder');
+		
 		Route::post('checkCoupon','CouponController@checkCoupon');
 
 	});
-
 	Route::group(['prefix' => 'cart'], function () {
 
 		Route::get('deliverykey','CartController@getDeliverykey');
@@ -210,7 +214,7 @@ Route::group(['prefix' => 'api'], function () {
 	
 		Route::put('bulk/{cartkey}','CartController@putBulk');
 
-		Route::delete('promotion/{key}','CartController@deletePromotion');
+		Route::delete('promotion/{cartKey}/{key}','CartController@deletePromotion');
 
 		Route::delete('card/{cartKey}/{key}','CartController@deleteCard');
 
@@ -310,9 +314,9 @@ Route::get('confirmorder','CartController@confirmorder');
 Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
 
 $fixPagesLinks = [
-	'events' => 'site/event-planner',
+	'events' => 'pages/event-planner',
 	'menu' => 'beer',
-	'how_to_order' => 'site/how-to-order'
+	'how_to_order' => 'pages/how-to-order'
 ];
 
 //FIX LINKS ROUTE

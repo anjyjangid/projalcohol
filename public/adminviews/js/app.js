@@ -16,7 +16,8 @@ var MetronicApp = angular.module("MetronicApp", [
 	"angular-storage",
 	"ui.calendar",
 	"ngPayments",
-	"ngMap"
+	"ngMap",
+	"vAccordion"
 ]);
 
 

@@ -4,11 +4,11 @@
 	<span class="badge badge-success" ng-bind="alcoholCart.getTotalItems()"></span>
 </a>
 
-<!-- <a href="#" ng-click="package($event)" class="icon-btn">
+<a href="#" ng-click="package($event)" class="icon-btn">
 	<i class="fa fa-barcode"></i>
 	<div>Package</div>
 	<span class="badge badge-success" ng-bind="alcoholCart.getTotalPackages()"></span>
-</a> -->
+</a>
 
 <a href="#" ng-click="giftcard($event,key)"  class="icon-btn">
 	<i class="fa fa-plus"></i>
@@ -125,6 +125,10 @@
 					<td width="52%">
 
 						<div class="orhistry2_td2procdtcvr">
+							<span>
+								{{giftCard.recipient.price | pricingTxt}}
+							</span>
+							
 							<div>
 								<div>Name: <b>{{giftCard.recipient.name}}</b></div>
 								<div>Email: <b>{{giftCard.recipient.email}}</b></div>
@@ -138,9 +142,7 @@
 					<td>
 						
 					</td>
-					<td>
-						
-					</td>
+					
 					<td width="150">
 						<div class="checkoutmiddlevlauediv">
 
@@ -149,7 +151,7 @@
 						</div>
 					</td>
 					<td>
-						<div>Price : <b>{{giftCard.recipient.price * giftCard.recipient.quantity | pricingTxt}}</b></div>
+						<div><b>{{giftCard.recipient.price * giftCard.recipient.quantity | pricingTxt}}</b></div>
 					</td>
 					<td>
 						<a href="#" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removeCard(giftCard.getUniqueId(),true)"><i class="glyphicon glyphicon-trash"></i></a>

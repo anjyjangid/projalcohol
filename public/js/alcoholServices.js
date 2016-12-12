@@ -448,30 +448,30 @@ AlcoholDelivery.service("ClaimGiftCard",['$http', '$q', 'UserService', '$rootSco
 
 				var token = localStorage.getItem("gifttoken",token);
 
-				if(!token){
+				if(token == null){
 					reject(response);
+				}else{
+					response.token = token;
+
+					$http.post("user/giftcard/"+response.token,{}).then(
+
+						function(successRes){
+							
+							$rootScope.$broadcast('alcoholWishlist:change', {message:'Hurry! credits added to your account'});
+
+							resolve(successRes.data);
+						},
+						function(rejectRes){
+
+							setTimeout(function() {							
+								$rootScope.$broadcast('alcoholWishlist:change', {message:rejectRes.data.message});
+							}, 1000);
+
+							reject(rejectRes);
+						}
+
+					);
 				}
-
-				response.token = token;
-
-				$http.post("user/giftcard/"+response.token,{}).then(
-
-					function(successRes){
-						
-						$rootScope.$broadcast('alcoholWishlist:change', {message:'Hurry! credits added to your account'});
-
-						resolve(successRes.data);
-					},
-					function(rejectRes){
-
-						setTimeout(function() {
-							$rootScope.$broadcast('alcoholWishlist:change', {message:rejectRes.data.message});
-						}, 1000);
-
-						reject(rejectRes);
-					}
-
-				);
 
 			});
 
@@ -570,11 +570,11 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct','CreditC
 		return defer.promise;
 	}
 
-	this.getDontMiss = function(){
+	this.getDontMiss = function(cartKey){
 
 		var defer = $q.defer();
 
-		$http.get("suggestion/dontmiss").then(
+		$http.get("suggestion/dontmiss/"+cartKey).then(
 
 			function(response){
 

@@ -1,0 +1,90 @@
+<div>	
+	<div class="productdetailbrudcumcover">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="media cocktaildetail-cover">
+					<div class="media-left">
+					    <a href="#">
+					      <img  err-src="asset/i/defaultImage.png" class="" ng-src="packages/i/{{packages.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+					    </a>
+				  	</div>
+					<div class="media-body  party-detail-contentcover">
+						<h4 class="media-heading party-detail-heading">{{packages.title}}</h4>
+						<p class="party-detail-btm-title">{{packages.subTitle}}</p>
+						<p class="party-product-desc">{{packages.description}}</p>
+						<div class="cockdetail-leftposion">
+							<p class="packtiti-rightset packag-amnt-divcolr">Package Amount</p>
+					    	<h3 class="amntrupee-clsdetail">{{settings.general.currency}}{{packages.packagePrice}}</h3>
+					    	<p class="packtiti-rightset">Savings</p>
+					    	<p class="packtiti-rightset amnt-savingclr">{{settings.general.currency}}{{packages.packageSavings}}</p>
+							<div class="checkoutmiddlevlauediv quantity-detailmarginrmv">
+					    		<div class="pardqantitytexthead">Quantity</div>
+								<input type="text" value="packages.packageQuantity" ng-model="packages.packageQuantity" min="1" max="10" ng-touch-spin>
+							</div>
+					    	<div class="addcart-btncover">
+					    		<a class="btn product_addcart addcart-detail" ng-if="!processing" ng-click="addPackage()"><img src="images/cart-icon.png" />{{btnText}}</a>
+					    		<a class="btn product_addcart addcart-detail" ng-if="processing"><i class="fa fa-spinner fa-spin"></i> {{btnText}}</a>	
+					    	</div>
+			    		</div>
+	            	</div>
+				</div>
+			</div>
+		</div>			
+	</div>
+	<div class="productdetailbrudcumcover cocktail-detailpagecover">
+		<div class="row ">
+			<div class="col-md-12" ng-cloak>
+				<md-content>
+					<md-tabs md-dynamic-height md-border-bottom class="">
+	                <div class="tabing-mainheading">
+						<md-tab label="Ingredients">
+							<md-content class="md-padding ingrdients-tabpadingrmv ">							
+								<div class="md-display-12 cocktail-btmborder" ng-repeat="(pkgKey,packageItem) in packages.packageItems">
+									<div class="ttile-divcover ">
+	                                <div class="cocktaildetail-coverdiv">
+										<h4  class=" ingredintwidthset">Ingredient # {{$index+1}}</h4><span class="product-cocktailtitle">{{packageItem.selectedProducts}}</span>
+									</div></div>
+									<div class="row ">													
+										<div ng-repeat-start="(proKey, pcprod) in packageItem.products" ng:class="{'row':($index!=0 && $index%4==0)}"></div>
+										<div class="col-md-3 cocktail-detail-width" ng-click="customizeCocktail(pkgKey, proKey)"> 							
+											<div class="thumbnail thumbnailheightset marginset-detailpage" ng:class="{'selectedproductcart':pcprod.cartquantity > 0}">								
+												<div class="caption"> 
+													<h5 class="item-btmtitle">{{ pcprod.name }}</h5>									
+												</div>
+												<div class="detail-productdiv"><img err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{pcprod.imageFiles[0].source}}">	</div>
+											</div>
+										</div>
+										<div ng-repeat-end></div>													
+									</div>
+								</div>
+							</md-content>
+						</md-tab></div>
+						<md-tab label="Receipe">
+							<md-content class="md-padding ingrdients-tabpadingrmv paddingrmvcls-cocktail">							
+								<div class="md-display-12 cocktail-btmborder reipie-marginset-titl">
+									<v-accordion id="accordionA" class="vAccordion--default" control="accordionA">        
+								        <v-pane id="{{$index}}" ng-repeat="rstep in packages.recipe">
+							                <v-pane-header id="{{$index}}-header"  aria-controls="{{ ::subpane.id }}-header" class="byz">
+							                <div class="ttile-divcover cocktail-title-float">
+							                  <h5  class="custmize-contntset recipie-titlediv">{{rstep.step}}</h5></div>
+							                </v-pane-header>
+							                <v-pane-content id="{{$index}}-content" class="btm-contetnrecipie" aria-labelledby="{{ ::subpane.id }}-content">
+							                  	{{rstep.description}}
+							                </v-pane-content>
+								        </v-pane>
+							      	</v-accordion>
+								</div>
+							</md-content>
+						</md-tab>
+						<md-tab label="Video">
+							<md-content class="md-padding">							
+								<div class="md-display-12" ng-bind-html="toTrustedHTML( packages.video )">
+								</div>
+							</md-content>
+						</md-tab>
+					</md-tabs>
+				</md-content>
+			</div>	
+		</div>
+	</div>
+</div>

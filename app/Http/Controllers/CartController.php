@@ -35,6 +35,9 @@ use stdClass;
 
 use AlcoholDelivery\Payment;
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 class CartController extends Controller
 {
 
@@ -48,7 +51,7 @@ class CartController extends Controller
 
 	public function __construct(Request $request)
 	{
-
+		
 		$user = Auth::user('admin');
 		if(!empty($user)){
 			$this->deliverykey = session()->get('deliverykeyAdmin');
@@ -188,7 +191,6 @@ class CartController extends Controller
 
 		$cart = Cart::findUpdated($id);
 
-
 		if(empty($cart)){
 
 			$cartObj = new Cart;
@@ -198,6 +200,7 @@ class CartController extends Controller
 			if($isCreated->success){
 
 				$cart = $isCreated->cart;
+				return response(["sucess"=>true,"cart"=>$cart],200);
 
 			}else{
 
@@ -211,7 +214,7 @@ class CartController extends Controller
 		}
 
 		$isMerged = $this->mergecarts($cart['_id']);
-		
+
 		if($isMerged->success){
 
 			$cart = $isMerged->cart;
@@ -349,7 +352,7 @@ class CartController extends Controller
 		}
 		// package validate and manage end
 
-		$request->session()->put('deliverykey', $cart['_id']);
+		// $request->session()->put('deliverykey', $cart['_id']);
 
 		return response(["sucess"=>true,"cart"=>$cart],200);
 
@@ -1069,7 +1072,7 @@ class CartController extends Controller
 
 		if(isset($user->_id)){
 
-			$userCart = Cart::where("user","=",new MongoId($user->_id))->where("_id","!=",new MongoId($cartKey))->first();
+			$userCart = Cart::where("user","=",new MongoId($user->_id))->where("_id","!=",new MongoId($cartKey))->whereNull("generatedBy")->first();
 
 			$sessionCart = Cart::find($cartKey);
 
@@ -1742,9 +1745,8 @@ jprd($product);
 
 	}
 
-	public function deletePromotion($promoId,Request $request){
+	public function deletePromotion($cartKey,$promoId,Request $request){
 
-		$cartKey = $request->session()->get('deliverykey');
 		$cart = Cart::find($cartKey);
 
 		if(empty($cart)){
@@ -1783,34 +1785,24 @@ jprd($product);
 
 		$user = Auth::user('user');
 
-		//$user = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
+		// $user = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
 
 		$userObj = User::find($user->_id);
 
-		if(empty($userObj)){
-
-			return response(['message'=>"Un-Authorised login"],401);
-
-		}
-
 		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
 
-		if($cartKey == null){
-
+		if($cartKey == null)
 			$cartKey = $request->get('merchant_data1');
-
-		}
-
-		//$cart = Cart::findUpdated($cartKey);
-		$cart = Cart::find($cartKey);
+		
+		$cart = Cart::findUpdated($cartKey);
 
 		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){
-
 			$order = Orders::where(['reference' => $request->get('order_number')])->first();
-
 			if($order)
 				return redirect('/orderplaced/'.$order['_id']);
 		}
+
+		
 
 		if(empty($cart)){
 			if($request->isMethod('get'))
@@ -1823,21 +1815,51 @@ jprd($product);
 
 		$cartArr['user'] = new MongoId($user->_id);
 
-		try {
+		try {			
 
-			$orderObj = $cart->cartToOrder($cartKey);
-			
 			//PREPARE PAYMENT FORM DATA
-			if(!$request->isMethod('get') && $orderObj['payment']['method'] == 'CARD' && $orderObj['payment']['total']>0){
-
+			if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){
 				$payment = new Payment();
-				$payment = $payment->prepareform($cartArr,$user);
-				return response($payment,200);
-
+				$paymentres = $payment->prepareform($cartArr,$user);
+				return response($paymentres,200);
 			}
 
-			$order = Orders::create($orderObj);
+			//CHECK FOR PAYMENT RESULT
+			if($request->isMethod('get') && $cartArr['payment']['method'] == 'CARD'){
+				$rdata = $request->all();
+				//VALIDATE RESPONSE SO IT IS VALID OR NOT
+				$payment = new Payment();				
+				$failed = false;
+				if(!$payment->validateresponse($rdata) || ($rdata['result']!='Paid')){					
+					$failed = true;										
+				}
 
+				unset($rdata['signature']);					
+
+				$paymentres = ['paymentres' => $rdata];
+
+				$cart->payment = array_merge($cartArr['payment'],$paymentres);
+
+				$cart->save();
+
+				$this->logtofile($rdata);
+
+				if($failed){
+					return redirect('/cart/payment');
+				}
+			}
+
+			//FORMAT CART TO ORDER
+			$orderObj = $cart->cartToOrder($cartKey);
+
+			$defaultContact = true;
+			if(!isset($orderObj['delivery']['newDefault']) || $orderObj['delivery']['newDefault']!==true){
+				$defaultContact = false;
+			}
+			$userObj->setContact($orderObj['delivery']['contact'],$defaultContact);
+			
+			//CREATE ORDER FROM CART & REMOVE CART
+			$order = Orders::create($orderObj);
 			$cart->delete();
 
 			$process = $order->processGiftCards();			
@@ -1895,6 +1917,7 @@ jprd($product);
 			}
 
 			$loyaltyPoints = $order['loyaltyPointEarned'];
+
 			if($loyaltyPoints>0){
 
 				$userObj->increment('loyaltyPoints', $loyaltyPoints);
@@ -1947,7 +1970,7 @@ jprd($product);
 
 		} catch(\Exception $e){
 
-			ErrorLog::create('emergency',[
+				ErrorLog::create('emergency',[
 					'error'=>$e,
 					'message'=> 'Cart Confirm'
 				]);
@@ -2040,6 +2063,10 @@ jprd($product);
 
 		if(isset($params['payment'])){
 			$cart->payment = $params['payment'];
+			//RESET PAYMENT RESPONSE
+			$paymentinfo = $cart->payment; 
+			unset($paymentinfo['paymentres']);
+			$cart->payment = $paymentinfo;
 		}
 
 		if(isset($params['discount'])){
@@ -2071,9 +2098,7 @@ jprd($product);
 
 	}
 
-	public function freezcart(Request $request){
-
-		$cartKey = $request->session()->get('deliverykey');
+	public function freezcart($cartKey,Request $request){
 
 		$cartObj = new Cart;
 
@@ -2085,6 +2110,7 @@ jprd($product);
 		// 	return response(["success"=>false,"message"=>"Cart is already freezed"],405); //405 => method not allowed
 
 		// }
+
 		$cart->freeze = true;
 
 		$cart->save();
@@ -2542,4 +2568,15 @@ return response(["under process"],400);
 	{
 		jprd("Missing");
 	}
+
+	function logtofile($message){
+        //if($this->enableLog){
+            $view_log = new Logger('Payment Logs');
+            $view_log->pushHandler(new StreamHandler(storage_path().'/logs/payment.log', Logger::INFO));
+            if(is_array($message)){
+            	$message = json_encode($message);
+            }
+            $view_log->addInfo($message);
+        //}
+    }
 }

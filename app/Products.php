@@ -557,7 +557,8 @@ class Products extends Eloquent
 							'isFeatured' => 1,
 							'metaTitle'=>1,
 							'metaDescription'=>1,
-							'metaKeywords'=>1
+							'metaKeywords'=>1,
+							'bulkDisable'=>1
 						]
 		];
 
@@ -638,7 +639,8 @@ class Products extends Eloquent
 								'categoriesObject' => 1,
 								'metaTitle'=>1,
 								'metaDescription'=>1,
-								'metaKeywords'=>1
+								'metaKeywords'=>1,
+								'bulkDisable'=>1
 							]
 					];
 
@@ -781,7 +783,8 @@ class Products extends Eloquent
 								'loyalty'=>1,
 								'metaTitle'=>1,
 								'metaDescription'=>1,
-								'metaKeywords'=>1
+								'metaKeywords'=>1,
+								'bulkDisable' => 1
 							]
 						],
 						[
@@ -844,7 +847,7 @@ class Products extends Eloquent
 								'metaTitle'=>1,
 								'metaDescription'=>1,
 								'metaKeywords'=>1,
-
+								'bulkDisable' => 1,
 								'regular_express_delivery' => [
 									'$ifNull' => [ '$regular_express_delivery',
 										[
@@ -937,7 +940,8 @@ class Products extends Eloquent
 								'loyalty'=>1,
 								'metaTitle'=>1,
 								'metaDescription'=>1,
-								'metaKeywords'=>1
+								'metaKeywords'=>1,
+								'bulkDisable' => 1,
 							]
 						],
 						[
@@ -975,7 +979,8 @@ class Products extends Eloquent
 								'loyalty'=>1,
 								'metaTitle'=>1,
 								'metaDescription'=>1,
-								'metaKeywords'=>1
+								'metaKeywords'=>1,
+								'bulkDisable' => 1,
 							]
 						]
 

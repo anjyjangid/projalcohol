@@ -71,18 +71,45 @@ class CustomerController extends Controller
 
 	public function getAutocomplete($col, Request $request)
 	{
-		// prd("hi");
 		$params = $request->all();
 		$users = new User;
 
+		$params['q'] = trim($params['q']);
+
+		if(!isset($params['q']) || empty($params['q'])) {	
+			return response([],200);
+		}
+
+		if($col == 'mobile_number'){
+
+			$project = [
+							'name'=>1,
+							'email'=>1,
+							'mobile_number'=>1,
+							'alternate_number' => 1
+						];
+
+			$query[]['$project'] = $project;
+
+			$s = "/".$params['q']."/i";
+			$query[]['$match'] = ['$or' => [					
+						['mobile_number' => ['$regex'=>new \MongoRegex($s)]],
+						['alternate_number' => ['$regex'=>new \MongoRegex($s)]]		
+				]];
+
+			$model = User::raw()->aggregate($query);
+			return response($model['result']);
+			
+		}
+
 		$columns = ['name','email','mobile_number'];
 
-		if(isset($params['q']) && !empty(trim($params['q']))) {
-			$users = $users->where($col,'regexp', "/.*".$params['q']."/i");
-			return response($users->get($columns));
-		}
-	
-		return response([]);
+		
+
+		$users = $users->where($col,'regexp', "/.*".$params['q']."/i");
+		return response($users->get($columns));
+		
+		
 	}
 
 	public function postSave(CustomerRequest $request)

@@ -10,7 +10,7 @@ use DB;
 
 class Payment extends Model
 {
- 	public $apiLive = true;
+ 	public $apiLive = false;
  	public $tokenUrl;
  	public $paymentUrl;
 	public $secretKey;
@@ -128,7 +128,12 @@ class Payment extends Model
 		return $ret;    	
     }
 
-    public function prepareform($orderData, $userData){
+    public function prepareform($orderData, $userData, $isAdmin = false){
+
+        $uprefix = '';
+
+        if($isAdmin)
+            $uprefix = '/adminapi/order';
 
         $request_transaction = array(
             'order_number' => $orderData['reference'],
@@ -139,7 +144,7 @@ class Payment extends Model
             'transaction_type' => $this->transactionType,
             'key' => $this->key,
             'token_id'=> $orderData['payment']['creditCard']['token_id'],            
-            'return_url' => url().'/confirmorder',            
+            'return_url' => url().$uprefix.'/confirmorder',            
             'merchant_data1' => $orderData['_id']
             //'notify_url' => url().'/confirmorder', //FOR SAFE PAYMENTS
         );
