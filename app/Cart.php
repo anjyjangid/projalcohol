@@ -2022,7 +2022,6 @@ class Cart extends Moloquent
 							"start_date" => $coupon['start_date'],
 							"end_date" => $coupon['end_date'],
 							"totalDiscount" => $couponDiscount
-
 						];
 
 					}

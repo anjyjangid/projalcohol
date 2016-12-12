@@ -822,6 +822,12 @@ class OrderController extends Controller
 			}
 
 			$orderObj = $cart->cartToOrder($cartKey,'2');
+
+			$defaultContact = true;
+			if(!isset($orderObj['delivery']['newDefault']) || $orderObj['delivery']['newDefault']!==true){
+				$defaultContact = false;
+			}
+			
 			$userObj->setContact($orderObj['delivery']['contact']);
 			$order = Orders::create($orderObj);
 				

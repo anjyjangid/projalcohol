@@ -506,6 +506,7 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct','CreditC
 			filter : null,
 			sort : 'new_desc',
 			parent : null,
+			subParent : null,
 
 		}
 
