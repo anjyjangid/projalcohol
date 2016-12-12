@@ -199,10 +199,10 @@ AlcoholDelivery.controller('ProductsController', [
 	$scope.AppController.subCategory = "";
 	$scope.AppController.showpackage = false;
 
-	$category = $stateParams.categorySlug;
-
+	var parentCategory = $stateParams.categorySlug;
+	var subCategory = "";
 	if(typeof $stateParams.subcategorySlug!=='undefined'){
-		$category = $stateParams.subcategorySlug;
+		var subCategory = $stateParams.subcategorySlug;
 		$scope.AppController.subCategory = $stateParams.subcategorySlug;
 	}
 
@@ -211,7 +211,7 @@ AlcoholDelivery.controller('ProductsController', [
 	//$scope.currentSort = $filter('filter')($scope.sortOptions,{value:$stateParams.sort})[0];
 
 	var data = {
-		category:$category,
+		category:parentCategory,
 		type : $stateParams.toggle,
 		sort: $stateParams.sort,
 	}
@@ -265,7 +265,8 @@ AlcoholDelivery.controller('ProductsController', [
 
 		ProductService.getProducts({
 
-			parent:$category,
+			parent:parentCategory,
+			subParent: subCategory,
 			filter : $stateParams.toggle,
 			sort: $stateParams.sort,
 			productList:1
@@ -331,10 +332,10 @@ AlcoholDelivery.controller('ProductsFeaturedController', [
 
 	$scope.category = $stateParams.categorySlug;
 
-	var slug = $stateParams.categorySlug;
-
+	var parentSlug = $stateParams.categorySlug;
+	var childSlug = "";
 	if(typeof $stateParams.subcategorySlug!=='undefined'){
-		slug = $stateParams.subcategorySlug;
+		var childSlug = $stateParams.subcategorySlug;
 	}
 
 	$scope.loadingfeatured = true;
@@ -342,7 +343,8 @@ AlcoholDelivery.controller('ProductsFeaturedController', [
 	ProductService.getProducts({
 
 		filter : 'featured',
-		parent : slug
+		parent : parentSlug,
+		subParent : childSlug
 
 	}).then(
 

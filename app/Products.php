@@ -512,8 +512,15 @@ class Products extends Eloquent
 
 			$matchCategoryCondition['$match']['$or'] = [
 				['parentCategory.slug' => $params['parent']],
-				['childCategory.slug' => $params['parent']],
 			];
+
+			if(isset($params['subParent']) && !empty($params['subParent'])){			
+
+				$matchCategoryCondition['$match']['$or'][] = ['childCategory.slug' => $params['subParent']];
+
+			}else{
+				$matchCategoryCondition['$match']['$or'][] = ['childCategory.slug' => $params['parent']];
+			}
 
 		}
 
