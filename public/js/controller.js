@@ -1,6 +1,6 @@
 AlcoholDelivery.controller('AppController',
-	['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 'alcoholCart',
-	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter, ProductService, alcoholCart) {
+	['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 'alcoholCart','$cookies',
+	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter, ProductService, alcoholCart,$cookies) {
 
 	$rootScope.setMeta = function(meta){
 
@@ -8,13 +8,13 @@ AlcoholDelivery.controller('AppController',
 
 		var title = $filter('ucwords')(meta.title)+ ' - '+$rootScope.settings.general.site_name;
 		$rootScope.meta = {        	
-        	fbid:$rootScope.settings.fbid,
-        	site_name:$rootScope.settings.general.site_name,
-        	img:'/img/metalogo.png',
-        	title:title,
-        	description:meta.description,
-        	keyword:meta.keyword,
-        }
+			fbid:$rootScope.settings.fbid,
+			site_name:$rootScope.settings.general.site_name,
+			img:'/img/metalogo.png',
+			title:title,
+			description:meta.description,
+			keyword:meta.keyword,
+		}
 	};
 
 	$scope.AppController = {};
@@ -28,9 +28,9 @@ AlcoholDelivery.controller('AppController',
 	$scope.AppController.subCategory = "";
 
 	$http.get("/super/settings/").success(function(response){
-    	$rootScope.settings = response;
-    	$rootScope.settings.fbid = '1269828463077215';
-    });
+		$rootScope.settings = response;
+		$rootScope.settings.fbid = '1269828463077215';
+	});
 
 
 	categoriesFac.getCategories().then(
@@ -98,9 +98,9 @@ AlcoholDelivery.controller('AppController',
 
 	}
 
-    $scope.giftPopup = function(ev) {
-	    $mdDialog.show(
-	    	{
+	$scope.giftPopup = function(ev) {
+		$mdDialog.show(
+			{
 				controller: function($scope, $rootScope,$mdDialog, $http) {
 					$scope.giftcategories = {
 						types:[]
@@ -151,39 +151,79 @@ AlcoholDelivery.controller('AppController',
 	];
 
 	$scope.orderstatus = [
-    	{value:0,label:'Under Process',class:'warning',update:false},
-    	{value:1,label:'Ready',class:'info',update:false},
-    	{value:2,label:'Delivered',class:'success',update:true},
-    	{value:3,label:'Cancelled',class:'danger',update:true},
-    ];
+		{value:0,label:'Under Process',class:'warning',update:false},
+		{value:1,label:'Ready',class:'info',update:false},
+		{value:2,label:'Delivered',class:'success',update:true},
+		{value:3,label:'Cancelled',class:'danger',update:true},
+	];
 
-    $scope.getOrderstatus = function(status){
-    	var fil = $filter('filter')($scope.orderstatus,{value:status});
-    	if(fil)
-    		return fil[0].label;
-    	else
-    		return '';
-    }
+	$scope.getOrderstatus = function(status){
+		var fil = $filter('filter')($scope.orderstatus,{value:status});
+		if(fil)
+			return fil[0].label;
+		else
+			return '';
+	}
 
 	$scope.ageVerification = function() {
-		var confirm = $mdDialog.prompt()
-	      .title('What would you name your dog?')
-	      .textContent('Bowser is a common name.')
-	      .placeholder('Dog name')
-	      .ariaLabel('Dog name')
-	      .initialValue('Buddy')
-	      //.targetEvent(ev)
-	      .ok('Okay!')
-	      .cancel('I\'m a cat person');
+		// Appending dialog to document.body to cover sidenav in docs app
+		
+		$mdDialog.show({
+			//scope: $scope.$new(),
+			controller: function($scope,$cookies){
+				
+				$scope.verifyage = function(){					
+					$cookies.remove('ageverfication');
+					$cookies.putObject('ageverfication', {month:$scope.verification.userMonth,day:$scope.verification.userDay,year:$scope.verification.userYear});
+					$mdDialog.hide();
+				};
 
-	    $mdDialog.show(confirm).then(function(result) {
-	      $scope.status = 'You decided to name your dog ' + result + '.';
-	    }, function() {
-	      $scope.status = 'You didn\'t name your dog.';
-	    });
-	};	
+				$scope.verification = {};
 
-	//$scope.ageVerification();
+				var offset = 0; range = 100;
+				var currentYear = new Date().getFullYear()-range;			
+				$scope.verification.years = [];
+			    for (var i = (offset*1); i < (range*1) + 1; i++){
+			        $scope.verification.years.push(currentYear + i);
+			    }
+
+				var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+
+			    $scope.verification.months = [];
+			    for (var i = 0; i < 12; i++){
+			    	var val = 1+i;
+			    	if(val<=9)			    	
+			    		val = 0+''+val;
+			        $scope.verification.months.push({value:(val),label:monthNames[i]});
+			    }
+			    
+			    $scope.verification.days = [];    
+			    
+			    for (var d = 1; d <= 31; d++){
+			    	var val = d;
+			    	if(val<=9)			    	
+			    		val = 0+''+val;
+			    	$scope.verification.days.push(val);
+			    }
+
+			},
+			templateUrl: '/templates/partials/ageverfication.html',
+			parent: angular.element(document.body),			
+			clickOutsideToClose:false,
+			escapeToClose:false,
+			fullscreen:true,			
+		}).then(function(result) {
+		  //$scope.status = 'You decided to name your dog ' + result + '.';
+		}, function() {
+		  //$scope.status = 'You didn\'t name your dog.';
+		});
+
+		
+	};
+
+
+	if(!$cookies.get('ageverfication'))
+		$scope.ageVerification();
 
 }]);
 
@@ -287,36 +327,36 @@ AlcoholDelivery.controller('ProductsController', [
 		if($scope.AppController.subCategory==''){
 
 			$state.go('mainLayout.category.products',
-            {
+			{
 				categorySlug:$scope.AppController.category,
 				toggle:typeof(obj.toggle)=='undefined'?data.type:obj.toggle,
 				sort:typeof(obj.sort)=='undefined'?data.sort:obj.sort,
 
-            },
-            {reload: false, location: 'replace'});
+			},
+			{reload: false, location: 'replace'});
 
 		}else{
 
 			$state.go('mainLayout.category.subCatProducts',
-            {
-            	categorySlug:$scope.AppController.category,
-            	subcategorySlug:$scope.AppController.subCategory,
-            	toggle:typeof(obj.toggle)=='undefined'?data.type:obj.toggle,
+			{
+				categorySlug:$scope.AppController.category,
+				subcategorySlug:$scope.AppController.subCategory,
+				toggle:typeof(obj.toggle)=='undefined'?data.type:obj.toggle,
 				sort:typeof(obj.sort)=='undefined'?data.sort:obj.sort,
-            },
-            {reload: false, location: 'replace'});
+			},
+			{reload: false, location: 'replace'});
 
 		}
 
-        	$state.$current.self.reloadOnSearch = true;
+			$state.$current.self.reloadOnSearch = true;
 
-        	data.category = $category;
+			data.category = $category;
 			data.type = $stateParams.toggle;
 			data.sort = $stateParams.sort;
 
-        	$scope.fetchproducts();
+			$scope.fetchproducts();
 
-    });
+	});
 
 	$scope.fetchproducts();	
 
@@ -434,7 +474,7 @@ AlcoholDelivery.controller('ProductDetailController', [
 		$state.go('accountLayout.wishlist');
 	}
 
-  	$scope.syncPosition = function(el){
+	$scope.syncPosition = function(el){
 
 		var current = this.currentItem;
 
@@ -455,7 +495,7 @@ AlcoholDelivery.controller('ProductDetailController', [
 		var key = angular.element($("[sortOrder='"+number+"']"));		
 		var ind = $('img.sync1').index(key);		
 		$scope.sync1.trigger("owl.goTo",ind);
-  	}
+	}
 
 
 
@@ -553,12 +593,12 @@ AlcoholDelivery.controller('ProductDetailController', [
 			};
 
 			var mdata = {
-	    		title:$scope.product.metaTitle,
-	    		description:$scope.product.metaDescription,
-	    		keyword:$scope.product.metaKeywords
-	    	};
+				title:$scope.product.metaTitle,
+				description:$scope.product.metaDescription,
+				keyword:$scope.product.metaKeywords
+			};
 
-	    	$rootScope.setMeta(mdata);
+			$rootScope.setMeta(mdata);
 
 		},
 		function(errRes){
@@ -593,10 +633,10 @@ AlcoholDelivery.controller('ProfileController',['$scope','$rootScope','$state','
 
 		$http.get('/loggedUser').success(function(response){
 
-            $scope.user = response;
-        }).error(function(data, status, headers){
+			$scope.user = response;
+		}).error(function(data, status, headers){
 
-        });
+		});
 
 	}
 
@@ -604,7 +644,7 @@ AlcoholDelivery.controller('ProfileController',['$scope','$rootScope','$state','
 
 		$http.put("/profile", $scope.user, {
 
-	        }).error(function(response, status, headers) {
+			}).error(function(response, status, headers) {
 
 				//sweetAlert.swal({
 				// 	type:'error',
@@ -613,20 +653,20 @@ AlcoholDelivery.controller('ProfileController',['$scope','$rootScope','$state','
 				// 	timer: 2000
 				// });
 
-	            $scope.errors = response.data;
-	        })
-	        .success(function(response) {
+				$scope.errors = response.data;
+			})
+			.success(function(response) {
 
-	            if(!response.success){
-	            	$scope.errors = response;
-	            }
+				if(!response.success){
+					$scope.errors = response;
+				}
 
-	            sweetAlert.swal({
+				sweetAlert.swal({
 					type:'success',
 					title: response.message,					
 				});
-	            $state.go($state.current, {}, {reload: true});
-	        })
+				$state.go($state.current, {}, {reload: true});
+			})
 	}
 
 }]);
@@ -646,22 +686,22 @@ AlcoholDelivery.controller('PasswordController',['$scope','$rootScope','$state',
 
 		$http.put("/password", $scope.password,{
 
-	        }).error(function(response, status, headers) {
+			}).error(function(response, status, headers) {
 
-	            $scope.errors = response.data;
-	        })
-	        .success(function(response) {
+				$scope.errors = response.data;
+			})
+			.success(function(response) {
 
-	            if(!response.success){
-	            	$scope.errors = response;
-	            }
+				if(!response.success){
+					$scope.errors = response;
+				}
 
-	            sweetAlert.swal({
+				sweetAlert.swal({
 					type:'success',
 					title: response.message,					
 				});
-	            $state.go($state.current, {}, {reload: true});
-	        })
+				$state.go($state.current, {}, {reload: true});
+			})
 	}
 
 }]);
@@ -671,7 +711,7 @@ AlcoholDelivery.controller('OrdersController',['$scope','$rootScope','$state','$
 
 	$scope.orders = [];
 
-    $http.get("order/orders")
+	$http.get("order/orders")
 	.success(function(response){
 
 		$scope.orders = response;
@@ -679,9 +719,9 @@ AlcoholDelivery.controller('OrdersController',['$scope','$rootScope','$state','$
 
 	})
 	.error(function(data, status, headers) {
-	   	if(data.auth===false){
-	   		$state.go("mainLayout.checkout.cart");
-	   	}
+		if(data.auth===false){
+			$state.go("mainLayout.checkout.cart");
+		}
 	})
 
 	$scope.setRating = function(order) {
@@ -703,7 +743,7 @@ AlcoholDelivery.controller('OrderDetailController',['$scope','$rootScope','$stat
 	$scope.orderid = $stateParams.orderid;
 	$scope.order = {};
 
-    $http.get("order/"+$stateParams.orderid)
+	$http.get("order/"+$stateParams.orderid)
 	.success(function(response){
 
 		$scope.order = response;
@@ -1102,13 +1142,13 @@ AlcoholDelivery.controller('CartController',[
 
 		$http.put("deploycart", tempCartData,{
 
-			        }).error(function(data, status, headers) {
+					}).error(function(data, status, headers) {
 
-			        }).success(function(response) {
-			        	if(!response.success){
+					}).success(function(response) {
+						if(!response.success){
 
-			        	}
-			        });
+						}
+					});
 	}
 
 	$scope.isSingleProductChilled = function(){
@@ -1489,63 +1529,63 @@ AlcoholDelivery.controller('CartDeliveryController',[
 
 		$http.get("cart/timeslots/"+$scope.currDate).success(function(response){
 			$scope.timeslots = response;
-	    }).finally(function() {
-	    	$timeout(function() {
-	    		$scope.loadingSlots = false;
-	    	},1000);
+		}).finally(function() {
+			$timeout(function() {
+				$scope.loadingSlots = false;
+			},1000);
 		});
 
 	}
 
 	$scope.timerange = {
 		"0":'12am',
-	    "30":'12:30am',
-	    "60":'1am',
-	    "90":'1:30am',
-	    "120":'2am',
-	    "150":'2:30am',
-	    "180":'3am',
-	    "210":'3:30am',
-	    "240":'4am',
-	    "270":'4:30am',
-	    "300":'5am',
-	    "330":'5:30am',
-	    "360":'6am',
-	    "390":'6:30am',
-	    "420":'7am',
-	    "450":'7:30am',
-	    "480":'8am',
-	    "510":'8:30am',
-	    "540":'9am',
-	    "570":'9:30am',
-	    "600":'10am',
-	    "630":'10:30am',
-	    "660":'11am',
-	    "690":'11:30am',
-	    "720":'12pm',
-	    "750":'12:30pm',
-	    "780":'1pm',
-	    "810":'1:30pm',
-	    "840":'2pm',
-	    "870":'2:30pm',
-	    "900":'3pm',
-	    "930":'3:30pm',
-	    "960":'4pm',
-	    "990":'4:30pm',
-	    "1020":'5pm',
-	    "1050":'5:30pm',
-	    "1080":'6pm',
-	    "1120":'6:30pm',
-	    "1150":'7pm',
-	    "1180":'7:30pm',
-	    "1210":'8pm',
-	    "1240":'8:30pm',
-	    "1270":'9pm',
-	    "1300":'9:30pm',
-	    "1330":'10pm',
-	    "1370":'10:30pm',
-	    "1400":'11pm',
-	    "1430":'11:30pm',
+		"30":'12:30am',
+		"60":'1am',
+		"90":'1:30am',
+		"120":'2am',
+		"150":'2:30am',
+		"180":'3am',
+		"210":'3:30am',
+		"240":'4am',
+		"270":'4:30am',
+		"300":'5am',
+		"330":'5:30am',
+		"360":'6am',
+		"390":'6:30am',
+		"420":'7am',
+		"450":'7:30am',
+		"480":'8am',
+		"510":'8:30am',
+		"540":'9am',
+		"570":'9:30am',
+		"600":'10am',
+		"630":'10:30am',
+		"660":'11am',
+		"690":'11:30am',
+		"720":'12pm',
+		"750":'12:30pm',
+		"780":'1pm',
+		"810":'1:30pm',
+		"840":'2pm',
+		"870":'2:30pm',
+		"900":'3pm',
+		"930":'3:30pm',
+		"960":'4pm',
+		"990":'4:30pm',
+		"1020":'5pm',
+		"1050":'5:30pm',
+		"1080":'6pm',
+		"1120":'6:30pm',
+		"1150":'7pm',
+		"1180":'7:30pm',
+		"1210":'8pm',
+		"1240":'8:30pm',
+		"1270":'9pm',
+		"1300":'9:30pm',
+		"1330":'10pm',
+		"1370":'10:30pm',
+		"1400":'11pm',
+		"1430":'11:30pm',
 
 	};
 
@@ -1735,28 +1775,28 @@ AlcoholDelivery.controller('CartReviewController',[
 									timer: 2000
 								});
 
-				        }).success(function(response) {
+						}).success(function(response) {
 
-					        	if($scope.cart.payment.method == 'CARD'){
-					        		var payurl = $sce.trustAsResourceUrl(response.formAction);
-						            $rootScope.$broadcast('gateway.redirect', {
-						                url: payurl,
-						                method: 'POST',
-						                params: response.formData
-						            });
-					        		return;
-					        	}
+								if($scope.cart.payment.method == 'CARD'){
+									var payurl = $sce.trustAsResourceUrl(response.formAction);
+									$rootScope.$broadcast('gateway.redirect', {
+										url: payurl,
+										method: 'POST',
+										params: response.formData
+									});
+									return;
+								}
 
-					            if(!response.success){
+								if(!response.success){
 
-					            	sweetAlert.swal({
+									sweetAlert.swal({
 										type:'error',
 										title: 'Oops...',
 										text:response.message,
 										timer: 2000
 									});
 
-					            }
+								}
 
 								sweetAlert.swal({
 									type:'success',
@@ -1797,10 +1837,10 @@ AlcoholDelivery.controller('OrderplacedController',[
 	$scope.order = $stateParams.order;
 
 	$http.get("order/summary/"+$scope.order).success(function(response){
-    	
-    	$scope.order = response;
+		
+		$scope.order = response;
 
-    	$scope.orderNumber = $scope.order.reference;    	
+		$scope.orderNumber = $scope.order.reference;    	
 
 		if($scope.order.timeslot.datekey!==false){
 
@@ -1855,11 +1895,11 @@ AlcoholDelivery.controller('OrderplacedController',[
 		$scope.aMpM = $scope.dopDate.getHours() > 12 ? 'PM' : 'AM';*/
 
 
-    });
+	});
 
 angular.SocialSharing = SocialSharingService;
 
-    $scope.fbShare = function(){
+	$scope.fbShare = function(){
 
 		SocialSharingService.shareFb({
 
@@ -1893,9 +1933,9 @@ angular.SocialSharing = SocialSharingService;
 			}
 		)
 
-    }
+	}
 
-    $scope.googleShare = function(){
+	$scope.googleShare = function(){
 
 		SocialSharingService.shareGoogle({
 
@@ -1929,7 +1969,7 @@ angular.SocialSharing = SocialSharingService;
 			}
 		)
 
-    }
+	}
 
 
 }]);
@@ -2324,27 +2364,27 @@ AlcoholDelivery.controller('CmsController',[
 	$scope.querySent = false;
 	$http.get("/super/cmsdata/"+$stateParams.slug).success(function(response){
 
-    	if(response.length == 0){
-    		$state.go('mainLayout.notfound');
-    	}
+		if(response.length == 0){
+			$state.go('mainLayout.notfound');
+		}
 
-    	$scope.cmsData = response;
+		$scope.cmsData = response;
 
-    	$scope.checkForm = function(){
-    		return (
-    			$scope.cmsData.formType == 'contact-us' ||
-    			$scope.cmsData.formType == 'event-planner' ||
-    			$scope.cmsData.formType == 'book-a-bartender' ||
-    			$scope.cmsData.formType == 'become-a-partner' ||
-    			$scope.cmsData.formType == 'sell-on-alcoholdelivery'
-    		);
-    	}
+		$scope.checkForm = function(){
+			return (
+				$scope.cmsData.formType == 'contact-us' ||
+				$scope.cmsData.formType == 'event-planner' ||
+				$scope.cmsData.formType == 'book-a-bartender' ||
+				$scope.cmsData.formType == 'become-a-partner' ||
+				$scope.cmsData.formType == 'sell-on-alcoholdelivery'
+			);
+		}
 
-    	$scope.cmsData.hasForm = $scope.checkForm();
+		$scope.cmsData.hasForm = $scope.checkForm();
 
-    	$scope.query = {type:$scope.cmsData.formType};
+		$scope.query = {type:$scope.cmsData.formType};
 
-    	var mdata = {
+		var mdata = {
 			title:response.metaTitle,
 			description:response.metaDescription,
 			keyword:response.metaKeywords
@@ -2353,12 +2393,12 @@ AlcoholDelivery.controller('CmsController',[
 		$rootScope.setMeta(mdata);
 
 
-    });
+	});
 
-    $scope.submitQuery = function(){
+	$scope.submitQuery = function(){
 		$scope.querySubmit = true;
-    	$http.post('/site/query',$scope.query).success(function(res){
-    		$scope.querySent = true;
+		$http.post('/site/query',$scope.query).success(function(res){
+			$scope.querySent = true;
 		}).error(function(data, status, headers){
 			$scope.errors = data;
 			$scope.querySubmit = false;
@@ -2366,7 +2406,7 @@ AlcoholDelivery.controller('CmsController',[
 	}
 
 	$scope.trustedHtml = function (plainText) {
-	      return $sce.trustAsHtml(plainText);
+		  return $sce.trustAsHtml(plainText);
 	}
 
 }]);
@@ -2713,15 +2753,15 @@ AlcoholDelivery.controller('SearchController', [
 		$rootScope.appSettings.layout.pageRightbarExist = true;
 
 		var self = this;
-	    self.simulateQuery = true;
-	    self.isDisabled    = false;
-	    // list of `state` value/display objects
+		self.simulateQuery = true;
+		self.isDisabled    = false;
+		// list of `state` value/display objects
 
-	    self.querySearch   = querySearch;
-	    self.selectedItemChange = selectedItemChange;
-	    self.searchTextChange   = searchTextChange;
-	    self.submitQuery   = submitQuery;
-	    
+		self.querySearch   = querySearch;
+		self.selectedItemChange = selectedItemChange;
+		self.searchTextChange   = searchTextChange;
+		self.submitQuery   = submitQuery;
+		
 
 
 	// ******************************
@@ -2731,17 +2771,17 @@ AlcoholDelivery.controller('SearchController', [
 	 * Search for states... use $timeout to simulate
 	 * remote dataservice call.
 	 */
-    function querySearch (query) {
+	function querySearch (query) {
 
 		return $http.get('/site/search/' + query).then(function(result){
-		    result.data = ProductService.prepareProductObjs(result.data);
-		    return result.data;
+			result.data = ProductService.prepareProductObjs(result.data);
+			return result.data;
 		});
-    }
-    function searchTextChange(text) {
-      //$log.info('Text changed to ' + text);
-    }
-    function selectedItemChange(item) {		
+	}
+	function searchTextChange(text) {
+	  //$log.info('Text changed to ' + text);
+	}
+	function selectedItemChange(item) {		
 		if(item){			
 			self.searchText = '';			
 			$state.go('mainLayout.product',{product:item.slug});
@@ -2749,31 +2789,31 @@ AlcoholDelivery.controller('SearchController', [
 				$anchorScroll();		    	
 			});		    
 		}
-    }
+	}
 
-    function submitQuery(){
-    	if(self.searchText!=''){
-    		//$log.info(self.searchText);
+	function submitQuery(){
+		if(self.searchText!=''){
+			//$log.info(self.searchText);
 			var autoChild = document.getElementById('Auto').firstElementChild;
-		    var el = angular.element(autoChild);
-		    el.scope().$mdAutocompleteCtrl.hidden = true;
-    		$state.go('mainLayout.search',{keyword:self.searchText});
-    	}
-    	return false;
-    }   
+			var el = angular.element(autoChild);
+			el.scope().$mdAutocompleteCtrl.hidden = true;
+			$state.go('mainLayout.search',{keyword:self.searchText});
+		}
+		return false;
+	}   
 
-    $timeout(clearInputBoxOnBlur, 0);    
-    
-    function clearInputBoxOnBlur(){
-        angular.element("#site-search").bind("blur", function(){
-            var autoChild = document.getElementById('Auto').firstElementChild;
-		    var el = angular.element(autoChild);
-		    el.scope().$mdAutocompleteCtrl.hidden = true;            
-            $scope.searchbar(0);                         
-        });
-    }
+	$timeout(clearInputBoxOnBlur, 0);    
+	
+	function clearInputBoxOnBlur(){
+		angular.element("#site-search").bind("blur", function(){
+			var autoChild = document.getElementById('Auto').firstElementChild;
+			var el = angular.element(autoChild);
+			el.scope().$mdAutocompleteCtrl.hidden = true;            
+			$scope.searchbar(0);                         
+		});
+	}
 
-    $scope.searchbar = function(toggle){
+	$scope.searchbar = function(toggle){
 		if(toggle){
 			$(".searchtop").addClass("searchtop100").removeClass("again21");
 			$(".search_close").addClass("search_close_opaque");
@@ -2803,11 +2843,11 @@ AlcoholDelivery.controller('SearchController', [
 	$scope.currentSort = $filter('filter')($scope.sortOptions,{value:$stateParams.sort})[0];
 
 	if($stateParams.keyword){
-    	if($stateParams.keyword!=''){
-    		/*$scope.args = {
-    			keyword:$stateParams.keyword,
-    			filter:$stateParams.filter,
-    			sortby:$stateParams.sort
+		if($stateParams.keyword!=''){
+			/*$scope.args = {
+				keyword:$stateParams.keyword,
+				filter:$stateParams.filter,
+				sortby:$stateParams.sort
 			}
 			$scope.url = '/site/searchlist';
 			$scope.products = new ScrollPaging($scope.args,$scope.url);*/
@@ -2816,8 +2856,8 @@ AlcoholDelivery.controller('SearchController', [
 			$scope.sortby = $stateParams.sort;
 
 			$scope.products = new ScrollPagination($scope.keyword,$scope.filter,$scope.sortby,'0');
-    	}
-    }
+		}
+	}
 
 }]);
 
@@ -2850,16 +2890,16 @@ AlcoholDelivery.controller('LoyaltyStoreController', [
 
 		ProductService.getCreditCertificates().then(
 
-    		function(response){
+			function(response){
 
 				$scope.credits = response;
 
-    		},
-    		function(errorRes){
+			},
+			function(errorRes){
 
-    		}
+			}
 
-    	);
+		);
 }]);
 
 AlcoholDelivery.controller('InviteController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll','sweetAlert', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll,sweetAlert){
