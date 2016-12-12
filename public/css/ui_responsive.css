@@ -1789,6 +1789,7 @@ body.menu-slider.in {
 	width:72%;
 }
 }
+
 @media (min-width : 768px) and (max-width : 1023px) {
   .col-md-2.homecallus_cover {
 	  display: none;
@@ -2548,6 +2549,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	width:72%;
 }
 }
+
 @media only screen and (max-width : 767px) {
   .col-md-2.homecallus_cover {
 	  display: none;
@@ -3885,14 +3887,17 @@ md-dialog .md-dialog-content{
 	padding-bottom: 60px !important;
 }
 
+.header {
+	background-size: auto 690px;
 }
+}
+
 @media only screen and (width : 640px) {
   .alcohal_addadress_headertitle {
 	  font-size: 23px
   }
- 
-
 }
+
 @media only screen and (max-width : 639px){
 	 .addressbook-btmpannelcover .addressbokk-trvaichacovr:nth-child(3n){
 	margin-right:10px;
@@ -3901,6 +3906,7 @@ md-dialog .md-dialog-content{
 	width:100%;
 }
 }
+
 @media only screen and (max-width : 479px) {
   .col-md-2.homecallus_cover {
 	  display: none;
@@ -4796,6 +4802,7 @@ md-dialog .md-dialog-content{
     transition: all 0.5s ease 0s;
 }
 }
+
 @media only screen and (max-width : 479px) {
 .combo_slider .nav-tabs li a{
 	padding:10px 5px;
