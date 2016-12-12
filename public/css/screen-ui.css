@@ -52,8 +52,8 @@ ui-sref {
 .header {
 	background: url(../images/bg.jpg) no-repeat center top;
 	min-height: 690px;
-	/*background-size: 100% 690px;*/
-	background-size: auto 690px;
+	background-size: 100%;
+	/*background-size: auto 690px;*/
 	/*padding-top:15px;*/
 	margin-bottom: 20px;
 }
