@@ -1427,3 +1427,7 @@ td.childtd {
     left: 0;
     cursor: no-drop;
 }
+
+.ageverificationpopup{
+	background: #FFC412;
+}

@@ -1,25 +1,49 @@
-<md-dialog aria-label="Age Verification">
-  <form ng-cloak>
+<md-dialog aria-label="Age Verification" layout="column" flex="50" class="ageverificationpopup">  
     <md-dialog-content>
-      <div class="md-dialog-content">
-        <h2 class="md-title">Welcome</h2>
-        <div layout="row">
+      <div class="md-dialog-content">        
+        <div layout="row" align="center">
+          <div align="center" class="fullwidth">
+            <img src="asset/i/poslogo.png" style="height: 100px;">
+          </div>
+        </div>
+        <div layout="row" align="center">
+        </div>
+        <div layout="row" align="center">
+          <h4 align="center">
+            To experience this site you must be of legal drinking age in Singapore
+          </h4>  
+        </div>  
+        
           <md-input-container>
-            <label>M</label>
-            <md-select ng-model="ctrl.userState">
+            <label>Month</label>
+            <md-select ng-model="userMonth">
               <md-option><em>None</em></md-option>
-              <md-option ng-repeat="state in ctrl.states" ng-value="state.abbrev" ng-disabled="$index === 1">
-                {{state.abbrev}}
+              <md-option ng-repeat="($index, month) in monthNames">                
               </md-option>
             </md-select>
           </md-input-container>
-        </div>
+          <md-input-container>
+            <label>Day</label>
+            <md-select ng-model="userDay">
+              <md-option><em>None</em></md-option>
+              <md-option ng-repeat="($index, month) in monthNames">                
+              </md-option>
+            </md-select>
+          </md-input-container>
+          <md-input-container>
+            <label>Year</label>
+            <md-select ng-model="userYear">
+              <md-option><em>None</em></md-option>
+              <md-option ng-repeat="($index, month) in monthNames">                
+              </md-option>
+            </md-select>
+          </md-input-container>
+        
       </div>
     </md-dialog-content>    
-    <md-dialog-actions layout="row">      
+    <md-dialog-actions>      
       <md-button ng-click="verifyage()">
         Useful
       </md-button>
-    </md-dialog-actions>
-  </form>
+    </md-dialog-actions>  
 </md-dialog>
