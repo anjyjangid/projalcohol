@@ -174,6 +174,26 @@ AlcoholDelivery.controller('AppController',
     		return '';
     }
 
+	$scope.ageVerification = function() {
+		var confirm = $mdDialog.prompt()
+	      .title('What would you name your dog?')
+	      .textContent('Bowser is a common name.')
+	      .placeholder('Dog name')
+	      .ariaLabel('Dog name')
+	      .initialValue('Buddy')
+	      //.targetEvent(ev)
+	      .ok('Okay!')
+	      .cancel('I\'m a cat person');
+
+	    $mdDialog.show(confirm).then(function(result) {
+	      $scope.status = 'You decided to name your dog ' + result + '.';
+	    }, function() {
+	      $scope.status = 'You didn\'t name your dog.';
+	    });
+	};	
+
+	//$scope.ageVerification();
+
 }]);
 
 AlcoholDelivery.controller('ProductsController', [
@@ -1294,9 +1314,14 @@ AlcoholDelivery.controller('CartAddressController',[
 	$scope.delivery = alcoholCart.$cart.delivery;
 	
 	$scope.user = UserService.getIfUser();
+	
 
-	if($scope.delivery.contact=="" && typeof $scope.user.mobile_number != 'undefined'){
-		$scope.delivery.contact = $scope.user.mobile_number;
+	if(!$scope.delivery.contact){		
+		if($scope.user.mobile_number){
+			$scope.delivery.contact = $scope.user.mobile_number;
+		}else if($scope.user.alternate_number){
+			$scope.delivery.contact = $scope.user.alternate_number.pop();
+		}
 	}
 
 	/*$scope.setSelectedAddress = function(key){

@@ -204,14 +204,26 @@
                             <td align="right"><strong>-{{ formatPrice($order['discount']['nonchilled']['exemption']) }}</strong></td>
                           </tr>                          
                           <?php }?>
+                          <?php if(isset($order['payment']['totalValue']) && isset($order['discount']['coupon']) && $order['discount']['coupon']>0){?>
+                          <tr>
+                            <td align="left" colspan="3"><strong>Coupon Discount</strong></td>    
+                            <td align="right">
+                              <?php if($order['payment']['totalValue'] < $order['discount']['coupon']){?>
+                              <strong>-{{ formatPrice($order['payment']['totalValue'],0) }}</strong>
+                              <?php }else{?>
+                              <strong>-{{ formatPrice($order['discount']['coupon'],0) }}</strong>
+                              <?php }?>
+                            </td>
+                          </tr>                          
+                          <?php }?>
                           <tr class="topborder">
                             <td align="left" valign="center" colspan="3"><strong>Total</strong></td>    
-                            <td align="right" valign="center"><h5 class="nomargin">{{ formatPrice($order['payment']['total']) }}</h5></td>
+                            <td align="right" valign="center"><h5 class="nomargin">{{ formatPrice($order['payment']['total'],0) }}</h5></td>
                           </tr>
                           
                           <tr class="bottomborder">
                             <td align="left" valign="center" colspan="3"><strong>Payment mode : {{ $paymode }}</strong></td>    
-                            <td align="right" valign="center"><h5 class="nomargin">{{ formatPrice($order['payment']['total']) }}</h5></td>
+                            <td align="right" valign="center"><h5 class="nomargin">{{ formatPrice($order['payment']['total'],0) }}</h5></td>
                           </tr>
                           <tr class="bottomborder">
                             <td align="left" valign="center" colspan="3"><strong>To Pay</strong></td>    

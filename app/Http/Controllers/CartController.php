@@ -1817,10 +1817,6 @@ jprd($product);
 
 		try {			
 
-			$orderObj = $cart->cartToOrder($cartKey);
-
-			$userObj->setContact($orderObj['delivery']['contact']);
-
 			//PREPARE PAYMENT FORM DATA
 			if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){
 				$payment = new Payment();
@@ -1855,9 +1851,10 @@ jprd($product);
 
 			//FORMAT CART TO ORDER
 			$orderObj = $cart->cartToOrder($cartKey);
-			//CREATE ORDER 
-			$order = Orders::create($orderObj);
+			$userObj->setContact($orderObj['delivery']['contact']);
 
+			//CREATE ORDER FROM CART & REMOVE CART
+			$order = Orders::create($orderObj);
 			$cart->delete();
 
 			$process = $order->processGiftCards();			

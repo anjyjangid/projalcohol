@@ -424,7 +424,12 @@ class OrderController extends Controller
 
 		if(isset($consumerName) && trim($consumerName)!=''){			
 			$s = "/".$consumerName."/i";
-			$query[]['$match']['consumer.name'] = ['$regex'=>new \MongoRegex($s)];
+
+			$query[]['$match'] = ['$or' => [
+					['consumer.name' => ['$regex'=>new \MongoRegex($s)]],
+					['consumer.mobile_number' => ['$regex'=>new \MongoRegex($s)]],
+					['consumer.alternate_number' => ['$regex'=>new \MongoRegex($s)]]		
+			]];
 		}
 
 		$project = [
@@ -469,6 +474,8 @@ class OrderController extends Controller
 		}
 
 		$query[]['$sort'] = $sort;
+
+		//return response($query);
 
 		$model = Orders::raw()->aggregate($query);
 
@@ -614,66 +621,65 @@ class OrderController extends Controller
 								$r = DB::collection('inventoryLog')->insert($newLog);
 							}
 
+						}
+
+						//UPDATE USER TRANSACTIONS
+						$userObj = User::find($order['user']);
+
+						//DEDUCT LOYALTY FROM USER ACCOUNT
+						if(isset($order['loyaltyPointEarned']) && $order['loyaltyPointEarned'] > 0){
 							
-							//UPDATE USER TRANSACTIONS
-							$userObj = User::find($order['user']);
+							if($userObj->loyaltyPoints < $order['loyaltyPointEarned']){
+								$decrement = $userObj['loyaltyPoints'];
+							}else{
+								$decrement = $order['loyaltyPointEarned'];
+							}
+							
+							$userObj->decrement('loyaltyPoints', $decrement);
 
-							//DEDUCT LOYALTY FROM USER ACCOUNT
-							if(isset($order['loyaltyPointEarned']) && $order['loyaltyPointEarned'] > 0){
-								
-								if($userObj->loyaltyPoints < $order['loyaltyPointEarned']){
-									$decrement = $userObj['loyaltyPoints'];
-								}else{
-									$decrement = $order['loyaltyPointEarned'];
-								}
-								
-								$userObj->decrement('loyaltyPoints', $decrement);
+							$userObj->push('loyalty', 
+								[
+									"type"=>"debit",
+									"points"=>$order['loyaltyPointEarned'],
+									"reason"=>[
+										"type"=>"order",
+										"key" => $order['reference'],
+										"comment"=> "Your order has been cancelled."
+									],
+									"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+								]
+							);								
+						}
 
-								$userObj->push('loyalty', 
-									[
-										"type"=>"debit",
-										"points"=>$order['loyaltyPointEarned'],
-										"reason"=>[
-											"type"=>"order",
-											"key" => $order['reference'],
+						//DEDUCT CREDITS ADDED FROM LOYALTY CREDITS
+						if(isset($order['creditsFromLoyalty']) && $order['creditsFromLoyalty'] > 0){
+							
+							$creditsFromLoyalty = $order['creditsFromLoyalty'];
+			
+							$creditObj = [
+											"credit"=>$creditsFromLoyalty,
+											"method"=>"order",
+											"reference" => $order['reference'],
+											"user" => new mongoId($userObj->_id),
 											"comment"=> "Your order has been cancelled."
-										],
-										"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
-									]
-								);								
-							}
+										];
+							
+							CreditTransactions::transaction('debit',$creditObj,$userObj);
+						}
 
-							//DEDUCT CREDITS ADDED FROM LOYALTY CREDITS
-							if(isset($order['creditsFromLoyalty']) && $order['creditsFromLoyalty'] > 0){
-								
-								$creditsFromLoyalty = $order['creditsFromLoyalty'];
-				
-								$creditObj = [
-												"credit"=>$creditsFromLoyalty,
-												"method"=>"order",
-												"reference" => $order['reference'],
-												"user" => new mongoId($userObj->_id),
-												"comment"=> "Your order has been cancelled."
-											];
-								
-								CreditTransactions::transaction('debit',$creditObj,$userObj);
-							}
+						//ROLL BACK CREDITS USED IN CART
+						if(isset($order->discount['credits']) && $order->discount['credits']>0){
 
-							//ROLL BACK CREDITS USED IN CART
-							if(isset($order->discount['credits']) && $order->discount['credits']>0){
+							$creditsUsed = $order->discount['credits'];
+							$creditObj = [
+											"credit"=>$creditsUsed,
+											"method"=>"order",
+											"reference" => $order['reference'],
+											"user" => new mongoId($userObj->_id),
+											"comment"=> "Your order has been cancelled."
+										];
 
-								$creditsUsed = $order->discount['credits'];
-								$creditObj = [
-												"credit"=>$creditsUsed,
-												"method"=>"order",
-												"reference" => $order['reference'],
-												"user" => new mongoId($userObj->_id),
-												"comment"=> "Your order has been cancelled."
-											];
-
-								CreditTransactions::transaction('credits',$creditObj,$userObj);
-
-							}
+							CreditTransactions::transaction('credits',$creditObj,$userObj);
 
 						}
 
@@ -740,7 +746,7 @@ class OrderController extends Controller
 	}
 
 
-	public function getConfirmorder(Request $request,$cartKey = null){
+	public function confirmorder(Request $request,$cartKey = null){
 
 		$creator = Auth::user('admin');
 		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
@@ -782,19 +788,41 @@ class OrderController extends Controller
 
 		try {
 
-			$orderObj = $cart->cartToOrder($cartKey,'2');
-
-			$userObj->setContact($orderObj['delivery']['contact']);
-
 			//PREPARE PAYMENT FORM DATA
-			if(!$request->isMethod('get') && $orderObj['payment']['method'] == 'CARD' && $orderObj['payment']['total']>0){
+			if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){
 
 				$payment = new Payment();
-				$payment = $payment->prepareform($cartArr,$user);
+				$payment = $payment->prepareform($cartArr,$user,true);
 				return response($payment,200);
-
 			}
 
+			//CHECK FOR PAYMENT RESULT
+			if($request->isMethod('get') && $cartArr['payment']['method'] == 'CARD'){
+				$rdata = $request->all();
+				//VALIDATE RESPONSE SO IT IS VALID OR NOT
+				$payment = new Payment();				
+				$failed = false;
+				if(!$payment->validateresponse($rdata) || ($rdata['result']!='Paid')){					
+					$failed = true;										
+				}
+
+				unset($rdata['signature']);					
+
+				$paymentres = ['paymentres' => $rdata];
+
+				$cart->payment = array_merge($cartArr['payment'],$paymentres);
+
+				$cart->save();
+
+				$this->logtofile($rdata);
+
+				if($failed){
+					return redirect('admin#/orders/consumer');
+				}
+			}
+
+			$orderObj = $cart->cartToOrder($cartKey,'2');
+			$userObj->setContact($orderObj['delivery']['contact']);
 			$order = Orders::create($orderObj);
 				
 
