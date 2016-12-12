@@ -507,13 +507,24 @@ class Products extends Eloquent
 			]
 		];
 
-		//CATEGORY WISE SEARCH 
+		//CATEGORY WISE SEARCH
 		if(isset($params['parent']) && !empty($params['parent'])){			
 
-			$matchCategoryCondition['$match']['$or'] = [
-				['parentCategory.slug' => $params['parent']],
-				['childCategory.slug' => $params['parent']],
-			];
+			if(isset($params['subParent']) && !empty($params['subParent'])){
+
+				$matchCategoryCondition['$match']['$and'] = [
+					['parentCategory.slug' => $params['parent']],
+					['childCategory.slug' => $params['subParent']],
+				];
+
+			}else{
+
+				$matchCategoryCondition['$match']['$or'] = [
+					['parentCategory.slug' => $params['parent']],
+					['childCategory.slug' => $params['parent']],
+				];
+
+			}
 
 		}
 
