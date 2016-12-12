@@ -189,7 +189,7 @@ class CartController extends Controller
 
 	public function show(Request $request,$id){
 
-		$cart = Cart::findUpdated($id);
+		$cart = Cart::find($id);
 
 		if(empty($cart)){
 
@@ -1072,15 +1072,11 @@ class CartController extends Controller
 
 		if(isset($user->_id)){
 
-			$userCart = Cart::where("user","=",new MongoId($user->_id))->where("_id","!=",new MongoId($cartKey))->whereNull("generatedBy")->first();
+			$userCart = Cart::where("user","=",new MongoId($user->_id))
+							->where("_id","!=",new MongoId($cartKey))
+							->whereNull("generatedBy")->first();
 
 			$sessionCart = Cart::find($cartKey);
-
-			// if(!empty($userCart)){
-
-				// $sessionCart->products = array_merge($sessionCart->products,$userCart->products);
-
-			// }
 
 			if(!empty($sessionCart->products) || empty($userCart)){
 
