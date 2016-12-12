@@ -1858,9 +1858,6 @@ jprd($product);
 			}
 			$userObj->setContact($orderObj['delivery']['contact'],$defaultContact);
 			
-			//CREATE ORDER 
-			$order = Orders::create($orderObj);
-
 			//CREATE ORDER FROM CART & REMOVE CART
 			$order = Orders::create($orderObj);
 			$cart->delete();
