@@ -5051,7 +5051,7 @@ ui-sref {
 md-backdrop.md-dialog-backdrop {
 	z-index: 80000;
 }
-.md-dialog-container, md-tooltip, md-toast {
+.md-dialog-container, md-tooltip, md-toast, .md-select-menu-container{
 	z-index: 80001;
 }
 .pac-container {

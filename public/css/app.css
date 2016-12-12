@@ -1431,3 +1431,13 @@ td.childtd {
 .ageverificationpopup{
 	background: #FFC412;
 }
+
+.ageverify{
+	background: #aa00ff !important; 
+	color: white;
+}
+
+button.ageverify:disabled{
+	background: transparent !important;
+	color: black;
+}

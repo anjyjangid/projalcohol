@@ -1,6 +1,6 @@
 AlcoholDelivery.controller('AppController',
-	['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 'alcoholCart',
-	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter, ProductService, alcoholCart) {
+	['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 'alcoholCart','$cookies',
+	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter, ProductService, alcoholCart,$cookies) {
 
 	$rootScope.setMeta = function(meta){
 
@@ -169,11 +169,43 @@ AlcoholDelivery.controller('AppController',
 		// Appending dialog to document.body to cover sidenav in docs app
 		
 		$mdDialog.show({
-			scope: $scope.$new(),
-			controller: function(){
-				$scope.verifyage = function(){
+			//scope: $scope.$new(),
+			controller: function($scope,$cookies){
+				
+				$scope.verifyage = function(){					
+					$cookies.remove('ageverfication');
+					$cookies.putObject('ageverfication', {month:$scope.verification.userMonth,day:$scope.verification.userDay,year:$scope.verification.userYear});
 					$mdDialog.hide();
-				}
+				};
+
+				$scope.verification = {};
+
+				var offset = 0; range = 100;
+				var currentYear = new Date().getFullYear()-range;			
+				$scope.verification.years = [];
+			    for (var i = (offset*1); i < (range*1) + 1; i++){
+			        $scope.verification.years.push(currentYear + i);
+			    }
+
+				var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+
+			    $scope.verification.months = [];
+			    for (var i = 0; i < 12; i++){
+			    	var val = 1+i;
+			    	if(val<=9)			    	
+			    		val = 0+''+val;
+			        $scope.verification.months.push({value:(val),label:monthNames[i]});
+			    }
+			    
+			    $scope.verification.days = [];    
+			    
+			    for (var d = 1; d <= 31; d++){
+			    	var val = d;
+			    	if(val<=9)			    	
+			    		val = 0+''+val;
+			    	$scope.verification.days.push(val);
+			    }
+
 			},
 			templateUrl: '/templates/partials/ageverfication.html',
 			parent: angular.element(document.body),			
@@ -187,11 +219,11 @@ AlcoholDelivery.controller('AppController',
 		});
 
 		
-	};			
+	};
 
-	$scope.monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
-	
-	$scope.ageVerification();
+
+	if(!$cookies.get('ageverfication'))
+		$scope.ageVerification();
 
 }]);
 
