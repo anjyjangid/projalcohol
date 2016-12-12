@@ -172,6 +172,12 @@ AlcoholDelivery.controller('AppController',
 			//scope: $scope.$new(),
 			controller: function($scope,$cookies){
 				
+				$scope.calculateAge = function(){
+					var currentYear = new Date().getFullYear();
+					return currentYear - $scope.verification.userYear;
+
+				}
+
 				$scope.verifyage = function(){					
 					$cookies.remove('ageverfication');
 					$cookies.putObject('ageverfication', {month:$scope.verification.userMonth,day:$scope.verification.userDay,year:$scope.verification.userYear});
