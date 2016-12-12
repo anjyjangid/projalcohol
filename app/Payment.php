@@ -10,12 +10,12 @@ use DB;
 
 class Payment extends Model
 {
- 	public $apiLive = false;
+ 	public $apiLive = true;
  	public $tokenUrl;
  	public $paymentUrl;
 	public $secretKey;
 	public $merchantId;
-	public $currencyCode = 'USD'; 	/*SGD, USD, IDR, CNY, THB, VND*/
+	public $currencyCode = 'SGD'; 	/*SGD, USD, IDR, CNY, THB, VND*/
 	public $transactionType = 'Sale';
 	public $key;
 	public $returnUrl;
