@@ -93,7 +93,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 
 	$scope.$watch('cart.delivery.contact',
 			function(newValue, oldValue) {
-			
+
 				if(newValue!=null && $scope.cartFrm.deliveryContact.$valid && $scope.cart.consumer.mobile_number!==newValue){
 					$scope.newNumber = true;
 				}else{
@@ -109,22 +109,29 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 		$scope.cart.user = null;
 
 		$scope.cart[$scope.cart.orderType] = customer;
-		$scope.cart.user = customer._id;
+		$scope.cart.user = mongoIdToStr(customer._id);
 
 		var api;
 		if($scope.cart.orderType=='business')
-			api = '/adminapi/business/detail/'+customer._id;
+			api = '/adminapi/business/detail/'+$scope.cart.user;
 		else
-			api = '/adminapi/customer/detail/'+customer._id;
+			api = '/adminapi/customer/detail/'+$scope.cart.user;
 
 		alcoholCart.deployCart();
 
 		$http.get(api)
 		.then(function(res){
-			
-			$scope.cart.addresses = res.data.address;
-			$scope.cart.user.savedCards = res.data.savedCards;
+
+			$scope.cart.addresses = res.data.address || [];
+			$scope.savedCards = res.data.savedCards || [];
+			$scope.alternateNumbers = res.data.alternate_number || [];
+
+			if(!$scope.cart.delivery.contact && $scope.alternateNumbers.length>0){
+				$scope.cart.delivery.contact = $scope.alternateNumbers[$scope.alternateNumbers.length-1];
+			}
+
 		});
+
 	}
 
 	$scope.updateConsumer = function(){
