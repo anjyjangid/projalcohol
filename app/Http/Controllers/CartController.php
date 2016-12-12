@@ -1815,11 +1815,7 @@ jprd($product);
 
 		$cartArr['user'] = new MongoId($user->_id);
 
-		try {			
-
-			$orderObj = $cart->cartToOrder($cartKey);
-
-			$userObj->setContact($orderObj['delivery']['contact']);
+		try {
 
 			//PREPARE PAYMENT FORM DATA
 			if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){
@@ -1855,6 +1851,13 @@ jprd($product);
 
 			//FORMAT CART TO ORDER
 			$orderObj = $cart->cartToOrder($cartKey);
+
+			$defaultContact = true;
+			if(!isset($orderObj['delivery']['newDefault']) || $orderObj['delivery']['newDefault']!==true){
+				$defaultContact = false;
+			}
+			$userObj->setContact($orderObj['delivery']['contact'],$defaultContact);
+			
 			//CREATE ORDER 
 			$order = Orders::create($orderObj);
 

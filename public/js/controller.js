@@ -984,9 +984,10 @@ AlcoholDelivery.controller('CartController',[
 
 
 				$scope.loading = true;
-				//$http.get("suggestion/dontmiss")
+				
+				var cartKey = alcoholCart.getCartKey();
 
-				ProductService.getDontMiss().then(
+				ProductService.getDontMiss(cartKey).then(
 
 					function(response){
 
@@ -1010,6 +1011,7 @@ AlcoholDelivery.controller('CartController',[
 
 					},
 					function(errorRes){
+
 
 
 					}
@@ -1722,7 +1724,7 @@ AlcoholDelivery.controller('CartReviewController',[
 								sweetAlert.swal({
 									type:'success',
 									title: response.message,
-									timer: 1000
+									timer: 2000
 								});
 
 								store.orderPlaced();

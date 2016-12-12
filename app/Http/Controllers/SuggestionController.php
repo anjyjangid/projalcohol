@@ -19,12 +19,17 @@ class SuggestionController extends Controller
 	 * Display a listing of the resource.
 	 *
 	 * @return \Illuminate\Http\Response
-	 */
-	public function getDontmiss(Request $request)
+	 *
+	**/
+
+	public function getDontmiss($cartKey, Request $request)
 	{
-		$cartKey = $request->session()->get('deliverykey');
 		
 		$cart = Cart::findUpdated($cartKey);
+		
+		if(empty($cart)){
+			return response(["message"=>"Cart not found"],405);
+		}
 
 		$productWithCount = $cart->getProductIncartCount();
 		$proInCartIds = array_keys($productWithCount);
