@@ -1784,9 +1784,7 @@ jprd($product);
 	public function confirmorder(Request $request,$cartKey = null){
 
 		$user = Auth::user('user');
-
-		// $user = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
-
+		
 		$userObj = User::find($user->_id);
 
 		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
@@ -1801,8 +1799,6 @@ jprd($product);
 			if($order)
 				return redirect('/orderplaced/'.$order['_id']);
 		}
-
-		
 
 		if(empty($cart)){
 			if($request->isMethod('get'))
@@ -1858,16 +1854,26 @@ jprd($product);
 			}
 			$userObj->setContact($orderObj['delivery']['contact'],$defaultContact);
 			
-			//CREATE ORDER 
-			$order = Orders::create($orderObj);
-
 			//CREATE ORDER FROM CART & REMOVE CART
 			$order = Orders::create($orderObj);
+
 			$cart->delete();
 
-			$process = $order->processGiftCards();			
+			$process = $order->processGiftCards();
 
 			$reference = $order->reference;
+
+			if(isset($order->coupon)){
+
+				$cRedeem = [
+					"coupon" => $order->coupon['_id'],
+					"reference"=>$order->reference,
+					"user" => $order->user
+				];
+				$coupon = new coupon;
+				$coupon->redeemed($cRedeem);
+
+			}
 
 			if(isset($order->discount['credits']) && $order->discount['credits']>0){
 
