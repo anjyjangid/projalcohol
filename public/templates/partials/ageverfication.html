@@ -51,11 +51,14 @@
               <div ng-message="required">This is required.</div>
             </div>
           </md-input-container>
-          <!-- <input type="number" ng-value="calculateAge()" ng-model="verification.cage" min="18" required> -->
+          <input class="hide" type="number" ng-model="verification.cage" min="19" required>
+          <div align="center" ng-if="verification.cage && verification.cage<19">
+            You must be 18+
+          </div>
         </div>
       </div>      
     </md-dialog-content>    
-    <md-dialog-actions >      
+    <md-dialog-actions layout="row">      
       <div class="fullwidth" align="center">
         <md-button ng-hide="verificationForm.$invalid" class="ageverify" type="submit">
           Submit
