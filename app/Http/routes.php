@@ -182,6 +182,9 @@ Route::group(['prefix' => 'api'], function () {
 		Route::post('checkCoupon','CouponController@checkCoupon');
 
 	});
+
+	Route::put('test/confirmorder/{cartKey}','CartController@confirmordertest');
+
 	Route::group(['prefix' => 'cart'], function () {
 
 		Route::get('deliverykey','CartController@getDeliverykey');

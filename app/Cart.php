@@ -178,12 +178,16 @@ class Cart extends Moloquent
 
 				$cart = $cart->first();
 
-				if(empty($cart->user)){
+				if(!empty($cart)){
 
-					$cart->user = new mongoId($user->_id);
+					if(empty($cart->user)){
 
-				}else if(((string)$cart->user) != $user->_id){
-					$cart = "";
+						$cart->user = new mongoId($user->_id);
+
+					}else if(((string)$cart->user) != $user->_id){
+						$cart = "";
+					}
+					
 				}
 
 			}else{
@@ -1351,6 +1355,7 @@ class Cart extends Moloquent
 				'chilled'=>(bool)$product['chilled'],
 				'loyaltyType'=>(int)$product['loyaltyType'],
 				'loyalty'=>(float)$product['loyalty'],
+				'bulkDisable'=>(float)$product['bulkDisable']
 			];
 
 			foreach ($product['imageFiles'] as $key => $value) {
@@ -1863,8 +1868,10 @@ class Cart extends Moloquent
 
 				$price = 0;
 
+
 				if(!$isSingleSalePro){
-					if($oProduct['qtyfinal']>1){
+
+					if($oProduct['qtyfinal']>1 && !$proDetail['bulkDisable']){
 
 						$originalPrice = $proDetail['price'];
 						foreach ($proDetail['express_delivery_bulk']['bulk'] as $key => $bulk) {
@@ -1887,11 +1894,12 @@ class Cart extends Moloquent
 
 					}
 
-					}elseif($oProduct['qtyfinal']==1){
+					}else{
 
-						$price = $oProduct['unitprice'];
+						$price = $oProduct['unitprice'] * $oProduct['qtyfinal'];
 
 					}
+
 				}else{
 
 					$price = $oProduct['unitprice'];
@@ -2106,14 +2114,26 @@ class Cart extends Moloquent
 			$discountExemption+=$order['discount']['nonchilled']['exemption'];
 		}
 
-		if(isset($order['discount']['credits']) && $order['discount']['credits']>0){
-			$discountExemption+=$order['discount']['credits'];
-		}
-
 		if(isset($order['coupon']) && $order['coupon']['totalDiscount']>0){
+
+			$totalTill = $subtotal + $serviceCharges - $discountExemption;
+
+			if($order['coupon']['totalDiscount']>$totalTill){
+				$order['coupon']['totalDiscount'] = $totalTill;
+			}
 
 			$order['discount']['coupon'] = $order['coupon']['totalDiscount'];
 			$discountExemption+=round($order['coupon']['totalDiscount'],2);
+		}
+
+		if(isset($order['discount']['credits']) && $order['discount']['credits']>0){
+
+			$totalTill = $subtotal + $serviceCharges - $discountExemption;
+			if($order['discount']['credits']>$totalTill){
+				$order['discount']['credits']=$totalTill;
+			}
+
+			$discountExemption+=$order['discount']['credits'];
 		}
 
 		$total+=$serviceCharges;

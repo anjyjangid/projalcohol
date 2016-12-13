@@ -6724,5 +6724,5 @@ td.childtd:last-child{
 	border: 0 none !important;
 }
 .wraptxt{
-	white-space:pre; 
+	white-space:pre-line;
 }

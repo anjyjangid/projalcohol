@@ -2088,8 +2088,12 @@ MetronicApp
 
 			}else{
 
-				this.bulkApplicable = true;
-				angular.forEach(bulkArr, function(bulk,key){
+				//CHECK IF BULK IS ENABLE FOR THE PRODUCT
+				if(this.bulkDisable == 0){
+					
+					this.bulkApplicable = true;
+					
+					angular.forEach(bulkArr, function(bulk,key){
 
 					if(bulk.type==1){
 						bulk.price = basePrice + (basePrice * bulk.value/100);
@@ -2100,6 +2104,7 @@ MetronicApp
 					bulk.price = bulk.price.toFixed(2);
 
 				})
+				}
 
 			}
 
