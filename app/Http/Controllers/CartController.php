@@ -189,7 +189,7 @@ class CartController extends Controller
 
 	public function show(Request $request,$id){
 
-		$cart = Cart::find($id);
+		$cart = Cart::findUpdated($id);
 
 		if(empty($cart)){
 
@@ -1985,6 +1985,177 @@ jprd($product);
 		return response(["message"=>'Something went wrong'],400);
 		
 	}
+
+
+	public function confirmordertest(Request $request,$cartKey = null){
+
+		if($request->getHost()!=="192.168.1.222"){
+			prd("Don't try to be smart :)");
+		}
+
+		$cart = Cart::find($cartKey);
+
+		$orderObj = $cart->cartToOrder($cartKey);
+
+		prd("test converterd cart");
+
+		try {			
+
+			//PREPARE PAYMENT FORM DATA
+			if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){
+				$payment = new Payment();
+				$paymentres = $payment->prepareform($cartArr,$user);
+				return response($paymentres,200);
+			}
+
+			//CHECK FOR PAYMENT RESULT
+			if($request->isMethod('get') && $cartArr['payment']['method'] == 'CARD'){}
+
+			//FORMAT CART TO ORDER
+			
+
+			$defaultContact = true;
+			if(!isset($orderObj['delivery']['newDefault']) || $orderObj['delivery']['newDefault']!==true){
+				$defaultContact = false;
+			}
+			$userObj->setContact($orderObj['delivery']['contact'],$defaultContact);
+			
+			//CREATE ORDER FROM CART & REMOVE CART
+			$order = Orders::create($orderObj);
+
+			$cart->delete();
+
+			$process = $order->processGiftCards();
+
+			$reference = $order->reference;
+
+			if(isset($order->coupon)){
+
+				$cRedeem = [
+					"coupon" => $order->coupon['_id'],
+					"reference"=>$order->reference,
+					"user" => $order->user
+				];
+				$coupon = new coupon;
+				$coupon->redeemed($cRedeem);
+
+			}
+
+			if(isset($order->discount['credits']) && $order->discount['credits']>0){
+
+				$creditsUsed = $order->discount['credits'];
+				$creditObj = [
+								"credit"=>$creditsUsed,
+								"method"=>"order",
+								"reference" => $reference,
+								"user" => new mongoId($user->_id),
+								"comment"=> "You have used this credits with an order"
+							];
+
+				CreditTransactions::transaction('debit',$creditObj,$userObj);
+
+			}
+
+			if(isset($order->creditsFromLoyalty) && $order->creditsFromLoyalty>0){
+
+				$creditsFromLoyalty = $order['creditsFromLoyalty'];
+				
+				$creditObj = [
+								"credit"=>$creditsFromLoyalty,
+								"method"=>"order",
+								"reference" => $reference,
+								"user" => new mongoId($user->_id),
+								"comment"=> "You have earned this credits in exchange of loyalty points"
+							];
+				
+				CreditTransactions::transaction('credit',$creditObj,$userObj);
+
+			}
+
+			if($order['loyaltyPointUsed']>0){
+
+				$userObj->decrement('loyaltyPoints', $order['loyaltyPointUsed']);
+
+				$userObj->push('loyalty',
+								[
+									"type"=>"debit",
+									"points"=>$order['loyaltyPointUsed'],
+									"reason"=>[
+										"type"=>"order",
+										"key" => $reference,
+										"comment"=> "You have used this points by making a purchase on our website"
+									],
+									"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+								]
+							);
+
+			}
+
+			$loyaltyPoints = $order['loyaltyPointEarned'];
+
+			if($loyaltyPoints>0){
+
+				$userObj->increment('loyaltyPoints', $loyaltyPoints);
+
+				$userObj->push('loyalty', 
+									[
+										"type"=>"credit",
+										"points"=>$loyaltyPoints,
+										"reason"=>[
+											"type"=>"order",
+											"key" => $reference,
+											"comment"=> "You have earned this points by making a purchase"
+										],
+										"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+									]
+								);
+			}
+
+			$request->session()->forget('deliverykey');
+			
+			//SAVE CARD IF USER CHECKED SAVE CARD FOR FUTURE PAYMENTS
+			if($cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['card'] == 'newcard' && $cartArr['payment']['savecard']){
+				$cardInfo = $cartArr['payment']['creditCard'];
+		        // $user = User::find($user->_id);
+		        $userObj->push('savedCards',$cardInfo,true);
+
+			}
+
+			//Update inventory if order is 1 hour delivery
+			if($order['delivery']['type'] == 0){
+				$model = new Products();
+				$model->updateInventory($order);
+			}
+
+			//CONFIRMATION EMAIL 
+			$emailTemplate = new Email('orderconfirm');
+			$mailData = [
+                'email' => strtolower($userObj->email),
+                'user_name' => ($userObj->name)?$userObj->name:$userObj->email,
+                'order_number' => $reference
+            ];
+
+            $mailSent = $emailTemplate->sendEmail($mailData);
+
+			if($request->isMethod('get')){
+				return redirect('/orderplaced/'.$order['_id']);
+			}
+
+			return response(array("success"=>true,"message"=>"Order Placed Successfully","order"=>$order['_id']));
+
+		} catch(\Exception $e){
+
+				ErrorLog::create('emergency',[
+					'error'=>$e,
+					'message'=> 'Cart Confirm'
+				]);
+
+		}
+
+		return response(["message"=>'Something went wrong'],400);
+		
+	}
+
 
 	private function setCartProductsList(&$cart){
 

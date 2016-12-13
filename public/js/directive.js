@@ -298,6 +298,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 						scope[ngModel] = $(element).owlCarousel(defaultOptions);
 						if(typeof $(scope[ngModel]).data('owlCarousel')!=='undefined'){
+							
 							scope[ngModel].visibleItems = $(scope[ngModel]).data('owlCarousel').visibleItems.length;
 						}
 						

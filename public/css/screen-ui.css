@@ -991,6 +991,7 @@ ui-sref {
 	float: left;
 	background: url(../images/img01.png) no-repeat center center;
 	height: 154px;
+	padding: 40px 0;
 }
 .happy_hours {
 	width: 49%;
@@ -1007,7 +1008,7 @@ ui-sref {
 	text-transform: uppercase;
 	color: #ffffff;
 	line-height: 50px;
-	padding-top: 44px;
+	/*padding-top: 44px;*/
 }
 .firstorder {
 	width: 100%;
@@ -6723,5 +6724,5 @@ td.childtd:last-child{
 	border: 0 none !important;
 }
 .wraptxt{
-	white-space:pre; 
+	white-space:pre-line;
 }
