@@ -72,7 +72,6 @@
 	</head>
 
 	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}">		    	    	     	
-    	<h1 class="hide" ng-bind="meta.title"></h1>
     	<div ng-spinner-bar class="page-spinner-bar">
 			<div class="bounce1"></div>
 			<div class="bounce2"></div>

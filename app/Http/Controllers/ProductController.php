@@ -209,15 +209,14 @@ class ProductController extends Controller
 
 	}
 
-	public function getAlsobought(Request $request, $productSlug){		
+	public function getAlsobought($cartKey, $productSlug, Request $request){		
 		
 		$response = [
 			'message'=>'',			
 		];
-
-		$cartKey = $request->session()->get('deliverykey');
 		
 		$cart = Cart::findUpdated($cartKey);
+
 		$productWithCount = $cart->getProductIncartCount();
 		$proInCartIds = array_keys($productWithCount);
 

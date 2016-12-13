@@ -114,7 +114,10 @@ class Coupon extends Moloquent
 		$coupon = $this::where(['_id' => $data['coupon'], 'status'=>1])->first();
 
 		$coupon->__set("used_count",$coupon->used_count+1);
-		$coupon->__set("used_list",array_merge($coupon->used_list, [$newList]));
+		if(is_array($coupon->used_list))
+			$coupon->__set("used_list",array_merge($coupon->used_list, [$newList]));
+		else
+			$coupon->__set("used_list",[$newList]);
 		
 		try{
 

@@ -76,6 +76,7 @@ class Payment extends Model
     			$u = $u->push('savedCards',$cardInfo,true);                
 			    $ret['user'] = User::find($user->_id);
             }else{
+                $cardInfo['cvc'] = $request['cvc'];
                 $ret['card'] = $cardInfo;
             }
             $ret['success'] = true;         
@@ -144,6 +145,7 @@ class Payment extends Model
             'transaction_type' => $this->transactionType,
             'key' => $this->key,
             'token_id'=> $orderData['payment']['creditCard']['token_id'],            
+            'cvv2'=> $orderData['payment']['creditCard']['cvc'],            
             'return_url' => url().$uprefix.'/confirmorder',            
             'merchant_data1' => $orderData['_id']
             //'notify_url' => url().'/confirmorder', //FOR SAFE PAYMENTS

@@ -575,6 +575,7 @@ button.checkoutproductbutton.in-active{
 	padding: 10%;
 	text-align: center;
 	font-size: 4em;
+	margin-bottom: 10px;
 }
 
 .order-fetching {	
@@ -1440,4 +1441,11 @@ td.childtd {
 button.ageverify:disabled{
 	background: transparent !important;
 	color: black;
+}
+
+.maintab .md-tab{
+	text-transform: none;
+}
+.product-bread-crumb{
+	
 }

@@ -126,7 +126,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 			$scope.savedCards = res.data.savedCards || [];
 			$scope.alternateNumbers = res.data.alternate_number || [];
 
-			if(!$scope.cart.delivery.contact && $scope.alternateNumbers.length>0){
+			if($scope.alternateNumbers.length>0){
 				$scope.cart.delivery.contact = $scope.alternateNumbers[$scope.alternateNumbers.length-1];
 			}
 
