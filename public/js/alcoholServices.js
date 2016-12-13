@@ -601,11 +601,11 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct','CreditC
 		return defer.promise;
 	}
 
-	this.getAlsoBought = function(product){
+	this.getAlsoBought = function(product,cartKey){
 
 		var defer = $q.defer();
 
-		$http.get("product/alsobought/"+product).then(
+		$http.get("product/alsobought/"+cartKey+"/"+product).then(
 
 			function(response){
 

@@ -155,7 +155,7 @@ Route::group(['prefix' => 'api'], function () {
 
 	Route::get('/getproductdetail', 'ProductController@getproductdetail');
 
-	Route::get('/product/alsobought/{productSlug}', 'ProductController@getAlsobought');
+	Route::get('/product/alsobought/{cartKey}/{productSlug}', 'ProductController@getAlsobought');
 
 	Route::controller('/password', 'Auth\PasswordController');
 

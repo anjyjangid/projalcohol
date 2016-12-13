@@ -189,7 +189,7 @@ class CartController extends Controller
 
 	public function show(Request $request,$id){
 
-		$cart = Cart::find($id);
+		$cart = Cart::findUpdated($id);
 
 		if(empty($cart)){
 

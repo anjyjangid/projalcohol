@@ -168,18 +168,28 @@ class Cart extends Moloquent
 		if(!$admin){
 
 			$user = Auth::user('user');
-			// $user = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
+
+			// $user = (object)['_id'=> "583fc1e0b190ec3d0d8b45bf"]; // for testing
 			$userId = isset($user->_id)?$user->_id:(string)new mongoId();
 
 			$cart = self::where("_id",new mongoId($id))->whereNull("generatedBy");
 
 			if(isset($user->_id)){
-				$cart = $cart->where("user",new mongoId($userId));
+
+				$cart = $cart->first();
+
+				if(empty($cart->user)){
+
+					$cart->user = new mongoId($user->_id);
+
+				}else if(((string)$cart->user) != $user->_id){
+					$cart = "";
+				}
+
 			}else{
 				$cart = $cart->whereNull("user");
+				$cart = $cart->first();
 			}
-
-			$cart = $cart->first();
 
 
 		}else{

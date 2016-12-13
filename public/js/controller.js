@@ -572,7 +572,6 @@ AlcoholDelivery.controller('ProductDetailController', [
 		function(response){
 
 			$scope.product = response;
-			console.log($scope.product);
 
 			if(!$scope.product.isInCart){
 
@@ -615,11 +614,12 @@ AlcoholDelivery.controller('ProductDetailController', [
 }]);
 
 AlcoholDelivery.controller('AlsoBoughtThisController',[
-			'$scope', '$http', '$stateParams', 'ProductService',
-	function($scope, $http, $stateParams, ProductService){
+			'$scope', '$http', '$stateParams', 'ProductService', 'alcoholCart',
+	function($scope, $http, $stateParams, ProductService, alcoholCart){
 
 	//$http.get("/product/alsobought/"+$stateParams.product)
-	ProductService.getAlsoBought($stateParams.product).then(
+	var cartKey = alcoholCart.getCartKey();
+	ProductService.getAlsoBought($stateParams.product,cartKey).then(
 
 		function(products){
 			$scope.suggestions = products;
