@@ -244,6 +244,12 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 		$rootScope.invalidCodeMsgTxt = '';
 	}
 
+	$scope.setSelectedAddress = function(key){
+
+		$scope.alcoholCart.$cart.delivery.address = {};
+		$scope.alcoholCart.$cart.delivery.address.key = key;
+		$scope.alcoholCart.$cart.delivery.address.detail = $scope.cart.addresses[key];
+	}
 
 	$scope.orderConfirm = function(){
 		
@@ -370,6 +376,8 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 			$scope.locateMap(lat,long,zoom,item);
 		}
 	}
+
+	
 
 	$scope.save = function(){
 		$scope.savingData = true;

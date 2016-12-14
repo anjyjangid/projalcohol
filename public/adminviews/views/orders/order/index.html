@@ -194,7 +194,7 @@
 							<h3>Delivery Address</h3>
 							<div class="row">
 								<div class="col-lg-6" ng-repeat-start="address in cart.addresses | limitTo:(showall?cart.addresses.length:3)">
-									<a class="thumbnail" ng-class="{'active':cart.selectedAddress==$index}" ng-click="cart.selectedAddress=$index">
+									<a class="thumbnail" ng-class="{'active':cart.selectedAddress==$index}" ng-click="cart.selectedAddress=$index;setSelectedAddress($index)">
 										<div class="caption">
 											<h4>{{address.firstname+' '+address.lastname}}</h4>
 											{{address.SEARCHVAL}}<br>
@@ -232,13 +232,13 @@
 								<div class="input-icon right">
 									<i class="fa fa-warning tooltips" data-original-title="{{errors['cart.delivery.type'][0]}}" data-container="body" ng-if="errors['cart.delivery.type'][0]"></i>
 									<select class="form-control" ng-model="cart.delivery.type">
-										<option value="0">Advance</option>
-										<option value="1">Standard 1 hour delivery</option>
+										<option value="0">Standard 1 hour delivery</option>
+										<option value="1">Advance</option>
 									</select>
 								</div>
 								</div>
 							</div>
-							<div class="form-group" ng-show="cart.delivery.type == 1">
+							<div class="form-group" ng-show="cart.delivery.type == 0">
 								<label class="control-label col-md-4">Express 30 minute delivery <span class="required">*</span></label>
 								<div class="col-md-8 input-group">
 									<div class="btn-group">
@@ -328,7 +328,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="portlet box blue" ng-if="cart.delivery.type != 1">
+		<div class="portlet box blue" ng-if="cart.delivery.type == 1">
 			<div class="portlet-title">
 				<div class="caption">Delivery Slot</div>
 				<!-- <div class="tools hidden-xs">
