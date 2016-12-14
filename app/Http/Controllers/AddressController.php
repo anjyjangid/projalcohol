@@ -72,6 +72,10 @@ class AddressController extends Controller
 			$user = User::find($loggeduser->_id);
 		}
 
+		if(!isset($inputs['house']) || (isset($inputs['house']) && $inputs['house']=='')){
+			$this->filterStreet($inputs);
+		}
+
 		$user->push('address',$inputs,true);
 
 		return response($user);		
@@ -184,5 +188,21 @@ class AddressController extends Controller
 
 		return response($return);
 
+	}
+
+	function filterStreet(&$address){
+		$result = '';
+		$addresspart = explode(' ', $address['HBRN']);
+		if(preg_match('/^[0-9]+$/', $addresspart[0], $street)){			
+			$result = $street[0];
+		}elseif(preg_match('/[0-9,].*[A-Za-z]/', $addresspart[0], $streetwithalphabet)){		
+			$result = $streetwithalphabet[0];			
+		}
+
+		if($result!=''){
+			unset($addresspart[0]);
+			$address['HBRN'] = implode(' ', $addresspart);
+			$address['house'] = $result;
+		}
 	}
 }

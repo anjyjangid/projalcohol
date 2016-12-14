@@ -126,8 +126,12 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 			$scope.savedCards = res.data.savedCards || [];
 			$scope.alternateNumbers = res.data.alternate_number || [];
 
-			if($scope.alternateNumbers.length>0){
-				$scope.cart.delivery.contact = $scope.alternateNumbers[$scope.alternateNumbers.length-1];
+			if(!angular.isDefined(res.data.mobile_number) || res.data.mobile_number==""){
+				if($scope.alternateNumbers.length>0){
+					$scope.cart.delivery.contact = $scope.alternateNumbers[$scope.alternateNumbers.length-1];
+				}
+			}else{
+				$scope.cart.delivery.contact = res.data.mobile_number;
 			}
 
 		});
@@ -181,6 +185,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 			templateUrl: 'newAddress.html',
 			controller: 'NewAddressModel',
 			backdrop: false,
+			size:'lg',
 			resolve: {
 				detail: function(){
 					return {
@@ -344,7 +349,24 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 
 	$scope.type = 1;
 
-	$scope.address;
+	$scope.address = {};
+
+	$scope.types = "['geocode']";
+	$scope.restrictions="{country:'sg'}";
+	$scope.center = "[1.290270, 103.851959]";
+	$scope.zoom = 2;
+
+	// Google map auto complete code start //
+	NgMap.getMap().then(function(map) {
+		$scope.map = map;
+		angular.map = $scope.map;
+		setTimeout(function() {
+			var point = new google.maps.LatLng(1.3544542534181963,103.86775184667965);
+			$scope.map.setCenter(point);
+			$scope.map.setZoom(12);
+			$scope.map.setOptions({draggable:false});
+		}, 500);
+	});
 
 	$scope.searchLocation = function(q){
 		return $http.get('api/site/search-location', {params: {q}})
@@ -353,7 +375,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 		});
 	}
 
-	$scope.locationSelect = function(location) {
+	/*$scope.locationSelect = function(location) {
 		$scope.address = location;
 
 		if(location){
@@ -365,12 +387,80 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 			$scope.addressData.SEARCHTEXT = addressData;
 			$scope.locateMap(lat,long,zoom,item);
 		}
+	}*/
+
+	$scope.addressData = {SEARCHTEXT:''};
+	$scope.simulateQuery = true;
+	$scope.isDisabled = false;
+
+	$scope.querySearch = function(query){
+		return $http.get('/site/search-location?q='+query).then(function(result){
+		    return result.data;
+		});
 	}
+
+	$scope.locationSelect = function(item){
+		
+		if(item){
+			var lat = item.LAT;
+			var long = item.LNG;
+			var zoom = 18;
+			var addressData = angular.copy($scope.addressData.SEARCHTEXT);
+			$scope.addressData = angular.copy(item);
+			$scope.address = angular.copy(item);
+			$scope.addressData.SEARCHTEXT = addressData;
+			$scope.locateMap(lat,long,zoom,item);
+		}
+	}
+
+	$scope.locateMap = function(lat,lng,zoom,item) {
+		setTimeout(function() {
+			
+			if($scope.map){
+				var point = new google.maps.LatLng(lat,lng);
+				$scope.map.setCenter(point);
+				$scope.map.setZoom(zoom);
+				$scope.map.setOptions({draggable:false});
+				//REMOVE THE PREVIOUS MARKER
+				if($scope.marker)
+					$scope.marker.setMap(null);
+
+				if(item.LAT){
+					$scope.marker = new google.maps.Marker({
+			            position: point,
+			            map: $scope.map,
+			        });
+				}
+			}
+		},500);
+	}
+
+	$scope.$watch('addressData.SEARCHTEXT',function(newValue,oldValue){
+		if(newValue == ''){
+			$scope.addressData = {};
+			var lat = 1.3544542534181963;
+			var long = 103.86775184667965;
+			var zoom = 12;
+			var item = angular.copy($scope.addressData);
+			$scope.locateMap(lat,long,zoom,item);
+		}
+	});		
+
+	
+
+	// Google map auto complete code start //
+	/*NgMap.getMap().then(function(map) {
+		$scope.map = map;
+		angular.map = map;
+		
+	});*/
+	// Google map auto complete code ends //
 
 	$scope.save = function(){
 		$scope.savingData = true;
-
+		$scope.errors = [];
 		var api;
+		console.log($scope.address);
 		if(detail.type=='business')
 			api = '/adminapi/business/address/'+detail.user._id;
 		else
@@ -387,31 +477,15 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 			$scope.savingData = false;
 		})
 	}
-
-	// Google map auto complete code start //
-	NgMap.getMap().then(function(map) {
-		$scope.map = map;
-		angular.map = map;
-		// setTimeout(function() {
-		// 	var point = new google.maps.LatLng(1.290270,103.851959);
-		// 	$scope.map.setZoom(12);
-		// 	$scope.marker = new google.maps.Marker({
-		// 		position: point,
-		// 		map: $scope.map,
-		// 	});
-		// 	$scope.map.setCenter(point);
-		// }, 500);
-	});
-	// Google map auto complete code ends //
 }])
 
 .controller('OrderProductsController',[
 				'$scope', '$http', '$timeout', '$mdDialog', 'alcoholCart', 
 				'categoriesService', 'productFactory', 'alcoholGifting',
-				'AlcoholProduct', '$q', '$modal'
+				'AlcoholProduct', '$q', '$modal', 'sweetAlert'
 	, function($scope, $http, $timeout, $mdDialog, alcoholCart, 
 				categoriesService, productFactory, alcoholGifting,
-				AlcoholProduct, $q, $modal){
+				AlcoholProduct, $q, $modal, sweetAlert){
 
 	var giftCardUpdateTimeOut = {};
 	$scope.alcoholCart = alcoholCart;
@@ -580,6 +654,63 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 			}, function() {
 			});
 	}
+
+	$scope.setSmoke = function () {
+
+		var smoke = alcoholCart.$cart.service.smoke;
+		
+		if(typeof smoke.detail === 'undefined'){
+			smoke.detail = "";
+		}
+
+		if(smoke.status === false){
+			alcoholCart.removeSmoke();
+			return false;
+		}
+
+		sweetAlert.swal({
+
+						title: 'Smoke Detail',
+						input: 'textarea',
+						inputValue : smoke.detail,
+						showCancelButton: true,
+						confirmButtonText: 'Submit',
+						showLoaderOnConfirm: true,
+						preConfirm: function (textarea) {
+							return new Promise(function (resolve, reject) {
+								setTimeout(function() {
+									if (textarea == '') {
+										reject('Please provide smoke detail');
+									} else {
+										resolve()
+									}
+								}, 500)
+							})
+						},
+						allowOutsideClick: false
+					}).then(
+
+						function (textarea) {
+
+						alcoholCart.addSmoke(textarea);
+
+						swal({
+							type: 'success',
+							title: 'Smoke Detail Saved!',
+							allowOutsideClick: false,
+							// html: textarea
+						})
+					},
+						function (cancel) {
+							
+							if(!angular.isDefined(smoke.detail) || smoke.detail==""){
+								alcoholCart.removeSmoke();
+							}
+
+						}
+					)
+	}
+
 	$scope.package = function(ev) {
 
 		$modal.open({

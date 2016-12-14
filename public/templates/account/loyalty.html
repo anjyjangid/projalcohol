@@ -5,15 +5,16 @@
 		<li class="active">Loyalty</li>
 	</ol>
 </div>
+
 <div ng-if="loyalty.length">
 	<div class="titlecreidt">Loyalty</div>
 	<div class="balancedetailsdiv">
 		<div class="balancedetailsdivinner">
-			<div class="amountdiv">{{statics.credit - statics.debit | number : 2}}</div>
+			<div class="amountdiv">{{statics.total | number : 2}}</div>
 			<div class="elventestgry">Current Balance</div>
 		</div>
 		<div class="balancedetailsdivinner">
-			<div class="amountdiv">{{statics.credit_last | number : 2}}</div>
+			<div class="amountdiv">{{statics.recent.earned | number : 2}}</div>
 			<div class="elventestgry">Recently Earned</div>
 		</div>
 
@@ -33,25 +34,30 @@
 			<tbody>
 				<tr ng-repeat="currLoyal in loyalty">
 					<td>
+
 						<div class="mainfirsttddiv">
-							<div class="arowpicdiv"><a href="#"><img src="images/upload_picn.png"/></a></div>
+							<div class="arowpicdiv">
+								<a ng-if="currLoyal.type==1" href="#"><img src="images/upload_picn.png"/></a>
+								<a ng-if="currLoyal.type==0" href="#"><img src="images/downloadpicn.png"/></a>
+								
+								
+							</div>
 							<div class="textfistrdivmain">
-								<div class="textboldtit" ng-if="currLoyal.type=='credit'">Earned for Order</div>
-								<div class="textboldtit" ng-if="currLoyal.type!='credit'">Redeemed for Order</div>
-								<div class="textnormalit">{{currLoyal.reason.key}}</div>
-								<div class="text_time_no">{{ (currLoyal.on.sec * 1000) | date:'yyyy-MM-dd h:mm:ss a'}}</div>
+							<div class="textboldtit">{{currLoyal.shortComment}}</div>
+							<div class="textnormalit">From : {{currLoyal.reference}}</div>
+							<div class="text_time_no">{{ (currLoyal.created_at.sec * 1000) | date:'yyyy-MM-dd h:mm:ss a'}}</div>
 							</div>
 						</div>
 					</td>
-					
-					<td ng-if="currLoyal.type=='credit'"><div class="fig_txtup">{{currLoyal.points}}</div></td>
-					<td ng-if="currLoyal.type=='credit'"><div class="fig_txtup">-</div></td>
+				  
+					<td ng-if="currLoyal.type==1"><div class="fig_txtup">{{currLoyal.points | pricingTxt}}</div></td>
+					<td ng-if="currLoyal.type==1"><div class="fig_txtup">-</div></td>
 
-					<td ng-if="currLoyal.type!=='credit'"><div class="fig_txtup">-</div></td>
-					<td ng-if="currLoyal.type!=='credit'"><div class="fig_txtup">{{currLoyal.points}}</div></td>
+					<td ng-if="currLoyal.type==0"><div class="fig_txtup">-</div></td>
+					<td ng-if="currLoyal.type==0"><div class="fig_txtup">{{currLoyal.points | pricingTxt}}</div></td>
 
 
-					<td><div class="cometdivtextpar">{{currLoyal.reason.comment}}</div></td>
+					<td><div class="cometdivtextpar">{{currLoyal.comment}}</div></td>
 				</tr>
 				
 			</tbody>
@@ -61,12 +67,10 @@
 
 	<div class="wish-nextprvicvr">
 		<button type="button" class="wishprev" ng-click="prev()" ng-disabled="pagination.start<1"><span class="glyphicon glyphicon-menu-left"></span> Previous </button>
-		<button type="button" class="wishnext" ng-click="next()" ng-disabled="!loyaltyMore">Next <span class="glyphicon glyphicon-menu-right"></span></button>
+		<button type="button" class="wishnext" ng-click="next()" ng-disabled="!pagination.next">Next <span class="glyphicon glyphicon-menu-right"></span></button>
 	</div>
 
 </div>
-
-
 
 <div ng-if="!loyalty.length">
 	There is no loyalty point

@@ -169,7 +169,6 @@ class Cart extends Moloquent
 
 			$user = Auth::user('user');
 
-			// $user = (object)['_id'=> "583fc1e0b190ec3d0d8b45bf"]; // for testing
 			$userId = isset($user->_id)?$user->_id:(string)new mongoId();
 
 			$cart = self::where("_id",new mongoId($id))->whereNull("generatedBy");
@@ -187,7 +186,7 @@ class Cart extends Moloquent
 					}else if(((string)$cart->user) != $user->_id){
 						$cart = "";
 					}
-					
+
 				}
 
 			}else{
