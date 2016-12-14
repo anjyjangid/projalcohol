@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Http\Requests;
 use AlcoholDelivery\Http\Controllers\Controller;
 
-use AlcoholDelivery\Loyalty as Loyalty;
+use AlcoholDelivery\Loyalty;
+use AlcoholDelivery\LoyaltyTransactions;
 
 
 class LoyaltyController extends Controller
@@ -38,9 +39,32 @@ class LoyaltyController extends Controller
 
 		$params = $request->all();
 
-		$loyalty = $this->loyaltyModel->getLoyalty($this->user->_id,$params);
+		$loyalty = $this->LoyaltyTransactions->getLoyalty($this->user->_id,$params);
 
 		return response($loyalty,200);
+
+	}
+
+	/**
+	* 
+	*/
+	public function getTransactions(Request $request){
+		
+		$params = $request->all();
+		$loyaltyTransactions = new LoyaltyTransactions;
+		$loyalty = $loyaltyTransactions->getLoyalty($this->user->_id,$params);
+
+		if($loyalty['success']){
+
+			return response(
+				[
+					'transactions'=>$loyalty['transactions'],
+					'statics'=>$this->user->loyalty,
+					'count'=>$loyalty['count']
+				],200);			
+		}
+
+		return response(['message'=>'Something went wrong'],400);
 
 	}
 

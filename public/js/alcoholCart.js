@@ -1093,7 +1093,6 @@ AlcoholDelivery.service('alcoholCart', [
 								customClass: 'swal-wide',
 								timer: 4000,
 								showConfirmButton:false,
-								closeOnConfirm: true
 							});				
 
 				return false;
@@ -2887,11 +2886,11 @@ AlcoholDelivery.service('alcoholCart', [
 
 			var d = $q.defer();
 
-			var subTotal = this.getSubTotal();
+			// var subTotal = this.getSubTotal();
 
-			if(!(subTotal>0)){
-				d.reject("foo");
-			}
+			// if(!(subTotal>0)){
+			// 	d.reject("foo");
+			// }
 
 			var isValid = this.validateSmoke();
 			if(isValid){

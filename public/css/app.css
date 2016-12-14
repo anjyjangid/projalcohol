@@ -1443,6 +1443,10 @@ button.ageverify:disabled{
 	color: black;
 }
 
+.maintab{
+	background: inherit;
+}
+
 .maintab .md-tab{
 	text-transform: none;
 }

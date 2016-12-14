@@ -838,25 +838,32 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 		};
 
 
-		$http.get("loyalty",{params: $scope.pagination}).then(
+		$http.get("loyalty/transactions",{params: $scope.pagination}).then(
 
 			function(response){
 
-				$scope.loyalty = response.data.data;
+				// $scope.loyalty = response.data.data;
 
-				$scope.loyaltyMore = response.data.more;
+				// $scope.loyaltyMore = response.data.more;
 
-				$http.get("loyalty/statics").then(
+				$scope.pagination.count = response.data.count;
 
-					function(statRes){
+				$scope.loyalty = response.data.transactions;
 
-						$scope.statics = statRes.data;
+				$scope.statics = response.data.statics;
 
-					},
-					function(errStatRes){
 
-					}
-				);
+				// $http.get("loyalty/statics").then(
+
+				// 	function(statRes){
+
+				// 		$scope.statics = statRes.data;
+
+				// 	},
+				// 	function(errStatRes){
+
+				// 	}
+				// );
 
 			},function(errRes){
 
@@ -934,17 +941,12 @@ angular.pagination = $scope.pagination;
 
 				$scope.statics = response.data.statics;
 
-				// $http.get("credits/statics").then(
+				if($scope.pagination.count<=(($scope.pagination.start+1) * $scope.pagination.limit)){
+					$scope.pagination.next = false;
+				}else{
+					$scope.pagination.next = true;
+				}
 
-				// 	function(statRes){
-
-				// 		$scope.statics = statRes.data;
-
-				// 	},
-				// 	function(errStatRes){
-
-				// 	}
-				// );
 
 			},function(errRes){
 

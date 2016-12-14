@@ -271,7 +271,7 @@ class UserController extends Controller
 													'name' => 1,
 													'password' => 1,
 													'mobile_number' => 1,
-													'loyaltyPoints' => 1,
+													'loyaltyPoints' => '$loyalty.total',
 													'credits' => '$credits.total',
 													'savedCards' => 1,
 													'alternate_number' => 1
