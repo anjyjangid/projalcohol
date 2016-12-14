@@ -35,7 +35,7 @@ class LoyaltyTransactions extends Moloquent
 	protected $fillable = [
 
 						'type', //1=>credit , 0=> debit/
-						'credit',
+						'points',
 						'method', // 0=>'Order',1=>
 						'reference',
 						'user',
@@ -43,7 +43,7 @@ class LoyaltyTransactions extends Moloquent
 						'extra' // this contain all extra detail we need to parse this transaction on view side
 					];
     
-    public function getCredits($userId,$params = []){
+    public function getLoyalty($userId,$params = []){
 
 		$offset = (int)$params['start'];
 
@@ -51,11 +51,11 @@ class LoyaltyTransactions extends Moloquent
 
 		try{
 
-			$count = DB::collection('creditTransactions')->where('user', new MongoId($userId))->count();
+			$count = DB::collection('loyaltyTransactions')->where('user', new MongoId($userId))->count();
 
-			$credits = DB::collection('creditTransactions')->where('user', new MongoId($userId))->orderBy('_id','desc')->skip($offset)->take($limit)->get();
+			$loyalty = DB::collection('loyaltyTransactions')->where('user', new MongoId($userId))->orderBy('_id','desc')->skip($offset)->take($limit)->get();
 
-			return ['success'=>true,'transactions'=>$credits,'count'=>$count];
+			return ['success'=>true,'transactions'=>$loyalty,'count'=>$count];
 
 		}catch(\Exception $e){
 
@@ -68,7 +68,7 @@ class LoyaltyTransactions extends Moloquent
 
 	/*******************************************
 	*
-	* Method to manage all credit transactions
+	* Method to manage all loyalty transactions
 	* @type : credited or debited
 	* @tData : transaction object
 	* @user : user model object
@@ -85,54 +85,44 @@ class LoyaltyTransactions extends Moloquent
 			}
 		}
 		
-		$creditObj = [
+		$loyaltyObj = [
 					"type"=>$type=='credit'?1:0,
-					"credit"=>$tData['credit'],
+					"points"=>$tData['points'],
 					"method"=>$tData['method'],
 					"reference" => $tData['reference'],
 					"user" => new mongoId($user->_id)
 				];
 
 		if(isset($tData['extra'])){
-			$creditObj['extra'] = $tData['extra'];
+			$loyaltyObj['extra'] = $tData['extra'];
 		}
 
-		$totalInAcc = 0;
+		$totalInAcc = isset($user->loyalty['total'])?$user->loyalty['total']:0;
 		$recentEarned = 0;
 
-		if(isset($user->credits['total'])){
-			$totalInAcc = $user->credits['total'];
-		}
-
-		if(isset($user->credits['recent']['earned'])){
+		if(isset($user->loyalty['recent']['earned'])){
 			$recentEarned = $user->credits['recent']['earned'];
 		}
-
 
 		switch ($type) {
 
 			case 'credit':
 
-				switch ($creditObj['method']) {
+				switch ($loyaltyObj['method']) {
 					case 'order':
-						$creditObj['shortComment'] = 'Earned In loyalty Exchange';
-						$creditObj['comment'] = 'You have earned this credits in exchange of loyalty points';
+						$loyaltyObj['shortComment'] = 'Earned from purchase';
+						$loyaltyObj['comment'] = 'You have earned this points by making a purchase';
 						break;
-					case 'giftcard':
-						$creditObj['shortComment'] = 'Earned As Gift';
-						$creditObj['comment'] = 'You have earned this credits as gift';
-						break;
-					
 					default:
 						# code...
 						break;
 				}
 
-				$user->__set('credits', [
+				$user->__set('loyalty', [
 
-					'total'=> $totalInAcc + $tData['credit'],
+					'total'=> $totalInAcc + $tData['points'],
 					'recent' => [
-						'earned'=>$tData['credit']
+						'earned'=>$tData['points']
 					]
 
 				]);
@@ -140,10 +130,10 @@ class LoyaltyTransactions extends Moloquent
 				break;
 			
 			default:
-				switch ($creditObj['method']) {
+				switch ($loyaltyObj['method']) {
 					case 'order':
-						$creditObj['shortComment'] = 'Used in order';
-						$creditObj['comment'] = 'You have used this credits to pay for an order';
+						$loyaltyObj['shortComment'] = 'Used in order';
+						$loyaltyObj['comment'] = 'You have used this points in an order';
 						break;
 					
 					default:
@@ -151,9 +141,9 @@ class LoyaltyTransactions extends Moloquent
 						break;
 				}
 
-				$user->__set('credits', [
+				$user->__set('loyalty', [
 
-					'total'=> $totalInAcc - $tData['credit'],
+					'total'=> $totalInAcc - $tData['points'],
 					'recent' => [
 						'earned'=>$recentEarned
 					]
@@ -162,10 +152,19 @@ class LoyaltyTransactions extends Moloquent
 				break;
 		}
 
+		if(isset($tData['shortComment']) && !empty($tData['shortComment'])){
+			$loyaltyObj['shortComment'] = $tData['shortComment'];
+		}
+		if(isset($tData['comment']) && !empty($tData['comment'])){
+			$loyaltyObj['comment'] = $tData['comment'];
+		}
+		
+		//jprd($user);
+//prd($loyaltyObj);
 		try{
 
 			$user->save();
-			self::create($creditObj);
+			self::create($loyaltyObj);
 
 			return ['success'=>true];
 
@@ -173,7 +172,7 @@ class LoyaltyTransactions extends Moloquent
 
 			ErrorLog::create('emergency',[
 					'error'=>$e,
-					'message'=> 'Insert/Remove credits data:'.json_encode($creditObj)
+					'message'=> 'Insert/Remove credits data:'.json_encode($loyaltyObj)
 				]);
 
 		}

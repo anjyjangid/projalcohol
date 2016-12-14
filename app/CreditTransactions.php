@@ -162,6 +162,14 @@ class CreditTransactions extends Moloquent
 				break;
 		}
 
+
+		if(isset($tData['shortComment']) && !empty($tData['shortComment'])){
+			$creditObj['shortComment'] = $tData['shortComment'];
+		}
+		if(isset($tData['comment']) && !empty($tData['comment'])){
+			$creditObj['comment'] = $tData['comment'];
+		}
+		
 		try{
 
 			$user->save();

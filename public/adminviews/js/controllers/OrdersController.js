@@ -126,8 +126,12 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 			$scope.savedCards = res.data.savedCards || [];
 			$scope.alternateNumbers = res.data.alternate_number || [];
 
-			if($scope.alternateNumbers.length>0){
-				$scope.cart.delivery.contact = $scope.alternateNumbers[$scope.alternateNumbers.length-1];
+			if(!angular.isDefined(res.data.mobile_number) || res.data.mobile_number==""){
+				if($scope.alternateNumbers.length>0){
+					$scope.cart.delivery.contact = $scope.alternateNumbers[$scope.alternateNumbers.length-1];
+				}
+			}else{
+				$scope.cart.delivery.contact = res.data.mobile_number;
 			}
 
 		});
@@ -408,10 +412,10 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 .controller('OrderProductsController',[
 				'$scope', '$http', '$timeout', '$mdDialog', 'alcoholCart', 
 				'categoriesService', 'productFactory', 'alcoholGifting',
-				'AlcoholProduct', '$q', '$modal'
+				'AlcoholProduct', '$q', '$modal', 'sweetAlert'
 	, function($scope, $http, $timeout, $mdDialog, alcoholCart, 
 				categoriesService, productFactory, alcoholGifting,
-				AlcoholProduct, $q, $modal){
+				AlcoholProduct, $q, $modal, sweetAlert){
 
 	var giftCardUpdateTimeOut = {};
 	$scope.alcoholCart = alcoholCart;
@@ -580,6 +584,59 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 			}, function() {
 			});
 	}
+
+	$scope.setSmoke = function () {
+
+		var smoke = alcoholCart.$cart.service.smoke;
+		
+		if(smoke.status === false){
+			alcoholCart.removeSmoke();
+			return false;
+		}
+
+		sweetAlert.swal({
+
+						title: 'Smoke Detail',
+						input: 'textarea',
+						inputValue : smoke.detail,
+						showCancelButton: true,
+						confirmButtonText: 'Submit',
+						showLoaderOnConfirm: true,
+						preConfirm: function (textarea) {
+							return new Promise(function (resolve, reject) {
+								setTimeout(function() {
+									if (textarea == '') {
+										reject('Please provide smoke detail');
+									} else {
+										resolve()
+									}
+								}, 500)
+							})
+						},
+						allowOutsideClick: false
+					}).then(
+
+						function (textarea) {
+
+						alcoholCart.addSmoke(textarea);
+
+						swal({
+							type: 'success',
+							title: 'Smoke Detail Saved!',
+							allowOutsideClick: false,
+							// html: textarea
+						})
+					},
+						function (cancel) {
+							
+							if(!angular.isDefined(smoke.detail) || smoke.detail==""){
+								alcoholCart.removeSmoke();
+							}
+
+						}
+					)
+	}
+
 	$scope.package = function(ev) {
 
 		$modal.open({

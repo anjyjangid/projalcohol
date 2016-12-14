@@ -4,9 +4,11 @@ namespace AlcoholDelivery;
 
 use Illuminate\Database\Eloquent\Model;
 
-use AlcoholDelivery\User as User;
+use AlcoholDelivery\User;
 
-use AlcoholDelivery\Setting as Setting;
+use AlcoholDelivery\Setting;
+
+use AlcoholDelivery\LoyaltyTransactions;
 
 use DB;
 
@@ -22,7 +24,7 @@ class Loyalty extends Model
 
 		$limit = isset($params['limit'])?(int)$params['limit']:10;
 
-		$loyalty = DB::collection('user')->where('_id', $userId)->project(
+		$loyalty = DB::collection('loyaltyTransactions')->where('_id', $userId)->project(
 			['loyalty' => array('$slice' => [$offset,($limit+1)])]);
 	
 		$loyalty = $loyalty->first(['loyalty']);		
