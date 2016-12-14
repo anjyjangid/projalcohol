@@ -197,9 +197,15 @@
 									<a class="thumbnail" ng-class="{'active':cart.selectedAddress==$index}" ng-click="cart.selectedAddress=$index;setSelectedAddress($index)">
 										<div class="caption">
 											<h4>{{address.firstname+' '+address.lastname}}</h4>
-											{{address.SEARCHVAL}}<br>
-											<span ng-if="address.FLOOR&&address.UNIT">{{'#'+address.FLOOR+' - '+address.UNIT}}<br></span>
-											Singapore - {{address.PostalCode}}
+
+											<div ng-if="address.HBRN" class="gry_text_div">
+												<span ng-bind="address.house"></span> {{address.HBRN}}
+											</div>
+											<div ng-if="address.FLOOR || address.FLOOR" class="gry_text_div">
+												<span ng-if="address.FLOOR">#{{address.FLOOR}} - </span> <span ng-if="address.UNIT">{{address.UNIT}}</span>
+											</div>
+											<div ng-if="address.PostalCode" class="gry_text_div">Singapore - {{address.PostalCode}}</div>
+											<div ng-if="address.phone" class="gry_text_div">Phone - {{address.phone}}</div>
 										</div>
 									</a>
 								</div>
@@ -382,6 +388,7 @@
 	<div class="modal-header">
 		<h3 class="modal-title">New Delivery Address</h3>
 	</div>
+
 	<div class="modal-body">
 		<div class="row" ng-if="type==1">
 			<div class="col-md-6">
@@ -389,7 +396,7 @@
 					<label class="control-label">Enter your postal code or location name</label>
 					<input
 						type="text"
-						typeahead="l.SEARCHVAL for l in searchLocation($viewValue)"
+						typeahead="(l.HBRN+', ' +l.PostalCode) for l in searchLocation($viewValue)"
 						typeahead-min-length="3"
 						typeahead-on-select="locationSelect($item, $model, $label)"
 						typeahead-wait-ms="300"
@@ -425,17 +432,19 @@
 			</div>
 		</div>
 		<div ng-if="type>1">
-			<div class="row">
+			<div class="row">				
 				<div class="col-md-6">
-					<div class="form-group">
+					<div class="form-group" ng:class="{'has-error':errors.firstname[0]}">
 						<label>First Name: <span>*</span></label>
 						<input type="text" class="form-control" ng-model="address.firstname">
+						<span class="help-block" ng-bind="errors.firstname[0]"></span>
 					</div>
 				</div>
 				<div class="col-md-6">
-					<div class="form-group">
+					<div class="form-group" ng:class="{'has-error':errors.lastname[0]}">
 						<label>Last Name: <span>*</span></label>
 						<input type="text" class="form-control" ng-model="address.lastname">
+						<span class="help-block" ng-bind="errors.lastname[0]"></span>
 					</div>
 				</div>
 			</div>
@@ -455,23 +464,26 @@
 			</div>
 			<div class="row">
 				<div class="col-md-6" ng-show="type>2">
-					<div class="form-group">
+					<div class="form-group" ng:class="{'has-error':errors.HBRN[0]}">
 						<label>Street <span>*</span></label>
 						<input type="text" class="form-control" ng-model="address.HBRN">
+						<span class="help-block" ng-bind="errors.HBRN[0]"></span>
 					</div>
 				</div>
 				<div class="col-md-6" ng-show="type>2">
-					<div class="form-group">
+					<div class="form-group" ng:class="{'has-error':errors.PostalCode[0]}">
 						<label>Postal Code <span>*</span></label>
 						<input type="text" class="form-control" ng-model="address.PostalCode">
+						<span class="help-block" ng-bind="errors.PostalCode[0]"></span>
 					</div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-6" ng-show="type>2">
-					<div class="form-group">
+					<div class="form-group" ng:class="{'has-error':errors.house[0]}">
 						<label>Block/House No <span>*</span></label>
 						<input type="text" class="form-control" ng-model="address.house">
+						<span class="help-block" ng-bind="errors.house[0]"></span>
 					</div>
 				</div>
 				<div class="col-md-3" ng-show="type>2">
