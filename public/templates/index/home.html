@@ -17,8 +17,8 @@
 		<div class="fullwidth">
 			<h4 class="nomargin" style="margin-left:10px;">Featured Items</h4>
 			<md-content class="maintab" data-ng-init="featuredProducts()">
-				<md-tabs md-selected="0" md-dynamic-height ><!-- md-no-ink-bar md-border-bottom md-autoselect -->				  
-				  <md-tab ng-repeat="cat in parentCategories | filterParentCat">				    				    	
+				<md-tabs md-selected="0" md-dynamic-height ><!-- md-no-ink-bar md-border-bottom md-autoselect -->
+				  <md-tab ng-repeat="cat in parentCategories | filterParentCat" md-stretch-tabs>				    				    	
 						<md-tab-label>
 					      {{cat.cat_title}}					      
 					    </md-tab-label>

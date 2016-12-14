@@ -26,7 +26,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 
 	// $location.hashPrefix('!');
 
-	$mdThemingProvider.theme('default').primaryPalette('purple');
+	$mdThemingProvider.theme('default').primaryPalette('purple').accentPalette('purple');
     //.accentPalette('orange');
 }]);
 
