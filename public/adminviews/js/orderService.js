@@ -261,6 +261,39 @@ MetronicApp
 
 	}
 
+	this.removeSmoke = function(){
+
+		this.$cart.service.smoke.status = false;
+		this.$cart.service.smoke.detail = "";
+
+		this.deployCart();
+	}
+
+	this.addSmoke = function(detail){
+
+		var smoke = this.$cart.service.smoke;
+		
+		if(typeof detail==="undefined" || detail==""){
+
+			var toast = $mdToast.simple()
+				.textContent("Please provide smoke detail")
+				
+				.highlightAction(false)
+				.position("top right fixed smokedetail")
+				.hideDelay(2000);
+
+			$mdToast.show(toast);
+
+		}else{
+
+			smoke.detail = detail;
+
+		}
+
+		this.deployCart();
+
+	}
+
 	this.addGiftCard = function(giftData){
 
 		var isFound = this.getGiftCardByUniqueId(giftData._uid);

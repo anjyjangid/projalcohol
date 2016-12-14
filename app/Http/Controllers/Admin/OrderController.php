@@ -21,6 +21,7 @@ use AlcoholDelivery\Email;
 use AlcoholDelivery\Payment;
 use AlcoholDelivery\ErrorLog;
 use AlcoholDelivery\CreditTransactions;
+use AlcoholDelivery\LoyaltyTransactions;
 
 use Storage;
 use Validator;
@@ -635,21 +636,49 @@ class OrderController extends Controller
 								$decrement = $order['loyaltyPointEarned'];
 							}
 							
-							$userObj->decrement('loyaltyPoints', $decrement);
+							// $userObj->decrement('loyaltyPoints', $decrement);
 
-							$userObj->push('loyalty', 
-								[
-									"type"=>"debit",
-									"points"=>$order['loyaltyPointEarned'],
-									"reason"=>[
-										"type"=>"order",
-										"key" => $order['reference'],
-										"comment"=> "Your order has been cancelled."
-									],
-									"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
-								]
-							);								
+							// $userObj->push('loyalty', 
+							// 	[
+							// 		"type"=>"debit",
+							// 		"points"=>$order['loyaltyPointEarned'],
+							// 		"reason"=>[
+							// 			"type"=>"order",
+							// 			"key" => $order['reference'],
+							// 			"comment"=> "Your order has been cancelled."
+							// 		],
+							// 		"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
+							// 	]
+							// );
+
+							$loyaltyObj = [
+								"points"=>$decrement,
+								"method"=>"order",
+								"reference" => $order['reference'],
+								"user" => new mongoId((string)$userObj->_id),
+								"comment"=> "Your order has been cancelled."
+							];
+
+							LoyaltyTransactions::transaction('debit',$loyaltyObj,$userObj);
+
 						}
+
+						//ROLL BACK LOYALTY TO USER ACCOUNT
+						if(isset($order['loyaltyPointUsed']) && $order['loyaltyPointUsed'] > 0){
+
+							$loyaltyObj = [
+								"points"=>$order['loyaltyPointUsed'],
+								"method"=>"order",
+								"reference" => $order['reference'],
+								"user" => new mongoId((string)$userObj->_id),
+								"comment"=> "Your order has been cancelled."
+							];
+
+							LoyaltyTransactions::transaction('credit',$loyaltyObj,$userObj);
+
+						}
+
+
 
 						//DEDUCT CREDITS ADDED FROM LOYALTY CREDITS
 						if(isset($order['creditsFromLoyalty']) && $order['creditsFromLoyalty'] > 0){
@@ -661,9 +690,10 @@ class OrderController extends Controller
 											"method"=>"order",
 											"reference" => $order['reference'],
 											"user" => new mongoId($userObj->_id),
+											"shortComment"=> "Order cancelled.",
 											"comment"=> "Your order has been cancelled."
 										];
-							
+
 							CreditTransactions::transaction('debit',$creditObj,$userObj);
 						}
 
@@ -676,6 +706,7 @@ class OrderController extends Controller
 											"method"=>"order",
 											"reference" => $order['reference'],
 											"user" => new mongoId($userObj->_id),
+											"shortComment"=> "Order cancelled.",
 											"comment"=> "Your order has been cancelled."
 										];
 
@@ -853,20 +884,17 @@ class OrderController extends Controller
 			$loyaltyPoints = $order['loyaltyPointEarned'];
 			if($loyaltyPoints>0){
 
-				$userObj->increment('loyaltyPoints', $loyaltyPoints);
+				$loyaltyObj = [
+						"points"=>$loyaltyPoints,
+						"method"=>"order",
+						"reference" => $reference,
+						"user" => new mongoId((string)$userObj->_id),
+						"comment"=> "You have earned this points by making a purchase"
+					];
+		
+				LoyaltyTransactions::transaction('credit',$loyaltyObj,$userObj);
 
-				$userObj->push('loyalty', 
-									[
-										"type"=>"credit",
-										"points"=>$loyaltyPoints,
-										"reason"=>[
-											"type"=>"order",
-											"key" => $reference,
-											"comment"=> "You have earned this points by making a purchase"
-										],
-										"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
-									]
-								);
+
 			}
 			
 			//SAVE CARD IF USER CHECKED SAVE CARD FOR FUTURE PAYMENTS
