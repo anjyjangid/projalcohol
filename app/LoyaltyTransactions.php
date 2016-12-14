@@ -14,11 +14,11 @@ use Log;
 
 use AlcoholDelivery\User;
 
-class CreditTransactions extends Moloquent
+class LoyaltyTransactions extends Moloquent
 {
     
     protected $primaryKey = "_id";
-    protected $collection = 'creditTransactions';
+    protected $collection = 'loyaltyTransactions';
 	
 	/**
 	 * Indicates if the model should be timestamped.
