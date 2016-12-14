@@ -1443,6 +1443,9 @@ button.ageverify:disabled{
 	color: black;
 }
 
+.maintab .md-tab{
+	text-transform: none;
+}
 .product-bread-crumb{
 	
 }

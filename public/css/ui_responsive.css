@@ -3707,9 +3707,9 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	float:left;
 	margin-left:10px;
 }
-.md-dialog-container, md-dialog {
+/*.md-dialog-container, md-dialog {
 	z-index:99999; 
-}
+}*/
 /*.navbar-fixed-top.navbar-shrink .logos-inner-cover{
 	display:unset;
 }*/

@@ -172,11 +172,15 @@ AlcoholDelivery.controller('AppController',
 			//scope: $scope.$new(),
 			controller: function($scope,$cookies){
 				
-				$scope.calculateAge = function(){
+				/*$scope.calculateAge = function(){
 					var currentYear = new Date().getFullYear();
 					return currentYear - $scope.verification.userYear;
+				}*/
 
-				}
+				$scope.$watch('verification.userYear',function(newV,oldV){
+					var currentYear = new Date().getFullYear();
+					$scope.verification.cage = currentYear - $scope.verification.userYear;
+				});
 
 				$scope.verifyage = function(){					
 					$cookies.remove('ageverfication');
@@ -187,10 +191,10 @@ AlcoholDelivery.controller('AppController',
 				$scope.verification = {};
 
 				var offset = 0; range = 100;
-				var currentYear = new Date().getFullYear()-range;			
+				var currentYear = new Date().getFullYear();			
 				$scope.verification.years = [];
-			    for (var i = (offset*1); i < (range*1) + 1; i++){
-			        $scope.verification.years.push(currentYear + i);
+			    for (var i = (offset*1); i <= range; i++){
+			        $scope.verification.years.push(currentYear - i);
 			    }
 
 				var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
@@ -230,6 +234,9 @@ AlcoholDelivery.controller('AppController',
 
 	if(!$cookies.get('ageverfication'))
 		$scope.ageVerification();
+
+
+	
 
 }]);
 
@@ -1692,6 +1699,10 @@ AlcoholDelivery.controller('CartPaymentController',[
 
 		$scope.payment = alcoholCart.$cart.payment;
 
+		if(typeof $scope.payment.creditCard != 'undefined'){
+			$scope.payment.creditCard.cvc = '';
+		}
+
 		if(typeof $scope.payment.savecard == 'undefined'){
 			$scope.payment.savecard = true;
 		}
@@ -1717,7 +1728,14 @@ AlcoholDelivery.controller('CartPaymentController',[
 					if($scope.payment.card == 'newcard'){
 						$scope.$broadcast('addcardsubmit');
 					}else{
-						$deployCart = true;
+						if(!$scope.payment.creditCard.cvc || $scope.payment.creditCard.cvc == ''){
+							sweetAlert.swal({
+								type:'error',
+								text:"Please enter cvv for the selected card.",
+							});
+						}else{
+							$deployCart = true;							
+						}						
 					}
 				}
 
