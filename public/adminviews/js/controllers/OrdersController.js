@@ -589,6 +589,10 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 
 		var smoke = alcoholCart.$cart.service.smoke;
 		
+		if(typeof smoke.detail === 'undefined'){
+			smoke.detail = "";
+		}
+
 		if(smoke.status === false){
 			alcoholCart.removeSmoke();
 			return false;

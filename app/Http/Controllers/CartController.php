@@ -1909,7 +1909,7 @@ jprd($product);
 								"points"=>$order['loyaltyPointUsed'],
 								"method"=>"order",
 								"reference" => $reference,
-								"user" => new mongoId($user->_id),
+								"user" => new mongoId((string)$userObj->_id),
 								"comment"=> "You have used this points by making a purchase on our website"
 							];
 
@@ -1925,7 +1925,7 @@ jprd($product);
 						"points"=>$loyaltyPoints,
 						"method"=>"order",
 						"reference" => $reference,
-						"user" => new mongoId($user->_id),
+						"user" => new mongoId((string)$userObj->_id),
 						"comment"=> "You have earned this points by making a purchase"
 					];
 		
@@ -1993,13 +1993,14 @@ jprd($product);
 						"points"=>$order['loyaltyPointUsed'],
 						"method"=>"order",
 						"reference" => $reference,
-						"user" => new mongoId($userObj->_id),
+						"user" => new mongoId((string)$userObj->_id),
 						"comment"=> "You have used this points by making a purchase on our website"
 					];
 
 		LoyaltyTransactions::transaction('debit',$loyaltyObj,$userObj);
 
 		prd("test complete");
+		
 		$cart = Cart::find($cartKey);
 
 		$orderObj = $cart->cartToOrder($cartKey);

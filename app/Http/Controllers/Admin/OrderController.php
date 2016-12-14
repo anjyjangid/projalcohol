@@ -888,7 +888,7 @@ class OrderController extends Controller
 						"points"=>$loyaltyPoints,
 						"method"=>"order",
 						"reference" => $reference,
-						"user" => new mongoId($user->_id),
+						"user" => new mongoId((string)$userObj->_id),
 						"comment"=> "You have earned this points by making a purchase"
 					];
 		
