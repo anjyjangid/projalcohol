@@ -30,7 +30,7 @@ class UserAddressRequest extends Request
 		$rules = [
 			
 			'firstname' => 'required|string|max:100',
-			'lastname' => 'required|string|max:100',
+			//'lastname' => 'required|string|max:100',
 			'HBRN' => 'required',
 			'PostalCode' => 'required',			
 			/*'company'=> 'string|max:100',
