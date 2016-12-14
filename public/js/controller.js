@@ -1699,7 +1699,9 @@ AlcoholDelivery.controller('CartPaymentController',[
 
 		$scope.payment = alcoholCart.$cart.payment;
 
-		$scope.payment.creditCard.cvc = '';
+		if(typeof $scope.payment.creditCard != 'undefined'){
+			$scope.payment.creditCard.cvc = '';
+		}
 
 		if(typeof $scope.payment.savecard == 'undefined'){
 			$scope.payment.savecard = true;
