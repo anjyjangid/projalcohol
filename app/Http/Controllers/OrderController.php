@@ -96,7 +96,7 @@ class OrderController extends Controller
 		$limit = isset($params['limit'])?(int)$params['limit']:10;
 
 		$offset = (int)$params['start'] * $limit;
-		
+
 		try{
 
 			$count = DB::collection('orders')->where('user', new MongoId($userId))->count();
@@ -111,6 +111,9 @@ class OrderController extends Controller
 								// 'products' => array('$exists'=>true),
 								// 'products' => array('$ne'=>null)
 							)
+						),
+						array(
+							'$sort' => array('created_at'=> -1)
 						),
 						array(
 							'$skip' => $offset
@@ -138,10 +141,8 @@ class OrderController extends Controller
 								),
 								'doStatus' => 1
 							),
-						),
-						array(
-							'$sort' => array('created_at'=> -1)
 						)
+						
 					));
 				});
 

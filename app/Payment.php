@@ -148,6 +148,7 @@ class Payment extends Model
             'cvv2'=> $orderData['payment']['creditCard']['cvc'],            
             'return_url' => url().$uprefix.'/confirmorder',            
             'merchant_data1' => $orderData['_id']
+            'notify_url' => url().$uprefix.'/confirmorder',            
             //'notify_url' => url().'/confirmorder', //FOR SAFE PAYMENTS
         );
 
