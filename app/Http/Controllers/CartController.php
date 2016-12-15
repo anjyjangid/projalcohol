@@ -2708,7 +2708,9 @@ jprd($product);
 
     public function confirmordermanual(Request $request,$cartKey = null){
 
-		
+		if(!$request->get('sercuretrue')){
+			return redirect('/');
+		}
 		//$user = Auth::user('user');
 		
 		//$userObj = User::find($user->_id);
