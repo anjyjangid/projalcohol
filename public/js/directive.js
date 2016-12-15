@@ -771,7 +771,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 					}				
 
-				}, 500);
+				}, 2000);
 
 			};
 

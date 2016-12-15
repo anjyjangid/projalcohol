@@ -171,6 +171,7 @@ Route::group(['prefix' => 'api'], function () {
 		Route::resource('loyalty', 'LoyaltyController');
 
 		Route::controller('credits', 'CreditsController');
+		
 		Route::resource('credits', 'CreditsController');
 
 		Route::resource('address', 'AddressController');
@@ -191,7 +192,28 @@ Route::group(['prefix' => 'api'], function () {
 
 		Route::get('services','CartController@getServices');	
 
-		Route::get('timeslots/{date}','CartController@getTimeslots');
+		Route::group(['middleware' => 'auth'], function () {
+
+			Route::get('timeslots/{date}','CartController@getTimeslots');
+
+			Route::post('repeatlast','CartController@postRepeatlast');
+
+			Route::put('bulk','CartController@putBulk');
+			
+			Route::put('bulk/{cartkey}','CartController@putBulk');
+
+			Route::put('loyalty/{cartKey}','CartController@putLoyalty');
+
+			Route::put('loyalty/credit/{cartKey}','CartController@putCreditCertificate');
+			
+			Route::delete('loyalty/{cartKey}/{key}/{type}','CartController@deleteLoyaltyProduct');
+
+			Route::delete('loyaltycard/{cartKey}/{key}','CartController@deleteLoyaltyCard');
+			
+			Route::put('chilled/loyalty/{cartkey}','CartController@updateLoyaltyChilledStatus');
+
+
+		});
 
 		Route::get('availability/{cartkey}','CartController@availability');
 
@@ -209,13 +231,7 @@ Route::group(['prefix' => 'api'], function () {
 		
 		Route::put('promotion/{cartkey}','CartController@putPromotion');
 
-		Route::put('bulk','CartController@putBulk');
-
-		Route::post('repeatlast','CartController@postRepeatlast');
-
 		Route::delete('product/{cartKey}/{key}/{type}','CartController@deleteProduct');
-	
-		Route::put('bulk/{cartkey}','CartController@putBulk');
 
 		Route::delete('promotion/{cartKey}/{key}','CartController@deletePromotion');
 
@@ -234,15 +250,6 @@ Route::group(['prefix' => 'api'], function () {
 		Route::put('giftcard/{uid}','CartController@putGiftcard');
 
 		Route::put('gift/product/chilledtoggle/{giftUid}','CartController@putGiftProductChilledStatus');
-
-		Route::put('loyalty/{cartKey}','CartController@putLoyalty');
-
-		Route::put('loyalty/credit/{cartKey}','CartController@putCreditCertificate');
-		
-		Route::delete('loyalty/{cartKey}/{key}/{type}','CartController@deleteLoyaltyProduct');
-		Route::delete('loyaltycard/{cartKey}/{key}','CartController@deleteLoyaltyCard');
-		
-		Route::put('chilled/loyalty/{cartkey}','CartController@updateLoyaltyChilledStatus');
 
 	});
 

@@ -429,33 +429,42 @@ AlcoholDelivery.service('alcoholCart', [
 		$http.post('cart/repeatlast', {cartKey: _self.getCartKey()})
 				.success(function(response){
 
-					if(response.success){					
+					var sales = response.sales;
 
-						angular.forEach(response.data.products, function (product, index) {
+					angular.forEach(response.products, function (resProduct, index) {
+						
+						var id = mongoIdToStr(resProduct.product._id);
+
+						var inCart = _self.getProductById(id);
+
+						if(inCart){
+
+							if(resProduct.quantity==0){
+
+								_self.removeItemById(id);
+
+							}else{
+
+								inCart.setRQuantity(resProduct.chilled.quantity,resProduct.nonchilled.quantity);
+								inCart.setTQuantity(resProduct.remainingQty);
+								inCart.setRemainingQty(resProduct.remainingQty);
+								inCart.setPrice(resProduct);
+
+							}									
+
+						}else{				
 							
-							var id = product.product._id;
-							var inCart = _self.getProductById(id);
+				    		var newItem = new alcoholCartItem(id, resProduct);
+							_self.$cart.products[id] = newItem;
+							
+						}
 
-							if(inCart){
+					});
 
-								inCart.setRQuantity(product.chilled.quantity,product.nonchilled.quantity);
-								inCart.setTQuantity(product.quantity);
-								inCart.setPrice(product);								
+					//_self.setAllProductsRemainingQty(proRemaining);
+					_self.setAllSales(sales);
 
-							}else{				
-								
-					    		var newItem = new alcoholCartItem(id, product);
-								_self.$cart.products[id] = newItem;
-								
-							}
-
-						});
-
-						defer.resolve("added success fully");
-
-					}
-
-					defer.reject("something went wrong");
+					defer.resolve("added success fully");
 
 				})
 				.error(function(data, status, headers){
@@ -2896,7 +2905,7 @@ AlcoholDelivery.service('alcoholCart', [
 			if(isValid){
 				d.resolve("every thing all right");
 			}else{
-				d.reject("foo");
+				d.reject("notvalid");
 			}
 			
 			return d.promise;
