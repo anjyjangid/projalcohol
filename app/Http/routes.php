@@ -191,6 +191,7 @@ Route::group(['prefix' => 'api'], function () {
 		Route::get('deliverykey','CartController@getDeliverykey');
 
 		Route::get('services','CartController@getServices');	
+		
 		/**/
 		Route::get('timeslots/{date}','CartController@getTimeslots');
 
