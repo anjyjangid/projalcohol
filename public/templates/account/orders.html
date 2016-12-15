@@ -35,6 +35,13 @@
 	</div>
 </div>
 
+<div class="col-sm-12">
+	<div class="wish-nextprvicvr">
+		<button type="button" class="wishprev" ng-click="prev()" ng-disabled="pagination.start<1"><span class="glyphicon glyphicon-menu-left"></span> Previous </button>
+		<button type="button" class="wishnext" ng-click="next()" ng-disabled="!pagination.next">Next <span class="glyphicon glyphicon-menu-right"></span></button>
+	</div>
+</div>
+
 <div ng-if="!orders.length" class="emptycart">
 	<div>There is no order history</div>
 	<div><a class="checkouterback" ui-sref="mainLayout.index">back to shopping</a></div>

@@ -245,6 +245,12 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 		$rootScope.invalidCodeMsgTxt = '';
 	}
 
+	$scope.setSelectedAddress = function(key){
+
+		$scope.alcoholCart.$cart.delivery.address = {};
+		$scope.alcoholCart.$cart.delivery.address.key = key;
+		$scope.alcoholCart.$cart.delivery.address.detail = $scope.cart.addresses[key];
+	}
 
 	$scope.orderConfirm = function(){
 		
@@ -435,6 +441,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 		},500);
 	}
 
+
 	$scope.$watch('addressData.SEARCHTEXT',function(newValue,oldValue){
 		if(newValue == ''){
 			$scope.addressData = {};
@@ -444,9 +451,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 			var item = angular.copy($scope.addressData);
 			$scope.locateMap(lat,long,zoom,item);
 		}
-	});		
-
-	
+	});
 
 	// Google map auto complete code start //
 	/*NgMap.getMap().then(function(map) {
