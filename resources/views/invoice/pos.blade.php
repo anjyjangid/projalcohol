@@ -1,7 +1,7 @@
 @extends('invoice.layout')
 @section('content')
+<?php  
 
-<?php 
   if($order['delivery']['type'] == 1){
     $delivery = 'advance delivery';
   }else{

@@ -451,9 +451,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 			var item = angular.copy($scope.addressData);
 			$scope.locateMap(lat,long,zoom,item);
 		}
-	});		
-
-	
+	});
 
 	// Google map auto complete code start //
 	/*NgMap.getMap().then(function(map) {
@@ -462,7 +460,6 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 		
 	});*/
 	// Google map auto complete code ends //
-
 
 	$scope.save = function(){
 		$scope.savingData = true;

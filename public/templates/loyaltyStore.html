@@ -17,8 +17,8 @@
 		<div class="fullwidth">    
 			<ul class="nav nav-tabs productcomboul">
 				<li ng-class="{active:filter==null}"><a ui-sref="mainLayout.loyaltystore({keyword:keyword,filter:null})" data-toggle="tab">All</a></li>
-				<li ng-class="{active:filter=='new'}"><a ui-sref="mainLayout.loyaltystore({keyword:keyword,filter:'new'})" data-toggle="tab">New</a></li>
-				<li ng-class="{active:filter=='in-stock'}"><a ui-sref="mainLayout.loyaltystore({keyword:keyword,filter:'in-stock'})" data-toggle="tab">In Stock</a></li>
+				<li ng-show="productView!='credits'" ng-class="{active:filter=='new'}"><a ui-sref="mainLayout.loyaltystore({keyword:keyword,filter:'new'})" data-toggle="tab">New</a></li>
+				<li ng-show="productView!='credits'" ng-class="{active:filter=='in-stock'}"><a ui-sref="mainLayout.loyaltystore({keyword:keyword,filter:'in-stock'})" data-toggle="tab">In Stock</a></li>
 
 			<!-- <div class="dropdown productdropdownbtn" uib-dropdown>
 				  <button class="btn dropdown-toggle" type="button" id="dropdownMenu1" uib-dropdown-toggle aria-haspopup="true" aria-expanded="true">

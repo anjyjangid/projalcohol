@@ -502,34 +502,10 @@ class UserController extends Controller
 						]
 					];
 
-		
-		// $creditDetail = [
-		// 					"type" => "credit",
-		// 					"unitprice" => (float)$currGiftCard['recipient']['price'],
-		// 					"quantity" => $currGiftCard['recipient']['quantity'],
-		// 					"price" => (float)((int)$currGiftCard['recipient']['quantity'] * (float)$currGiftCard['recipient']['price']),
-
-		// 					"reason" => [
-		// 						"type" => "giftcard",								
-		// 						"sender" => [
-		// 							"_id" => new mongoId($sender['_id']),
-		// 							"email" => $sender['email'],
-		// 							"name" => $sender['name']
-		// 						],
-		// 						"comment" => "You have earned this points as gift"
-		// 					],
-							
-		// 					"recipient" => $currGiftCard['recipient'],
-		// 					"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
-
-		// 				];
-
 		try{
 
 			CreditTransactions::transaction('credit',$creditObj,$this->user->_id);
-			// $isUpdated = User::where('_id', $userId)->increment('credits', (float)$creditDetail['price']);
-			// $isUpdated = User::where('_id', $userId)->push('creditsSummary', $creditDetail);
-
+			
 			$orderObj->giftCards = $giftCards;
 			$orderObj->save();
 

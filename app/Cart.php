@@ -16,6 +16,7 @@ use stdClass;
 use MongoId;
 use MongoDate;
 use Route;
+use DateTime;
 
 class Cart extends Moloquent
 {
@@ -205,6 +206,20 @@ class Cart extends Moloquent
 			return false;
 		}
 
+		$datetime = new DateTime('tomorrow');
+		$tomorrowTime = strtotime($datetime->format('Y-m-d H:i:s'));
+
+		if(isset($cart->timeslot['datekey']) && $cart->timeslot['datekey']<$tomorrowTime){
+
+			$cart->timeslot = [
+				"datekey"=>false,
+				"slotkey"=>false,
+				"slug"=>"",
+				"slotslug"=>""
+			];
+
+		}
+
 		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.express_delivery.applicablePostalCodes','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value'])->first();
 
 		$services = $services['settings'];
@@ -215,7 +230,6 @@ class Cart extends Moloquent
 
 		$cartServices["smoke"]["charges"] = $services['cigratte_services']['value'];
 		
-
 		$cartServices["delivery"] = [
 								"free" => false,
 								"charges" => $services['non_free_delivery']['value'],
