@@ -724,18 +724,81 @@ AlcoholDelivery.controller('OrdersController',['$scope','$rootScope','$state','$
 
 	$scope.orders = [];
 
-	$http.get("order/orders")
-	.success(function(response){
+	$scope.pagination = {
 
-		$scope.orders = response;
-		//$scope.shipping = UserService.currentUser.address[response.delivery.address.key];
+		start : 0,
+		limit : 10,
+		count : 0
 
-	})
-	.error(function(data, status, headers) {
-		if(data.auth===false){
-			$state.go("mainLayout.checkout.cart");
+	}
+
+	$scope.prev = function(){
+
+		if($scope.pagination.start==0){
+			return;
 		}
-	})
+		$scope.pagination.start--;
+
+	}
+	$scope.next = function(){
+
+		if($scope.pagination.count<=(($scope.pagination.start+1) * $scope.pagination.limit)){
+			return false;
+		}
+
+		$scope.pagination.start++;
+		console.log($scope.pagination.start);
+
+	}
+
+	$scope.getOrders = function(){
+
+		$scope.process = {
+			fetching:true
+		};
+
+		$http.get("order/orders",{params: $scope.pagination}).then(
+
+			function(response){
+
+				$scope.pagination.count = response.data.count;
+
+				$scope.orders = response.data.orders;
+
+				if($scope.pagination.count<=(($scope.pagination.start+1) * $scope.pagination.limit)){
+					$scope.pagination.next = false;
+				}else{
+					$scope.pagination.next = true;
+				}
+
+
+			},function(errRes){
+
+				console.log(errRes);
+
+			}
+
+		).finally(function(){
+
+			$timeout(function(){
+
+				$scope.process.fetching = false;
+
+			},1000)
+
+		});
+
+	}
+
+	$scope.$watch('pagination.start',
+		function(newValue, oldValue) {
+
+			$scope.getOrders();
+
+		}
+	);
+
+	
 
 	$scope.setRating = function(order) {
 		if(!order.rate || order.rate<1) return;
@@ -842,28 +905,11 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 
 			function(response){
 
-				// $scope.loyalty = response.data.data;
-
-				// $scope.loyaltyMore = response.data.more;
-
 				$scope.pagination.count = response.data.count;
 
 				$scope.loyalty = response.data.transactions;
 
 				$scope.statics = response.data.statics;
-
-
-				// $http.get("loyalty/statics").then(
-
-				// 	function(statRes){
-
-				// 		$scope.statics = statRes.data;
-
-				// 	},
-				// 	function(errStatRes){
-
-				// 	}
-				// );
 
 			},function(errRes){
 
@@ -903,8 +949,6 @@ AlcoholDelivery.controller('CreditsController',['$scope','$http','sweetAlert','$
 		count : 0
 
 	}
-
-angular.pagination = $scope.pagination;
 
 	$scope.prev = function(){
 
@@ -1842,8 +1886,12 @@ AlcoholDelivery.controller('CartReviewController',[
 
 				)
 			},
-			function (errorRes) {								
-				$state.go("mainLayout.checkout.cart", {}, {reload: true});
+			function (errorRes) {
+
+				if(errorRes==='reload'){
+					$state.go("mainLayout.checkout.cart", {}, {reload: true});
+				}
+
 			}
 
 		);

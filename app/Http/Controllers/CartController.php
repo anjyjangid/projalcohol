@@ -2275,17 +2275,7 @@ jprd($product);
 			}else{
 				$products = $products['product'];
 			}
-
-			// $products = $productObj->getProducts(
-			// 								array(
-			// 									"id"=>$productKeys,
-			// 									"with"=>array(
-			// 										"discounts"
-			// 									)
-			// 								)
-			// 							);
-
-
+			
 			$updatedData = [
 				"products"=>[]				
 			];
@@ -2379,25 +2369,128 @@ jprd($product);
 
 	public function postRepeatlast(Request $request){
 		
-		$userLogged = Auth::user('user');
-return response(["under process"],400);
-		$userLogged = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
-		if(empty($userLogged)){
-			
-			$return['message'] = 'login required';
-			
-			return response($return,401);
-		}
+		$userLogged = Auth::user('user');		
 
-		$params = Orders::where("user",new mongoId($userLogged->_id))->whereNotNull("products")->orderBy("created_at","desc")->first(["products.quantity","updated_at","reference"]);
+		$params = Orders::where("user",new mongoId($userLogged->_id))->whereNotNull("products")->orderBy("created_at","desc")->first(["products._id","products.quantity.chilled","products.quantity.nonChilled"]);
 
 		$cartKey = $request->get('cartKey');
 		
 		$cart = Cart::find($cartKey);
 
 		$cartProducts = $cart->products;
-		prd($cartProducts);
 
+		if(isset($params['products']) && is_array($params['products'])){
+			
+			$productKeys = [];
+
+			$params['products'] = valueToKey($params['products'],"_id");
+			
+			$productKeys = array_keys($params['products']);
+
+			$productObj = new Products;
+
+			$products = $productObj->fetchProduct([
+						"id"=>$productKeys,
+					]);
+
+			if($products['success']===false && empty($products['product'])){
+
+				$response['message'] = "Products not found";
+				$response['action'] = "refresh";
+				return response($response,405);
+
+			}else{
+				$products = $products['product'];
+			}
+			
+			$updatedData = [
+				"products"=>[]				
+			];
+
+			foreach($products as $product){
+				
+				$proIdToUpdate = (string)$product['_id'];
+
+				$proPutValues = $params['products'][$proIdToUpdate];
+
+				$productInCart = isset($cartProducts[$proIdToUpdate])?$cartProducts[$proIdToUpdate]:false;
+
+				$chilledQty = (int)$proPutValues['quantity']['chilled'];
+				$nonChilledQty = (int)$proPutValues['quantity']['nonChilled'];
+
+				$newQty = $chilledQty + $nonChilledQty;
+
+				if($productInCart!==false){
+
+					$chilledQty+= (int)$productInCart['chilled']['quantity'];
+					$nonChilledQty+= (int)$productInCart['nonchilled']['quantity'];
+
+				}
+
+				$totalQty = $chilledQty + $nonChilledQty;
+				
+				$updateProData = array(
+
+					"chilled"=>array(
+						"quantity"=>$chilledQty,
+						"status"=>"chilled",
+					),
+					"nonchilled"=>array(
+						"quantity"=>$nonChilledQty,
+						"status"=>"nonchilled",
+					),
+					"quantity"=>$totalQty,
+					"lastServedChilled" => true,
+					"sale"=>isset($product['proSales'])?$product['proSales']:false
+
+				);
+				$updateProData['remainingQty']= $newQty;
+				if($productInCart!==false){
+
+					$updateProData['chilled']['status'] = $productInCart['chilled']['status'];
+					$updateProData['nonchilled']['status'] = $productInCart['nonchilled']['status'];
+					$updateProData['lastServedChilled'] = $productInCart['lastServedChilled'];
+					$updateProData['remainingQty']+= $productInCart['remainingQty'];
+
+				}			
+
+				$cartProducts[$proIdToUpdate] = $updateProData;
+				$updateProData['product'] = $product; //product original detail required in cart
+
+				array_push($updatedData['products'],$updateProData);
+
+			}
+
+			try{
+
+				$cart->products = $cartProducts;
+				$cart->createAllPossibleSales();
+
+				$latestUpdate = [];
+				foreach($updatedData['products'] as &$cProduct){
+
+					$key = (string)$cProduct['product']['_id'];
+					$cProduct['remainingQty'] = $cart->products[$key]['remainingQty'];
+
+				}
+
+				$cart->save();
+
+				$response = [
+					'message'=>'cart updated successfully',
+					'sales' => $cart->sales,
+					'products' => $updatedData['products']
+				];
+				
+				return response($response,200);
+
+			}catch(\Exception $e){
+
+				return response(["success"=>false,"message"=>$e->getMessage()],400);
+
+			}
+
+		}
 		
 		
 	}

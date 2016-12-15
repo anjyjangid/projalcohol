@@ -13,6 +13,7 @@ use AlcoholDelivery\Orders as Orders;
 use MongoDate;
 use MongoId;
 use DB;
+use AlcoholDelivery\ErrorLog;
 
 class OrderController extends Controller
 {
@@ -85,53 +86,82 @@ class OrderController extends Controller
 		return response($order,200);
 	}
 
-	public function getOrders(){
+	public function getOrders(Request $request){
 
 		$user = Auth::user('user');
+		$userId = $user->_id;
 
-		$orders = DB::collection('orders')->raw(function($collection) use($user){
-			return $collection->aggregate(array(
-				array(
-					'$match'=> array(
-						'user'=> new MongoId($user->_id),
-						// 'products' => array('$exists'=>true),
-						// 'products' => array('$ne'=>null)
-					)
-				),
-				/*array(
-					'$limit' => 10
-				),*/
-				array(
-					'$skip' => 0
-				),
-				array(
-					'$project' => array(
-						'_id'=>1,
-						'reference'=>1,
-						'service'=>1,
-						'delivery.type'=>1,
-						'nonchilled'=>1,
-						'total'=>1,
-						'quantity' => array(
-							'$size' => '$products'
-						),
-						'created_at'=>1,
-						'timeslot'=>1,
-						'rate'=>1,
-						//'productsLog' => 1,
-						'quantity' => array(
-							'$sum' => '$productsLog.quantity'
-						),
-						'doStatus' => 1
-					),
-				),
-				array(
-					'$sort' => array('created_at'=> -1)
-				)
-			));
-		});
+		$params = $request->all();
+		
+		$limit = isset($params['limit'])?(int)$params['limit']:10;
 
-		return response($orders['result'],200);
+		$offset = (int)$params['start'] * $limit;
+		
+		try{
+
+			$count = DB::collection('orders')->where('user', new MongoId($userId))->count();
+
+			$loyalty = DB::collection('loyaltyTransactions')->where('user', new MongoId($userId))->orderBy('_id','desc')->skip($offset)->take($limit)->get();
+
+			$orders = DB::collection('orders')->raw(function($collection) use($user,$limit,$offset){
+					return $collection->aggregate(array(
+						array(
+							'$match'=> array(
+								'user'=> new MongoId($user->_id),
+								// 'products' => array('$exists'=>true),
+								// 'products' => array('$ne'=>null)
+							)
+						),
+						array(
+							'$skip' => $offset
+						),
+						array(
+							'$limit' => $limit
+						),
+						array(
+							'$project' => array(
+								'_id'=>1,
+								'reference'=>1,
+								'service'=>1,
+								'delivery.type'=>1,
+								'nonchilled'=>1,
+								'total'=>1,
+								'quantity' => array(
+									'$size' => '$products'
+								),
+								'created_at'=>1,
+								'timeslot'=>1,
+								'rate'=>1,
+								//'productsLog' => 1,
+								'quantity' => array(
+									'$sum' => '$productsLog.quantity'
+								),
+								'doStatus' => 1
+							),
+						),
+						array(
+							'$sort' => array('created_at'=> -1)
+						)
+					));
+				});
+
+			return response([
+					
+					'orders'=>$orders['result'],					
+					'count'=>$count
+
+				],200);
+
+		}catch(\Exception $e){
+
+			ErrorLog::create('emergency',[
+					'error'=>$e,
+					'message'=> 'Show orders'
+				]);
+		}
+
+		return response(['message'=>'Something went wrong'],400);
+	
 	}
 
 	public function getToRepeat(){
