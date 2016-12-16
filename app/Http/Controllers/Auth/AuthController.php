@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\ThrottlesLogins;
 //use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Sarav\Multiauth\Foundation\AuthenticatesAndRegistersUsers;
 use AlcoholDelivery\Email as Email;
+use MongoId;
 
 class AuthController extends Controller
 {
@@ -131,7 +132,7 @@ class AuthController extends Controller
 		
 		try {
 
-			$user = User::create([
+			$userData = [
 
 				'email' => $data['email'],
 				'password' => bcrypt($data['password']),
@@ -139,7 +140,17 @@ class AuthController extends Controller
 				'status' => 0,
 				'verified' => 0,
 
-			]);
+			];
+
+			if(isset($data['refferedBy']) && MongoId::isValid($data['refferedBy'])){
+				
+				$user = user::find($data['refferedBy']);
+				if(!empty($user))
+				$userData['reffered'] = new MongoId($data['refferedBy']);
+
+			}
+
+			$user = User::create($userData);
 		
 		} catch(\Exception $e){
 

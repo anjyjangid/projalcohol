@@ -49,6 +49,11 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.signupSubmit = function() {
 				$scope.signup.errors = {};
+
+				if(angular.isDefined($rootScope.refferal)){
+					$scope.signup.refferedBy = $rootScope.refferal;
+				}
+
 				$http.post('/auth/register',$scope.signup).success(function(response){
 	                $scope.user = response;
 					$scope.user.name = response.email;

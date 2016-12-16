@@ -33,6 +33,10 @@ class SuperController extends Controller
 
 		$categories = $categories->get();
 
+		if(empty($categories) || !is_object($categories) || empty($categories->toArray())){
+			return response([],404);
+		}
+
 		if(isset($params['withChild']) && $params['withChild']){
 
 			foreach($categories as &$category){

@@ -363,7 +363,7 @@ AlcoholDelivery.controller('ProductsController', [
 
 			$state.$current.self.reloadOnSearch = true;
 
-			data.category = $category;
+			data.category = $scope.AppController.category;
 			data.type = $stateParams.toggle;
 			data.sort = $stateParams.sort;
 
@@ -747,8 +747,6 @@ AlcoholDelivery.controller('OrdersController',['$scope','$rootScope','$state','$
 		}
 
 		$scope.pagination.start++;
-		console.log($scope.pagination.start);
-
 	}
 
 	$scope.getOrders = function(){
@@ -1826,10 +1824,14 @@ AlcoholDelivery.controller('CartReviewController',[
 
 	$scope.orderConfirm = function(){
 		
-		alcoholCart.checkoutValidate().then(			
+		$rootScope.processingOrder = true;
+
+		alcoholCart.checkoutValidate().then(
+
 			function (successRes) {
 
 				alcoholCart.freezCart().then(
+
 					function(result){
 						
 						var cartKey = alcoholCart.getCartKey();
@@ -1885,6 +1887,7 @@ AlcoholDelivery.controller('CartReviewController',[
 					}
 
 				)
+
 			},
 			function (errorRes) {
 
@@ -1895,6 +1898,7 @@ AlcoholDelivery.controller('CartReviewController',[
 			}
 
 		);
+
 	}
 
 	if($stateParams.pstatus){
