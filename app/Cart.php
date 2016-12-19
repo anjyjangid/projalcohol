@@ -374,7 +374,8 @@ class Cart extends Moloquent
 		$offset = strtotime('+8 hours'); //ADD OFFSET SO TIME WILL BE EQUAL TO SINGAPORE TIMEZONE 
 		//$this->updated_at
 		$reference = "ADSG";
-		$reference.= ((int)date("ymd",$offset) - 123456);			
+		$reference.= abs((int)date("his",$offset) - 123456);
+		//$reference.= ((int)date("ymd",$offset) - 123456);			
 		$reference.="O";			
 		$reference.= (string)date("Hi",$offset);
 

@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'from' => ['address' => 'noreply@alcoholdelivery.com', 'name' => 'Alcohol Delivery'],
+    'from' => ['address' => 'noreply@alcoholdelivery.com.sg', 'name' => 'Alcohol Delivery'],
 
     /*
     |--------------------------------------------------------------------------
