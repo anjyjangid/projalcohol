@@ -1942,7 +1942,9 @@ jprd($product);
                 'order_number' => $reference
             ];
 
-            $mailSent = $emailTemplate->sendEmail($mailData);
+            $order->placed();
+
+            //$mailSent = $emailTemplate->sendEmail($mailData);
 
 			if($request->isMethod('get')){
 				return redirect('/orderplaced/'.$order['_id']);
