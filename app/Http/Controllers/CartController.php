@@ -600,16 +600,6 @@ class CartController extends Controller
 			$cart->loyalty = [];
 		}
 
-		$data = [
-				"loyalty" => [
-
-					"chilled" => 1,
-					"_id" => new mongoId("57025683c31d53b2218b45a4"),
-					"quantity" => 1
-
-				]
-			];
-
 		$product = Products::where("_id",$proIdToUpdate)
 					->where("status",1)
 					->where("isLoyalty",1)					
@@ -730,11 +720,7 @@ class CartController extends Controller
 
 	public function putCreditCertificate(Request $request, $cartKey) {
 
-		$user = Auth::user('user');		
-
-		// if($user===null){
-		// 	return response(["message"=>"login required"],401);
-		// }
+		$user = Auth::user('user');
 		
 		$inputs = $request->all();
 		$value = $inputs['id'];
@@ -816,7 +802,6 @@ class CartController extends Controller
 			$user = Auth::user('user');
 			$userLoyaltyPoints = $user['loyaltyPoints'];
 			$pointsUsed = $cart->getLoyaltyPointUsed();
-
 			return $userLoyaltyPoints - $pointsUsed;
 
 		}
@@ -1779,7 +1764,7 @@ jprd($product);
 	}
 
 	public function confirmorder(Request $request,$cartKey = null){
-
+		
 		$user = Auth::user('user');
 		
 		$userObj = User::find($user->_id);
@@ -2872,7 +2857,9 @@ jprd($product);
                 'order_number' => $reference
             ];
 
-            $mailSent = $emailTemplate->sendEmail($mailData);
+            $order->placed();
+
+            //$mailSent = $emailTemplate->sendEmail($mailData);
 
 			if($request->isMethod('get')){
 				return redirect('/orderplaced/'.$order['_id']);
