@@ -365,7 +365,7 @@ AlcoholDelivery.controller('ProductsController', [
 
 			$state.$current.self.reloadOnSearch = true;
 
-			data.category = $category;
+			data.category = $scope.AppController.category;
 			data.type = $stateParams.toggle;
 			data.sort = $stateParams.sort;
 
@@ -749,8 +749,6 @@ AlcoholDelivery.controller('OrdersController',['$scope','$rootScope','$state','$
 		}
 
 		$scope.pagination.start++;
-		console.log($scope.pagination.start);
-
 	}
 
 	$scope.getOrders = function(){
@@ -1802,9 +1800,9 @@ AlcoholDelivery.controller('CartPaymentController',[
 }]);
 
 AlcoholDelivery.controller('CartReviewController',[
-			'$scope','$rootScope','$http','$q','$state', '$mdDialog', 
+			'$scope','$rootScope','$http','$q','$state', '$mdDialog', '$mdToast',
 			'$mdMedia', '$interval', 'alcoholCart','store','sweetAlert', '$sce', '$filter','$stateParams'
-	, function($scope, $rootScope, $http, $q, $state, $mdDialog, 
+	, function($scope, $rootScope, $http, $q, $state, $mdDialog, $mdToast,
 			$mdMedia, $interval, alcoholCart, store, sweetAlert, $sce, $filter,$stateParams){
 
 	$scope.card = {
@@ -1825,13 +1823,17 @@ AlcoholDelivery.controller('CartReviewController',[
 	$scope.daySlug = $filter('dateSuffix')($scope.myDate);
 
 	$scope.slotslug = $scope.$parent.cart.timeslot.slotslug;
-
+	
 	$scope.orderConfirm = function(){
 		
-		alcoholCart.checkoutValidate().then(			
+		$rootScope.processingOrder = true;
+
+		alcoholCart.checkoutValidate().then(
+
 			function (successRes) {
 
 				alcoholCart.freezCart().then(
+
 					function(result){
 						
 						var cartKey = alcoholCart.getCartKey();
@@ -1840,6 +1842,7 @@ AlcoholDelivery.controller('CartReviewController',[
 
 						}).error(function(response, status, headers) {
 
+								
 								sweetAlert.swal({
 									type:'error',
 									title: 'Oops...',
@@ -1847,11 +1850,12 @@ AlcoholDelivery.controller('CartReviewController',[
 									timer: 2000
 								});
 
-						}).success(function(response) {
+						})
+						.success(function(response) {
 
 								if($scope.cart.payment.method == 'CARD'){
 									var payurl = $sce.trustAsResourceUrl(response.formAction);
-									$rootScope.$broadcast('gateway.redirect', {
+									$scope.$broadcast('gateway.redirect', {
 										url: payurl,
 										method: 'POST',
 										params: response.formData
@@ -1878,26 +1882,38 @@ AlcoholDelivery.controller('CartReviewController',[
 
 								store.orderPlaced();
 
+								$rootScope.processingOrder = false;
+
 								$state.go('orderplaced',{order:response.order},{reload: false, location: 'replace'});
 
 						})
+						.finally(function(){
+
+							$rootScope.processingOrder = false;
+
+						})
+
 					},
 					function(errorRes){
+						$rootScope.processingOrder = false;
 						console.log(errorRes);
 					}
 
 				)
+
 			},
 			function (errorRes) {
 
 				if(errorRes==='reload'){
 					$state.go("mainLayout.checkout.cart", {}, {reload: true});
 				}
-
+				$rootScope.processingOrder = false;
 			}
 
 		);
+
 	}
+
 
 	if($stateParams.pstatus){
 		$scope.paymenterror = 'Payment failed';

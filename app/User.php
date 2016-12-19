@@ -47,7 +47,8 @@ class User extends Eloquent implements AuthenticatableContract,
 		'status',
 		'verified',
 		'productAddedNotification',
-		'savedCards'
+		'savedCards',
+		'reffered'
 	];
 
 	public function getFields(){

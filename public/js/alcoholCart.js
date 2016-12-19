@@ -3291,8 +3291,8 @@ AlcoholDelivery.service("promotionsService",[
 }]);
 
 AlcoholDelivery.service('cartValidation',[
-			'alcoholCart', '$state', '$mdToast'
-	,function(alcoholCart, $state, $mdToast) {
+			'alcoholCart', '$state', '$mdToast','UserService'
+	,function(alcoholCart, $state, $mdToast, UserService) {
 
 	this.showToast = function (msg) {
 		if(!msg) return false;
@@ -3327,6 +3327,13 @@ AlcoholDelivery.service('cartValidation',[
 		// return true;
 
 		if(step > 0) {
+
+			var currUser = UserService.getIfUser();
+			if(currUser===false){
+				$state.go(states[0], {err: "Please login"});
+				return false;
+			}
+
 			if(alcoholCart.isEmpty()){
 				$state.go(states[0], {err: "Add some products to the cart!"}, {reload: true});
 				return false;
@@ -3357,10 +3364,10 @@ AlcoholDelivery.service('cartValidation',[
 
 		if(step > 1) {
 
-			if(typeof cart.delivery == 'undefined' ||
-				typeof cart.delivery.address == 'undefined' ||
-				typeof cart.delivery.address.detail == 'undefined' ||
-				typeof cart.delivery.address.key == 'undefined'
+			if(!angular.isDefined(cart.delivery) ||
+				!cart.delivery.address ||
+				!cart.delivery.address.detail ||
+				!cart.delivery.address.key
 			){
 				$state.go(states[1], {err: "Please select a delivery address!"}, {reload: true});
 				return false;

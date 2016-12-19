@@ -255,6 +255,8 @@ Route::group(['prefix' => 'api'], function () {
 
 	});
 
+	Route::get("mailOrderPlaced/{orderRef}","OrderController@getMailOrderPlaced");
+
 	Route::controller('suggestion', 'SuggestionController');
 	Route::resource('cart', 'CartController');
 	Route::resource('wishlist', 'WishlistController');

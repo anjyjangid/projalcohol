@@ -1369,6 +1369,7 @@ class Cart extends Moloquent
 				'loyaltyType'=>(int)$product['loyaltyType'],
 				'loyalty'=>(float)$product['loyalty'],
 				'bulkDisable'=>(float)$product['bulkDisable']
+
 			];
 
 			foreach ($product['imageFiles'] as $key => $value) {
@@ -1417,7 +1418,11 @@ class Cart extends Moloquent
 					$objSale['giftQuantity'] = $product['proSales']['giftQuantity'];
 				}
 
-				$proSales[(string)$product['proSales']['_id']] = $objSale;				
+				$proSales[(string)$product['proSales']['_id']] = $objSale;
+
+				if($this->isSingleProductSale($product['proSales']))
+				$proDetails[(string)$product['_id']]['common']['sale'] = $objSale;
+
 
 			}
 
@@ -1927,6 +1932,12 @@ class Cart extends Moloquent
 						$price = $oProduct['qtyfinal'] * ($price - $discountValue);	
 
 					}
+
+					// $oProduct['sale'] = [
+					// 	"title" => $product['sale']['title'],
+					// 	"detailTitle" => $product['sale']['detailTitle']
+					// ];
+
 				}
 
 				$oProduct['price'] = $price;

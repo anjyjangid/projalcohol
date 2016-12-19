@@ -1155,6 +1155,25 @@ AlcoholDelivery.run([
 	$rootScope.isAppInitialized = false;
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
 
+		if(angular.isDefined($rootScope.processingOrder) && $rootScope.processingOrder===true){
+
+			$mdToast.show({
+
+				controller:function($scope){
+					$scope.message = "Cart under process";
+				},
+				templateUrl: '/templates/toast-tpl/wishlist-notify.html',
+				parent : $document[0].querySelector('#cart-summary-icon'),
+				position: 'top center',
+				hideDelay:3000
+
+			});
+
+			
+			event.preventDefault();
+
+		}
+
 		var regex = new RegExp('^accountLayout', 'i');
 
 		if(toState != fromState){			

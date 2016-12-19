@@ -7,6 +7,7 @@ use MongoId;
 use AlcoholDelivery\Products as Products;
 use AlcoholDelivery\User as Users;
 use AlcoholDelivery\Email as Email;
+use View;
 
 class Orders extends Moloquent
 {
@@ -176,7 +177,6 @@ class Orders extends Moloquent
 
 	}
 
-
 	public function generate($params = array()){
 		
 		$order = new Orders;
@@ -252,7 +252,6 @@ class Orders extends Moloquent
 
 	}
 
-
 	public function formatorder($order){
 
 		$productInfo = [];
@@ -267,6 +266,7 @@ class Orders extends Moloquent
 		if(isset($order['products']) && !empty($order['products'])){
 			foreach ($order['products'] as $key => $value) {
 				if(isset($value['qtyfinal']) && $value['qtyfinal']>0){
+
 					$productId = (string)$value['_id'];
 					$product = $productInfo[$productId];
 					
@@ -285,7 +285,8 @@ class Orders extends Moloquent
 							'unitPrice' => $value['unitprice'],
 							'total' => $value['quantity']['chilled']*$value['unitprice'],
 							'products' => [],
-							'category' => 'product'
+							'category' => 'product',
+							'sale' => isset($product['sale'])?$product['sale']:false
 						];
 					}
 
@@ -376,8 +377,7 @@ class Orders extends Moloquent
 		}
 
 		//PACKAGES
-		if(isset($order['packages']) && !empty($order['packages'])){			
-
+		if(isset($order['packages']) && !empty($order['packages'])){
 
 			foreach ($order['packages'] as $key => $value) {
 				$packageProduct = [];
@@ -500,7 +500,7 @@ class Orders extends Moloquent
 			}				
 		}	
 
-		//GIFT PACAGING
+		//GIFT PACKAGING
 		if(isset($order['gift']) && !empty($order['gift'])){
 			foreach ($order['gift']['container'] as $containerkey => $containervalue) {						
 					$giftpackage = [];
@@ -564,10 +564,10 @@ class Orders extends Moloquent
 					$particulars[] = [
 						'_id' => '',
 						'name' => $promotionvalue['title'],
-						'slug' => '',
-						'coverImage' => '',
-						'description' => '',
-						'shortDescription' => '',
+						'slug' => $product['slug'],
+						'coverImage' => $product['coverImage'],
+						'description' => $product['description'],
+						'shortDescription' => $product['shortDescription'],
 						'chilled' => false,
 						'quantity' => 1,
 						'unitPrice' => $promotionvalue['price'],							
@@ -601,4 +601,29 @@ class Orders extends Moloquent
 		}*/
 
 	}
+
+	public function placed(){
+
+		$order = $this->toArray();
+		$user = User::find($order['user']);
+
+		$order = $this->formatorder($order);
+
+		$view = View::make('emails.order', $order);
+
+		$contents = $view->render();
+		prd($contents);
+		$email = new Email('orderconfirm');
+
+		$data = [
+			'name' => (isset($user->name) && !empty($user->name))?$user->name:$user->email,
+			'email' => $user->email,
+			'order_number' => $order['reference'],
+			'order_detail' => $contents
+		];
+
+		$emailSent = $email->sendEmail($data);
+
+	}
+
 }
