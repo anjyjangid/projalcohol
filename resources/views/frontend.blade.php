@@ -29,7 +29,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		
 		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-		<title class="hide" ng-bind="meta.title"></title>
+		<title ng-bind="meta.title"></title>
 
 
 

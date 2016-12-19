@@ -29,7 +29,9 @@ AlcoholDelivery.controller('AppController',
 
 	$http.get("/super/settings/").success(function(response){
 		$rootScope.settings = response;
-		$rootScope.settings.fbid = '1269828463077215';
+		$rootScope.settings.fbid = '273669936304095';//'1269828463077215';
+
+		//http://54.169.107.156/
 	});
 
 

@@ -119,7 +119,7 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 
 	Route::post('checkCoupon','CouponController@checkCoupon');
 	
-	
+	Route::post('payment/addcard/{id}','PaymentController@postAddcard');
 
 });
 
@@ -375,6 +375,8 @@ Route::get('sitemap.xml', function(){
     // add every post to the sitemap
     if($categories){
     	foreach ($categories as $category){
+    		if($category['cat_status'] == 0) continue;
+
 	        $sitemap->add(url().'/'.$category['slug']);
 	    }
 	}

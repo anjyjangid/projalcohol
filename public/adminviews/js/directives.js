@@ -908,3 +908,123 @@ MetronicApp.directive('orderStatus', function(){
 	}
 });		
 
+MetronicApp.directive('userCards', function(){
+
+	return {
+		scope :{
+			paymentmode: '=paymentmode',
+			payment:'=payment',
+			userdata:'=userdata',
+			adminmode:'=adminmode',
+			errors:'=errors'
+		},
+		restrict: 'A',
+		templateUrl: '/templates/partials/addcard.html',
+		controller: function($scope,$rootScope,$http,$state,$payments,sweetAlert,alcoholCart){
+
+			$scope.$on('addcardsubmit', function() {
+	            $scope.addnewcard();
+	        });
+
+	    	//$scope.userdata = $scope.savedcards;
+
+		    $scope.verified = function () {
+		    	return $payments.verified();
+		    }
+
+		    $scope.addnewcard = function(){
+		    	if($scope.paymentmode){
+		    		$scope.payment.creditCard.token = 1;
+		    	}
+		    	$scope.processingcard = true;
+		    	$scope.errors = [];
+				$http.post('/payment/addcard',$scope.payment.creditCard).success(function(rdata){
+
+					if($scope.paymentmode){
+						
+						$scope.payment.creditCard = rdata.card;
+
+						/*alcoholCart.deployCart().then(
+							function(result){
+								$state.go('mainLayout.checkout.review');
+							}
+						);*/
+
+					}else{
+						$scope.payment.card = '';
+						$scope.userdata = rdata.user;
+						$scope.payment.creditCard = {};
+					}
+
+					$scope.processingcard = false;
+				}).error(function(errors){
+					$scope.errors = errors;
+					$scope.processingcard = false;
+				});
+
+			}
+
+			$scope.removeCard = function(card){
+				sweetAlert.swal({
+				  title: 'Are you sure?',
+				  text: "You won't be able to revert this!",
+				  type: 'warning',
+				  showCancelButton: true,
+				  confirmButtonColor: '#3085d6',
+				  cancelButtonColor: '#d33',
+				  confirmButtonText: 'Yes, delete it!'
+				}).then(function() {
+					$http.post('/payment/removecard',card).success(function(rdata){
+						$scope.userdata = rdata.user;
+						$scope.payment.card = '';
+					}).error(function(errors){
+						sweetAlert.swal({
+							type:'error',
+							text:errors,
+						});
+					});
+				});
+			}
+
+			$scope.changeCard = function(card){
+				$scope.payment.creditCard = card;
+				$scope.payment.creditCard.cvc = '';				
+			}
+
+			var offset = 0; range = 10;
+			var currentYear = new Date().getFullYear();			
+			$scope.years = [];
+            for (var i = (offset*1); i < (range*1) + 1; i++){
+                $scope.years.push(currentYear + i);
+            }
+
+            $scope.months = [];
+            for (var i = 0; i < 12; i++){
+                $scope.months.push(1 + i);
+            }
+			
+		}
+	};
+})
+
+MetronicApp.directive('paymentForm', ['$rootScope','$timeout',function($rootScope,$timeout){
+	return {
+		restrict: 'E',
+        replace: true,
+        template:
+            '<form action="{{ formData.url }}" method="{{ formData.method }}">' +
+            '   <div ng-repeat="(key,val) in formData.params">' +
+            '       <input type="hidden" name="{{ key }}" value="{{ val }}" />' +
+            '   </div>' +
+            '</form>',
+        link: function($scope, $element, $attrs) {
+            $scope.$on('gateway.redirect', function(event, data) {
+                $scope.formData = data;
+                $timeout(function() {
+                    //$rootScope.$broadcast('redirecting','Wait while we redirect you to the payment gateway..');
+                    $element.submit();
+                });
+            })
+        }
+	};
+}]);
