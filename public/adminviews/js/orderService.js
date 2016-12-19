@@ -1233,15 +1233,56 @@ MetronicApp
 		var subTotal = this.getSubTotal();
 
 		if(!(subTotal>0)){
-			d.reject("foo");
+			d.reject({customError:true,message:'Invalid amount to place order!'});
 		}
 
-		if(isValid){
+		//CHECK PAYMENT OPTIONS
+		if(this.$cart.payment.method == 'COD'){				
+			//REMOVE CARD ATTR IN CASE OF COD
+			delete _self.$cart.payment.card;
+			delete _self.$cart.payment.creditCard;
+			delete _self.$cart.payment.savecard;
+		}else{
+
+			var cartpayment = this.$cart.payment;
+
+			if(typeof cartpayment.card == 'undefined' || cartpayment.card == "" || cartpayment.card == null){
+				d.reject({customError:true,message:'Please select card for payment.'});				
+			}else{				
+				if(cartpayment.card == 'newcard'){
+					cartpayment.creditCard.token = 1;
+					$http.post('/adminapi/payment/addcard/'+this.$cart.user,cartpayment.creditCard).error(function(data, status, headers) {			        	
+			        	d.reject(data);
+			        }).success(function(rdata){
+						d.resolve(rdata);
+					})
+					//$scope.$broadcast('addcardsubmit');					
+				}else{
+					if(!this.$cart.payment.creditCard.cvc || this.$cart.payment.creditCard.cvc == ''){						
+						d.reject({customError:true,message:'Please enter cvv for the selected card.'});						
+					}else{
+						d.resolve({});						
+					}						
+				}
+			}
+
+		}
+
+		/*if(isValid){
 			d.resolve("every thing all right");
 		}else{
 			d.reject("foo");
-		}
+		}*/		
 		
+		return d.promise;
+	}
+
+	this.processPayment = function(){
+
+		var d = $q.defer();
+
+		d.reject("foo");
+
 		return d.promise;
 	}
 

@@ -1,6 +1,7 @@
 <div ng-if="cart.payment.paymentres && cart.payment.paymentres.result!='Paid'" class="alert alert-danger">
   Card is rejected by the bank. Please check with your bank or re-enter card details
 </div>
+<!-- <pre>{{cart|json}}</pre> -->
 <div class="row" ng-form="cartFrm">
 	<div class="col-md-12">
 		<div class="portlet box blue">
@@ -229,7 +230,7 @@
 									</a> -->
 								</div>
 							</div>
-						</div>
+						</div>						
 						<div class="col-sm-6">
 							<h3>Delivery Type</h3>
 							<div class="form-group" ng-class="{'has-warning':errors['cart.delivery.type'][0]}">
@@ -378,7 +379,7 @@
 		</div>
 
 		<div class="form-actions">
-			<button type="button" ng-click="orderConfirm()" ng-disabled="!alcoholCart.getTotalUniqueItems()" class="btn blue">Submit</button>
+			<button type="button" ng-click="orderConfirm()" ng-disabled="!alcoholCart.getTotalUniqueItems()" class="btn blue">Place order</button>
 			<button type="button" class="btn default" ng-click="newCart()">Cancel order</button>
 		</div>
 	</div>
@@ -512,3 +513,5 @@
 		<button ng-disabled="savingData" class="btn btn-warning" ng-click="cancel()">Cancel</button>
 	</div>
 </script>
+
+<payment-form></payment-form>
