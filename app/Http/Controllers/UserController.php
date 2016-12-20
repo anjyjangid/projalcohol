@@ -46,7 +46,7 @@ class UserController extends Controller
 
 		if($user && $user->verified!=1){
 			$invalidcredentials = 'You need to verify your email. Click below link to resend verification email';
-			$reverification = 1;			
+			$reverification = 1;
 			Auth::logout();
 		}
 		

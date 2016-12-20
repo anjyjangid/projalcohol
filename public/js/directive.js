@@ -49,6 +49,11 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.signupSubmit = function() {
 				$scope.signup.errors = {};
+
+				if(angular.isDefined($rootScope.refferal)){
+					$scope.signup.refferedBy = $rootScope.refferal;
+				}
+
 				$http.post('/auth/register',$scope.signup).success(function(response){
 	                $scope.user = response;
 					$scope.user.name = response.email;
@@ -1626,6 +1631,8 @@ AlcoholDelivery.directive('sideBar', function() {
 
 				// display the spinner bar whenever the route changes(the content part started loading)
 				$rootScope.$on('$stateChangeStart', function() {
+
+					if(!(angular.isDefined($rootScope.processingOrder) && $rootScope.processingOrder===true))
 					element.removeClass('hide'); // show spinner bar
 					//$('#sectionarea').addClass('hide');
 				});

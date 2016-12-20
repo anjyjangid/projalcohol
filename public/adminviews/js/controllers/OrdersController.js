@@ -45,7 +45,6 @@ MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout'
     angular.orderModel = orderModel;
     orderModel.getOrder($stateParams.order).success(function(response){
 		$scope.order = response;
-
 		$scope.shipping = response.delivery.address.detail;
 		$scope.serviceCharge = 0;
 		if($scope.order.service.express.status){
@@ -63,12 +62,15 @@ MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout'
 
 }]);
 
-MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$timeout', 'alcoholCart', '$modal', '$filter', '$rootScope', 'sweetAlert'
-, function($scope, $state, $http, $timeout, alcoholCart, $modal, $filter, $rootScope, sweetAlert){
+MetronicApp.controller('OrderCreateController',[
+	'$scope', '$state', '$http', '$timeout', 'alcoholCart', '$modal', '$filter', '$rootScope', 'sweetAlert','$sce'
+, function($scope, $state, $http, $timeout, alcoholCart, $modal, $filter, $rootScope, sweetAlert,$sce){
 	angular.alcoholCart = alcoholCart;
 
 	$scope.alcoholCart = alcoholCart;
 	$scope.cart = alcoholCart.getCart();
+
+	$scope.paymentError = [];
 
 	// $scope.cart.orderType = "consumer";
 
@@ -111,6 +113,10 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 		$scope.cart[$scope.cart.orderType] = customer;
 		$scope.cart.user = mongoIdToStr(customer._id);
 
+		delete $scope.cart.payment.creditCard;
+		delete $scope.cart.payment.card;
+		delete $scope.cart.payment.savecard;
+
 		var api;
 		if($scope.cart.orderType=='business')
 			api = '/adminapi/business/detail/'+$scope.cart.user;
@@ -123,7 +129,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 		.then(function(res){
 
 			$scope.cart.addresses = res.data.address || [];
-			$scope.savedCards = res.data.savedCards || [];
+			//$scope.cart.[$scope.cart.orderType].savedCards = res.data.savedCards || [];
 			$scope.alternateNumbers = res.data.alternate_number || [];
 
 			if(!angular.isDefined(res.data.mobile_number) || res.data.mobile_number==""){
@@ -252,67 +258,86 @@ MetronicApp.controller('OrderCreateController',['$scope', '$state', '$http', '$t
 		$scope.alcoholCart.$cart.delivery.address.detail = $scope.cart.addresses[key];
 	}
 
-	$scope.orderConfirm = function(){
+	$scope.orderConfirm = function(){				
 		
 		alcoholCart.checkoutValidate().then(
-
 			function (successRes) {
 
-				alcoholCart.freezCart().then(
+				if(successRes.card)
+					$scope.cart.payment.creditCard = successRes.card;
 
-					function(result){
+				alcoholCart.deployCart().then(
+					function (successRes) {
+						alcoholCart.freezCart().then(
+							function(result){
 
-						var cartKey = alcoholCart.getCartKey();
+							var cartKey = alcoholCart.getCartKey();
 
-						$http.put("adminapi/order/confirmorder/"+cartKey, {} ,{
+							$http.put("adminapi/order/confirmorder/"+cartKey, {} ,{
 
-						}).error(function(response, status, headers) {
+							}).error(function(response, status, headers) {
 
-								sweetAlert.swal({
-									type:'error',
-									title: 'Oops...',
-									text:response.message,
-									timer: 2000
-								});
-
-				        }).success(function(response) {
-
-					        	if($scope.cart.payment.method == 'CARD'){
-					        		var payurl = $sce.trustAsResourceUrl(response.formAction);
-						            $rootScope.$broadcast('gateway.redirect', {
-						                url: payurl,
-						                method: 'POST',
-						                params: response.formData
-						            });
-					        		return;
-					        	}
-
-								sweetAlert.swal({
-									type:'success',
-									title: response.message,
-									timer: 1000
-								});
-
-								$state.go('userLayout.orders.show',{order:response.order},{reload: false, location: 'replace'});
-
-						})
-					},
-					function(errorRes){
-						sweetAlert.swal({
+									sweetAlert.swal({
 										type:'error',
 										title: 'Oops...',
-										text:errorRes.message,
+										text:response.message,
 										timer: 2000
 									});
-						
-					}
 
-				)
+					        }).success(function(response) {
+
+						        	if($scope.cart.payment.method == 'CARD'){
+						        		var payurl = $sce.trustAsResourceUrl(response.formAction);
+							            $rootScope.$broadcast('gateway.redirect', {
+							                url: payurl,
+							                method: 'POST',
+							                params: response.formData
+							            });
+						        		return;
+						        	}
+
+									sweetAlert.swal({
+										type:'success',
+										title: response.message,
+										timer: 1000
+									});
+
+									//$state.go('userLayout.orders.show',{order:response.order},{reload: false, location: 'replace'});
+
+							})
+						},
+							function(errorRes){
+							sweetAlert.swal({
+											type:'error',
+											title: 'Oops...',
+											text:errorRes.message,
+											timer: 2000
+										});
+							
+						}
+						);
+					},
+					function (errRes){
+
+					}
+				);	
 			},
 			function (errorRes) {
-				$state.go("userLayout.orders.consumer", {}, {reload: true});
+				if(errorRes.customError){					
+					sweetAlert.swal({				  
+					  text: errorRes.message,
+					  type: 'error'				  
+					});				
+				}else{
+					sweetAlert.swal({				  
+					  text: 'Please validate the card details',
+					  type: 'error'				  
+					});
+					$scope.paymentError = errorRes;
+				}
 			}
 		);
+			
 	}
 
 	$scope.newCart = function() {

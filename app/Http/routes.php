@@ -119,7 +119,7 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 
 	Route::post('checkCoupon','CouponController@checkCoupon');
 	
-	
+	Route::post('payment/addcard/{id}','PaymentController@postAddcard');
 
 });
 
@@ -255,6 +255,8 @@ Route::group(['prefix' => 'api'], function () {
 
 	});
 
+	Route::get("mailOrderPlaced/{orderRef}","OrderController@getMailOrderPlaced");
+
 	Route::controller('suggestion', 'SuggestionController');
 	Route::resource('cart', 'CartController');
 	Route::resource('wishlist', 'WishlistController');
@@ -375,6 +377,8 @@ Route::get('sitemap.xml', function(){
     // add every post to the sitemap
     if($categories){
     	foreach ($categories as $category){
+    		if($category['cat_status'] == 0) continue;
+
 	        $sitemap->add(url().'/'.$category['slug']);
 	    }
 	}

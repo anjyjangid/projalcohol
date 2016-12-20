@@ -1,6 +1,3 @@
-<!-- <pre>
-    {{payment|json}}
-</pre> -->
 <div class="checkoutmiddletable">
     <div class="">
         <md-radio-group ng-model="payment.card" ng:class="{'hideselector':!paymentmode}">
@@ -24,7 +21,7 @@
                             <input focus-me="paymentmode && payment.creditCard && payment.creditCard.token_id == card.token_id" type="password" autocomplete="false" ng-model="payment.creditCard.cvc" size="4"> <img style="width:50px;" src="asset/i/security.png">
                         </div>
                     </td>                    
-                    <td align="right">
+                    <td align="right" ng-if="!adminmode">
                         <a href="javascript:void(0)" ng-click="removeCard(card)" class="checkoutmiddletabledeleteimg"><i class="glyphicon glyphicon-trash"></i></a>
                     </td>                
                 </tr>

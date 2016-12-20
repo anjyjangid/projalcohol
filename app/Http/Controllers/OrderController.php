@@ -20,7 +20,7 @@ class OrderController extends Controller
 
 	public function __construct()
 	{
-		$this->middleware('auth',['except' => 'getOrderdetail']);
+		$this->middleware('auth',['except' => ['getOrderdetail','getMailOrderPlaced']]);
 	}
 
 	/**
@@ -253,6 +253,14 @@ class OrderController extends Controller
 			return view('invoice.404',['id'=>$reference]);
 
 		}
+	}
+
+	public function getMailOrderPlaced($order = false){
+		
+		$order = Orders::where("reference",'=',$order)->first();
+		$order->placed();
+		prd("order placed");
+
 	}
 
 	

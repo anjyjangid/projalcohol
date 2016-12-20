@@ -86,7 +86,8 @@ class CustomerController extends Controller
 							'name'=>1,
 							'email'=>1,
 							'mobile_number'=>1,
-							'alternate_number' => 1
+							'alternate_number' => 1,
+							'savedCards' => 1
 						];
 
 			$query[]['$project'] = $project;
@@ -102,7 +103,7 @@ class CustomerController extends Controller
 			
 		}
 
-		$columns = ['name','email','mobile_number'];
+		$columns = ['name','email','mobile_number','savedCards'];
 
 		
 
