@@ -49,6 +49,11 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.signupSubmit = function() {
 				$scope.signup.errors = {};
+
+				if(angular.isDefined($rootScope.refferal)){
+					$scope.signup.refferedBy = $rootScope.refferal;
+				}
+
 				$http.post('/auth/register',$scope.signup).success(function(response){
 	                $scope.user = response;
 					$scope.user.name = response.email;
@@ -298,6 +303,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 						scope[ngModel] = $(element).owlCarousel(defaultOptions);
 						if(typeof $(scope[ngModel]).data('owlCarousel')!=='undefined'){
+							
 							scope[ngModel].visibleItems = $(scope[ngModel]).data('owlCarousel').visibleItems.length;
 						}
 						
@@ -770,7 +776,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 					}				
 
-				}, 500);
+				}, 2000);
 
 			};
 
@@ -1260,6 +1266,7 @@ AlcoholDelivery.directive('sideBar', function() {
 				$http.post('/payment/addcard',$scope.payment.creditCard).success(function(rdata){
 
 					if($scope.paymentmode){
+						
 						$scope.payment.creditCard = rdata.card;
 
 						alcoholCart.deployCart().then(
@@ -1306,6 +1313,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.changeCard = function(card){
 				$scope.payment.creditCard = card;
+				$scope.payment.creditCard.cvc = '';				
 			}
 
 			var offset = 0; range = 10;
@@ -1623,6 +1631,8 @@ AlcoholDelivery.directive('sideBar', function() {
 
 				// display the spinner bar whenever the route changes(the content part started loading)
 				$rootScope.$on('$stateChangeStart', function() {
+
+					if(!(angular.isDefined($rootScope.processingOrder) && $rootScope.processingOrder===true))
 					element.removeClass('hide'); // show spinner bar
 					//$('#sectionarea').addClass('hide');
 				});
@@ -1652,4 +1662,25 @@ AlcoholDelivery.directive('sideBar', function() {
 			}
 		};
 	}
-]);
+]).directive('focusMe', ['$timeout', '$parse', function ($timeout, $parse) {
+    return {
+        //scope: true,   // optionally create a child scope
+        link: function (scope, element, attrs) {
+            var model = $parse(attrs.focusMe);
+            scope.$watch(model, function (value) {
+                console.log('value=', value);
+                if (value === true) {
+                    $timeout(function () {
+                        element[0].focus();
+                    });
+                }
+            });
+            // to address @blesh's comment, set attribute value to 'false'
+            // on blur event:
+            element.bind('blur', function () {
+                //console.log('blur');
+                //scope.$apply(model.assign(scope, false));
+            });
+        }
+    };
+}]);

@@ -1,67 +1,64 @@
-<div class="row" ng-if="selected.package && packageType=='party'">
-<div class="col-sm-12">
-<div class="row">
-<div class="col-sm-6">
-
-<img class="img-responsive" err-src="asset/i/defaultImage.png" ng-src="packages/i/{{selected.package.coverImage.source | getProductThumb}}">
-<br>
-<p class="caption" ng-bind="selected.package.description"></p>
-</div>
-<div class="col-sm-6">
-<h2 ng-bind="selected.package.title"></h2>
-<p class="lead" ng-bind="selected.package.subTitle"></p>
-<p>
-Package Amount<br>
-<span class="h2 strong">${{selected.package.packagePrice}}</span>
-</p>
-<p class="text-success">
-Savings<br>
-<span class="h2 strong">${{selected.package.packageSavings}}</span>
-</p>
-<div class="form-group">
-<label>Quantity</label>
-
-<input type="text" ng-model="selected.package.packageQuantity" value="selected.package.packageQuantity" min="1"  ng-touch-spin on-increment="addPackage(package._id)" on-decrement="addPackage(package._id)">
-
-</div>
-<button class="btn btn-primary" ng-click="alcoholCart.addPackage(selected.package._id, p)">Add to Cart</button>
-</div>
-</div>
-<div class="row">
-<div class="party-detail-btmtitl4"><h3>Customise your own package</h3></div>
-<div class="col-md-12 party-alcholcover">
-<v-accordion id="accordionA" class="vAccordion--default" control="accordionA" multiple onexpand="expandCallback(index, id)" oncollapse="collapseCallback(index, id)">
-<v-pane id="{{$index}}" ng-repeat="packageItem in selected.package.packageItems">
-<v-pane-header id="{{$index}}-header"  aria-controls="{{ ::subpane.id }}-header" class="byz">
-<div class="ttile-divcover party-deatil-pading5">
-<h5  class="custmize-contntset ">{{ ::packageItem.title }}</h5>
-<span ng-bind="packageItem.selectedProducts"></span>
-</div>
-</v-pane-header>
-<v-pane-content id="{{$index}}-content" aria-labelledby="{{ ::subpane.id }}-content">
-<div class="alert alert-danger" ng-show="errors[$index]" ng-bind="errors[$index]"></div>
-<div class="row">													
-<div ng-repeat-start="pcprod in packageItem.products" ng:class="{'row':($index!=0 && $index%3==0)}"></div>
-<div class="col-md-4 party-detail-btm-width"> 							
-<div class="thumbnail thumbnailheightset" ng:class="{'selectedproductcart':pcprod.customizequantity > 0}">						
-<div class="caption party-detail-caption">
-<h5 class="item-btmtitle">{{ pcprod.name }}</h5>
-<!-- <p>{{pcprod.cprice}} - {{pcprod.sprice}}</p> -->
-</div>
-<div class="detail-productdiv">
-<img  err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{pcprod.imageFiles[0].source}}" class="img-responsive img-responsive-h"></div>
-<div class="checkoutmiddlevlauediv party-checkout-detail" style="float: none;">
-<input type="text" value="pcprod.customizequantity" ng-model="pcprod.customizequantity" ng-change="validateByIndex($parent.$index)" mquantity="packageItem.quantity" min="0" ng-touch-spin>
-</div>
-</div>
-</div>
-<div ng-repeat-end></div>													
-</div>
-</v-pane-content>
-</v-pane>
-</v-accordion>		
-</div>
-
-</div>
-</div>
+<div class="row" ng-if="package">		
+	<div class="col-sm-12">
+		<div class="row">
+			<div class="col-sm-6">
+				<img class="img-responsive" err-src="asset/i/defaultImage.png" ng-src="packages/i/{{selected.package.coverImage.source | getProductThumb}}">
+				<br>
+				<p class="caption" ng-bind="selected.package.description"></p>
+			</div>
+			<div class="col-sm-6">
+				<h2 ng-bind="selected.package.title"></h2>
+				<p class="lead" ng-bind="selected.package.subTitle"></p>
+				<p>
+					Package Amount<br>
+					<span class="h2 strong">${{selected.package.packagePrice}}</span>
+				</p>
+				<p class="text-success">
+				Savings<br>
+				<span class="h2 strong">${{selected.package.packageSavings}}</span>
+				</p>
+				<div class="form-group">
+				<label>Quantity</label>
+				<input type="text" ng-model="selected.package.packageQuantity" value="selected.package.packageQuantity" min="1"  ng-touch-spin on-increment="addPackage(package._id)" on-decrement="addPackage(package._id)">
+				</div>
+				<button class="btn btn-primary" ng-click="alcoholCart.addPackage(selected.package._id, p)">Add to Cart</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="party-detail-btmtitl4"><h3>Customise your own package</h3></div>
+			<div class="col-md-12 party-alcholcover">
+				<v-accordion id="accordionA" class="vAccordion--default" control="accordionA" multiple onexpand="expandCallback(index, id)" oncollapse="collapseCallback(index, id)">
+					<v-pane id="{{$index}}" ng-repeat="packageItem in selected.package.packageItems">
+						<v-pane-header id="{{$index}}-header"  aria-controls="{{ ::subpane.id }}-header" class="byz">
+							<div class="ttile-divcover party-deatil-pading5">
+								<h5  class="custmize-contntset ">{{ ::packageItem.title }}</h5>
+								<span ng-bind="packageItem.selectedProducts"></span>
+							</div>
+						</v-pane-header>
+						<v-pane-content id="{{$index}}-content" aria-labelledby="{{ ::subpane.id }}-content">
+							<div class="alert alert-danger" ng-show="errors[$index]" ng-bind="errors[$index]"></div>
+							<div class="row">													
+								<div ng-repeat-start="pcprod in packageItem.products" ng:class="{'row':($index!=0 && $index%3==0)}"></div>
+								<div class="col-md-4 party-detail-btm-width"> 							
+									<div class="thumbnail thumbnailheightset" ng:class="{'selectedproductcart':pcprod.customizequantity > 0}">						
+										<div class="caption party-detail-caption">
+										<h5 class="item-btmtitle">{{ pcprod.name }}</h5>
+										<!-- <p>{{pcprod.cprice}} - {{pcprod.sprice}}</p> -->
+										</div>
+										<div class="detail-productdiv">
+											<img  err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{pcprod.imageFiles[0].source}}" class="img-responsive img-responsive-h">
+										</div>
+										<div class="checkoutmiddlevlauediv party-checkout-detail" style="float: none;">
+											<input type="text" value="pcprod.customizequantity" ng-model="pcprod.customizequantity" ng-change="validateByIndex($parent.$index)" mquantity="packageItem.quantity" min="0" ng-touch-spin>
+										</div>
+									</div>
+								</div>
+							<div ng-repeat-end></div>													
+							</div>
+						</v-pane-content>
+					</v-pane>
+				</v-accordion>		
+			</div>
+		</div>
+	</div>
 </div>

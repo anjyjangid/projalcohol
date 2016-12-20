@@ -26,7 +26,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 
 	// $location.hashPrefix('!');
 
-	$mdThemingProvider.theme('default').primaryPalette('purple');
+	$mdThemingProvider.theme('default').primaryPalette('purple').accentPalette('purple');
     //.accentPalette('orange');
 }]);
 
@@ -608,7 +608,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('mainLayout.checkout.review', {
-						url: "/cart/review",
+						url: "/cart/review?{pstatus:string}",
 						params: {err:false},
 						templateUrl : "/templates/checkout/review.html",
 						controller:"CartReviewController",
@@ -734,7 +734,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('cmsLayout.pages', {
-					url: "/site/{slug}",
+					url: "/pages/{slug}",
 					templateUrl:"/templates/cms/cms.html",
 					controller:'CmsController'
 				})
@@ -1044,8 +1044,8 @@ function validateCheckout($q, $state, $timeout, $location, store, alcoholWishlis
 
 
 AlcoholDelivery.service('LoadingInterceptor', [
-'$q', '$rootScope', '$log', '$location',
-function ($q, $rootScope, $log, $location) {
+'$q', '$rootScope', '$log', '$location', '$window',
+function ($q, $rootScope, $log, $location, $window) {
     'use strict';
 
     var xhrCreations = 0;
@@ -1098,7 +1098,7 @@ function ($q, $rootScope, $log, $location) {
 			};
 
 			if(rejection.status == 405){ //405 => method not allowed
-				//$location.url('/404').replace();
+				$window.location.reload();
 			};
 
             return $q.reject(rejection);
@@ -1154,6 +1154,25 @@ AlcoholDelivery.run([
 
 	$rootScope.isAppInitialized = false;
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
+
+		if(angular.isDefined($rootScope.processingOrder) && $rootScope.processingOrder===true){
+
+			$mdToast.show({
+
+				controller:function($scope){
+					$scope.message = "Cart under process";
+				},
+				templateUrl: '/templates/toast-tpl/wishlist-notify.html',
+				parent : $document[0].querySelector('#cart-summary-icon'),
+				position: 'top center',
+				hideDelay:3000
+
+			});
+
+			
+			event.preventDefault();
+
+		}
 
 		var regex = new RegExp('^accountLayout', 'i');
 

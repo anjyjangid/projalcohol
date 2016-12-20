@@ -25,7 +25,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <meta content="" name="description"/>
 <meta content="" name="author"/>
 <!-- BEGIN GLOBAL MANDATORY STYLES -->
-<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css"/>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css"/>
 <link href="{{ asset('assets/global/plugins/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css"/>
 <link href="{{ asset('assets/global/plugins/simple-line-icons/simple-line-icons.min.css') }}" rel="stylesheet" type="text/css"/>
 <link href="{{ asset('assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css"/>
@@ -58,6 +58,8 @@ License: You must have a valid license purchased only from themeforest(the above
 <link href="{{ asset('css/admincustom.css') }}" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
 <link rel="shortcut icon" href="images/favicon.ico"/>
+
+<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/v-accordion/dist/v-accordion.css') }}">
 </head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->
@@ -136,7 +138,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
 
 	<!-- END CORE ANGULARJS PLUGINS -->
-	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAO1xAu1wBu7NZOqNBn9aoYg-RVstm60jc&libraries=places"></script>
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAO1xAu1wBu7NZOqNBn9aoYg-RVstm60jc&libraries=places"></script>
     <script type="text/javascript" src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.js"></script>
     
 	<!-- BEGIN APP LEVEL ANGULARJS SCRIPTS -->
@@ -206,6 +208,7 @@ License: You must have a valid license purchased only from themeforest(the above
 	    
 		
 	</script>
+	<script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>   
 	<!-- END JAVASCRIPTS -->
 </body>
 <!-- END BODY -->

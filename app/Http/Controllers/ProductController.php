@@ -201,8 +201,6 @@ class ProductController extends Controller
 
 		$product = $productObj->fetchProducts($params);
 
-		// $product = Products::where("slug","=",$params['product'])->first();
-
 		if(!empty($product['products'])){
 			return response($product['products'][0],200);
 		}
@@ -211,15 +209,14 @@ class ProductController extends Controller
 
 	}
 
-	public function getAlsobought(Request $request, $productSlug){		
+	public function getAlsobought($cartKey, $productSlug, Request $request){		
 		
 		$response = [
 			'message'=>'',			
 		];
-
-		$cartKey = $request->session()->get('deliverykey');
 		
 		$cart = Cart::findUpdated($cartKey);
+
 		$productWithCount = $cart->getProductIncartCount();
 		$proInCartIds = array_keys($productWithCount);
 

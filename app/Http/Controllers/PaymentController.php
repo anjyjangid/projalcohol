@@ -11,6 +11,7 @@ use AlcoholDelivery\Payment;
 
 use Illuminate\Support\Facades\Validator;
 use AlcoholDelivery\Http\Requests\CardRequest;
+use AlcoholDelivery\User;
 
 class PaymentController extends Controller
 {
@@ -90,9 +91,14 @@ class PaymentController extends Controller
         //
     }
 
-    public function postAddcard(CardRequest $request){
+    public function postAddcard(CardRequest $request,$id = ''){
         $data = $request->all();        
-        $user = Auth::user('user');
+        
+        if($id == '')
+            $user = Auth::user('user');
+        else
+            $user = User::find($id);
+        
         if($user){                       
             $saveUser = true;
             if(isset($data['token'])){
@@ -104,7 +110,7 @@ class PaymentController extends Controller
                 return response($response,200);                
             }else{
                 return response(['number'=>['Error adding card, please try again or verify your card details.']],422);
-                //return response(['number'=>[$response['response_msg']]],422);
+                //return response(['number'=>[$response]],422);
             }
         }else{
             return response('Unauthorized.', 401);

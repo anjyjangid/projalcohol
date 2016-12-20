@@ -31,6 +31,10 @@ Route::group(['prefix' => 'adminapi'], function () {
 
 Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	
+	Route::put('order/confirmorder/{cartKey}','Admin\OrderController@confirmorder');
+	
+	Route::get('order/confirmorder','Admin\OrderController@confirmorder');	
+
 	Route::resource('order', 'Admin\OrderController',['except'=>'show']);
 	Route::controller('order', 'Admin\OrderController');
 
@@ -114,6 +118,9 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	// Route::controller('address', 'AddressController');
 
 	Route::post('checkCoupon','CouponController@checkCoupon');
+	
+	Route::post('payment/addcard/{id}','PaymentController@postAddcard');
+
 });
 
 Route::group(['prefix' => 'admin'], function () {
@@ -148,19 +155,15 @@ Route::group(['prefix' => 'api'], function () {
 
 	Route::get('/getproductdetail', 'ProductController@getproductdetail');
 
-	Route::get('/product/alsobought/{productSlug}', 'ProductController@getAlsobought');
+	Route::get('/product/alsobought/{cartKey}/{productSlug}', 'ProductController@getAlsobought');
 
 	Route::controller('/password', 'Auth\PasswordController');
 
 	Route::get('reset/{key}', 'Auth\PasswordController@reset');
 
 	Route::put('deploycart/{cartKey}','CartController@deploycart');
- 
-	Route::put('confirmorder/{cartKey}','CartController@confirmorder');
 
-	
-
-	Route::get('freezcart','CartController@freezcart');
+	Route::get('freezcart/{cartKey}','CartController@freezcart');
 
 	Route::group(['middleware' => 'auth'], function () {
 
@@ -168,23 +171,51 @@ Route::group(['prefix' => 'api'], function () {
 		Route::resource('loyalty', 'LoyaltyController');
 
 		Route::controller('credits', 'CreditsController');
+		
 		Route::resource('credits', 'CreditsController');
 
 		Route::resource('address', 'AddressController');
 
 		Route::controller('coupon', 'CouponController');
-
+		
+		Route::put('confirmorder/{cartKey}','CartController@confirmorder');
+		
 		Route::post('checkCoupon','CouponController@checkCoupon');
 
 	});
+
+	Route::put('test/confirmorder/{cartKey}','CartController@confirmordertest');
 
 	Route::group(['prefix' => 'cart'], function () {
 
 		Route::get('deliverykey','CartController@getDeliverykey');
 
 		Route::get('services','CartController@getServices');	
-
+		
+		/**/
 		Route::get('timeslots/{date}','CartController@getTimeslots');
+
+		Route::post('repeatlast','CartController@postRepeatlast');
+
+		Route::put('bulk','CartController@putBulk');
+		
+		Route::put('bulk/{cartkey}','CartController@putBulk');
+
+		Route::put('loyalty/{cartKey}','CartController@putLoyalty');
+
+		Route::put('loyalty/credit/{cartKey}','CartController@putCreditCertificate');
+		
+		Route::delete('loyalty/{cartKey}/{key}/{type}','CartController@deleteLoyaltyProduct');
+
+		Route::delete('loyaltycard/{cartKey}/{key}','CartController@deleteLoyaltyCard');
+		
+		Route::put('chilled/loyalty/{cartkey}','CartController@updateLoyaltyChilledStatus');
+		
+		/*Route::group(['middleware' => 'auth'], function () {
+
+
+
+		});*/
 
 		Route::get('availability/{cartkey}','CartController@availability');
 
@@ -202,15 +233,9 @@ Route::group(['prefix' => 'api'], function () {
 		
 		Route::put('promotion/{cartkey}','CartController@putPromotion');
 
-		Route::put('bulk','CartController@putBulk');
-
-		Route::post('repeatlast','CartController@postRepeatlast');
-
 		Route::delete('product/{cartKey}/{key}/{type}','CartController@deleteProduct');
-	
-		Route::put('bulk/{cartkey}','CartController@putBulk');
 
-		Route::delete('promotion/{key}','CartController@deletePromotion');
+		Route::delete('promotion/{cartKey}/{key}','CartController@deletePromotion');
 
 		Route::delete('card/{cartKey}/{key}','CartController@deleteCard');
 
@@ -228,16 +253,9 @@ Route::group(['prefix' => 'api'], function () {
 
 		Route::put('gift/product/chilledtoggle/{giftUid}','CartController@putGiftProductChilledStatus');
 
-		Route::put('loyalty/{cartKey}','CartController@putLoyalty');
-
-		Route::put('loyalty/credit/{cartKey}','CartController@putCreditCertificate');
-		
-		Route::delete('loyalty/{cartKey}/{key}/{type}','CartController@deleteLoyaltyProduct');
-		Route::delete('loyaltycard/{cartKey}/{key}','CartController@deleteLoyaltyCard');
-		
-		Route::put('chilled/loyalty/{cartkey}','CartController@updateLoyaltyChilledStatus');
-
 	});
+
+	Route::get("mailOrderPlaced/{orderRef}","OrderController@getMailOrderPlaced");
 
 	Route::controller('suggestion', 'SuggestionController');
 	Route::resource('cart', 'CartController');
@@ -307,12 +325,14 @@ Route::get('{storageFolder}/i/{filename}', function ($storageFolder,$filename){
 
 //EXTERNAL URL LIST
 Route::get('confirmorder','CartController@confirmorder');
+Route::get('confirmordermanual/{key}','CartController@confirmordermanual');
 Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
 
+
 $fixPagesLinks = [
-	'events' => 'site/event-planner',
+	'events' => 'pages/event-planner',
 	'menu' => 'beer',
-	'how_to_order' => 'site/how-to-order'
+	'how_to_order' => 'pages/how-to-order'
 ];
 
 //FIX LINKS ROUTE
@@ -357,6 +377,8 @@ Route::get('sitemap.xml', function(){
     // add every post to the sitemap
     if($categories){
     	foreach ($categories as $category){
+    		if($category['cat_status'] == 0) continue;
+
 	        $sitemap->add(url().'/'.$category['slug']);
 	    }
 	}
@@ -366,7 +388,7 @@ Route::get('sitemap.xml', function(){
     // add every post to the sitemap
     if($pages){
     	foreach ($pages as $page){
-	        $sitemap->add(url('site').'/'.$page['slug']);
+	        $sitemap->add(url('pages').'/'.$page['slug']);
 	    }
 	}
     

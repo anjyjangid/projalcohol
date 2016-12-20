@@ -75,7 +75,9 @@ class PrintJob extends Command
             //$printers = $gcp->getPrinters();
             //$resarray = $gcp->sendPrintToPrinter($printerid, "testprint", "http://52.77.231.254/printjob", "url");
 
-            $deliveryOrders = DB::collection('orders')->where('doStatus',1)->get(['reference']);
+            $deliveryOrders = DB::collection('orders')
+            ->whereRaw(['doStatus'=>1,'printed'=>['$exists'=>false]])
+            ->get(['reference']);
 
             $successPrint = 0;
             $failPrint = 0;
@@ -87,12 +89,13 @@ class PrintJob extends Command
                     if($resarray['status']==true) {                                
                         $successPrint += 1;
                         $this->logtofile("Order#".$value['reference']." has been sent to printer and should print shortly.");
+
                         //UPDATE STATUS AS PRINTED
-                        $value->doStatus = 2;
+                        $value->printed = 1;
                         $value->save();
                     }else{
                         $failPrint += 1;
-                        $this->logtofile("An error occured while printing order#".$value['reference']." the doc. Error code:".$resarray['errorcode']." Message:".$resarray['errormessage']);
+                        $this->logtofile("An error occured while printing order#".$value['reference'].". Error code:".$resarray['errorcode']." Message:".$resarray['errormessage']);
                     }
                 }
             }

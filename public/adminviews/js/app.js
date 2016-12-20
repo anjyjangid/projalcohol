@@ -15,7 +15,9 @@ var MetronicApp = angular.module("MetronicApp", [
 	"slugifier",
 	"angular-storage",
 	"ui.calendar",
-	"ngMap"
+	"ngPayments",
+	"ngMap",
+	"vAccordion"
 ]);
 
 
@@ -424,6 +426,62 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
                 place: 'prepend'
             });
         });
+    };
+
+    $scope.orderstatus = [
+    	{value:0,label:'Under Process',class:'warning',update:false},
+    	{value:1,label:'Ready',class:'info',update:false},
+    	{value:2,label:'Delivered',class:'success',update:true},
+    	{value:3,label:'Cancelled',class:'danger',update:true},
+    ];    
+
+    $scope.showStatus = function(s){
+    	if(typeof s == 'undefined') return '';
+    	var search = $filter('filter')($scope.orderstatus,{value:s})[0];    	
+    	return '<span class="label label-sm label-'+search.class+'" >'+search.label+'</span>';;
+    };
+
+    $scope.statusForm = function(order){    	
+    	$scope.orderform = order;
+    	$scope.orderform.notify = 0;
+    	$scope.orderform.notifytime = 30;
+    	$scope.orderform.notifysms = 0;
+    	$scope.orderform.notifymail = 0;
+    	$scope.orderform.errors = {};
+    	
+    	$scope.orderform.message = '';
+		$scope.regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]{5,})$/;    
+		$scope.$watch('orderform.message', function(){
+		    $scope.regex.test($scope.orderform.message);
+		});			
+
+		$scope.$watch('orderform.doStatus',function(newValue,oldValue){
+			$scope.updateMsg();
+		});
+
+		$scope.$watch('orderform.notifytime',function(newValue,oldValue){
+			$scope.updateMsg();
+		});
+
+    	$('#statusupdate').find('.alert').remove();
+        $('#statusupdate').modal('show');
+    }
+
+    $scope.messagelist = [
+		{value:0,message:''},
+		{value:1,message:'Your designated {site_title} dispatch personnel will be delivering order #{order_number} within {time_of_delivery} minutes! Need help? Call us @ 9-2445533 (9-CHILLED). Thank you!'},
+		{value:2,message:'Your designated {site_title} order #{order_number} has been delivered to you! Need help? Call us @ 9-2445533 (9-CHILLED). Thank you!'},
+		{value:3,message:'Your designated {site_title} order #{order_number} has been cancelled! Need help? Call us @ 9-2445533 (9-CHILLED). Thank you!'},
+	];
+
+    $scope.updateMsg = function(){
+    	var message = $filter('filter')($scope.messagelist,{value:$scope.orderform.doStatus});
+		if(message[0]){				
+			var msg = message[0].message;
+			msg = msg.replace('{site_title}','Alcohol Delivery').replace('{order_number}',$scope.orderform.reference).replace('{time_of_delivery}',$scope.orderform.notifytime);
+
+			$scope.orderform.message = msg;
+		}
     };
 
 }]);
@@ -3141,6 +3199,30 @@ MetronicApp.filter('pricingTxt', function(currencyFilter,$rootScope) {
 
 			return (price || freeTxt!==true)?currencyFilter(price,$rootScope.settings.general.currency,2):'free';
 		}
+});
+
+MetronicApp.filter('creditcard', function() {
+	return function(number) {
+		var r = number.substr(number.length-4,4);
+		return 'XXXX XXXX XXXX '+r;
+	}
+});
+
+MetronicApp.filter('creditcardname', function() {
+	return function(name) {
+		var cardName = {
+			visa:'VISA',
+			maestro:'Maestro',
+			dinersclub:'Diners Club',
+			laser:'LASER',
+			jcb:'JCB',
+			unionpay:'UnionPay',
+			discover:'Discover',
+			mastercard:'MasterCard',
+			amex:'American Express'
+		};		
+		return cardName[name];
+	}
 });
 
 /* Init global settings and run the app */

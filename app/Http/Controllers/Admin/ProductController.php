@@ -635,6 +635,12 @@ class ProductController extends Controller
 	public function getTest(Request $request){
 		
 
+		$deliveryOrders = DB::collection('orders')
+            ->whereRaw(['doStatus'=>1,'printed'=>['$exists'=>false]])
+            ->get(['reference']);
+
+		return response($deliveryOrders);            
+
 		/*DB::collection('orders')->raw()->update([
 			//"_id" => new MongoId(),
 			'productsLog.received' => ['$exists' => true]			
@@ -643,6 +649,8 @@ class ProductController extends Controller
             '$set' => ['doStatus' => 0]
         ],['multiple' => true]);*/
         
+        return new \MongoDate();
+
         return date('Y-m-d h:i:s',strtotime('+8 hours'));
 
         $yourDate = new \MongoDate();

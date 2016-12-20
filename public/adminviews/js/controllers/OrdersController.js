@@ -45,7 +45,6 @@ MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout'
     angular.orderModel = orderModel;
     orderModel.getOrder($stateParams.order).success(function(response){
 		$scope.order = response;
-
 		$scope.shipping = response.delivery.address.detail;
 		$scope.serviceCharge = 0;
 		if($scope.order.service.express.status){
@@ -63,11 +62,15 @@ MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout'
 
 }]);
 
-MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', 'alcoholCart', '$modal', '$filter', '$rootScope'
-, function($scope, $http, $timeout, alcoholCart, $modal, $filter, $rootScope){
+MetronicApp.controller('OrderCreateController',[
+	'$scope', '$state', '$http', '$timeout', 'alcoholCart', '$modal', '$filter', '$rootScope', 'sweetAlert','$sce'
+, function($scope, $state, $http, $timeout, alcoholCart, $modal, $filter, $rootScope, sweetAlert,$sce){
 	angular.alcoholCart = alcoholCart;
 
+	$scope.alcoholCart = alcoholCart;
 	$scope.cart = alcoholCart.getCart();
+
+	$scope.paymentError = [];
 
 	// $scope.cart.orderType = "consumer";
 
@@ -90,6 +93,17 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		})
 	}
 
+	$scope.$watch('cart.delivery.contact',
+			function(newValue, oldValue) {
+
+				if(newValue!=null && $scope.cartFrm.deliveryContact.$valid && $scope.cart.consumer.mobile_number!==newValue){
+					$scope.newNumber = true;
+				}else{
+					$scope.newNumber = false;
+				}
+			}
+		);
+
 	$scope.customerSelect = function(customer) {
 
 		delete $scope.cart['consumer'];
@@ -97,22 +111,37 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		$scope.cart.user = null;
 
 		$scope.cart[$scope.cart.orderType] = customer;
-		$scope.cart.user = customer._id;
+		$scope.cart.user = mongoIdToStr(customer._id);
+
+		delete $scope.cart.payment.creditCard;
+		delete $scope.cart.payment.card;
+		delete $scope.cart.payment.savecard;
 
 		var api;
 		if($scope.cart.orderType=='business')
-			api = '/adminapi/business/detail/'+customer._id;
+			api = '/adminapi/business/detail/'+$scope.cart.user;
 		else
-			api = '/adminapi/customer/detail/'+customer._id;
+			api = '/adminapi/customer/detail/'+$scope.cart.user;
 
 		alcoholCart.deployCart();
 
 		$http.get(api)
 		.then(function(res){
-			
-			$scope.cart.addresses = res.data.address;
-			$scope.cart.savedCards = res.data.savedCards;
+
+			$scope.cart.addresses = res.data.address || [];
+			//$scope.cart.[$scope.cart.orderType].savedCards = res.data.savedCards || [];
+			$scope.alternateNumbers = res.data.alternate_number || [];
+
+			if(!angular.isDefined(res.data.mobile_number) || res.data.mobile_number==""){
+				if($scope.alternateNumbers.length>0){
+					$scope.cart.delivery.contact = $scope.alternateNumbers[$scope.alternateNumbers.length-1];
+				}
+			}else{
+				$scope.cart.delivery.contact = res.data.mobile_number;
+			}
+
 		});
+
 	}
 
 	$scope.updateConsumer = function(){
@@ -144,7 +173,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	}
 
 	$scope.qualifyFor = function(section){
-		return true;
+		
 		if(!$scope.cart || !$scope.cart[$scope.cart.orderType] || !$scope.cart[$scope.cart.orderType]._id){
 			return false;
 		}
@@ -162,6 +191,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 			templateUrl: 'newAddress.html',
 			controller: 'NewAddressModel',
 			backdrop: false,
+			size:'lg',
 			resolve: {
 				detail: function(){
 					return {
@@ -220,7 +250,128 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		$rootScope.invalidCodeMsg = true;
 		$rootScope.invalidCodeMsgTxt = '';
 	}
+
+	$scope.setSelectedAddress = function(key){
+
+		$scope.alcoholCart.$cart.delivery.address = {};
+		$scope.alcoholCart.$cart.delivery.address.key = key;
+		$scope.alcoholCart.$cart.delivery.address.detail = $scope.cart.addresses[key];
+	}
+
+	$scope.orderConfirm = function(){				
 		
+		alcoholCart.checkoutValidate().then(
+			function (successRes) {
+
+				if(successRes.card)
+					$scope.cart.payment.creditCard = successRes.card;
+
+				alcoholCart.deployCart().then(
+					function (successRes) {
+						alcoholCart.freezCart().then(
+							function(result){
+
+							var cartKey = alcoholCart.getCartKey();
+
+							$http.put("adminapi/order/confirmorder/"+cartKey, {} ,{
+
+							}).error(function(response, status, headers) {
+
+									sweetAlert.swal({
+										type:'error',
+										title: 'Oops...',
+										text:response.message,
+										timer: 2000
+									});
+
+					        }).success(function(response) {
+
+						        	if($scope.cart.payment.method == 'CARD'){
+						        		var payurl = $sce.trustAsResourceUrl(response.formAction);
+							            $rootScope.$broadcast('gateway.redirect', {
+							                url: payurl,
+							                method: 'POST',
+							                params: response.formData
+							            });
+						        		return;
+						        	}
+
+									sweetAlert.swal({
+										type:'success',
+										title: response.message,
+										timer: 1000
+									});
+
+									//$state.go('userLayout.orders.show',{order:response.order},{reload: false, location: 'replace'});
+
+							})
+						},
+							function(errorRes){
+							sweetAlert.swal({
+											type:'error',
+											title: 'Oops...',
+											text:errorRes.message,
+											timer: 2000
+										});
+							
+						}
+						);
+					},
+					function (errRes){
+
+					}
+				);	
+			},
+			function (errorRes) {
+				if(errorRes.customError){					
+					sweetAlert.swal({				  
+					  text: errorRes.message,
+					  type: 'error'				  
+					});				
+				}else{
+					sweetAlert.swal({				  
+					  text: 'Please validate the card details',
+					  type: 'error'				  
+					});
+					$scope.paymentError = errorRes;
+				}
+			}
+		);
+			
+	}
+
+	$scope.newCart = function() {
+		
+		sweetAlert.swal({
+
+				  title: 'Are you sure?',
+				  text: "You won't be able to revert this!",
+				  type: 'warning',
+				  showCancelButton: true,
+				  confirmButtonColor: '#3085d6',
+				  cancelButtonColor: '#d33',
+				  confirmButtonText: 'Yes, cancel it!'
+
+				}).then(function() {
+
+					$http.get("/adminapi/order/remove-un-processed")
+					.success(function(rdata){
+
+						$state.go("userLayout.orders.consumer", {}, {reload: true});
+
+					}).error(function(errors){
+
+						sweetAlert.swal({
+							type:'error',
+							text:errors,
+						});
+
+					});
+				});
+
+	}
+
+
 }])
 
 .controller('NewAddressModel',[ '$scope', '$modalInstance', 'NgMap', '$http', 'detail'
@@ -229,30 +380,117 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 	$scope.type = 1;
 
-	$scope.address;
+	$scope.address = {};
+
+	$scope.types = "['geocode']";
+	$scope.restrictions="{country:'sg'}";
+	$scope.center = "[1.290270, 103.851959]";
+	$scope.zoom = 2;
+
+	// Google map auto complete code start //
+	NgMap.getMap().then(function(map) {
+		$scope.map = map;
+		angular.map = $scope.map;
+		setTimeout(function() {
+			var point = new google.maps.LatLng(1.3544542534181963,103.86775184667965);
+			$scope.map.setCenter(point);
+			$scope.map.setZoom(12);
+			$scope.map.setOptions({draggable:false});
+		}, 500);
+	});
 
 	$scope.searchLocation = function(q){
-		return $http.get('/site/search-location', {params: {q}})
+		return $http.get('api/site/search-location', {params: {q}})
 		.then(function(res){
 			return res.data;
 		});
 	}
 
-	$scope.locationSelect = function(location) {
+	/*$scope.locationSelect = function(location) {
 		$scope.address = location;
 
-		var point = new google.maps.LatLng(parseFloat(location.LAT),parseFloat(location.LNG));
+		if(location){
+			lat = item.LAT;
+			long = item.LNG;
+			zoom = 18;
+			var addressData = angular.copy($scope.addressData.SEARCHTEXT);
+			$scope.addressData = angular.copy(item);
+			$scope.addressData.SEARCHTEXT = addressData;
+			$scope.locateMap(lat,long,zoom,item);
+		}
+	}*/
 
-		$scope.map.setCenter(point);
-		$scope.marker.setPosition(point);
+	$scope.addressData = {SEARCHTEXT:''};
+	$scope.simulateQuery = true;
+	$scope.isDisabled = false;
+
+	$scope.querySearch = function(query){
+		return $http.get('/site/search-location?q='+query).then(function(result){
+		    return result.data;
+		});
 	}
 
-	console.log(detail);
+	$scope.locationSelect = function(item){
+		
+		if(item){
+			var lat = item.LAT;
+			var long = item.LNG;
+			var zoom = 18;
+			var addressData = angular.copy($scope.addressData.SEARCHTEXT);
+			$scope.addressData = angular.copy(item);
+			$scope.address = angular.copy(item);
+			$scope.addressData.SEARCHTEXT = addressData;
+			$scope.locateMap(lat,long,zoom,item);
+		}
+	}
+
+	$scope.locateMap = function(lat,lng,zoom,item) {
+		setTimeout(function() {
+			
+			if($scope.map){
+				var point = new google.maps.LatLng(lat,lng);
+				$scope.map.setCenter(point);
+				$scope.map.setZoom(zoom);
+				$scope.map.setOptions({draggable:false});
+				//REMOVE THE PREVIOUS MARKER
+				if($scope.marker)
+					$scope.marker.setMap(null);
+
+				if(item.LAT){
+					$scope.marker = new google.maps.Marker({
+			            position: point,
+			            map: $scope.map,
+			        });
+				}
+			}
+		},500);
+	}
+
+
+	$scope.$watch('addressData.SEARCHTEXT',function(newValue,oldValue){
+		if(newValue == ''){
+			$scope.addressData = {};
+			var lat = 1.3544542534181963;
+			var long = 103.86775184667965;
+			var zoom = 12;
+			var item = angular.copy($scope.addressData);
+			$scope.locateMap(lat,long,zoom,item);
+		}
+	});
+
+	// Google map auto complete code start //
+	/*NgMap.getMap().then(function(map) {
+		$scope.map = map;
+		angular.map = map;
+		
+	});*/
+	// Google map auto complete code ends //
 
 	$scope.save = function(){
 		$scope.savingData = true;
-
+		$scope.errors = [];
 		var api;
+		console.log($scope.address);
 		if(detail.type=='business')
 			api = '/adminapi/business/address/'+detail.user._id;
 		else
@@ -269,31 +507,15 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 			$scope.savingData = false;
 		})
 	}
-
-	// Google map auto complete code start //
-	NgMap.getMap().then(function(map) {
-		$scope.map = map;
-		angular.map = map;
-		// setTimeout(function() {
-		// 	var point = new google.maps.LatLng(1.290270,103.851959);
-		// 	$scope.map.setZoom(12);
-		// 	$scope.marker = new google.maps.Marker({
-		// 		position: point,
-		// 		map: $scope.map,
-		// 	});
-		// 	$scope.map.setCenter(point);
-		// }, 500);
-	});
-	// Google map auto complete code ends //
 }])
 
 .controller('OrderProductsController',[
 				'$scope', '$http', '$timeout', '$mdDialog', 'alcoholCart', 
 				'categoriesService', 'productFactory', 'alcoholGifting',
-				'AlcoholProduct', '$q', '$modal'
+				'AlcoholProduct', '$q', '$modal', 'sweetAlert'
 	, function($scope, $http, $timeout, $mdDialog, alcoholCart, 
 				categoriesService, productFactory, alcoholGifting,
-				AlcoholProduct, $q, $modal){
+				AlcoholProduct, $q, $modal, sweetAlert){
 
 	var giftCardUpdateTimeOut = {};
 	$scope.alcoholCart = alcoholCart;
@@ -462,13 +684,72 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 			}, function() {
 			});
 	}
+
+	$scope.setSmoke = function () {
+
+		var smoke = alcoholCart.$cart.service.smoke;
+		
+		if(typeof smoke.detail === 'undefined'){
+			smoke.detail = "";
+		}
+
+		if(smoke.status === false){
+			alcoholCart.removeSmoke();
+			return false;
+		}
+
+		sweetAlert.swal({
+
+						title: 'Smoke Detail',
+						input: 'textarea',
+						inputValue : smoke.detail,
+						showCancelButton: true,
+						confirmButtonText: 'Submit',
+						showLoaderOnConfirm: true,
+						preConfirm: function (textarea) {
+							return new Promise(function (resolve, reject) {
+								setTimeout(function() {
+									if (textarea == '') {
+										reject('Please provide smoke detail');
+									} else {
+										resolve()
+									}
+								}, 500)
+							})
+						},
+						allowOutsideClick: false
+					}).then(
+
+						function (textarea) {
+
+						alcoholCart.addSmoke(textarea);
+
+						swal({
+							type: 'success',
+							title: 'Smoke Detail Saved!',
+							allowOutsideClick: false,
+							// html: textarea
+						})
+					},
+						function (cancel) {
+							
+							if(!angular.isDefined(smoke.detail) || smoke.detail==""){
+								alcoholCart.removeSmoke();
+							}
+
+						}
+					)
+	}
+
 	$scope.package = function(ev) {
 
 		$modal.open({
+			size:'lg',
 			controller: "OrderPackageController",
 			templateUrl: '/adminviews/views/orders/order/searchpackage.html',
 		}).result
 		.then(function(answer) {
+			
 		});
 
 
@@ -491,32 +772,211 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 }])
 
-.controller('OrderPackageController',['$scope', '$http', '$mdDialog', 'alcoholCart', 'categoriesService',function($scope, $http, $mdDialog, alcoholCart, categoriesService){
+.controller('OrderPackageController',[
+	'$scope', '$http', '$mdDialog', '$compile', '$sce','alcoholCart', 'categoriesService','sweetAlert','$stateParams','$location','$modalInstance',
+	function($scope, $http, $mdDialog, $compile, $sce, alcoholCart, categoriesService,sweetAlert,$stateParams,$location,$modalInstance){
 
 	$scope.cart = alcoholCart.getCart();
 	$scope.alcoholCart = alcoholCart;
 
-	$scope.hide = function() {
-		$mdDialog.hide();
-	};
-	$scope.cancel = function() {
-		$mdDialog.cancel();
+	$scope.hidemodal = function() {
+		$modalInstance.close();
 	};
 
-	$scope.packages = {};
+	$scope.errors = [];
+
+	$scope.processing = false;
+
+	$scope.btnText = "ADD TO CART";	
+
+	$scope.allPackages = {};
 	$scope.selected = {};
 	$scope.fetchList = function(type) {
-		if(!$scope.packages[type])
+		if(!$scope.allPackages[type])
 			$http.get('api/package/packages/'+type)
 			.then(function(res){
-				$scope.packages[type] = res.data;
+				$scope.allPackages[type] = res.data;
 				$scope.selected.package = res.data[0];
 			})
 		else
-			$scope.selected.package = $scope.packages[type][0];
+			$scope.selected.package = $scope.allPackages[type][0];
 
 		$scope.packageType=type;
 	};
+
+	$scope.collapseCallback = function (index, id) {
+		
+		var totalseleted = 0;
+		var packageItems = angular.copy($scope.selected.package.packageItems[index]);
+		var maxQuantity = parseInt(packageItems.quantity);
+		var packageUpdate = true;
+
+		var outerloopPromises = angular.forEach($scope.selected.package.packageItems, function(pkgItem, pkgKey) {
+			
+			var totalseleted = 0;
+			var maxQuantity = parseInt(pkgItem.quantity);
+
+			angular.forEach(pkgItem.products, function(value, key) {
+				totalseleted+=parseInt(value.customizequantity);
+			});
+
+			if(totalseleted!=maxQuantity){
+				$scope.errors[pkgKey] = 'You must select total of '+maxQuantity+' items.';
+			}else{
+				delete $scope.errors[pkgKey];
+			}
+
+		});
+
+		if(typeof $scope.errors[index] == 'undefined'){
+			//ADD IN CARTQUATITY IF THERE IS NO ERROR
+			angular.forEach($scope.selected.package.packageItems[index].products, function(inPkgItem, inPkgKey) {
+
+				$scope.selected.package.packageItems[index].products[inPkgKey].cartquantity = parseInt(inPkgItem.customizequantity);
+
+			});
+			$scope.updatePackage();
+		}else{			
+			$scope.accordion.toggle(index);
+		}
+
+	};
+
+	$scope.updatePackage = function(){
+
+		var discountAmount = 0;
+		var originalAmount = 0;
+		angular.forEach($scope.selected.package.packageItems, function(pkgItem, pkgkey) {
+			var lineofproductadded = [];
+			angular.forEach(pkgItem.products, function(value, key) {
+				var quantityadded = parseInt(value.cartquantity);
+				if(quantityadded > 0)
+					lineofproductadded.push(quantityadded+' x '+value.name);
+
+				discountAmount += parseFloat(value.cprice)*parseInt(quantityadded);
+				originalAmount += parseFloat(value.sprice)*parseInt(quantityadded);
+			});
+			$scope.selected.package.packageItems[pkgkey].selectedProducts = lineofproductadded.join(', ');
+		});
+
+		$scope.selected.package.packagePrice = discountAmount.toFixed(2);
+		$scope.selected.package.packageSavings = parseFloat(originalAmount-discountAmount).toFixed(2);
+
+	}
+
+	$scope.validateByIndex = function(index){
+		var totalseleted = 0;
+		var packageItems = angular.copy($scope.selected.package.packageItems[index]);
+		var maxQuantity = parseInt(packageItems.quantity);
+		var packageUpdate = true;
+
+		var apromise = angular.forEach($scope.selected.package.packageItems, function(pkgItem, pkgKey) {
+
+			var totalseleted = 0;
+			var maxQuantity = parseInt(pkgItem.quantity);
+
+			angular.forEach(pkgItem.products, function(value, key) {
+				totalseleted+=parseInt(value.customizequantity);
+			});
+
+			if(totalseleted!=maxQuantity){
+				$scope.errors[pkgKey] = 'You must select total of '+maxQuantity+' items.';
+			}else{
+				delete $scope.errors[pkgKey];
+			}
+
+		});
+
+		if(typeof $scope.errors[index] == 'undefined'){
+			//ADD IN CARTQUATITY IF THERE IS NO ERROR
+
+			angular.forEach($scope.selected.package.packageItems[index].products, function(inPkgItem, inPkgKey) {
+
+				$scope.selected.package.packageItems[index].products[inPkgKey].cartquantity = parseInt(inPkgItem.customizequantity);
+
+			});
+			$scope.updatePackage();
+		}
+	}
+
+	$scope.toTrustedHTML = function( html ){
+		return $sce.trustAsHtml( html );
+	}
+
+	$scope.expandCallback = function (index, id) {
+		/*$timeout(function() {
+			$anchorScroll(id);
+		});*/
+	};	
+
+	$scope.customizeCocktail = function(pkgKey, proKey){
+
+		angular.forEach($scope.selected.package.packageItems[pkgKey].products, function(item, key) {
+			if(key == proKey){
+				item.cartquantity = 1;
+			}else{
+				item.cartquantity = 0;
+			}
+		});
+		$scope.updatePackage();
+	};
+
+	$scope.addPackage = function(){
+
+		var c = Object.keys($scope.errors).length;
+		if(c!=0){
+			/*sweetAlert.swal({
+				type:'error',
+				title: 'Wait...',
+				text:"Please verify your selection.",
+				timer: 2000
+			});*/
+			alert("Please verify your selection.");
+			
+			return;
+		}
+
+		$scope.processing = true;
+
+		//if($scope.selected.package.isInCart===false){
+			alcoholCart.addPackage($scope.selected.package._id,$scope.selected.package)
+			.then(function(response) {
+
+				$scope.selected.package.unique = response.key;
+				$scope.processing = false;
+
+				$scope.btnText = "UPDATE CART";
+
+				$scope.hidemodal();
+
+				//$location.path($location.path()+response.key).replace();
+				
+
+			}, function(error) {
+
+				console.error(error);
+				$scope.processing = false;
+
+			});
+		/*}else{
+
+			alcoholCart.updatePackage($scope.selected.package._id,$scope.selected.package)
+			.then(function(response) {
+
+				
+				$scope.processing = false;
+				
+
+			}, function(error) {
+
+				console.error(error);
+				$scope.processing = false;
+
+			});
+
+		}*/
+
+	}	
 
 }])
 
@@ -655,6 +1115,8 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 	};
 
+
+
 	$scope.customizeCocktail = function(pkgKey, proKey){
 
 		angular.forEach($scope.packages.packageItems[pkgKey].products, function(item, key) {
@@ -678,7 +1140,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		$scope.processing = true;
 
 		if($scope.packages.isInCart===false){
-		alcoholCart.addPackage($stateParams.id,$scope.packages)
+			alcoholCart.addPackage($stateParams.id,$scope.packages)
 			.then(function(response) {
 
 				$scope.packages.unique = response.key;
@@ -790,7 +1252,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 }])
 
-.controller('OrderDeliveryController',['$scope', '$http', 'alcoholCart',function($scope, $http, alcoholCart){
+.controller('OrderDeliveryController',['$scope', '$http', '$timeout', 'alcoholCart',function($scope, $http, $timeout, alcoholCart){
 
 	$scope.alcoholCart = alcoholCart;
 	$scope.timeslot = alcoholCart.$cart.timeslot;
@@ -845,7 +1307,9 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		$scope.monthName = $scope.monthsName[$scope.myDate.getMonth()];
 		$scope.daySlug = $scope.weekName+', '+$scope.day+' '+$scope.monthName+', '+$scope.year;
 		$scope.currDate = $scope.myDate.getFullYear()+'-'+($scope.myDate.getMonth()+1)+'-'+$scope.myDate.getDate();
+		$scope.loadingSlots = true;
 		$http.get("api/cart/timeslots/"+$scope.currDate).success(function(response){
+
 			var arr = [];
 
 			for(var i in response){
@@ -853,7 +1317,12 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 			}
 
 			$scope.timeslots = arr;
-	    });
+
+		}).finally(function() {
+			$timeout(function() {
+				$scope.loadingSlots = false;
+			},1000);
+		});
 	}
 	$scope.timerange = {
 		"0":'12am',
@@ -970,6 +1439,8 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 .controller('OrderReviewController',['$scope', '$http', 'alcoholCart',function($scope, $http, alcoholCart){
 	$scope.alcoholCart = alcoholCart;
+
+
 }])
 
 .directive('userCards', function(){
@@ -977,22 +1448,21 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 	return {
 		scope :{
 			paymentmode: '=paymentmode',
-			payment:'=payment',
-			savedCards: '=savedcards'
+			payment:'=payment'
 		},
 		restrict: 'A',
-		templateUrl: '/adminviews/views/orders/order/addcard.html',
-		controller: function($scope,$rootScope,$http,$state,sweetAlert,alcoholCart){//,$payments
+		templateUrl: '/templates/partials/addcard.html',
+		controller: function($scope,$rootScope,$http,$state,$payments,sweetAlert,alcoholCart){
 
 			$scope.$on('addcardsubmit', function() {
 	            $scope.addnewcard();
 	        });
 
-	    	// $scope.userdata = {};
+	    	$scope.userdata = alcoholCart.getUser();
 
-		    // $scope.verified = function () {
-		    // 	return $payments.verified();
-		    // }
+		    $scope.verified = function () {
+		    	return $payments.verified();
+		    }
 
 		    $scope.addnewcard = function(){
 		    	if($scope.paymentmode){
@@ -1000,7 +1470,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 		    	}
 		    	$scope.processingcard = true;
 		    	$scope.errors = [];
-				$http.post('/payment/addcard',$scope.payment.creditCard).success(function(rdata){
+				$http.post('api/payment/addcard',$scope.payment.creditCard).success(function(rdata){
 
 					if($scope.paymentmode){
 						$scope.payment.creditCard = rdata.card;
@@ -1013,8 +1483,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 
 					}else{
 						$scope.payment.card = '';
-						// $scope.userdata = rdata.user;
-						$scope.savedCards = rdata.user.savedCards;
+						$scope.userdata = rdata.user;
 						$scope.payment.creditCard = {};
 					}
 
@@ -1023,6 +1492,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 					$scope.errors = errors;
 					$scope.processingcard = false;
 				});
+
 			}
 
 			$scope.removeCard = function(card){
@@ -1036,8 +1506,7 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 				  confirmButtonText: 'Yes, delete it!'
 				}).then(function() {
 					$http.post('/payment/removecard',card).success(function(rdata){
-						// $scope.userdata = rdata.user;
-						$scope.savedCards = rdata.user.savedCards;
+						$scope.userdata = rdata.user;
 						$scope.payment.card = '';
 					}).error(function(errors){
 						sweetAlert.swal({
@@ -1052,6 +1521,48 @@ MetronicApp.controller('OrderCreateController',['$scope', '$http', '$timeout', '
 				$scope.payment.creditCard = card;
 			}
 
+			var offset = 0; 
+			var range = 10;
+			var currentYear = new Date().getFullYear();			
+			$scope.years = [];
+            for (var i = (offset*1); i < (range*1) + 1; i++){
+                $scope.years.push(currentYear + i);
+            }
+
+            $scope.months = [];
+            for (var i = 0; i < 12; i++){
+                $scope.months.push(1 + i);
+            }
+			/*$scope.testCard = [
+		        {
+		          token_id:"2992471298821111",
+		          type: 'maestro',
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'dinersclub',
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'laser',
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'jcb',
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'unionpay',
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'discover',
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'mastercard',
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'amex',
+		        }, {
+		          token_id:"2992471298821111",
+		          type: 'visa',
+		        }
+		      ];*/
 		}
 	};
 })

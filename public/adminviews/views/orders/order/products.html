@@ -16,14 +16,17 @@
 	<span class="badge badge-success" ng-bind="alcoholCart.getTotalGifts()"></span>
 </a>
 
-<a href="#" ng-click="giftcard($event,key)"  class="pull-right">
-	asdas
+<a href="javascript:void(0)" class="cart-nonchilled-btn-cover icon-btn" >
+	<md-switch aria-label="cart.service.smoke.status" ng-model="cart.service.smoke.status" ng-change="setSmoke()">Need Smoke &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</md-switch><i class="fa fa-edit" ng-click="setSmoke()" id="smoke-edit-btn" ng-if="cart.service.smoke.status"></i>
 </a>
 
-<div>
-	<div class="table-responsive">
+<a href="javascript:void(0)" class="cart-nonchilled-btn-cover icon-btn">
+	<md-switch aria-label="cart.nonchilled" ng-model="cart.nonchilled" ng-change="alcoholCart.setCartChilled(cart.nonchilled)">SAVE {{cart.discount.nonchilled.exemption | pricingTxt}} by choosing to have drinks delivered Non-Chilled.</md-switch>
+</a>
+
+	<div class="table-responsive" ng-if="alcoholCart.getTotalUniqueItems()">
 	
-		<table class="table cart-table">		
+		<table class="table cart-table">
 			<tbody>
 				<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getProducts()"></tr>
 				<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0 && cartproduct['remain'+type]>0">
@@ -126,6 +129,10 @@
 					<td width="52%">
 
 						<div class="orhistry2_td2procdtcvr">
+							<span>
+								{{giftCard.recipient.price | pricingTxt}}
+							</span>
+							
 							<div>
 								<div>Name: <b>{{giftCard.recipient.name}}</b></div>
 								<div>Email: <b>{{giftCard.recipient.email}}</b></div>
@@ -139,9 +146,7 @@
 					<td>
 						
 					</td>
-					<td>
-						
-					</td>
+					
 					<td width="150">
 						<div class="checkoutmiddlevlauediv">
 
@@ -150,7 +155,7 @@
 						</div>
 					</td>
 					<td>
-						<div>Price : <b>{{giftCard.recipient.price * giftCard.recipient.quantity | pricingTxt}}</b></div>
+						<div><b>{{giftCard.recipient.price * giftCard.recipient.quantity | pricingTxt}}</b></div>
 					</td>
 					<td>
 						<a href="#" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removeCard(giftCard.getUniqueId(),true)"><i class="glyphicon glyphicon-trash"></i></a>
@@ -192,7 +197,10 @@
 			</tbody>
 		</table>
 	</div>
-</div>
+
+<div ng-if="!alcoholCart.getTotalUniqueItems()" class="emptycart">
+	<div>There is nothing in your cart</div>
+</div>	
 
 <!-- Product Modal -->
 <div id="productModal" class="modal fade" role="dialog">
@@ -272,6 +280,30 @@
         
       </div>
       
+    </div>
+  </div>
+</div>
+
+
+<div id="smokeModal" class="modal fade" role="dialog">
+
+  <div class="modal-dialog modal-md">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Smoke Detail</h4>
+      </div>
+      <div class="modal-body">
+        <div class="input-group full-width">
+        	<textarea ng-model="cart.smokedetail" class="form-control" id="cart-smokedetail" placeholder="Please provide details. (Brand, Quantity)"></textarea>
+        </div>
+      </div>
+		<div class="modal-footer">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">Smoke Detail</h4>
+		</div>
     </div>
   </div>
 </div>

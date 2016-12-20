@@ -73,7 +73,7 @@ class CreditTransactions extends Moloquent
 	* @tData : transaction object
 	* @user : user model object
 	*
-	*******************************************/
+	********************************************/
 	public static function transaction ($type,$tData,$user) {
 
 		if(!($user instanceof User)) {
@@ -162,6 +162,14 @@ class CreditTransactions extends Moloquent
 				break;
 		}
 
+
+		if(isset($tData['shortComment']) && !empty($tData['shortComment'])){
+			$creditObj['shortComment'] = $tData['shortComment'];
+		}
+		if(isset($tData['comment']) && !empty($tData['comment'])){
+			$creditObj['comment'] = $tData['comment'];
+		}
+		
 		try{
 
 			$user->save();

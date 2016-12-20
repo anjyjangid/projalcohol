@@ -295,7 +295,6 @@ class Products extends Eloquent
 					]
 				];
 
-
 		if(isset($params['product'])){
 			
 			$match['$match']['slug'] = $params['product'];
@@ -508,13 +507,24 @@ class Products extends Eloquent
 			]
 		];
 
-		//CATEGORY WISE SEARCH 
+		//CATEGORY WISE SEARCH
 		if(isset($params['parent']) && !empty($params['parent'])){			
 
-			$matchCategoryCondition['$match']['$or'] = [
-				['parentCategory.slug' => $params['parent']],
-				['childCategory.slug' => $params['parent']],
-			];
+			if(isset($params['subParent']) && !empty($params['subParent'])){
+
+				$matchCategoryCondition['$match']['$and'] = [
+					['parentCategory.slug' => $params['parent']],
+					['childCategory.slug' => $params['subParent']],
+				];
+
+			}else{
+
+				$matchCategoryCondition['$match']['$or'] = [
+					['parentCategory.slug' => $params['parent']],
+					['childCategory.slug' => $params['parent']],
+				];
+
+			}
 
 		}
 
@@ -558,7 +568,8 @@ class Products extends Eloquent
 							'isFeatured' => 1,
 							'metaTitle'=>1,
 							'metaDescription'=>1,
-							'metaKeywords'=>1
+							'metaKeywords'=>1,
+							'bulkDisable'=>1
 						]
 		];
 
@@ -639,7 +650,8 @@ class Products extends Eloquent
 								'categoriesObject' => 1,
 								'metaTitle'=>1,
 								'metaDescription'=>1,
-								'metaKeywords'=>1
+								'metaKeywords'=>1,
+								'bulkDisable'=>1
 							]
 					];
 
@@ -713,7 +725,7 @@ class Products extends Eloquent
 	}
 
 	public function fetchProduct($params){
-
+		
 		$globalPricing = Setting::where("_id",'=',"pricing")
 									->first([
 										'settings.regular_express_delivery',
@@ -782,7 +794,8 @@ class Products extends Eloquent
 								'loyalty'=>1,
 								'metaTitle'=>1,
 								'metaDescription'=>1,
-								'metaKeywords'=>1
+								'metaKeywords'=>1,
+								'bulkDisable' => 1
 							]
 						],
 						[
@@ -845,7 +858,7 @@ class Products extends Eloquent
 								'metaTitle'=>1,
 								'metaDescription'=>1,
 								'metaKeywords'=>1,
-
+								'bulkDisable' => 1,
 								'regular_express_delivery' => [
 									'$ifNull' => [ '$regular_express_delivery',
 										[
@@ -938,7 +951,8 @@ class Products extends Eloquent
 								'loyalty'=>1,
 								'metaTitle'=>1,
 								'metaDescription'=>1,
-								'metaKeywords'=>1
+								'metaKeywords'=>1,
+								'bulkDisable' => 1,
 							]
 						],
 						[
@@ -976,7 +990,8 @@ class Products extends Eloquent
 								'loyalty'=>1,
 								'metaTitle'=>1,
 								'metaDescription'=>1,
-								'metaKeywords'=>1
+								'metaKeywords'=>1,
+								'bulkDisable' => 1,
 							]
 						]
 

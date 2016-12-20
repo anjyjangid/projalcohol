@@ -1,7 +1,7 @@
 @extends('invoice.layout')
 @section('content')
+<?php  
 
-<?php 
   if($order['delivery']['type'] == 1){
     $delivery = 'advance delivery';
   }else{
@@ -82,7 +82,7 @@
                         <?php if(isset($address['BLDG_NAME'])){?>
                         <div>{{ $address['BLDG_NAME'] }}</div>
                         <?php }?>
-                        <div>{{ $address['HBRN'] }}</div>
+                        <div>{{ $address['house'].' '.$address['HBRN'] }}</div>
                         <?php if(isset($address['FLOOR']) || isset($address['UNIT'])){?>
                           <div>
                             <?php if(isset($address['FLOOR'])){?>
@@ -204,14 +204,26 @@
                             <td align="right"><strong>-{{ formatPrice($order['discount']['nonchilled']['exemption']) }}</strong></td>
                           </tr>                          
                           <?php }?>
+                          <?php if(isset($order['payment']['totalValue']) && isset($order['discount']['coupon']) && $order['discount']['coupon']>0){?>
+                          <tr>
+                            <td align="left" colspan="3"><strong>Coupon Discount</strong></td>    
+                            <td align="right">
+                              <?php if($order['payment']['totalValue'] < $order['discount']['coupon']){?>
+                              <strong>-{{ formatPrice($order['payment']['totalValue'],0) }}</strong>
+                              <?php }else{?>
+                              <strong>-{{ formatPrice($order['discount']['coupon'],0) }}</strong>
+                              <?php }?>
+                            </td>
+                          </tr>                          
+                          <?php }?>
                           <tr class="topborder">
                             <td align="left" valign="center" colspan="3"><strong>Total</strong></td>    
-                            <td align="right" valign="center"><h5 class="nomargin">{{ formatPrice($order['payment']['total']) }}</h5></td>
+                            <td align="right" valign="center"><h5 class="nomargin">{{ formatPrice($order['payment']['total'],0) }}</h5></td>
                           </tr>
                           
                           <tr class="bottomborder">
                             <td align="left" valign="center" colspan="3"><strong>Payment mode : {{ $paymode }}</strong></td>    
-                            <td align="right" valign="center"><h5 class="nomargin">{{ formatPrice($order['payment']['total']) }}</h5></td>
+                            <td align="right" valign="center"><h5 class="nomargin">{{ formatPrice($order['payment']['total'],0) }}</h5></td>
                           </tr>
                           <tr class="bottomborder">
                             <td align="left" valign="center" colspan="3"><strong>To Pay</strong></td>    
@@ -240,7 +252,7 @@
                         <?php }?>
                         <div>&nbsp;</div>
                         <?php }?>
-                        <strong><u>Terms & Conditions with reference to http://alcoholdelivery.com.sg/</u></strong>
+                        <strong><u>Terms & Conditions with reference to <?php echo url();?></u></strong>
                         <ul style="margin-left: 13px;padding:0px;">
                           <?php if($order['service']['smoke']['status']){?>
                           <li>Cost of cigarettes must be paid in CASH.</li> 

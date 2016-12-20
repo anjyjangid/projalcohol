@@ -10,12 +10,12 @@ use DB;
 
 class Payment extends Model
 {
- 	public $apiLive = false;
+ 	public $apiLive = true;
  	public $tokenUrl;
  	public $paymentUrl;
 	public $secretKey;
 	public $merchantId;
-	public $currencyCode = 'USD'; 	/*SGD, USD, IDR, CNY, THB, VND*/
+	public $currencyCode = 'SGD'; 	/*SGD, USD, IDR, CNY, THB, VND*/
 	public $transactionType = 'Sale';
 	public $key;
 	public $returnUrl;
@@ -25,11 +25,11 @@ class Payment extends Model
  	{
  		if((bool)$this->apiLive === true){  
  			//LIVE
- 			$this->tokenUrl = 'https://connect.reddotpayment.com/service/tokenization-api/create'; 			
+ 			$this->tokenUrl = 'https://secure.reddotpayment.com/service/tokenization-api/create';//'https://connect.reddotpayment.com/service/tokenization-api/create'; 			
 			$this->notificationUrl = '';
- 			$this->secretKey = 'jMAb6rYoBPF96dacwGe9tCLYpnhYglkFBKPH4LbT8mKQi2IhOyIhWSmZBvlFjlshAyFPi3NrYGTKV35sLVrDekX5y5FxWSv2XKkcFvbGaafuj93rFoRT69FRKKpaBner'; 			
- 			$this->merchantId = '1000089464';
- 			$this->key = 'r5f3ZLs8FRbhMnv7AaeQwvgkmHoDw9pKFAriTEFh';
+ 			$this->secretKey = 'oUGgs0nAa6E99EVEgjJZiPWzJctqhNzIAsfHgnSMlrKZM71gKfBIt44i19Wrgl3sjjWrKnJI9QDD4LaoNQrVDV3oeb1czTTkGLI88u3WAavFiKpDuu41K2Nxa7np4fpb'; 			
+ 			$this->merchantId = '0000021925';
+ 			$this->key = 'axpnrAsGCwVxbpdJM6YhVX3QK0fOhEiOPG10AWxq';
  			$this->paymentUrl = 'https://connect.reddotpayment.com/merchant/cgi-bin-live';
 			$this->returnUrl = '';
  		}else{ 
@@ -51,7 +51,7 @@ class Payment extends Model
  		$request['number'] = str_replace(' ', '', $request['number']);
         
         //USE OF CVV
-        if($this->apiLive)
+        if(false)//if($this->apiLive)
             $request['number'] .= $request['cvc'];        
 
  		$request_params = array(
@@ -76,12 +76,14 @@ class Payment extends Model
     			$u = $u->push('savedCards',$cardInfo,true);                
 			    $ret['user'] = User::find($user->_id);
             }else{
+                $cardInfo['cvc'] = $request['cvc'];
                 $ret['card'] = $cardInfo;
             }
             $ret['success'] = true;         
         }else{
         	$ret['success'] = false;
         }
+    
         return $ret;
  	}
 
@@ -127,7 +129,12 @@ class Payment extends Model
 		return $ret;    	
     }
 
-    public function prepareform($orderData, $userData){
+    public function prepareform($orderData, $userData, $isAdmin = false){
+
+        $uprefix = '';
+
+        if($isAdmin)
+            $uprefix = '/adminapi/order';
 
         $request_transaction = array(
             'order_number' => $orderData['reference'],
@@ -138,8 +145,10 @@ class Payment extends Model
             'transaction_type' => $this->transactionType,
             'key' => $this->key,
             'token_id'=> $orderData['payment']['creditCard']['token_id'],            
-            'return_url' => url().'/confirmorder',            
-            'merchant_data1' => $orderData['_id']
+            'cvv2'=> $orderData['payment']['creditCard']['cvc'],            
+            'return_url' => url().$uprefix.'/confirmorder',            
+            'merchant_data1' => $orderData['_id'],
+            'notify_url' => url().$uprefix.'/confirmorder',            
             //'notify_url' => url().'/confirmorder', //FOR SAFE PAYMENTS
         );
 

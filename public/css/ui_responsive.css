@@ -777,6 +777,7 @@
 	width: 100%;
 	display: inline-block;
 	line-height: 1.7;
+	white-space: pre-line;
 }
 .paddingrmvcls-cocktail {
 	padding-left: 0
@@ -1788,6 +1789,7 @@ body.menu-slider.in {
 	width:72%;
 }
 }
+
 @media (min-width : 768px) and (max-width : 1023px) {
   .col-md-2.homecallus_cover {
 	  display: none;
@@ -1826,7 +1828,7 @@ body.menu-slider.in {
   .occassion_sale {
 	  float: left;
 	  font-size: 100px;
-	  line-height: 0;
+	  line-height: normal;
 	  padding-bottom: 40px;
 	  padding-top: 60px;
   }
@@ -2547,6 +2549,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	width:72%;
 }
 }
+
 @media only screen and (max-width : 767px) {
   .col-md-2.homecallus_cover {
 	  display: none;
@@ -2575,7 +2578,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
   .occassion_sale {
 	  font-size: 70px;
 	  float: left;
-	  line-height: 0;
+	  line-height: normal;
 	  padding-bottom: 25px;
 	  padding-top: 40px;
   }
@@ -3704,9 +3707,9 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	float:left;
 	margin-left:10px;
 }
-.md-dialog-container, md-dialog {
+/*.md-dialog-container, md-dialog {
 	z-index:99999; 
-}
+}*/
 /*.navbar-fixed-top.navbar-shrink .logos-inner-cover{
 	display:unset;
 }*/
@@ -3884,14 +3887,17 @@ md-dialog .md-dialog-content{
 	padding-bottom: 60px !important;
 }
 
+.header {
+	background-size: auto 690px;
 }
+}
+
 @media only screen and (width : 640px) {
   .alcohal_addadress_headertitle {
 	  font-size: 23px
   }
- 
-
 }
+
 @media only screen and (max-width : 639px){
 	 .addressbook-btmpannelcover .addressbokk-trvaichacovr:nth-child(3n){
 	margin-right:10px;
@@ -3900,6 +3906,7 @@ md-dialog .md-dialog-content{
 	width:100%;
 }
 }
+
 @media only screen and (max-width : 479px) {
   .col-md-2.homecallus_cover {
 	  display: none;
@@ -3934,7 +3941,7 @@ md-dialog .md-dialog-content{
   .occassion_sale {
 	  font-size: 70px;
 	  float: left;
-	  line-height: 0;
+	  line-height: normal;
 	  padding-bottom: 20px;
 	  padding-top: 25px;
   }
@@ -4795,6 +4802,7 @@ md-dialog .md-dialog-content{
     transition: all 0.5s ease 0s;
 }
 }
+
 @media only screen and (max-width : 479px) {
 .combo_slider .nav-tabs li a{
 	padding:10px 5px;

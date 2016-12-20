@@ -1,6 +1,9 @@
-<div class="occassion_sale">Christmas Sale</div>
-<div class="occassion_date">23-25th December</div>
-<div class="occassion_descrip">Lorem ipsum dolor sit amet, consectetur adipisicing elit,<br />sed do eiusmod tempor incididunt ut labore.</div>
+<h1 class="hide">MERRY CHRISTMAS!</h1>
+<h2 class="hide">ONE HOUR Alcohol Delivery!</h2>
+<h3 class="hide">Whether you need to place an advance order for your upcoming party, or you are running out of alcohol in the middle of a party, we've got you covered!</h3>
+<div class="occassion_sale">MERRY CHRISTMAS!</div>
+<div class="occassion_date">ONE HOUR Alcohol Delivery!</div>
+<div class="occassion_descrip">Whether you need to place an advance order for your upcoming party, or you are running out of alcohol in the middle of a party, we've got you covered!</div>
 <div class="registernowbtn">
 	<a class="pointer" ng-hide="user.email" ng-click="showSignup();">
 		register now
@@ -8,14 +11,53 @@
 </div>
 
 
-<div class="combo_slider main" data-ng-init="featuredProducts()">
-	<div class="tabbable">
-		<!-- Only required for left/right tabs -->
+
+<div class="combo_slider main">	
+	<div class="tabbable">		
+		<div class="fullwidth">
+			<h4 class="nomargin" style="margin-left:10px;">Featured Items</h4>
+			<md-content class="maintab" data-ng-init="featuredProducts()">
+				<md-tabs md-selected="0" md-dynamic-height ><!-- md-no-ink-bar md-border-bottom md-autoselect -->
+				  <md-tab ng-repeat="cat in parentCategories | filterParentCat" md-stretch-tabs>				    				    	
+						<md-tab-label>
+					      {{cat.cat_title}}					      
+					    </md-tab-label>
+					    <md-tab-body>	
+					    	<div class="tab-content fullwidth prod-in-slider">
+						    	<div class="tab-pane active">
+						    	<data-owl-carousel class="owl-carousel owl-theme" data-options="{							    		
+										navigation : false,
+										navigationText :['<span class=\'glyphicon glyphicon-chevron-left\'></span>','<span class=\'glyphicon glyphicon-chevron-right\'></span>'],
+										pagination : true,
+										autoWidth: true,
+										items : 4,
+										itemsDesktop : [1199,3],
+										itemsDesktopSmall : [979,3],
+										itemsTablet : [768,3],
+										itemsTabletSmall : [767,2],
+										itemsMobile : [479,1]
+
+							    		}">
+							      <div owl-carousel-item="" ng-repeat="fproduct in cat['featured']" class="item">		        	
+							        	<div al-tpl-product info="fproduct" classes="proHoverEffect"></div>		
+							      </div>
+							    </data-owl-carousel>
+							    </div>
+						    </div>	
+						</md-tab-body>
+				  </md-tab>
+				</md-tabs>
+			</md-content>
+		</div>
+	</div>
+</div>		
+
+<!-- <div class="combo_slider main" data-ng-init="featuredProducts()">
+	<div class="tabbable">		
 		<div class="fullwidth top-tabmainouter">
 			<div class="tabtitle">Featured Items</div>
             
             <div class="right-crousel">
-
 	            <data-owl-carousel class="owl-carousel owl-theme" data-options="{				    		
 				    		navigation : true,
 							navigationText :['<span class=\'glyphicon glyphicon-chevron-left\'></span>','<span class=\'glyphicon glyphicon-chevron-right\'></span>'],
@@ -67,4 +109,4 @@
 
 		<div ui-view='giftClaim'></div>
 	</div>
-</div>
+</div> -->

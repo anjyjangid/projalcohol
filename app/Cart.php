@@ -4,10 +4,10 @@ namespace AlcoholDelivery;
 
 use Moloquent;
 
-use AlcoholDelivery\Setting as Setting;
-use AlcoholDelivery\Products as Products;
-use AlcoholDelivery\Packages as Packages;
-use AlcoholDelivery\Credits as Credits;
+use AlcoholDelivery\Setting;
+use AlcoholDelivery\Products;
+use AlcoholDelivery\Packages;
+use AlcoholDelivery\Credits;
 use AlcoholDelivery\Promotion;
 use AlcoholDelivery\Gift;
 
@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 use stdClass;
 use MongoId;
 use MongoDate;
+use Route;
+use DateTime;
 
 class Cart extends Moloquent
 {
@@ -129,7 +131,17 @@ class Cart extends Moloquent
 			"nonchilled" => false,
 			"status" => 0,
 			"user" => null,
+			
 		];
+
+
+		$user = Auth::user('user');
+
+		if(!empty($user)){
+
+			$cart['user'] = new mongoId($user->_id);
+
+		}
 
 		$cart = self::setServices($cart);
 		
@@ -143,33 +155,69 @@ class Cart extends Moloquent
 
 
 			return (object)array("success"=>true,"message"=>"cart generated succesfully","cart"=>$cart);
-
+			
 		}catch(Exception $e){
 
 			return (object)array("success"=>false,"message"=>$e->getMessage());
 
-		}		
+		}
 
 	}
 
-	public static function findUpdated($id){
+	public static function findUpdated($id,$admin = false){
 
-		$user = Auth::user('user');
-		
-		$userId = isset($user->_id)?$user->_id:(string)new mongoId();
+		if(!$admin){
 
-		$cart = self::where("_id",new mongoId($id));
+			$user = Auth::user('user');
 
-		if(isset($user->_id)){
-			$cart = $cart->where("user",new mongoId($userId));
+			$userId = isset($user->_id)?$user->_id:(string)new mongoId();
+
+			$cart = self::where("_id",new mongoId($id))->whereNull("generatedBy");
+
+			if(isset($user->_id)){
+
+				$cart = $cart->first();
+
+				if(!empty($cart)){
+
+					if(empty($cart->user)){
+
+						$cart->user = new mongoId($user->_id);
+
+					}else if(((string)$cart->user) != $user->_id){
+						$cart = "";
+					}
+
+				}
+
+			}else{
+				$cart = $cart->whereNull("user");
+				$cart = $cart->first();
+			}
+
+
 		}else{
-			$cart = $cart->whereNull("user");
-		}
 
-		$cart = $cart->first();
+			$cart = self::where("_id",new mongoId($id))->first();
+
+		}
 
 		if(empty($cart)){
 			return false;
+		}
+
+		$datetime = new DateTime('tomorrow');
+		$tomorrowTime = strtotime($datetime->format('Y-m-d H:i:s'));
+
+		if(isset($cart->timeslot['datekey']) && $cart->timeslot['datekey']<$tomorrowTime){
+
+			$cart->timeslot = [
+				"datekey"=>false,
+				"slotkey"=>false,
+				"slug"=>"",
+				"slotslug"=>""
+			];
+
 		}
 
 		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.express_delivery.applicablePostalCodes','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value'])->first();
@@ -182,7 +230,6 @@ class Cart extends Moloquent
 
 		$cartServices["smoke"]["charges"] = $services['cigratte_services']['value'];
 		
-
 		$cartServices["delivery"] = [
 								"free" => false,
 								"charges" => $services['non_free_delivery']['value'],
@@ -194,17 +241,6 @@ class Cart extends Moloquent
 		$cartDiscount = $cart->discount;							
 		$cartDiscount['nonchilled']['exemption'] = $services['non_chilled_delivery']['value'];
 		$cart->discount = $cartDiscount;
-
-
-		// code to apply filters so invalid data dosen't get fetch//
-
-		// foreach ($cart->products as $key => $product) {
-
-		// 	if($product['quantity']<0){
-		// 		unset($cart['products'][$key]);
-		// 	}
-
-		// }
 
 		try{
 
@@ -338,7 +374,7 @@ class Cart extends Moloquent
 		$offset = strtotime('+8 hours'); //ADD OFFSET SO TIME WILL BE EQUAL TO SINGAPORE TIMEZONE 
 		//$this->updated_at
 		$reference = "ADSG";
-		$reference.= ((int)date("ymd",$offset) - 123456);			
+		$reference.= abs((int)date("his",$offset) - 123456);			
 		$reference.="O";			
 		$reference.= (string)date("Hi",$offset);
 
@@ -1291,12 +1327,20 @@ class Cart extends Moloquent
 
 	}
 
-	public function cartToOrder($cartKey=null){
+	
+	/**
+	 * function to convert cart data to a order
+	 *
+	 * @var $cartKey // as denotes from name its a key of cart wants to convert
+	 * @var $interface (wi=>1,eci=>2,bi=>3) // define order placed from which interface
+	 *
+	 */
+	public function cartToOrder($cartKey=null,$interface=1){
 
 		$productsInCartCount = $this->getProductIncartCount();
 
 		$order = [
-			'interface'=>1			
+			'interface'=>$interface
 		];
 
 		$total = 0;
@@ -1324,6 +1368,8 @@ class Cart extends Moloquent
 				'chilled'=>(bool)$product['chilled'],
 				'loyaltyType'=>(int)$product['loyaltyType'],
 				'loyalty'=>(float)$product['loyalty'],
+				'bulkDisable'=>(float)$product['bulkDisable']
+
 			];
 
 			foreach ($product['imageFiles'] as $key => $value) {
@@ -1372,7 +1418,11 @@ class Cart extends Moloquent
 					$objSale['giftQuantity'] = $product['proSales']['giftQuantity'];
 				}
 
-				$proSales[(string)$product['proSales']['_id']] = $objSale;				
+				$proSales[(string)$product['proSales']['_id']] = $objSale;
+
+				if($this->isSingleProductSale($product['proSales']))
+				$proDetails[(string)$product['_id']]['common']['sale'] = $objSale;
+
 
 			}
 
@@ -1721,8 +1771,6 @@ class Cart extends Moloquent
 				$gift['description'] = $gDetail['description'];
 				$gift['image'] = $gDetail['coverImage']['source'];
 
-				
-
 				$subtotal+=$gift['price'];
 
 				if($gift['type']==1){
@@ -1838,8 +1886,10 @@ class Cart extends Moloquent
 
 				$price = 0;
 
+
 				if(!$isSingleSalePro){
-					if($oProduct['qtyfinal']>1){
+
+					if($oProduct['qtyfinal']>1 && !$proDetail['bulkDisable']){
 
 						$originalPrice = $proDetail['price'];
 						foreach ($proDetail['express_delivery_bulk']['bulk'] as $key => $bulk) {
@@ -1862,11 +1912,12 @@ class Cart extends Moloquent
 
 					}
 
-					}elseif($oProduct['qtyfinal']==1){
+					}else{
 
-						$price = $oProduct['unitprice'];
+						$price = $oProduct['unitprice'] * $oProduct['qtyfinal'];
 
 					}
+
 				}else{
 
 					$price = $oProduct['unitprice'];
@@ -1881,6 +1932,12 @@ class Cart extends Moloquent
 						$price = $oProduct['qtyfinal'] * ($price - $discountValue);	
 
 					}
+
+					// $oProduct['sale'] = [
+					// 	"title" => $product['sale']['title'],
+					// 	"detailTitle" => $product['sale']['detailTitle']
+					// ];
+
 				}
 
 				$oProduct['price'] = $price;
@@ -1893,112 +1950,130 @@ class Cart extends Moloquent
 
 			}
 
-			//SET COUPON IF COUPON CODE IS APPLIED
+		}		
+		// Set Products ends //
 
-			if($cartKey){
-				$cartData = Cart::where(['_id' => $cartKey])->first();
+		//SET COUPON IF COUPON CODE IS APPLIED
 
-				if(isset($cartData->coupon) && $cartData->coupon){
-					$couponData = Coupon::where(['_id' => $cartData->coupon, 'status'=>1])->first();
+		if(isset($this->coupon) && $this->coupon){
 
-					if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date. ' + 1 days')>= time()){
-						$coupon = $couponData->toArray();
+			$couponData = Coupon::where(['_id' => $this->coupon, 'status'=>1])->first();
 
-						if (isset($coupon) && $coupon['_id']) {
-							$cDiscount = $coupon['discount'];
-							$cTotal = $coupon['total'];
-							$discountTotal = 0;
+			if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date. ' + 1 days')>= time()){
+				$coupon = $couponData->toArray();
 
-							if(!$cTotal || ($cTotal && $cTotal <= $subtotal) ){
+				if (isset($coupon) && $coupon['_id']) {
+					$cDiscount = $coupon['discount'];
+					$cTotal = $coupon['total'];
+					$couponDisAmt = 0;
+					$couponDiscount = 0;
+					$isProductOriented = (count($coupon['products']) + count($coupon['categories']))?true:false;
 
-								foreach($order['products'] as $key=>$nOrder){
-									$quantity = $nOrder['qtyfinal'];
-									$hasCategory = 0;
-									$unitPrice = $nOrder['unitprice'];
-									$discountedUnitPrice = $nOrder['unitprice'];
+					if(!$cTotal || ($cTotal && $cTotal <= $subtotal) ){
 
-									$prodDetail = $proDetails[(string)$nOrder['_id']];
+						if($isProductOriented){
 
+							foreach($order['products'] as $key=>$nOrder){
 
-									if(!empty($coupon['products'])){
-										if(!in_array((string)$nOrder['_id'], $coupon['products'])){
-											continue;
+								$quantity = $nOrder['qtyfinal'];
+								$hasCategory = 0;
+								$unitPrice = $nOrder['unitprice'];
+								$discountedUnitPrice = $nOrder['unitprice'];
+
+								$prodDetail = $proDetails[(string)$nOrder['_id']];
+
+								if(!empty($coupon['products'])){
+									if(!in_array((string)$nOrder['_id'], $coupon['products'])){
+										continue;
+									}
+								}
+
+								if(!empty($coupon['categories'])){
+
+									foreach ($prodDetail['categories'] as $catVal) {
+										if(!in_array((string)$catVal, $coupon['categories'])){
+											$hasCategory = 1;
 										}
 									}
 
-									if(!empty($coupon['categories'])){
+									if(!$hasCategory)
+										continue;
+								}
 
-										foreach ($prodDetail['categories'] as $catVal) {
-											if(!in_array((string)$catVal, $coupon['categories'])){
-												$hasCategory = 1;
-											}
+								if($coupon['discount_status']==1){
+									$pAmount = $unitPrice*$quantity;
+								}else{
+									$pAmount = $discountedUnitPrice*$quantity;
+								}
+
+								if($coupon['type']==1){
+									$couponDisAmt = $cDiscount * $quantity;
+								}else{
+									$couponDisAmt = ($pAmount*$cDiscount)/100;
+								}
+
+								//In case coupon dis is more than product price
+								if($discountAmount>$pAmount){
+									$couponDisAmt = $pAmount;
+								}
+
+								$amtAfterCouponDis = $pAmount - $couponDisAmt;
+
+
+								if($coupon['discount_status']==1){ // 1 is set to check discount from other sources like single sale NOTE single sale :)
+
+									$proAmtAfterOtherDiscount =  $discountedUnitPrice*$quantity;
+
+									if($amtAfterCouponDis > $proAmtAfterOtherDiscount){
+										
+										$couponDisAmt = 0; // if discount from other sources is more than coupon don't apply coupon discount
+
+									}else{
+
+										$diffAmt = $proAmtAfterOtherDiscount - $amtAfterCouponDis;
+
+										$couponDisAmt = 0;
+										if($diffAmt>0){
+											$couponDisAmt = $diffAmt;
 										}
-
-										if(!$hasCategory)
-											continue;
 									}
 
-									if($coupon['discount_status']==1){
-										$pAmount = $unitPrice*$quantity;
-									}else{
-										$pAmount = $discountedUnitPrice*$quantity;
-									}
-
-									if($coupon['type']==1){
-										$discountAmount = $pAmount - $cDiscount;
-									}else{
-										$discountAmount = $pAmount - (($pAmount*$cDiscount)/100);
-									}
-
-									if($coupon['discount_status']==1 && $discountAmount > $discountedUnitPrice*$quantity){
-										$discountAmount = $discountedUnitPrice*$quantity;
-									}
-
-									$discountTotal +=  $pAmount - $discountAmount;
-
-									if($discountAmount)
-										$order['products'][$key]['price'] = $discountAmount;
-								}
-							
-								$subtotal = $subtotal - $discountTotal;
-
-
-								//UPDATE COUPON COUNT AND COUPON LIST
-								$user = Auth::user('user');
-								$userId = new MongoId($user->_id);
-
-								$newList = array('orderId'=> 100, 'userId'=> $userId);
-
-								if(!isset($coupon['used_count'])){
-									$used_count = 0;
-								}else{
-									$used_count = $coupon['used_count'];
 								}
 
-								if(isset($couponData->used_list)){
-									$oldList = $coupon['used_list'];
-								}else{
-									$oldList = array();
-								}
+								$order['products'][$key]['discount'] = $couponDisAmt;
+								$couponDiscount+=$couponDisAmt;
 
-								array_push($oldList, $newList);
-
-								if($couponData){
-									$couponData->used_count = $used_count + 1;
-									$couponData->used_list = $oldList;
-									$couponData->save();
-								}
 							}
+						}else{
+
+							if($coupon['type']==1){
+								$couponDiscount = $coupon['discount'];
+							}else{
+								$couponDiscount = $subtotal*($coupon['discount']/100);
+							}
+
 						}
+
+						$order['coupon'] = [
+							"_id" => $this->coupon,
+							"code" => $coupon['code'],
+							"name" => $coupon['name'],
+							"type" => $coupon['type'],
+							"discount" => $coupon['discount'],
+							"total" => $coupon['total'],
+							"start_date" => $coupon['start_date'],
+							"end_date" => $coupon['end_date'],
+							"totalDiscount" => $couponDiscount
+						];
+
 					}
 				}
 			}
-
-			//prd($order);
-
 		}
-		
-		// Set Products ends //
+
+		if($interface==2){
+			$order['generatedBy'] = $this->generatedBy;
+		}
 
 		$created_at = strtotime('now');		
 		$order['created_at'] = new MongoDate($created_at);
@@ -2032,7 +2107,7 @@ class Cart extends Moloquent
 			$order['delivery']['deliveryTimeRange'] = '';
 			$order['delivery']['deliveryDateObj'] = new MongoDate($orderDateTime);
 		}
-		
+
 		$lpEarned = $this->setLoyaltyPointEarned();
 		$order['loyaltyPointEarned'] = $lpEarned;
 
@@ -2063,12 +2138,35 @@ class Cart extends Moloquent
 			$discountExemption+=$order['discount']['nonchilled']['exemption'];
 		}
 
+		if(isset($order['coupon']) && $order['coupon']['totalDiscount']>0){
+
+			$totalTill = $subtotal + $serviceCharges - $discountExemption;
+
+			if($order['coupon']['totalDiscount']>$totalTill){
+				$order['coupon']['totalDiscount'] = $totalTill;
+			}
+
+			$order['discount']['coupon'] = $order['coupon']['totalDiscount'];
+			$discountExemption+=round($order['coupon']['totalDiscount'],2);
+		}
+
 		if(isset($order['discount']['credits']) && $order['discount']['credits']>0){
+
+			$totalTill = $subtotal + $serviceCharges - $discountExemption;
+			if($order['discount']['credits']>$totalTill){
+				$order['discount']['credits']=$totalTill;
+			}
+
 			$discountExemption+=$order['discount']['credits'];
 		}
 
 		$total+=$serviceCharges;
 		$total-=$discountExemption;
+
+		//SET TOTAL AS ZERO IF IT IS NEGATIVE 
+		if($total < 0){
+			$total = 0;
+		}
 
 		$order['payment'] = [
 			'subtotal' => round($subtotal,2),
@@ -2076,8 +2174,12 @@ class Cart extends Moloquent
 			'service'=> round($serviceCharges,2),
 			'discount'=> round($discountExemption,2),
 			'total'=> round($total,2),
-			'method' => $this->payment['method']
+			'method' => $this->payment['method'],			
 		];
+
+		$totalValue = $order['payment']['subtotal'] + $order['payment']['service'];
+
+		$order['payment']['totalValue'] = round($totalValue,2);
 
 		return $order;
 

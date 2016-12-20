@@ -24,6 +24,7 @@ use AlcoholDelivery\Gift;
 use AlcoholDelivery\Email;
 
 use AlcoholDelivery\CreditTransactions;
+use AlcoholDelivery\LoyaltyTransactions;
 use AlcoholDelivery\ErrorLog;
 
 use AlcoholDelivery\Coupon;
@@ -34,6 +35,9 @@ use MongoId;
 use stdClass;
 
 use AlcoholDelivery\Payment;
+
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 class CartController extends Controller
 {
@@ -48,7 +52,7 @@ class CartController extends Controller
 
 	public function __construct(Request $request)
 	{
-
+		
 		$user = Auth::user('admin');
 		if(!empty($user)){
 			$this->deliverykey = session()->get('deliverykeyAdmin');
@@ -188,7 +192,6 @@ class CartController extends Controller
 
 		$cart = Cart::findUpdated($id);
 
-
 		if(empty($cart)){
 
 			$cartObj = new Cart;
@@ -198,6 +201,7 @@ class CartController extends Controller
 			if($isCreated->success){
 
 				$cart = $isCreated->cart;
+				return response(["sucess"=>true,"cart"=>$cart],200);
 
 			}else{
 
@@ -211,7 +215,7 @@ class CartController extends Controller
 		}
 
 		$isMerged = $this->mergecarts($cart['_id']);
-		
+
 		if($isMerged->success){
 
 			$cart = $isMerged->cart;
@@ -349,7 +353,7 @@ class CartController extends Controller
 		}
 		// package validate and manage end
 
-		$request->session()->put('deliverykey', $cart['_id']);
+		// $request->session()->put('deliverykey', $cart['_id']);
 
 		return response(["sucess"=>true,"cart"=>$cart],200);
 
@@ -596,16 +600,6 @@ class CartController extends Controller
 			$cart->loyalty = [];
 		}
 
-		$data = [
-				"loyalty" => [
-
-					"chilled" => 1,
-					"_id" => new mongoId("57025683c31d53b2218b45a4"),
-					"quantity" => 1
-
-				]
-			];
-
 		$product = Products::where("_id",$proIdToUpdate)
 					->where("status",1)
 					->where("isLoyalty",1)					
@@ -726,11 +720,7 @@ class CartController extends Controller
 
 	public function putCreditCertificate(Request $request, $cartKey) {
 
-		$user = Auth::user('user');		
-
-		// if($user===null){
-		// 	return response(["message"=>"login required"],401);
-		// }
+		$user = Auth::user('user');
 		
 		$inputs = $request->all();
 		$value = $inputs['id'];
@@ -812,7 +802,6 @@ class CartController extends Controller
 			$user = Auth::user('user');
 			$userLoyaltyPoints = $user['loyaltyPoints'];
 			$pointsUsed = $cart->getLoyaltyPointUsed();
-
 			return $userLoyaltyPoints - $pointsUsed;
 
 		}
@@ -1069,15 +1058,11 @@ class CartController extends Controller
 
 		if(isset($user->_id)){
 
-			$userCart = Cart::where("user","=",new MongoId($user->_id))->where("_id","!=",new MongoId($cartKey))->first();
+			$userCart = Cart::where("user","=",new MongoId($user->_id))
+							->where("_id","!=",new MongoId($cartKey))
+							->whereNull("generatedBy")->first();
 
 			$sessionCart = Cart::find($cartKey);
-
-			// if(!empty($userCart)){
-
-				// $sessionCart->products = array_merge($sessionCart->products,$userCart->products);
-
-			// }
 
 			if(!empty($sessionCart->products) || empty($userCart)){
 
@@ -1742,9 +1727,8 @@ jprd($product);
 
 	}
 
-	public function deletePromotion($promoId,Request $request){
+	public function deletePromotion($cartKey,$promoId,Request $request){
 
-		$cartKey = $request->session()->get('deliverykey');
 		$cart = Cart::find($cartKey);
 
 		if(empty($cart)){
@@ -1780,34 +1764,20 @@ jprd($product);
 	}
 
 	public function confirmorder(Request $request,$cartKey = null){
-
+		
 		$user = Auth::user('user');
-
-		//$user = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
-
+		
 		$userObj = User::find($user->_id);
-
-		if(empty($userObj)){
-
-			return response(['message'=>"Un-Authorised login"],401);
-
-		}
 
 		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
 
-		if($cartKey == null){
-
+		if($cartKey == null)
 			$cartKey = $request->get('merchant_data1');
-
-		}
-
-		//$cart = Cart::findUpdated($cartKey);
-		$cart = Cart::find($cartKey);
+		
+		$cart = Cart::findUpdated($cartKey);
 
 		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){
-
 			$order = Orders::where(['reference' => $request->get('order_number')])->first();
-
 			if($order)
 				return redirect('/orderplaced/'.$order['_id']);
 		}
@@ -1823,26 +1793,69 @@ jprd($product);
 
 		$cartArr['user'] = new MongoId($user->_id);
 
-		try {
+		try {			
 
-			$orderObj = $cart->cartToOrder($cartKey);
-			
 			//PREPARE PAYMENT FORM DATA
-			if(!$request->isMethod('get') && $orderObj['payment']['method'] == 'CARD' && $orderObj['payment']['total']>0){
-
+			if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){
 				$payment = new Payment();
-				$payment = $payment->prepareform($cartArr,$user);
-				return response($payment,200);
-
+				$paymentres = $payment->prepareform($cartArr,$user);
+				return response($paymentres,200);
 			}
 
+			//CHECK FOR PAYMENT RESULT
+			if($request->isMethod('get') && $cartArr['payment']['method'] == 'CARD'){
+				$rdata = $request->all();
+				//VALIDATE RESPONSE SO IT IS VALID OR NOT
+				$payment = new Payment();				
+				$failed = false;
+				if(!$payment->validateresponse($rdata) || ($rdata['result']!='Paid')){					
+					$failed = true;										
+				}
+
+				unset($rdata['signature']);					
+
+				$paymentres = ['paymentres' => $rdata];
+
+				$cart->payment = array_merge($cartArr['payment'],$paymentres);
+
+				$cart->save();
+
+				$this->logtofile($rdata);
+
+				if($failed){
+					return redirect('/cart/payment');
+				}
+			}
+
+			//FORMAT CART TO ORDER
+			$orderObj = $cart->cartToOrder($cartKey);
+
+			$defaultContact = true;
+			if(!isset($orderObj['delivery']['newDefault']) || $orderObj['delivery']['newDefault']!==true){
+				$defaultContact = false;
+			}
+			$userObj->setContact($orderObj['delivery']['contact'],$defaultContact);
+			
+			//CREATE ORDER FROM CART & REMOVE CART
 			$order = Orders::create($orderObj);
 
 			$cart->delete();
 
-			$process = $order->processGiftCards();			
+			$process = $order->processGiftCards();
 
 			$reference = $order->reference;
+
+			if(isset($order->coupon)){
+
+				$cRedeem = [
+					"coupon" => $order->coupon['_id'],
+					"reference"=>$order->reference,
+					"user" => $order->user
+				];
+				$coupon = new coupon;
+				$coupon->redeemed($cRedeem);
+
+			}
 
 			if(isset($order->discount['credits']) && $order->discount['credits']>0){
 
@@ -1877,40 +1890,32 @@ jprd($product);
 
 			if($order['loyaltyPointUsed']>0){
 
-				$userObj->decrement('loyaltyPoints', $order['loyaltyPointUsed']);
+				$loyaltyObj = [
+								"points"=>$order['loyaltyPointUsed'],
+								"method"=>"order",
+								"reference" => $reference,
+								"user" => new mongoId((string)$userObj->_id),
+								"comment"=> "You have used this points by making a purchase on our website"
+							];
 
-				$userObj->push('loyalty',
-								[
-									"type"=>"debit",
-									"points"=>$order['loyaltyPointUsed'],
-									"reason"=>[
-										"type"=>"order",
-										"key" => $reference,
-										"comment"=> "You have used this points by making a purchase on our website"
-									],
-									"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
-								]
-							);
+				LoyaltyTransactions::transaction('debit',$loyaltyObj,$userObj);
 
 			}
 
 			$loyaltyPoints = $order['loyaltyPointEarned'];
+
 			if($loyaltyPoints>0){
 
-				$userObj->increment('loyaltyPoints', $loyaltyPoints);
+				$loyaltyObj = [
+						"points"=>$loyaltyPoints,
+						"method"=>"order",
+						"reference" => $reference,
+						"user" => new mongoId((string)$userObj->_id),
+						"comment"=> "You have earned this points by making a purchase"
+					];
+		
+				LoyaltyTransactions::transaction('credit',$loyaltyObj,$userObj);
 
-				$userObj->push('loyalty', 
-									[
-										"type"=>"credit",
-										"points"=>$loyaltyPoints,
-										"reason"=>[
-											"type"=>"order",
-											"key" => $reference,
-											"comment"=> "You have earned this points by making a purchase"
-										],
-										"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
-									]
-								);
 			}
 
 			$request->session()->forget('deliverykey');
@@ -1947,7 +1952,7 @@ jprd($product);
 
 		} catch(\Exception $e){
 
-			ErrorLog::create('emergency',[
+				ErrorLog::create('emergency',[
 					'error'=>$e,
 					'message'=> 'Cart Confirm'
 				]);
@@ -1957,6 +1962,41 @@ jprd($product);
 		return response(["message"=>'Something went wrong'],400);
 		
 	}
+
+
+	public function confirmordertest(Request $request,$cartKey = null){
+
+		if($request->getHost()!=="192.168.1.222"){
+			prd("Don't try to be smart :)");
+		}
+
+		$order['loyaltyPointUsed'] = 200;
+		$reference = "ABCDEFGH";
+		$userObj = User::find("57c422d611f6a1450b8b456c"); // for testing
+
+		$loyaltyObj = [
+						"points"=>$order['loyaltyPointUsed'],
+						"method"=>"order",
+						"reference" => $reference,
+						"user" => new mongoId((string)$userObj->_id),
+						"comment"=> "You have used this points by making a purchase on our website"
+					];
+
+		LoyaltyTransactions::transaction('debit',$loyaltyObj,$userObj);
+
+		prd("test complete");
+		
+		$cart = Cart::find($cartKey);
+
+		$orderObj = $cart->cartToOrder($cartKey);
+
+		prd("test converterd cart");
+
+
+		return response(["message"=>'Something went wrong'],400);
+		
+	}
+
 
 	private function setCartProductsList(&$cart){
 
@@ -2040,6 +2080,10 @@ jprd($product);
 
 		if(isset($params['payment'])){
 			$cart->payment = $params['payment'];
+			//RESET PAYMENT RESPONSE
+			$paymentinfo = $cart->payment; 
+			unset($paymentinfo['paymentres']);
+			$cart->payment = $paymentinfo;
 		}
 
 		if(isset($params['discount'])){
@@ -2071,9 +2115,7 @@ jprd($product);
 
 	}
 
-	public function freezcart(Request $request){
-
-		$cartKey = $request->session()->get('deliverykey');
+	public function freezcart($cartKey,Request $request){
 
 		$cartObj = new Cart;
 
@@ -2085,6 +2127,7 @@ jprd($product);
 		// 	return response(["success"=>false,"message"=>"Cart is already freezed"],405); //405 => method not allowed
 
 		// }
+
 		$cart->freeze = true;
 
 		$cart->save();
@@ -2217,17 +2260,7 @@ jprd($product);
 			}else{
 				$products = $products['product'];
 			}
-
-			// $products = $productObj->getProducts(
-			// 								array(
-			// 									"id"=>$productKeys,
-			// 									"with"=>array(
-			// 										"discounts"
-			// 									)
-			// 								)
-			// 							);
-
-
+			
 			$updatedData = [
 				"products"=>[]				
 			];
@@ -2321,25 +2354,128 @@ jprd($product);
 
 	public function postRepeatlast(Request $request){
 		
-		$userLogged = Auth::user('user');
-return response(["under process"],400);
-		$userLogged = (object)['_id'=> "57c422d611f6a1450b8b456c"]; // for testing
-		if(empty($userLogged)){
-			
-			$return['message'] = 'login required';
-			
-			return response($return,401);
-		}
+		$userLogged = Auth::user('user');		
 
-		$params = Orders::where("user",new mongoId($userLogged->_id))->whereNotNull("products")->orderBy("created_at","desc")->first(["products.quantity","updated_at","reference"]);
+		$params = Orders::where("user",new mongoId($userLogged->_id))->whereNotNull("products")->orderBy("created_at","desc")->first(["products._id","products.quantity.chilled","products.quantity.nonChilled"]);
 
 		$cartKey = $request->get('cartKey');
 		
 		$cart = Cart::find($cartKey);
 
 		$cartProducts = $cart->products;
-		prd($cartProducts);
 
+		if(isset($params['products']) && is_array($params['products'])){
+			
+			$productKeys = [];
+
+			$params['products'] = valueToKey($params['products'],"_id");
+			
+			$productKeys = array_keys($params['products']);
+
+			$productObj = new Products;
+
+			$products = $productObj->fetchProduct([
+						"id"=>$productKeys,
+					]);
+
+			if($products['success']===false && empty($products['product'])){
+
+				$response['message'] = "Products not found";
+				$response['action'] = "refresh";
+				return response($response,405);
+
+			}else{
+				$products = $products['product'];
+			}
+			
+			$updatedData = [
+				"products"=>[]				
+			];
+
+			foreach($products as $product){
+				
+				$proIdToUpdate = (string)$product['_id'];
+
+				$proPutValues = $params['products'][$proIdToUpdate];
+
+				$productInCart = isset($cartProducts[$proIdToUpdate])?$cartProducts[$proIdToUpdate]:false;
+
+				$chilledQty = (int)$proPutValues['quantity']['chilled'];
+				$nonChilledQty = (int)$proPutValues['quantity']['nonChilled'];
+
+				$newQty = $chilledQty + $nonChilledQty;
+
+				if($productInCart!==false){
+
+					$chilledQty+= (int)$productInCart['chilled']['quantity'];
+					$nonChilledQty+= (int)$productInCart['nonchilled']['quantity'];
+
+				}
+
+				$totalQty = $chilledQty + $nonChilledQty;
+				
+				$updateProData = array(
+
+					"chilled"=>array(
+						"quantity"=>$chilledQty,
+						"status"=>"chilled",
+					),
+					"nonchilled"=>array(
+						"quantity"=>$nonChilledQty,
+						"status"=>"nonchilled",
+					),
+					"quantity"=>$totalQty,
+					"lastServedChilled" => true,
+					"sale"=>isset($product['proSales'])?$product['proSales']:false
+
+				);
+				$updateProData['remainingQty']= $newQty;
+				if($productInCart!==false){
+
+					$updateProData['chilled']['status'] = $productInCart['chilled']['status'];
+					$updateProData['nonchilled']['status'] = $productInCart['nonchilled']['status'];
+					$updateProData['lastServedChilled'] = $productInCart['lastServedChilled'];
+					$updateProData['remainingQty']+= $productInCart['remainingQty'];
+
+				}			
+
+				$cartProducts[$proIdToUpdate] = $updateProData;
+				$updateProData['product'] = $product; //product original detail required in cart
+
+				array_push($updatedData['products'],$updateProData);
+
+			}
+
+			try{
+
+				$cart->products = $cartProducts;
+				$cart->createAllPossibleSales();
+
+				$latestUpdate = [];
+				foreach($updatedData['products'] as &$cProduct){
+
+					$key = (string)$cProduct['product']['_id'];
+					$cProduct['remainingQty'] = $cart->products[$key]['remainingQty'];
+
+				}
+
+				$cart->save();
+
+				$response = [
+					'message'=>'cart updated successfully',
+					'sales' => $cart->sales,
+					'products' => $updatedData['products']
+				];
+				
+				return response($response,200);
+
+			}catch(\Exception $e){
+
+				return response(["success"=>false,"message"=>$e->getMessage()],400);
+
+			}
+
+		}
 		
 		
 	}
@@ -2541,5 +2677,206 @@ return response(["under process"],400);
 	public function missingMethod($parameters = array())
 	{
 		jprd("Missing");
+	}
+
+	function logtofile($message){
+        //if($this->enableLog){
+            $view_log = new Logger('Payment Logs');
+            $view_log->pushHandler(new StreamHandler(storage_path().'/logs/payment.log', Logger::INFO));
+            if(is_array($message)){
+            	$message = json_encode($message);
+            }
+            $view_log->addInfo($message);
+        //}
+    }
+
+
+    public function confirmordermanual(Request $request,$cartKey = null){
+
+		if(!$request->get('sercuretrue')){
+			return redirect('/');
+		}
+		//$user = Auth::user('user');
+		
+		//$userObj = User::find($user->_id);
+
+		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
+
+		if($cartKey == null)
+			$cartKey = $request->get('merchant_data1');
+		
+		$cart = Cart::find($cartKey);
+
+		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){
+			$order = Orders::where(['reference' => $request->get('order_number')])->first();
+			if($order)
+				return redirect('/orderplaced/'.$order['_id']);
+		}
+
+		if(empty($cart)){
+			if($request->isMethod('get'))
+				return redirect('/');	
+			else	
+				return response(["success"=>false,"message"=>"cart not found"],405); //405 => method not allowed
+		}
+
+		if($cart){
+			$user = Auth::user('user');
+		
+			$userObj = User::find((string)$cart->user);
+		}
+
+		$cartArr = $cart->toArray();		
+
+		$cartArr['user'] = new MongoId($user->_id);
+
+		try {			
+
+			//PREPARE PAYMENT FORM DATA
+			if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){
+				$payment = new Payment();
+				$paymentres = $payment->prepareform($cartArr,$user);
+				return response($paymentres,200);
+			}
+
+			//CHECK FOR PAYMENT RESULT
+			if($request->isMethod('get') && $cartArr['payment']['method'] == 'CARD'){}
+
+			//FORMAT CART TO ORDER
+			$orderObj = $cart->cartToOrder($cartKey);
+
+			$defaultContact = true;
+			if(!isset($orderObj['delivery']['newDefault']) || $orderObj['delivery']['newDefault']!==true){
+				$defaultContact = false;
+			}
+			$userObj->setContact($orderObj['delivery']['contact'],$defaultContact);
+			
+			//CREATE ORDER FROM CART & REMOVE CART
+			$order = Orders::create($orderObj);
+
+			$cart->delete();
+
+			$process = $order->processGiftCards();
+
+			$reference = $order->reference;
+
+			if(isset($order->coupon)){
+
+				$cRedeem = [
+					"coupon" => $order->coupon['_id'],
+					"reference"=>$order->reference,
+					"user" => $order->user
+				];
+				$coupon = new coupon;
+				$coupon->redeemed($cRedeem);
+
+			}
+
+			if(isset($order->discount['credits']) && $order->discount['credits']>0){
+
+				$creditsUsed = $order->discount['credits'];
+				$creditObj = [
+								"credit"=>$creditsUsed,
+								"method"=>"order",
+								"reference" => $reference,
+								"user" => new mongoId($user->_id),
+								"comment"=> "You have used this credits with an order"
+							];
+
+				CreditTransactions::transaction('debit',$creditObj,$userObj);
+
+			}
+
+			if(isset($order->creditsFromLoyalty) && $order->creditsFromLoyalty>0){
+
+				$creditsFromLoyalty = $order['creditsFromLoyalty'];
+				
+				$creditObj = [
+								"credit"=>$creditsFromLoyalty,
+								"method"=>"order",
+								"reference" => $reference,
+								"user" => new mongoId($user->_id),
+								"comment"=> "You have earned this credits in exchange of loyalty points"
+							];
+				
+				CreditTransactions::transaction('credit',$creditObj,$userObj);
+
+			}
+
+			if($order['loyaltyPointUsed']>0){
+
+				$loyaltyObj = [
+								"points"=>$order['loyaltyPointUsed'],
+								"method"=>"order",
+								"reference" => $reference,
+								"user" => new mongoId((string)$userObj->_id),
+								"comment"=> "You have used this points by making a purchase on our website"
+							];
+
+				LoyaltyTransactions::transaction('debit',$loyaltyObj,$userObj);
+
+			}
+
+			$loyaltyPoints = $order['loyaltyPointEarned'];
+
+			if($loyaltyPoints>0){
+
+				$loyaltyObj = [
+						"points"=>$loyaltyPoints,
+						"method"=>"order",
+						"reference" => $reference,
+						"user" => new mongoId((string)$userObj->_id),
+						"comment"=> "You have earned this points by making a purchase"
+					];
+		
+				LoyaltyTransactions::transaction('credit',$loyaltyObj,$userObj);
+
+			}
+
+			$request->session()->forget('deliverykey');
+			
+			//SAVE CARD IF USER CHECKED SAVE CARD FOR FUTURE PAYMENTS
+			if($cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['card'] == 'newcard' && $cartArr['payment']['savecard']){
+				$cardInfo = $cartArr['payment']['creditCard'];
+		        // $user = User::find($user->_id);
+		        $userObj->push('savedCards',$cardInfo,true);
+
+			}
+
+			//Update inventory if order is 1 hour delivery
+			if($order['delivery']['type'] == 0){
+				$model = new Products();
+				$model->updateInventory($order);
+			}
+
+			//CONFIRMATION EMAIL 
+			$emailTemplate = new Email('orderconfirm');
+			$mailData = [
+                'email' => strtolower($userObj->email),
+                'user_name' => ($userObj->name)?$userObj->name:$userObj->email,
+                'order_number' => $reference
+            ];
+
+            $order->placed();
+
+            //$mailSent = $emailTemplate->sendEmail($mailData);
+
+			if($request->isMethod('get')){
+				return redirect('/orderplaced/'.$order['_id']);
+			}
+
+			return response(array("success"=>true,"message"=>"Order Placed Successfully","order"=>$order['_id']));
+
+		} catch(\Exception $e){
+
+				ErrorLog::create('emergency',[
+					'error'=>$e,
+					'message'=> 'Cart Confirm'
+				]);
+
+		}
+
+		return response(["message"=>'Something went wrong'],400);
+		
 	}
 }

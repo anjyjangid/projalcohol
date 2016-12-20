@@ -7,6 +7,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />		
 		<meta name="title" content="@{{meta.title}}">
 		<meta name="description" content="@{{meta.description}}">
+		<meta name="image" content="{{url()}}@{{meta.img}}">
 		<meta name="keywords" content="@{{meta.keyword}}">
 
 		<!--TWITTER META-->
@@ -15,20 +16,22 @@
 		<meta name="twitter:title" content="@{{meta.title}}">
 		<meta name="twitter:description" content="@{{meta.description}}" />
 		<meta name="twitter:creator" content="@{{meta.site_name}}">
-		<meta name="twitter:image:src" content="@{{meta.img}}" />
+		<meta name="twitter:image:src" content="{{url()}}@{{meta.img}}" />
 	    <!--FACEBOOK/OTHER META -->
 		<meta property="fb:app_id" content="@{{meta.fbid}}" />
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content="@{{meta.title}}" />
-		<meta property="og:image" content="@{{meta.img}}" />
+		<meta property="og:image" content="{{url()}}@{{meta.img}}" />
 		<meta property="og:site_name" content="@{{meta.site_name}}" />
 		<meta property="og:description" content="@{{meta.description}}" />
 		<meta property="og:url" content="{{url()}}" />
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		
+		<meta name="google-site-verification" content="89WKkM4ineKdT62fjxZwCKUhQCOZyE7wTbCpvlfDt2E"/> 
+
 		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-		<title class="hide" ng-bind="meta.title"></title>
+		<title ng-bind="meta.title"></title>
 
 
 
@@ -71,7 +74,6 @@
 	</head>
 
 	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}">		    	    	     	
-    	<h1 class="hide" ng-bind="meta.title"></h1>
     	<div ng-spinner-bar class="page-spinner-bar">
 			<div class="bounce1"></div>
 			<div class="bounce2"></div>
@@ -270,11 +272,11 @@
     
 
 
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/SVG-Morpheus/0.1.8/svg-morpheus.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/SVG-Morpheus/0.1.8/svg-morpheus.js"></script>
 	
     <script type="text/javascript" src="{{asset('js/morpher.js')}}"></script>
 
-    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAO1xAu1wBu7NZOqNBn9aoYg-RVstm60jc&libraries=places"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAO1xAu1wBu7NZOqNBn9aoYg-RVstm60jc&libraries=places"></script>
     <script type="text/javascript" src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.js"></script>
 
     <!-- SWEET ALERT STYLE -->
@@ -306,5 +308,15 @@
     <script type="text/javascript" src="js/directive.js"></script>
     <script src="{{ asset('bower_components/angular-fblogin/dist/angular-fblogin.js') }}"></script>   
     <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>   
+    <script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	 
+	  ga('create', 'UA-31785217-1', 'auto');
+	  ga('send', 'pageview');
+	 
+	</script>
             
 </html>

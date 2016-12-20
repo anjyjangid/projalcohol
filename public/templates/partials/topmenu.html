@@ -76,7 +76,7 @@
         <div class="logos-inner-cover"> 
           <a ui-sref="mainLayout.index">
             <div class="logo-top-img-main"> 
-              <svg id="icon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" enable-background="new 0 0 171 76" xml:space="preserve" viewBox="0 0 171 76">
+              <svg id="icon" version="1.1" id="Layer_1" xmlns="https://www.w3.org/2000/svg" xmlns:xlink="https://www.w3.org/1999/xlink" x="0px" y="0px" enable-background="new 0 0 171 76" xml:space="preserve" viewBox="0 0 171 76">
       <g display="none" id="question">
       <path fill="rgb(62,45,24)" d="M110.9,27l-1.3-2.7c-0.7-1.4-2.3-2.1-3.7-1.5c-0.3-0.2-0.6-0.2-0.9-0.1l-0.9,0.4c-0.3,0.1-0.5,0.4-0.5,0.7
       l-8.5,4c-2.3-1.5-5.3-1.9-8-0.6l-14.9,6.9l0,0l-7.9,3.7c-4,1.9-5.7,6.7-3.7,10.8c1.9,4,6.7,5.9,10.7,4L83,47.1l0,0L94,42
@@ -199,7 +199,7 @@ new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'e
               <!--  <input type="checkbox" class="" ng-model="signup.terms" name="regis" id="regis">-->
               
               <md-checkbox ng-model="signup.terms" aria-label="leaveatdoor-checkbox" name="regis" id="regis" class="md-warn md-align-top-left">
-              <div class="register_checktext"> By submitting this form, I confirm that I have read and agree to Alcohol Delivery’s <a target="_blank" ui-sref="cmsLayout.terms-conditions">Terms of Use</a> and <a target="_blank" ui-sref="cmsLayout.privacy-policy">Privacy Policy</a> <span class="help-block" ng-bind="signup.errors.terms[0]"></span></div>
+              <div class="register_checktext"> By submitting this form, I confirm that I have read and agree to Alcohol Delivery’s <a target="_blank" ui-sref="cmsLayout.pages({slug:'terms-conditions'})">Terms of Use</a> and <a target="_blank" ui-sref="cmsLayout.pages({slug:'security-privacy-policy'}) ">Privacy Policy</a> <span class="help-block" ng-bind="signup.errors.terms[0]"></span></div>
               </md-checkbox>
               <label for="regis"><span></span></label>
               

@@ -106,7 +106,7 @@ class PackageController extends Controller
             ));
 
             foreach ($packages as $key => $package) {
-                
+                $package->packageQuantity = 1;  
                 $packageItems = $package['packageItems'];
                 $packageupdate = [];
                 $packagePrice = $productOrgPrice = 0;
@@ -148,7 +148,8 @@ class PackageController extends Controller
                             'name' => $value['name'],
                             'sprice' => $sprice,
                             'imageFiles' => $value['imageFiles'],
-                            'cartquantity' => 0
+                            'cartquantity' => 0,
+                            'customizequantity' => 0
                         ];
                         $minprice[$prokey] = $provalue['cprice'];
                     }

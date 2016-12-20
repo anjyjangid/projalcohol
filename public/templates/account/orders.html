@@ -19,8 +19,8 @@
 		</div>
 		<div class="col-sm-3">
 			<div class="-status">
-				STATUS
-				<div class="deep-status">Pending</div>
+				STATUS 
+				<div class="deep-status">{{ getOrderstatus(order.doStatus) | uppercase }}</div>
 			</div>
 		</div>
 		<div class="col-sm-3">			
@@ -32,6 +32,13 @@
 				</div>
 			</div>
 		</div>
+	</div>
+</div>
+
+<div class="col-sm-12">
+	<div class="wish-nextprvicvr">
+		<button type="button" class="wishprev" ng-click="prev()" ng-disabled="pagination.start<1"><span class="glyphicon glyphicon-menu-left"></span> Previous </button>
+		<button type="button" class="wishnext" ng-click="next()" ng-disabled="!pagination.next">Next <span class="glyphicon glyphicon-menu-right"></span></button>
 	</div>
 </div>
 

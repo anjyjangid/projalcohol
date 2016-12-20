@@ -1,0 +1,69 @@
+<md-dialog aria-label="Age Verification" layout="column" flex="50" class="ageverificationpopup">  
+    <form name="verificationForm"  ng-submit="verifyage()">
+    
+    <md-dialog-content>
+      <div class="md-dialog-content">                
+        <div layout="row" align="center">
+          <div align="center" class="fullwidth">
+            <img src="asset/i/poslogo.png" style="height: 100px;">
+          </div>
+        </div>        
+        <div>&nbsp;</div>
+        <div layout="row" align="center">
+          <div class="fullwidth">
+          <h4 align="center">
+            To experience this site you must be of legal drinking age in Singapore
+          </h4>
+          </div>  
+        </div>
+        <div>&nbsp;</div>
+        <div align="center">                          
+          <md-input-container md-no-float >
+            <label>Month</label>
+            <md-select required ng-model="verification.userMonth" name="userMonth">              
+              <md-option ng-repeat="month in verification.months" ng-value="{{month.value}}">
+                {{month.label}}
+              </md-option>
+            </md-select>
+            <div ng-messages="verificationForm.userMonth.$error">
+              <div ng-message="required">This is required.</div>
+            </div>
+          </md-input-container>
+          <md-input-container md-no-float>
+            <label>Day</label>
+            <md-select required ng-model="verification.userDay" name="userDay">              
+              <md-option ng-repeat="dayval in verification.days" ng-value="{{dayval}}">
+                {{dayval}}
+              </md-option>
+            </md-select>
+            <div ng-messages="verificationForm.userDay.$error">
+              <div ng-message="required">This is required.</div>
+            </div>
+          </md-input-container>
+          <md-input-container md-no-float>
+            <label>Year</label>
+            <md-select required ng-model="verification.userYear" name="userYear">              
+              <md-option ng-repeat="year in verification.years" ng-value="{{year}}">
+                {{year}}
+              </md-option>
+            </md-select>
+            <div ng-messages="verificationForm.userYear.$error">
+              <div ng-message="required">This is required.</div>
+            </div>
+          </md-input-container>
+          <input class="hide" type="number" ng-model="verification.cage" min="19" required>
+          <div align="center" ng-if="verification.cage && verification.cage<19">
+            You must be 18+
+          </div>
+        </div>
+      </div>      
+    </md-dialog-content>    
+    <md-dialog-actions layout="row">      
+      <div class="fullwidth" align="center">
+        <md-button ng-hide="verificationForm.$invalid" class="ageverify" type="submit">
+          Submit
+        </md-button>
+      </div>
+    </md-dialog-actions>  
+    </form>
+</md-dialog>

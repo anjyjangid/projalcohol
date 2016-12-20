@@ -46,7 +46,7 @@ class UserController extends Controller
 
 		if($user && $user->verified!=1){
 			$invalidcredentials = 'You need to verify your email. Click below link to resend verification email';
-			$reverification = 1;			
+			$reverification = 1;
 			Auth::logout();
 		}
 		
@@ -271,9 +271,10 @@ class UserController extends Controller
 													'name' => 1,
 													'password' => 1,
 													'mobile_number' => 1,
-													'loyaltyPoints' => 1,
+													'loyaltyPoints' => '$loyalty.total',
 													'credits' => '$credits.total',
-													'savedCards' => 1
+													'savedCards' => 1,
+													'alternate_number' => 1
 												]
 								]
 							]);
@@ -501,34 +502,10 @@ class UserController extends Controller
 						]
 					];
 
-		
-		// $creditDetail = [
-		// 					"type" => "credit",
-		// 					"unitprice" => (float)$currGiftCard['recipient']['price'],
-		// 					"quantity" => $currGiftCard['recipient']['quantity'],
-		// 					"price" => (float)((int)$currGiftCard['recipient']['quantity'] * (float)$currGiftCard['recipient']['price']),
-
-		// 					"reason" => [
-		// 						"type" => "giftcard",								
-		// 						"sender" => [
-		// 							"_id" => new mongoId($sender['_id']),
-		// 							"email" => $sender['email'],
-		// 							"name" => $sender['name']
-		// 						],
-		// 						"comment" => "You have earned this points as gift"
-		// 					],
-							
-		// 					"recipient" => $currGiftCard['recipient'],
-		// 					"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
-
-		// 				];
-
 		try{
 
 			CreditTransactions::transaction('credit',$creditObj,$this->user->_id);
-			// $isUpdated = User::where('_id', $userId)->increment('credits', (float)$creditDetail['price']);
-			// $isUpdated = User::where('_id', $userId)->push('creditsSummary', $creditDetail);
-
+			
 			$orderObj->giftCards = $giftCards;
 			$orderObj->save();
 

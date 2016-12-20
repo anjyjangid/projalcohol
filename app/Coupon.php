@@ -4,6 +4,7 @@ namespace AlcoholDelivery;
 
 use Moloquent;
 use AlcoholDelivery\Products as Products;
+use AlcoholDelivery\ErrorLog;
 
 class Coupon extends Moloquent
 {
@@ -101,6 +102,37 @@ class Coupon extends Moloquent
 		}
 
 		return $coupons;
+
+	}
+
+	public function redeemed($data){
+
+		//UPDATE COUPON COUNT AND COUPON LIST
+		
+		$newList = array('orderId'=> $data['reference'], 'userId'=> $data['user']);
+
+		$coupon = $this::where(['_id' => $data['coupon'], 'status'=>1])->first();
+
+		$coupon->__set("used_count",$coupon->used_count+1);
+		if(is_array($coupon->used_list))
+			$coupon->__set("used_list",array_merge($coupon->used_list, [$newList]));
+		else
+			$coupon->__set("used_list",[$newList]);
+		
+		try{
+
+			$coupon->save();
+
+		}catch(Exception $e){
+
+			ErrorLog::create('emergency',[
+					'error'=>$e,
+					'message'=> 'Reedem coupon'
+				]);
+
+		}	
+
+		return ['success'=>true];
 
 	}
 

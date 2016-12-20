@@ -1,4 +1,4 @@
-<!-- <pre>{{order|json}}</pre> -->
+
 <div class="checkoutstep5-mid-top">
 	<div class="row">
 		<div class="col-md-12 col-sm-6 col-xs-12 checkoutstep5-mid-left">
@@ -49,7 +49,7 @@
 										<a ui-sref="mainLayout.product({product:packageproducts.slug})" title="View Product">
 											<img alt="{{packageproducts.name}}" err-pro-src="" ng-src="products/i/200/{{packageproducts.coverImage}}" class="img-responsive img-responsive-h new-img"/>
 										</a>
-									</span>							
+									</span>
 								</div>	
 							</div>
 						</td>
@@ -65,7 +65,7 @@
 						<td>
 							<div class="orderhistry2price">{{cartproduct.total | pricingTxt}}</div>
 						</td>
-					<tr ng-repeat-end></tr>				
+					<tr ng-repeat-end></tr>
 					<tr>
 						<td colspan="1" class="childtd">
 							<div class="table-responsive">
@@ -208,12 +208,24 @@
 											</div>
 										</td>
 									</tr>
+									<tr ng-if="order.discount.coupon">
+										<td class="bordernone">
+											<div class="checkoutstep5right-middle-title" >Coupon Discount <span class=""><img src="images/questionimg.png"></span></div>
+										</td>
+										<td class="bordernone">
+											<div class="checkboxtotaldiv-text">
+												<span ng-if="order.payment.totalValue < order.discount.coupon">&minus;{{(order.payment.totalValue) | currency:settings.general.currency:2}}</span>
+												<span ng-if="order.payment.totalValue >= order.discount.coupon">&minus;{{order.discount.coupon | currency:settings.general.currency:2}}</span>												
+											</div>
+										</td>
+									</tr>
+
 									<tr>
 										<td class="">
 											<div class="checkoutstep5right-bottom-title">Total</div>
 										</td>
 										<td class="">
-											<div class="checkoutstep5right-bottom-text">{{order.payment.total | currency:settings.general.currency:2}}</div>
+											<div class="checkoutstep5right-bottom-text">{{ (order.payment.total<0)?0:order.payment.total | currency:settings.general.currency:2}}</div>
 										</td>
 									</tr>
 								</table>

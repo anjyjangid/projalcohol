@@ -1,6 +1,6 @@
 MetronicApp
-.service('alcoholCart',['$http', '$q', '$filter', 'alcoholCartItem', 'cartSale', 'alcoholCartPackage', 'alcoholCartGiftCard', '$rootScope'
-, function($http, $q, $filter, alcoholCartItem, cartSale, alcoholCartPackage, alcoholCartGiftCard, $rootScope){
+.service('alcoholCart',['$http', '$q', '$filter', 'sweetAlert', 'alcoholCartItem', 'cartSale', 'alcoholCartPackage', 'alcoholCartGiftCard', '$rootScope'
+, function($http, $q, $filter, sweetAlert, alcoholCartItem, cartSale, alcoholCartPackage, alcoholCartGiftCard, $rootScope){
 
 	this.init = function(){
 
@@ -50,6 +50,12 @@ MetronicApp
 					slotslug:""
 				},
 		};
+
+	}
+
+	this.getUser = function () {
+
+		return this.$cart[this.$cart.orderType];
 
 	}
 
@@ -252,6 +258,39 @@ MetronicApp
 		}).success(function(response) {
 
 		});
+
+	}
+
+	this.removeSmoke = function(){
+
+		this.$cart.service.smoke.status = false;
+		this.$cart.service.smoke.detail = "";
+
+		this.deployCart();
+	}
+
+	this.addSmoke = function(detail){
+
+		var smoke = this.$cart.service.smoke;
+		
+		if(typeof detail==="undefined" || detail==""){
+
+			var toast = $mdToast.simple()
+				.textContent("Please provide smoke detail")
+				
+				.highlightAction(false)
+				.position("top right fixed smokedetail")
+				.hideDelay(2000);
+
+			$mdToast.show(toast);
+
+		}else{
+
+			smoke.detail = detail;
+
+		}
+
+		this.deployCart();
 
 	}
 
@@ -817,43 +856,57 @@ MetronicApp
 	};
 
 	this.getTotalUniqueItems = function () {
-
+		
 		if(typeof this.getCart() === "undefined"){
 			return 0;
 		}
 
-		var count = Object.keys(this.getCart().products).length;
+		var cart = this.getCart();
 
-		count+= this.getCart().packages.length;
+		count = 0;
+
+		angular.forEach(cart.products, function (product) {
+			if(product.getQuantity()>0){
+				count++;
+			}
+		});
+
+		count+= Object.keys(cart.sales).length;
+
+		count+= cart.packages.length;
+
+		count+= cart.giftCards.length;
 
 		return count;
 	};
 
 	this.setSubTotal =function(){
-
+		
 		var total = 0;
 		var cart = this.getCart();
 
 		angular.forEach(cart.products, function (product) {
-			total += parseFloat(product.getTotal());
+			if(product.getQuantity()>0){
+				total += parseFloat(product.getRemainQtyPrice());
+			}
 		});
 
 		angular.forEach(cart.packages, function (package) {
 			total += parseFloat(package.getTotal());
-		});
+		});		
 
+		
 		angular.forEach(cart.giftCards, function (giftCard) {
 			total += parseFloat(giftCard.getPrice());
-		});
-		
-		angular.forEach(cart.gifts, function (gifts) {
-			total += parseFloat(gifts.gsPrice());
 		});
 
 		angular.forEach(cart.sales, function (sale) {
 			total += parseFloat(sale.getPrice());
 		});
-		
+
+		if(typeof(this.$cart.couponData) !== "undefined"){
+			this.setCouponPrice(this.$cart.couponData,total);
+		}
 
 		return +parseFloat(total).toFixed(2);
 
@@ -893,14 +946,60 @@ MetronicApp
 
 	this.setCartChilled = function(status){
 
-		if(typeof status !=="undefined"){
+			var isEligible = this.isEligibleNonChilled();
+			
+			if(!isEligible){
 
-			this.$cart.nonchilled = status;
-			this.$cart.discount.nonchilled.status = status;
+				sweetAlert.swal({
+								type:'warning',
+								title: "There are no chilled items in cart.",
+								text : "Chilled items are usually beers, champagnes and white wines",
+								customClass: 'swal-wide'
+							}).done();				
+
+				return false;
+			}
+
+			if(typeof status !=="undefined"){
+
+				this.$cart.nonchilled = status;
+				this.$cart.discount.nonchilled.status = status;				
+			}
+
+			this.deployCart().then(
+				function(res){
+
+					if(!status){
+						$rootScope.$broadcast('alcoholCart:notify',"Non-Chilled condition deactivated");
+					}else{
+						$rootScope.$broadcast('alcoholCart:notify',"Non-Chilled condition activated");
+					}
+
+				}
+			);
+		
 		}
 
-		this.deployCart();
+	this.isEligibleNonChilled = function(){
 
+		var products = this.getProducts();
+		
+		var isEligible = false;
+		angular.forEach(products, function (item,key) {
+			if(item.getChilledAllowed()){
+				
+				isEligible = true;
+				return false;
+			}
+			if(isEligible)
+				return false;
+
+		});
+
+		if(!isEligible)
+		this.$cart.nonchilled = false;
+		return isEligible;
+		
 	}
 
 	this.setDiscount = function(){
@@ -917,8 +1016,26 @@ MetronicApp
 
 	}
 
-	this.getDiscount = function(){
-		return this.setDiscount();
+	this.getDiscount = function(type){
+
+		var discount = 0, nonChilledDiscount = 0;
+
+		this.isEligibleNonChilled();
+
+		if(this.$cart.nonchilled){
+
+			nonChilledDiscount = parseFloat(this.$cart.discount.nonchilled.exemption);
+
+			discount+=nonChilledDiscount;
+
+		}
+
+		if(type==='nonchilled'){
+				
+			return nonChilledDiscount.toFixed(2);
+		}
+
+		return +parseFloat(discount).toFixed(2);
 	}
 
 	this.setAllServicesCharges = function(){
@@ -1098,6 +1215,7 @@ MetronicApp
 	}
 
 	this.newCart = function() {
+
 		var _self = this;
 		return $http.get("/adminapi/order/newcart")
 		.success(function(newCartRes){
@@ -1105,35 +1223,152 @@ MetronicApp
 		});
 	}
 
-	this.setCouponPrice = function(coupon){
 
+	this.checkoutValidate = function(){
+
+		var d = $q.defer();
+
+		var isValid = true;
+
+		var subTotal = this.getSubTotal();
+
+		if(!(subTotal>0)){
+			d.reject({customError:true,message:'Invalid amount to place order!'});
+		}
+
+		//CHECK PAYMENT OPTIONS
+		if(this.$cart.payment.method == 'COD'){				
+			//REMOVE CARD ATTR IN CASE OF COD
+			delete _self.$cart.payment.card;
+			delete _self.$cart.payment.creditCard;
+			delete _self.$cart.payment.savecard;
+		}else{
+
+			var cartpayment = this.$cart.payment;
+
+			if(typeof cartpayment.card == 'undefined' || cartpayment.card == "" || cartpayment.card == null){
+				d.reject({customError:true,message:'Please select card for payment.'});				
+			}else{				
+				if(cartpayment.card == 'newcard'){
+					cartpayment.creditCard.token = 1;
+					$http.post('/adminapi/payment/addcard/'+this.$cart.user,cartpayment.creditCard).error(function(data, status, headers) {			        	
+			        	d.reject(data);
+			        }).success(function(rdata){
+						d.resolve(rdata);
+					})
+					//$scope.$broadcast('addcardsubmit');					
+				}else{
+					if(!this.$cart.payment.creditCard.cvc || this.$cart.payment.creditCard.cvc == ''){						
+						d.reject({customError:true,message:'Please enter cvv for the selected card.'});						
+					}else{
+						d.resolve({});						
+					}						
+				}
+			}
+
+		}
+
+		/*if(isValid){
+			d.resolve("every thing all right");
+		}else{
+			d.reject("foo");
+		}*/		
+		
+		return d.promise;
+	}
+
+	this.processPayment = function(){
+
+		var d = $q.defer();
+
+		d.reject("foo");
+
+		return d.promise;
+	}
+
+	this.freezCart = function(){
+
+			var d = $q.defer();
+
+			this.deployCart().then(
+				
+				function(successRes){
+
+					$http.get("freezcart").error(function(data, status, headers) {
+
+			        	d.reject(data);
+
+			        }).success(function(response) {	        		      
+
+			        	d.resolve(response);
+
+			        });	
+				},
+				function(errorRes){}
+			);
+
+			return d.promise;
+
+		}
+
+	this.setCouponPrice = function(coupon,cartSubTotal){
+			
 			var _self = this;
 			var cTotal = coupon.total;
 
-			var productsList = _self.getProducts();
-			var cartTotal = this.getSubTotal();
+			var isProductOriented = (coupon.products.length + coupon.categories.length)?true:false;
+
+			cartSubTotal = angular.isDefined(cartSubTotal)?cartSubTotal:this.getSubTotal();
+
 			var discountTotal = 0;
 			var discountMessage = '';
 			this.$cart.couponMessage = '';
 
-			if(!cTotal || (cTotal && cTotal <= cartTotal) ){
-				if(Object.keys(productsList).length){
-					angular.forEach(productsList, function (item) {
-						var discountAmt = item.setCoupon(coupon);
-						discountTotal += discountAmt.couponAmount;
+			if(!cTotal || (cTotal && cTotal <= cartSubTotal) ){
 
-						if(discountAmt.couponMessage)
-							discountMessage = discountAmt.couponMessage;
-					});
+				if(isProductOriented){
 
-					if(!discountTotal && discountMessage)
-						this.$cart.couponMessage = discountMessage;
+					var productsList = _self.getProducts();
+
+					if(Object.keys(productsList).length){
+						angular.forEach(productsList, function (item) {
+
+							var discountAmt = item.setCoupon(coupon);
+							discountTotal += discountAmt.couponAmount;
+
+							if(discountAmt.couponMessage)
+								discountMessage = discountAmt.couponMessage;
+						});
+
+						if(!discountTotal && discountMessage)
+							this.$cart.couponMessage = discountMessage;
+
+					}else{
+						if(typeof(this.$cart.couponData) !== "undefined"){
+							this.removeCoupon();
+						}
+					}
 
 				}else{
-					if(typeof(this.$cart.couponData) !== "undefined"){
-						this.removeCoupon();
+
+					if(coupon.type==1){
+						discountTotal = coupon.discount;
+					}else{
+						discountTotal = cartSubTotal*(coupon.discount/100);
 					}
+
+					var totalExceptCoupon = cartSubTotal;
+
+					totalExceptCoupon+= parseFloat(this.getAllServicesCharges());
+
+					totalExceptCoupon+= parseFloat(this.$cart.delivery.charges);
+
+					totalExceptCoupon-= parseFloat(this.getDiscount());
+
+					discountTotal = discountTotal>totalExceptCoupon?totalExceptCoupon:discountTotal;
+
 				}
+
 			}else{
 				this.$cart.couponMessage = 'Minimum amount should be '+cTotal+' to use this coupon.';
 			}
@@ -1168,19 +1403,25 @@ MetronicApp
 			var cartKey = cartKey;
 			var couponCode = discountCode;
 
-			$http.post("adminapi/checkCoupon", {params: {cart: cartKey, coupon: couponCode}}).success(function(result){
-				if(result.errorCode==1 || result.errorCode==2){
-					_self.removeCoupon();
-					$rootScope.invalidCodeMsg = false;
-					$rootScope.invalidCodeMsgTxt = result.msg;
-				}else{
+			$http.post("adminapi/checkCoupon", {params: {cart: cartKey, coupon: couponCode}})
+				.success(function(result){
+
+					if(result.errorCode==1 || result.errorCode==2){
+
+						_self.removeCoupon();
+						$rootScope.invalidCodeMsg = false;
+						$rootScope.invalidCodeMsgTxt = result.msg;
+						return false;
+					}
+
 					$rootScope.invalidCodeMsg = true;
 					_self.$cart.couponData = result.coupon;
 					_self.setCouponPrice(result.coupon);
-				}
+					
 
-			}).error(function(){
-			});
+				}).error(function(){
+
+				});
 		}
 
 		this.getCouponDiscount = function(){
@@ -1921,8 +2162,12 @@ MetronicApp
 
 			}else{
 
-				this.bulkApplicable = true;
-				angular.forEach(bulkArr, function(bulk,key){
+				//CHECK IF BULK IS ENABLE FOR THE PRODUCT
+				if(this.bulkDisable == 0){
+					
+					this.bulkApplicable = true;
+					
+					angular.forEach(bulkArr, function(bulk,key){
 
 					if(bulk.type==1){
 						bulk.price = basePrice + (basePrice * bulk.value/100);
@@ -1933,6 +2178,7 @@ MetronicApp
 					bulk.price = bulk.price.toFixed(2);
 
 				})
+				}
 
 			}
 

@@ -1,6 +1,7 @@
 <!-- <div product-breadcrumb info="product" viaLoyaltyStore="viaLoyaltyStore"></div> -->
+<h1 class="hide">{{product.name}}</h1>
+<h2 class="hide">{{product.shortDescription}}</h2>
 <div product-breadcrumb info="product"></div>
-
 
 <div class="productdetailcovermainbgimg">
 <div class="row">
@@ -29,7 +30,7 @@
 											
 		</data-owl-carousel> 
 		
-		<div class="prddetailnormaltext">{{product.description}}</div>           
+		<div class="prddetailnormaltext wraptxt">{{product.description}}</div>           
 	</div>
 	<div class="col-xs-12 col-sm-6 col-md-6 product-detail-right-set" ng:class="{'has-sale-div':product.sale || product.nameDetailSale}">
 		<div class="prddetailtitle">{{product.name}} </div>
@@ -54,25 +55,17 @@
 					<div class="salediscount tag-button-new">{{product.sale.detailTitle}}</div>
 				</div>
 				<div class="fullwidth"></div>
-				<div class="tag-purple-new transparent-bg" ng-if="product.sale.coverImage">					
-					<div class="pull-right tag-pic" ng-if="product.sale.coverImage">						
+				<div class="tag-purple-new transparent-bg" ng-if="product.sale.coverImage">
+					<div class="pull-right tag-pic" ng-if="product.sale.coverImage">
 						<a ng-if="product.sale.imageLink" href="{{product.sale.imageLink}}" target="_blank">
 							<img style="width: 100px;" src="sale/i/{{product.sale.coverImage}}">
 						</a>
 						<img ng-if="!product.sale.imageLink" style="width: 100px;" src="sale/i/{{product.sale.coverImage}}">
 					</div>
-				</div>						
-				
+				</div>
 			</div>
 			<div class="prddetailsubexttitle">{{product.shortDescription}}</div>
-			<!-- <div class="prddetailnormaltext">{{product.description}}</div> -->
-			<!-- <div class="prddetailnormaltext">
-				<button class="btn btn-default btn-purple" ng-click="isInwishList?myWish():addToWishlist(0); $event.stopPropagation();">
-					<img src="images/add-wish-icon.png" /> 
-					<span ng-bind="isInwishList?'Added to Wishlist':'Add to Wishlist'"></span>
-				</button>
-			</div> -->
-			
+
 			<div class="prddetailchilledcover text-noselect" ng-if="product.chilled && (product.quantity>0 || product.outOfStockType == 2)">
 				<div class="prodchilled-btn" ng-class="{'active':product.servechilled}" ng-click="product.servechilled=1">
 					<span>Chilled</span>
