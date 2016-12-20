@@ -4,7 +4,7 @@
 		<tr style="background: #ffc412 none repeat scroll 0 0; float: left; padding: 10px 12px 10px 5px; width: 97%; margin-bottom:15px;">
 			<td style="float: left; width: 33%; text-align: center;"><img src="{{asset('asset/i/emailtemplate-callusnow.jpg')}}" alt="9-2445533" style="margin-top:10px;"></td>
 			<td style="float: left; width: 33%; text-align: center;"><img src="{{asset('asset/i/emaitemplate-logo.png')}}" alt="AlcoholDelivery"></td>
-			<td style="	float: left; width: 33%; text-align: right;">{{url('/')}}</td>
+			<td style="	float: left; width: 33%; text-align: right;white-space:nowrap;">{{url('/')}}</td>
 		</tr>
 		<tr>
 		<td colspan="3">
