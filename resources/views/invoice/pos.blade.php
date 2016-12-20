@@ -75,7 +75,7 @@
                     <tr>
                       <td valign="top">
                         <div><strong>Delivery Address</strong></div>
-                        <div>{{ $address['firstname'].' '.$address['lastname'] }}</div>
+                        <div>{{ $address['firstname'].' '.@$address['lastname'] }}</div>
                         <?php if(isset($address['company'])){?>
                           <div>{{ $address['company'] }}</div>
                         <?php }?>

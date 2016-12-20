@@ -103,6 +103,7 @@ class AuthController extends Controller
 			$checkUser->fbid = $data['id'];
 			$checkUser->email = $data['email'];
 			$checkUser->name = $name;	
+			$checkUser->verified = 1;	
 			$checkUser->save();
 			Auth::login($checkUser);
 		}else{	

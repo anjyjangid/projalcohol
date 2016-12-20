@@ -375,6 +375,7 @@ class Cart extends Moloquent
 		//$this->updated_at
 		$reference = "ADSG";
 		$reference.= abs((int)date("his",$offset) - 123456);			
+
 		$reference.="O";			
 		$reference.= (string)date("Hi",$offset);
 
