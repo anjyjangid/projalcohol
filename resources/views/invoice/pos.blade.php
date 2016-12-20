@@ -82,7 +82,7 @@
                         <?php if(isset($address['BLDG_NAME'])){?>
                         <div>{{ $address['BLDG_NAME'] }}</div>
                         <?php }?>
-                        <div>{{ $address['house'].' '.$address['HBRN'] }}</div>
+                        <div>{{ @$address['house'].' '.$address['HBRN'] }}</div>
                         <?php if(isset($address['FLOOR']) || isset($address['UNIT'])){?>
                           <div>
                             <?php if(isset($address['FLOOR'])){?>
