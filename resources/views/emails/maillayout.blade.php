@@ -12,7 +12,7 @@
 		</td>
 		</tr>
 		<tr style="	float: left;width: 100%;background: #ffffff;">
-			<td style="float: left;width: 100%;text-align: center;font-weight: bold;font-size: 26px;color:#343538;margin: 35px 0px 45px 0px;">Need help? Simply contact us at:</td>
+			<td colspan="3" style="float: left;width: 100%;text-align: center;font-weight: bold;font-size: 26px;color:#343538;margin: 35px 0px 45px 0px;">Need help? Simply contact us at:</td>
 		</tr>
 		<tr style="	float: left;width: 100%;background: #ffffff;margin-bottom:15px;">
 			<td style="	float: left;width: 33%;text-align: center;">
