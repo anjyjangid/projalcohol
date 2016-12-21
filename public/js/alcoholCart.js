@@ -3366,8 +3366,7 @@ AlcoholDelivery.service('cartValidation',[
 
 			if(!angular.isDefined(cart.delivery) ||
 				!cart.delivery.address ||
-				!cart.delivery.address.detail ||
-				!cart.delivery.address.key
+				!cart.delivery.address.detail
 			){
 				$state.go(states[1], {err: "Please select a delivery address!"}, {reload: true});
 				return false;

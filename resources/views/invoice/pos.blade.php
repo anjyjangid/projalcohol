@@ -157,7 +157,7 @@
                               </tr>
                             <?php }?>
                           <?php }?>                                                                            
-                          <tr class="bottomborder">                      
+                          <tr class="bottomborder">
                             <td colspan="4" align="left" nowrap="nowrap"></td>
                           </tr>
                           <tr>

@@ -605,14 +605,18 @@ class Orders extends Moloquent
 	public function placed(){
 
 		$order = $this->toArray();
-		$user = User::find($order['user']);
+		$user = User::find($order['user']);		
 
-		$order = $this->formatorder($order);
+		$order['productsLog'] = valueToKey($order['productsLog'],'_id');
 
-		$view = View::make('emails.order', $order);
+		$view = View::make('emails.order', [
+					'order'=>$order,
+					'name' => (isset($user->name) && !empty($user->name))?$user->name:$user->email,
+					'email' => $user->email
+				]);
 
 		$contents = $view->render();
-		prd($contents);
+		
 		$email = new Email('orderconfirm');
 
 		$data = [

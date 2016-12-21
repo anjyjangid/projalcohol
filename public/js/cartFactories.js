@@ -1617,7 +1617,7 @@ angular.module('AlcoholCartFactories', [])
 			break;
 			default:{
 
-				if (p.price){
+				if (angular.isDefined(p.price) && !(p.price<0)){
 
 					var basePrice = parseFloat(p.price)/1;
 					var unitPrice = basePrice;
