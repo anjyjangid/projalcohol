@@ -1958,9 +1958,12 @@ class Cart extends Moloquent
 
 		if(isset($this->coupon) && $this->coupon){
 
-			$couponData = Coupon::where(['_id' => $this->coupon, 'status'=>1])->first();
+			$couponData = Coupon::where(['_id' => $this->coupon])->first();
 
-			if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date. ' + 1 days')>= time()){
+			if(isset($couponData->_id) && $couponData->_id){
+			
+				// if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date. ' + 1 days')>= time()){}
+
 				$coupon = $couponData->toArray();
 
 				if (isset($coupon) && $coupon['_id']) {
@@ -2014,7 +2017,7 @@ class Cart extends Moloquent
 								}
 
 								//In case coupon dis is more than product price
-								if($discountAmount>$pAmount){
+								if($couponDisAmt>$pAmount){
 									$couponDisAmt = $pAmount;
 								}
 
@@ -2069,6 +2072,7 @@ class Cart extends Moloquent
 
 					}
 				}
+			
 			}
 		}
 

@@ -49,7 +49,8 @@ class CouponController extends Controller
 			$query = [
 				[
 					'$match' => [
-									"code" => ['$regex'=>new \MongoRegex('/^'.$params['coupon'].'$/i')]
+									"code" => ['$regex'=>new \MongoRegex('/^'.$params['coupon'].'$/i')],
+									'status' => 1
 								]
 				],
 				[

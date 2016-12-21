@@ -268,6 +268,8 @@ class Email extends Moloquent
 				$this->recipient_info["replace"]["{user_name}"] = $data['name'];
 
 				$this->recipient_info["replace"]["{order_number}"] = $data['order_number'];
+				$this->recipient_info["replace"]["{order_link}"] = $data['order_number'];
+				
 
 				$this->recipient_info["replace"]["{order_detail}"] = $data['order_detail'];
 
