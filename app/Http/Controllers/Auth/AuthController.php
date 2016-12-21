@@ -103,6 +103,7 @@ class AuthController extends Controller
 			$checkUser->fbid = $data['id'];
 			$checkUser->email = $data['email'];
 			$checkUser->name = $name;	
+			$checkUser->verified = 1;	
 			$checkUser->save();
 			Auth::login($checkUser);
 		}else{	
@@ -169,13 +170,13 @@ class AuthController extends Controller
 
 		$user = User::where("email_key","=",$key)->first();
 
-		$email = new Email('welcomeEmailVerified');
-		$email->sendEmail($user->toArray());
 
 		if(empty($user->_id)){
 			return redirect('/mailverified/0');
 		}
 
+		$email = new Email('welcomeEmailVerified');
+		$email->sendEmail($user->toArray());
 		$user->status = 1;
 		$user->verified = 1;
 		$user->save();

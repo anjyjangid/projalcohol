@@ -63,7 +63,8 @@ class CartAdmin extends Moloquent
 					"_id"=> $userId,
 					"name"=> $user->name,
 					"mobile_number"=> $user->mobile_number,
-					"email"=> $user->email
+					"email"=> $user->email,
+					"savedCards"=> $user->savedCards
 				];
 				$cart->addresses = $user->address;
 			}
@@ -100,7 +101,7 @@ class CartAdmin extends Moloquent
 			"packages" => [],
 			"promotions" => [],
 			"delivery" => [
-				"type" => 1,
+				"type" => 0,
 				"charges" => null,
 				"address" => null,
 				"contact" => null,

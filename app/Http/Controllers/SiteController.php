@@ -444,7 +444,7 @@ class SiteController extends Controller
         $content .= '</div>';       
 
         Mail::send('emails.mail', ['content'=>$content], function ($message) use ($subject) {
-            $message->setTo(['cgt.test.team@gmail.com'=>'CGT Testing']);
+            $message->setTo(['sales@alcoholdelivery.com.sg'=>'Sales Query']);
             $message->setSubject($subject);
         });
 

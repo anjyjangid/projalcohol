@@ -58,6 +58,11 @@ class PasswordController extends Controller
 
 		$user = User::where('email','=',$data['email'])->first();
 
+		//RETURN ERROR IN CASE USER IS NOT VERIFIED
+		if($user && $user->verified==0){
+			return response(['email'=>['You need to verify your email. Click below link to resend verification email.'],'reverification'=>[true]],422);
+		}
+
 		$user->email_key = $tokens->create($user);
 		
 		$user->save();

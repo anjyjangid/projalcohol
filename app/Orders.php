@@ -271,7 +271,7 @@ class Orders extends Moloquent
 					$product = $productInfo[$productId];
 					
 					//HAS CHILLED 
-					if(isset($value['quantity']['chilled']) && $value['quantity']['chilled']>0){							
+					if(isset($value['afterSale']['chilled']) && $value['afterSale']['chilled']>0){							
 						$particulars[] = [
 							'_id' => $value['_id'],
 							'name' => $product['name'],
@@ -281,9 +281,9 @@ class Orders extends Moloquent
 							'shortDescription' => $product['shortDescription'],
 							'sku' => $product['sku'],
 							'chilled' => true,
-							'quantity' => $value['quantity']['chilled'],
+							'quantity' => $value['afterSale']['chilled'],
 							'unitPrice' => $value['unitprice'],
-							'total' => $value['quantity']['chilled']*$value['unitprice'],
+							'total' => $value['afterSale']['chilled']*$value['unitprice'],
 							'products' => [],
 							'category' => 'product',
 							'sale' => isset($product['sale'])?$product['sale']:false
@@ -291,7 +291,7 @@ class Orders extends Moloquent
 					}
 
 					//HAS NON-CHILLED 
-					if(isset($value['quantity']['nonChilled']) && $value['quantity']['nonChilled']>0){							
+					if(isset($value['afterSale']['nonChilled']) && $value['afterSale']['nonChilled']>0){							
 						$particulars[] = [
 							'_id' => $value['_id'],
 							'name' => $product['name'],
@@ -301,9 +301,9 @@ class Orders extends Moloquent
 							'shortDescription' => $product['shortDescription'],
 							'sku' => $product['sku'],
 							'chilled' => false,
-							'quantity' => $value['quantity']['nonChilled'],
+							'quantity' => $value['afterSale']['nonChilled'],
 							'unitPrice' => $value['unitprice'],
-							'total' => $value['quantity']['nonChilled']*$value['unitprice'],
+							'total' => $value['afterSale']['nonChilled']*$value['unitprice'],
 							'products' => [],
 							'category' => 'product'
 						];
@@ -616,7 +616,7 @@ class Orders extends Moloquent
 				]);
 
 		$contents = $view->render();
-		
+
 		$email = new Email('orderconfirm');
 
 		$data = [

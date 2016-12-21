@@ -75,14 +75,14 @@
                     <tr>
                       <td valign="top">
                         <div><strong>Delivery Address</strong></div>
-                        <div>{{ $address['firstname'].' '.$address['lastname'] }}</div>
+                        <div>{{ $address['firstname'].' '.@$address['lastname'] }}</div>
                         <?php if(isset($address['company'])){?>
                           <div>{{ $address['company'] }}</div>
                         <?php }?>
                         <?php if(isset($address['BLDG_NAME'])){?>
                         <div>{{ $address['BLDG_NAME'] }}</div>
                         <?php }?>
-                        <div>{{ $address['HBRN'] }}</div>
+                        <div>{{ @$address['house'].' '.$address['HBRN'] }}</div>
                         <?php if(isset($address['FLOOR']) || isset($address['UNIT'])){?>
                           <div>
                             <?php if(isset($address['FLOOR'])){?>
@@ -252,7 +252,7 @@
                         <?php }?>
                         <div>&nbsp;</div>
                         <?php }?>
-                        <strong><u>Terms & Conditions with reference to http://alcoholdelivery.com.sg/</u></strong>
+                        <strong><u>Terms & Conditions with reference to <?php echo url();?></u></strong>
                         <ul style="margin-left: 13px;padding:0px;">
                           <?php if($order['service']['smoke']['status']){?>
                           <li>Cost of cigarettes must be paid in CASH.</li> 

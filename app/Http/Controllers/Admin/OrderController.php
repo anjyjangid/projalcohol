@@ -30,6 +30,8 @@ use MongoId;
 use MongoDate;
 use DB;
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 class OrderController extends Controller
 {
@@ -823,7 +825,7 @@ class OrderController extends Controller
 			if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){
 
 				$payment = new Payment();
-				$payment = $payment->prepareform($cartArr,$user,true);
+				$payment = $payment->prepareform($cartArr,$userObj,true);
 				return response($payment,200);
 			}
 
@@ -898,7 +900,7 @@ class OrderController extends Controller
 			}
 			
 			//SAVE CARD IF USER CHECKED SAVE CARD FOR FUTURE PAYMENTS
-			if($cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['card'] == 'newcard' && $cartArr['payment']['savecard']){
+			if($cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['card'] == 'newcard' && (isset($cartArr['payment']['savecard']) && $cartArr['payment']['savecard'])){
 				$cardInfo = $cartArr['payment']['creditCard'];
 		        // $user = User::find($user->_id);
 		        $userObj->push('savedCards',$cardInfo,true);
@@ -919,7 +921,9 @@ class OrderController extends Controller
                 'order_number' => $reference
             ];
 
-            $mailSent = $emailTemplate->sendEmail($mailData);
+            $order->placed();
+
+            //$mailSent = $emailTemplate->sendEmail($mailData);
 
 			if($request->isMethod('get')){
 				return redirect('admin#/orders/show/'.$order['_id']);
@@ -939,4 +943,15 @@ class OrderController extends Controller
 		return response(["message"=>'Something went wrong'],400);
 		
 	}
+
+	function logtofile($message){
+        //if($this->enableLog){
+            $view_log = new Logger('Payment Logs');
+            $view_log->pushHandler(new StreamHandler(storage_path().'/logs/admin_payment.log', Logger::INFO));
+            if(is_array($message)){
+            	$message = json_encode($message);
+            }
+            $view_log->addInfo($message);
+        //}
+    }
 }

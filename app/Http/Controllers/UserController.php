@@ -288,7 +288,7 @@ class UserController extends Controller
 
 			$userLogged["auth"] = true;
 			$userLogged['loginfb'] = false;
-			if($userLogged['password']=="")
+			if(!isset($userLogged['password']))
 				$userLogged['loginfb'] = true;
 			unset($userLogged['password']);
 

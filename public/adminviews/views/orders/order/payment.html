@@ -1,21 +1,23 @@
 <div class="checkoutstepthree_showdate">Please choose a payment method from below</div>
 <div class="row">
-	<div class="col-sm-4 col-sm-offset-2 paymenttype" ng-class="{active:payment.method=='COD'}" ng-click="payment.method='COD'">
+	<div class="col-sm-4 col-sm-offset-2 paymenttype" ng-class="{active:cart.payment.method=='COD'}" ng-click="cart.payment.method='COD'">
 		<div class="pic_divcash" style="height: 149px;">
 			<div class="verticetnter2"><img src="images/cashondelivery.png"></div>
 		</div>
 		<div class="divcash_text">Cash on Delivery</div>
-		<img src="images/activepaytype.png" class="hidethumb" ng-show="payment.method=='COD'">
+		<img src="images/activepaytype.png" class="hidethumb" ng-show="cart.payment.method=='COD'">
 	</div>
-	<div class="col-sm-4 paymenttype" ng-class="{active:payment.method=='CARD'}" ng-click="payment.method='CARD'">
+	<div class="col-sm-4 paymenttype" ng-class="{active:cart.payment.method=='CARD'}" ng-click="cart.payment.method='CARD'">
 		<div class="pic_creadetcard" style="height: 149px;">
 			<div class="verticetnter"><img src="images/creaditcardpay.png"></div>
 		</div>
 		<div class="creadetcard_text">Credit Card</div>
-		<img src="images/activepaytype.png" class="hidethumb" ng-show="payment.method=='CARD'">
+		<img src="images/activepaytype.png" class="hidethumb" ng-show="cart.payment.method=='CARD'">
 	</div>
 </div>
 <br>
+<!-- <pre>{{paymentError|json}}</pre> -->
+<!-- <pre>{{cart.payment|json}}</pre> -->
 <div class="availablecards">
-	<div paymentmode="true" payment="payment" savedcards="cart.savedCards" ng-show="payment.method=='CARD'" user-cards></div>
+	<div paymentmode="true" errors="paymentError" adminmode="true" payment="cart.payment" userdata="(cart.orderType=='consumer')?cart.consumer:cart.business" ng-show="cart.payment.method=='CARD'" user-cards></div>
 </div>
