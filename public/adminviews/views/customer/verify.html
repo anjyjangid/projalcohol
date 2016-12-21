@@ -1,0 +1,40 @@
+<div data-replace="true" tabindex="-1" class="modal fade modal-scroll" id="verificationupdate" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            
+            <div class="modal-header" ng-show="savingData">
+                <h1 align="center">Please Wait...</h1>
+            </div>
+            <div class="modal-header" ng-hide="savingData">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button"></button>
+                <h4 class="modal-title">Email Verification</b></h4>
+            </div>
+            <div class="modal-body" ng-hide="savingData">                
+                <div class="portlet-body form">                                        
+                    <div ng-if="selectedUser.error" class="alert alert-danger">
+                      Error in sending mail verification
+                    </div>
+                    <div ng-if="selectedUser.success" class="alert alert-success">
+                      Verification mail sent successfully
+                    </div>
+                    <!-- <pre>
+                        {{orderform|json}}
+                    </pre>                     -->
+                    <form role="form" class="form-horizontal" ng-submit="sendVerification()">
+                        <div align="center">
+                            <a target="_blank" href="/verifyemail/{{selectedUser.email_key}}" class="btn btn-lg green" type="button">
+                                Verify user email
+                            </a>                                    
+                        </div>
+                        <h2 align="center">OR</h2>
+                        <div align="center">
+                            <button ng-disabled="form.loading" class="btn btn-lg green" type="submit">
+                                Send Verification Mail
+                            </button>                                    
+                        </div>
+                    </form>
+                </div>  
+            </div>          
+        </div>
+    </div>
+</div>

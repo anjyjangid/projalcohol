@@ -222,7 +222,9 @@ MetronicApp.service('fileUpload', ['$http','$location','$q', function ($http,$lo
 
 
 /* Setup App Main Controller */
-MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAlert','$state','$filter', 'AdminUserService', function($scope, $rootScope,$http,sweetAlert,$state,$filter, AdminUserService) {
+MetronicApp.controller('AppController', [
+	'$scope', '$rootScope','$http','sweetAlert','$state','$filter', 'AdminUserService', '$location',
+	function($scope, $rootScope,$http,sweetAlert,$state,$filter, AdminUserService,$location) {
 
 	$scope.$on('$viewContentLoaded', function() {
 		Metronic.initComponents(); // init core components
@@ -483,6 +485,16 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope','$http','sweetAl
 			$scope.orderform.message = msg;
 		}
     };
+
+    $scope.selectedUser = {};
+
+    $scope.verifyUser = function(user){
+		$scope.selectedUser = user;
+		$scope.selectedUser.vlink = $location.host()+'/verifyemail/'+user.email_key    	
+		$scope.selectedUser.success = false;
+		$scope.selectedUser.error = false;		
+        $('#verificationupdate').modal('show');
+    }
 
 }]);
 

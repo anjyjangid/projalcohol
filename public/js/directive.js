@@ -49,7 +49,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.signupSubmit = function() {
 				$scope.signup.errors = {};
-
+				$scope.socialError = '';
 				if(angular.isDefined($rootScope.refferal)){
 					$scope.signup.refferedBy = $rootScope.refferal;
 				}
@@ -109,8 +109,11 @@ AlcoholDelivery.directive('sideBar', function() {
 				angular.element('#wrapper').toggleClass('toggled');
 				angular.element('body').toggleClass(' hidden-scroll');
 			}
+
+			$scope.socialError = '';
 			//FACEBOOK LOGIN
 			$scope.loginToggle = function() {
+				
 				$fblogin({
 					fbId: $rootScope.settings.fbid,
 					permissions: 'email,user_birthday',
@@ -125,6 +128,9 @@ AlcoholDelivery.directive('sideBar', function() {
 
 							$scope.loginSuccess(res);
 
+						}).error(function(result){
+							$scope.socialError = result;
+							$scope.signupOpen();
 						});
 
 					}

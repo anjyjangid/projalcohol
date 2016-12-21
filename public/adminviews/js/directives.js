@@ -1028,3 +1028,30 @@ MetronicApp.directive('paymentForm', ['$rootScope','$timeout',function($rootScop
         }
 	};
 }]);
+
+MetronicApp.directive('verifyUser', function(){
+
+	return {		
+		restrict: 'A',
+		templateUrl: '/adminviews/views/customer/verify.html',
+		controller: function($scope,$rootScope,$http,$window){
+			
+			$scope.sendVerification = function(){
+				$scope.savingData = true;
+				
+				$http.post('api/user/resendverification',{email:$scope.selectedUser.email})
+				.then(function(res){
+					$scope.savingData = false;
+					$scope.selectedUser.success = true;
+				})
+				.catch(function(err){
+					$scope.savingData = false;
+					$scope.selectedUser.error = true;
+				})
+				.finally(function(){
+					$scope.savingData = false;					
+				})
+			}
+		}
+	}
+});

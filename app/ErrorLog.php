@@ -3,6 +3,8 @@
 namespace AlcoholDelivery;
 
 use Illuminate\Support\Facades\Log;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 class ErrorLog
 {
@@ -13,12 +15,19 @@ class ErrorLog
 			$e = $params['error'];
 
 			$error = [
+				'Type' => $type,
 				'File'=>$e->getFile(),
 				'Line'=>$e->getLine(),
-				'Message'=>$e->getMessage()
+				'Message'=>$e->getMessage(),
+				'ParamMessage' => $params['message']
 			];
 			
 		}
+
+		$view_log = new Logger('Cart Logs');
+        $view_log->pushHandler(new StreamHandler(storage_path().'/logs/cart.log', Logger::INFO));
+        $message = json_encode($error);	            
+        $view_log->addInfo($message);
 
 		switch ($type) {
 			case 'emergency':

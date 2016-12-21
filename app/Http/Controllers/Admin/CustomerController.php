@@ -285,9 +285,9 @@ class CustomerController extends Controller
 
         extract($params);
 
-        $columns = ['_id','smallTitle','email','status'];
+        $columns = ['_id','smallTitle','email','status','verified'];
 
-        $project = ['title'=>1,'status'=>1,'email'=>1,'name'=>1,'mobile_number'=>1];
+        $project = ['title'=>1,'status'=>1,'email'=>1,'name'=>1,'mobile_number'=>1,'verified'=>1,'email_key'=>1];
 
         $query = [];        
         
@@ -307,6 +307,10 @@ class CustomerController extends Controller
 
         if(isset($status) && trim($status)!=''){            
             $query[]['$match']['status'] = (int)$status;
+        }
+
+        if(isset($verified) && trim($verified)!=''){            
+            $query[]['$match']['verified'] = (int)$verified;
         }
 
         if(isset($mobile_number) && trim($mobile_number)!=''){            
