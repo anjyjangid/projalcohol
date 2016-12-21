@@ -921,7 +921,9 @@ class OrderController extends Controller
                 'order_number' => $reference
             ];
 
-            $mailSent = $emailTemplate->sendEmail($mailData);
+            $order->placed();
+
+            //$mailSent = $emailTemplate->sendEmail($mailData);
 
 			if($request->isMethod('get')){
 				return redirect('admin#/orders/show/'.$order['_id']);

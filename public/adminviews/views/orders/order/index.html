@@ -379,7 +379,9 @@
 		</div>
 
 		<div class="form-actions">
-			<button type="button" ng-click="orderConfirm()" ng-disabled="!alcoholCart.getTotalUniqueItems()" class="btn blue">Place order</button>
+			<button type="button" ng-click="orderConfirm()" ng-disabled="!alcoholCart.getTotalUniqueItems() || orderprocessing" class="btn blue">
+				{{(orderprocessing)?'Processing..':'Place order'}}
+			</button>
 			<button type="button" class="btn default" ng-click="newCart()">Cancel order</button>
 		</div>
 	</div>
