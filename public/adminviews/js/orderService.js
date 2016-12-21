@@ -1232,16 +1232,23 @@ MetronicApp
 
 		var subTotal = this.getSubTotal();
 
+
 		if(!(subTotal>0)){
 			d.reject({customError:true,message:'Invalid amount to place order!'});
+		}
+		
+		//check address selected
+		if(typeof this.$cart.selectedAddress == 'undefined'){
+			d.reject({customError:true,message:'Please select delivery address!'});
 		}
 
 		//CHECK PAYMENT OPTIONS
 		if(this.$cart.payment.method == 'COD'){				
 			//REMOVE CARD ATTR IN CASE OF COD
-			delete _self.$cart.payment.card;
-			delete _self.$cart.payment.creditCard;
-			delete _self.$cart.payment.savecard;
+			delete this.$cart.payment.card;
+			delete this.$cart.payment.creditCard;
+			delete this.$cart.payment.savecard;
+			d.resolve({});	
 		}else{
 
 			var cartpayment = this.$cart.payment;

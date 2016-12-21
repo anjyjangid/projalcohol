@@ -258,17 +258,25 @@ MetronicApp.controller('OrderCreateController',[
 		$scope.alcoholCart.$cart.delivery.address.detail = $scope.cart.addresses[key];
 	}
 
+	$scope.orderprocessing = false;
+
 	$scope.orderConfirm = function(){				
 		
+		$scope.orderprocessing = true;
+
 		alcoholCart.checkoutValidate().then(
+
 			function (successRes) {
 
 				if(successRes.card)
 					$scope.cart.payment.creditCard = successRes.card;
 
 				alcoholCart.deployCart().then(
+
 					function (successRes) {
+
 						alcoholCart.freezCart().then(
+
 							function(result){
 
 							var cartKey = alcoholCart.getCartKey();
@@ -276,12 +284,10 @@ MetronicApp.controller('OrderCreateController',[
 							$http.put("adminapi/order/confirmorder/"+cartKey, {} ,{
 
 							}).error(function(response, status, headers) {
-
+									$scope.orderprocessing = false;
 									sweetAlert.swal({
-										type:'error',
-										title: 'Oops...',
-										text:response.message,
-										timer: 2000
+										type:'error',										
+										text:response.message										
 									});
 
 					        }).success(function(response) {
@@ -302,27 +308,30 @@ MetronicApp.controller('OrderCreateController',[
 										timer: 1000
 									});
 
-									//$state.go('userLayout.orders.show',{order:response.order},{reload: false, location: 'replace'});
+									$state.go('userLayout.orders.show',{order:response.order},{reload: false, location: 'replace'});
 
 							})
 						},
 							function(errorRes){
+							$scope.orderprocessing = false;	
 							sweetAlert.swal({
-											type:'error',
-											title: 'Oops...',
-											text:errorRes.message,
-											timer: 2000
-										});
-							
+								type:'error',
+								text:errorRes.message								
+							});							
 						}
 						);
 					},
 					function (errRes){
-
+						$scope.orderprocessing = false;
+						sweetAlert.swal({
+							text: "Error in cart",
+				  			type: 'error',
+						});
 					}
 				);	
 			},
 			function (errorRes) {
+				$scope.orderprocessing = false;
 				if(errorRes.customError){					
 					sweetAlert.swal({				  
 					  text: errorRes.message,
@@ -330,7 +339,7 @@ MetronicApp.controller('OrderCreateController',[
 					});				
 				}else{
 					sweetAlert.swal({				  
-					  text: 'Please validate the card details',
+					  text: 'Please validate credit card details',
 					  type: 'error'				  
 					});
 					$scope.paymentError = errorRes;
