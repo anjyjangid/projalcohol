@@ -75,14 +75,14 @@
                     <tr>
                       <td valign="top">
                         <div><strong>Delivery Address</strong></div>
-                        <div>{{ $address['firstname'].' '.$address['lastname'] }}</div>
+                        <div>{{ $address['firstname'].' '.@$address['lastname'] }}</div>
                         <?php if(isset($address['company'])){?>
                           <div>{{ $address['company'] }}</div>
                         <?php }?>
                         <?php if(isset($address['BLDG_NAME'])){?>
                         <div>{{ $address['BLDG_NAME'] }}</div>
                         <?php }?>
-                        <div>{{ $address['house'].' '.$address['HBRN'] }}</div>
+                        <div>{{ @$address['house'].' '.$address['HBRN'] }}</div>
                         <?php if(isset($address['FLOOR']) || isset($address['UNIT'])){?>
                           <div>
                             <?php if(isset($address['FLOOR'])){?>

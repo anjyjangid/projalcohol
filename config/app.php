@@ -26,7 +26,7 @@ return [
     |
      */
 
-    'url' => 'http://52.220.94.36:8080',
+    'url' => 'https://www.alcoholdelivery.com.sg',
 
     /*
     |--------------------------------------------------------------------------
@@ -155,7 +155,7 @@ return [
         
         'Intervention\Image\ImageServiceProvider',
         Roumen\Sitemap\SitemapServiceProvider::class,
-        'Nutsweb\LaravelPrerender\LaravelPrerenderServiceProvider',
+    	'Nutsweb\LaravelPrerender\LaravelPrerenderServiceProvider',
     ],
 
     /*
