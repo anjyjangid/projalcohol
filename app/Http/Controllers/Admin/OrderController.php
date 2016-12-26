@@ -42,7 +42,7 @@ class OrderController extends Controller
 	 */
 	public function __construct()
 	{
-
+		return response([],400);
 	}
 	/**
 	 * Display a listing of the resource.

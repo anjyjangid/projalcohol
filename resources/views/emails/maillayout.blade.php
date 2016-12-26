@@ -33,8 +33,10 @@
 		</tr>
 
 		<tr style="background: #ffc412 none repeat scroll 0 0; float: left; padding: 10px 12px 10px 5px; width: 97%;">
-			<td style="float: left;width: 100%;text-align: center;"><img src="{{asset('asset/i/emailtemplate-footer-fb.png')}}"></td>
-			<td style="float: left;width: 100%;text-align: center;font-size: 12px;color: #000000;">Copyright AlcoholDelivery 2017. All rights reserved. <br> www.alcoholdelivery.com.sg</td>
+			<td style="float: left;width: 100%;text-align: center;">
+				<a href="{{$replace['{social_facebook}']}}" style="display: inline-block;"><img src="{{asset('asset/i/emailtemplate-footer-fb.png')}}"></a>
+			</td>
+			<td style="float: left;width: 100%;text-align: center;font-size: 12px;color: #000000;">Copyright AlcoholDelivery {{date('Y')}}. All rights reserved. <br> www.alcoholdelivery.com.sg</td>
 		</tr>
 	</tbody>
 </table>

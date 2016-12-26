@@ -326,6 +326,8 @@ Route::get('{storageFolder}/i/{filename}', function ($storageFolder,$filename){
 //EXTERNAL URL LIST
 Route::get('confirmorder','CartController@confirmorder');
 Route::get('confirmordermanual/{key}','CartController@confirmordermanual');
+Route::get('saleNotification','CartController@saleNotification');//for AP testing
+
 Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
 
 

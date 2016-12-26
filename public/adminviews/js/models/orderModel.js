@@ -12,7 +12,7 @@ MetronicApp.factory('orderModel', ['$http', '$cookies','$location', function($ht
 
 	        return $http.put("/adminapi/order/"+orderId, fields, {
 	            
-	        }).error(function(data, status, headers) {            
+	        }).error(function(data, status, headers) {
 	            Metronic.alert({
 	                type: 'danger',
 	                icon: 'warning',

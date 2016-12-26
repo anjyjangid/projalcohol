@@ -155,7 +155,7 @@ return [
         
         'Intervention\Image\ImageServiceProvider',
         Roumen\Sitemap\SitemapServiceProvider::class,
-    	'Nutsweb\LaravelPrerender\LaravelPrerenderServiceProvider',
+    	// 'Nutsweb\LaravelPrerender\LaravelPrerenderServiceProvider',
     ],
 
     /*

@@ -110,6 +110,13 @@ class Cart extends Moloquent
 					"charges" => null,
 					"mincart" => null
 				],
+				"surcharge" => [
+					'holiday' => [
+						'label' => 'Holiday surcharge',
+						'type' => 1, //0=>fixed 1=>percentage
+						'value' => 10
+					]
+				]
 			],
 			"discount" => [
 				"nonchilled" => [
@@ -236,7 +243,15 @@ class Cart extends Moloquent
 								"mincart" => $services['minimum_cart_value']['value'],
 							];
 
-		$cart->service = $cartServices;							
+		$cartServices["surcharge"] = [
+					'holiday' => [
+						'label' => 'Holiday surcharge',
+						'type' => 1, //0=>fixed 1=>percentage
+						'value' => 10
+					]
+				];
+
+		$cart->service = $cartServices;
 		$cart->applicablePostalCodes = $services['express_delivery']['applicablePostalCodes'];
 		$cartDiscount = $cart->discount;							
 		$cartDiscount['nonchilled']['exemption'] = $services['non_chilled_delivery']['value'];
@@ -1995,9 +2010,22 @@ class Cart extends Moloquent
 								if(!empty($coupon['categories'])){
 
 									foreach ($prodDetail['categories'] as $catVal) {
-										if(!in_array((string)$catVal, $coupon['categories'])){
-											$hasCategory = 1;
+										
+										foreach($coupon['categories'] as $couponCategory){
+
+											if((string)$couponCategory == (string)$catVal){
+												$hasCategory = 1;
+												break;
+											}
+
 										}
+
+										if($hasCategory){
+											break;
+										}
+										// if(!in_array((string)$catVal, $coupon['categories'])){
+										// 	$hasCategory = 1;
+										// }
 									}
 
 									if(!$hasCategory)
@@ -2045,6 +2073,7 @@ class Cart extends Moloquent
 								}
 
 								$order['products'][$key]['discount'] = $couponDisAmt;
+
 								$couponDiscount+=$couponDisAmt;
 
 							}
@@ -2069,6 +2098,7 @@ class Cart extends Moloquent
 							"end_date" => $coupon['end_date'],
 							"totalDiscount" => $couponDiscount
 						];
+						
 
 					}
 				}
@@ -2155,9 +2185,22 @@ class Cart extends Moloquent
 			$discountExemption+=round($order['coupon']['totalDiscount'],2);
 		}
 
-		if(isset($order['discount']['credits']) && $order['discount']['credits']>0){
+		$surCharges = 0;
+		if($order['delivery']['type']==0){
 
 			$totalTill = $subtotal + $serviceCharges - $discountExemption;
+			$surCharges = ($totalTill * 10)/100;
+			$order['service']['surcharge_taxes'][] = [
+
+				'label'=>'Holiday surcharge',
+				'value' => $surCharges			
+			];
+
+		}
+
+		if(isset($order['discount']['credits']) && $order['discount']['credits']>0){
+
+			$totalTill = $subtotal + $serviceCharges + $surCharges - $discountExemption;
 			if($order['discount']['credits']>$totalTill){
 				$order['discount']['credits']=$totalTill;
 			}
@@ -2166,6 +2209,7 @@ class Cart extends Moloquent
 		}
 
 		$total+=$serviceCharges;
+		$total+=$surCharges;
 		$total-=$discountExemption;
 
 		//SET TOTAL AS ZERO IF IT IS NEGATIVE 

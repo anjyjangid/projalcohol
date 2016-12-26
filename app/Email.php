@@ -254,7 +254,7 @@ class Email extends Moloquent
 
 				$this->recipient_info["replace"]["{user_name}"] = $data['user_name'];
 
-				$this->recipient_info["replace"]["{product_list}"] = $data['product_list'];
+				$this->recipient_info["replace"]["{sale_detail}"] = $data['sale_detail'];
 
 				$this->recipient_info["message"] = str_ireplace(array_keys($this->recipient_info["replace"]),array_values($this->recipient_info["replace"]),$this->recipient_info["message"]);
 				
@@ -268,7 +268,7 @@ class Email extends Moloquent
 				$this->recipient_info["replace"]["{user_name}"] = $data['name'];
 
 				$this->recipient_info["replace"]["{order_number}"] = $data['order_number'];
-				$this->recipient_info["replace"]["{order_link}"] = $data['order_number'];
+				$this->recipient_info["replace"]["{order_link}"] = url()."/orderplaced/".$data['order_id'];
 				
 
 				$this->recipient_info["replace"]["{order_detail}"] = $data['order_detail'];
@@ -295,14 +295,13 @@ class Email extends Moloquent
 				
 				/*LAYOUT BASED MAIL*/
 
-				$data = ['content' => $this->recipient_info['message']];
-				//$this->recipient_info["receiver"]['email'] = 'anuragcgt@yahoo.com';
+				$data = ['content' => $this->recipient_info['message'],'replace'=>$this->recipient_info['replace']];
+				$this->recipient_info["receiver"]['email'] = 'anuragcgt@gmail.com';
 
 				Mail::send('emails.mail', $data, function ($message) {
 					$message->setTo(array($this->recipient_info["receiver"]['email']=>$this->recipient_info["receiver"]['name']));
 					$message->setSubject($this->recipient_info['subject']);
 				});
-
 				
 				// Backup your default mailer
 				/*$backup = Mail::getSwiftMailer();

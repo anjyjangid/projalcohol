@@ -1067,11 +1067,11 @@ AlcoholDelivery.controller('CartController',[
 	
 	if(alcoholCart.getCouponCode()){
 		$scope.discountCode = alcoholCart.getCouponCode();
-		$rootScope.couponInput = false;
-		$rootScope.couponOutput = true;
+		alcoholCart.$coupon.couponInput = false;
+		alcoholCart.$coupon.couponOutput = true;
 	}else{
-		$rootScope.couponInput = true;
-		$rootScope.couponOutput = false;
+		alcoholCart.$coupon.couponInput = true;
+		alcoholCart.$coupon.couponOutput = false;
 	}
 
 	$scope.checkCoupon = function(discountCode){
@@ -1086,8 +1086,8 @@ AlcoholDelivery.controller('CartController',[
 	}
 
 	$scope.hideCouponMsg = function(){
-		$rootScope.invalidCodeMsg = true;
-		$rootScope.invalidCodeMsgTxt = '';
+		alcoholCart.$coupon.invalidCodeMsg = true;
+		alcoholCart.$coupon.invalidCodeMsgTxt = '';
 	}
 
 	$scope.checkout = function(ev) {
@@ -1856,10 +1856,12 @@ AlcoholDelivery.controller('CartReviewController',[
 								if($scope.cart.payment.method == 'CARD'){
 									var payurl = $sce.trustAsResourceUrl(response.formAction);
 									$scope.$broadcast('gateway.redirect', {
+										
 										url: payurl,
 										method: 'POST',
 										params: response.formData
-									});
+
+									}).done();
 									return;
 								}
 
@@ -1870,7 +1872,7 @@ AlcoholDelivery.controller('CartReviewController',[
 										title: 'Oops...',
 										text:response.message,
 										timer: 2000
-									});
+									}).done();
 
 								}
 
@@ -1878,7 +1880,7 @@ AlcoholDelivery.controller('CartReviewController',[
 									type:'success',
 									title: response.message,
 									timer: 2000
-								});
+								}).done();
 
 								store.orderPlaced();
 
@@ -2020,7 +2022,7 @@ angular.SocialSharing = SocialSharingService;
 					text:rejectRes.message,
 					timer: 2000
 
-				});
+			});
 
 			}
 		)
@@ -3007,12 +3009,11 @@ AlcoholDelivery.controller('InviteController', ['$scope', '$rootScope','$state',
 			$scope.errors = [];
 			$scope.invite = res;
 
-
 			sweetAlert.swal({
 				type:'success',
 				title: res.success,
 				timer: 2000
-			});
+			}).done();
 
 		}).error(function(data, status, headers){
 			$scope.errors = data;

@@ -622,6 +622,7 @@ class Orders extends Moloquent
 		$data = [
 			'name' => (isset($user->name) && !empty($user->name))?$user->name:$user->email,
 			'email' => $user->email,
+			'order_id' => (string)$order['_id'],
 			'order_number' => $order['reference'],
 			'order_detail' => $contents
 		];
@@ -629,5 +630,5 @@ class Orders extends Moloquent
 		$emailSent = $email->sendEmail($data);
 
 	}
-
+	
 }
