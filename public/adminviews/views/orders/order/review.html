@@ -40,7 +40,7 @@
 					<div class="checkboxtotaldiv-text" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount() | pricingTxt}}</div>
 				</div>
 
-				<div class="checkboxtotaldiv-middle-first" ng-if="alcoholCart.$cart.delivery.type==0">
+				<div class="checkboxtotaldiv-middle-first" ng-if="alcoholCart.$cart.delivery.type==0 && alcoholCart.$cart.service.tempsurcharge">
 					
 					<div class="checkboxtotaldiv-title">10% PH Surcharge <span class="">
 						<img src="images/questionimg.png"></span>

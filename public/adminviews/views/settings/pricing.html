@@ -128,13 +128,19 @@
             <tr>
                 <td colspan="4"><h4>Surcharge & Taxes (Applicable on top of the cart value)</h4></td>
                 <td>
-                    <button class="btn default yellow-stripe" type="button" ng-click="settings.surcharge_taxes.types.push({type:1})">
+                    <!-- <button class="btn default yellow-stripe" type="button" ng-click="settings.surcharge_taxes.types.push({type:1,status:1})">
                         <i class="fa fa-plus"></i>
                         <span class="hidden-480">Add new</span>
-                    </button>
+                    </button> -->
+                    <button class="btn default" type="button" ng-click="settings.tempsurcharge = !settings.tempsurcharge">
+                        <i class="fa fa-{{(settings.tempsurcharge)?'check':'close'}}"></i>
+                        <span class="hidden-480">
+                            {{(settings.tempsurcharge)?'Enabled':'Disabled'}}
+                        </span>
+                    </button>                    
                 </td>
             </tr>
-            <tr role="row" class="heading">                        
+            <!-- <tr role="row" class="heading">                        
                 <th width="28%">
                      Name
                 </th>
@@ -173,9 +179,15 @@
                     <span class="help-block" ng-bind="errors['surcharge_taxes.types.'+kv+'.order'][0]"></span>                     
                 </td>                
                 <td align="left">
-                    <a href="#" class="btn default btn-sm" ng-click="settings.surcharge_taxes.types.splice(kv,1)"><i class="fa fa-times"></i> Remove </a>
+                    <button type="button" ng:class="{'green-haze':setting.status}" class="btn btn-sm default btn-sm" ng-click="setting.status = !setting.status">
+                        <i class="fa fa-{{setting.status?'check':'close'}}"></i> 
+                        {{setting.status?'Enabled':'Disabled'}}
+                    </button>
+                    <button type="button" class="btn btn-sm default btn-sm" ng-click="settings.surcharge_taxes.types.splice(kv,1)">
+                        <i class="fa fa-trash"></i>
+                    </button>                    
                 </td>                
-            </tr>
+            </tr> -->
         </tbody>
     </table> 
     <!-- <pre>

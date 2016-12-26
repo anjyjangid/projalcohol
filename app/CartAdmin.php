@@ -131,7 +131,8 @@ class CartAdmin extends Moloquent
 						'type' => 1, //0=>fixed 1=>percentage
 						'value' => 10
 					]
-				]
+				],
+				"tempsurcharge" => true
 			],
 			"discount" => [
 				"nonchilled" => [
@@ -185,7 +186,7 @@ class CartAdmin extends Moloquent
 			return false;
 		}
 
-		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.express_delivery.applicablePostalCodes','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value'])->first();
+		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.express_delivery.applicablePostalCodes','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value','settings.tempsurcharge'])->first();
 
 		$services = $services['settings'];
 
@@ -201,6 +202,9 @@ class CartAdmin extends Moloquent
 								"charges" => $services['non_free_delivery']['value'],
 								"mincart" => $services['minimum_cart_value']['value'],
 							];
+
+		//ADD TEMPSURCHARGE FLAG
+		$cartServices["tempsurcharge"] = $services['tempsurcharge'];							
 
 		$cartServices["surcharge"] = [
 					'holiday' => [
@@ -231,7 +235,7 @@ class CartAdmin extends Moloquent
 
 	public function setServices($cart){
 
-		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value'])->first();
+		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value','settings.tempsurcharge'])->first();
 
 
 		$services = $services['settings'];
@@ -245,7 +249,12 @@ class CartAdmin extends Moloquent
 								"mincart" => $services['minimum_cart_value']['value'],
 							];
 
+		//ADD TEMPSURCHARGE FLAG
+		$cart["service"]["tempsurcharge"] = $services['tempsurcharge'];
+
 		$cart["discount"]["nonchilled"]["exemption"] = $services['non_chilled_delivery']['value'];
+
+
 
 		return $cart;
 

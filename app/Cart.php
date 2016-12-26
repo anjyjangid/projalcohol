@@ -60,7 +60,7 @@ class Cart extends Moloquent
 
 	public function setServices($cart){
 
-		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value'])->first();
+		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value','settings.tempsurcharge'])->first();
 
 		$services = $services['settings'];
 
@@ -72,6 +72,9 @@ class Cart extends Moloquent
 								"charges" => $services['non_free_delivery']['value'],
 								"mincart" => $services['minimum_cart_value']['value'],
 							];
+
+		//ADD TEMPSURCHARGE FLAG
+		$cart["service"]["tempsurcharge"] = $services['tempsurcharge'];
 
 		$cart["discount"]["nonchilled"]["exemption"] = $services['non_chilled_delivery']['value'];
 
@@ -114,9 +117,10 @@ class Cart extends Moloquent
 					'holiday' => [
 						'label' => 'Holiday surcharge',
 						'type' => 1, //0=>fixed 1=>percentage
-						'value' => 10
+						'value' => 10						
 					]
-				]
+				],
+				"tempsurcharge" => true
 			],
 			"discount" => [
 				"nonchilled" => [
@@ -227,7 +231,7 @@ class Cart extends Moloquent
 
 		}
 
-		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.express_delivery.applicablePostalCodes','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value'])->first();
+		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.express_delivery.applicablePostalCodes','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value','settings.tempsurcharge'])->first();
 
 		$services = $services['settings'];
 
@@ -242,6 +246,9 @@ class Cart extends Moloquent
 								"charges" => $services['non_free_delivery']['value'],
 								"mincart" => $services['minimum_cart_value']['value'],
 							];
+
+		//ADD TEMPSURCHARGE FLAG
+		$cartServices["tempsurcharge"] = $services['tempsurcharge'];
 
 		$cartServices["surcharge"] = [
 					'holiday' => [
@@ -2186,7 +2193,7 @@ class Cart extends Moloquent
 		}
 
 		$surCharges = 0;
-		if($order['delivery']['type']==0){
+		if($order['delivery']['type']==0 && $order['service']['tempsurcharge']){
 
 			$totalTill = $subtotal + $serviceCharges - $discountExemption;
 			$surCharges = ($totalTill * 10)/100;

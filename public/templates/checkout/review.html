@@ -89,7 +89,7 @@
 								<div class="checkboxtotaldiv-text-font-size" ng-class="">-{{alcoholCart.getCouponDiscount() | currency:settings.general.currency:2}}</div>
 							</div>
 
-							<div class="checkoutstep5right-middle-first" ng-if="alcoholCart.$cart.delivery.type==0">
+							<div class="checkoutstep5right-middle-first" ng-if="alcoholCart.$cart.delivery.type==0  && alcoholCart.$cart.service.tempsurcharge">
 								<div class="checkoutstep5right-middle-title" >10% PH Surcharge <span class=""><img src="images/questionimg.png" title="Holiday Surcharge"></span></div>
 								<div class="checkboxtotaldiv-text-font-size">{{(alcoholCart.$cart.payment.totalWithoutSur * 10/100) | pricingTxt}}</div>
 							</div>

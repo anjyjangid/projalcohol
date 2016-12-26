@@ -939,7 +939,7 @@ MetronicApp
 
 			this.$cart.payment.totalWithoutSur = cartTotal;
 
-			if(this.$cart.delivery.type==0 && angular.isDefined(service.surcharge)){
+			if(this.$cart.service.tempsurcharge && this.$cart.delivery.type==0 && angular.isDefined(service.surcharge)){
 
 				if(angular.isDefined(service.surcharge.holiday)) {
 
