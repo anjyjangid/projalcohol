@@ -125,8 +125,40 @@
                 <td align="center">N/A</td>
                 <td align="center">N/A</td>
             </tr>
+            <!-- <tr>
+                <td colspan="4"><h4>Surcharge & Taxes (Applicable on top of the cart value)</h4></td>
+                <td>
+                    <button class="btn default yellow-stripe" type="button" ng-click="settings.surcharge_taxes.types.push({type:1})">
+                        <i class="fa fa-plus"></i>
+                        <span class="hidden-480">Add new</span>
+                    </button>
+                </td>
+            </tr>
+            <tr ng-repeat="(kv, setting) in settings.surcharge_taxes.types">
+                <td ng:class="{'has-error':errors['surcharge_taxes.types.'+kv+'.label'][0]}"> 
+                    <input type="text" class="form-control" ng-model="setting.label" placeholder="Surcharge or tax name">
+                    <span class="help-block" ng-bind="errors['surcharge_taxes.types.'+kv+'.label'][0]"></span>
+                </td>                
+                <td ng:class="{'has-error':errors['surcharge_taxes.types.'+kv+'.type'][0]}">
+                    <select empty="false" class="form-control" ng-model="setting.type">            
+                        <option value="0">Fix Amount</option>
+                        <option value="1">% of Amount</option>
+                    </select>
+                    <span class="help-block" ng-bind="errors['surcharge_taxes.types.'+kv+'.type'][0]"></span>
+                </td>
+                <td ng:class="{'has-error':errors['surcharge_taxes.types.'+kv+'.value'][0]}">
+                    <input type="number" min="0" step="any" class="form-control" ng-model="setting.value" placeholder="">
+                    <span class="help-block" ng-bind="errors['surcharge_taxes.types.'+kv+'.value'][0]"></span>                     
+                </td>                
+                <td colspan="2" align="left">
+                    <a href="#" class="btn default btn-sm" ng-click="settings.surcharge_taxes.types.splice(kv,1)"><i class="fa fa-times"></i> Remove </a>
+                </td>                
+            </tr> -->
         </tbody>
-    </table>    
+    </table> 
+    <!-- <pre>
+        {{settings|json}}
+    </pre> -->   
     <div class="row">
         <div class="col-sm-12">
             <div class="margiv-top-10 pull-right">

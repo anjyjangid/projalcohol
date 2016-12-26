@@ -25,6 +25,7 @@ class SettingRequest extends Request
      */
     public function rules()
     {
+        $input = Input::all();
         switch ($this->setting) {
 
             case 'general':
@@ -69,11 +70,11 @@ class SettingRequest extends Request
                     'regular_express_delivery.type' => 'required|numeric',
                     'minimum_cart_value.value' => 'required|numeric',
                     'non_free_delivery.value' => 'required|numeric',
-
                     'non_chilled_delivery.type' => 'required|numeric',
                     'non_chilled_delivery.value' => 'required|numeric',
 
-                ];
+                ];               
+
                 break;
 
             case 'loyalty':
@@ -91,7 +92,7 @@ class SettingRequest extends Request
         }
 
         if($this->setting == 'pricing'){            
-            $input = Input::all();
+            
             foreach ($input['express_delivery_bulk']['bulk'] as $bk => $bval)
             {
                 $ruleKey = 'express_delivery_bulk.bulk.' . $bk;
@@ -100,10 +101,19 @@ class SettingRequest extends Request
                 $rules[$ruleKey . '.type'] = 'required|numeric';
                 $rules[$ruleKey . '.value'] = 'required|numeric';
             }   
+
+            if(isset($input['surcharge_taxes']) && !empty($input['surcharge_taxes']['types'])){
+                foreach ($input['surcharge_taxes']['types'] as $bk => $bval)
+                {
+                    $ruleKey = 'surcharge_taxes.types.' . $bk;
+                    $rules[$ruleKey . '.label'] = 'required';                    
+                    $rules[$ruleKey . '.type'] = 'required|numeric';
+                    $rules[$ruleKey . '.value'] = 'required|numeric';
+                }
+            }
         }
 
-        if($this->setting == 'timeslot'){            
-            $input = Input::all();
+        if($this->setting == 'timeslot'){                       
 
             foreach ($input as $bk => $bval)
             {

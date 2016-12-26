@@ -101,7 +101,7 @@ class AuthController extends Controller
 		if(isset($data['email']))
 			$data['email'] = strtolower($data['email']);
 		else
-			return response('Hello '.$firstname.', we could not find your email address from Facebook, please try signup.',422);
+			return response('We are unable to retrieve your email address via Facebook login to complete the sign up. Please change the settings in Facebook or signup via your email address on Alcohol Delivery!',422);
 		
 		$checkUser = User::where('fbid', '=', $data['id'])->orWhere('email', $data['email'])->first();
 		

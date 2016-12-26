@@ -214,7 +214,19 @@
                               <strong>-{{ formatPrice($order['discount']['coupon'],0) }}</strong>
                               <?php }?>
                             </td>
-                          </tr>                          
+                          </tr> 
+                          <?php }?>
+                          <?php if(isset($order['service']['surcharge_taxes']) && !empty($order['service']['surcharge_taxes'])) {
+                            foreach ($order['service']['surcharge_taxes'] as $key => $value) {?>
+                            <tr>
+                              <td align="left" colspan="3">
+                                <strong>10% PH Surcharge<!-- {{ $value['label'] }} --></strong>
+                              </td>
+                              <td align="right">                                
+                                {{ formatPrice($value['value'],0) }}
+                              </td>
+                            </tr>                         
+                          <?php }?>  
                           <?php }?>
                           <tr class="topborder">
                             <td align="left" valign="center" colspan="3"><strong>Total</strong></td>    
