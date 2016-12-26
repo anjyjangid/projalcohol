@@ -76,7 +76,6 @@ class OrderController extends Controller
 
 				$cart = $cart->toArray();
 				
-				
 				$productsIdInCart = array_keys((array)$cart['products']);
 
 				$productObj = new Products;

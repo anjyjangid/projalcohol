@@ -932,6 +932,41 @@ MetronicApp
 
 		cartTotal-= parseFloat(this.getCouponDiscount());
 
+		var service = this.$cart.service;
+			var _self = this;
+			
+			_self.$cart.otherCharges = {};
+
+			this.$cart.payment.totalWithoutSur = cartTotal;
+
+			if(this.$cart.delivery.type==0 && angular.isDefined(service.surcharge)){
+
+				if(angular.isDefined(service.surcharge.holiday)) {
+
+					if(angular.isDefined(service.surcharge.holiday.value) && service.surcharge.holiday.value>0) {
+
+						var amt = 0;
+						if(service.surcharge.holiday.type==1){
+							amt = (cartTotal * service.surcharge.holiday.value)/100;
+						}else{
+							amt = service.surcharge.holiday.value;
+						}
+
+
+						_self.$cart.otherCharges = {
+							"label" : service.surcharge.holiday.label,
+							"value" : amt.toFixed(2),
+						}
+						
+						cartTotal = cartTotal + amt.toFixed(2)
+						//charges.push(currCharge);
+
+					}
+
+				}
+
+			}
+
 		return +parseFloat(cartTotal).toFixed(2);
 
 	};

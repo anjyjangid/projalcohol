@@ -2223,7 +2223,7 @@ class Cart extends Moloquent
 			'service'=> round($serviceCharges,2),
 			'discount'=> round($discountExemption,2),
 			'total'=> round($total,2),
-			'method' => $this->payment['method'],			
+			'method' => $this->payment['method'],
 		];
 
 		$totalValue = $order['payment']['subtotal'] + $order['payment']['service'];

@@ -51,6 +51,8 @@ class CartAdmin extends Moloquent
 		$cart = self::where('generatedBy',$adminId)->orderBy('updated_at', 'desc')->first();
 
 		if(!empty($cart->user)){
+			
+			$cart = $this->findUpdated($cart->_id);
 
 			$cart->addresses = [];
 
@@ -123,6 +125,13 @@ class CartAdmin extends Moloquent
 					"charges" => null,
 					"mincart" => null
 				],
+				"surcharge" => [
+					'holiday' => [
+						'label' => 'Holiday surcharge',
+						'type' => 1, //0=>fixed 1=>percentage
+						'value' => 10
+					]
+				]
 			],
 			"discount" => [
 				"nonchilled" => [
@@ -192,6 +201,14 @@ class CartAdmin extends Moloquent
 								"charges" => $services['non_free_delivery']['value'],
 								"mincart" => $services['minimum_cart_value']['value'],
 							];
+
+		$cartServices["surcharge"] = [
+					'holiday' => [
+						'label' => 'Holiday surcharge',
+						'type' => 1, //0=>fixed 1=>percentage
+						'value' => 10
+					]
+				];
 
 		$cart->service = $cartServices;							
 		$cart->applicablePostalCodes = $services['express_delivery']['applicablePostalCodes'];
