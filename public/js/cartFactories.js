@@ -328,7 +328,7 @@ angular.module('AlcoholCartFactories', [])
 
 		var amtAfterCouponDis = 0;
 		var pAmount = 0;
-		var hasProduct = 1;
+		var hasProduct = 0;
 		var hasCategory = 0;
 		var quantity = this.remainingQty;
 		var couponDisAmt = 0;
@@ -338,7 +338,7 @@ angular.module('AlcoholCartFactories', [])
 		if(typeof cProducts !== "undefined"){
 			if (cProducts.length > 0) {
 				if(cProducts.indexOf(this._id) == -1) {
-					hasProduct = 0;
+					hasProduct = 1;
 				}
 			}
 		}

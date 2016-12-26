@@ -1079,8 +1079,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			      },
 			      templateUrl: '/templates/toast-tpl/notify-template.html',
 			      parent : $document[0].querySelector('#toastBounds'),
-			      //parent : $document[0].querySelector('nav'),
-			      position: 'top center',
+			      position: 'top left',
 			      hideDelay:0
 			    });
 

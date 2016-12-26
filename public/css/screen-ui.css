@@ -2162,6 +2162,7 @@ ui-sref {
 	font-weight: 400;
 	color: #656565;
 	margin-bottom: 13px;
+	min-height: 40px;
 }
 .combo_sliderProduct .tabbable .fullwidth {
 	margin-top: 19px;
@@ -6579,6 +6580,7 @@ button:hover{
     top: -5px;
     transform: rotate(44deg);
     width: 20px;
+    z-index: -3;
 }
 
 .product-detail-right-set{

@@ -82,10 +82,18 @@
 								<div class="checkoutstep5right-middle-title" >Discount (Non-Chilled) <span class=""><img src="images/questionimg.png" title="Non chilled Discount"></span></div>
 								<div class="checkboxtotaldiv-text-font-size" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount('nonchilled') | currency:settings.general.currency:2}}</div>
 							</div>
+												
+
 							<div class="checkoutstep5right-middle-first" ng-show="alcoholCart.getCouponDiscount()">
 								<div class="checkoutstep5right-middle-title" >Coupon Discount <span class=""><img src="images/questionimg.png"></span></div>
 								<div class="checkboxtotaldiv-text-font-size" ng-class="">-{{alcoholCart.getCouponDiscount() | currency:settings.general.currency:2}}</div>
 							</div>
+
+							<div class="checkoutstep5right-middle-first" ng-if="alcoholCart.$cart.delivery.type==0">
+								<div class="checkoutstep5right-middle-title" >Holiday Surcharge <span class=""><img src="images/questionimg.png" title="Holiday Surcharge"></span></div>
+								<div class="checkboxtotaldiv-text-font-size">{{(alcoholCart.$cart.payment.totalWithoutSur * 10/100) | pricingTxt}}</div>
+							</div>
+							
 							<use-credits></use-credits>
 							
 

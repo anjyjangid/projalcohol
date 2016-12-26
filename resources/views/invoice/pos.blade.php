@@ -136,7 +136,10 @@
                                 <?php echo (!$isPackage)?$value['quantity']:'';?>
                               </td>
                               <td class="{{ $isPackage }}">
-                                <?php echo $value['name'];?>
+                                <?php echo $value['name'];?> 
+                                  <?php if($value['chilled']){?> 
+                                    <img src="{{ asset('img/snowflake.png') }}" width="16px">
+                                  <?php }?>
                               </td>
                               <td align="right"><?php echo (!$isPackage)?$value['unitPrice']:'';?></td>
                               <td align="right"><?php echo formatPrice($value['total']);?></td>

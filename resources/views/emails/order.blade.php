@@ -79,7 +79,7 @@
 	<td style="float: left;width: 45%;padding-left: 20px;text-align: left;font-family: 14px;color: #343538;">Delivery Time</td>
 </tr>
 <tr style="float: left;width: 100%;background: #ffffff;">
-	<td style="float: left;width: 96%;padding-left:20px;font-size: 13px;color: #343538;margin-top: 10px; margin-bottom:25px;">Monday, 12th Dec
+	<td style="float: left;width: 96%;padding-left:20px;font-size: 13px;color: #343538;margin-top: 10px; margin-bottom:25px;">
         <div><?php echo @$order['delivery']['deliveryDate']; ?></div>
         <?php if(isset($order['delivery']['deliveryTimeRange']) && $order['delivery']['deliveryTimeRange']!=''){?>                        
         <div><?php echo @$order['delivery']['deliveryTimeRange']; ?></div>
@@ -186,7 +186,7 @@ foreach($order['products'] as $product){
 	}
 					
 	$tpl.=		'</td>
-				<td style="float: right;width: 20%;padding-right: 20px;margin-top: 50px;font-size: 14px;font-weight: normal;color: #343538;text-align: right;">'.$product['qtyfinal'].' X <span style="font-size: 14px;color: #343538;font-weight: bold;">'.currency($product['price']).'</span></td>
+				<td style="float: right;width: 20%;padding-right: 20px;margin-top: 50px;font-size: 14px;font-weight: normal;color: #343538;text-align: right;">( '.$product['qtyfinal'].' ) &nbsp;&nbsp;&nbsp;&nbsp;  <span style="font-size: 14px;color: #343538;font-weight: bold;">'.currency($product['price']).'</span></td>
 			</tr>';
 }
 
@@ -272,7 +272,7 @@ function showPackages($order){
 		}
 						
 		$tpl.=		'</div></td>
-					<td style="float: right;width: 20%;padding-right: 20px;margin-top: 50px;font-size: 14px;font-weight: normal;color: #343538;text-align: right;">'.$package['packageQuantity'].' X <span style="font-size: 14px;color: #343538;font-weight: bold;">'.currency($package['price']).'</span></td>
+					<td style="float: right;width: 20%;padding-right: 20px;margin-top: 50px;font-size: 14px;font-weight: normal;color: #343538;text-align: right;">( '.$package['packageQuantity'].' ) &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-size: 14px;color: #343538;font-weight: bold;">'.currency($package['price']).'</span></td>
 				</tr>';
 	}
 
@@ -295,7 +295,7 @@ foreach($order['loyaltyCards'] as $card){
 					<span style="color: #343538;float: left;font-size: 14px;font-weight: bold;margin-top: 5px;padding-left: 20px;width: 75%;">Convert '.$card['points'].' to '.currency($card['value']).'</span>';
 					
 	$tpl.=		'</td>
-				<td style="float: right;width: 20%;padding-right: 20px;margin-top: 50px;font-size: 14px;font-weight: normal;color: #343538;text-align: right;">'.$card['quantity'].' X <span style="font-size: 14px;color: #343538;font-weight: bold;">LP '.$card['total'].'</span></td>
+				<td style="float: right;width: 20%;padding-right: 20px;margin-top: 50px;font-size: 14px;font-weight: normal;color: #343538;text-align: right;">( '.$card['quantity'].' ) &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-size: 14px;color: #343538;font-weight: bold;">LP '.$card['total'].'</span></td>
 			</tr>';
 }
 
