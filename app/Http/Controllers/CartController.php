@@ -1957,7 +1957,7 @@ jprd($product);
 				ErrorLog::create('emergency',[
 					'error'=>$e,
 					'message'=> 'Cart Confirm'
-				]);
+				]);			
 
 		}
 

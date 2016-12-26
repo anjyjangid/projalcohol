@@ -43,6 +43,9 @@
 								</th>
 								<th width="10%">
 									Status
+								</th>
+								<th width="10%">
+									Verification
 								</th>								
 								<th width="20%">
 									Actions
@@ -69,6 +72,13 @@
 									</select>
 								</td>
 								<td>
+									<select name="verified" class="form-control form-filter input-sm" id="user_verified">
+										<option value="">Select...</option>
+										<option value="1">Verified</option>
+										<option value="0">Not Verified</option>										
+									</select>
+								</td>
+								<td>
 									<div class="margin-bottom-5">
 										<button class="btn btn-sm yellow filter-submit margin-bottom"><i class="fa fa-search"></i> Search</button>
 									</div>
@@ -87,6 +97,8 @@
 </div>
 <!-- END MAIN CONTENT -->
 <!-- BEGIN MAIN JS -->
+
+<div verify-user></div>
 
 <script>
 	
@@ -145,13 +157,28 @@
                         },
                         orderable:true
                     },
+					{  
+                        mData: null,
+                        mRender: function(data, type, full) {                           
+                            var bClass = (data.verified==0)?'warning':'success';
+                            var bLabel = (data.verified==0)?'Not verified':'Verified';                            
+                            var revertStatus = (data.verified==0)?1:0;                            
+                            return '<span class="label label-sm label-'+bClass+'">'+bLabel+'</span>';             
+                        },
+                        orderable:true
+                    },
 					{
 						mData: null,
 						sClass: "center",
 						mRender: function(data, type, full) {
 	                        var txt = 'Edit';
+	                        var verification = '';
 
-	                        return '<a title="Edit" ui-sref=userLayout.customer.edit({customerid:"'+data._id.$id+'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
+	                        if(data.verified == 0){
+								verification = '<button type="button" title="Verify" ng-click=verifyUser({id:"'+data._id.$id+'",email:"'+data.email+'",email_key:"'+data.email_key+'"}) class="btn btn-xs default"><i class="fa fa-envelope"></i></button>';	                        	
+	                        }
+
+	                        return '<a title="Edit" ui-sref=userLayout.customer.edit({customerid:"'+data._id.$id+'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>'+verification;
 	                    },					
 						orderable:false
 					}

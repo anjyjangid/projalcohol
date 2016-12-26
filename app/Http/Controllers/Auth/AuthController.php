@@ -94,11 +94,17 @@ class AuthController extends Controller
 	{
 		$data = $request->all();
 		
+		$name = $data['first_name'].' '.$data['last_name'];
+
+		$firstname = @$data['first_name'];
+
 		if(isset($data['email']))
 			$data['email'] = strtolower($data['email']);
+		else
+			return response('Hello '.$firstname.', we could not find your email address from Facebook, please try signup.',422);
 		
 		$checkUser = User::where('fbid', '=', $data['id'])->orWhere('email', $data['email'])->first();
-		$name = $data['first_name'].' '.$data['last_name'];
+		
 		if($checkUser){
 			$checkUser->fbid = $data['id'];
 			$checkUser->email = $data['email'];
