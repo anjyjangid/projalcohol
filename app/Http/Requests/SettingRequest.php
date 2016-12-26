@@ -109,6 +109,7 @@ class SettingRequest extends Request
                     $rules[$ruleKey . '.label'] = 'required';                    
                     $rules[$ruleKey . '.type'] = 'required|numeric';
                     $rules[$ruleKey . '.value'] = 'required|numeric';
+                    $rules[$ruleKey . '.order'] = 'required|numeric';
                 }
             }
         }
