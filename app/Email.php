@@ -295,6 +295,7 @@ class Email extends Moloquent
 				
 				/*LAYOUT BASED MAIL*/
 
+
 				$data = ['content' => $this->recipient_info['message'],'replace'=>$this->recipient_info['replace']];				
 
 				Mail::send('emails.mail', $data, function ($message) {

@@ -261,7 +261,16 @@
 											</div>
 										</td>
 									</tr>
-
+									<tr ng-if="order.service.surcharge_taxes" ng-repeat="surcharge_taxes in order.service.surcharge_taxes">
+										<td class="bordernone">
+											<div class="checkoutstep5right-middle-title" >{{surcharge_taxes.label}} <span class=""><img src="images/questionimg.png"></span></div>
+										</td>
+										<td class="bordernone">
+											<div class="checkboxtotaldiv-text">
+												{{(surcharge_taxes.value) | currency:settings.general.currency:2}}
+											</div>
+										</td>
+									</tr>
 									<tr>
 										<td class="">
 											<div class="checkoutstep5right-bottom-title">Total</div>
@@ -280,5 +289,5 @@
 	</div>
 </div>
 <!-- <pre>
-	{{order.delivery|json}}
+	{{order.service|json}}
 </pre> -->
