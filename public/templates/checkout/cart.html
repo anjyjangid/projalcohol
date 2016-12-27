@@ -389,8 +389,7 @@
 			<div class="error" ng-hide="alcoholCart.$coupon.invalidCodeMsg">{{alcoholCart.$coupon.invalidCodeMsgTxt}}</div>
 		</div>
 		<div class="col-md-6">
-			<div class="checkboxtotaldiv-title">Subtotal</div>
-			<div class="checkboxtotaldiv-text">{{alcoholCart.getSubTotal() | pricingTxt}}</div>
+			<div class="checkboxtotaldiv-title pull-right m-top-5">Subtotal &nbsp; {{alcoholCart.getSubTotal() | pricingTxt}}</div>
 		</div>
 	</div>
 	<div class="checkboxtotaldiv-middle">
@@ -399,28 +398,52 @@
 		</div> -->
 		<div class="col-sm-6 col-sm-offset-6">
 			<div class="checkboxtotaldiv-middle-first">
-				<div class="checkboxtotaldiv-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
+				<div class="checkboxtotaldiv-title">Delivery Charge 
+					<span>
+						<img src="images/questionimg.png">
+						<md-tooltip class="ad-tooltip" md-direction="top">
+							Order above {{alcoholCart.$cart.service.delivery.mincart | pricingTxt}} for free delivery!
+						</md-tooltip>
+					</span>
+				</div>
 
 				<div class="checkboxtotaldiv-text" ng-if="!cart.delivery.charges">Free</div>
 				<div class="checkboxtotaldiv-text" ng-if="cart.delivery.charges>0">{{alcoholCart.getDeliveryCharges() | pricingTxt }}</div>
 
 			</div>
 			<div class="checkboxtotaldiv-middle-first">
-				<div class="checkboxtotaldiv-title">Service Charge <span class=""><img src="images/questionimg.png"></span></div>
+				<div class="checkboxtotaldiv-title">Service Charge 
+					<span>
+						<img src="images/questionimg.png">
+						<md-tooltip class="ad-tooltip" md-direction="top">
+							Additional fees for express delivery or pickup service
+						</md-tooltip>
+					</span>
+				</div>
 				<div class="checkboxtotaldiv-text">{{alcoholCart.getAllServicesCharges() | pricingTxt}}</div>
 			</div>
 			<div class="checkboxtotaldiv-middle-first">
 				
-				<div class="checkboxtotaldiv-title">Discount (Non-Chilled) <span class="">
-					<img src="images/questionimg.png"></span>
+				<div class="checkboxtotaldiv-title">Discount (Non-Chilled) 
+					<span>
+						<img src="images/questionimg.png">
+						<md-tooltip class="ad-tooltip" md-direction="bottom">
+							Discount for select chilled products non-chilled
+						</md-tooltip>
+					</span>
 				</div>
 
 				<div class="checkboxtotaldiv-text" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount() | pricingTxt}}</div>
 			</div>
 			<div class="checkboxtotaldiv-middle-first" ng-show="alcoholCart.getCouponDiscount()">
 				
-				<div class="checkboxtotaldiv-title">Coupon Discount<span class="">
-					<img src="images/questionimg.png"></span>
+				<div class="checkboxtotaldiv-title">Coupon Discount
+					<span>
+						<img src="images/questionimg.png">
+						<md-tooltip class="ad-tooltip" md-direction="bottom">
+							Discount applied by using coupon
+						</md-tooltip>
+					</span>
 				</div>
 
 				<div class="checkboxtotaldiv-text" ng-class="">-{{alcoholCart.getCouponDiscount() | pricingTxt}}</div>
@@ -428,8 +451,14 @@
 			
 			<div class="checkboxtotaldiv-middle-first" ng-if="alcoholCart.$cart.delivery.type==0 && alcoholCart.$cart.service.tempsurcharge">
 				
-				<div class="checkboxtotaldiv-title">10% PH Surcharge <span class="">
-					<img src="images/questionimg.png"></span>
+				<div class="checkboxtotaldiv-title">10% PH Surcharge 
+
+					<span>
+						<img src="images/questionimg.png">
+						<md-tooltip class="ad-tooltip" md-direction="bottom">
+							Surcharge aplied for public holidays
+						</md-tooltip>
+					</span>
 				</div>
 
 				<div class="checkboxtotaldiv-text" ng-class="">{{(alcoholCart.$cart.payment.totalWithoutSur * 10/100) | pricingTxt}}</div>
@@ -464,9 +493,9 @@
 
 	<div class="checkouterexprienceouter pos-realtive hide" ng-show="cart.delivery.type==0" ng-class="{'disabled':alcoholCart.expressDisable}">
 		<span id="express-disable-note">Express delivery is not available if cart contain any gift packaging product</span>
+
 		<div class="checkouterexpressdivleft checkbox-gray-top-first">
 			<md-switch aria-label="express" ng-model="cart.service.express.status" ng-change="alcoholCart.setExpressStatus(cart.service.express.status)"></md-switch>
-
 		</div>
 		<div class="checkouterexpressdiv">
 			<div class="checkouterexpresstitle">Express Delivery <span class="checkouterexpresstext">(Guaranteed 30 mins delivery)</span></div>

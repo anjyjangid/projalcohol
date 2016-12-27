@@ -25,7 +25,7 @@
 			
 			<thead>
 				<tr>
-					<th>Reason</th>
+					<th>Transactions</th>
 					<th>earned</th>
 					<th>redeemed</th>
 					<th>comment</th>
@@ -34,14 +34,7 @@
 			<tbody>
 				<tr ng-repeat="currLoyal in loyalty">
 					<td>
-
 						<div class="mainfirsttddiv">
-							<div class="arowpicdiv">
-								<a ng-if="currLoyal.type==1" href="#"><img src="images/upload_picn.png"/></a>
-								<a ng-if="currLoyal.type==0" href="#"><img src="images/downloadpicn.png"/></a>
-								
-								
-							</div>
 							<div class="textfistrdivmain">
 							<div class="textboldtit">{{currLoyal.shortComment}}</div>
 							<div class="textnormalit">From : {{currLoyal.reference}}</div>

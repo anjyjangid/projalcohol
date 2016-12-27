@@ -1,31 +1,38 @@
 <?php
 		
 	function prd($arr){
-		
-		pr($arr);
-		die;
+
+		if(isLocal()){
+			pr($arr);
+			die;
+		}
 
 	}
 
 	function jprd($arr){
 
-        header("Content-type: application/json");
-		echo json_encode($arr);
-		die;
+		if(isLocal()){
+	        header("Content-type: application/json");
+			echo json_encode($arr);
+			die;
+		}
 
 	}
 
 	function jpr($arr){
-
-		pr(json_encode($arr));
+		if(isLocal()){
+			pr(json_encode($arr));
+		}
 
 	}
 
 	function pr($arr){
-		
-		echo "<pre>";
-		print_r($arr);
-		echo "</pre>";
+
+		if(isLocal()){
+			echo "<pre>";
+			print_r($arr);
+			echo "</pre>";
+		}
 
 	}
 	
@@ -53,6 +60,14 @@
 
 		return $newArray;
 
+	}
+
+	function isLocal () {
+
+		if($_SERVER['REMOTE_ADDR']==='192.168.1.222'){
+			return true;
+		}
+		return false;
 	}
 
 	// Returns the next highest integer value by rounding up number if necessary. optional significance specifies the multiple
