@@ -87,6 +87,8 @@
 		<!-- DO NOT MODIFY -->
 		<!-- End Facebook Pixel Code -->
 
+
+
 	</head>
 
 	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}">		    	    	     	
@@ -334,5 +336,5 @@
 	  ga('send', 'pageview');
 	 
 	</script>
-            
+	<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion_async.js" charset="utf-8"></script>    
 </html>

@@ -1926,8 +1926,8 @@ AlcoholDelivery.controller('CartReviewController',[
 }]);
 
 AlcoholDelivery.controller('OrderplacedController',[
-	'$scope','$http','$stateParams','$filter','sweetAlert','SocialSharingService',
-	function($scope,$http,$stateParams,$filter,sweetAlert,SocialSharingService){
+	'$scope','$http','$stateParams','$filter','sweetAlert','SocialSharingService','$window',
+	function($scope,$http,$stateParams,$filter,sweetAlert,SocialSharingService,$window){
 
 	$scope.order = $stateParams.order;
 
@@ -1978,7 +1978,7 @@ AlcoholDelivery.controller('OrderplacedController',[
 			$scope.paymode = 'Debit/Credit Card';
 		}
 
-		
+		$scope.fireConversion();
 
 		/*$scope.dopDay = $scope.dopDate.getDate();
 		$scope.dopYear = $scope.dopDate.getFullYear();
@@ -1992,7 +1992,7 @@ AlcoholDelivery.controller('OrderplacedController',[
 
 	});
 
-angular.SocialSharing = SocialSharingService;
+	angular.SocialSharing = SocialSharingService;
 
 	$scope.fbShare = function(){
 
@@ -2066,7 +2066,20 @@ angular.SocialSharing = SocialSharingService;
 
 	}
 
-
+	//GOOGLE CONVERSION SCRIPT
+	$scope.fireConversion = function() {		
+		$window.google_trackConversion({
+			google_conversion_id : 1005306689,
+			google_conversion_language : "en",
+			google_conversion_format : "3",
+			google_conversion_color : "ffffff",
+			google_conversion_label : "nlRtCNf-5RUQwYav3wM",
+			google_conversion_value : 1.00,
+			google_conversion_currency : "SGD",
+			google_remarketing_only : false
+		});
+	}
+	//GOOGLE CONVERSION SCRIPT
 }]);
 
 AlcoholDelivery.controller('RepeatOrderController',[
