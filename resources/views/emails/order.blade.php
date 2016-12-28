@@ -27,17 +27,29 @@
 			<span style="float: left;width: 100%;">Delivery Charge</span>
 			<span style="float: left;width: 100%;">Service Charge</span>
 			<span style="float: left;width: 100%;">Discount (Non-Chilled)</span>
-			<span style="float: left;width: 100%;">Coupon Discount</span>
+			@if(isset($order['discount']['coupon']))
+				<span style="float: left;width: 100%;">Coupon Discount</span>
+			@endif
+			@if(isset($order['service']['surcharge_taxes']))
+				@foreach($order['service']['surcharge_taxes'] as $surcharges)
+					<span style="float: left;width: 100%;">{{$surcharges['label']}}</span>
+				@endforeach
+			@endif
 			<span style="float: left;width: 100%;">Total</span>
 		</span>
 		<span style="float: right;width: 40%;font-size: 13px;color: #343538;text-align:right;line-height: 30px;font-weight: bold;padding-right: 20px;">
 			<span style="float: left;width: 100%;">{{currency($order['payment']['subtotal'])}}</span>
 			<span style="float: left;width: 100%;">{{getDeliveryCharges($order['service'])}}</span>
 			<span style="float: left;width: 100%;">{{getServiceCharges($order['service'])}}</span>
-
 			<span style="float: left;width: 100%;">-{{getNonChilledDiscount($order)}}</span>
-
-			<span style="float: left;width: 100%;">-{{getCouponDiscount($order)}}</span>
+			@if(isset($order['discount']['coupon']))
+				<span style="float: left;width: 100%;">-{{getCouponDiscount($order)}}</span>
+			@endif
+			@if(isset($order['service']['surcharge_taxes']))
+				@foreach($order['service']['surcharge_taxes'] as $surcharges)
+					<span style="float: left;width: 100%;">{{currency($surcharges['value'])}}</span>
+				@endforeach
+			@endif
 			<span style="float: left;width: 100%;">{{currency($order['payment']['total'])}}</span>
 		</span>
 	</td>

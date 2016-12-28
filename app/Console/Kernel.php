@@ -27,11 +27,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        //AUTOMATED PRINT INVOICE        
         //$schedule->command('inspire')->hourly();
         //NOTIFY USER FOR SALE
         $schedule->command('sale:notify')->everyMinute();
 
         //AUTOMATED PRINT INVOICE
         $schedule->command('printjob:print')->everyMinute();
+
     }
 }

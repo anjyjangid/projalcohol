@@ -634,6 +634,9 @@ class ProductController extends Controller
 
 	public function getTest(Request $request){
 		
+		/*$jobs = DB::collection('jobs')->get();
+
+		return response($jobs);*/
 
 		$deliveryOrders = DB::collection('orders')
             ->whereRaw(['doStatus'=>1,'printed'=>['$exists'=>false]])
