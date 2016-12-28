@@ -52,9 +52,21 @@
 						 	<span ng-if="cart.service.express.status">Express Delivery</span>
 						 	<span ng-if="!cart.service.express.status">Standard 1 hour Delivery</span>
 
-						 	<span class=""><img src="images/questionimg.png"></span>
+						 	<span>
+								<img src="images/questionimg.png">
+								<md-tooltip class="ad-tooltip" md-direction="top">
+									Delivery  within 1Hr
+								</md-tooltip>
+							</span>
 						 </div>
-						 <div class="checkoutstep5-left-first-lefttitle" ng-if="cart.delivery.type==1">Advance Delivery<span class=""><img src="images/questionimg.png"></span></div>
+						 <div class="checkoutstep5-left-first-lefttitle" ng-if="cart.delivery.type==1">Advance Delivery
+						 	<span>
+								<img src="images/questionimg.png">
+								<md-tooltip class="ad-tooltip" md-direction="top">
+									Advanced dlivery
+								</md-tooltip>
+							</span>
+						 </div>
 
 					 </div>
 					 <a class="checkoutstep5-left-edit" ui-sref="mainLayout.checkout.cart"><img src="images/checkoutstep5-editimg.png"></a>
@@ -69,28 +81,63 @@
 								<div class="checkboxtotaldiv-text-font-size">{{alcoholCart.getSubTotal() | currency:settings.general.currency:2}}</div>
 							</div>
 							<div class="checkoutstep5right-middle-first">
-								<div class="checkoutstep5right-middle-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
+								<div class="checkoutstep5right-middle-title">Delivery Charge 
+									<span>
+										<img src="images/questionimg.png">
+										<md-tooltip class="ad-tooltip" md-direction="top">
+											Order above {{alcoholCart.$cart.service.delivery.mincart | pricingTxt}} for free delivery!
+										</md-tooltip>
+									</span>
+								</div>
 								
 								<div class="checkboxtotaldiv-text-font-size" ng-if="!cart.delivery.charges">Free</div>
 								<div class="checkboxtotaldiv-text-font-size" ng-if="cart.delivery.charges>0">{{alcoholCart.getDeliveryCharges() | currency:settings.general.currency:2 }}</div>
 							</div>
 							<div class="checkoutstep5right-middle-first">
-								<div class="checkoutstep5right-middle-title">Service Charge <span class=""><img src="images/questionimg.png" title="Service charge applied"></span></div>
+								<div class="checkoutstep5right-middle-title">Service Charge 
+									<span>
+										<img src="images/questionimg.png">
+										<md-tooltip class="ad-tooltip" md-direction="top">
+											Additional fees for express delivery or pickup service
+										</md-tooltip>
+									</span>
+								</div>
 								<div class="checkboxtotaldiv-text-font-size">{{alcoholCart.getAllServicesCharges() | currency:settings.general.currency:2}}</div>
 							</div>
 							<div class="checkoutstep5right-middle-first">
-								<div class="checkoutstep5right-middle-title" >Discount (Non-Chilled) <span class=""><img src="images/questionimg.png" title="Non chilled Discount"></span></div>
+								<div class="checkoutstep5right-middle-title" >Discount (Non-Chilled) 
+									<span>
+										<img src="images/questionimg.png">
+										<md-tooltip class="ad-tooltip" md-direction="bottom">
+											Discount for select chilled products non-chilled
+										</md-tooltip>
+									</span>
+								</div>
 								<div class="checkboxtotaldiv-text-font-size" ng-class="{txtcross:!cart.nonchilled}">-{{alcoholCart.getDiscount('nonchilled') | currency:settings.general.currency:2}}</div>
 							</div>
 												
 
 							<div class="checkoutstep5right-middle-first" ng-show="alcoholCart.getCouponDiscount()">
-								<div class="checkoutstep5right-middle-title" >Coupon Discount <span class=""><img src="images/questionimg.png"></span></div>
+								<div class="checkoutstep5right-middle-title" >Coupon Discount 
+									<span>
+										<img src="images/questionimg.png">
+										<md-tooltip class="ad-tooltip" md-direction="bottom">
+											Discount applied by using coupon
+										</md-tooltip>
+									</span>
+								</div>
 								<div class="checkboxtotaldiv-text-font-size" ng-class="">-{{alcoholCart.getCouponDiscount() | currency:settings.general.currency:2}}</div>
 							</div>
 
 							<div class="checkoutstep5right-middle-first" ng-if="alcoholCart.$cart.delivery.type==0  && alcoholCart.$cart.service.tempsurcharge">
-								<div class="checkoutstep5right-middle-title" >10% PH Surcharge <span class=""><img src="images/questionimg.png" title="Holiday Surcharge"></span></div>
+								<div class="checkoutstep5right-middle-title" >10% PH Surcharge 
+									<span>
+										<img src="images/questionimg.png">
+										<md-tooltip class="ad-tooltip" md-direction="bottom">
+											Surcharge aplied for public holidays
+										</md-tooltip>
+									</span>
+								</div>
 								<div class="checkboxtotaldiv-text-font-size">{{(alcoholCart.$cart.payment.totalWithoutSur * 10/100) | pricingTxt}}</div>
 							</div>
 							

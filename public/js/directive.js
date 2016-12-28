@@ -498,7 +498,11 @@ AlcoholDelivery.directive('sideBar', function() {
 
 		},
 		template : '<div class="checkoutstep5right-middle-first" ng-if="render">'+
-						'<div class="checkoutstep5right-middle-title" >Discount (Credits) <span class=""><img src="images/questionimg.png"></span></div>'+
+						'<div class="checkoutstep5right-middle-title" >Discount (Credits) <span><img src="images/questionimg.png">'+
+						'<md-tooltip class="ad-tooltip" md-visible="true" md-direction="bottom">'+
+							'Use credits available in account'+
+						'</md-tooltip>'+
+						'</span></div>'+
 						'<div class="checkboxtotaldiv-text-font-size negative-field" ng-class="">'+
 							'<input type="text" id="credits-input" max="{{maxCredits}}" only-digits ng-model="$parent.credit">'+
 						'</div>'+

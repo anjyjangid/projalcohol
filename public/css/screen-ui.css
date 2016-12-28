@@ -2287,7 +2287,7 @@ ui-sref {
 	float: left;
 	border-top: 1px solid #e2e2e2;
 	border-bottom: 1px solid #e2e2e2;
-	padding: 15px 40px 15px 0px;
+	padding: 15px 20px 15px 0px;
 }
 .checkboxtotaldiv-middle {
 	width: 100%;
@@ -4138,7 +4138,7 @@ ui-sref {
 }
 .creditable tr th:first-child {
 	width: 319px;
-	padding: 0 0 10px 47px;
+	padding: 0 0 10px 10px;
 }
 .creditable tr th:nth-child(4) {
 	width: 268px;
@@ -4154,7 +4154,7 @@ ui-sref {
 	padding-top: 3px;
 }
 .textfistrdivmain {
-	float: right;
+	padding-left: 10px;
 	text-align: left;
 	width: 85%;
 	line-height: 22px;

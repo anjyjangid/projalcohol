@@ -1453,3 +1453,15 @@ button.ageverify:disabled{
 .product-bread-crumb{
 	
 }
+
+md-tooltip.ad-tooltip .md-content {
+    background: #000;
+}
+.cur-help{
+	cursor: help;
+}
+
+md-dialog md-dialog-actions{
+	padding-right: 0 !important;
+    padding-left: 1px !important;
+}

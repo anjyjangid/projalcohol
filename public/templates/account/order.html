@@ -132,9 +132,23 @@
 
 														<div class="checkoutstep5-left-first-lefttitle" ng-if="order.delivery.type==0">
 															{{ (order.service.express.status)?'Express Delivery (Gauranteed 30 mins delivery)':'Standard 1hr Delivery'}}
-															<span class=""><img src="images/questionimg.png"></span>
+
+															<span>
+																<img src="images/questionimg.png">
+																<md-tooltip class="ad-tooltip" md-direction="bottom">
+																	Delivery within 1Hr
+																</md-tooltip>
+															</span>
+
 														</div>
-														<div class="checkoutstep5-left-first-lefttitle" ng-if="order.delivery.type==1">Advance Delivery<span class=""><img src="images/questionimg.png"></span></div>
+														<div class="checkoutstep5-left-first-lefttitle" ng-if="order.delivery.type==1">Advance Delivery
+															<span>
+																<img src="images/questionimg.png">
+																<md-tooltip class="ad-tooltip" md-direction="bottom">
+																	Advance Delivery
+																</md-tooltip>
+															</span>
+														</div>
 													</div>
 												</div>
 											</td>
@@ -180,7 +194,16 @@
 									</tr>
 									<tr>
 										<td class="bordernone">
-											<div class="checkoutstep5right-middle-title">Delivery Charge <span class=""><img src="images/questionimg.png"></span></div>
+											<div class="checkoutstep5right-middle-title">Delivery Charge 
+												
+												<span>
+													<img src="images/questionimg.png">
+													<md-tooltip class="ad-tooltip" md-direction="bottom">
+														Charges applied for your delivery
+													</md-tooltip>
+												</span>
+
+											</div>
 										</td>
 										<td class="bordernone">
 											<div class="checkboxtotaldiv-text">{{order.delivery.charges | pricingTxt}}</div>
@@ -190,7 +213,12 @@
 										<td class="bordernone">
 											<div class="checkoutstep5right-middle-title">
 												Service Charge 
-												<span class=""><img src="images/questionimg.png"></span>
+												<span>
+													<img src="images/questionimg.png">
+													<md-tooltip class="ad-tooltip" md-direction="bottom">
+														Additional fees for express delivery or pickup service
+													</md-tooltip>
+												</span>
 											</div>
 										</td>
 										<td class="bordernone">
@@ -199,7 +227,14 @@
 									</tr>
 									<tr>
 										<td class="bordernone">
-											<div class="checkoutstep5right-middle-title" >Discount (Non-Chilled) <span class=""><img src="images/questionimg.png"></span></div>
+											<div class="checkoutstep5right-middle-title" >Discount (Non-Chilled) 
+												<span>
+													<img src="images/questionimg.png">
+													<md-tooltip class="ad-tooltip" md-direction="bottom">
+														Discount for select chilled products non-chilled
+													</md-tooltip>
+												</span>
+											</div>
 										</td>
 										<td class="bordernone">
 											<div class="checkboxtotaldiv-text" ng-class="{txtcross:!order.nonchilled}">
@@ -209,7 +244,14 @@
 									</tr>
 									<tr ng-if="order.discount.coupon">
 										<td class="bordernone">
-											<div class="checkoutstep5right-middle-title" >Coupon Discount <span class=""><img src="images/questionimg.png"></span></div>
+											<div class="checkoutstep5right-middle-title" >Coupon Discount 
+												<span>
+													<img src="images/questionimg.png">
+													<md-tooltip class="ad-tooltip" md-direction="bottom">
+														Discount by applying coupon
+													</md-tooltip>
+												</span>
+											</div>
 										</td>
 										<td class="bordernone">
 											<div class="checkboxtotaldiv-text">
