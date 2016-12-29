@@ -161,8 +161,10 @@ MetronicApp.controller('OrderCreateController',[
 		delete $scope.errors;
 		$http.post( api, angular.extend({status: 1}, $scope.cart[$scope.cart.orderType]) )
 		.then(function(res){
-			if(res.data._id)
+			if(res.data._id){
 				$scope.cart[$scope.cart.orderType]._id = res.data._id;
+				$scope.cart.user = res.data._id;
+			}
 		})
 		.catch(function(err){
 			$scope.errors = err.data;

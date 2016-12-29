@@ -133,6 +133,9 @@ AlcoholDelivery.directive('sideBar', function() {
 							$scope.signupOpen();
 						});
 
+					},
+					function(res){
+						alert(res.error);
 					}
 				);
 			};
