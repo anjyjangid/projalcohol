@@ -117,21 +117,9 @@ AlcoholDelivery.directive('sideBar', function() {
 				$fblogin({
 					fbId: $rootScope.settings.fbid,
 					permissions: 'email,user_birthday',
-					fields: 'first_name,last_name,locale,email,birthday',
-					success: function (response) {
-						$mdDialog.hide();
-						$http.post('/auth/registerfb',response)
-						.success(function(res){
-
-							$scope.loginSuccess(res);
-
-						}).error(function(result){
-							$scope.socialError = result;
-							$scope.signupOpen();
-						});
-					}
-				});
-				/*.then(
+					fields: 'first_name,last_name,locale,email,birthday'
+				})
+				.then(
 					function(response){
 
 						$mdDialog.hide();
@@ -145,8 +133,13 @@ AlcoholDelivery.directive('sideBar', function() {
 							$scope.signupOpen();
 						});
 
+					},
+					function(res){
+						alert(res.error);
 					}
-				);*/
+				).finally(function(){
+					alert('does not work.');
+				});
 			};
 
 			// INTIALIZE AFTER USER LOGIN(FB & NORMAL)
