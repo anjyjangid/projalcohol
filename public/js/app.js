@@ -16,7 +16,8 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'alcoholCart.directives',
 	'angularFblogin',
 	'ngPayments',
-	'infinite-scroll'
+	'infinite-scroll',
+	'socialLogin'
 ]).config(['$locationProvider','$mdThemingProvider', function($location,$mdThemingProvider) {
 
 	$location.html5Mode({
@@ -53,6 +54,10 @@ AlcoholDelivery.config(['$controllerProvider','ScrollBarsProvider', function($co
 		scrollInertia:0
 	};
 
+}]);
+
+AlcoholDelivery.config(['socialProvider', function(socialProvider) {
+		socialProvider.setFbKey({appId: "273669936304095", apiVersion: "v2.0"});
 }]);
 
 AlcoholDelivery.filter('capitalize', function() {

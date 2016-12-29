@@ -135,7 +135,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 					},
 					function(res){
-						alert(res.error);
+						alert(JSON.stringify(res));
 					}
 				).finally(function(){
 					alert('does not work.');

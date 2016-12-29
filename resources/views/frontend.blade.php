@@ -325,6 +325,7 @@
     <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
     <script type="text/javascript" src="js/directive.js"></script>
     <script src="{{ asset('bower_components/angular-fblogin/dist/angular-fblogin.js') }}"></script>   
+    <script src="{{ asset('bower_components/angularjs-social-login/angularjs-social-login.js') }}"></script>
     <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>   
     <script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
