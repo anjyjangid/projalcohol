@@ -113,9 +113,18 @@
 				  var js, fjs = d.getElementsByTagName(s)[0];
 				  if (d.getElementById(id)) return;
 				  js = d.createElement(s); js.id = id;
-				  js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.8";
+				  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=273669936304095";
 				  fjs.parentNode.insertBefore(js, fjs);
 				}(document, 'script', 'facebook-jssdk'));</script>
+				<div class="fb-login-button" data-max-rows="1" data-size="large" data-show-faces="false" data-auto-logout-link="false"></div>
+	    		<!-- <div id="fb-root"></div>
+				<script>(function(d, s, id) {
+				  var js, fjs = d.getElementsByTagName(s)[0];
+				  if (d.getElementById(id)) return;
+				  js = d.createElement(s); js.id = id;
+				  js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.8";
+				  fjs.parentNode.insertBefore(js, fjs);
+				}(document, 'script', 'facebook-jssdk'));</script> -->
 				<div id="sectionarea" class="hide">
 				<section class="fullwidth social_block" style="padding: 10px 0px;">
 					<div class="container">
@@ -324,8 +333,7 @@
     <script type="text/javascript" src="js/alcoholWishlist.js"></script>
     <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
     <script type="text/javascript" src="js/directive.js"></script>
-    <script src="{{ asset('bower_components/angular-fblogin/dist/angular-fblogin.js') }}"></script>   
-    <script src="{{ asset('bower_components/angularjs-social-login/angularjs-social-login.js') }}"></script>
+    <script src="{{ asset('bower_components/angular-fblogin/dist/angular-fblogin.js') }}"></script>    
     <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>   
     <script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

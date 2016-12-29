@@ -236,12 +236,7 @@ AlcoholDelivery.controller('AppController',
 
 
 	if(!$cookies.get('ageverfication'))
-		$scope.ageVerification();
-
-
-	$rootScope.$on('event:social-sign-in-success', function(event, userDetails){
-		alert(JSON.stringify(userDetails));
-	})	
+		$scope.ageVerification();	
 
 }]);
 
