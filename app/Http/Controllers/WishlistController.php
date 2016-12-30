@@ -70,7 +70,7 @@ class WishlistController extends Controller
 		if(empty($products)){
 
 			$response['message'] = "Product not found";
-			return response($response,400);
+			return response($response,200);
 
 		}
 

@@ -119,7 +119,7 @@ AlcoholDelivery.directive('sideBar', function() {
 				FB.login(function(response) {
 				    if (response.authResponse) {				     
 				     FB.api('/me', {fields: 'first_name,last_name,locale,email,birthday'},function(result) {
-				       	console.log(result);
+				       	//console.log(result);
 				       	$mdDialog.hide();
 						$http.post('/auth/registerfb',result)
 						.success(function(res){
