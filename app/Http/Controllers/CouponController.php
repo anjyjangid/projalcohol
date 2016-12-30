@@ -31,7 +31,7 @@ class CouponController extends Controller
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function checkCoupon(Request $request){
+	public function checkCoupon(Request $request, $id=''){
 
 		$params = $request->all();
 
@@ -41,8 +41,13 @@ class CouponController extends Controller
 		$msg = '';
 		$coupon = array();
 
-		$user = Auth::user('user');
-		$userId = new MongoId($user->_id);
+		$uid = $id;
+		if($id==''){
+			$user = Auth::user('user');
+			$uid = $user->_id;
+		}
+		
+		$userId = new MongoId($uid);
 
 		if(isset($params['coupon'])){
 

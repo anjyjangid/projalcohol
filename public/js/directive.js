@@ -130,7 +130,7 @@ AlcoholDelivery.directive('sideBar', function() {
 						});
 				     });
 				    } else {
-				     	alert(JSON.parseInt(response));
+				     	alert(JSON.parse(response));
 				    }
 				});
 
