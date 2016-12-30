@@ -92,6 +92,7 @@
 	</head>
 
 	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}">		    	    	     	
+    	
     	<div ng-spinner-bar class="page-spinner-bar">
 			<div class="bounce1"></div>
 			<div class="bounce2"></div>
@@ -106,16 +107,8 @@
              	<top-menu></top-menu>          
         		
 
-	    		<div ui-view class="ancontainer"></div>
-
-	    		<div id="fb-root"></div>
-				<script>(function(d, s, id) {
-				  var js, fjs = d.getElementsByTagName(s)[0];
-				  if (d.getElementById(id)) return;
-				  js = d.createElement(s); js.id = id;
-				  js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.8";
-				  fjs.parentNode.insertBefore(js, fjs);
-				}(document, 'script', 'facebook-jssdk'));</script>
+	    		<div ui-view class="ancontainer"></div>    		
+				
 				<div id="sectionarea" class="hide">
 				<section class="fullwidth social_block" style="padding: 10px 0px;">
 					<div class="container">
@@ -123,8 +116,8 @@
 						<div class="occassion_sale ng-scope" style="font-size: 40px;line-height: 34px; padding: 0px; color: #fff;">
 							Your friends like us too.. 
 						</div>						
-						<div id="fboverlay" style="margin-top: 10px; color: #fff;" class="fb-like" data-href="https://www.facebook.com/alcoholdelivery.com.sg/" data-layout="standard" data-action="like" data-size="large" data-show-faces="true" data-share="true" >
-							
+
+						<div id="fboverlay" style="margin-top: 10px; color: #fff;" class="fb-like" data-href="https://www.facebook.com/alcoholdelivery.com.sg/" data-layout="standard" data-action="like" data-size="large" data-show-faces="true" data-share="true" >							
 						</div>
 						</div>
 						<!-- <div class="socilblok_folowtxt">
@@ -265,12 +258,14 @@
 				</div>
 			</div>
 		</div>		
+		<div id="fb-root"></div>
+				
 	</body>
 
 	<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
    
     
-	<script type="text/javascript" src="js/social.js"></script>
+	<!-- <script type="text/javascript" src="js/social.js"></script> -->
     <script type="text/javascript" src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/angular/angular.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js') }}"></script> 
@@ -324,7 +319,7 @@
     <script type="text/javascript" src="js/alcoholWishlist.js"></script>
     <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
     <script type="text/javascript" src="js/directive.js"></script>
-    <script src="{{ asset('bower_components/angular-fblogin/dist/angular-fblogin.js') }}"></script>    
+    <!-- <script src="{{ asset('bower_components/angular-fblogin/dist/angular-fblogin.js') }}"></script>     -->
     <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>   
     <script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

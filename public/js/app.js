@@ -14,9 +14,9 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'ngMap',
 	'vAccordion',
 	'alcoholCart.directives',
-	'angularFblogin',
+	//'angularFblogin',
 	'ngPayments',
-	'infinite-scroll'	
+	'infinite-scroll'
 ]).config(['$locationProvider','$mdThemingProvider', function($location,$mdThemingProvider) {
 
 	$location.html5Mode({
@@ -27,7 +27,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	// $location.hashPrefix('!');
 
 	$mdThemingProvider.theme('default').primaryPalette('purple').accentPalette('purple');
-    //.accentPalette('orange');
+    //.accentPalette('orange');    
 }]);
 
 
@@ -1310,6 +1310,29 @@ AlcoholDelivery.run([
 	
 	// store.init();
 	// alcoholWishlist.init();
+
+	$window.fbAsyncInit = function() {
+    	// Executed when the SDK is loaded
+	    FB.init({
+	      appId: '273669936304095',
+	      status: true, 
+	      cookie: true, 
+	      xfbml: true,
+	      version: 'v2.4'
+	    }); 
+
+	    /*FB.Event.subscribe('auth.authResponseChange', function(res) {
+	    	console.log(res);
+	    });*/  
+	};
+
+	(function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&version=v2.8&appId=273669936304095";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
 
 }]);
 

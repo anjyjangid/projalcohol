@@ -36,7 +36,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 		templateUrl: '/templates/partials/topmenu.html',
 		controller: function($scope,$rootScope,$http,$state,sweetAlert,UserService,store
-							,alcoholWishlist,ClaimGiftCard,$fblogin,$mdDialog, $timeout){
+							,alcoholWishlist,ClaimGiftCard,$mdDialog, $timeout,$window){
 
 			$scope.list = [];
 
@@ -112,17 +112,67 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.socialError = '';
 			//FACEBOOK LOGIN
-			$scope.loginToggle = function() {
+
+
+			$scope.socialLogin = function(){
+
+				FB.login(function(response) {
+				    if (response.authResponse) {				     
+				     FB.api('/me', {fields: 'first_name,last_name,locale,email,birthday'},function(response) {
+				       	$mdDialog.hide();
+						$http.post('/auth/registerfb',response)
+						.success(function(res){
+							$scope.loginSuccess(res);
+
+						}).error(function(result){
+							$scope.socialError = result;
+							$scope.signupOpen();
+						});
+				     });
+				    } else {
+				     console.log('User cancelled login or did not fully authorize.');
+				    }
+				});
+
 				
+				/*FB.api('/me', {fields: 'first_name,last_name,locale,email,birthday'},function(response) {
+					$mdDialog.hide();
+					$http.post('/auth/registerfb',response)
+					.success(function(res){
+
+						$scope.loginSuccess(res);
+
+					}).error(function(result){
+						$scope.socialError = result;
+						$scope.signupOpen();
+					});
+				});*/
+
+				
+			}
+
+			$scope.loginToggle = function() {
+
 				$fblogin({
 					fbId: $rootScope.settings.fbid,
 					permissions: 'email,user_birthday',
 					fields: 'first_name,last_name,locale,email,birthday',
-					success:function(res){
-						alert(JSON.stringify(res));
+					success:function(response){
+						$mdDialog.hide();
+						$http.post('/auth/registerfb',response)
+						.success(function(res){
+
+							$scope.loginSuccess(res);
+
+						}).error(function(result){
+							$scope.socialError = result;
+							$scope.signupOpen();
+						});
 					},
 					error:function(res){
-						alert(JSON.stringify(res));
+						/*$scope.socialError = 'We are unable to retrieve your email address via Facebook login to complete the sign up. Please change the settings in Facebook or signup via your email address on Alcohol Delivery!';
+						$scope.signupOpen();
+						*/
 					}
 				});/*
 				.then(
@@ -180,7 +230,9 @@ AlcoholDelivery.directive('sideBar', function() {
 				};
 			    $mdDialog.show({
 					scope: $scope.$new(),
-					controller: function(){},
+					controller: function(){
+
+					},
 					templateUrl: '/templates/partials/signup.html',
 					parent: angular.element(document.body),
 					targetEvent: ev,
@@ -289,6 +341,53 @@ AlcoholDelivery.directive('sideBar', function() {
 					$scope.resend.errors = data;
 		        });
 		    }
+
+		    watchLoginChange = function() {
+
+			  var _self = this;
+
+			  FB.Event.subscribe('auth.authResponseChange', function(res) {
+
+			    if (res.status === 'connected') {
+
+			      /*
+			       The user is already logged,
+			       is possible retrieve his personal info
+			      */
+			      _self.getUserInfo();
+
+			      /*
+			       This is also the point where you should create a
+			       session for the current user.
+			       For this purpose you can use the data inside the
+			       res.authResponse object.
+			      */
+
+			    }
+			    else {
+
+			      /*
+			       The user is not logged to the app, or into Facebook:
+			       destroy the session on the server.
+			      */
+
+			    }
+
+			  });
+
+			}
+
+			getUserInfo = function() {
+
+			  var _self = this;
+
+			  FB.api('/me', function(res) {
+			    $rootScope.$apply(function() {
+			      $rootScope.user = _self.user = res;
+			    });
+			  });
+
+			}
 		}
 	};
 })
