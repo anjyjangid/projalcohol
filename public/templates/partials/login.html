@@ -24,7 +24,11 @@
             <input autocomplete="off" type="password" ng-model="login.password" class="alcohalrestertextbox form-control" placeholder="Password" />
             <span class="help-block" ng-bind="login.errors.password[0]"></span> </div>
           <div class="fbloginDiv">                        
-            <div class="fblogin" id="login-btn"  align="center"> <img ng-click="loginToggle()" src="img/facebook_login.png"> </div>
+            <div align="center">
+              <!-- <div class="fb-login-button" data-scope="email,user_birthday" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false"></div> -->
+              <!-- <fb:login-button size="xlarge" autologoutlink="false"></fb:login-button> -->
+            </div>
+            <div class="fblogin" id="login-btn"  align="center"> <img ng-click="socialLogin()" src="img/facebook_login.png"> </div>
           </div>
         </div>
       </div>
@@ -35,8 +39,7 @@
           <div class="alcohallogin_forgettxt"> 
             <a class="pointer" ng-click="forgotpassOpen($event)">Forgot Password?</a>             
             <div><a class="pointer" ng-click="signupOpen()">New to Alcohol Delivery?</a></div> 
-          </div>
-          
+          </div>          
           <button ng-disabled="loading" type="submit" class="alcohalfootersign alcohal_fotrloginbox">Log in</button>
         </div>
       </div>
@@ -44,3 +47,6 @@
     </div>
     </form>    
 </md-dialog>
+<script type="text/javascript">
+  //FB.XFBML.parse();
+</script>

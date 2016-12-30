@@ -36,8 +36,7 @@
     "v-accordion": "^1.6.0",
     "angular-fblogin": "*",
     "sweetalert2": "^4.0.8",
-    "angular-bootstrap": "^1.3.3",
-    "angularjs-social-login": "^2.4.5"
+    "angular-bootstrap": "^1.3.3"
   },
   "resolutions": {
     "angular": "~1.4.0",
