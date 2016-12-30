@@ -1433,7 +1433,12 @@ MetronicApp
 				this.setCouponMessage(this.$cart.couponMessage, 2);
 			}
 
-			$http.post("adminapi/checkCoupon", {params: {cart: _self.getCartKey(), removeCoupon: 1}}).success(function(result){
+			if(this.$cart.user == null){
+				alert('Please select customer.');
+				return false;
+			}
+
+			$http.post("adminapi/checkCoupon/"+this.$cart.user, {params: {cart: _self.getCartKey(), removeCoupon: 1}}).success(function(result){
 				delete _self.$cart.couponData;
 			}).error(function(){
 
@@ -1445,7 +1450,12 @@ MetronicApp
 			var cartKey = cartKey;
 			var couponCode = discountCode;
 
-			$http.post("adminapi/checkCoupon", {params: {cart: cartKey, coupon: couponCode}})
+			if(this.$cart.user == null){
+				alert('Please select customer.');
+				return false;
+			}
+
+			$http.post("adminapi/checkCoupon/"+this.$cart.user, {params: {cart: cartKey, coupon: couponCode}})
 				.success(function(result){
 
 					if(result.errorCode==1 || result.errorCode==2){
