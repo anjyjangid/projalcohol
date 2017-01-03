@@ -210,6 +210,9 @@ License: You must have a valid license purchased only from themeforest(the above
 	</script>
 	<script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>   
 	<!-- END JAVASCRIPTS -->
+
+	<script src="{{ asset('assets/global/plugins/bootstrap-growl/jquery.bootstrap-growl.min.js') }}"></script>
+	
 </body>
 <!-- END BODY -->
 </html>

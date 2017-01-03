@@ -1267,43 +1267,52 @@ MetronicApp
 
 		var subTotal = this.getSubTotal();
 
+		var errmessage = [];
 
-		if(!(subTotal>0)){
-			d.reject({customError:true,message:'Invalid amount to place order!'});
-		}
+		var resolve = false;	
 		
 		//check address selected
-		if(typeof this.$cart.selectedAddress == 'undefined'){
-			d.reject({customError:true,message:'Please select delivery address!'});
+		if(typeof this.$cart.selectedAddress == 'undefined'){			
+			errmessage.push({value:'addresserror',message:'Please select delivery address!'});
 		}
 
+		//check address selected
+		if(this.$cart.delivery.contact == null){			
+			errmessage.push({value:'contacterror',message:'Please enter contact number!'});
+		}
+
+		if(errmessage.length){			
+			d.reject({customError:true,messages:errmessage});
+		}
+
+		
 		//CHECK PAYMENT OPTIONS
 		if(this.$cart.payment.method == 'COD'){				
 			//REMOVE CARD ATTR IN CASE OF COD
 			delete this.$cart.payment.card;
 			delete this.$cart.payment.creditCard;
 			delete this.$cart.payment.savecard;
-			d.resolve({});	
+			d.resolve();
 		}else{
 
 			var cartpayment = this.$cart.payment;
 
 			if(typeof cartpayment.card == 'undefined' || cartpayment.card == "" || cartpayment.card == null){
-				d.reject({customError:true,message:'Please select card for payment.'});				
+				d.reject({value:'paymenterror',message:'Please select card for payment.'});
 			}else{				
 				if(cartpayment.card == 'newcard'){
-					cartpayment.creditCard.token = 1;
+					cartpayment.creditCard.token = 1;							
 					$http.post('/adminapi/payment/addcard/'+this.$cart.user,cartpayment.creditCard).error(function(data, status, headers) {			        	
-			        	d.reject(data);
-			        }).success(function(rdata){
+			        	d.reject({value:'paycarderror',message:'Please validate credit card details',errors:data});			        	
+			        }).success(function(rdata){						
 						d.resolve(rdata);
-					})
+					});
 					//$scope.$broadcast('addcardsubmit');					
 				}else{
 					if(!this.$cart.payment.creditCard.cvc || this.$cart.payment.creditCard.cvc == ''){						
-						d.reject({customError:true,message:'Please enter cvv for the selected card.'});						
+						d.reject({value:'paymentcvverror',message:'Please enter cvv for the selected card.'});						
 					}else{
-						d.resolve({});						
+						d.resolve();						
 					}						
 				}
 			}

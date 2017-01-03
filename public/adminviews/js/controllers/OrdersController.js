@@ -333,23 +333,45 @@ MetronicApp.controller('OrderCreateController',[
 				);	
 			},
 			function (errorRes) {
+				console.log(errorRes);
 				$scope.orderprocessing = false;
 				if(errorRes.customError){					
-					sweetAlert.swal({				  
-					  text: errorRes.message,
-					  type: 'error'				  
-					});				
+					for(var m in errorRes.messages){
+						if($('.'+errorRes.messages[m].value).length) continue;
+						
+						if(errorRes.messages[m].errors){
+							$scope.paymentError = errorRes.messages[m].errors;
+						}
+
+						$scope.showError({message:errorRes.messages[m].message,value:errorRes.messages[m].value});
+					}									
 				}else{
-					sweetAlert.swal({				  
-					  text: 'Please validate credit card details',
-					  type: 'error'				  
-					});
-					$scope.paymentError = errorRes;
+					$scope.showError(errorRes);					
+					if(typeof errorRes.errors != "undefined")
+						$scope.paymentError = errorRes.errors;
 				}
 			}
 		);
 			
 	}
+
+	$scope.showError = function(data){
+
+		$.bootstrapGrowl(data.message, {
+            ele: 'body', // which element to append to
+            type: 'danger '+data.value, // (null, 'info', 'danger', 'success', 'warning')
+            offset: {
+                from: 'top',
+                amount: 50
+            }, // 'top', or 'bottom'
+            align: 'right', // ('left', 'right', or 'center')
+            width: 'auto', // (integer, or 'auto')
+            delay: 10000, // Time while the message will be displayed. It's not equivalent to the *demo* timeOut!
+            allow_dismiss: true, // If true then will display a cross to close the popup.
+            //stackup_spacing: 10 // spacing between consecutively stacked growls.
+        });
+
+	}  
 
 	$scope.newCart = function() {
 		
