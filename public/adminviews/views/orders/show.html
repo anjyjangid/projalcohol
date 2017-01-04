@@ -264,7 +264,7 @@
 												<tbody>
 													<tr ng-repeat-start="(key, orderproduct) in order.particulars">
 													</tr>
-														<td ng:class="{'bold':orderproduct.products.length}">{{orderproduct.name}} - {{orderproduct.category}}
+														<td ng:class="{'bold':orderproduct.products.length}">{{orderproduct.name}} <!-- - {{orderproduct.category}} -->
 														<div style="font-weight: normal;" ng-repeat="(pkey, packageProduct) in orderproduct.products">
 															{{packageProduct.quantity}}&nbsp;&times;&nbsp;{{packageProduct.name}}
 														</div>

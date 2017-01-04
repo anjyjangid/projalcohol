@@ -269,9 +269,9 @@ MetronicApp.controller('OrderCreateController',[
 		alcoholCart.checkoutValidate().then(
 
 			function (successRes) {
-
-				if(successRes.card)
-					$scope.cart.payment.creditCard = successRes.card;
+				
+				if(typeof successRes.card != "undefined")
+					$scope.alcoholCart.$cart.payment.creditCard = successRes.card;
 
 				alcoholCart.deployCart().then(
 
@@ -333,7 +333,7 @@ MetronicApp.controller('OrderCreateController',[
 				);	
 			},
 			function (errorRes) {
-				console.log(errorRes);
+				
 				$scope.orderprocessing = false;
 				if(errorRes.customError){					
 					for(var m in errorRes.messages){
