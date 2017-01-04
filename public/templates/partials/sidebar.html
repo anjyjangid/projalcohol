@@ -1,7 +1,17 @@
 <ul class="nav navbar-nav modify capitalize mobilesidebar" ng-cloak>
 	<!-- SHOW IN MOBILE ONLY -->
 	<li class="mobilemenu hide">
-		<a class="pointer" href="tel:+6592445533">Call us now : 9-2445533</a>
+		<a class="pointer" href="tel:+6592445533">
+			<!--Call us now : 9-2445533-->
+			<div class="menu-phone-div">
+		          <div class="menu-phone-icon"><img src="images/phone-new.gif"></div>
+		          <div class="menu-phon-right">
+		          	<div class="menu-phon-call">CALL US NOW</div>
+		          	<div class="menu-phon-number">9-CHILLED</div>
+		          	<div class="menu-phon-number">9-2445533</div>
+		          </div>
+		    </div>      
+		</a>
 	</li>
 	<li ng-if="!user.email" class="mobilemenu hide">
 		<a class="pointer" ng-click="loginOpen($event);">LOGIN</a>
