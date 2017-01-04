@@ -87,7 +87,8 @@ AlcoholDelivery.controller('AppController',
 							if(!$scope.parentCategories[key]['featured']){
 								$scope.parentCategories[key]['featured']=[]
 							}
-							$scope.parentCategories[key]['featured'].push(response[proKey]);
+							if($scope.parentCategories[key]['featured'].length < 8)
+								$scope.parentCategories[key]['featured'].push(response[proKey]);
 						}
 					}
 
@@ -237,6 +238,8 @@ AlcoholDelivery.controller('AppController',
 
 	if(!$cookies.get('ageverfication'))
 		$scope.ageVerification();	
+
+	
 
 }]);
 
