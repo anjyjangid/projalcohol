@@ -1684,6 +1684,7 @@ AlcoholDelivery.service('alcoholCart', [
 						inCart.setTQuantity(resProduct.quantity);
 						inCart.setRemainingQty(resProduct.remainingQty);
 
+						inCart.setPrice();
 
 					}else{
 						_self.removeItemById(id);
@@ -3027,7 +3028,7 @@ AlcoholDelivery.service('alcoholCart', [
 			var isValid = this.validateSmoke();
 			
 			if(this.getDeliveryType()==0){
-				
+
 				appConfig.isServerUnderWorkingTime(true).then(
 
 					function(res){
