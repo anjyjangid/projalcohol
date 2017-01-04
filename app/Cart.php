@@ -427,7 +427,7 @@ class Cart extends Moloquent
 		$offset = strtotime('+8 hours'); //ADD OFFSET SO TIME WILL BE EQUAL TO SINGAPORE TIMEZONE 
 		//$this->updated_at
 		$reference = "ADSG";
-		$reference.= abs((int)date("his",$offset) - 123456);			
+		$reference.= abs((int)date("his",$offset) - 123456);		
 
 		$reference.="O";			
 		$reference.= (string)date("Hi",$offset);
@@ -1886,20 +1886,23 @@ class Cart extends Moloquent
 				$qtyChilled = 0;
 				$qtyNonChilled = 0;
 
-				if($product['chilled']['status']==='chilled'){
-					$qtyChilled = $product['chilled']['quantity'];
-				}
-				if($product['nonchilled']['status']==='chilled'){
-					$qtyChilled = $product['nonchilled']['quantity'];
-				}
+				if($this->nonchilled){
+					$qtyNonChilled = $product['chilled']['quantity']+$product['nonchilled']['quantity'];
+				}else{
+					if($product['chilled']['status']==='chilled'){
+						$qtyChilled = $product['chilled']['quantity'];
+					}
+					if($product['nonchilled']['status']==='chilled'){
+						$qtyChilled = $product['nonchilled']['quantity'];
+					}
 
-				if($product['chilled']['status']==='nonchilled'){
-					$qtyNonChilled = $product['chilled']['quantity'];
+					if($product['chilled']['status']==='nonchilled'){
+						$qtyNonChilled = $product['chilled']['quantity'];
+					}
+					if($product['nonchilled']['status']==='nonchilled'){
+						$qtyNonChilled = $product['nonchilled']['quantity'];
+					}
 				}
-				if($product['nonchilled']['status']==='nonchilled'){
-					$qtyNonChilled = $product['nonchilled']['quantity'];
-				}
-
 				$qtyTotal = $qtyChilled + $qtyNonChilled;
 
 				$oProduct["quantity"] = [

@@ -181,7 +181,7 @@ body.md-dialog-is-showing{
 }
 #wrapper.toggled .navbar.navbar-default.navbar-fixed-top {
 	position: fixed;
-	transform: translate(83%, 0);
+	transform: translate(82.1%, 0);
 }
 #wrapper.toggled .christmas-mainouter{
 	-moz-transition: all .3s ease;
@@ -217,9 +217,11 @@ body.md-dialog-is-showing{
 	position: absolute;
 	top: 40px;
 	z-index: 9999;
+	padding: 10px;
+	top: 31px
 }
 .navbar-shrink .menu-icon {
-	top: 26px
+	top: 15px
 }
 .modify .dropdown-menu li {
 	margin-right: 0;

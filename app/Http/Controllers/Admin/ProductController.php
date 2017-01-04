@@ -634,6 +634,11 @@ class ProductController extends Controller
 
 	public function getTest(Request $request){
 		
+		$timenow = strtotime('now');
+		return $time = strtotime('now').' = '.str_replace(".","",microtime(true)); 
+		/*$jobs = DB::collection('jobs')->get();
+
+		return response($jobs);*/
 
 		$deliveryOrders = DB::collection('orders')
             ->whereRaw(['doStatus'=>1,'printed'=>['$exists'=>false]])

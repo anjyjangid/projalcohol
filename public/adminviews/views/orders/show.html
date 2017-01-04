@@ -175,7 +175,7 @@
 													{{shipping.BLDG_NAME}}
 												</div>
 												<div class="col-md-12 value" ng-if="shipping.HBRN">
-													{{shipping.HBRN}}
+													{{shipping.house}} {{shipping.HBRN}}
 												</div>
 												<div class="col-md-12 value" ng-if="shipping.FLOOR || shipping.FLOOR">
 													<span ng-if="shipping.FLOOR">#{{shipping.FLOOR}} - </span>
@@ -264,7 +264,7 @@
 												<tbody>
 													<tr ng-repeat-start="(key, orderproduct) in order.particulars">
 													</tr>
-														<td ng:class="{'bold':orderproduct.products.length}">{{orderproduct.name}} - {{orderproduct.category}}
+														<td ng:class="{'bold':orderproduct.products.length}">{{orderproduct.name}} <!-- - {{orderproduct.category}} -->
 														<div style="font-weight: normal;" ng-repeat="(pkey, packageProduct) in orderproduct.products">
 															{{packageProduct.quantity}}&nbsp;&times;&nbsp;{{packageProduct.name}}
 														</div>
@@ -302,6 +302,12 @@
 														<td align="right">															
 															<span ng-if="order.payment.totalValue < order.discount.coupon">&minus;{{(order.payment.totalValue) | pricingTxt}}</span>
 												<span ng-if="order.payment.totalValue >= order.discount.coupon">&minus;{{order.discount.coupon | pricingTxt}}</span>																											
+														</td>
+													</tr>
+													<tr ng-if="order.service.surcharge_taxes" ng-repeat="surcharge_taxes in order.service.surcharge_taxes">
+														<td colspan="4" align="right">{{surcharge_taxes.label}}</td>
+														<td align="right">															
+															{{(surcharge_taxes.value) | pricingTxt}}
 														</td>
 													</tr>
 													<tr>

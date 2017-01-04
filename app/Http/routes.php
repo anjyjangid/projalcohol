@@ -117,7 +117,7 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::post('address/{id}','AddressController@store');
 	// Route::controller('address', 'AddressController');
 
-	Route::post('checkCoupon','CouponController@checkCoupon');
+	Route::post('checkCoupon/{id}','CouponController@checkCoupon');
 	
 	Route::post('payment/addcard/{id}','PaymentController@postAddcard');
 
@@ -623,9 +623,28 @@ $fixPagesLinks = [
 
 //FIX LINKS ROUTE
 foreach ($fixPagesLinks as $route => $url) {
-	Route::get($route,function() use($url){		
+	
+	$version1 = $route;
+	$version2 = $version1.'/';
+	$version3 = strtolower($route);
+	$version4 = $version3.'/';
+	$version5 = strtoupper($route);
+	$version6 = $version5.'/';
+
+	Route::get($version1,function() use($url){		
+		return redirect('/'.$url,301);
+	});Route::get($version2,function() use($url){		
+		return redirect('/'.$url,301);
+	});Route::get($version3,function() use($url){		
+		return redirect('/'.$url,301);
+	});Route::get($version4,function() use($url){		
+		return redirect('/'.$url,301);
+	});Route::get($version5,function() use($url){		
+		return redirect('/'.$url,301);
+	});Route::get($version6,function() use($url){		
 		return redirect('/'.$url,301);
 	});
+	
 }
 
 //ROUTE IF CATEGORY OR PRODUCT NAME IS FOUND LIKE red_wine will be redirected to red-wine

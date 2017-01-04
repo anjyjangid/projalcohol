@@ -543,12 +543,15 @@ ui-sref {
 	margin-bottom: 15px;
 	cursor: pointer;
 	overflow: hidden;	
+	text-align: right;
 }
 .cart-table .prod_chilled {
 	margin-bottom: 0px;
 }
 .prod_chilled_icon {
-	float: right !important;
+	display: inline-block;
+	float: none;
+	vertical-align: middle;
 	background: url(../images/sprite.png) no-repeat -444px 0px;
 	min-width: 24px;
 	min-height: 24px;
@@ -562,7 +565,7 @@ ui-sref {
 	margin-right: 0;
 }
 .prod_chilled span {
-	float: right;
+	vertical-align: middle;
 	display: inline-block;
 	width: 48px;
 	-webkit-transition: width 0.3s; /* Safari */
@@ -6757,4 +6760,30 @@ td.childtd:last-child{
 }
 .wraptxt{
 	white-space:pre-line;
+}
+.menu-phone-icon{
+	float: left;
+}
+.menu-phon-right{
+	padding-left: 80px;
+}
+.menu-phon-call{
+	font-size: 17px;
+	font-weight: 400;
+}
+.menu-phon-number{
+	font-size: 22px;
+	font-weight: 500;
+}
+.combo_sliderProduct md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar{
+	background: #aa00ff !important
+
+}
+.menu-phone-div{
+ float: left;
+ width: 100%;
+padding: 16px 16px 33px;
+}
+#fboverlay {
+	color: #fff;
 }

@@ -36,7 +36,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 		templateUrl: '/templates/partials/topmenu.html',
 		controller: function($scope,$rootScope,$http,$state,sweetAlert,UserService,store
-							,alcoholWishlist,ClaimGiftCard,$fblogin,$mdDialog, $timeout){
+							,alcoholWishlist,ClaimGiftCard,$mdDialog, $timeout,$window){
 
 			$scope.list = [];
 
@@ -112,13 +112,69 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.socialError = '';
 			//FACEBOOK LOGIN
-			$scope.loginToggle = function() {
+
+
+			$scope.socialLogin = function(){
+
+				FB.login(function(response) {
+				    if (response.authResponse) {				     
+				     FB.api('/me', {fields: 'first_name,last_name,locale,email,birthday'},function(result) {
+				       	//console.log(result);
+				       	$mdDialog.hide();
+						$http.post('/auth/registerfb',result)
+						.success(function(res){
+							$scope.loginSuccess(res);
+						}).error(function(erresult){
+							$scope.socialError = erresult;
+							$scope.signupOpen();
+						});
+				     });
+				    } else {
+				     	alert(JSON.parse(response));
+				    }
+				});
+
 				
+				/*FB.api('/me', {fields: 'first_name,last_name,locale,email,birthday'},function(response) {
+					$mdDialog.hide();
+					$http.post('/auth/registerfb',response)
+					.success(function(res){
+
+						$scope.loginSuccess(res);
+
+					}).error(function(result){
+						$scope.socialError = result;
+						$scope.signupOpen();
+					});
+				});*/
+
+				
+			}
+
+			$scope.loginToggle = function() {
+
 				$fblogin({
 					fbId: $rootScope.settings.fbid,
 					permissions: 'email,user_birthday',
-					fields: 'first_name,last_name,locale,email,birthday'
-				})
+					fields: 'first_name,last_name,locale,email,birthday',
+					success:function(response){
+						$mdDialog.hide();
+						$http.post('/auth/registerfb',response)
+						.success(function(res){
+
+							$scope.loginSuccess(res);
+
+						}).error(function(result){
+							$scope.socialError = result;
+							$scope.signupOpen();
+						});
+					},
+					error:function(res){
+						/*$scope.socialError = 'We are unable to retrieve your email address via Facebook login to complete the sign up. Please change the settings in Facebook or signup via your email address on Alcohol Delivery!';
+						$scope.signupOpen();
+						*/
+					}
+				});/*
 				.then(
 					function(response){
 
@@ -133,8 +189,13 @@ AlcoholDelivery.directive('sideBar', function() {
 							$scope.signupOpen();
 						});
 
+					},
+					function(res){
+						alert(JSON.stringify(res));
 					}
-				);
+				).finally(function(){
+					alert('does not work.');
+				});*/
 			};
 
 			// INTIALIZE AFTER USER LOGIN(FB & NORMAL)
@@ -169,7 +230,9 @@ AlcoholDelivery.directive('sideBar', function() {
 				};
 			    $mdDialog.show({
 					scope: $scope.$new(),
-					controller: function(){},
+					controller: function(){
+
+					},
 					templateUrl: '/templates/partials/signup.html',
 					parent: angular.element(document.body),
 					targetEvent: ev,
@@ -278,6 +341,7 @@ AlcoholDelivery.directive('sideBar', function() {
 					$scope.resend.errors = data;
 		        });
 		    }
+
 		}
 	};
 })
