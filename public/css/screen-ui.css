@@ -1949,8 +1949,8 @@ ui-sref {
 	color: #7c7b7d;
 	font-weight: 400;
 	min-width: 118px;
-	height: 14px;
-	line-height: 12px;
+	height: 15px;
+	line-height: 15px;
 	text-align: center;
 	border-radius: 2px;
 	text-transform: uppercase;
@@ -2048,7 +2048,7 @@ ui-sref {
 }
 .productsoldbt, .productsoldbt:hover {
 	background: #cdcdcd;
-	width: 100%;
+	width: 158px;
 	font-size: 12px;
 	font-weight: 500;
 	color: #8f8f8f;
@@ -6749,6 +6749,7 @@ button:hover{
 }
 #toastBounds{
 	/*margin-top:10px;*/
+	width: 158px;
 }
 td.childtd{
 	padding:0px !important;
@@ -6786,4 +6787,8 @@ padding: 16px 16px 33px;
 }
 #fboverlay {
 	color: #fff;
+}
+.procatname{
+	white-space: normal;
+    line-height: normal;
 }

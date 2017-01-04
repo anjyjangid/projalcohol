@@ -198,9 +198,9 @@ body.md-dialog-is-showing{
 }
 .menu-icon > .line {
 	background-color: #614911;
-	height: 3px;
+	height: 4px;
 	display: block;
-	width: 26px;
+	width: 30px;
 	border-radius: 7px;
 	z-index: 100000;
 }
