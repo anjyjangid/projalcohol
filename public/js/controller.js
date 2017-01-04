@@ -2907,15 +2907,15 @@ AlcoholDelivery.controller('SearchController', [
 		return false;
 	}   
 
-	$timeout(clearInputBoxOnBlur, 0);    
+	//$timeout(clearInputBoxOnBlur, 0);    
 	
 	function clearInputBoxOnBlur(){
-		angular.element("#site-search").bind("blur", function(){
+		/*angular.element("#site-search").bind("blur", function(){
 			var autoChild = document.getElementById('Auto').firstElementChild;
 			var el = angular.element(autoChild);
 			el.scope().$mdAutocompleteCtrl.hidden = true;            
 			$scope.searchbar(0);                         
-		});
+		});*/
 	}
 
 	$scope.searchbar = function(toggle){
