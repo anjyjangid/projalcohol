@@ -1451,10 +1451,16 @@ AlcoholDelivery.run([
 	// store.init();
 	// alcoholWishlist.init();
 
+	//LIVE
+	//var appId = '1269828463077215';
+	//LOCAL OR BETA
+	var appId = '273669936304095';
+
+
 	$window.fbAsyncInit = function() {
     	// Executed when the SDK is loaded
 	    FB.init({
-	      appId: '1269828463077215',
+	      appId: appId,
 	      status: true, 
 	      cookie: true, 
 	      xfbml: true,
@@ -1470,7 +1476,7 @@ AlcoholDelivery.run([
 	  var js, fjs = d.getElementsByTagName(s)[0];
 	  if (d.getElementById(id)) return;
 	  js = d.createElement(s); js.id = id;
-	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&version=v2.8&appId=1269828463077215";
+	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&version=v2.8&appId="+appId;
 	  fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));
 
