@@ -340,6 +340,7 @@ class Products extends Eloquent
 
 			if($params['type']==1){
 				$match['$match']['isLoyalty'] = 1;
+				
 			}
 			
 		}
@@ -348,7 +349,7 @@ class Products extends Eloquent
 		if(isset($params['filter'])){
 
 			if($params['filter']=="featured"){
-				$match['$match']['isFeatured'] = 1;
+				$match['$match']['isFeatured'] = 1;				
 			}
 
 			if($params['filter']=="new"){

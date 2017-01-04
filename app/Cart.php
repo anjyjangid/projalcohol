@@ -54,9 +54,9 @@ class Cart extends Moloquent
 					];
 	
 
-	public function setKey($keyVal){
-		$this->key = $keyVal;
-	}
+	// public function setKey($keyVal){
+	// 	$this->key = $keyVal;
+	// }
 
 	public function setServices($cart){
 
@@ -78,7 +78,35 @@ class Cart extends Moloquent
 
 		$cart["discount"]["nonchilled"]["exemption"] = $services['non_chilled_delivery']['value'];
 
+		
+
 		return $cart;
+
+	}
+
+	public function setWorkingHrs() {
+
+		$working = Setting::where("_id","=","workinghrs")->first(['settings.from','settings.to']);		
+		
+		$currentTime = strtotime("+8 hours");
+
+		$date = date("Y-m-d",time());
+		$fromTime = $date." ".((int)($working['settings']['from']/60)).":".((int)$working['settings']['from']%60).":00";	 
+		$toTime = $date." ".((int)($working['settings']['to']/60)-1).":".((int)$working['settings']['to']%60).":00";
+		$setting = [
+			'currentTime' => $currentTime,
+			'from' => strtotime($fromTime),
+			'to' => strtotime($toTime),
+		];
+		
+		$this->__set("working",$setting);
+
+	}
+
+	public function isUnderWorkingHrs(){
+
+		$working = $this->working; 
+		return (($working['from'] < $working['currentTime']) && ($working['currentTime'] < $working['to']));
 
 	}
 
@@ -145,7 +173,6 @@ class Cart extends Moloquent
 			
 		];
 
-
 		$user = Auth::user('user');
 
 		if(!empty($user)){
@@ -159,11 +186,13 @@ class Cart extends Moloquent
 		try{
 			
 			$cart = self::create($cart);
-			$cart = $cart->toArray();		
+
+			$cart->setWorkingHrs();
+
+			$cart = $cart->toArray();
 
 			$cart['products'] = (object)$cart['products'];
 			$cart['packages'] = (object)$cart['packages'];
-
 
 			return (object)array("success"=>true,"message"=>"cart generated succesfully","cart"=>$cart);
 			
@@ -258,15 +287,17 @@ class Cart extends Moloquent
 					]
 				];
 
-		$cart->service = $cartServices;
+		$cart->__set('service', $cartServices);
+		
 		$cart->applicablePostalCodes = $services['express_delivery']['applicablePostalCodes'];
 		$cartDiscount = $cart->discount;							
 		$cartDiscount['nonchilled']['exemption'] = $services['non_chilled_delivery']['value'];
-		$cart->discount = $cartDiscount;
+		$cart->__set('discount', $cartDiscount);
 
 		try{
 
-			$cart->save();			
+			$cart->save();
+			$cart->setWorkingHrs();
 			return $cart;
 
 		}catch(\Exception $e){
@@ -396,7 +427,7 @@ class Cart extends Moloquent
 		$offset = strtotime('+8 hours'); //ADD OFFSET SO TIME WILL BE EQUAL TO SINGAPORE TIMEZONE 
 		//$this->updated_at
 		$reference = "ADSG";
-		$reference.= abs((int)date("his",$offset) - 123456);			
+		$reference.= abs((int)date("his",$offset) - 123456);		
 
 		$reference.="O";			
 		$reference.= (string)date("Hi",$offset);
@@ -1855,20 +1886,23 @@ class Cart extends Moloquent
 				$qtyChilled = 0;
 				$qtyNonChilled = 0;
 
-				if($product['chilled']['status']==='chilled'){
-					$qtyChilled = $product['chilled']['quantity'];
-				}
-				if($product['nonchilled']['status']==='chilled'){
-					$qtyChilled = $product['nonchilled']['quantity'];
-				}
+				if($this->nonchilled){
+					$qtyNonChilled = $product['chilled']['quantity']+$product['nonchilled']['quantity'];
+				}else{
+					if($product['chilled']['status']==='chilled'){
+						$qtyChilled = $product['chilled']['quantity'];
+					}
+					if($product['nonchilled']['status']==='chilled'){
+						$qtyChilled = $product['nonchilled']['quantity'];
+					}
 
-				if($product['chilled']['status']==='nonchilled'){
-					$qtyNonChilled = $product['chilled']['quantity'];
+					if($product['chilled']['status']==='nonchilled'){
+						$qtyNonChilled = $product['chilled']['quantity'];
+					}
+					if($product['nonchilled']['status']==='nonchilled'){
+						$qtyNonChilled = $product['nonchilled']['quantity'];
+					}
 				}
-				if($product['nonchilled']['status']==='nonchilled'){
-					$qtyNonChilled = $product['nonchilled']['quantity'];
-				}
-
 				$qtyTotal = $qtyChilled + $qtyNonChilled;
 
 				$oProduct["quantity"] = [

@@ -482,7 +482,7 @@
 <div class="checkouterwantbuttonouter" ng-if="alcoholCart.deliveryApplicable">
 	<div class="checkouterwantfirst">
 
-		<button class="checkouterwantbutton" ng-class="{selected:cart.delivery.type==0}" ng-click="alcoholCart.setDeliveryType(0)">I want this order Now!</button>
+		<button class="checkouterwantbutton" id="checkout-cart-standard-btn" ng-class="{selected:cart.delivery.type==0}" ng-click="alcoholCart.setDeliveryType(0)">I want this order Now!</button>
 
 		<span>
 			<small ng-class="{'strike-txt-only':alcoholCart.expressDisable}">(Standard 1 hour delivery)</small>
@@ -505,7 +505,7 @@
 	</div>
 
 	<div class="checkouterwantfirst m-top-20 m-bottom-50">
-		<button class="checkouterwantbutton" ng-class="{selected:cart.delivery.type==1}" ng-click="alcoholCart.setDeliveryType(1)">I want this order Later!</button>
+		<button class="checkouterwantbutton" id="checkout-cart-advance-btn" ng-class="{selected:cart.delivery.type==1}" ng-click="alcoholCart.setDeliveryType(1)">I want this order Later!</button>
 		<span>(Scheduled delivery)</span>
 	</div>
 

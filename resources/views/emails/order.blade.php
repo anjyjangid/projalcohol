@@ -60,7 +60,7 @@
 </tr>
 <tr style="float: left;width: 100%;background: #ffffff;">
 
-	<td style="float: left;width: 96%;padding-left:20px;font-size: 13px;color: #343538;margin-top: 10px;">{{ucfirst($order['delivery']['address']['detail']['firstname'].' '.$order['delivery']['address']['detail']['lastname'])}} ,</td>
+	<td style="float: left;width: 96%;padding-left:20px;font-size: 13px;color: #343538;margin-top: 10px;">{{ucfirst($order['delivery']['address']['detail']['firstname'].' '.@$order['delivery']['address']['detail']['lastname'])}} ,</td>
 
 	<?php if(isset($order['delivery']['address']['detail']['company'])){?>      
       <td style="float: left;width: 96%;padding-left:20px;font-size: 13px;color: #343538;margin-top: 10px;">{{$order['delivery']['address']['detail']['company']}}</td>

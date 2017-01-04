@@ -1139,17 +1139,17 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.showPopover = function(result){
 				$mdToast.show({
-			      controller:function($scope){
-			      	$scope.user = result;
-			      	$scope.closeToast = function(){
-			      		$mdToast.hide();
-			      	}
-			      },
-			      templateUrl: '/templates/toast-tpl/notify-template.html',
-			      parent : $document[0].querySelector('#toastBounds'),
-			      position: 'top left',
-			      hideDelay:0
-			    });
+					controller:function($scope){
+						$scope.user = result;
+						$scope.closeToast = function(){
+							$mdToast.hide();
+						}
+					},
+					templateUrl: '/templates/toast-tpl/notify-template.html',
+					parent : $document[0].querySelector('#toastBounds'),
+					position: 'top left',
+					hideDelay:0
+				});
 
 				$scope.nlabel = 'Notify Me';
 			};
