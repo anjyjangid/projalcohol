@@ -1,12 +1,12 @@
 AlcoholDelivery.service('alcoholCart', [
 			'$log','$rootScope', '$window', '$document', '$http', '$state', '$q', '$mdToast', '$filter', 
-			'$timeout', '$interval','sweetAlert', 
+			'$timeout', '$interval', 'appConfig', 'sweetAlert', 
 			'alcoholCartItem', 'alcoholCartLoyaltyItem', 
 			'alcoholCartPackage','promotionsService','alcoholCartPromotion', 
 			'alcoholCartGiftCard', 'alcoholCartGift', 
 			'alcoholCartSale', 'alcoholCartCreditCard','UserService'
 	,function ($log, $rootScope, $window, $document, $http, $state, $q, $mdToast, $filter, 
-			$timeout, $interval, sweetAlert, 
+			$timeout, $interval, appConfig, sweetAlert, 
 			alcoholCartItem, alcoholCartLoyaltyItem, 
 			alcoholCartPackage, promotionsService, alcoholCartPromotion, 
 			alcoholCartGiftCard, alcoholCartGift,
@@ -73,6 +73,26 @@ AlcoholDelivery.service('alcoholCart', [
 			couponOutput:false,
 			applied:false,
 			message:""
+		};
+		this.$validations = {
+
+			"cart": {
+
+				'workingHrs':{
+					status:false,
+					message:"1 Hr delivery is not allowed"
+				}
+
+			},
+			"address": {
+
+				'allowed':{
+					status:true,
+					message:"unable to deliver on selected address"
+				}
+
+			}
+
 		};
 
 	};
@@ -1664,6 +1684,7 @@ AlcoholDelivery.service('alcoholCart', [
 						inCart.setTQuantity(resProduct.quantity);
 						inCart.setRemainingQty(resProduct.remainingQty);
 
+
 					}else{
 						_self.removeItemById(id);
 					}
@@ -2239,6 +2260,10 @@ AlcoholDelivery.service('alcoholCart', [
 				this.deliveryApplicable = false;
 			}
 
+		}
+		
+		this.getDeliveryType = function () {
+			return this.$cart.delivery.type;
 		}
 
 		this.setDeliveryType = function(status){
@@ -2832,6 +2857,10 @@ AlcoholDelivery.service('alcoholCart', [
 				_self.$cart.couponData = storedCart.couponData;
 				_self.setCouponPrice(storedCart.couponData);
 			}
+			angular.appConfig = appConfig;
+
+			appConfig.setServerTime(storedCart.working.currentTime);
+			appConfig.setWorkingTime(storedCart.working.from,storedCart.working.to);
 
 			_self.resetAsPerRule();
 		};
@@ -2932,45 +2961,24 @@ AlcoholDelivery.service('alcoholCart', [
 
 		}
 
-		this.validate = function(){
+		this.validate = function(step){
 
 			var _self = this;
-			var cart = this.getCart();
-			var stepName = this.step;
-						
-			var cartSteps = angular.copy(this.stepsName)
-			
-			var stepValidating = "";
 
-			while(stepValidating !== stepName){
+			var cartSteps = this.stepsName[step-1];
 
-				stepValidating = cartSteps.shift();
-				// isValid = _self[stepValidating+'Validate']();
+			isValid = _self[cartSteps+'Validate']();
 
-			}
-
-			return false;
-		}		
-
-		this.cartValidate = function(){
-
-			return false;
-			// if(!cart.delivery.type){
-
-			// 	if(step){}
-
-			// }
+			return isValid;
 
 		}
-		this.addressValidate = function(){return false;}
-		this.deliveryValidate = function(){return false;}
-		this.paymentValidate = function(){return false;}
-		this.reviewValidate = function(){return false;}
+
+
 		this.validateSmoke = function(){
 
-			var isSmokeRequired = this.getSmokeStatus();			
+			var isSmokeRequired = this.getSmokeStatus();
 
-			if(isSmokeRequired){				
+			if(isSmokeRequired){
 
 				var isDeliveryAdvance = this.isDeliveryAdvance();
 
@@ -3011,23 +3019,40 @@ AlcoholDelivery.service('alcoholCart', [
 			return true;
 
 		}
+
 		this.checkoutValidate = function(){
 
 			var d = $q.defer();
 
-			// var subTotal = this.getSubTotal();
-
-			// if(!(subTotal>0)){
-			// 	d.reject("foo");
-			// }
-
 			var isValid = this.validateSmoke();
-			if(isValid){
-				d.resolve("every thing all right");
-			}else{
-				d.reject("notvalid");
-			}
 			
+			if(this.getDeliveryType()==0){
+				
+				appConfig.isServerUnderWorkingTime(true).then(
+
+					function(res){
+
+						if(isValid){
+							d.resolve("every thing all right");
+						}else{
+							d.reject("notvalid");
+						}
+
+					},function(err){
+						d.reject("reload");
+					}
+				)
+
+			}else{
+
+				if(isValid){
+					d.resolve("every thing all right");
+				}else{
+					d.reject("notvalid");
+				}
+
+			}
+
 			return d.promise;
 		}
 
@@ -3215,7 +3240,6 @@ AlcoholDelivery.service('store', [
 					promotionsService.init().then(
 
 						function(){
-
 
 							$http.get("cart/"+deliverykey).success(function(response){
 
@@ -3416,10 +3440,13 @@ AlcoholDelivery.service("promotionsService",[
 }]);
 
 AlcoholDelivery.service('cartValidation',[
-			'alcoholCart', '$state', '$mdToast','UserService'
-	,function(alcoholCart, $state, $mdToast, UserService) {
+			'alcoholCart', '$state', '$document', '$timeout', '$mdToast','UserService', 'appConfig'
+	,function(alcoholCart, $state, $document, $timeout, $mdToast, UserService, appConfig) {
 
 	this.showToast = function (msg) {
+
+		//this.processValidators();
+
 		if(!msg) return false;
 		var toast = $mdToast.simple()
 			.textContent(msg)
@@ -3427,6 +3454,7 @@ AlcoholDelivery.service('cartValidation',[
 			.position("top right");
 		$mdToast.show(toast);
 		return true;
+
 	}
 
 	this.init = function(toState, fromState) {
@@ -3448,10 +3476,16 @@ AlcoholDelivery.service('cartValidation',[
 			]
 		  , step = states.indexOf(toState.name)
 		  , prevState = fromState?states.indexOf(fromState.name):0;
-
-		// return true;
-
+		
+		
 		if(step > 0) {
+
+			if(alcoholCart.getDeliveryType()==0 && !appConfig.isServerUnderWorkingTime()){
+
+				alcoholCart.$validations.cart.workingHrs.status = true;
+				$state.go(states[0],{},{reload: false});
+				return false;
+			}
 
 			var currUser = UserService.getIfUser();
 			if(currUser===false){
@@ -3486,7 +3520,6 @@ AlcoholDelivery.service('cartValidation',[
 
 		}
 
-
 		if(step > 1) {
 
 			if(!angular.isDefined(cart.delivery) ||
@@ -3506,15 +3539,19 @@ AlcoholDelivery.service('cartValidation',[
 
 		if(step == 2 && cart.delivery.type != 1){
 			if(prevState>2){
-				$state.go(states[1], {}, {reload: true});
+				$state.go(states[1], {}, {reload: false});
 			}else{
-				$state.go(states[3], {}, {reload: true});
+				$state.go(states[3], {}, {reload: false});
 			}
 			return false;
 		}
 
 		if(step > 2 && cart.delivery.type == 1){
-			if(typeof cart.timeslot == 'undefined' || typeof cart.timeslot.slotkey == 'undefined' || typeof cart.timeslot.datekey == 'undefined'){
+			if(typeof cart.timeslot == 'undefined' || 
+				typeof cart.timeslot.slotkey == 'undefined' || 
+				typeof cart.timeslot.datekey == 'undefined' || 
+						cart.timeslot.datekey==false || 
+						cart.timeslot.slotkey==false){
 				$state.go(states[2], {err: "Please select a Time slot!"}, {reload: true});
 				return false;
 			}
@@ -3528,5 +3565,9 @@ AlcoholDelivery.service('cartValidation',[
 		}
 
 		return true;
+
 	}
+
+	
+
 }]);

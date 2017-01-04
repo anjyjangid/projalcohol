@@ -1465,3 +1465,13 @@ md-dialog md-dialog-actions{
 	padding-right: 0 !important;
     padding-left: 1px !important;
 }
+
+md-toast.notify.bottom{
+	position: fixed;
+    bottom: 0;
+}
+.dependencypopuptext-title i.fa{
+	position: absolute;
+    left: 0;
+    font-size: 52px;
+}

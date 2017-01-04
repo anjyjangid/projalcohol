@@ -8,156 +8,165 @@ use Input;
 
 class SettingRequest extends Request
 {    
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
+	/**
+	 * Determine if the user is authorized to make this request.
+	 *
+	 * @return bool
+	 */
+	public function authorize()
+	{
+		return true;
+	}
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
-    public function rules()
-    {
-        $input = Input::all();
-        switch ($this->setting) {
+	/**
+	 * Get the validation rules that apply to the request.
+	 *
+	 * @return array
+	 */
+	public function rules()
+	{
+		$input = Input::all();
+		switch ($this->setting) {
 
-            case 'general':
-                $rules = [
-                               
-                    'site_name.value' => 'required|string|max:255',
+			case 'general':
+				$rules = [
+							   
+					'site_name.value' => 'required|string|max:255',
 
-                    'site_title.value' => 'required|string|max:255',
+					'site_title.value' => 'required|string|max:255',
 
-                    'meta_keyword.value' => 'required|max:255',
+					'meta_keyword.value' => 'required|max:255',
 
-                    'meta_desc.value' => 'required|max:1000',
-                    
-                    'currency.value'=> 'required|in:"$","£","SGD"',
+					'meta_desc.value' => 'required|max:1000',
+					
+					'currency.value'=> 'required|in:"$","£","SGD"',
 
-                    'language.value'=> 'required|in:"eng","french"',
+					'language.value'=> 'required|in:"eng","french"',
 
-                    'mode.value'=> 'required|in:"dev","test","live","maintenance"',        
+					'mode.value'=> 'required|in:"dev","test","live","maintenance"',        
 
-                ];
-                break;
+				];
+				break;
 
-            case 'social':
-                $rules = [
+			case 'social':
+				$rules = [
 
-                    'facebook.value' => 'required|url',
-                    'googleplus.value' => 'required|url',
-                    'instagram.value' => 'required|string|max:255',
-                    'twitter.value' => 'required|url',
-                    'youtube.value' => 'required|string|max:255',
+					'facebook.value' => 'required|url',
+					'googleplus.value' => 'required|url',
+					'instagram.value' => 'required|string|max:255',
+					'twitter.value' => 'required|url',
+					'youtube.value' => 'required|string|max:255',
 
-                ];
-                break;
-            case 'pricing':
-                $rules = [                    
-                    'cigratte_services.value' => 'required|numeric',
-                    'gift_packaging.value' => 'required|numeric',
-                    'express_delivery.value' => 'required|numeric',                    
-                    'regular_express_delivery.value' => 'required|numeric',                    
-                    'cigratte_services.type' => 'required|numeric',
-                    'express_delivery.type' => 'required|numeric',                    
-                    'regular_express_delivery.type' => 'required|numeric',
-                    'minimum_cart_value.value' => 'required|numeric',
-                    'non_free_delivery.value' => 'required|numeric',
-                    'non_chilled_delivery.type' => 'required|numeric',
-                    'non_chilled_delivery.value' => 'required|numeric',
+				];
+				break;
+			case 'pricing':
+				$rules = [                    
+					'cigratte_services.value' => 'required|numeric',
+					'gift_packaging.value' => 'required|numeric',
+					'express_delivery.value' => 'required|numeric',                    
+					'regular_express_delivery.value' => 'required|numeric',                    
+					'cigratte_services.type' => 'required|numeric',
+					'express_delivery.type' => 'required|numeric',                    
+					'regular_express_delivery.type' => 'required|numeric',
+					'minimum_cart_value.value' => 'required|numeric',
+					'non_free_delivery.value' => 'required|numeric',
+					'non_chilled_delivery.type' => 'required|numeric',
+					'non_chilled_delivery.value' => 'required|numeric',
 
-                ];               
+				];               
 
-                break;
+				break;
 
-            case 'loyalty':
-                $rules = [
+			case 'loyalty':
+				$rules = [
 
-                    'order_sharing.value' => 'required|numeric',
-                    'site_sharing.value' => 'required|numeric',                    
+					'order_sharing.value' => 'required|numeric',
+					'site_sharing.value' => 'required|numeric',                    
 
-                ];
-                break;
+				];
+				break;
 
-            default:
-                # code...
-                break;
-        }
+			default:
+				# code...
+				break;
+		}
 
-        if($this->setting == 'pricing'){            
-            
-            foreach ($input['express_delivery_bulk']['bulk'] as $bk => $bval)
-            {
-                $ruleKey = 'express_delivery_bulk.bulk.' . $bk;
-                $rules[$ruleKey . '.from_qty'] = 'required|numeric|min:1';
-                $rules[$ruleKey . '.to_qty'] = 'required|numeric|min:1|max:99999';
-                $rules[$ruleKey . '.type'] = 'required|numeric';
-                $rules[$ruleKey . '.value'] = 'required|numeric';
-            }   
+		if($this->setting == 'pricing'){
+			
+			foreach ($input['express_delivery_bulk']['bulk'] as $bk => $bval)
+			{
+				$ruleKey = 'express_delivery_bulk.bulk.' . $bk;
+				$rules[$ruleKey . '.from_qty'] = 'required|numeric|min:1';
+				$rules[$ruleKey . '.to_qty'] = 'required|numeric|min:1|max:99999';
+				$rules[$ruleKey . '.type'] = 'required|numeric';
+				$rules[$ruleKey . '.value'] = 'required|numeric';
+			}   
 
-            if(isset($input['surcharge_taxes']) && !empty($input['surcharge_taxes']['types'])){
-                foreach ($input['surcharge_taxes']['types'] as $bk => $bval)
-                {
-                    $ruleKey = 'surcharge_taxes.types.' . $bk;
-                    $rules[$ruleKey . '.label'] = 'required';                    
-                    $rules[$ruleKey . '.type'] = 'required|numeric';
-                    $rules[$ruleKey . '.value'] = 'required|numeric';
-                    $rules[$ruleKey . '.order'] = 'required|numeric';
-                }
-            }
-        }
+			if(isset($input['surcharge_taxes']) && !empty($input['surcharge_taxes']['types'])){
+				foreach ($input['surcharge_taxes']['types'] as $bk => $bval)
+				{
+					$ruleKey = 'surcharge_taxes.types.' . $bk;
+					$rules[$ruleKey . '.label'] = 'required';                    
+					$rules[$ruleKey . '.type'] = 'required|numeric';
+					$rules[$ruleKey . '.value'] = 'required|numeric';
+					$rules[$ruleKey . '.order'] = 'required|numeric';
+				}
+			}
+		}
 
-        if($this->setting == 'timeslot'){                       
+		if($this->setting == 'timeslot'){
 
-            foreach ($input as $bk => $bval)
-            {
-                foreach ($bval as $chkey => $chvalue) {
-                    
-                    $ruleKey = $bk.'.'.$chkey;
+			foreach ($input as $bk => $bval)
+			{
+				foreach ($bval as $chkey => $chvalue) {
+					
+					$ruleKey = $bk.'.'.$chkey;
 
-                    $rules[$ruleKey . '.orderlimit'] = 'required|numeric';
-                }
-            }
+					$rules[$ruleKey . '.orderlimit'] = 'required|numeric';
+				}
+			}
 
-        }
-                
-        return $rules;
-    }
+		}
 
-    public function messages()
-    {
+		if($this->setting == 'workinghrs'){
+			
+			$rules = [
+				'from' => 'required|numeric|digits_between:0,1440',
+				'to' => 'required_with:from|integer|gtf:from|digits_between:0,1440',
+			];
 
-        $messages = [
+		}
+				
+		return $rules;
+	}
 
-                'required' => 'This field is required',
-                'in' => 'Please select from given values',
-                'numeric' => 'Field must be numeric',
-                'min' => 'Minimum :min is allowed',
-                'max' => 'Maximum :max is allowed',
-                'url' => 'The value must be a valid url.'
+	public function messages()
+	{
 
-        ];
-        
-        return $messages;
+		$messages = [
 
-    }
+				'required' => 'This field is required',
+				'in' => 'Please select from given values',
+				'numeric' => 'Field must be numeric',
+				'min' => 'Minimum :min is allowed',
+				'max' => 'Maximum :max is allowed',
+				'url' => 'The value must be a valid url.'
 
-    // public function response(array $errors){
-        
-    //     return $errors;
+		];
+		
+		return $messages;
 
-    // }
+	}
 
-    public function forbiddenResponse()
-    {
-        return Response::make('message',403);
-    }
+	// public function response(array $errors){
+		
+	//     return $errors;
+
+	// }
+
+	public function forbiddenResponse()
+	{
+		return Response::make('message',403);
+	}
 
 }
