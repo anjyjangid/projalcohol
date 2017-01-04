@@ -292,39 +292,18 @@ class Email extends Moloquent
 		}
 
 		try {			
-				
-				/*LAYOUT BASED MAIL*/
-
-
-				$data = ['content' => $this->recipient_info['message'],'replace'=>$this->recipient_info['replace']];				
-
-				Mail::send('emails.mail', $data, function ($message) {
-					$message->setTo(array($this->recipient_info["receiver"]['email']=>$this->recipient_info["receiver"]['name']));
-					$message->setSubject($this->recipient_info['subject']);
-				});
-				
-				// Backup your default mailer
-				/*$backup = Mail::getSwiftMailer();
-
-				// Setup your gmail mailer
-				$transport = SmtpTransport::newInstance('aspmx.l.google.com', 25, 'tls');
-				$transport->setUsername('alcoholdeliveryis@gmail.com');
-				$transport->setPassword('@lcohol1234#*12');
-
-				$message = Swift_Message::newInstance();;
-				$message->setTo(array($this->recipient_info["receiver"]['email']=>$this->recipient_info["receiver"]['name']));
-
-				$message->setFrom($this->recipient_info["sender"]['email'],$this->recipient_info["sender"]['name']);				
-				
-				$message->setSubject($this->recipient_info['subject']);
-				$message->setBody($this->recipient_info['message'],'text/html');
 								
+			$data = ['content' => $this->recipient_info['message'],'replace'=>$this->recipient_info['replace']];
 
-				$mailer = Swift_Mailer::newInstance($transport);
-				$mailer->send($message);		       
+			if(isLocal()){
+				$this->recipient_info["receiver"]['email'] = 'anuragcgt@gmail.com';
+			}
 
-				// Restore your original mailer
-				Mail::setSwiftMailer($backup);*/
+			Mail::send('emails.mail', $data, function ($message) {
+				$message->setTo(array($this->recipient_info["receiver"]['email']=>$this->recipient_info["receiver"]['name']));
+				$message->setSubject($this->recipient_info['subject']);
+			});
+			
 			
 		} catch(\Exception $e){
 

@@ -8,9 +8,26 @@
 					<div class="caption">
 						<i class="icon-clock"></i>{{$state.$current.data.pageTitle}}
 					</div>
+					
 					<div class="actions">
 						<button ng-disabled="loading" class="btn green-haze" type="submit"><i class="fa fa-check"></i> Update</button>
 					</div>
+
+					<ul class="actions list-inline">
+						<li>
+							Working Hours
+						</li>
+						<li>
+						<select ng-disabled="slot.status==0" ng-model="workinghrs.from" class="form-control" ng-options="fop.opVal as fop.opTag for fop in getTimeOptions(1)"></select>
+						<span class="help-block" ng-bind=""></span>
+						</li>
+						<li>
+						<select ng-disabled="slot.status==0" ng-model="workinghrs.to" class="form-control" ng-options="fop.opVal as fop.opTag for fop in getTimeOptions(2)"></select>
+						<span class="help-block" ng-bind=""></span>						                    
+						</li>
+					</div>
+
+					
 				</div>			
 				<div class="portlet-body form">   
 					<div class="table-container">    
@@ -41,6 +58,7 @@
 					        			<td>
 						                    <select ng-disabled="slot.status==0" empty="false" ng-model="slot.from" class="form-control" ng-options="fop.opVal as fop.opTag for fop in getTimeOptions(1)"></select>
 						                    <span class="help-block" ng-bind=""></span>
+						                </td>
 						                <td>
 						                    <select ng-disabled="slot.status==0" empty="false" ng-model="slot.to" class="form-control" ng-options="fop.opVal as fop.opTag for fop in getTimeOptions(2)"></select>
 						                    <span class="help-block" ng-bind=""></span>						                    

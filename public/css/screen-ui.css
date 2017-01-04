@@ -3136,6 +3136,36 @@ ui-sref {
 	width: 100%;
 	float: left;
 }
+
+.dependencypopuptext {
+	display: inline-block;
+	text-align: justify;
+	width: 100%;
+}
+.dependencypopuptext-title {
+	font-size: 16px;
+	color: #454545;
+	width: 100%;
+	float: left;
+	margin-bottom: 10px;
+	font-weight: 500;
+	padding-left: 60px;
+	position: relative;
+}
+
+.dependencypopuptext-title img.message-type{
+	position: absolute;
+    left: 0;
+    max-width: 55px;
+    max-height: 55px;
+}
+.dependencypopuptext-text {
+	font-size: 12px;
+	color: #7a7a7a;
+	width: 100%;
+	float: left;
+}
+
 /*------------popupmodal------------*/
 .popup1button {
 	background: #aa00ff none repeat scroll 0 0;
