@@ -137,7 +137,7 @@
                               </td>
                               <td class="{{ $isPackage }}">
                                 <?php echo $value['name'];?> 
-                                  <?php if($value['chilled']){?> 
+                                  <?php if($value['chilled'] && !$order['nonchilled']){?> 
                                     <img src="{{ asset('img/snowflake.png') }}" width="16px">
                                   <?php }?>
                               </td>

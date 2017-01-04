@@ -93,7 +93,7 @@ class CartController extends Controller
 
 		}else{
 
-			$userCart = Cart::where("user","=",new MongoId($user->_id))->first();
+			$userCart = Cart::where("user","=",new MongoId($user->_id))->first();			
 
 			$cart = new Cart;
 			$isCreated = $cart->generate();
@@ -101,6 +101,7 @@ class CartController extends Controller
 			if(empty($userCart)){
 
 				$cart = Cart::find($isCreated->cart['_id']);
+
 				$cart->user = new MongoId($user->_id);
 				try{
 
@@ -115,6 +116,7 @@ class CartController extends Controller
 			}
 			else{
 
+				$userCart->setWorkingHrs();
 				$userCart = $userCart->toArray();
 
 				if(!isset($userCart['loyalty'])){
@@ -1078,6 +1080,7 @@ class CartController extends Controller
 						$userCart->delete();
 
 					}
+					$sessionCart->setWorkingHrs();
 					return (object)["success"=>true,"message"=>"cart merge successfully","cart"=>$sessionCart->toArray()];
 
 				}catch(\Exception $e){
@@ -1086,6 +1089,7 @@ class CartController extends Controller
 
 			}
 
+			$userCart->setWorkingHrs();
 			return (object)["success"=>true,"message"=>"cart merge successfully","cart"=>$userCart->toArray()];
 
 		}else{
@@ -2129,24 +2133,27 @@ jprd($product);
 		// 	return response(["success"=>false,"message"=>"Cart is already freezed"],405); //405 => method not allowed
 
 		// }
+		
+		//$isValid = $this->validateCart($cartArr);
+		$isValid['valid'] = true;
+
+		if($cart->delivery['type'] ==0 && !$cart->isUnderWorkingHrs()){
+			$isValid['valid'] = false;
+		}
+
+		if($isValid['valid']==false){
+
+			// $cart->freeze = false;
+
+			// $cart->save();
+
+			return response(["message"=>"Cart is not valid"],405); //405 => method not allowed
+
+		}
 
 		$cart->freeze = true;
 
 		$cart->save();
-
-		$cartArr = $cart->toArray();
-
-		//$isValid = $this->validateCart($cartArr);
-		$isValid['valid'] = true;
-
-		if($isValid['valid']==false){
-
-			$cart->freeze = false;
-
-			$cart->save();
-
-			return response(["success"=>false,"valid"=>false,"message"=>"Cart is not valid"],405); //405 => method not allowed
-		}
 
 		// $productWithCount = $cartObj->getProductIncartCount();
 

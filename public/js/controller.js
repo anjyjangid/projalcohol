@@ -87,7 +87,8 @@ AlcoholDelivery.controller('AppController',
 							if(!$scope.parentCategories[key]['featured']){
 								$scope.parentCategories[key]['featured']=[]
 							}
-							$scope.parentCategories[key]['featured'].push(response[proKey]);
+							if($scope.parentCategories[key]['featured'].length < 8)
+								$scope.parentCategories[key]['featured'].push(response[proKey]);
 						}
 					}
 
@@ -237,6 +238,8 @@ AlcoholDelivery.controller('AppController',
 
 	if(!$cookies.get('ageverfication'))
 		$scope.ageVerification();	
+
+	
 
 }]);
 
@@ -1023,9 +1026,9 @@ AlcoholDelivery.controller('CreditsController',['$scope','$http','sweetAlert','$
 
 AlcoholDelivery.controller('CartController',[
 			'$scope','$rootScope','$state','$stateParams', '$location','$anchorScroll','$http','$q', '$mdDialog', '$mdMedia','$timeout',
-			'UserService','sweetAlert','alcoholCart','alcoholGifting','store'
+			'UserService','sweetAlert','alcoholCart','alcoholGifting','store', 'cartValidation', 'cartValidate'
 	,function($scope, $rootScope, $state, $stateParams, $location, $anchorScroll, $http, $q, $mdDialog, $mdMedia, $timeout, 
-			UserService, sweetAlert, alcoholCart, alcoholGifting, store){
+			UserService, sweetAlert, alcoholCart, alcoholGifting, store, cartValidation, cartValidate){
 	
 	// var isStepSet = alcoholCart.setCurrentStep($state.$current.data.step);
 	// if(isStepSet===false){
@@ -1073,6 +1076,11 @@ AlcoholDelivery.controller('CartController',[
 	}
 
 	$scope.checkCoupon = function(discountCode){
+
+		if(!angular.isDefined(discountCode) || !discountCode){
+			return false;
+		}
+
 		$scope.discountCode = discountCode;
 		alcoholCart.checkCoupon(discountCode, alcoholCart.getCartKey());
 	}
@@ -1090,94 +1098,104 @@ AlcoholDelivery.controller('CartController',[
 
 	$scope.checkout = function(ev) {
 
-		isCartValid = alcoholCart.validate($scope.step);
+		//isCartValid = alcoholCart.validate($scope.step);
+		cartValidate.check('cart').then(
+			function(valid){
 
-		if(!UserService.getIfUser())
-			return $rootScope.$broadcast('showLogin');
-
-
-		$mdDialog.show({
-
-			controller: function($scope, $rootScope, $document, ProductService) {
-
-				$scope.address = {
-					step:1
-				}
-
-				$scope.hide = function() {
-					$mdDialog.hide();
-				};
-				$scope.cancel = function() {
-					$mdDialog.cancel();
-				};
-
-
-				$scope.loading = true;
+				if(valid===true){
 				
-				var cartKey = alcoholCart.getCartKey();
+					if(!UserService.getIfUser())
+						return $rootScope.$broadcast('showLogin');
 
-				ProductService.getDontMiss(cartKey).then(
+					$mdDialog.show({
 
-					function(response){
+						controller: function($scope, $rootScope, $document, ProductService) {
 
-						if(response.length==0){
+							$scope.address = {
+								step:1
+							}
 
-							$scope.notAvailable = true;
-							$timeout(function(){
-
-								$scope.continue();
-
-
-							},1500)
-
-						}else{
-
-							$scope.products = response;
-
-						}
-
-						$scope.loading = false;
-
-					},
-					function(errorRes){
+							$scope.hide = function() {
+								$mdDialog.hide();
+							};
+							$scope.cancel = function() {
+								$mdDialog.cancel();
+							};
 
 
+							$scope.loading = true;
+							
+							var cartKey = alcoholCart.getCartKey();
 
-					}
-				)
+							ProductService.getDontMiss(cartKey).then(
 
-				$scope.continue = function(){
+								function(response){
+
+									if(response.length==0){
+
+										$scope.notAvailable = true;
+										$timeout(function(){
+
+											$scope.continue();
 
 
-					alcoholCart.deployCart();
+										},1500)
 
-					$scope.step = 2;
+									}else{
 
-					$mdDialog.hide();
+										$scope.products = response;
 
-					$state.go("mainLayout.checkout.address");
+									}
 
+									$scope.loading = false;
+
+								},
+								function(errorRes){
+
+
+
+								}
+							)
+
+							$scope.continue = function(){
+
+
+								alcoholCart.deployCart();
+
+								$scope.step = 2;
+
+								$mdDialog.hide();
+
+								$state.go("mainLayout.checkout.address");
+
+							}
+
+							$scope.loadMore = function(dir){
+								var owl = $('.dontmissowl').data('owlCarousel');
+								if(dir)
+									owl.prev();
+								else
+									owl.next();
+							}
+						},
+						templateUrl: '/templates/checkout/dont-miss.html',
+						parent: angular.element(document.body),
+						//targetEvent: ev,
+						clickOutsideToClose:true,
+						fullscreen:true
+					})
+					.then(function(answer) {
+
+					}, function() {
+
+					});
+
+				}else{
+					cartValidate.processValidators();
 				}
+			}			
+		);
 
-				$scope.loadMore = function(dir){
-					var owl = $('.dontmissowl').data('owlCarousel');
-					if(dir)
-						owl.prev();
-					else
-						owl.next();
-				}
-			},
-			templateUrl: '/templates/checkout/dont-miss.html',
-			parent: angular.element(document.body),
-			//targetEvent: ev,
-			clickOutsideToClose:true,
-			fullscreen:true
-		})
-		.then(function(answer) {
-
-		}, function() {
-
-		});
 	};
 
 	$scope.setdeliverytype = function(type){
@@ -1632,18 +1650,17 @@ AlcoholDelivery.controller('CartDeliveryController',[
 		"1020":'5pm',
 		"1050":'5:30pm',
 		"1080":'6pm',
-		"1120":'6:30pm',
-		"1150":'7pm',
-		"1180":'7:30pm',
-		"1210":'8pm',
-		"1240":'8:30pm',
-		"1270":'9pm',
-		"1300":'9:30pm',
-		"1330":'10pm',
-		"1370":'10:30pm',
-		"1400":'11pm',
-		"1430":'11:30pm',
-
+		"1110":'6:30pm',
+		"1140":'7pm',
+		"1170":'7:30pm',
+		"1200":'8pm',
+		"1230":'8:30pm',
+		"1260":'9pm',
+		"1290":'9:30pm',
+		"1320":'10pm',
+		"1350":'10:30pm',
+		"1380":'11pm',
+		"1410":'11:30pm',
 	};
 
 
@@ -1829,7 +1846,7 @@ AlcoholDelivery.controller('CartReviewController',[
 		alcoholCart.checkoutValidate().then(
 
 			function (successRes) {
-
+				
 				alcoholCart.freezCart().then(
 
 					function(result){
@@ -1895,6 +1912,7 @@ AlcoholDelivery.controller('CartReviewController',[
 
 					},
 					function(errorRes){
+						
 						$rootScope.processingOrder = false;
 						console.log(errorRes);
 					}
@@ -1904,10 +1922,11 @@ AlcoholDelivery.controller('CartReviewController',[
 			},
 			function (errorRes) {
 
-				if(errorRes==='reload'){
-					$state.go("mainLayout.checkout.cart", {}, {reload: true});
-				}
 				$rootScope.processingOrder = false;
+				if(errorRes==='reload'){
+					$state.go("mainLayout.checkout.cart");
+				}
+				
 			}
 
 		);

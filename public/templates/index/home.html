@@ -9,6 +9,7 @@
 		register now
 	</a>
 </div>
+
 <div class="responsive-blokimg"><img class="img-responsive" style="margin:10px auto;" src="asset/i/new.png"></div>
 
 <div class="combo_slider combo_sliderProduct" ng-cloak>
@@ -16,14 +17,7 @@
     <md-tabs md-selected="0" md-dynamic-height>    
       <md-tab ng-repeat="cat in parentCategories | filterParentCat">
       	<md-tab-label>{{cat.cat_title}}</md-tab-label>
-      	<md-tab-body>
-      		<md-content class="md-padding">
-      		<md-nav-bar md-selected-nav-item="0" nav-bar-aria-label="navigation links">
-		      <md-nav-item md-nav-click="goto('page1')" name="page1">New</md-nav-item>
-		      <md-nav-item md-nav-click="goto('page2')" name="page2">Featured</md-nav-item>
-		      <md-nav-item md-nav-click="goto('page3')" name="page3">Best Sellers</md-nav-item>		      
-		    </md-nav-bar>
-		    </md-content>
+      	<md-tab-body>      		
       		<div class="product-listcover2">
 	    		<div al-tpl-product classes="col-xs-12 col-sm-3 col-md-3 comboproductitems" ng-repeat="fproduct in cat['featured']" info="fproduct"></div>
 	    	</div>
@@ -31,30 +25,8 @@
       </md-tab>	      
     </md-tabs>
   </md-content>  
+  <div ui-view='giftClaim'></div>
 </div>
-
-
-
-<!-- <div class="combo_slider combo_sliderProduct">  
-  <div class="tabbable">
-	<div class="fullwidth">		
-		<md-content class="maintab" data-ng-init="featuredProducts()">
-		<md-tabs md-selected="0" md-dynamic-height>
-			<md-tab ng-repeat="cat in parentCategories | filterParentCat" md-stretch-tabs>
-				<md-tab-label>
-			      {{cat.cat_title}}					      
-			    </md-tab-label>
-			    <md-tab-body>					    	
-			    	<div class="product-listcover2">
-			    		<div al-tpl-product classes="col-xs-12 col-sm-3 col-md-3 comboproductitems" ng-repeat="fproduct in cat['featured']" info="fproduct"></div>
-			    	</div>	
-				</md-tab-body>
-		  	</md-tab>
-		</md-tabs>
-		</md-content>
-	</div>           	
-  </div>
-</div> -->
 
 <!-- <div class="combo_slider main" data-ng-init="featuredProducts()">
 	<div class="tabbable">		

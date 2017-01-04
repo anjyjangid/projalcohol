@@ -25,36 +25,60 @@ MetronicApp.controller('TimeslotFormController',['$rootScope', '$scope', '$timeo
 	
 	$scope.error = [];
 
-	$http.get("/adminapi/setting/settings/timeslot").success(function(response){			
+	$http.get("/adminapi/setting/settings/timeslot").success(function(response){
 		$scope.settings = response.settings;
+	});	
+	$http.get("/adminapi/setting/settings/workinghrs").success(function(response){
+
+		$scope.workinghrs = response.settings;
+
 	});	
 
 	$scope.update = function(){
 
-		$http.put("/adminapi/setting/timeslot", $scope.settings, {
-                
-        }).error(function(data, status, headers) {            
-            $scope.error = data;
-            Metronic.alert({
-                type: 'danger',
-                icon: 'warning',
-                message: 'Please enter all required fields.',
-                container: '.portlet-body',
-                place: 'prepend',
-                closeInSeconds: 3
-            });
-        })
-        .success(function(response) {               
-            $scope.error = []; 
-            Metronic.alert({
-                type: 'success',
-                icon: 'check',
-                message: response.message,
-                container: '.portlet-body',
-                place: 'prepend',
-                closeInSeconds: 3
-            });
-        })
+		$http.put("/adminapi/setting/workinghrs", $scope.workinghrs, {
+
+		}).error(function(data, status, headers) {
+			
+			Metronic.alert({
+				type: 'danger',
+				icon: 'warning',
+				message: 'Please enter proper working hours',
+				container: '.portlet-body',
+				place: 'prepend',
+				closeInSeconds: 3
+			});
+		})
+		.success(function(response) {
+
+			$scope.error = [];
+			$http.put("/adminapi/setting/timeslot", $scope.settings, {
+
+			}).error(function(data, status, headers) {
+			    $scope.error = data;
+			    Metronic.alert({
+			        type: 'danger',
+			        icon: 'warning',
+			        message: 'Please enter all required fields.',
+			        container: '.portlet-body',
+			        place: 'prepend',
+			        closeInSeconds: 3
+			    });
+			})
+			.success(function(response) {
+			    $scope.error = []; 
+			    Metronic.alert({
+			        type: 'success',
+			        icon: 'check',
+			        message: response.message,
+			        container: '.portlet-body',
+			        place: 'prepend',
+			        closeInSeconds: 3
+			    });
+			})
+		})
+
+		
 
 	};
 }]);

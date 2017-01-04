@@ -5103,14 +5103,14 @@ md-tooltip{
 	  float: left;
 	  padding: 0 10px;
   }
-  md-tabs-canvas.md-paginated {
-	  /*margin: 0 auto;
-	  width: 133px;*/
-  }
-  .md-tab {
-	  /*min-width: 133px;
-	  text-align: center;*/
-  }
+  /*md-tabs-canvas.md-paginated {
+	  margin: 0 auto;
+	  width: 133px;
+  }*/
+  /*.md-tab {
+	  min-width: 133px;
+	  text-align: center;
+  }*/
   .media-body.cockatil-bodycover {
 	  padding-left: 0;
 	  width: 100%;

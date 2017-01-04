@@ -1292,7 +1292,7 @@ MetronicApp
 			delete this.$cart.payment.card;
 			delete this.$cart.payment.creditCard;
 			delete this.$cart.payment.savecard;
-			d.resolve();
+			d.resolve({});
 		}else{
 
 			var cartpayment = this.$cart.payment;
@@ -1312,7 +1312,7 @@ MetronicApp
 					if(!this.$cart.payment.creditCard.cvc || this.$cart.payment.creditCard.cvc == ''){						
 						d.reject({value:'paymentcvverror',message:'Please enter cvv for the selected card.'});						
 					}else{
-						d.resolve();						
+						d.resolve({});						
 					}						
 				}
 			}
