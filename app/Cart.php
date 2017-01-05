@@ -92,11 +92,21 @@ class Cart extends Moloquent
 
 		$date = date("Y-m-d",time());
 		$fromTime = $date." ".((int)($working['settings']['from']/60)).":".((int)$working['settings']['from']%60).":00";	 
-		$toTime = $date." ".((int)($working['settings']['to']/60)-1).":".((int)$working['settings']['to']%60).":00";
+		// $toTime = $date." ".((int)($working['settings']['to']/60)-1).":".((int)$working['settings']['to']%60).":00";
+
+		$toMinute = (int)$working['settings']['to']%60;
+		$toMinute = str_pad($toMinute, 2, "0", STR_PAD_LEFT);
+		$toTime = $date." ".((int)($working['settings']['to']/60)-1).":".$toMinute.":00";
+		$toTimeString = $date." ".((int)($working['settings']['to']/60)).":".$toMinute.":00";
+
 		$setting = [
 			'currentTime' => $currentTime,
 			'from' => strtotime($fromTime),
 			'to' => strtotime($toTime),
+			'string' => [
+				'from' => date('H:i A',strtotime($fromTime)),
+				'to' => date('H:i A',strtotime($toTimeString))
+			]
 		];
 		
 		$this->__set("working",$setting);

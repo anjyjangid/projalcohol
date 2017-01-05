@@ -288,6 +288,14 @@ AlcoholDelivery.service('appConfig', [
     	};
     }
 
+    this.setWorkingTimeString = function(fromT,toT) {
+
+    	this.workingTimeString = {
+    		from : fromT,
+    		to : toT
+    	};
+    }
+
     this.updateWorkingHrs = function(){
     	var _self = this;
     	return $q(function(resolve,reject){
@@ -296,6 +304,7 @@ AlcoholDelivery.service('appConfig', [
 					
 					_self.serverTime = res.data.currentTime;
 					_self.setWorkingTime(res.data.from,res.data.to);
+					_self.setWorkingTimeString(res.data.string.from,res.data.string.to);
 
 					resolve();
 				}
@@ -307,6 +316,10 @@ AlcoholDelivery.service('appConfig', [
 
     this.getWorkingTime = function() {
     	return this.workingTime;
+    }
+
+    this.getWorkingTimeString = function() {
+    	return this.workingTimeString;
     }
 
     this.isServerUnderWorkingTime = function(fromServer) {
@@ -1451,10 +1464,16 @@ AlcoholDelivery.run([
 	// store.init();
 	// alcoholWishlist.init();
 
+	//LIVE
+	//var appId = '1269828463077215';
+	//LOCAL OR BETA
+	var appId = '273669936304095';
+
+
 	$window.fbAsyncInit = function() {
     	// Executed when the SDK is loaded
 	    FB.init({
-	      appId: '1269828463077215',
+	      appId: appId,
 	      status: true, 
 	      cookie: true, 
 	      xfbml: true,
@@ -1470,7 +1489,7 @@ AlcoholDelivery.run([
 	  var js, fjs = d.getElementsByTagName(s)[0];
 	  if (d.getElementById(id)) return;
 	  js = d.createElement(s); js.id = id;
-	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&version=v2.8&appId=1269828463077215";
+	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&version=v2.8&appId="+appId;
 	  fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));
 

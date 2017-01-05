@@ -682,10 +682,15 @@ AlcoholDelivery.service('cartValidate',['alcoholCart', '$state', '$q', '$mdToast
 
 		if(alcoholCart.$validations.cart.workingHrs.status===true){
 
-
 			$mdToast.show({
 
 					controller:function($scope){
+
+						var workingTime = appConfig.getWorkingTimeString();
+						
+						$scope.to = workingTime.to;
+						$scope.from = workingTime.from;
+
 						$scope.closeToast = function(){
 								$mdToast.hide();
 							}
@@ -693,7 +698,7 @@ AlcoholDelivery.service('cartValidate',['alcoholCart', '$state', '$q', '$mdToast
 					templateUrl: '/templates/toast-tpl/dependency-notify.html',
 					//parent : $document[0].querySelector('#cart-summary-icon'),
 					position: 'bottom right',
-					hideDelay:5000
+					hideDelay:10000
 
 				});
 

@@ -15,6 +15,18 @@ Object.defineProperty(Object.prototype, 'renameProperty',{
   enumerable : false
 });
 
+
+Date.prototype.amPmFormat = function() {
+	var hours = this.getHours();
+	var minutes = this.getMinutes();
+	var ampm = hours >= 12 ? 'pm' : 'am';
+	hours = hours % 12;
+	hours = hours ? hours : 12; // the hour '0' should be '12'
+	minutes = minutes < 10 ? '0'+minutes : minutes;
+	var strTime = hours + ':' + minutes + ' ' + ampm;
+	return strTime;
+}
+
 function GOM(obj)
 {
 	var res = [];
@@ -53,3 +65,13 @@ String.prototype.toFixed = function(digits) {
 	return Math.round(value * Math.pow(10, digits))/Math.pow(10, digits);
 }
 
+function formatAMPM(date) {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var ampm = hours >= 12 ? 'pm' : 'am';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0'+minutes : minutes;
+  var strTime = hours + ':' + minutes + ' ' + ampm;
+  return strTime;
+}
