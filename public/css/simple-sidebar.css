@@ -132,7 +132,7 @@ body.md-dialog-is-showing{
 }
 .side-menu-responsive, .laeftdivmain{
 	display: block;
-	width:82%;
+	width:100%;
 	opacity: 1;
 	position: fixed;
 	background: #333;
@@ -151,11 +151,15 @@ body.md-dialog-is-showing{
 	padding: 0;
 	margin: 0;
 	transform: translate(-100%);
+	-webkit-transform: translate(-100%);
+	-ms-transform: translate(-100%);
 	
 }
 #wrapper.toggled .side-menu-responsive, #wrapper.toggled .laeftdivmain {
 	 
 	transform: translate(0px, 0px);
+	-webkit-transform: translate(0px, 0px);
+	-ms-transform: translate(0px, 0px);
 	opacity: 1;
 	/*-webkit-transition: all 0.5s ease;
 	-moz-transition: all 0.5s ease;
@@ -166,7 +170,7 @@ body.md-dialog-is-showing{
 	-o-transition: all .3s ease;
 	-webkit-transition: all .3s ease;
 	transition: all .3s ease;
-	z-index:3;
+	z-index: 1052;
 	
 }
 #bs-example-navbar-collapse-1 {
@@ -181,14 +185,17 @@ body.md-dialog-is-showing{
 }
 #wrapper.toggled .navbar.navbar-default.navbar-fixed-top {
 	position: fixed;
-	transform: translate(82.1%, 0);
+	transform: translate(0%, 0);
+	 -webkit-transform: translate(0%, 0);
+	 z-index: 0
 }
 #wrapper.toggled .christmas-mainouter{
 	-moz-transition: all .3s ease;
 	-o-transition: all .3s ease;
 	-webkit-transition: all .3s ease;
 	transition: all .3s ease-out;
-	transform: translate(83%, 0);
+	transform: translate(0%, 0);
+	-webkit-transform: translate(0%, 0);
 }
 .christmas-mainouter{
 	-moz-transition: all .3s ease;
@@ -291,8 +298,29 @@ ul.mobilesidebar li.active:not(.open) ul{
     padding: 0px 10px;
     /*width: auto;*/
     background: #ebeef0 ;
+    z-index: 1052;
 	
 }
 .modal {
 	z-index: 99999;
+}
+.closemenu  {
+    color: #ffffff;
+    cursor: pointer;
+    float: right;
+    font-size: 51px;
+    line-height: 30px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    padding: 10px;
+    z-index: 9999;
+}
+.laeftdivmain .closemenu{
+	color: #69696a;
+
+}
+.mobilemenu  a{
+	float: left;
+
 }
