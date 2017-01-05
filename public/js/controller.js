@@ -597,6 +597,7 @@ AlcoholDelivery.controller('ProductDetailController', [
 		function(response){
 
 			$scope.product = response;
+			$scope.lastQty = {chilled : 0,nonChilled : 0}
 
 			if(!$scope.product.isInCart){
 
@@ -606,7 +607,12 @@ AlcoholDelivery.controller('ProductDetailController', [
 					$scope.product.qNChilled = 1;
 				}
 				
+			}else{
+				$scope.lastQty.chilled = $scope.product.qChilled;
+				$scope.lastQty.nonChilled = $scope.product.qNChilled;
 			}
+
+
 
 			$scope.addtocart = function(){
 
@@ -614,6 +620,16 @@ AlcoholDelivery.controller('ProductDetailController', [
 					chilled : parseInt($scope.product.qChilled),
 					nonChilled : parseInt($scope.product.qNChilled)
 				}
+
+				if($scope.product.servechilled){
+					quantity.nonChilled = $scope.lastQty.nonChilled;
+				}else{
+					quantity.chilled = $scope.lastQty.chilled;
+				}
+
+				$scope.lastQty.chilled = quantity.chilled;
+				$scope.lastQty.nonChilled = quantity.nonChilled;
+
 				alcoholCart.addItem($scope.product._id,quantity,$scope.product.servechilled).then(
 					function(response){
 						$scope.isInCart = true;

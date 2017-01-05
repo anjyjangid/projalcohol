@@ -2862,6 +2862,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 			appConfig.setServerTime(storedCart.working.currentTime);
 			appConfig.setWorkingTime(storedCart.working.from,storedCart.working.to);
+			appConfig.setWorkingTimeString(storedCart.working.string.from,storedCart.working.string.to);
 
 			_self.resetAsPerRule();
 		};

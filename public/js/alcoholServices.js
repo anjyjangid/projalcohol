@@ -681,10 +681,15 @@ AlcoholDelivery.service('cartValidate',['alcoholCart', '$state', '$q', '$mdToast
 
 		if(alcoholCart.$validations.cart.workingHrs.status===true){
 
-
 			$mdToast.show({
 
 					controller:function($scope){
+
+						var workingTime = appConfig.getWorkingTimeString();
+						
+						$scope.to = workingTime.to;
+						$scope.from = workingTime.from;
+
 						$scope.closeToast = function(){
 								$mdToast.hide();
 							}
