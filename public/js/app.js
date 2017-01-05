@@ -288,6 +288,14 @@ AlcoholDelivery.service('appConfig', [
     	};
     }
 
+    this.setWorkingTimeString = function(fromT,toT) {
+
+    	this.workingTimeString = {
+    		from : fromT,
+    		to : toT
+    	};
+    }
+
     this.updateWorkingHrs = function(){
     	var _self = this;
     	return $q(function(resolve,reject){
@@ -296,6 +304,7 @@ AlcoholDelivery.service('appConfig', [
 					
 					_self.serverTime = res.data.currentTime;
 					_self.setWorkingTime(res.data.from,res.data.to);
+					_self.setWorkingTimeString(res.data.string.from,res.data.string.to);
 
 					resolve();
 				}
@@ -307,6 +316,10 @@ AlcoholDelivery.service('appConfig', [
 
     this.getWorkingTime = function() {
     	return this.workingTime;
+    }
+
+    this.getWorkingTimeString = function() {
+    	return this.workingTimeString;
     }
 
     this.isServerUnderWorkingTime = function(fromServer) {
