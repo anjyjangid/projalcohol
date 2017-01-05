@@ -635,6 +635,8 @@ class ProductController extends Controller
 	public function getTest(Request $request){
 		
 		$timenow = strtotime('now');
+		$microtime = explode('.',microtime(true));
+		return response($microtime);
 		return $time = strtotime('now').' = '.str_replace(".","",microtime(true)); 
 		/*$jobs = DB::collection('jobs')->get();
 
