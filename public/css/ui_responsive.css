@@ -123,7 +123,8 @@
 	padding-top: 0;
 }
 .item-btmtitle.ng-binding {
-	height: 40px;
+	height: 45px;
+	overflow: hidden;
 	margin-top: 0;
 	text-align: center;
 	width: 100%;
@@ -1401,6 +1402,10 @@ body.menu-slider.in {
 .responsive-show-product-des{
 	display: none;
 }
+.closemenu{
+	display: none;
+
+}
 @media (min-width : 1024px) and (max-width : 1200px) {
   .christmas-mainouter.col-md-8 {
 	  padding-left: 0;
@@ -2646,9 +2651,11 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 }
 .combo_sliderProduct .productsoldbt,.combo_sliderProduct .productsoldbt:hover{
 	border-radius: 0px;
+	width: 100%;
 }
 .combo_sliderProduct #toastBounds{
 	margin-bottom: 0px !important;
+	width: 100%;
 }
 .combo_sliderProduct .md-tab{
 	font-size: 20px;
@@ -2762,6 +2769,15 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 }
 .owl-item .comboproductitems,.owl-item .comboproductitems:hover{
 	width: 100% !important;
+}
+
+.closemenu{
+	display: block;
+
+}
+.item-btmtitle.ng-binding {
+	height: 45px;
+	overflow: hidden;
 }
 }
 
@@ -3224,7 +3240,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	  padding-left: 50px;
   }
   .checkboxtotaldiv-top {
-	  padding: 15px 20px 15px 0;
+	  padding: 15px 0px 15px 0;
   }
   .checkboxtotaldiv-title {
 	  width: 75%
@@ -4200,6 +4216,7 @@ md-dialog .md-dialog-content{
 }
 .product-listcover2 #toastBounds,.combo_sliderProduct #toastBounds{
 	margin-bottom: 0px;
+	width: 100%;
 }
 .combo_sliderProduct .productsoldbt img{
 	float: none;
@@ -4253,8 +4270,9 @@ md-dialog .md-dialog-content{
 .combo_sliderProduct .cartbtn{
 	font-size: 13px;
 }
-.productsoldbt, .productsoldbt:hover{
+.combo_sliderProduct .productsoldbt,.combo_sliderProduct .productsoldbt:hover{
 	font-size: 13px;
+	width: 100%;
 }
 .combo_sliderProduct .saletags-list{
 	font-size: 12px;
@@ -4318,6 +4336,22 @@ md-dialog .md-dialog-content{
 	  max-height: 40px;
 	  
   }
+  .closemenu{
+	display: block;
+
+}
+
+.closemenu{
+	display: block;
+
+}
+.thumbnailheightset{
+	text-align: center;
+}
+.item-btmtitle.ng-binding {
+	height: 45px;
+	overflow: hidden;
+}
 }
 
 @media only screen and (width : 640px) {
@@ -4840,6 +4874,9 @@ md-tooltip{
   .cover_cashdiv_left.paymenttype.active {
 	  width: 100%;
   }
+  .cover_cashdiv_left{
+  	width: 100%	
+  }
   .cover_creadetcard_right {
 	  width: 100%
   }
@@ -5264,6 +5301,10 @@ md-tooltip{
 }
 .ro_desc{
 	width: 70%;
+}
+.closemenu{
+	display: block;
+
 }
 }
 
