@@ -119,14 +119,19 @@ AlcoholDelivery.directive('sideBar', function() {
 				FB.login(function(response) {
 				    if (response.authResponse) {				     
 				     FB.api('/me', {fields: 'first_name,last_name,locale,email,birthday'},function(result) {
-				       	//console.log(result);
-				       	$mdDialog.hide();
+				       	//console.log(result);				       	
 						$http.post('/auth/registerfb',result)
 						.success(function(res){
+							$mdDialog.hide();
 							$scope.loginSuccess(res);
 						}).error(function(erresult){
-							$scope.socialError = erresult;
-							$scope.signupOpen();
+							if(typeof erresult.suspended != 'undefined'){
+								$scope.login.errors = erresult;
+							}else{
+								$mdDialog.hide();	
+								$scope.socialError = erresult;
+								$scope.signupOpen();
+							}
 						});
 				     });
 				    } else {
@@ -1083,8 +1088,8 @@ AlcoholDelivery.directive('sideBar', function() {
 						}
 					},
 					templateUrl: '/templates/toast-tpl/notify-template.html',
-					parent : $document[0].querySelector('#toastBounds'),
-					position: 'top left',
+					//parent : $document[0].querySelector('#toastBounds'),
+					position: 'bottom right',
 					hideDelay:0
 				});
 
