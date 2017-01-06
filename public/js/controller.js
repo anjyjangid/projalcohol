@@ -186,9 +186,24 @@ AlcoholDelivery.controller('AppController',
 					$scope.verification.cage = currentYear - $scope.verification.userYear;
 				});
 
-				$scope.verifyage = function(){					
-					$cookies.remove('ageverfication');
-					$cookies.putObject('ageverfication', {month:$scope.verification.userMonth,day:$scope.verification.userDay,year:$scope.verification.userYear});
+				$scope.verifyage = function(){		
+
+					$cookies.remove('ageverfication');					
+    				
+    				if($scope.verification.rememberme){
+    					// this will set the expiration to 12 months
+						var now = new Date();
+    					now = new Date(now.getFullYear()+1, now.getMonth(), now.getDate());
+    					$cookies.putObject('ageverfication', 
+							{month:$scope.verification.userMonth,day:$scope.verification.userDay,year:$scope.verification.userYear},
+							{expires:now}
+						);
+    				}else{
+						$cookies.putObject('ageverfication', 
+							{month:$scope.verification.userMonth,day:$scope.verification.userDay,year:$scope.verification.userYear}							
+						);    					
+    				}
+
 					$mdDialog.hide();
 				};
 

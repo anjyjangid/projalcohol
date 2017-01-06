@@ -216,8 +216,9 @@ class OrderController extends Controller
 	public function getOrderdetail(Request $request,$reference){
 
 		//return strtotime('now').' = '.(round(microtime(true) * 1000));
-		$order = Orders::where('reference','=',$reference)->first();		
-
+		
+		$order = Orders::where('reference','=',$reference)->first();
+				
 
 		//return response($order);
 		//$logupdate = [];

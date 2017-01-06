@@ -405,8 +405,7 @@ AlcoholDelivery.service("ClaimGiftCard",['$http', '$q', 'UserService', '$rootSco
 
 	return {
 
-		init : function (token){
-
+		init : function (token){			
 			var _self = this;
 			_self.store(token);
 
