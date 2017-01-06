@@ -3,7 +3,7 @@
  * Copyright 2013-2016 Start Bootstrap
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
  */
-
+@media  (max-width : 1023px) {
 body {
 	/*overflow:auto;*/
 	overflow-y: scroll;
@@ -323,4 +323,5 @@ ul.mobilesidebar li.active:not(.open) ul{
 .mobilemenu  a{
 	float: left;
 
+}
 }
