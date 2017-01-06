@@ -1088,8 +1088,8 @@ AlcoholDelivery.directive('sideBar', function() {
 						}
 					},
 					templateUrl: '/templates/toast-tpl/notify-template.html',
-					parent : $document[0].querySelector('#toastBounds'),
-					position: 'top left',
+					//parent : $document[0].querySelector('#toastBounds'),
+					position: 'bottom right',
 					hideDelay:0
 				});
 
