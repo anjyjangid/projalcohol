@@ -12,12 +12,17 @@
       <div class="modal-body alcohabody">
         <div class="alcohal_regisemailcvr">
           <div class="alcohal_regissigntxt" hide-xs hide-sm>Login to Your Account</div>
+          <div ng-if="login.errors.suspended" class="fullwidth">
+              <div class="alert alert-danger">
+                {{login.errors.suspended}}
+              </div>
+          </div>
           <div class="registeremailcvr" ng-class="{'has-error':login.errors.email[0]}">
             <label>Email Address</label>
             <input type="text" ng-model="login.email" class="alcohalrestertextbox form-control" placeholder="Email Address" />
             <span class="help-block" ng-bind="login.errors.email[0]"></span> 
             <div align="center">
-              <a class="pointer" ng-if="login.errors.reverification[0]" ng-click="resendverification()">Resend verification email</a>
+              <a class="pointer" ng-if="login.errors.reverification[0]" ng-click="resendverification()">Resend verification email</a>              
             </div>
           </div>
           <div class="registeremailcvr" ng-class="{'has-error':login.errors.password[0]}">
