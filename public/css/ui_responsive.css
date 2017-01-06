@@ -1406,6 +1406,10 @@ body.menu-slider.in {
 	display: none;
 
 }
+#dont-miss-popup{
+	max-height: 100% !important;
+
+}
 @media (min-width : 1024px) and (max-width : 1200px) {
   .christmas-mainouter.col-md-8 {
 	  padding-left: 0;
