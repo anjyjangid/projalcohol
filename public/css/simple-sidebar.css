@@ -272,7 +272,7 @@ body.md-dialog-is-showing{
 }
 
 ul.mobilesidebar li.active:not(.open) ul{
-	display: none;
+	display: block;
 }
 .username.dropdown-toggle.ng-binding {
     max-width: 100%;
