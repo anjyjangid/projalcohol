@@ -1827,9 +1827,9 @@ ui-sref {
 	background: #aa00ff;
 }
 .addcart span {
-	background: url(../images/sprite.png) no-repeat -381px 0;
+	background: url(../images/add-cart-img.png) no-repeat 0px 2px;
 	width: 19px;
-	height: 17px;
+	height: 20px;
 	display: inline-block;
 	float: left;
 	margin:4px 3px 0 12px;
@@ -6791,4 +6791,7 @@ padding: 16px 16px 33px;
 .procatname{
 	white-space: normal;
     line-height: normal;
+}
+md-toast.notify.bottom{
+	float: right !important;
 }

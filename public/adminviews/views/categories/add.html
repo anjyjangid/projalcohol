@@ -254,8 +254,8 @@
 									<div class="col-md-3">
 										<div class="fileinput fileinput-new" data-provides="fileinput">
 											<div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-												<img ng-if="!category.thumb" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Thumbnail" alt=""/>
-												<img ng-if="category.thumb" ng-src="/assets/resources/category/thumb/200/{{category.thumb}}" err-src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Thumbnail" class="img-responsive" alt="">
+												<img ng-if="!category.thumb" src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Thumbnail" alt=""/>
+												<img ng-if="category.thumb" ng-src="/assets/resources/category/thumb/200/{{category.thumb}}" err-src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Thumbnail" class="img-responsive" alt="">
 											</div>
 											<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
 											</div>
@@ -273,29 +273,7 @@
 										</div>															
 										<span class="help-block" ng-show="errors.thumb[0]">Thumbnail is required and must be in jpg or png format</span>					
 									</div>											
-									<!-- <div class="col-sm-3" ng-if="!category.ancestors" ng-class="{'has-error':errors.lthumb[0]}">
-										<label class="control-label">listing Thumbnail</label>
-										<div class="form-group">												
-											<div class="fileinput fileinput-new" data-provides="fileinput">
-												<div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-													<img ng-if="!category.lthumb" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Listing" alt=""/>
-													<img ng-if="category.lthumb" ng-src="/assets/resources/category/lthumb/400/{{category.lthumb}}" err-src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Listing" class="img-responsive" alt="">
-												</div>
-												<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
-												</div>
-												<div>
-													<span class="btn default btn-file">
-													<span class="fileinput-new">Select</span>
-													<span class="fileinput-exists">Change</span>
-													<input type="file" accept="image/*" name="lthumb" placeholder="thumbnail" class="form-control" file-model="category.lthumb"/>
-													</span>
-													<a href="#" class="btn default fileinput-exists" data-dismiss="fileinput">
-													Remove </a>
-												</div>
-											</div>
-											<span class="help-block" ng-show="errors.lthumb[0]">Listing thumbnail is required and must be in jpg or png format</span>					
-										</div>	
-									</div> -->
+									
 								</div>								
 							</div>						
 							<div class="form-horizontal">

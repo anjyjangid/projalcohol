@@ -434,10 +434,10 @@ class Cart extends Moloquent
 
 	public function setReference(){
 
-		$offset = strtotime('+8 hours'); //ADD OFFSET SO TIME WILL BE EQUAL TO SINGAPORE TIMEZONE 
+		$offset = strtotime('+8 hours');//ADD OFFSET SO TIME WILL BE EQUAL TO SINGAPORE TIMEZONE
 		//$this->updated_at
 		$reference = "ADSG";
-		$reference.= abs((int)date("his",$offset) - 123456);		
+		$reference.= abs((int)date("his",$offset) - 123456);	
 
 		$reference.="O";			
 		$reference.= (string)date("Hi",$offset);

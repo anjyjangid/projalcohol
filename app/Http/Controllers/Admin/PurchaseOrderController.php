@@ -231,7 +231,7 @@ class PurchaseOrderController extends Controller
 
             $hasUpdate = false;
             $isComplete = true;
-            $received = false;
+            $receivedFlag = false;
 
             //CURRENT USER 
             $user = Auth::user('admin');
@@ -305,8 +305,10 @@ class PurchaseOrderController extends Controller
                 if($products[$i]['order'] > 0)
                     $isComplete = false;
                 if($products[$i]['received'] > 0)
-                    $received = true;
+                    $receivedFlag = true;
             }
+
+            //return response([$received,$products],200);
 
             //INSERT INVENTORY LOG
             if($inventoryLog){
@@ -317,7 +319,7 @@ class PurchaseOrderController extends Controller
             
             if($isComplete)
                 $status = 2;
-            else if($received)
+            else if($receivedFlag)
                 $status = 1;
             else
                 $status = 0;
