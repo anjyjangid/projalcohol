@@ -2559,7 +2559,7 @@ jprd($product);
 				"_id" => $gift['_id'],
 				'_uid'=> new MongoId(),
 				
-				"recipient" => $inputs['recipient'],
+				"recipient" => isset($inputs['recipient'])?$inputs['recipient']:['name'=>"",'message'=>""],
 				"price" => $gift['price'],
 				"title"=> $gift['title'],
 				"subTitle"=> $gift['subTitle'],

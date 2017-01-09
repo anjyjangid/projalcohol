@@ -1811,8 +1811,8 @@ AlcoholDelivery.controller('CartPaymentController',[
 								text:"Please enter cvv for the selected card.",
 							});
 						}else{
-							$deployCart = true;							
-						}						
+							$deployCart = true;
+						}
 					}
 				}
 
@@ -1826,8 +1826,7 @@ AlcoholDelivery.controller('CartPaymentController',[
 				);
 			}
 
-		}		
-
+		}
 }]);
 
 AlcoholDelivery.controller('CartReviewController',[

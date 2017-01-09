@@ -530,6 +530,44 @@ AlcoholDelivery.directive('sideBar', function() {
     };
 })
 
+.directive('onlyCurrency', function () {
+    return {
+      require: 'ngModel',
+      restrict: 'A',
+      link: function (scope, element, attr, ctrl) {
+        function inputValue(val) {
+          if (val) {
+
+            var digits = val.replace(/.*?(\d+(\.\d{0,2})?)?.*/g, '$1');
+
+			if(attr.max){
+				var max = parseFloat(attr.max);
+				
+				if(digits>max){
+
+					var newVal = ctrl.$modelValue || 0;
+					newVal = newVal.toString();
+					//console.log("newVal",newVal);
+					ctrl.$setViewValue(newVal);
+              		ctrl.$render();
+              		return parseInt(newVal,10);
+				}
+			}
+
+            if (digits !== val) {
+              ctrl.$setViewValue(digits);
+              ctrl.$render();
+            }
+
+            return parseFloat(digits);
+          }
+          return undefined;
+        }
+        ctrl.$parsers.push(inputValue);
+      }
+    };
+})
+
 .directive('useCredits',['UserService', 'alcoholCart',function(UserService, alcoholCart){
 	return {
 		restrict :'E',
@@ -568,7 +606,7 @@ AlcoholDelivery.directive('sideBar', function() {
 						'</md-tooltip>'+
 						'</span></div>'+
 						'<div class="checkboxtotaldiv-text-font-size negative-field" ng-class="">'+
-							'<input type="text" id="credits-input" max="{{maxCredits}}" only-digits ng-model="$parent.credit">'+
+							'<input type="text" id="credits-input" max="{{maxCredits}}" only-currency ng-model="$parent.credit">'+
 						'</div>'+
 					'</div>'
 	}
