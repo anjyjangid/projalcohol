@@ -93,7 +93,7 @@ class CartController extends Controller
 
 		}else{
 
-			$userCart = Cart::where("user","=",new MongoId($user->_id))->first();			
+			$userCart = Cart::where("user","=",new MongoId($user->_id))->first();
 
 			$cart = new Cart;
 			$isCreated = $cart->generate();
@@ -106,6 +106,8 @@ class CartController extends Controller
 				try{
 
 					$cart->save();
+					$cart->setWorkingHrs();
+					
 					return response(["success"=>true,"message"=>"cart created successfully","cart"=>$cart->toArray()],200);
 
 				}catch(\Exception $e){

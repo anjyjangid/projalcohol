@@ -1423,12 +1423,13 @@ AlcoholDelivery.service('alcoholCart', [
 			}
 			
 			var totalWithoutPromotion = total;
+
 			this.nonEligiblePromotionsCheck = $timeout(function() {
 
-				_self.removeNonEligiblePromotions(totalWithoutPromotion);				
+				_self.removeNonEligiblePromotions(totalWithoutPromotion);
 				_self.resetAsPerRule();
 
-			}, 500, false);
+			}, 250, false);
 
 			angular.forEach(cart.promotions, function (promotion) {
 				total += parseFloat(promotion.getPrice());
