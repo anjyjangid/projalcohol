@@ -217,6 +217,9 @@ class OrderController extends Controller
 
 		//return strtotime('now').' = '.(round(microtime(true) * 1000));
 		$order = Orders::where('reference','=',$reference)->first();		
+		
+		if(!$order)
+			$order = Orders::find($reference);
 
 
 		//return response($order);
