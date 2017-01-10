@@ -776,9 +776,9 @@ class OrderController extends Controller
 
 		$cart = Cart::findUpdated($cartKey,$creator->_id);
 
-		if(!isset($cart->reference)){
+		/*if(!isset($cart->reference)){
 			$cart->setReference();
-		}
+		}*/
 		
 
 		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){
