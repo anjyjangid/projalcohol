@@ -48,6 +48,9 @@
 								<th width="">
 									Type
 								</th>
+								<th width="">
+									Used
+								</th>
 								<th width="10%">
 									Status
 								</th>
@@ -110,6 +113,12 @@
 						mData: null,
 						mRender: function(data, type, full) {
 							return (data.type==0)?'Discount':'Fixed';
+						},
+						orderable:true
+					},{
+						mData: null,
+						mRender: function(data, type, full) {
+							return data.used_count;
 						},
 						orderable:true
 					},{

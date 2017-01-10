@@ -39,7 +39,7 @@ function GOM(obj)
 }
 
 function mongoIdToStr(id){
-
+console.log(id);
 	if(typeof id.$id !== 'undefined'){ 
 		id = id.$id
 	}

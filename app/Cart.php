@@ -96,7 +96,7 @@ class Cart extends Moloquent
 
 		$toMinute = (int)$working['settings']['to']%60;
 		$toMinute = str_pad($toMinute, 2, "0", STR_PAD_LEFT);
-		$toTime = $date." ".((int)($working['settings']['to']/60)-1).":".$toMinute.":00";
+		$toTime = $date." ".((int)($working['settings']['to']/60)).":".$toMinute.":00";
 		$toTimeString = $date." ".((int)($working['settings']['to']/60)).":".$toMinute.":00";
 
 		$setting = [
