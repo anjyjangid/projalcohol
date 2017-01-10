@@ -180,11 +180,15 @@ AlcoholDelivery.controller('AppController',
 					var currentYear = new Date().getFullYear();
 					return currentYear - $scope.verification.userYear;
 				}*/
-
-				$scope.$watch('verification.userYear',function(newV,oldV){
+				$scope.checkYear = function(){
+					
 					var currentYear = new Date().getFullYear();
 					$scope.verification.cage = currentYear - $scope.verification.userYear;
-				});
+				}
+				
+				/*$scope.$watch('verification.userYear',function(newV,oldV){
+				
+				});*/
 
 				$scope.verifyage = function(){		
 

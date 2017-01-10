@@ -6795,3 +6795,19 @@ padding: 16px 16px 33px;
 md-toast.notify.bottom{
 	float: right !important;
 }
+.date-selectbox{
+	background:#ffc412  url(../images/producticon2.png) no-repeat right center;
+	border: none;
+	box-shadow: none;
+	position: relative;
+	width: 100px;
+	cursor:pointer !important;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	text-overflow: '';
+	appearance: none;
+	height:50px;
+}
+.date-selectbox:focus{
+	box-shadow: none;
+}
