@@ -36,6 +36,7 @@ class UserController extends Controller
 
 		$invalidcredentials = false;
 		$reverification = 0;
+		$suspended = false;
 
 		// if the credentials are wrong
 		if (!Auth::attempt('user',$credentials)) {
@@ -44,11 +45,18 @@ class UserController extends Controller
 
 		$user = Auth::user('user');
 
+		if($user && $user->status!=1){
+			$suspended = 'Your account has been suspended by the site administrator.';			
+			Auth::logout();			
+			return response(['suspended' => $suspended], 422);
+		}
+
 		if($user && $user->verified!=1){
 			$invalidcredentials = 'You need to verify your email. Click below link to resend verification email';
 			$reverification = 1;
 			Auth::logout();
 		}
+
 		
 		if ($validator->fails() || $invalidcredentials){
 			
@@ -57,7 +65,7 @@ class UserController extends Controller
 				$validator->errors()->add('password',' ');
 				if($reverification == 1)
 					$validator->errors()->add('reverification',$reverification);
-			}
+			}			
 
 			return response($validator->errors(), 422);
 		}

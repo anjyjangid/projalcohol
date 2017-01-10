@@ -104,8 +104,12 @@ class AuthController extends Controller
 			return response('We are unable to retrieve your email address via Facebook login to complete the sign up. Please change the settings in Facebook or signup via your email address on Alcohol Delivery!',422);
 		
 		$checkUser = User::where('fbid', '=', $data['id'])->orWhere('email', $data['email'])->first();
-		
+
 		if($checkUser){
+			if($checkUser->status!=1){
+				$suspended = 'Your account has been suspended by the site administrator.';			
+				return response(['suspended' => $suspended],422);
+			}
 			$checkUser->fbid = $data['id'];
 			$checkUser->email = $data['email'];
 			$checkUser->name = $name;	

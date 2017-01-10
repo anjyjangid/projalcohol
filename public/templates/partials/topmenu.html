@@ -24,12 +24,13 @@
                       <div class="ro_items nomargin nopad">
                         <div class="ro_pic">
                           <img err-src="asset/i/defaultImage.png" src="products/i/200/{{item.imageFiles | getProductThumb}}" class="img-responsive img-responsive-h"> 
-                        </div>
-                        <!-- md-highlight-text="ctrl.searchText" md-highlight-flags="^i" -->                      
+                        </div>                                              
                         <div class="ro_desc pull-left"> 
                           {{item.name}} 
                           <div>{{item.shortDescription}}</div>
-                          <div class="procatname"><small>{{item.parentCategory.cat_title}}</small></div>                          
+                          <div class="procatname">
+                            <small>{{item.parentCategory.cat_title}}</small>
+                          </div>
                         </div>
                       </div> 
                     </md-item-template>
@@ -42,12 +43,12 @@
           <a ng-click="searchbar(0); openSearch=!openSearch" class="search_close">&times;</a> </div>
         <div ng-click="openMenu()" class="menu-icon"> <span class="line"></span> <span class="line"></span> <span class="line"></span> </div>
         <div class="col-md-2 homecallus_cover"> <a href="tel:+6592445533">
-          <div class="callshape">            
+          <div class="callshape">
               <div class="homecallus">Call us now</div>
               <div class="homechilled">9-chilled</div>
-              <div class="homechilled">9-2445533</div>            
+              <div class="homechilled">9-2445533</div>
           </div>
-          </a> 
+          </a>
         </div>
         <div class="col-md-10 top-logo-sideacnt-cover text-center">
           <div class="signuplogin_cover">
@@ -165,166 +166,3 @@
     </div>
   </div>
 </nav>
-
-<!-- <div id="google_translate_element"></div><script type="text/javascript">
-function googleTranslateElementInit() {
-new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,zh-CN', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
-}
-</script><script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script> --> 
-
-<!-- Modal -->
-<div class="modal" id="register" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
-  <div class="modal-dialog alcohal_registermain" role="document">
-    <div class="modal-content alcohalregiterconntcvr">
-      <div class="modal-header alcohalhdr">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      </div>
-      <form ng-submit="signupSubmit()" name="myForm">
-        <div class="modal-body alcohabody">
-          <div class="alcohal_regisemailcvr">
-            <div class="alcohal_regissigntxt">Sign Up for Free</div>            
-            <div class="registeremailcvr" ng-class="{'has-error':signup.errors.email[0]}">
-              <input type="email" name="email" ng-model="signup.email" class="alcohalrestertextbox form-control" placeholder="Email Address" ng-model="formData.email">
-              <!-- <span style="color:red; clear:both" ng-show="myForm.email.$dirty && myForm.email.$invalid">
-								<span ng-show="!myForm.email.$error.required && myForm.email.$error.email && myForm.email.$dirty">invalid email</span>
-							</span> --> 
-              <span class="help-block" ng-bind="signup.errors.email[0]"></span> </div>
-            <div class="registeremailcvr" ng-class="{'has-error':signup.errors.password[0]}">
-              <input type="password" ng-model="signup.password" class="alcohalrestertextbox form-control" placeholder="Password">
-              <span class="help-block" ng-bind="signup.errors.password[0]"></span> </div>
-            <div class="registeremailcvr" ng-class="{'has-error':signup.errors.password_confirmation[0]}">
-              <input type="password" ng-model="signup.password_confirmation" class="alcohalrestertextbox form-control" placeholder="Confirm Password">
-              <span class="help-block" ng-bind="signup.errors.password_confirmation[0]"></span> </div>
-            <div class="registeremailcvr" ng-class="{'has-error':signup.errors.terms[0]}"> 
-              <!--  <input type="checkbox" class="" ng-model="signup.terms" name="regis" id="regis">-->
-              
-              <md-checkbox ng-model="signup.terms" aria-label="leaveatdoor-checkbox" name="regis" id="regis" class="md-warn md-align-top-left">
-              <div class="register_checktext"> By submitting this form, I confirm that I have read and agree to Alcohol Delivery’s <a target="_blank" ui-sref="cmsLayout.pages({slug:'terms-conditions'})">Terms of Use</a> and <a target="_blank" ui-sref="cmsLayout.pages({slug:'security-privacy-policy'}) ">Privacy Policy</a> <span class="help-block" ng-bind="signup.errors.terms[0]"></span></div>
-              </md-checkbox>
-              <label for="regis"><span></span></label>
-              
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer alcohalfotter">
-          <div class="alcohal_regisemailcvr">
-            <button ng-disabled="loading" type="submit" class="alcohalfootersign">Sign Up</button>
-            
-            <!-- <button type="submit" ng-disabled="myForm.user.$dirty && myForm.user.$invalid ||  myForm.email.$dirty && myForm.email.$invalid" class="alcohalfootersign">Sign Up</button> --> 
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-<div class="modal" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
-  <div class="modal-dialog alcohal_registermain" role="document">
-    <div class="modal-content alcohalregiterconntcvr">
-      <div class="modal-header alcohalhdr">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>--> 
-      </div>
-      <form ng-submit="loginSubmit()" name="loginForm">
-        <div class="modal-body alcohabody">
-          <div class="alcohal_regisemailcvr">
-            <div class="alcohal_regissigntxt">Login to Your Account</div>
-            <div class="registeremailcvr" ng-class="{'has-error':errors.email[0]}">
-              <label>Email Address</label>
-              <input type="text" ng-model="login.email" class="alcohalrestertextbox form-control" placeholder="Email Address" />
-              <span class="help-block" ng-bind="errors.email[0]"></span> </div>
-            <div class="registeremailcvr" ng-class="{'has-error':errors.password[0]}">
-              <input autocomplete="off" type="password" ng-model="login.password" class="alcohalrestertextbox form-control" placeholder="Password" />
-              <span class="help-block" ng-bind="errors.password[0]"></span> </div>
-            <div class="fbloginDiv">
-              <div class="fblogin" id="login-btn"  align="center"> <img ng-click="loginToggle()" src="img/facebook_login.png"> </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer alcohalfotter">
-          <div class="alcohal_regisemailcvr">
-            <div class="alcohallogin_forgettxt"> <a data-dismiss="modal" data-target="#forgot_password" data-toggle="modal" href="javascript:;">Forgot Password?</a> </div>
-            <button ng-disabled="loading" type="submit" class="alcohalfootersign alcohal_fotrloginbox">Log in</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-<div class="modal" id="reset" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
-  <div class="modal-dialog alcohal_registermain" role="document">
-    <div class="modal-content alcohalregiterconntcvr">
-      <div class="modal-header alcohalhdr">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>--> 
-      </div>
-      <form ng-submit="resetSubmit()" name="resetForm">
-        <div class="modal-body alcohabody">
-          <div class="alcohal_regisemailcvr">
-            <div class="alcohal_regissigntxt">Reset Your Password</div>
-            <div class="registeremailcvr" ng-class="{'has-error':reset.errors.password[0]}">
-              <label>New Password</label>
-              <input type="password" ng-model="reset.password" class="alcohalrestertextbox form-control" placeholder="New Password" />
-              <span class="help-block" ng-bind="reset.errors.password[0]"></span> </div>
-            <div class="registeremailcvr" ng-class="{'has-error':reset.errors.password_confirmation[0]}">
-              <label>Confirm Password</label>
-              <input autocomplete="off" type="password" ng-model="reset.password_confirmation" class="alcohalrestertextbox form-control" placeholder="Confirm Password" />
-              <span class="help-block" ng-bind="reset.errors.password_confirmation[0]"></span> </div>
-          </div>
-        </div>
-        <div class="modal-footer alcohalfotter">
-          <div class="alcohal_regisemailcvr">
-            <div class="alcohallogin_forgettxt"> <a data-dismiss="modal" data-target="#login" data-toggle="modal" href="javascript:;">Login</a> </div>
-            <button ng-disabled="loading" type="submit" class="alcohalfootersign alcohal_fotrloginbox">Reset</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-<div class="modal" id="forgot_password" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
-  <div class="modal-dialog alcohal_registermain" role="document">
-    <div class="modal-content alcohalregiterconntcvr">
-      <div class="modal-header alcohalhdr">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>--> 
-      </div>
-      <form ng-submit="forgotSubmit()" name="loginForm">
-        <div class="modal-body alcohabody">
-          <div class="alcohal_regisemailcvr">
-            <div class="alcohal_regissigntxt">Forget Password ?</div>
-            <div class="registeremailcvr" ng-class="{'has-error':forgot.errors.email[0]}">
-              <label>Enter your e-mail address below to reset your password. </label>
-              <input type="text" ng-model="forgot.email" class="alcohalrestertextbox form-control" placeholder="Email Address" />
-              <span class="help-block" ng-bind="forgot.errors.email[0]"></span> 
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer alcohalfotter">
-          <div class="alcohal_regisemailcvr">
-            <button ng-disabled="loading" type="submit" class="alcohalfootersign">Submit</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-<div class="modal" id="forgot_password_sent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-easein="perspectiveLeftIn">
-  <div class="modal-dialog alcohal_registermain" role="document">
-    <div class="modal-content alcohalregiterconntcvr">
-      <div class="modal-header alcohalhdr">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>--> 
-      </div>
-      <div class="modal-body alcohabody">
-        <div class="alcohal_regisemailcvr">
-          <div class="alcohal_regissigntxt">{{forgot.message}}</div>
-        </div>
-      </div>
-      <div class="modal-footer alcohalfotter">
-        <div class="alcohal_regisemailcvr">
-          <button type="button" data-dismiss="modal" class="alcohalfootersign alcohal_fotrloginbox">OK</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>

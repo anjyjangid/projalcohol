@@ -1,12 +1,12 @@
 AlcoholDelivery.service('alcoholCart', [
 			'$log','$rootScope', '$window', '$document', '$http', '$state', '$q', '$mdToast', '$filter', 
-			'$timeout', '$interval','sweetAlert', 
+			'$timeout', '$interval', 'appConfig', 'sweetAlert', 
 			'alcoholCartItem', 'alcoholCartLoyaltyItem', 
 			'alcoholCartPackage','promotionsService','alcoholCartPromotion', 
 			'alcoholCartGiftCard', 'alcoholCartGift', 
 			'alcoholCartSale', 'alcoholCartCreditCard','UserService'
 	,function ($log, $rootScope, $window, $document, $http, $state, $q, $mdToast, $filter, 
-			$timeout, $interval, sweetAlert, 
+			$timeout, $interval, appConfig, sweetAlert, 
 			alcoholCartItem, alcoholCartLoyaltyItem, 
 			alcoholCartPackage, promotionsService, alcoholCartPromotion, 
 			alcoholCartGiftCard, alcoholCartGift,
@@ -73,6 +73,26 @@ AlcoholDelivery.service('alcoholCart', [
 			couponOutput:false,
 			applied:false,
 			message:""
+		};
+		this.$validations = {
+
+			"cart": {
+
+				'workingHrs':{
+					status:false,
+					message:"1 Hr delivery is not allowed"
+				}
+
+			},
+			"address": {
+
+				'allowed':{
+					status:true,
+					message:"unable to deliver on selected address"
+				}
+
+			}
+
 		};
 
 	};
@@ -1190,9 +1210,10 @@ AlcoholDelivery.service('alcoholCart', [
 
 			if(this.$cart.credits){
 				
+				console.log("creditsDiscount",this.$cart.discount.credits)
 				var creditsDiscount = parseFloat(this.$cart.discount.credits);
-				
 				if(type==='credits'){
+					console.log("creditsDiscount",creditsDiscount.toFixed(2));
 					return creditsDiscount.toFixed(2);
 				}
 
@@ -1402,12 +1423,13 @@ AlcoholDelivery.service('alcoholCart', [
 			}
 			
 			var totalWithoutPromotion = total;
+
 			this.nonEligiblePromotionsCheck = $timeout(function() {
 
-				_self.removeNonEligiblePromotions(totalWithoutPromotion);				
+				_self.removeNonEligiblePromotions(totalWithoutPromotion);
 				_self.resetAsPerRule();
 
-			}, 500, false);
+			}, 250, false);
 
 			angular.forEach(cart.promotions, function (promotion) {
 				total += parseFloat(promotion.getPrice());
@@ -1663,6 +1685,8 @@ AlcoholDelivery.service('alcoholCart', [
 						inCart.setRQuantity(resProduct.chilled.quantity,resProduct.nonchilled.quantity);
 						inCart.setTQuantity(resProduct.quantity);
 						inCart.setRemainingQty(resProduct.remainingQty);
+
+						inCart.setPrice();
 
 					}else{
 						_self.removeItemById(id);
@@ -2104,15 +2128,25 @@ AlcoholDelivery.service('alcoholCart', [
 
 		this.setSmokeStatus = function(status){
 
+			var _self = this;
 			var status = Boolean(status);
 
-			this.$cart.service.smoke.status = status;
-			
-			if(!status){
-				this.removeSmoke();
+			if(typeof status !=="undefined"){
+				
+				_self.$cart.service.smoke.status = status;
+				if(!status){
+					_self.removeSmoke();
+				}				
 			}
 
-			this.deployCart();
+			this.toggleSmokeAndExpress("smoke").then(
+				function (successRes) {
+					_self.deployCart();
+				},
+				function (errorRes) {
+
+				}
+			)
 
 		}
 
@@ -2240,6 +2274,10 @@ AlcoholDelivery.service('alcoholCart', [
 			}
 
 		}
+		
+		this.getDeliveryType = function () {
+			return this.$cart.delivery.type;
+		}
 
 		this.setDeliveryType = function(status){
 			
@@ -2317,14 +2355,74 @@ AlcoholDelivery.service('alcoholCart', [
 		}
 
 		this.setExpressStatus = function(status){
-
+			var _self = this;
 			if(typeof status !=="undefined"){
-
-				this.$cart.service.express.status = status;
-
+				_self.$cart.service.express.status = status;
 			}
+			this.toggleSmokeAndExpress("express").then(
+				function (successRes) {
+					_self.deployCart();
+				},
+				function (errorRes) {
 
-			this.deployCart();
+				}
+			)			
+		}
+
+		this.toggleSmokeAndExpress = function (currentSetFor) {
+
+			var _self = this;
+			return $q(function (resolve,reject) {
+				
+				if(_self.getExpressStatus() && _self.getSmokeStatus()){
+
+					sweetAlert.swal({
+					
+						type:'warning',
+						title: "Cigarette service is not available for Express Delivery. Would you like to proceed?",
+						showCancelButton: true,
+						confirmButtonText: "Yes, proceed!",
+						cancelButtonText: "No, cancel",
+
+					}).then(
+
+						function (response) {
+
+							var msg = "Smoke removed";
+							if(currentSetFor==='express'){
+								_self.setSmokeStatus(false);
+							}else{
+								_self.setExpressStatus(false);
+								msg = "Express Delivery disabled";
+							}
+
+							sweetAlert.swal({
+							
+								type:'success',
+								title: msg,
+								timer: 2000,
+								showConfirmButton: false
+							}).done()
+
+							resolve();
+						},
+						function (error) {
+
+							if(currentSetFor==='express'){
+								_self.setExpressStatus(false);
+							}else{
+								_self.setSmokeStatus(false);
+							}
+							reject();
+						}
+					);
+
+				}
+
+				resolve();
+
+			})
+
 		}
 
 		this.getExpressStatus = function(){
@@ -2832,6 +2930,11 @@ AlcoholDelivery.service('alcoholCart', [
 				_self.$cart.couponData = storedCart.couponData;
 				_self.setCouponPrice(storedCart.couponData);
 			}
+			angular.appConfig = appConfig;
+
+			appConfig.setServerTime(storedCart.working.currentTime);
+			appConfig.setWorkingTime(storedCart.working.from,storedCart.working.to);
+			appConfig.setWorkingTimeString(storedCart.working.string.from,storedCart.working.string.to);
 
 			_self.resetAsPerRule();
 		};
@@ -2932,45 +3035,24 @@ AlcoholDelivery.service('alcoholCart', [
 
 		}
 
-		this.validate = function(){
+		this.validate = function(step){
 
 			var _self = this;
-			var cart = this.getCart();
-			var stepName = this.step;
-						
-			var cartSteps = angular.copy(this.stepsName)
-			
-			var stepValidating = "";
 
-			while(stepValidating !== stepName){
+			var cartSteps = this.stepsName[step-1];
 
-				stepValidating = cartSteps.shift();
-				// isValid = _self[stepValidating+'Validate']();
+			isValid = _self[cartSteps+'Validate']();
 
-			}
-
-			return false;
-		}		
-
-		this.cartValidate = function(){
-
-			return false;
-			// if(!cart.delivery.type){
-
-			// 	if(step){}
-
-			// }
+			return isValid;
 
 		}
-		this.addressValidate = function(){return false;}
-		this.deliveryValidate = function(){return false;}
-		this.paymentValidate = function(){return false;}
-		this.reviewValidate = function(){return false;}
+
+
 		this.validateSmoke = function(){
 
-			var isSmokeRequired = this.getSmokeStatus();			
+			var isSmokeRequired = this.getSmokeStatus();
 
-			if(isSmokeRequired){				
+			if(isSmokeRequired){
 
 				var isDeliveryAdvance = this.isDeliveryAdvance();
 
@@ -3011,23 +3093,40 @@ AlcoholDelivery.service('alcoholCart', [
 			return true;
 
 		}
+
 		this.checkoutValidate = function(){
 
 			var d = $q.defer();
 
-			// var subTotal = this.getSubTotal();
-
-			// if(!(subTotal>0)){
-			// 	d.reject("foo");
-			// }
-
 			var isValid = this.validateSmoke();
-			if(isValid){
-				d.resolve("every thing all right");
-			}else{
-				d.reject("notvalid");
-			}
 			
+			if(this.getDeliveryType()==0){
+
+				appConfig.isServerUnderWorkingTime(true).then(
+
+					function(res){
+
+						if(isValid){
+							d.resolve("every thing all right");
+						}else{
+							d.reject("notvalid");
+						}
+
+					},function(err){
+						d.reject("reload");
+					}
+				)
+
+			}else{
+
+				if(isValid){
+					d.resolve("every thing all right");
+				}else{
+					d.reject("notvalid");
+				}
+
+			}
+
 			return d.promise;
 		}
 
@@ -3215,7 +3314,6 @@ AlcoholDelivery.service('store', [
 					promotionsService.init().then(
 
 						function(){
-
 
 							$http.get("cart/"+deliverykey).success(function(response){
 
@@ -3416,10 +3514,13 @@ AlcoholDelivery.service("promotionsService",[
 }]);
 
 AlcoholDelivery.service('cartValidation',[
-			'alcoholCart', '$state', '$mdToast','UserService'
-	,function(alcoholCart, $state, $mdToast, UserService) {
+			'alcoholCart', '$state', '$document', '$timeout', '$mdToast','UserService', 'appConfig'
+	,function(alcoholCart, $state, $document, $timeout, $mdToast, UserService, appConfig) {
 
 	this.showToast = function (msg) {
+
+		//this.processValidators();
+
 		if(!msg) return false;
 		var toast = $mdToast.simple()
 			.textContent(msg)
@@ -3427,6 +3528,7 @@ AlcoholDelivery.service('cartValidation',[
 			.position("top right");
 		$mdToast.show(toast);
 		return true;
+
 	}
 
 	this.init = function(toState, fromState) {
@@ -3448,10 +3550,16 @@ AlcoholDelivery.service('cartValidation',[
 			]
 		  , step = states.indexOf(toState.name)
 		  , prevState = fromState?states.indexOf(fromState.name):0;
-
-		// return true;
-
+		
+		
 		if(step > 0) {
+
+			if(alcoholCart.getDeliveryType()==0 && !appConfig.isServerUnderWorkingTime()){
+
+				alcoholCart.$validations.cart.workingHrs.status = true;
+				$state.go(states[0],{},{reload: false});
+				return false;
+			}
 
 			var currUser = UserService.getIfUser();
 			if(currUser===false){
@@ -3486,7 +3594,6 @@ AlcoholDelivery.service('cartValidation',[
 
 		}
 
-
 		if(step > 1) {
 
 			if(!angular.isDefined(cart.delivery) ||
@@ -3506,15 +3613,19 @@ AlcoholDelivery.service('cartValidation',[
 
 		if(step == 2 && cart.delivery.type != 1){
 			if(prevState>2){
-				$state.go(states[1], {}, {reload: true});
+				$state.go(states[1], {}, {reload: false});
 			}else{
-				$state.go(states[3], {}, {reload: true});
+				$state.go(states[3], {}, {reload: false});
 			}
 			return false;
 		}
 
 		if(step > 2 && cart.delivery.type == 1){
-			if(typeof cart.timeslot == 'undefined' || typeof cart.timeslot.slotkey == 'undefined' || typeof cart.timeslot.datekey == 'undefined'){
+			if(typeof cart.timeslot == 'undefined' || 
+				typeof cart.timeslot.slotkey == 'undefined' || 
+				typeof cart.timeslot.datekey == 'undefined' || 
+						cart.timeslot.datekey==false || 
+						cart.timeslot.slotkey==false){
 				$state.go(states[2], {err: "Please select a Time slot!"}, {reload: true});
 				return false;
 			}
@@ -3528,5 +3639,9 @@ AlcoholDelivery.service('cartValidation',[
 		}
 
 		return true;
+
 	}
+
+	
+
 }]);

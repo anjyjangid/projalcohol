@@ -101,10 +101,13 @@ class CartController extends Controller
 			if(empty($userCart)){
 
 				$cart = Cart::find($isCreated->cart['_id']);
+
 				$cart->user = new MongoId($user->_id);
 				try{
 
 					$cart->save();
+					$cart->setWorkingHrs();
+					
 					return response(["success"=>true,"message"=>"cart created successfully","cart"=>$cart->toArray()],200);
 
 				}catch(\Exception $e){
@@ -115,6 +118,7 @@ class CartController extends Controller
 			}
 			else{
 
+				$userCart->setWorkingHrs();
 				$userCart = $userCart->toArray();
 
 				if(!isset($userCart['loyalty'])){
@@ -1078,6 +1082,7 @@ class CartController extends Controller
 						$userCart->delete();
 
 					}
+					$sessionCart->setWorkingHrs();
 					return (object)["success"=>true,"message"=>"cart merge successfully","cart"=>$sessionCart->toArray()];
 
 				}catch(\Exception $e){
@@ -1086,6 +1091,7 @@ class CartController extends Controller
 
 			}
 
+			$userCart->setWorkingHrs();
 			return (object)["success"=>true,"message"=>"cart merge successfully","cart"=>$userCart->toArray()];
 
 		}else{
@@ -2129,24 +2135,27 @@ jprd($product);
 		// 	return response(["success"=>false,"message"=>"Cart is already freezed"],405); //405 => method not allowed
 
 		// }
+		
+		//$isValid = $this->validateCart($cartArr);
+		$isValid['valid'] = true;
+
+		if($cart->delivery['type'] ==0 && !$cart->isUnderWorkingHrs()){
+			$isValid['valid'] = false;
+		}
+
+		if($isValid['valid']==false){
+
+			// $cart->freeze = false;
+
+			// $cart->save();
+
+			return response(["message"=>"Cart is not valid"],405); //405 => method not allowed
+
+		}
 
 		$cart->freeze = true;
 
 		$cart->save();
-
-		$cartArr = $cart->toArray();
-
-		//$isValid = $this->validateCart($cartArr);
-		$isValid['valid'] = true;
-
-		if($isValid['valid']==false){
-
-			$cart->freeze = false;
-
-			$cart->save();
-
-			return response(["success"=>false,"valid"=>false,"message"=>"Cart is not valid"],405); //405 => method not allowed
-		}
 
 		// $productWithCount = $cartObj->getProductIncartCount();
 
@@ -2552,7 +2561,7 @@ jprd($product);
 				"_id" => $gift['_id'],
 				'_uid'=> new MongoId(),
 				
-				"recipient" => $inputs['recipient'],
+				"recipient" => isset($inputs['recipient'])?$inputs['recipient']:['name'=>"",'message'=>""],
 				"price" => $gift['price'],
 				"title"=> $gift['title'],
 				"subTitle"=> $gift['subTitle'],

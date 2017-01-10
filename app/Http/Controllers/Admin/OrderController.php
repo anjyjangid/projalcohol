@@ -558,7 +558,7 @@ class OrderController extends Controller
         }else{
 
         	$order = Orders::find($data['id']);
-
+        	$inventorylog = [];
         	//ORDER STATUS IS UPDATED
         	if($order['doStatus'] != $data['doStatus']){				
 
@@ -637,21 +637,6 @@ class OrderController extends Controller
 								$decrement = $order['loyaltyPointEarned'];
 							}
 							
-							// $userObj->decrement('loyaltyPoints', $decrement);
-
-							// $userObj->push('loyalty', 
-							// 	[
-							// 		"type"=>"debit",
-							// 		"points"=>$order['loyaltyPointEarned'],
-							// 		"reason"=>[
-							// 			"type"=>"order",
-							// 			"key" => $order['reference'],
-							// 			"comment"=> "Your order has been cancelled."
-							// 		],
-							// 		"on"=>new MongoDate(strtotime(date("Y-m-d H:i:s")))
-							// 	]
-							// );
-
 							$loyaltyObj = [
 								"points"=>$decrement,
 								"method"=>"order",
@@ -791,9 +776,9 @@ class OrderController extends Controller
 
 		$cart = Cart::findUpdated($cartKey,$creator->_id);
 
-		if(!isset($cart->reference)){
+		/*if(!isset($cart->reference)){
 			$cart->setReference();
-		}
+		}*/
 		
 
 		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){

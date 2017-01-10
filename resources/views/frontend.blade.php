@@ -26,7 +26,8 @@
 		<meta property="og:description" content="@{{meta.description}}" />
 		<meta property="og:url" content="{{url()}}" />
 		
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+       <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">-->		
+		 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 		
 		<meta name="google-site-verification" content="89WKkM4ineKdT62fjxZwCKUhQCOZyE7wTbCpvlfDt2E"/> 
 
@@ -65,7 +66,7 @@
 			<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
-		<link rel="stylesheet" media="screen and (max-device-width:1023px)" type="text/css" href="css/simple-sidebar.css">
+		<link rel="stylesheet" type="text/css" href="css/simple-sidebar.css">
 		
 
 
@@ -91,7 +92,7 @@
 
 	</head>
 
-	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}">		    	    	     	
+	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}" >		    	    	     	
     	
     	<div ng-spinner-bar class="page-spinner-bar">
 			<div class="bounce1"></div>
@@ -117,7 +118,7 @@
 							Your friends like us too.. 
 						</div>						
 
-						<div id="fboverlay" style="margin-top: 10px; color: #fff;" class="fb-like" data-href="https://www.facebook.com/alcoholdelivery.com.sg/" data-layout="standard" data-action="like" data-size="large" data-show-faces="true" data-share="true" >							
+						<div id="fboverlay" style="margin-top: 10px; color: #fff;" class="fb-like" data-width="250" data-href="https://www.facebook.com/alcoholdelivery.com.sg/" data-layout="standard" data-action="like" data-size="large" data-show-faces="true" data-share="true" >							
 						</div>
 						</div>
 						<!-- <div class="socilblok_folowtxt">

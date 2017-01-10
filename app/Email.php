@@ -301,29 +301,7 @@ class Email extends Moloquent
 					$message->setTo(array($this->recipient_info['receiver']['email']=>$this->recipient_info['receiver']['name']));
 					$message->setSubject($this->recipient_info['subject']);
 				});
-				
-				// Backup your default mailer
-				/*$backup = Mail::getSwiftMailer();
-
-				// Setup your gmail mailer
-				$transport = SmtpTransport::newInstance('aspmx.l.google.com', 25, 'tls');
-				$transport->setUsername('alcoholdeliveryis@gmail.com');
-				$transport->setPassword('@lcohol1234#*12');
-
-				$message = Swift_Message::newInstance();;
-				$message->setTo(array($this->recipient_info['receiver']['email']=>$this->recipient_info['receiver']['name']));
-
-				$message->setFrom($this->recipient_info['sender']['email'],$this->recipient_info['sender']['name']);				
-				
-				$message->setSubject($this->recipient_info['subject']);
-				$message->setBody($this->recipient_info['message'],'text/html');
-								
-
-				$mailer = Swift_Mailer::newInstance($transport);
-				$mailer->send($message);		       
-
-				// Restore your original mailer
-				Mail::setSwiftMailer($backup);*/
+			
 			
 		} catch(\Exception $e){
 

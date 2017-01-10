@@ -122,8 +122,6 @@ angular.module('AlcoholCartFactories', [])
 		this.totalDiscount = (parseFloat(price) - parseFloat(currPrice)).toFixed(2);
 		this.price = currPrice.toFixed(2);
 
-		
-
 	};
 
 	saleObj.prototype.getPrice = function(){
@@ -133,8 +131,6 @@ angular.module('AlcoholCartFactories', [])
 	saleObj.prototype.getId = function(){
 		return this._id;
 	};
-
-
 
 	return saleObj;
 

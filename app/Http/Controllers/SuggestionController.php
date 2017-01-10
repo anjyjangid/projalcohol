@@ -39,7 +39,11 @@ class SuggestionController extends Controller
 		// }
 
 		$quantity = Dontmiss::first(['quantity']);
-		$quantity = $quantity->quantity;
+
+		if($quantity)
+			$quantity = $quantity->quantity;
+		else
+			$quantity = 0;
 
 		$params = $request->all();
 

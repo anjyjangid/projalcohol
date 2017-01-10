@@ -127,6 +127,8 @@ AlcoholDelivery.filter('pricingTxt', function(currencyFilter,$rootScope) {
 		}
 });
 
+
+
 AlcoholDelivery.filter('truncate', function (){
   return function (text, length, end){
     if (text !== undefined){
@@ -196,7 +198,8 @@ AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
         },
         messages : {
         	hideDelay : 4000
-        }
+        },
+
     };
 
     $rootScope.appSettings = appSettings;
@@ -239,20 +242,126 @@ AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
         {opVal:1020,opTag:'05:00 pm'},
         {opVal:1050,opTag:'05:30 pm'},
         {opVal:1080,opTag:'06:00 pm'},
-        {opVal:1120,opTag:'06:30 pm'},
-        {opVal:1150,opTag:'07:00 pm'},
-        {opVal:1180,opTag:'07:30 pm'},
-        {opVal:1210,opTag:'08:00 pm'},
-        {opVal:1240,opTag:'08:30 pm'},
-        {opVal:1270,opTag:'09:00 pm'},
-        {opVal:1300,opTag:'09:30 pm'},
-        {opVal:1330,opTag:'10:00 pm'},
-        {opVal:1370,opTag:'10:30 pm'},
-        {opVal:1400,opTag:'11:00 pm'},
-        {opVal:1430,opTag:'11:30 pm'},
+        {opVal:1110,opTag:'06:30 pm'},
+        {opVal:1140,opTag:'07:00 pm'},
+        {opVal:1170,opTag:'07:30 pm'},
+        {opVal:1200,opTag:'08:00 pm'},
+        {opVal:1230,opTag:'08:30 pm'},
+        {opVal:1260,opTag:'09:00 pm'},
+        {opVal:1290,opTag:'09:30 pm'},
+        {opVal:1320,opTag:'10:00 pm'},
+        {opVal:1350,opTag:'10:30 pm'},
+        {opVal:1380,opTag:'11:00 pm'},
+        {opVal:1410,opTag:'11:30 pm'},
     ];
 
     return appSettings;
+
+}]);
+
+AlcoholDelivery.service('appConfig', [
+			'$interval','$http','$q'
+	,function($interval, $http, $q) {    
+    
+    this.workingTime = {};
+    this.serverTime = "";
+
+	this.setServerTime = function(serverTimeInSec){
+
+		this.serverTime = serverTimeInSec;
+		var _self = this;
+		$interval(function(){			
+			_self.serverTime+= 1;
+		},1000)
+		
+	}
+
+	this.getServerTime = function(){
+
+    	return this.serverTime;
+
+    }
+
+    this.setWorkingTime = function(fromT,toT) {
+
+    	this.workingTime = {
+    		from : fromT,
+    		to : toT
+    	};
+    }
+
+    this.setWorkingTimeString = function(fromT,toT) {
+
+    	this.workingTimeString = {
+    		from : fromT,
+    		to : toT
+    	};
+    }
+
+    this.updateWorkingHrs = function(){
+    	var _self = this;
+    	return $q(function(resolve,reject){
+    		$http.get("super/server-time").then(
+				function(res){
+					
+					_self.serverTime = res.data.currentTime;
+					_self.setWorkingTime(res.data.from,res.data.to);
+					_self.setWorkingTimeString(res.data.string.from,res.data.string.to);
+
+					resolve();
+				}
+			)
+    	})
+		
+
+    }
+
+    this.getWorkingTime = function() {
+    	return this.workingTime;
+    }
+
+    this.getWorkingTimeString = function() {
+    	return this.workingTimeString;
+    }
+
+    this.isServerUnderWorkingTime = function(fromServer) {
+    	var _self = this;
+    	if(angular.isDefined(fromServer) && fromServer){
+
+    		return $q(function(resolve,reject){
+
+    			_self.updateWorkingHrs().then(
+    				function(){
+
+    					var workingTime = _self.getWorkingTime();
+    					var serverTime = _self.getServerTime();
+
+    					var isWorking = ((workingTime.from < serverTime) && (serverTime < workingTime.to));
+    					if(isWorking)
+    					resolve();
+    					reject();
+    				}
+    			);
+    		})
+
+    	}else{
+
+    		var workingTime = this.getWorkingTime();
+			var serverTime = this.getServerTime();
+
+    		return ((workingTime.from < serverTime) && (serverTime < workingTime.to));
+    	}
+    }
+
+ //    return {
+
+	// 	setServerTime : setServerTime,
+	// 	getServerTime : getServerTime,
+	// 	setWorkingTime : setWorkingTime,
+	// 	getWorkingTime : getWorkingTime,
+	// 	isServerUnderWorkingTime : isServerUnderWorkingTime
+
+	// };
 
 }]);
 
@@ -278,6 +387,33 @@ AlcoholDelivery.factory('catPricing', ["$q", "$timeout", "$rootScope", "$http", 
 }]);
 
 AlcoholDelivery.factory('categoriesFac', ["$q", "$http", function($q, $http){
+
+	var categoriesFac = {};
+
+	function getCategories() {
+
+		var d = $q.defer();
+
+		$http.get("/super/category/",{params: {withCount:true}}).success(function(response){
+
+			d.resolve(response);
+
+		});
+
+		return d.promise;
+
+	};
+
+	return {
+
+		getCategories: getCategories,
+		categories : null
+
+	};
+
+}]);
+
+AlcoholDelivery.factory('appServices', ["$q", "$http", function($q, $http){
 
 	var categoriesFac = {};
 
@@ -392,7 +528,6 @@ AlcoholDelivery.factory('ScrollPaging', function($http) {
 
 });
 
-
 AlcoholDelivery.factory('ScrollPagination', function($http,ProductService) {
 
   var Search = function(keyword,filter,sortby,type) {
@@ -444,7 +579,7 @@ AlcoholDelivery.factory('ScrollPagination', function($http,ProductService) {
 
 });
 
-/* Setup Rounting For All Pages */
+/* Setup Routing For All Pages */
 AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
 		// Redirect any unmatched url
 		$urlRouterProvider.otherwise("/");
@@ -527,7 +662,6 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							}
 						}
 
-
 				})
 
 				.state('mainLayout.checkout', {
@@ -545,6 +679,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 							},
 						},
+						resolve: {
+							allLoaded: function(cartValidate,appLoad){
+								return cartValidate.init();
+							}
+						}
 
 				})
 
@@ -560,10 +699,12 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								controller:"PromotionsController"
 							},
 						},
-						data: {step: 'cart',stepCount:1}						,
+						data: {step: 'cart', stepCount:1},
 						resolve: {
-							showToastIfErr: function($stateParams,cartValidation){
-								cartValidation.showToast($stateParams.err);
+							showToastIfErr: function($stateParams,cartValidation,cartValidate,allLoaded){
+								return cartValidate.check('cart');
+								//return cartValidation.init();
+								//cartValidation.showToast($stateParams.err);
 							}
 						}
 				})
@@ -573,9 +714,10 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						params: {err:false},
 						templateUrl : "/templates/checkout/address.html",
 						controller:"CartAddressController",
-						data: {step: 'address',stepCount:2},
+						data: {step: 'address', stepCount:2},
 						resolve: {
-							showToastIfErr: function($stateParams,cartValidation){
+							showToastIfErr: function($stateParams,cartValidation,cartValidate,allLoaded){
+								cartValidate.check('address');
 								cartValidation.showToast($stateParams.err);
 							}
 						}
@@ -586,9 +728,9 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						params: {err:false},
 						templateUrl : "/templates/checkout/delivery.html",
 						controller:"CartDeliveryController",
-						data: {step: 'delivery',stepCount:3},
+						data: {step: 'delivery', stepCount:3},
 						resolve: {
-							showToastIfErr: function($stateParams,cartValidation){
+							showToastIfErr: function($stateParams,cartValidation,allLoaded){
 								cartValidation.showToast($stateParams.err);
 							}
 						}
@@ -599,10 +741,12 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						params: {err:false},
 						templateUrl : "/templates/checkout/payment.html",
 						controller:"CartPaymentController",
-						data: {step: 'payment',stepCount:4},
+						data: {step: 'payment', stepCount:4},
 						resolve: {
-							showToastIfErr: function($stateParams,cartValidation){
+							showToastIfErr: function($stateParams,cartValidation,allLoaded){
+
 								cartValidation.showToast($stateParams.err);
+
 							}
 						}
 				})
@@ -612,9 +756,9 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						params: {err:false},
 						templateUrl : "/templates/checkout/review.html",
 						controller:"CartReviewController",
-						data: {step: 'review',stepCount:5},
+						data: {step: 'review', stepCount:5},
 						resolve: {
-							showToastIfErr: function($stateParams,cartValidation){
+							showToastIfErr: function($stateParams,cartValidation,allLoaded){
 								cartValidation.showToast($stateParams.err);
 							}
 						}
@@ -996,38 +1140,43 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 		}]);
 	
-function appLoad($q, $state, $timeout, $location, store, alcoholWishlist, UserService) {
+function appLoad($q, $rootScope, $state, $timeout, $location, store, alcoholWishlist, UserService, catPricing) {
 	
 	var defer = $q.defer();
 
-	store.init().then(
+	catPricing.GetCategoryPricing().then(
 
-		function(storeRes){
+		function(result) {
 
-			alcoholWishlist.init().then(
+			catPricing.categoryPricing = result;
+			$rootScope.catPricing = result;
 
-				function(wishRes){
-
-					UserService.getIfUser(true).then(
-
-						function(userRes){
-
-							defer.resolve();
-
+			store.init().then(
+				function(storeRes){
+					alcoholWishlist.init().then(
+						function(wishRes){
+							UserService.getIfUser(true).then(
+								function(userRes){
+									defer.resolve();
+								}
+							);
+						},
+						function(wishErrRes){
+							defer.reject();
 						}
-
-					);
-
+					)
 				},
-				function(wishErrRes){
+				function(storeErrRes){
 					defer.reject();
 				}
-			)
+			);
 		},
-		function(storeErrRes){
+		function(cateErrRes){
 			defer.reject();
 		}
+
 	);
+	
 
 	return defer.promise;
 };
@@ -1112,14 +1261,15 @@ function ($q, $rootScope, $log, $location, $window) {
 AlcoholDelivery.run([
 		"$rootScope", "appSettings", "alcoholCart", "ProductService", "store", "alcoholWishlist", "catPricing"
 		, "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll"
-		, "$timeout","cartValidation"
+		, "$timeout","cartValidation","cartValidate"
 , function($rootScope, settings, alcoholCart, ProductService, store, alcoholWishlist, catPricing
 		,categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll
-		,$timeout,cartValidation) {
+		,$timeout,cartValidation,cartValidate) {
 
-	angular.alcoholCart = alcoholCart;
+	//angular.alcoholCart = alcoholCart;
 
 	$rootScope.$state = $state; // state to be accessed from view
+
 
 	catPricing.GetCategoryPricing().then(
 
@@ -1161,7 +1311,7 @@ AlcoholDelivery.run([
 		}
 
 		angular.element('#wrapper').removeClass('toggled');
-		angular.element('body').removeClass(' hidden-scroll');
+		angular.element('body').removeClass('hidden-scroll');
 
 		if($rootScope.isAppInitialized && !cartValidation.init(toState, fromState))
 			event.preventDefault();
@@ -1186,8 +1336,14 @@ AlcoholDelivery.run([
 				ev.preventDefault();
 			$rootScope.isAppInitialized = true;
 		}
-	});	
+		$timeout(function() {
+			if(/^mainLayout\.checkout\..+$/.test(to.name)){
+				cartValidate.processValidators();
+			}
+		},1000);
+		
 
+	});	
 
 	$rootScope.getProductInCart = function(_id){
 
@@ -1196,7 +1352,6 @@ AlcoholDelivery.run([
 		return product
 
 	};	
-	
 
 
 	// (function(d, s, id) {
@@ -1311,10 +1466,16 @@ AlcoholDelivery.run([
 	// store.init();
 	// alcoholWishlist.init();
 
+	//LIVE
+	var appId = '1269828463077215';
+	//LOCAL OR BETA
+	//var appId = '273669936304095';
+
+
 	$window.fbAsyncInit = function() {
     	// Executed when the SDK is loaded
 	    FB.init({
-	      appId: '1269828463077215',
+	      appId: appId,
 	      status: true, 
 	      cookie: true, 
 	      xfbml: true,
@@ -1330,9 +1491,10 @@ AlcoholDelivery.run([
 	  var js, fjs = d.getElementsByTagName(s)[0];
 	  if (d.getElementById(id)) return;
 	  js = d.createElement(s); js.id = id;
-	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&version=v2.8&appId=1269828463077215";
+	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&version=v2.8&appId="+appId;
 	  fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));
+
 
 }]);
 

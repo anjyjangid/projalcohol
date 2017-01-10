@@ -177,6 +177,7 @@ function currency($value,$sign = "$"){
 function showProducts($order){
 
 $tpl = "";
+if(isset($order['products'])){
 foreach($order['products'] as $product){
 
 	if($product['qtyfinal']<1){continue;}
@@ -201,7 +202,7 @@ foreach($order['products'] as $product){
 				<td style="float: right;width: 20%;padding-right: 20px;margin-top: 50px;font-size: 14px;font-weight: normal;color: #343538;text-align: right;">( '.$product['qtyfinal'].' ) &nbsp;&nbsp;&nbsp;&nbsp;  <span style="font-size: 14px;color: #343538;font-weight: bold;">'.currency($product['price']).'</span></td>
 			</tr>';
 }
-
+}
 return $tpl;
 
 }

@@ -92,13 +92,13 @@ AlcoholDelivery.directive('sideBar', function() {
 	                // Destroy Cart Params start
 	                delete $rootScope.deliverykey;
 	                localStorage.removeItem("deliverykey");
-	                store.init().then(
+	                $state.go("mainLayout.index", {}, {reload: true});
+	                /*store.init().then(
 	                	function(successRes){	                		
-	                		$state.go("mainLayout.index", {}, {reload: true});
 	                	},
 	                	function(errorRes){}
 	                );
-	                alcoholWishlist.init();
+	                alcoholWishlist.init();*/
 	            }).error(function(data, status, headers) {
 	                $scope.user = {};
 	            });
@@ -119,35 +119,25 @@ AlcoholDelivery.directive('sideBar', function() {
 				FB.login(function(response) {
 				    if (response.authResponse) {				     
 				     FB.api('/me', {fields: 'first_name,last_name,locale,email,birthday'},function(result) {
-				       	//console.log(result);
-				       	$mdDialog.hide();
+				       	//console.log(result);				       	
 						$http.post('/auth/registerfb',result)
 						.success(function(res){
+							$mdDialog.hide();
 							$scope.loginSuccess(res);
 						}).error(function(erresult){
-							$scope.socialError = erresult;
-							$scope.signupOpen();
+							if(typeof erresult.suspended != 'undefined'){
+								$scope.login.errors = erresult;
+							}else{
+								$mdDialog.hide();	
+								$scope.socialError = erresult;
+								$scope.signupOpen();
+							}
 						});
 				     });
 				    } else {
 				     	alert(JSON.parse(response));
 				    }
 				});
-
-				
-				/*FB.api('/me', {fields: 'first_name,last_name,locale,email,birthday'},function(response) {
-					$mdDialog.hide();
-					$http.post('/auth/registerfb',response)
-					.success(function(res){
-
-						$scope.loginSuccess(res);
-
-					}).error(function(result){
-						$scope.socialError = result;
-						$scope.signupOpen();
-					});
-				});*/
-
 				
 			}
 
@@ -174,54 +164,8 @@ AlcoholDelivery.directive('sideBar', function() {
 						$scope.signupOpen();
 						*/
 					}
-				});/*
-				.then(
-					function(response){
-
-						$mdDialog.hide();
-						$http.post('/auth/registerfb',response)
-						.success(function(res){
-
-							$scope.loginSuccess(res);
-
-						}).error(function(result){
-							$scope.socialError = result;
-							$scope.signupOpen();
-						});
-
-					},
-					function(res){
-						alert(JSON.stringify(res));
-					}
-				).finally(function(){
-					alert('does not work.');
-				});*/
-			};
-
-			// INTIALIZE AFTER USER LOGIN(FB & NORMAL)
-			// $scope.loginSuccess = function(response){
-
-			// 	UserService.currentUser = response;
-			// 	$scope.login = {};
-			// 	$scope.user = response;
-			// 	$scope.user.name = response.email;
-			// 	$mdDialog.hide();
-			// 	$scope.errors = {};
-			// 	store.init().then(
-
-			// 		function(successRes){
-			// 			//$state.go($state.current, {}, {reload: true});
-			// 		},
-			// 		function(errorRes){
-
-			// 		}
-
-			// 	);
-
-			// 	//alcoholWishlist.init();
-			// 	ClaimGiftCard.claim();
-
-			// }
+				});
+			};			
 
 		    $scope.signupOpen = function(ev){
 			    $scope.signup = {
@@ -295,19 +239,17 @@ AlcoholDelivery.directive('sideBar', function() {
 			//INTIALIZE AFTER USER LOGIN(FB & NORMAL)
 		    $scope.loginSuccess = function(response){
 		    	UserService.currentUser = response;
-		    	$scope.login = {};
-		  //       $scope.user = response;
-				// $scope.user.name = response.email;
+		    	$scope.login = {};		  
 		        $mdDialog.hide();
+		       	$state.go($state.current, {}, {reload: true});
 		        $scope.errors = {};
-		        store.init().then(
-		        	function(successRes){
-		        		$state.go($state.current, {}, {reload: true});
+		        /*store.init().then(
+		        	function(successRes){		        
 		        	},
 		        	function(errorRes){}
 		        );
 		        alcoholWishlist.init();
-		        ClaimGiftCard.claim();
+		        ClaimGiftCard.claim();*/
 		    }	
 
 		    $scope.visitLink = function(slug){
@@ -530,6 +472,44 @@ AlcoholDelivery.directive('sideBar', function() {
     };
 })
 
+.directive('onlyCurrency', function () {
+    return {
+      require: 'ngModel',
+      restrict: 'A',
+      link: function (scope, element, attr, ctrl) {
+        function inputValue(val) {
+          if (val) {
+
+            var digits = val.replace(/.*?(\d+(\.\d{0,2})?)?.*/g, '$1');
+
+			if(attr.max){
+				var max = parseFloat(attr.max);
+				
+				if(digits>max){
+
+					var newVal = ctrl.$modelValue || 0;
+					newVal = newVal.toString();
+					//console.log("newVal",newVal);
+					ctrl.$setViewValue(newVal);
+              		ctrl.$render();
+              		return parseInt(newVal,10);
+				}
+			}
+
+            if (digits !== val) {
+              ctrl.$setViewValue(digits);
+              ctrl.$render();
+            }
+
+            return parseFloat(digits);
+          }
+          return undefined;
+        }
+        ctrl.$parsers.push(inputValue);
+      }
+    };
+})
+
 .directive('useCredits',['UserService', 'alcoholCart',function(UserService, alcoholCart){
 	return {
 		restrict :'E',
@@ -568,7 +548,7 @@ AlcoholDelivery.directive('sideBar', function() {
 						'</md-tooltip>'+
 						'</span></div>'+
 						'<div class="checkboxtotaldiv-text-font-size negative-field" ng-class="">'+
-							'<input type="text" id="credits-input" max="{{maxCredits}}" only-digits ng-model="$parent.credit">'+
+							'<input type="text" id="credits-input" max="{{maxCredits}}" only-currency ng-model="$parent.credit">'+
 						'</div>'+
 					'</div>'
 	}
@@ -1139,17 +1119,17 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.showPopover = function(result){
 				$mdToast.show({
-			      controller:function($scope){
-			      	$scope.user = result;
-			      	$scope.closeToast = function(){
-			      		$mdToast.hide();
-			      	}
-			      },
-			      templateUrl: '/templates/toast-tpl/notify-template.html',
-			      parent : $document[0].querySelector('#toastBounds'),
-			      position: 'top left',
-			      hideDelay:0
-			    });
+					controller:function($scope){
+						$scope.user = result;
+						$scope.closeToast = function(){
+							$mdToast.hide();
+						}
+					},
+					templateUrl: '/templates/toast-tpl/notify-template.html',
+					//parent : $document[0].querySelector('#toastBounds'),
+					position: 'bottom right',
+					hideDelay:0
+				});
 
 				$scope.nlabel = 'Notify Me';
 			};

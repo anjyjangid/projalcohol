@@ -405,8 +405,7 @@ AlcoholDelivery.service("ClaimGiftCard",['$http', '$q', 'UserService', '$rootSco
 
 	return {
 
-		init : function (token){
-
+		init : function (token){			
 			var _self = this;
 			_self.store(token);
 
@@ -674,3 +673,155 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct','CreditC
 	}
 
 }]);
+
+AlcoholDelivery.service('cartValidate',['alcoholCart', '$state', '$q', '$mdToast', '$document', 'appConfig'
+			,function (alcoholCart, $state, $q, $mdToast, $document, appConfig) {
+
+	this.processValidators = function () {
+
+		if(alcoholCart.$validations.cart.workingHrs.status===true){
+
+			$mdToast.show({
+
+					controller:function($scope){
+
+						var workingTime = appConfig.getWorkingTimeString();
+						
+						$scope.to = workingTime.to;
+						$scope.from = workingTime.from;
+
+						$scope.closeToast = function(){
+								$mdToast.hide();
+							}
+					},
+					templateUrl: '/templates/toast-tpl/dependency-notify.html',
+					//parent : $document[0].querySelector('#cart-summary-icon'),
+					position: 'bottom right',
+					hideDelay:10000
+
+				});
+
+			alcoholCart.$validations.cart.workingHrs.status = false;
+
+		}
+
+		return true;
+	}
+	this.mainResolve = true;
+
+	this.stepsName = [
+			"cart",
+			"address",
+			"delivery",
+			"payment",
+			"review"
+		];
+
+	this.init = function(main) {
+
+		var _self = this;
+		return $q(function(resolve,reject){
+						
+			var i = 0;
+
+			while(i<_self.stepsName.length){
+
+				isValid = _self[_self.stepsName[i]+'Validate']();
+				if(isValid!==true){
+					break;
+				}
+				i++;
+			}			
+			resolve();
+
+		});
+
+	}
+
+	this.check = function(step) {
+
+		var _self = this;
+		return $q(function(resolve,reject){
+
+			var isValid = _self.isAllValidTill(step);
+
+			if(isValid===true){
+
+				_self[step+'Validate']().then(
+					function () {
+
+						resolve(alcoholCart.$validations[step].isValid);
+
+					}
+				);
+
+			}else{
+
+				$state.go('mainLayout.checkout.'+isValid);
+				reject();
+			}
+
+		})
+
+	}
+
+	this.isAllValidTill = function (step) {
+		var inValidStep = true;
+		var keyStepChecked = false;
+		
+		angular.forEach(alcoholCart.$validations,function (value,key) {
+
+			if(key==step){
+				keyStepChecked = true;
+			}
+
+			if(value.isValid!==true && inValidStep===true && keyStepChecked===false){
+				inValidStep = key;
+			}
+
+		})
+		
+		return inValidStep;
+	}
+
+	this.cartValidate = function(){
+
+		return $q(function(resolve,reject){
+
+			var isValid = true;
+			if(alcoholCart.getDeliveryType()==0 && !appConfig.isServerUnderWorkingTime()){
+				alcoholCart.$validations.cart.workingHrs.status = true;
+				isValid = false;
+			}
+
+			alcoholCart.$validations.cart.isValid = isValid;
+			resolve();
+
+		});
+
+	}
+
+	this.addressValidate = function(){
+		return $q(function(resolve,reject){
+			resolve();
+		})
+	}
+	this.deliveryValidate = function(){
+		return $q(function(resolve,reject){
+			resolve();
+		})
+	}
+	this.paymentValidate = function(){
+		return $q(function(resolve,reject){
+			resolve();
+		})
+	}
+	this.reviewValidate = function(){
+		return $q(function(resolve,reject){
+			resolve();
+		})
+	}
+
+
+
+}])

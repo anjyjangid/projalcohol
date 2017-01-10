@@ -1,289 +1,290 @@
-
-<div class="checkoutstep5-mid-top">
-	<div class="row">
-		<div class="col-md-12 col-sm-6 col-xs-12 checkoutstep5-mid-left">
-			<div class="checkoutstep5-left-first">
-				<div class="checkoutstep5-left-first-left">
-					<div class="checkoutstep5-left-first-lefttext">Order Id</div>
-					<div class="checkoutstep5-left-first-lefttitle">{{order.reference}}</div>
+<div ng-hide="loading">
+	<div class="checkoutstep5-mid-top">
+		<div class="row">
+			<div class="col-md-12 col-sm-6 col-xs-12 checkoutstep5-mid-left">
+				<div class="checkoutstep5-left-first">
+					<div class="checkoutstep5-left-first-left">
+						<div class="checkoutstep5-left-first-lefttext">Order Id</div>
+						<div class="checkoutstep5-left-first-lefttitle">{{order.reference}}</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-<div class="checkoutmiddletable">
-	<div class="chekoutstep5-table-title">List of item odered</div>
-	<div class="chekoutstep5-table">
-		<div class="table-responsive">
-			<table class="table">
-				<tbody>
-					<tr ng-repeat-start="(key, cartproduct) in order.particulars"></tr>
-						<td width="52%">
-							<div ng-if="cartproduct.category == 'saleproduct' && cartproduct.products.length">
-								<div class="col-md-3" ng-repeat="packageproducts in cartproduct.products">
-									<span class="cursor-pointer">										
-										<a ui-sref="mainLayout.product({product:packageproducts.slug})" title="View Product">
-											<img alt="{{packageproducts.name}}" err-pro-src="" ng-src="products/i/200/{{packageproducts.coverImage}}" class="img-responsive img-responsive-h "/>
-										</a>
-									</span>							
-								</div>	
-							</div>
-
-							<div class="orhistry2_td2procdtcvr">
-								<span class="cursor-pointer" ng-if="cartproduct.category != 'saleproduct'">
-									<a ui-sref="mainLayout.product({product:cartproduct.slug})" title="View Product">
-										<img err-pro-src="" ng-src="products/i/200/{{cartproduct.coverImage}}" alt="" class="img-responsive img-responsive-h " />
-									</a>
-								</span>
-								<div class="checkouter-td-right-text">
-									<div class="orhistry2_td2proctext1">{{cartproduct.detailTitle}}</div>
-									<div class="orhistry2_td2proctext2">{{cartproduct.shortDescription}}</div>
-									<div class="orhistry2_td2proctext1">{{cartproduct.unitPrice | pricingTxt}}</div>
-									<div class="orhistry2_td2proctext2" ng-if="cartproduct.products.length == 0">unit Price</div>
+	<div class="checkoutmiddletable">
+		<div class="chekoutstep5-table-title">List of item odered</div>
+		<div class="chekoutstep5-table">
+			<div class="table-responsive">
+				<table class="table">
+					<tbody>
+						<tr ng-repeat-start="(key, cartproduct) in order.particulars"></tr>
+							<td width="52%">
+								<div ng-if="cartproduct.category == 'saleproduct' && cartproduct.products.length">
+									<div class="col-md-3" ng-repeat="packageproducts in cartproduct.products">
+										<span class="cursor-pointer">										
+											<a ui-sref="mainLayout.product({product:packageproducts.slug})" title="View Product">
+												<img alt="{{packageproducts.name}}" err-pro-src="" ng-src="products/i/200/{{packageproducts.coverImage}}" class="img-responsive img-responsive-h "/>
+											</a>
+										</span>							
+									</div>	
 								</div>
-							</div>
 
-							<div ng-if="cartproduct.category != 'saleproduct' && cartproduct.products.length">
-								<div class="col-md-3 listimgborder" ng-repeat="packageproducts in cartproduct.products">
-									<span class="cursor-pointer">
-										<a ui-sref="mainLayout.product({product:packageproducts.slug})" title="View Product">
-											<img alt="{{packageproducts.name}}" err-pro-src="" ng-src="products/i/200/{{packageproducts.coverImage}}" class="img-responsive img-responsive-h new-img"/>
+								<div class="orhistry2_td2procdtcvr">
+									<span class="cursor-pointer" ng-if="cartproduct.category != 'saleproduct'">
+										<a ui-sref="mainLayout.product({product:cartproduct.slug})" title="View Product">
+											<img err-pro-src="" ng-src="products/i/200/{{cartproduct.coverImage}}" alt="" class="img-responsive img-responsive-h " />
 										</a>
 									</span>
+									<div class="checkouter-td-right-text">
+										<div class="orhistry2_td2proctext1">{{cartproduct.detailTitle}}</div>
+										<div class="orhistry2_td2proctext2">{{cartproduct.shortDescription}}</div>
+										<div class="orhistry2_td2proctext1">{{cartproduct.unitPrice | pricingTxt}}</div>
+										<div class="orhistry2_td2proctext2" ng-if="cartproduct.products.length == 0">unit Price</div>
+									</div>
+								</div>
+
+								<div ng-if="cartproduct.category != 'saleproduct' && cartproduct.products.length">
+									<div class="col-md-3 listimgborder" ng-repeat="packageproducts in cartproduct.products">
+										<span class="cursor-pointer">
+											<a ui-sref="mainLayout.product({product:packageproducts.slug})" title="View Product">
+												<img alt="{{packageproducts.name}}" err-pro-src="" ng-src="products/i/200/{{packageproducts.coverImage}}" class="img-responsive img-responsive-h new-img"/>
+											</a>
+										</span>
+									</div>	
+								</div>
+							</td>
+							<td>
+								<div class="prod_chilled" ng-class="{ notchilled:cartproduct.chilled }">
+									<span>Chilled</span>
+									<div class="prod_chilled_icon"></div>
+								</div>
+							</td>
+							<td>
+								<span class="orderhistry2price" ng-bind="cartproduct.quantity"></span>
+							</td>
+							<td>
+								<div class="orderhistry2price">{{cartproduct.total | pricingTxt}}</div>
+							</td>
+						<tr ng-repeat-end></tr>
+						<tr>
+							<td colspan="1" class="childtd">
+								<div class="table-responsive">
+									<table class="table">
+										<tbody>
+											<tr>
+												<td>
+													<div class="checkoutstep5-left-first bordernone">
+														<div class="checkoutstep5-left-first-left">
+															<div class="checkoutstep5-left-first-lefttext">Delivery Address</div>
+															<div class="checkoutstep5-left-first-lefttitle">
+																<div>
+																	<span ng-bind="address.detail.firstname"></span> <span ng-bind="address.detail.lastname"></span>,
+																</div>
+																<span ng-bind="address.detail.house"></span> 
+																<span ng-bind="address.detail.HBRN"></span>, 
+																<div ng-if="address.detail.FLOOR || address.detail.FLOOR">
+																	<span ng-if="address.detail.FLOOR">#{{address.detail.FLOOR}} - </span> <span ng-if="address.detail.UNIT">{{address.detail.UNIT}}</span>
+																</div>
+																<div>
+																	Singapore - <span ng-bind="address.detail.PostalCode"></span>
+																</div>
+																<div>
+																	Contact - <span ng-bind="order.delivery.contact"></span>
+																</div>
+															</div>					 
+														</div>
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="checkoutstep5-left-first bordernone">
+														<div class="checkoutstep5-left-first-left">
+															<div class="checkoutstep5-left-first-lefttext">Delivery Time</div>
+															<div class="checkoutstep5-left-first-lefttitle">
+																{{order.delivery.deliveryDate | dateSuffix}}
+																<span ng-if="order.delivery.deliveryTimeRange"> between {{order.delivery.deliveryTimeRange}}</span>
+															</div>
+														</div>
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="checkoutstep5-left-first bordernone">
+														<div class="checkoutstep5-left-first-left">
+															<div class="checkoutstep5-left-first-lefttext">Payment Method</div>
+															<div class="checkoutstep5-left-first-lefttitle">
+																
+																
+
+																{{(order.payment.method == 'COD')?'Cash on delivery':'Credit/Debit Card'}}
+															</div>
+														</div>
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="checkoutstep5-left-first bordernone">
+														<div class="checkoutstep5-left-first-left">
+															<div class="checkoutstep5-left-first-lefttext">Delivery mode</div>
+
+															<div class="checkoutstep5-left-first-lefttitle" ng-if="order.delivery.type==0">
+																{{ (order.service.express.status)?'Express Delivery (Gauranteed 30 mins delivery)':'Standard 1hr Delivery'}}
+
+																<span>
+																	<img src="images/questionimg.png">
+																	<md-tooltip class="ad-tooltip" md-direction="bottom">
+																		Delivery within 1Hr
+																	</md-tooltip>
+																</span>
+
+															</div>
+															<div class="checkoutstep5-left-first-lefttitle" ng-if="order.delivery.type==1">Advance Delivery
+																<span>
+																	<img src="images/questionimg.png">
+																	<md-tooltip class="ad-tooltip" md-direction="bottom">
+																		Advance Delivery
+																	</md-tooltip>
+																</span>
+															</div>
+														</div>
+													</div>
+												</td>
+											</tr>
+											<tr ng-if="order.service.smoke.status">
+												<td>
+													<div class="checkoutstep5-left-first bordernone" >
+														<div class="checkoutstep5-left-first-left">
+															<div class="checkoutstep5-left-first-lefttext">Smoke detail</div>
+															<div class="checkoutstep5-left-first-lefttitle">{{order.service.smoke.detail}}</div>
+														</div>
+													</div>
+												</td>
+											</tr>
+											<tr ng-if="order.delivery.leaveatdoor || order.delivery.instructions || address.detail.instruction">
+												<td>
+													<div class="checkoutstep5-left-first bordernone">
+														<div class="checkoutstep5-left-first-left">
+															<div class="checkoutstep5-left-first-lefttext">Delivery/Special Instructions</div>
+															<div  class="checkoutstep5-left-first-lefttitle">
+																<div ng-if="order.delivery.leaveatdoor">- Leave this order at my doorstep.</div>
+																<div ng-if="order.delivery.instructions">- {{order.delivery.instructions}}</div>
+																<div ng-if="address.detail.instruction">- {{address.detail.instruction}}</div>
+															</div>
+														</div>
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</td>
+							<td colspan="3" valign="top" class="childtd">
+								<div class="table-responsive">
+									<table class="table">
+										<tr>
+											<td class="bordernone" width="70%">
+												<div class="checkoutstep5right-middle-title">Subtotal </div>
+											</td>
+											<td class="bordernone" width="30%">
+												<div class="checkboxtotaldiv-text">{{order.payment.subtotal | currency:settings.general.currency:2}}</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="bordernone">
+												<div class="checkoutstep5right-middle-title">Delivery Charge 
+													
+													<span>
+														<img src="images/questionimg.png">
+														<md-tooltip class="ad-tooltip" md-direction="bottom">
+															Charges applied for your delivery
+														</md-tooltip>
+													</span>
+
+												</div>
+											</td>
+											<td class="bordernone">
+												<div class="checkboxtotaldiv-text">{{order.delivery.charges | pricingTxt}}</div>
+											</td>	
+										</tr>
+										<tr>
+											<td class="bordernone">
+												<div class="checkoutstep5right-middle-title">
+													Service Charge 
+													<span>
+														<img src="images/questionimg.png">
+														<md-tooltip class="ad-tooltip" md-direction="bottom">
+															Additional fees for express delivery or pickup service
+														</md-tooltip>
+													</span>
+												</div>
+											</td>
+											<td class="bordernone">
+												<div class="checkboxtotaldiv-text">{{order.service.total | pricingTxt}}</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="bordernone">
+												<div class="checkoutstep5right-middle-title" >Discount (Non-Chilled) 
+													<span>
+														<img src="images/questionimg.png">
+														<md-tooltip class="ad-tooltip" md-direction="bottom">
+															Discount for select chilled products non-chilled
+														</md-tooltip>
+													</span>
+												</div>
+											</td>
+											<td class="bordernone">
+												<div class="checkboxtotaldiv-text" ng-class="{txtcross:!order.nonchilled}">
+													&minus;{{services.chilled | currency:settings.general.currency:2}}
+												</div>
+											</td>
+										</tr>
+										<tr ng-if="order.discount.coupon">
+											<td class="bordernone">
+												<div class="checkoutstep5right-middle-title" >Coupon Discount 
+													<span>
+														<img src="images/questionimg.png">
+														<md-tooltip class="ad-tooltip" md-direction="bottom">
+															Discount by applying coupon
+														</md-tooltip>
+													</span>
+												</div>
+											</td>
+											<td class="bordernone">
+												<div class="checkboxtotaldiv-text">
+													<span ng-if="order.payment.totalValue < order.discount.coupon">&minus;{{(order.payment.totalValue) | currency:settings.general.currency:2}}</span>
+													<span ng-if="order.payment.totalValue >= order.discount.coupon">&minus;{{order.discount.coupon | currency:settings.general.currency:2}}</span>												
+												</div>
+											</td>
+										</tr>
+										<tr ng-if="order.service.surcharge_taxes" ng-repeat="surcharge_taxes in order.service.surcharge_taxes">
+											<td class="bordernone">
+												<div class="checkoutstep5right-middle-title" >{{surcharge_taxes.label}} <span class=""><img src="images/questionimg.png"></span></div>
+											</td>
+											<td class="bordernone">
+												<div class="checkboxtotaldiv-text">
+													{{(surcharge_taxes.value) | currency:settings.general.currency:2}}
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="">
+												<div class="checkoutstep5right-bottom-title">Total</div>
+											</td>
+											<td class="">
+												<div class="checkoutstep5right-bottom-text">{{ (order.payment.total<0)?0:order.payment.total | currency:settings.general.currency:2}}</div>
+											</td>
+										</tr>
+									</table>
 								</div>	
-							</div>
-						</td>
-						<td>
-							<div class="prod_chilled" ng-class="{ notchilled:cartproduct.chilled }">
-								<span>Chilled</span>
-								<div class="prod_chilled_icon"></div>
-							</div>
-						</td>
-						<td>
-							<span class="orderhistry2price" ng-bind="cartproduct.quantity"></span>
-						</td>
-						<td>
-							<div class="orderhistry2price">{{cartproduct.total | pricingTxt}}</div>
-						</td>
-					<tr ng-repeat-end></tr>
-					<tr>
-						<td colspan="1" class="childtd">
-							<div class="table-responsive">
-								<table class="table">
-									<tbody>
-										<tr>
-											<td>
-												<div class="checkoutstep5-left-first bordernone">
-													<div class="checkoutstep5-left-first-left">
-														<div class="checkoutstep5-left-first-lefttext">Delivery Address</div>
-														<div class="checkoutstep5-left-first-lefttitle">
-															<div>
-																<span ng-bind="address.detail.firstname"></span> <span ng-bind="address.detail.lastname"></span>,
-															</div>
-															<span ng-bind="address.detail.house"></span> 
-															<span ng-bind="address.detail.HBRN"></span>, 
-															<div ng-if="address.detail.FLOOR || address.detail.FLOOR">
-																<span ng-if="address.detail.FLOOR">#{{address.detail.FLOOR}} - </span> <span ng-if="address.detail.UNIT">{{address.detail.UNIT}}</span>
-															</div>
-															<div>
-																Singapore - <span ng-bind="address.detail.PostalCode"></span>
-															</div>
-															<div>
-																Contact - <span ng-bind="order.delivery.contact"></span>
-															</div>
-														</div>					 
-													</div>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="checkoutstep5-left-first bordernone">
-													<div class="checkoutstep5-left-first-left">
-														<div class="checkoutstep5-left-first-lefttext">Delivery Time</div>
-														<div class="checkoutstep5-left-first-lefttitle">
-															{{order.delivery.deliveryDate | dateSuffix}}
-															<span ng-if="order.delivery.deliveryTimeRange"> between {{order.delivery.deliveryTimeRange}}</span>
-														</div>
-													</div>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="checkoutstep5-left-first bordernone">
-													<div class="checkoutstep5-left-first-left">
-														<div class="checkoutstep5-left-first-lefttext">Payment Method</div>
-														<div class="checkoutstep5-left-first-lefttitle">
-															
-															
-
-															{{(order.payment.method == 'COD')?'Cash on delivery':'Credit/Debit Card'}}
-														</div>
-													</div>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="checkoutstep5-left-first bordernone">
-													<div class="checkoutstep5-left-first-left">
-														<div class="checkoutstep5-left-first-lefttext">Delivery mode</div>
-
-														<div class="checkoutstep5-left-first-lefttitle" ng-if="order.delivery.type==0">
-															{{ (order.service.express.status)?'Express Delivery (Gauranteed 30 mins delivery)':'Standard 1hr Delivery'}}
-
-															<span>
-																<img src="images/questionimg.png">
-																<md-tooltip class="ad-tooltip" md-direction="bottom">
-																	Delivery within 1Hr
-																</md-tooltip>
-															</span>
-
-														</div>
-														<div class="checkoutstep5-left-first-lefttitle" ng-if="order.delivery.type==1">Advance Delivery
-															<span>
-																<img src="images/questionimg.png">
-																<md-tooltip class="ad-tooltip" md-direction="bottom">
-																	Advance Delivery
-																</md-tooltip>
-															</span>
-														</div>
-													</div>
-												</div>
-											</td>
-										</tr>
-										<tr ng-if="order.service.smoke.status">
-											<td>
-												<div class="checkoutstep5-left-first bordernone" >
-													<div class="checkoutstep5-left-first-left">
-														<div class="checkoutstep5-left-first-lefttext">Smoke detail</div>
-														<div class="checkoutstep5-left-first-lefttitle">{{order.service.smoke.detail}}</div>
-													</div>
-												</div>
-											</td>
-										</tr>
-										<tr ng-if="order.delivery.leaveatdoor || order.delivery.instructions || address.detail.instruction">
-											<td>
-												<div class="checkoutstep5-left-first bordernone">
-													<div class="checkoutstep5-left-first-left">
-														<div class="checkoutstep5-left-first-lefttext">Delivery/Special Instructions</div>
-														<div  class="checkoutstep5-left-first-lefttitle">
-															<div ng-if="order.delivery.leaveatdoor">- Leave this order at my doorstep.</div>
-															<div ng-if="order.delivery.instructions">- {{order.delivery.instructions}}</div>
-															<div ng-if="address.detail.instruction">- {{address.detail.instruction}}</div>
-														</div>
-													</div>
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</td>
-						<td colspan="3" valign="top" class="childtd">
-							<div class="table-responsive">
-								<table class="table">
-									<tr>
-										<td class="bordernone" width="70%">
-											<div class="checkoutstep5right-middle-title">Subtotal </div>
-										</td>
-										<td class="bordernone" width="30%">
-											<div class="checkboxtotaldiv-text">{{order.payment.subtotal | currency:settings.general.currency:2}}</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="bordernone">
-											<div class="checkoutstep5right-middle-title">Delivery Charge 
-												
-												<span>
-													<img src="images/questionimg.png">
-													<md-tooltip class="ad-tooltip" md-direction="bottom">
-														Charges applied for your delivery
-													</md-tooltip>
-												</span>
-
-											</div>
-										</td>
-										<td class="bordernone">
-											<div class="checkboxtotaldiv-text">{{order.delivery.charges | pricingTxt}}</div>
-										</td>	
-									</tr>
-									<tr>
-										<td class="bordernone">
-											<div class="checkoutstep5right-middle-title">
-												Service Charge 
-												<span>
-													<img src="images/questionimg.png">
-													<md-tooltip class="ad-tooltip" md-direction="bottom">
-														Additional fees for express delivery or pickup service
-													</md-tooltip>
-												</span>
-											</div>
-										</td>
-										<td class="bordernone">
-											<div class="checkboxtotaldiv-text">{{order.service.total | pricingTxt}}</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="bordernone">
-											<div class="checkoutstep5right-middle-title" >Discount (Non-Chilled) 
-												<span>
-													<img src="images/questionimg.png">
-													<md-tooltip class="ad-tooltip" md-direction="bottom">
-														Discount for select chilled products non-chilled
-													</md-tooltip>
-												</span>
-											</div>
-										</td>
-										<td class="bordernone">
-											<div class="checkboxtotaldiv-text" ng-class="{txtcross:!order.nonchilled}">
-												&minus;{{services.chilled | currency:settings.general.currency:2}}
-											</div>
-										</td>
-									</tr>
-									<tr ng-if="order.discount.coupon">
-										<td class="bordernone">
-											<div class="checkoutstep5right-middle-title" >Coupon Discount 
-												<span>
-													<img src="images/questionimg.png">
-													<md-tooltip class="ad-tooltip" md-direction="bottom">
-														Discount by applying coupon
-													</md-tooltip>
-												</span>
-											</div>
-										</td>
-										<td class="bordernone">
-											<div class="checkboxtotaldiv-text">
-												<span ng-if="order.payment.totalValue < order.discount.coupon">&minus;{{(order.payment.totalValue) | currency:settings.general.currency:2}}</span>
-												<span ng-if="order.payment.totalValue >= order.discount.coupon">&minus;{{order.discount.coupon | currency:settings.general.currency:2}}</span>												
-											</div>
-										</td>
-									</tr>
-									<tr ng-if="order.service.surcharge_taxes" ng-repeat="surcharge_taxes in order.service.surcharge_taxes">
-										<td class="bordernone">
-											<div class="checkoutstep5right-middle-title" >{{surcharge_taxes.label}} <span class=""><img src="images/questionimg.png"></span></div>
-										</td>
-										<td class="bordernone">
-											<div class="checkboxtotaldiv-text">
-												{{(surcharge_taxes.value) | currency:settings.general.currency:2}}
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="">
-											<div class="checkoutstep5right-bottom-title">Total</div>
-										</td>
-										<td class="">
-											<div class="checkoutstep5right-bottom-text">{{ (order.payment.total<0)?0:order.payment.total | currency:settings.general.currency:2}}</div>
-										</td>
-									</tr>
-								</table>
-							</div>	
-						</td>						
-					</tr>					
-				</tbody>
-			</table>
+							</td>						
+						</tr>					
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 </div>

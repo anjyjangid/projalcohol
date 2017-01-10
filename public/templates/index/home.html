@@ -10,47 +10,23 @@
 	</a>
 </div>
 
+<div class="responsive-blokimg"><img class="img-responsive" style="margin:10px auto;" src="asset/i/new.png"></div>
 
-
-<div class="combo_slider main">	
-	<div class="tabbable">		
-		<div class="fullwidth">
-			<h4 class="nomargin" style="margin-left:10px;">Featured Items</h4>
-			<md-content class="maintab" data-ng-init="featuredProducts()">
-				<md-tabs md-selected="0" md-dynamic-height ><!-- md-no-ink-bar md-border-bottom md-autoselect -->
-				  <md-tab ng-repeat="cat in parentCategories | filterParentCat" md-stretch-tabs>
-						<md-tab-label>
-					      {{cat.cat_title}}					      
-					    </md-tab-label>
-					    <md-tab-body>					    	
-					    	<div class="tab-content fullwidth prod-in-slider">
-						    	<div class="tab-pane active">
-						    	<data-owl-carousel class="owl-carousel owl-theme" data-options="{							    		
-										navigation : false,
-										navigationText :['<span class=\'glyphicon glyphicon-chevron-left\'></span>','<span class=\'glyphicon glyphicon-chevron-right\'></span>'],
-										pagination : true,
-										autoWidth: true,
-										items : 4,
-										itemsDesktop : [1199,3],
-										itemsDesktopSmall : [979,3],
-										itemsTablet : [768,3],
-										itemsTabletSmall : [767,2],
-										itemsMobile : [479,1]
-
-							    		}">
-							      <div owl-carousel-item="" ng-repeat="fproduct in cat['featured']" class="item">	
-							        	<div al-tpl-product info="fproduct" classes="proHoverEffect"></div>		
-							      </div>
-							    </data-owl-carousel>
-							    </div>
-						    </div>	
-						</md-tab-body>
-				  </md-tab>
-				</md-tabs>
-			</md-content>
-		</div>
-	</div>
-</div>		
+<div class="combo_slider combo_sliderProduct" ng-cloak>
+  <md-content class="maintab" data-ng-init="featuredProducts()">
+    <md-tabs md-selected="0" md-dynamic-height>    
+      <md-tab ng-repeat="cat in parentCategories | filterParentCat">
+      	<md-tab-label>{{cat.cat_title}}</md-tab-label>
+      	<md-tab-body>      		
+      		<div class="product-listcover2">
+	    		<div al-tpl-product classes="col-xs-12 col-sm-3 col-md-3 comboproductitems" ng-repeat="fproduct in cat['featured']" info="fproduct"></div>
+	    	</div>
+      	</md-tab-body>
+      </md-tab>	      
+    </md-tabs>
+  </md-content>  
+  <div ui-view='giftClaim'></div>
+</div>
 
 <!-- <div class="combo_slider main" data-ng-init="featuredProducts()">
 	<div class="tabbable">		
