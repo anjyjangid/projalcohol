@@ -633,7 +633,17 @@ class ProductController extends Controller
 	}
 
 	public function getTest(Request $request){
-		
+
+		$models = Setting::raw()->findAndModify(
+	    	['_id' => 'invoice'],
+            ['$inc' => ['serial' => 1]],
+            null,
+            ['new' => true, 'upsert' => true]
+	    );	
+		echo $models['serial'];	
+		exit;
+		return response($models,200);
+
 		$timenow = strtotime('now');
 		$microtime = explode('.',microtime(true));
 		return response($microtime);
