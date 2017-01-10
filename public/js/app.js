@@ -1496,7 +1496,7 @@ AlcoholDelivery.run([
 	}(document, 'script', 'facebook-jssdk'));
 	angular.$templateCache = $templateCache;
 	$rootScope.$on('$viewContentLoaded', function() {	  		  
-	  var newversion = 'newupdate5.0';
+	  var newversion = 'newupdate7.0';
       if(!$cookies.get('viewcached') || $cookies.get('viewcached')!=newversion){      		
       		$templateCache.removeAll();
 	  		$cookies.put('viewcached',newversion);	      		
