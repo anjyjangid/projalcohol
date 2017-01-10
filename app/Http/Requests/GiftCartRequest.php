@@ -28,8 +28,6 @@ class GiftCartRequest extends Request
 
 		$rulesCommon = [
 					'type' => 'required|in:"giftcard","giftpackaging","giftattach"',
-					'recipient.message'=> 'required|max:200',					
-					'recipient.name'=> 'required',
 				];
 		$rules = [];
 		
@@ -38,7 +36,9 @@ class GiftCartRequest extends Request
 			case 'giftcard':
 
 				$rules = [
-					
+
+					'recipient.message'=> 'required|max:200',					
+					'recipient.name'=> 'required',
 					'recipient.email'=> 'required|email',
 					'recipient.price'=> 'required|numeric',
 					'recipient.quantity'=> 'required|integer|min:1',
@@ -46,6 +46,17 @@ class GiftCartRequest extends Request
 					'recipient.mobile'=> 'required_if:recipient.sms,1|digits:8',
 				];
 			break;
+
+			case 'giftattach':
+
+				$rules = [
+
+					'recipient.message'=> 'required|max:200',					
+					'recipient.name'=> 'required',
+				];
+			break;
+
+
 			default :
 				$rules = [
 					// "products"

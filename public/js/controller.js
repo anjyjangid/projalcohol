@@ -854,16 +854,26 @@ AlcoholDelivery.controller('OrderDetailController',['$scope','$rootScope','$stat
 
 	$scope.orderid = $stateParams.orderid;
 	$scope.order = {};
-
+	$scope.loading = true;
 	$http.get("order/"+$stateParams.orderid)
 	.success(function(response){
 
 		$scope.order = response;
 		$scope.address = $scope.order.delivery.address;
+		$scope.loading = false;
 
 	})
 	.error(function(data, status, headers) {
+		sweetAlert.swal({
+		
+			type:'error',
+			title: "Order not found",			
 
+		}).then(
+			function(){
+				$state.go("accountLayout.orders")
+			}
+		)
 	})
 
 	$scope.getQuantity = function(product) {
@@ -1830,8 +1840,8 @@ AlcoholDelivery.controller('CartPaymentController',[
 								text:"Please enter cvv for the selected card.",
 							});
 						}else{
-							$deployCart = true;							
-						}						
+							$deployCart = true;
+						}
 					}
 				}
 
@@ -1845,8 +1855,7 @@ AlcoholDelivery.controller('CartPaymentController',[
 				);
 			}
 
-		}		
-
+		}
 }]);
 
 AlcoholDelivery.controller('CartReviewController',[

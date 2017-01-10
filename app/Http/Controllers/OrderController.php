@@ -31,11 +31,16 @@ class OrderController extends Controller
 	 */
 
 	public function show($id)
-	{
-
+	{		
 		$user = Auth::user('user');
 
-		$order = Orders::where("_id","=",new MongoId($id))->where("user",'=',new MongoId($user->_id))->first();
+		if(MongoId::isValid($id)){
+			$order = Orders::where("_id","=",new MongoId($id));
+		}else{
+			$order = Orders::where("reference","=",$id);
+		}
+
+		$order = $order->where("user",'=',new MongoId($user->_id))->first();
 
 		if(!empty($order)){
 

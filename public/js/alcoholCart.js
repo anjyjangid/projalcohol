@@ -1210,9 +1210,10 @@ AlcoholDelivery.service('alcoholCart', [
 
 			if(this.$cart.credits){
 				
+				console.log("creditsDiscount",this.$cart.discount.credits)
 				var creditsDiscount = parseFloat(this.$cart.discount.credits);
-				
 				if(type==='credits'){
+					console.log("creditsDiscount",creditsDiscount.toFixed(2));
 					return creditsDiscount.toFixed(2);
 				}
 
@@ -1422,12 +1423,13 @@ AlcoholDelivery.service('alcoholCart', [
 			}
 			
 			var totalWithoutPromotion = total;
+
 			this.nonEligiblePromotionsCheck = $timeout(function() {
 
-				_self.removeNonEligiblePromotions(totalWithoutPromotion);				
+				_self.removeNonEligiblePromotions(totalWithoutPromotion);
 				_self.resetAsPerRule();
 
-			}, 500, false);
+			}, 250, false);
 
 			angular.forEach(cart.promotions, function (promotion) {
 				total += parseFloat(promotion.getPrice());
@@ -2126,15 +2128,25 @@ AlcoholDelivery.service('alcoholCart', [
 
 		this.setSmokeStatus = function(status){
 
+			var _self = this;
 			var status = Boolean(status);
 
-			this.$cart.service.smoke.status = status;
-			
-			if(!status){
-				this.removeSmoke();
+			if(typeof status !=="undefined"){
+				
+				_self.$cart.service.smoke.status = status;
+				if(!status){
+					_self.removeSmoke();
+				}				
 			}
 
-			this.deployCart();
+			this.toggleSmokeAndExpress("smoke").then(
+				function (successRes) {
+					_self.deployCart();
+				},
+				function (errorRes) {
+
+				}
+			)
 
 		}
 
@@ -2343,14 +2355,74 @@ AlcoholDelivery.service('alcoholCart', [
 		}
 
 		this.setExpressStatus = function(status){
-
+			var _self = this;
 			if(typeof status !=="undefined"){
-
-				this.$cart.service.express.status = status;
-
+				_self.$cart.service.express.status = status;
 			}
+			this.toggleSmokeAndExpress("express").then(
+				function (successRes) {
+					_self.deployCart();
+				},
+				function (errorRes) {
 
-			this.deployCart();
+				}
+			)			
+		}
+
+		this.toggleSmokeAndExpress = function (currentSetFor) {
+
+			var _self = this;
+			return $q(function (resolve,reject) {
+				
+				if(_self.getExpressStatus() && _self.getSmokeStatus()){
+
+					sweetAlert.swal({
+					
+						type:'warning',
+						title: "Cigarette service is not available for Express Delivery. Would you like to proceed?",
+						showCancelButton: true,
+						confirmButtonText: "Yes, proceed!",
+						cancelButtonText: "No, cancel",
+
+					}).then(
+
+						function (response) {
+
+							var msg = "Smoke removed";
+							if(currentSetFor==='express'){
+								_self.setSmokeStatus(false);
+							}else{
+								_self.setExpressStatus(false);
+								msg = "Express Delivery disabled";
+							}
+
+							sweetAlert.swal({
+							
+								type:'success',
+								title: msg,
+								timer: 2000,
+								showConfirmButton: false
+							}).done()
+
+							resolve();
+						},
+						function (error) {
+
+							if(currentSetFor==='express'){
+								_self.setExpressStatus(false);
+							}else{
+								_self.setSmokeStatus(false);
+							}
+							reject();
+						}
+					);
+
+				}
+
+				resolve();
+
+			})
+
 		}
 
 		this.getExpressStatus = function(){

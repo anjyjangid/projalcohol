@@ -33,21 +33,22 @@
 			</thead>
 			<tbody>
 				<tr ng-repeat="currLoyal in loyalty">
-					<td>
+					<td>						
 						<div class="mainfirsttddiv">
+							
 							<div class="textfistrdivmain">
 							<div class="textboldtit">{{currLoyal.shortComment}}</div>
-							<div class="textnormalit">From : {{currLoyal.reference}}</div>
+							<div class="textnormalit">From : <a ui-sref="accountLayout.order({orderid:currLoyal.reference})">{{currLoyal.reference}}</a></div>
 							<div class="text_time_no">{{ (currLoyal.created_at.sec * 1000) | date:'yyyy-MM-dd h:mm:ss a'}}</div>
 							</div>
 						</div>
 					</td>
 				  
-					<td ng-if="currLoyal.type==1"><div class="fig_txtup">{{currLoyal.points | pricingTxt}}</div></td>
+					<td ng-if="currLoyal.type==1"><div class="fig_txtup">{{currLoyal.points | currency:'LP ':2}}</div></td>
 					<td ng-if="currLoyal.type==1"><div class="fig_txtup">-</div></td>
 
 					<td ng-if="currLoyal.type==0"><div class="fig_txtup">-</div></td>
-					<td ng-if="currLoyal.type==0"><div class="fig_txtup">{{currLoyal.points | pricingTxt}}</div></td>
+					<td ng-if="currLoyal.type==0"><div class="fig_txtup">{{currLoyal.points | currency:'LP ':2}}</div></td>
 
 
 					<td><div class="cometdivtextpar">{{currLoyal.comment}}</div></td>

@@ -127,6 +127,8 @@ AlcoholDelivery.filter('pricingTxt', function(currencyFilter,$rootScope) {
 		}
 });
 
+
+
 AlcoholDelivery.filter('truncate', function (){
   return function (text, length, end){
     if (text !== undefined){
