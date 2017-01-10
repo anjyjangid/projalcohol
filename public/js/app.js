@@ -1261,10 +1261,10 @@ function ($q, $rootScope, $log, $location, $window) {
 AlcoholDelivery.run([
 		"$rootScope", "appSettings", "alcoholCart", "ProductService", "store", "alcoholWishlist", "catPricing"
 		, "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll"
-		, "$timeout","cartValidation","cartValidate"
+		, "$timeout","cartValidation","cartValidate","$templateCache","$cookies"
 , function($rootScope, settings, alcoholCart, ProductService, store, alcoholWishlist, catPricing
 		,categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll
-		,$timeout,cartValidation,cartValidate) {
+		,$timeout,cartValidation,cartValidate,$templateCache,$cookies) {
 
 	//angular.alcoholCart = alcoholCart;
 
@@ -1494,7 +1494,14 @@ AlcoholDelivery.run([
 	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&version=v2.8&appId="+appId;
 	  fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));
-
+	angular.$templateCache = $templateCache;
+	$rootScope.$on('$viewContentLoaded', function() {	  		  
+	  var newversion = 'newupdate5.0';
+      if(!$cookies.get('viewcached') || $cookies.get('viewcached')!=newversion){      		
+      		$templateCache.removeAll();
+	  		$cookies.put('viewcached',newversion);	      		
+      }
+   	});
 
 }]);
 
