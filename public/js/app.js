@@ -1216,6 +1216,8 @@ function ($q, $rootScope, $log, $location, $window) {
             if(urlStr.indexOf('templates') == -1 && urlStr.indexOf('template') == -1){
 	            if(urlStr.charAt(0) == '/') urlStr = urlStr.substr(1);
 	            	config.url = 'api/'+urlStr;
+	        }else{
+	        	config.url += '?d=123';
 	        }	        	
             return config;
         },
@@ -1494,14 +1496,16 @@ AlcoholDelivery.run([
 	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&version=v2.8&appId="+appId;
 	  fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));
-	angular.$templateCache = $templateCache;
+	
+	/*angular.$templateCache = $templateCache;
+	
 	$rootScope.$on('$viewContentLoaded', function() {	  		  
 	  var newversion = 'newupdate8.0';
       if(!$cookies.get('viewcached') || $cookies.get('viewcached')!=newversion){      		
       		$templateCache.removeAll();
 	  		$cookies.put('viewcached',newversion);	      		
       }
-   	});
+   	});*/
 
 }]);
 
