@@ -195,6 +195,7 @@ AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
     var appSettings = {
         layout: {
             pageRightbarExist: true, // sidebar menu state
+            cartSummaryEnable:true // show cart summary on mouse hover
         },
         messages : {
         	hideDelay : 4000
@@ -1266,10 +1267,7 @@ AlcoholDelivery.run([
 		,categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll
 		,$timeout,cartValidation,cartValidate) {
 
-	//angular.alcoholCart = alcoholCart;
-
 	$rootScope.$state = $state; // state to be accessed from view
-
 
 	catPricing.GetCategoryPricing().then(
 
@@ -1321,6 +1319,12 @@ AlcoholDelivery.run([
 
 	   $state.previous = {state:from, param:fromParams}
 	   $rootScope.appSettings.layout.pageRightbarExist = true;
+
+		if(($state.current.name).indexOf('mainLayout.checkout')===0){
+			settings.layout.cartSummaryEnable = false;
+		}else{
+			settings.layout.cartSummaryEnable = true;
+		}
 
 		//SETTING HOME META DATA FOR EVERY ROUTE
 		var mdata = {
