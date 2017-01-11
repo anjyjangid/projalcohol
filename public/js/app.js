@@ -1262,10 +1262,10 @@ function ($q, $rootScope, $log, $location, $window) {
 AlcoholDelivery.run([
 		"$rootScope", "appSettings", "alcoholCart", "ProductService", "store", "alcoholWishlist", "catPricing"
 		, "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll"
-		, "$timeout","cartValidation","cartValidate"
+		, "$timeout","cartValidation","cartValidate","$templateCache","$cookies"
 , function($rootScope, settings, alcoholCart, ProductService, store, alcoholWishlist, catPricing
 		,categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll
-		,$timeout,cartValidation,cartValidate) {
+		,$timeout,cartValidation,cartValidate,$templateCache,$cookies) {
 
 	$rootScope.$state = $state; // state to be accessed from view
 
@@ -1471,9 +1471,9 @@ AlcoholDelivery.run([
 	// alcoholWishlist.init();
 
 	//LIVE
-	//var appId = '1269828463077215';
+	var appId = '1269828463077215';
 	//LOCAL OR BETA
-	var appId = '273669936304095';
+	//var appId = '273669936304095';
 
 
 	$window.fbAsyncInit = function() {
@@ -1498,7 +1498,14 @@ AlcoholDelivery.run([
 	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&version=v2.8&appId="+appId;
 	  fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));
-
+	angular.$templateCache = $templateCache;
+	$rootScope.$on('$viewContentLoaded', function() {	  		  
+	  var newversion = 'newupdate8.0';
+      if(!$cookies.get('viewcached') || $cookies.get('viewcached')!=newversion){      		
+      		$templateCache.removeAll();
+	  		$cookies.put('viewcached',newversion);	      		
+      }
+   	});
 
 }]);
 

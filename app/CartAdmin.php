@@ -263,13 +263,27 @@ class CartAdmin extends Moloquent
 	
 	public function setReference(){
 
-		$offset = strtotime('+8 hours'); //ADD OFFSET SO TIME WILL BE EQUAL TO SINGAPORE TIMEZONE 
-		//$this->updated_at
-		$reference = "ADSG";
-		$reference.= ((int)date("ymd",$offset) - 123456);			
-		$reference.="O";			
-		$reference.= (string)date("Hi",$offset);
+		if($this->reference==''){
+			$models = Setting::raw()->findAndModify(
+		    	['_id' => 'invoice'],
+	            ['$inc' => ['serial' => 1]],
+	            null,
+	            ['new' => true, 'upsert' => true]
+		    );
+			$reference = "ADSG".$models['serial'];
+		}else{
+			
+			if(str_contains($this->reference,'E'))
+				$referencepart = explode('E',$this->reference);
+			else
+				$referencepart = explode('O',$this->reference);
+			
+			$reference = $referencepart[0];
+		}
 
+		$reference.="E";			
+		$offset = strtotime('+8 hours');//ADD OFFSET SO TIME WILL BE EQUAL TO SINGAPORE TIMEZONE
+		$reference.= (string)date("Hi",$offset);
 		$this->reference = $reference;
 		
 	}

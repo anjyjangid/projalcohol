@@ -92,7 +92,7 @@
 
 	</head>
 
-	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}">		    	    	     	
+	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}" >		    	    	     	
     	
     	<div ng-spinner-bar class="page-spinner-bar">
 			<div class="bounce1"></div>

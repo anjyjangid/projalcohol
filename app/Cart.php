@@ -305,7 +305,6 @@ class Cart extends Moloquent
 		$cart->__set('discount', $cartDiscount);
 
 		try{
-
 			$cart->save();
 			$cart->setWorkingHrs();
 			return $cart;
@@ -434,16 +433,27 @@ class Cart extends Moloquent
 
 	public function setReference(){
 
-		$offset = strtotime('+8 hours');//ADD OFFSET SO TIME WILL BE EQUAL TO SINGAPORE TIMEZONE
-		//$this->updated_at
-		$reference = "ADSG";
-		$reference.= abs((int)date("his",$offset) - 123456);	
-
-		$reference.="O";			
-		$reference.= (string)date("Hi",$offset);
-
-		$this->reference = $reference;
+		if($this->reference==''){
+			$models = Setting::raw()->findAndModify(
+		    	['_id' => 'invoice'],
+	            ['$inc' => ['serial' => 1]],
+	            null,
+	            ['new' => true, 'upsert' => true]
+		    );
+			$reference = "ADSG".$models['serial'];
+		}else{			
+			if(str_contains($this->reference,'W'))
+				$referencepart = explode('W',$this->reference);
+			else
+				$referencepart = explode('O',$this->reference);
+			
+			$reference = $referencepart[0];
+		}
 		
+		$reference.="W";			
+		$offset = strtotime('+8 hours');//ADD OFFSET SO TIME WILL BE EQUAL TO SINGAPORE TIMEZONE
+		$reference.= (string)date("Hi",$offset);		
+		$this->reference = $reference;		
 	}
 
 	private function getProductById($id){
