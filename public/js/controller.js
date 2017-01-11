@@ -1086,7 +1086,7 @@ AlcoholDelivery.controller('CartController',[
 
 	$scope.alcoholGifting = alcoholGifting;
 
-	angular.alcoholCart = alcoholCart;
+	// angular.alcoholCart = alcoholCart;
 	
 	$scope.cart = alcoholCart.$cart;	
 

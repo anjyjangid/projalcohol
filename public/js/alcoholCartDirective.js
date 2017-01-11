@@ -2,7 +2,7 @@
 
 angular.module('alcoholCart.directives',[])
 
-	.controller('CartTopController',['$scope', 'alcoholCart',"$timeout", function($scope, alcoholCart) {
+	.controller('CartTopController',['$scope', 'alcoholCart', 'appSettings', '$timeout', function($scope, alcoholCart, appSettings, $timeout) {
 
 		$scope.alcoholCart = alcoholCart;
 
@@ -16,7 +16,11 @@ angular.module('alcoholCart.directives',[])
 				    }
 			};
 
-		angular.scrollconfig = $scope.scrollconfig;
+		$scope.$watch(function(){return appSettings.layout.cartSummaryEnable},function(n,o){
+			$scope.cartSummaryEnable = appSettings.layout.cartSummaryEnable;
+		});
+
+		// angular.scrollconfig = $scope.scrollconfig;
 
 
 		// $scope.updateScrollbar('scrollTo', 10);

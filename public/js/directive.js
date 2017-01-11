@@ -36,7 +36,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 		templateUrl: '/templates/partials/topmenu.html',
 		controller: function($scope,$rootScope,$http,$state,sweetAlert,UserService,store
-							,alcoholWishlist,ClaimGiftCard,$mdDialog, $timeout,$window){
+							,alcoholWishlist,ClaimGiftCard,$mdDialog, $timeout,$window,appSettings){
 
 			$scope.list = [];
 
