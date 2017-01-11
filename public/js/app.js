@@ -1218,7 +1218,7 @@ function ($q, $rootScope, $log, $location, $window) {
 	            if(urlStr.charAt(0) == '/') urlStr = urlStr.substr(1);
 	            	config.url = 'api/'+urlStr;
 	        }else{
-	        	config.url += '?ver=1.0';
+	        	config.url += '?ver=1.1';
 	        }	        	
             return config;
         },
