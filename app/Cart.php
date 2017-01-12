@@ -392,7 +392,11 @@ class Cart extends Moloquent
 
 	}
 
-	public function getAllProductsInCart($data){
+	public function getAllProductsInCart($data=false){
+
+		if($data===false){
+			$data = $this->toArray();
+		}
 
 		$products = $this->getProductIncartCount($data);
 
