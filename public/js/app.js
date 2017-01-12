@@ -1249,6 +1249,19 @@ function ($q, $rootScope, $log, $location, $window) {
 				// $location.url('/404').replace();
 			};
 
+			if(rejection.status == 412){ // 412 => The server does not meet one of the preconditions that the requester put on the request.
+				
+				if(rejection.data.reset==='cart'){
+					$window.localStorage.removeItem('deliverykey');
+					$window.location.reload();
+				}
+
+				if(angular.isDefined(rejection.data.refresh) && rejection.data.refresh===true){
+					//$window.location.reload();
+				}
+
+			};
+
 			if(rejection.status == 405){ //405 => method not allowed
 				$window.location.reload();
 			};
@@ -1270,7 +1283,7 @@ AlcoholDelivery.run([
 		,$timeout,cartValidation,cartValidate,$templateCache,$cookies) {
 
 	$rootScope.$state = $state; // state to be accessed from view
-
+	angular.alcoholCart = alcoholCart;
 	catPricing.GetCategoryPricing().then(
 
 		function(result) {
@@ -1284,7 +1297,7 @@ AlcoholDelivery.run([
 
 	$rootScope.isAppInitialized = false;
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-
+		settings.layout.cartSummaryEnable = false;
 		if(angular.isDefined($rootScope.processingOrder) && $rootScope.processingOrder===true){
 
 			$mdToast.show({
@@ -1299,9 +1312,12 @@ AlcoholDelivery.run([
 
 			});
 
-			
 			event.preventDefault();
 
+		}
+
+		if((toState.name).indexOf('mainLayout.checkout')!==0){
+			settings.layout.cartSummaryEnable = true;
 		}
 
 		var regex = new RegExp('^accountLayout', 'i');
@@ -1321,12 +1337,6 @@ AlcoholDelivery.run([
 
 	   $state.previous = {state:from, param:fromParams}
 	   $rootScope.appSettings.layout.pageRightbarExist = true;
-
-		if(($state.current.name).indexOf('mainLayout.checkout')===0){
-			settings.layout.cartSummaryEnable = false;
-		}else{
-			settings.layout.cartSummaryEnable = true;
-		}
 
 		//SETTING HOME META DATA FOR EVERY ROUTE
 		var mdata = {
@@ -1468,15 +1478,11 @@ AlcoholDelivery.run([
 		});
 
 	});
-	
-	// store.init();
-	// alcoholWishlist.init();
-
+		
 	//LIVE
 	var appId = '1269828463077215';
 	//LOCAL OR BETA
 	//var appId = '273669936304095';
-
 
 	$window.fbAsyncInit = function() {
     	// Executed when the SDK is loaded

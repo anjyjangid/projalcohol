@@ -5,6 +5,7 @@ namespace AlcoholDelivery\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Cart as Cart;
+use MongoId;
 
 class CartNotAvailable
 {
@@ -30,19 +31,28 @@ class CartNotAvailable
 			case "PUT":
 			case "DELETE":
 			case "POST":
+			case "GET":
 
-				$cartKey = \Route::current()->getParameter('cartKey');
+				$cart = \Route::current()->getParameter('cart'); // for Controllers resource created action routes
+				$cartKey = \Route::current()->getParameter('cartKey'); 
+				
+				$cartKey = empty($cartKey)?$cart:$cartKey;
 
 				if(empty($cartKey)){
 					break;
 				}
 
-				$cart = Cart::find($cartKey);
+				$cart = "";
+				if(MongoId::isValid($cartKey)){
+					$cart = Cart::find($cartKey);
+				}
 
 				if(empty($cart)){
 
 					$response['success'] = false;
 					$response['message'] = "Cart not found";
+					$response['reset'] = 'cart';
+					$response['refresh'] = true;
 
 				}
 
@@ -52,7 +62,7 @@ class CartNotAvailable
 		}
 		
 		if(!$response['success']){
-			return response($response,406);
+			return response($response,412);
 		}
 
 		return $next($request);

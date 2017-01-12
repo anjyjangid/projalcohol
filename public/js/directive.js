@@ -1634,8 +1634,8 @@ AlcoholDelivery.directive('sideBar', function() {
 		                showCancelButton: true,
 		                confirmButtonColor: "#DD6B55",
 		                confirmButtonText: "Yes",
-		                closeOnConfirm: false,
-		                closeOnCancel: false
+		                // closeOnConfirm: false,
+		                // closeOnCancel: false
 	            }).then(function(isConfirm) {
 	                    if (isConfirm) {
 	                        $http.delete("address/"+key)
@@ -1661,7 +1661,7 @@ AlcoholDelivery.directive('sideBar', function() {
 	                    } else {
 	                        sweetAlert.swal("Cancelled", "Address safe :)", "error");
 	                    }
-	                }
+	                },function(cancel){}
 		       	);
 			};
 

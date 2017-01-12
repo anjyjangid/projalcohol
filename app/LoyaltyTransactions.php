@@ -101,7 +101,7 @@ class LoyaltyTransactions extends Moloquent
 		$recentEarned = 0;
 
 		if(isset($user->loyalty['recent']['earned'])){
-			$recentEarned = $user->credits['recent']['earned'];
+			$recentEarned = $user->loyalty['recent']['earned'];
 		}
 
 		switch ($type) {

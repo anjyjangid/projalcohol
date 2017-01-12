@@ -113,8 +113,7 @@
 
 				<tr ng-repeat="(key, package) in alcoholCart.getPackages()">
 
-					<td width="52%">	
-						<!-- <pre>{{package.original.packageItems|json}}</pre> -->
+					<td width="52%">
 						<div class="orhistry2_td2procdtcvr">
 							<span>
 								<a ui-sref="mainLayout.packagedetail({type:package.original.type==2?'cocktail':'party',id:package._id,uid:package._uniqueId})">

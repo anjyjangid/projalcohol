@@ -192,7 +192,8 @@ Route::group(['prefix' => 'api'], function () {
 
 		Route::get('services','CartController@getServices');	
 		
-		/**/
+		Route::get('products-lapsed-time/{cartKey}','CartController@getProductsLapsedTime');
+		
 		Route::get('timeslots/{date}','CartController@getTimeslots');
 
 		Route::post('repeatlast','CartController@postRepeatlast');

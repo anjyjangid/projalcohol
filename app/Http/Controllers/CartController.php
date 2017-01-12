@@ -193,7 +193,7 @@ class CartController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 
-	public function show(Request $request,$id){
+	public function show(Request $request, $id){
 
 		$cart = Cart::findUpdated($id);
 
@@ -1373,42 +1373,45 @@ jprd($product);
 	public function getTimeslots($date){
 
 		$timeSlots = Setting::where("_id","=","timeslot")->get(['settings'])->first();
-		$timeSlots = $timeSlots['settings'];    
+		$timeSlots = $timeSlots['settings'];
 
-		$tomorrowTimeStr = strtotime('tomorrow');
+		$minTimeStr = strtotime(date('Y-m-d'));
 		$passedTimeStr = strtotime($date);
-		
-	
-		if($passedTimeStr < $tomorrowTimeStr){
-			return response(["message"=>"In-valid date passed, Time slot is not available for previous date"],400);
+
+		$skipMinutes = 120;
+
+		if($passedTimeStr < $minTimeStr){
+			return response([
+						"message"=>"In-valid date passed, Time slot is not available for previous date"
+					],400);
 		}
 
 		$start = (float)$passedTimeStr*1000;
 		$end = (float)(strtotime('+6 days',$passedTimeStr)*1000);
 		
-		$holiday = new Holiday;
-		$holidays = $holiday->getHolidays(
-			[
-				'start'=>$start, 
-				'end'=>$end
-			]
-		);	
+		// $holiday = new Holiday;
+		// $holidays = $holiday->getHolidays(
+		// 	[
+		// 		'start'=>$start, 
+		// 		'end'=>$end
+		// 	]
+		// )
 
-		$currDate = date("Y-m-d", $tomorrowTimeStr);
+		$currDate = date("Y-m-d", $minTimeStr);
 
 		$passedDate = date("Y-m-d",$passedTimeStr);
 
-		$weeknumber = date("N",strtotime($passedDate));//pass "3" for 2016-06-08(wednesday)
+		$weeknumber = date("N",strtotime($passedDate));//return "3" for wednesday
 
 		$weekDaysOff = [];
 		$holidayTimestamp = [];
-		foreach($holidays as $holiday){
-			if($holiday['_id']==="weekdayoff"){
-				$weekDaysOff = $holiday['dow'];
-			}else{
-				$holidayTimestamp[] = ($holiday['timeStamp'])/1000;
-			}
-		}
+		// foreach($holidays as $holiday){
+		// 	if($holiday['_id']==="weekdayoff"){
+		// 		$weekDaysOff = $holiday['dow'];
+		// 	}else{
+		// 		$holidayTimestamp[] = ($holiday['timeStamp'])/1000;
+		// 	}
+		// }
 
 		$weekKeys = array(
 
@@ -1424,22 +1427,39 @@ jprd($product);
 		$slotArr = [];
 
 		$tempDate = $passedDate;
+		
+		$currentTimeStr = strtotime("+8 hours");
+		$todayDateStr = strtotime(date("Y-m-d",$currentTimeStr));
+		$slotsActiveAfter = round(($currentTimeStr - $todayDateStr)/60) + $skipMinutes;
 
 		for($i=1;$i<=7;$i++){
 
 			$datekey = strtotime($tempDate);
-			$datestamp = date("d M",$datekey);			
+			$datestamp = date("d M",$datekey);
+			$currTimeSlots = $timeSlots[$weeknumber-1];
 			$status = 1;
-			if(in_array($weeknumber==7?0:$weeknumber, $weekDaysOff) || (in_array($datekey,$holidayTimestamp))){
+
+			if(in_array($weeknumber==7?0:$weeknumber, $weekDaysOff) || in_array($datekey,$holidayTimestamp) || $datekey<$todayDateStr){
 				$status = 0;
 			}
 
+			if($datekey===$todayDateStr){
+								
+				foreach ($currTimeSlots as $key => &$slot) {
+					if($slot['from']<$slotsActiveAfter){
+						$slot['status'] = 0;
+					};
+				}
+			}
+
 			$slotArr[$weekKeys[$weeknumber]] = [
-				'slots' => $timeSlots[$weeknumber-1],
+				'slots' => $currTimeSlots,
 				'datestamp' => $datestamp,
 				'datekey' => $datekey,
 				'status' => $status
 			];
+
+			
 
 			$tempDate = date("Y-m-d",strtotime('+1 day', strtotime($tempDate)));
 
@@ -2891,6 +2911,36 @@ jprd($product);
 		
 	}
 
+	public function getProductsLapsedTime ($cartKey) {
+
+		$cart = Cart::find($cartKey);
+		$products = $cart->getAllProductsInCart();
+
+		$products = $this->setProductAvailabilityAfter($products);
+
+	}
+
+
+	private function setProductAvailabilityAfter($products){
+
+		$today = new MongoDate();
+		$highestDelay = 0;
+
+		$today = strtotime(date('Y-m-d'))*1000;
+
+		$holidays = DB::collection('holidays')
+						->where('timeStamp','>',$today)
+						->orWhere('_id','weekdayoff')
+						->get(['dow','timeStamp']);
+
+		foreach ($products as $key => $product) {
+			jprd($product);
+			$today = strtotime(date('Y-m-d'))*1000;
+		}
+		jprd($holidays);
+
+	}
+
 	public function saleNotification(){
 		
         $data = DB::collection('notifications')->raw()->aggregate(
@@ -3061,4 +3111,7 @@ jprd($product);
         }
         return $img;
     }
+
+
+
 }

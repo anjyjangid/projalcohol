@@ -1071,9 +1071,9 @@ AlcoholDelivery.controller('CreditsController',['$scope','$http','sweetAlert','$
 
 AlcoholDelivery.controller('CartController',[
 			'$scope','$rootScope','$state','$stateParams', '$location','$anchorScroll','$http','$q', '$mdDialog', '$mdMedia','$timeout',
-			'UserService','sweetAlert','alcoholCart','alcoholGifting','store', 'cartValidation', 'cartValidate'
+			'UserService','sweetAlert','alcoholCart','alcoholGifting','store', 'cartValidation', 'cartValidate', 'ProductService'
 	,function($scope, $rootScope, $state, $stateParams, $location, $anchorScroll, $http, $q, $mdDialog, $mdMedia, $timeout, 
-			UserService, sweetAlert, alcoholCart, alcoholGifting, store, cartValidation, cartValidate){
+			UserService, sweetAlert, alcoholCart, alcoholGifting, store, cartValidation, cartValidate, ProductService){
 	
 	// var isStepSet = alcoholCart.setCurrentStep($state.$current.data.step);
 	// if(isStepSet===false){
@@ -1152,88 +1152,76 @@ AlcoholDelivery.controller('CartController',[
 					if(!UserService.getIfUser())
 						return $rootScope.$broadcast('showLogin');
 
-					$mdDialog.show({
+					var cartKey = alcoholCart.getCartKey();
 
-						controller: function($scope, $rootScope, $document, ProductService) {
+					ProductService.getDontMiss(cartKey).then(
 
-							$scope.address = {
-								step:1
-							}
+						function(response){
 
-							$scope.hide = function() {
-								$mdDialog.hide();
-							};
-							$scope.cancel = function() {
-								$mdDialog.cancel();
-							};
+							if(response.length>0){
 
+								$mdDialog.show({
 
-							$scope.loading = true;
-							
-							var cartKey = alcoholCart.getCartKey();
-
-							ProductService.getDontMiss(cartKey).then(
-
-								function(response){
-
-									if(response.length==0){
-
-										$scope.notAvailable = true;
-										$timeout(function(){
-
-											$scope.continue();
-
-
-										},1500)
-
-									}else{
+									controller: function($scope, $rootScope, $document) {
 
 										$scope.products = response;
 
-									}
+										$scope.address = {
+											step:1
+										}
 
-									$scope.loading = false;
+										$scope.hide = function() {
+											$mdDialog.hide();
+										};
+										$scope.cancel = function() {
+											$mdDialog.cancel();
+										};
 
-								},
-								function(errorRes){
+										$scope.continue = function(){
 
+											//alcoholCart.deployCart();
 
+											$scope.step = 2;
 
-								}
-							)
+											$mdDialog.hide();
 
-							$scope.continue = function(){
+											$state.go("mainLayout.checkout.address");
 
+										}
 
-								alcoholCart.deployCart();
+										$scope.loadMore = function(dir){
+											var owl = $('.dontmissowl').data('owlCarousel');
+											if(dir)
+												owl.prev();
+											else
+												owl.next();
+										}
+									},
+									templateUrl: '/templates/checkout/dont-miss.html',
+									parent: angular.element(document.body),
+									//targetEvent: ev,
+									clickOutsideToClose:true,
+									fullscreen:true
+								})
+								.then(function(answer) {
 
-								$scope.step = 2;
+								}, function() {
 
-								$mdDialog.hide();
+								});
+
+							}else{
 
 								$state.go("mainLayout.checkout.address");
 
 							}
 
-							$scope.loadMore = function(dir){
-								var owl = $('.dontmissowl').data('owlCarousel');
-								if(dir)
-									owl.prev();
-								else
-									owl.next();
-							}
+							$scope.loading = false;
+
 						},
-						templateUrl: '/templates/checkout/dont-miss.html',
-						parent: angular.element(document.body),
-						//targetEvent: ev,
-						clickOutsideToClose:true,
-						fullscreen:true
-					})
-					.then(function(answer) {
+						function(errorRes){
 
-					}, function() {
-
-					});
+						}
+					);
 
 				}else{
 					cartValidate.processValidators();
@@ -1524,8 +1512,7 @@ AlcoholDelivery.controller('CartAddressController',[
 			sweetAlert.swal({
 				
 					type:'error',
-					title: "Please select an address",
-					closeOnConfirm: true
+					title: "Please select an address"
 
 				}).then(
 
@@ -1607,7 +1594,7 @@ AlcoholDelivery.controller('CartDeliveryController',[
 	$scope.alcoholCart = alcoholCart;
 
 	$scope.timeslot = alcoholCart.$cart.timeslot;
-
+	var skipDays = 0;
 	$scope.localDate = new Date();
 
 	if($scope.timeslot.slug){
@@ -1616,10 +1603,10 @@ AlcoholDelivery.controller('CartDeliveryController',[
 
 	}else{
 		$scope.myDate = new Date();
-		$scope.myDate.setDate($scope.myDate.getDate()+1);
+		$scope.myDate.setDate($scope.myDate.getDate()+skipDays);
 	}
 
-	$scope.localDate.setDate($scope.localDate.getDate()+1);
+	$scope.localDate.setDate($scope.localDate.getDate()+skipDays);
 
 	$scope.minDate = new Date(
 		$scope.localDate.getFullYear(),
