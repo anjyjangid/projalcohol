@@ -993,11 +993,28 @@ class Products extends Eloquent
 								'metaDescription'=>1,
 								'metaKeywords'=>1,
 								'bulkDisable' => 1,
+								'cImage' => [
+									'$filter' => [
+										'input' => '$imageFiles',
+										'as' => 'imageFile',
+										'cond' => [
+											'$eq' => [ '$$imageFile.coverimage', 1 ]
+										]
+									]
+								]
 							]
 						]
 
 					];
 			
+			if(isset($params['matchconditions'])){
+				$extraMatchCondition = [];
+				foreach ($params['matchconditions'] as $field => $condition) {
+					$extraMatchCondition[$field] = $condition;
+				}
+				$query[]['$match'] = $extraMatchCondition;
+			}
+
 			$product = Products::raw()->aggregate($query);
 
 
@@ -1011,6 +1028,27 @@ class Products extends Eloquent
 					if(is_null($tempPro['express_delivery_bulk'])){
 						$tempPro['express_delivery_bulk'] = $edbGlobal;
 					}
+
+					//CALCULATE PRICING
+					$tempPro['finalPrice'] = $tempPro['price'];
+					if(isset($tempPro['regular_express_delivery']) && !empty($tempPro['regular_express_delivery'])){
+						if($tempPro['regular_express_delivery']['type'] == 1){
+							$tempPro['finalPrice'] += ($tempPro['finalPrice']*$tempPro['regular_express_delivery']['value']/100);
+						}else{
+							$tempPro['finalPrice'] += $tempPro['regular_express_delivery']['value'];
+						}
+					}					
+					//CHECK FOR SALE for single unit
+					if(isset($tempPro['proSales']) && !empty($tempPro['proSales']) && ($tempPro['proSales']['conditionQuantity'] == 1) && ($tempPro['proSales']['actionType'] == 2) && empty($tempPro['actionProductId'])){
+						if($tempPro['proSales']['discountType'] == 2){
+							$tempPro['salePrice'] = $tempPro['finalPrice']-($tempPro['finalPrice']*$tempPro['proSales']['discountValue']/100);
+						}else{
+							$tempPro['salePrice'] = $tempPro['finalPrice']-$tempPro['proSales']['discountValue'];
+						}	
+						$tempPro['salePrice'] = number_format($tempPro['salePrice'],2);
+					}
+
+					$tempPro['finalPrice'] = number_format($tempPro['finalPrice'],2);
 
 				}
 

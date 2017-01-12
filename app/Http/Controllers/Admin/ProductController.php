@@ -632,50 +632,70 @@ class ProductController extends Controller
 		return response($result, 200);
 	}
 
-	public function getTest(Request $request){
-
-		$models = Setting::raw()->findAndModify(
-	    	['_id' => 'invoice'],
-            ['$inc' => ['serial' => 1]],
-            null,
-            ['new' => true, 'upsert' => true]
-	    );	
-		echo $models['serial'];	
-		exit;
-		return response($models,200);
-
-		$timenow = strtotime('now');
-		$microtime = explode('.',microtime(true));
-		return response($microtime);
-		return $time = strtotime('now').' = '.str_replace(".","",microtime(true)); 
-		/*$jobs = DB::collection('jobs')->get();
-
-		return response($jobs);*/
-
-		$deliveryOrders = DB::collection('orders')
-            ->whereRaw(['doStatus'=>1,'printed'=>['$exists'=>false]])
-            ->get(['reference']);
-
-		return response($deliveryOrders);            
-
-		/*DB::collection('orders')->raw()->update([
-			//"_id" => new MongoId(),
-			'productsLog.received' => ['$exists' => true]			
-        ], [
-            '$unset' => ['productsLog.$.received' => 1],
-            '$set' => ['doStatus' => 0]
-        ],['multiple' => true]);*/
-        
-        return new \MongoDate();
-
-        return date('Y-m-d h:i:s',strtotime('+8 hours'));
-
-        $yourDate = new \MongoDate();
-        echo date('Y-M-d h:i:s', $yourDate->sec);
-        //return ;
-
+	public function getTest(Request $request){		
 		
 
+		/*$userlist = DB::collection('user')
+            ->whereRaw(['productAddedNotification'=>['$exists'=>true,'$not'=>['$size'=>0]]])            
+            ->get();
+        dd($userlist);    
+        $plist = [];    
+        $productwiseuser = [];
+        foreach ($userlist as $user) {
+        	foreach ($user['productAddedNotification'] as $pid) {
+        		$pid = (string)$pid;
+        		if(!in_array($pid, $plist))
+        			$plist[] = $pid;
+
+        		$productwiseuser[$pid][] = $user;
+        	}
+        }        
+        
+        $model = new Products();
+        $query = [];
+        $query['id'] = $plist;
+        $query['matchconditions'] = ['quantity' => ['$gt' => 0]];
+        $products = $model->fetchProduct($query);
+        
+        $userMails = [];
+        $userUpdate = [];
+        if(isset($products['product'])){
+			foreach ($products['product'] as $product) {
+				$productId = (string)$product['_id'];
+				$users = $productwiseuser[$productId];
+				foreach ($users as $user) {
+					$uid = (string)$user['_id'];
+					$userUpdate[$uid][] = $productId;
+					$userMails[$uid]['userdetail'] = $user;
+					$userMails[$uid]['products'][] = $product;
+				}
+			}
+        }
+
+        $contents = '';        
+
+        if($userMails){
+        	foreach ($userMails as $userMail) {
+        		$view = \View::make('emails.backinstock',['userMail'=>$userMail]);
+				
+				$contents = $view->render();
+
+				$email = new Email('notifyuseronproductadd');
+
+				$user = $userMail['userdetail'];
+
+				$data = [
+					'name' => (isset($user['name']) && !empty($user['name']))?$user['name']:$user['email'],
+					'email' => $user['email'],					
+					'products' => $contents
+				];
+
+				$emailSent = $email->sendEmail($data);
+        	}
+        }
+
+        return $contents;
+        return response(['userMails'=>$userMails,'userUpdate'=>$userUpdate],200);*/
 	}
 
 	private function castVariables(&$inputs){

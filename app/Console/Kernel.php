@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         \AlcoholDelivery\Console\Commands\DatabaseBackup::class,
         \AlcoholDelivery\Console\Commands\Notification::class,
         \AlcoholDelivery\Console\Commands\PrintJob::class,
+        \AlcoholDelivery\Console\Commands\StockNotification::class,
     ];
 
     /**
@@ -34,6 +35,9 @@ class Kernel extends ConsoleKernel
 
         //AUTOMATED PRINT INVOICE
         $schedule->command('printjob:print')->everyMinute();
+
+        //SEND STOCK BACK NOTIFICATION
+        $schedule->command('stock:notify')->everyMinute();
 
     }
 }
