@@ -197,11 +197,10 @@ class Email extends Moloquent
 			case 'notifyuseronproductadd':/* begin : Notification Email { */
 								
 				$this->recipient_info['receiver']['email'] = $data['email'];
-				$this->recipient_info['receiver']['name'] = $data['username'];
-
-				$this->recipient_info['replace']['{product_link}'] = url().'/product/'.$data['p_id'];
-				$this->recipient_info['replace']['{user_name}'] = $data['username'];
-				$this->recipient_info['replace']['{product_name}'] = $data['product_name'];
+				$this->recipient_info['receiver']['name'] = $data['name'];
+				
+				$this->recipient_info['replace']['{user_name}'] = $data['name'];
+				$this->recipient_info['replace']['{products}'] = $data['products'];
 
 				$this->recipient_info['message'] = str_ireplace(array_keys($this->recipient_info['replace']),array_values($this->recipient_info['replace']),$this->recipient_info['message']);
 				

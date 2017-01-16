@@ -26,7 +26,7 @@ class PrintJob extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Print invoice through google cloud print';
 
     /**
      * The console command description.

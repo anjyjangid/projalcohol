@@ -95,4 +95,8 @@
 	    }
 	}
 
+	function currency($value,$sign = "$"){
+		return $sign.money_format('%.2n', $value);
+	}
+
 ?>
