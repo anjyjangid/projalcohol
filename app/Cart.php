@@ -1613,8 +1613,8 @@ class Cart extends Moloquent
 				}
 
 				$sObj['price'] = [
-					'original' => number_format($strikePrice,2),
-					'sale' => number_format($currPrice,2)
+					'original' => round($strikePrice,2),
+					'sale' => round($currPrice,2)
 				];
 
 				$subtotal+= $sObj['price']['sale'];
@@ -1987,7 +1987,7 @@ class Cart extends Moloquent
 
 							}
 							
-							$price = number_format($price,2);
+							$price = round($price,2);
 
 						}
 

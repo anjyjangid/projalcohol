@@ -153,7 +153,7 @@ class CreditTransactions extends Moloquent
 
 				$user->__set('credits', [
 
-					'total'=> $totalInAcc - $tData['credit'],
+					'total'=> round($totalInAcc - $tData['credit'],2),
 					'recent' => [
 						'earned'=>$recentEarned
 					]
@@ -161,7 +161,6 @@ class CreditTransactions extends Moloquent
 				]);
 				break;
 		}
-
 
 		if(isset($tData['shortComment']) && !empty($tData['shortComment'])){
 			$creditObj['shortComment'] = $tData['shortComment'];

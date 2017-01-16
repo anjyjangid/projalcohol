@@ -1459,8 +1459,6 @@ jprd($product);
 				'status' => $status
 			];
 
-			
-
 			$tempDate = date("Y-m-d",strtotime('+1 day', strtotime($tempDate)));
 
 			if($weeknumber==7){
@@ -1948,10 +1946,8 @@ jprd($product);
 			
 			//SAVE CARD IF USER CHECKED SAVE CARD FOR FUTURE PAYMENTS
 			if($cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['card'] == 'newcard' && $cartArr['payment']['savecard']){
-				$cardInfo = $cartArr['payment']['creditCard'];
-		        // $user = User::find($user->_id);
+				$cardInfo = $cartArr['payment']['creditCard'];		        
 		        $userObj->push('savedCards',$cardInfo,true);
-
 			}
 
 			//Update inventory if order is 1 hour delivery
@@ -1968,9 +1964,7 @@ jprd($product);
                 'order_number' => $reference
             ];
 
-            $order->placed();
-
-            //$mailSent = $emailTemplate->sendEmail($mailData);
+            $order->placed();            
 
 			if($request->isMethod('get')){
 				return redirect('/orderplaced/'.$order['_id']);
@@ -2915,11 +2909,9 @@ jprd($product);
 
 		$cart = Cart::find($cartKey);
 		$products = $cart->getAllProductsInCart();
-
 		$products = $this->setProductAvailabilityAfter($products);
 
 	}
-
 
 	private function setProductAvailabilityAfter($products){
 
