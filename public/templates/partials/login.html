@@ -20,10 +20,10 @@
           <div class="registeremailcvr" ng-class="{'has-error':login.errors.email[0]}">
             <label>Email Address</label>
             <input type="text" ng-model="login.email" class="alcohalrestertextbox form-control" placeholder="Email Address" />
-            <span class="help-block" ng-bind="login.errors.email[0]"></span> 
-            <div align="center">
-              <a class="pointer" ng-if="login.errors.reverification[0]" ng-click="resendverification()">Resend verification email</a>              
-            </div>
+            <span class="help-block" ng-if="!login.errors.reverification[0]" ng-bind="login.errors.email[0]"></span>
+            <span class="help-block" ng-if="login.errors.reverification[0]">
+              You have not verified your email. Please check your inbox to activate your account and start shopping with us! Or <a class="pointer" ng-click="resendverification()">click here</a> to resend the verification email                            
+            </span>
           </div>
           <div class="registeremailcvr" ng-class="{'has-error':login.errors.password[0]}">
             <input autocomplete="off" type="password" ng-model="login.password" class="alcohalrestertextbox form-control" placeholder="Password" />

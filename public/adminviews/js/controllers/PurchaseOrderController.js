@@ -29,7 +29,12 @@ MetronicApp.controller('PurchaseOrderController',['$rootScope', '$scope', '$time
 		/*alert('Purchase order update is under construction!');
 		return false;*/
 
-		$http.put('/adminapi/purchaseorder/'+$stateParams.id, shortfall?{status:3}:{products:$scope.products})
+		var req = {};
+		req.products = $scope.products;
+		if(shortfall)
+			req.status = 3;
+
+		$http.put('/adminapi/purchaseorder/'+$stateParams.id, req)
 		.then(function(res) {
             Metronic.alert({
                 type: 'success',

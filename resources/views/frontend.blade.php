@@ -17,24 +17,21 @@
 		<meta name="twitter:description" content="@{{meta.description}}" />
 		<meta name="twitter:creator" content="@{{meta.site_name}}">
 		<meta name="twitter:image:src" content="{{url()}}@{{meta.img}}" />
-	    <!--FACEBOOK/OTHER META -->
+	    <!--FACEBOOK/OPEN GRAPH META -->
 		<meta property="fb:app_id" content="@{{meta.fbid}}" />
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content="@{{meta.title}}" />
 		<meta property="og:image" content="{{url()}}@{{meta.img}}" />
 		<meta property="og:site_name" content="@{{meta.site_name}}" />
 		<meta property="og:description" content="@{{meta.description}}" />
-		<meta property="og:url" content="{{url()}}" />
-		
-       <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">-->		
-		 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+		<meta property="og:url" content="@{{meta.url}}" />		
+       
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 		
 		<meta name="google-site-verification" content="89WKkM4ineKdT62fjxZwCKUhQCOZyE7wTbCpvlfDt2E"/> 
 
 		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 		<title ng-bind="meta.title"></title>
-
-
 
 		<!-- Bootstrap -->
 		<link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,700,800,500' rel='stylesheet' type='text/css'>
@@ -67,8 +64,6 @@
 			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
 		<link rel="stylesheet" type="text/css" href="css/simple-sidebar.css">
-		
-
 
 		<link rel="shortcut icon" href="images/favicon.ico"/>	
 		
@@ -88,8 +83,19 @@
 		<!-- DO NOT MODIFY -->
 		<!-- End Facebook Pixel Code -->
 
-
-
+		<!-- Google analytics -->
+		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+		 
+		  ga('create', 'UA-31785217-1', 'auto');
+		  ga('send', 'pageview');
+		 
+		</script>
+		<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion_async.js" charset="utf-8"></script>		
+		<!-- Google analytics -->
 	</head>
 
 	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}" >		    	    	     	
@@ -114,30 +120,13 @@
 				<section class="fullwidth social_block" style="padding: 10px 0px;">
 					<div class="container">
 						<div align="center">
-						<div class="occassion_sale ng-scope" style="font-size: 40px;line-height: 34px; padding: 0px; color: #fff;">
-							Your friends like us too.. 
-						</div>						
+							<div class="occassion_sale ng-scope" style="font-size: 40px;line-height: 34px; padding: 0px; color: #fff;">
+								Your friends like us too.. 
+							</div>						
 
-						<div id="fboverlay" style="margin-top: 10px; color: #fff;" class="fb-like" data-width="250" data-href="https://www.facebook.com/alcoholdelivery.com.sg/" data-layout="standard" data-action="like" data-size="large" data-show-faces="true" data-share="true" >							
-						</div>
-						</div>
-						<!-- <div class="socilblok_folowtxt">
-							<div class="socilblok_folowtxt1">Follow and like us for latest deals and updates:
+							<div id="fboverlay" style="margin-top: 10px; color: #fff;" class="fb-like" data-width="250" data-href="https://www.facebook.com/alcoholdelivery.com.sg/" data-layout="standard" data-action="like" data-size="large" data-show-faces="true" data-share="true" >							
 							</div>
-						</div>
-						<div class="socilblok_twtr" style="margin-left: 20px;">
-						<div class="fb-like" data-href="https://www.facebook.com/alcoholdelivery.com.sg/" data-layout="standard" data-action="like" data-size="large" data-show-faces="true" data-share="true" ></div>
-						</div> -->
-						<!-- <div class="socilblok_twtr">
-							<a target="_blank" href="@{{settings.social.twitter}}"><img class="img-responsive" src="images/socl_itwtr.png" />
-							<span>Twitter</span>
-							</a>
-						</div>
-						<div class="socilblok_fb">
-							<a target="_blank" href="@{{settings.social.facebook}}"><img class="img-responsive" src="images/social_fbicon.png" />
-							<span>Facebook</span>
-							</a>
-						</div> -->
+						</div>						
 					</div>
 				</section>				
 				<section class="fullwidth footer1">
@@ -198,50 +187,7 @@
 										<li><a>Mobile Apps</a></li>
 									</ul>
 								</div>
-							</div>
-							<!-- <div class="col-xs-12 col-md-3 footer1_pannel2cvr">
-								<div class="footer1_title">About</div>
-								<div class="footer1_subtitle">
-									<ul>
-										<li><a ui-sref="cmsLayout.about-us">About us</a></li>
-										<li><a href="#">How it Works</a></li>
-										<li><a href="#">Team</a></li>
-										<li><a href="#">Mobile App</a></li>
-										<li><a href="#">Desktop App</a></li>
-										<li><a href="#">Security</a></li>
-										<li><a href="#">Report Bug</a></li>
-										<li><a href="#">Fees & Charges</a></li>
-										<li><a href="#">Investor</a></li>
-										<li><a href="#">Quotes</a></li>
-									</ul>
-								</div>
-							</div>
-							<div class="col-xs-12 col-md-3 footer1_pannel3cvr">
-								<div class="footer1_title">Press</div>
-								<div class="footer1_subtitle">
-									<ul>
-										<li><a href="#">In the News</a></li>
-										<li><a href="#">Press Releases</a></li>
-										<li><a href="#">Awards</a></li>
-										<li><a href="#">Testimonials</a></li>
-										<li><a href="#">Timeline</a></li>
-									</ul>
-								</div>
-							</div>
-							<div class="col-xs-12 col-md-2 footer1_pannel4cvr">
-								<div class="footer1_title">Get in Touch</div>
-								<div class="footer1_subtitle">
-									<ul>
-										<li><a href="#">Get Support</a></li>
-										<li><a href="#">Advertise with Us</a></li>
-										<li><a href="#">Careers</a></li>
-										<li><a href="#">Community</a></li>
-										<li><a href="#">Affiliate Program</a></li>
-										<li><a href="#">Merchandise</a></li>
-										<li><a href="#">Contact Us</a></li>
-									</ul>
-								</div>
-							</div> -->
+							</div>							
 						</div>
 					</div>
 				</section>
@@ -281,10 +227,7 @@
     <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') }}"></script>
     
     
-    <script type="text/javascript" src="{{ asset('bower_components/angular-ui-router/release/angular-ui-router.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('bower_components/oclazyload/dist/ocLazyLoad.min.js') }}"></script>
-    
-
+    <script type="text/javascript" src="{{ asset('bower_components/angular-ui-router/release/angular-ui-router.min.js') }}"></script>    
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/SVG-Morpheus/0.1.8/svg-morpheus.js"></script>
 	
@@ -320,17 +263,5 @@
     <script type="text/javascript" src="js/alcoholWishlist.js"></script>
     <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
     <script type="text/javascript" src="js/directive.js"></script>
-    <!-- <script src="{{ asset('bower_components/angular-fblogin/dist/angular-fblogin.js') }}"></script>     -->
-    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>   
-    <script>
-	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	 
-	  ga('create', 'UA-31785217-1', 'auto');
-	  ga('send', 'pageview');
-	 
-	</script>
-	<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion_async.js" charset="utf-8"></script>    
+    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>       
 </html>

@@ -45,7 +45,8 @@ class UserController extends Controller
 
 		$user = Auth::user('user');
 
-		if($user && $user->status!=1){
+		//ACCOUNT SUSPENDED BY ADMIN
+		if($user && ($user->status!=1 && $user->verified==1)){
 			$suspended = 'Your account has been suspended by the site administrator.';			
 			Auth::logout();			
 			return response(['suspended' => $suspended], 422);
@@ -63,6 +64,7 @@ class UserController extends Controller
 			if($invalidcredentials){
 				$validator->errors()->add('email',$invalidcredentials);
 				$validator->errors()->add('password',' ');
+				$validator->errors()->add('errors',$user);
 				if($reverification == 1)
 					$validator->errors()->add('reverification',$reverification);
 			}			

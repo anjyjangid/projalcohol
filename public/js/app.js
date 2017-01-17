@@ -3,7 +3,6 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	"AlcoholCartFactories",
 	"ui.router",
 	'ngCookies',
-	'oc.lazyLoad',
 	'ngSanitize',
 	'ui.bootstrap',
 	'19degrees.ngSweetAlert2',
@@ -32,12 +31,13 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 
 
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
-AlcoholDelivery.config(
+
+/*AlcoholDelivery.config(
 	['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
 		$ocLazyLoadProvider.config({
 			// global configs go here
 		});
-}]);
+}]);*/
 
 AlcoholDelivery.config(['$controllerProvider','ScrollBarsProvider', function($controllerProvider,ScrollBarsProvider) {
   // this option might be handy for migrating old apps, but please don't use it
@@ -1218,7 +1218,8 @@ function ($q, $rootScope, $log, $location, $window) {
 	            if(urlStr.charAt(0) == '/') urlStr = urlStr.substr(1);
 	            	config.url = 'api/'+urlStr;
 	        }else{
-	        	config.url += '?ver=1.1';
+	        	if(urlStr.indexOf('templates') > 0)
+	        		config.url += '?ver=1.1';
 	        }	        	
             return config;
         },

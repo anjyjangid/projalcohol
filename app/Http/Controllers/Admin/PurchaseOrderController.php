@@ -222,9 +222,11 @@ class PurchaseOrderController extends Controller
 
         extract($params);
 
-        if(isset($status) && $model->status<1){
-            $model->status = 3;
-            $model->save();
+        $stockshortfall = false;
+
+        if(isset($status)){
+            $stockshortfall = true;
+            //$model->save();
             /*$response = PurchaseOrder::raw()->update(['_id' => new MongoId($id), 'status'=> ['$lte' => 1]], ['$set' => ['status'=>3]]);*/
         }
         if(isset($products)) {
@@ -317,12 +319,16 @@ class PurchaseOrderController extends Controller
 
             //PROCESS ADVANCE ORDER
             
-            if($isComplete)
-                $status = 2;
-            else if($receivedFlag)
-                $status = 1;
-            else
-                $status = 0;
+            if($stockshortfall){                
+                $status = 3;
+            }else{
+                if($isComplete)
+                    $status = 2;
+                else if($receivedFlag)
+                    $status = 1; 
+                else
+                    $status = 0;
+            }
 
             if($hasUpdate)
                 $response = PurchaseOrder::raw()->update(['_id' => new MongoId($id)], ['$set' => ['products'=>$products, 'status'=>$status]]);
