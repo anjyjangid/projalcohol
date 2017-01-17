@@ -3533,7 +3533,7 @@ AlcoholDelivery.service('cartValidation',[
 			fromState = $state.previous;
 		}
 
-		if(!/^mainLayout\.checkout\..+$/.test(toState.name)) return true;
+		if(!/^mainLayout\.checkout\..+$/.test(toState.name) || (alcoholCart.getTotalUniqueItems()<1)) return true;
 		
 		var cart = alcoholCart.$cart
 		  , states = [
