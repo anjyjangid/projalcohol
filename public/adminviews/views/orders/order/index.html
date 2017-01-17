@@ -330,7 +330,7 @@
 				</div>
 			</div>
 			<div class="portlet-body form">
-				<div class="form-body" ng-if="qualifyFor('products')">
+				<div class="form-body" ng-if="qualifyFor('products') || true">
 					<div class="clearfix" ui-view="products"></div>
 				</div>
 			</div>
@@ -379,7 +379,7 @@
 		</div>
 
 		<div class="form-actions">
-			<button type="button" ng-click="orderConfirm()" ng-disabled="!alcoholCart.getTotalUniqueItems() || orderprocessing" class="btn blue">
+			<button type="button" ng-click="orderConfirm()" ng-disabled="!alcoholCart.getTotalUniqueItems() || !cart.user || orderprocessing" class="btn blue">
 				{{(orderprocessing)?'Processing..':'Place order'}}
 			</button>
 			<button type="button" class="btn default" ng-click="newCart()">Cancel order</button>

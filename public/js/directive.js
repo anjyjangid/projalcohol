@@ -56,12 +56,12 @@ AlcoholDelivery.directive('sideBar', function() {
 
 				$http.post('/auth/register',$scope.signup).success(function(response){
 	                $scope.user = response;
-					$scope.user.name = response.email;
+					$scope.user.name = response.email;	                
 	                sweetAlert.swal({
-						type:'success',
-						title: "Congratulations!",
-						text : "Account Created successfully. Please check your mail to verify your account",
-						timer: 10000
+						title: "Verification email sent",
+						text : "Please check your inbox to activate your account and start shopping with us!",
+						imageUrl:'/images/send.gif',
+						confirmButtonColor: "#aa00ff", 
 					});
 	                $mdDialog.hide();
 	            }).error(function(data, status, headers) {
@@ -78,7 +78,14 @@ AlcoholDelivery.directive('sideBar', function() {
 				$scope.forgot.errors = {};
 				$http.post('/password/email',$scope.forgot).success(function(response){
 	                $scope.forgot = {};
-	                $scope.forgot.message = response.message;
+	                //$scope.forgot.message = response.message;
+	                sweetAlert.swal({
+						title: "Reset link sent",
+						text : "Please check your inbox to reset your account password",
+						imageUrl:'/images/send.gif',
+						confirmButtonColor: "#aa00ff", 
+					});
+	                $mdDialog.hide();
 	            }).error(function(data, status, headers) {
 	                $scope.forgot.errors = data;
 	            });
@@ -273,11 +280,11 @@ AlcoholDelivery.directive('sideBar', function() {
 				$http.post('/user/resendverification',$scope.resend).success(function(response){
 					$scope.resend = {};
 					sweetAlert.swal({
-						type:'success',
-						//title: "Congratulation!",
-						text : response.message,
-						timer: 10000
-					});
+						title: "Verification email sent",
+						text : "Please check your inbox to activate your account and start shopping with us!",
+						imageUrl:'/images/send.gif',
+						confirmButtonColor: "#aa00ff", 
+					});					
 	                $mdDialog.hide();
 				}).error(function(data, status, headers) {
 					$scope.resend.errors = data;
