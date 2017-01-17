@@ -504,8 +504,7 @@ AlcoholDelivery.service('alcoholCart', [
 	};
 
 	this.addPackage = function (id,detail) {
-
-		//console.log(arguments);
+		
 		var _self = this;
 
 		var deliveryKey = _self.getCartKey();
@@ -1209,11 +1208,9 @@ AlcoholDelivery.service('alcoholCart', [
 			}
 
 			if(this.$cart.credits){
-				
-				console.log("creditsDiscount",this.$cart.discount.credits)
+
 				var creditsDiscount = parseFloat(this.$cart.discount.credits);
 				if(type==='credits'){
-					console.log("creditsDiscount",creditsDiscount.toFixed(2));
 					return creditsDiscount.toFixed(2);
 				}
 
@@ -1469,8 +1466,6 @@ AlcoholDelivery.service('alcoholCart', [
 			_self.$cart.otherCharges = {};
 
 			this.$cart.payment.totalWithoutSur = cartTotal;
-
-			//console.log(this.$cart.service.tempsurcharge);
 
 			if(this.$cart.service.tempsurcharge && this.$cart.delivery.type==0 && angular.isDefined(service.surcharge)){
 
@@ -3201,7 +3196,7 @@ AlcoholDelivery.service('alcoholCart', [
 		}
 
 		this.removeCoupon = function(res){
-			console.log("ok im here");
+			
 			var _self = this;
 			var productsList = this.getProducts();
 
@@ -3538,7 +3533,7 @@ AlcoholDelivery.service('cartValidation',[
 			fromState = $state.previous;
 		}
 
-		if(!/^mainLayout\.checkout\..+$/.test(toState.name)) return true;
+		if(!/^mainLayout\.checkout\..+$/.test(toState.name) || (alcoholCart.getTotalUniqueItems()<1)) return true;
 		
 		var cart = alcoholCart.$cart
 		  , states = [
@@ -3586,9 +3581,9 @@ AlcoholDelivery.service('cartValidation',[
 		if((step==1 || step==2) && alcoholCart.deliveryApplicable===false){
 
 			if(prevState>0){
-				$state.go(states[0], {}, {reload: true});
+				$state.go(states[0], {}, {reload: false});
 			}else{
-				$state.go(states[3], {}, {reload: true});
+				$state.go(states[3], {}, {reload: false});
 			}
 			return false;
 
@@ -3596,17 +3591,17 @@ AlcoholDelivery.service('cartValidation',[
 
 		if(step > 1) {
 
-			if(!angular.isDefined(cart.delivery) ||
-				!cart.delivery.address ||
-				!cart.delivery.address.detail
-			){
-				$state.go(states[1], {err: "Please select a delivery address!"}, {reload: true});
-				return false;
-			}
+			if(alcoholCart.deliveryApplicable!==false){
+				if(!angular.isDefined(cart.delivery) || !cart.delivery.address || !cart.delivery.address.detail){
 
-			if(!angular.isDefined(cart.delivery.contact)){
-				$state.go(states[1], {err: "Please Provide Contact Number!"});
-				return false;
+					$state.go(states[1], {err: "Please select a delivery address!"}, {reload: true});
+					return false;
+				}
+
+				if(!angular.isDefined(cart.delivery.contact)){
+					$state.go(states[1], {err: "Please Provide Contact Number!"});
+					return false;
+				}
 			}
 
 		}

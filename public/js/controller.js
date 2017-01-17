@@ -1,6 +1,6 @@
 AlcoholDelivery.controller('AppController',
-	['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 'alcoholCart','$cookies',
-	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter, ProductService, alcoholCart,$cookies) {
+	['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 'alcoholCart','$cookies','$location',
+	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter, ProductService, alcoholCart,$cookies,$location) {
 
 	$rootScope.setMeta = function(meta){
 
@@ -14,6 +14,7 @@ AlcoholDelivery.controller('AppController',
 			title:title,
 			description:meta.description,
 			keyword:meta.keyword,
+			url:$location.absUrl()
 		}
 	};
 
@@ -1527,8 +1528,6 @@ AlcoholDelivery.controller('CartAddressController',[
 
 					}
 				);
-
-			
 
 			return false;
 		}

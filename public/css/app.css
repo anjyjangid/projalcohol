@@ -1475,3 +1475,8 @@ md-toast.notify.bottom{
     left: 0;
     font-size: 52px;
 }
+
+span.help-block a {
+	text-decoration: underline;
+	color: #454545;
+}
