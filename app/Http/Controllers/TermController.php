@@ -101,9 +101,9 @@ class TermController extends Controller
         $response["firmwareMarking"] = $request->input("firmwareMarking");
         $response["firmwareVersion"] = $request->input("firmwareVersion");
         $response["isModifyConfig"] = "1"; // Whether revise configuration or not(1：not revise、2：revise)
-        $response["commIP"] = "1.1.1.1"; // communication server IP address
-        $response["commPort"] = "111"; // communication server port number
-        $response["commURL"] = "1.1.1.1/TermAPI/RecvOrder"; // URL explain
+        $response["commIP"] = "52.220.94.36"; // communication server IP address
+        $response["commPort"] = "8000"; // communication server port number
+        $response["commURL"] = "http://52.220.94.36:8000/TermAPI/RecvOrder"; // URL explain
         $response["orderURL"] = "/TermAPI/RecvOrder"; // (localhost)，eg:http://localhost:8081/TermAPI/RecvOrder/ (OrderURL=/TermAPI/RecvOrder)
         $response["upgradeURL"] = "/TermAPI/Upgrade"; // (Localhost) eg:http://localhost:8081/TermAPI/Upgrade (OrderURL=/TermAPI/Upgrade)
 
