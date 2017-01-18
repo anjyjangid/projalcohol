@@ -108,8 +108,7 @@ class TermController extends Controller
         $response["commURL"] = "http://52.220.94.36:8000/TermAPI/RecvOrder"; // URL explain
         $response["orderURL"] = "/TermAPI/RecvOrder"; // (localhost)，eg:http://localhost:8081/TermAPI/RecvOrder/ (OrderURL=/TermAPI/RecvOrder)
         $response["upgradeURL"] = "/TermAPI/Upgrade"; // (Localhost) eg:http://localhost:8081/TermAPI/Upgrade (OrderURL=/TermAPI/Upgrade)
-
-        return response()->json($response);
+        return response()->json($response, 200, [], JSON_UNESCAPED_SLASHES);        
     }
 
     // For server firmware upgrade URL,authorization etc
@@ -117,12 +116,12 @@ class TermController extends Controller
         // echo "<pre>"; print_r($request->input()); echo "</pre>"; exit;
         $this->_logToFile("upgrade.log",$request->input());
         // die("Log Done");
-
+        $data = $request->all();
         $response = array();
         $response["success"] = "1"; // 1 successful，2 fail
         $response["errorCode"] = "0";
-        $response["firmwareMarking"] = $request->input("firmwareMarking"); // for exa: httpegt0
-        $response["firmwareVersion"] = $request->input("firmwareVersion"); // for exa: 0204
+        $response["firmwareMarking"] = $data["firmwareMarking"];
+        $response["firmwareVersion"] = $data["firmwareVersion"];
         $response["downloadType"] = "2"; // HTTP＝1、TCP＝2、UDP＝3、TFTP＝4
         $response["downloadAddress"] = "113.59.226.27:10123"; // HTTP:URL;TCP:IP:Port
         $response["followFirmwareNum"] = "2"; // Number of firmware
@@ -132,7 +131,8 @@ class TermController extends Controller
         $response["downLicenseKey1"] = "9069c10b45b4486db9077bcaf5356547"; // download authorization code 1
         $response["hashCode1"] = "d2fc383a2e7321a6"; // Hash data 1
 
-        return response($response);
+        return response()->json($response, 200, [], JSON_UNESCAPED_SLASHES);
+        //return response($response);
     }
 
     // error code
