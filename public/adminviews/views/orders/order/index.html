@@ -192,10 +192,11 @@
 					<p ng-hide="qualifyFor('address')" class="text-danger">Please Save the user to select address</p>
 					<div class="row" ng-show="qualifyFor('address')">
 						<div class="col-sm-6">
-							<h3>Delivery Address</h3>
+							<h2>Delivery Address</h2>
 							<div class="row">
 								<div class="col-lg-6" ng-repeat-start="address in cart.addresses | limitTo:(showall?cart.addresses.length:3)">
-									<a class="thumbnail" ng-class="{'active':cart.selectedAddress==$index}" ng-click="cart.selectedAddress=$index;setSelectedAddress($index)">
+									<a class="thumbnail" ng-class="{'active':cart.delivery.address.key==$index}" ng-click="cart.selectedAddress=$index;setSelectedAddress($index)">
+										<i ng-if="cart.delivery.address.key==$index" style="position: absolute;right: 25px;top: 10px;" class="fa fa-lg fa-check"></i>
 										<div class="caption">
 											<h4>{{address.firstname+' '+address.lastname}}</h4>
 
@@ -232,7 +233,7 @@
 							</div>
 						</div>						
 						<div class="col-sm-6">
-							<h3>Delivery Type</h3>
+							<h2>Delivery Type</h2>
 							<div class="form-group" ng-class="{'has-warning':errors['cart.delivery.type'][0]}">
 								<label class="control-label col-md-4">Delivery Method <span class="required">*</span></label>
 								<div class="col-md-8 input-group">
@@ -319,9 +320,6 @@
 				</div>
 			</div>
 		</div>
-
-		
-
 		<div class="portlet box blue">
 			<div class="portlet-title">
 				<div class="caption">Products</div>
@@ -347,8 +345,7 @@
 					<div class="clearfix" ui-view="delivery"></div>
 				</div>
 			</div>
-		</div>
-
+		</div>		
 		<div class="portlet box blue">
 			<div class="portlet-title">
 				<div class="caption">Payment</div>
