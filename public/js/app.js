@@ -325,7 +325,7 @@ AlcoholDelivery.service('appConfig', [
     	return this.workingTimeString;
     }
 
-    this.isServerUnderWorkingTime = function(fromServer) {
+    this.isServerUnderWorkingTime = function(fromServer) {console.log("isServerUnderWorkingTime");
     	var _self = this;
     	if(angular.isDefined(fromServer) && fromServer){
 
@@ -353,16 +353,6 @@ AlcoholDelivery.service('appConfig', [
     		return ((workingTime.from < serverTime) && (serverTime < workingTime.to));
     	}
     }
-
- //    return {
-
-	// 	setServerTime : setServerTime,
-	// 	getServerTime : getServerTime,
-	// 	setWorkingTime : setWorkingTime,
-	// 	getWorkingTime : getWorkingTime,
-	// 	isServerUnderWorkingTime : isServerUnderWorkingTime
-
-	// };
 
 }]);
 

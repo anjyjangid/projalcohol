@@ -20,6 +20,12 @@ Route::get('/morphing', function(){
 	return view('invoice.morph');
 });
 
+
+// For Device API
+Route::post('Term/RecvOrder', 'TermController@postRecvOrder');
+Route::post('Term/Upgrade', 'TermController@postUpgrade');
+
+
 Route::group(['prefix' => 'adminapi'], function () {
 
 	Route::controller('auth', 'Auth\AdminAuthController');

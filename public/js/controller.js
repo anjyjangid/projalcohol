@@ -1529,8 +1529,6 @@ AlcoholDelivery.controller('CartAddressController',[
 					}
 				);
 
-			
-
 			return false;
 		}
 
