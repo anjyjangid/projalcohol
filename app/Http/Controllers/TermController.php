@@ -95,11 +95,13 @@ class TermController extends Controller
         $this->_logToFile("recvorder.log",$request->input());
         // die("Log Done");
 
+        $data = $request->all();
+
         $response = array();
         $response["success"] = "1"; // 1 successful，2 fail
         $response["errorCode"] = "0";
-        $response["firmwareMarking"] = $request->input("firmwareMarking");
-        $response["firmwareVersion"] = $request->input("firmwareVersion");
+        $response["firmwareMarking"] = $data["firmwareMarking"];
+        $response["firmwareVersion"] = $data["firmwareVersion"];
         $response["isModifyConfig"] = "1"; // Whether revise configuration or not(1：not revise、2：revise)
         $response["commIP"] = "52.220.94.36"; // communication server IP address
         $response["commPort"] = "8000"; // communication server port number
@@ -107,7 +109,7 @@ class TermController extends Controller
         $response["orderURL"] = "/TermAPI/RecvOrder"; // (localhost)，eg:http://localhost:8081/TermAPI/RecvOrder/ (OrderURL=/TermAPI/RecvOrder)
         $response["upgradeURL"] = "/TermAPI/Upgrade"; // (Localhost) eg:http://localhost:8081/TermAPI/Upgrade (OrderURL=/TermAPI/Upgrade)
 
-        return response($response);
+        return response()->json($response);
     }
 
     // For server firmware upgrade URL,authorization etc
