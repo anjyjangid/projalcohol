@@ -44,11 +44,7 @@
                 </div>
               </div>
             </div>
-            <div class="row">
-              <md-checkbox ng-model="verification.rememberme" aria-label="Remember Me. Only check this box if you are not using a shared computer.">
-                Remember Me. Only check this box if you are not using a shared computer.
-              </md-checkbox>
-            </div>            
+                        
           </div> -->
           <md-input-container md-no-float >
             <label>Month</label>
@@ -83,17 +79,23 @@
               <div ng-message="required">This is required.</div>
             </div>
           </md-input-container>
+          <div class="row">
+            <md-checkbox ng-model="verification.rememberme" aria-label="Remember Me. Only check this box if you are not using a shared computer.">
+              Remember Me. Only check this box if you are not using a shared computer.
+            </md-checkbox>
+          </div>
           <input class="hide" type="number" ng-model="verification.cage" min="19" required>          
           </form>
-          <div align="center" ng-if="verification.cage<19">
-            You must be 18+
-          </div>          
+                    
           
         </div>
       </div>      
     </md-dialog-content>    
     <md-dialog-actions layout="row">      
       <div class="fullwidth" align="center">
+        <div ng-if="verification.cage<19">
+          You must be 18+
+        </div>
         <md-button ng-hide="verificationForm.$invalid" class="ageverify" type="button" ng-click="verifyage()">
           Submit
         </md-button>

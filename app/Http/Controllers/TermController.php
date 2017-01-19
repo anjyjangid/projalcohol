@@ -91,48 +91,46 @@ class TermController extends Controller
 
     // Receive Order
     public function postRecvOrder(Request $request){
-        // echo "<pre>"; print_r($request->input()); echo "</pre>"; exit;
-        $this->_logToFile("recvorder.log",$request->input());
-        // die("Log Done");
-
-        $data = $request->all();
-
-        $response = array();
-        $response["success"] = "1"; // 1 successful，2 fail
-        $response["errorCode"] = "0";
-        $response["firmwareMarking"] = $data["firmwareMarking"];
-        $response["firmwareVersion"] = $data["firmwareVersion"];
-        $response["isModifyConfig"] = "1"; // Whether revise configuration or not(1：not revise、2：revise)
-        $response["commIP"] = "52.220.94.36"; // communication server IP address
-        $response["commPort"] = "8000"; // communication server port number
-        $response["commURL"] = "http://52.220.94.36:8000/TermAPI/RecvOrder"; // URL explain
-        $response["orderURL"] = "/TermAPI/RecvOrder"; // (localhost)，eg:http://localhost:8081/TermAPI/RecvOrder/ (OrderURL=/TermAPI/RecvOrder)
-        $response["upgradeURL"] = "/TermAPI/Upgrade"; // (Localhost) eg:http://localhost:8081/TermAPI/Upgrade (OrderURL=/TermAPI/Upgrade)
-        return response()->json($response, 200, [], JSON_UNESCAPED_SLASHES);        
+        
+        $this->_logToFile("recvorder.log",$request->all());
+                
+        $response = [
+            'errorCode'=>'0',
+            'success'=>'1',
+            'firmwareMarking'=>'httpegt0',
+            'firmwareVersion'=>'0204',
+            'isModifyConfig'=>'1',
+            'commIP'=>'52.220.94.36',
+            'commPort'=>'8000',
+            'commURL'=>'52.220.94.36:8000',
+            'orderURL'=>'/Term/RecvOrder',
+            'upgradeURL'=>'/Term/Upgrade'
+        ];
+        
+        return json_encode($response,JSON_UNESCAPED_SLASHES);
     }
 
     // For server firmware upgrade URL,authorization etc
     public function postUpgrade(Request $request){
-        // echo "<pre>"; print_r($request->input()); echo "</pre>"; exit;
-        $this->_logToFile("upgrade.log",$request->input());
-        // die("Log Done");
-        $data = $request->all();
-        $response = array();
-        $response["success"] = "1"; // 1 successful，2 fail
-        $response["errorCode"] = "0";
-        $response["firmwareMarking"] = $data["firmwareMarking"];
-        $response["firmwareVersion"] = $data["firmwareVersion"];
-        $response["downloadType"] = "2"; // HTTP＝1、TCP＝2、UDP＝3、TFTP＝4
-        $response["downloadAddress"] = "113.59.226.27:10123"; // HTTP:URL;TCP:IP:Port
-        $response["followFirmwareNum"] = "2"; // Number of firmware
-        $response["firmwareNumber1"] = "1"; // firmware serial number 1
-        $response["firmwareType1"] = "0"; // firmware type 1
-        $response["firmwareSize1"] = "269012"; // Firmware size 1
-        $response["downLicenseKey1"] = "9069c10b45b4486db9077bcaf5356547"; // download authorization code 1
-        $response["hashCode1"] = "d2fc383a2e7321a6"; // Hash data 1
 
-        return response()->json($response, 200, [], JSON_UNESCAPED_SLASHES);
-        //return response($response);
+        $this->_logToFile("upgrade.log",$request->all());
+        
+        $response = [
+            'success' => '1',
+            'errorCode' => '0',
+            'firmwareMarking'=>'httpegt0',
+            'firmwareVersion'=>'0204',
+            'downloadType' => '2',
+            'downloadAddress' => '113.59.226.27:10123',
+            'followFirmwareNum' => '2',
+            'firmwareNumber1' => '1',
+            'firmwareType1' => '0',
+            'firmwareSize1' => '269012',
+            'downLicenseKey1' => '9069c10b45b4486db9077bcaf5356547',
+            'hashCode1' => 'd2fc383a2e7321a6',
+        ];
+
+        return json_encode($response,JSON_UNESCAPED_SLASHES);        
     }
 
     // error code

@@ -1471,9 +1471,9 @@ AlcoholDelivery.run([
 	});
 		
 	//LIVE
-	var appId = '1269828463077215';
+	//var appId = '1269828463077215';
 	//LOCAL OR BETA
-	//var appId = '273669936304095';
+	var appId = '273669936304095';
 
 	$window.fbAsyncInit = function() {
     	// Executed when the SDK is loaded
