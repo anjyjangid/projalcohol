@@ -102,7 +102,7 @@ class TermController extends Controller
             'isModifyConfig'=>'1',
             'commIP'=>'52.220.94.36',
             'commPort'=>'8000',
-            'commURL'=>'52.220.94.36:8000',
+            'commURL'=>'52.220.94.36',
             'orderURL'=>'/Term/RecvOrder',
             'upgradeURL'=>'/Term/Upgrade'
         ];
