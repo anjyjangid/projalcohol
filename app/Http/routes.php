@@ -22,8 +22,8 @@ Route::get('/morphing', function(){
 
 
 // For Device API
-Route::post('Term/RecvOrder', 'TermController@postRecvOrder');
-Route::post('Term/Upgrade', 'TermController@postUpgrade');
+Route::post('TermAPI/RecvOrder', 'TermController@postRecvOrder');
+Route::post('TermAPI/Upgrade', 'TermController@postUpgrade');
 
 
 Route::group(['prefix' => 'adminapi'], function () {
