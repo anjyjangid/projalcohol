@@ -91,8 +91,10 @@ class TermController extends Controller
 
     // Receive Order
     public function postRecvOrder(Request $request){
-        
-        $this->_logToFile("recvorder.log",$request->all());
+
+        $data = $request->getContent();
+
+        $this->_logToFile("recvorder.log",$data);
                 
         $response = [
             'errorCode'=>'0',
@@ -113,7 +115,9 @@ class TermController extends Controller
     // For server firmware upgrade URL,authorization etc
     public function postUpgrade(Request $request){
 
-        $this->_logToFile("upgrade.log",$request->all());
+        $data = $request->getContent();
+
+        $this->_logToFile("upgrade.log",$data);
         
         $response = [
             'success' => '1',
