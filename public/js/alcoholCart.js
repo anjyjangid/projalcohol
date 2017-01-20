@@ -2307,15 +2307,15 @@ AlcoholDelivery.service('alcoholCart', [
 
 			$http.get("cart/availability/"+cartKey,{
 
-	        }).error(function(data, status, headers) {
+			}).error(function(data, status, headers) {
 
-	        	d.reject(data);
+				d.reject(data);
 
-	        }).success(function(response) {	        		      
+			}).success(function(response) {
 
-	        	d.resolve(response);
+				d.resolve(response);
 
-	        });
+			});
 
 			return d.promise;
 

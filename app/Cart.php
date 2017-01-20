@@ -104,8 +104,8 @@ class Cart extends Moloquent
 			'from' => strtotime($fromTime),
 			'to' => strtotime($toTime),
 			'string' => [
-				'from' => date('H:i A',strtotime($fromTime)),
-				'to' => date('H:i A',strtotime($toTimeString))
+				'from' => date('h:i A',strtotime($fromTime)),
+				'to' => date('h:i A',strtotime($toTimeString))
 			]
 		];
 		

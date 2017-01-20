@@ -1102,60 +1102,6 @@ class CartController extends Controller
 
 	}
 
-	public function availability($cartKey){
-
-		$cart = Cart::find($cartKey);
-
-		if(empty($cart)){
-			return response(array("success"=>false,"message"=>"cart not found"),401);
-		}
-
-		$products = $cart->products;
-
-		$productsIdInCart = array_keys((array)$products);
-
-		$productObj = new Products;
-
-		$productsInCart = $productObj->getProducts(
-									array(
-										"id"=>$productsIdInCart,
-									)
-								);
-
-		jprd($productsInCart);
-
-		$notAvail = [];
-
-		foreach($productsInCart as $product){
-
-			$cartProduct = $products[$product["_id"]];
-
-if($product['quantity']==0)
-jprd($product);
-
-
-			if($product['quantity']==0 && $product['outOfStockType']===2){
-
-				$notAvail[] = [
-					"id"=>$product["_id"]
-
-				];
-
-			};
-
-			if($cartProduct['quantity']<=$product['quantity']){
-
-				$notAvail[] = [
-					"id"=>$product["_id"]
-
-				];
-
-			}
-		}
-
-
-	}
-
 	/**
 	 * Remove the specified resource from storage.
 	 *
@@ -2905,33 +2851,106 @@ jprd($product);
 		
 	}
 
+	public function availability($cartKey){
+
+		$cart = Cart::find($cartKey);
+
+		if(empty($cart)){
+			return response(array("success"=>false,"message"=>"cart not found"),401);
+		}
+
+		$products = $cart->products;
+
+		$productsIdInCart = array_keys((array)$products);
+
+		$productObj = new Products;
+
+		$productsInCart = $productObj->getProducts(
+									array(
+										"id"=>$productsIdInCart,
+									)
+								);
+
+		jprd($productsInCart);
+
+		$notAvail = [];
+
+		foreach($productsInCart as $product){
+
+			$cartProduct = $products[$product["_id"]];
+
+if($product['quantity']==0)
+jprd($product);
+
+
+			if($product['quantity']==0 && $product['outOfStockType']===2){
+
+				$notAvail[] = [
+					"id"=>$product["_id"]
+
+				];
+
+			};
+
+			if($cartProduct['quantity']<=$product['quantity']){
+
+				$notAvail[] = [
+					"id"=>$product["_id"]
+
+				];
+
+			}
+		}
+
+	}
+
 	public function getProductsLapsedTime ($cartKey) {
 
 		$cart = Cart::find($cartKey);
-		$products = $cart->getAllProductsInCart();
-		$products = $this->setProductAvailabilityAfter($products);
+
+		try{
+			$products = $cart->getAllProductsInCart();
+			$products = $this->setProductAvailabilityAfter($products);
+			return response($products,200);
+
+		}catch(\Exception $e){
+			Log::warning("Package Update : ".$e->getMessage());
+		}
+
+		return response(['refresh' => true],412);
 
 	}
 
 	private function setProductAvailabilityAfter($products){
 
-		$today = new MongoDate();
-		$highestDelay = 0;
+		$sgtTimeStamp = strtotime("+8 hours");
 
-		$today = strtotime(date('Y-m-d'))*1000;
+		$today = strtotime(date('Y-m-d',$sgtTimeStamp))*1000;
 
 		$holidays = DB::collection('holidays')
-						->where('timeStamp','>',$today)
+						->where('timeStamp','>=',$today)
 						->orWhere('_id','weekdayoff')
+						->orderBy("timeStamp")
 						->get(['dow','timeStamp']);
 
-		foreach ($products as $key => $product) {
-			jprd($product);
-			$today = strtotime(date('Y-m-d'))*1000;
-		}
-		jprd($holidays);
+		foreach ($products as $key => &$product) {
 
-	}
+			if($product['outOfStockType']!==2){
+				$product['lapsedTime'] = 0;
+				continue;
+			}
+						
+			$workingDaysRequired = $product['availabilityDays'];
+
+			$availDateTimeStamp = Holiday::getDateWithWorkingDays($workingDaysRequired,$holidays);
+			$availTimeStamp = $availDateTimeStamp + ($product['availabilityTime']*60);
+			
+			$product['lapsedTime'] = $availTimeStamp;
+		}
+
+		return $products;
+
+	}		
 
 	public function saleNotification(){
 		
