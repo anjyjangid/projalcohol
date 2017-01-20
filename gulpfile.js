@@ -1,7 +1,5 @@
 var elixir = require('laravel-elixir');
 
-//elixir.config.assetsPath = 'public';
-
 /*
  |--------------------------------------------------------------------------
  | Elixir Asset Management
@@ -15,6 +13,7 @@ var elixir = require('laravel-elixir');
 
 elixir(function(mix) {
     mix.scripts([
+    	'general.js',
     	'jquery-1.11.3.min.js',
 	    '../bower_components/bootstrap/dist/js/bootstrap.min.js',
 	    '../bower_components/angular/angular.min.js',
@@ -50,4 +49,24 @@ elixir(function(mix) {
 	    'directive.js',
 	    '../bower_components/v-accordion/dist/v-accordion.js'
     ],'public/js/build/all.js','public/js');
+});
+
+
+elixir(function(mix) {
+    mix.styles([
+        '../bower_components/angular-material/angular-material.min.css',
+		'bootstrap.min.css',
+		'owl.carousel.css',
+		'owl.theme.css',
+		'font-awesome-4.7.0/css/font-awesome.min.css',
+		'../bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.min.css',
+		'jquery.bootstrap-touchspin.css',
+		'../bower_components/sweetalert2/dist/sweetalert2.css',
+		'common.css',
+		'screen-ui.css',
+		'ui_responsive.css',
+		'app.css',
+		'../bower_components/v-accordion/dist/v-accordion.css',
+		'simple-sidebar.css'
+    ],'public/css/all.css','public/css');
 });

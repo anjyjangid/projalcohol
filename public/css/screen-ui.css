@@ -677,7 +677,7 @@ ui-sref {
 	text-transform: uppercase;
 	text-align: left;
 	font-weight: 600;
-	margin-bottom::;5px;
+	margin-bottom:5px;
 }
 .prod_addtocart {
 	width: 100%;
@@ -1638,7 +1638,7 @@ ui-sref {
 	border-color: #aa00ff;
 	color: #333;
 }
-}
+
 .bootstrap-touchspin .input-group-btn-vertical {
 	display: table-cell;
 	position: relative;
