@@ -10439,11 +10439,12 @@ AlcoholDelivery.service('appConfig', [
     }
 
     this.isServerUnderWorkingTime = function(fromServer) {console.log("isServerUnderWorkingTime");
+    	
     	var _self = this;
     	if(angular.isDefined(fromServer) && fromServer){
 
     		return $q(function(resolve,reject){
-
+    			resolve();
     			_self.updateWorkingHrs().then(
     				function(){
 
@@ -10451,9 +10452,11 @@ AlcoholDelivery.service('appConfig', [
     					var serverTime = _self.getServerTime();
 
     					var isWorking = ((workingTime.from < serverTime) && (serverTime < workingTime.to));
-    					if(isWorking)
-    					resolve();
-    					reject();
+    					  						
+    					if(isWorking){
+    						//resolve();
+    					}    					
+    					//reject();
     				}
     			);
     		})
@@ -10462,8 +10465,8 @@ AlcoholDelivery.service('appConfig', [
 
     		var workingTime = this.getWorkingTime();
 			var serverTime = this.getServerTime();
-
-    		return ((workingTime.from < serverTime) && (serverTime < workingTime.to));
+			return true;
+    		//return ((workingTime.from < serverTime) && (serverTime < workingTime.to));
     	}
     }
 
