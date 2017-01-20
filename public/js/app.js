@@ -1209,7 +1209,7 @@ function ($q, $rootScope, $log, $location, $window) {
 	            	config.url = 'api/'+urlStr;
 	        }else{
 	        	if(urlStr.indexOf('templates') > 0)
-	        		config.url += '?ver=1.1';
+	        		config.url += '?ver=1.2';
 	        }	        	
             return config;
         },
