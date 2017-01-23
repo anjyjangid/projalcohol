@@ -223,7 +223,7 @@ AlcoholDelivery.controller('AppController',
 
 				var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
 
-			    $scope.verification.months = [];
+			    /*$scope.verification.months = [];
 			    for (var i = 0; i < 12; i++){
 			    	var val = 1+i;
 			    	if(val<=9)			    	
@@ -238,7 +238,7 @@ AlcoholDelivery.controller('AppController',
 			    	if(val<=9)			    	
 			    		val = 0+''+val;
 			    	$scope.verification.days.push(val);
-			    }
+			    }*/
 
 			},
 			templateUrl: '/templates/partials/ageverfication.html',

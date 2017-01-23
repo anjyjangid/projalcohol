@@ -191,6 +191,59 @@
 	</body>
 
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAO1xAu1wBu7NZOqNBn9aoYg-RVstm60jc&libraries=places"></script>
+
 	
-	<script type="text/javascript" src="js/build/all.js"></script>       
+	<!-- <script type="text/javascript" src="js/build/all.js"></script> -->
+
+	<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>   
+    
+	<script type="text/javascript" src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bower_components/angular/angular.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js') }}"></script> 
+
+    <script src="{{ asset('assets/global/plugins/angularjs/angular-sanitize.min.js') }}" type="text/javascript"></script>	
+
+    <script src="{{ asset('assets/global/plugins/jquery.pulsate.min.js') }}" type="text/javascript"></script>	
+
+    <script type="text/javascript" src="{{ asset('bower_components/angular-route/angular-route.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bower_components/angular-cookies/angular-cookies.min.js') }}"></script>
+    
+    <script type="text/javascript" src="{{ asset('bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') }}"></script>
+    
+    
+    <script type="text/javascript" src="{{ asset('bower_components/angular-ui-router/release/angular-ui-router.min.js') }}"></script>    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/SVG-Morpheus/0.1.8/svg-morpheus.js"></script>
+	
+    <script type="text/javascript" src="{{asset('js/morpher.js')}}"></script>
+
+    <script type="text/javascript" src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.js"></script>    
+	
+	<script src="{{ asset('bower_components/sweetalert2/dist/sweetalert2.min.js') }}" type="text/javascript"></script>
+
+	<script src="{{ asset('bower_components/ngSweetAlert2/SweetAlert.js') }}" type="text/javascript"></script>
+
+	<script src="{{ asset('bower_components/es6-promise/promise.min.js') }}" type="text/javascript"></script>
+
+    <script type="text/javascript" src="{{ asset('bower_components/angular-animate/angular-animate.js') }}"></script>
+
+	<script type="text/javascript" src="{{ asset('bower_components/angular-aria/angular-aria.min.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bower_components/angular-messages/angular-messages.min.js') }}"></script>	
+
+	<script src="{{ asset('bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js')}}"></script>
+	<script src="{{ asset('bower_components/ng-scrollbars/dist/scrollbars.min.js')}}"></script>	
+	
+	<script type="text/javascript" src="{{ asset('bower_components/angular-material/angular-material.min.js') }}"></script>	
+	
+	<script src="{{ asset('js/owl.carousel.min.js') }}"></script>	
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/controller.js"></script>
+    <script type="text/javascript" src="js/alcoholServices.js"></script>
+    <script type="text/javascript" src="js/alcoholCart.js"></script>
+    <script type="text/javascript" src="js/cartFactories.js"></script>
+    <script type="text/javascript" src="js/alcoholWishlist.js"></script>
+    <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
+    <script type="text/javascript" src="js/directive.js"></script>
+    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>       
+    
 </html>
