@@ -10444,7 +10444,7 @@ AlcoholDelivery.service('appConfig', [
     	if(angular.isDefined(fromServer) && fromServer){
 
     		return $q(function(resolve,reject){
-    			resolve();
+    			//resolve();
     			_self.updateWorkingHrs().then(
     				function(){
 
@@ -10454,9 +10454,9 @@ AlcoholDelivery.service('appConfig', [
     					var isWorking = ((workingTime.from < serverTime) && (serverTime < workingTime.to));
     					  						
     					if(isWorking){
-    						//resolve();
+    						resolve();
     					}    					
-    					//reject();
+    					reject();
     				}
     			);
     		})
@@ -10464,9 +10464,8 @@ AlcoholDelivery.service('appConfig', [
     	}else{
 
     		var workingTime = this.getWorkingTime();
-			var serverTime = this.getServerTime();
-			return true;
-    		//return ((workingTime.from < serverTime) && (serverTime < workingTime.to));
+			var serverTime = this.getServerTime();			
+    		return ((workingTime.from < serverTime) && (serverTime < workingTime.to));
     	}
     }
 
@@ -12210,7 +12209,7 @@ AlcoholDelivery.controller('AppController',
 
 				var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
 
-			    $scope.verification.months = [];
+			    /*$scope.verification.months = [];
 			    for (var i = 0; i < 12; i++){
 			    	var val = 1+i;
 			    	if(val<=9)			    	
@@ -12225,7 +12224,7 @@ AlcoholDelivery.controller('AppController',
 			    	if(val<=9)			    	
 			    		val = 0+''+val;
 			    	$scope.verification.days.push(val);
-			    }
+			    }*/
 
 			},
 			templateUrl: '/templates/partials/ageverfication.html',

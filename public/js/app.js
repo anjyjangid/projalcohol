@@ -331,7 +331,7 @@ AlcoholDelivery.service('appConfig', [
     	if(angular.isDefined(fromServer) && fromServer){
 
     		return $q(function(resolve,reject){
-    			resolve();
+    			//resolve();
     			_self.updateWorkingHrs().then(
     				function(){
 
@@ -341,9 +341,9 @@ AlcoholDelivery.service('appConfig', [
     					var isWorking = ((workingTime.from < serverTime) && (serverTime < workingTime.to));
     					  						
     					if(isWorking){
-    						//resolve();
+    						resolve();
     					}    					
-    					//reject();
+    					reject();
     				}
     			);
     		})
@@ -351,9 +351,8 @@ AlcoholDelivery.service('appConfig', [
     	}else{
 
     		var workingTime = this.getWorkingTime();
-			var serverTime = this.getServerTime();
-			return true;
-    		//return ((workingTime.from < serverTime) && (serverTime < workingTime.to));
+			var serverTime = this.getServerTime();			
+    		return ((workingTime.from < serverTime) && (serverTime < workingTime.to));
     	}
     }
 

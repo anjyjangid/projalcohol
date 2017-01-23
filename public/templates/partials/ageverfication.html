@@ -16,41 +16,25 @@
           </div>  
         </div>
         <div>&nbsp;</div>
-        <div align="center" ng-clock>
-          <!-- <div class="form-body">
-            <div class="row">
-              <div class="col-md-4 col-sm-4 col-xs-4">
-                <div class="form-group">
-                   <select required ng-model="verification.userMonth" empty="false" class="form-control date-selectbox">
-                     <option value="">Month</option>   
-                     <option ng-repeat="month in verification.months" ng-value="{{month.value}}">{{month.label}}</option>
-                   </select>                    
-                </div>
-              </div>
-              <div class="col-md-4 col-sm-4 col-xs-4">
-                <div class="form-group">
-                   <select required ng-model="verification.userDay" class="form-control date-selectbox">
-                    <option value="">Day</option>   
-                    <option ng-repeat="dayval in verification.days" ng-value="{{dayval}}">{{dayval}}</option>
-                   </select>                   
-                </div>
-              </div>
-              <div class="col-md-4 col-sm-4 col-xs-4">
-                <div class="form-group">
-                   <select required ng-model="verification.userYear" class="form-control date-selectbox">
-                     <option value="">Year</option>   
-                     <option ng-repeat="year in verification.years" ng-value="{{year}}">{{year}}</option>
-                   </select>                   
-                </div>
-              </div>
-            </div>                        
-          </div> -->
-          <md-input-container md-no-float >
+        <div align="center" ng-clock>          
+          <md-input-container md-no-float>
             <label>Month</label>
             <md-select required ng-model="verification.userMonth" name="userMonth">              
-              <md-option ng-repeat="month in verification.months" ng-value="{{month.value}}">
+              <!-- <md-option ng-repeat="month in verification.months" ng-value="{{month.value}}">
                 {{month.label}}
-              </md-option>
+              </md-option> -->
+              <md-option ng-value="01">Jan</md-option>
+              <md-option ng-value="02">Feb</md-option>
+              <md-option ng-value="03">Mar</md-option>
+              <md-option ng-value="04">Apr</md-option>
+              <md-option ng-value="05">May</md-option>
+              <md-option ng-value="06">Jun</md-option>
+              <md-option ng-value="07">Jul</md-option>
+              <md-option ng-value="08">Aug</md-option>
+              <md-option ng-value="09">Sep</md-option>
+              <md-option ng-value="10">Oct</md-option>
+              <md-option ng-value="11">Nov</md-option>
+              <md-option ng-value="12">Dec</md-option>
             </md-select>
             <div ng-messages="verificationForm.userMonth.$error">
               <div ng-message="required">This is required.</div>
@@ -59,9 +43,40 @@
           <md-input-container md-no-float>
             <label>Day</label>
             <md-select required ng-model="verification.userDay" name="userDay">              
-              <md-option ng-repeat="dayval in verification.days" ng-value="{{dayval}}">
+              <!-- <md-option ng-repeat="dayval in verification.days" ng-value="{{dayval}}">
                 {{dayval}}
-              </md-option>
+              </md-option> -->
+              <md-option ng-value="01">01</md-option>
+              <md-option ng-value="02">02</md-option>
+              <md-option ng-value="03">03</md-option>
+              <md-option ng-value="04">04</md-option>
+              <md-option ng-value="05">05</md-option>
+              <md-option ng-value="06">06</md-option>
+              <md-option ng-value="07">07</md-option>
+              <md-option ng-value="08">08</md-option>
+              <md-option ng-value="09">09</md-option>
+              <md-option ng-value="10">10</md-option>
+              <md-option ng-value="11">11</md-option>
+              <md-option ng-value="12">12</md-option>
+              <md-option ng-value="13">13</md-option>
+              <md-option ng-value="14">14</md-option>
+              <md-option ng-value="15">15</md-option>
+              <md-option ng-value="16">16</md-option>
+              <md-option ng-value="17">17</md-option>
+              <md-option ng-value="18">18</md-option>
+              <md-option ng-value="19">19</md-option>
+              <md-option ng-value="20">20</md-option>
+              <md-option ng-value="21">21</md-option>
+              <md-option ng-value="22">22</md-option>
+              <md-option ng-value="23">23</md-option>
+              <md-option ng-value="24">24</md-option>
+              <md-option ng-value="25">25</md-option>
+              <md-option ng-value="26">26</md-option>
+              <md-option ng-value="27">27</md-option>
+              <md-option ng-value="28">28</md-option>
+              <md-option ng-value="29">29</md-option>
+              <md-option ng-value="30">30</md-option>
+              <md-option ng-value="31">31</md-option>
             </md-select>
             <div ng-messages="verificationForm.userDay.$error">
               <div ng-message="required">This is required.</div>
@@ -69,7 +84,7 @@
           </md-input-container>
           <md-input-container md-no-float>
             <label>Year</label>
-            <md-select required ng-model="verification.userYear" name="userYear" ng-change="checkYear()">              
+            <md-select required ng-model="verification.userYear" name="userYear" ng-change="checkYear()">
               <md-option ng-repeat="year in verification.years" ng-value="{{year}}">
                 {{year}}
               </md-option>
