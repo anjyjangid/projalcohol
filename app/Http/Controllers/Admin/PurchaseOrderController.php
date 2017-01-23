@@ -330,9 +330,8 @@ class PurchaseOrderController extends Controller
                     $status = 0;
             }
 
-            if($hasUpdate)
-                $response = PurchaseOrder::raw()->update(['_id' => new MongoId($id)], ['$set' => ['products'=>$products, 'status'=>$status]]);
-
+            if($hasUpdate || $status == 3)
+                $response = PurchaseOrder::raw()->update(['_id' => new MongoId($id)], ['$set' => ['products'=>$products, 'status'=>$status]]);            
             
         }
 

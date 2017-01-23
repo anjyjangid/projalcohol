@@ -245,7 +245,7 @@ AlcoholDelivery.controller('AppController',
 			parent: angular.element(document.body),			
 			clickOutsideToClose:false,
 			escapeToClose:false,
-			fullscreen:true,			
+			fullscreen:true
 		}).then(function(result) {
 		  //$scope.status = 'You decided to name your dog ' + result + '.';
 		}, function() {
@@ -253,8 +253,7 @@ AlcoholDelivery.controller('AppController',
 		});
 
 		
-	};
-
+	};	
 
 	if(!$cookies.get('ageverfication'))
 		$scope.ageVerification();	

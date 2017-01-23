@@ -123,22 +123,34 @@ MetronicApp.controller('OrderCreateController',[
 		else
 			api = '/adminapi/customer/detail/'+$scope.cart.user;
 
-		alcoholCart.deployCart();
+		
 
 		$http.get(api)
 		.then(function(res){
 
 			$scope.cart.addresses = res.data.address || [];
+
+			if($scope.cart.addresses.length){
+				$scope.alcoholCart.$cart.selectedAddress = 0;
+				$scope.setSelectedAddress(0);
+			}else{
+				delete $scope.alcoholCart.$cart.delivery.address;
+				delete $scope.alcoholCart.$cart.selectedAddress;
+			}
 			//$scope.cart.[$scope.cart.orderType].savedCards = res.data.savedCards || [];
 			$scope.alternateNumbers = res.data.alternate_number || [];
 
 			if(!angular.isDefined(res.data.mobile_number) || res.data.mobile_number==""){
 				if($scope.alternateNumbers.length>0){
 					$scope.cart.delivery.contact = $scope.alternateNumbers[$scope.alternateNumbers.length-1];
+				}else{
+					$scope.alcoholCart.$cart.delivery.contact = null;
 				}
 			}else{
 				$scope.cart.delivery.contact = res.data.mobile_number;
 			}
+
+			alcoholCart.deployCart();
 
 		});
 
@@ -706,7 +718,16 @@ MetronicApp.controller('OrderCreateController',[
 
 	$scope.giftcard = function(ev,key) {
 
-		$mdDialog.show({
+		$modal.open({
+			size:'lg',
+			controller: "OrderGiftCardController",
+			templateUrl: '/adminviews/views/orders/order/giftCard.html',
+		}).result
+		.then(function(answer) {
+			
+		});
+
+			/*$mdDialog.show({
 				controller: "OrderGiftCardController",
 				templateUrl: '/adminviews/views/orders/order/giftCard.html',
 				parent: angular.element(document.body),
@@ -715,8 +736,10 @@ MetronicApp.controller('OrderCreateController',[
 			})
 			.then(function(answer) {
 			}, function() {
-			});
+			});*/
 	}
+
+
 
 	$scope.setSmoke = function () {
 
@@ -1251,9 +1274,13 @@ MetronicApp.controller('OrderCreateController',[
 
 }])
 
-.controller('OrderGiftCardController',['$scope', '$http', '$mdDialog', 'alcoholCart', 'alcoholGifting', function($scope, $http, $mdDialog, alcoholCart, alcoholGifting){
-	$scope.hide = function() {
+.controller('OrderGiftCardController',['$scope', '$http', '$mdDialog', '$modalInstance', 'alcoholCart', 'alcoholGifting', function($scope, $http, $mdDialog, $modalInstance, alcoholCart, alcoholGifting){
+	$scope.hide = function() {		
 		$mdDialog.hide();
+	};
+
+	$scope.hidemodal = function() {
+		$modalInstance.close();		
 	};
 	$scope.cancel = function() {
 		$mdDialog.cancel();
@@ -1271,7 +1298,7 @@ MetronicApp.controller('OrderCreateController',[
 					$scope.processing = true;
 					alcoholGifting.addUpdateGiftCard($scope.gift, alcoholCart.getCart()._id).then(
 						function(successRes){
-							$mdDialog.cancel();
+							$scope.hidemodal();
 						},
 						function(errorRes){
 							$scope.errors = errorRes.data;

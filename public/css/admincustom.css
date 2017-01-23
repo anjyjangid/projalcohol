@@ -962,3 +962,18 @@ tr.proSelected {
     font-size: 1.5em;
     z-index: 1;
 }
+
+.btn-purple {
+	background-color: #aa00ff !important;
+	border-color: #d7d7d7;
+	font-size: 15px;
+	color: #fff !important;
+	border: 1px solid transparent !important;
+}
+.btn.btn-cls-gift {
+	border: 1px solid #d7d7d7;
+	margin-right: 5px;
+	background: #fff;
+	color: #222122;
+	font-size: 15px;
+}

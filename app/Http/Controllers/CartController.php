@@ -2914,7 +2914,7 @@ jprd($product);
 			return response($products,200);
 
 		}catch(\Exception $e){
-			Log::warning("Package Update : ".$e->getMessage());
+			Log::warning("Get Products Lapsed Time : ".$e->getMessage());
 		}
 
 		return response(['refresh' => true],412);
