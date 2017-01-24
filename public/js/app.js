@@ -352,7 +352,8 @@ AlcoholDelivery.service('appConfig', [
     	}else{
 
     		var workingTime = this.getWorkingTime();
-			var serverTime = this.getServerTime();			
+			var serverTime = this.getServerTime();
+			return true;			
     		return ((workingTime.from < serverTime) && (serverTime < workingTime.to));
     	}
     }
