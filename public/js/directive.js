@@ -248,8 +248,8 @@ AlcoholDelivery.directive('sideBar', function() {
 		    	UserService.currentUser = response;
 		    	$scope.login = {};		  
 		        $mdDialog.hide();
-		       	$state.go($state.current, {}, {reload: true});
 		        $scope.errors = {};
+		       	$state.go($state.current, {}, {reload: true});
 		        /*store.init().then(
 		        	function(successRes){		        
 		        	},

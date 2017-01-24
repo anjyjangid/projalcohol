@@ -272,8 +272,8 @@ AlcoholDelivery.service('appConfig', [
 		this.serverTime = serverTimeInSec;
 		var _self = this;
 		$interval(function(){			
-			_self.serverTime+= 1;
-		},1000)
+			_self.serverTime+= 10;
+		},10000);
 		
 	}
 
@@ -325,7 +325,8 @@ AlcoholDelivery.service('appConfig', [
     	return this.workingTimeString;
     }
 
-    this.isServerUnderWorkingTime = function(fromServer) {console.log("isServerUnderWorkingTime");
+
+    this.isServerUnderWorkingTime = function(fromServer) {
     	
     	var _self = this;
     	if(angular.isDefined(fromServer) && fromServer){

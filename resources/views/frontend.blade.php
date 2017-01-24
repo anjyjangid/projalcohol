@@ -191,6 +191,7 @@
 	</body>
 
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAO1xAu1wBu7NZOqNBn9aoYg-RVstm60jc&libraries=places"></script>
+
 	
 	<script type="text/javascript" src="js/build/all.js"></script>
 	
@@ -244,5 +245,4 @@
     <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
     <script type="text/javascript" src="js/directive.js"></script>
     <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script> -->       
-
 </html>

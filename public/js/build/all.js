@@ -10385,8 +10385,8 @@ AlcoholDelivery.service('appConfig', [
 		this.serverTime = serverTimeInSec;
 		var _self = this;
 		$interval(function(){			
-			_self.serverTime+= 1;
-		},1000)
+			_self.serverTime+= 10;
+		},10000);
 		
 	}
 
@@ -10438,7 +10438,8 @@ AlcoholDelivery.service('appConfig', [
     	return this.workingTimeString;
     }
 
-    this.isServerUnderWorkingTime = function(fromServer) {console.log("isServerUnderWorkingTime");
+
+    this.isServerUnderWorkingTime = function(fromServer) {
     	
     	var _self = this;
     	if(angular.isDefined(fromServer) && fromServer){
@@ -16036,8 +16037,8 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct','CreditC
 
 }]);
 
-AlcoholDelivery.service('cartValidate',['alcoholCart', '$state', '$q', '$mdToast', '$document', 'appConfig'
-			,function (alcoholCart, $state, $q, $mdToast, $document, appConfig) {
+AlcoholDelivery.service('cartValidate',['alcoholCart', '$state', '$q', '$mdToast', '$document', 'appConfig', '$http'
+			,function (alcoholCart, $state, $q, $mdToast, $document, appConfig, $http) {
 
 	this.processValidators = function () {
 
@@ -16083,8 +16084,17 @@ AlcoholDelivery.service('cartValidate',['alcoholCart', '$state', '$q', '$mdToast
 
 		var _self = this;
 		return $q(function(resolve,reject){
-						
+
 			var i = 0;
+
+			$http.get("cart/products-lapsed-time/"+alcoholCart.getCartKey()).then(
+				function(res){
+					var products = res.data
+				},
+				function(err){
+					console.log(err);
+				}
+			)
 
 			while(i<_self.stepsName.length){
 
@@ -16093,7 +16103,7 @@ AlcoholDelivery.service('cartValidate',['alcoholCart', '$state', '$q', '$mdToast
 					break;
 				}
 				i++;
-			}			
+			}
 			resolve();
 
 		});
@@ -18496,15 +18506,15 @@ AlcoholDelivery.service('alcoholCart', [
 
 			$http.get("cart/availability/"+cartKey,{
 
-	        }).error(function(data, status, headers) {
+			}).error(function(data, status, headers) {
 
-	        	d.reject(data);
+				d.reject(data);
 
-	        }).success(function(response) {	        		      
+			}).success(function(response) {
 
-	        	d.resolve(response);
+				d.resolve(response);
 
-	        });
+			});
 
 			return d.promise;
 
@@ -22733,8 +22743,8 @@ AlcoholDelivery.directive('sideBar', function() {
 		    	UserService.currentUser = response;
 		    	$scope.login = {};		  
 		        $mdDialog.hide();
-		       	$state.go($state.current, {}, {reload: true});
 		        $scope.errors = {};
+		       	$state.go($state.current, {}, {reload: true});
 		        /*store.init().then(
 		        	function(successRes){		        
 		        	},
