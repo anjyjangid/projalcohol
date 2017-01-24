@@ -1713,9 +1713,8 @@ AlcoholDelivery.controller('CartDeliveryController',[
 				for(skey in timeslots[key].slots){
 
 					if(skey==slotKey){
-
 						$scope.timeslot.slotslug = $scope.timerange[timeslots[key].slots[skey].from]+" - "+$scope.timerange[timeslots[key].slots[skey].to];
-
+						$scope.timeslot.slotTime = timeslots[key].slots[skey].from;												
 					}
 
 				}

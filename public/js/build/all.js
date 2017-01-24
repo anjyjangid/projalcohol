@@ -10444,7 +10444,7 @@ AlcoholDelivery.service('appConfig', [
     	if(angular.isDefined(fromServer) && fromServer){
 
     		return $q(function(resolve,reject){
-    			//resolve();
+    			resolve();
     			_self.updateWorkingHrs().then(
     				function(){
 
@@ -10454,9 +10454,9 @@ AlcoholDelivery.service('appConfig', [
     					var isWorking = ((workingTime.from < serverTime) && (serverTime < workingTime.to));
     					  						
     					if(isWorking){
-    						resolve();
+    						//resolve();
     					}    					
-    					reject();
+    					//reject();
     				}
     			);
     		})
@@ -13699,9 +13699,8 @@ AlcoholDelivery.controller('CartDeliveryController',[
 				for(skey in timeslots[key].slots){
 
 					if(skey==slotKey){
-
 						$scope.timeslot.slotslug = $scope.timerange[timeslots[key].slots[skey].from]+" - "+$scope.timerange[timeslots[key].slots[skey].to];
-
+						$scope.timeslot.slotTime = timeslots[key].slots[skey].from;												
 					}
 
 				}
@@ -22822,7 +22821,6 @@ AlcoholDelivery.directive('sideBar', function() {
         }
     };
 }])
-
 .directive('owlCarouselItem', ['$timeout',function($timeout) {
 
     return {
@@ -22848,7 +22846,6 @@ AlcoholDelivery.directive('sideBar', function() {
         }
     };
 }])
-
 .directive("tscroll", function ($window) {
     return function(scope, element, attrs) {
 
@@ -22894,7 +22891,6 @@ AlcoholDelivery.directive('sideBar', function() {
         });
     };
 })
-
 .directive('errProSrc', function() {
   return {
     link: function(scope, element, attrs) {
@@ -22908,27 +22904,6 @@ AlcoholDelivery.directive('sideBar', function() {
     }
   }
 })
-
-// .directive('myError', function() {
-//   return {
-//   	require: 'ngModel',
-//     link: function(scope, element, attrs, ctrl) {
-
-//       element.on('blur', function() {
-
-//       	if(element.context.value==""){
-//       		ctrl.$setValidity("blank", false);
-//       	}else{
-//       		ctrl.$setValidity("blank", true);
-//       	}
-
-//       	scope.$apply();
-
-//       });
-//     }
-//   }
-// })
-
 .directive('onlyDigits', function () {
     return {
       require: 'ngModel',
@@ -24174,7 +24149,6 @@ AlcoholDelivery.directive('sideBar', function() {
 				element.addClass('hide'); // hide spinner bar by default
 
 				
-
 				// display the spinner bar whenever the route changes(the content part started loading)
 				$rootScope.$on('$stateChangeStart', function() {
 

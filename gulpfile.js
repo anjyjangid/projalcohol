@@ -70,3 +70,7 @@ elixir(function(mix) {
 		'simple-sidebar.css'
     ],'public/css/all.css','public/css');
 });
+
+/*elixir(function(mix) {
+    mix.version(['public/css/all.css', 'public/js/build/all.js']);
+});*/

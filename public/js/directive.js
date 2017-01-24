@@ -336,7 +336,6 @@ AlcoholDelivery.directive('sideBar', function() {
         }
     };
 }])
-
 .directive('owlCarouselItem', ['$timeout',function($timeout) {
 
     return {
@@ -362,7 +361,6 @@ AlcoholDelivery.directive('sideBar', function() {
         }
     };
 }])
-
 .directive("tscroll", function ($window) {
     return function(scope, element, attrs) {
 
@@ -408,7 +406,6 @@ AlcoholDelivery.directive('sideBar', function() {
         });
     };
 })
-
 .directive('errProSrc', function() {
   return {
     link: function(scope, element, attrs) {
@@ -422,27 +419,6 @@ AlcoholDelivery.directive('sideBar', function() {
     }
   }
 })
-
-// .directive('myError', function() {
-//   return {
-//   	require: 'ngModel',
-//     link: function(scope, element, attrs, ctrl) {
-
-//       element.on('blur', function() {
-
-//       	if(element.context.value==""){
-//       		ctrl.$setValidity("blank", false);
-//       	}else{
-//       		ctrl.$setValidity("blank", true);
-//       	}
-
-//       	scope.$apply();
-
-//       });
-//     }
-//   }
-// })
-
 .directive('onlyDigits', function () {
     return {
       require: 'ngModel',
@@ -1688,7 +1664,6 @@ AlcoholDelivery.directive('sideBar', function() {
 				element.addClass('hide'); // hide spinner bar by default
 
 				
-
 				// display the spinner bar whenever the route changes(the content part started loading)
 				$rootScope.$on('$stateChangeStart', function() {
 
