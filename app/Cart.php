@@ -257,18 +257,45 @@ class Cart extends Moloquent
 		}
 
 		$currentTimeStr = strtotime("+8 hours");
-		$todayDateStr = date("H",$currentTimeStr);
-		$timeLapsed = $todayDateStr * 60;
-		$timeLapsed+= 120;
-				
-		if(!isset($cart->timeslot['slotTime']) || (isset($cart->timeslot['slotTime']) && $cart->timeslot['slotTime']<$timeLapsed)){			
-			
-			$cart->timeslot = [
-				"datekey"=>false,
-				"slotkey"=>false,
-				"slug"=>"",
-				"slotslug"=>""
-			];
+
+		$todayStartTimeStr = strtotime(date("Y-m-d",$currentTimeStr));
+
+
+
+		if(isset($cart->timeslot['datekey']) && $cart->timeslot['datekey']!==false && $todayStartTimeStr>=$cart->timeslot['datekey']){
+
+
+
+			$todayLapsedHours = date("H",$currentTimeStr);
+
+			$todayLapsedMinutes = $todayLapsedHours * 60;
+
+			$todayLapsedMinutes+= 120;			
+
+
+
+			if(isset($cart->timeslot['slotTime']) && $cart->timeslot['slotTime']<$todayLapsedMinutes){
+
+
+
+				$cart->timeslot = [
+
+					"datekey"=>false,
+
+					"slotkey"=>false,
+
+					"slug"=>"",
+
+					"slotslug"=>""
+
+				];
+
+
+
+			}
+
+
+
 		}
 
 		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.express_delivery.applicablePostalCodes','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value','settings.tempsurcharge'])->first();
