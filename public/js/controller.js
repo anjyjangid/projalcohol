@@ -2,6 +2,94 @@ AlcoholDelivery.controller('AppController',
 	['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 'alcoholCart','$cookies','$location',
 	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter, ProductService, alcoholCart,$cookies,$location) {
 
+	$scope.ageVerification = function() {
+		// Appending dialog to document.body to cover sidenav in docs app
+		
+		$mdDialog.show({
+			//scope: $scope.$new(),
+			controller: function($scope,$cookies){
+				
+				/*$scope.calculateAge = function(){
+					var currentYear = new Date().getFullYear();
+					return currentYear - $scope.verification.userYear;
+				}*/
+				$scope.checkYear = function(){
+					
+					var currentYear = new Date().getFullYear();
+					$scope.verification.cage = currentYear - $scope.verification.userYear;
+				}
+				
+				/*$scope.$watch('verification.userYear',function(newV,oldV){
+				
+				});*/
+
+				$scope.verifyage = function(){		
+
+					$cookies.remove('ageverfication');					
+    				
+    				if($scope.verification.rememberme){
+    					// this will set the expiration to 12 months
+						var now = new Date();
+    					now = new Date(now.getFullYear()+1, now.getMonth(), now.getDate());
+    					$cookies.putObject('ageverfication', 
+							{month:$scope.verification.userMonth,day:$scope.verification.userDay,year:$scope.verification.userYear},
+							{expires:now}
+						);
+    				}else{
+						$cookies.putObject('ageverfication', 
+							{month:$scope.verification.userMonth,day:$scope.verification.userDay,year:$scope.verification.userYear}							
+						);    					
+    				}
+
+					$mdDialog.hide();
+				};
+
+				$scope.verification = {};
+
+				var offset = 0; range = 100;
+				var currentYear = new Date().getFullYear();			
+				$scope.verification.years = [];
+			    for (var i = (offset*1); i <= range; i++){
+			        $scope.verification.years.push(currentYear - i);
+			    }
+
+				var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+
+			    /*$scope.verification.months = [];
+			    for (var i = 0; i < 12; i++){
+			    	var val = 1+i;
+			    	if(val<=9)			    	
+			    		val = 0+''+val;
+			        $scope.verification.months.push({value:(val),label:monthNames[i]});
+			    }
+			    
+			    $scope.verification.days = [];    
+			    
+			    for (var d = 1; d <= 31; d++){
+			    	var val = d;
+			    	if(val<=9)			    	
+			    		val = 0+''+val;
+			    	$scope.verification.days.push(val);
+			    }*/
+
+			},
+			templateUrl: '/templates/partials/ageverfication.html',
+			parent: angular.element(document.body),			
+			clickOutsideToClose:false,
+			escapeToClose:false,
+			fullscreen:true
+		}).then(function(result) {
+		  //$scope.status = 'You decided to name your dog ' + result + '.';
+		}, function() {
+		  //$scope.status = 'You didn\'t name your dog.';
+		});
+
+		
+	};	
+
+	if(!$cookies.get('ageverfication'))
+		$scope.ageVerification();
+	
 	$rootScope.setMeta = function(meta){
 
 		if(typeof meta.title == 'undefined') return;
@@ -170,93 +258,7 @@ AlcoholDelivery.controller('AppController',
 			return '';
 	}
 
-	$scope.ageVerification = function() {
-		// Appending dialog to document.body to cover sidenav in docs app
 		
-		$mdDialog.show({
-			//scope: $scope.$new(),
-			controller: function($scope,$cookies){
-				
-				/*$scope.calculateAge = function(){
-					var currentYear = new Date().getFullYear();
-					return currentYear - $scope.verification.userYear;
-				}*/
-				$scope.checkYear = function(){
-					
-					var currentYear = new Date().getFullYear();
-					$scope.verification.cage = currentYear - $scope.verification.userYear;
-				}
-				
-				/*$scope.$watch('verification.userYear',function(newV,oldV){
-				
-				});*/
-
-				$scope.verifyage = function(){		
-
-					$cookies.remove('ageverfication');					
-    				
-    				if($scope.verification.rememberme){
-    					// this will set the expiration to 12 months
-						var now = new Date();
-    					now = new Date(now.getFullYear()+1, now.getMonth(), now.getDate());
-    					$cookies.putObject('ageverfication', 
-							{month:$scope.verification.userMonth,day:$scope.verification.userDay,year:$scope.verification.userYear},
-							{expires:now}
-						);
-    				}else{
-						$cookies.putObject('ageverfication', 
-							{month:$scope.verification.userMonth,day:$scope.verification.userDay,year:$scope.verification.userYear}							
-						);    					
-    				}
-
-					$mdDialog.hide();
-				};
-
-				$scope.verification = {};
-
-				var offset = 0; range = 100;
-				var currentYear = new Date().getFullYear();			
-				$scope.verification.years = [];
-			    for (var i = (offset*1); i <= range; i++){
-			        $scope.verification.years.push(currentYear - i);
-			    }
-
-				var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
-
-			    /*$scope.verification.months = [];
-			    for (var i = 0; i < 12; i++){
-			    	var val = 1+i;
-			    	if(val<=9)			    	
-			    		val = 0+''+val;
-			        $scope.verification.months.push({value:(val),label:monthNames[i]});
-			    }
-			    
-			    $scope.verification.days = [];    
-			    
-			    for (var d = 1; d <= 31; d++){
-			    	var val = d;
-			    	if(val<=9)			    	
-			    		val = 0+''+val;
-			    	$scope.verification.days.push(val);
-			    }*/
-
-			},
-			templateUrl: '/templates/partials/ageverfication.html',
-			parent: angular.element(document.body),			
-			clickOutsideToClose:false,
-			escapeToClose:false,
-			fullscreen:true
-		}).then(function(result) {
-		  //$scope.status = 'You decided to name your dog ' + result + '.';
-		}, function() {
-		  //$scope.status = 'You didn\'t name your dog.';
-		});
-
-		
-	};	
-
-	if(!$cookies.get('ageverfication'))
-		$scope.ageVerification();	
 
 	
 

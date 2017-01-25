@@ -24,8 +24,8 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	});
 
 	// $location.hashPrefix('!');
-	$mdThemingProvider.disableTheming();
-	//$mdThemingProvider.theme('default').primaryPalette('purple').accentPalette('purple');
+	//$mdThemingProvider.disableTheming();
+	$mdThemingProvider.theme('default').primaryPalette('purple').accentPalette('purple');
     //.accentPalette('orange');    
 }]);
 
