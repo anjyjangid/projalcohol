@@ -89,7 +89,7 @@ AlcoholDelivery.controller('AppController',
 
 	if(!$cookies.get('ageverfication'))
 		$scope.ageVerification();
-	
+
 	$rootScope.setMeta = function(meta){
 
 		if(typeof meta.title == 'undefined') return;
@@ -157,7 +157,7 @@ AlcoholDelivery.controller('AppController',
 
 	$scope.featuredProducts = function(){
 
-		ProductService.getProducts({
+		/*ProductService.getProducts({
 
 			filter : 'featured',
 
@@ -187,7 +187,7 @@ AlcoholDelivery.controller('AppController',
 
 				}
 
-			});
+		});*/
 
 	}
 
