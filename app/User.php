@@ -85,6 +85,16 @@ class User extends Eloquent implements AuthenticatableContract,
 
 	public static function searchLocation($searchVal,$live = false){
 		
+		$searchVal = urlencode($searchVal);
+
+		$json = json_decode(file_get_contents('https://developers.onemap.sg/commonapi/search?searchVal='.$searchVal.'&returnGeom=Y&getAddrDetails=Y&pageNum=1'), true);
+
+		if(!empty($json) && isset($json['results']) && !empty($json['results'])){
+			return $json['results'];
+		}else{
+			return [];
+		}
+
 		$token = '';
 
 		$cTimestamp = (int)strtotime(date('Y-m-d'));

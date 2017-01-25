@@ -478,8 +478,8 @@ MetronicApp.controller('OrderCreateController',[
 	$scope.locationSelect = function(item){
 		
 		if(item){
-			var lat = item.LAT;
-			var long = item.LNG;
+			var lat = item.LATITUDE;
+			var long = item.LONGITUDE;
 			var zoom = 18;
 			var addressData = angular.copy($scope.addressData.SEARCHTEXT);
 			$scope.addressData = angular.copy(item);
@@ -515,6 +515,7 @@ MetronicApp.controller('OrderCreateController',[
 	$scope.$watch('addressData.SEARCHTEXT',function(newValue,oldValue){
 		if(newValue == ''){
 			$scope.addressData = {};
+			$scope.address = {};
 			var lat = 1.3544542534181963;
 			var long = 103.86775184667965;
 			var zoom = 12;
