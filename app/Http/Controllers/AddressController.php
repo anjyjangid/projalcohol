@@ -51,10 +51,12 @@ class AddressController extends Controller
 	{
 		$inputs = $request->all();
 
-		if(isset($inputs['LAT']) && isset($inputs['LNG'])){
-			$inputs['LAT'] = (float)$inputs['LAT'];
-			$inputs['LNG'] = (float)$inputs['LNG'];
-
+		if(isset($inputs['LATITUDE']) && isset($inputs['LONGITUDE'])){
+			$inputs['LAT'] = (float)$inputs['LATITUDE'];
+			$inputs['LNG'] = (float)$inputs['LONGITUDE'];
+			unset($inputs['LATITUDE']);
+			unset($inputs['LONGITUDE']);
+			unset($inputs['LONGTITUDE']);
 			$inputs['location'] = [$inputs['LNG'],$inputs['LAT']];
 		}
 
@@ -72,8 +74,29 @@ class AddressController extends Controller
 			$user = User::find($loggeduser->_id);
 		}
 
-		if(!isset($inputs['house']) || (isset($inputs['house']) && $inputs['house']=='')){
+		/*if(!isset($inputs['house']) || (isset($inputs['house']) && $inputs['house']=='')){
 			$this->filterStreet($inputs);
+		}*/
+
+		if(isset($inputs['BUILDING']) && $inputs['BUILDING']!=''){
+			$inputs['CATEGORY'] = 'Building';
+			$inputs['BLDG_NAME'] = $inputs['BUILDING'];
+			unset($inputs['BUILDING']);
+		}
+
+		if(isset($inputs['POSTAL']) && $inputs['POSTAL']!=''){			
+			$inputs['PostalCode'] = $inputs['POSTAL'];
+			unset($inputs['POSTAL']);
+		}
+
+		if(isset($inputs['BLK_NO']) && $inputs['BLK_NO']!=''){			
+			$inputs['house'] = $inputs['BLK_NO'];
+			unset($inputs['BLK_NO']);
+		}
+
+		if(isset($inputs['ROAD_NAME']) && $inputs['ROAD_NAME']!=''){			
+			$inputs['HBRN'] = $inputs['ROAD_NAME'];
+			unset($inputs['ROAD_NAME']);
 		}
 
 		$user->push('address',$inputs,true);

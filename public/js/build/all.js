@@ -10137,8 +10137,8 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	});
 
 	// $location.hashPrefix('!');
-
-	$mdThemingProvider.theme('default').primaryPalette('purple').accentPalette('purple');
+	$mdThemingProvider.disableTheming();
+	//$mdThemingProvider.theme('default').primaryPalette('purple').accentPalette('purple');
     //.accentPalette('orange');    
 }]);
 
@@ -10465,7 +10465,8 @@ AlcoholDelivery.service('appConfig', [
     	}else{
 
     		var workingTime = this.getWorkingTime();
-			var serverTime = this.getServerTime();			
+			var serverTime = this.getServerTime();
+			return true;			
     		return ((workingTime.from < serverTime) && (serverTime < workingTime.to));
     	}
     }
@@ -11325,7 +11326,7 @@ function ($q, $rootScope, $log, $location, $window) {
 	            	config.url = 'api/'+urlStr;
 	        }else{
 	        	if(urlStr.indexOf('templates') > 0)
-	        		config.url += '?ver=1.2';
+	        		config.url += '?ver=1.3';
 	        }	        	
             return config;
         },
@@ -23970,8 +23971,8 @@ AlcoholDelivery.directive('sideBar', function() {
 
 						$scope.selectedItemChange = function(item){
 							if(item){
-								lat = item.LAT;
-								long = item.LNG;
+								lat = item.LATITUDE;
+								long = item.LONGITUDE;
 								zoom = 18;
 								var addressData = angular.copy($scope.addressData.SEARCHTEXT);
 								$scope.addressData = angular.copy(item);
@@ -24029,15 +24030,15 @@ AlcoholDelivery.directive('sideBar', function() {
 
 						//SELECT THIS ADDRESS
 						$scope.setMapAddress = function(){
-							if($scope.addressData.PostalCode){
+							if($scope.addressData.POSTAL){
 								$scope.address.step = 2;
 							}
 						}
 
 						//CANCEL FROM STEP 2
 						$scope.changeAddress = function(){
-							var lat = angular.copy($scope.addressData.LAT);
-							var long = angular.copy($scope.addressData.LNG);
+							var lat = angular.copy($scope.addressData.LATITUDE);
+							var long = angular.copy($scope.addressData.LONGITUDE);
 							var zoom = 18;
 							var item = angular.copy($scope.addressData);
 							$scope.locateMap(lat,long,zoom,item);

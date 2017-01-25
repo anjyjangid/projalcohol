@@ -24,8 +24,8 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	});
 
 	// $location.hashPrefix('!');
-
-	$mdThemingProvider.theme('default').primaryPalette('purple').accentPalette('purple');
+	$mdThemingProvider.disableTheming();
+	//$mdThemingProvider.theme('default').primaryPalette('purple').accentPalette('purple');
     //.accentPalette('orange');    
 }]);
 
@@ -1213,7 +1213,7 @@ function ($q, $rootScope, $log, $location, $window) {
 	            	config.url = 'api/'+urlStr;
 	        }else{
 	        	if(urlStr.indexOf('templates') > 0)
-	        		config.url += '?ver=1.2';
+	        		config.url += '?ver=1.3';
 	        }	        	
             return config;
         },
