@@ -25,19 +25,12 @@ AlcoholDelivery.directive('sideBar', function() {
 		}
 	};
 })
-
 .directive('topMenu', function(){
-
 	return {
 		restrict: 'E',
-		/*scope:{
-			user:'='
-		},*/
-
 		templateUrl: '/templates/partials/topmenu.html',
-		controller: function($scope,$rootScope,$http,$state,sweetAlert,UserService,store
-							,alcoholWishlist,ClaimGiftCard,$mdDialog, $timeout,$window,appSettings){
-
+		controller: function($scope,$rootScope,$http,$state,$mdDialog,$timeout,$window,appSettings,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard){
+			
 			$scope.list = [];
 
 			$scope.menu = {openSearch:true};
@@ -100,12 +93,7 @@ AlcoholDelivery.directive('sideBar', function() {
 	                delete $rootScope.deliverykey;
 	                localStorage.removeItem("deliverykey");
 	                $state.go("mainLayout.index", {}, {reload: true});
-	                /*store.init().then(
-	                	function(successRes){	                		
-	                	},
-	                	function(errorRes){}
-	                );
-	                alcoholWishlist.init();*/
+	                
 	            }).error(function(data, status, headers) {
 	                $scope.user = {};
 	            });
@@ -119,7 +107,6 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope.socialError = '';
 			//FACEBOOK LOGIN
-
 
 			$scope.socialLogin = function(){
 
@@ -294,8 +281,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		}
 	};
 })
-
-.directive("owlCarousel", ['$timeout',function($timeout){
+.directive('owlCarousel', ['$timeout',function($timeout){
 
     return {
         restrict: 'E',
@@ -361,7 +347,7 @@ AlcoholDelivery.directive('sideBar', function() {
         }
     };
 }])
-.directive("tscroll", function ($window) {
+.directive('tscroll', ['$window',function ($window) {
     return function(scope, element, attrs) {
 
 		var svgMorpheus = new SVGMorpheus('#icon',{rotation:'none'});
@@ -405,7 +391,7 @@ AlcoholDelivery.directive('sideBar', function() {
              
         });
     };
-})
+}])
 .directive('errProSrc', function() {
   return {
     link: function(scope, element, attrs) {
@@ -454,7 +440,6 @@ AlcoholDelivery.directive('sideBar', function() {
       }
     };
 })
-
 .directive('onlyCurrency', function () {
     return {
       require: 'ngModel',
@@ -492,7 +477,6 @@ AlcoholDelivery.directive('sideBar', function() {
       }
     };
 })
-
 .directive('useCredits',['UserService', 'alcoholCart',function(UserService, alcoholCart){
 	return {
 		restrict :'E',
@@ -536,7 +520,6 @@ AlcoholDelivery.directive('sideBar', function() {
 					'</div>'
 	}
 }])
-
 .directive('ngTouchSpin', ['$timeout', '$interval', function($timeout, $interval) {
 	'use strict';
 
@@ -717,7 +700,6 @@ AlcoholDelivery.directive('sideBar', function() {
 	};
 
 }])
-
 .directive('alTplProduct',[function($rootScope){
 	return {
 		restrict: 'A',
@@ -777,7 +759,6 @@ AlcoholDelivery.directive('sideBar', function() {
 		}]
 	}
 }])
-
 .directive('addToCartBtn',[function(){
 	return {
 		restrict : "E",
@@ -935,7 +916,6 @@ AlcoholDelivery.directive('sideBar', function() {
 		}
 	}
 }])
-
 .directive('productBreadcrumb', ['categoriesFac', function(categoriesFac){
 	'use strict';
 
@@ -1013,7 +993,6 @@ AlcoholDelivery.directive('sideBar', function() {
 				'</div>'
 	};
 }])
-
 .directive('ngBlur', ['$parse', function($parse){
 	return function(scope, element, attr) {
 		var fn = $parse(attr['ngBlur']);
@@ -1024,8 +1003,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		});
 	};
 }])
-
-.directive("apFocusOut", ['$document','$parse', function( $document, $parse ){
+.directive('apFocusOut', ['$document','$parse', function( $document, $parse ){
     return {
         link: function( $scope, $element, $attributes ){
             // var scopeExpression = $attributes.apFocusOut,
@@ -1046,7 +1024,6 @@ AlcoholDelivery.directive('sideBar', function() {
         }
     }
 }])
-
 .directive('backImg', function(){
     return function(scope, element, attrs){
         var url = attrs.backImg;
@@ -1056,7 +1033,6 @@ AlcoholDelivery.directive('sideBar', function() {
         });
     };
 })
-
 .directive('errSrc', function() {
   return {
     link: function(scope, element, attrs) {
@@ -1071,7 +1047,6 @@ AlcoholDelivery.directive('sideBar', function() {
     }
   }
 })
-
 .directive('outOfStock',[function(){
 	return {
 		restrict : "E",
@@ -1120,7 +1095,6 @@ AlcoholDelivery.directive('sideBar', function() {
 		}
 	}
 }])
-
 .directive('notAvailable',[function(){
 	return {
 		restrict : "E",
@@ -1187,7 +1161,6 @@ AlcoholDelivery.directive('sideBar', function() {
 		}
 	}
 }])
-
 .directive('hoverClass', function () {
     return {
         restrict: 'A',
@@ -1205,9 +1178,7 @@ AlcoholDelivery.directive('sideBar', function() {
     };
 
 })
-
-.directive('twitterShareBtn',["SocialSharingService","sweetAlert",
-    function(SocialSharingService,sweetAlert) {
+.directive('twitterShareBtn',['SocialSharingService','sweetAlert',function(SocialSharingService,sweetAlert) {
         return {
             link: function(scope, element, attr) {
                 setTimeout(function() {
@@ -1259,9 +1230,7 @@ AlcoholDelivery.directive('sideBar', function() {
                 });
             }
         }
-    }
-])
-
+    }])
 .directive('giftingProducts',['alcoholCart',function(alcoholCart){
 	return {
 		restrict: 'A',
@@ -1271,7 +1240,6 @@ AlcoholDelivery.directive('sideBar', function() {
 		controller:''
 	};
 }])
-
 .directive('userCards', function(){
 
 	return {
@@ -1656,8 +1624,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		}
 	};
 })
-.directive('ngSpinnerBar', ['$rootScope',
-	function($rootScope) {
+.directive('ngSpinnerBar', ['$rootScope',function($rootScope) {
 		return {
 			link: function(scope, element, attrs) {
 				// by defult hide the spinner bar
@@ -1696,8 +1663,8 @@ AlcoholDelivery.directive('sideBar', function() {
 				});
 			}
 		};
-	}
-]).directive('focusMe', ['$timeout', '$parse', function ($timeout, $parse) {
+	}])
+.directive('focusMe', ['$timeout', '$parse', function ($timeout, $parse) {
     return {
         //scope: true,   // optionally create a child scope
         link: function (scope, element, attrs) {
