@@ -25,7 +25,7 @@ elixir(function(mix) {
 	    '../bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
 	    '../bower_components/angular-ui-router/release/angular-ui-router.min.js',
 	    'svg-morpheus.js',    
-	    'morpher.js',    
+	    //'morpher.js',    
 	    'ng-map.js',
 	    /*SWEET ALERT STYLE*/
 	    '../bower_components/sweetalert2/dist/sweetalert2.min.js',

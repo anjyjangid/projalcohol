@@ -157,7 +157,7 @@ AlcoholDelivery.controller('AppController',
 
 	$scope.featuredProducts = function(){
 
-		/*ProductService.getProducts({
+		ProductService.getProducts({
 
 			filter : 'featured',
 
@@ -187,7 +187,7 @@ AlcoholDelivery.controller('AppController',
 
 				}
 
-		});*/
+		});
 
 	}
 
