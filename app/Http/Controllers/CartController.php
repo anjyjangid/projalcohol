@@ -2851,64 +2851,65 @@ class CartController extends Controller
 		
 	}
 
-	public function availability($cartKey){
+// 	public function availability($cartKey){
 
-		$cart = Cart::find($cartKey);
+// 		$cart = Cart::find($cartKey);
 
-		if(empty($cart)){
-			return response(array("success"=>false,"message"=>"cart not found"),401);
-		}
+// 		if(empty($cart)){
+// 			return response(array("success"=>false,"message"=>"cart not found"),401);
+// 		}
 
-		$products = $cart->products;
+// 		$products = $cart->products;
 
-		$productsIdInCart = array_keys((array)$products);
+// 		$productsIdInCart = array_keys((array)$products);
 
-		$productObj = new Products;
+// 		$productObj = new Products;
 
-		$productsInCart = $productObj->getProducts(
-									array(
-										"id"=>$productsIdInCart,
-									)
-								);
+// 		$productsInCart = $productObj->getProducts(
+// 									array(
+// 										"id"=>$productsIdInCart,
+// 									)
+// 								);
 
-		jprd($productsInCart);
+// 		jprd($productsInCart);
 
-		$notAvail = [];
+// 		$notAvail = [];
 
-		foreach($productsInCart as $product){
+// 		foreach($productsInCart as $product){
 
-			$cartProduct = $products[$product["_id"]];
+// 			$cartProduct = $products[$product["_id"]];
 
-if($product['quantity']==0)
-jprd($product);
+// if($product['quantity']==0)
+// jprd($product);
 
 
-			if($product['quantity']==0 && $product['outOfStockType']===2){
+// 			if($product['quantity']==0 && $product['outOfStockType']===2){
 
-				$notAvail[] = [
-					"id"=>$product["_id"]
+// 				$notAvail[] = [
+// 					"id"=>$product["_id"]
 
-				];
+// 				];
 
-			};
+// 			};
 
-			if($cartProduct['quantity']<=$product['quantity']){
+// 			if($cartProduct['quantity']<=$product['quantity']){
 
-				$notAvail[] = [
-					"id"=>$product["_id"]
+// 				$notAvail[] = [
+// 					"id"=>$product["_id"]
 
-				];
+// 				];
 
-			}
-		}
+// 			}
+// 		}
 
-	}
+// 	}
 
 	public function getProductsLapsedTime ($cartKey) {
 
 		$cart = Cart::find($cartKey);
 
 		try{
+
 			$products = $cart->getAllProductsInCart();
 			$products = $this->setProductAvailabilityAfter($products);
 			return response($products,200);
@@ -2936,7 +2937,7 @@ jprd($product);
 		foreach ($products as $key => &$product) {
 
 			if($product['outOfStockType']!==2){
-				$product['lapsedTime'] = 0;
+				$product['lapsedTime'] = strtotime("+1 years",$sgtTimeStamp);
 				continue;
 			}
 						

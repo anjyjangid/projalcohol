@@ -1144,6 +1144,7 @@ AlcoholDelivery.controller('CartController',[
 	$scope.checkout = function(ev) {
 
 		//isCartValid = alcoholCart.validate($scope.step);
+
 		cartValidate.check('cart').then(
 			function(valid){
 
@@ -1151,6 +1152,11 @@ AlcoholDelivery.controller('CartController',[
 				
 					if(!UserService.getIfUser())
 						return $rootScope.$broadcast('showLogin');
+
+					if(alcoholCart.highestShortLapsed!==0){
+						alcoholCart.availabilityPopUp();
+						return false;
+					}
 
 					var cartKey = alcoholCart.getCartKey();
 
@@ -1715,6 +1721,7 @@ AlcoholDelivery.controller('CartDeliveryController',[
 					if(skey==slotKey){
 
 						$scope.timeslot.slotslug = $scope.timerange[timeslots[key].slots[skey].from]+" - "+$scope.timerange[timeslots[key].slots[skey].to];
+						$scope.timeslot.slotTime = timeslots[key].slots[skey].from;
 
 					}
 

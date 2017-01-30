@@ -256,19 +256,30 @@ class Cart extends Moloquent
 			return false;
 		}
 
-		$datetime = new DateTime('tomorrow');
-		$tomorrowTime = strtotime($datetime->format('Y-m-d H:i:s'));
 
-		if(isset($cart->timeslot['datekey']) && $cart->timeslot['datekey']<$tomorrowTime){
+		$currentTimeStr = strtotime("+8 hours");
+		$todayStartTimeStr = strtotime(date("Y-m-d",$currentTimeStr));
 
-			$cart->timeslot = [
-				"datekey"=>false,
-				"slotkey"=>false,
-				"slug"=>"",
-				"slotslug"=>""
-			];
+		if(isset($cart->timeslot['datekey']) && $cart->timeslot['datekey']!==false && $todayStartTimeStr>=$cart->timeslot['datekey']){
+
+			$todayLapsedHours = date("H",$currentTimeStr);
+			$todayLapsedMinutes = $todayLapsedHours * 60;
+			$todayLapsedMinutes+= 120;			
+
+			if(isset($cart->timeslot['slotTime']) && $cart->timeslot['slotTime']<$todayLapsedMinutes){
+
+				$cart->timeslot = [
+					"datekey"=>false,
+					"slotkey"=>false,
+					"slug"=>"",
+					"slotslug"=>""
+				];
+
+			}
 
 		}
+
+		
 
 		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.express_delivery.applicablePostalCodes','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value','settings.tempsurcharge'])->first();
 
@@ -416,6 +427,7 @@ class Cart extends Moloquent
 															"price",
 															"loyalty",
 															"loyaltyType",
+															"deliveryType"
 														],
 												// "with"=>["discounts"]
 											)

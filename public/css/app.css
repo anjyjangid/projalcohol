@@ -1480,3 +1480,11 @@ span.help-block a {
 	text-decoration: underline;
 	color: #454545;
 }
+
+
+.pro-notavail-footer {
+    width: 100%;
+    background: #ccc;
+    font-size: 1.3em;
+    
+}

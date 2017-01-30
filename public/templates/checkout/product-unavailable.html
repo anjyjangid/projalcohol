@@ -1,0 +1,59 @@
+<md-dialog id="dont-miss-popup" aria-label="dont-miss-popup">
+	<md-toolbar>
+		<div class="md-toolbar-tools alcohal_addadress_header">
+			<div class="alcohal_addadress_headercurmain">          
+				<div class="alcohal_addadress_headertitle">Some products are not available</div>
+			</div>
+			<span class="glyphicon glyphicon-chevron-left dontmissbut" ng-if="products.length>dontMissCarousel.visibleItems" ng-click="loadMore(1);"></span>
+			<span class="glyphicon glyphicon-chevron-right dontmissbut" ng-if="products.length>dontMissCarousel.visibleItems" ng-click="loadMore(0);"></span>
+			
+			<span flex></span>  <md-button class="md-icon-button" ng-click="hide()"> &times; </md-button>
+		</div>
+	</md-toolbar>
+
+	<md-dialog-content layout="row" class="" flex="100%">
+
+		<div class="table-responsive">
+			<table class="table cart-table">
+				<tbody>	
+					<tr ng-repeat="pro in products">
+
+						<td width="52%">
+							<div class="orhistry2_td2procdtcvr">
+								<span>
+									<a ui-sref="mainLayout.product({product:pro.product.slug})">
+										<img err-pro-src="" ng-src="products/i/200/{{pro.product.imageFiles | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
+									</a>
+								</span>
+
+								<div class="checkouter-td-right-text">
+									<div class="orhistry2_td2proctext1">{{pro.product._title}}</div>
+									<div class="orhistry2_td2proctext2">{{pro.product.description}}</div>
+								</div> 
+							</div>
+						</td>
+									
+						<td> 
+							{{pro.short}} out of {{pro.quantity}} is unavailable
+							<span ng-if="pro.outOfStockType==2">This product will be available from {{pro.availabilityDate}} {{pro.availabilityTime}}</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+	</md-dialog-content>
+
+	<md-dialog-actions layout="row">
+		<div class="modal-footer pro-notavail-footer">
+			
+			<div class="text-center m-bottom-15">
+				Remove these products from your cart <span>OR change your delivery type</span>
+			</div>
+			<div class="alcohalosavebntcvr">
+				<button class="adresssvaebtn" ng-click="cancel()" type="button">Close <span> <i class="fa fa-close"></i></span></button>
+
+			</div>
+		</div>
+	</md-dialog-actions>
+</md-dialog>

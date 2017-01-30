@@ -1,11 +1,11 @@
 AlcoholDelivery.service('alcoholCart', [
-			'$log','$rootScope', '$window', '$document', '$http', '$state', '$q', '$mdToast', '$filter', 
+			'$log','$rootScope', '$window', '$document', '$http', '$state', '$q', '$mdToast', '$mdDialog', '$filter', 
 			'$timeout', '$interval', 'appConfig', 'sweetAlert', 
 			'alcoholCartItem', 'alcoholCartLoyaltyItem', 
 			'alcoholCartPackage','promotionsService','alcoholCartPromotion', 
 			'alcoholCartGiftCard', 'alcoholCartGift', 
 			'alcoholCartSale', 'alcoholCartCreditCard','UserService'
-	,function ($log, $rootScope, $window, $document, $http, $state, $q, $mdToast, $filter, 
+	,function ($log, $rootScope, $window, $document, $http, $state, $q, $mdToast, $mdDialog, $filter, 
 			$timeout, $interval, appConfig, sweetAlert, 
 			alcoholCartItem, alcoholCartLoyaltyItem, 
 			alcoholCartPackage, promotionsService, alcoholCartPromotion, 
@@ -16,6 +16,8 @@ AlcoholDelivery.service('alcoholCart', [
 	
 	this.expressDisable = false;
 	this.deliveryApplicable = true;
+	this.productsStats = {};
+	this.highestShortLapsed = 0;
 
 	this.init = function(){
 		
@@ -1008,6 +1010,7 @@ AlcoholDelivery.service('alcoholCart', [
 			var products = this.getProducts();
 			var promotions = this.getPromotions();
 			var loyalty = this.getLoyaltyProducts();
+			var packages = this.getPackages();
 
 			var prosInCart = {};
 
@@ -1041,6 +1044,30 @@ AlcoholDelivery.service('alcoholCart', [
 					prosInCart[key] = parseInt(prosInCart[key]) + parseInt(product.getQuantity());
 
 				}
+			});
+
+
+			angular.forEach(packages, function(package) {
+
+				var packageQty = package.getQuantity();
+
+				angular.forEach(package._products, function(product) {
+
+					var proQty = packageQty * product.quantity;
+					var key = product._id;
+
+					if(typeof prosInCart[key] === 'undefined'){
+
+						prosInCart[key] = proQty;
+
+					}else{
+
+						prosInCart[key] = parseInt(prosInCart[key]) + parseInt(proQty);
+
+					}
+
+				})
+
 			});
 			
 			return prosInCart;
@@ -2301,53 +2328,25 @@ AlcoholDelivery.service('alcoholCart', [
 			this.deployCart();
 		}
 
-		this.checkAvailability = function(){
+		// this.checkAvailability = function(){
 
-			var d = $q.defer();
+		// 	var d = $q.defer();
 
-			$http.get("cart/availability/"+cartKey,{
+		// 	$http.get("cart/availability/"+cartKey,{
 
-			}).error(function(data, status, headers) {
+		// 	}).error(function(data, status, headers) {
 
-				d.reject(data);
+		// 		d.reject(data);
 
-			}).success(function(response) {
+		// 	}).success(function(response) {
 
-				d.resolve(response);
+		// 		d.resolve(response);
 
-			});
+		// 	});
 
-			return d.promise;
+		// 	return d.promise;
 
-		}
-
-		this.setProductsAvailability = function(){
-
-			var products = this.getProducts();
-			var packages = this.getPackages();
-			var promotions = this.getPromotions();
-
-			angular.forEach(products, function (item,key) {
-
-
-
-			});
-
-			// angular.forEach(packages, function (package,key) {
-				
-			// 	(cartproduct.onlyForAdvance && cart.delivery.type==0) || cartproduct.isNotAvailable
-
-			// });
-
-			// angular.forEach(promotions, function (promotion,key) {
-
-			// 	(cartproduct.onlyForAdvance && cart.delivery.type==0) || cartproduct.isNotAvailable			
-				
-			// });
-
-			
-			
-		}
+		// }
 
 		this.setExpressStatus = function(status){
 			var _self = this;
@@ -2735,12 +2734,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 		}
 
-		// this.setNonChilledStatus(){
-
-		// 	$cart.nonchilled = true;
-
-		// }
-
+		
 		this.setCartKey = function(cartKey){
 
 			localStorage.setItem("deliverykey",cartKey)
@@ -3287,7 +3281,137 @@ AlcoholDelivery.service('alcoholCart', [
 			}
 		}
 
-	}]);
+	this.getSelectedTimeSlot = function () {
+
+		var slot = this.$cart.timeslot;
+		
+		if(!slot.datekey){
+			return false;
+		}
+
+		return slot.datekey + (slot.slotTime * 60);
+
+	}
+
+	// function to calculate base time selected by 
+	this.getDeliveryBaseTime = function () {
+
+		var deliveryType = this.getDeliveryType();
+		var deliveryBaseTime = null;
+		if(deliveryType==1){
+
+			var timeSlot = this.getSelectedTimeSlot();
+			
+			if(timeSlot!==false){
+
+			}
+
+		}else{
+			var serverTime = appConfig.getServerTime();
+			var halfHourTimeStr = 1800;
+			deliveryBaseTime = serverTime + (halfHourTimeStr * 3);			
+		}
+
+		return deliveryBaseTime;
+		
+	}
+
+	this.getProductsStats = function(){
+		return this.productsStats || {};
+	}
+
+	this.setProductsAvailability = function(prosLapsedTime){
+
+		var proCounts = this.getProductsCountInCart();
+		var deliveryBaseTime = this.getDeliveryBaseTime();
+		var _self = this;
+		this.highestShortLapsed = 0;
+
+		angular.forEach(prosLapsedTime, function (pro,key) {
+			
+			pro.short = 0;
+
+			if(deliveryBaseTime<pro.lapsedTime){
+				var proCountIncart = proCounts[pro._id];
+				if(pro.quantity < proCountIncart){
+					_self.highestShortLapsed = _self.highestShortLapsed<pro.lapsedTime?pro.lapsedTime:_self.highestShortLapsed;
+					pro.short = proCountIncart - pro.quantity;
+				}
+
+			}			
+
+		});
+
+		this.productsStats = prosLapsedTime;
+		return this.highestShortLapsed;
+		
+	}
+
+	this.availabilityPopUp = function () {
+
+		var _self = this;
+
+		$mdDialog.show({
+
+				controller: function($scope, $rootScope, $document) {
+
+					$scope.products = [];
+					angular.forEach(_self.productsStats, function (product) {
+						
+						if(product.short==0){
+							return;
+						}
+						var pro = angular.copy(_self.getProductInCartById(product._id));
+
+						if(pro){
+
+							pro.short = product.short;
+							pro.quantity = product.count;
+							console.log(product.product);
+							pro.outOfStockType = product.outOfStockType;
+							var d = new Date(product.lapsedTime * 1000);
+							pro.availabilityDate = d.toDateString();
+							pro.availabilityTime = d.amPmFormat();
+
+							$scope.products.push(pro);
+						}
+						
+
+					})
+					console.log("products",$scope.products);
+
+					$scope.hide = function() {
+						$mdDialog.hide();
+					};
+					$scope.cancel = function() {
+						$mdDialog.cancel();
+					};
+
+					$scope.continue = function(){					
+
+						$scope.step = 0;
+
+						$mdDialog.hide();
+
+						$state.go("mainLayout.checkout.cart");
+
+					}
+					
+				},
+				templateUrl: '/templates/checkout/product-unavailable.html',
+				parent: angular.element(document.body),
+				clickOutsideToClose:false,
+				fullscreen:true
+			})
+			.then(function(answer) {
+
+			}, function() {
+
+			});
+	}
+
+}]);
+
 
 AlcoholDelivery.service('store', [
 			'$rootScope','$window','$http','alcoholCart','promotionsService','$q', 'cartValidation'
@@ -3620,8 +3744,8 @@ AlcoholDelivery.service('cartValidation',[
 				typeof cart.timeslot.slotkey == 'undefined' || 
 				typeof cart.timeslot.datekey == 'undefined' || 
 						cart.timeslot.datekey==false || 
-						cart.timeslot.slotkey==false){
-				$state.go(states[2], {err: "Please select a Time slot!"}, {reload: true});
+						cart.timeslot.slotkey===false){
+				$state.go(states[2], {err: "Please select a Time slot!"}, {reload: false});
 				return false;
 			}
 		}

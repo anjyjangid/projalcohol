@@ -1203,6 +1203,7 @@ AlcoholDelivery.directive('sideBar', function() {
 				curDate.setTime($rootScope.settings.today);
 				curDate.setHours(0,0,0,0);
 				curDate.setDate(curDate.getDate() + daystoadd);
+				
 				return curDate.setMinutes(mins);
 			};
 

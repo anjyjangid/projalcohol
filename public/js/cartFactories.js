@@ -387,13 +387,11 @@ angular.module('AlcoholCartFactories', [])
 						couponDisAmt = diffAmt;
 					}
 				}
-
 			}
 
 			this.couponDiscount = couponDisAmt.toFixed(2);
 			this.couponMessage = couponMessage;
 
-			
 		}else{
 			couponMessage = 'Coupon is not valid on these products.';
 			this.couponMessage = couponMessage;
@@ -410,7 +408,7 @@ angular.module('AlcoholCartFactories', [])
 	};
 
 	item.prototype.setRQuantity = function(cQuantity,ncQuantity){
-		
+
 		this.qChilled = parseInt(cQuantity);
 		this.qNChilled = parseInt(ncQuantity);
 
@@ -455,7 +453,6 @@ angular.module('AlcoholCartFactories', [])
 
 		this.onlyForAdvance = false;
 		if(data.product.quantity==0 && data.product.outOfStockType==2){
-
 			this.onlyForAdvance = true;
 		}
 
@@ -1703,6 +1700,7 @@ angular.module('AlcoholCartFactories', [])
 
 			})
 		}
+		price = parseFloat(price);
 		return price.toFixed(2);
 
 	}
