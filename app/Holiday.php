@@ -39,11 +39,11 @@ class Holiday extends Eloquent
 		
 		while ($workingDaysRequired) {
 			
-			if(!self::isHoliday($holidays,$currAvailDate))
-				--$workingDaysRequired;
-
 			if($workingDaysRequired)
-			$currAvailDate+=$aDayTimeStamp;			
+			$currAvailDate+=$aDayTimeStamp;
+
+			if(!self::isHoliday($holidays,$currAvailDate))
+				--$workingDaysRequired;	
 
 		}
 

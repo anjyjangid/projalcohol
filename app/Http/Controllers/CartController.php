@@ -302,7 +302,6 @@ class CartController extends Controller
 		}
 
 		$cart['products'] = (object)$cart['products'];
-		
 
 		// package validate and manage start
 		if(!empty($cart['packages'])){
@@ -330,25 +329,45 @@ class CartController extends Controller
 						$proDetail = [];
 
 						foreach ($package['productlist'] as $pkey => $pvalue) {
-							$proDetail[(string)$pvalue['_id']]['name'] = $pvalue['name'];
-							$proDetail[(string)$pvalue['_id']]['cartquantity'] = 0;
+
+							// $proDetail[(string)$pvalue['_id']]['name'] = $pvalue['name'];
+							// $proDetail[(string)$pvalue['_id']]['cartquantity'] = 0;
+							$proDetail[(string)$pvalue['_id']] = [
+											'name'=>$pvalue['name'],
+											'cartquantity' => 0,
+											'description' => $pvalue['description'],
+											'shortDescription' => $pvalue['shortDescription'],
+											'imageFiles' => $pvalue['imageFiles'],
+											'slug' => $pvalue['slug']
+										];
 						}
 
 						$addedQuantity = [];
 
-						foreach ($package['products'] as $pkey => $pvalue) {
+						foreach ($package['products'] as $pkey => &$pvalue) {
+
 							$proDetail[(string)$pvalue['_id']]['cartquantity'] = $pvalue['quantity'];
+							$pDetail = $proDetail[(string)$pvalue['_id']];
+
+							$pvalue['description'] = $pDetail['description'];
+							$pvalue['shortDescription'] = $pDetail['shortDescription'];
+							$pvalue['imageFiles'] = $pDetail['imageFiles'];
+							$pvalue['slug'] = $pDetail['slug'];
 						}
 
 						unset($package['productlist']);
 						
 						foreach ($package['packageItems'] as $oPackagekey => &$oPackagevalue) {
 							foreach ($oPackagevalue['products'] as &$provalue) {
+
 								$pDetail = $proDetail[(string)$provalue['_id']];
+
 								$provalue['name'] = $pDetail['name'];
 								$provalue['cartquantity'] = $pDetail['cartquantity'];
+								
+
 							}
-						}								
+						}
 					}					
 
 				}
@@ -1390,12 +1409,17 @@ class CartController extends Controller
 			}
 
 			if($datekey===$todayDateStr){
-								
+
 				foreach ($currTimeSlots as $key => &$slot) {
 					if($slot['from']<$slotsActiveAfter){
 						$slot['status'] = 0;
 					};
 				}
+			}
+
+			foreach ($currTimeSlots as $key => &$slot) {
+				$slot['slotCeilKey'] = $datekey + ($slot['to'] * 60);
+				$slot['slotFloorKey'] = $datekey + ($slot['from'] * 60);
 			}
 
 			$slotArr[$weekKeys[$weeknumber]] = [
@@ -1746,6 +1770,12 @@ class CartController extends Controller
 		
 		$cart = Cart::findUpdated($cartKey);
 
+		$isValidate = $cart->validate();
+
+		if($isValidate['valid']===false){
+			return response($isValidate,400);
+		}		
+
 		if(empty($cart) && $request->isMethod('get') && $request->get('order_number')){
 			$order = Orders::where(['reference' => $request->get('order_number')])->first();
 			if($order)
@@ -1759,9 +1789,9 @@ class CartController extends Controller
 				return response(["success"=>false,"message"=>"cart not found"],405); //405 => method not allowed
 		}
 
-		$cartArr = $cart->toArray();		
+		$cartArr = $cart->toArray();
 
-		$cartArr['user'] = new MongoId($user->_id);
+		$cartArr['user'] = new MongoId($user->_id);		
 
 		try {			
 
@@ -1910,7 +1940,7 @@ class CartController extends Controller
                 'order_number' => $reference
             ];
 
-            $order->placed();            
+            $order->placed();
 
 			if($request->isMethod('get')){
 				return redirect('/orderplaced/'.$order['_id']);
@@ -1923,7 +1953,7 @@ class CartController extends Controller
 				ErrorLog::create('emergency',[
 					'error'=>$e,
 					'message'=> 'Cart Confirm'
-				]);			
+				]);
 
 		}
 
@@ -2945,13 +2975,13 @@ class CartController extends Controller
 
 			$availDateTimeStamp = Holiday::getDateWithWorkingDays($workingDaysRequired,$holidays);
 			$availTimeStamp = $availDateTimeStamp + ($product['availabilityTime']*60);
-			
+
 			$product['lapsedTime'] = $availTimeStamp;
 		}
 
 		return $products;
 
-	}		
+	}
 
 	public function saleNotification(){
 		

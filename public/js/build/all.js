@@ -13175,7 +13175,7 @@ AlcoholDelivery.controller('CartController',[
 					if(!UserService.getIfUser())
 						return $rootScope.$broadcast('showLogin');
 
-					if(alcoholCart.highestShortLapsed!==0){
+					if(alcoholCart.getDeliveryBaseTime()!==null && alcoholCart.setProductsAvailability()!==0){
 						alcoholCart.availabilityPopUp();
 						return false;
 					}
@@ -13609,7 +13609,6 @@ AlcoholDelivery.controller('CartAddressController',[
 		);
 
 	}
-	
 
 }]);
 
@@ -13750,6 +13749,10 @@ AlcoholDelivery.controller('CartDeliveryController',[
 				}
 
 			}
+		}
+
+		if(alcoholCart.setProductsAvailability()!==0){
+			alcoholCart.availabilityPopUp();			
 		}
 
 	}
@@ -18985,7 +18988,7 @@ AlcoholDelivery.service('alcoholCart', [
 		
 		this.setCartKey = function(cartKey){
 
-			localStorage.setItem("deliverykey",cartKey)
+			localStorage.setItem("deliverykey",cartKey);
 			$rootScope.deliverykey = cartKey;
 
 			return cartKey;
@@ -19551,7 +19554,7 @@ AlcoholDelivery.service('alcoholCart', [
 			var timeSlot = this.getSelectedTimeSlot();
 			
 			if(timeSlot!==false){
-
+				deliveryBaseTime = timeSlot;
 			}
 
 		}else{
@@ -19570,8 +19573,13 @@ AlcoholDelivery.service('alcoholCart', [
 
 	this.setProductsAvailability = function(prosLapsedTime){
 
+		if(!angular.isDefined(prosLapsedTime)){
+			var prosLapsedTime = this.productsStats;
+		}
+
 		var proCounts = this.getProductsCountInCart();
 		var deliveryBaseTime = this.getDeliveryBaseTime();
+		console.log(deliveryBaseTime);
 		var _self = this;
 		this.highestShortLapsed = 0;
 
@@ -19615,7 +19623,6 @@ AlcoholDelivery.service('alcoholCart', [
 
 							pro.short = product.short;
 							pro.quantity = product.count;
-							console.log(product.product);
 							pro.outOfStockType = product.outOfStockType;
 							var d = new Date(product.lapsedTime * 1000);
 							pro.availabilityDate = d.toDateString();
@@ -19623,10 +19630,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 							$scope.products.push(pro);
 						}
-						
 
-					})
-					console.log("products",$scope.products);
+					});
 
 					$scope.hide = function() {
 						$mdDialog.hide();

@@ -10,6 +10,8 @@ use AlcoholDelivery\Packages;
 use AlcoholDelivery\Credits;
 use AlcoholDelivery\Promotion;
 use AlcoholDelivery\Gift;
+use AlcoholDelivery\Holiday;
+use AlcoholDelivery\ErrorLog;
 
 use Illuminate\Support\Facades\Auth;
 use stdClass;
@@ -17,6 +19,7 @@ use MongoId;
 use MongoDate;
 use Route;
 use DateTime;
+use DB;
 
 class Cart extends Moloquent
 {
@@ -325,6 +328,147 @@ class Cart extends Moloquent
 			return false;
 
 		}
+
+	}
+
+	public function validate(){
+
+		$response = [
+			'valid' => false
+		];
+
+		try{
+
+			$isCartEmpty = $this->isCartEmpty();
+
+			if($isCartEmpty){
+
+				$response['message'] = "There is no product in cart to process";
+				$response['step'] = 'cart';
+				$response['refresh'] = true;
+				return $response;
+			}
+
+
+			$isAnyProductSort = false;
+			$deliveryBaseTime = $this->getCartDeliveryBaseTime();
+			
+			$products = $this->getAllProductsInCart();
+			
+			$products = $this->setProductAvailabilityAfter($products);
+
+			foreach ($products as $product) {
+
+				if($deliveryBaseTime<$product['lapsedTime'] && $product['quantity'] < $product['count']){
+					$isAnyProductSort = true;
+					break;
+				}
+				
+			}
+
+			if($isAnyProductSort){
+				$response['message'] = "Some products are not available as per your selected delivery time";
+				$response['step'] = $this->isAdvanceDelivery()?'delivery':'cart';
+			}
+
+			return $response;
+
+		}catch(\Exception $e){
+			ErrorLog::create('emergency',[
+					'error'=>$e,
+					'message'=> 'Cart Validate',
+				]);
+		}
+
+		return response(['refresh' => true],412);
+
+	}
+
+	public function isCartEmpty () {
+
+		$products = $this->getAllProductsInCart();
+
+		if(key($products)!=false){
+			return false;
+		}
+
+		if(isset($this->gifts) && is_array($this->gifts) && count($this->gifts)){
+			return false;
+		}
+		
+		if(isset($this->giftCards) && is_array($this->giftCards) && count($this->giftCards)){
+			return false;
+		}
+
+		if(isset($this->loyaltyCards) && is_array($this->loyaltyCards) && count($this->loyaltyCards)){
+			return false;
+		}
+		
+		return true;
+	}
+	// Cart getter and setters Starts
+
+	public function getCartDeliveryBaseTime () {
+
+		$baseTime = 0;
+		if($this->isAdvanceDelivery()){
+
+			$baseTime = $this->getTimeSlotDeliveryTime();
+
+		}else{
+
+			$serverTime = getServerTime();
+			$halfHourTimeStr = 1800;
+			$baseTime = $serverTime + ($halfHourTimeStr * 3);
+
+		}
+		
+		return $baseTime;
+
+	}
+
+	public function isAdvanceDelivery () {
+		return $this->delivery['type'] === 1 ? true : false;
+	}
+
+	public function getTimeSlotDeliveryTime () {
+
+		if($this->timeslot['datekey'] && $this->timeslot['slotTime']){
+			return $this->timeslot['datekey'] + ( $this->timeslot['slotTime'] * 60 );
+		}
+		return 0;
+	}
+
+	// Cart getter and setters Ends
+
+	private function setProductAvailabilityAfter($products){
+
+		$sgtTimeStamp = strtotime("+8 hours");
+
+		$today = strtotime(date('Y-m-d',$sgtTimeStamp))*1000;
+
+		$holidays = DB::collection('holidays')
+						->where('timeStamp','>=',$today)
+						->orWhere('_id','weekdayoff')
+						->orderBy("timeStamp")
+						->get(['dow','timeStamp']);
+
+		foreach ($products as $key => &$product) {
+
+			if($product['outOfStockType']!==2){
+				$product['lapsedTime'] = strtotime("+1 years",$sgtTimeStamp);
+				continue;
+			}
+						
+			$workingDaysRequired = $product['availabilityDays'];
+
+			$availDateTimeStamp = Holiday::getDateWithWorkingDays($workingDaysRequired,$holidays);
+			$availTimeStamp = $availDateTimeStamp + ($product['availabilityTime']*60);
+
+			$product['lapsedTime'] = $availTimeStamp;
+		}
+
+		return $products;
 
 	}
 

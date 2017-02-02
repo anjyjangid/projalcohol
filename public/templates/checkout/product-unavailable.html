@@ -2,7 +2,7 @@
 	<md-toolbar>
 		<div class="md-toolbar-tools alcohal_addadress_header">
 			<div class="alcohal_addadress_headercurmain">          
-				<div class="alcohal_addadress_headertitle">Some products are not available</div>
+				<div class="pro_unavailable_header">The following product(s) quantity are unavailable</div>
 			</div>
 			<span class="glyphicon glyphicon-chevron-left dontmissbut" ng-if="products.length>dontMissCarousel.visibleItems" ng-click="loadMore(1);"></span>
 			<span class="glyphicon glyphicon-chevron-right dontmissbut" ng-if="products.length>dontMissCarousel.visibleItems" ng-click="loadMore(0);"></span>
@@ -34,8 +34,8 @@
 						</td>
 									
 						<td> 
-							{{pro.short}} out of {{pro.quantity}} is unavailable
-							<span ng-if="pro.outOfStockType==2">This product will be available from {{pro.availabilityDate}} {{pro.availabilityTime}}</span>
+							<span class="label label-primary">{{pro.short}} out of {{pro.quantity}} is unavailable</span>
+							<span class="label label-primary" ng-if="pro.outOfStockType==2">This product will be available from {{pro.availabilityDate}} {{pro.availabilityTime}}</span>
 						</td>
 					</tr>
 				</tbody>
@@ -48,7 +48,9 @@
 		<div class="modal-footer pro-notavail-footer">
 			
 			<div class="text-center m-bottom-15">
-				Remove these products from your cart <span>OR change your delivery type</span>
+				Remove these products from your cart 
+				<span ng-if="!isTimeslotPage">OR change your delivery type</span>
+				<span ng-if="isTimeslotPage">OR Select a different time slot</span>
 			</div>
 			<div class="alcohalosavebntcvr">
 				<button class="adresssvaebtn" ng-click="cancel()" type="button">Close <span> <i class="fa fa-close"></i></span></button>

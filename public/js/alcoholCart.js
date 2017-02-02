@@ -967,6 +967,7 @@ AlcoholDelivery.service('alcoholCart', [
 			var products = this.getProducts();
 			var promotions = this.getPromotions();
 			var loyalty = this.getLoyaltyProducts();
+			var packages = this.getPackages();
 
 			var build = false;
 			
@@ -1000,6 +1001,20 @@ AlcoholDelivery.service('alcoholCart', [
 				build = loyalty[productId];
 			}
 			
+			if(build!==false){return build;}
+
+			angular.forEach(packages, function(package, key) {
+				
+				angular.forEach(package._products, function(product, key) {
+
+					if(product._id == productId){
+						build = {product:product};
+					}
+
+				})	
+
+			});
+
 			if(build!==false){return build;}
 
 		}
@@ -2737,7 +2752,7 @@ AlcoholDelivery.service('alcoholCart', [
 		
 		this.setCartKey = function(cartKey){
 
-			localStorage.setItem("deliverykey",cartKey)
+			localStorage.setItem("deliverykey",cartKey);
 			$rootScope.deliverykey = cartKey;
 
 			return cartKey;
@@ -3015,13 +3030,27 @@ AlcoholDelivery.service('alcoholCart', [
 			})
 
 			if(!valid){
-
+				
 				$log.error("Not a valid cart step");
 				return false;
 			}
 			
 			return this.step = step;
 
+		}
+
+		this.getCurrentStep = function (index) {
+
+			if(this.step){
+
+				if(index){
+
+					return this.stepsName.indexOf(this.step);
+
+				}
+			}
+
+			return false;
 		}
 
 		this.validate = function(step){
@@ -3294,17 +3323,23 @@ AlcoholDelivery.service('alcoholCart', [
 	}
 
 	// function to calculate base time selected by 
+	// @param onTimeSlot : this will let know basetime calculate on time slot or not
 	this.getDeliveryBaseTime = function () {
+
+		var currentStep = this.getCurrentStep(true);
 
 		var deliveryType = this.getDeliveryType();
 		var deliveryBaseTime = null;
+
 		if(deliveryType==1){
 
-			var timeSlot = this.getSelectedTimeSlot();
-			
-			if(timeSlot!==false){
+			if(currentStep>1){
+				var timeSlot = this.getSelectedTimeSlot();
 
-			}
+				if(timeSlot!==false){
+					deliveryBaseTime = timeSlot;
+				}
+			}		
 
 		}else{
 			var serverTime = appConfig.getServerTime();
@@ -3322,6 +3357,10 @@ AlcoholDelivery.service('alcoholCart', [
 
 	this.setProductsAvailability = function(prosLapsedTime){
 
+		if(!angular.isDefined(prosLapsedTime)){
+			var prosLapsedTime = this.productsStats;
+		}
+
 		var proCounts = this.getProductsCountInCart();
 		var deliveryBaseTime = this.getDeliveryBaseTime();
 		var _self = this;
@@ -3338,7 +3377,7 @@ AlcoholDelivery.service('alcoholCart', [
 					pro.short = proCountIncart - pro.quantity;
 				}
 
-			}			
+			}
 
 		});
 
@@ -3367,7 +3406,6 @@ AlcoholDelivery.service('alcoholCart', [
 
 							pro.short = product.short;
 							pro.quantity = product.count;
-							console.log(product.product);
 							pro.outOfStockType = product.outOfStockType;
 							var d = new Date(product.lapsedTime * 1000);
 							pro.availabilityDate = d.toDateString();
@@ -3375,11 +3413,11 @@ AlcoholDelivery.service('alcoholCart', [
 
 							$scope.products.push(pro);
 						}
-						
 
-					})
-					console.log("products",$scope.products);
+					});
 
+					$scope.isTimeslotPage = _self.getCurrentStep(true)===2?true:false;
+					
 					$scope.hide = function() {
 						$mdDialog.hide();
 					};

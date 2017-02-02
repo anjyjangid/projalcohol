@@ -99,4 +99,25 @@
 		return $sign.money_format('%.2n', $value);
 	}
 
+	// Function to get singapore time which is +8 hours from GMT
+	function getServerTime ($type = 'str') {
+
+		$sgtTimeStamp = strtotime("+8 hours");
+
+		switch ($type) {
+
+			case 'date':
+				$sgtTimeStamp = date('Y-m-d',$sgtTimeStamp);
+				break;
+
+			case 'datetime':
+				$sgtTimeStamp = date('Y-m-d H:i:s',$sgtTimeStamp);
+				break;
+
+		}
+
+		return $sgtTimeStamp;
+
+	}
+
 ?>
