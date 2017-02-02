@@ -34,10 +34,10 @@
 		<title ng-bind="meta.title"></title>
 
 		<!-- Bootstrap -->
-		<link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,700,800,500' rel='stylesheet' type='text/css'>
-		<link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
+		<link async href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,700,800,500' rel='stylesheet' type='text/css'>
+		<link async href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
 		
-		<link rel="stylesheet" type="text/css" href="css/all.css">
+		<link rel="stylesheet" href="css/all.css">
 		
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -75,7 +75,7 @@
 		  ga('send', 'pageview');
 		 
 		</script>
-		<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion_async.js" charset="utf-8"></script>		
+		<script async type="text/javascript" src="//www.googleadservices.com/pagead/conversion_async.js" charset="utf-8"></script>		
 		<!-- Google analytics -->
 	</head>
 
@@ -190,12 +190,14 @@
 				
 	</body>
 
-	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAO1xAu1wBu7NZOqNBn9aoYg-RVstm60jc&libraries=places"></script>
+	<script async type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAO1xAu1wBu7NZOqNBn9aoYg-RVstm60jc&libraries=places"></script>
 
 	
-	<!-- <script type="text/javascript" src="js/build/all.js"></script> -->
-	<script type="text/javascript" src="js/general.js"></script>   
-	<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>   
+
+	<script type="text/javascript" src="js/build/all.js"></script>
+	
+	<!-- <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>   
+
     
 	<script type="text/javascript" src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/angular/angular.min.js') }}"></script>
@@ -244,6 +246,5 @@
     <script type="text/javascript" src="js/alcoholWishlist.js"></script>
     <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
     <script type="text/javascript" src="js/directive.js"></script>
-    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>       
-    
+    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script> -->       
 </html>

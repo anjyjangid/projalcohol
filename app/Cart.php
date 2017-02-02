@@ -259,7 +259,6 @@ class Cart extends Moloquent
 			return false;
 		}
 
-
 		$currentTimeStr = strtotime("+8 hours");
 		$todayStartTimeStr = strtotime(date("Y-m-d",$currentTimeStr));
 
@@ -279,6 +278,7 @@ class Cart extends Moloquent
 				];
 
 			}
+
 
 		}
 

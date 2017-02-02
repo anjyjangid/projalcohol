@@ -1,4 +1,4 @@
-<md-dialog aria-label="Age Verification " layout="column" flex="50" class="ageverificationpopup">  
+<md-dialog aria-label="Age Verification " layout="column" flex="50" class="ageverificationpopup ng-cloak">  
     <form name="verificationForm" ng-submit="verifyage()" class="horizontal-form">                          
     <md-dialog-content>
       <div class="md-dialog-content">                
@@ -16,10 +16,8 @@
           </div>  
         </div>
         <div>&nbsp;</div>
-
         <div align="center" ng-clock>          
           <md-input-container md-no-float>
-
             <label>Month</label>
             <md-select required ng-model="verification.userMonth" name="userMonth">              
               <!-- <md-option ng-repeat="month in verification.months" ng-value="{{month.value}}">

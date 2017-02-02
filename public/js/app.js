@@ -25,7 +25,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	});
 
 	// $location.hashPrefix('!');
-
+	//$mdThemingProvider.disableTheming();
 	$mdThemingProvider.theme('default').primaryPalette('purple').accentPalette('purple');
     //.accentPalette('orange');    
 }]);
@@ -333,7 +333,7 @@ AlcoholDelivery.service('appConfig', [
     	if(angular.isDefined(fromServer) && fromServer){
 
     		return $q(function(resolve,reject){
-    			//resolve();
+    			resolve();
     			_self.updateWorkingHrs().then(
     				function(){
 
@@ -343,9 +343,9 @@ AlcoholDelivery.service('appConfig', [
     					var isWorking = ((workingTime.from < serverTime) && (serverTime < workingTime.to));
     					  						
     					if(isWorking){
-    						resolve();
+    						//resolve();
     					}    					
-    					reject();
+    					//reject();
     				}
     			);
     		})
@@ -353,7 +353,8 @@ AlcoholDelivery.service('appConfig', [
     	}else{
 
     		var workingTime = this.getWorkingTime();
-			var serverTime = this.getServerTime();			
+			var serverTime = this.getServerTime();
+			return true;			
     		return ((workingTime.from < serverTime) && (serverTime < workingTime.to));
     	}
     }
@@ -1213,7 +1214,7 @@ function ($q, $rootScope, $log, $location, $window) {
 	            	config.url = 'api/'+urlStr;
 	        }else{
 	        	if(urlStr.indexOf('templates') > 0)
-	        		config.url += '?ver=1.2';
+	        		config.url += '?ver=1.3';
 	        }	        	
             return config;
         },

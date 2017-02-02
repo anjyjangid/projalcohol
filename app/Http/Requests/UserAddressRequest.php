@@ -31,8 +31,8 @@ class UserAddressRequest extends Request
 			
 			'firstname' => 'required|string|max:100',
 			//'lastname' => 'required|string|max:100',
-			'HBRN' => 'required',
-			'PostalCode' => 'required',			
+			'ROAD_NAME' => 'required',
+			'POSTAL' => 'required',			
 			/*'company'=> 'string|max:100',
 			'building'=>'string|max:100',
 			'street'=>'required|string|max:100',
@@ -45,7 +45,11 @@ class UserAddressRequest extends Request
 		];
 
 		if(isset($input['manualForm'])){
+			unset($rules['ROAD_NAME']);
+			unset($rules['POSTAL']);
 			$rules['house'] = 'required';
+			$rules['HBRN'] = 'required';
+			$rules['PostalCode'] = 'required';
 		}
 
 

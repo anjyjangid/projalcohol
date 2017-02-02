@@ -3784,6 +3784,7 @@ AlcoholDelivery.service('cartValidation',[
 						cart.timeslot.datekey==false || 
 						cart.timeslot.slotkey===false){
 				$state.go(states[2], {err: "Please select a Time slot!"}, {reload: false});
+
 				return false;
 			}
 		}
