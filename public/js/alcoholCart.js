@@ -1,12 +1,12 @@
 AlcoholDelivery.service('alcoholCart', [
 			'$log','$rootScope', '$window', '$document', '$http', '$state', '$q', '$mdToast', '$filter', 
-			'$timeout', '$interval', 'appConfig', 'sweetAlert', 
+			'$timeout', '$interval', '$cookies','appConfig', 'sweetAlert', 
 			'alcoholCartItem', 'alcoholCartLoyaltyItem', 
 			'alcoholCartPackage','promotionsService','alcoholCartPromotion', 
 			'alcoholCartGiftCard', 'alcoholCartGift', 
 			'alcoholCartSale', 'alcoholCartCreditCard','UserService'
 	,function ($log, $rootScope, $window, $document, $http, $state, $q, $mdToast, $filter, 
-			$timeout, $interval, appConfig, sweetAlert, 
+			$timeout, $interval, $cookies, appConfig, sweetAlert, 
 			alcoholCartItem, alcoholCartLoyaltyItem, 
 			alcoholCartPackage, promotionsService, alcoholCartPromotion, 
 			alcoholCartGiftCard, alcoholCartGift,
@@ -2196,7 +2196,8 @@ AlcoholDelivery.service('alcoholCart', [
 		this.empty = function () {
 
 			this.$cart.products = {};
-			$window.localStorage.removeItem('deliverykey');
+			//$window.localStorage.removeItem('deliverykey');
+			$cookies.remove('deliverykey');
 		};
 		
 		this.isEmpty = function () {
@@ -2722,7 +2723,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 		this.getCartKey = function(){
 
-			var deliverykey = localStorage.getItem("deliverykey");
+			//var deliverykey = localStorage.getItem("deliverykey");
+			var deliverykey = $cookies.get("deliverykey");
 			if(deliverykey===null || typeof deliverykey==="undefined"){
 				deliverykey = $rootScope.deliverykey;
 			}
@@ -2742,8 +2744,10 @@ AlcoholDelivery.service('alcoholCart', [
 		// }
 
 		this.setCartKey = function(cartKey){
-
-			localStorage.setItem("deliverykey",cartKey)
+			var now = new Date();
+    		now = new Date(now.getFullYear()+1, now.getMonth(), now.getDate());
+        	//localStorage.setItem("deliverykey",cartKey)
+			$cookies.put("deliverykey", cartKey, {expires:now});
 			$rootScope.deliverykey = cartKey;
 
 			return cartKey;
@@ -3290,8 +3294,8 @@ AlcoholDelivery.service('alcoholCart', [
 	}]);
 
 AlcoholDelivery.service('store', [
-			'$rootScope','$window','$http','alcoholCart','promotionsService','$q', 'cartValidation'
-	,function ($rootScope,$window,$http,alcoholCart,promotionsService,$q, cartValidation) {
+			'$rootScope','$window','$http','alcoholCart','promotionsService','$q', '$cookies','cartValidation'
+	,function ($rootScope,$window,$http,alcoholCart,promotionsService,$q,$cookies,cartValidation) {
 
 		return {
 
@@ -3337,7 +3341,8 @@ AlcoholDelivery.service('store', [
 			orderPlaced : function(){
 
 				delete $rootScope.deliverykey;
-				localStorage.removeItem("deliverykey");
+				//localStorage.removeItem("deliverykey");
+				$cookies.remove("deliverykey");
 				this.init();
 
 			},
@@ -3619,8 +3624,8 @@ AlcoholDelivery.service('cartValidation',[
 			if(typeof cart.timeslot == 'undefined' || 
 				typeof cart.timeslot.slotkey == 'undefined' || 
 				typeof cart.timeslot.datekey == 'undefined' || 
-						cart.timeslot.datekey==false/* || 
-						cart.timeslot.slotkey==false*/){
+						cart.timeslot.datekey==false || 
+						cart.timeslot.slotkey===false){
 				$state.go(states[2], {err: "Please select a Time slot!"}, {reload: true});
 				return false;
 			}
