@@ -17,14 +17,47 @@ Object.defineProperty(Object.prototype, 'renameProperty',{
 
 
 Date.prototype.amPmFormat = function() {
-	var hours = this.getHours();
-	var minutes = this.getMinutes();
+	var hours = this.getUTCHours();
+	var minutes = this.getUTCMinutes();
 	var ampm = hours >= 12 ? 'pm' : 'am';
 	hours = hours % 12;
 	hours = hours ? hours : 12; // the hour '0' should be '12'
 	minutes = minutes < 10 ? '0'+minutes : minutes;
 	var strTime = hours + ':' + minutes + ' ' + ampm;
 	return strTime;
+}
+
+Date.prototype.format = function(f){
+	var d = this,
+		month = (d.getMonth()+1),
+		day = d.getDate(),
+		year = d.getFullYear();
+	var hours = d.getHours(),
+		minutes = d.getMinutes(),
+		seconds = d.getSeconds();
+
+	if(!f) f = "yyyy-mm-ddTHH:ii:ss";
+	function preleadingZeros(n, z){
+		n = ''+n;
+		while(n.length<z) n = '0'+n;
+		return n;
+	}
+	return f.replace(/mm/g, preleadingZeros(month,2))
+		.replace(/m/g, month)
+		.replace(/dd/g, preleadingZeros(day,2))
+		.replace(/d/g, day)
+		.replace(/yyyy/g, preleadingZeros(year,4))
+		.replace(/y/g, year)
+		.replace(/hh/g, preleadingZeros(hours,2))
+		.replace(/h/g, hours)
+		.replace(/HH/g, preleadingZeros((hours>12)?(hours-12):hours,2))
+		.replace(/H/g, (hours>12)?(hours-12):hours)
+		.replace(/ii/g, preleadingZeros(minutes,2))
+		.replace(/i/g, minutes)
+		.replace(/ss/g, preleadingZeros(seconds,2))
+		.replace(/s/g, seconds)
+		.replace(/a/g, (hours>=12)?"pm":"am")
+		.replace(/A/g, (hours>=12)?"PM":"AM");
 }
 
 function GOM(obj)
@@ -39,7 +72,6 @@ function GOM(obj)
 }
 
 function mongoIdToStr(id){
-console.log(id);
 	if(typeof id.$id !== 'undefined'){ 
 		id = id.$id
 	}

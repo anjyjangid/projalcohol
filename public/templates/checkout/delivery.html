@@ -19,8 +19,10 @@
 		</div>
 
 		<div class="single-slot" ng-repeat="(skey,slot) in slotbunch.slots" ng-class="{inactive:slot.status==0 || slotbunch.status==0,selected:timeslot.slotkey===skey}" ng-click="setSlot(slotbunch.datekey,skey)">
+				<i class="fa fa-info" ng-if="slot.slotFloorKey<alcoholCart.highestShortLapsed"></i>
 				{{timerange[slot.from]}} - {{timerange[slot.to]}}
 		</div>	
+
 
 	</div>	
 </div>

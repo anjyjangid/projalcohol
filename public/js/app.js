@@ -1,3 +1,4 @@
+
 /*This is the main file where angular is defined*/
 var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	"AlcoholCartFactories",
@@ -1279,6 +1280,8 @@ AlcoholDelivery.run([
 
 	$rootScope.$state = $state; // state to be accessed from view
 	angular.alcoholCart = alcoholCart;
+	angular.cartValidate = cartValidate;
+
 	catPricing.GetCategoryPricing().then(
 
 		function(result) {
