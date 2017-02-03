@@ -1214,7 +1214,7 @@ function ($q, $rootScope, $log, $location, $window) {
 	            	config.url = 'api/'+urlStr;
 	        }else{
 	        	if(urlStr.indexOf('templates') > 0)
-	        		config.url += '?ver=1.3';
+	        		config.url += '?ver=1.4';
 	        }	        	
             return config;
         },
