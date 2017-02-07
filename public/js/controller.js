@@ -1077,6 +1077,23 @@ AlcoholDelivery.controller('CartController',[
 	,function($scope, $rootScope, $state, $stateParams, $location, $anchorScroll, $http, $q, $mdDialog, $mdMedia, $timeout, 
 			UserService, sweetAlert, alcoholCart, alcoholGifting, store, cartValidation, cartValidate, ProductService){
 	
+	
+	$scope.$watch(function () {
+
+		try {
+			return $state.$current.data.step
+		}
+		catch(err) {
+			return false;
+		}
+		
+
+	} ,
+			function(newValue, oldValue) {
+				if(newValue)
+				alcoholCart.setCurrentStep(newValue);
+		});
+	
 	// var isStepSet = alcoholCart.setCurrentStep($state.$current.data.step);
 	// if(isStepSet===false){
 	// 	$state.go("mainLayout.checkout.cart");
@@ -1146,6 +1163,7 @@ AlcoholDelivery.controller('CartController',[
 	$scope.checkout = function(ev) {
 
 		//isCartValid = alcoholCart.validate($scope.step);
+
 		cartValidate.check('cart').then(
 			function(valid){
 
@@ -1153,6 +1171,11 @@ AlcoholDelivery.controller('CartController',[
 				
 					if(!UserService.getIfUser())
 						return $rootScope.$broadcast('showLogin');
+
+					if(alcoholCart.getDeliveryBaseTime()!==null && alcoholCart.setProductsAvailability()!==0){
+						alcoholCart.availabilityPopUp();
+						return false;
+					}
 
 					var cartKey = alcoholCart.getCartKey();
 
@@ -1583,7 +1606,6 @@ AlcoholDelivery.controller('CartAddressController',[
 		);
 
 	}
-	
 
 }]);
 
@@ -1716,12 +1738,17 @@ AlcoholDelivery.controller('CartDeliveryController',[
 
 					if(skey==slotKey){
 						$scope.timeslot.slotslug = $scope.timerange[timeslots[key].slots[skey].from]+" - "+$scope.timerange[timeslots[key].slots[skey].to];
-						$scope.timeslot.slotTime = timeslots[key].slots[skey].from;												
+						$scope.timeslot.slotTime = timeslots[key].slots[skey].from;
+
 					}
 
 				}
 
 			}
+		}
+
+		if(alcoholCart.setProductsAvailability()!==0){
+			alcoholCart.availabilityPopUp();			
 		}
 
 	}
@@ -1763,6 +1790,11 @@ AlcoholDelivery.controller('CartDeliveryController',[
 			});
 
 		}else{
+
+			if(alcoholCart.setProductsAvailability()!==0){
+				alcoholCart.availabilityPopUp();
+				return false;			
+			}
 
 			alcoholCart.deployCart().then(
 				function(result){
@@ -1845,9 +1877,9 @@ AlcoholDelivery.controller('CartPaymentController',[
 }]);
 
 AlcoholDelivery.controller('CartReviewController',[
-			'$scope','$rootScope','$http','$q','$state', '$mdDialog', '$mdToast',
+			'$scope','$rootScope','$http','$q','$state', '$window', '$mdDialog', '$mdToast',
 			'$mdMedia', '$interval', 'alcoholCart','store','sweetAlert', '$sce', '$filter','$stateParams'
-	, function($scope, $rootScope, $http, $q, $state, $mdDialog, $mdToast,
+	, function($scope, $rootScope, $http, $q, $state, $window, $mdDialog, $mdToast,
 			$mdMedia, $interval, alcoholCart, store, sweetAlert, $sce, $filter,$stateParams){
 
 	$scope.card = {
@@ -1887,13 +1919,26 @@ AlcoholDelivery.controller('CartReviewController',[
 
 						}).error(function(response, status, headers) {
 
-								
 								sweetAlert.swal({
 									type:'error',
 									title: 'Oops...',
-									text:response.message,
-									timer: 2000
+									text:response.message									
 								});
+
+								$rootScope.processingOrder = false;
+
+								stepToRe = 'cart';
+								if(angular.isDefined(response.step)){
+									var stepToRe = response.step
+								}								
+
+								if(angular.isDefined(response.refresh)){
+									$state.go("mainLayout.checkout."+stepToRe,{},{reload: true});
+									//$window.location.reload();
+								}else{
+									$state.go("mainLayout.checkout."+stepToRe);
+								}
+
 
 						})
 						.success(function(response) {

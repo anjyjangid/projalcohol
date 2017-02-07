@@ -397,7 +397,7 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 		)
 
 		return defer.promise;
-	}
+	}	
 
 }]);
 
@@ -493,6 +493,10 @@ AlcoholDelivery.service('ProductService',['$http','$q','AlcoholProduct','CreditC
 		});
 
 		return products;
+	}
+
+	this.isProductAvailable = function () {
+		
 	}
 
 	this.getProducts = function(params){
@@ -726,7 +730,9 @@ AlcoholDelivery.service('cartValidate',['alcoholCart', '$state', '$q', '$mdToast
 
 			$http.get("cart/products-lapsed-time/"+alcoholCart.getCartKey()).then(
 				function(res){
-					var products = res.data
+
+					alcoholCart.setProductsAvailability(res.data);
+
 				},
 				function(err){
 					console.log(err);

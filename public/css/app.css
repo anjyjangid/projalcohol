@@ -1480,3 +1480,20 @@ span.help-block a {
 	text-decoration: underline;
 	color: #454545;
 }
+
+.pro-notavail-footer {
+    width: 100%;
+    background: #ccc;
+    font-size: 1.3em;
+    
+}
+.single-slot.inactive .fa-info{display: none;}
+.single-slot .fa-info{
+	color: red;
+    width: 14px;
+    border-radius: 13px;
+    background: #fff;
+    padding-top: 3px;
+    height: 14px;
+    font-size: 8px;
+}

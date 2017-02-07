@@ -1,3 +1,4 @@
+
 /*This is the main file where angular is defined*/
 var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	"AlcoholCartFactories",
@@ -1213,7 +1214,7 @@ function ($q, $rootScope, $log, $location, $window) {
 	            	config.url = 'api/'+urlStr;
 	        }else{
 	        	if(urlStr.indexOf('templates') > 0)
-	        		config.url += '?ver=1.3';
+	        		config.url += '?ver=1.4';
 	        }	        	
             return config;
         },
@@ -1279,6 +1280,8 @@ AlcoholDelivery.run([
 
 	$rootScope.$state = $state; // state to be accessed from view
 	angular.alcoholCart = alcoholCart;
+	angular.cartValidate = cartValidate;
+
 	catPricing.GetCategoryPricing().then(
 
 		function(result) {

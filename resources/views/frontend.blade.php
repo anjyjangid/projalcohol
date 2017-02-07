@@ -79,8 +79,7 @@
 		<!-- Google analytics -->
 	</head>
 
-	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}" >		    	    	     	
-    	
+	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}" ng-cloak>		    	    	
     	<div ng-spinner-bar class="page-spinner-bar">
 			<div class="bounce1"></div>
 			<div class="bounce2"></div>
@@ -193,9 +192,11 @@
 	<script async type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAO1xAu1wBu7NZOqNBn9aoYg-RVstm60jc&libraries=places"></script>
 
 	
+
 	<script type="text/javascript" src="js/build/all.js"></script>
 	
 	<!-- <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>   
+
     
 	<script type="text/javascript" src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bower_components/angular/angular.min.js') }}"></script>

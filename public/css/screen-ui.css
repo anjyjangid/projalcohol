@@ -2212,7 +2212,7 @@ ui-sref {
 	box-shadow: none;
 }
 .checkoutmiddleouter {
-	padding: 0px 25px;
+	padding: 0px 14px;
 	width: 100%;
 	float: left;
 	transition: all 0.5s ease 0s;
@@ -5113,14 +5113,15 @@ md-backdrop.md-dialog-backdrop {
 }
 .single-slot {
 	border: 1px solid #ccc;
-	padding: 4px;
-	text-align: left;
-	margin: 8px 3%;
-	background: rgba(204, 204, 204, 0.55);
-	font-size: 0.9em;
-	border-radius: 5px;
-	cursor: pointer;
-	color: #333;
+    padding: 4px 2px;
+    margin: 8px 3%;
+    background: rgba(204, 204, 204, 0.55);
+    font-size: 0.8em;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #333;
+    text-align: center;
+    white-space: nowrap;
 }
 .single-slot.inactive {
 	background: transparent;
