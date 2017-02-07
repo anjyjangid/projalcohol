@@ -1,5 +1,5 @@
-AlcoholDelivery.controller('AppController',
-	['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 'alcoholCart','$cookies','$location',
+AlcoholDelivery.controller('AppController', [
+	'$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 'alcoholCart','$cookies','$location',
 	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter, ProductService, alcoholCart,$cookies,$location) {
 
 	$scope.ageVerification = function() {
@@ -1067,9 +1067,6 @@ AlcoholDelivery.controller('CreditsController',['$scope','$http','sweetAlert','$
 	);
 
 }]);
-
-
-
 
 AlcoholDelivery.controller('CartController',[
 			'$scope','$rootScope','$state','$stateParams', '$location','$anchorScroll','$http','$q', '$mdDialog', '$mdMedia','$timeout',
@@ -2610,7 +2607,6 @@ AlcoholDelivery.controller('CmsController',[
 
 }]);
 
-
 AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll','alcoholCart', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll,alcoholCart){
 
 	$rootScope.appSettings.layout.pageRightbarExist = false;
@@ -2695,8 +2691,7 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 
 }]);
 
-AlcoholDelivery.controller('PackageDetailController',
-	['$q','$scope', '$rootScope','$state','$http','$stateParams','$location','$timeout','$anchorScroll','alcoholCart','sweetAlert', '$sce',
+AlcoholDelivery.controller('PackageDetailController', ['$q','$scope', '$rootScope','$state','$http','$stateParams','$location','$timeout','$anchorScroll','alcoholCart','sweetAlert', '$sce',
 	function($q, $scope, $rootScope,$state,$http,$stateParams,$location,$timeout,$anchorScroll,alcoholCart,sweetAlert,$sce){
 
 	$scope.errors = [];
@@ -3407,7 +3402,6 @@ AlcoholDelivery.controller('GiftCardController', [
 
 
 }]);
-
 
 AlcoholDelivery.controller('ClaimGiftCardController', ['$scope', '$http', '$state', '$stateParams', 'ClaimGiftCard',function($scope, $http, $state, $stateParams, ClaimGiftCard){
 

@@ -262,4 +262,14 @@ class StocksController extends Controller
 
         return response($response,200);
     }
+
+    public function getList(Request $request){
+
+        $params = $request->all();
+
+        $response = Stocks::neworderList($params);
+
+        return response($response,200);        
+
+    }
 }

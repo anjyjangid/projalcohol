@@ -3534,8 +3534,8 @@ AlcoholDelivery.service('store', [
 		}
 	}]);
 
-AlcoholDelivery.service("promotionsService",[
-			"$http","$log","$q","$rootScope"
+AlcoholDelivery.service('promotionsService',[
+			'$http','$log','$q','$rootScope'
 	,function($http,$log,$q,$rootScope){
 
 	this.init = function(){
