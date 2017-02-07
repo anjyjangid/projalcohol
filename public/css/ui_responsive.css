@@ -1414,7 +1414,7 @@ body.menu-slider.in {
 	display: none;
 	width: 100%;
 	float: left;
-	text-align: center;
+	text-align: right;
 	margin-bottom: 20px;
 }
 .prod-in-slider{
@@ -1423,6 +1423,9 @@ body.menu-slider.in {
 .dont-miss-res-show .alcohalosavebntcvr{
 	float: none;
 
+}
+.res-show{
+	display: none;
 }
 @media (min-width : 1024px) and (max-width : 1200px) {
   .christmas-mainouter.col-md-8 {
@@ -2841,6 +2844,9 @@ md-toast.notify div.md-toast-content{
 	display: inherit !important;
 	margin-top: 5px;
 }
+.navbar-fixed-top .logos-inner-cover.hide{
+	display: none !important;
+}
 .comboproductitems, .comboproductitems{
 	border-right: none !important;
 }
@@ -3850,7 +3856,18 @@ md-toast.notify div.md-toast-content{
 }
 .productinner_rightslide{
 	height:120px;
-	position:relative
+	position:relative;
+	padding-left: 15px;
+	padding-right: 15px;
+	margin-top: 20px;
+	width:100%;
+}
+.featured_product{
+	position: absolute;
+	top: 0px;
+}
+.checkoutcongratulationouter{
+	border-bottom: none;
 }
 .productinner_rightslide img{
 	position:absolute;
@@ -4410,7 +4427,7 @@ md-dialog .md-dialog-content{
 	padding-bottom: 0px;
 }
 .productslide_normaltext.ng-binding {
-	  max-height: 40px;
+	  max-height: 38px;
 	  
   }
   .closemenu{
@@ -4471,6 +4488,9 @@ md-toast.notify div.md-toast-content{
 }
 .productcomboul{
 	border-bottom: none !important;
+}
+.res-show{
+	display: block;
 }
 }
 
@@ -5118,7 +5138,7 @@ md-tooltip{
 	  right: 0;
   }
   .productslide_normaltext.ng-binding {
-	  max-height: 40px;
+	  max-height: 38px;
 	  
   }
   .comboproductitems {
