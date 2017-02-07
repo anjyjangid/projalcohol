@@ -59,5 +59,8 @@ MetronicApp.factory('productModel', ['$http', '$cookies','$location', function($
 			return $http.get("/adminapi/product/detail/"+productid);
 		},
 
+		getGroups: function(){
+			return $http.get("/adminapi/productgroup/listgroup");
+		}
 	};
 }]);

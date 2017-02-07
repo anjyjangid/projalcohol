@@ -80,6 +80,17 @@
 									<span class="help-block" ng-bind="errors.categories[0]"></span>
 								</div>
 							</div>
+							<div class="form-group" ng:class="{'has-error':errors.groupId[0]}">
+								<label class="col-md-2 control-label">Group:
+								</label>
+								<div class="col-md-10" >									
+									<select class="form-control" ng-model="product.groupId" ng-options="grpobj._id as grpobj.name | ucwords for grpobj in grouplist">
+										<option value="">Select Group</option>
+									</select>									
+									<span class="help-block" ng-bind="errors.groupId[0]"></span>
+								</div>
+							</div>
+
 							<div class="form-group">
 								<label class="control-label col-md-2">Chilled/Non-chilled <span class="required" aria-required="true">
 								* </span></label>

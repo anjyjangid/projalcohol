@@ -29,7 +29,8 @@ MetronicApp.controller('ProductController',['$rootScope', '$scope', '$timeout','
 			loyaltyType : 0,
 			suggestions : [],
 			dealerData:[{}],
-			store:{}
+			store:{},
+			group:null
 		};
 		
 
@@ -78,6 +79,10 @@ MetronicApp.controller('ProductController',['$rootScope', '$scope', '$timeout','
 
 	productModel.getDealers().success(function(data){				
 		$scope.dealerlist = data;	
+	});
+
+	productModel.getGroups().success(function(data){				
+		$scope.grouplist = data;	
 	});
 
 	$scope.errors = {};

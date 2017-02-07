@@ -1,0 +1,98 @@
+<div class="row" ng-controller="ProductGroupFormController">
+	<div class="col-md-12">
+		<form role="form" name="productgroupForm" ng-submit="store()" required="false">
+		<div class="portlet light">			
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="icon-grid"></i>{{productgroup._id?'Edit ':'Add New '}}Product Group
+				</div>
+				<div class="actions btn-set">
+					<a class="btn default" ui-sref="userLayout.productgroups.list"><i class="fa fa-angle-left"></i> Back</a>
+					<button ng-disabled="loading" class="btn green" type="submit"><i class="fa fa-check"></i> {{productgroup._id?'Update':'Save'}}</button>					
+				</div>
+			</div>
+			<div class="portlet-body">				
+				<div class="form-horizontal">
+					<div class="form-group" ng:class="{'has-error':errors.name[0]}">
+						<label class="col-md-3 control-label">Group Name: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-4">
+							<input type="text" class="form-control" ng-model="productgroup.name" placeholder="Group Name">
+							<span class="help-block" ng-bind="errors.name[0]"></span>
+						</div>
+					</div>
+					
+					<div class="form-group" ng:class="{'has-error':(errors.tradeQuantity[0] || errors.tradeValue[0])}">
+						<label class="col-md-3 control-label">Trade Deal: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-4" >
+							<div class="input-group">												
+								<input type="number" step="1" min="1" class="form-control" ng-model="productgroup.tradeQuantity" placeholder="Purchase Qty">			
+								<span class="input-group-addon">
+									<i class="fa fa-plus"></i>
+								</span>												
+								<input type="number" step="1" min="1" class="form-control" ng-model="productgroup.tradeValue" placeholder="Free Qty">
+							</div>																		
+							<span class="help-block" ng-bind="errors.tradeQuantity[0]"></span>
+							<span class="help-block" ng-bind="errors.tradeValue[0]"></span>
+						</div>
+					</div>
+
+					<div class="form-group" ng:class="{'has-error':errors.cartonQuantity[0]}">
+
+						<label class="col-md-3 control-label">Carton Quantity:<span class="required">*</span>
+						</label>
+						<div class="col-md-4">
+							<input type="number" min="0" class="form-control" ng-model="productgroup.cartonQuantity" placeholder="Carton Quantity">
+							<span class="help-block" ng-bind="errors.cartonQuantity[0]"></span>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3">Purchased in carton<span class="required" aria-required="true">
+						* </span></label>
+						<div class="col-md-4">
+						
+						<div class="radio-list">
+							<label class="radio-inline">
+							<input plugin-uniform ng-model="productgroup.cartonPurchased" type="radio" value="1" name="chilled"> Yes </label>
+							<label class="radio-inline">
+							<input plugin-uniform ng-model="productgroup.cartonPurchased" type="radio" value="0" name="chilled"> No </label>
+						</div>
+
+						</div>
+					</div>
+					
+					<div class="form-group" ng-show="productgroup.cartonPurchased == 0" ng:class="{'has-error':errors.minOrder[0]}">
+
+						<label class="col-md-3 control-label">Minimum Order Quantity:<span class="required">*</span>
+						</label>
+						<div class="col-md-4">
+							<input type="number" min="0" class="form-control" ng-model="productgroup.minOrder" placeholder="Minimum Order">
+							<span class="help-block" ng-bind="errors.minOrder[0]"></span>
+						</div>
+					</div>
+
+					<!-- <div class="form-group" ng:class="{'has-error':errors.status[0]}">
+						<label class="col-md-3 control-label">Status: <span class="required">
+						* </span>
+						</label>
+						<div class="col-md-4">
+							<select class="table-group-action-input form-control input-medium" ng-model="product.status">
+								<option value="">Select...</option>
+								<option value="1">Published</option>
+								<option value="0">Not Published</option>
+							</select>
+							<span class="help-block" ng-bind="errors.status[0]"></span>
+						</div>
+					</div> -->
+				</div>									
+			</div>			
+		</div>
+		</form>
+	</div>
+	<!-- <pre>{{cd|json}}</pre> -->
+	<!-- <pre>{{product|json}}</pre> -->
+</div>

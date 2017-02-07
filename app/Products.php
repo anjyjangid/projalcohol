@@ -66,7 +66,8 @@ class Products extends Eloquent
 		'suggestionId',
 		'suggestionObjectId',
 		'suggestedId',
-		'suggestedObjectId'
+		'suggestedObjectId',
+		'groupId'
 	];
 
 
