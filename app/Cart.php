@@ -218,7 +218,7 @@ class Cart extends Moloquent
 	}
 
 	public static function findUpdated($id,$admin = false){
-
+		
 		if(!$admin){
 
 			$user = Auth::user('user');
@@ -349,7 +349,8 @@ class Cart extends Moloquent
 				return $response;
 			}
 
-
+			$response['valid']= true;
+		
 			$isAnyProductSort = false;
 			$deliveryBaseTime = $this->getCartDeliveryBaseTime();
 			
@@ -370,6 +371,7 @@ class Cart extends Moloquent
 				$response['message'] = "Some products are not available as per your selected delivery time";
 				$response['step'] = $this->isAdvanceDelivery()?'delivery':'cart';
 			}
+
 
 			return $response;
 
@@ -419,7 +421,11 @@ class Cart extends Moloquent
 
 			$serverTime = getServerTime();
 			$halfHourTimeStr = 1800;
-			$baseTime = $serverTime + ($halfHourTimeStr * 3);
+
+			if(!$this->isExpressDelivery())
+				$baseTime = $serverTime + ($halfHourTimeStr * 3);
+			else
+				$baseTime = $serverTime + ($halfHourTimeStr * 1.5);
 
 		}
 		
@@ -427,8 +433,24 @@ class Cart extends Moloquent
 
 	}
 
+	public function getNextAvailableSlots () {
+
+		$deliveryTime = $this->getCartDeliveryBaseTime();
+		$timeslot = Setting::where("_id","=","timeslot")->first();
+		$dayIndex = getTodayDayNumber();
+prd($dayIndex);
+
+		$timeslot = $timeslot->settings[0];
+		prd($timeslot);
+
+	}
+
 	public function isAdvanceDelivery () {
 		return $this->delivery['type'] === 1 ? true : false;
+	}
+
+	public function isExpressDelivery () {
+		return $this->delivery['type'] === 1 ? false : $this->service['express']['status']==1?true:false;
 	}
 
 	public function getTimeSlotDeliveryTime () {
@@ -2331,7 +2353,7 @@ class Cart extends Moloquent
 			$order['generatedBy'] = $this->generatedBy;
 		}
 
-		$created_at = strtotime('now');		
+		$created_at = getServerTime();
 		$order['created_at'] = new MongoDate($created_at);
 
 		$order['nonchilled'] = $this->nonchilled;
@@ -2346,11 +2368,14 @@ class Cart extends Moloquent
 
 		$order['doStatus'] = 1;
 		if($order['delivery']['type']==1){
+
 			$order['doStatus'] = 0;
 			$order['delivery']['deliveryDate'] = date('Y-m-d',$order['timeslot']['datekey']);
-			$order['delivery']['deliveryDateTime'] = date('Y-m-d H:i:s',$order['timeslot']['datekey']);
+			$deliveryKey = $order['timeslot']['datekey'] + ($this->timeslot['slotTime'] * 60);
+			$order['delivery']['deliveryDateTime'] = date('Y-m-d H:i:s',$deliveryKey);
 			$order['delivery']['deliveryTimeRange'] = $order['timeslot']['slotslug'];
 			$order['delivery']['deliveryDateObj'] = new MongoDate($order['timeslot']['datekey']);
+
 		}else{
 
 			$orderDateTime = strtotime('+60 minutes',$created_at);
@@ -2363,6 +2388,8 @@ class Cart extends Moloquent
 			$order['delivery']['deliveryTimeRange'] = '';
 			$order['delivery']['deliveryDateObj'] = new MongoDate($orderDateTime);
 		}
+
+		$order['delivery']['deliveryKey'] = strtotime($order['delivery']['deliveryDateTime']);
 
 		$lpEarned = $this->setLoyaltyPointEarned();
 		$order['loyaltyPointEarned'] = $lpEarned;

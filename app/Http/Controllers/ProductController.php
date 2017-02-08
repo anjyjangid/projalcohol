@@ -22,8 +22,6 @@ class ProductController extends Controller
 
 	public function getproduct(Request $request){
 
-		
-
 		$params = $request->all();
 		
 		$products = new Products;

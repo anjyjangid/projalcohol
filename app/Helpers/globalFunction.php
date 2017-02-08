@@ -120,4 +120,8 @@
 
 	}
 
+	function getTodayDayNumber() {
+		return date('N', getServerTime());
+	}
+
 ?>
