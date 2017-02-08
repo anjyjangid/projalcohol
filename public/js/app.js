@@ -670,9 +670,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							},
 						},
 						resolve: {
-							allLoaded: function(cartValidate,appLoad){
+							allLoaded: [
+							'cartValidate','appLoad',
+							function(cartValidate,appLoad){
 								return cartValidate.init();
-							}
+							}]
 						}
 
 				})
@@ -691,11 +693,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						},
 						data: {step: 'cart', stepCount:1},
 						resolve: {
-							showToastIfErr: function($stateParams,cartValidation,cartValidate,allLoaded){
-								return cartValidate.check('cart');
-								//return cartValidation.init();
-								//cartValidation.showToast($stateParams.err);
-							}
+							showToastIfErr: [
+							'$stateParams','cartValidation','cartValidate','allLoaded',
+							function($stateParams,cartValidation,cartValidate,allLoaded){
+								return cartValidate.check('cart');								
+							}]
 						}
 				})
 
@@ -706,10 +708,12 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						controller:'CartAddressController',
 						data: {step: 'address', stepCount:2},
 						resolve: {
-							showToastIfErr: function($stateParams,cartValidation,cartValidate,allLoaded){
+							showToastIfErr: [
+							'$stateParams','cartValidation','cartValidate','allLoaded',
+							function($stateParams,cartValidation,cartValidate,allLoaded){
 								cartValidate.check('address');
 								cartValidation.showToast($stateParams.err);
-							}
+							}]
 						}
 				})
 
@@ -720,9 +724,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						controller:"CartDeliveryController",
 						data: {step: 'delivery', stepCount:3},
 						resolve: {
-							showToastIfErr: function($stateParams,cartValidation,allLoaded){
+							showToastIfErr: [
+							'$stateParams','cartValidation','allLoaded',
+							function($stateParams,cartValidation,allLoaded){
 								cartValidation.showToast($stateParams.err);
-							}
+							}]
 						}
 				})
 
@@ -733,11 +739,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						controller:"CartPaymentController",
 						data: {step: 'payment', stepCount:4},
 						resolve: {
-							showToastIfErr: function($stateParams,cartValidation,allLoaded){
-
+							showToastIfErr: [
+							'$stateParams','cartValidation','allLoaded',
+							function($stateParams,cartValidation,allLoaded){
 								cartValidation.showToast($stateParams.err);
-
-							}
+							}]
 						}
 				})
 
@@ -748,9 +754,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						controller:"CartReviewController",
 						data: {step: 'review', stepCount:5},
 						resolve: {
-							showToastIfErr: function($stateParams,cartValidation,allLoaded){
+							showToastIfErr: [
+							'$stateParams','cartValidation','allLoaded',
+							function($stateParams,cartValidation,allLoaded){
 								cartValidation.showToast($stateParams.err);
-							}
+							}]
 						}
 				})
 
@@ -882,9 +890,11 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 					templateUrl: "/templates/orderconfirmation.html",
 					controller:"OrderplacedController",
 					resolve: {
-						loggedIn: function(UserService) {
+						loggedIn: [
+						'UserService',
+						function(UserService) {
 							return UserService.getIfUser(true, true);
-						}
+						}]
 					}
 
 				})
@@ -902,20 +912,18 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 					},
 					resolve: {
-						storeInit : function (store,alcoholWishlist){
-							store.init().then(
-								function(){
+						storeInit : [
+						'store','alcoholWishlist',
+						function (store,alcoholWishlist){
+							store.init().then(function(){
 									return alcoholWishlist.init()
-								}
-							);
-
-						},
-						// wishlistInit : function(alcoholWishlist){
-						// 	return alcoholWishlist.init();
-						// },
-						loggedIn: function(UserService) {
+							});
+						}],						
+						loggedIn: [
+						'UserService',
+						function(UserService) {
 							return UserService.getIfUser(true, true);
-						}
+						}]
 					}
 				})
 				.state('accountLayout.profile', {
