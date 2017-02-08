@@ -579,9 +579,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 		$stateProvider
 				.state('mainLayout', {
 						templateUrl: "/templates/index.html",
-						controller:function(){
-
-						},
+						/*controller:function(){},*/
 						resolve: {
 
 							appLoad : appLoad
@@ -602,40 +600,40 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 							"" : {
 								templateUrl : "/templates/index/home.html",
-								controller:function($scope,$http,$rootScope){
-										$scope.AppController.category = "";
-										$scope.AppController.subCategory = "";
-										$scope.AppController.showpackage = false;										
-										$scope.showSignup = function(){
-											$rootScope.$broadcast('showSignup');
-										};
-								},
+								controller:['$scope','$http','$rootScope',function($scope,$http,$rootScope){
+													$scope.AppController.category = "";
+													$scope.AppController.subCategory = "";
+													$scope.AppController.showpackage = false;										
+													$scope.showSignup = function(){
+														$rootScope.$broadcast('showSignup');
+													};
+											}],
 
 							},
 							"testimonials" : {
-								templateUrl : "/templates/partials/testimonials.html",
-								controller : function($scope,$http){
-
-									$http.get("/super/testimonial/").success(function(response){
-										$scope.testimonials = response;
-									});
-
-								}
+								templateUrl: "/templates/partials/testimonials.html",
+								controller: ['$scope','$http',function($scope,$http){
+								
+																	$http.get("/super/testimonial/").success(function(response){
+																		$scope.testimonials = response;
+																	});
+								
+																}]
 							},
 							"brands" : {
 								templateUrl : "/templates/partials/brands.html",
-								controller : function($scope,$http){
-
-									$http.get("/super/brand/").success(function(response){
-										$scope.brands = response;
-									});
-
-								}
+								controller: ['$scope','$http',function($scope,$http){
+								
+																	$http.get("/super/brand/").success(function(response){
+																		$scope.brands = response;
+																	});
+								
+																}]
 							},
 							"rightPanel" : {
 
 								templateUrl : "/templates/partials/rightBarRecentOrder.html",
-								controller : "RepeatOrderController",
+								controller: "RepeatOrderController",
 
 							},
 
@@ -688,7 +686,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							},
 							"promotions@mainLayout.checkout.cart":{
 								templateUrl: "/templates/partials/promotions.html",
-								controller:"PromotionsController"
+								controller:'PromotionsController'
 							},
 						},
 						data: {step: 'cart', stepCount:1},
@@ -705,7 +703,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						url: "/cart/address",
 						params: {err:false},
 						templateUrl : "/templates/checkout/address.html",
-						controller:"CartAddressController",
+						controller:'CartAddressController',
 						data: {step: 'address', stepCount:2},
 						resolve: {
 							showToastIfErr: function($stateParams,cartValidation,cartValidate,allLoaded){
@@ -760,104 +758,108 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 						url: "/mailverified/{status}",
 						//templateUrl: "/templates/index/home.html",
-						controller:function(sweetAlert,$location,$stateParams){
-
-							var title = '';
-							var type = 'success';
-							var msg = 'Your email is already verified.';
-							if($stateParams.status == 1){
-								title = 'Congratulations!';
-								//type = 'success';
-								msg = 'Your email has been verified successfully, you can login with your registered email & password.';	
-							}							
-
-							sweetAlert.swal({
-								type:type,
-								title: title,
-								text : msg,
-								timer: 0,
-								closeOnConfirm: true
-							});
-
-							$location.url('/').replace();
-
-						}
+						controller:['sweetAlert','$location','$stateParams',function(sweetAlert,$location,$stateParams){
+						
+													var title = '';
+													var type = 'success';
+													var msg = 'Your email is already verified.';
+													if($stateParams.status == 1){
+														title = 'Congratulations!';
+														//type = 'success';
+														msg = 'Your email has been verified successfully, you can login with your registered email & password.';	
+													}							
+						
+													sweetAlert.swal({
+														type:type,
+														title: title,
+														text : msg,
+														timer: 0,
+														closeOnConfirm: true
+													});
+						
+													$location.url('/').replace();
+						
+												}]
 				})
 
 				.state('mainLayout.expiredlink', {
 
 						url: "/resetexpired",
 						//templateUrl: "/templates/index/home.html",
-						controller:function(sweetAlert,$location,$stateParams){
-
-							var title = '';
-							var type = 'error';
-							var msg = 'Invalid or expired reset password link.';
-							
-							sweetAlert.swal({
-								type:type,
-								title: title,
-								text : msg,
-								timer: 0,
-								closeOnConfirm: true
-							});
-
-							$location.url('/').replace();
-
-						}
+						controller:['sweetAlert','$location','$stateParams',function(sweetAlert,$location,$stateParams){
+						
+										var title = '';
+										var type = 'error';
+										var msg = 'Invalid or expired reset password link.';
+										
+										sweetAlert.swal({
+											type:type,
+											title: title,
+											text : msg,
+											timer: 0,
+											closeOnConfirm: true
+										});
+			
+										$location.url('/').replace();
+			
+									}]
 				})
 
 				.state('cmsLayout.reset', {
 						url: "/resetpassword/{token}",
 						templateUrl: "/templates/partials/resetpassword.html",
-						controller:function($rootScope,$stateParams,$scope,$http,$timeout,$mdDialog,sweetAlert,$location){
-
-							$rootScope.token = $stateParams.token;
-
-							$scope.resetSubmit = function() {
-								$scope.reset.errors = {};
-								$scope.reset.token = $rootScope.token;
-								$http.post('/password/reset',$scope.reset).success(function(response){
-					                $scope.reset = {};
-					                $scope.reset.errors = {};
-					                $timeout(function(){
-										$location.url('/').replace();
-									});
-					                sweetAlert.swal({
-										type:'success',
-										title: "Congratulation!",
-										text : response.message,
-										timer: 4000,
-										closeOnConfirm: false
-									});														                
-					            }).error(function(data, status, headers) {
-					            	if(typeof data.token !== "undefined" && data.token===false){
-					            		$timeout(function(){
-											$location.url('/').replace();
-										});
-					            		sweetAlert.swal({
-											type:'warning',
-											title: "Expired or used reset link!",
-											timer: 0,
-											showConfirmButton:true,
-											closeOnConfirm: true
-										});
-
-					            	}
-					                $scope.reset.errors = data;
-					            });
-							};							
-
-						}
+						controller:[
+							'$rootScope','$stateParams','$scope','$http','$timeout','$mdDialog','sweetAlert','$location',
+							function($rootScope,$stateParams,$scope,$http,$timeout,$mdDialog,sweetAlert,$location){
+						
+													$rootScope.token = $stateParams.token;
+						
+													$scope.resetSubmit = function() {
+														$scope.reset.errors = {};
+														$scope.reset.token = $rootScope.token;
+														$http.post('/password/reset',$scope.reset).success(function(response){
+											                $scope.reset = {};
+											                $scope.reset.errors = {};
+											                $timeout(function(){
+																$location.url('/').replace();
+															});
+											                sweetAlert.swal({
+																type:'success',
+																title: "Congratulation!",
+																text : response.message,
+																timer: 4000,
+																closeOnConfirm: false
+															});														                
+											            }).error(function(data, status, headers) {
+											            	if(typeof data.token !== "undefined" && data.token===false){
+											            		$timeout(function(){
+																	$location.url('/').replace();
+																});
+											            		sweetAlert.swal({
+																	type:'warning',
+																	title: "Expired or used reset link!",
+																	timer: 0,
+																	showConfirmButton:true,
+																	closeOnConfirm: true
+																});
+						
+											            	}
+											                $scope.reset.errors = data;
+											            });
+													};							
+						
+												}]
 				})
 
 				.state('mainLayout.invite', {
 						url: "/acceptinvitation/{reffererid}",
 						templateUrl: "/templates/index/home.html",
-						controller:function($rootScope,$stateParams,$state){
-							$rootScope.refferal = $stateParams.reffererid;
-							$state.go('mainLayout.index');
-						}
+						controller:[
+							'$rootScope','$stateParams','$state',
+							function($rootScope,$stateParams,$state){
+													$rootScope.refferal = $stateParams.reffererid;
+													$state.go('mainLayout.index');
+												}]
 				})
 				// CMS Page YKB //
 
@@ -1052,18 +1054,20 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 							'' : {
 								templateUrl : '/templates/product/index.html',
-								controller:function($scope,$stateParams,$filter,$state,$anchorScroll){
-									
-									$scope.filterList = function(rstate,obj){
-										$state.go(rstate,obj,
-							            {reload: false, location: 'replace'});
-										
-										$scope.currentSort = $filter('filter')($scope.sortOptions,{value:obj.sort})[0];
-									}
-
-									$scope.currentSort = $filter('filter')($scope.sortOptions,{value:$stateParams.sort})[0];
-									
-								},
+								controller:[
+									'$scope','$stateParams','$filter','$state','$anchorScroll',
+									function($scope,$stateParams,$filter,$state,$anchorScroll){
+																	
+																	$scope.filterList = function(rstate,obj){
+																		$state.go(rstate,obj,
+															            {reload: false, location: 'replace'});
+																		
+																		$scope.currentSort = $filter('filter')($scope.sortOptions,{value:obj.sort})[0];
+																	}
+								
+																	$scope.currentSort = $filter('filter')($scope.sortOptions,{value:$stateParams.sort})[0];
+																	
+																}],
 								//reloadOnSearch : false,								
 							},
 							'rightPanel' : {
@@ -1122,9 +1126,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 				.state('invitation',{
 					url:'/acceptinvitation/{rid}',
-					controller:function($state){
-						$state.go('/');
-					}
+					controller:['$state',function($state){$state.go('/');}]
 				});
 
 				/*$locationProvider.html5Mode(true);
@@ -1294,9 +1296,9 @@ AlcoholDelivery.run([
 
 			$mdToast.show({
 
-				controller:function($scope){
-					$scope.message = "Cart under process";
-				},
+				controller:['$scope',function($scope){
+									$scope.message = "Cart under process";
+								}],
 				templateUrl: '/templates/toast-tpl/wishlist-notify.html',
 				parent : $document[0].querySelector('#cart-summary-icon'),
 				position: 'top center',
@@ -1378,10 +1380,10 @@ AlcoholDelivery.run([
 	$rootScope.$on('alcoholCart:notify', function(data,msg,hideDelay){
 		
 		$mdToast.show({
-			controller:function($scope){
-
-				$scope.message = msg;
-			},
+			controller:['$scope',function($scope){
+			
+							$scope.message = msg;
+						}],
 			templateUrl: '/templates/toast-tpl/wishlist-notify.html',
 			parent : $document[0].querySelector('#cart-summary-icon'),
 			position: 'top center',
@@ -1407,21 +1409,21 @@ AlcoholDelivery.run([
 	$rootScope.$on('alcoholCart:updated', function(object,params){
 
 		$mdToast.show({
-						controller:function($scope){
-
-							$scope.quantity = params.quantity;
-							$scope.message = params.msg;
-
-							$scope.freeRequired = alcoholCart.getRemainToFreeDelivery();
-							$scope.requiredPer = alcoholCart.getRemainToFreeDelivery('percentage')+'%';
-
-							if($scope.freeRequired>0){
-								$scope.isFreeDelivery = false;
-							}else{
-								$scope.isFreeDelivery = true;
-							}
-							
-						},
+						controller:['$scope',function($scope){
+						
+													$scope.quantity = params.quantity;
+													$scope.message = params.msg;
+						
+													$scope.freeRequired = alcoholCart.getRemainToFreeDelivery();
+													$scope.requiredPer = alcoholCart.getRemainToFreeDelivery('percentage')+'%';
+						
+													if($scope.freeRequired>0){
+														$scope.isFreeDelivery = false;
+													}else{
+														$scope.isFreeDelivery = true;
+													}
+													
+												}],
 						templateUrl: '/templates/toast-tpl/cart-update.html',
 						parent : $document[0].querySelector('#cart-summary-icon'),
 						position: 'top center',
@@ -1454,15 +1456,15 @@ AlcoholDelivery.run([
 			targId = params.targId;		
 
 		$mdToast.show({
-			controller:function($scope){
-
-				$scope.message = params.message;
-				$scope.hideDelay = params.hideDelay;
-
-				$scope.hidePopup = function(){
-					$mdToast.hide();	
-				}
-			},
+			controller:['$scope',function($scope){
+			
+							$scope.message = params.message;
+							$scope.hideDelay = params.hideDelay;
+			
+							$scope.hidePopup = function(){
+								$mdToast.hide();	
+							}
+						}],
 			templateUrl: '/templates/toast-tpl/wishlist-notify.html',
 			parent : $document[0].querySelector('#'+targId),
 			position: 'top center',

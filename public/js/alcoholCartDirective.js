@@ -125,3 +125,4 @@ angular.module('alcoholCart.directives',[])
             }
 		};
 	}]);
+	

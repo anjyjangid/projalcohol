@@ -697,9 +697,7 @@ AlcoholDelivery.service('alcoholCart', [
 		if(!this.isEligibleForPromotion(promoId)){
 
 			$mdToast.show({
-				controller:function($scope){
-
-				},
+				/*controller:function($scope){},*/
 				templateUrl: '/templates/toast-tpl/notify-promo-nq.html',
 				parent : $event.currentTarget.parentElement,
 				position: 'top center',
@@ -3396,50 +3394,50 @@ AlcoholDelivery.service('alcoholCart', [
 
 		$mdDialog.show({
 
-				controller: function($scope, $rootScope, $document) {
-
-					$scope.products = [];
-					angular.forEach(_self.productsStats, function (product) {
-						
-						if(product.short==0){
-							return;
-						}
-						var pro = angular.copy(_self.getProductInCartById(product._id));
-
-						if(pro){
-
-							pro.short = product.short;
-							pro.quantity = product.count;
-							pro.outOfStockType = product.outOfStockType;
-							var d = new Date(product.lapsedTime * 1000);
-							pro.availabilityDate = d.toDateString();
-							pro.availabilityTime = d.amPmFormat();
-
-							$scope.products.push(pro);
-						}
-
-					});
-
-					$scope.isTimeslotPage = _self.getCurrentStep(true)===2?true:false;
-					
-					$scope.hide = function() {
-						$mdDialog.hide();
-					};
-					$scope.cancel = function() {
-						$mdDialog.cancel();
-					};
-
-					$scope.continue = function(){					
-
-						$scope.step = 0;
-
-						$mdDialog.hide();
-
-						$state.go("mainLayout.checkout.cart");
-
-					}
-					
-				},
+				controller: ['$scope', '$rootScope', '$document',function($scope, $rootScope, $document) {
+				
+									$scope.products = [];
+									angular.forEach(_self.productsStats, function (product) {
+										
+										if(product.short==0){
+											return;
+										}
+										var pro = angular.copy(_self.getProductInCartById(product._id));
+				
+										if(pro){
+				
+											pro.short = product.short;
+											pro.quantity = product.count;
+											pro.outOfStockType = product.outOfStockType;
+											var d = new Date(product.lapsedTime * 1000);
+											pro.availabilityDate = d.toDateString();
+											pro.availabilityTime = d.amPmFormat();
+				
+											$scope.products.push(pro);
+										}
+				
+									});
+				
+									$scope.isTimeslotPage = _self.getCurrentStep(true)===2?true:false;
+									
+									$scope.hide = function() {
+										$mdDialog.hide();
+									};
+									$scope.cancel = function() {
+										$mdDialog.cancel();
+									};
+				
+									$scope.continue = function(){					
+				
+										$scope.step = 0;
+				
+										$mdDialog.hide();
+				
+										$state.go("mainLayout.checkout.cart");
+				
+									}
+									
+								}],
 				templateUrl: '/templates/checkout/product-unavailable.html',
 				parent: angular.element(document.body),
 				clickOutsideToClose:false,
@@ -3539,10 +3537,9 @@ AlcoholDelivery.service('promotionsService',[
 	,function($http,$log,$q,$rootScope){
 
 	this.init = function(){
-
+		
 		var _self = this;
 		var defer = $q.defer();
-
 		//ProductService.getPromotions()
 		$http.get("super/promotions").then(
 

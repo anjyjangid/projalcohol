@@ -687,17 +687,17 @@ AlcoholDelivery.service('cartValidate',['alcoholCart', '$state', '$q', '$mdToast
 
 			$mdToast.show({
 
-					controller:function($scope){
-
-						var workingTime = appConfig.getWorkingTimeString();
-						
-						$scope.to = workingTime.to;
-						$scope.from = workingTime.from;
-
-						$scope.closeToast = function(){
-								$mdToast.hide();
-							}
-					},
+					controller:['$scope',function($scope){
+					
+											var workingTime = appConfig.getWorkingTimeString();
+											
+											$scope.to = workingTime.to;
+											$scope.from = workingTime.from;
+					
+											$scope.closeToast = function(){
+													$mdToast.hide();
+												}
+										}],
 					templateUrl: '/templates/toast-tpl/dependency-notify.html',
 					//parent : $document[0].querySelector('#cart-summary-icon'),
 					position: 'bottom right',
@@ -839,4 +839,4 @@ AlcoholDelivery.service('cartValidate',['alcoholCart', '$state', '$q', '$mdToast
 
 
 
-}])
+}]);

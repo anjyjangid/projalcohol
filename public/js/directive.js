@@ -1,30 +1,29 @@
-AlcoholDelivery.directive('sideBar', [function() {
+AlcoholDelivery.directive('sideBar', function() {
 	return {
 		restrict: 'E',
 		templateUrl: '/templates/partials/sidebar.html',
-		controller: function($scope){
-		
-					$scope.childOf = function(categories, parent){
-		
-							if(!categories) return [];
-		
-							if(!parent || parent==0){
-									return categories.filter(function(category){
-											return (!category.ancestors || category.ancestors.length==0);
-									});
-							}
-		
+		controller: ['$scope',function($scope){				
+
+			$scope.childOf = function(categories, parent){
+					if(!categories) return [];
+
+					if(!parent || parent==0){
 							return categories.filter(function(category){
-									return (category.ancestors && category.ancestors.length > 0 && category.ancestors[0]._id["$id"] == parent);
+									return (!category.ancestors || category.ancestors.length==0);
 							});
 					}
-		
-					$scope.hideMenu = function(){
-						$('.dropdown-menu').removeClass('animate');
-					}
-				}
+
+					return categories.filter(function(category){
+							return (category.ancestors && category.ancestors.length > 0 && category.ancestors[0]._id["$id"] == parent);
+					});
+			}
+
+			$scope.hideMenu = function(){
+				$('.dropdown-menu').removeClass('animate');
+			}
+		}]
 	};
-}])
+})
 .directive('topMenu', function(){
 	return {
 		restrict: 'E',
@@ -284,7 +283,6 @@ AlcoholDelivery.directive('sideBar', [function() {
 	};
 })
 .directive('owlCarousel', ['$timeout',function($timeout){
-
     return {
         restrict: 'E',
         priority: 100,
@@ -851,15 +849,15 @@ AlcoholDelivery.directive('sideBar', [function() {
 							var qNchilled = $scope.product.qNChilled;
 		
 							$mdToast.show({
-								controller:function($scope){
-		
-									$scope.qChilled = qChilled;
-									$scope.qNchilled = qNchilled;
-		
-									$scope.closeToast = function(){
-										$mdToast.hide();
-									}
-								},
+								controller:['$scope',function($scope){
+										
+																	$scope.qChilled = qChilled;
+																	$scope.qNchilled = qNchilled;
+										
+																	$scope.closeToast = function(){
+																		$mdToast.hide();
+																	}
+																}],
 								templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
 								parent : ele,
 								//parent : $document[0].querySelector('nav'),
@@ -1009,7 +1007,7 @@ AlcoholDelivery.directive('sideBar', [function() {
 }])
 .directive('apFocusOut', ['$document','$parse', function( $document, $parse ){
     return {
-        link: function( $scope, $element, $attributes ){
+        link: function( scope, element, attributes ){
             // var scopeExpression = $attributes.apFocusOut,
             console.log("asdasd");
             //     onDocumentClick = function(event){
@@ -1083,12 +1081,12 @@ AlcoholDelivery.directive('sideBar', [function() {
 		
 					$scope.showPopover = function(result){
 						$mdToast.show({
-							controller:function($scope){
-								$scope.user = result;
-								$scope.closeToast = function(){
-									$mdToast.hide();
-								}
-							},
+							controller:['$scope',function($scope){
+															$scope.user = result;
+															$scope.closeToast = function(){
+																$mdToast.hide();
+															}
+														}],
 							templateUrl: '/templates/toast-tpl/notify-template.html',
 							//parent : $document[0].querySelector('#toastBounds'),
 							position: 'bottom right',
