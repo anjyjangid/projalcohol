@@ -601,13 +601,13 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							"" : {
 								templateUrl : "/templates/index/home.html",
 								controller:['$scope','$http','$rootScope',function($scope,$http,$rootScope){
-													$scope.AppController.category = "";
-													$scope.AppController.subCategory = "";
-													$scope.AppController.showpackage = false;										
-													$scope.showSignup = function(){
-														$rootScope.$broadcast('showSignup');
-													};
-											}],
+										$scope.AppController.category = "";
+										$scope.AppController.subCategory = "";
+										$scope.AppController.showpackage = false;										
+										$scope.showSignup = function(){
+											$rootScope.$broadcast('showSignup');
+										};
+								}],
 
 							},
 							"testimonials" : {
@@ -1133,7 +1133,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				$locationProvider.hashPrefix = '!';*/
 
 		}]);
-	
+appLoad.$inject = ['$q', '$rootScope', '$state', '$timeout', '$location', 'store', 'alcoholWishlist', 'UserService', 'catPricing'];	
 function appLoad($q, $rootScope, $state, $timeout, $location, store, alcoholWishlist, UserService, catPricing) {
 	
 	var defer = $q.defer();
@@ -1174,17 +1174,6 @@ function appLoad($q, $rootScope, $state, $timeout, $location, store, alcoholWish
 
 	return defer.promise;
 };
-
-function validateCheckout($q, $state, $timeout, $location, store, alcoholWishlist, UserService) {
-	var defer = $q.defer();
-	
-	//defer.reject();
-	
-	defer.resolve();
-	
-	return defer.promise;
-}
-
 
 AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$location', '$window', function ($q, $rootScope, $log, $location, $window) {
     'use strict';
@@ -1276,18 +1265,7 @@ AlcoholDelivery.run([
 
 	$rootScope.$state = $state; // state to be accessed from view
 	angular.alcoholCart = alcoholCart;
-	angular.cartValidate = cartValidate;
-
-	catPricing.GetCategoryPricing().then(
-
-		function(result) {
-
-			catPricing.categoryPricing = result;
-			$rootScope.catPricing = result;
-
-		}
-
-	);
+	angular.cartValidate = cartValidate;	
 
 	$rootScope.isAppInitialized = false;
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
