@@ -191,9 +191,9 @@
 
 	<script async type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAO1xAu1wBu7NZOqNBn9aoYg-RVstm60jc&libraries=places"></script>
 
-	<!-- <script type="text/javascript" src="js/build/all.js"></script> -->
+	<script type="text/javascript" src="js/build/all.js"></script>
 	
-	<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>   
+	<!-- <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>   
 
     
 	<script type="text/javascript" src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
@@ -243,5 +243,5 @@
     <script type="text/javascript" src="js/alcoholWishlist.js"></script>
     <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
     <script type="text/javascript" src="js/directive.js"></script>
-    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>       
+    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>     -->   
 </html>
