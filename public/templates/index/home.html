@@ -10,21 +10,25 @@
 	</a>
 </div>
 
-<div class="responsive-blokimg"><img class="img-responsive" style="margin:10px auto;" src="asset/i/new.png"></div>
+<div class="responsive-blokimg">
+	<img class="img-responsive" style="margin:10px auto;" src="asset/i/mobilebanner.png">
+</div>
 
 <div class="combo_slider combo_sliderProduct" ng-cloak>
-  <md-content class="maintab" data-ng-init="featuredProducts()">
-    <md-tabs md-selected="0" md-dynamic-height>    
-      <md-tab ng-repeat="cat in parentCategories | filterParentCat">
-      	<md-tab-label>{{cat.cat_title}}</md-tab-label>
-      	<md-tab-body>      		
-      		<div class="product-listcover2">
+	<!-- <div class="tabtitle">Featured Items</div>	 -->
+	<md-content class="maintab" data-ng-init="featuredProducts()">
+	<md-tabs md-selected="0" md-dynamic-height>    
+	  <md-tab ng-repeat="cat in parentCategories | filterParentCat">
+	  	<md-tab-label>{{cat.cat_title}}</md-tab-label>	  	
+	  	<md-tab-body> 
+	  		<div class="product-listcover2">
 	    		<div al-tpl-product classes="col-xs-12 col-sm-3 col-md-3 comboproductitems" ng-repeat="fproduct in cat['featured']" info="fproduct"></div>
 	    	</div>
-      	</md-tab-body>
-      </md-tab>	      
-    </md-tabs>
-  </md-content>  
+	  	</md-tab-body>
+	  </md-tab>	      
+	</md-tabs>
+	</md-content>  
+	
   <div ui-view='giftClaim'></div>
 </div>
 

@@ -1,5 +1,7 @@
 var elixir = require('laravel-elixir');
 
+elixir.config.production = true;
+
 /*
  |--------------------------------------------------------------------------
  | Elixir Asset Management

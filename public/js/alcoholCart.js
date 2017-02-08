@@ -1,12 +1,12 @@
 AlcoholDelivery.service('alcoholCart', [
 			'$log','$rootScope', '$window', '$document', '$http', '$state', '$q', '$mdToast', '$mdDialog', '$filter', 
-			'$timeout', '$interval', 'appConfig', 'sweetAlert', 
+			'$timeout', '$interval', '$cookies','appConfig', 'sweetAlert', 
 			'alcoholCartItem', 'alcoholCartLoyaltyItem', 
 			'alcoholCartPackage','promotionsService','alcoholCartPromotion', 
 			'alcoholCartGiftCard', 'alcoholCartGift', 
 			'alcoholCartSale', 'alcoholCartCreditCard','UserService'
 	,function ($log, $rootScope, $window, $document, $http, $state, $q, $mdToast, $mdDialog, $filter, 
-			$timeout, $interval, appConfig, sweetAlert, 
+			$timeout, $interval, $cookies, appConfig, sweetAlert, 
 			alcoholCartItem, alcoholCartLoyaltyItem, 
 			alcoholCartPackage, promotionsService, alcoholCartPromotion, 
 			alcoholCartGiftCard, alcoholCartGift,
@@ -697,9 +697,7 @@ AlcoholDelivery.service('alcoholCart', [
 		if(!this.isEligibleForPromotion(promoId)){
 
 			$mdToast.show({
-				controller:function($scope){
-
-				},
+				/*controller:function($scope){},*/
 				templateUrl: '/templates/toast-tpl/notify-promo-nq.html',
 				parent : $event.currentTarget.parentElement,
 				position: 'top center',
@@ -2238,7 +2236,8 @@ AlcoholDelivery.service('alcoholCart', [
 		this.empty = function () {
 
 			this.$cart.products = {};
-			$window.localStorage.removeItem('deliverykey');
+			//$window.localStorage.removeItem('deliverykey');
+			$cookies.remove('deliverykey');
 		};
 		
 		this.isEmpty = function () {
@@ -2736,7 +2735,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 		this.getCartKey = function(){
 
-			var deliverykey = localStorage.getItem("deliverykey");
+			//var deliverykey = localStorage.getItem("deliverykey");
+			var deliverykey = $cookies.get("deliverykey");
 			if(deliverykey===null || typeof deliverykey==="undefined"){
 				deliverykey = $rootScope.deliverykey;
 			}
@@ -2751,8 +2751,10 @@ AlcoholDelivery.service('alcoholCart', [
 
 		
 		this.setCartKey = function(cartKey){
-
-			localStorage.setItem("deliverykey",cartKey);
+			var now = new Date();
+    		now = new Date(now.getFullYear()+1, now.getMonth(), now.getDate());
+        	//localStorage.setItem("deliverykey",cartKey)
+			$cookies.put("deliverykey", cartKey, {expires:now});
 			$rootScope.deliverykey = cartKey;
 
 			return cartKey;
@@ -3392,50 +3394,50 @@ AlcoholDelivery.service('alcoholCart', [
 
 		$mdDialog.show({
 
-				controller: function($scope, $rootScope, $document) {
-
-					$scope.products = [];
-					angular.forEach(_self.productsStats, function (product) {
-						
-						if(product.short==0){
-							return;
-						}
-						var pro = angular.copy(_self.getProductInCartById(product._id));
-
-						if(pro){
-
-							pro.short = product.short;
-							pro.quantity = product.count;
-							pro.outOfStockType = product.outOfStockType;
-							var d = new Date(product.lapsedTime * 1000);
-							pro.availabilityDate = d.toDateString();
-							pro.availabilityTime = d.amPmFormat();
-
-							$scope.products.push(pro);
-						}
-
-					});
-
-					$scope.isTimeslotPage = _self.getCurrentStep(true)===2?true:false;
-					
-					$scope.hide = function() {
-						$mdDialog.hide();
-					};
-					$scope.cancel = function() {
-						$mdDialog.cancel();
-					};
-
-					$scope.continue = function(){					
-
-						$scope.step = 0;
-
-						$mdDialog.hide();
-
-						$state.go("mainLayout.checkout.cart");
-
-					}
-					
-				},
+				controller: ['$scope', '$rootScope', '$document',function($scope, $rootScope, $document) {
+				
+									$scope.products = [];
+									angular.forEach(_self.productsStats, function (product) {
+										
+										if(product.short==0){
+											return;
+										}
+										var pro = angular.copy(_self.getProductInCartById(product._id));
+				
+										if(pro){
+				
+											pro.short = product.short;
+											pro.quantity = product.count;
+											pro.outOfStockType = product.outOfStockType;
+											var d = new Date(product.lapsedTime * 1000);
+											pro.availabilityDate = d.toDateString();
+											pro.availabilityTime = d.amPmFormat();
+				
+											$scope.products.push(pro);
+										}
+				
+									});
+				
+									$scope.isTimeslotPage = _self.getCurrentStep(true)===2?true:false;
+									
+									$scope.hide = function() {
+										$mdDialog.hide();
+									};
+									$scope.cancel = function() {
+										$mdDialog.cancel();
+									};
+				
+									$scope.continue = function(){					
+				
+										$scope.step = 0;
+				
+										$mdDialog.hide();
+				
+										$state.go("mainLayout.checkout.cart");
+				
+									}
+									
+								}],
 				templateUrl: '/templates/checkout/product-unavailable.html',
 				parent: angular.element(document.body),
 				clickOutsideToClose:false,
@@ -3452,8 +3454,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 
 AlcoholDelivery.service('store', [
-			'$rootScope','$window','$http','alcoholCart','promotionsService','$q', 'cartValidation'
-	,function ($rootScope,$window,$http,alcoholCart,promotionsService,$q, cartValidation) {
+			'$rootScope','$window','$http','alcoholCart','promotionsService','$q', '$cookies','cartValidation'
+	,function ($rootScope,$window,$http,alcoholCart,promotionsService,$q,$cookies,cartValidation) {
 
 		return {
 
@@ -3499,7 +3501,8 @@ AlcoholDelivery.service('store', [
 			orderPlaced : function(){
 
 				delete $rootScope.deliverykey;
-				localStorage.removeItem("deliverykey");
+				//localStorage.removeItem("deliverykey");
+				$cookies.remove("deliverykey");
 				this.init();
 
 			},
@@ -3529,15 +3532,14 @@ AlcoholDelivery.service('store', [
 		}
 	}]);
 
-AlcoholDelivery.service("promotionsService",[
-			"$http","$log","$q","$rootScope"
+AlcoholDelivery.service('promotionsService',[
+			'$http','$log','$q','$rootScope'
 	,function($http,$log,$q,$rootScope){
 
 	this.init = function(){
-
+		
 		var _self = this;
 		var defer = $q.defer();
-
 		//ProductService.getPromotions()
 		$http.get("super/promotions").then(
 
@@ -3783,6 +3785,7 @@ AlcoholDelivery.service('cartValidation',[
 				typeof cart.timeslot.datekey == 'undefined' || 
 						cart.timeslot.datekey==false || 
 						cart.timeslot.slotkey===false){
+
 				$state.go(states[2], {err: "Please select a Time slot!"}, {reload: false});
 
 				return false;

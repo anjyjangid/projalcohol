@@ -79,8 +79,7 @@
 		<!-- Google analytics -->
 	</head>
 
-	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}" >		    	    	     	
-    	
+	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}" ng-cloak>		    	    	
     	<div ng-spinner-bar class="page-spinner-bar">
 			<div class="bounce1"></div>
 			<div class="bounce2"></div>

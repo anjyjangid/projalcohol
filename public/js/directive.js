@@ -2,10 +2,9 @@ AlcoholDelivery.directive('sideBar', function() {
 	return {
 		restrict: 'E',
 		templateUrl: '/templates/partials/sidebar.html',
-		controller: function($scope){
+		controller: ['$scope',function($scope){				
 
 			$scope.childOf = function(categories, parent){
-
 					if(!categories) return [];
 
 					if(!parent || parent==0){
@@ -22,267 +21,268 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.hideMenu = function(){
 				$('.dropdown-menu').removeClass('animate');
 			}
-		}
+		}]
 	};
 })
 .directive('topMenu', function(){
 	return {
 		restrict: 'E',
 		templateUrl: '/templates/partials/topmenu.html',
-		controller: function($scope,$rootScope,$http,$state,$mdDialog,$timeout,$window,appSettings,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard){
-			
-			$scope.list = [];
-
-			$scope.menu = {openSearch:true};
-
-			$scope.login = {};
-			$scope.forgot = {};
-			$scope.reset = {};
-			$scope.resend = {};
-
-			$scope.signupSubmit = function() {
-				$scope.signup.errors = {};
-				$scope.socialError = '';
-				if(angular.isDefined($rootScope.refferal)){
-					$scope.signup.refferedBy = $rootScope.refferal;
-				}
-
-				$http.post('/auth/register',$scope.signup).success(function(response){
-	                $scope.user = response;
-					$scope.user.name = response.email;	                
-	                sweetAlert.swal({
-						title: "Verification email sent",
-						text : "Please check your inbox to activate your account and start shopping with us!",
-						imageUrl:'/images/send.gif',
-						confirmButtonColor: "#aa00ff", 
+		controller: [
+		'$scope','$rootScope','$http','$state','$mdDialog','$timeout','$window','appSettings','sweetAlert','UserService','store','alcoholWishlist','ClaimGiftCard',
+		function($scope,$rootScope,$http,$state,$mdDialog,$timeout,$window,appSettings,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard){
+					
+					$scope.list = [];
+		
+					$scope.menu = {openSearch:true};
+		
+					$scope.login = {};
+					$scope.forgot = {};
+					$scope.reset = {};
+					$scope.resend = {};
+		
+					$scope.signupSubmit = function() {
+						$scope.signup.errors = {};
+						$scope.socialError = '';
+						if(angular.isDefined($rootScope.refferal)){
+							$scope.signup.refferedBy = $rootScope.refferal;
+						}
+		
+						$http.post('/auth/register',$scope.signup).success(function(response){
+			                $scope.user = response;
+							$scope.user.name = response.email;	                
+			                sweetAlert.swal({
+								title: "Verification email sent",
+								text : "Please check your inbox to activate your account and start shopping with us!",
+								imageUrl:'/images/send.gif',
+								confirmButtonColor: "#aa00ff", 
+							});
+			                $mdDialog.hide();
+			            }).error(function(data, status, headers) {
+			                $scope.signup.errors = data;
+			            });
+					};
+		
+					// Any change in user login detail will be tracked here
+					$scope.$watch(function(){return UserService.currentUser},function(newValue, oldValue) {
+						$scope.user = newValue;
 					});
-	                $mdDialog.hide();
-	            }).error(function(data, status, headers) {
-	                $scope.signup.errors = data;
-	            });
-			};
-
-			// Any change in user login detail will be tracked here
-			$scope.$watch(function(){return UserService.currentUser},function(newValue, oldValue) {
-				$scope.user = newValue;
-			});
-
-	        $scope.forgotSubmit = function() {
-				$scope.forgot.errors = {};
-				$http.post('/password/email',$scope.forgot).success(function(response){
-	                $scope.forgot = {};
-	                //$scope.forgot.message = response.message;
-	                sweetAlert.swal({
-						title: "Reset link sent",
-						text : "Please check your inbox to reset your account password",
-						imageUrl:'/images/send.gif',
-						confirmButtonColor: "#aa00ff", 
-					});
-	                $mdDialog.hide();
-	            }).error(function(data, status, headers) {
-	                $scope.forgot.errors = data;
-	            });
-			};
-
-			$scope.logout = function() {
-
-				$http.get('/auth/logout').success(function(response){
-
-	                $scope.user = null;
-	                // Destroy Cart Params start
-	                delete $rootScope.deliverykey;
-	                localStorage.removeItem("deliverykey");
-	                $state.go("mainLayout.index", {}, {reload: true});
-	                
-	            }).error(function(data, status, headers) {
-	                $scope.user = {};
-	            });
-
-			};
-
-			$scope.openMenu = function(){
-				angular.element('#wrapper').toggleClass('toggled');
-				angular.element('body').toggleClass(' hidden-scroll');
-			}
-
-			$scope.socialError = '';
-			//FACEBOOK LOGIN
-
-			$scope.socialLogin = function(){
-
-				FB.login(function(response) {
-				    if (response.authResponse) {				     
-				     FB.api('/me', {fields: 'first_name,last_name,locale,email,birthday'},function(result) {
-				       	//console.log(result);				       	
-						$http.post('/auth/registerfb',result)
-						.success(function(res){
-							$mdDialog.hide();
-							$scope.loginSuccess(res);
-						}).error(function(erresult){
-							if(typeof erresult.suspended != 'undefined'){
-								$scope.login.errors = erresult;
-							}else{
-								$mdDialog.hide();	
-								$scope.socialError = erresult;
+		
+			        $scope.forgotSubmit = function() {
+						$scope.forgot.errors = {};
+						$http.post('/password/email',$scope.forgot).success(function(response){
+			                $scope.forgot = {};
+			                //$scope.forgot.message = response.message;
+			                sweetAlert.swal({
+								title: "Reset link sent",
+								text : "Please check your inbox to reset your account password",
+								imageUrl:'/images/send.gif',
+								confirmButtonColor: "#aa00ff", 
+							});
+			                $mdDialog.hide();
+			            }).error(function(data, status, headers) {
+			                $scope.forgot.errors = data;
+			            });
+					};
+		
+					$scope.logout = function() {
+		
+						$http.get('/auth/logout').success(function(response){
+		
+			                $scope.user = null;
+			                // Destroy Cart Params start
+			                delete $rootScope.deliverykey;
+			                localStorage.removeItem("deliverykey");
+			                $state.go("mainLayout.index", {}, {reload: true});
+			                
+			            }).error(function(data, status, headers) {
+			                $scope.user = {};
+			            });
+		
+					};
+		
+					$scope.openMenu = function(){
+						angular.element('#wrapper').toggleClass('toggled');
+						angular.element('body').toggleClass(' hidden-scroll');
+					}
+		
+					$scope.socialError = '';
+					//FACEBOOK LOGIN
+		
+					$scope.socialLogin = function(){
+		
+						FB.login(function(response) {
+						    if (response.authResponse) {				     
+						     FB.api('/me', {fields: 'first_name,last_name,locale,email,birthday'},function(result) {
+						       	//console.log(result);				       	
+								$http.post('/auth/registerfb',result)
+								.success(function(res){
+									$mdDialog.hide();
+									$scope.loginSuccess(res);
+								}).error(function(erresult){
+									if(typeof erresult.suspended != 'undefined'){
+										$scope.login.errors = erresult;
+									}else{
+										$mdDialog.hide();	
+										$scope.socialError = erresult;
+										$scope.signupOpen();
+									}
+								});
+						     });
+						    } else {
+						     	alert(JSON.parse(response));
+						    }
+						});
+						
+					}
+		
+					$scope.loginToggle = function() {
+		
+						$fblogin({
+							fbId: $rootScope.settings.fbid,
+							permissions: 'email,user_birthday',
+							fields: 'first_name,last_name,locale,email,birthday',
+							success:function(response){
+								$mdDialog.hide();
+								$http.post('/auth/registerfb',response)
+								.success(function(res){
+		
+									$scope.loginSuccess(res);
+		
+								}).error(function(result){
+									$scope.socialError = result;
+									$scope.signupOpen();
+								});
+							},
+							error:function(res){
+								/*$scope.socialError = 'We are unable to retrieve your email address via Facebook login to complete the sign up. Please change the settings in Facebook or signup via your email address on Alcohol Delivery!';
 								$scope.signupOpen();
+								*/
 							}
 						});
-				     });
-				    } else {
-				     	alert(JSON.parse(response));
-				    }
-				});
-				
-			}
-
-			$scope.loginToggle = function() {
-
-				$fblogin({
-					fbId: $rootScope.settings.fbid,
-					permissions: 'email,user_birthday',
-					fields: 'first_name,last_name,locale,email,birthday',
-					success:function(response){
-						$mdDialog.hide();
-						$http.post('/auth/registerfb',response)
-						.success(function(res){
-
-							$scope.loginSuccess(res);
-
-						}).error(function(result){
-							$scope.socialError = result;
-							$scope.signupOpen();
+					};			
+		
+				    $scope.signupOpen = function(ev){
+					    $scope.signup = {
+							terms:null,
+							errors:[]
+						};
+					    $mdDialog.show({
+							scope: $scope.$new(),
+							controller: function(){
+		
+							},
+							templateUrl: '/templates/partials/signup.html',
+							parent: angular.element(document.body),
+							targetEvent: ev,
+							clickOutsideToClose:true,
+							fullscreen:true
 						});
-					},
-					error:function(res){
-						/*$scope.socialError = 'We are unable to retrieve your email address via Facebook login to complete the sign up. Please change the settings in Facebook or signup via your email address on Alcohol Delivery!';
-						$scope.signupOpen();
-						*/
 					}
-				});
-			};			
-
-		    $scope.signupOpen = function(ev){
-			    $scope.signup = {
-					terms:null,
-					errors:[]
-				};
-			    $mdDialog.show({
-					scope: $scope.$new(),
-					controller: function(){
-
-					},
-					templateUrl: '/templates/partials/signup.html',
-					parent: angular.element(document.body),
-					targetEvent: ev,
-					clickOutsideToClose:true,
-					fullscreen:true
-				});
-			}
-
-			$scope.forgotpassOpen = function(ev){
-			    $scope.forgot = {errors:[]};
-
-			    $mdDialog.show({
-					scope: $scope.$new(),
-					controller: function(){},
-					templateUrl: '/templates/partials/forgotpassword.html',
-					parent: angular.element(document.body),
-					targetEvent: ev,
-					clickOutsideToClose:true,
-					fullscreen:true
-				});
-			}
-
-			$scope.hide = function() {
-				$mdDialog.hide();
-			};
-
-			$scope.$on("showLogin", function () {
-		        $scope.loginOpen();
-		    });
-
-		    $scope.$on("showSignup", function (event,args) {
-		        $scope.signupOpen();
-		    });
-
-			$scope.loginOpen = function(ev){
-			    $scope.login.errors = {};
-			    var elementWrapper = {};
-    			elementWrapper.target = document.getElementById('loginlink');
-			    $mdDialog.show({
-					scope: $scope.$new(),
-					controller: function(){},
-					templateUrl: '/templates/partials/login.html',
-					parent: angular.element(document.body),
-					targetEvent: ev,
-					clickOutsideToClose:true,		
-					fullscreen:true
-				});			
-
-			}
-
-			$scope.loginSubmit = function(){
-				$scope.login.errors = {};
-				$http.post('/auth',$scope.login).success(function(response){
-					$scope.loginSuccess(response);
-				}).error(function(data, status, headers) {
-					$scope.login.errors = data;
-		        });
-			};
-
-			//INTIALIZE AFTER USER LOGIN(FB & NORMAL)
-		    $scope.loginSuccess = function(response){
-		    	UserService.currentUser = response;
-		    	$scope.login = {};		  
-		        $mdDialog.hide();
-		        $scope.errors = {};
-		       	$state.go($state.current, {}, {reload: true});
-		        /*store.init().then(
-		        	function(successRes){		        
-		        	},
-		        	function(errorRes){}
-		        );
-		        alcoholWishlist.init();
-		        ClaimGiftCard.claim();*/
-		    }	
-
-		    $scope.visitLink = function(slug){
-		    	$state.go('cmsLayout.pages',{slug:slug,target:'_blank'});
-		    }
-
-		    $scope.resendverification = function(){
-		    	$mdDialog.show({
-					scope: $scope.$new(),
-					controller: function(){},
-					templateUrl: '/templates/partials/resendverification.html',
-					parent: angular.element(document.body),
-					//targetEvent: ev,
-					clickOutsideToClose:true,		
-					fullscreen:true
-				});
-		    }
-
-		    $scope.resendSubmit = function(){
-		    	$scope.resend.errors = {};
-				$http.post('/user/resendverification',$scope.resend).success(function(response){
-					$scope.resend = {};
-					sweetAlert.swal({
-						title: "Verification email sent",
-						text : "Please check your inbox to activate your account and start shopping with us!",
-						imageUrl:'/images/send.gif',
-						confirmButtonColor: "#aa00ff", 
-					});					
-	                $mdDialog.hide();
-				}).error(function(data, status, headers) {
-					$scope.resend.errors = data;
-		        });
-		    }
-
-		}
+		
+					$scope.forgotpassOpen = function(ev){
+					    $scope.forgot = {errors:[]};
+		
+					    $mdDialog.show({
+							scope: $scope.$new(),
+							controller: function(){},
+							templateUrl: '/templates/partials/forgotpassword.html',
+							parent: angular.element(document.body),
+							targetEvent: ev,
+							clickOutsideToClose:true,
+							fullscreen:true
+						});
+					}
+		
+					$scope.hide = function() {
+						$mdDialog.hide();
+					};
+		
+					$scope.$on("showLogin", function () {
+				        $scope.loginOpen();
+				    });
+		
+				    $scope.$on("showSignup", function (event,args) {
+				        $scope.signupOpen();
+				    });
+		
+					$scope.loginOpen = function(ev){
+					    $scope.login.errors = {};
+					    var elementWrapper = {};
+		    			elementWrapper.target = document.getElementById('loginlink');
+					    $mdDialog.show({
+							scope: $scope.$new(),
+							controller: function(){},
+							templateUrl: '/templates/partials/login.html',
+							parent: angular.element(document.body),
+							targetEvent: ev,
+							clickOutsideToClose:true,		
+							fullscreen:true
+						});			
+		
+					}
+		
+					$scope.loginSubmit = function(){
+						$scope.login.errors = {};
+						$http.post('/auth',$scope.login).success(function(response){
+							$scope.loginSuccess(response);
+						}).error(function(data, status, headers) {
+							$scope.login.errors = data;
+				        });
+					};
+		
+					//INTIALIZE AFTER USER LOGIN(FB & NORMAL)
+				    $scope.loginSuccess = function(response){
+				    	UserService.currentUser = response;
+				    	$scope.login = {};		  
+				        $mdDialog.hide();
+				        $scope.errors = {};
+				       	$state.go($state.current, {}, {reload: true});
+				        /*store.init().then(
+				        	function(successRes){		        
+				        	},
+				        	function(errorRes){}
+				        );
+				        alcoholWishlist.init();
+				        ClaimGiftCard.claim();*/
+				    }	
+		
+				    $scope.visitLink = function(slug){
+				    	$state.go('cmsLayout.pages',{slug:slug,target:'_blank'});
+				    }
+		
+				    $scope.resendverification = function(){
+				    	$mdDialog.show({
+							scope: $scope.$new(),
+							controller: function(){},
+							templateUrl: '/templates/partials/resendverification.html',
+							parent: angular.element(document.body),
+							//targetEvent: ev,
+							clickOutsideToClose:true,		
+							fullscreen:true
+						});
+				    }
+		
+				    $scope.resendSubmit = function(){
+				    	$scope.resend.errors = {};
+						$http.post('/user/resendverification',$scope.resend).success(function(response){
+							$scope.resend = {};
+							sweetAlert.swal({
+								title: "Verification email sent",
+								text : "Please check your inbox to activate your account and start shopping with us!",
+								imageUrl:'/images/send.gif',
+								confirmButtonColor: "#aa00ff", 
+							});					
+			                $mdDialog.hide();
+						}).error(function(data, status, headers) {
+							$scope.resend.errors = data;
+				        });
+				    }
+		
+				}]
 	};
 })
 .directive('owlCarousel', ['$timeout',function($timeout){
-
     return {
         restrict: 'E',
         priority: 100,
@@ -392,7 +392,7 @@ AlcoholDelivery.directive('sideBar', function() {
         });
     };
 }])
-.directive('errProSrc', function() {
+.directive('errProSrc', [function() {
   return {
     link: function(scope, element, attrs) {
       element.bind('error', function() {
@@ -404,8 +404,8 @@ AlcoholDelivery.directive('sideBar', function() {
       });
     }
   }
-})
-.directive('onlyDigits', function () {
+}])
+.directive('onlyDigits', [function () {
     return {
       require: 'ngModel',
       restrict: 'A',
@@ -439,8 +439,8 @@ AlcoholDelivery.directive('sideBar', function() {
         ctrl.$parsers.push(inputValue);
       }
     };
-})
-.directive('onlyCurrency', function () {
+}])
+.directive('onlyCurrency', [function () {
     return {
       require: 'ngModel',
       restrict: 'A',
@@ -476,7 +476,7 @@ AlcoholDelivery.directive('sideBar', function() {
         ctrl.$parsers.push(inputValue);
       }
     };
-})
+}])
 .directive('useCredits',['UserService', 'alcoholCart',function(UserService, alcoholCart){
 	return {
 		restrict :'E',
@@ -700,7 +700,7 @@ AlcoholDelivery.directive('sideBar', function() {
 	};
 
 }])
-.directive('alTplProduct',[function($rootScope){
+.directive('alTplProduct',['$rootScope',function($rootScope){
 	return {
 		restrict: 'A',
 		transclude: true,
@@ -771,149 +771,151 @@ AlcoholDelivery.directive('sideBar', function() {
 			product:'=',
 		},
 
-		controller: function($scope, $rootScope, $element, $timeout, $http, alcoholCart, $mdToast, UserService){
-
-			$scope.addMoreCustom = false;
-			$scope.element = $element;
-			$scope.isAddCustom = false;
-
-			$scope.focusout = function(){
-
-				$timeout(function() {
+		controller: [
+		'$scope', '$rootScope', '$element', '$timeout', '$http', 'alcoholCart', '$mdToast', 'UserService',
+		function($scope, $rootScope, $element, $timeout, $http, alcoholCart, $mdToast, UserService){
+		
 					$scope.addMoreCustom = false;
-
-					if(typeof $scope.isAddCustom === "undefined"){
-
-						var p = alcoholCart.getProductById($scope.product._id);
-						$scope.product.qChilled = p.qChilled;
-						$scope.product.qNChilled = p.qNChilled;
-
-					}else{
-
-						delete $scope.isAddCustom;
-
-					}				
-
-				}, 2000);
-
-			};
-
-			$scope.addtocart = function(){
-
-				$scope.product.addToCart().then(
-					function(successRes){},
-					function(errRes){
-
-					}
-				)
-
-			};
-
-			$scope.addCustom = function(){				
-
-				$scope.isAddCustom = true;
-				$scope.addtocart();
-				$scope.addMoreCustom = false;
-
-			};
-
-			$scope.activeAddToCart = function() {
-
-				var userData = UserService.currentUser;
-
-				$element.find(".addmore-count").css({visibility: "hidden"});
-				$element.find(".addmore").css({ "opacity": "0"});
-				$element.find(".addmore-count").css({top: "30px"});
-
-				if($scope.product.isLoyaltyStoreProduct === true){
-
-					if(userData===false){
-
-						$rootScope.$broadcast('showLogin');
-						return false;
-
-					}
-
-					if($scope.product.notSufficient){
-						return false;
-					}
-
-				}
-
-				if($scope.maxQuantity < $scope.tquantity){
-
-					var ele = $scope.element;
-					var qChilled = $scope.product.qChilled;
-					var qNchilled = $scope.product.qNChilled;
-
-					$mdToast.show({
-						controller:function($scope){
-
-							$scope.qChilled = qChilled;
-							$scope.qNchilled = qNchilled;
-
-							$scope.closeToast = function(){
-								$mdToast.hide();
+					$scope.element = $element;
+					$scope.isAddCustom = false;
+		
+					$scope.focusout = function(){
+		
+						$timeout(function() {
+							$scope.addMoreCustom = false;
+		
+							if(typeof $scope.isAddCustom === "undefined"){
+		
+								var p = alcoholCart.getProductById($scope.product._id);
+								$scope.product.qChilled = p.qChilled;
+								$scope.product.qNChilled = p.qNChilled;
+		
+							}else{
+		
+								delete $scope.isAddCustom;
+		
+							}				
+		
+						}, 2000);
+		
+					};
+		
+					$scope.addtocart = function(){
+		
+						$scope.product.addToCart().then(
+							function(successRes){},
+							function(errRes){
+		
 							}
-						},
-						templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
-						parent : ele,
-						//parent : $document[0].querySelector('nav'),
-						position: 'top center',
-						hideDelay:116000
-					});
-
-
-					return false;
-				}
-
-				$scope.addMoreCustom = false;
-				
-				$timeout(function(){
-					
-					if($scope.product.servechilled){
-
-						if($scope.product.qChilled==0)
-						$scope.product.qChilled = 1;
-
-					}else{
-
-						if($scope.product.qNChilled==0)
-						$scope.product.qNChilled = 1;
-					}
-					
-					$timeout(function(){					
-						
-						$element.find(".addmore").css({ "opacity": "1"});
-
+						)
+		
+					};
+		
+					$scope.addCustom = function(){				
+		
+						$scope.isAddCustom = true;
 						$scope.addtocart();
-
-						$element.find(".addmore-count").css({visibility: "visible"});
+						$scope.addMoreCustom = false;
+		
+					};
+		
+					$scope.activeAddToCart = function() {
+		
+						var userData = UserService.currentUser;
+		
+						$element.find(".addmore-count").css({visibility: "hidden"});
+						$element.find(".addmore").css({ "opacity": "0"});
+						$element.find(".addmore-count").css({top: "30px"});
+		
+						if($scope.product.isLoyaltyStoreProduct === true){
+		
+							if(userData===false){
+		
+								$rootScope.$broadcast('showLogin');
+								return false;
+		
+							}
+		
+							if($scope.product.notSufficient){
+								return false;
+							}
+		
+						}
+		
+						if($scope.maxQuantity < $scope.tquantity){
+		
+							var ele = $scope.element;
+							var qChilled = $scope.product.qChilled;
+							var qNchilled = $scope.product.qNChilled;
+		
+							$mdToast.show({
+								controller:['$scope',function($scope){
+										
+																	$scope.qChilled = qChilled;
+																	$scope.qNchilled = qNchilled;
+										
+																	$scope.closeToast = function(){
+																		$mdToast.hide();
+																	}
+																}],
+								templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+								parent : ele,
+								//parent : $document[0].querySelector('nav'),
+								position: 'top center',
+								hideDelay:116000
+							});
+		
+		
+							return false;
+						}
+		
+						$scope.addMoreCustom = false;
 						
-						$element.find(".addmore-count").animate({ top: "0px"},300);
-
-					}, 100);
-
-				}, 100)
-
-				
-
-				
-
-			};
-
-			$scope.activeAddToCartCustom = function(){
-
-				$scope.addMoreCustom = true;
-
-				$timeout(function(){
-					$element.find(".addmanual input").animate({ width: "70%"},250);
-					$element.find(".addmanual input").css({ "padding-left": "13px"});
-		  			$element.find(".addmanual .addbuttton").animate({ width: "30%"},250);
-				}, 100);
-
-			};
-		}
+						$timeout(function(){
+							
+							if($scope.product.servechilled){
+		
+								if($scope.product.qChilled==0)
+								$scope.product.qChilled = 1;
+		
+							}else{
+		
+								if($scope.product.qNChilled==0)
+								$scope.product.qNChilled = 1;
+							}
+							
+							$timeout(function(){					
+								
+								$element.find(".addmore").css({ "opacity": "1"});
+		
+								$scope.addtocart();
+		
+								$element.find(".addmore-count").css({visibility: "visible"});
+								
+								$element.find(".addmore-count").animate({ top: "0px"},300);
+		
+							}, 100);
+		
+						}, 100)
+		
+						
+		
+						
+		
+					};
+		
+					$scope.activeAddToCartCustom = function(){
+		
+						$scope.addMoreCustom = true;
+		
+						$timeout(function(){
+							$element.find(".addmanual input").animate({ width: "70%"},250);
+							$element.find(".addmanual input").css({ "padding-left": "13px"});
+				  			$element.find(".addmanual .addbuttton").animate({ width: "30%"},250);
+						}, 100);
+		
+					};
+				}]
 	}
 }])
 .directive('productBreadcrumb', ['categoriesFac', function(categoriesFac){
@@ -928,54 +930,54 @@ AlcoholDelivery.directive('sideBar', function() {
 
 		},
 		replace: true,
-		controller: function ($scope) {
-
-			$scope.categoryBread = [];
-
-			$scope.$watch('productInfo',
-
-				function(newValue, oldValue) {
-
-					if(typeof $scope.productInfo === "undefined"){
-						return $scope.categoryBread;
-					}
-
-					if(typeof $scope.viaLoyaltyStore !== "undefined"){
-						return $scope.categoryBread.push({
-
-									_id:0,
-									title:'loyalty-store',
-									slug:'loyalty-store'
-
-								});
-					}
-
-					angular.forEach($scope.productInfo.categories, function (catId, index) {
-
-						for(var i=0;i<categoriesFac.categories.length;i++){
-
-							var cat = categoriesFac.categories[i];
-							if(cat["_id"]===catId){
-
-								$scope.categoryBread.push({
-
-									_id:catId,
-									title:cat.cat_title,
-									slug:cat.slug
-
-								})
-
+		controller: ['$scope',function ($scope) {
+		
+					$scope.categoryBread = [];
+		
+					$scope.$watch('productInfo',
+		
+						function(newValue, oldValue) {
+		
+							if(typeof $scope.productInfo === "undefined"){
+								return $scope.categoryBread;
 							}
+		
+							if(typeof $scope.viaLoyaltyStore !== "undefined"){
+								return $scope.categoryBread.push({
+		
+											_id:0,
+											title:'loyalty-store',
+											slug:'loyalty-store'
+		
+										});
+							}
+		
+							angular.forEach($scope.productInfo.categories, function (catId, index) {
+		
+								for(var i=0;i<categoriesFac.categories.length;i++){
+		
+									var cat = categoriesFac.categories[i];
+									if(cat["_id"]===catId){
+		
+										$scope.categoryBread.push({
+		
+											_id:catId,
+											title:cat.cat_title,
+											slug:cat.slug
+		
+										})
+		
+									}
+								}
+		
+							});
+		
 						}
-
-					});
-
-				}
-			);
-
-
-
-		},
+					);
+		
+		
+		
+				}],
 		template:'<div class="productdetailbrudcumcover">'+
 
 				'<a href="">Home</a>'+
@@ -1005,7 +1007,7 @@ AlcoholDelivery.directive('sideBar', function() {
 }])
 .directive('apFocusOut', ['$document','$parse', function( $document, $parse ){
     return {
-        link: function( $scope, $element, $attributes ){
+        link: function( scope, element, attributes ){
             // var scopeExpression = $attributes.apFocusOut,
             console.log("asdasd");
             //     onDocumentClick = function(event){
@@ -1024,7 +1026,7 @@ AlcoholDelivery.directive('sideBar', function() {
         }
     }
 }])
-.directive('backImg', function(){
+.directive('backImg', [function(){
     return function(scope, element, attrs){
         var url = attrs.backImg;
         element.css({
@@ -1032,8 +1034,8 @@ AlcoholDelivery.directive('sideBar', function() {
             'background-size' : 'cover'
         });
     };
-})
-.directive('errSrc', function() {
+}])
+.directive('errSrc', [function() {
   return {
     link: function(scope, element, attrs) {
       element.bind('error', function() {
@@ -1046,7 +1048,7 @@ AlcoholDelivery.directive('sideBar', function() {
       });
     }
   }
-})
+}])
 .directive('outOfStock',[function(){
 	return {
 		restrict : "E",
@@ -1057,42 +1059,44 @@ AlcoholDelivery.directive('sideBar', function() {
 		scope: {
 			product:'=',
 		},
-		controller: function($scope,$rootScope,$http,$mdToast,$document,UserService,$log){
-
-			$scope.nlabel = 'Notify Me';
-
-			$scope.showCustomToast = function() {
-				$scope.nlabel = 'Wait..';
-				if(!UserService.getIfUser()){
+		controller: [
+		'$scope','$rootScope','$http','$mdToast','$document','UserService','$log',
+		function($scope,$rootScope,$http,$mdToast,$document,UserService,$log){
+		
 					$scope.nlabel = 'Notify Me';
-					$rootScope.$broadcast('showLogin');
-				}else{
-					$http.post('/user/notifyme',{pid:$scope.product._id}).success(function(){
-						$scope.showPopover(UserService.getIfUser());
-					}).error(function(){
-						$scope.nlabel = 'Notify Me';
-					});
-				}
-			};
-
-			$scope.showPopover = function(result){
-				$mdToast.show({
-					controller:function($scope){
-						$scope.user = result;
-						$scope.closeToast = function(){
-							$mdToast.hide();
+		
+					$scope.showCustomToast = function() {
+						$scope.nlabel = 'Wait..';
+						if(!UserService.getIfUser()){
+							$scope.nlabel = 'Notify Me';
+							$rootScope.$broadcast('showLogin');
+						}else{
+							$http.post('/user/notifyme',{pid:$scope.product._id}).success(function(){
+								$scope.showPopover(UserService.getIfUser());
+							}).error(function(){
+								$scope.nlabel = 'Notify Me';
+							});
 						}
-					},
-					templateUrl: '/templates/toast-tpl/notify-template.html',
-					//parent : $document[0].querySelector('#toastBounds'),
-					position: 'bottom right',
-					hideDelay:0
-				});
-
-				$scope.nlabel = 'Notify Me';
-			};
-
-		}
+					};
+		
+					$scope.showPopover = function(result){
+						$mdToast.show({
+							controller:['$scope',function($scope){
+															$scope.user = result;
+															$scope.closeToast = function(){
+																$mdToast.hide();
+															}
+														}],
+							templateUrl: '/templates/toast-tpl/notify-template.html',
+							//parent : $document[0].querySelector('#toastBounds'),
+							position: 'bottom right',
+							hideDelay:0
+						});
+		
+						$scope.nlabel = 'Notify Me';
+					};
+		
+				}]
 	}
 }])
 .directive('notAvailable',[function(){
@@ -1106,63 +1110,65 @@ AlcoholDelivery.directive('sideBar', function() {
 			product:'=',
 			tagsize:'@'
 		},
-		controller: function($scope,$rootScope,$log,$filter){
-
-			var holiDays = angular.copy($rootScope.settings.holiDays);
-
-			$scope.weekdayoff = $filter('filter')(holiDays,{_id:'weekdayoff'});
-
-			if(typeof $scope.weekdayoff[0] !== 'undefined'){
-				$scope.weekdayoff = $scope.weekdayoff[0];
-			}else{
-				$scope.weekdayoff = {dow:[]};
-			}
-
-			$scope.isHoliday = function(daystoadd){
-				var cDate = new Date();
-				cDate.setTime($rootScope.settings.today);
-				cDate.setDate(cDate.getDate() + daystoadd);
-				var dayofdate = cDate.getDay();
-				if($scope.weekdayoff.dow.indexOf(dayofdate) !== -1){
-					return true;
-				}
-				var tsofdate = cDate.getTime();
-				
-				var isPh = $filter('filter')(holiDays,{timeStamp:tsofdate});
-				if(typeof isPh[0] !== 'undefined'){
-					return true;
-				}else{
-					return false;
-				}
-			};
-
-			$scope.addDays = function(days,mins){
-				var old = days;		
-				var init = 0;
-				var daystoadd = 0;						
-				//CALCULATE DAYS TO BE ADDED IN CURRENT DATE, SKIPING ALL PUBLIC HOLIDAYS
-				while(init<days){
-					daystoadd+=1;
-					//SKIP THE DAY IF IT IS A HOLIDAY 
-					if(!$scope.isHoliday(daystoadd))
-						init = init + 1;
-
-				}
-				//console.log('DAYS TO ADD : '+daystoadd);
-				var curDate = new Date();
-				curDate.setTime($rootScope.settings.today);
-				curDate.setHours(0,0,0,0);
-				curDate.setDate(curDate.getDate() + daystoadd);
-				
-				return curDate.setMinutes(mins);
-			};
-
-			$scope.availDate = $scope.addDays($scope.product.availabilityDays,$scope.product.availabilityTime);
-
-		}
+		controller: [
+		'$scope','$rootScope','$log','$filter',
+		function($scope,$rootScope,$log,$filter){
+		
+					var holiDays = angular.copy($rootScope.settings.holiDays);
+		
+					$scope.weekdayoff = $filter('filter')(holiDays,{_id:'weekdayoff'});
+		
+					if(typeof $scope.weekdayoff[0] !== 'undefined'){
+						$scope.weekdayoff = $scope.weekdayoff[0];
+					}else{
+						$scope.weekdayoff = {dow:[]};
+					}
+		
+					$scope.isHoliday = function(daystoadd){
+						var cDate = new Date();
+						cDate.setTime($rootScope.settings.today);
+						cDate.setDate(cDate.getDate() + daystoadd);
+						var dayofdate = cDate.getDay();
+						if($scope.weekdayoff.dow.indexOf(dayofdate) !== -1){
+							return true;
+						}
+						var tsofdate = cDate.getTime();
+						
+						var isPh = $filter('filter')(holiDays,{timeStamp:tsofdate});
+						if(typeof isPh[0] !== 'undefined'){
+							return true;
+						}else{
+							return false;
+						}
+					};
+		
+					$scope.addDays = function(days,mins){
+						var old = days;		
+						var init = 0;
+						var daystoadd = 0;						
+						//CALCULATE DAYS TO BE ADDED IN CURRENT DATE, SKIPING ALL PUBLIC HOLIDAYS
+						while(init<days){
+							daystoadd+=1;
+							//SKIP THE DAY IF IT IS A HOLIDAY 
+							if(!$scope.isHoliday(daystoadd))
+								init = init + 1;
+		
+						}
+						//console.log('DAYS TO ADD : '+daystoadd);
+						var curDate = new Date();
+						curDate.setTime($rootScope.settings.today);
+						curDate.setHours(0,0,0,0);
+						curDate.setDate(curDate.getDate() + daystoadd);
+						
+						return curDate.setMinutes(mins);
+					};
+		
+					$scope.availDate = $scope.addDays($scope.product.availabilityDays,$scope.product.availabilityTime);
+		
+				}]
 	}
 }])
-.directive('hoverClass', function () {
+.directive('hoverClass', [function () {
     return {
         restrict: 'A',
         scope: {
@@ -1178,7 +1184,7 @@ AlcoholDelivery.directive('sideBar', function() {
         }
     };
 
-})
+}])
 .directive('twitterShareBtn',['SocialSharingService','sweetAlert',function(SocialSharingService,sweetAlert) {
         return {
             link: function(scope, element, attr) {
@@ -1241,7 +1247,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		controller:''
 	};
 }])
-.directive('userCards', function(){
+.directive('userCards', [function(){
 
 	return {
 		scope :{
@@ -1250,132 +1256,136 @@ AlcoholDelivery.directive('sideBar', function() {
 		},
 		restrict: 'A',
 		templateUrl: '/templates/partials/addcard.html',
-		controller: function($scope,$rootScope,$http,$state,$payments,UserService,sweetAlert,alcoholCart){
-
-			$scope.$on('addcardsubmit', function() {
-	            $scope.addnewcard();
-	        });
-
-	    	$scope.userdata = UserService.getIfUser();
-
-		    $scope.verified = function () {
-		    	return $payments.verified();
-		    }
-
-		    $scope.addnewcard = function(){
-		    	if($scope.paymentmode){
-		    		$scope.payment.creditCard.token = 1;
-		    	}
-		    	$scope.processingcard = true;
-		    	$scope.errors = [];
-				$http.post('/payment/addcard',$scope.payment.creditCard).success(function(rdata){
-
-					if($scope.paymentmode){
-						
-						$scope.payment.creditCard = rdata.card;
-
-						alcoholCart.deployCart().then(
-							function(result){
-								$state.go('mainLayout.checkout.review');
+		controller: [
+		'$scope','$rootScope','$http','$state','$payments','UserService','sweetAlert','alcoholCart',
+		function($scope,$rootScope,$http,$state,$payments,UserService,sweetAlert,alcoholCart){
+		
+					$scope.$on('addcardsubmit', function() {
+			            $scope.addnewcard();
+			        });
+		
+			    	$scope.userdata = UserService.getIfUser();
+		
+				    $scope.verified = function () {
+				    	return $payments.verified();
+				    }
+		
+				    $scope.addnewcard = function(){
+				    	if($scope.paymentmode){
+				    		$scope.payment.creditCard.token = 1;
+				    	}
+				    	$scope.processingcard = true;
+				    	$scope.errors = [];
+						$http.post('/payment/addcard',$scope.payment.creditCard).success(function(rdata){
+		
+							if($scope.paymentmode){
+								
+								$scope.payment.creditCard = rdata.card;
+		
+								alcoholCart.deployCart().then(
+									function(result){
+										$state.go('mainLayout.checkout.review');
+									}
+								);
+		
+							}else{
+								$scope.payment.card = '';
+								$scope.userdata = rdata.user;
+								$scope.payment.creditCard = {};
 							}
-						);
-
-					}else{
-						$scope.payment.card = '';
-						$scope.userdata = rdata.user;
-						$scope.payment.creditCard = {};
-					}
-
-					$scope.processingcard = false;
-				}).error(function(errors){
-					$scope.errors = errors;
-					$scope.processingcard = false;
-				});
-
-			}
-
-			$scope.removeCard = function(card){
-				sweetAlert.swal({
-				  title: 'Are you sure?',
-				  text: "You won't be able to revert this!",
-				  type: 'warning',
-				  showCancelButton: true,
-				  confirmButtonColor: '#3085d6',
-				  cancelButtonColor: '#d33',
-				  confirmButtonText: 'Yes, delete it!'
-				}).then(function() {
-					$http.post('/payment/removecard',card).success(function(rdata){
-						$scope.userdata = rdata.user;
-						$scope.payment.card = '';
-					}).error(function(errors){
-						sweetAlert.swal({
-							type:'error',
-							text:errors,
+		
+							$scope.processingcard = false;
+						}).error(function(errors){
+							$scope.errors = errors;
+							$scope.processingcard = false;
 						});
-					});
-				});
-			}
-
-			$scope.changeCard = function(card){
-				$scope.payment.creditCard = card;
-				$scope.payment.creditCard.cvc = '';				
-			}
-
-			var offset = 0; range = 10;
-			var currentYear = new Date().getFullYear();			
-			$scope.years = [];
-            for (var i = (offset*1); i < (range*1) + 1; i++){
-                $scope.years.push(currentYear + i);
-            }
-
-            $scope.months = [];
-            for (var i = 0; i < 12; i++){
-                $scope.months.push(1 + i);
-            }
-			/*$scope.testCard = [
-		        {
-		          token_id:"2992471298821111",
-		          type: 'maestro',
-		        }, {
-		          token_id:"2992471298821111",
-		          type: 'dinersclub',
-		        }, {
-		          token_id:"2992471298821111",
-		          type: 'laser',
-		        }, {
-		          token_id:"2992471298821111",
-		          type: 'jcb',
-		        }, {
-		          token_id:"2992471298821111",
-		          type: 'unionpay',
-		        }, {
-		          token_id:"2992471298821111",
-		          type: 'discover',
-		        }, {
-		          token_id:"2992471298821111",
-		          type: 'mastercard',
-		        }, {
-		          token_id:"2992471298821111",
-		          type: 'amex',
-		        }, {
-		          token_id:"2992471298821111",
-		          type: 'visa',
-		        }
-		      ];*/
-		}
+		
+					}
+		
+					$scope.removeCard = function(card){
+						sweetAlert.swal({
+						  title: 'Are you sure?',
+						  text: "You won't be able to revert this!",
+						  type: 'warning',
+						  showCancelButton: true,
+						  confirmButtonColor: '#3085d6',
+						  cancelButtonColor: '#d33',
+						  confirmButtonText: 'Yes, delete it!'
+						}).then(function() {
+							$http.post('/payment/removecard',card).success(function(rdata){
+								$scope.userdata = rdata.user;
+								$scope.payment.card = '';
+							}).error(function(errors){
+								sweetAlert.swal({
+									type:'error',
+									text:errors,
+								});
+							});
+						});
+					}
+		
+					$scope.changeCard = function(card){
+						$scope.payment.creditCard = card;
+						$scope.payment.creditCard.cvc = '';				
+					}
+		
+					var offset = 0; range = 10;
+					var currentYear = new Date().getFullYear();			
+					$scope.years = [];
+		            for (var i = (offset*1); i < (range*1) + 1; i++){
+		                $scope.years.push(currentYear + i);
+		            }
+		
+		            $scope.months = [];
+		            for (var i = 0; i < 12; i++){
+		                $scope.months.push(1 + i);
+		            }
+					/*$scope.testCard = [
+				        {
+				          token_id:"2992471298821111",
+				          type: 'maestro',
+				        }, {
+				          token_id:"2992471298821111",
+				          type: 'dinersclub',
+				        }, {
+				          token_id:"2992471298821111",
+				          type: 'laser',
+				        }, {
+				          token_id:"2992471298821111",
+				          type: 'jcb',
+				        }, {
+				          token_id:"2992471298821111",
+				          type: 'unionpay',
+				        }, {
+				          token_id:"2992471298821111",
+				          type: 'discover',
+				        }, {
+				          token_id:"2992471298821111",
+				          type: 'mastercard',
+				        }, {
+				          token_id:"2992471298821111",
+				          type: 'amex',
+				        }, {
+				          token_id:"2992471298821111",
+				          type: 'visa',
+				        }
+				      ];*/
+				}]
 	};
-})
-.directive('navLeft', function(){
+}])
+.directive('navLeft', [function(){
 
 	return {
 		restrict: 'A',
 		templateUrl: '/templates/account/navLeft.html',
-		controller: function($scope,UserService){
-	    	$scope.user = UserService.getIfUser();	    	
-		}
+		controller: [
+		'$scope','UserService',
+		function($scope,UserService){
+			    	$scope.user = UserService.getIfUser();	    	
+		}]	
 	};
-})
-.directive('userAddresses', function(){
+}])
+.directive('userAddresses', [function(){
 
 	return {
 		scope :{
@@ -1383,248 +1393,250 @@ AlcoholDelivery.directive('sideBar', function() {
 		},
 		restrict: 'A',
 		templateUrl: '/templates/partials/addresslist.html',
-		controller: function($scope,$rootScope,$http,$state,$payments,UserService,$mdDialog,NgMap,sweetAlert,$anchorScroll){
-
-			$scope.listUserAddress = function(){
-				$http.get("address").success(function(response){
-					$scope.addresses = response;
-					$rootScope.addresses = $scope.addresses;	
-					$anchorScroll();									
-				}).error(function(data, status, headers) {
-
-				});
-			}
-
-			$scope.listUserAddress();
-
-			$scope.hide = function() {
-				$mdDialog.hide();
-			};
-			$scope.cancel = function() {
-				$mdDialog.cancel();
-			};
-
-			$scope.answer = function(answer) {
-				$mdDialog.hide(answer);
-			};
-
-			$scope.addNewAddress = function(ev){
-
-				$mdDialog.show({
-					scope: $scope.$new(),
-					controller: function(){
-
-						$scope.address = {step:1};
-						$scope.types = "['geocode']";
-						$scope.restrictions="{country:'sg'}";
-						$scope.center = "[1.290270, 103.851959]";
-						$scope.zoom = 2;
-
-						// Google map auto complete code start //
-						NgMap.getMap().then(function(map) {
-							$scope.map = map;
-							angular.map = $scope.map;
-							setTimeout(function() {
-								var point = new google.maps.LatLng(1.3544542534181963,103.86775184667965);
-								$scope.map.setCenter(point);
-								$scope.map.setZoom(12);
-								$scope.map.setOptions({draggable:false});
-							}, 500);
+		controller: [
+		'$scope','$rootScope','$http','$state','$payments','UserService','$mdDialog','NgMap','sweetAlert','$anchorScroll',
+		function($scope,$rootScope,$http,$state,$payments,UserService,$mdDialog,NgMap,sweetAlert,$anchorScroll){
+		
+					$scope.listUserAddress = function(){
+						$http.get("address").success(function(response){
+							$scope.addresses = response;
+							$rootScope.addresses = $scope.addresses;	
+							$anchorScroll();									
+						}).error(function(data, status, headers) {
+		
 						});
-
-						$scope.addressData = {SEARCHTEXT:''};
-						$scope.simulateQuery = true;
-						$scope.isDisabled = false;
-
-						$scope.querySearch = function(query){
-							return $http.get('/site/search-location?q='+query).then(function(result){
-							    return result.data;
-							});
-						}
-
-						$scope.selectedItemChange = function(item){
-							if(item){
-								lat = item.LATITUDE;
-								long = item.LONGITUDE;
-								zoom = 18;
-								var addressData = angular.copy($scope.addressData.SEARCHTEXT);
-								$scope.addressData = angular.copy(item);
-								$scope.addressData.SEARCHTEXT = addressData;
-								$scope.locateMap(lat,long,zoom,item);
-							}
-						}
-
-						$scope.locateMap = function(lat,lng,zoom,item) {
-							setTimeout(function() {
-								
-								if($scope.map){
-									var point = new google.maps.LatLng(lat,lng);
-									$scope.map.setCenter(point);
-									$scope.map.setZoom(zoom);
-									$scope.map.setOptions({draggable:false});
-									//REMOVE THE PREVIOUS MARKER
-									if($scope.marker)
-										$scope.marker.setMap(null);
-
-									if(item.LAT){
-										$scope.marker = new google.maps.Marker({
-								            position: point,
-								            map: $scope.map,
-								        });
+					}
+		
+					$scope.listUserAddress();
+		
+					$scope.hide = function() {
+						$mdDialog.hide();
+					};
+					$scope.cancel = function() {
+						$mdDialog.cancel();
+					};
+		
+					$scope.answer = function(answer) {
+						$mdDialog.hide(answer);
+					};
+		
+					$scope.addNewAddress = function(ev){
+		
+						$mdDialog.show({
+							scope: $scope.$new(),
+							controller: function(){
+		
+								$scope.address = {step:1};
+								$scope.types = "['geocode']";
+								$scope.restrictions="{country:'sg'}";
+								$scope.center = "[1.290270, 103.851959]";
+								$scope.zoom = 2;
+		
+								// Google map auto complete code start //
+								NgMap.getMap().then(function(map) {
+									$scope.map = map;
+									angular.map = $scope.map;
+									setTimeout(function() {
+										var point = new google.maps.LatLng(1.3544542534181963,103.86775184667965);
+										$scope.map.setCenter(point);
+										$scope.map.setZoom(12);
+										$scope.map.setOptions({draggable:false});
+									}, 500);
+								});
+		
+								$scope.addressData = {SEARCHTEXT:''};
+								$scope.simulateQuery = true;
+								$scope.isDisabled = false;
+		
+								$scope.querySearch = function(query){
+									return $http.get('/site/search-location?q='+query).then(function(result){
+									    return result.data;
+									});
+								}
+		
+								$scope.selectedItemChange = function(item){
+									if(item){
+										lat = item.LATITUDE;
+										long = item.LONGITUDE;
+										zoom = 18;
+										var addressData = angular.copy($scope.addressData.SEARCHTEXT);
+										$scope.addressData = angular.copy(item);
+										$scope.addressData.SEARCHTEXT = addressData;
+										$scope.locateMap(lat,long,zoom,item);
 									}
 								}
-							},500);
-						}
-
-						$scope.$watch('addressData.SEARCHTEXT',function(newValue,oldValue){
-							if(newValue == ''){
-								$scope.addressData = {};
-								var lat = 1.3544542534181963;
-								var long = 103.86775184667965;
-								var zoom = 12;
-								var item = angular.copy($scope.addressData);
-								$scope.locateMap(lat,long,zoom,item);
-							}
+		
+								$scope.locateMap = function(lat,lng,zoom,item) {
+									setTimeout(function() {
+										
+										if($scope.map){
+											var point = new google.maps.LatLng(lat,lng);
+											$scope.map.setCenter(point);
+											$scope.map.setZoom(zoom);
+											$scope.map.setOptions({draggable:false});
+											//REMOVE THE PREVIOUS MARKER
+											if($scope.marker)
+												$scope.marker.setMap(null);
+		
+											if(item.LAT){
+												$scope.marker = new google.maps.Marker({
+										            position: point,
+										            map: $scope.map,
+										        });
+											}
+										}
+									},500);
+								}
+		
+								$scope.$watch('addressData.SEARCHTEXT',function(newValue,oldValue){
+									if(newValue == ''){
+										$scope.addressData = {};
+										var lat = 1.3544542534181963;
+										var long = 103.86775184667965;
+										var zoom = 12;
+										var item = angular.copy($scope.addressData);
+										$scope.locateMap(lat,long,zoom,item);
+									}
+								});
+		
+								$scope.saveAddress = function(){
+		
+									$http.post("address", $scope.addressData, {
+		
+								    }).success(function(response) {
+								    	$scope.errors = {};
+								    	$scope.hide();
+								    	$scope.listUserAddress();
+								    }).error(function(data, status, headers) {
+								    	$scope.errors = data;
+								    })
+		
+								};
+		
+								//SELECT THIS ADDRESS
+								$scope.setMapAddress = function(){
+									if($scope.addressData.POSTAL){
+										$scope.address.step = 2;
+									}
+								}
+		
+								//CANCEL FROM STEP 2
+								$scope.changeAddress = function(){
+									var lat = angular.copy($scope.addressData.LATITUDE);
+									var long = angular.copy($scope.addressData.LONGITUDE);
+									var zoom = 18;
+									var item = angular.copy($scope.addressData);
+									$scope.locateMap(lat,long,zoom,item);
+									$scope.address.step = 1;
+								}
+		
+							},
+							templateUrl: '/templates/partials/addressMap.html',
+							parent: angular.element(document.body),
+							targetEvent: ev,
+							clickOutsideToClose:true,
+							fullscreen:true
 						});
-
-						$scope.saveAddress = function(){
-
-							$http.post("address", $scope.addressData, {
-
-						    }).success(function(response) {
-						    	$scope.errors = {};
-						    	$scope.hide();
-						    	$scope.listUserAddress();
-						    }).error(function(data, status, headers) {
-						    	$scope.errors = data;
-						    })
-
-						};
-
-						//SELECT THIS ADDRESS
-						$scope.setMapAddress = function(){
-							if($scope.addressData.POSTAL){
-								$scope.address.step = 2;
-							}
-						}
-
-						//CANCEL FROM STEP 2
-						$scope.changeAddress = function(){
-							var lat = angular.copy($scope.addressData.LATITUDE);
-							var long = angular.copy($scope.addressData.LONGITUDE);
-							var zoom = 18;
-							var item = angular.copy($scope.addressData);
-							$scope.locateMap(lat,long,zoom,item);
-							$scope.address.step = 1;
-						}
-
-					},
-					templateUrl: '/templates/partials/addressMap.html',
-					parent: angular.element(document.body),
-					targetEvent: ev,
-					clickOutsideToClose:true,
-					fullscreen:true
-				});
-			};
-
-			$scope.showAddressForm = function(dObj) {
-				$scope.errors = {};
-				$mdDialog.show({
-					scope: $scope.$new(),
-					controller: function() {
-						$scope.update = false;
-						$scope.currentKey = dObj.key;
-						if(dObj.key!=null){
-							$scope.update = true;
-							$scope.address = $rootScope.addresses[dObj.key];
-						}
-
-						$scope.saveManualAddress = function(){
-
-							$scope.errors = {};
-							$scope.address.manualForm = 1;
-
-
-							if($scope.update){
-								$http.put("address/"+$scope.currentKey, $scope.address, {
-
-						        }).success(function(response) {
-						        	$scope.errors = {};
-						        	$scope.hide();
-						        	$scope.listUserAddress();
-						        }).error(function(data, status, headers) {
-						        	$scope.errors = data;
-						        });
-					    	}else{
-								$http.post("address", $scope.address, {
-
-						        }).success(function(response) {
-						        	$scope.errors = {};
-						        	$scope.hide();
-						        	$scope.listUserAddress();
-						        }).error(function(data, status, headers) {
-						        	$scope.errors = data;
-						        });
-					    	}
-						}
-					},
-					templateUrl: '/templates/partials/addressManually.html',
-					parent: angular.element(document.body),
-					targetEvent: dObj.ev,
-					clickOutsideToClose:true,
-					fullscreen:true
-				});
-
-			};
-
-			$scope.removeAddress = function(key) {
-
-				sweetAlert.swal({
-		                title: "Are you sure?",
-		                //text: "You will not be able to recover this address!",
-		                type: "warning",
-		                showCancelButton: true,
-		                confirmButtonColor: "#DD6B55",
-		                confirmButtonText: "Yes",
-		                // closeOnConfirm: false,
-		                // closeOnCancel: false
-	            }).then(function(isConfirm) {
-	                    if (isConfirm) {
-	                        $http.delete("address/"+key)
-	                            .success(function(response) {
-	                                if(response.success){
-	                                    $mdDialog.hide();
-	                                    $scope.listUserAddress();
-	                                    sweetAlert.swal({
-	                                    	title: response.message,
-							                type: "success",
-							                timer: 2000,
-
-	                                    });
-	                                }else{
-	                                    sweetAlert.swal("Cancelled!", response.message, "error");
-	                                }
-
-	                            })
-	                            .error(function(data, status, headers) {
-	                                sweetAlert.swal("Cancelled", data.message, "error");
-	                            })
-
-	                    } else {
-	                        sweetAlert.swal("Cancelled", "Address safe :)", "error");
-	                    }
-	                },function(cancel){}
-		       	);
-			};
-
-			$scope.setSelectedAddress = function(key){
-				$scope.delivery.address = {};
-				$scope.delivery.address.key = key;
-				$scope.delivery.address.detail = $scope.addresses[key];
-			}
-		}
+					};
+		
+					$scope.showAddressForm = function(dObj) {
+						$scope.errors = {};
+						$mdDialog.show({
+							scope: $scope.$new(),
+							controller: function() {
+								$scope.update = false;
+								$scope.currentKey = dObj.key;
+								if(dObj.key!=null){
+									$scope.update = true;
+									$scope.address = $rootScope.addresses[dObj.key];
+								}
+		
+								$scope.saveManualAddress = function(){
+		
+									$scope.errors = {};
+									$scope.address.manualForm = 1;
+		
+		
+									if($scope.update){
+										$http.put("address/"+$scope.currentKey, $scope.address, {
+		
+								        }).success(function(response) {
+								        	$scope.errors = {};
+								        	$scope.hide();
+								        	$scope.listUserAddress();
+								        }).error(function(data, status, headers) {
+								        	$scope.errors = data;
+								        });
+							    	}else{
+										$http.post("address", $scope.address, {
+		
+								        }).success(function(response) {
+								        	$scope.errors = {};
+								        	$scope.hide();
+								        	$scope.listUserAddress();
+								        }).error(function(data, status, headers) {
+								        	$scope.errors = data;
+								        });
+							    	}
+								}
+							},
+							templateUrl: '/templates/partials/addressManually.html',
+							parent: angular.element(document.body),
+							targetEvent: dObj.ev,
+							clickOutsideToClose:true,
+							fullscreen:true
+						});
+		
+					};
+		
+					$scope.removeAddress = function(key) {
+		
+						sweetAlert.swal({
+				                title: "Are you sure?",
+				                //text: "You will not be able to recover this address!",
+				                type: "warning",
+				                showCancelButton: true,
+				                confirmButtonColor: "#DD6B55",
+				                confirmButtonText: "Yes",
+				                // closeOnConfirm: false,
+				                // closeOnCancel: false
+			            }).then(function(isConfirm) {
+			                    if (isConfirm) {
+			                        $http.delete("address/"+key)
+			                            .success(function(response) {
+			                                if(response.success){
+			                                    $mdDialog.hide();
+			                                    $scope.listUserAddress();
+			                                    sweetAlert.swal({
+			                                    	title: response.message,
+									                type: "success",
+									                timer: 2000,
+		
+			                                    });
+			                                }else{
+			                                    sweetAlert.swal("Cancelled!", response.message, "error");
+			                                }
+		
+			                            })
+			                            .error(function(data, status, headers) {
+			                                sweetAlert.swal("Cancelled", data.message, "error");
+			                            })
+		
+			                    } else {
+			                        sweetAlert.swal("Cancelled", "Address safe :)", "error");
+			                    }
+			                },function(cancel){}
+				       	);
+					};
+		
+					$scope.setSelectedAddress = function(key){
+						$scope.delivery.address = {};
+						$scope.delivery.address.key = key;
+						$scope.delivery.address.detail = $scope.addresses[key];
+					}
+				}]
 	};
-})
+}])
 .directive('ngSpinnerBar', ['$rootScope',function($rootScope) {
 		return {
 			link: function(scope, element, attrs) {

@@ -103,43 +103,7 @@ angular.module('alcoholCart.directives',[])
 			}
 		};
 	}])
-
-	.directive('alcoholcartCheckout', [function(){
-		return {
-			restrict : 'E',
-			controller : ('CartController', ['$rootScope', '$scope', 'alcoholCart', 'fulfilmentProvider', function($rootScope, $scope, alcoholCart, fulfilmentProvider) {
-				$scope.alcoholCart = alcoholCart;
-
-				$scope.checkout = function () {
-					fulfilmentProvider.setService($scope.service);
-					fulfilmentProvider.setSettings($scope.settings);
-					fulfilmentProvider.checkout()
-						.success(function (data, status, headers, config) {
-							$rootScope.$broadcast('alcoholCart:checkout_succeeded', data);
-						})
-						.error(function (data, status, headers, config) {
-							$rootScope.$broadcast('alcoholCart:checkout_failed', {
-								statusCode: status,
-								error: data
-							});
-						});
-				}
-			}]),
-			scope: {
-				service:'@',
-				settings:'='
-			},
-			transclude: true,
-			templateUrl: function(element, attrs) {
-				if ( typeof attrs.templateUrl == 'undefined' ) {
-					return 'template/alcoholCart/checkout.html';
-				} else {
-					return attrs.templateUrl;
-				}
-			}
-		};
-	}])
-
+	
 	.directive('paymentForm', ['$rootScope','$timeout',function($rootScope,$timeout){
 		return {
 			restrict: 'E',
@@ -161,3 +125,4 @@ angular.module('alcoholCart.directives',[])
             }
 		};
 	}]);
+	

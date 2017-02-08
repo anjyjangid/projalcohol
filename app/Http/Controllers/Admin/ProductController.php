@@ -800,6 +800,12 @@ class ProductController extends Controller
 			}
 			$inputs['categoriesObject'] = $categoriesObject;
 		}
+
+		if(isset($inputs['groupId']) && !empty($inputs['groupId'])){
+			$inputs['groupId'] = new MongoId($inputs['groupId']);
+		}else{
+			$inputs['unsetFields'][] = 'groupId';				
+		}
 	}
 
 	public function getUpdatep(Request $request){

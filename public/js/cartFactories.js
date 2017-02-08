@@ -1775,15 +1775,14 @@ angular.module('AlcoholCartFactories', [])
 
 									$timeout(function(){
 										$mdToast.show({
-											controller:function($scope){
-
+											controller:['$scope',function($scope){											
 												$scope.qChilled = 0;
 												$scope.qNchilled = 0;
 
 												$scope.closeToast = function(){
 													$mdToast.hide();
 												}
-											},
+											}],
 											templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
 											parent : $element,
 											position: 'top center',
@@ -1797,15 +1796,14 @@ angular.module('AlcoholCartFactories', [])
 									$timeout(function(){
 
 										$mdToast.show({
-											controller:function($scope){
-
+											controller:['$scope',function($scope){											
 												$scope.qChilled = 0;
 												$scope.qNchilled = 0;
 
 												$scope.closeToast = function(){
 													$mdToast.hide();
 												}
-											},
+											}],
 											templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
 											parent : $element,
 											position: 'top center',
@@ -1867,15 +1865,14 @@ angular.module('AlcoholCartFactories', [])
 
 									$timeout(function(){
 									$mdToast.show({
-										controller:function($scope){
-
+										controller:['$scope',function($scope){										
 											$scope.qChilled = 0;
 											$scope.qNchilled = 0;
 
 											$scope.closeToast = function(){
 												$mdToast.hide();
 											}
-										},
+										}],
 										templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
 										parent : $element,
 										position: 'top center',
@@ -1888,15 +1885,14 @@ angular.module('AlcoholCartFactories', [])
 
 									$timeout(function(){
 									$mdToast.show({
-										controller:function($scope){
-
+										controller:['$scope',function($scope){										
 											$scope.qChilled = 0;
 											$scope.qNchilled = 0;
 
 											$scope.closeToast = function(){
 												$mdToast.hide();
 											}
-										},
+										}],
 										templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
 										parent : $element,
 										position: 'top center',
@@ -2047,15 +2043,14 @@ angular.module('AlcoholCartFactories', [])
 
 								$timeout(function(){
 									$mdToast.show({
-										controller:function($scope){
-
+										controller:['$scope',function($scope){										
 											$scope.qChilled = 0;
 											$scope.qNchilled = 0;
 
 											$scope.closeToast = function(){
 												$mdToast.hide();
 											}
-										},
+										}],
 										templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
 										parent : $element,
 										position: 'top center',
@@ -2069,15 +2064,14 @@ angular.module('AlcoholCartFactories', [])
 								$timeout(function(){
 
 									$mdToast.show({
-										controller:function($scope){
-
+										controller:['$scope',function($scope){										
 											$scope.qChilled = 0;
 											$scope.qNchilled = 0;
 
 											$scope.closeToast = function(){
 												$mdToast.hide();
 											}
-										},
+										}],
 										templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
 										parent : $element,
 										position: 'top center',

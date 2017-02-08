@@ -1,5 +1,5 @@
-AlcoholDelivery.controller('AppController',
-	['$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 'alcoholCart','$cookies','$location',
+AlcoholDelivery.controller('AppController', [
+	'$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 'alcoholCart','$cookies','$location',
 	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter, ProductService, alcoholCart,$cookies,$location) {
 
 	$scope.ageVerification = function() {
@@ -7,72 +7,72 @@ AlcoholDelivery.controller('AppController',
 		
 		$mdDialog.show({
 			//scope: $scope.$new(),
-			controller: function($scope,$cookies){
-				
-				/*$scope.calculateAge = function(){
-					var currentYear = new Date().getFullYear();
-					return currentYear - $scope.verification.userYear;
-				}*/
-				$scope.checkYear = function(){
-					
-					var currentYear = new Date().getFullYear();
-					$scope.verification.cage = currentYear - $scope.verification.userYear;
-				}
-				
-				/*$scope.$watch('verification.userYear',function(newV,oldV){
-				
-				});*/
-
-				$scope.verifyage = function(){		
-
-					$cookies.remove('ageverfication');					
-    				
-    				if($scope.verification.rememberme){
-    					// this will set the expiration to 12 months
-						var now = new Date();
-    					now = new Date(now.getFullYear()+1, now.getMonth(), now.getDate());
-    					$cookies.putObject('ageverfication', 
-							{month:$scope.verification.userMonth,day:$scope.verification.userDay,year:$scope.verification.userYear},
-							{expires:now}
-						);
-    				}else{
-						$cookies.putObject('ageverfication', 
-							{month:$scope.verification.userMonth,day:$scope.verification.userDay,year:$scope.verification.userYear}							
-						);    					
-    				}
-
-					$mdDialog.hide();
-				};
-
-				$scope.verification = {};
-
-				var offset = 0; range = 100;
-				var currentYear = new Date().getFullYear();			
-				$scope.verification.years = [];
-			    for (var i = (offset*1); i <= range; i++){
-			        $scope.verification.years.push(currentYear - i);
-			    }
-
-				var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
-
-			    /*$scope.verification.months = [];
-			    for (var i = 0; i < 12; i++){
-			    	var val = 1+i;
-			    	if(val<=9)			    	
-			    		val = 0+''+val;
-			        $scope.verification.months.push({value:(val),label:monthNames[i]});
-			    }
-			    
-			    $scope.verification.days = [];    
-			    
-			    for (var d = 1; d <= 31; d++){
-			    	var val = d;
-			    	if(val<=9)			    	
-			    		val = 0+''+val;
-			    	$scope.verification.days.push(val);
-			    }*/
-
-			},
+			controller: ['$scope','$cookies',function($scope,$cookies){
+							
+							/*$scope.calculateAge = function(){
+								var currentYear = new Date().getFullYear();
+								return currentYear - $scope.verification.userYear;
+							}*/
+							$scope.checkYear = function(){
+								
+								var currentYear = new Date().getFullYear();
+								$scope.verification.cage = currentYear - $scope.verification.userYear;
+							}
+							
+							/*$scope.$watch('verification.userYear',function(newV,oldV){
+							
+							});*/
+			
+							$scope.verifyage = function(){		
+			
+								$cookies.remove('ageverfication');					
+			    				
+			    				if($scope.verification.rememberme){
+			    					// this will set the expiration to 12 months
+									var now = new Date();
+			    					now = new Date(now.getFullYear()+1, now.getMonth(), now.getDate());
+			    					$cookies.putObject('ageverfication', 
+										{month:$scope.verification.userMonth,day:$scope.verification.userDay,year:$scope.verification.userYear},
+										{expires:now}
+									);
+			    				}else{
+									$cookies.putObject('ageverfication', 
+										{month:$scope.verification.userMonth,day:$scope.verification.userDay,year:$scope.verification.userYear}							
+									);    					
+			    				}
+			
+								$mdDialog.hide();
+							};
+			
+							$scope.verification = {};
+			
+							var offset = 0; range = 100;
+							var currentYear = new Date().getFullYear();			
+							$scope.verification.years = [];
+						    for (var i = (offset*1); i <= range; i++){
+						        $scope.verification.years.push(currentYear - i);
+						    }
+			
+							var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+			
+						    /*$scope.verification.months = [];
+						    for (var i = 0; i < 12; i++){
+						    	var val = 1+i;
+						    	if(val<=9)			    	
+						    		val = 0+''+val;
+						        $scope.verification.months.push({value:(val),label:monthNames[i]});
+						    }
+						    
+						    $scope.verification.days = [];    
+						    
+						    for (var d = 1; d <= 31; d++){
+						    	var val = d;
+						    	if(val<=9)			    	
+						    		val = 0+''+val;
+						    	$scope.verification.days.push(val);
+						    }*/
+			
+						}],
 			templateUrl: '/templates/partials/ageverfication.html',
 			parent: angular.element(document.body),			
 			clickOutsideToClose:false,
@@ -194,24 +194,26 @@ AlcoholDelivery.controller('AppController',
 	$scope.giftPopup = function(ev) {
 		$mdDialog.show(
 			{
-				controller: function($scope, $rootScope,$mdDialog, $http) {
-					$scope.giftcategories = {
-						types:[]
-					};
-					$scope.processinggift = true;
-
-					$http.get('/giftcategory').success(function(result){
-						$scope.giftcategories.types = result;
-
-						$scope.processinggift = false;
-					}).error(function(){
-						$scope.processinggift = false;
-					});
-
-					$scope.hide = function() {
-						$mdDialog.hide();
-					};
-				},
+				controller: [
+				'$scope', '$rootScope','$mdDialog', '$http',
+				function($scope, $rootScope,$mdDialog, $http) {
+									$scope.giftcategories = {
+										types:[]
+									};
+									$scope.processinggift = true;
+				
+									$http.get('/giftcategory').success(function(result){
+										$scope.giftcategories.types = result;
+				
+										$scope.processinggift = false;
+									}).error(function(){
+										$scope.processinggift = false;
+									});
+				
+									$scope.hide = function() {
+										$mdDialog.hide();
+									};
+								}],
 				templateUrl: '/templates/partials/gift-packaging-popup.html',
 				parent: angular.element(document.body),
 				targetEvent: ev,
@@ -1068,9 +1070,6 @@ AlcoholDelivery.controller('CreditsController',['$scope','$http','sweetAlert','$
 
 }]);
 
-
-
-
 AlcoholDelivery.controller('CartController',[
 			'$scope','$rootScope','$state','$stateParams', '$location','$anchorScroll','$http','$q', '$mdDialog', '$mdMedia','$timeout',
 			'UserService','sweetAlert','alcoholCart','alcoholGifting','store', 'cartValidation', 'cartValidate', 'ProductService'
@@ -1187,41 +1186,43 @@ AlcoholDelivery.controller('CartController',[
 
 								$mdDialog.show({
 
-									controller: function($scope, $rootScope, $document) {
-
-										$scope.products = response;
-
-										$scope.address = {
-											step:1
-										}
-
-										$scope.hide = function() {
-											$mdDialog.hide();
-										};
-										$scope.cancel = function() {
-											$mdDialog.cancel();
-										};
-
-										$scope.continue = function(){
-
-											//alcoholCart.deployCart();
-
-											$scope.step = 2;
-
-											$mdDialog.hide();
-
-											$state.go("mainLayout.checkout.address");
-
-										}
-
-										$scope.loadMore = function(dir){
-											var owl = $('.dontmissowl').data('owlCarousel');
-											if(dir)
-												owl.prev();
-											else
-												owl.next();
-										}
-									},
+									controller: [
+									'$scope', '$rootScope', '$document',
+									function($scope, $rootScope, $document) {
+									
+																			$scope.products = response;
+									
+																			$scope.address = {
+																				step:1
+																			}
+									
+																			$scope.hide = function() {
+																				$mdDialog.hide();
+																			};
+																			$scope.cancel = function() {
+																				$mdDialog.cancel();
+																			};
+									
+																			$scope.continue = function(){
+									
+																				//alcoholCart.deployCart();
+									
+																				$scope.step = 2;
+									
+																				$mdDialog.hide();
+									
+																				$state.go("mainLayout.checkout.address");
+									
+																			}
+									
+																			$scope.loadMore = function(dir){
+																				var owl = $('.dontmissowl').data('owlCarousel');
+																				if(dir)
+																					owl.prev();
+																				else
+																					owl.next();
+																			}
+																		}],
 									templateUrl: '/templates/checkout/dont-miss.html',
 									parent: angular.element(document.body),
 									//targetEvent: ev,
@@ -2610,7 +2611,6 @@ AlcoholDelivery.controller('CmsController',[
 
 }]);
 
-
 AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll','alcoholCart', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll,alcoholCart){
 
 	$rootScope.appSettings.layout.pageRightbarExist = false;
@@ -2695,8 +2695,7 @@ AlcoholDelivery.controller('PackagesController', ['$scope', '$rootScope','$state
 
 }]);
 
-AlcoholDelivery.controller('PackageDetailController',
-	['$q','$scope', '$rootScope','$state','$http','$stateParams','$location','$timeout','$anchorScroll','alcoholCart','sweetAlert', '$sce',
+AlcoholDelivery.controller('PackageDetailController', ['$q','$scope', '$rootScope','$state','$http','$stateParams','$location','$timeout','$anchorScroll','alcoholCart','sweetAlert', '$sce',
 	function($q, $scope, $rootScope,$state,$http,$stateParams,$location,$timeout,$anchorScroll,alcoholCart,sweetAlert,$sce){
 
 	$scope.errors = [];
@@ -3407,7 +3406,6 @@ AlcoholDelivery.controller('GiftCardController', [
 
 
 }]);
-
 
 AlcoholDelivery.controller('ClaimGiftCardController', ['$scope', '$http', '$state', '$stateParams', 'ClaimGiftCard',function($scope, $http, $state, $stateParams, ClaimGiftCard){
 

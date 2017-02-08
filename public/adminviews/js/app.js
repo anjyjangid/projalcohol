@@ -620,6 +620,14 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', '$http', '$root
 					links:['userLayout.products.list','userLayout.products.add','userLayout.products.edit']
 				},
 				{
+					label:'Product Groups',
+					icon:'icon-grid',
+					uisref:'userLayout.productgroups.list',
+					id:'sidebar_menu_link_product_grouplist',
+					access : ['admin'],
+					links:['userLayout.productgroups.list','userLayout.productgroups.add','userLayout.productgroups.edit']
+				},
+				{
 					label:'Shared Inventory',
 					icon:'icon-share',
 					uisref:'userLayout.products.shared',
@@ -1794,6 +1802,69 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				pageTitle:'Edit Product',
 				breadCrumb:[
 					{title:'Products','uisref':'userLayout.products.list'},
+					{title:'Edit','uisref':'#'}
+				]
+			},
+			resolve: {
+                authenticate: authenticate
+            }
+        })
+
+        .state('userLayout.productgroups', {
+            abstract:true,
+            templateUrl:'adminviews/views/auth.html',
+            controller: "ProductGroupController",
+            resolve: {
+                authenticate: authenticate,
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [                            
+                            'adminviews/js/models/productgroupModel.js',
+                            'adminviews/js/controllers/ProductGroupController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+        
+        .state("userLayout.productgroups.list", {
+            url: "/productgroup/list",
+            templateUrl: "adminviews/views/products/grouplist.html",
+            data:{
+				pageTitle:'Product Groups',
+				breadCrumb:[
+					{title:'Product Groups','uisref':'#'}
+				]
+			},
+			resolve: {
+                authenticate: authenticate
+            }
+        })
+
+        .state("userLayout.productgroups.add", {
+            url: "/products/groupadd",
+            templateUrl: "adminviews/views/products/groupform.html",
+            data:{
+				pageTitle:'Add Product Group',
+				breadCrumb:[
+					{title:'Product Groups','uisref':'userLayout.productgroups.list'},
+					{title:'Add','uisref':'#'}
+				]
+			},
+			resolve: {
+                authenticate: authenticate
+            }
+        })
+
+        .state("userLayout.productgroups.edit", {
+            url: "/products/groupedit/{productgroupid}",
+            templateUrl: "adminviews/views/products/groupform.html",
+            data:{
+				pageTitle:'Edit Product Group',
+				breadCrumb:[
+					{title:'Product Groups','uisref':'userLayout.productgroups.list'},
 					{title:'Edit','uisref':'#'}
 				]
 			},

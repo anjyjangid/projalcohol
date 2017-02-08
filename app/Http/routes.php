@@ -125,6 +125,9 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	
 	Route::post('payment/addcard/{id}','PaymentController@postAddcard');
 
+	Route::resource('productgroup', 'Admin\ProductGroupController',['only'=>['store','edit','update']]);
+	Route::controller('productgroup', 'Admin\ProductGroupController');
+
 });
 
 Route::group(['prefix' => 'admin'], function () {

@@ -4779,10 +4779,13 @@ ui-sref {
 }
 .addressbok-travis {
 	float: left;
+	position: relative;
 	width: 100%;
 }
 .addressbok-travis > span {
 	float: left;
+	position: absolute;
+	left: 0px;
 }
 .addresseditdltpic {
 	float: right;
@@ -4793,7 +4796,11 @@ ui-sref {
 	float: left;
 	font-size: 14px;
 	font-weight: 600;
-	padding-left: 10px;
+	padding-left: 30px;
+	width: 75%;
+	text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 .addressbok-address {
 	color: #666666;
