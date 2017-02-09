@@ -729,9 +729,20 @@ AlcoholDelivery.service('cartValidate',['alcoholCart', '$state', '$q', '$mdToast
 			var i = 0;
 
 			$http.get("cart/products-lapsed-time/"+alcoholCart.getCartKey()).then(
+
 				function(res){
 
 					alcoholCart.setProductsAvailability(res.data);
+
+					// $http.get("cart/available-next-slots/"+alcoholCart.getCartKey()).then(
+
+					// 	function (slotRes) {
+					// 		console.log(slotRes);
+					// 	},
+					// 	function (slotResErr) {
+
+					// 	}
+					// )
 
 				},
 				function(err){
@@ -747,6 +758,7 @@ AlcoholDelivery.service('cartValidate',['alcoholCart', '$state', '$q', '$mdToast
 				}
 				i++;
 			}
+
 			resolve();
 
 		});

@@ -30,7 +30,7 @@
 				<div class="party-detail-btmtitl4"><h3>Customise your own package</h3></div>
 				<div class="col-md-8 party-alcholcover">
 					<v-accordion id="accordionA" class="vAccordion--default" control="accordionA" multiple onexpand="expandCallback(index, id)" oncollapse="collapseCallback(index, id)">
-				        <v-pane id="{{$index}}" ng-repeat="packageItem in packages.packageItems">
+				        <v-pane id="{{$index}}" ng-repeat="packageItem in packages.packageItems" ng-class="">
 			                <v-pane-header id="{{$index}}-header"  aria-controls="{{ ::subpane.id }}-header" class="byz">
 				                <div class="ttile-divcover party-deatil-pading5">
 				                  <h5  class="custmize-contntset ">{{ ::packageItem.title }}</h5>

@@ -1351,6 +1351,52 @@ class CartController extends Controller
 					],400);
 		}
 
+		$endDateTimeStr = strtotime("+7 day", $passedTimeStr);
+
+		$query = [
+					[
+						'$match' => [
+							"delivery.deliveryKey" => [ '$exists' => true ],
+							"delivery.deliveryKey" => [
+								'$gte'=> $passedTimeStr, 
+								'$lt'=> $endDateTimeStr
+							],
+							"status" => [ '$ne'=>3 ]
+						]
+					],
+					[
+						'$project' => [
+							'_id' => 0,
+					 		'deliveryKey' => '$delivery.deliveryKey'
+						]
+					]
+					// [
+					// 	'$project'=> [
+					// 		'_id' => 0,
+					// 		'deliveryKey' => [
+					// 			'$floor' => [
+					// 				'$divide' => [
+					// 					[
+					// 						'$mod' => [
+					// 							'$delivery.deliveryKey',86400
+					// 						]
+					// 					],
+					// 					60
+					// 				]
+					// 			]
+					// 		],
+					// 	]
+					// ],
+					// [
+					// 	'$group' => [
+					// 		'_id'=>'$deliveryKey',							
+					// 		'count' => [ '$sum'=>1 ] 
+					// 	]
+					// ]
+				];
+
+		$orders = Orders::raw()->aggregate($query);
+		$orders = $orders['result'];
 		$start = (float)$passedTimeStr*1000;
 		$end = (float)(strtotime('+6 days',$passedTimeStr)*1000);
 		
@@ -1402,11 +1448,30 @@ class CartController extends Controller
 			$datekey = strtotime($tempDate);
 			$datestamp = date("d M",$datekey);
 			$currTimeSlots = $timeSlots[$weeknumber-1];
+
+			foreach($currTimeSlots as &$timeSlot){
+
+				$floorTime = $datekey + $timeSlot['from'] * 60;
+				$ceilTime = $datekey + $timeSlot['to'] * 60;
+
+				foreach ($orders as $order) {
+					if($order['deliveryKey']>=$floorTime && $order['deliveryKey']<$ceilTime){
+						$timeSlot['orderlimit']-=1;						
+					}
+				}
+
+				if($timeSlot['orderlimit']<1){
+					$timeSlot['status'] = 0;
+				}
+
+			}
+
 			$status = 1;
 
 			if(in_array($weeknumber==7?0:$weeknumber, $weekDaysOff) || in_array($datekey,$holidayTimestamp) || $datekey<$todayDateStr){
 				$status = 0;
 			}
+
 
 			if($datekey===$todayDateStr){
 
@@ -1421,6 +1486,8 @@ class CartController extends Controller
 				$slot['slotCeilKey'] = $datekey + ($slot['to'] * 60);
 				$slot['slotFloorKey'] = $datekey + ($slot['from'] * 60);
 			}
+
+
 
 			$slotArr[$weekKeys[$weeknumber]] = [
 				'slots' => $currTimeSlots,
@@ -1828,6 +1895,7 @@ class CartController extends Controller
 			}
 
 			//FORMAT CART TO ORDER
+
 			$orderObj = $cart->cartToOrder($cartKey);
 
 			$defaultContact = true;
@@ -2933,6 +3001,13 @@ class CartController extends Controller
 // 		}
 
 // 	}
+
+	public function getNextAvailableSlot ($cartKey) {
+
+		$cart = Cart::find($cartKey);
+		$cart->getNextAvailableSlots();
+
+	}
 
 	public function getProductsLapsedTime ($cartKey) {
 
