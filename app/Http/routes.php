@@ -175,6 +175,7 @@ Route::group(['prefix' => 'api'], function () {
 	Route::group(['middleware' => 'auth'], function () {
 
 		Route::controller('loyalty', 'LoyaltyController');
+		
 		Route::resource('loyalty', 'LoyaltyController');
 
 		Route::controller('credits', 'CreditsController');
