@@ -228,6 +228,7 @@ AlcoholDelivery.directive('sideBar', function() {
 							$scope.loginSuccess(response);
 						}).error(function(data, status, headers) {
 							$scope.login.errors = data;
+							$scope.login.errors.useremail = angular.copy($scope.login.email);
 				        });
 					};
 		
@@ -265,6 +266,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		
 				    $scope.resendSubmit = function(){
 				    	$scope.resend.errors = {};
+				    	$scope.resend.email = angular.copy($scope.login.errors.useremail);
 						$http.post('/user/resendverification',$scope.resend).success(function(response){
 							$scope.resend = {};
 							sweetAlert.swal({

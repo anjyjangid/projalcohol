@@ -41,7 +41,10 @@
 									Delivery type
 								</th>
 								<th width="10%">
-									Status
+                                    Status
+                                </th>
+                                <th width="10%">
+									User rating
 								</th>
 								<th width="12%">
 									Actions
@@ -72,6 +75,7 @@
                                         <option ng-repeat="obj in orderstatus" value="{{obj.value}}">{{obj.label}}</option>
 									</select>
 								</td>
+                                <td></td>
 								<td>
 									<div class="margin-bottom-5">
 										<button class="btn btn-xs yellow filter-submit margin-bottom" title="Search"><i class="fa fa-search"></i></button>
@@ -244,6 +248,19 @@
                             }else if(status == 3){
                                 return '<span class="label label-sm label-danger">Cancelled</span>';
                             }*/                       
+                        },                  
+                        orderable:true
+                    },
+                    {
+                        mData: null,
+                        sClass: "center",
+                        mRender: function(data, type, full) {
+                            var rate = data.rate;                            
+                            
+                            if(typeof rate == 'undefined'){
+                                return 'Not rated yet';
+                            }
+                            return rate+'/5';
                         },                  
                         orderable:true
                     },

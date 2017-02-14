@@ -32,7 +32,7 @@ elixir(function(mix) {
 	    /*SWEET ALERT STYLE*/
 	    '../bower_components/sweetalert2/dist/sweetalert2.min.js',
 	    '../bower_components/ngSweetAlert2/SweetAlert.js',
-	    '../bower_components/es6-promise/promise.min.js',
+	    '../bower_components/es6-promise/es6-promise.min.js',
 	    '../bower_components/angular-animate/angular-animate.js',
 	    '../bower_components/angular-aria/angular-aria.min.js',
 	    '../bower_components/angular-messages/angular-messages.min.js',
