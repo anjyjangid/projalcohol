@@ -601,12 +601,12 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							"" : {
 								templateUrl : "/templates/index/home.html",
 								controller:['$scope','$http','$rootScope',function($scope,$http,$rootScope){
-										$scope.AppController.category = "";
-										$scope.AppController.subCategory = "";
-										$scope.AppController.showpackage = false;										
-										$scope.showSignup = function(){
-											$rootScope.$broadcast('showSignup');
-										};
+									$scope.AppController.category = "";
+									$scope.AppController.subCategory = "";
+									$scope.AppController.showpackage = false;										
+									$scope.showSignup = function(){
+										$rootScope.$broadcast('showSignup');
+									};
 								}],
 
 							},
