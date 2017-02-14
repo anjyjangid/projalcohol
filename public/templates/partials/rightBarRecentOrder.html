@@ -5,12 +5,14 @@
 	<div class="fullwidth modifyscroll" ng-scrollbars >
 
 		
-		<div class="order-fetching" ng-if="fetching || processAdding"></div>
+		<div class="order-fetching" ng-if="fetching || processAdding"></div>		
+
+		<md-checkbox ng-model="allSelected" ng-init="allSelected=true" class="full" ng-change="selectAll(allSelected)"> Select all</md-checkbox>
 
 		<div class="ro_items" ng-class="{'itemselect':product.selected}" ng-repeat="product in lastorder.products" title="{{product.shortDescription}}">
 
 			<div class="chk_unchk">
-				<md-checkbox ng-model="product.selected" aria-label="{{product.name}}"></md-checkbox>			
+				<md-checkbox ng-model="product.selected" ng-change = "selectPro()" aria-label="{{product.name}}"></md-checkbox>
 			</div>
 			<div class="ro_pic">				
 				<img ng-src="products/i/200/{{product.imageFiles | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
@@ -33,7 +35,7 @@
 		</div>
 		<div class="repeatbtn" data-toggle="modal" ng-click="repeatOrder($event)">
 			<!-- <img src="images/repeat.png" class="img-responsive" /> -->
-			<button type="button" class="alcohalfooter_repeatorderbtn-rep">Repeat</button>
+			<!-- <button type="button" class="alcohalfooter_repeatorderbtn-rep">Repeat</button> -->
 		</div>
 	</div>
 	<div class="recentorder_title">Order History</div>

@@ -1207,7 +1207,7 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 	            	config.url = 'api/'+urlStr;
 	        }else{
 	        	if(urlStr.indexOf('templates') > 0)
-	        		config.url += '?ver=1.5';
+	        		config.url += '?ver=1.6';
 	        }	        	
             return config;
         },

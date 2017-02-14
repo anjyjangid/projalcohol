@@ -71,6 +71,7 @@ function GOM(obj)
 	return res;
 }
 
+
 function mongoIdToStr(id){
 	if(typeof id.$id !== 'undefined'){ 
 		id = id.$id

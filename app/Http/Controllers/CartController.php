@@ -3005,7 +3005,9 @@ class CartController extends Controller
 	public function getNextAvailableSlot ($cartKey) {
 
 		$cart = Cart::find($cartKey);
-		$cart->getNextAvailableSlots();
+		$nextAvailableSlots = $cart->getNextAvailableSlots();
+
+		return response($nextAvailableSlots,200);
 
 	}
 

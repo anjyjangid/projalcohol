@@ -40,7 +40,7 @@ class Cart extends Moloquent
 	 * @var array
 	 */
 	protected $fillable = [
-
+	
 						'products',
 						'loyalty',
 						'packages',
@@ -437,11 +437,26 @@ class Cart extends Moloquent
 
 		$deliveryTime = $this->getCartDeliveryBaseTime();
 		$timeslot = Setting::where("_id","=","timeslot")->first();
-		$dayIndex = getTodayDayNumber();
-prd($dayIndex);
+		$dayIndex = getTodayDayNumber() - 1;
 
-		$timeslot = $timeslot->settings[0];
-		prd($timeslot);
+		$todaySlots = $timeslot->settings[$dayIndex];
+		$availSlots = [];
+		
+		$deliveryTime = $deliveryTime - strtotime(date('Y-m-d',$deliveryTime));
+		$deliveryTime = round($deliveryTime/60);
+
+		foreach($todaySlots as $slot){
+
+			if(count($availSlots)>1){
+				break;
+			}
+			if($slot['status']==1 && $slot['from']<= $deliveryTime && $deliveryTime<$slot['to'] ){
+				array_push($availSlots, $slot);
+			}
+
+		}
+
+		return $availSlots;
 
 	}
 
@@ -465,7 +480,7 @@ prd($dayIndex);
 
 	private function setProductAvailabilityAfter($products){
 
-		$sgtTimeStamp = strtotime("+8 hours");
+		$sgtTimeStamp = getServerTime();
 
 		$today = strtotime(date('Y-m-d',$sgtTimeStamp))*1000;
 

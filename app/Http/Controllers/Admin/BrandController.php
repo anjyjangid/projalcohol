@@ -231,7 +231,8 @@ class BrandController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($ids)
-    {        
+    {   
+        prd("asdasd");
         $keys = explode(",", $ids);
         
         try {
