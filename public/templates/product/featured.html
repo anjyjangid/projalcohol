@@ -1,26 +1,41 @@
 <div class="single_slider single_slider_product" ng-if="featured.length">
 
 	<data-owl-carousel class="owl-carousel owl-theme owl-wraaper-margin" data-options="{
-							
+
 						navigation : false,
 						pagination : true,
                         singleItem:true,
-						
 
 				}">
 	<div owl-carousel-item="" ng-repeat="product in featured" class="item">
 		
 		<div class="productinner_rightslide">
-			<img err-pro-src="" ng-src="products/i/400/{{product.imageFiles[0].source}}" alt="" class="img-responsive img-responsive-h"/>      
+			<img err-pro-src="" ng-src="products/i/400/{{product.imageFiles[0].source}}" alt="product image" class="img-responsive img-responsive-h"/>      
 		</div>
         <div class="productinner_leftslide left-main-outerdiv">
-				<div class="featured_product">Featured Product</div>
+
+				<div class="featured_product">Featured Product </div>
+				<ul class="list-inline saletags-list pos-relative ">
+					<li ng-if="product.nameSale">{{product.nameSale}}</li>
+					<li ng-if="product.sale">{{product.sale.title}}</li>
+				</ul>
+
 				<div class="productslide_heading">{{product.name}}</div>
 				<div class="productslide_normaltext">{{product.shortDescription}}</div>
-				<div class="productslide_normaltext">{{product.description}}</div>
 
-				<div class="productslide_discountprice strike-txt-only" ng-if="product.unitPrice!=product.price">{{product.unitPrice | pricingTxt}}</div>
-				<div class="productslide_discountprice">{{product.price | pricingTxt}}</div>
+				<div class="productslide_normaltext"><p read-more limit="140" more-text="...." less-text="" ui-sref="mainLayout.product({product:product.slug})" expand="false" content="{{product.description}}"></p></div>
+
+				<div class="pro-pricing m-top-30">
+					<div class="grey-txt">Unit Price</div>
+					<span ng-if="product.unitPrice!=product.price" class="-dis-price">{{product.price | pricingTxt}}</span>
+					<span class="-unit-price">{{product.unitPrice | pricingTxt}}</span>
+				</div>
+				<!-- <div class="productslide_discountprice strike-txt-only" ng-if="product.unitPrice!=product.price">
+					<div>Unit Price</div>
+					<span class="productslide_discountprice">{{product.price | pricingTxt}}</span>
+					<span>{{product.unitPrice | pricingTxt}}</span>
+				</div> -->
+				
 				
 				<div class="productslide_addbutton"><button class="btn product_addcart addcart-detail top-set-cart" ui-sref="mainLayout.product({product:product.slug})"><img src="images/cart-icon.png" />Add to Cart</button></div>
 		</div>

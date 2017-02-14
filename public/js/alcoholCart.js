@@ -2077,9 +2077,9 @@ AlcoholDelivery.service('alcoholCart', [
 					$http.delete("cart/promotion/"+deliveryKey+"/"+id).then(
 
 						function(successRes){
-							
+
 							var locPromotion = cart.promotions.splice(index, 1)[0] || {};
-							
+
 							$rootScope.$broadcast('alcoholCart:notify',"Promotion removed from cart");
 
 							_self.setPromotionsInCart();
@@ -2901,7 +2901,7 @@ AlcoholDelivery.service('alcoholCart', [
 				}else if(isExist.product === false){
 
 					var toast = $mdToast.simple()
-						.textContent("Not Available : Promotion Product removed from your cart")
+						.textContent("Not Available : Promotion bundle removed")
 						.highlightAction(false)
 						.position("top right");
 					$mdToast.show(toast);
@@ -3386,6 +3386,15 @@ AlcoholDelivery.service('alcoholCart', [
 		this.productsStats = prosLapsedTime;
 		return this.highestShortLapsed;
 		
+	}
+
+	this.setStandardDeliveryRemainOrders = function (deliverySlots) {
+
+		var serverTime = appConfig.getServerTime();
+		
+		console.log(serverTime);
+		console.log(deliverySlots);
+
 	}
 
 	this.availabilityPopUp = function () {

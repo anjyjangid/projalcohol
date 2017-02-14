@@ -687,17 +687,17 @@ AlcoholDelivery.service('cartValidate',['alcoholCart', '$state', '$q', '$mdToast
 
 			$mdToast.show({
 
-					controller:['$scope',function($scope){
-					
-											var workingTime = appConfig.getWorkingTimeString();
-											
-											$scope.to = workingTime.to;
-											$scope.from = workingTime.from;
-					
-											$scope.closeToast = function(){
-													$mdToast.hide();
-												}
-										}],
+					controller:function($scope){
+
+						var workingTime = appConfig.getWorkingTimeString();
+						
+						$scope.to = workingTime.to;
+						$scope.from = workingTime.from;
+
+						$scope.closeToast = function(){
+								$mdToast.hide();
+							}
+					},
 					templateUrl: '/templates/toast-tpl/dependency-notify.html',
 					//parent : $document[0].querySelector('#cart-summary-icon'),
 					position: 'bottom right',
@@ -734,15 +734,15 @@ AlcoholDelivery.service('cartValidate',['alcoholCart', '$state', '$q', '$mdToast
 
 					alcoholCart.setProductsAvailability(res.data);
 
-					// $http.get("cart/available-next-slots/"+alcoholCart.getCartKey()).then(
+					$http.get("cart/available-next-slots/"+alcoholCart.getCartKey()).then(
 
-					// 	function (slotRes) {
-					// 		console.log(slotRes);
-					// 	},
-					// 	function (slotResErr) {
-
-					// 	}
-					// )
+						function (slotRes) {
+							alcoholCart.setStandardDeliveryRemainOrders(slotRes);
+						},
+						function (slotResErr) {
+							console.log('slotResErr',slotResErr);
+						}
+					)
 
 				},
 				function(err){
@@ -851,4 +851,4 @@ AlcoholDelivery.service('cartValidate',['alcoholCart', '$state', '$q', '$mdToast
 
 
 
-}]);
+}])

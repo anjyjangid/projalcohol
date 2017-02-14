@@ -243,5 +243,5 @@
     <script type="text/javascript" src="js/alcoholWishlist.js"></script>
     <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
     <script type="text/javascript" src="js/directive.js"></script>
-    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>     -->   
+    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>        -->
 </html>

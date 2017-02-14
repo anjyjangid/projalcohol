@@ -63,7 +63,7 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 		Route::post('uploadgraphics','Admin\GlobalController@uploadgraphics');
 	});
 
-	Route::resource('dealer', 'Admin\DealerController',['only'=>['store','update']]);
+	Route::resource('dealer', 'Admin\DealerController',['only'=>['store','update','destroy']]);
 	Route::controller('dealer', 'Admin\DealerController');
 
 	Route::resource('category', 'Admin\CategoryController',['only'=>['store','update']]);

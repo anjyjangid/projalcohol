@@ -30,7 +30,8 @@
 				<div class="party-detail-btmtitl4"><h3>Customise your own package</h3></div>
 				<div class="col-md-8 party-alcholcover">
 					<v-accordion id="accordionA" class="vAccordion--default" control="accordionA" multiple onexpand="expandCallback(index, id)" oncollapse="collapseCallback(index, id)">
-				        <v-pane id="{{$index}}" ng-repeat="packageItem in packages.packageItems" ng-class="">
+				        <v-pane id="{{$index}}" ng-repeat="packageItem in packages.packageItems" ng-class="" ng-init="accordionA.toggle(0)">
+
 			                <v-pane-header id="{{$index}}-header"  aria-controls="{{ ::subpane.id }}-header" class="byz">
 				                <div class="ttile-divcover party-deatil-pading5">
 				                  <h5  class="custmize-contntset ">{{ ::packageItem.title }}</h5>
@@ -62,10 +63,10 @@
 				</div>
 				<div class="col-md-4">
 					<p class="packtiti-rightset packag-amnt-divcolr">Package Amount</p>
-			    	<h3 class="amntrupee-clsdetail">${{packages.packagePrice}}</h3>
-                
+			    	<h3 class="amntrupee-clsdetail">{{packages.packagePrice | pricingTxt}}</h3>
+                	<span class="strike-txt-only grey-txt">{{(packages.packagePrice + packages.packageSavings) | pricingTxt}}</span>
 			    	<p class="packtiti-rightset">Savings</p>
-			    	<p class="packtiti-rightset amnt-savingclr">${{packages.packageSavings}}</p>
+			    	<p class="packtiti-rightset amnt-savingclr">{{packages.packageSavings | pricingTxt}}</p>
 					<div class="checkoutmiddlevlauediv ">
 			    		<div class="pardqantitytexthead party-qtn-titl">Quantity</div>
 						<input type="text" value="packages.packageQuantity" ng-model="packages.packageQuantity" min="1" max="10" ng-touch-spin>
