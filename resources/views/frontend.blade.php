@@ -34,10 +34,10 @@
 		<title ng-bind="meta.title"></title>
 
 		<!-- Bootstrap -->
-		<link async href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,700,800,500' rel='stylesheet' type='text/css'>
-		<link async href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,700,800,500' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
 		
-		<link rel="stylesheet" href="css/all.css">
+		<link rel="stylesheet" href="css/all.css">		
 		
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -222,7 +222,7 @@
 
 	<script src="{{ asset('bower_components/ngSweetAlert2/SweetAlert.js') }}" type="text/javascript"></script>
 
-	<script src="{{ asset('bower_components/es6-promise/promise.min.js') }}" type="text/javascript"></script>
+	<script src="{{ asset('bower_components/es6-promise/es6-promise.min.js') }}" type="text/javascript"></script>
 
     <script type="text/javascript" src="{{ asset('bower_components/angular-animate/angular-animate.js') }}"></script>
 
@@ -243,5 +243,5 @@
     <script type="text/javascript" src="js/alcoholWishlist.js"></script>
     <script type="text/javascript" src="js/alcoholCartDirective.js"></script>
     <script type="text/javascript" src="js/directive.js"></script>
-    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>     -->   
+    <script src="{{ asset('bower_components/v-accordion/dist/v-accordion.js') }}"></script>        -->
 </html>

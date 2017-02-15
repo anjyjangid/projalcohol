@@ -33,9 +33,11 @@
 						<div class="btmcontn-set"> 
 						<div class="package-desc"> {{package.description}}</div><a ui-sref="mainLayout.packagedetail({type:'party',id:package._id})">More Detail</a></div>
 	            		<div class="party-leftposion">
+            				
 							<div class="package-amtcover">
 								<p class="packtiti-rightset packag-amnt-divcolr">Package Amount</p>
 								<h3 class="amntrupee-clsdetail">{{package.packagePrice | pricingTxt}}</h3>
+								<span class="strike-txt-only grey-txt">{{(package.packagePrice + package.packageSavings) | pricingTxt}}</span>
 							</div>            
 							<div class="saving-amount-cover">
 								<p class="packtiti-rightset">Savings</p>

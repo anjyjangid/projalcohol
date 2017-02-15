@@ -31,8 +31,8 @@ class PurchaseOrderController extends Controller
 
         $userStoreId = Auth::user('admin')->storeId;
 
-        if(!isset($skip))
-            $skip = 0;
+        if(!isset($start))
+            $start = 0;
 
         if(!isset($length))
             $length = 10;
@@ -85,7 +85,7 @@ class PurchaseOrderController extends Controller
                     'total' => 1,
                     'createTime' => 1,
                     'results' => [
-                        '$slice' => ['$results', (int)$skip, (int)$length]
+                        '$slice' => ['$results', (int)$start, (int)$length]
                     ],
                 ]
             ]

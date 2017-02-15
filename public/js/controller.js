@@ -2215,6 +2215,7 @@ AlcoholDelivery.controller('RepeatOrderController',[
 
 									product.qChilled = oPro.orderQty.chilled;
 									product.qNChilled = oPro.orderQty.nonChilled;
+									product.selected = true;
 
 								}
 							});
@@ -2235,6 +2236,12 @@ AlcoholDelivery.controller('RepeatOrderController',[
 				}
 			)
 
+	}
+
+	$scope.selectAll = function(selected) {
+		$scope.lastorder.products.forEach(function(product){			
+			product.selected = selected;
+		})
 	}
 
 	$scope.repeatOrder = function(ev) {
@@ -2285,6 +2292,21 @@ AlcoholDelivery.controller('RepeatOrderController',[
 		$scope.selectedCount = count;
 	}, true);
 
+	$scope.selectPro = function () {
+
+		var isAllSelected = true;
+		angular.forEach($scope.lastorder.products, function(product) {
+
+			if(!product.selected){
+				isAllSelected = false;
+			}
+
+		})
+
+		$scope.allSelected = isAllSelected;
+
+	}
+
 	$scope.addSelected = function(){
 
 		var selected = {
@@ -2334,6 +2356,7 @@ AlcoholDelivery.controller('RepeatOrderController',[
 					product.selected = false;
 				});
 
+				$scope.allSelected = false;
 				$scope.processAdding = false;
 
 			});
@@ -2350,6 +2373,8 @@ AlcoholDelivery.controller('RepeatOrderController',[
 		}
 
 	}
+
+
 
 }]);
 
@@ -2730,7 +2755,7 @@ AlcoholDelivery.controller('PackageDetailController', ['$q','$scope', '$rootScop
 			$scope.packages.packageItems[pkgkey].selectedProducts = lineofproductadded.join(', ');
 		});
 
-		$scope.packages.packagePrice = discountAmount.toFixed(2);
+		$scope.packages.packagePrice = discountAmount.toFixed(2);		
 		$scope.packages.packageSavings = parseFloat(originalAmount-discountAmount).toFixed(2);
 
 	}
@@ -2769,7 +2794,6 @@ AlcoholDelivery.controller('PackageDetailController', ['$q','$scope', '$rootScop
 				})
 
 				$scope.packages.packageQuantity = isInCart.getQuantity();
-
 				$scope.packages.isInCart = isInCart;
 
 				$scope.updatePackage();
@@ -2780,6 +2804,9 @@ AlcoholDelivery.controller('PackageDetailController', ['$q','$scope', '$rootScop
 			$scope.packages.isInCart = false;
 
 		}
+		
+		$scope.packages.packagePrice = parseFloat($scope.packages.packagePrice);
+		$scope.packages.packageSavings = parseFloat($scope.packages.packageSavings);	
 
 		var mdata = {
 			title:$scope.packages.metaTitle,
@@ -3064,7 +3091,7 @@ AlcoholDelivery.controller('LoyaltyStoreController', [
 	function($q, $http, $scope, ScrollPagination,userService,$stateParams,alcoholCart,ProductService,$timeout){
 
 		var user = userService.currentUser;
-
+		$scope.AppController.category = "loyalty-store";
 		$scope.keyword = $stateParams.keyword;
 		$scope.filter = $stateParams.filter;
 		$scope.sortby = $stateParams.sort;

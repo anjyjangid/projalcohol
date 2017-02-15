@@ -26,13 +26,14 @@
     "ngSweetAlert2": "angular-sweetalert-2#^2.1.1",
     "owl.carousel": "^2.0.0-beta.3",
     "angular-animate": "1.5.3",
-    "angular-material": "1.0.7",
+    "angular-material": "1.1.0",
     "ng-scrollbars": "^0.0.10",
     "angular-ui-calendar": "^1.0.1",
     "ngInfiniteScroll": "^1.2.2",
     "v-accordion": "^1.6.0",
     "sweetalert2": "^4.0.8",
-    "angular-bootstrap": "^1.3.3"
+    "angular-bootstrap": "^1.3.3",
+    "es6-promise": "^4.0.5"
   },
   "resolutions": {
     "angular": "~1.4.0",

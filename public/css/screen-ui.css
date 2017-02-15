@@ -1936,11 +1936,13 @@ ui-sref {
 	float: left;
 	width: 50%;
 }
+
 .productinner_rightslide {
 	float: right;
 	width: 44%;
 	text-align: right;
 	padding-top: 9%;
+	height: 400px;
 }
 .featured_product {
 	float: left;
@@ -1954,6 +1956,7 @@ ui-sref {
 	text-align: center;
 	border-radius: 2px;
 	text-transform: uppercase;
+	margin-right: 10px;
 }
 .productslide_heading {
 	float: left;
@@ -1989,7 +1992,7 @@ ui-sref {
 	float: left;
 	width: 100%;
 	font-weight: 500;
-	font-size: 13px;
+	font-size: 16px;
 	color: #222122;
 	margin-top: 20px;
 }

@@ -30,6 +30,9 @@
 					<div class="thumbnail cocktail-products-div">
 					<div class="cock-img"><img err-src="asset/i/defaultImage.png" ng-src="products/i/200/{{productItem.imageFiles[0].source}}">	</div>
 						<div class="caption">
+							<md-tooltip class="ad-tooltip" md-direction="bottom">
+									{{productItem.name}}
+								</md-tooltip>
 							{{ productItem.name }}
 						</div>
 					</div>
@@ -39,11 +42,15 @@
 			<div class="cocktail-cartbtn">
 				<a class="btn product_addcart addcart-detail cocktail-cart-margintop" ui-sref="mainLayout.packagedetail({type:'cocktail',id:package._id})"><img src="images/cart-icon.png">  Add to Cart</a>
 
-				<div class="cocktail-amntdivcover"><div class="amntrupee"> {{package.packagePrice | pricingTxt}}</div><span>Amount :</span>
-            <div class="saving-cocktail-cover"> <div class="saving-titie-amnt"> {{package.packageSavings | pricingTxt}}</div><span>saving :</span></div></div>
+				<div class="cocktail-amntdivcover">
+					<span class="strike-txt-only grey-txt pull-right"> {{(package.packagePrice + package.packageSavings) | pricingTxt}}</span> <div class="amntrupee"> {{package.packagePrice | pricingTxt}}</div> <span>Amount :</span>
 
-                
-                
+					<div class="saving-cocktail-cover"> 
+					<div class="saving-titie-amnt"> {{package.packageSavings | pricingTxt}}</div>					
+					<span>saving :</span>
+					</div>
+				</div>
+
 			</div>
 		</div>
 	</div>

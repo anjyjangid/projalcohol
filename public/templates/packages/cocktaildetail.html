@@ -25,9 +25,11 @@
 					<p class="party-product-desc">{{packages.description}}</p>
 			<div class="cockdetail-leftposion">
 			<p class="packtiti-rightset packag-amnt-divcolr">Package Amount</p>
-	    	<h3 class="amntrupee-clsdetail">{{settings.general.currency}}{{packages.packagePrice}}</h3>
+	    	<h3 class="amntrupee-clsdetail">{{packages.packagePrice | pricingTxt}}</h3>
+
+	    	<span class="strike-txt-only grey-txt">{{(packages.packagePrice + packages.packageSavings) | pricingTxt}}</span>
 	    	<p class="packtiti-rightset">Savings</p>
-	    	<p class="packtiti-rightset amnt-savingclr">{{settings.general.currency}}{{packages.packageSavings}}</p>
+	    	<p class="packtiti-rightset amnt-savingclr">{{packages.packageSavings | pricingTxt}}</p>
 			<div class="checkoutmiddlevlauediv quantity-detailmarginrmv">
 	    		<div class="pardqantitytexthead">Quantity</div>
 				<input type="text" value="packages.packageQuantity" ng-model="packages.packageQuantity" min="1" max="10" ng-touch-spin>
