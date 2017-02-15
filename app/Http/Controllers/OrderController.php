@@ -17,10 +17,14 @@ use AlcoholDelivery\ErrorLog;
 
 class OrderController extends Controller
 {
+	private $limit;
 
 	public function __construct()
 	{
 		$this->middleware('auth',['except' => ['getOrderdetail','getMailOrderPlaced']]);
+
+		// set limit 
+		$this->limit = 10;
 	}
 
 	/**
@@ -170,24 +174,39 @@ class OrderController extends Controller
 	
 	}
 
-	public function getToRepeat(){
+	public function getToRepeat(Request $request){
 
 		$user = Auth::user('user');
 
-		$orders = DB::collection('orders')->raw(function($collection) use($user){
+		$params = $request->all();
+
+		// ========== Paging Work Start ==========
+		if(isset($params['pageno'])){
+			$limit = $this->limit;
+			$pageNo = $params['pageno']>0?(int)$params['pageno']:1;
+			$offset = $limit*($pageNo-1);
+		}else{
+			$limit = 10000;
+			$offset = 0;
+		}
+        // ========== Paging Work End ==========
+
+        $whereConditions = array(
+									'user'=> new MongoId($user->_id),
+									'products' => array('$exists'=>true),
+									'products' => array('$ne'=>null)
+								);
+
+		$orders = DB::collection('orders')->raw(function($collection) use($user, $whereConditions, $limit, $offset){
 			return $collection->aggregate(array(
 				array(
-					'$match'=> array(
-						'user'=> new MongoId($user->_id),
-						'products' => array('$exists'=>true),
-						'products' => array('$ne'=>null)
-					)
+					'$match'=> $whereConditions
 				),
-				/*array(
-					'$limit' => 10
-				),*/
 				array(
-					'$skip' => 0
+					'$skip' => $offset
+				),
+				array(
+					'$limit' => $limit
 				),
 				array(
 					'$project' => array(
@@ -215,7 +234,11 @@ class OrderController extends Controller
 			));
 		});
 
-		return response($orders['result'],200);
+		// get total count of user orders
+		$totalCount = Orders::where($whereConditions)->count();
+		$orders['total_count'] = $totalCount;
+
+		return response($orders,200);
 	}
 
 	public function getOrderdetail(Request $request,$reference){

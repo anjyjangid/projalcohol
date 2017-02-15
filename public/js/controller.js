@@ -2374,7 +2374,7 @@ AlcoholDelivery.controller('ShopFromPreviousController',[
 
 		function(response){
 
-			$scope.orders = response.data;
+			$scope.orders = response.data.result;
 
 			$timeout(function(){
 				$scope.fetchingOrders = false;
