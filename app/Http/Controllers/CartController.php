@@ -107,6 +107,7 @@ class CartController extends Controller
 
 					$cart->save();
 					$cart->setWorkingHrs();
+					$cart->setAllDependencies();
 					
 					return response(["success"=>true,"message"=>"cart created successfully","cart"=>$cart->toArray()],200);
 
@@ -119,6 +120,8 @@ class CartController extends Controller
 			else{
 
 				$userCart->setWorkingHrs();
+				$userCart->setAllDependencies();
+
 				$userCart = $userCart->toArray();
 
 				if(!isset($userCart['loyalty'])){
@@ -604,7 +607,7 @@ class CartController extends Controller
 		$cart = Cart::find($cartKey);		
 
 		$loyaltyAvailable = $this->getLoyaltyAvailable($cart); // LOYALTY POINTS AVAILABLE BEFORE ADD NEW PRODUCT
-
+		
 		if($loyaltyAvailable===false || $loyaltyAvailable<0){
 
 			$cart->removeAllLoyaltyProduct();			
@@ -824,7 +827,7 @@ class CartController extends Controller
 		if(is_object($cart)){
 
 			$user = Auth::user('user');
-			$userLoyaltyPoints = $user['loyaltyPoints'];
+			$userLoyaltyPoints = isset($user['loyalty']['total'])?$user['loyalty']['total']:0;			
 			$pointsUsed = $cart->getLoyaltyPointUsed();
 			return $userLoyaltyPoints - $pointsUsed;
 
@@ -1101,7 +1104,10 @@ class CartController extends Controller
 						$userCart->delete();
 
 					}
+					
 					$sessionCart->setWorkingHrs();
+					$sessionCart->setAllDependencies();
+
 					return (object)["success"=>true,"message"=>"cart merge successfully","cart"=>$sessionCart->toArray()];
 
 				}catch(\Exception $e){
@@ -1111,6 +1117,8 @@ class CartController extends Controller
 			}
 
 			$userCart->setWorkingHrs();
+			$userCart->setAllDependencies();
+			
 			return (object)["success"=>true,"message"=>"cart merge successfully","cart"=>$userCart->toArray()];
 
 		}else{
@@ -1439,7 +1447,7 @@ class CartController extends Controller
 
 		$tempDate = $passedDate;
 		
-		$currentTimeStr = strtotime("+8 hours");
+		$currentTimeStr = getServerTime();  //strtotime("+8 hours");
 		$todayDateStr = strtotime(date("Y-m-d",$currentTimeStr));
 		$slotsActiveAfter = round(($currentTimeStr - $todayDateStr)/60) + $skipMinutes;
 
@@ -1486,8 +1494,6 @@ class CartController extends Controller
 				$slot['slotCeilKey'] = $datekey + ($slot['to'] * 60);
 				$slot['slotFloorKey'] = $datekey + ($slot['from'] * 60);
 			}
-
-
 
 			$slotArr[$weekKeys[$weeknumber]] = [
 				'slots' => $currTimeSlots,
@@ -2686,7 +2692,9 @@ class CartController extends Controller
 
 		try{		
 
-			$isInserted = DB::collection('cart')->where('_id', $cartKey)->push('giftCards', $giftCard);
+			$isInserted = DB::collection('cart')
+							->where('_id', $cartKey)
+							->push('giftCards', $giftCard);
 
 			return response(["success"=>true,"message"=>"cart updated successfully","data"=>$giftCard],200);
 

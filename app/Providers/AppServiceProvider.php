@@ -48,7 +48,6 @@ class AppServiceProvider extends ServiceProvider
 	 */
 	public function register()
 	{
-
 		require base_path().'/app/Helpers/globalFunction.php';
 	}
 }

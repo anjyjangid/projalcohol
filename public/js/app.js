@@ -1183,7 +1183,7 @@ function appLoad($q, $rootScope, $state, $timeout, $location, store, alcoholWish
 	return defer.promise;
 };
 
-AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$location', '$window', function ($q, $rootScope, $log, $location, $window) {
+AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$location', '$window','$cookies', function ($q, $rootScope, $log, $location, $window, $cookies) {
     'use strict';
 
     var xhrCreations = 0;
@@ -1241,7 +1241,8 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 			if(rejection.status == 412){ // 412 => The server does not meet one of the preconditions that the requester put on the request.
 				
 				if(rejection.data.reset==='cart'){
-					$window.localStorage.removeItem('deliverykey');
+					//$window.localStorage.removeItem('deliverykey');
+					$cookies.remove('deliverykey');
 					$window.location.reload();
 				}
 

@@ -1547,3 +1547,25 @@ span.more-text {
 span.more-text.show {
 		display: inline !important
 }
+
+.na-pro-for-gift{
+	padding: 40px 20px 15px 20px;
+    color: #a0f;
+    font-size: 25px;
+}
+
+.product-req-add{
+	font-size: 50px;
+    border: 2px solid #a0f;
+    width: 100px;
+    border-radius: 100%;
+    text-align: center;
+    padding: 24px 10px;
+    color: #a0f;
+    
+    cursor: pointer;
+}
+.product-req-add:hover{
+	box-shadow: 0px 2px 5px 2px #ccc;
+}
+

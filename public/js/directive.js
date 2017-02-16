@@ -674,7 +674,7 @@ AlcoholDelivery.directive('sideBar', function() {
 				}
 				oldval = scope.val;
 				var value = parseFloat(parseFloat(Number(scope.val)) + parseFloat(scope.step)).toFixed(scope.decimals);
-
+				console.log('scope.max',scope.max);
 				if (parseFloat(value) > parseFloat(scope.max)) return;
 
 				scope.val = value;
@@ -814,6 +814,10 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			$scope._sPromotion = promotionsService;
 
+			if($scope.loyalty){
+				$scope.productInfo.loyaltyStoreProduct = true;
+			}
+
 			// var isInCart = alcoholCart.getProductById($scope.productInfo._id);
 
 			$scope.isInwishList = alcoholWishlist.getProductById($scope.productInfo._id);
@@ -869,11 +873,17 @@ AlcoholDelivery.directive('sideBar', function() {
 					$scope.focusout = function(){
 		
 						$timeout(function() {
+
 							$scope.addMoreCustom = false;
-		
+							
 							if(typeof $scope.isAddCustom === "undefined"){
-		
-								var p = alcoholCart.getProductById($scope.product._id);
+				
+								if(!$scope.product.loyaltyStoreProduct){
+									var p = alcoholCart.getProductById($scope.product._id);
+								}else{
+									var p = alcoholCart.getLoyaltyProductById($scope.product._id);
+								}
+
 								$scope.product.qChilled = p.qChilled;
 								$scope.product.qNChilled = p.qNChilled;
 		
@@ -899,7 +909,7 @@ AlcoholDelivery.directive('sideBar', function() {
 					};
 		
 					$scope.addCustom = function(){				
-		
+
 						$scope.isAddCustom = true;
 						$scope.addtocart();
 						$scope.addMoreCustom = false;
@@ -907,13 +917,13 @@ AlcoholDelivery.directive('sideBar', function() {
 					};
 		
 					$scope.activeAddToCart = function() {
-		
+
 						var userData = UserService.currentUser;
-		
+
 						$element.find(".addmore-count").css({visibility: "hidden"});
 						$element.find(".addmore").css({ "opacity": "0"});
 						$element.find(".addmore-count").css({top: "30px"});
-		
+
 						if($scope.product.isLoyaltyStoreProduct === true){
 		
 							if(userData===false){
@@ -993,8 +1003,9 @@ AlcoholDelivery.directive('sideBar', function() {
 		
 						$timeout(function(){
 							$element.find(".addmanual input").animate({ width: "70%"},250);
-							$element.find(".addmanual input").css({ "padding-left": "13px"});
+							$element.find(".addmanual input").css({ "padding-left": "13px"}).focus();
 				  			$element.find(".addmanual .addbuttton").animate({ width: "30%"},250);
+
 						}, 100);
 		
 					};

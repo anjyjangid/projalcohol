@@ -1318,13 +1318,15 @@ MetronicApp.controller('OrderCreateController',[
 	$scope.alcoholCart = alcoholCart;
 	$scope.timeslot = alcoholCart.$cart.timeslot;
 	$scope.localDate = new Date();
+	var skipDays = 0;
+	
 	if($scope.timeslot.slug){
 		$scope.myDate = new Date($scope.timeslot.slug);
 	}else{
 		$scope.myDate = new Date();
-		$scope.myDate.setDate($scope.myDate.getDate()+1);
+		$scope.myDate.setDate($scope.myDate.getDate()+skipDays);
 	}
-	$scope.localDate.setDate($scope.localDate.getDate()+1);
+	$scope.localDate.setDate($scope.localDate.getDate()+skipDays);
 	$scope.minDate = new Date(
 		$scope.localDate.getFullYear(),
 		$scope.localDate.getMonth(),
@@ -1387,54 +1389,55 @@ MetronicApp.controller('OrderCreateController',[
 	}
 	$scope.timerange = {
 		"0":'12am',
-	    "30":'12:30am',
-	    "60":'1am',
-	    "90":'1:30am',
-	    "120":'2am',
-	    "150":'2:30am',
-	    "180":'3am',
-	    "210":'3:30am',
-	    "240":'4am',
-	    "270":'4:30am',
-	    "300":'5am',
-	    "330":'5:30am',
-	    "360":'6am',
-	    "390":'6:30am',
-	    "420":'7am',
-	    "450":'7:30am',
-	    "480":'8am',
-	    "510":'8:30am',
-	    "540":'9am',
-	    "570":'9:30am',
-	    "600":'10am',
-	    "630":'10:30am',
-	    "660":'11am',
-	    "690":'11:30am',
-	    "720":'12pm',
-	    "750":'12:30pm',
-	    "780":'1pm',
-	    "810":'1:30pm',
-	    "840":'2pm',
-	    "870":'2:30pm',
-	    "900":'3pm',
-	    "930":'3:30pm',
-	    "960":'4pm',
-	    "990":'4:30pm',
-	    "1020":'5pm',
-	    "1050":'5:30pm',
-	    "1080":'6pm',
-	    "1120":'6:30pm',
-	    "1150":'7pm',
-	    "1180":'7:30pm',
-	    "1210":'8pm',
-	    "1240":'8:30pm',
-	    "1270":'9pm',
-	    "1300":'9:30pm',
-	    "1330":'10pm',
-	    "1370":'10:30pm',
-	    "1400":'11pm',
-	    "1430":'11:30pm',
+		"30":'12:30am',
+		"60":'1am',
+		"90":'1:30am',
+		"120":'2am',
+		"150":'2:30am',
+		"180":'3am',
+		"210":'3:30am',
+		"240":'4am',
+		"270":'4:30am',
+		"300":'5am',
+		"330":'5:30am',
+		"360":'6am',
+		"390":'6:30am',
+		"420":'7am',
+		"450":'7:30am',
+		"480":'8am',
+		"510":'8:30am',
+		"540":'9am',
+		"570":'9:30am',
+		"600":'10am',
+		"630":'10:30am',
+		"660":'11am',
+		"690":'11:30am',
+		"720":'12pm',
+		"750":'12:30pm',
+		"780":'1pm',
+		"810":'1:30pm',
+		"840":'2pm',
+		"870":'2:30pm',
+		"900":'3pm',
+		"930":'3:30pm',
+		"960":'4pm',
+		"990":'4:30pm',
+		"1020":'5pm',
+		"1050":'5:30pm',
+		"1080":'6pm',
+		"1110":'6:30pm',
+		"1140":'7pm',
+		"1170":'7:30pm',
+		"1200":'8pm',
+		"1230":'8:30pm',
+		"1260":'9pm',
+		"1290":'9:30pm',
+		"1320":'10pm',
+		"1350":'10:30pm',
+		"1380":'11pm',
+		"1410":'11:30pm',
 	};
+
 	$scope.setSlot = function(dateKey,slotKey){
 		if(!$scope.isSlotAvailable(dateKey,slotKey)){
 			return false;
