@@ -1,6 +1,8 @@
 var elixir = require('laravel-elixir');
 
-// elixir.config.production = true;
+
+elixir.config.production = true;
+
 
 /*
  |--------------------------------------------------------------------------
@@ -32,7 +34,7 @@ elixir(function(mix) {
 	    /*SWEET ALERT STYLE*/
 	    '../bower_components/sweetalert2/dist/sweetalert2.min.js',
 	    '../bower_components/ngSweetAlert2/SweetAlert.js',
-	    '../bower_components/es6-promise/promise.min.js',
+	    '../bower_components/es6-promise/es6-promise.min.js',
 	    '../bower_components/angular-animate/angular-animate.js',
 	    '../bower_components/angular-aria/angular-aria.min.js',
 	    '../bower_components/angular-messages/angular-messages.min.js',
@@ -75,4 +77,9 @@ elixir(function(mix) {
 
 /*elixir(function(mix) {
     mix.version(['public/css/all.css', 'public/js/build/all.js']);
+});*/
+
+/*elixir(function(mix) {
+    elixir.config.images = {webp:false};
+    mix.images('../../../public/images', 'public/imagesmin',{sizes:[[]]});
 });*/

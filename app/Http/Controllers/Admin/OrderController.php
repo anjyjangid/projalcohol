@@ -443,7 +443,8 @@ class OrderController extends Controller
 				'payment'=>1,
 				'service'=>1,
 				'reference'=> 1,
-				'doStatus'=>1
+				'doStatus'=>1,
+				'rate'=>1
 			];
 
 		$project['orderDate'] = ['$dateToString'=>['format' => '%Y-%m-%d','date'=>'$created_at']];
@@ -461,7 +462,7 @@ class OrderController extends Controller
 
 		$query[]['$project'] = $project;
 
-		$columns = ['reference','consumer.name','payment.total','created_at','delivery.type','doStatus'];
+		$columns = ['reference','consumer.name','payment.total','created_at','delivery.type','doStatus','rate'];
 
 		$sort = ['created_at' => -1]; 
 
@@ -614,7 +615,6 @@ class OrderController extends Controller
 				                            ]
 										]
 									);
-
 									
 								}
 							}
@@ -663,8 +663,6 @@ class OrderController extends Controller
 							LoyaltyTransactions::transaction('credit',$loyaltyObj,$userObj);
 
 						}
-
-
 
 						//DEDUCT CREDITS ADDED FROM LOYALTY CREDITS
 						if(isset($order['creditsFromLoyalty']) && $order['creditsFromLoyalty'] > 0){

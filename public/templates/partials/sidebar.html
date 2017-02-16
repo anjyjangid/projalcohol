@@ -44,6 +44,9 @@
 
 		<ul ng-click="hideMenu()" class="dropdown-menu" ng-class="{'animate':showPersonSubMenu}" ng-style="{'background-image':'url(/assets/resources/category/thumb/400/{{c.cat_thumb}})'}" ng-if='isChildExist'>
 			<li class="dm_title">{{c.cat_title}}</li>			
+			<li class="mobilemenu hide">
+				<a ui-sref="mainLayout.category.products({categorySlug:c.slug})">All<span>{{c.productCount}}</span></a>
+			</li>
 			<li ng-class="{'subactive':AppController.subCategory==cc.slug}" ng-repeat="cc in childCategories">
 				<a ui-sref="mainLayout.category.subCatProducts({categorySlug:c.slug,subcategorySlug:cc.slug})">{{cc.cat_title}}<span>{{cc.productCount}}</span></a>
 			</li>
@@ -59,10 +62,10 @@
 		</ul>
 
 	</li>
-	<li ng-class="{'active':AppController.category=='loyalty'}" class="dropdown">
+	<li ng-class="{'active':AppController.category=='loyalty-store'}" class="dropdown">
 		<a class="pointer" ui-sref="mainLayout.loyaltystore">Loyalty Store</a>
-	</li>
-	<!-- <li ng-class="{'active':AppController.category=='gifts'}" class="dropdown">
+	</li>	
+	<li ng-class="{'active':AppController.category=='gifts'}" class="dropdown">
 		<a class="pointer" ng-click="giftPopup($event)">Gift packaging</a>
-	</li> -->
+	</li>
 </ul>

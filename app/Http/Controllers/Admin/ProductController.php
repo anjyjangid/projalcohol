@@ -634,6 +634,36 @@ class ProductController extends Controller
 
 	public function getTest(Request $request){		
 		
+		$products = DB::collection('products')->raw(function($collection){
+
+			return $collection->aggregate(array(
+				array(
+					'$match' => array(
+						'status' => 1
+					)
+				),
+				array(
+					'$project' => array('categories' => 1)
+				),
+				array(
+					'$unwind' => array(
+						'path' => '$categories',
+						'preserveNullAndEmptyArrays' => true	
+					)
+				),				
+				array(
+					'$group' => array(
+						'_id'=>'$categories',
+						'count' => array(
+							'$sum' => 1
+						)
+					)
+				)
+			));
+		});
+
+		return response($products);
+
 
 		/*$userlist = DB::collection('user')
             ->whereRaw(['productAddedNotification'=>['$exists'=>true,'$not'=>['$size'=>0]]])            

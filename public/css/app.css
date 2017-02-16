@@ -1569,3 +1569,6 @@ span.more-text.show {
 	box-shadow: 0px 2px 5px 2px #ccc;
 }
 
+body {
+	top: 0px !important;
+}

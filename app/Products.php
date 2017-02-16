@@ -350,7 +350,7 @@ class Products extends Eloquent
 		if(isset($params['filter'])){
 
 			if($params['filter']=="featured"){
-				$match['$match']['isFeatured'] = 1;				
+				$match['$match']['isFeatured'] = 1;								
 			}
 
 			if($params['filter']=="new"){
@@ -409,7 +409,11 @@ class Products extends Eloquent
 
 			if($sortby == 'new'){
 				$sortby = 'created_at';
-			}
+				if(isset($params['filter']) && $params['filter']=="featured"){
+					$sortby = 'updated_at';	
+					$sortDir = -1;	
+				}
+			}			
 
 			$sortParam['$sort'][$sortby] = (int)$sortDir;
 			
@@ -567,6 +571,7 @@ class Products extends Eloquent
 							'childCategory' => 1,
 							'status' => 1,
 							'created_at' => 1,
+							'updated_at' => 1,
 							'isFeatured' => 1,
 							'metaTitle'=>1,
 							'metaDescription'=>1,
@@ -647,6 +652,7 @@ class Products extends Eloquent
 								'catSubParent' => ['$arrayElemAt'=> [ '$categoriesObject', -1 ]],
 								'status' => 1,
 								'created_at' => 1,
+								'updated_at' => 1,
 								'isFeatured' => 1,
 								'isLoyalty' => 1,
 								'categoriesObject' => 1,

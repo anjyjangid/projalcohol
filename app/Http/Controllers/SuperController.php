@@ -61,6 +61,15 @@ class SuperController extends Controller
 						)
 					),
 					array(
+						'$project' => array('categories' => 1)
+					),
+					array(
+						'$unwind' => array(
+							'path' => '$categories',
+							'preserveNullAndEmptyArrays' => true	
+						)
+					),				
+					array(
 						'$group' => array(
 							'_id'=>'$categories',
 							'count' => array(
@@ -74,7 +83,7 @@ class SuperController extends Controller
 			$processedPro = [];
 			foreach($products['result'] as $product){
 
-				$cat = array_pop($product['_id']);
+				$cat = $product['_id'];
 
 				$processedPro[$cat] = $product['count'];
 
