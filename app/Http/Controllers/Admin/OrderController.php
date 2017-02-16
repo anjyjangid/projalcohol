@@ -615,7 +615,6 @@ class OrderController extends Controller
 				                            ]
 										]
 									);
-
 									
 								}
 							}
@@ -664,8 +663,6 @@ class OrderController extends Controller
 							LoyaltyTransactions::transaction('credit',$loyaltyObj,$userObj);
 
 						}
-
-
 
 						//DEDUCT CREDITS ADDED FROM LOYALTY CREDITS
 						if(isset($order['creditsFromLoyalty']) && $order['creditsFromLoyalty'] > 0){

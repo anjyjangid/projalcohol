@@ -199,7 +199,7 @@ AlcoholDelivery.directive('sideBar', function() {
 					//FACEBOOK LOGIN
 		
 					$scope.socialLogin = function(){
-		
+						
 						FB.login(function(response) {
 						    if (response.authResponse) {				     
 						     FB.api('/me', {fields: 'first_name,last_name,locale,email,birthday'},function(result) {
@@ -214,6 +214,7 @@ AlcoholDelivery.directive('sideBar', function() {
 									}else{
 										$mdDialog.hide();	
 										$scope.socialError = erresult;
+										FB.logout();
 										$scope.signupOpen();
 									}
 								});
@@ -221,7 +222,7 @@ AlcoholDelivery.directive('sideBar', function() {
 						    } else {
 						     	alert(JSON.parse(response));
 						    }
-						});
+						});					
 						
 					}
 		
@@ -1482,17 +1483,21 @@ AlcoholDelivery.directive('sideBar', function() {
 		'$scope','$rootScope','$http','$state','$payments','UserService','$mdDialog','NgMap','sweetAlert','$anchorScroll',
 		function($scope,$rootScope,$http,$state,$payments,UserService,$mdDialog,NgMap,sweetAlert,$anchorScroll){
 		
-					$scope.listUserAddress = function(){
+					$scope.listUserAddress = function(flag){
 						$http.get("address").success(function(response){
 							$scope.addresses = response;
 							$rootScope.addresses = $scope.addresses;	
+							if($scope.delivery && flag){
+								var lastkey = ($scope.addresses.length - 1);
+								$scope.setSelectedAddress(lastkey);
+							}
 							$anchorScroll();									
 						}).error(function(data, status, headers) {
 		
 						});
 					}
 		
-					$scope.listUserAddress();
+					$scope.listUserAddress(false);
 		
 					$scope.hide = function() {
 						$mdDialog.hide();
@@ -1591,7 +1596,7 @@ AlcoholDelivery.directive('sideBar', function() {
 								    }).success(function(response) {
 								    	$scope.errors = {};
 								    	$scope.hide();
-								    	$scope.listUserAddress();
+								    	$scope.listUserAddress(true);
 								    }).error(function(data, status, headers) {
 								    	$scope.errors = data;
 								    })
@@ -1648,7 +1653,7 @@ AlcoholDelivery.directive('sideBar', function() {
 								        }).success(function(response) {
 								        	$scope.errors = {};
 								        	$scope.hide();
-								        	$scope.listUserAddress();
+								        	$scope.listUserAddress(false);
 								        }).error(function(data, status, headers) {
 								        	$scope.errors = data;
 								        });
@@ -1658,7 +1663,7 @@ AlcoholDelivery.directive('sideBar', function() {
 								        }).success(function(response) {
 								        	$scope.errors = {};
 								        	$scope.hide();
-								        	$scope.listUserAddress();
+								        	$scope.listUserAddress(true);
 								        }).error(function(data, status, headers) {
 								        	$scope.errors = data;
 								        });
@@ -1690,8 +1695,11 @@ AlcoholDelivery.directive('sideBar', function() {
 			                        $http.delete("address/"+key)
 			                            .success(function(response) {
 			                                if(response.success){
-			                                    $mdDialog.hide();
-			                                    $scope.listUserAddress();
+			                                	if($scope.delivery && $scope.delivery.address.key == key){
+			                                		$scope.delivery.address = {};
+			                                	}
+			                                    $mdDialog.hide();			                                    
+			                                    $scope.listUserAddress(false);
 			                                    sweetAlert.swal({
 			                                    	title: response.message,
 									                type: "success",
@@ -1768,7 +1776,7 @@ AlcoholDelivery.directive('sideBar', function() {
         link: function (scope, element, attrs) {
             var model = $parse(attrs.focusMe);
             scope.$watch(model, function (value) {
-                console.log('value=', value);
+                //console.log('value=', value);
                 if (value === true) {
                     $timeout(function () {
                         element[0].focus();

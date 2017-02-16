@@ -266,3 +266,14 @@ table tr, table tr{
 .fontbold{
 	font-weight: bold;
 }
+
+td div{
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+  word-break: break-all;
+}
+strong{
+	word-break: normal;
+}
