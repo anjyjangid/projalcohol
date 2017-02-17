@@ -87,10 +87,10 @@
 		</div>		
     	<div class="loader"></div>
     	<div ng-bind="loadingmsg" ng-show="loadingmsg" class="ldmsg" align="center"></div>
-    	<div id="wrapper" md-swipe-left="onSwipeLeft()" md-swipe-right="onSwipeRight()">     	    		    
+    	<div id="wrapper" ng-swipe-left="onSwipeLeft()" ng-swipe-right="onSwipeRight()">     	    		    
 
 	        <div id="page-content-wrapper">    		    
-	        
+
              	<top-menu></top-menu>
 
 	    		<div ui-view class="ancontainer" ></div>    		
