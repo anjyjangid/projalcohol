@@ -123,7 +123,7 @@
                 loadingMessage: 'Loading...',
                 dataTable: {
                     //"pageLength": 2,                        
-                    "lengthMenu": [10, 25, 50],
+                    //"lengthMenu": [10, 25, 50],
                     "columns": [
                         {
                             mData: null,
@@ -147,7 +147,17 @@
                             orderable:true
                         },
                         {
-                            data : "supplierName",
+                            //data : "supplierName",
+                            mData: null,
+                            mRender: function(data, type, full) {
+
+                                if(typeof data.supplierName != 'undefined'){
+                                    return data.supplierName
+                                }else{
+                                    return '';
+                                }
+
+                            },
                             orderable:true
                         },
                         {
