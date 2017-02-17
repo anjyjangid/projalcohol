@@ -236,7 +236,7 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 
 		});
 
-		angular.forEach(this.$products,function(pro){
+		angular.forEach(this.$products,function(pro,index){
 
 			var isInGift = alcoholCart.isProductInGift(pro._id);
 			if(isInGift!==false){
@@ -276,7 +276,7 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 
 	this.getGiftAttachedProduct = function(){
 
-		var products = this.getProducts();
+		var products = this.$products;//getProducts();
 		var attachedPro = [];
 
 		angular.forEach(products,function(product,key){
@@ -343,14 +343,17 @@ AlcoholDelivery.service('alcoholGifting', ['$rootScope', '$q', '$http', '$mdToas
 		var cartKey = alcoholCart.getCartKey();
 
 		$http.post("/cart/giftcard/"+cartKey,{
+			
 			type: 'giftcard',
 			id:gift._id,
 			recipient : gift.recipient
+
 		}).then(
 
 			function(successRes){
-
-				alcoholCart.addGiftCard(successRes.data.data);
+				
+				successRes = successRes.data.data;
+				alcoholCart.addGiftCard(successRes);
 
 				defer.resolve(successRes);
 

@@ -6,6 +6,6 @@
   "dependencies": {
     "bootstrap-sass": "^3.0.0",
     "laravel-elixir": "^4.0.0",
-    "laravel-elixir-image-optimize": "^1.1.0"
+    "laravel-elixir-images": "^2.0.0"
   }
 }

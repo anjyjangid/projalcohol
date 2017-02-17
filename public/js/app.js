@@ -1183,7 +1183,7 @@ function appLoad($q, $rootScope, $state, $timeout, $location, store, alcoholWish
 	return defer.promise;
 };
 
-AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$location', '$window', function ($q, $rootScope, $log, $location, $window) {
+AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$location', '$window','$cookies', function ($q, $rootScope, $log, $location, $window, $cookies) {
     'use strict';
 
     var xhrCreations = 0;
@@ -1207,7 +1207,7 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 	            	config.url = 'api/'+urlStr;
 	        }else{
 	        	if(urlStr.indexOf('templates') > 0)
-	        		config.url += '?ver=1.6';
+	        		config.url += '?ver=1.7';
 	        }	        	
             return config;
         },
@@ -1241,7 +1241,8 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 			if(rejection.status == 412){ // 412 => The server does not meet one of the preconditions that the requester put on the request.
 				
 				if(rejection.data.reset==='cart'){
-					$window.localStorage.removeItem('deliverykey');
+					//$window.localStorage.removeItem('deliverykey');
+					$cookies.remove('deliverykey');
 					$window.location.reload();
 				}
 
@@ -1460,9 +1461,9 @@ AlcoholDelivery.run([
 	});
 		
 	//LIVE
-	var appId = '1269828463077215';
+	//var appId = '1269828463077215';
 	//LOCAL OR BETA
-	//var appId = '273669936304095';
+	var appId = '273669936304095';
 
 	$window.fbAsyncInit = function() {
     	// Executed when the SDK is loaded

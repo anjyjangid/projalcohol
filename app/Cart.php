@@ -10,6 +10,7 @@ use AlcoholDelivery\Packages;
 use AlcoholDelivery\Credits;
 use AlcoholDelivery\Promotion;
 use AlcoholDelivery\Gift;
+use AlcoholDelivery\GiftCategory;
 use AlcoholDelivery\Holiday;
 use AlcoholDelivery\ErrorLog;
 
@@ -113,6 +114,18 @@ class Cart extends Moloquent
 		];
 		
 		$this->__set("working",$setting);
+
+	}
+
+	public function setAllDependencies () {
+
+		$model = GiftCategory::where('type','!=','category')->first(['coverImage']);
+
+		if(isset($model->coverImage)){
+			$this->__set("giftCertificateLogo",$model->coverImage['source']);
+		}else{
+			$this->__set("giftCertificateLogo",'');
+		}
 
 	}
 

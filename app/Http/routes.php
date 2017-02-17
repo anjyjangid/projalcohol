@@ -18,6 +18,27 @@ Route::get('/morphing', function(){
 	return view('invoice.morph');
 });
 
+Route::get('/useraddress/{blankhouse}', function($blankhouse){
+	$query = [];
+	$query[]['$match'] = [
+		'address' => ['$exists' => 1,'$not' => ['$size' => 0]]
+	];
+	$query[]['$unwind'] = [
+		'path' => '$address',
+		'preserveNullAndEmptyArrays' => true	
+	];
+	if($blankhouse == 1){
+		$query[]['$match'] = [
+			'address.house' => ['$exists' => false]
+		];	
+	}
+
+	
+	$useraddress = DB::collection('user')->raw()->aggregate($query);
+	
+	return view('invoice.useraddress',['addresslist' => $useraddress]);
+});
+
 Route::get('apilist', function() {
 
 	$routeCollection = Route::getRoutes();

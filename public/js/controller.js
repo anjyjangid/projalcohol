@@ -3099,7 +3099,6 @@ AlcoholDelivery.controller('LoyaltyStoreController', [
 		$scope.products = new ScrollPagination();
 
 		$scope.credits = {};
-		
 
 		$scope.$watch(function(){return alcoholCart.setLoyaltyPointsInCart();},function(newValue,oldValue){
 
@@ -3266,11 +3265,15 @@ AlcoholDelivery.controller('GiftController', [
 					});
 
 					angular.forEach($scope.products,function(value,key){
+						
+						var maxQuantity = parseInt(result.limit) - total + parseInt(value._inGift);
 
-						var maxQuantity = result.limit - total + value._inGift;
-						value._maxQuantity = value._quantity>maxQuantity?maxQuantity:value._quantity;
+						var qty = value._quantity>maxQuantity?maxQuantity:value._quantity;
+
+						value._maxQuantity = parseInt(qty);
 
 					});
+
 				}
 
 				if($scope.giftData._uid){
@@ -3291,21 +3294,28 @@ AlcoholDelivery.controller('GiftController', [
 
 						})
 
-					})		
-
-					angular.forEach($scope.products,function(gProduct,index){
-
-						if(gProduct._quantity<1){
-
-							$scope.products.splice(index, 1)[0];
-
-						}
-
 					})
 
-					$scope.totalAttached();
-
 				}
+
+				var indexesToUnset = [];
+				angular.forEach($scope.products,function(gProduct,index){
+
+					if(gProduct._quantity<1){
+
+						indexesToUnset.push(index);						
+
+					}
+
+				})
+
+				for(var i = indexesToUnset.length-1;i>=0;i--){
+
+					$scope.products.splice(indexesToUnset[i], 1)[0];
+
+				}			
+
+				$scope.totalAttached();
 
 				$scope.addGift = function(){
 
@@ -3376,8 +3386,8 @@ AlcoholDelivery.controller('GiftController', [
 }]);
 
 AlcoholDelivery.controller('GiftCardController', [
-	'$q', '$http', '$scope', '$stateParams', '$rootScope', 'alcoholGifting',
-	function($q, $http, $scope, $stateParams, $rootScope, alcoholGifting){
+	'$state', '$q', '$http', '$scope', '$stateParams', '$rootScope', 'alcoholGifting',
+	function($state, $q, $http, $scope, $stateParams, $rootScope, alcoholGifting){
 
 		$rootScope.appSettings.layout.pageRightbarExist = false;
 
@@ -3411,6 +3421,10 @@ AlcoholDelivery.controller('GiftCardController', [
 					alcoholGifting.addGiftCard($scope.gift).then(
 
 						function(successRes){
+
+							//$scope.btnText = 'Update cart';
+							$state.go($state.current, {}, {reload: true});
+							//$scope.gift._uid = successRes._uid;
 
 						},
 						function(errorRes){

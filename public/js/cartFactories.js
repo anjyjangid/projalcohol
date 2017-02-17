@@ -1836,15 +1836,15 @@ angular.module('AlcoholCartFactories', [])
 
 						}
 
-						if(errorRes.quantity){
-
+						if(angular.isDefined(errorRes.quantity)){
+							
 							_product.qChilled = errorRes.quantity.chilled | 0;
-							_product.qNchilled = errorRes.quantity.nonchilled | 0;
+							_product.qNChilled = errorRes.quantity.nonchilled | 0;
 
 						}else{
 
 							_product.qChilled = 0;
-							_product.qNchilled = 0;
+							_product.qNChilled = 0;
 
 						}
 

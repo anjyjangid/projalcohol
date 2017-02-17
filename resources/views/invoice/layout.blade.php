@@ -8,7 +8,7 @@
     <!-- <link href="css/printbootstrap.css" rel="stylesheet" media="screen"/>
     <link type="text/css" href="css/print.css" rel="stylesheet" media="screen"/> -->
   </head>
-  <body>
+  <body>  
     @yield('content')
   </body>
 </html>  

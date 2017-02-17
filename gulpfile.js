@@ -1,6 +1,8 @@
 var elixir = require('laravel-elixir');
 
+
 elixir.config.production = true;
+
 
 /*
  |--------------------------------------------------------------------------
@@ -75,4 +77,9 @@ elixir(function(mix) {
 
 /*elixir(function(mix) {
     mix.version(['public/css/all.css', 'public/js/build/all.js']);
+});*/
+
+/*elixir(function(mix) {
+    elixir.config.images = {webp:false};
+    mix.images('../../../public/images', 'public/imagesmin',{sizes:[[]]});
 });*/

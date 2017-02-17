@@ -168,12 +168,14 @@
 
 						<div class="orhistry2_td2procdtcvr">
 							<span>
-								{{giftCard.recipient.price | pricingTxt}}
+								<img err-src="asset/i/defaultImage.png" ng-src="giftcategory/i/{{cart.giftCertificateLogo}}" src="asset/i/defaultImage.png" alt="" class="img-responsive img-responsive-h" />
+								<!-- {{giftCard.recipient.price | pricingTxt}} -->
 							</span>
 
 							<div class="checkouter-td-right-text">
-								<div class="orhistry2_td2proctext1">{{giftCard.recipient.name}}</div>
-								<div class="orhistry2_td2proctext2 split-txt">{{giftCard.recipient.message}}</div>
+								<div class="orhistry2_td2proctext1">Gift Certificate</div>						
+								<div class="orhistry2_td2proctext2 split-txt">To: {{giftCard.recipient.name}}</div>
+								<div class="orhistry2_td2proctext2 split-txt">Message: {{giftCard.recipient.message}}</div>
 								<div class="orhistry2_td2proctext1">{{giftCard.recipient.price | pricingTxt}}</div>
 								<div class="orhistry2_td2proctext2">unit Price</div>
 							</div> 
@@ -392,9 +394,9 @@
 		</div>
 	</div>
 	<div class="checkboxtotaldiv-middle">
-		<!-- <div class="col-sm-6">
+		<div class="col-sm-6">
 			<button class="checkoutergitpackage pull-left m-top-15"  ng-click="giftPopup($event)" >Gift Packaging</button>
-		</div> -->
+		</div>
 		<div class="col-sm-6 col-sm-offset-6">
 			<div class="checkboxtotaldiv-middle-first">
 				<div class="checkboxtotaldiv-title">Delivery Charge 

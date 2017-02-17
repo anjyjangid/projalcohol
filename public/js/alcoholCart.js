@@ -285,7 +285,7 @@ AlcoholDelivery.service('alcoholCart', [
 					inCart.setTQuantity(resProduct.quantity);
 					inCart.setPrice(resProduct.product);
 
-				}									
+				}
 
 			}else{
 				
@@ -1345,6 +1345,7 @@ AlcoholDelivery.service('alcoholCart', [
 		this.setLoyaltyPointsInCart = function(){
 
 			var pointsUsedInCart = this.getLoyaltyPointsInCart();
+
 			var pointsInUserAccount = parseInt(UserService.currentUser.loyaltyPoints);
 
 			this.availableLoyaltyPoints = pointsInUserAccount - pointsUsedInCart;
@@ -1664,9 +1665,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 			var subTotal = parseFloat(this.getSubTotal());
 
-			if(subTotal>=parseFloat(delivery.mincart)){
-				//this.$cart.service.delivery
-
+			if(!this.deliveryApplicable || subTotal>=parseFloat(delivery.mincart)){
+				
 				delivery.free = true;
 				this.$cart.delivery.charges = 0;				
 
@@ -2562,10 +2562,16 @@ AlcoholDelivery.service('alcoholCart', [
 
 			var isFound = this.getGiftCardByUniqueId(giftData._uid);
 
-			if(isFound===false){
-			
+			if(isFound===false){				
+
 				var giftCard = new alcoholCartGiftCard(giftData);
 				this.$cart.giftCards.push(giftCard);
+
+				$rootScope.$broadcast('alcoholCart:updated',{msg:"Gift certificate added to cart",quantity:giftCard.recipient.quantity});
+
+			}else{
+
+				$rootScope.$broadcast('alcoholCart:updated',{msg:"Gift certificate Updated Successfully",quantity:giftCard.recipient.quantity});
 
 			}
 
@@ -2659,7 +2665,7 @@ AlcoholDelivery.service('alcoholCart', [
 
 		};
 
-		this.getGiftCardByUniqueId = function(uid){
+		this.getGiftCardByUniqueId = function(cardUniqueId){
 
 			var giftCards = this.getGiftCards();
 			var build = false;
@@ -2735,8 +2741,8 @@ AlcoholDelivery.service('alcoholCart', [
 
 		this.getCartKey = function(){
 
-			//var deliverykey = localStorage.getItem("deliverykey");
 			var deliverykey = $cookies.get("deliverykey");
+
 			if(deliverykey===null || typeof deliverykey==="undefined"){
 				deliverykey = $rootScope.deliverykey;
 			}
