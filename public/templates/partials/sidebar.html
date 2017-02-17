@@ -1,5 +1,5 @@
-
 <span class="closemenu " ng-click="openMenu()">&times;</span>
+
 <ul class="nav navbar-nav modify capitalize mobilesidebar" ng-cloak>
 	<!-- SHOW IN MOBILE ONLY -->
 	<li class="mobilemenu hide">
@@ -21,8 +21,14 @@
 	<li ng-if="!user.email" class="mobilemenu hide brd-bot">
     	<a class="pointer" ng-click="signupOpen($event);"> SIGNUP </a>                       	
     </li>
-	<li ng:class="{'hideOp':hideOp}" class="dropdown mobilemenu hide brd-bot" ng-if="user.email" ng-click="hideOp=!hideOp"> 
-		<a class="username dropdown-toggle" role="button" aria-expanded="false" > 
+	<li class="dropdown mobilemenu hide brd-bot" ng-if="user.email"> 
+		
+	  <!-- <a class="dropdown-toggle" type="button" data-toggle="dropdown">Hello</a>
+	  <ul class="dropdown-menu">
+	    <li><a ui-sref="accountLayout.profile">HTML</a></li>    
+	  </ul> -->
+		
+		<a class="username dropdown-toggle" type="button" data-toggle="dropdown"> 
 			Hola, {{(user.name)?user.name:user.email}} 
 		</a>
         <ul class="dropdown-menu profil-dropdown">
@@ -39,17 +45,17 @@
 			{{childCategories = childOf(categories,c._id)}}
 			{{isChildExist = childCategories.length > 0}}		
 		</div>
-		<a ng:class="{'notlinkmenu':isChildExist}" ui-sref="mainLayout.category.products({categorySlug:c.slug})" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" >
+		<a ng:class="{'notlinkmenu':isChildExist}" ui-sref="mainLayout.category.products({categorySlug:c.slug})" class="dropdown-toggle" type="button" data-toggle="dropdown">
 				{{c.cat_title}} <span class="caret" ng-show='isChildExist'></span>
 		</a>
 
-		<ul ng-click="hideMenu()" class="dropdown-menu" ng-class="{'animate':showPersonSubMenu}" ng-style="{'background-image':'url(/assets/resources/category/thumb/400/{{c.cat_thumb}})'}" ng-if='isChildExist'>
+		<ul  class="dropdown-menu" ng-class="{'animate':showPersonSubMenu}" ng-style="{'background-image':'url(/assets/resources/category/thumb/400/{{c.cat_thumb}})'}" ng-if='isChildExist'>
 			<li class="dm_title">{{c.cat_title}}</li>			
 			<li class="mobilemenu hide">
 				<a ui-sref="mainLayout.category.products({categorySlug:c.slug})">All<span>{{c.productCount}}</span></a>
 			</li>
 			<li ng-class="{'subactive':AppController.subCategory==cc.slug}" ng-repeat="cc in childCategories">
-				<a ui-sref="mainLayout.category.subCatProducts({categorySlug:c.slug,subcategorySlug:cc.slug})">{{cc.cat_title}}<span>{{cc.productCount}}</span></a>
+				<a ng-click="hideMenu()" ui-sref="mainLayout.category.subCatProducts({categorySlug:c.slug,subcategorySlug:cc.slug})">{{cc.cat_title}}<span>{{cc.productCount}}</span></a>
 			</li>
 		</ul>
 	</li>
@@ -58,8 +64,12 @@
 		<a ng-click="AppController.showpackage = !AppController.showpackage" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Packages</a>
 
 		<ul class="nav navbar-nav party-cocktail-liset" ng-show="AppController.showpackage">
-			<li ng-class="{'active':AppController.subCategory=='party'}" class="dropdown"><a ui-sref="mainLayout.packages({type:'party'})">Party Packages</a></li>
-			<li ng-class="{'active':AppController.subCategory=='cocktail'}" class="dropdown"><a ui-sref="mainLayout.packages({type:'cocktail'})">Cocktail Packages</a></li>
+			<li ng-class="{'active':AppController.subCategory=='party'}" class="dropdown">
+				<a ui-sref="mainLayout.packages({type:'party'})">Party Packages</a>
+			</li>
+			<li ng-class="{'active':AppController.subCategory=='cocktail'}" class="dropdown">
+			<a ui-sref="mainLayout.packages({type:'cocktail'})">Cocktail Packages</a>
+			</li>
 		</ul>
 
 	</li>
