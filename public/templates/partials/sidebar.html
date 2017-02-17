@@ -21,14 +21,15 @@
 	<li ng-if="!user.email" class="mobilemenu hide brd-bot">
     	<a class="pointer" ng-click="signupOpen($event);"> SIGNUP </a>                       	
     </li>
-	<li ng:class="{'hideOp':hideOp}" class="dropdown mobilemenu hide brd-bot" ng-if="user.email" ng-click="hideOp=!hideOp"  class="mobilemenu hide"> 
-		<a class="username dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" > Hola, {{(user.name)?user.name:user.email}} 
+	<li ng:class="{'hideOp':hideOp}" class="dropdown mobilemenu hide brd-bot" ng-if="user.email" ng-click="hideOp=!hideOp"> 
+		<a class="username dropdown-toggle" role="button" aria-expanded="false" > 
+			Hola, {{(user.name)?user.name:user.email}} 
 		</a>
-        <ul  class="dropdown-menu profil-dropdown">
+        <ul class="dropdown-menu profil-dropdown">
           <li><a ui-sref="accountLayout.profile">My Account</a></li>
           <li><a ng-click="logout()">Logout</a></li>
         </ul>
-    </li>                  
+    </li>                   
     <!-- SHOW IN MOBILE ONLY -->
 	<!-- <li ng-class="{'active':$state.current.url=='/'}">
 		<a ui-sref="mainLayout.index">On Sale! <span class="sr-only">(current)</span></a>
@@ -38,7 +39,7 @@
 			{{childCategories = childOf(categories,c._id)}}
 			{{isChildExist = childCategories.length > 0}}		
 		</div>
-		<a ng:class="{'notlinkmenu':isChildExist}" ui-sref="mainLayout.category.products({categorySlug:c.slug})" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >
+		<a ng:class="{'notlinkmenu':isChildExist}" ui-sref="mainLayout.category.products({categorySlug:c.slug})" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" >
 				{{c.cat_title}} <span class="caret" ng-show='isChildExist'></span>
 		</a>
 
