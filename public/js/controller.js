@@ -263,15 +263,15 @@ AlcoholDelivery.controller('AppController', [
 		
 
 	$scope.onSwipeLeft = function(ev) {
-
-      angular.element('#wrapper').removeClass('toggled');
-	  angular.element('body').removeClass(' hidden-scroll');
+		ev.stopPropagation();
+		angular.element('#wrapper').removeClass('toggled');
+		angular.element('body').removeClass(' hidden-scroll');
     };
 
     $scope.onSwipeRight = function(ev) {
-    	
-      angular.element('#wrapper').addClass('toggled');
-	  angular.element('body').addClass(' hidden-scroll');
+    	ev.stopPropagation();
+		angular.element('#wrapper').addClass('toggled');
+		angular.element('body').addClass(' hidden-scroll');
     };	
 
 }]);

@@ -1,4 +1,3 @@
-
 /*This is the main file where angular is defined*/
 var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	"AlcoholCartFactories",
@@ -17,7 +16,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	//'angularFblogin',
 	'ngPayments',
 	'infinite-scroll',
-	'ngTouch'
+	//'ngTouch'
 ]).config(['$locationProvider','$mdThemingProvider', function($location,$mdThemingProvider) {
 
 	$location.html5Mode({
@@ -1208,7 +1207,7 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 	            	config.url = 'api/'+urlStr;
 	        }else{
 	        	if(urlStr.indexOf('templates') > 0)
-	        		config.url += '?ver=1.9';
+	        		config.url += '?ver=1.10';
 	        }	        	
             return config;
         },
@@ -1462,9 +1461,9 @@ AlcoholDelivery.run([
 	});
 		
 	//LIVE
-	//var appId = '1269828463077215';
+	var appId = '1269828463077215';
 	//LOCAL OR BETA
-	var appId = '273669936304095';
+	//var appId = '273669936304095';
 
 	$window.fbAsyncInit = function() {
     	// Executed when the SDK is loaded

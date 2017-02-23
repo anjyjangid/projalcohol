@@ -1,7 +1,7 @@
 var elixir = require('laravel-elixir');
 
 
-elixir.config.production = true;
+//elixir.config.production = true;
 
 
 /*
@@ -21,7 +21,7 @@ elixir(function(mix) {
     	'jquery-1.11.3.min.js',
 	    '../bower_components/bootstrap/dist/js/bootstrap.min.js',
 	    '../bower_components/angular/angular.min.js',
-	    '../bower_components/angular-touch/angular-touch.min.js',
+	    // '../bower_components/angular-touch/angular-touch.min.js',
 	    '../bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
 	    '../assets/global/plugins/angularjs/angular-sanitize.min.js',
 	    '../assets/global/plugins/jquery.pulsate.min.js',

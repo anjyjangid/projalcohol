@@ -108,3 +108,9 @@ function formatAMPM(date) {
   var strTime = hours + ':' + minutes + ' ' + ampm;
   return strTime;
 }
+
+Date.prototype.shiftDays = function(days){    
+  days = parseInt(days, 10);
+  this.setDate(this.getDate() + days);
+  return this;
+}

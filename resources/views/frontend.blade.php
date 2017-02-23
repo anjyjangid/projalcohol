@@ -87,7 +87,7 @@
 		</div>		
     	<div class="loader"></div>
     	<div ng-bind="loadingmsg" ng-show="loadingmsg" class="ldmsg" align="center"></div>
-    	<div id="wrapper" ng-swipe-left="onSwipeLeft()" ng-swipe-right="onSwipeRight()">     	    		    
+    	<div id="wrapper" md-swipe-left="onSwipeLeft($event)" md-swipe-right="onSwipeRight($event)">     	    		    
 
 	        <div id="page-content-wrapper">    		    
 
