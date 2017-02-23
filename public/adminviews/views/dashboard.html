@@ -41,7 +41,10 @@
 							<ul class="list-group">
 								<li ng-repeat="hlist in stats.upcomingdays" class="list-group-item">
 									 {{hlist.timeStamp | date :'EEEE, MMMM d, y'}} <span class="badge badge-danger">{{hlist.title}}</span>
-								</li>								
+								</li>
+								<li ng-if="stats.upcomingdays.length == 0" class="list-group-item">
+									No upcoming holiday(s) found.
+								</li>
 							</ul>
 						</div>
 					</div>

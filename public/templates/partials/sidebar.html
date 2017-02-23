@@ -22,12 +22,6 @@
     	<a class="pointer" ng-click="signupOpen($event);"> SIGNUP </a>                       	
     </li>
 	<li class="dropdown mobilemenu hide brd-bot" ng-if="user.email"> 
-		
-	  <!-- <a class="dropdown-toggle" type="button" data-toggle="dropdown">Hello</a>
-	  <ul class="dropdown-menu">
-	    <li><a ui-sref="accountLayout.profile">HTML</a></li>    
-	  </ul> -->
-		
 		<a class="username dropdown-toggle" type="button" data-toggle="dropdown"> 
 			Hola, {{(user.name)?user.name:user.email}} 
 		</a>
@@ -76,7 +70,7 @@
 	<li ng-class="{'active':AppController.category=='loyalty-store'}" class="dropdown">
 		<a class="pointer" ui-sref="mainLayout.loyaltystore">Loyalty Store</a>
 	</li>	
-	<li ng-class="{'active':AppController.category=='gifts'}" class="dropdown">
+	<!-- <li ng-class="{'active':AppController.category=='gifts'}" class="dropdown">
 		<a class="pointer" ng-click="giftPopup($event)">Gift packaging</a>
-	</li>
+	</li> -->
 </ul>
