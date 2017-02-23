@@ -10537,7 +10537,7 @@ AlcoholDelivery.controller('AppController', [
     	ev.stopPropagation();
 		angular.element('#wrapper').addClass('toggled');
 		angular.element('body').addClass(' hidden-scroll');
-    };	
+    };	    
 
 }]);
 
