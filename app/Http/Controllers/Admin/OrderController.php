@@ -386,13 +386,25 @@ class OrderController extends Controller
 
 	}
 
-	public function postOrders(Request $request){
+	public function postOrders(Request $request, $filter = ''){
 		
 		$params = $request->all();
 
 		extract($params);
 
 		$query = [];
+		
+		//DEFAULT SORTING
+		$sort = ['created_at' => -1]; 
+
+		if($filter != ''){
+			if($filter == 'todaysorders'){
+				$query[]['$match']['delivery.deliveryDate'] = date('Y-m-d');			
+				$sort = ['delivery.deliveryKey' => 1]; 				
+			}
+
+
+		}
 
 		if(isset($reference) && trim($reference)!=''){			
 			$s = "/".$reference."/i";
@@ -464,7 +476,11 @@ class OrderController extends Controller
 
 		$columns = ['reference','consumer.name','payment.total','created_at','delivery.type','doStatus','rate'];
 
-		$sort = ['created_at' => -1]; 
+		if($filter != ''){
+			if($filter == 'todaysorders'){
+				$columns = ['reference','consumer.name','delivery.deliveryKey','delivery.type','doStatus','rate'];				
+			}
+		}
 
 		if(isset($params['order']) && !empty($params['order'])){
 			$field = $columns[$params['order'][0]['column']];			
@@ -495,7 +511,8 @@ class OrderController extends Controller
 			'recordsTotal' => $iTotalRecords,
 			'recordsFiltered' => $iTotalRecords,
 			'draw' => $draw,
-			'data' => $model['result']            
+			'data' => $model['result'],
+			'filter' => $filter
 		];
 
 		return response($response,200);		
@@ -936,4 +953,5 @@ class OrderController extends Controller
             $view_log->addInfo($message);
         //}
     }
+    
 }

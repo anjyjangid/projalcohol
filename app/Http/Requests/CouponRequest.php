@@ -43,7 +43,7 @@ class CouponRequest extends Request
 
         ];
 
-        if($inputs['type']==0){
+        if(isset($inputs['type']) && $inputs['type']==0){
             $rules['discount'] = 'required|numeric|max:99';
         }
 
@@ -71,7 +71,7 @@ class CouponRequest extends Request
             $messages['required'] = "This field is required";
 
 
-        if($inputs['type']==0){
+        if(isset($inputs['type']) && $inputs['type']==0){
             $messages['discount.max'] = 'The discount not be greater than 99% when its applied as percentage';
         }
 

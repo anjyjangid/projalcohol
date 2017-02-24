@@ -365,7 +365,7 @@ class CouponController extends Controller
 
         $columns = ['_id','_id','smallTitle','discount','type','used_count','status'];
 
-        $project = ['image'=>1,'code'=>1,'discount'=>1,'type'=>1,'used_count'=>1,'status'=>1];
+        $project = ['image'=>1,'code'=>1,'discount'=>1,'type'=>1,'used_count'=>1,'status'=>1,'updated_at' => 1];
 
         $project['smallTitle'] = ['$toLower' => '$code'];
 
@@ -382,8 +382,7 @@ class CouponController extends Controller
             $sort = [$field=>$direction];            
         }
 
-        $query[]['$sort'] = $sort;
-        
+        $query[]['$sort'] = $sort;        
 
         $model = Coupon::raw()->aggregate($query);
 

@@ -17,6 +17,7 @@ use AlcoholDelivery\Products;
 use AlcoholDelivery\Orders;
 use AlcoholDelivery\Email;
 use AlcoholDelivery\Book;
+use AlcoholDelivery\Holiday;
 use MongoId;
 
 class AdminController extends Controller
@@ -329,8 +330,22 @@ class AdminController extends Controller
         $totalProducts = Products::count();
         $totalOrder = Orders::count();   
         $avgOrders = Orders::avg('payment.total');
+        $range = 7;
+        $start = strtotime(date('Y-m-d'));        
+        $end = strtotime('+'.$range.' days',$start)*1000;    
+        $start = $start*1000;           
+        $holidays = Holiday::whereBetween('timeStamp', [$start, $end])->orWhere('_id','weekdayoff')->get();
 
-        $res = ['totalProducts'=>$totalProducts,'totalOrder'=>$totalOrder,'avgOrders'=>$avgOrders];
+        $res = [
+            'totalProducts'=>$totalProducts,
+            'totalOrder'=>$totalOrder,
+            'avgOrders'=>$avgOrders,
+            'today' => date('l F d, Y'),
+            'upcomingholidays' => $holidays,
+            'start' => $start,
+            'end' => $end,
+            'range' => $range
+        ];
 
         return response($res,200);
     }
