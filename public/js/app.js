@@ -912,13 +912,14 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 					},
 					resolve: {
-						storeInit : [
-						'store','alcoholWishlist',
-						function (store,alcoholWishlist){
-							store.init().then(function(){
-									return alcoholWishlist.init()
-							});
-						}],						
+						appLoad : appLoad,
+						// storeInit : [
+						// 'store','alcoholWishlist',
+						// function (store,alcoholWishlist){
+						// 	store.init().then(function(){
+						// 		return alcoholWishlist.init()
+						// 	});
+						// }],			
 						loggedIn: [
 						'UserService',
 						function(UserService) {
@@ -1223,15 +1224,20 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 			return response;
         },
         responseError: function (rejection) {
+
             xhrResolutions++;
             updateStatus();
+
             if(rejection.status == 404){
 				$location.url('/404').replace();
 			};
 
 			if(rejection.status == 401){
+
 				$location.url('/').replace();
+
 				$rootScope.$broadcast('showLogin');
+
 			};
 
 			if(rejection.status == 500){				
@@ -1265,11 +1271,9 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 
 /* Init global settings and run the app */
 AlcoholDelivery.run([
-		"$rootScope", "appSettings", "alcoholCart", "ProductService", "store", "alcoholWishlist", "catPricing"
-		, "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll"
+		"$rootScope", "appSettings", "alcoholCart", "$state", "$http", "$window","$mdToast","$document","$anchorScroll"
 		, "$timeout","cartValidation","cartValidate","$templateCache","$cookies"
-, function($rootScope, settings, alcoholCart, ProductService, store, alcoholWishlist, catPricing
-		,categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll
+, function($rootScope, settings, alcoholCart, $state, $http, $window, $mdToast,$document,$anchorScroll
 		,$timeout,cartValidation,cartValidate,$templateCache,$cookies) {
 
 	$rootScope.$state = $state; // state to be accessed from view

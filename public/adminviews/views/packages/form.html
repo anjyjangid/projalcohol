@@ -76,10 +76,9 @@
 									</label>
 									<div class="col-md-10">
 										<textarea class="form-control" ng-model="package.video"></textarea>
-
 										<span class="help-block" ng-bind="errors.video[0]"></span>
 									</div>
-								</div>								
+								</div>
 							</div>
 							<div class="form-group" ng:class="{'has-error':errors.status[0]}">
 								<label class="col-md-2 control-label">Status: <span class="required">
@@ -189,9 +188,13 @@
 						</div>
 						<div class="portlet box blue-hoki" ng-repeat="(pckey, pc) in package.packageItems">
 							<div class="portlet-title">
-								<div class="caption">
-									{{ ($state.$current.data.type == 1) ? pc.title : ('Ingredient # '+($index+1))}}
-								</div>								
+								<div class="caption" ng-if="$state.$current.data.type == 1">
+									{{pc.title}}
+								</div>
+								<div class="caption" ng-if="$state.$current.data.type != 1">
+									<input type="text" class="visible-hide-input" ng-model="package.packageItems[pckey].title" ng-init="package.packageItems[pckey].title==null?package.packageItems[pckey].title = 'Ingredient #'+($index+1):''">
+								</div>
+
 								<div class="tools">
 									<a class="collapse" href="javascript:;" data-original-title="" title="">
 									</a>
@@ -305,4 +308,5 @@
 		</div>
 	</div>
 </div>
+<pre>{{package | json}}</pre>
 </div>

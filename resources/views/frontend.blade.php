@@ -94,7 +94,7 @@
              	<top-menu></top-menu>          
         		
 
-	    		<div ui-view class="ancontainer"></div>    		
+	    		<div ui-view class="ancontainer"></div>
 				
 				<div id="sectionarea" class="hide">
 				<section class="fullwidth social_block" style="padding: 10px 0px;">

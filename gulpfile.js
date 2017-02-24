@@ -1,7 +1,7 @@
 var elixir = require('laravel-elixir');
 
 
-elixir.config.production = true;
+// elixir.config.production = true;
 
 
 /*
