@@ -333,7 +333,7 @@ angular.module('AlcoholCartFactories', [])
 
 		if(typeof cProducts !== "undefined"){
 			if (cProducts.length > 0) {
-				if(cProducts.indexOf(this._id) == -1) {
+				if(cProducts.indexOf(this._id) !== -1) {
 					hasProduct = 1;
 				}
 			}

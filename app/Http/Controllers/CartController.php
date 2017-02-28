@@ -1867,8 +1867,11 @@ class CartController extends Controller
 
 		$cartArr['user'] = new MongoId($user->_id);		
 
-		try {			
+		try {	
 
+			//FORMAT CART TO ORDER
+			$orderObj = $cart->cartToOrder($cartKey);		
+			$cartArr['payment']['total'] = $orderObj['payment']['total'];
 			//PREPARE PAYMENT FORM DATA
 			if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){
 				$payment = new Payment();
@@ -1901,9 +1904,7 @@ class CartController extends Controller
 				}
 			}
 
-			//FORMAT CART TO ORDER
-
-			$orderObj = $cart->cartToOrder($cartKey);
+			
 
 			$defaultContact = true;
 			if(!isset($orderObj['delivery']['newDefault']) || $orderObj['delivery']['newDefault']!==true){

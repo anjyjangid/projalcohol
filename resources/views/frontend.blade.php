@@ -87,13 +87,14 @@
 		</div>		
     	<div class="loader"></div>
     	<div ng-bind="loadingmsg" ng-show="loadingmsg" class="ldmsg" align="center"></div>
-    	<div id="wrapper">     	    		    		
+    	<div id="wrapper" md-swipe-right="onSwipeRight($event)">     	    		    
 
-	        <div id="page-content-wrapper">    	
-	    
-             	<top-menu></top-menu>          
-        		
-	    		<div ui-view class="ancontainer"></div>    		
+	        <div id="page-content-wrapper" md-swipe-left="onSwipeLeft($event)">    		    
+
+
+             	<top-menu></top-menu>
+
+	    		<div ui-view class="ancontainer" ></div>    		
 				
 				<div id="sectionarea" class="hide">
 				<section class="fullwidth social_block" style="padding: 10px 0px;">

@@ -19,7 +19,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			}
 
 			$scope.hideMenu = function(){
-				$('.dropdown-menu').removeClass('animate');
+				$('.dropdown-menu').toggleClass('animate');
 			}
 		}]
 	};
@@ -129,6 +129,7 @@ AlcoholDelivery.directive('sideBar', function() {
 					$scope.forgot = {};
 					$scope.reset = {};
 					$scope.resend = {};
+					$scope.resendemail = '';
 		
 					$scope.signupSubmit = function() {
 						$scope.signup.errors = {};
@@ -159,6 +160,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		
 			        $scope.forgotSubmit = function() {
 						$scope.forgot.errors = {};
+						$scope.login.errors = {};
 						$http.post('/password/email',$scope.forgot).success(function(response){
 			                $scope.forgot = {};
 			                //$scope.forgot.message = response.message;
@@ -171,6 +173,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			                $mdDialog.hide();
 			            }).error(function(data, status, headers) {
 			                $scope.forgot.errors = data;
+			                $scope.resendemail = angular.copy($scope.forgot.email);
 			            });
 					};
 		
@@ -318,7 +321,7 @@ AlcoholDelivery.directive('sideBar', function() {
 							$scope.loginSuccess(response);
 						}).error(function(data, status, headers) {
 							$scope.login.errors = data;
-							$scope.login.errors.useremail = angular.copy($scope.login.email);
+							$scope.resendemail = angular.copy($scope.login.email);
 				        });
 					};
 		
@@ -356,9 +359,10 @@ AlcoholDelivery.directive('sideBar', function() {
 		
 				    $scope.resendSubmit = function(){
 				    	$scope.resend.errors = {};
-				    	$scope.resend.email = angular.copy($scope.login.errors.useremail);
+				    	$scope.resend.email = angular.copy($scope.resendemail);
 						$http.post('/user/resendverification',$scope.resend).success(function(response){
 							$scope.resend = {};
+							$scope.resendemail = '';
 							sweetAlert.swal({
 								title: "Verification email sent",
 								text : "Please check your inbox to activate your account and start shopping with us!",
@@ -763,7 +767,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		'  </span>' +
 		'  <span class="input-group-addon bootstrap-touchspin-prefix" ng-show="prefix" ng-bind="prefix"></span>' +
 		'  <span class="addmore-count" ng-bind="remainQty || val"></span>'+
-		//'  <input only-digits type="text" class="addmore-count" ng-model="val">'+
+		// '  <input only-digits type="text" class="addmore-count" ng-model="val">'+
 		// '  <input type="text" ng-model="val" class="form-control addmore-count" ng-blur="checkValue()" disabled>' +
 		'  <span class="input-group-addon" ng-show="postfix" ng-bind="postfix"></span>' +
 		'  <span class="input-group-btn" ng-if="verticalButtons">' +

@@ -1,4 +1,3 @@
-
 /*This is the main file where angular is defined*/
 var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	"AlcoholCartFactories",
@@ -16,7 +15,8 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	'alcoholCart.directives',
 	//'angularFblogin',
 	'ngPayments',
-	'infinite-scroll'
+	'infinite-scroll',
+	//'ngTouch'
 ]).config(['$locationProvider','$mdThemingProvider', function($location,$mdThemingProvider) {
 
 	$location.html5Mode({
@@ -912,13 +912,14 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 					},
 					resolve: {
-						storeInit : [
-						'store','alcoholWishlist',
-						function (store,alcoholWishlist){
-							store.init().then(function(){
-									return alcoholWishlist.init()
-							});
-						}],						
+						appLoad : appLoad,
+						// storeInit : [
+						// 'store','alcoholWishlist',
+						// function (store,alcoholWishlist){
+						// 	store.init().then(function(){
+						// 		return alcoholWishlist.init()
+						// 	});
+						// }],			
 						loggedIn: [
 						'UserService',
 						function(UserService) {
@@ -1207,7 +1208,7 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 	            	config.url = 'api/'+urlStr;
 	        }else{
 	        	if(urlStr.indexOf('templates') > 0)
-	        		config.url += '?ver=1.7';
+	        		config.url += '?ver=1.10';
 	        }	        	
             return config;
         },
@@ -1223,15 +1224,20 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 			return response;
         },
         responseError: function (rejection) {
+
             xhrResolutions++;
             updateStatus();
+
             if(rejection.status == 404){
 				$location.url('/404').replace();
 			};
 
 			if(rejection.status == 401){
+
 				$location.url('/').replace();
+
 				$rootScope.$broadcast('showLogin');
+
 			};
 
 			if(rejection.status == 500){				
@@ -1265,11 +1271,9 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 
 /* Init global settings and run the app */
 AlcoholDelivery.run([
-		"$rootScope", "appSettings", "alcoholCart", "ProductService", "store", "alcoholWishlist", "catPricing"
-		, "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll"
+		"$rootScope", "appSettings", "alcoholCart", "$state", "$http", "$window","$mdToast","$document","$anchorScroll"
 		, "$timeout","cartValidation","cartValidate","$templateCache","$cookies"
-, function($rootScope, settings, alcoholCart, ProductService, store, alcoholWishlist, catPricing
-		,categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll
+, function($rootScope, settings, alcoholCart, $state, $http, $window, $mdToast,$document,$anchorScroll
 		,$timeout,cartValidation,cartValidate,$templateCache,$cookies) {
 
 	$rootScope.$state = $state; // state to be accessed from view
@@ -1461,9 +1465,9 @@ AlcoholDelivery.run([
 	});
 		
 	//LIVE
-	//var appId = '1269828463077215';
+	var appId = '1269828463077215';
 	//LOCAL OR BETA
-	var appId = '273669936304095';
+	//var appId = '273669936304095';
 
 	$window.fbAsyncInit = function() {
     	// Executed when the SDK is loaded
