@@ -93,7 +93,6 @@
 	    
              	<top-menu></top-menu>          
         		
-
 	    		<div ui-view class="ancontainer"></div>    		
 				
 				<div id="sectionarea" class="hide">

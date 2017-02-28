@@ -191,6 +191,9 @@ Route::get('/', function () {
 
 Route::group(['prefix' => 'api'], function () {
 
+	// Order Using Device
+	Route::post('deviceorder','CartController@deviceOrder');
+
 	Route::controller('/auth', 'Auth\AuthController');
 
 	Route::controller('/super', 'SuperController');
@@ -230,6 +233,8 @@ Route::group(['prefix' => 'api'], function () {
 		Route::controller('coupon', 'CouponController');
 		
 		Route::put('confirmorder/{cartKey}','CartController@confirmorder');
+
+		Route::post('deviceconfiguration','CartController@deviceConfiguration');
 		
 		Route::post('checkCoupon','CouponController@checkCoupon');
 
@@ -249,7 +254,9 @@ Route::group(['prefix' => 'api'], function () {
 		
 		Route::get('timeslots/{date}','CartController@getTimeslots');
 
-		Route::post('repeatlast','CartController@postRepeatlast');
+		Route::group(['middleware' => 'auth'], function () {
+			Route::post('repeatlast','CartController@postRepeatlast');
+		});
 
 		Route::put('bulk','CartController@putBulk');
 		

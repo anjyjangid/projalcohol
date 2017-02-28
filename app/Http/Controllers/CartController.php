@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Cart;
+use AlcoholDelivery\DeviceConfigurations;
 use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Products;
 use AlcoholDelivery\Packages;
@@ -2431,13 +2432,34 @@ class CartController extends Controller
 		
 		$userLogged = Auth::user('user');		
 
-		$params = Orders::where("user",new mongoId($userLogged->_id))->whereNotNull("products")->orderBy("created_at","desc")->first(["products._id","products.quantity.chilled","products.quantity.nonChilled"]);
+		$orderId = $request->get('orderId');
+		if(!empty($orderId)){
+			$params = Orders::where("_id",new mongoId($orderId))->whereNotNull("products")->first(["products._id","products.quantity.chilled","products.quantity.nonChilled"]);
+		}else{
+			$params = Orders::where("user",new mongoId($userLogged->_id))->whereNotNull("products")->orderBy("created_at","desc")->first(["products._id","products.quantity.chilled","products.quantity.nonChilled"]);
+		}
+
+		if(empty($params)){
+			return response(['refresh' => true],412);
+		}
 
 		$cartKey = $request->get('cartKey');
-		
-		$cart = Cart::find($cartKey);
 
-		$cartProducts = $cart->products;
+		if(!empty($orderId)){
+			$cart = Cart::destroy($cartKey);
+			$cart = new Cart;
+			$cart = $cart->generate();
+			if($cart->success){
+				$cartKey = $cart->cart['_id'];
+				$request->session()->put('deliverykey', $cartKey);
+			}else{
+				return response(['refresh' => true],412);
+			}
+		}else{
+			$cart = Cart::find($cartKey);
+		}
+
+		$cartProducts = isset($cart->products)?$cart->products:"";
 
 		if(isset($params['products']) && is_array($params['products'])){
 			
@@ -3239,6 +3261,252 @@ class CartController extends Controller
         return $img;
     }
 
+    // SAVE DEVICE CONFIGURATION
+    public function deviceConfiguration(Request $request){
 
+		$user = Auth::user('user');
+		$userObj = User::find($user->_id);
+
+		$deviceId = $request->get('deviceId');
+		$cartKey = $request->get('cartKey');
+		$cart = Cart::findUpdated($cartKey);
+		if(empty($cart)){
+			return response(["success"=>false,"message"=>"cart not found"],405); //405 => method not allowed
+		}
+
+		$isValidate = $cart->validate();
+		if($isValidate['valid']===false){
+			return response($isValidate,400);
+		}
+
+		// Add device id
+		$cart->device = ['id'=>$deviceId];
+
+		$cartArr = $cart->toArray();
+
+		try {
+
+			$defaultContact = true;
+			if(!isset($cartArr['delivery']['newDefault']) || $cartArr['delivery']['newDefault']!==true){
+				$defaultContact = false;
+			}
+			$userObj->setContact($cartArr['delivery']['contact'],$defaultContact);
+
+			$isDeviceConfigExist = DeviceConfigurations::where('user',new MongoId($user->_id))->where('device.id',$deviceId)->first();
+			if(!empty($isDeviceConfigExist)){
+				// If device config exist for device and user then delete that and create new
+				$isDeviceConfigExist->delete();
+			}
+
+			// SAVE DEVICE CONFIGURATION DETAILS IN TABLE
+			$deviceConfigure = DeviceConfigurations::create($cartArr);
+			// Update user id
+			$deviceConfigure->user = new MongoId($user->_id);
+			$deviceConfigure->save();
+
+			// CLEAR CART
+			$cart->delete();
+
+			$request->session()->forget('deliverykey');
+			
+			//SAVE CARD IF USER CHECKED SAVE CARD FOR FUTURE PAYMENTS
+			if($cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['card'] == 'newcard' && $cartArr['payment']['savecard']){
+				$cardInfo = $cartArr['payment']['creditCard'];
+		        $userObj->push('savedCards',$cardInfo,true);
+			}
+
+			return response(array("success"=>true,"message"=>"Device Configured Successfully","deviceConfigure"=>$deviceConfigure['_id']));
+
+		} catch(\Exception $e){
+
+				ErrorLog::create('emergency',[
+					'error'=>$e,
+					'message'=> 'device configure error'
+				]);
+		}
+
+		return response(["message"=>'Something went wrong'],400);	
+	}
+
+	public function deviceOrder(Request $request){
+		// get data sent by device
+		$deviceId = $request->get('did');
+		$deviceType = $request->get('deviceType');
+		$deviceMacAddress = $request->get('dmac'); // Device physical address(Hexadecimal BCD)
+		$userId = $request->get('userMarking');
+		// $orderId = $request->get('orderMarking');
+		// $deviceConfigurationId = $request->get('deviceConfigMarking'); // Custom parameter(deviceConfigurationId) set in device by app when device configuration is set.
+		$orderButtonType = $request->get('orderButton'); // 0:not choose 1：single press(place order) 2：long press
+		$callButtonType = $request->get('callButton'); // 0:not choose 1：single press(call customer service) 2：Long press(cancel order)
+
+		// 1：single press(place order)
+		if($orderButtonType==1 && !empty($deviceId) && !empty($userId)){
+			$userObj = User::find($userId);
+
+			$deviceConfig = DeviceConfigurations::where('user',new MongoId($userId))->where('device.id',$deviceId)->first();
+			if(empty($deviceConfig)){
+				return response(["success"=>false,"message"=>"Data not found"],405); //405 => method not allowed
+			}
+
+			$deviceConfigArr = $deviceConfig->toArray();
+
+			// SAVE DEVICE CONFIGURATION TO CART
+			$cart = Cart::create($deviceConfigArr);
+			$cartKey = $cart->_id;
+			$cart->user = new MongoId($userId);
+			$cart->save();
+
+			//SET CART REFERENCE FOR ORDER ID
+			$cart->setReference();
+
+			$isValidate = $cart->validate();
+			if($isValidate['valid']===false){
+				return response($isValidate,400);
+			}
+
+			$cartArr = $cart->toArray();
+			$cartArr['user'] = new MongoId($userId);
+
+			try {
+				//PREPARE PAYMENT FORM DATA
+				if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){
+					$payment = new Payment();
+					$paymentres = $payment->prepareform($cartArr,$userObj);
+					return response($paymentres,200);
+				}
+
+				//CHECK FOR PAYMENT RESULT
+				/*if($request->isMethod('get') && $cartArr['payment']['method'] == 'CARD'){
+					$rdata = $request->all();
+					//VALIDATE RESPONSE SO IT IS VALID OR NOT
+					$payment = new Payment();
+					$failed = false;
+					if(!$payment->validateresponse($rdata) || ($rdata['result']!='Paid')){
+						$failed = true;
+					}
+
+					unset($rdata['signature']);
+					$paymentres = ['paymentres' => $rdata];
+					$cart->payment = array_merge($cartArr['payment'],$paymentres);
+					$cart->save();
+					$this->logtofile($rdata);
+
+					if($failed){
+						return redirect('/cart/payment');
+					}
+				}*/
+
+				//FORMAT CART TO ORDER
+				$orderObj = $cart->cartToOrder($cartKey);
+
+				$defaultContact = true;
+				if(!isset($orderObj['delivery']['newDefault']) || $orderObj['delivery']['newDefault']!==true){
+					$defaultContact = false;
+				}
+				$userObj->setContact($orderObj['delivery']['contact'],$defaultContact);
+
+				//CREATE ORDER FROM CART
+				$order = Orders::create($orderObj);
+
+				// CLEAR CART
+				$cart->delete();
+
+				$process = $order->processGiftCards();
+
+				$reference = $order->reference;
+
+				if(isset($order->coupon)){
+					$cRedeem = [
+						"coupon" => $order->coupon['_id'],
+						"reference"=>$order->reference,
+						"user" => $order->user
+					];
+					$coupon = new coupon;
+					$coupon->redeemed($cRedeem);
+				}
+
+				if(isset($order->discount['credits']) && $order->discount['credits']>0){
+					$creditsUsed = $order->discount['credits'];
+					$creditObj = [
+									"credit"=>$creditsUsed,
+									"method"=>"order",
+									"reference" => $reference,
+									"user" => new mongoId($userId),
+									"comment"=> "You have used this credits with an order"
+								];
+
+					CreditTransactions::transaction('debit',$creditObj,$userObj);
+				}
+
+				if(isset($order->creditsFromLoyalty) && $order->creditsFromLoyalty>0){
+					$creditsFromLoyalty = $order['creditsFromLoyalty'];
+					$creditObj = [
+									"credit"=>$creditsFromLoyalty,
+									"method"=>"order",
+									"reference" => $reference,
+									"user" => new mongoId($userId),
+									"comment"=> "You have earned this credits in exchange of loyalty points"
+								];
+					
+					CreditTransactions::transaction('credit',$creditObj,$userObj);
+				}
+
+				if($order['loyaltyPointUsed']>0){
+					$loyaltyObj = [
+									"points"=>$order['loyaltyPointUsed'],
+									"method"=>"order",
+									"reference" => $reference,
+									"user" => new mongoId((string)$userObj->_id),
+									"comment"=> "You have used this points by making a purchase on our website"
+								];
+
+					LoyaltyTransactions::transaction('debit',$loyaltyObj,$userObj);
+				}
+
+				$loyaltyPoints = $order['loyaltyPointEarned'];
+				if($loyaltyPoints>0){
+					$loyaltyObj = [
+							"points"=>$loyaltyPoints,
+							"method"=>"order",
+							"reference" => $reference,
+							"user" => new mongoId((string)$userObj->_id),
+							"comment"=> "You have earned this points by making a purchase"
+						];
+			
+					LoyaltyTransactions::transaction('credit',$loyaltyObj,$userObj);
+				}
+
+				//Update inventory if order is 1 hour delivery
+				if($order['delivery']['type'] == 0){
+					$model = new Products();
+					$model->updateInventory($order);
+				}
+
+				//CONFIRMATION EMAIL 
+				$emailTemplate = new Email('orderconfirm');
+				$mailData = [
+	                'email' => strtolower($userObj->email),
+	                'user_name' => ($userObj->name)?$userObj->name:$userObj->email,
+	                'order_number' => $reference
+	            ];
+
+	            $order->placed();
+/*
+				if($request->isMethod('get')){
+					return redirect('/orderplaced/'.$order['_id']);
+				}
+*/
+				return response(array("success"=>true,"message"=>"Order Placed Successfully","order"=>$order->reference));
+
+			}catch(\Exception $e){
+				ErrorLog::create('emergency',[
+					'error'=>$e,
+					'message'=> 'Device Order'
+				]);
+			}
+
+			return response(["message"=>'Something went wrong'],400);
+		}
+	}
 
 }
