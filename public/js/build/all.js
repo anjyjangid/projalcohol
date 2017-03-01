@@ -8926,7 +8926,7 @@ AlcoholDelivery.factory('ScrollPaging', ['$http',function($http) {
 
 AlcoholDelivery.factory('ScrollPagination', ['$http','ProductService',function($http,ProductService) {
 
-  var Search = function(keyword,filter,sortby,type) {
+  var Search = function(keyword,filter,sortby,type,parent) {
     this.items = [];
     this.busy = false;
     this.skip = 0;
@@ -8937,6 +8937,7 @@ AlcoholDelivery.factory('ScrollPagination', ['$http','ProductService',function($
     this.filter = filter;
     this.sortby = sortby;
     this.type = type || 1;
+    this.parent = parent || '';
   };
 
   Search.prototype.nextPage = function() {
@@ -8952,8 +8953,8 @@ AlcoholDelivery.factory('ScrollPagination', ['$http','ProductService',function($
 		filter:this.filter,
 		sort:this.sortby,
 		keyword:this.keyword,
-		productList:1
-
+		productList:1,
+		parent:this.parent
 	}).then(function(items){
 
 		// _self.totalResult = result.data.total;
@@ -9437,7 +9438,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('mainLayout.loyaltystore', {
-					url: '/loyalty-store?{filter}&{sort}',
+					url: '/loyalty-store?{parent}&{filter}&{sort}',
 					templateUrl : "/templates/loyaltyStore.html",
 					params: {pageTitle: 'Loyalty Store'},
 					controller:"LoyaltyStoreController"
@@ -13374,8 +13375,9 @@ AlcoholDelivery.controller('LoyaltyStoreController', [
 		$scope.keyword = $stateParams.keyword;
 		$scope.filter = $stateParams.filter;
 		$scope.sortby = $stateParams.sort;
+		$scope.parent = $stateParams.parent;
 
-		$scope.products = new ScrollPagination();
+		$scope.products = new ScrollPagination($scope.keyword,$scope.filter,$scope.sortby,1,$scope.parent);
 
 		$scope.credits = {};
 
