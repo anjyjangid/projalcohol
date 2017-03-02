@@ -17,6 +17,7 @@ use AlcoholDelivery\Setting as Setting;
 use AlcoholDelivery\Libraries\GoogleCloudPrint\GoogleCloudPrint;
 
 use DB;
+use File;
 
 class SettingController extends Controller
 {
@@ -52,10 +53,8 @@ class SettingController extends Controller
 	{
 		$inputs = $request->all();
 
-		$setting = Setting::find($id);        
-		
+		$setting = Setting::find($id);
 		$setting->settings = $inputs;
-
 		if($setting->save()){
 			return response(array("success"=>true,"message"=>"Settings updated successfully"));
 		}
@@ -66,12 +65,10 @@ class SettingController extends Controller
 	
 	public function getSettings($settingKey){
 		$settingObj = new Setting;
-
 		$result = $settingObj->getSettings(array(
 						"key"=>$settingKey,
 						"multiple"=>false
 					));
-		
 		return response($result, 201);
 
 	}
@@ -183,5 +180,57 @@ class SettingController extends Controller
 		return response('Error in saving printer detail',400);
 
 	}
-	
+
+	public function postAnnouncement(Request $request){
+		$rules = [
+			'enable' => 'Required|Boolean',
+			'text' => 'Required',
+			'link' => 'Required|URL',
+		];
+
+		if($request->hasFile('rightImage')){
+			$rules['rightImage'] = 'image|max:5102';
+		}
+
+		if($request->hasFile('leftImage')){
+			$rules['leftImage'] = 'image|max:5102';	
+		}
+
+		$this->validate($request,$rules);
+
+		$inputs = $request->all();
+		$setting = Setting::find('announcementBar');
+
+		$setting->settings = $inputs;
+
+		if($request->hasFile('rightImage')){
+		    $image = $inputs['rightImage'];    
+		    $filename = $setting->_id.'_rightImage'.'.'.$image->getClientOriginalExtension();
+		    $destinationPath = storage_path('announcement');
+		    if (!File::exists($destinationPath)){
+		        File::MakeDirectory($destinationPath,0777, true);
+		    }            
+		    $upload_success = $image->move($destinationPath, $filename);
+		    $inputs['rightImage'] = $filename;
+		}
+
+		if($request->hasFile('leftImage')){
+		    $image = $inputs['leftImage'];
+		    $filename = $setting->_id.'_leftImage'.'.'.$image->getClientOriginalExtension();
+		    $destinationPath = storage_path('announcement');
+		    if (!File::exists($destinationPath)){
+		        File::MakeDirectory($destinationPath,0777, true);
+		    }            
+		    $upload_success = $image->move($destinationPath, $filename);
+		    $inputs['leftImage'] = $filename;
+		}
+
+		$setting->settings = $inputs;
+		// prd($setting);
+		if($setting->save()){
+			return response(array("success"=>true,"message"=>"Settings updated successfully"));
+		}
+
+		return response(array("success"=>false,"message"=>"Something went wrong"));
+	}
 }

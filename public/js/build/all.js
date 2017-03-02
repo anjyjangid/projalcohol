@@ -13376,7 +13376,7 @@ AlcoholDelivery.controller('LoyaltyStoreController', [
 		$scope.filter = $stateParams.filter;
 		$scope.sortby = $stateParams.sort;
 		$scope.parent = $stateParams.parent;
-
+		// type 1 for loyalty store
 		$scope.products = new ScrollPagination($scope.keyword,$scope.filter,$scope.sortby,1,$scope.parent);
 
 		$scope.credits = {};

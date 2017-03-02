@@ -85,7 +85,6 @@ class SettingRequest extends Request
 
 				];
 				break;
-
 			default:
 				# code...
 				break;

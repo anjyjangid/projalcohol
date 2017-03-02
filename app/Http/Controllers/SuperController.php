@@ -138,26 +138,29 @@ class SuperController extends Controller
 	 */
 	public function getSettings(Request $request)
 	{        
-		$settings = DB::collection('settings')->whereIn("_id",['general','social','loyalty'])->get();
+		$settings = DB::collection('settings')->whereIn("_id",['general','social','loyalty','announcementBar'])->get();
 		
 		$settingsData = array();
-
-		foreach($settings as $setting){        
-
+		
+		foreach($settings as $setting){
 			foreach($setting['settings'] as $subKey=>$subSetting){
-
-				$settingsData[$setting['_id']][$subKey] = $subSetting['value'];
-				
+				if(isset($subSetting['value'])){
+					$settingsData[$setting['_id']][$subKey] = $subSetting['value'];
+				}else{
+					$settingsData[$setting['_id']][$subKey] = $subSetting;
+				}
 			}
 		}
 
 		$today = strtotime(date('Y-m-d'))*1000;
+		$holidays = DB::collection('holidays')
+						->where('timeStamp','>',$today)
+						->orWhere('_id','weekdayoff')
+						->get(['_id','dow','timeStamp']);
 
-		$holidays = DB::collection('holidays')->where('timeStamp','>',$today)->orWhere('_id','weekdayoff')
-		->get(['_id','dow','timeStamp']);
-
-		$pages = DB::collection('pages')->where('status',1)
-		->get(['linkTitle','section','slug']);
+		$pages = DB::collection('pages')
+					->where('status',1)
+					->get(['linkTitle','section','slug']);
 
 		$settingsData['holiDays'] = $holidays;
 		$settingsData['today'] = $today;
