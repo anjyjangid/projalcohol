@@ -1,0 +1,36 @@
+<section class="fullwidth">
+	<div class="fullwidth innerpagemargintop">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-8 christmas-mainouter">
+					<div class="divider"></div>
+					<div ng-if="payment.paymentres && payment.paymentres.result!='Paid'" class="alert alert-danger">
+						Card is rejected by the bank. Please check with your bank or re-enter card details
+					</div>									
+
+					<!-- If configured card for device is available then show this view -->
+					<div ng-if="isConfiguredCardFound" class="device_card_section availablecards">
+						<div ui-view="deviceconfiguredcard"></div>
+					</div>
+
+					<!-- If configured card for device is not available then show all card view -->
+					<div ng-if="!isConfiguredCardFound" class="device_card_not_found_section">
+						<div class="div_please_choose_time_text">Sorry, we did not found your selected card. <br>Please select a card from the list below or add new card to complete the transaction</div>
+						<div class="availablecards">
+							<span>SELECT YOUR CARD:</span>
+							<div ui-view="addcard" paymentmode="true" payment="payment"></div>
+						</div>
+					</div>
+
+					<div class="checkouterlastdiv">
+						<button class="checkoutcheckoutnowbutton2" ng-click="proceedReview()">PAY</button>
+					</div>
+				</div>
+				<div class="col-md-2"></div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<payment-form></payment-form>

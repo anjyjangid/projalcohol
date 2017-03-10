@@ -775,6 +775,14 @@ Route::get('sitemap.xml', function(){
 
 });
 
+//ROUTE FOR DEVICE PAYMENT MOBILEAPPEND
+Route::get('devicepayment/{deviceconfigid}',function($page){
+	return view('mobileappend');
+});
+
+Route::get('cart/configuredCard/{deviceconfigid}','CartController@getConfiguredCard');
+Route::post('cart/deviceOrder/{deviceconfigid}','CartController@deviceOrder');
+
 //FINAL ROUTE FOR FRONTEND
 Route::any('{catchall}', function ( $page ) {
     return view('frontend');

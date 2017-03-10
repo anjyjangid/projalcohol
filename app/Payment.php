@@ -10,7 +10,7 @@ use DB;
 
 class Payment extends Model
 {
- 	public $apiLive = true;
+ 	public $apiLive = false;
  	public $tokenUrl;
  	public $paymentUrl;
 	public $secretKey;
@@ -32,7 +32,7 @@ class Payment extends Model
  			$this->key = 'axpnrAsGCwVxbpdJM6YhVX3QK0fOhEiOPG10AWxq';
  			$this->paymentUrl = 'https://connect.reddotpayment.com/merchant/cgi-bin-live';
 			$this->returnUrl = '';
- 		}else{ 
+ 		}/*else{ 
  			//TEST
  			$this->tokenUrl = 'http://test.reddotpayment.com/service/tokenization-api/create'; 			
 			$this->notificationUrl = '';
@@ -41,7 +41,17 @@ class Payment extends Model
  			$this->key = 'r5f3ZLs8FRbhMnv7AaeQwvgkmHoDw9pKFAriTEFh';
  			$this->paymentUrl = 'http://test.reddotpayment.com/merchant/cgi-bin';
 			$this->returnUrl = '';
- 		}
+ 		}*/
+        else{ 
+            //TEST
+            $this->tokenUrl = 'http://secure-dev.reddotpayment.com/service/tokenization-api/create';            
+            $this->notificationUrl = '';
+            $this->secretKey = 'jMAb6rYoBPF96dacwGe9tCLYpnhYglkFBKPH4LbT8mKQi2IhOyIhWSmZBvlFjlshAyFPi3NrYGTKV35sLVrDekX5y5FxWSv2XKkcFvbGaafuj93rFoRT69FRKKpaBner';          
+            $this->merchantId = '1000089464';
+            $this->key = 'r5f3ZLs8FRbhMnv7AaeQwvgkmHoDw9pKFAriTEFh';
+            $this->paymentUrl = 'http://test.reddotpayment.com/connect-api/cgi-bin-live';
+            $this->returnUrl = '';
+        }
  	}   
 
  	public function saveCard($request,$user,$saveUser){        
@@ -129,7 +139,7 @@ class Payment extends Model
 		return $ret;    	
     }
 
-    public function prepareform($orderData, $userData, $isAdmin = false){
+    public function prepareform($orderData, $userData, $isAdmin=false, $isDeviceOrder=false){
 
         $uprefix = '';
 
@@ -144,14 +154,15 @@ class Payment extends Model
             'currency_code' => $this->currencyCode,
             'transaction_type' => $this->transactionType,
             'key' => $this->key,
-            'token_id'=> $orderData['payment']['creditCard']['token_id'],            
-            'cvv2'=> $orderData['payment']['creditCard']['cvc'],            
-            'return_url' => url().$uprefix.'/confirmorder',            
+            'token_id' => $orderData['payment']['creditCard']['token_id'],
+            'cvv2' => $orderData['payment']['creditCard']['cvc'],
+            'return_url' => url().$uprefix.'/confirmorder',
             'merchant_data1' => $orderData['_id'],
-            'notify_url' => url().$uprefix.'/confirmorder',            
+            'merchant_data2' => (string)$orderData['user'],
+            'merchant_data3' => $isDeviceOrder==false?0:1,
+            'notify_url' => url().$uprefix.'/confirmorder',
             //'notify_url' => url().'/confirmorder', //FOR SAFE PAYMENTS
         );
-
 
         $chosenFields = array_keys($request_transaction);
         sort($chosenFields);
