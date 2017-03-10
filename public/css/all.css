@@ -7901,11 +7901,7 @@ ui-sref {
 .registeremailcvr {
 	float: left;
 	width: 100%;
-<<<<<<< HEAD
 	margin-bottom: 15px;
-=======
-	margin-bottom: 20px;
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 }
 .registeremailcvr label {
 	float: left;
@@ -7938,11 +7934,7 @@ ui-sref {
 	font-size: 24px;
 	color: #454545;
 	font-family: 'Work Sans', sans-serif;
-<<<<<<< HEAD
 	margin-bottom: 16px;
-=======
-	margin-bottom: 36px;
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 	line-height: 25px;
 }
 .modal-dialog.alcohal_registermain {
@@ -13514,13 +13506,10 @@ md-toast.notify.bottom{
 .date-selectbox:focus{
 	box-shadow: none;
 }
-<<<<<<< HEAD
 
 .registeremailcvr md-checkbox{
 	margin-bottom: 0px;
 }
-=======
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 /*party-package-page*/
 .partypackegescover {
 	width: 100%;
@@ -15682,11 +15671,7 @@ body.menu-slider.in {
 	  width: 26%;
   }
   .registeremailcvr {
-<<<<<<< HEAD
 	  margin-bottom: 15px
-=======
-	  margin-bottom: 20px
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
   }
   .balancetexxt {
 	  width: 100%
@@ -16739,11 +16724,7 @@ md-toast.notify div.md-toast-content{
 	  width: 100%
   }
   .registeremailcvr {
-<<<<<<< HEAD
 	  margin-bottom: 15px
-=======
-	  margin-bottom: 20px
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
   }
   .balancetexxt {
 	  width: 100%;
@@ -20592,7 +20573,6 @@ body {
 	top: 0px !important;
 }
 
-<<<<<<< HEAD
 /*********************
 * Social Buttons
 *********************/
@@ -20780,8 +20760,6 @@ body {
     text-align: center;
     border-right: 1px solid rgba(0,0,0,0.2);
 }
-=======
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 /**
  * vAccordion - AngularJS multi-level accordion component
  * @version v1.6.0

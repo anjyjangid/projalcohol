@@ -429,7 +429,6 @@ shortDate:"M/d/yy",shortTime:"h:mm a"},NUMBER_FORMATS:{CURRENCY_SYM:"$",DECIMAL_
 !window.angular.$$csp().noInlineStyle&&window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
 //# sourceMappingURL=angular.min.js.map
 
-<<<<<<< HEAD
 /**
  * Satellizer 0.15.5
  * (c) 2016 Sahat Yalkabov 
@@ -1390,8 +1389,6 @@ shortDate:"M/d/yy",shortTime:"h:mm a"},NUMBER_FORMATS:{CURRENCY_SYM:"$",DECIMAL_
 }));
 //# sourceMappingURL=satellizer.js.map
 
-=======
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 /* ng-infinite-scroll - v1.3.0 - 2016-11-04 */
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
@@ -9383,7 +9380,6 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	//'angularFblogin',
 	'ngPayments',
 	'infinite-scroll',
-<<<<<<< HEAD
 	'satellizer'
 	//'ngTouch'
 ]).config(['$locationProvider','$mdThemingProvider','$authProvider',
@@ -9419,20 +9415,6 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	      clientId: instagram_id
 	    });
     
-=======
-	//'ngTouch'
-]).config(['$locationProvider','$mdThemingProvider', function($location,$mdThemingProvider) {
-
-	$location.html5Mode({
-		enabled: true,
-		requireBase: false
-	});
-
-	// $location.hashPrefix('!');
-	//$mdThemingProvider.disableTheming();
-	$mdThemingProvider.theme('default').primaryPalette('purple').accentPalette('purple');
-    //.accentPalette('orange');    
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 }]);
 
 
@@ -9927,11 +9909,7 @@ AlcoholDelivery.factory('ScrollPaging', ['$http',function($http) {
 
 AlcoholDelivery.factory('ScrollPagination', ['$http','ProductService',function($http,ProductService) {
 
-<<<<<<< HEAD
-  var Search = function(keyword,filter,sortby,type) {
-=======
   var Search = function(keyword,filter,sortby,type,parent) {
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
     this.items = [];
     this.busy = false;
     this.skip = 0;
@@ -9942,10 +9920,7 @@ AlcoholDelivery.factory('ScrollPagination', ['$http','ProductService',function($
     this.filter = filter;
     this.sortby = sortby;
     this.type = type || 1;
-<<<<<<< HEAD
-=======
     this.parent = parent || '';
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
   };
 
   Search.prototype.nextPage = function() {
@@ -9961,13 +9936,8 @@ AlcoholDelivery.factory('ScrollPagination', ['$http','ProductService',function($
 		filter:this.filter,
 		sort:this.sortby,
 		keyword:this.keyword,
-<<<<<<< HEAD
-		productList:1
-
-=======
 		productList:1,
 		parent:this.parent
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 	}).then(function(items){
 
 		// _self.totalResult = result.data.total;
@@ -10186,7 +10156,6 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						//templateUrl: "/templates/index/home.html",
 						controller:['sweetAlert','$location','$stateParams',function(sweetAlert,$location,$stateParams){
 						
-<<<<<<< HEAD
 							var title = '';
 							var type = 'success';
 							var msg = 'Your email is already verified.';
@@ -10230,28 +10199,6 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							$location.url('/').replace();
 
 						}]
-=======
-													var title = '';
-													var type = 'success';
-													var msg = 'Your email is already verified.';
-													if($stateParams.status == 1){
-														title = 'Congratulations!';
-														//type = 'success';
-														msg = 'Your email has been verified successfully, you can login with your registered email & password.';	
-													}							
-						
-													sweetAlert.swal({
-														type:type,
-														title: title,
-														text : msg,
-														timer: 0,
-														closeOnConfirm: true
-													});
-						
-													$location.url('/').replace();
-						
-												}]
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 				})
 
 				.state('mainLayout.expiredlink', {
@@ -10376,15 +10323,6 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 					},
 					resolve: {
-<<<<<<< HEAD
-						storeInit : [
-						'store','alcoholWishlist',
-						function (store,alcoholWishlist){
-							store.init().then(function(){
-									return alcoholWishlist.init()
-							});
-						}],						
-=======
 						appLoad : appLoad,
 						// storeInit : [
 						// 'store','alcoholWishlist',
@@ -10393,7 +10331,6 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						// 		return alcoholWishlist.init()
 						// 	});
 						// }],			
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 						loggedIn: [
 						'UserService',
 						function(UserService) {
@@ -10507,11 +10444,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('mainLayout.loyaltystore', {
-<<<<<<< HEAD
-					url: '/loyalty-store?{filter}&{sort}',
-=======
 					url: '/loyalty-store?{parent}&{filter}&{sort}',
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 					templateUrl : "/templates/loyaltyStore.html",
 					params: {pageTitle: 'Loyalty Store'},
 					controller:"LoyaltyStoreController"
@@ -10686,11 +10619,7 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 	            	config.url = 'api/'+urlStr;
 	        }else{
 	        	if(urlStr.indexOf('templates') > 0)
-<<<<<<< HEAD
 	        		config.url += '?ver=1.11';
-=======
-	        		config.url += '?ver=1.10';
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 	        }	        	
             return config;
         },
@@ -10706,30 +10635,20 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 			return response;
         },
         responseError: function (rejection) {
-<<<<<<< HEAD
-            xhrResolutions++;
-            updateStatus();
-=======
 
             xhrResolutions++;
             updateStatus();
 
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
             if(rejection.status == 404){
 				$location.url('/404').replace();
 			};
 
 			if(rejection.status == 401){
-<<<<<<< HEAD
-				$location.url('/').replace();
-				$rootScope.$broadcast('showLogin');
-=======
 
 				$location.url('/').replace();
 
 				$rootScope.$broadcast('showLogin');
 
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 			};
 
 			if(rejection.status == 500){				
@@ -10763,17 +10682,9 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 
 /* Init global settings and run the app */
 AlcoholDelivery.run([
-<<<<<<< HEAD
-		"$rootScope", "appSettings", "alcoholCart", "ProductService", "store", "alcoholWishlist", "catPricing"
-		, "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll"
-		, "$timeout","cartValidation","cartValidate","$templateCache","$cookies"
-, function($rootScope, settings, alcoholCart, ProductService, store, alcoholWishlist, catPricing
-		,categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll
-=======
 		"$rootScope", "appSettings", "alcoholCart", "$state", "$http", "$window","$mdToast","$document","$anchorScroll"
 		, "$timeout","cartValidation","cartValidate","$templateCache","$cookies"
 , function($rootScope, settings, alcoholCart, $state, $http, $window, $mdToast,$document,$anchorScroll
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 		,$timeout,cartValidation,cartValidate,$templateCache,$cookies) {
 
 	$rootScope.$state = $state; // state to be accessed from view
@@ -10962,39 +10873,19 @@ AlcoholDelivery.run([
 			hideDelay:def
 		});
 
-<<<<<<< HEAD
 	});		
 	
 	//FB SCRIPT 
 	var appId = angular.element('meta[name="facebook_id"]').attr('content');
     
 	$window.fbAsyncInit = function() {
-=======
-	});
-		
-	//LIVE
-	var appId = '1269828463077215';
-	//LOCAL OR BETA
-	//var appId = '273669936304095';
-
-	$window.fbAsyncInit = function() {
-    	// Executed when the SDK is loaded
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 	    FB.init({
 	      appId: appId,
 	      status: true, 
 	      cookie: true, 
 	      xfbml: true,
 	      version: 'v2.4'
-<<<<<<< HEAD
 	    }); 	    
-=======
-	    }); 
-
-	    /*FB.Event.subscribe('auth.authResponseChange', function(res) {
-	    	console.log(res);
-	    });*/  
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 	};
 
 	(function(d, s, id) {
@@ -11003,21 +10894,7 @@ AlcoholDelivery.run([
 	  js = d.createElement(s); js.id = id;
 	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&version=v2.8&appId="+appId;
 	  fjs.parentNode.insertBefore(js, fjs);
-<<<<<<< HEAD
 	}(document, 'script', 'facebook-jssdk'));	
-=======
-	}(document, 'script', 'facebook-jssdk'));
-	
-	/*angular.$templateCache = $templateCache;
-	
-	$rootScope.$on('$viewContentLoaded', function() {	  		  
-	  var newversion = 'newupdate8.0';
-      if(!$cookies.get('viewcached') || $cookies.get('viewcached')!=newversion){      		
-      		$templateCache.removeAll();
-	  		$cookies.put('viewcached',newversion);	      		
-      }
-   	});*/
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 
 }]);
 
@@ -14487,14 +14364,9 @@ AlcoholDelivery.controller('LoyaltyStoreController', [
 		$scope.keyword = $stateParams.keyword;
 		$scope.filter = $stateParams.filter;
 		$scope.sortby = $stateParams.sort;
-<<<<<<< HEAD
-
-		$scope.products = new ScrollPagination();
-=======
 		$scope.parent = $stateParams.parent;
 		// type 1 for loyalty store
 		$scope.products = new ScrollPagination($scope.keyword,$scope.filter,$scope.sortby,1,$scope.parent);
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 
 		$scope.credits = {};
 
@@ -18897,10 +18769,7 @@ AlcoholDelivery.service('alcoholCart', [
 					var productsList = _self.getProducts();
 
 					if(Object.keys(productsList).length){
-<<<<<<< HEAD
-=======
 
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 						angular.forEach(productsList, function (item) {
 
 							var discountAmt = item.setCoupon(coupon);
@@ -18908,22 +18777,14 @@ AlcoholDelivery.service('alcoholCart', [
 
 							if(discountAmt.couponMessage)
 								discountMessage = discountAmt.couponMessage;
-<<<<<<< HEAD
-						});
-
-=======
 
 						});
 						console.log("setCouponPrice Called");
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 						if(!discountTotal && discountMessage)
 							this.$cart.couponMessage = discountMessage;
 
 					}else{
-<<<<<<< HEAD
-=======
 
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 						if(typeof(this.$cart.couponData) !== "undefined"){
 							this.removeCoupon();
 						}
@@ -18972,18 +18833,11 @@ AlcoholDelivery.service('alcoholCart', [
 				this.setCouponMessage(this.$cart.couponMessage, 2);
 			}
 
-<<<<<<< HEAD
-			$http.post("checkCoupon", {params: {cart: _self.getCartKey(), removeCoupon: 1}}).success(function(result){
-				/*angular.forEach(productsList, function (item) {
-					item.setPrice(item);
-				});*/
-=======
 			$http.post("checkCoupon", {params: {cart: _self.getCartKey(), removeCoupon: 1}})
 				.success(function(result){
 					/*angular.forEach(productsList, function (item) {
 						item.setPrice(item);
 					});*/
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 				
 				delete _self.$cart.couponData;
 
@@ -19001,15 +18855,9 @@ AlcoholDelivery.service('alcoholCart', [
 				return $rootScope.$broadcast('showLogin');
 
 			$http.post("checkCoupon", {params: {cart: cartKey, coupon: couponCode}}).success(function(result){
-<<<<<<< HEAD
-				if(result.errorCode==1 || result.errorCode==2){
-					//_self.removeCoupon();
-
-=======
 				
 				if(result.errorCode==1 || result.errorCode==2){
 					//_self.removeCoupon();
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 					// $rootScope.invalidCodeMsg = false;
 					// $rootScope.invalidCodeMsgTxt = result.msg;
 					_self.$coupon.invalidCodeMsg = false;
@@ -19025,10 +18873,6 @@ AlcoholDelivery.service('alcoholCart', [
 			});
 		}
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 		this.getCouponDiscount = function(){
 			if(typeof(this.$cart.couponDiscount) !== "undefined"){
 
@@ -19146,12 +18990,6 @@ AlcoholDelivery.service('alcoholCart', [
 	this.setStandardDeliveryRemainOrders = function (deliverySlots) {
 
 		var serverTime = appConfig.getServerTime();
-<<<<<<< HEAD
-		
-		console.log(serverTime);
-		console.log(deliverySlots);
-=======
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 
 	}
 
@@ -19891,10 +19729,7 @@ angular.module('AlcoholCartFactories', [])
 	};
 
 	item.prototype.setCoupon = function(coupon){
-<<<<<<< HEAD
-=======
 
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 		var cType = coupon.type;
 		var cDiscount = coupon.discount;
 		var cDiscountStatus = parseInt(coupon.discount_status);
@@ -19913,11 +19748,7 @@ angular.module('AlcoholCartFactories', [])
 
 		if(typeof cProducts !== "undefined"){
 			if (cProducts.length > 0) {
-<<<<<<< HEAD
-				if(cProducts.indexOf(this._id) == -1) {
-=======
 				if(cProducts.indexOf(this._id) !== -1) {
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 					hasProduct = 1;
 				}
 			}
@@ -19928,14 +19759,6 @@ angular.module('AlcoholCartFactories', [])
 				angular.forEach(this.product.categories, function (pCat) {
 					if(cCategories.indexOf(pCat) > -1) {
 						hasCategory = 1;
-<<<<<<< HEAD
-					}	
-				});
-			}
-		}		
-
-		if(hasProduct || hasCategory){
-=======
 					}
 				});
 			}
@@ -19943,7 +19766,6 @@ angular.module('AlcoholCartFactories', [])
 
 		if(hasProduct || hasCategory){
 
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 			if(cDiscountStatus==1){
 				pAmount = this.unitPrice*quantity;
 			}else{
@@ -19975,18 +19797,11 @@ angular.module('AlcoholCartFactories', [])
 				}else{
 
 					var diffAmt = proAmtAfterOtherDiscount - amtAfterCouponDis;
-<<<<<<< HEAD
-
-=======
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 					couponDisAmt = 0;
 					if(diffAmt>0){
 						couponDisAmt = diffAmt;
 					}
-<<<<<<< HEAD
-=======
 
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 				}
 			}
 
@@ -19994,15 +19809,10 @@ angular.module('AlcoholCartFactories', [])
 			this.couponMessage = couponMessage;
 
 		}else{
-<<<<<<< HEAD
-			couponMessage = 'Coupon is not valid on these products.';
-			this.couponMessage = couponMessage;
-=======
 
 			couponMessage = 'Coupon is not valid on these products.';
 			this.couponMessage = couponMessage;
 
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 		}
 
 		returnVal.couponMessage = this.couponMessage;
@@ -22336,13 +22146,8 @@ AlcoholDelivery.directive('sideBar', function() {
 		restrict: 'E',
 		templateUrl: '/templates/partials/topmenu.html',
 		controller: [
-<<<<<<< HEAD
 		'$scope','$rootScope','$http','$state','$mdDialog','$timeout','$window','appSettings','sweetAlert','UserService','store','alcoholWishlist','ClaimGiftCard','$auth',
 		function($scope,$rootScope,$http,$state,$mdDialog,$timeout,$window,appSettings,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard,$auth){
-=======
-		'$scope','$rootScope','$http','$state','$mdDialog','$timeout','$window','appSettings','sweetAlert','UserService','store','alcoholWishlist','ClaimGiftCard',
-		function($scope,$rootScope,$http,$state,$mdDialog,$timeout,$window,appSettings,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard){
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 					
 					$scope.list = [];
 		
@@ -22353,10 +22158,7 @@ AlcoholDelivery.directive('sideBar', function() {
 					$scope.reset = {};
 					$scope.resend = {};
 					$scope.resendemail = '';
-<<<<<<< HEAD
 					$scope.sendmail = {};
-=======
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 		
 					$scope.signupSubmit = function() {
 						$scope.signup.errors = {};
@@ -22600,7 +22402,6 @@ AlcoholDelivery.directive('sideBar', function() {
 						}).error(function(data, status, headers) {
 							$scope.resend.errors = data;
 				        });
-<<<<<<< HEAD
 				    }				    			
 
 				    $scope.authenticate = function(provider) {
@@ -22637,8 +22438,6 @@ AlcoholDelivery.directive('sideBar', function() {
 						}).error(function(data, status, headers) {
 							$scope.sendmail.errors = data;
 				        });
-=======
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 				    }
 		
 				}]
@@ -22754,11 +22553,7 @@ AlcoholDelivery.directive('sideBar', function() {
         });
     };
 }])
-<<<<<<< HEAD
 .directive('errProSrc', ['$q',function($q) {
-=======
-.directive('errProSrc', [function() {
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
   return {
     link: function(scope, element, attrs) {
       element.bind('error', function() {
@@ -22767,11 +22562,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 		attrs.$set('src', attrs.errSrc);
 
-<<<<<<< HEAD
       });     
-=======
-      });
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
     }
   }
 }])
@@ -23041,11 +22832,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		'  </span>' +
 		'  <span class="input-group-addon bootstrap-touchspin-prefix" ng-show="prefix" ng-bind="prefix"></span>' +
 		'  <span class="addmore-count" ng-bind="remainQty || val"></span>'+
-<<<<<<< HEAD
-		//'  <input only-digits type="text" class="addmore-count" ng-model="val">'+
-=======
 		// '  <input only-digits type="text" class="addmore-count" ng-model="val">'+
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 		// '  <input type="text" ng-model="val" class="form-control addmore-count" ng-blur="checkValue()" disabled>' +
 		'  <span class="input-group-addon" ng-show="postfix" ng-bind="postfix"></span>' +
 		'  <span class="input-group-btn" ng-if="verticalButtons">' +
@@ -24041,11 +23828,7 @@ AlcoholDelivery.directive('sideBar', function() {
 				// hide the spinner bar on rounte change success(after the content loaded)
 				$rootScope.$on('$stateChangeSuccess', function() {
 					element.addClass('hide'); // hide spinner bar
-<<<<<<< HEAD
 					$('#sectionarea').removeAttr('style');
-=======
-					$('#sectionarea').removeClass('hide');
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 					//$('body').removeClass('page-on-load'); // remove page loading indicator
 					// auto scorll to page top
 					setTimeout(function () {
@@ -24368,10 +24151,6 @@ function vAccordionController ($scope) {
   };
 
   ctrl.toggle = function toggle (paneToToggle) {
-<<<<<<< HEAD
-=======
-
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
     if (isDisabled || !paneToToggle) { return; }
 
     if (!$scope.allowMultiple) {
@@ -24388,10 +24167,6 @@ function vAccordionController ($scope) {
   };
 
   ctrl.expand = function expand (paneToExpand) {
-<<<<<<< HEAD
-=======
-
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
     if (isDisabled || !paneToExpand) { return; }
 
     if (!$scope.allowMultiple) {
@@ -24438,10 +24213,6 @@ function vAccordionController ($scope) {
   // API
   $scope.internalControl = {
     toggle: function toggle (indexOrId) {
-<<<<<<< HEAD
-=======
-      
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
       if (angular.isString(indexOrId)) {
         ctrl.toggle( ctrl.getPaneById(indexOrId) );
       } else {
@@ -24449,10 +24220,6 @@ function vAccordionController ($scope) {
       }
     },
     expand: function expand (indexOrId) {
-<<<<<<< HEAD
-=======
-
->>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
       if (angular.isString(indexOrId)) {
         ctrl.expand( ctrl.getPaneById(indexOrId) );
       } else {
