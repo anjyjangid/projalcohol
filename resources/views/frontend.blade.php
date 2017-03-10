@@ -37,24 +37,7 @@
 		<title ng-bind="meta.title"></title>
 
 		<!-- Bootstrap -->
-		<noscript id="deferred">
-			<link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,700,800,500' rel='stylesheet' type='text/css'>
-			<link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>		
-			<link rel="stylesheet" href="css/all.css">			
-	    </noscript>
-		<script>
-	      var loadDeferredStyles = function() {
-	        var addStylesNode = document.getElementById("deferred");
-	        var replacement = document.createElement("div");
-	        replacement.innerHTML = addStylesNode.textContent;
-	        document.body.appendChild(replacement)
-	        addStylesNode.parentElement.removeChild(addStylesNode);
-	      };
-	      var raf = requestAnimationFrame || mozRequestAnimationFrame ||
-	          webkitRequestAnimationFrame || msRequestAnimationFrame;
-	      if (raf) raf(function() { window.setTimeout(loadDeferredStyles, 0); });
-	      else window.addEventListener('load', loadDeferredStyles);
-	    </script>		
+				
 		
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -202,7 +185,24 @@
 			</div>
 		</div>		
 		<div id="fb-root"></div>		
-		
+		<noscript id="deferred">
+			<link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,700,800,500' rel='stylesheet' type='text/css'>
+			<link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>		
+			<link rel="stylesheet" href="css/all.css">			
+	    </noscript>
+		<script>
+	      var loadDeferredStyles = function() {
+	        var addStylesNode = document.getElementById("deferred");
+	        var replacement = document.createElement("div");
+	        replacement.innerHTML = addStylesNode.textContent;
+	        document.body.appendChild(replacement)
+	        addStylesNode.parentElement.removeChild(addStylesNode);
+	      };
+	      var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+	          webkitRequestAnimationFrame || msRequestAnimationFrame;
+	      if (raf) raf(function() { window.setTimeout(loadDeferredStyles, 0); });
+	      else window.addEventListener('load', loadDeferredStyles);
+	    </script>
 	</body>
 
     
