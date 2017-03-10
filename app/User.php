@@ -41,6 +41,9 @@ class User extends Eloquent implements AuthenticatableContract,
 		'email',
 		'password',
 		'fbid',
+		'gplusid',
+		'twitterid',
+		'instagramid',
 		'mobile_number',
 		'alternate_number',
 		'email_key',
@@ -48,7 +51,8 @@ class User extends Eloquent implements AuthenticatableContract,
 		'verified',
 		'productAddedNotification',
 		'savedCards',
-		'reffered'
+		'reffered',
+		'socialData'
 	];
 
 	public function getFields(){

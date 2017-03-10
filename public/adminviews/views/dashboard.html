@@ -192,6 +192,75 @@
 </div>
 <!-- END ORDER MAIN CONTENT -->
 
+<div class="row">
+	<div class="col-md-12">		
+		<div class="portlet box red">		
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-cart"></i>Order status critical
+				</div>
+				<div class="tools">
+					<a href="javascript:;" class="collapse">
+					</a>								
+					<a class="reload" href="javascript:;" data-callback="reloadOrder" data-original-title="" title="">
+					</a>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<div class="table-container">
+					<table class="table table-striped table-bordered table-hover" id="criticalorders">
+						<thead>
+							<tr role="row" class="heading">
+                                <th >
+                                    Order #
+                                </th>
+								<th >
+									User
+								</th>																
+								<th>
+									Delivery datetime
+								</th>
+								<th>
+									Delivery type
+								</th>								
+								<th >
+									Actions
+								</th>
+							</tr>
+							<tr role="row" class="filter">								
+                                <td>
+                                    <input type="text" class="form-control form-filter input-sm" name="reference">
+                                </td>
+								<td>
+                                    <input type="text" class="form-control form-filter input-sm" name="consumerName">
+                                </td>
+                                <td></td>								
+								<td>
+                                    <select name="deliveryType" class="form-control form-filter input-sm">
+                                        <option value="">All</option>
+                                        <option value="0">Standard 1 hour</option>
+                                        <option value="1">Advance Order</option>
+                                        <option value="2">Express 30 min</option>
+                                    </select>                        
+                                </td>									
+								<td>
+									<div class="margin-bottom-5">
+										<button class="btn btn-xs yellow filter-submit margin-bottom" title="Search"><i class="fa fa-search"></i></button>
+                                        <button class="btn btn-xs red filter-cancel" title="Reset"><i class="fa fa-times"></i></button>
+									</div>									
+								</td>
+							</tr>
+						</thead>
+						<tbody id="tablistBody">
+						</tbody>
+					</table>					
+				</div>
+			</div>
+		</div>
+		<!-- End: life time stats -->
+	</div>
+</div>
+
 <div data-replace="true" tabindex="-1" class="modal fade modal-scroll" id="notify" style="display: none;">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -253,30 +322,32 @@
 
 <!-- BEGIN MAIN JS & CSS -->
 <script>
+
 var grid;
 var detailRows = [];
-
 /*ORDER TABLE*/
 
 function reloadOrder(){
 	$('#orderslisttab').dataTable()._fnAjaxUpdate();
 }	
 
-var orderGrid = new Datatable();
+
 
 var OrdersTableAjax = function () {
 
-var initPickers = function () {
-    //init date pickers
-    $('.date-filter').datepicker({
-        rtl: Metronic.isRTL(),
-        autoclose: true            
-    });
-}
+	var initPickers = function () {
+	    //init date pickers
+	    $('.date-filter').datepicker({
+	        rtl: Metronic.isRTL(),
+	        autoclose: true            
+	    });
+	}
 
-var handleRecords = function () {
+	var handleRecords = function () {
 
-    orderGrid.init({
+		var orderGrid = new Datatable();
+
+    	orderGrid.init({
         src: $("#orderslisttab"),
         onSuccess: function (orderGrid) {
             // execute some code after table records loaded
@@ -400,50 +471,203 @@ var handleRecords = function () {
         }
     });
 
-    // handle group actionsubmit button click
-    orderGrid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
-        e.preventDefault();
-        var action = $(".table-group-action-input", orderGrid.getTableWrapper());
-        if (action.val() != "" && orderGrid.getSelectedRowsCount() > 0) {
-            orderGrid.setAjaxParam("customActionType", "group_action");
-            orderGrid.setAjaxParam("customActionName", action.val());
-            orderGrid.setAjaxParam("id", orderGrid.getSelectedRows());
-            orderGrid.getDataTable().ajax.reload();
-            orderGrid.clearAjaxParams();
-        } else if (action.val() == "") {
-            Metronic.alert({
-                type: 'danger',
-                icon: 'warning',
-                message: 'Please select an action',
-                container: orderGrid.getTableWrapper(),
-                place: 'prepend'
-            });
-        } else if (orderGrid.getSelectedRowsCount() === 0) {
-            Metronic.alert({
-                type: 'danger',
-                icon: 'warning',
-                message: 'No record selected',
-                container: orderGrid.getTableWrapper(),
-                place: 'prepend'
-            });
-        }
-    });
-}
+    	// handle group actionsubmit button click
+    	orderGrid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
+	        e.preventDefault();
+	        var action = $(".table-group-action-input", orderGrid.getTableWrapper());
+	        if (action.val() != "" && orderGrid.getSelectedRowsCount() > 0) {
+	            orderGrid.setAjaxParam("customActionType", "group_action");
+	            orderGrid.setAjaxParam("customActionName", action.val());
+	            orderGrid.setAjaxParam("id", orderGrid.getSelectedRows());
+	            orderGrid.getDataTable().ajax.reload();
+	            orderGrid.clearAjaxParams();
+	        } else if (action.val() == "") {
+	            Metronic.alert({
+	                type: 'danger',
+	                icon: 'warning',
+	                message: 'Please select an action',
+	                container: orderGrid.getTableWrapper(),
+	                place: 'prepend'
+	            });
+	        } else if (orderGrid.getSelectedRowsCount() === 0) {
+	            Metronic.alert({
+	                type: 'danger',
+	                icon: 'warning',
+	                message: 'No record selected',
+	                container: orderGrid.getTableWrapper(),
+	                place: 'prepend'
+	            });
+	        }
+	    });
+	}
 
-return {
+	return {
+	    //main function to initiate the module
+	    init: function () {
 
-    //main function to initiate the module
-    init: function () {
+	        initPickers();
+	        handleRecords();
+	    }
 
-        initPickers();
-        handleRecords();
-    }
-
-};
+	};
 
 }();
 
+
+var CriticalOrderTableAjax = function () {	
+
+	var handleRecords = function () {
+		var criticalOrderGrid = new Datatable();
+    	criticalOrderGrid.init({
+	        src: $("#criticalorders"),
+	        onSuccess: function (criticalOrderGrid) {
+	            // execute some code after table records loaded
+	        },
+	        onError: function (criticalOrderGrid) {
+	            // execute some code on network or other general error  
+	        },
+	        loadingMessage: 'Loading...',
+	        dataTable: {                 
+	            //"dom":"<'row'<'col-md-12 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-6 col-sm-12'p><'col-md-6 col-sm-12'i>>",
+	            "lengthMenu": [
+
+	                [5, 10, 20, 50, 100, 150, -1],
+	                [5, 10, 20, 50, 100, 150, "All"] // change per page values here
+	            ],
+	            /*language:{
+	            	"info": "Showing _START_ to _END_ of _TOTAL_ entries",
+	            },*/
+	            "columns": [                                       
+	                {    
+	                    mData: null,
+	                    sClass: "center",
+	                    mRender: function(data, type, full) {
+	                        return '<b>'+data.reference+'</b>';
+	                        
+	                    },                  
+	                    orderable:true
+	                },
+	                {
+	                    mData: null,
+	                    sClass: "center",
+	                    mRender: function(data, type, full) {
+	                        var consumer = data.consumer;                               
+	                        if(typeof consumer.name != 'undefined'){
+	                            return consumer.name;
+	                        }else{
+	                            return consumer.email;
+	                        }
+	                        
+	                    },                  
+	                    orderable:true
+	                },
+	                {    
+	                    mData: null,
+	                    sClass: "center",
+	                    mRender: function(data, type, full) {
+							var delivery = data.delivery;
+							var d = new Date(delivery.deliveryDateTime);
+							var datestring = '';
+	                        if(delivery.type == 0){                        	
+	    						datestring = d.format('yyyy-mm-dd HH:ii A');
+	                        }else{
+	                        	datestring = d.format('yyyy-mm-dd')+' ('+delivery.deliveryTimeRange+')';
+	                        }     
+	                        return datestring;                   
+	                    },                  
+	                    orderable:true
+	                },
+	                {
+	                    mData: null,
+	                    sClass: "center",
+	                    mRender: function(data, type, full) {
+	                        var delivery = data.delivery; 
+	                        if(delivery.type == 0){
+	                            if(data.service.express.status){
+	                                return '<span class="label label-sm label-danger">Express</span>';
+	                            }else{
+	                                return '<span class="label label-sm label-danger">Standard</span>';
+	                            }
+	                        }else{
+	                            return '<span class="label label-sm label-success">Advance</span>';
+	                        }                       
+	                    },                  
+	                    orderable:true
+	                },
+	                {
+	                    mData: null,
+	                    sClass: "center",
+	                    mRender: function(data, type, full) {
+	                        var OId = data._id.$id;
+	                        var consumerContact = (typeof data.consumer.mobile_number != 'undefined')?data.consumer.mobile_number:0;
+	                        return '<a title="View Detail" ui-sref=userLayout.orders.show({order:"'+OId+'"}) class="btn btn-xs default"><i class="fa fa-search"></i></a> <a title="Print Invoice" class="btn btn-xs default" target="_blank" href="/printjob/'+data.reference+'"><i class="fa fa-print"></i></a><button type="button" ng-click=statusForm({id:"'+OId+'",doStatus:'+data.doStatus+',reference:"'+data.reference+'"}) class="btn btn-xs default" title="Edit Order"><i class="fa fa-cog"></i></button>';
+	                        //<a title="Notify user" ng-click=notifyUser("'+OId+'",'+consumerContact+') class="btn btn-xs default"><i class="glyphicon glyphicon-comment"></i></a>
+	                    },                  
+	                    orderable:false                     
+	                }
+	            ],
+	            "pageLength": 5, // default record count per page
+	            
+	            "ajax": {
+	                "url": "../adminapi/order/orders/criticalorders", // ajax source                    
+	                "type": "POST"
+	            },
+	            "order": [], // set first column as a default sort by asc
+	            "fnDrawCallback": function (oSettings) {               						
+				    var content = $('#tablistBody');
+				    angular.element(document).injector().invoke(function($compile) {
+				        var scope = angular.element(content).scope();
+				        $compile(content)(scope);
+				    });
+					Metronic.initAjax()
+				}
+	        }
+    	});
+
+    	// handle group actionsubmit button click
+    	criticalOrderGrid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
+	        e.preventDefault();
+	        var action = $(".table-group-action-input", criticalOrderGrid.getTableWrapper());
+	        if (action.val() != "" && criticalOrderGrid.getSelectedRowsCount() > 0) {
+	            criticalOrderGrid.setAjaxParam("customActionType", "group_action");
+	            criticalOrderGrid.setAjaxParam("customActionName", action.val());
+	            criticalOrderGrid.setAjaxParam("id", criticalOrderGrid.getSelectedRows());
+	            criticalOrderGrid.getDataTable().ajax.reload();
+	            criticalOrderGrid.clearAjaxParams();
+	        } else if (action.val() == "") {
+	            Metronic.alert({
+	                type: 'danger',
+	                icon: 'warning',
+	                message: 'Please select an action',
+	                container: criticalOrderGrid.getTableWrapper(),
+	                place: 'prepend'
+	            });
+	        } else if (criticalOrderGrid.getSelectedRowsCount() === 0) {
+	            Metronic.alert({
+	                type: 'danger',
+	                icon: 'warning',
+	                message: 'No record selected',
+	                container: criticalOrderGrid.getTableWrapper(),
+	                place: 'prepend'
+	            });
+	        }
+	    });
+	}
+
+	return {
+	    //main function to initiate the module
+	    init: function () {	        
+	        handleRecords();
+	    }
+
+	};
+
+}();
+
+
 OrdersTableAjax.init();
+CriticalOrderTableAjax.init();
+
 
 </script>
 <!-- END ORDER MAIN JS

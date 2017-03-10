@@ -1,8 +1,18 @@
 var elixir = require('laravel-elixir');
-
-
 //elixir.config.production = true;
 
+const gulp = require('gulp');
+const image = require('gulp-image');
+
+gulp.task('optimg', function () {
+  gulp.src('public/images/*')
+    .pipe(image())
+    .pipe(gulp.dest('public/images'));
+
+  gulp.src('public/img/*')
+    .pipe(image())
+    .pipe(gulp.dest('public/img'));  
+});
 
 /*
  |--------------------------------------------------------------------------
@@ -21,6 +31,7 @@ elixir(function(mix) {
     	'jquery-1.11.3.min.js',
 	    '../bower_components/bootstrap/dist/js/bootstrap.min.js',
 	    '../bower_components/angular/angular.min.js',
+	    '../bower_components/satellizer/dist/satellizer.js',	    
 	    // '../bower_components/angular-touch/angular-touch.min.js',
 	    '../bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
 	    '../assets/global/plugins/angularjs/angular-sanitize.min.js',
@@ -78,9 +89,4 @@ elixir(function(mix) {
 
 /*elixir(function(mix) {
     mix.version(['public/css/all.css', 'public/js/build/all.js']);
-});*/
-
-/*elixir(function(mix) {
-    elixir.config.images = {webp:false};
-    mix.images('../../../public/images', 'public/imagesmin',{sizes:[[]]});
 });*/

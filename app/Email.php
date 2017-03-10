@@ -285,6 +285,17 @@ class Email extends Moloquent
 				$this->recipient_info['subject'] = $data['subject'];
 			break ;
 
+			case 'verifyemail':/* begin : Registration Email { */
+								
+				$this->recipient_info['receiver']['email'] = $data['email'];
+				$this->recipient_info['receiver']['name'] = (isset($data['name']))?$data['name']:$data['email'];
+
+				$this->recipient_info['replace']['{verification_link}'] =url().'/socialverifyemail/'.$data['email_key'];
+				$this->recipient_info['replace']['{user_name}'] = (isset($data['name']))?$data['name']:$data['email'];
+				$this->recipient_info['replace']['{social_account}'] = $data['socialData']['providername'];
+				$this->recipient_info['message'] = str_ireplace(array_keys($this->recipient_info['replace']),array_values($this->recipient_info['replace']),$this->recipient_info['message']);
+				
+			break ;
 			
 			default:return  (object)array('error'=>true , 'success'=>false , 'message'=>' Please Define Proper Type for  Email');
 									

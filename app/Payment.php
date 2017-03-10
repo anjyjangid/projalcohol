@@ -10,7 +10,7 @@ use DB;
 
 class Payment extends Model
 {
- 	public $apiLive = true;
+ 	public $apiLive = false;
  	public $tokenUrl;
  	public $paymentUrl;
 	public $secretKey;
@@ -34,12 +34,12 @@ class Payment extends Model
 			$this->returnUrl = '';
  		}else{ 
  			//TEST
- 			$this->tokenUrl = 'http://test.reddotpayment.com/service/tokenization-api/create'; 			
+ 			$this->tokenUrl = 'http://secure-dev.reddotpayment.com/service/tokenization-api/create'; 			
 			$this->notificationUrl = '';
  			$this->secretKey = 'jMAb6rYoBPF96dacwGe9tCLYpnhYglkFBKPH4LbT8mKQi2IhOyIhWSmZBvlFjlshAyFPi3NrYGTKV35sLVrDekX5y5FxWSv2XKkcFvbGaafuj93rFoRT69FRKKpaBner'; 			
  			$this->merchantId = '1000089464';
  			$this->key = 'r5f3ZLs8FRbhMnv7AaeQwvgkmHoDw9pKFAriTEFh';
- 			$this->paymentUrl = 'http://test.reddotpayment.com/merchant/cgi-bin';
+ 			$this->paymentUrl = 'http://test.reddotpayment.com/connect-api/cgi-bin-live';
 			$this->returnUrl = '';
  		}
  	}   

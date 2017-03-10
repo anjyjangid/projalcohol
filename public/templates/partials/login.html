@@ -17,8 +17,45 @@
                 {{login.errors.suspended}}
               </div>
           </div>
+
+          <div class="fbloginDiv">            
+            <!-- <button ng-disabled="loading" type="submit" class="alcohalfootersign alcohal_fotrloginbox">Log in</button> -->            
+            <div class="row">
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="col-md-6 col-sm-6">
+                    <button type="button" class="btn btn-block btn-facebook btn-social" ng-click="authenticate('facebook')">
+                      <i class="fa fa-facebook"></i> Facebook Login
+                    </button>
+                  </div>
+                  <div class="col-md-6 col-sm-6">
+                    <button type="button" class="btn btn-block btn-google-plus btn-social" ng-click="authenticate('google')">
+                      <i class="fa fa-google-plus"></i> Google+ Login
+                    </button>
+                  </div>
+                </div>
+                <div class="row">  
+                  <div class="col-md-6 col-sm-6">
+                    <button type="button" class="btn btn-block btn-twitter btn-social" ng-click="authenticate('twitter')">
+                      <i class="fa fa-twitter"></i> Twitter Login
+                    </button>
+                  </div>
+                  <div class="col-md-6 col-sm-6">  
+                    <button type="button" class="btn btn-block btn-instagram btn-social" ng-click="authenticate('instagram')">
+                      <i class="fa fa-instagram"></i> Instagram Login
+                    </button>
+                  </div>
+                </div>  
+              </div>
+            </div>  
+            <!-- <div class="fblogin" id="login-btn"  align="center"> <img ng-click="socialLogin()" src="img/facebook_login.png"> </div> -->
+          </div>
+          <div class="signup-or-separator">
+            <h6 class="text">OR</h6>
+            <hr>
+          </div>
           <div class="registeremailcvr" ng-class="{'has-error':login.errors.email[0]}">
-            <label>Email Address</label>
+            <label align="center">Use your email address</label>
             <input type="text" ng-model="login.email" class="alcohalrestertextbox form-control" placeholder="Email Address" />
             <span class="help-block" ng-if="!login.errors.reverification[0]" ng-bind="login.errors.email[0]"></span>
             <span class="help-block" ng-if="login.errors.reverification[0]">
@@ -27,14 +64,13 @@
           </div>
           <div class="registeremailcvr" ng-class="{'has-error':login.errors.password[0]}">
             <input autocomplete="off" type="password" ng-model="login.password" class="alcohalrestertextbox form-control" placeholder="Password" />
-            <span class="help-block" ng-bind="login.errors.password[0]"></span> </div>
-          <div class="fbloginDiv">                        
-            <div align="center">
-              <!-- <div class="fb-login-button" data-scope="email,user_birthday" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false"></div> -->
-              <!-- <fb:login-button size="xlarge" autologoutlink="false"></fb:login-button> -->
-            </div>
-            <div class="fblogin" id="login-btn"  align="center"> <img ng-click="socialLogin()" src="img/facebook_login.png"> </div>
+            <span class="help-block" ng-bind="login.errors.password[0]"></span> 
           </div>
+          <!-- <button ng-disabled="loading" type="submit" class="btn btn-block btn-purple">Log in</button>
+          <div class="loginotheroption">
+            <a class="pointer" ng-click="forgotpassOpen($event)">Forgot Password?</a>
+            <a class="pointer pull-right" ng-click="signupOpen()">New to Alcohol Delivery?</a>
+          </div> -->
         </div>
       </div>
       </md-dialog-content>
