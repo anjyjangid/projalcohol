@@ -10,11 +10,10 @@ MetronicApp.factory('settingsModel', ['$http', '$cookies','$location', function(
      * @return {promise}
      */
     settingsModel.getSettings = function(settingKey){            
-            return $http.get("/adminapi/setting/settings/"+settingKey);
-        },
+        return $http.get("/adminapi/setting/settings/"+settingKey);
+    },
 
     settingsModel.updateSetting = function(settingKey,postedData) {
-
         return $http.put("/adminapi/setting/"+settingKey, postedData, {
                 
             }).error(function(data, status, headers) {            
@@ -39,6 +38,35 @@ MetronicApp.factory('settingsModel', ['$http', '$cookies','$location', function(
                 });
             })
 
+    };
+
+    settingsModel.updateAnnouncement = function(settingKey,postedData) {
+
+        var fd = objectToFormData(postedData);
+
+        $http.post("/adminapi/setting/announcement", fd, {            
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        }).error(function(data, status, headers) {
+            Metronic.alert({
+                type: 'danger',
+                icon: 'warning',
+                message: 'Please enter all required fields.',
+                container: '.portlet-body',
+                place: 'prepend',
+                closeInSeconds: 3
+            });
+        })
+        .success(function(response) {
+            Metronic.alert({
+                type: 'success',
+                icon: 'check',
+                message: response.message,
+                container: '#info-message',
+                place: 'prepend',
+                closeInSeconds: 3
+            });
+        });
     };
 
     settingsModel.updatePrinter = function(postedData) {
@@ -68,6 +96,5 @@ MetronicApp.factory('settingsModel', ['$http', '$cookies','$location', function(
             })
 
     };
-
     return settingsModel;
 }])

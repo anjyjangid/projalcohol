@@ -760,6 +760,12 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', '$http', '$root
 					uisref:'userLayout.settings.cloudprinters',
 					icon:'icon-printer',
 					links:['userLayout.settings.cloudprinters']
+				},
+				{
+					label:'Announcement Bar',
+					uisref:'userLayout.settings.announcementBar',
+					icon:'icon-bell',
+					links:['userLayout.settings.announcementBar']
 				}
 
 			]
@@ -2496,6 +2502,30 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 	        },
 	        controller:'SettingPrinterController'
 	    })
+    	.state("userLayout.settings.announcementBar", {
+            url: "/settings/announcement-bar",
+            templateUrl: "adminviews/views/settings/announcement-bar.html",
+            data:{
+				pageTitle:'Announcement Bar',
+				key:"announcementBar",
+				breadCrumb:[
+					{title:'Announcement Bar','uisref':'#'}
+				]
+			},
+			resolve: {
+                authenticate: authenticate,
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+                        ]
+                    });
+                }]
+            }
+        })
 
         .state('userLayout.promotion', {
             abstract:true,

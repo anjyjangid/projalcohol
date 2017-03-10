@@ -3179,6 +3179,7 @@ AlcoholDelivery.service('alcoholCart', [
 					var productsList = _self.getProducts();
 
 					if(Object.keys(productsList).length){
+
 						angular.forEach(productsList, function (item) {
 
 							var discountAmt = item.setCoupon(coupon);
@@ -3186,12 +3187,14 @@ AlcoholDelivery.service('alcoholCart', [
 
 							if(discountAmt.couponMessage)
 								discountMessage = discountAmt.couponMessage;
-						});
 
+						});
+						console.log("setCouponPrice Called");
 						if(!discountTotal && discountMessage)
 							this.$cart.couponMessage = discountMessage;
 
 					}else{
+
 						if(typeof(this.$cart.couponData) !== "undefined"){
 							this.removeCoupon();
 						}
@@ -3240,10 +3243,11 @@ AlcoholDelivery.service('alcoholCart', [
 				this.setCouponMessage(this.$cart.couponMessage, 2);
 			}
 
-			$http.post("checkCoupon", {params: {cart: _self.getCartKey(), removeCoupon: 1}}).success(function(result){
-				/*angular.forEach(productsList, function (item) {
-					item.setPrice(item);
-				});*/
+			$http.post("checkCoupon", {params: {cart: _self.getCartKey(), removeCoupon: 1}})
+				.success(function(result){
+					/*angular.forEach(productsList, function (item) {
+						item.setPrice(item);
+					});*/
 				
 				delete _self.$cart.couponData;
 
@@ -3261,9 +3265,9 @@ AlcoholDelivery.service('alcoholCart', [
 				return $rootScope.$broadcast('showLogin');
 
 			$http.post("checkCoupon", {params: {cart: cartKey, coupon: couponCode}}).success(function(result){
+				
 				if(result.errorCode==1 || result.errorCode==2){
 					//_self.removeCoupon();
-
 					// $rootScope.invalidCodeMsg = false;
 					// $rootScope.invalidCodeMsgTxt = result.msg;
 					_self.$coupon.invalidCodeMsg = false;
@@ -3278,7 +3282,6 @@ AlcoholDelivery.service('alcoholCart', [
 			}).error(function(){
 			});
 		}
-
 
 		this.getCouponDiscount = function(){
 			if(typeof(this.$cart.couponDiscount) !== "undefined"){
@@ -3397,9 +3400,6 @@ AlcoholDelivery.service('alcoholCart', [
 	this.setStandardDeliveryRemainOrders = function (deliverySlots) {
 
 		var serverTime = appConfig.getServerTime();
-		
-		console.log(serverTime);
-		console.log(deliverySlots);
 
 	}
 

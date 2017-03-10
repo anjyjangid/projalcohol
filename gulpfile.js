@@ -1,6 +1,7 @@
 var elixir = require('laravel-elixir');
 //elixir.config.production = true;
 
+<<<<<<< HEAD
 const gulp = require('gulp');
 const image = require('gulp-image');
 
@@ -14,6 +15,10 @@ gulp.task('optimg', function () {
     .pipe(gulp.dest('public/img'));  
 });
 
+=======
+//elixir.config.production = true;
+
+>>>>>>> 1938b3ec0a316f6422722650e52cc2e320d85c49
 /*
  |--------------------------------------------------------------------------
  | Elixir Asset Management

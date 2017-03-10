@@ -315,6 +315,7 @@ angular.module('AlcoholCartFactories', [])
 	};
 
 	item.prototype.setCoupon = function(coupon){
+
 		var cType = coupon.type;
 		var cDiscount = coupon.discount;
 		var cDiscountStatus = parseInt(coupon.discount_status);
@@ -333,7 +334,7 @@ angular.module('AlcoholCartFactories', [])
 
 		if(typeof cProducts !== "undefined"){
 			if (cProducts.length > 0) {
-				if(cProducts.indexOf(this._id) == -1) {
+				if(cProducts.indexOf(this._id) !== -1) {
 					hasProduct = 1;
 				}
 			}
@@ -344,12 +345,13 @@ angular.module('AlcoholCartFactories', [])
 				angular.forEach(this.product.categories, function (pCat) {
 					if(cCategories.indexOf(pCat) > -1) {
 						hasCategory = 1;
-					}	
+					}
 				});
 			}
-		}		
+		}
 
 		if(hasProduct || hasCategory){
+
 			if(cDiscountStatus==1){
 				pAmount = this.unitPrice*quantity;
 			}else{
@@ -381,11 +383,11 @@ angular.module('AlcoholCartFactories', [])
 				}else{
 
 					var diffAmt = proAmtAfterOtherDiscount - amtAfterCouponDis;
-
 					couponDisAmt = 0;
 					if(diffAmt>0){
 						couponDisAmt = diffAmt;
 					}
+
 				}
 			}
 
@@ -393,8 +395,10 @@ angular.module('AlcoholCartFactories', [])
 			this.couponMessage = couponMessage;
 
 		}else{
+
 			couponMessage = 'Coupon is not valid on these products.';
 			this.couponMessage = couponMessage;
+
 		}
 
 		returnVal.couponMessage = this.couponMessage;

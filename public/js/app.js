@@ -545,7 +545,7 @@ AlcoholDelivery.factory('ScrollPaging', ['$http',function($http) {
 
 AlcoholDelivery.factory('ScrollPagination', ['$http','ProductService',function($http,ProductService) {
 
-  var Search = function(keyword,filter,sortby,type) {
+  var Search = function(keyword,filter,sortby,type,parent) {
     this.items = [];
     this.busy = false;
     this.skip = 0;
@@ -556,6 +556,7 @@ AlcoholDelivery.factory('ScrollPagination', ['$http','ProductService',function($
     this.filter = filter;
     this.sortby = sortby;
     this.type = type || 1;
+    this.parent = parent || '';
   };
 
   Search.prototype.nextPage = function() {
@@ -571,8 +572,8 @@ AlcoholDelivery.factory('ScrollPagination', ['$http','ProductService',function($
 		filter:this.filter,
 		sort:this.sortby,
 		keyword:this.keyword,
-		productList:1
-
+		productList:1,
+		parent:this.parent
 	}).then(function(items){
 
 		// _self.totalResult = result.data.total;
@@ -958,13 +959,14 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 					},
 					resolve: {
-						storeInit : [
-						'store','alcoholWishlist',
-						function (store,alcoholWishlist){
-							store.init().then(function(){
-									return alcoholWishlist.init()
-							});
-						}],						
+						appLoad : appLoad,
+						// storeInit : [
+						// 'store','alcoholWishlist',
+						// function (store,alcoholWishlist){
+						// 	store.init().then(function(){
+						// 		return alcoholWishlist.init()
+						// 	});
+						// }],			
 						loggedIn: [
 						'UserService',
 						function(UserService) {
@@ -1078,7 +1080,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('mainLayout.loyaltystore', {
-					url: '/loyalty-store?{filter}&{sort}',
+					url: '/loyalty-store?{parent}&{filter}&{sort}',
 					templateUrl : "/templates/loyaltyStore.html",
 					params: {pageTitle: 'Loyalty Store'},
 					controller:"LoyaltyStoreController"
@@ -1269,15 +1271,20 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 			return response;
         },
         responseError: function (rejection) {
+
             xhrResolutions++;
             updateStatus();
+
             if(rejection.status == 404){
 				$location.url('/404').replace();
 			};
 
 			if(rejection.status == 401){
+
 				$location.url('/').replace();
+
 				$rootScope.$broadcast('showLogin');
+
 			};
 
 			if(rejection.status == 500){				
@@ -1311,11 +1318,9 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 
 /* Init global settings and run the app */
 AlcoholDelivery.run([
-		"$rootScope", "appSettings", "alcoholCart", "ProductService", "store", "alcoholWishlist", "catPricing"
-		, "categoriesFac","UserService", "$state", "$http", "$window","$mdToast","$document","$anchorScroll"
+		"$rootScope", "appSettings", "alcoholCart", "$state", "$http", "$window","$mdToast","$document","$anchorScroll"
 		, "$timeout","cartValidation","cartValidate","$templateCache","$cookies"
-, function($rootScope, settings, alcoholCart, ProductService, store, alcoholWishlist, catPricing
-		,categoriesFac, UserService, $state, $http, $window, $mdToast,$document,$anchorScroll
+, function($rootScope, settings, alcoholCart, $state, $http, $window, $mdToast,$document,$anchorScroll
 		,$timeout,cartValidation,cartValidate,$templateCache,$cookies) {
 
 	$rootScope.$state = $state; // state to be accessed from view

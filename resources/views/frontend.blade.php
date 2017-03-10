@@ -108,6 +108,7 @@
 
 	        <div id="page-content-wrapper" md-swipe-left="onSwipeLeft($event)">    		    
 
+
              	<top-menu></top-menu>
 
 	    		<div ui-view class="ancontainer" ></div>    		

@@ -977,3 +977,8 @@ tr.proSelected {
 	color: #222122;
 	font-size: 15px;
 }
+
+.visible-hide-input{
+	border: none;
+    background: transparent;
+}

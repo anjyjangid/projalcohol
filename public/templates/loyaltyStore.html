@@ -4,8 +4,11 @@
 	<div class="productbeerfiltertopcover">
 		<div class="productbeerfiltertoptitle text-capitalize">Loyalty Store <span ng-if="availableLoyaltyPoints">{{availableLoyaltyPoints}}</span></div>
 			<div class="row">
-				<div class="col-xs-12 col-sm-3 col-md-3"> 
-					<a href="javascript:void(0)" ng-class="{active:productView=='alcohol'}" ng-click="productView='alcohol'">Alcohol</a> 
+				<div class="col-xs-12 col-sm-3 col-md-3 text-capitalize"> 
+					<a ui-sref="mainLayout.loyaltystore({keyword:keyword,parent:''})" ng-class="{active:parent==null}">All Types</a> 
+				</div>
+				<div class="col-xs-12 col-sm-3 col-md-3 text-capitalize" ng-repeat="category in categories" ng-if="!category.ancestors"> 
+					<a ui-sref="mainLayout.loyaltystore({keyword:keyword,parent:category.slug})" ng-class="{active:parent==category.slug}" >{{category.cat_title}}</a> 
 				</div>
 				<div class="col-xs-12 col-sm-3 col-md-3"> 
 					<a href="javascript:void(0)" ng-class="{active:productView=='credits'}" ng-click="productView='credits'">Credits</a> 

@@ -46,7 +46,7 @@ MetronicApp.controller('CompanyFormController',[
 
 	$scope.store = function(){
 
-		var fd = objectToFormData($scope.company);	       	  
+		var fd = objectToFormData($scope.company);
 
 		$http.post('/adminapi/company/update/'+$stateParams.companyId, fd, {			
 			transformRequest: angular.identity,
