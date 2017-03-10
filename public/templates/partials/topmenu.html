@@ -1,9 +1,9 @@
 <div class="announcement-bar" style="width: 100%; height: 60px; color: white; float: left; background-color: rgb(156,39,176); position: absolute; z-index: 999999;" ng-if="settings['announcementBar']['enable']=='1'">
   <a ui-sref="settings['announcementBar']['link']">
   <div class="container">
-    <img err-src="asset/i/defaultImage.png" src="announcement/i/{{settings['announcementBar']['leftImage']}}" ng-if="settings['announcementBar']['leftImage']!=null" style="max-height: 50px;"> 
+    <img err-src="" ng-src="announcement/i/{{settings['announcementBar']['leftImage']}}" ng-if="settings['announcementBar']['leftImage']!=null" style="max-height: 50px;"> 
     <span>{{settings['announcementBar']['text']}}</span>
-    <img err-src="asset/i/defaultImage.png" src="announcement/i/{{settings['announcementBar']['rightImage']}}"  ng-if="settings['announcementBar']['rightImage']!=null" style="max-height: 50px;"> 
+    <img err-src="" ng-src="announcement/i/{{settings['announcementBar']['rightImage']}}"  ng-if="settings['announcementBar']['rightImage']!=null" style="max-height: 50px;"> 
   </div>
   </a>
 </div>
@@ -33,7 +33,7 @@
                     <md-item-template> 
                       <div class="ro_items nomargin nopad">
                         <div class="ro_pic">
-                          <img err-src="asset/i/defaultImage.png" src="products/i/200/{{item.imageFiles | getProductThumb}}" class="img-responsive img-responsive-h"> 
+                          <img err-src="" ng-src="products/i/200/{{item.imageFiles | getProductThumb}}" class="img-responsive img-responsive-h"> 
                         </div>                                              
                         <div class="ro_desc pull-left"> 
                           {{item.name}} 
