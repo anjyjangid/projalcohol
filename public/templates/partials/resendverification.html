@@ -1,21 +1,28 @@
 <md-dialog layout="column" flex="40">
     <div class="md-toolbar-tools alcohalhdr">
-      <h2 show-sm show-xs hide-lg hide-xl>Resend verification email</h2>
+      <h2 show-sm show-xs hide-lg hide-xl>Provide your email</h2>
       <span flex></span>
       <button type="button" class="close" ng-click="hide()" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>        
     </div>
-    <form ng-submit="resendSubmit()" name="resendForm">
+    <form ng-submit="addEmail()" name="resendForm">
     <div class="inner-form">
       <md-dialog-content>
       <div class="modal-body alcohabody">
         <div class="alcohal_regisemailcvr">
-          <div class="alcohal_regissigntxt" hide-xs hide-sm>Resend verification email</div>
-          <div class="registeremailcvr" ng-class="{'has-error':resend.errors.email[0]}">
-            <label>Enter your e-mail address below to resend verification email.</label>
-            <input type="text" ng-model="resend.email" class="alcohalrestertextbox form-control" placeholder="Email Address" />
-            <span class="help-block" ng-bind="resend.errors.email[0]"></span>             
+          <div class="alcohal_regissigntxt" hide-xs hide-sm>Provide your email</div>
+
+          <div ng-if="socialError" class="fullwidth">
+            <div class="alert">
+              {{socialError}}
+            </div>
+          </div>
+
+          <div class="registeremailcvr" ng-class="{'has-error':sendmail.errors.email[0]}">
+            <!-- <label>Email</label> -->
+            <input type="text" ng-model="sendmail.email" class="alcohalrestertextbox form-control" placeholder="Email Address" />
+            <span class="help-block" ng-bind="sendmail.errors.email[0]"></span>             
           </div>          
         </div>
       </div>

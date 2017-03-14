@@ -12,12 +12,49 @@
         <div class="modal-body alcohabody">
           <div class="alcohal_regisemailcvr">
             <div class="alcohal_regissigntxt" hide-xs hide-sm>Sign Up for Free</div>
+            <div class="fbloginDiv">            
+            <!-- <button ng-disabled="loading" type="submit" class="alcohalfootersign alcohal_fotrloginbox">Log in</button> -->            
+            <div class="row">
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="col-md-6 col-sm-6">
+                    <button type="button" class="btn btn-block btn-facebook btn-social" ng-click="authenticate('facebook')">
+                      <i class="fa fa-facebook"></i> Facebook Login
+                    </button>
+                  </div>
+                  <div class="col-md-6 col-sm-6">
+                    <button type="button" class="btn btn-block btn-google-plus btn-social" ng-click="authenticate('google')">
+                      <i class="fa fa-google-plus"></i> Google+ Login
+                    </button>
+                  </div>
+                </div>
+                <div class="row">  
+                  <div class="col-md-6 col-sm-6">
+                    <button type="button" class="btn btn-block btn-twitter btn-social" ng-click="authenticate('twitter')">
+                      <i class="fa fa-twitter"></i> Twitter Login
+                    </button>
+                  </div>
+                  <div class="col-md-6 col-sm-6">  
+                    <button type="button" class="btn btn-block btn-instagram btn-social" ng-click="authenticate('instagram')">
+                      <i class="fa fa-instagram"></i> Instagram Login
+                    </button>
+                  </div>
+                </div>  
+              </div>
+            </div>  
+            <!-- <div class="fblogin" id="login-btn"  align="center"> <img ng-click="socialLogin()" src="img/facebook_login.png"> </div> -->
+          </div>
+          <div class="signup-or-separator">
+            <h6 class="text">OR</h6>
+            <hr>
+          </div>
             <div ng-if="socialError" class="fullwidth">
               <div class="alert alert-danger">
                 {{socialError}}
               </div>
             </div>
             <div class="registeremailcvr" ng-class="{'has-error':signup.errors.email[0]}">
+              <label align="center">Use your email address</label>
               <input type="email" name="email" ng-model="signup.email" class="alcohalrestertextbox form-control" placeholder="Email Address" ng-model="formData.email">              
               <span class="help-block" ng-bind="signup.errors.email[0]"></span> </div>
             <div class="registeremailcvr" ng-class="{'has-error':signup.errors.password[0]}">
