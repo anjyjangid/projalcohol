@@ -87,10 +87,8 @@
 		</div>		
     	<div class="loader"></div>
     	<div ng-bind="loadingmsg" ng-show="loadingmsg" class="ldmsg" align="center"></div>
-    	<div id="wrapper" md-swipe-right="onSwipeRight($event)">     	    		    
-
-	        <div id="page-content-wrapper" md-swipe-left="onSwipeLeft($event)">    		    
-
+    	<div id="wrapper" ng-swipe-right="onSwipeRight()" ng-swipe-left="onSwipeLeft()">     	    
+	        <div id="page-content-wrapper" >    		    
 
              	<top-menu></top-menu>
 
@@ -209,4 +207,6 @@
 
 	<script async type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAO1xAu1wBu7NZOqNBn9aoYg-RVstm60jc&libraries=places"></script>		
 	<script type="text/javascript" src="js/build/all.js"></script>
+
+	
 </html>
