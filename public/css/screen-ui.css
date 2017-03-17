@@ -1218,7 +1218,7 @@ ui-sref {
 .registeremailcvr {
 	float: left;
 	width: 100%;
-	margin-bottom: 20px;
+	margin-bottom: 15px;
 }
 .registeremailcvr label {
 	float: left;
@@ -1251,7 +1251,7 @@ ui-sref {
 	font-size: 24px;
 	color: #454545;
 	font-family: 'Work Sans', sans-serif;
-	margin-bottom: 36px;
+	margin-bottom: 16px;
 	line-height: 25px;
 }
 .modal-dialog.alcohal_registermain {
@@ -4075,8 +4075,9 @@ ui-sref {
 	font-size: 14px;
 	line-height: 23px;
 	margin-top: 9px;
+	margin-right: 20px;
 	text-transform: uppercase;
-	width: 77%;
+	/*width: 77%;*/
 	font-weight: 500;
 	cursor: pointer;
 }
@@ -6822,4 +6823,8 @@ md-toast.notify.bottom{
 }
 .date-selectbox:focus{
 	box-shadow: none;
+}
+
+.registeremailcvr md-checkbox{
+	margin-bottom: 0px;
 }

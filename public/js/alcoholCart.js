@@ -3189,11 +3189,12 @@ AlcoholDelivery.service('alcoholCart', [
 								discountMessage = discountAmt.couponMessage;
 
 						});
-
+						console.log("setCouponPrice Called");
 						if(!discountTotal && discountMessage)
 							this.$cart.couponMessage = discountMessage;
 
 					}else{
+
 						if(typeof(this.$cart.couponData) !== "undefined"){
 							this.removeCoupon();
 						}
@@ -3264,7 +3265,7 @@ AlcoholDelivery.service('alcoholCart', [
 				return $rootScope.$broadcast('showLogin');
 
 			$http.post("checkCoupon", {params: {cart: cartKey, coupon: couponCode}}).success(function(result){
-				console.log(result);
+				
 				if(result.errorCode==1 || result.errorCode==2){
 					//_self.removeCoupon();
 					// $rootScope.invalidCodeMsg = false;
@@ -3281,7 +3282,6 @@ AlcoholDelivery.service('alcoholCart', [
 			}).error(function(){
 			});
 		}
-
 
 		this.getCouponDiscount = function(){
 			if(typeof(this.$cart.couponDiscount) !== "undefined"){

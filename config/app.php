@@ -210,5 +210,14 @@ return [
         'Html' => 'Collective\Html\HtmlFacade',
     ],
     'appName' => 'Alcohol Delivery',
-    'appContact' => '92445533'
+    'appContact' => '92445533',
+
+    'facebook_id' => env('FACEBOOK_ID','273669936304095'),
+    'facebook_secret' => env('FACEBOOK_SECRET','2963cf60b9ee599cb61650da81b2989e'),
+    'google_id' => env('GOOGLE_ID','560402887297-6mkdppgijfmi5gv6fvlfe41hn2dubkpk.apps.googleusercontent.com'),
+    'google_secret' => env('GOOGLE_SECRET','JFxHeUKmsu9kv4Syr4XyTs_d'),
+    'instagram_id' => env('INSTAGRAM_ID','5e4558d80fdd4fe2958d69b4336fb352'),
+    'instagram_secret' => env('INSTAGRAM_SECRET','d38d55f9f76f41f484f734e811cd2e47'),
+    'twitter_key' => env('TWITTER_SECRET','KDU8eRxjDevmDg5dLTZz9ypdT'),
+    'twitter_secret' => env('TWITTER_KEY','BPPkqeKE9rCwlEvJmeqaR5FCJyQBM8w8VMiopidDHceXpv9vHg'),
 ];

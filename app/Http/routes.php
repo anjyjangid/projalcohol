@@ -188,8 +188,14 @@ Route::get('/', function () {
 });
 
 /**/
-
 Route::group(['prefix' => 'api'], function () {
+	
+	/*SOCIAL LOGINS*/
+	Route::post('/auth/facebook', 'Auth\AuthController@facebook');	
+	Route::post('/auth/twitter', 'Auth\AuthController@twitter');
+	Route::post('/auth/instagram', 'Auth\AuthController@instagram');
+	Route::post('/auth/google', 'Auth\AuthController@google');
+
 
 	// Order Using Device
 	Route::post('deviceorder','CartController@deviceOrder');
@@ -343,7 +349,10 @@ Route::group(['prefix' => 'api'], function () {
 	Route::resource('gift', 'GiftController',['only'=>['show']]);
 	Route::controller('payment', 'PaymentController');
 
+	
+
 });
+
 
 /*PRODUCT IMAGE ROUTUING*/
 Route::get('products/i/{folder}/{filename}', function ($folder,$filename){
@@ -390,6 +399,7 @@ Route::get('confirmordermanual/{key}','CartController@confirmordermanual');
 Route::get('saleNotification','CartController@saleNotification');//for AP testing
 
 Route::get('verifyemail/{key}', 'Auth\AuthController@verifyemail');
+Route::get('socialverifyemail/{key}', 'Auth\AuthController@socialverifyemail');
 
 
 $fixPagesLinks = [

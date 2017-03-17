@@ -118,8 +118,8 @@ AlcoholDelivery.directive('sideBar', function() {
 		restrict: 'E',
 		templateUrl: '/templates/partials/topmenu.html',
 		controller: [
-		'$scope','$rootScope','$http','$state','$mdDialog','$timeout','$window','appSettings','sweetAlert','UserService','store','alcoholWishlist','ClaimGiftCard',
-		function($scope,$rootScope,$http,$state,$mdDialog,$timeout,$window,appSettings,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard){
+		'$scope','$rootScope','$http','$state','$mdDialog','$timeout','$window','appSettings','sweetAlert','UserService','store','alcoholWishlist','ClaimGiftCard','$auth',
+		function($scope,$rootScope,$http,$state,$mdDialog,$timeout,$window,appSettings,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard,$auth){
 					
 					$scope.list = [];
 		
@@ -130,6 +130,7 @@ AlcoholDelivery.directive('sideBar', function() {
 					$scope.reset = {};
 					$scope.resend = {};
 					$scope.resendemail = '';
+					$scope.sendmail = {};
 		
 					$scope.signupSubmit = function() {
 						$scope.signup.errors = {};
@@ -373,6 +374,42 @@ AlcoholDelivery.directive('sideBar', function() {
 						}).error(function(data, status, headers) {
 							$scope.resend.errors = data;
 				        });
+				    }				    			
+
+				    $scope.authenticate = function(provider) {
+				      $scope.login.errors = {};
+
+				      $auth.authenticate(provider).then(function(response) {						
+						$mdDialog.hide();
+						$scope.loginSuccess(response);
+					  }).finally(function(){					  	
+
+					  }).catch(function(erresult) {					  	
+				  		if(typeof erresult.data.emailnotfound != 'undefined'){								
+							$mdDialog.hide();
+							$scope.socialError = erresult.data.emailnotfound;								
+							$scope.resendverification();
+						}else{															
+					  		$scope.login.errors = erresult.data;
+						}
+					  });
+
+				    };
+
+				    $scope.addEmail = function(){				    	
+				    	$scope.sendmail.errors = {};				    	
+						$http.post('/auth/socialverification',$scope.sendmail).success(function(response){
+							$scope.sendmail = {};							
+							sweetAlert.swal({
+								title: "Verification email sent",
+								text : "Please check your inbox to verify your email and start shopping with us!",
+								imageUrl:'/images/send.gif',
+								confirmButtonColor: "#aa00ff", 
+							});					
+			                $mdDialog.hide();
+						}).error(function(data, status, headers) {
+							$scope.sendmail.errors = data;
+				        });
 				    }
 		
 				}]
@@ -488,7 +525,7 @@ AlcoholDelivery.directive('sideBar', function() {
         });
     };
 }])
-.directive('errProSrc', [function() {
+.directive('errProSrc', ['$q',function($q) {
   return {
     link: function(scope, element, attrs) {
       element.bind('error', function() {
@@ -497,7 +534,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 		attrs.$set('src', attrs.errSrc);
 
-      });
+      });     
     }
   }
 }])
@@ -1500,8 +1537,31 @@ AlcoholDelivery.directive('sideBar', function() {
 		
 					$scope.listUserAddress = function(flag){
 						$http.get("address").success(function(response){
+
+							var isDefaultSet = false;
+
+							if(response.length>0){
+
+								angular.forEach(response,function (currAdd,key) {
+									if(currAdd.default==true){
+										isDefaultSet = key;
+									}
+								})
+
+								if(!isDefaultSet){
+									response[0].default=true;
+								}								
+								
+							}
+
 							$scope.addresses = response;
-							$rootScope.addresses = $scope.addresses;	
+
+							if(isDefaultSet!==false && angular.isDefined($scope.delivery) && $scope.delivery.address == null){									
+								$scope.setSelectedAddress(isDefaultSet);
+							}
+
+							
+							$rootScope.addresses = $scope.addresses;
 							if($scope.delivery && flag){
 								var lastkey = ($scope.addresses.length - 1);
 								$scope.setSelectedAddress(lastkey);
@@ -1530,7 +1590,7 @@ AlcoholDelivery.directive('sideBar', function() {
 						$mdDialog.show({
 							scope: $scope.$new(),
 							controller: function(){
-		
+								
 								$scope.address = {step:1};
 								$scope.types = "['geocode']";
 								$scope.restrictions="{country:'sg'}";
@@ -1645,6 +1705,7 @@ AlcoholDelivery.directive('sideBar', function() {
 					};
 		
 					$scope.showAddressForm = function(dObj) {
+
 						$scope.errors = {};
 						$mdDialog.show({
 							scope: $scope.$new(),
@@ -1763,7 +1824,7 @@ AlcoholDelivery.directive('sideBar', function() {
 				// hide the spinner bar on rounte change success(after the content loaded)
 				$rootScope.$on('$stateChangeSuccess', function() {
 					element.addClass('hide'); // hide spinner bar
-					$('#sectionarea').removeClass('hide');
+					$('#sectionarea').removeAttr('style');
 					//$('body').removeClass('page-on-load'); // remove page loading indicator
 					// auto scorll to page top
 					setTimeout(function () {

@@ -15,6 +15,13 @@ use Sarav\Multiauth\Foundation\AuthenticatesAndRegistersUsers;
 use AlcoholDelivery\Email as Email;
 use MongoId;
 
+use Firebase\JWT\JWT;
+use GuzzleHttp;
+use GuzzleHttp\Subscriber\Oauth\Oauth1 as Oauth1;
+use Hash;
+use Config;
+use Session;
+
 class AuthController extends Controller
 {
 	/*
@@ -48,7 +55,7 @@ class AuthController extends Controller
 	 * @param  array  $data
 	 * @return \Illuminate\Contracts\Validation\Validator
 	 */
-	protected function validator(array $data)
+	protected function validator(array $data)	
 	{
 		if(isset($data['email']))
 			$data['email'] = strtolower($data['email']);
@@ -61,8 +68,7 @@ class AuthController extends Controller
 			'terms' => 'required|accepted'
 		],[           
 		   'terms.required' => 'Please agree terms.',
-		   'terms.accepted' => 'Please agree terms.'
-		   
+		   'terms.accepted' => 'Please agree terms.'		   
 		]);
 	}
 
@@ -148,7 +154,7 @@ class AuthController extends Controller
 	protected function create(array $data)
 	{
 
-		$data['email_key'] = strtotime(date("Y-m-d H:i:s"));
+		$data['email_key'] = new MongoId();
 		$data['email'] = strtolower($data['email']);
 		
 		try {
@@ -175,7 +181,7 @@ class AuthController extends Controller
 		
 		} catch(\Exception $e){
 
-            return response(array("success"=>false,"message"=>$e->getMessage()));
+			return response(array("success"=>false,"message"=>$e->getMessage()));
 				
 		}	
 
@@ -206,5 +212,348 @@ class AuthController extends Controller
 	}
 
 	
+
+
+	/*********************SOCIAL LOGIN*************************/
+
+	protected function providers($providername){
+
+		$providerList = [
+			'facebook' => ['field' => 'fbid','name' => 'Facebook','verifiedField' => 'fbverified'],
+			'google' => ['field' => 'gplusid','name' => 'Google+','verifiedField' => 'gplusverified'],
+			'twitter' => ['field' => 'twitterid','name' => 'Twitter','verifiedField' => 'twitterverified'],
+			'instagram' => ['field' => 'instagramid','name' => 'Instagram','verifiedField' => 'instagramverified'],
+		];
+
+		return $providerList[$providername];
+
+	}
+
+	protected function socialLogin($data){			
+		
+		if(!empty($data) && isset($data['id'])){
+			$data['id'] = (string)$data['id'];
+			$providerData = $this->providers($data['providername']);		    
+			$field = $providerData['field'];
+			$providername = $providerData['name'];
+
+			$id = $data['id'];
+			$email = (isset($data['email']) && $data['email']!='')?$data['email']:'';
+
+			$user = User::where($field, '=', $id)->orWhere('email',$email)->first();            
+
+			if($user){
+				if($user->status!=1){
+					$suspended = 'Your account has been suspended by the site administrator.';          
+					return response(['suspended' => $suspended],422);
+				}
+				$user->$field = $data['id'];
+				
+				if(!isset($user->name))
+					$user->name = $data['name'];   
+				
+				$user->verified = 1;   
+				$user->save();                
+			}elseif($email!=''){
+				$user = User::create([
+					'email' => $email,                    
+					'name' => $data['name'],
+					$field => $data['id'],
+					'status' => 1,
+					'verified' => 1
+				]);                
+			}else{
+				Session::put('socialData',$data);
+				return response(['emailnotfound' => 'Hello '.$data['name'].', we could not find your email address from '.$providername.', please enter your email below to complete the registration process.'],422);
+			}
+
+			Auth::login($user);
+			return response(Auth::user('user'),200);
+		}else{
+			return response(['couldnotconnect' => 'We could not connect to '.$providername.', please try again.'],422);
+		}        			
+
+	}
+
+	/**
+	 * Generate JSON Web Token.
+	 */
+	protected function createToken($user)
+	{
+		$payload = [
+			'sub' => $user->id,
+			'iat' => time(),
+			'exp' => time() + (2 * 7 * 24 * 60 * 60)
+		];
+		return JWT::encode($payload, Config::get('app.token_secret'));
+	}
+
+	/**
+	 * Login with Facebook.
+	 */
+	public function facebook(Request $request){
+
+		$client = new GuzzleHttp\Client();
+		$params = [
+			'code' => $request->input('code'),
+			'client_id' => $request->input('clientId'),
+			'redirect_uri' => $request->input('redirectUri'),
+			'client_secret' => Config::get('app.facebook_secret')
+		];
+		// Step 1. Exchange authorization code for access token.
+		$accessTokenResponse = $client->request('GET', 'https://graph.facebook.com/v2.5/oauth/access_token', [
+			'query' => $params
+		]);
+		$accessToken = json_decode($accessTokenResponse->getBody(), true);
+		// Step 2. Retrieve profile information about the current user.
+		$fields = 'id,email,first_name,last_name,link,name';
+		$profileResponse = $client->request('GET', 'https://graph.facebook.com/v2.5/me', [
+			'query' => [
+				'access_token' => $accessToken['access_token'],
+				'fields' => $fields
+			]
+		]);
+		$profile = json_decode($profileResponse->getBody(), true);        
+
+		$profile['providername'] = 'facebook';
+
+		return $this->socialLogin($profile);        
+	}
+	/**
+	 * Login with Google.
+	 */
+	public function google(Request $request){
+
+		$client = new GuzzleHttp\Client();
+		$params = [
+			'code' => $request->input('code'),
+			'client_id' => $request->input('clientId'),
+			'client_secret' => Config::get('app.google_secret'),
+			'redirect_uri' => $request->input('redirectUri'),
+			'grant_type' => 'authorization_code',
+		];
+		// Step 1. Exchange authorization code for access token.
+		$accessTokenResponse = $client->request('POST', 'https://accounts.google.com/o/oauth2/token', [
+			'form_params' => $params
+		]);
+		$accessToken = json_decode($accessTokenResponse->getBody(), true);
+		// Step 2. Retrieve profile information about the current user.
+		$profileResponse = $client->request('GET', 'https://www.googleapis.com/plus/v1/people/me', [
+			'headers' => array('Authorization' => 'Bearer ' . $accessToken['access_token'])
+		]);
+		$profile = json_decode($profileResponse->getBody(), true);
+		
+		if(!empty($profile) && isset($profile['emails'])){
+
+			$profile['name'] = $profile['displayName'];
+			
+			foreach ($profile['emails'] as $key => $value) {
+				if($value['type'] == 'account'){
+					$profile['email'] = $value['value'];
+					break;
+				}
+			}
+		}    
+
+		$profile['providername'] = 'google';
+
+		return $this->socialLogin($profile);
+	}	
+
+	/**
+	 * Login with Twitter.
+	 */
+	public function twitter(Request $request){
+		$stack = GuzzleHttp\HandlerStack::create();
+		// Part 1 of 2: Initial request from Satellizer.
+		if (!$request->input('oauth_token') || !$request->input('oauth_verifier'))
+		{
+			$stack = GuzzleHttp\HandlerStack::create();
+			$requestTokenOauth = new Oauth1([
+			  'consumer_key' => Config::get('app.twitter_key'),
+			  'consumer_secret' => Config::get('app.twitter_secret'),
+			  'callback' => $request->input('redirectUri'),
+			  'token' => '',
+			  'token_secret' => ''
+			]);
+			$stack->push($requestTokenOauth);
+			$client = new GuzzleHttp\Client([
+				'handler' => $stack
+			]);
+			// Step 1. Obtain request token for the authorization popup.
+			$requestTokenResponse = $client->request('POST', 'https://api.twitter.com/oauth/request_token', [
+				'auth' => 'oauth'
+			]);
+			$oauthToken = array();
+			parse_str($requestTokenResponse->getBody(), $oauthToken);
+			// Step 2. Send OAuth token back to open the authorization screen.
+			return response()->json($oauthToken);
+		}
+		// Part 2 of 2: Second request after Authorize app is clicked.
+		else
+		{
+			$accessTokenOauth = new Oauth1([
+				'consumer_key' => Config::get('app.twitter_key'),
+				'consumer_secret' => Config::get('app.twitter_secret'),
+				'token' => $request->input('oauth_token'),
+				'verifier' => $request->input('oauth_verifier'),
+				'token_secret' => ''
+			]);
+			$stack->push($accessTokenOauth);
+			$client = new GuzzleHttp\Client([
+				'handler' => $stack
+			]);
+			// Step 3. Exchange oauth token and oauth verifier for access token.
+			$accessTokenResponse = $client->request('POST', 'https://api.twitter.com/oauth/access_token', [
+				'auth' => 'oauth'
+			]);
+			$accessToken = array();
+			parse_str($accessTokenResponse->getBody(), $accessToken);
+			$profileOauth = new Oauth1([
+				'consumer_key' => Config::get('app.twitter_key'),
+				'consumer_secret' => Config::get('app.twitter_secret'),
+				'oauth_token' => $accessToken['oauth_token'],
+				'token_secret' => ''
+			]);
+			$stack->push($profileOauth);
+			$client = new GuzzleHttp\Client([
+				'handler' => $stack
+			]);
+			// Step 4. Retrieve profile information about the current user.
+			$profileResponse = $client->request('GET', 'https://api.twitter.com/1.1/users/show.json?screen_name=' . $accessToken['screen_name'], [
+				'auth' => 'oauth'
+			]);
+			$profile = json_decode($profileResponse->getBody(), true);
+
+			$profile['providername'] = 'twitter';
+
+			return $this->socialLogin($profile);
+			
+		}
+	}
+
+	/**
+	 * Login with Instagram.
+	 */
+	public function instagram(Request $request)
+	{
+		$client = new GuzzleHttp\Client();
+		$params = [
+			'code' => $request->input('code'),
+			'client_id' => $request->input('clientId'),
+			'client_secret' => Config::get('app.instagram_secret'),
+			'redirect_uri' => $request->input('redirectUri'),
+			'grant_type' => 'authorization_code',
+		];
+		// Step 1. Exchange authorization code for access token.
+		$accessTokenResponse = $client->request('POST', 'https://api.instagram.com/oauth/access_token', [
+			'form_params' => $params
+		]);
+		$accessToken = json_decode($accessTokenResponse->getBody(), true);
+
+		$profile = [];
+
+		if(isset($accessToken['user'])){
+			$profile = $accessToken['user'];
+			if(isset($profile['full_name']))
+				$profile['name'] = $profile['full_name'];
+		}
+
+		$profile['providername'] = 'instagram';
+
+		return $this->socialLogin($profile);        
+		
+	}
+
+	public function postSocialverification(Request $request){
+
+		//CHECK SESSION DATA		
+		$socialData = $request->session()->get('socialData');
+		if(empty($socialData)){
+			return response(['email'=>['We could not recognize your request, please try again.']], 422);
+		}
+
+		$data = $request->all();
+
+		if(isset($data['email']))
+			$data['email'] = strtolower($data['email']);
+		
+		$validator = Validator::make($data, [			
+			'email' => 'required|email|max:255',			
+		]);
+
+		if ($validator->fails()) {
+			return response($validator->errors(), 422);
+		}else{
+
+			$data['email_key'] = (string)new MongoId();
+			$providerData = $this->providers($socialData['providername']);		    
+			$field = $providerData['field'];
+			$providername = $providerData['name'];
+			$checkUser = User::whereRaw([
+				$field => ['$eq' => $socialData['id']]
+			])->first();
+
+			if($checkUser){
+				return response(['email' => ['We already have an account linked with this social login.']],422);
+			}
+
+			$user = User::where('email',$data['email'])->first();
+
+			if($user){				
+				$user->socialData = $socialData;
+				$user->email_key = $data['email_key'];
+				$user->save();
+			}else{
+				$user = User::create([
+					'email' => $data['email'],
+					'socialData' => $socialData,
+					'name' => $socialData['name'],
+					'status' => 1,
+					'verified' => 1,
+					'email_key' => $data['email_key']
+				]);
+			}		
+
+			$email = new Email('verifyemail');
+			$email->sendEmail($user);	
+
+			$request->session()->forget('socialData');
+			return response(['message' => 'Verification email has been sent successfully. Please check your mail to verify your account'], 200);
+		}
+
+	}
+
+	public function socialverifyemail($key){		
+
+		$user = User::where("email_key","=",$key)->first();
+
+		if(empty($user->_id) || !isset($user->socialData)){
+			return redirect('/mailverified/0');
+		}
+		
+
+		$socialData = $user->socialData;
+		$providerData = $this->providers($socialData['providername']);		    
+		$field = $providerData['field'];
+		$providername = $providerData['name'];		
+
+		$checkUser = User::whereRaw([
+			$field => ['$eq' => $socialData['id']]
+		])->first();
+
+		if($checkUser){
+			return redirect('/mailverified/0');
+		}
+
+		$user->$field = $socialData['id'];
+		$user->save();
+		$user->unset("email_key");
+		$user->unset("socialData");
+		
+		Auth::login($user);
+
+		return redirect('/socialmailverified/'.$socialData['providername']);
+	}
 }
 	

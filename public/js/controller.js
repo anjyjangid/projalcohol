@@ -262,14 +262,13 @@ AlcoholDelivery.controller('AppController', [
 
 		
 
-	$scope.onSwipeLeft = function(ev) {
-		ev.stopPropagation();
+	$scope.onSwipeLeft = function() {
+		
 		angular.element('#wrapper').removeClass('toggled');
 		angular.element('body').removeClass(' hidden-scroll');
     };
 
-    $scope.onSwipeRight = function(ev) {
-    	ev.stopPropagation();
+    $scope.onSwipeRight = function() {    	
 		angular.element('#wrapper').addClass('toggled');
 		angular.element('body').addClass(' hidden-scroll');
     };	    
@@ -2610,7 +2609,8 @@ AlcoholDelivery.controller('CmsController',[
 				$scope.cmsData.formType == 'contact-us' ||
 				$scope.cmsData.formType == 'event-planner' ||
 				$scope.cmsData.formType == 'book-a-bartender' ||
-				$scope.cmsData.formType == 'become-a-partner' ||
+				$scope.cmsData.formType == 'bulkcorporate-discounts' ||
+				$scope.cmsData.formType == 'suggest-a-product' ||
 				$scope.cmsData.formType == 'sell-on-alcoholdelivery'
 			);
 		}
@@ -2641,8 +2641,16 @@ AlcoholDelivery.controller('CmsController',[
 	}
 
 	$scope.trustedHtml = function (plainText) {
-		  return $sce.trustAsHtml(plainText);
+		return $sce.trustAsHtml(plainText);
 	}
+
+	$scope.formElements = [
+		{label:'Subject',modelname:'subject',required:true},
+		{label:'Name',modelname:'name',required:true},
+		{label:'Email',modelname:'email',required:true},
+		{label:'Feedback',modelname:'feedback',required:true},
+		{label:'Additional Comment (optional)',modelname:'additionalComment',required:false},
+	];
 
 }]);
 
@@ -3105,8 +3113,9 @@ AlcoholDelivery.controller('LoyaltyStoreController', [
 		$scope.keyword = $stateParams.keyword;
 		$scope.filter = $stateParams.filter;
 		$scope.sortby = $stateParams.sort;
-
-		$scope.products = new ScrollPagination();
+		$scope.parent = $stateParams.parent;
+		// type 1 for loyalty store
+		$scope.products = new ScrollPagination($scope.keyword,$scope.filter,$scope.sortby,1,$scope.parent);
 
 		$scope.credits = {};
 

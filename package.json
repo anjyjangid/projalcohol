@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "bootstrap-sass": "^3.0.0",
-    "laravel-elixir": "^4.0.0",
-    "laravel-elixir-images": "^2.0.0"
+    "gulp-image": "^2.7.5",
+    "laravel-elixir": "^4.0.0"
   }
 }

@@ -102,7 +102,7 @@
 	// Function to get singapore time which is +8 hours from GMT
 	function getServerTime ($type = 'str') {
 
-		$sgtTimeStamp = strtotime("+4 hours");
+		$sgtTimeStamp = strtotime("+8 hours");
 
 		switch ($type) {
 

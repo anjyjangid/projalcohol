@@ -172,6 +172,7 @@ class PurchaseOrderController extends Controller
                     'product' => [
                         '_id' => '$products._id',
                         'order' => '$products.order',
+                        'tradeData' => '$products.tradeData',
                         'received' => '$products.received',
                         'name' => '$productDetails.name',
                     ]

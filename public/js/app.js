@@ -16,18 +16,41 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	//'angularFblogin',
 	'ngPayments',
 	'infinite-scroll',
+	'satellizer'
 	//'ngTouch'
-]).config(['$locationProvider','$mdThemingProvider', function($location,$mdThemingProvider) {
+]).config(['$locationProvider','$mdThemingProvider','$authProvider',
+	function($location,$mdThemingProvider,$authProvider) {
 
-	$location.html5Mode({
-		enabled: true,
-		requireBase: false
-	});
+		var social = angular.element('#socialid');
+		
+		$location.html5Mode({
+			enabled: true,
+			requireBase: false
+		});
 
-	// $location.hashPrefix('!');
-	//$mdThemingProvider.disableTheming();
-	$mdThemingProvider.theme('default').primaryPalette('purple').accentPalette('purple');
-    //.accentPalette('orange');    
+		//$location.hashPrefix('!');
+		//$mdThemingProvider.disableTheming();
+		$mdThemingProvider.theme('default').primaryPalette('purple').accentPalette('purple');
+	    //.accentPalette('orange');    
+
+	    // Optional: For client-side use (Implicit Grant), set responseType to 'token' (default: 'code')	    
+
+	    var fb_id = angular.element('meta[name="facebook_id"]').attr('content');
+	    var google_id = angular.element('meta[name="google_id"]').attr('content');
+	    var instagram_id = angular.element('meta[name="instagram_id"]').attr('content');
+	    
+	    $authProvider.facebook({
+	      clientId: fb_id
+	    });
+
+	    $authProvider.google({
+	      clientId: google_id
+	    });	    
+
+	    $authProvider.instagram({
+	      clientId: instagram_id
+	    });
+    
 }]);
 
 
@@ -522,7 +545,7 @@ AlcoholDelivery.factory('ScrollPaging', ['$http',function($http) {
 
 AlcoholDelivery.factory('ScrollPagination', ['$http','ProductService',function($http,ProductService) {
 
-  var Search = function(keyword,filter,sortby,type) {
+  var Search = function(keyword,filter,sortby,type,parent) {
     this.items = [];
     this.busy = false;
     this.skip = 0;
@@ -533,6 +556,7 @@ AlcoholDelivery.factory('ScrollPagination', ['$http','ProductService',function($
     this.filter = filter;
     this.sortby = sortby;
     this.type = type || 1;
+    this.parent = parent || '';
   };
 
   Search.prototype.nextPage = function() {
@@ -548,8 +572,8 @@ AlcoholDelivery.factory('ScrollPagination', ['$http','ProductService',function($
 		filter:this.filter,
 		sort:this.sortby,
 		keyword:this.keyword,
-		productList:1
-
+		productList:1,
+		parent:this.parent
 	}).then(function(items){
 
 		// _self.totalResult = result.data.total;
@@ -768,26 +792,49 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						//templateUrl: "/templates/index/home.html",
 						controller:['sweetAlert','$location','$stateParams',function(sweetAlert,$location,$stateParams){
 						
-													var title = '';
-													var type = 'success';
-													var msg = 'Your email is already verified.';
-													if($stateParams.status == 1){
-														title = 'Congratulations!';
-														//type = 'success';
-														msg = 'Your email has been verified successfully, you can login with your registered email & password.';	
-													}							
+							var title = '';
+							var type = 'success';
+							var msg = 'Your email is already verified.';
+							if($stateParams.status == 1){
+								title = 'Congratulations!';
+								//type = 'success';
+								msg = 'Your email has been verified successfully, you can login with your registered email & password.';	
+							}							
+
+							sweetAlert.swal({
+								type:type,
+								title: title,
+								text : msg,
+								timer: 0,
+								closeOnConfirm: true
+							});
+
+							$location.url('/').replace();
+
+						}]
+				})
+
+				.state('mainLayout.sociallogin', {
+
+						url: "/socialmailverified/{type}",
+						//templateUrl: "/templates/index/home.html",
+						controller:['sweetAlert','$location','$stateParams',function(sweetAlert,$location,$stateParams){
 						
-													sweetAlert.swal({
-														type:type,
-														title: title,
-														text : msg,
-														timer: 0,
-														closeOnConfirm: true
-													});
-						
-													$location.url('/').replace();
-						
-												}]
+							var title = 'Congratulations!';
+							var type = 'success';
+							var msg = 'Your email for {type} login has been verified.';
+							msg = msg.replace('{type}',$stateParams.type);
+							sweetAlert.swal({
+								type:type,
+								title: title,
+								text : msg,
+								timer: 0,
+								closeOnConfirm: true
+							});
+
+							$location.url('/').replace();
+
+						}]
 				})
 
 				.state('mainLayout.expiredlink', {
@@ -1033,7 +1080,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				})
 
 				.state('mainLayout.loyaltystore', {
-					url: '/loyalty-store?{filter}&{sort}',
+					url: '/loyalty-store?{parent}&{filter}&{sort}',
 					templateUrl : "/templates/loyaltyStore.html",
 					params: {pageTitle: 'Loyalty Store'},
 					controller:"LoyaltyStoreController"
@@ -1208,7 +1255,7 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 	            	config.url = 'api/'+urlStr;
 	        }else{
 	        	if(urlStr.indexOf('templates') > 0)
-	        		config.url += '?ver=1.10';
+	        		config.url += '?ver=1.11';
 	        }	        	
             return config;
         },
@@ -1462,26 +1509,19 @@ AlcoholDelivery.run([
 			hideDelay:def
 		});
 
-	});
-		
-	//LIVE
-	var appId = '1269828463077215';
-	//LOCAL OR BETA
-	//var appId = '273669936304095';
-
+	});		
+	
+	//FB SCRIPT 
+	var appId = angular.element('meta[name="facebook_id"]').attr('content');
+    
 	$window.fbAsyncInit = function() {
-    	// Executed when the SDK is loaded
 	    FB.init({
 	      appId: appId,
 	      status: true, 
 	      cookie: true, 
 	      xfbml: true,
 	      version: 'v2.4'
-	    }); 
-
-	    /*FB.Event.subscribe('auth.authResponseChange', function(res) {
-	    	console.log(res);
-	    });*/  
+	    }); 	    
 	};
 
 	(function(d, s, id) {
@@ -1490,17 +1530,7 @@ AlcoholDelivery.run([
 	  js = d.createElement(s); js.id = id;
 	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&version=v2.8&appId="+appId;
 	  fjs.parentNode.insertBefore(js, fjs);
-	}(document, 'script', 'facebook-jssdk'));
-	
-	/*angular.$templateCache = $templateCache;
-	
-	$rootScope.$on('$viewContentLoaded', function() {	  		  
-	  var newversion = 'newupdate8.0';
-      if(!$cookies.get('viewcached') || $cookies.get('viewcached')!=newversion){      		
-      		$templateCache.removeAll();
-	  		$cookies.put('viewcached',newversion);	      		
-      }
-   	});*/
+	}(document, 'script', 'facebook-jssdk'));	
 
 }]);
 
