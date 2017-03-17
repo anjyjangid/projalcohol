@@ -159,7 +159,7 @@ class Payment extends Model
             'return_url' => url().$uprefix.'/confirmorder',
             'merchant_data1' => $orderData['_id'],
             'merchant_data2' => (string)$orderData['user'],
-            'merchant_data3' => $isDeviceOrder==false?0:1,
+            'merchant_data3' => $isDeviceOrder==false?0:1, // check that order is placed from device or other
             'notify_url' => url().$uprefix.'/confirmorder',
             //'notify_url' => url().'/confirmorder', //FOR SAFE PAYMENTS
         );

@@ -16,25 +16,42 @@ var MobileApp = angular.module('MobileApp', [
 /* Setup Routing For All Pages */
 MobileApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider){
 	// Redirect any unmatched url
-	$urlRouterProvider.otherwise("/");
+	$urlRouterProvider.otherwise("device/");
 
 	$stateProvider
 		.state('mainLayout',{
 			//abstract:true,
-			url: "/devicepayment/{deviceconfigid}",
 			views: {
 				"": {
 					templateUrl: '/templates/mobileappLayout.html',
+				}
+			},
+			data: {pageTitle: 'Device Payment'}
+		})
+		.state('mainLayout.index',{
+			controller : function () {
+				location.href = "/"
+			}
+		})
+		.state('mainLayout.devicepayment', {
+			url: "/device/payment/{deviceconfigid}",
+			views: {
+				"": {
+					templateUrl: '/templates/devicePayment.html',
 					controller: 'MobileAppController',
 				},
-				"addcard@mainLayout": {
+				"addcard@mainLayout.devicepayment": {
 					templateUrl: '/templates/partials/addcard.html',
 				},
-				"deviceconfiguredcard@mainLayout": {
+				"deviceconfiguredcard@mainLayout.devicepayment": {
 					templateUrl: '/templates/partials/deviceConfiguredCard.html',
 				},
 			},
-			data: {pageTitle: 'Device Payment'}
+		})
+		.state('mainLayout.orderplaced', {
+			url: "/device/orderplaced/{order}",
+			templateUrl: "/templates/orderconfirmation.html",
+			controller:"OrderplacedController",
 		});
 }]);
 
@@ -87,6 +104,7 @@ MobileApp.controller('MobileAppController', [
 	function($scope,$rootScope,$http,$state,$stateParams,$payments,$sce,UserService,sweetAlert, $timeout,$routeParams){		
 
 		$scope.adminmode = true; // To remove card delete option
+		$scope.savecardfuture = true; // To remove card delete option
     	$scope.userdata = {savedCards:[]};
 		$scope.isConfiguredCardFound = false;
     	$scope.paymentmode = true;
@@ -95,7 +113,7 @@ MobileApp.controller('MobileAppController', [
 
 		// get device configuration id
 		var deviceconfigid = $stateParams.deviceconfigid;
-		// console.log($deviceconfigid);
+		// console.log(deviceconfigid);
 		if(typeof deviceconfigid!='undefined'){
 			$http.get('/cart/configuredCard/'+deviceconfigid)
 			.success(function(data){
@@ -157,7 +175,7 @@ MobileApp.controller('MobileAppController', [
 			}
 
 			if($deployCart){
-				$http.post('/cart/deviceOrder/'+deviceconfigid,$scope.payment.creditCard)
+				$http.post('/cart/deviceOrder/'+deviceconfigid,$scope.payment)
 				.success(function(response){
 					var payurl = $sce.trustAsResourceUrl(response.formAction);
 					$scope.$broadcast('gateway.redirect', {
@@ -318,6 +336,85 @@ MobileApp.controller('MobileAppController', [
             })
         }
 	};
+}]);
+
+
+MobileApp.controller('OrderplacedController',[
+	'$scope','$http','$stateParams','$filter','sweetAlert','$window',
+	function($scope,$http,$stateParams,$filter,sweetAlert,$window){
+
+		$scope.order = $stateParams.order;
+
+		$http.get("/device/order/summary/"+$scope.order).success(function(response){
+			
+			$scope.order = response;
+
+			$scope.orderNumber = $scope.order.reference;    	
+
+			if($scope.order.timeslot.datekey!==false){
+				var mili = $scope.order.timeslot.datekey * 1000;
+			}else{
+				var mili = $scope.order.dop * 1000;
+			}
+
+			$scope.myDate = new Date(mili);	
+
+			// $scope.daySlug = $scope.day+' '+$scope.monthName+', '+$scope.year;
+			$scope.daySlug = $filter('dateSuffix')($scope.myDate);
+			
+			$scope.slotslug = $scope.order.timeslot.slotslug;
+
+			var dopmili = $scope.order.dop * 1000;
+			$scope.dopDate = new Date(dopmili);
+
+			$scope.dopSlug = $filter('dateSuffix')($scope.dopDate);
+			
+			if($scope.order.delivery.type == 1){
+				$scope.deliveryDateTime = $scope.daySlug+', '+$scope.slotslug;
+			}else{
+				$scope.deliveryDateTime = $scope.dopSlug+', '+$filter('date')($scope.dopDate,'hh:mm a');
+
+				if($scope.order.service.express.status){
+					$scope.deliveryDateTime += ' +30 Minutes';
+				}else{
+					$scope.deliveryDateTime += ' +1 Hour';
+				}
+			}
+
+			if($scope.order.payment.method == 'COD'){
+				$scope.paymode = 'Cash on Delivery';
+			}else{
+				$scope.paymode = 'Debit/Credit Card';
+			}
+
+			// $scope.fireConversion();
+
+			/*$scope.dopDay = $scope.dopDate.getDate();
+			$scope.dopYear = $scope.dopDate.getFullYear();
+			$scope.dopMonthName = $scope.monthsName[$scope.dopDate.getMonth()];
+			$scope.dopSlug = $scope.dopMonthName+' '+$scope.dopDay+', '+$scope.year;
+
+			$scope.hour = $scope.dopDate.getHours() % 12 || 12;
+			$scope.minute = $scope.dopDate.getMinutes();
+			$scope.aMpM = $scope.dopDate.getHours() > 12 ? 'PM' : 'AM';*/
+
+
+		});
+
+		//GOOGLE CONVERSION SCRIPT
+		/*$scope.fireConversion = function() {		
+			$window.google_trackConversion({
+				google_conversion_id : 1005306689,
+				google_conversion_language : "en",
+				google_conversion_format : "3",
+				google_conversion_color : "ffffff",
+				google_conversion_label : "nlRtCNf-5RUQwYav3wM",
+				google_conversion_value : 1.00,
+				google_conversion_currency : "SGD",
+				google_remarketing_only : false
+			});
+		}*/
+		//GOOGLE CONVERSION SCRIPT
 }]);
 
 /* Init global settings and run the app */

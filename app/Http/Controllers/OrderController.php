@@ -21,7 +21,7 @@ class OrderController extends Controller
 
 	public function __construct()
 	{
-		$this->middleware('auth',['except' => ['getOrderdetail','getMailOrderPlaced']]);
+		$this->middleware('auth',['except' => ['getOrderdetail','getMailOrderPlaced','getDeviceOrderSummary']]);
 
 		// set limit 
 		$this->limit = 10;
@@ -296,5 +296,16 @@ class OrderController extends Controller
 
 	}
 
-	
+	public function getDeviceOrderSummary(Request $request,$id){
+
+		$order = Orders::where("_id",$id)->first();
+
+		if(empty($order)){
+			return response(["message"=>"Order not found"],400);
+		}
+
+		$order->dop = strtotime($order->created_at);
+
+		return response($order,200);
+	}
 }

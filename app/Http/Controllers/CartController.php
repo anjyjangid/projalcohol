@@ -1831,7 +1831,7 @@ class CartController extends Controller
 		return response(["success"=>false,"message"=>"Something went wrong"],400);
 	}
 
-	public function confirmorder(Request $request,$cartKey = null){
+	public function confirmorder(Request $request,$cartKey=null,$isDeviceOrder=false){
 
 		$user = Auth::user('user');
 
@@ -1839,7 +1839,7 @@ class CartController extends Controller
 		if($request->isMethod('get') && empty($user) && !empty($request->get('merchant_data3'))){
 			$user = new stdClass;
 			$user->_id = $request->get('merchant_data2');
-			$this->logtofile($request->all());
+			// $this->logtofile($request->all());
 			$userObj = User::find($user->_id); // get user object
 			$user->email = strtolower($userObj->email);
 			$user_id = $user->_id;
@@ -1854,7 +1854,7 @@ class CartController extends Controller
 			$cartKey = $request->get('merchant_data1');
 
 		$cart = Cart::findUpdated($cartKey,'',$user_id);
-
+		
 		$isValidate = $cart->validate();
 
 		if($isValidate['valid']===false){
@@ -1885,9 +1885,10 @@ class CartController extends Controller
 		$cartArr['user'] = new MongoId($user->_id);		
 
 		try {	
-
+			// $interface (wi=>1,eci=>2,bi=>3,device=>4,mobile=>5,pos=>6) // define order placed from which interface
+			$interface = !empty($request->get('merchant_data3'))?4:1;
 			//FORMAT CART TO ORDER
-			$orderObj = $cart->cartToOrder($cartKey);		
+			$orderObj = $cart->cartToOrdeconfirmorderr($cartKey,$interface);
 			$cartArr['payment']['total'] = $orderObj['payment']['total'];
 			//PREPARE PAYMENT FORM DATA
 			if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){
@@ -1919,7 +1920,7 @@ class CartController extends Controller
 				if($failed){
 					// if order from device
 					if($request->isMethod('get') && !empty($request->get('merchant_data3'))){
-						return redirect('/devicepayment/'.(string)$cartArr['deviceConfiguration']);
+						return redirect('/device/payment/'.(string)$cartArr['deviceConfiguration']);
 					}else{
 						return redirect('/cart/payment');
 					}
@@ -2039,7 +2040,11 @@ class CartController extends Controller
             $order->placed();
 
 			if($request->isMethod('get')){
-				return redirect('/orderplaced/'.$order['_id']);
+				if($order->interface==4){ // Order by Device
+					return redirect('/device/orderplaced/'.$order['_id']);
+				}else{
+					return redirect('/orderplaced/'.$order['_id']);
+				}
 			}
 
 			return response(array("success"=>true,"message"=>"Order Placed Successfully","order"=>$order['_id']));
@@ -3357,7 +3362,6 @@ class CartController extends Controller
 		$deviceMacAddress = $request->get('dmac'); // Device physical address(Hexadecimal BCD)
 		$userId = $request->get('userMarking');
 		// $orderId = $request->get('orderMarking');
-		// $deviceConfigurationId = $request->get('deviceConfigMarking'); // Custom parameter(deviceConfigurationId) set in device by app when device configuration is set.
 		$orderButtonType = $request->get('orderButton'); // 0:not choose 1：single press(place order) 2：long press
 		$callButtonType = $request->get('callButton'); // 0:not choose 1：single press(call customer service) 2：Long press(cancel order)
 
@@ -3395,21 +3399,26 @@ class CartController extends Controller
 			$cart->deviceConfiguration = new MongoId($deviceConfigArr['_id']);
 
 			// if payment using new card
-			$cardTokenId = $request->get('token_id');
-			$cardType = $request->get('type');
-			$cardCvc = $request->get('cvc');
-			if(!empty($deviceConfigurationId) && !empty($cardTokenId)){
-				$cart->payment->creditCard->savecard = 0;
-				$cart->payment->creditCard->token_id = $cardTokenId;
-				$cart->payment->creditCard->type = $cardType;
-				$cart->payment->creditCard->cvc = $cardCvc;
-			}
+			$card = $request->get('card');
+			$saveCard = $request->get('savecard');
+			$creditCard = $request->get('creditCard');
+			$cardTokenId = $creditCard['token_id'];
+			$cardType = $creditCard['type'];
+			$cardCvc = $creditCard['cvc'];
 
-			// save config data in cart
-			$cart->save();
+			if(!empty($deviceConfigurationId) && !empty($cardTokenId)){
+				$cart->__set('payment.card',$card);
+				$cart->__set('payment.savecard',$saveCard);
+				$cart->__set('payment.creditCard.token_id',$cardTokenId);
+				$cart->__set('payment.creditCard.type',$cardType);
+				$cart->__set('payment.creditCard.cvc',$cardCvc);
+			}
 
 			//SET CART REFERENCE FOR ORDER ID
 			$cart->setReference();
+			
+			// save config data in cart
+			$cart->save();
 
 			$isValidate = $cart->validate();
 			if($isValidate['valid']===false){
@@ -3427,128 +3436,8 @@ class CartController extends Controller
 					return response($paymentres,200);
 				}
 
-				//CHECK FOR PAYMENT RESULT
-				/*if($request->isMethod('get') && $cartArr['payment']['method'] == 'CARD'){
-					$rdata = $request->all();
-					//VALIDATE RESPONSE SO IT IS VALID OR NOT
-					$payment = new Payment();
-					$failed = false;
-					if(!$payment->validateresponse($rdata) || ($rdata['result']!='Paid')){
-						$failed = true;
-					}
-
-					unset($rdata['signature']);
-					$paymentres = ['paymentres' => $rdata];
-					$cart->payment = array_merge($cartArr['payment'],$paymentres);
-					$cart->save();
-					$this->logtofile($rdata);
-
-					if($failed){
-						return redirect('/cart/payment');
-					}
-				}*/
-
-				//FORMAT CART TO ORDER
-				$orderObj = $cart->cartToOrder($cartKey);
-
-				$defaultContact = true;
-				if(!isset($orderObj['delivery']['newDefault']) || $orderObj['delivery']['newDefault']!==true){
-					$defaultContact = false;
-				}
-				$userObj->setContact($orderObj['delivery']['contact'],$defaultContact);
-
-				//CREATE ORDER FROM CART
-				$order = Orders::create($orderObj);
-
-				// CLEAR CART
-				$cart->delete();
-
-				$process = $order->processGiftCards();
-
-				$reference = $order->reference;
-
-				if(isset($order->coupon)){
-					$cRedeem = [
-						"coupon" => $order->coupon['_id'],
-						"reference"=>$order->reference,
-						"user" => $order->user
-					];
-					$coupon = new coupon;
-					$coupon->redeemed($cRedeem);
-				}
-
-				if(isset($order->discount['credits']) && $order->discount['credits']>0){
-					$creditsUsed = $order->discount['credits'];
-					$creditObj = [
-									"credit"=>$creditsUsed,
-									"method"=>"order",
-									"reference" => $reference,
-									"user" => new mongoId($userId),
-									"comment"=> "You have used this credits with an order"
-								];
-
-					CreditTransactions::transaction('debit',$creditObj,$userObj);
-				}
-
-				if(isset($order->creditsFromLoyalty) && $order->creditsFromLoyalty>0){
-					$creditsFromLoyalty = $order['creditsFromLoyalty'];
-					$creditObj = [
-									"credit"=>$creditsFromLoyalty,
-									"method"=>"order",
-									"reference" => $reference,
-									"user" => new mongoId($userId),
-									"comment"=> "You have earned this credits in exchange of loyalty points"
-								];
-					
-					CreditTransactions::transaction('credit',$creditObj,$userObj);
-				}
-
-				if($order['loyaltyPointUsed']>0){
-					$loyaltyObj = [
-									"points"=>$order['loyaltyPointUsed'],
-									"method"=>"order",
-									"reference" => $reference,
-									"user" => new mongoId((string)$userObj->_id),
-									"comment"=> "You have used this points by making a purchase on our website"
-								];
-
-					LoyaltyTransactions::transaction('debit',$loyaltyObj,$userObj);
-				}
-
-				$loyaltyPoints = $order['loyaltyPointEarned'];
-				if($loyaltyPoints>0){
-					$loyaltyObj = [
-							"points"=>$loyaltyPoints,
-							"method"=>"order",
-							"reference" => $reference,
-							"user" => new mongoId((string)$userObj->_id),
-							"comment"=> "You have earned this points by making a purchase"
-						];
-			
-					LoyaltyTransactions::transaction('credit',$loyaltyObj,$userObj);
-				}
-
-				//Update inventory if order is 1 hour delivery
-				if($order['delivery']['type'] == 0){
-					$model = new Products();
-					$model->updateInventory($order);
-				}
-
-				//CONFIRMATION EMAIL 
-				$emailTemplate = new Email('orderconfirm');
-				$mailData = [
-	                'email' => strtolower($userObj->email),
-	                'user_name' => ($userObj->name)?$userObj->name:$userObj->email,
-	                'order_number' => $reference
-	            ];
-
-	            $order->placed();
-/*
-				if($request->isMethod('get')){
-					return redirect('/orderplaced/'.$order['_id']);
-				}
-*/
-				return response(array("success"=>true,"message"=>"Order Placed Successfully","order"=>$order->reference));
+				// DEVICE BUTTON WORK
+				return response(["message"=>'Invalid payment option!'],400);
 
 			}catch(\Exception $e){
 				ErrorLog::create('emergency',[

@@ -776,8 +776,17 @@ Route::get('sitemap.xml', function(){
 });
 
 //ROUTE FOR DEVICE PAYMENT MOBILEAPPEND
-Route::get('devicepayment/{deviceconfigid}',function($page){
-	return view('mobileappend');
+Route::group(['prefix' => 'device'], function () {
+
+	Route::get('/order/summary/{id}','OrderController@getDeviceOrderSummary');
+
+	Route::any('{catchall}', function ( $page ) {
+	    return view('mobileappend');    
+	} )->where('catchall', '(.*)');
+
+	Route::get('/', function () {
+	    return view('mobileappend');
+	});
 });
 
 Route::get('cart/configuredCard/{deviceconfigid}','CartController@getConfiguredCard');

@@ -1621,7 +1621,7 @@ class Cart extends Moloquent
 	 * function to convert cart data to a order
 	 *
 	 * @var $cartKey // as denotes from name its a key of cart wants to convert
-	 * @var $interface (wi=>1,eci=>2,bi=>3) // define order placed from which interface
+	 * @var $interface (wi=>1,eci=>2,bi=>3,device=>4,mobile=>5,pos=>6) // define order placed from which interface
 	 *
 	 */
 	public function cartToOrder($cartKey=null,$interface=1){
