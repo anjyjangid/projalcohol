@@ -272,14 +272,14 @@ class Cart extends Moloquent
 			return false;
 		}
 
-		$currentTimeStr = strtotime("+8 hours");
+		$currentTimeStr = getServerTime();
 		$todayStartTimeStr = strtotime(date("Y-m-d",$currentTimeStr));
 
 		if(isset($cart->timeslot['datekey']) && $cart->timeslot['datekey']!==false && $todayStartTimeStr>=$cart->timeslot['datekey']){
 
 			$todayLapsedHours = date("H",$currentTimeStr);
 			$todayLapsedMinutes = $todayLapsedHours * 60;
-			$todayLapsedMinutes+= 120;			
+			$todayLapsedMinutes+= 120;
 
 			if(isset($cart->timeslot['slotTime']) && $cart->timeslot['slotTime']<$todayLapsedMinutes){
 
@@ -363,12 +363,12 @@ class Cart extends Moloquent
 			}
 
 			$response['valid']= true;
-		
+
 			$isAnyProductSort = false;
 			$deliveryBaseTime = $this->getCartDeliveryBaseTime();
-			
+
 			$products = $this->getAllProductsInCart();
-			
+
 			$products = $this->setProductAvailabilityAfter($products);
 
 			foreach ($products as $product) {

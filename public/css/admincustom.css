@@ -982,3 +982,24 @@ tr.proSelected {
 	border: none;
     background: transparent;
 }
+
+.pos-realtive{
+	position: relative;
+}
+
+.package-pro-remove:hover{
+	box-shadow: 0px 0px 8px 1px #ccc;
+}
+.package-pro-remove{
+	position: absolute;
+    top: 10px;
+    left: 25px;
+}
+
+input.package-pro-default{
+	width: 50px;
+	float: right;
+	text-align: center;
+}
+
+

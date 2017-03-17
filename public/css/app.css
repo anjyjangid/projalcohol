@@ -1760,3 +1760,16 @@ body {
     text-align: center;
     border-right: 1px solid rgba(0,0,0,0.2);
 }
+
+.add-default-check{
+	color: #d7d7d7;
+    font-weight: normal;
+}
+
+#address-default-tag{
+	position: absolute;
+    right: 10px;
+    bottom: 20px;
+    color: #ada6a6;
+    font-style: italic;
+}
