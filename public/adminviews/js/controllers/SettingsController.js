@@ -42,7 +42,6 @@ MetronicApp.controller('SettingsController',[
 }]);
 
 MetronicApp.controller('SettingFormController',['$rootScope', '$scope', '$timeout','$http','$state','settingsModel', function($rootScope, $scope, $timeout,$http,$state,settingsModel) {
-
 	$scope.update = function(checkPostal){
 		var data = $scope.settings;
 		$scope.errors = {};
@@ -58,16 +57,23 @@ MetronicApp.controller('SettingFormController',['$rootScope', '$scope', '$timeou
 				return false;
 			}
 		}
+
 		//POST DATA WITH FILES
-		settingsModel.updateSetting($state.$current.data.key,data).success(function(response){
-			
-			$scope.errors = {};
-
-		}).error(function(data, status, headers){
-
-			$scope.errors = data;
-
-		});
+		if($state.$current.data.key=='announcementBar'){
+			//Different action to post announcement
+			settingsModel.updateAnnouncement($state.$current.data.key,data).success(function(response){
+				$scope.errors = {};
+			}).error(function(data, status, headers){
+				$scope.errors = data;
+			});
+		}else{
+			settingsModel.updateSetting($state.$current.data.key,data).success(function(response){
+				$scope.errors = {};
+			}).error(function(data, status, headers){
+				$scope.errors = data;
+			});
+		}
+		
 	}
 
 	settingsModel.getSettings($state.$current.data.key).success(function(response){

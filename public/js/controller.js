@@ -263,16 +263,16 @@ AlcoholDelivery.controller('AppController', [
 		
 
 	$scope.onSwipeLeft = function(ev) {
-
-      angular.element('#wrapper').removeClass('toggled');
-	  angular.element('body').removeClass(' hidden-scroll');
+		ev.stopPropagation();
+		angular.element('#wrapper').removeClass('toggled');
+		angular.element('body').removeClass(' hidden-scroll');
     };
 
     $scope.onSwipeRight = function(ev) {
-    	
-      angular.element('#wrapper').addClass('toggled');
-	  angular.element('body').addClass(' hidden-scroll');
-    };	
+    	ev.stopPropagation();
+		angular.element('#wrapper').addClass('toggled');
+		angular.element('body').addClass(' hidden-scroll');
+    };	    
 
 }]);
 
@@ -3105,8 +3105,9 @@ AlcoholDelivery.controller('LoyaltyStoreController', [
 		$scope.keyword = $stateParams.keyword;
 		$scope.filter = $stateParams.filter;
 		$scope.sortby = $stateParams.sort;
-
-		$scope.products = new ScrollPagination();
+		$scope.parent = $stateParams.parent;
+		// type 1 for loyalty store
+		$scope.products = new ScrollPagination($scope.keyword,$scope.filter,$scope.sortby,1,$scope.parent);
 
 		$scope.credits = {};
 

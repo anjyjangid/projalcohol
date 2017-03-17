@@ -55,7 +55,7 @@
 							<div class="md-display-12 cocktail-btmborder" ng-repeat="(pkgKey,packageItem) in packages.packageItems">
 								<div class="ttile-divcover ">
                                 <div class="cocktaildetail-coverdiv">
-									<h4  class=" ingredintwidthset">Ingredient # {{$index+1}}</h4><span class="product-cocktailtitle">{{packageItem.selectedProducts}}</span>
+									<h4  class=" ingredintwidthset">{{packageItem.title}}</h4><span class="product-cocktailtitle">{{packageItem.selectedProducts}}</span>
 								</div></div>
 								<div class="row ">													
 									<div ng-repeat-start="(proKey, pcprod) in packageItem.products" ng:class="{'row':($index!=0 && $index%4==0)}"></div>

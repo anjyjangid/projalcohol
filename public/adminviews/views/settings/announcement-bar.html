@@ -1,0 +1,101 @@
+<!-- BEGIN MAIN CONTENT --> 
+<div class="row">
+    <div class="col-md-12">     
+        <!-- Begin: life time stats -->
+        <div class="portlet light">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="icon-bell"></i>{{$state.$current.data.pageTitle}}
+                </div>
+            </div>
+            <form ng-submit="update(0)" ng-controller="SettingFormController">
+                <div class="form-horizontal"  id="info-message">
+                    <div class="form-group" ng:class="{'has-error':errors['enable'][0]}">
+                        <label class="col-md-2 control-label"><span class="required"></span></label>
+                        <div class="col-md-10">
+                            <label><input plugin-uniform type="radio" class="form-control" ng-model="settings.enable" ng-value="1" name="announcementEnable">Enable</label>
+                            <label><input plugin-uniform type="radio" class="form-control" ng-model="settings.enable" ng-value="0" name="announcementEnable">Disable</label>
+                            <span class="help-block" ng-bind="errors['enable'][0]"></span>
+                        </div>
+                    </div>
+                    <div class="form-group" ng:class="{'has-error':errors['text'][0]}">
+                        <label class="col-md-2 control-label">Text: <span class="required">*</span></label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" ng-model="settings.text" placeholder="">
+                            <span class="help-block" ng-bind="errors['text'][0]"></span>
+                        </div>
+                    </div>
+                    <div class="form-group" ng:class="{'has-error':errors['link'][0]}">
+                        <label class="col-md-2 control-label">Link: <span class="required">*</span></label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" ng-model="settings.link" placeholder="">
+                            <span class="help-block" ng-bind="errors['link'][0]"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng:class="{'has-error':errors['rightImage'][0]}">
+                        <label class="col-md-2 control-label">Right Image:<span class="required">
+                        * </span>
+                        <br>
+                        (60 X 60px)
+                        </label>
+                        <div class="col-md-10">
+                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                <div class="fileinput-new thumbnail" style="max-width: 50px; max-height: 50px;">
+                                    <img err-src="asset/i/defaultImage.png" 
+                                        ng-src="announcement/i/{{settings.rightImage}}" src="asset/i/defaultImage.png" alt=""/>
+
+                                </div>
+                                <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 50px; max-height: 50px;">
+                                </div>
+                                <div>
+                                    <span class="btn default btn-file">
+                                        <span class="fileinput-new">{{ settings.rightImage ? 'Change':'Select' }}</span>
+                                        <span class="fileinput-exists">Change</span>
+                                        <input type="file" placeholder="thumbnail" class="form-control" file-model="settings.rightImage"/>
+                                    </span> 
+                                </div>
+                            </div>
+                            <span class="help-block" ng-bind="errors['rightImage'][0]"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng:class="{'has-error':errors['rightImage'][0]}">
+                        <label class="col-md-2 control-label">Left Image:<span class="required">* </span>
+                        <br>
+                        (60 X 60px)</label>
+                        <div class="col-md-10">
+                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                <div class="fileinput-new thumbnail" style="max-width: 50px; max-height: 50px;">
+                                    <img err-src="asset/i/defaultImage.png" 
+                                        ng-src="announcement/i/{{settings.leftImage}}" src="asset/i/defaultImage.png" alt=""/>
+                                </div>
+                                <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 50px; max-height: 50px;">
+                                </div>
+                                <div>
+                                    <span class="btn default btn-file">
+                                        <span class="fileinput-new">{{ settings.leftImage ? 'Change':'Select' }}</span>
+                                        <span class="fileinput-exists">Change</span>
+                                        <input type="file" placeholder="thumbnail" class="form-control" file-model="settings.leftImage"/>
+                                    </span> 
+                                </div>
+                            </div>
+                            <span class="help-block" ng-bind="errors['leftImage'][0]"></span>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="margiv-top-10 pull-right">
+                                <button type="submit" ng-disabled="loading" class="btn green-haze" ><i class="fa fa-check"></i> Update</button>
+                                <input type="button" ng-click="reset()" name="reset" value="Reset" class="btn default">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
