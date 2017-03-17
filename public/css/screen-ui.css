@@ -4075,8 +4075,9 @@ ui-sref {
 	font-size: 14px;
 	line-height: 23px;
 	margin-top: 9px;
+	margin-right: 20px;
 	text-transform: uppercase;
-	width: 77%;
+	/*width: 77%;*/
 	font-weight: 500;
 	cursor: pointer;
 }

@@ -10758,8 +10758,9 @@ ui-sref {
 	font-size: 14px;
 	line-height: 23px;
 	margin-top: 9px;
+	margin-right: 20px;
 	text-transform: uppercase;
-	width: 77%;
+	/*width: 77%;*/
 	font-weight: 500;
 	cursor: pointer;
 }
@@ -20759,6 +20760,19 @@ body {
     font-size: 1.2em;
     text-align: center;
     border-right: 1px solid rgba(0,0,0,0.2);
+}
+
+.add-default-check{
+	color: #d7d7d7;
+    font-weight: normal;
+}
+
+#address-default-tag{
+	position: absolute;
+    right: 10px;
+    bottom: 20px;
+    color: #ada6a6;
+    font-style: italic;
 }
 /**
  * vAccordion - AngularJS multi-level accordion component

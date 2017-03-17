@@ -1447,7 +1447,8 @@ class CartController extends Controller
 
 		$tempDate = $passedDate;
 		
-		$currentTimeStr = getServerTime();  //strtotime("+8 hours");
+		$currentTimeStr = getServerTime();
+
 		$todayDateStr = strtotime(date("Y-m-d",$currentTimeStr));
 		$slotsActiveAfter = round(($currentTimeStr - $todayDateStr)/60) + $skipMinutes;
 
@@ -2162,6 +2163,7 @@ class CartController extends Controller
 		if(isset($params['discount'])){
 			$cart->discount = $params['discount'];
 		}
+
 
 		if(isset($params['timeslot'])){
 

@@ -23573,8 +23573,31 @@ AlcoholDelivery.directive('sideBar', function() {
 		
 					$scope.listUserAddress = function(flag){
 						$http.get("address").success(function(response){
+
+							var isDefaultSet = false;
+
+							if(response.length>0){
+
+								angular.forEach(response,function (currAdd,key) {
+									if(currAdd.default==true){
+										isDefaultSet = key;
+									}
+								})
+
+								if(!isDefaultSet){
+									response[0].default=true;
+								}								
+								
+							}
+
 							$scope.addresses = response;
-							$rootScope.addresses = $scope.addresses;	
+
+							if(isDefaultSet!==false && angular.isDefined($scope.delivery) && $scope.delivery.address == null){									
+								$scope.setSelectedAddress(isDefaultSet);
+							}
+
+							
+							$rootScope.addresses = $scope.addresses;
 							if($scope.delivery && flag){
 								var lastkey = ($scope.addresses.length - 1);
 								$scope.setSelectedAddress(lastkey);
@@ -23603,7 +23626,7 @@ AlcoholDelivery.directive('sideBar', function() {
 						$mdDialog.show({
 							scope: $scope.$new(),
 							controller: function(){
-		
+								
 								$scope.address = {step:1};
 								$scope.types = "['geocode']";
 								$scope.restrictions="{country:'sg'}";
@@ -23718,6 +23741,7 @@ AlcoholDelivery.directive('sideBar', function() {
 					};
 		
 					$scope.showAddressForm = function(dObj) {
+
 						$scope.errors = {};
 						$mdDialog.show({
 							scope: $scope.$new(),

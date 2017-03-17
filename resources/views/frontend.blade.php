@@ -77,6 +77,35 @@
 		</script>
 		<script async type="text/javascript" src="//www.googleadservices.com/pagead/conversion_async.js" charset="utf-8"></script>		
 		<!-- Google analytics -->
+		<style type="text/css">
+			.announcement-enable-wrapper {
+			    padding-top: 60px;
+			}
+			.announcement-enable-wrapper .announcement-bar {
+			    width: 100%;
+			    height: 60px;
+			    color: white;
+			    float: left;
+			    background-color: rgb(156,39,176);
+			    position: fixed;
+			    z-index: 999999;
+			    top: 0;
+			    text-align: center;
+			}
+			.announcement-enable-wrapper .announcement-enable {
+				top: 60px;
+			}
+			.announcement-container {
+				display: inline-block;
+			    height: 50px;
+			    position: relative;
+			    top: 5px;
+			}
+			.announcement-enable-wrapper .announcement-bar a {
+			    display: inline-block;
+			    height: 60px;
+			}
+		</style>
 	</head>
 
 	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}" ng-cloak>		    	    	
@@ -87,8 +116,10 @@
 		</div>		
     	<div class="loader"></div>
     	<div ng-bind="loadingmsg" ng-show="loadingmsg" class="ldmsg" align="center"></div>
-    	<div id="wrapper" ng-swipe-right="onSwipeRight()" ng-swipe-left="onSwipeLeft()">     	    
-	        <div id="page-content-wrapper" >    		    
+
+    	<div id="wrapper" ng:class="{'announcement-enable-wrapper':settings['announcementBar']['enable']=='1'}">
+
+	        <div id="page-content-wrapper">    		    
 
              	<top-menu></top-menu>
 
