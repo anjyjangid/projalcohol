@@ -403,7 +403,19 @@ class OrderController extends Controller
 				$sort = ['delivery.deliveryKey' => 1]; 				
 			}
 
-
+			if($filter == 'criticalorders'){				
+				$s = strtotime(date('Y-m-d'));
+				$e = strtotime(date('Y-m-d',strtotime('+5 days')));
+				$query[]['$match']['doStatus'] = 0;
+				$query[]['$match']['delivery.deliveryKey'] = ['$gte'=>$s,'$lte' => $e];			
+				//$sort = ['delivery.deliveryKey' => 1]; 				
+				$query[]['$lookup'] = [
+					'from' => 'purchase_order',
+					'localField'=>'_id',
+					'foreignField'=>'advanceOrderId',
+					'as'=>'po'
+				];
+			}
 		}
 
 		if(isset($reference) && trim($reference)!=''){			
@@ -440,24 +452,25 @@ class OrderController extends Controller
 			$s = "/".$consumerName."/i";
 
 			$query[]['$match'] = ['$or' => [
-					['consumer.name' => ['$regex'=>new \MongoRegex($s)]],
-					['consumer.mobile_number' => ['$regex'=>new \MongoRegex($s)]],
-					['consumer.alternate_number' => ['$regex'=>new \MongoRegex($s)]]		
+				['consumer.name' => ['$regex'=>new \MongoRegex($s)]],
+				['consumer.mobile_number' => ['$regex'=>new \MongoRegex($s)]],
+				['consumer.alternate_number' => ['$regex'=>new \MongoRegex($s)]]		
 			]];
 		}
 
 		$project = [
-				'reference'=>1,
-				'delivery'=>1,
-				'status'=>1,
-				'_id'=>1,
-				'created_at'=>1,
-				'payment'=>1,
-				'service'=>1,
-				'reference'=> 1,
-				'doStatus'=>1,
-				'rate'=>1
-			];
+			'reference'=>1,
+			'delivery'=>1,
+			'status'=>1,
+			'_id'=>1,
+			'created_at'=>1,
+			'payment'=>1,
+			'service'=>1,
+			'reference'=> 1,
+			'doStatus'=>1,
+			'rate'=>1,
+			'po' => 1
+		];
 
 		$project['orderDate'] = ['$dateToString'=>['format' => '%Y-%m-%d','date'=>'$created_at']];
 
@@ -478,7 +491,7 @@ class OrderController extends Controller
 
 		if($filter != ''){
 			if($filter == 'todaysorders'){
-				$columns = ['reference','consumer.name','delivery.deliveryKey','delivery.type','doStatus','rate'];				
+				$columns = ['reference','consumer.name','delivery.deliveryKey','delivery.type','doStatus','rate'];
 			}
 		}
 

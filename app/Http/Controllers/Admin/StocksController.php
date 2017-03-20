@@ -144,8 +144,12 @@ class StocksController extends Controller
                     ]
                 ]);
 
-                if(count($productTrade['result'])>0)
+                $tradeArray = [];
+                
+                if(count($productTrade['result'])>0){
                     $tradeOffer = $productTrade['result'][0]['tradeValue'] + $productTrade['result'][0]['tradeQuantity'];
+                    $tradeArray =  ['tradeValue'=>$productTrade['result'][0]['tradeValue'],'tradeQuantity'=>$productTrade['result'][0]['tradeQuantity']];
+                }
 
                 if(!isset($tradeOffer) || $tradeOffer<1)
                     $tradeOffer = 1;
@@ -175,7 +179,8 @@ class StocksController extends Controller
                         '$push' => [
                             'products' => [
                                 '_id' => $stock['_id'],
-                                'order' => ceiling($stock['totalQty'], $tradeOffer)
+                                'order' => ceiling($stock['totalQty'], $tradeOffer),
+                                'tradeData' => $tradeArray
                             ]
                         ],
                         '$set' => [

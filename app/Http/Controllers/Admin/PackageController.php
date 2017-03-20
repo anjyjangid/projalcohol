@@ -62,8 +62,7 @@ class PackageController extends Controller
 		 * @param  \Illuminate\Http\Request  $request
 		 * @return \Illuminate\Http\Response
 		 */
-		public function postStore(PackageRequest $request)
-		{
+		public function postStore(PackageRequest $request){
 				$inputs = $request->all();
 
 				$inputs['status'] = (int)$inputs['status'];

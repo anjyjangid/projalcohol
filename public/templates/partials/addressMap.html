@@ -100,6 +100,14 @@
 						<textarea class="alcohlinputextareaa" placeholder="E.g. Please call my contact number instead of pressing the doorbell when you have arrived at my address." ng-model="address.instruction"></textarea>
 						<span class="help-block" ng-bind="errors.instruction[0]"></span> </div>
 				</div>
+
+				<div class="alcohlinputextcvr" ng-if="addresses.length">
+					<label class="pull-right add-default-check">
+						
+						<md-checkbox ng-model="addressData.default" aria-label="default-address-checkbox">Make this my default address</md-checkbox>
+					</label>
+				</div>
+
 			</div>
 		</md-dialog-content>
 		<md-dialog-actions layout="row" ng-if="address.step==2" class="modal-uifooter">

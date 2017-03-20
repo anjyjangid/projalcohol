@@ -21,7 +21,7 @@ MetronicApp.controller('PackageController',['$rootScope', '$scope', '$timeout','
 
 }]);
 
-MetronicApp.controller('PackageFormController',['$scope', '$location','$stateParams','$state','fileUpload','packageModel', function($scope,$location,$stateParams,$state,fileUpload,packageModel) {
+MetronicApp.controller('PackageFormController',['$scope', '$location','$stateParams','$state','sweetAlert','fileUpload','packageModel', function($scope,$location,$stateParams,$state,sweetAlert,fileUpload,packageModel) {
 
 	$scope.itemlist = [];
 
@@ -57,6 +57,34 @@ MetronicApp.controller('PackageFormController',['$scope', '$location','$statePar
 			url = 'package/update/'+$stateParams.packageid;
 		}
 		
+		$scope.defaultError = [];
+
+		angular.forEach($scope.package.packageItems,function(packageItem,packageItemIndex){
+			var totalDefault = 0;
+
+			angular.forEach(packageItem.products,function(product){
+
+				if(product.default)
+				totalDefault+=product.defaultQty
+
+			})
+
+			if(totalDefault!==0 && totalDefault!==packageItem.quantity){
+				$scope.defaultError[packageItemIndex] = true;
+			}
+
+		})
+		
+		if($scope.defaultError.length!==0){
+
+			sweetAlert.swal({
+				type:'error',										
+				text:"default quantity doesn't match required quantity"
+			});
+
+			return false;
+		}
+
 		//POST DATA WITH FILES
 		packageModel.storePackage($scope.package,url).success(function(response){						
 			

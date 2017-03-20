@@ -429,37 +429,969 @@ shortDate:"M/d/yy",shortTime:"h:mm a"},NUMBER_FORMATS:{CURRENCY_SYM:"$",DECIMAL_
 !window.angular.$$csp().noInlineStyle&&window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
 //# sourceMappingURL=angular.min.js.map
 
-/* ng-infinite-scroll - v1.3.0 - 2016-11-04 */
+/**
+ * Satellizer 0.15.5
+ * (c) 2016 Sahat Yalkabov 
+ * License: MIT 
+ */
+
 (function (global, factory) {
-  if (typeof define === "function" && define.amd) {
-    define(['module', 'exports', 'angular'], factory);
-  } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('angular'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod, mod.exports, global.angular);
-    global.infiniteScroll = mod.exports;
-  }
-})(this, function (module, exports, _angular) {
-  'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global.satellizer = factory());
+}(this, function () { 'use strict';
 
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
+    var Config = (function () {
+        function Config() {
+            this.baseUrl = '/';
+            this.loginUrl = '/auth/login';
+            this.signupUrl = '/auth/signup';
+            this.unlinkUrl = '/auth/unlink/';
+            this.tokenName = 'token';
+            this.tokenPrefix = 'satellizer';
+            this.tokenHeader = 'Authorization';
+            this.tokenType = 'Bearer';
+            this.storageType = 'localStorage';
+            this.tokenRoot = null;
+            this.withCredentials = false;
+            this.providers = {
+                facebook: {
+                    name: 'facebook',
+                    url: '/auth/facebook',
+                    authorizationEndpoint: 'https://www.facebook.com/v2.5/dialog/oauth',
+                    redirectUri: window.location.origin + '/',
+                    requiredUrlParams: ['display', 'scope'],
+                    scope: ['email'],
+                    scopeDelimiter: ',',
+                    display: 'popup',
+                    oauthType: '2.0',
+                    popupOptions: { width: 580, height: 400 }
+                },
+                google: {
+                    name: 'google',
+                    url: '/auth/google',
+                    authorizationEndpoint: 'https://accounts.google.com/o/oauth2/auth',
+                    redirectUri: window.location.origin,
+                    requiredUrlParams: ['scope'],
+                    optionalUrlParams: ['display', 'state'],
+                    scope: ['profile', 'email'],
+                    scopePrefix: 'openid',
+                    scopeDelimiter: ' ',
+                    display: 'popup',
+                    oauthType: '2.0',
+                    popupOptions: { width: 452, height: 633 },
+                    state: function () { return encodeURIComponent(Math.random().toString(36).substr(2)); }
+                },
+                github: {
+                    name: 'github',
+                    url: '/auth/github',
+                    authorizationEndpoint: 'https://github.com/login/oauth/authorize',
+                    redirectUri: window.location.origin,
+                    optionalUrlParams: ['scope'],
+                    scope: ['user:email'],
+                    scopeDelimiter: ' ',
+                    oauthType: '2.0',
+                    popupOptions: { width: 1020, height: 618 }
+                },
+                instagram: {
+                    name: 'instagram',
+                    url: '/auth/instagram',
+                    authorizationEndpoint: 'https://api.instagram.com/oauth/authorize',
+                    redirectUri: window.location.origin,
+                    requiredUrlParams: ['scope'],
+                    scope: ['basic'],
+                    scopeDelimiter: '+',
+                    oauthType: '2.0'
+                },
+                linkedin: {
+                    name: 'linkedin',
+                    url: '/auth/linkedin',
+                    authorizationEndpoint: 'https://www.linkedin.com/uas/oauth2/authorization',
+                    redirectUri: window.location.origin,
+                    requiredUrlParams: ['state'],
+                    scope: ['r_emailaddress'],
+                    scopeDelimiter: ' ',
+                    state: 'STATE',
+                    oauthType: '2.0',
+                    popupOptions: { width: 527, height: 582 }
+                },
+                twitter: {
+                    name: 'twitter',
+                    url: '/auth/twitter',
+                    authorizationEndpoint: 'https://api.twitter.com/oauth/authenticate',
+                    redirectUri: window.location.origin,
+                    oauthType: '1.0',
+                    popupOptions: { width: 495, height: 645 }
+                },
+                twitch: {
+                    name: 'twitch',
+                    url: '/auth/twitch',
+                    authorizationEndpoint: 'https://api.twitch.tv/kraken/oauth2/authorize',
+                    redirectUri: window.location.origin,
+                    requiredUrlParams: ['scope'],
+                    scope: ['user_read'],
+                    scopeDelimiter: ' ',
+                    display: 'popup',
+                    oauthType: '2.0',
+                    popupOptions: { width: 500, height: 560 }
+                },
+                live: {
+                    name: 'live',
+                    url: '/auth/live',
+                    authorizationEndpoint: 'https://login.live.com/oauth20_authorize.srf',
+                    redirectUri: window.location.origin,
+                    requiredUrlParams: ['display', 'scope'],
+                    scope: ['wl.emails'],
+                    scopeDelimiter: ' ',
+                    display: 'popup',
+                    oauthType: '2.0',
+                    popupOptions: { width: 500, height: 560 }
+                },
+                yahoo: {
+                    name: 'yahoo',
+                    url: '/auth/yahoo',
+                    authorizationEndpoint: 'https://api.login.yahoo.com/oauth2/request_auth',
+                    redirectUri: window.location.origin,
+                    scope: [],
+                    scopeDelimiter: ',',
+                    oauthType: '2.0',
+                    popupOptions: { width: 559, height: 519 }
+                },
+                bitbucket: {
+                    name: 'bitbucket',
+                    url: '/auth/bitbucket',
+                    authorizationEndpoint: 'https://bitbucket.org/site/oauth2/authorize',
+                    redirectUri: window.location.origin + '/',
+                    requiredUrlParams: ['scope'],
+                    scope: ['email'],
+                    scopeDelimiter: ' ',
+                    oauthType: '2.0',
+                    popupOptions: { width: 1028, height: 529 }
+                },
+                spotify: {
+                    name: 'spotify',
+                    url: '/auth/spotify',
+                    authorizationEndpoint: 'https://accounts.spotify.com/authorize',
+                    redirectUri: window.location.origin,
+                    optionalUrlParams: ['state'],
+                    requiredUrlParams: ['scope'],
+                    scope: ['user-read-email'],
+                    scopePrefix: '',
+                    scopeDelimiter: ',',
+                    oauthType: '2.0',
+                    popupOptions: { width: 500, height: 530 },
+                    state: function () { return encodeURIComponent(Math.random().toString(36).substr(2)); }
+                }
+            };
+            this.httpInterceptor = function () { return true; };
+        }
+        Object.defineProperty(Config, "getConstant", {
+            get: function () {
+                return new Config();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return Config;
+    }());
+    ;
 
-  var _angular2 = _interopRequireDefault(_angular);
+    var AuthProvider = (function () {
+        function AuthProvider(SatellizerConfig) {
+            this.SatellizerConfig = SatellizerConfig;
+        }
+        Object.defineProperty(AuthProvider.prototype, "baseUrl", {
+            get: function () { return this.SatellizerConfig.baseUrl; },
+            set: function (value) { this.SatellizerConfig.baseUrl = value; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AuthProvider.prototype, "loginUrl", {
+            get: function () { return this.SatellizerConfig.loginUrl; },
+            set: function (value) { this.SatellizerConfig.loginUrl = value; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AuthProvider.prototype, "signupUrl", {
+            get: function () { return this.SatellizerConfig.signupUrl; },
+            set: function (value) { this.SatellizerConfig.signupUrl = value; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AuthProvider.prototype, "unlinkUrl", {
+            get: function () { return this.SatellizerConfig.unlinkUrl; },
+            set: function (value) { this.SatellizerConfig.unlinkUrl = value; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AuthProvider.prototype, "tokenRoot", {
+            get: function () { return this.SatellizerConfig.tokenRoot; },
+            set: function (value) { this.SatellizerConfig.tokenRoot = value; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AuthProvider.prototype, "tokenName", {
+            get: function () { return this.SatellizerConfig.tokenName; },
+            set: function (value) { this.SatellizerConfig.tokenName = value; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AuthProvider.prototype, "tokenPrefix", {
+            get: function () { return this.SatellizerConfig.tokenPrefix; },
+            set: function (value) { this.SatellizerConfig.tokenPrefix = value; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AuthProvider.prototype, "tokenHeader", {
+            get: function () { return this.SatellizerConfig.tokenHeader; },
+            set: function (value) { this.SatellizerConfig.tokenHeader = value; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AuthProvider.prototype, "tokenType", {
+            get: function () { return this.SatellizerConfig.tokenType; },
+            set: function (value) { this.SatellizerConfig.tokenType = value; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AuthProvider.prototype, "withCredentials", {
+            get: function () { return this.SatellizerConfig.withCredentials; },
+            set: function (value) { this.SatellizerConfig.withCredentials = value; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AuthProvider.prototype, "storageType", {
+            get: function () { return this.SatellizerConfig.storageType; },
+            set: function (value) { this.SatellizerConfig.storageType = value; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AuthProvider.prototype, "httpInterceptor", {
+            get: function () { return this.SatellizerConfig.httpInterceptor; },
+            set: function (value) {
+                if (typeof value === 'function') {
+                    this.SatellizerConfig.httpInterceptor = value;
+                }
+                else {
+                    this.SatellizerConfig.httpInterceptor = function () { return value; };
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        AuthProvider.prototype.facebook = function (options) {
+            angular.extend(this.SatellizerConfig.providers.facebook, options);
+        };
+        AuthProvider.prototype.google = function (options) {
+            angular.extend(this.SatellizerConfig.providers.google, options);
+        };
+        AuthProvider.prototype.github = function (options) {
+            angular.extend(this.SatellizerConfig.providers.github, options);
+        };
+        AuthProvider.prototype.instagram = function (options) {
+            angular.extend(this.SatellizerConfig.providers.instagram, options);
+        };
+        AuthProvider.prototype.linkedin = function (options) {
+            angular.extend(this.SatellizerConfig.providers.linkedin, options);
+        };
+        AuthProvider.prototype.twitter = function (options) {
+            angular.extend(this.SatellizerConfig.providers.twitter, options);
+        };
+        AuthProvider.prototype.twitch = function (options) {
+            angular.extend(this.SatellizerConfig.providers.twitch, options);
+        };
+        AuthProvider.prototype.live = function (options) {
+            angular.extend(this.SatellizerConfig.providers.live, options);
+        };
+        AuthProvider.prototype.yahoo = function (options) {
+            angular.extend(this.SatellizerConfig.providers.yahoo, options);
+        };
+        AuthProvider.prototype.bitbucket = function (options) {
+            angular.extend(this.SatellizerConfig.providers.bitbucket, options);
+        };
+        AuthProvider.prototype.spotify = function (options) {
+            angular.extend(this.SatellizerConfig.providers.spotify, options);
+        };
+        AuthProvider.prototype.oauth1 = function (options) {
+            this.SatellizerConfig.providers[options.name] = angular.extend(options, {
+                oauthType: '1.0'
+            });
+        };
+        AuthProvider.prototype.oauth2 = function (options) {
+            this.SatellizerConfig.providers[options.name] = angular.extend(options, {
+                oauthType: '2.0'
+            });
+        };
+        AuthProvider.prototype.$get = function (SatellizerShared, SatellizerLocal, SatellizerOAuth) {
+            return {
+                login: function (user, options) { return SatellizerLocal.login(user, options); },
+                signup: function (user, options) { return SatellizerLocal.signup(user, options); },
+                logout: function () { return SatellizerShared.logout(); },
+                authenticate: function (name, data) { return SatellizerOAuth.authenticate(name, data); },
+                link: function (name, data) { return SatellizerOAuth.authenticate(name, data); },
+                unlink: function (name, options) { return SatellizerOAuth.unlink(name, options); },
+                isAuthenticated: function () { return SatellizerShared.isAuthenticated(); },
+                getPayload: function () { return SatellizerShared.getPayload(); },
+                getToken: function () { return SatellizerShared.getToken(); },
+                setToken: function (token) { return SatellizerShared.setToken({ access_token: token }); },
+                removeToken: function () { return SatellizerShared.removeToken(); },
+                setStorageType: function (type) { return SatellizerShared.setStorageType(type); }
+            };
+        };
+        AuthProvider.$inject = ['SatellizerConfig'];
+        return AuthProvider;
+    }());
+    AuthProvider.prototype.$get.$inject = ['SatellizerShared', 'SatellizerLocal', 'SatellizerOAuth'];
 
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
+    function joinUrl(baseUrl, url) {
+        if (/^(?:[a-z]+:)?\/\//i.test(url)) {
+            return url;
+        }
+        var joined = [baseUrl, url].join('/');
+        var normalize = function (str) {
+            return str
+                .replace(/[\/]+/g, '/')
+                .replace(/\/\?/g, '?')
+                .replace(/\/\#/g, '#')
+                .replace(/\:\//g, '://');
+        };
+        return normalize(joined);
+    }
+    function getFullUrlPath(location) {
+        var isHttps = location.protocol === 'https:';
+        return location.protocol + '//' + location.hostname +
+            ':' + (location.port || (isHttps ? '443' : '80')) +
+            (/^\//.test(location.pathname) ? location.pathname : '/' + location.pathname);
+    }
+    function parseQueryString(str) {
+        var obj = {};
+        var key;
+        var value;
+        angular.forEach((str || '').split('&'), function (keyValue) {
+            if (keyValue) {
+                value = keyValue.split('=');
+                key = decodeURIComponent(value[0]);
+                obj[key] = angular.isDefined(value[1]) ? decodeURIComponent(value[1]) : true;
+            }
+        });
+        return obj;
+    }
+    function decodeBase64(str) {
+        var buffer;
+        if (typeof module !== 'undefined' && module.exports) {
+            try {
+                buffer = require('buffer').Buffer;
+            }
+            catch (err) {
+            }
+        }
+        var fromCharCode = String.fromCharCode;
+        var re_btou = new RegExp([
+            '[\xC0-\xDF][\x80-\xBF]',
+            '[\xE0-\xEF][\x80-\xBF]{2}',
+            '[\xF0-\xF7][\x80-\xBF]{3}'
+        ].join('|'), 'g');
+        var cb_btou = function (cccc) {
+            switch (cccc.length) {
+                case 4:
+                    var cp = ((0x07 & cccc.charCodeAt(0)) << 18)
+                        | ((0x3f & cccc.charCodeAt(1)) << 12)
+                        | ((0x3f & cccc.charCodeAt(2)) << 6)
+                        | (0x3f & cccc.charCodeAt(3));
+                    var offset = cp - 0x10000;
+                    return (fromCharCode((offset >>> 10) + 0xD800)
+                        + fromCharCode((offset & 0x3FF) + 0xDC00));
+                case 3:
+                    return fromCharCode(((0x0f & cccc.charCodeAt(0)) << 12)
+                        | ((0x3f & cccc.charCodeAt(1)) << 6)
+                        | (0x3f & cccc.charCodeAt(2)));
+                default:
+                    return fromCharCode(((0x1f & cccc.charCodeAt(0)) << 6)
+                        | (0x3f & cccc.charCodeAt(1)));
+            }
+        };
+        var btou = function (b) {
+            return b.replace(re_btou, cb_btou);
+        };
+        var _decode = buffer ? function (a) {
+            return (a.constructor === buffer.constructor
+                ? a : new buffer(a, 'base64')).toString();
+        }
+            : function (a) {
+                return btou(atob(a));
+            };
+        return _decode(String(str).replace(/[-_]/g, function (m0) {
+            return m0 === '-' ? '+' : '/';
+        })
+            .replace(/[^A-Za-z0-9\+\/]/g, ''));
+    }
 
-  var MODULE_NAME = 'infinite-scroll';
+    var Shared = (function () {
+        function Shared($q, $window, SatellizerConfig, SatellizerStorage) {
+            this.$q = $q;
+            this.$window = $window;
+            this.SatellizerConfig = SatellizerConfig;
+            this.SatellizerStorage = SatellizerStorage;
+            var _a = this.SatellizerConfig, tokenName = _a.tokenName, tokenPrefix = _a.tokenPrefix;
+            this.prefixedTokenName = tokenPrefix ? [tokenPrefix, tokenName].join('_') : tokenName;
+        }
+        Shared.prototype.getToken = function () {
+            return this.SatellizerStorage.get(this.prefixedTokenName);
+        };
+        Shared.prototype.getPayload = function () {
+            var token = this.SatellizerStorage.get(this.prefixedTokenName);
+            if (token && token.split('.').length === 3) {
+                try {
+                    var base64Url = token.split('.')[1];
+                    var base64 = base64Url.replace('-', '+').replace('_', '/');
+                    return JSON.parse(decodeBase64(base64));
+                }
+                catch (e) {
+                }
+            }
+        };
+        Shared.prototype.setToken = function (response) {
+            var tokenRoot = this.SatellizerConfig.tokenRoot;
+            var tokenName = this.SatellizerConfig.tokenName;
+            var accessToken = response && response.access_token;
+            var token;
+            if (accessToken) {
+                if (angular.isObject(accessToken) && angular.isObject(accessToken.data)) {
+                    response = accessToken;
+                }
+                else if (angular.isString(accessToken)) {
+                    token = accessToken;
+                }
+            }
+            if (!token && response) {
+                var tokenRootData = tokenRoot && tokenRoot.split('.').reduce(function (o, x) { return o[x]; }, response.data);
+                token = tokenRootData ? tokenRootData[tokenName] : response.data && response.data[tokenName];
+            }
+            if (token) {
+                this.SatellizerStorage.set(this.prefixedTokenName, token);
+            }
+        };
+        Shared.prototype.removeToken = function () {
+            this.SatellizerStorage.remove(this.prefixedTokenName);
+        };
+        Shared.prototype.isAuthenticated = function () {
+            var token = this.SatellizerStorage.get(this.prefixedTokenName);
+            if (token) {
+                if (token.split('.').length === 3) {
+                    try {
+                        var base64Url = token.split('.')[1];
+                        var base64 = base64Url.replace('-', '+').replace('_', '/');
+                        var exp = JSON.parse(this.$window.atob(base64)).exp;
+                        if (typeof exp === 'number') {
+                            return Math.round(new Date().getTime() / 1000) < exp;
+                        }
+                    }
+                    catch (e) {
+                        return true; // Pass: Non-JWT token that looks like JWT
+                    }
+                }
+                return true; // Pass: All other tokens
+            }
+            return false; // Fail: No token at all
+        };
+        Shared.prototype.logout = function () {
+            this.SatellizerStorage.remove(this.prefixedTokenName);
+            return this.$q.when();
+        };
+        Shared.prototype.setStorageType = function (type) {
+            this.SatellizerConfig.storageType = type;
+        };
+        Shared.$inject = ['$q', '$window', 'SatellizerConfig', 'SatellizerStorage'];
+        return Shared;
+    }());
 
-  _angular2['default'].module(MODULE_NAME, []).value('THROTTLE_MILLISECONDS', null).directive('infiniteScroll', ['$rootScope', '$window', '$interval', 'THROTTLE_MILLISECONDS', function ($rootScope, $window, $interval, THROTTLE_MILLISECONDS) {
+    var Local = (function () {
+        function Local($http, SatellizerConfig, SatellizerShared) {
+            this.$http = $http;
+            this.SatellizerConfig = SatellizerConfig;
+            this.SatellizerShared = SatellizerShared;
+        }
+        Local.prototype.login = function (user, options) {
+            var _this = this;
+            if (options === void 0) { options = {}; }
+            options.url = options.url ? options.url : joinUrl(this.SatellizerConfig.baseUrl, this.SatellizerConfig.loginUrl);
+            options.data = user || options.data;
+            options.method = options.method || 'POST';
+            options.withCredentials = options.withCredentials || this.SatellizerConfig.withCredentials;
+            return this.$http(options).then(function (response) {
+                _this.SatellizerShared.setToken(response);
+                return response;
+            });
+        };
+        Local.prototype.signup = function (user, options) {
+            if (options === void 0) { options = {}; }
+            options.url = options.url ? options.url : joinUrl(this.SatellizerConfig.baseUrl, this.SatellizerConfig.signupUrl);
+            options.data = user || options.data;
+            options.method = options.method || 'POST';
+            options.withCredentials = options.withCredentials || this.SatellizerConfig.withCredentials;
+            return this.$http(options);
+        };
+        Local.$inject = ['$http', 'SatellizerConfig', 'SatellizerShared'];
+        return Local;
+    }());
+
+    var Popup = (function () {
+        function Popup($interval, $window, $q) {
+            this.$interval = $interval;
+            this.$window = $window;
+            this.$q = $q;
+            this.popup = null;
+            this.defaults = {
+                redirectUri: null
+            };
+        }
+        Popup.prototype.stringifyOptions = function (options) {
+            var parts = [];
+            angular.forEach(options, function (value, key) {
+                parts.push(key + '=' + value);
+            });
+            return parts.join(',');
+        };
+        Popup.prototype.open = function (url, name, popupOptions, redirectUri, dontPoll) {
+            var width = popupOptions.width || 500;
+            var height = popupOptions.height || 500;
+            var options = this.stringifyOptions({
+                width: width,
+                height: height,
+                top: this.$window.screenY + ((this.$window.outerHeight - height) / 2.5),
+                left: this.$window.screenX + ((this.$window.outerWidth - width) / 2)
+            });
+            var popupName = this.$window['cordova'] || this.$window.navigator.userAgent.indexOf('CriOS') > -1 ? '_blank' : name;
+            this.popup = this.$window.open(url, popupName, options);
+            if (this.popup && this.popup.focus) {
+                this.popup.focus();
+            }
+            if (dontPoll) {
+                return;
+            }
+            if (this.$window['cordova']) {
+                return this.eventListener(redirectUri);
+            }
+            else {
+                if (url === 'about:blank') {
+                    this.popup.location = url;
+                }
+                return this.polling(redirectUri);
+            }
+        };
+        Popup.prototype.polling = function (redirectUri) {
+            var _this = this;
+            return this.$q(function (resolve, reject) {
+                var redirectUriParser = document.createElement('a');
+                redirectUriParser.href = redirectUri;
+                var redirectUriPath = getFullUrlPath(redirectUriParser);
+                var polling = _this.$interval(function () {
+                    if (!_this.popup || _this.popup.closed || _this.popup.closed === undefined) {
+                        _this.$interval.cancel(polling);
+                        reject(new Error('The popup window was closed'));
+                    }
+                    try {
+                        var popupWindowPath = getFullUrlPath(_this.popup.location);
+                        if (popupWindowPath === redirectUriPath) {
+                            if (_this.popup.location.search || _this.popup.location.hash) {
+                                var query = parseQueryString(_this.popup.location.search.substring(1).replace(/\/$/, ''));
+                                var hash = parseQueryString(_this.popup.location.hash.substring(1).replace(/[\/$]/, ''));
+                                var params = angular.extend({}, query, hash);
+                                if (params.error) {
+                                    reject(new Error(params.error));
+                                }
+                                else {
+                                    resolve(params);
+                                }
+                            }
+                            else {
+                                reject(new Error('OAuth redirect has occurred but no query or hash parameters were found. ' +
+                                    'They were either not set during the redirect, or were removed—typically by a ' +
+                                    'routing library—before Satellizer could read it.'));
+                            }
+                            _this.$interval.cancel(polling);
+                            _this.popup.close();
+                        }
+                    }
+                    catch (error) {
+                    }
+                }, 500);
+            });
+        };
+        Popup.prototype.eventListener = function (redirectUri) {
+            var _this = this;
+            return this.$q(function (resolve, reject) {
+                _this.popup.addEventListener('loadstart', function (event) {
+                    if (event.url.indexOf(redirectUri) !== 0) {
+                        return;
+                    }
+                    var parser = document.createElement('a');
+                    parser.href = event.url;
+                    if (parser.search || parser.hash) {
+                        var query = parseQueryString(parser.search.substring(1).replace(/\/$/, ''));
+                        var hash = parseQueryString(parser.hash.substring(1).replace(/[\/$]/, ''));
+                        var params = angular.extend({}, query, hash);
+                        if (params.error) {
+                            reject(new Error(params.error));
+                        }
+                        else {
+                            resolve(params);
+                        }
+                        _this.popup.close();
+                    }
+                });
+                _this.popup.addEventListener('loaderror', function () {
+                    reject(new Error('Authorization failed'));
+                });
+                _this.popup.addEventListener('exit', function () {
+                    reject(new Error('The popup window was closed'));
+                });
+            });
+        };
+        Popup.$inject = ['$interval', '$window', '$q'];
+        return Popup;
+    }());
+
+    var OAuth1 = (function () {
+        function OAuth1($http, $window, SatellizerConfig, SatellizerPopup) {
+            this.$http = $http;
+            this.$window = $window;
+            this.SatellizerConfig = SatellizerConfig;
+            this.SatellizerPopup = SatellizerPopup;
+            this.defaults = {
+                name: null,
+                url: null,
+                authorizationEndpoint: null,
+                scope: null,
+                scopePrefix: null,
+                scopeDelimiter: null,
+                redirectUri: null,
+                requiredUrlParams: null,
+                defaultUrlParams: null,
+                oauthType: '1.0',
+                popupOptions: { width: null, height: null }
+            };
+        }
+        ;
+        OAuth1.prototype.init = function (options, userData) {
+            var _this = this;
+            angular.extend(this.defaults, options);
+            var name = options.name, popupOptions = options.popupOptions;
+            var redirectUri = this.defaults.redirectUri;
+            // Should open an empty popup and wait until request token is received
+            if (!this.$window['cordova']) {
+                this.SatellizerPopup.open('about:blank', name, popupOptions, redirectUri, true);
+            }
+            return this.getRequestToken().then(function (response) {
+                return _this.openPopup(options, response).then(function (popupResponse) {
+                    return _this.exchangeForToken(popupResponse, userData);
+                });
+            });
+        };
+        OAuth1.prototype.openPopup = function (options, response) {
+            var url = [options.authorizationEndpoint, this.buildQueryString(response.data)].join('?');
+            var redirectUri = this.defaults.redirectUri;
+            if (this.$window['cordova']) {
+                return this.SatellizerPopup.open(url, options.name, options.popupOptions, redirectUri);
+            }
+            else {
+                this.SatellizerPopup.popup.location = url;
+                return this.SatellizerPopup.polling(redirectUri);
+            }
+        };
+        OAuth1.prototype.getRequestToken = function () {
+            var url = this.SatellizerConfig.baseUrl ? joinUrl(this.SatellizerConfig.baseUrl, this.defaults.url) : this.defaults.url;
+            return this.$http.post(url, this.defaults);
+        };
+        OAuth1.prototype.exchangeForToken = function (oauthData, userData) {
+            var payload = angular.extend({}, userData, oauthData);
+            var exchangeForTokenUrl = this.SatellizerConfig.baseUrl ? joinUrl(this.SatellizerConfig.baseUrl, this.defaults.url) : this.defaults.url;
+            return this.$http.post(exchangeForTokenUrl, payload, { withCredentials: this.SatellizerConfig.withCredentials });
+        };
+        OAuth1.prototype.buildQueryString = function (obj) {
+            var str = [];
+            angular.forEach(obj, function (value, key) {
+                str.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
+            });
+            return str.join('&');
+        };
+        OAuth1.$inject = ['$http', '$window', 'SatellizerConfig', 'SatellizerPopup'];
+        return OAuth1;
+    }());
+
+    var OAuth2 = (function () {
+        function OAuth2($http, $window, $timeout, $q, SatellizerConfig, SatellizerPopup, SatellizerStorage) {
+            this.$http = $http;
+            this.$window = $window;
+            this.$timeout = $timeout;
+            this.$q = $q;
+            this.SatellizerConfig = SatellizerConfig;
+            this.SatellizerPopup = SatellizerPopup;
+            this.SatellizerStorage = SatellizerStorage;
+            this.defaults = {
+                name: null,
+                url: null,
+                clientId: null,
+                authorizationEndpoint: null,
+                redirectUri: null,
+                scope: null,
+                scopePrefix: null,
+                scopeDelimiter: null,
+                state: null,
+                requiredUrlParams: null,
+                defaultUrlParams: ['response_type', 'client_id', 'redirect_uri'],
+                responseType: 'code',
+                responseParams: {
+                    code: 'code',
+                    clientId: 'clientId',
+                    redirectUri: 'redirectUri'
+                },
+                oauthType: '2.0',
+                popupOptions: { width: null, height: null }
+            };
+        }
+        OAuth2.camelCase = function (name) {
+            return name.replace(/([\:\-\_]+(.))/g, function (_, separator, letter, offset) {
+                return offset ? letter.toUpperCase() : letter;
+            });
+        };
+        OAuth2.prototype.init = function (options, userData) {
+            var _this = this;
+            return this.$q(function (resolve, reject) {
+                angular.extend(_this.defaults, options);
+                var stateName = _this.defaults.name + '_state';
+                var _a = _this.defaults, name = _a.name, state = _a.state, popupOptions = _a.popupOptions, redirectUri = _a.redirectUri, responseType = _a.responseType;
+                if (typeof state === 'function') {
+                    _this.SatellizerStorage.set(stateName, state());
+                }
+                else if (typeof state === 'string') {
+                    _this.SatellizerStorage.set(stateName, state);
+                }
+                var url = [_this.defaults.authorizationEndpoint, _this.buildQueryString()].join('?');
+                _this.SatellizerPopup.open(url, name, popupOptions, redirectUri).then(function (oauth) {
+                    if (responseType === 'token' || !url) {
+                        return resolve(oauth);
+                    }
+                    if (oauth.state && oauth.state !== _this.SatellizerStorage.get(stateName)) {
+                        return reject(new Error('The value returned in the state parameter does not match the state value from your original ' +
+                            'authorization code request.'));
+                    }
+                    resolve(_this.exchangeForToken(oauth, userData));
+                }).catch(function (error) { return reject(error); });
+            });
+        };
+        OAuth2.prototype.exchangeForToken = function (oauthData, userData) {
+            var _this = this;
+            var payload = angular.extend({}, userData);
+            angular.forEach(this.defaults.responseParams, function (value, key) {
+                switch (key) {
+                    case 'code':
+                        payload[value] = oauthData.code;
+                        break;
+                    case 'clientId':
+                        payload[value] = _this.defaults.clientId;
+                        break;
+                    case 'redirectUri':
+                        payload[value] = _this.defaults.redirectUri;
+                        break;
+                    default:
+                        payload[value] = oauthData[key];
+                }
+            });
+            if (oauthData.state) {
+                payload.state = oauthData.state;
+            }
+            var exchangeForTokenUrl = this.SatellizerConfig.baseUrl ?
+                joinUrl(this.SatellizerConfig.baseUrl, this.defaults.url) :
+                this.defaults.url;
+            return this.$http.post(exchangeForTokenUrl, payload, { withCredentials: this.SatellizerConfig.withCredentials });
+        };
+        OAuth2.prototype.buildQueryString = function () {
+            var _this = this;
+            var keyValuePairs = [];
+            var urlParamsCategories = ['defaultUrlParams', 'requiredUrlParams', 'optionalUrlParams'];
+            angular.forEach(urlParamsCategories, function (paramsCategory) {
+                angular.forEach(_this.defaults[paramsCategory], function (paramName) {
+                    var camelizedName = OAuth2.camelCase(paramName);
+                    var paramValue = angular.isFunction(_this.defaults[paramName]) ? _this.defaults[paramName]() : _this.defaults[camelizedName];
+                    if (paramName === 'redirect_uri' && !paramValue) {
+                        return;
+                    }
+                    if (paramName === 'state') {
+                        var stateName = _this.defaults.name + '_state';
+                        paramValue = encodeURIComponent(_this.SatellizerStorage.get(stateName));
+                    }
+                    if (paramName === 'scope' && Array.isArray(paramValue)) {
+                        paramValue = paramValue.join(_this.defaults.scopeDelimiter);
+                        if (_this.defaults.scopePrefix) {
+                            paramValue = [_this.defaults.scopePrefix, paramValue].join(_this.defaults.scopeDelimiter);
+                        }
+                    }
+                    keyValuePairs.push([paramName, paramValue]);
+                });
+            });
+            return keyValuePairs.map(function (pair) { return pair.join('='); }).join('&');
+        };
+        OAuth2.$inject = ['$http', '$window', '$timeout', '$q', 'SatellizerConfig', 'SatellizerPopup', 'SatellizerStorage'];
+        return OAuth2;
+    }());
+
+    var OAuth = (function () {
+        function OAuth($http, $window, $timeout, $q, SatellizerConfig, SatellizerPopup, SatellizerStorage, SatellizerShared, SatellizerOAuth1, SatellizerOAuth2) {
+            this.$http = $http;
+            this.$window = $window;
+            this.$timeout = $timeout;
+            this.$q = $q;
+            this.SatellizerConfig = SatellizerConfig;
+            this.SatellizerPopup = SatellizerPopup;
+            this.SatellizerStorage = SatellizerStorage;
+            this.SatellizerShared = SatellizerShared;
+            this.SatellizerOAuth1 = SatellizerOAuth1;
+            this.SatellizerOAuth2 = SatellizerOAuth2;
+        }
+        OAuth.prototype.authenticate = function (name, userData) {
+            var _this = this;
+            return this.$q(function (resolve, reject) {
+                var provider = _this.SatellizerConfig.providers[name];
+                var oauth = null;
+                switch (provider.oauthType) {
+                    case '1.0':
+                        oauth = new OAuth1(_this.$http, _this.$window, _this.SatellizerConfig, _this.SatellizerPopup);
+                        break;
+                    case '2.0':
+                        oauth = new OAuth2(_this.$http, _this.$window, _this.$timeout, _this.$q, _this.SatellizerConfig, _this.SatellizerPopup, _this.SatellizerStorage);
+                        break;
+                    default:
+                        return reject(new Error('Invalid OAuth Type'));
+                }
+                return oauth.init(provider, userData).then(function (response) {
+                    if (provider.url) {
+                        _this.SatellizerShared.setToken(response);
+                    }
+                    resolve(response);
+                }).catch(function (error) {
+                    reject(error);
+                });
+            });
+        };
+        OAuth.prototype.unlink = function (provider, httpOptions) {
+            if (httpOptions === void 0) { httpOptions = {}; }
+            httpOptions.url = httpOptions.url ? httpOptions.url : joinUrl(this.SatellizerConfig.baseUrl, this.SatellizerConfig.unlinkUrl);
+            httpOptions.data = { provider: provider } || httpOptions.data;
+            httpOptions.method = httpOptions.method || 'POST';
+            httpOptions.withCredentials = httpOptions.withCredentials || this.SatellizerConfig.withCredentials;
+            return this.$http(httpOptions);
+        };
+        OAuth.$inject = [
+            '$http',
+            '$window',
+            '$timeout',
+            '$q',
+            'SatellizerConfig',
+            'SatellizerPopup',
+            'SatellizerStorage',
+            'SatellizerShared',
+            'SatellizerOAuth1',
+            'SatellizerOAuth2'
+        ];
+        return OAuth;
+    }());
+
+    var Storage = (function () {
+        function Storage($window, SatellizerConfig) {
+            this.$window = $window;
+            this.SatellizerConfig = SatellizerConfig;
+            this.memoryStore = {};
+        }
+        Storage.prototype.get = function (key) {
+            try {
+                return this.$window[this.SatellizerConfig.storageType].getItem(key);
+            }
+            catch (e) {
+                return this.memoryStore[key];
+            }
+        };
+        Storage.prototype.set = function (key, value) {
+            try {
+                this.$window[this.SatellizerConfig.storageType].setItem(key, value);
+            }
+            catch (e) {
+                this.memoryStore[key] = value;
+            }
+        };
+        Storage.prototype.remove = function (key) {
+            try {
+                this.$window[this.SatellizerConfig.storageType].removeItem(key);
+            }
+            catch (e) {
+                delete this.memoryStore[key];
+            }
+        };
+        Storage.$inject = ['$window', 'SatellizerConfig'];
+        return Storage;
+    }());
+
+    var Interceptor = (function () {
+        function Interceptor(SatellizerConfig, SatellizerShared, SatellizerStorage) {
+            var _this = this;
+            this.SatellizerConfig = SatellizerConfig;
+            this.SatellizerShared = SatellizerShared;
+            this.SatellizerStorage = SatellizerStorage;
+            this.request = function (config) {
+                if (config['skipAuthorization']) {
+                    return config;
+                }
+                if (_this.SatellizerShared.isAuthenticated() && _this.SatellizerConfig.httpInterceptor()) {
+                    var tokenName = _this.SatellizerConfig.tokenPrefix ?
+                        [_this.SatellizerConfig.tokenPrefix, _this.SatellizerConfig.tokenName].join('_') : _this.SatellizerConfig.tokenName;
+                    var token = _this.SatellizerStorage.get(tokenName);
+                    if (_this.SatellizerConfig.tokenHeader && _this.SatellizerConfig.tokenType) {
+                        token = _this.SatellizerConfig.tokenType + ' ' + token;
+                    }
+                    config.headers[_this.SatellizerConfig.tokenHeader] = token;
+                }
+                return config;
+            };
+        }
+        Interceptor.Factory = function (SatellizerConfig, SatellizerShared, SatellizerStorage) {
+            return new Interceptor(SatellizerConfig, SatellizerShared, SatellizerStorage);
+        };
+        Interceptor.$inject = ['SatellizerConfig', 'SatellizerShared', 'SatellizerStorage'];
+        return Interceptor;
+    }());
+    Interceptor.Factory.$inject = ['SatellizerConfig', 'SatellizerShared', 'SatellizerStorage'];
+
+    var HttpProviderConfig = (function () {
+        function HttpProviderConfig($httpProvider) {
+            this.$httpProvider = $httpProvider;
+            $httpProvider.interceptors.push(Interceptor.Factory);
+        }
+        HttpProviderConfig.$inject = ['$httpProvider'];
+        return HttpProviderConfig;
+    }());
+
+    angular.module('satellizer', [])
+        .provider('$auth', ['SatellizerConfig', function (SatellizerConfig) { return new AuthProvider(SatellizerConfig); }])
+        .constant('SatellizerConfig', Config.getConstant)
+        .service('SatellizerShared', Shared)
+        .service('SatellizerLocal', Local)
+        .service('SatellizerPopup', Popup)
+        .service('SatellizerOAuth', OAuth)
+        .service('SatellizerOAuth2', OAuth2)
+        .service('SatellizerOAuth1', OAuth1)
+        .service('SatellizerStorage', Storage)
+        .service('SatellizerInterceptor', Interceptor)
+        .config(['$httpProvider', function ($httpProvider) { return new HttpProviderConfig($httpProvider); }]);
+    var ng1 = 'satellizer';
+
+    return ng1;
+
+}));
+//# sourceMappingURL=satellizer.js.map
+
+/* ng-infinite-scroll - v1.3.0 - 2016-06-30 */
+angular.module('infinite-scroll', []).value('THROTTLE_MILLISECONDS', null).directive('infiniteScroll', [
+  '$rootScope', '$window', '$interval', 'THROTTLE_MILLISECONDS', function($rootScope, $window, $interval, THROTTLE_MILLISECONDS) {
     return {
       scope: {
         infiniteScroll: '&',
@@ -469,260 +1401,183 @@ shortDate:"M/d/yy",shortTime:"h:mm a"},NUMBER_FORMATS:{CURRENCY_SYM:"$",DECIMAL_
         infiniteScrollUseDocumentBottom: '=',
         infiniteScrollListenForEvent: '@'
       },
-
-      link: function link(scope, elem, attrs) {
-        var windowElement = _angular2['default'].element($window);
-
-        var scrollDistance = null;
-        var scrollEnabled = null;
-        var checkWhenEnabled = null;
-        var container = null;
-        var immediateCheck = true;
-        var useDocumentBottom = false;
-        var unregisterEventListener = null;
-        var checkInterval = false;
-
-        function height(element) {
-          var el = element[0] || element;
-
-          if (isNaN(el.offsetHeight)) {
-            return el.document.documentElement.clientHeight;
+      link: function(scope, elem, attrs) {
+        var changeContainer, checkInterval, checkWhenEnabled, container, handleInfiniteScrollContainer, handleInfiniteScrollDisabled, handleInfiniteScrollDistance, handleInfiniteScrollUseDocumentBottom, handler, height, immediateCheck, offsetTop, pageYOffset, scrollDistance, scrollEnabled, throttle, unregisterEventListener, useDocumentBottom, windowElement;
+        windowElement = angular.element($window);
+        scrollDistance = null;
+        scrollEnabled = null;
+        checkWhenEnabled = null;
+        container = null;
+        immediateCheck = true;
+        useDocumentBottom = false;
+        unregisterEventListener = null;
+        checkInterval = false;
+        height = function(elem) {
+          elem = elem[0] || elem;
+          if (isNaN(elem.offsetHeight)) {
+            return elem.document.documentElement.clientHeight;
+          } else {
+            return elem.offsetHeight;
           }
-          return el.offsetHeight;
-        }
-
-        function pageYOffset(element) {
-          var el = element[0] || element;
-
+        };
+        offsetTop = function(elem) {
+          if (!elem[0].getBoundingClientRect || elem.css('none')) {
+            return;
+          }
+          return elem[0].getBoundingClientRect().top + pageYOffset(elem);
+        };
+        pageYOffset = function(elem) {
+          elem = elem[0] || elem;
           if (isNaN(window.pageYOffset)) {
-            return el.document.documentElement.scrollTop;
+            return elem.document.documentElement.scrollTop;
+          } else {
+            return elem.ownerDocument.defaultView.pageYOffset;
           }
-          return el.ownerDocument.defaultView.pageYOffset;
-        }
-
-        function offsetTop(element) {
-          if (!(!element[0].getBoundingClientRect || element.css('none'))) {
-            return element[0].getBoundingClientRect().top + pageYOffset(element);
-          }
-          return undefined;
-        }
-
-        // infinite-scroll specifies a function to call when the window,
-        // or some other container specified by infinite-scroll-container,
-        // is scrolled within a certain range from the bottom of the
-        // document. It is recommended to use infinite-scroll-disabled
-        // with a boolean that is set to true when the function is
-        // called in order to throttle the function call.
-        function defaultHandler() {
-          var containerBottom = void 0;
-          var elementBottom = void 0;
+        };
+        handler = function() {
+          var containerBottom, containerTopOffset, elementBottom, remaining, shouldScroll;
           if (container === windowElement) {
             containerBottom = height(container) + pageYOffset(container[0].document.documentElement);
             elementBottom = offsetTop(elem) + height(elem);
           } else {
             containerBottom = height(container);
-            var containerTopOffset = 0;
-            if (offsetTop(container) !== undefined) {
+            containerTopOffset = 0;
+            if (offsetTop(container) !== void 0) {
               containerTopOffset = offsetTop(container);
             }
             elementBottom = offsetTop(elem) - containerTopOffset + height(elem);
           }
-
           if (useDocumentBottom) {
             elementBottom = height((elem[0].ownerDocument || elem[0].document).documentElement);
           }
-
-          var remaining = elementBottom - containerBottom;
-          var shouldScroll = remaining <= height(container) * scrollDistance + 1;
-
+          remaining = elementBottom - containerBottom;
+          shouldScroll = remaining <= height(container) * scrollDistance + 1;
           if (shouldScroll) {
             checkWhenEnabled = true;
-
             if (scrollEnabled) {
               if (scope.$$phase || $rootScope.$$phase) {
-                scope.infiniteScroll();
+                return scope.infiniteScroll();
               } else {
-                scope.$apply(scope.infiniteScroll);
+                return scope.$apply(scope.infiniteScroll);
               }
             }
           } else {
             if (checkInterval) {
               $interval.cancel(checkInterval);
             }
-            checkWhenEnabled = false;
+            return checkWhenEnabled = false;
           }
-        }
-
-        // The optional THROTTLE_MILLISECONDS configuration value specifies
-        // a minimum time that should elapse between each call to the
-        // handler. N.b. the first call the handler will be run
-        // immediately, and the final call will always result in the
-        // handler being called after the `wait` period elapses.
-        // A slimmed down version of underscore's implementation.
-        function throttle(func, wait) {
-          var timeout = null;
-          var previous = 0;
-
-          function later() {
+        };
+        throttle = function(func, wait) {
+          var later, previous, timeout;
+          timeout = null;
+          previous = 0;
+          later = function() {
             previous = new Date().getTime();
             $interval.cancel(timeout);
             timeout = null;
             return func.call();
-          }
-
-          function throttled() {
-            var now = new Date().getTime();
-            var remaining = wait - (now - previous);
+          };
+          return function() {
+            var now, remaining;
+            now = new Date().getTime();
+            remaining = wait - (now - previous);
             if (remaining <= 0) {
               $interval.cancel(timeout);
               timeout = null;
               previous = now;
-              func.call();
-            } else if (!timeout) {
-              timeout = $interval(later, remaining, 1);
+              return func.call();
+            } else {
+              if (!timeout) {
+                return timeout = $interval(later, remaining, 1);
+              }
             }
-          }
-
-          return throttled;
+          };
+        };
+        if (THROTTLE_MILLISECONDS != null) {
+          handler = throttle(handler, THROTTLE_MILLISECONDS);
         }
-
-        var handler = THROTTLE_MILLISECONDS != null ? throttle(defaultHandler, THROTTLE_MILLISECONDS) : defaultHandler;
-
-        function handleDestroy() {
+        scope.$on('$destroy', function() {
           container.unbind('scroll', handler);
           if (unregisterEventListener != null) {
             unregisterEventListener();
             unregisterEventListener = null;
           }
           if (checkInterval) {
-            $interval.cancel(checkInterval);
+            return $interval.cancel(checkInterval);
           }
-        }
-
-        scope.$on('$destroy', handleDestroy);
-
-        // infinite-scroll-distance specifies how close to the bottom of the page
-        // the window is allowed to be before we trigger a new scroll. The value
-        // provided is multiplied by the container height; for example, to load
-        // more when the bottom of the page is less than 3 container heights away,
-        // specify a value of 3. Defaults to 0.
-        function handleInfiniteScrollDistance(v) {
-          scrollDistance = parseFloat(v) || 0;
-        }
-
+        });
+        handleInfiniteScrollDistance = function(v) {
+          return scrollDistance = parseFloat(v) || 0;
+        };
         scope.$watch('infiniteScrollDistance', handleInfiniteScrollDistance);
-        // If I don't explicitly call the handler here, tests fail. Don't know why yet.
         handleInfiniteScrollDistance(scope.infiniteScrollDistance);
-
-        // infinite-scroll-disabled specifies a boolean that will keep the
-        // infnite scroll function from being called; this is useful for
-        // debouncing or throttling the function call. If an infinite
-        // scroll is triggered but this value evaluates to true, then
-        // once it switches back to false the infinite scroll function
-        // will be triggered again.
-        function handleInfiniteScrollDisabled(v) {
+        handleInfiniteScrollDisabled = function(v) {
           scrollEnabled = !v;
           if (scrollEnabled && checkWhenEnabled) {
             checkWhenEnabled = false;
-            handler();
+            return handler();
           }
-        }
-
+        };
         scope.$watch('infiniteScrollDisabled', handleInfiniteScrollDisabled);
-        // If I don't explicitly call the handler here, tests fail. Don't know why yet.
         handleInfiniteScrollDisabled(scope.infiniteScrollDisabled);
-
-        // use the bottom of the document instead of the element's bottom.
-        // This useful when the element does not have a height due to its
-        // children being absolute positioned.
-        function handleInfiniteScrollUseDocumentBottom(v) {
-          useDocumentBottom = v;
-        }
-
+        handleInfiniteScrollUseDocumentBottom = function(v) {
+          return useDocumentBottom = v;
+        };
         scope.$watch('infiniteScrollUseDocumentBottom', handleInfiniteScrollUseDocumentBottom);
         handleInfiniteScrollUseDocumentBottom(scope.infiniteScrollUseDocumentBottom);
-
-        // infinite-scroll-container sets the container which we want to be
-        // infinte scrolled, instead of the whole window. Must be an
-        // Angular or jQuery element, or, if jQuery is loaded,
-        // a jQuery selector as a string.
-        function changeContainer(newContainer) {
+        changeContainer = function(newContainer) {
           if (container != null) {
             container.unbind('scroll', handler);
           }
-
           container = newContainer;
           if (newContainer != null) {
-            container.bind('scroll', handler);
+            return container.bind('scroll', handler);
           }
-        }
-
+        };
         changeContainer(windowElement);
-
         if (scope.infiniteScrollListenForEvent) {
           unregisterEventListener = $rootScope.$on(scope.infiniteScrollListenForEvent, handler);
         }
-
-        function handleInfiniteScrollContainer(newContainer) {
-          // TODO: For some reason newContainer is sometimes null instead
-          // of the empty array, which Angular is supposed to pass when the
-          // element is not defined
-          // (https://github.com/sroze/ngInfiniteScroll/pull/7#commitcomment-5748431).
-          // So I leave both checks.
-          if (!(newContainer != null) || newContainer.length === 0) {
+        handleInfiniteScrollContainer = function(newContainer) {
+          if ((newContainer == null) || newContainer.length === 0) {
             return;
           }
-
-          var newerContainer = void 0;
-
           if (newContainer.nodeType && newContainer.nodeType === 1) {
-            newerContainer = _angular2['default'].element(newContainer);
+            newContainer = angular.element(newContainer);
           } else if (typeof newContainer.append === 'function') {
-            newerContainer = _angular2['default'].element(newContainer[newContainer.length - 1]);
+            newContainer = angular.element(newContainer[newContainer.length - 1]);
           } else if (typeof newContainer === 'string') {
-            newerContainer = _angular2['default'].element(document.querySelector(newContainer));
+            newContainer = angular.element(document.querySelector(newContainer));
+          }
+          if (newContainer != null) {
+            return changeContainer(newContainer);
           } else {
-            newerContainer = newContainer;
+            throw new Error("invalid infinite-scroll-container attribute.");
           }
-
-          if (newerContainer == null) {
-            throw new Error('invalid infinite-scroll-container attribute.');
-          }
-          changeContainer(newerContainer);
-        }
-
+        };
         scope.$watch('infiniteScrollContainer', handleInfiniteScrollContainer);
         handleInfiniteScrollContainer(scope.infiniteScrollContainer || []);
-
-        // infinite-scroll-parent establishes this element's parent as the
-        // container infinitely scrolled instead of the whole window.
         if (attrs.infiniteScrollParent != null) {
-          changeContainer(_angular2['default'].element(elem.parent()));
+          changeContainer(angular.element(elem.parent()));
         }
-
-        // infinte-scoll-immediate-check sets whether or not run the
-        // expression passed on infinite-scroll for the first time when the
-        // directive first loads, before any actual scroll.
         if (attrs.infiniteScrollImmediateCheck != null) {
           immediateCheck = scope.$eval(attrs.infiniteScrollImmediateCheck);
         }
-
-        function intervalCheck() {
+        return checkInterval = $interval((function() {
           if (immediateCheck) {
             handler();
           }
           return $interval.cancel(checkInterval);
-        }
-
-        checkInterval = $interval(intervalCheck);
-        return checkInterval;
+        }));
       }
     };
-  }]);
+  }
+]);
 
-  exports['default'] = MODULE_NAME;
-  module.exports = exports['default'];
-});
+if (typeof module !== "undefined" && typeof exports !== "undefined" && module.exports === exports) {
+  module.exports = 'infinite-scroll';
+}
 
 /*
  AngularJS v1.3.10
@@ -4112,7 +4967,7 @@ angular.module('ngMap', []);
 
 return 'ngMap';
 }));
-!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):e.Sweetalert2=t()}(this,function(){"use strict";function e(){if(void 0===arguments[0])return console.error("SweetAlert2 expects at least 1 attribute!"),!1;var e=s({},K);switch(typeof arguments[0]){case"string":e.title=arguments[0],e.text=arguments[1]||"",e.type=arguments[2]||"";break;case"object":s(e,arguments[0]),e.extraParams=arguments[0].extraParams,"email"===e.input&&null===e.inputValidator&&(e.inputValidator=function(e){return new Promise(function(t,n){var o=/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;o.test(e)?t():n("Invalid email address")})});break;default:return console.error('SweetAlert2: Unexpected type of argument! Expected "string" or "object", got '+typeof arguments[0]),!1}W(e);var n=p();return new Promise(function(o,i){function a(t,n){for(var o=w(e.focusCancel),r=0;r<o.length;r++){t+=n,t===o.length?t=0:-1===t&&(t=o.length-1);var i=o[t];if(P(i))return i.focus()}}function l(n){var o=n||window.event,r=o.keyCode||o.which;if(-1!==[9,13,32,27].indexOf(r)){for(var l=o.target||o.srcElement,s=w(e.focusCancel),c=-1,u=0;u<s.length;u++)if(l===s[u]){c=u;break}9===r?(o.shiftKey?a(c,-1):a(c,1),N(o)):13===r||32===r?-1===c&&(e.focusCancel?O(M,o):O(L,o)):27===r&&e.allowEscapeKey===!0&&(t.closeModal(e.onClose),i("esc"))}}e.timer&&(n.timeout=setTimeout(function(){t.closeModal(e.onClose),i("timer")},e.timer));var s=function(t){switch(t=t||e.input){case"select":case"textarea":return E(n,r[t]);case"checkbox":return n.querySelector("."+r.checkbox+" input");case"radio":return n.querySelector("."+r.radio+" input:checked")||n.querySelector("."+r.radio+" input:first-child");case"range":return n.querySelector("."+r.range+" input");default:return E(n,r.input)}},d=function(){var t=s();if(!t)return null;switch(e.input){case"checkbox":return t.checked?1:0;case"radio":return t.checked?t.value:null;case"file":return t.files.length?t.files[0]:null;default:return e.inputAutoTrim?t.value.trim():t.value}};e.input&&setTimeout(function(){var e=s();e&&k(e)},0);var p,m=function(n){e.showLoaderOnConfirm&&t.showLoading(),e.preConfirm?e.preConfirm(n,e.extraParams).then(function(r){t.closeModal(e.onClose),o(r||n)},function(e){t.hideLoading(),e&&t.showValidationError(e)}):(t.closeModal(e.onClose),o(n))},C=function(n){var o=n||window.event,r=o.target||o.srcElement,a=h(),l=g(),s=a===r||a.contains(r),u=l===r||l.contains(r);switch(o.type){case"mouseover":case"mouseup":e.buttonsStyling&&(s?a.style.backgroundColor=c(e.confirmButtonColor,-.1):u&&(l.style.backgroundColor=c(e.cancelButtonColor,-.1)));break;case"mouseout":e.buttonsStyling&&(s?a.style.backgroundColor=e.confirmButtonColor:u&&(l.style.backgroundColor=e.cancelButtonColor));break;case"mousedown":e.buttonsStyling&&(s?a.style.backgroundColor=c(e.confirmButtonColor,-.2):u&&(l.style.backgroundColor=c(e.cancelButtonColor,-.2)));break;case"click":if(s&&t.isVisible())if(e.input){var p=d();e.inputValidator?(t.disableInput(),e.inputValidator(p,e.extraParams).then(function(){t.enableInput(),m(p)},function(e){t.enableInput(),e&&t.showValidationError(e)})):m(p)}else m(!0);else u&&t.isVisible()&&(t.closeModal(e.onClose),i("cancel"))}},q=n.querySelectorAll("button");for(p=0;p<q.length;p++)q[p].onclick=C,q[p].onmouseover=C,q[p].onmouseout=C,q[p].onmousedown=C;b().onclick=function(){t.closeModal(e.onClose),i("close")},f().onclick=function(){e.allowOutsideClick&&(t.closeModal(e.onClose),i("overlay"))};var L=h(),M=g();e.reverseButtons?L.parentNode.insertBefore(M,L):L.parentNode.insertBefore(L,M),u.previousWindowKeyDown=window.onkeydown,window.onkeydown=l,e.buttonsStyling&&(L.style.borderLeftColor=e.confirmButtonColor,L.style.borderRightColor=e.confirmButtonColor),t.showLoading=t.enableLoading=function(){A(v()),A(L,"inline-block"),S(L,"loading"),S(n,"loading"),L.disabled=!0,M.disabled=!0},t.hideLoading=t.disableLoading=function(){e.showConfirmButton||(B(L),e.showCancelButton||B(v())),x(L,"loading"),x(n,"loading"),L.disabled=!1,M.disabled=!1},t.enableButtons=function(){L.disabled=!1,M.disabled=!1},t.disableButtons=function(){L.disabled=!0,M.disabled=!0},t.enableConfirmButton=function(){L.disabled=!1},t.disableConfirmButton=function(){L.disabled=!0},t.enableInput=function(){var e=s();if(!e)return!1;if("radio"===e.type)for(var t=e.parentNode.parentNode,n=t.querySelectorAll("input"),o=0;o<n.length;o++)n[o].disabled=!1;else e.disabled=!1},t.disableInput=function(){var e=s();if(!e)return!1;if(e&&"radio"===e.type)for(var t=e.parentNode.parentNode,n=t.querySelectorAll("input"),o=0;o<n.length;o++)n[o].disabled=!0;else e.disabled=!0},t.showValidationError=function(e){var t=n.querySelector("."+r.validationerror);t.innerHTML=e,A(t);var o=s();k(o),S(o,"error")},t.resetValidationError=function(){var e=n.querySelector("."+r.validationerror);B(e);var t=s();t&&x(t,"error")},t.getProgressSteps=function(){return e.progressSteps},t.setProgressSteps=function(t){e.progressSteps=t,W(e)},t.showProgressSteps=function(){A(y())},t.hideProgressSteps=function(){B(y())},t.enableButtons(),t.hideLoading(),t.resetValidationError();var T,V=["input","range","select","radio","checkbox","textarea"];for(p=0;p<V.length;p++){var H=r[V[p]],D=E(n,H);if(T=s(V[p])){for(;T.attributes.length>0;)T.removeAttribute(T.attributes[0].name);for(var I in e.inputAttributes)T.setAttribute(I,e.inputAttributes[I])}D.className=H,e.inputClass&&S(D,e.inputClass),B(D)}var j;switch(e.input){case"text":case"email":case"password":case"file":case"number":case"tel":T=E(n,r.input),T.value=e.inputValue,T.placeholder=e.inputPlaceholder,T.type=e.input,A(T);break;case"range":var K=E(n,r.range),U=K.querySelector("input"),Q=K.querySelector("output");U.value=e.inputValue,U.type=e.input,Q.value=e.inputValue,A(K);break;case"select":var Z=E(n,r.select);if(Z.innerHTML="",e.inputPlaceholder){var $=document.createElement("option");$.innerHTML=e.inputPlaceholder,$.value="",$.disabled=!0,$.selected=!0,Z.appendChild($)}j=function(t){for(var n in t){var o=document.createElement("option");o.value=n,o.innerHTML=t[n],e.inputValue===n&&(o.selected=!0),Z.appendChild(o)}A(Z),Z.focus()};break;case"radio":var F=E(n,r.radio);F.innerHTML="",j=function(t){for(var n in t){var o=1,i=document.createElement("input"),a=document.createElement("label"),l=document.createElement("span");i.type="radio",i.name=r.radio,i.value=n,i.id=r.radio+"-"+o++,e.inputValue===n&&(i.checked=!0),l.innerHTML=t[n],a.appendChild(i),a.appendChild(l),a["for"]=i.id,F.appendChild(a)}A(F);var s=F.querySelectorAll("input");s.length&&s[0].focus()};break;case"checkbox":var J=E(n,r.checkbox),_=s("checkbox");_.type="checkbox",_.value=1,_.id=r.checkbox,_.checked=Boolean(e.inputValue);var G=J.getElementsByTagName("span");G.length&&J.removeChild(G[0]),G=document.createElement("span"),G.innerHTML=e.inputPlaceholder,J.appendChild(G),A(J);break;case"textarea":var X=E(n,r.textarea);X.value=e.inputValue,X.placeholder=e.inputPlaceholder,A(X);break;case null:break;default:console.error('SweetAlert2: Unexpected type of input! Expected "text" or "email" or "password", "select", "checkbox", "textarea" or "file", got "'+e.input+'"')}"select"!==e.input&&"radio"!==e.input||(e.inputOptions instanceof Promise?(t.showLoading(),e.inputOptions.then(function(e){t.hideLoading(),j(e)})):"object"==typeof e.inputOptions?j(e.inputOptions):console.error("SweetAlert2: Unexpected type of inputOptions! Expected object or Promise, got "+typeof e.inputOptions)),R(),z(e.animation,e.onOpen),a(-1,1)})}function t(){var n=arguments,o=p();return null===o&&(t.init(),o=p()),t.isVisible()&&t.close(),e.apply(this,n)}var n="swal2-",o=function(e){var t={};for(var o in e)t[e[o]]=n+e[o];return t},r=o(["container","modal","overlay","close","content","spacer","confirm","cancel","icon","image","input","range","select","radio","checkbox","textarea","validationerror","progresssteps","activeprogressstep","progresscircle","progressline"]),i=o(["success","warning","info","question","error"]),a={title:"",text:"",html:"",type:null,customClass:"",animation:!0,allowOutsideClick:!0,allowEscapeKey:!0,showConfirmButton:!0,showCancelButton:!1,preConfirm:null,confirmButtonText:"OK",confirmButtonColor:"#3085d6",confirmButtonClass:null,cancelButtonText:"Cancel",cancelButtonColor:"#aaa",cancelButtonClass:null,buttonsStyling:!0,reverseButtons:!1,focusCancel:!1,showCloseButton:!1,showLoaderOnConfirm:!1,imageUrl:null,imageWidth:null,imageHeight:null,imageClass:null,timer:null,width:500,padding:20,background:"#fff",input:null,inputPlaceholder:"",inputValue:"",inputOptions:{},inputAutoTrim:!0,inputClass:null,inputAttributes:{},inputValidator:null,progressSteps:[],currentProgressStep:null,progressStepsDistance:"40px",onOpen:null,onClose:null},l='<div class="'+r.overlay+'" tabIndex="-1"></div><div class="'+r.modal+'" style="display: none" tabIndex="-1"><ul class="'+r.progresssteps+'"></ul><div class="'+r.icon+" "+i.error+'"><span class="x-mark"><span class="line left"></span><span class="line right"></span></span></div><div class="'+r.icon+" "+i.question+'">?</div><div class="'+r.icon+" "+i.warning+'">!</div><div class="'+r.icon+" "+i.info+'">i</div><div class="'+r.icon+" "+i.success+'"><span class="line tip"></span> <span class="line long"></span><div class="placeholder"></div> <div class="fix"></div></div><img class="'+r.image+'"><h2></h2><div class="'+r.content+'"></div><input class="'+r.input+'"><div class="'+r.range+'"><output></output><input type="range"></div><select class="'+r.select+'"></select><div class="'+r.radio+'"></div><label for="'+r.checkbox+'" class="'+r.checkbox+'"><input type="checkbox"></label><textarea class="'+r.textarea+'"></textarea><div class="'+r.validationerror+'"></div><hr class="'+r.spacer+'"><button type="button" class="'+r.confirm+'">OK</button><button type="button" class="'+r.cancel+'">Cancel</button><span class="'+r.close+'">&times;</span></div>',s=function(e,t){for(var n in t)t.hasOwnProperty(n)&&(e[n]=t[n]);return e},c=function(e,t){e=String(e).replace(/[^0-9a-f]/gi,""),e.length<6&&(e=e[0]+e[0]+e[1]+e[1]+e[2]+e[2]),t=t||0;for(var n="#",o=0;3>o;o++){var r=parseInt(e.substr(2*o,2),16);r=Math.round(Math.min(Math.max(0,r+r*t),255)).toString(16),n+=("00"+r).substr(r.length)}return n},u={previousWindowKeyDown:null,previousActiveElement:null},d=function(e){return document.querySelector("."+e)},p=function(){return d(r.modal)},f=function(){return d(r.overlay)},m=function(){var e=p();return e.querySelectorAll("."+r.icon)},v=function(){return d(r.spacer)},y=function(){return d(r.progresssteps)},h=function(){return d(r.confirm)},g=function(){return d(r.cancel)},b=function(){return d(r.close)},w=function(e){var t=[h(),g()];return e&&t.reverse(),t.concat(Array.prototype.slice.call(p().querySelectorAll("button:not([class^="+n+"]), input:not([type=hidden]), textarea, select")))},C=function(e,t){return e.classList.contains(t)},k=function(e){e.focus();var t=e.value;e.value="",e.value=t},S=function(e,t){if(e&&t){var n=t.split(/\s+/);n.forEach(function(t){e.classList.add(t)})}},x=function(e,t){if(e&&t){var n=t.split(/\s+/);n.forEach(function(t){e.classList.remove(t)})}},E=function(e,t){for(var n=0;n<e.childNodes.length;n++)if(C(e.childNodes[n],t))return e.childNodes[n]},A=function(e,t){t||(t="block"),e.style.opacity="",e.style.display=t},B=function(e){e.style.opacity="",e.style.display="none"},q=function(e){for(;e.firstChild;)e.removeChild(e.firstChild)},P=function(e){return e.offsetWidth||e.offsetHeight||e.getClientRects().length},L=function(e,t){e.style.removeProperty?e.style.removeProperty(t):e.style.removeAttribute(t)},M=function(e){var t=e.style.display;e.style.left="-9999px",e.style.display="block";var n=e.clientHeight;return e.style.left="",e.style.display=t,"-"+parseInt(n/2,10)+"px"},T=function(e,t){if(+e.style.opacity<1){t=t||16,e.style.opacity=0,e.style.display="block";var n=+new Date,o=function(){var r=+e.style.opacity+(new Date-n)/100;e.style.opacity=r>1?1:r,n=+new Date,+e.style.opacity<1&&setTimeout(o,t)};o()}},V=function(e,t){if(+e.style.opacity>0){t=t||16;var n=e.style.opacity,o=+new Date,r=function(){var i=new Date-o,a=+e.style.opacity-i/(100*n);e.style.opacity=a,o=+new Date,+e.style.opacity>0?setTimeout(r,t):B(e)};r()}},O=function(e){if("function"==typeof MouseEvent){var t=new MouseEvent("click",{view:window,bubbles:!1,cancelable:!0});e.dispatchEvent(t)}else if(document.createEvent){var n=document.createEvent("MouseEvents");n.initEvent("click",!1,!1),e.dispatchEvent(n)}else document.createEventObject?e.fireEvent("onclick"):"function"==typeof e.onclick&&e.onclick()},N=function(e){"function"==typeof e.stopPropagation?(e.stopPropagation(),e.preventDefault()):window.event&&window.event.hasOwnProperty("cancelBubble")&&(window.event.cancelBubble=!0)},H=function(){var e=document.createElement("div"),t={WebkitAnimation:"webkitAnimationEnd",OAnimation:"oAnimationEnd oanimationend",msAnimation:"MSAnimationEnd",animation:"animationend"};for(var n in t)if(t.hasOwnProperty(n)&&void 0!==e.style[n])return t[n];return!1}(),D=function(){var e=p();window.onkeydown=u.previousWindowKeyDown,u.previousActiveElement&&u.previousActiveElement.focus&&u.previousActiveElement.focus(),clearTimeout(e.timeout)},I=function(e){var t=n+"mediaquery-"+Math.random().toString(36).substring(2,7),o=document.getElementsByTagName("head")[0],r=document.createElement("style");return r.type="text/css",r.id=t,r.innerHTML=e,o.appendChild(r),t},j=function(e){if(!e)return!1;var t=document.getElementsByTagName("head")[0],n=document.getElementById(e);n&&t.removeChild(n)},K=s({},a),U=[],W=function(e){var t=p();for(var n in e)a.hasOwnProperty(n)||"extraParams"===n||console.warn('SweetAlert2: Unknown parameter "'+n+'"');e.width=e.width.toString();var o,l=e.width.match(/^(\d+)(px|%)?$/);if(l?(o="px",l[2]&&(o=l[2]),l=parseInt(l[1],10),t.style.width=l+o,t.style.marginLeft=-l/2+o):console.warn('SweetAlert2: Invalid width parameter, usage examples: "400px", "50%", or just 500 which equals to "500px"'),t.style.padding=e.padding+"px",t.style.background=e.background,"px"===o){var s=5,c=l+l*(s/100)*2,u=I("@media screen and (max-width: "+c+"px) {."+r.modal+" {width: auto !important;left: "+s+"% !important;right: "+s+"% !important;margin-left: 0 !important;}}");t.setAttribute("data-mediaquery-id",u)}var d=t.querySelector("h2"),f=t.querySelector("."+r.content),b=h(),w=g(),C=t.querySelector("."+r.close);d.innerHTML=e.title.split("\n").join("<br>");var k;if(e.text||e.html){if("object"==typeof e.html)if(f.innerHTML="",0 in e.html)for(k=0;k in e.html;k++)f.appendChild(e.html[k].cloneNode(!0));else f.appendChild(e.html.cloneNode(!0));else f.innerHTML=e.html||e.text.split("\n").join("<br>");A(f)}else B(f);e.showCloseButton?A(C):B(C),t.className=r.modal,e.customClass&&S(t,e.customClass);var E=y(),P=parseInt(null===e.currentProgressStep?swal.getQueueStep():e.currentProgressStep,10);e.progressSteps.length?(A(E),q(E),P>=e.progressSteps.length&&console.warn("SweetAlert2: Invalid currentProgressStep parameter, it should be less than progressSteps.length (currentProgressStep like JS arrays starts from 0)"),e.progressSteps.forEach(function(t,n){var o=document.createElement("li");if(S(o,r.progresscircle),o.innerHTML=t,n===P&&S(o,r.activeprogressstep),E.appendChild(o),n!==e.progressSteps.length-1){var i=document.createElement("li");S(i,r.progressline),i.style.width=e.progressStepsDistance,E.appendChild(i)}})):B(E);var M=m();for(k=0;k<M.length;k++)B(M[k]);if(e.type){var T=!1;for(var V in i)if(e.type===V){T=!0;break}if(!T)return console.error("SweetAlert2: Unknown alert type: "+e.type),!1;var O=t.querySelector("."+r.icon+"."+i[e.type]);switch(A(O),e.type){case"success":S(O,"animate"),S(O.querySelector(".tip"),"animate-success-tip"),S(O.querySelector(".long"),"animate-success-long");break;case"error":S(O,"animate-error-icon"),S(O.querySelector(".x-mark"),"animate-x-mark");break;case"warning":S(O,"pulse-warning")}}var N=t.querySelector("."+r.image);e.imageUrl?(N.setAttribute("src",e.imageUrl),A(N),e.imageWidth?N.setAttribute("width",e.imageWidth):N.removeAttribute("width"),e.imageHeight?N.setAttribute("height",e.imageHeight):N.removeAttribute("height"),N.className=r.image,e.imageClass&&S(N,e.imageClass)):B(N),e.showCancelButton?w.style.display="inline-block":B(w),e.showConfirmButton?L(b,"display"):B(b);var H=v();e.showConfirmButton||e.showCancelButton?A(H):B(H),b.innerHTML=e.confirmButtonText,w.innerHTML=e.cancelButtonText,e.buttonsStyling&&(b.style.backgroundColor=e.confirmButtonColor,w.style.backgroundColor=e.cancelButtonColor),b.className=r.confirm,S(b,e.confirmButtonClass),w.className=r.cancel,S(w,e.cancelButtonClass),e.buttonsStyling?(S(b,"styled"),S(w,"styled")):(x(b,"styled"),x(w,"styled"),b.style.backgroundColor=b.style.borderLeftColor=b.style.borderRightColor="",w.style.backgroundColor=w.style.borderLeftColor=w.style.borderRightColor=""),e.animation===!0?x(t,"no-animation"):S(t,"no-animation")},z=function(e,t){var n=p();e?(T(f(),10),S(n,"show-swal2"),x(n,"hide-swal2")):A(f()),A(n),u.previousActiveElement=document.activeElement,null!==t&&"function"==typeof t&&t.call(this,n)},R=function(){var e=p();null!==e&&(e.style.marginTop=M(e))};return t.isVisible=function(){var e=p();return P(e)},t.queue=function(e){U=e;var n=p()||t.init(),o=function(){U=[],n.removeAttribute("data-queue-step")};return new Promise(function(e,r){!function i(a,l){a<U.length?(n.setAttribute("data-queue-step",a),t(U[a]).then(function(){i(a+1,l)},function(e){o(),r(e)})):(o(),e())}(0)})},t.getQueueStep=function(){return p().getAttribute("data-queue-step")},t.insertQueueStep=function(e,t){return t&&t<U.length?U.splice(t,0,e):U.push(e)},t.deleteQueueStep=function(e){"undefined"!=typeof U[e]&&U.splice(e,1)},t.close=t.closeModal=function(e){var t=p();x(t,"show-swal2"),S(t,"hide-swal2");var n=t.querySelector("."+r.icon+"."+i.success);x(n,"animate"),x(n.querySelector(".tip"),"animate-success-tip"),x(n.querySelector(".long"),"animate-success-long");var o=t.querySelector("."+r.icon+"."+i.error);x(o,"animate-error-icon"),x(o.querySelector(".x-mark"),"animate-x-mark");var a=t.querySelector("."+r.icon+"."+i.warning);x(a,"pulse-warning"),D();var l=t.getAttribute("data-mediaquery-id");H&&!C(t,"no-animation")?t.addEventListener(H,function s(){t.removeEventListener(H,s),C(t,"hide-swal2")&&(B(t),V(f(),0)),j(l)}):(B(t),B(f()),j(l)),null!==e&&"function"==typeof e&&e.call(this,t)},t.clickConfirm=function(){h().click()},t.clickCancel=function(){g().click()},t.init=function(){if("undefined"==typeof document)return void console.log("SweetAlert2 requires document to initialize");if(!document.getElementsByClassName(r.container).length){var e=document.createElement("div");e.className=r.container,e.innerHTML=l,document.body.appendChild(e);var n=p(),o=E(n,r.input),i=n.querySelector("."+r.range+" input"),a=E(n,r.select),s=n.querySelector("."+r.checkbox+" input"),c=E(n,r.textarea),u=E(n,r.image);return o.oninput=function(){t.resetValidationError()},o.onkeyup=function(e){e.stopPropagation(),13===e.keyCode&&t.clickConfirm()},i.oninput=function(){t.resetValidationError(),i.previousSibling.value=i.value},i.onchange=function(){t.resetValidationError(),i.previousSibling.value=i.value},a.onchange=function(){t.resetValidationError()},s.onchange=function(){t.resetValidationError()},c.oninput=function(){t.resetValidationError()},u.onload=R,u.onerror=R,window.addEventListener("resize",R,!1),n}},t.setDefaults=function(e){if(!e)throw new Error("userParams is required");if("object"!=typeof e)throw new Error("userParams has to be a object");s(K,e)},t.resetDefaults=function(){K=s({},a)},t.version="4.3.3",window.sweetAlert=window.swal=t,function(){"complete"===document.readyState||"interactive"===document.readyState&&document.body?t.init():document.addEventListener("DOMContentLoaded",function e(){document.removeEventListener("DOMContentLoaded",e,!1),t.init()},!1)}(),"function"==typeof Promise?Promise.prototype.done=Promise.prototype.done||function(){return this["catch"](function(){})}:console.warn("SweetAlert2: Please inlude Promise polyfill BEFORE including sweetalert2.js if IE10+ support needed."),t});
+!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):e.Sweetalert2=t()}(this,function(){"use strict";var e={title:"",titleText:"",text:"",html:"",type:null,customClass:"",target:"body",animation:!0,allowOutsideClick:!0,allowEscapeKey:!0,allowEnterKey:!0,showConfirmButton:!0,showCancelButton:!1,preConfirm:null,confirmButtonText:"OK",confirmButtonColor:"#3085d6",confirmButtonClass:null,cancelButtonText:"Cancel",cancelButtonColor:"#aaa",cancelButtonClass:null,buttonsStyling:!0,reverseButtons:!1,focusCancel:!1,showCloseButton:!1,showLoaderOnConfirm:!1,imageUrl:null,imageWidth:null,imageHeight:null,imageClass:null,timer:null,width:500,padding:20,background:"#fff",input:null,inputPlaceholder:"",inputValue:"",inputOptions:{},inputAutoTrim:!0,inputClass:null,inputAttributes:{},inputValidator:null,progressSteps:[],currentProgressStep:null,progressStepsDistance:"40px",onOpen:null,onClose:null},t=function(e){var t={};for(var n in e)t[e[n]]="swal2-"+e[n];return t},n=t(["container","shown","iosfix","modal","overlay","fade","show","hide","noanimation","close","title","content","spacer","confirm","cancel","icon","image","input","file","range","select","radio","checkbox","textarea","inputerror","validationerror","progresssteps","activeprogressstep","progresscircle","progressline","loading","styled"]),o=t(["success","warning","info","question","error"]),r=function(e,t){e=String(e).replace(/[^0-9a-f]/gi,""),e.length<6&&(e=e[0]+e[0]+e[1]+e[1]+e[2]+e[2]),t=t||0;for(var n="#",o=0;o<3;o++){var r=parseInt(e.substr(2*o,2),16);r=Math.round(Math.min(Math.max(0,r+r*t),255)).toString(16),n+=("00"+r).substr(r.length)}return n},i={previousWindowKeyDown:null,previousActiveElement:null,previousBodyPadding:null},a=function(e){if("undefined"==typeof document)return void console.error("SweetAlert2 requires document to initialize");var t=document.createElement("div");t.className=n.container,t.innerHTML=l;var o=document.querySelector(e.target);o||(console.warn("SweetAlert2: Can't find the target \""+e.target+'"'),o=document.body),o.appendChild(t);var r=u(),i=B(r,n.input),a=B(r,n.file),s=r.querySelector("."+n.range+" input"),c=r.querySelector("."+n.range+" output"),d=B(r,n.select),p=r.querySelector("."+n.checkbox+" input"),f=B(r,n.textarea);return i.oninput=function(){$.resetValidationError()},i.onkeydown=function(t){setTimeout(function(){13===t.keyCode&&e.allowEnterKey&&(t.stopPropagation(),$.clickConfirm())},0)},a.onchange=function(){$.resetValidationError()},s.oninput=function(){$.resetValidationError(),c.value=s.value},s.onchange=function(){$.resetValidationError(),s.previousSibling.value=s.value},d.onchange=function(){$.resetValidationError()},p.onchange=function(){$.resetValidationError()},f.oninput=function(){$.resetValidationError()},r},l=('\n <div  role="dialog" aria-labelledby="modalTitleId" aria-describedby="modalContentId" class="'+n.modal+'" tabIndex="-1" >\n   <ul class="'+n.progresssteps+'"></ul>\n   <div class="'+n.icon+" "+o.error+'">\n     <span class="x-mark"><span class="line left"></span><span class="line right"></span></span>\n   </div>\n   <div class="'+n.icon+" "+o.question+'">?</div>\n   <div class="'+n.icon+" "+o.warning+'">!</div>\n   <div class="'+n.icon+" "+o.info+'">i</div>\n   <div class="'+n.icon+" "+o.success+'">\n     <span class="line tip"></span> <span class="line long"></span>\n     <div class="placeholder"></div> <div class="fix"></div>\n   </div>\n   <img class="'+n.image+'">\n   <h2 class="'+n.title+'" id="modalTitleId"></h2>\n   <div id="modalContentId" class="'+n.content+'"></div>\n   <input class="'+n.input+'">\n   <input type="file" class="'+n.file+'">\n   <div class="'+n.range+'">\n     <output></output>\n     <input type="range">\n   </div>\n   <select class="'+n.select+'"></select>\n   <div class="'+n.radio+'"></div>\n   <label for="'+n.checkbox+'" class="'+n.checkbox+'">\n     <input type="checkbox">\n   </label>\n   <textarea class="'+n.textarea+'"></textarea>\n   <div class="'+n.validationerror+'"></div>\n   <hr class="'+n.spacer+'">\n   <button type="button" role="button" tabIndex="0" class="'+n.confirm+'">OK</button>\n   <button type="button" role="button" tabIndex="0" class="'+n.cancel+'">Cancel</button>\n   <span class="'+n.close+'">&times;</span>\n </div>\n').replace(/(^|\n)\s*/g,""),s=function(){return document.body.querySelector("."+n.container)},u=function(){return s()?s().querySelector("."+n.modal):null},c=function(){return u().querySelectorAll("."+n.icon)},d=function(e){return s()?s().querySelector("."+e):null},p=function(){return d(n.title)},f=function(){return d(n.content)},m=function(){return d(n.image)},v=function(){return d(n.spacer)},h=function(){return d(n.progresssteps)},y=function(){return d(n.validationerror)},g=function(){return d(n.confirm)},b=function(){return d(n.cancel)},w=function(){return d(n.close)},C=function(e){var t=[g(),b()];return e&&t.reverse(),t.concat(Array.prototype.slice.call(u().querySelectorAll("button:not([class^=swal2-]), input:not([type=hidden]), textarea, select")))},k=function(e,t){return!!e.classList&&e.classList.contains(t)},x=function(e){if(e.focus(),"file"!==e.type){var t=e.value;e.value="",e.value=t}},S=function(e,t){if(e&&t){t.split(/\s+/).filter(Boolean).forEach(function(t){e.classList.add(t)})}},E=function(e,t){if(e&&t){t.split(/\s+/).filter(Boolean).forEach(function(t){e.classList.remove(t)})}},B=function(e,t){for(var n=0;n<e.childNodes.length;n++)if(k(e.childNodes[n],t))return e.childNodes[n]},A=function(e,t){t||(t="block"),e.style.opacity="",e.style.display=t},P=function(e){e.style.opacity="",e.style.display="none"},T=function(e){for(;e.firstChild;)e.removeChild(e.firstChild)},L=function(e){return e.offsetWidth||e.offsetHeight||e.getClientRects().length},M=function(e,t){e.style.removeProperty?e.style.removeProperty(t):e.style.removeAttribute(t)},q=function(e){if(!L(e))return!1;if("function"==typeof MouseEvent){var t=new MouseEvent("click",{view:window,bubbles:!1,cancelable:!0});e.dispatchEvent(t)}else if(document.createEvent){var n=document.createEvent("MouseEvents");n.initEvent("click",!1,!1),e.dispatchEvent(n)}else document.createEventObject?e.fireEvent("onclick"):"function"==typeof e.onclick&&e.onclick()},V=function(){var e=document.createElement("div"),t={WebkitAnimation:"webkitAnimationEnd",OAnimation:"oAnimationEnd oanimationend",msAnimation:"MSAnimationEnd",animation:"animationend"};for(var n in t)if(t.hasOwnProperty(n)&&void 0!==e.style[n])return t[n];return!1}(),O=function(){if(window.onkeydown=i.previousWindowKeyDown,i.previousActiveElement&&i.previousActiveElement.focus){var e=window.scrollX,t=window.scrollY;i.previousActiveElement.focus(),e&&t&&window.scrollTo(e,t)}},H=function(){if("ontouchstart"in window||navigator.msMaxTouchPoints)return 0;var e=document.createElement("div");e.style.width="50px",e.style.height="50px",e.style.overflow="scroll",document.body.appendChild(e);var t=e.offsetWidth-e.clientWidth;return document.body.removeChild(e),t},I=function(e,t){var n=void 0;return function(){var o=function(){n=null,e()};clearTimeout(n),n=setTimeout(o,t)}},N="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},j=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var o in n)Object.prototype.hasOwnProperty.call(n,o)&&(e[o]=n[o])}return e},K=j({},e),D=[],U=void 0,W=function(t){var r=u()||a(t);for(var i in t)e.hasOwnProperty(i)||"extraParams"===i||console.warn('SweetAlert2: Unknown parameter "'+i+'"');r.style.width="number"==typeof t.width?t.width+"px":t.width,r.style.padding=t.padding+"px",r.style.background=t.background;var l=p(),s=f(),d=g(),y=b(),C=w();if(t.titleText?l.innerText=t.titleText:l.innerHTML=t.title.split("\n").join("<br>"),t.text||t.html){if("object"===N(t.html))if(s.innerHTML="",0 in t.html)for(var k=0;k in t.html;k++)s.appendChild(t.html[k].cloneNode(!0));else s.appendChild(t.html.cloneNode(!0));else t.html?s.innerHTML=t.html:t.text&&(s.textContent=t.text);A(s)}else P(s);t.showCloseButton?A(C):P(C),r.className=n.modal,t.customClass&&S(r,t.customClass);var x=h(),B=parseInt(null===t.currentProgressStep?$.getQueueStep():t.currentProgressStep,10);t.progressSteps.length?(A(x),T(x),B>=t.progressSteps.length&&console.warn("SweetAlert2: Invalid currentProgressStep parameter, it should be less than progressSteps.length (currentProgressStep like JS arrays starts from 0)"),t.progressSteps.forEach(function(e,o){var r=document.createElement("li");if(S(r,n.progresscircle),r.innerHTML=e,o===B&&S(r,n.activeprogressstep),x.appendChild(r),o!==t.progressSteps.length-1){var i=document.createElement("li");S(i,n.progressline),i.style.width=t.progressStepsDistance,x.appendChild(i)}})):P(x);for(var L=c(),q=0;q<L.length;q++)P(L[q]);if(t.type){var V=!1;for(var O in o)if(t.type===O){V=!0;break}if(!V)return console.error("SweetAlert2: Unknown alert type: "+t.type),!1;var H=r.querySelector("."+n.icon+"."+o[t.type]);switch(A(H),t.type){case"success":S(H,"animate"),S(H.querySelector(".tip"),"animate-success-tip"),S(H.querySelector(".long"),"animate-success-long");break;case"error":S(H,"animate-error-icon"),S(H.querySelector(".x-mark"),"animate-x-mark");break;case"warning":S(H,"pulse-warning")}}var I=m();t.imageUrl?(I.setAttribute("src",t.imageUrl),A(I),t.imageWidth?I.setAttribute("width",t.imageWidth):I.removeAttribute("width"),t.imageHeight?I.setAttribute("height",t.imageHeight):I.removeAttribute("height"),I.className=n.image,t.imageClass&&S(I,t.imageClass)):P(I),t.showCancelButton?y.style.display="inline-block":P(y),t.showConfirmButton?M(d,"display"):P(d);var j=v();t.showConfirmButton||t.showCancelButton?A(j):P(j),d.innerHTML=t.confirmButtonText,y.innerHTML=t.cancelButtonText,t.buttonsStyling&&(d.style.backgroundColor=t.confirmButtonColor,y.style.backgroundColor=t.cancelButtonColor),d.className=n.confirm,S(d,t.confirmButtonClass),y.className=n.cancel,S(y,t.cancelButtonClass),t.buttonsStyling?(S(d,n.styled),S(y,n.styled)):(E(d,n.styled),E(y,n.styled),d.style.backgroundColor=d.style.borderLeftColor=d.style.borderRightColor="",y.style.backgroundColor=y.style.borderLeftColor=y.style.borderRightColor=""),t.animation===!0?E(r,n.noanimation):S(r,n.noanimation)},R=function(e,t){var o=s(),r=u();e?(S(r,n.show),S(o,n.fade),E(r,n.hide)):E(r,n.fade),A(r),o.style.overflowY="hidden",V&&!k(r,n.noanimation)?r.addEventListener(V,function e(){r.removeEventListener(V,e),o.style.overflowY="auto"}):o.style.overflowY="auto",S(document.documentElement,n.shown),S(document.body,n.shown),S(o,n.shown),z(),Y(),i.previousActiveElement=document.activeElement,null!==t&&"function"==typeof t&&setTimeout(function(){t(r)})},z=function(){null===i.previousBodyPadding&&document.body.scrollHeight>window.innerHeight&&(i.previousBodyPadding=document.body.style.paddingRight,document.body.style.paddingRight=H()+"px")},Q=function(){null!==i.previousBodyPadding&&(document.body.style.paddingRight=i.previousBodyPadding,i.previousBodyPadding=null)},Y=function(){if(/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream&&!k(document.body,n.iosfix)){var e=document.body.scrollTop;document.body.style.top=e*-1+"px",S(document.body,n.iosfix)}},Z=function(){if(k(document.body,n.iosfix)){var e=parseInt(document.body.style.top,10);E(document.body,n.iosfix),document.body.style.top="",document.body.scrollTop=e*-1}},$=function e(){for(var t=arguments.length,o=Array(t),a=0;a<t;a++)o[a]=arguments[a];if(void 0===o[0])return console.error("SweetAlert2 expects at least 1 attribute!"),!1;var l=j({},K);switch(N(o[0])){case"string":l.title=o[0],l.html=o[1],l.type=o[2];break;case"object":j(l,o[0]),l.extraParams=o[0].extraParams,"email"===l.input&&null===l.inputValidator&&(l.inputValidator=function(e){return new Promise(function(t,n){/^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(e)?t():n("Invalid email address")})}),"url"===l.input&&null===l.inputValidator&&(l.inputValidator=function(e){return new Promise(function(t,n){/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/.test(e)?t():n("Invalid URL")})});break;default:return console.error('SweetAlert2: Unexpected type of argument! Expected "string" or "object", got '+N(o[0])),!1}W(l);var c=s(),d=u();return new Promise(function(t,o){l.timer&&(d.timeout=setTimeout(function(){e.closeModal(l.onClose),o("timer")},l.timer));var a=function(e){if(!(e=e||l.input))return null;switch(e){case"select":case"textarea":case"file":return B(d,n[e]);case"checkbox":return d.querySelector("."+n.checkbox+" input");case"radio":return d.querySelector("."+n.radio+" input:checked")||d.querySelector("."+n.radio+" input:first-child");case"range":return d.querySelector("."+n.range+" input");default:return B(d,n.input)}},k=function(){var e=a();if(!e)return null;switch(l.input){case"checkbox":return e.checked?1:0;case"radio":return e.checked?e.value:null;case"file":return e.files.length?e.files[0]:null;default:return l.inputAutoTrim?e.value.trim():e.value}};l.input&&setTimeout(function(){var e=a();e&&x(e)},0);for(var T=function(n){l.showLoaderOnConfirm&&e.showLoading(),l.preConfirm?l.preConfirm(n,l.extraParams).then(function(o){e.closeModal(l.onClose),t(o||n)},function(t){e.hideLoading(),t&&e.showValidationError(t)}):(e.closeModal(l.onClose),t(n))},M=function(t){var n=t||window.event,i=n.target||n.srcElement,a=g(),s=b(),u=a===i||a.contains(i),c=s===i||s.contains(i);switch(n.type){case"mouseover":case"mouseup":l.buttonsStyling&&(u?a.style.backgroundColor=r(l.confirmButtonColor,-.1):c&&(s.style.backgroundColor=r(l.cancelButtonColor,-.1)));break;case"mouseout":l.buttonsStyling&&(u?a.style.backgroundColor=l.confirmButtonColor:c&&(s.style.backgroundColor=l.cancelButtonColor));break;case"mousedown":l.buttonsStyling&&(u?a.style.backgroundColor=r(l.confirmButtonColor,-.2):c&&(s.style.backgroundColor=r(l.cancelButtonColor,-.2)));break;case"click":if(u&&e.isVisible())if(e.disableButtons(),l.input){var d=k();l.inputValidator?(e.disableInput(),l.inputValidator(d,l.extraParams).then(function(){e.enableButtons(),e.enableInput(),T(d)},function(t){e.enableButtons(),e.enableInput(),t&&e.showValidationError(t)})):T(d)}else T(!0);else c&&e.isVisible()&&(e.disableButtons(),e.closeModal(l.onClose),o("cancel"))}},V=d.querySelectorAll("button"),O=0;O<V.length;O++)V[O].onclick=M,V[O].onmouseover=M,V[O].onmouseout=M,V[O].onmousedown=M;w().onclick=function(){e.closeModal(l.onClose),o("close")},c.onclick=function(t){t.target===c&&l.allowOutsideClick&&(e.closeModal(l.onClose),o("overlay"))};var H=g(),j=b();l.reverseButtons?H.parentNode.insertBefore(j,H):H.parentNode.insertBefore(H,j);var K=function(e,t){for(var n=C(l.focusCancel),o=0;o<n.length;o++){e+=t,e===n.length?e=0:e===-1&&(e=n.length-1);var r=n[e];if(L(r))return r.focus()}},D=function(t){var n=t||window.event,r=n.keyCode||n.which;if([9,13,32,27].indexOf(r)!==-1){for(var i=n.target||n.srcElement,a=C(l.focusCancel),s=-1,u=0;u<a.length;u++)if(i===a[u]){s=u;break}9===r?(n.shiftKey?K(s,-1):K(s,1),n.stopPropagation(),n.preventDefault()):13===r||32===r?s===-1&&l.allowEnterKey&&q(l.focusCancel?j:H):27===r&&l.allowEscapeKey===!0&&(e.closeModal(l.onClose),o("esc"))}};i.previousWindowKeyDown=window.onkeydown,window.onkeydown=D,l.buttonsStyling&&(H.style.borderLeftColor=l.confirmButtonColor,H.style.borderRightColor=l.confirmButtonColor),e.showLoading=e.enableLoading=function(){A(v()),A(H,"inline-block"),S(H,n.loading),S(d,n.loading),H.disabled=!0,j.disabled=!0},e.hideLoading=e.disableLoading=function(){l.showConfirmButton||(P(H),l.showCancelButton||P(v())),E(H,n.loading),E(d,n.loading),H.disabled=!1,j.disabled=!1},e.getTitle=function(){return p()},e.getContent=function(){return f()},e.getInput=function(){return a()},e.getImage=function(){return m()},e.getConfirmButton=function(){return g()},e.getCancelButton=function(){return b()},e.enableButtons=function(){H.disabled=!1,j.disabled=!1},e.disableButtons=function(){H.disabled=!0,j.disabled=!0},e.enableConfirmButton=function(){H.disabled=!1},e.disableConfirmButton=function(){H.disabled=!0},e.enableInput=function(){var e=a();if(!e)return!1;if("radio"===e.type)for(var t=e.parentNode.parentNode,n=t.querySelectorAll("input"),o=0;o<n.length;o++)n[o].disabled=!1;else e.disabled=!1},e.disableInput=function(){var e=a();if(!e)return!1;if(e&&"radio"===e.type)for(var t=e.parentNode.parentNode,n=t.querySelectorAll("input"),o=0;o<n.length;o++)n[o].disabled=!0;else e.disabled=!0},e.recalculateHeight=I(function(){var e=u();if(e){var t=e.style.display;e.style.minHeight="",A(e),e.style.minHeight=e.scrollHeight+1+"px",e.style.display=t}},50),e.showValidationError=function(e){var t=y();t.innerHTML=e,A(t);var o=a();o&&(x(o),S(o,n.inputerror))},e.resetValidationError=function(){P(y()),e.recalculateHeight();var t=a();t&&E(t,n.inputerror)},e.getProgressSteps=function(){return l.progressSteps},e.setProgressSteps=function(e){l.progressSteps=e,W(l)},e.showProgressSteps=function(){A(h())},e.hideProgressSteps=function(){P(h())},e.enableButtons(),e.hideLoading(),e.resetValidationError();for(var z=["input","file","range","select","radio","checkbox","textarea"],Q=void 0,Y=0;Y<z.length;Y++){var Z=n[z[Y]],$=B(d,Z);if(Q=a(z[Y])){for(var J in Q.attributes)if(Q.attributes.hasOwnProperty(J)){var X=Q.attributes[J].name;"type"!==X&&"value"!==X&&Q.removeAttribute(X)}for(var _ in l.inputAttributes)Q.setAttribute(_,l.inputAttributes[_])}$.className=Z,l.inputClass&&S($,l.inputClass),P($)}var F=void 0;switch(l.input){case"text":case"email":case"password":case"number":case"tel":case"url":Q=B(d,n.input),Q.value=l.inputValue,Q.placeholder=l.inputPlaceholder,Q.type=l.input,A(Q);break;case"file":Q=B(d,n.file),Q.placeholder=l.inputPlaceholder,Q.type=l.input,A(Q);break;case"range":var G=B(d,n.range),ee=G.querySelector("input"),te=G.querySelector("output");ee.value=l.inputValue,ee.type=l.input,te.value=l.inputValue,A(G);break;case"select":var ne=B(d,n.select);if(ne.innerHTML="",l.inputPlaceholder){var oe=document.createElement("option");oe.innerHTML=l.inputPlaceholder,oe.value="",oe.disabled=!0,oe.selected=!0,ne.appendChild(oe)}F=function(e){for(var t in e){var n=document.createElement("option");n.value=t,n.innerHTML=e[t],l.inputValue===t&&(n.selected=!0),ne.appendChild(n)}A(ne),ne.focus()};break;case"radio":var re=B(d,n.radio);re.innerHTML="",F=function(e){for(var t in e){var o=document.createElement("input"),r=document.createElement("label"),i=document.createElement("span");o.type="radio",o.name=n.radio,o.value=t,l.inputValue===t&&(o.checked=!0),i.innerHTML=e[t],r.appendChild(o),r.appendChild(i),r.for=o.id,re.appendChild(r)}A(re);var a=re.querySelectorAll("input");a.length&&a[0].focus()};break;case"checkbox":var ie=B(d,n.checkbox),ae=a("checkbox");ae.type="checkbox",ae.value=1,ae.id=n.checkbox,ae.checked=Boolean(l.inputValue);var le=ie.getElementsByTagName("span");le.length&&ie.removeChild(le[0]),le=document.createElement("span"),le.innerHTML=l.inputPlaceholder,ie.appendChild(le),A(ie);break;case"textarea":var se=B(d,n.textarea);se.value=l.inputValue,se.placeholder=l.inputPlaceholder,A(se);break;case null:break;default:console.error('SweetAlert2: Unexpected type of input! Expected "text", "email", "password", "number", "tel", "select", "radio", "checkbox", "textarea", "file" or "url", got "'+l.input+'"')}"select"!==l.input&&"radio"!==l.input||(l.inputOptions instanceof Promise?(e.showLoading(),l.inputOptions.then(function(t){e.hideLoading(),F(t)})):"object"===N(l.inputOptions)?F(l.inputOptions):console.error("SweetAlert2: Unexpected type of inputOptions! Expected object or Promise, got "+N(l.inputOptions))),R(l.animation,l.onOpen),l.allowEnterKey?K(-1,1):document.activeElement&&document.activeElement.blur(),s().scrollTop=0,"undefined"==typeof MutationObserver||U||(U=new MutationObserver(e.recalculateHeight),U.observe(d,{childList:!0,characterData:!0,subtree:!0}))})};return $.isVisible=function(){return!!u()},$.queue=function(e){D=e;var t=function(){D=[],document.body.removeAttribute("data-swal2-queue-step")},n=[];return new Promise(function(e,o){!function r(i,a){i<D.length?(document.body.setAttribute("data-swal2-queue-step",i),$(D[i]).then(function(e){n.push(e),r(i+1,a)},function(e){t(),o(e)})):(t(),e(n))}(0)})},$.getQueueStep=function(){return document.body.getAttribute("data-swal2-queue-step")},$.insertQueueStep=function(e,t){return t&&t<D.length?D.splice(t,0,e):D.push(e)},$.deleteQueueStep=function(e){void 0!==D[e]&&D.splice(e,1)},$.close=$.closeModal=function(e){var t=s(),o=u();if(o){E(o,n.show),S(o,n.hide),clearTimeout(o.timeout),O();var r=function(){t.parentNode.removeChild(t),E(document.documentElement,n.shown),E(document.body,n.shown),Q(),Z()};V&&!k(o,n.noanimation)?o.addEventListener(V,function e(){o.removeEventListener(V,e),k(o,n.hide)&&r()}):r(),null!==e&&"function"==typeof e&&setTimeout(function(){e(o)})}},$.clickConfirm=function(){return g().click()},$.clickCancel=function(){return b().click()},$.setDefaults=function(t){if(!t||"object"!==(void 0===t?"undefined":N(t)))return console.error("SweetAlert2: the argument for setDefaults() is required and has to be a object");for(var n in t)e.hasOwnProperty(n)||"extraParams"===n||(console.warn('SweetAlert2: Unknown parameter "'+n+'"'),delete t[n]);j(K,t)},$.resetDefaults=function(){K=j({},e)},$.noop=function(){},$.version="6.4.4",$.default=$,$}),window.Sweetalert2&&(window.sweetAlert=window.swal=window.Sweetalert2);
 /**
 @fileOverview
 
@@ -8420,18 +9275,41 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	//'angularFblogin',
 	'ngPayments',
 	'infinite-scroll',
+	'satellizer'
 	//'ngTouch'
-]).config(['$locationProvider','$mdThemingProvider', function($location,$mdThemingProvider) {
+]).config(['$locationProvider','$mdThemingProvider','$authProvider',
+	function($location,$mdThemingProvider,$authProvider) {
 
-	$location.html5Mode({
-		enabled: true,
-		requireBase: false
-	});
+		var social = angular.element('#socialid');
+		
+		$location.html5Mode({
+			enabled: true,
+			requireBase: false
+		});
 
-	// $location.hashPrefix('!');
-	//$mdThemingProvider.disableTheming();
-	$mdThemingProvider.theme('default').primaryPalette('purple').accentPalette('purple');
-    //.accentPalette('orange');    
+		//$location.hashPrefix('!');
+		//$mdThemingProvider.disableTheming();
+		$mdThemingProvider.theme('default').primaryPalette('purple').accentPalette('purple');
+	    //.accentPalette('orange');    
+
+	    // Optional: For client-side use (Implicit Grant), set responseType to 'token' (default: 'code')	    
+
+	    var fb_id = angular.element('meta[name="facebook_id"]').attr('content');
+	    var google_id = angular.element('meta[name="google_id"]').attr('content');
+	    var instagram_id = angular.element('meta[name="instagram_id"]').attr('content');
+	    
+	    $authProvider.facebook({
+	      clientId: fb_id
+	    });
+
+	    $authProvider.google({
+	      clientId: google_id
+	    });	    
+
+	    $authProvider.instagram({
+	      clientId: instagram_id
+	    });
+    
 }]);
 
 
@@ -9173,26 +10051,49 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						//templateUrl: "/templates/index/home.html",
 						controller:['sweetAlert','$location','$stateParams',function(sweetAlert,$location,$stateParams){
 						
-													var title = '';
-													var type = 'success';
-													var msg = 'Your email is already verified.';
-													if($stateParams.status == 1){
-														title = 'Congratulations!';
-														//type = 'success';
-														msg = 'Your email has been verified successfully, you can login with your registered email & password.';	
-													}							
+							var title = '';
+							var type = 'success';
+							var msg = 'Your email is already verified.';
+							if($stateParams.status == 1){
+								title = 'Congratulations!';
+								//type = 'success';
+								msg = 'Your email has been verified successfully, you can login with your registered email & password.';	
+							}							
+
+							sweetAlert.swal({
+								type:type,
+								title: title,
+								text : msg,
+								timer: 0,
+								closeOnConfirm: true
+							});
+
+							$location.url('/').replace();
+
+						}]
+				})
+
+				.state('mainLayout.sociallogin', {
+
+						url: "/socialmailverified/{type}",
+						//templateUrl: "/templates/index/home.html",
+						controller:['sweetAlert','$location','$stateParams',function(sweetAlert,$location,$stateParams){
 						
-													sweetAlert.swal({
-														type:type,
-														title: title,
-														text : msg,
-														timer: 0,
-														closeOnConfirm: true
-													});
-						
-													$location.url('/').replace();
-						
-												}]
+							var title = 'Congratulations!';
+							var type = 'success';
+							var msg = 'Your email for {type} login has been verified.';
+							msg = msg.replace('{type}',$stateParams.type);
+							sweetAlert.swal({
+								type:type,
+								title: title,
+								text : msg,
+								timer: 0,
+								closeOnConfirm: true
+							});
+
+							$location.url('/').replace();
+
+						}]
 				})
 
 				.state('mainLayout.expiredlink', {
@@ -9613,7 +10514,7 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 	            	config.url = 'api/'+urlStr;
 	        }else{
 	        	if(urlStr.indexOf('templates') > 0)
-	        		config.url += '?ver=1.10';
+	        		config.url += '?ver=1.11';
 	        }	        	
             return config;
         },
@@ -9867,26 +10768,19 @@ AlcoholDelivery.run([
 			hideDelay:def
 		});
 
-	});
-		
-	//LIVE
-	var appId = '1269828463077215';
-	//LOCAL OR BETA
-	//var appId = '273669936304095';
-
+	});		
+	
+	//FB SCRIPT 
+	var appId = angular.element('meta[name="facebook_id"]').attr('content');
+    
 	$window.fbAsyncInit = function() {
-    	// Executed when the SDK is loaded
 	    FB.init({
 	      appId: appId,
 	      status: true, 
 	      cookie: true, 
 	      xfbml: true,
 	      version: 'v2.4'
-	    }); 
-
-	    /*FB.Event.subscribe('auth.authResponseChange', function(res) {
-	    	console.log(res);
-	    });*/  
+	    }); 	    
 	};
 
 	(function(d, s, id) {
@@ -9895,17 +10789,7 @@ AlcoholDelivery.run([
 	  js = d.createElement(s); js.id = id;
 	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&version=v2.8&appId="+appId;
 	  fjs.parentNode.insertBefore(js, fjs);
-	}(document, 'script', 'facebook-jssdk'));
-	
-	/*angular.$templateCache = $templateCache;
-	
-	$rootScope.$on('$viewContentLoaded', function() {	  		  
-	  var newversion = 'newupdate8.0';
-      if(!$cookies.get('viewcached') || $cookies.get('viewcached')!=newversion){      		
-      		$templateCache.removeAll();
-	  		$cookies.put('viewcached',newversion);	      		
-      }
-   	});*/
+	}(document, 'script', 'facebook-jssdk'));	
 
 }]);
 
@@ -10532,14 +11416,13 @@ AlcoholDelivery.controller('AppController', [
 
 		
 
-	$scope.onSwipeLeft = function(ev) {
-		ev.stopPropagation();
+	$scope.onSwipeLeft = function() {
+		
 		angular.element('#wrapper').removeClass('toggled');
 		angular.element('body').removeClass(' hidden-scroll');
     };
 
-    $scope.onSwipeRight = function(ev) {
-    	ev.stopPropagation();
+    $scope.onSwipeRight = function() {    	
 		angular.element('#wrapper').addClass('toggled');
 		angular.element('body').addClass(' hidden-scroll');
     };	    
@@ -12880,7 +13763,8 @@ AlcoholDelivery.controller('CmsController',[
 				$scope.cmsData.formType == 'contact-us' ||
 				$scope.cmsData.formType == 'event-planner' ||
 				$scope.cmsData.formType == 'book-a-bartender' ||
-				$scope.cmsData.formType == 'become-a-partner' ||
+				$scope.cmsData.formType == 'bulkcorporate-discounts' ||
+				$scope.cmsData.formType == 'suggest-a-product' ||
 				$scope.cmsData.formType == 'sell-on-alcoholdelivery'
 			);
 		}
@@ -12911,8 +13795,16 @@ AlcoholDelivery.controller('CmsController',[
 	}
 
 	$scope.trustedHtml = function (plainText) {
-		  return $sce.trustAsHtml(plainText);
+		return $sce.trustAsHtml(plainText);
 	}
+
+	$scope.formElements = [
+		{label:'Subject',modelname:'subject',required:true},
+		{label:'Name',modelname:'name',required:true},
+		{label:'Email',modelname:'email',required:true},
+		{label:'Feedback',modelname:'feedback',required:true},
+		{label:'Additional Comment (optional)',modelname:'additionalComment',required:false},
+	];
 
 }]);
 
@@ -21157,8 +22049,8 @@ AlcoholDelivery.directive('sideBar', function() {
 		restrict: 'E',
 		templateUrl: '/templates/partials/topmenu.html',
 		controller: [
-		'$scope','$rootScope','$http','$state','$mdDialog','$timeout','$window','appSettings','sweetAlert','UserService','store','alcoholWishlist','ClaimGiftCard',
-		function($scope,$rootScope,$http,$state,$mdDialog,$timeout,$window,appSettings,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard){
+		'$scope','$rootScope','$http','$state','$mdDialog','$timeout','$window','appSettings','sweetAlert','UserService','store','alcoholWishlist','ClaimGiftCard','$auth',
+		function($scope,$rootScope,$http,$state,$mdDialog,$timeout,$window,appSettings,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard,$auth){
 					
 					$scope.list = [];
 		
@@ -21169,6 +22061,7 @@ AlcoholDelivery.directive('sideBar', function() {
 					$scope.reset = {};
 					$scope.resend = {};
 					$scope.resendemail = '';
+					$scope.sendmail = {};
 		
 					$scope.signupSubmit = function() {
 						$scope.signup.errors = {};
@@ -21412,6 +22305,42 @@ AlcoholDelivery.directive('sideBar', function() {
 						}).error(function(data, status, headers) {
 							$scope.resend.errors = data;
 				        });
+				    }				    			
+
+				    $scope.authenticate = function(provider) {
+				      $scope.login.errors = {};
+
+				      $auth.authenticate(provider).then(function(response) {						
+						$mdDialog.hide();
+						$scope.loginSuccess(response);
+					  }).finally(function(){					  	
+
+					  }).catch(function(erresult) {					  	
+				  		if(typeof erresult.data.emailnotfound != 'undefined'){								
+							$mdDialog.hide();
+							$scope.socialError = erresult.data.emailnotfound;								
+							$scope.resendverification();
+						}else{															
+					  		$scope.login.errors = erresult.data;
+						}
+					  });
+
+				    };
+
+				    $scope.addEmail = function(){				    	
+				    	$scope.sendmail.errors = {};				    	
+						$http.post('/auth/socialverification',$scope.sendmail).success(function(response){
+							$scope.sendmail = {};							
+							sweetAlert.swal({
+								title: "Verification email sent",
+								text : "Please check your inbox to verify your email and start shopping with us!",
+								imageUrl:'/images/send.gif',
+								confirmButtonColor: "#aa00ff", 
+							});					
+			                $mdDialog.hide();
+						}).error(function(data, status, headers) {
+							$scope.sendmail.errors = data;
+				        });
 				    }
 		
 				}]
@@ -21527,7 +22456,7 @@ AlcoholDelivery.directive('sideBar', function() {
         });
     };
 }])
-.directive('errProSrc', [function() {
+.directive('errProSrc', ['$q',function($q) {
   return {
     link: function(scope, element, attrs) {
       element.bind('error', function() {
@@ -21536,7 +22465,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 		attrs.$set('src', attrs.errSrc);
 
-      });
+      });     
     }
   }
 }])
@@ -22539,8 +23468,31 @@ AlcoholDelivery.directive('sideBar', function() {
 		
 					$scope.listUserAddress = function(flag){
 						$http.get("address").success(function(response){
+
+							var isDefaultSet = false;
+
+							if(response.length>0){
+
+								angular.forEach(response,function (currAdd,key) {
+									if(currAdd.default==true){
+										isDefaultSet = key;
+									}
+								})
+
+								if(!isDefaultSet){
+									response[0].default=true;
+								}								
+								
+							}
+
 							$scope.addresses = response;
-							$rootScope.addresses = $scope.addresses;	
+
+							if(isDefaultSet!==false && angular.isDefined($scope.delivery) && $scope.delivery.address == null){									
+								$scope.setSelectedAddress(isDefaultSet);
+							}
+
+							
+							$rootScope.addresses = $scope.addresses;
 							if($scope.delivery && flag){
 								var lastkey = ($scope.addresses.length - 1);
 								$scope.setSelectedAddress(lastkey);
@@ -22569,7 +23521,7 @@ AlcoholDelivery.directive('sideBar', function() {
 						$mdDialog.show({
 							scope: $scope.$new(),
 							controller: function(){
-		
+								
 								$scope.address = {step:1};
 								$scope.types = "['geocode']";
 								$scope.restrictions="{country:'sg'}";
@@ -22684,6 +23636,7 @@ AlcoholDelivery.directive('sideBar', function() {
 					};
 		
 					$scope.showAddressForm = function(dObj) {
+
 						$scope.errors = {};
 						$mdDialog.show({
 							scope: $scope.$new(),
@@ -22802,7 +23755,7 @@ AlcoholDelivery.directive('sideBar', function() {
 				// hide the spinner bar on rounte change success(after the content loaded)
 				$rootScope.$on('$stateChangeSuccess', function() {
 					element.addClass('hide'); // hide spinner bar
-					$('#sectionarea').removeClass('hide');
+					$('#sectionarea').removeAttr('style');
 					//$('body').removeClass('page-on-load'); // remove page loading indicator
 					// auto scorll to page top
 					setTimeout(function () {

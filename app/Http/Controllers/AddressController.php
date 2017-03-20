@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Http\Requests\UserAddressRequest;
 use AlcoholDelivery\Http\Controllers\Controller;
 use DateTime;
-use AlcoholDelivery\User as User;
+use AlcoholDelivery\User;
+use mongoId;
 
 class AddressController extends Controller
 {
@@ -47,8 +48,7 @@ class AddressController extends Controller
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(UserAddressRequest $request, $id='')
-	{
+	public function store(UserAddressRequest $request, $id=''){
 		$inputs = $request->all();
 
 		if(isset($inputs['LATITUDE']) && isset($inputs['LONGITUDE'])){
@@ -99,9 +99,29 @@ class AddressController extends Controller
 			unset($inputs['ROAD_NAME']);
 		}
 
+		if(isset($inputs['default']) && $inputs['default']===true){
+
+			$address = $user->address;
+
+			foreach ($address as &$value) {
+				$value['default'] = false;
+			}
+
+			$user->__set('address',$address);
+
+			$user->save();
+
+			$inputs['default'] = true;
+
+		}else{
+
+			$inputs['default'] = false;
+
+		}
+
 		$user->push('address',$inputs,true);
 
-		return response($user);		
+		return response($user);
 
 	}
 
@@ -153,9 +173,23 @@ class AddressController extends Controller
 
 		}
 
+		if(isset($inputs['default']) && $inputs['default']==true){
+			
+			foreach ($address as &$value) {
+				$value['default'] = false;
+			}
+
+			$inputs['default'] = true;
+
+		}else{
+
+			$inputs['default'] = false;
+
+		}
+
 		$address[$id] = $inputs;
 
-		$user->__set("address",$address);        
+		$user->__set("address",$address);
 
 		$return = array("success"=>false,"message"=>"","data"=>""); 
 
