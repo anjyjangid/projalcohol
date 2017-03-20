@@ -271,7 +271,9 @@ AlcoholDelivery.controller('AppController', [
     $scope.onSwipeRight = function() {    	
 		angular.element('#wrapper').addClass('toggled');
 		angular.element('body').addClass(' hidden-scroll');
-    };	    
+    };	        
+
+    //window.location = "js-call:testObjectiveCFunction";
 
 }]);
 

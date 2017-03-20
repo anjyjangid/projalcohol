@@ -16,7 +16,8 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	//'angularFblogin',
 	'ngPayments',
 	'infinite-scroll',
-	'satellizer'
+	'satellizer',
+	'ngIOS9UIWebViewPatch'
 	//'ngTouch'
 ]).config(['$locationProvider','$mdThemingProvider','$authProvider',
 	function($location,$mdThemingProvider,$authProvider) {
