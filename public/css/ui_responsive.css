@@ -4492,6 +4492,21 @@ md-toast.notify div.md-toast-content{
 .res-show{
 	display: block;
 }
+
+.productbeerfiltertopcover .row div{
+	margin-bottom: 0;
+}
+
+.cmspage-cover{
+	padding: 0 15px 44px 15px;
+}
+.cms-rightpanelMobile{
+	display: block;
+}
+.cms-rightpanel{
+	display: none;
+}
+
 }
 
 @media only screen and (width : 640px) {
@@ -5484,4 +5499,5 @@ top: -1px;
 .additempopuppinkboxrightinner a,.additempopuppinkboxrightinner a:hover,.additempopuppinkboxrightinner a:focus{
 	padding:0px !important;
 }
+
 }
