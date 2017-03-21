@@ -1832,22 +1832,24 @@ class CartController extends Controller
 		return response(["success"=>false,"message"=>"Something went wrong"],400);
 	}
 
-	public function confirmorder(Request $request,$cartKey=null,$isDeviceOrder=false){
+	public function confirmorder(Request $request,$cartKey=null,$isDeviceCODOrder=false,$userId=null){
 
 		$user = Auth::user('user');
 
 		// if its device order
 		if($request->isMethod('get') && empty($user) && !empty($request->get('merchant_data3'))){
 			$user = new stdClass;
-			$user->_id = $request->get('merchant_data2');
+			$user->_id = $user_id = $request->get('merchant_data2');
 			// $this->logtofile($request->all());
-			$userObj = User::find($user->_id); // get user object
-			$user->email = strtolower($userObj->email);
-			$user_id = $user->_id;
+		}else if(empty($user) && $isDeviceCODOrder && $userId!=null){
+			$user = new stdClass;
+			$user->_id = $user_id = $userId;
 		}else{
-			$userObj = User::find($user->_id); // get user object
 			$user_id = "";
 		}
+
+		$userObj = User::find($user->_id); // get user object
+		$user->email = strtolower($userObj->email);
 
 		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
 
@@ -1855,7 +1857,7 @@ class CartController extends Controller
 			$cartKey = $request->get('merchant_data1');
 
 		$cart = Cart::findUpdated($cartKey,'',$user_id);
-		
+
 		$isValidate = $cart->validate();
 
 		if($isValidate['valid']===false){
@@ -1885,11 +1887,11 @@ class CartController extends Controller
 
 		$cartArr['user'] = new MongoId($user->_id);		
 
-		try {	
+		try {
 			// $interface (wi=>1,eci=>2,bi=>3,device=>4,mobile=>5,pos=>6) // define order placed from which interface
-			$interface = !empty($request->get('merchant_data3'))?4:1;
+			$interface = (!empty($request->get('merchant_data3')) || $isDeviceCODOrder)?4:1;
 			//FORMAT CART TO ORDER
-			$orderObj = $cart->cartToOrdeconfirmorderr($cartKey,$interface);
+			$orderObj = $cart->cartToOrder($cartKey,$interface);
 			$cartArr['payment']['total'] = $orderObj['payment']['total'];
 			//PREPARE PAYMENT FORM DATA
 			if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){
@@ -1933,7 +1935,7 @@ class CartController extends Controller
 				$defaultContact = false;
 			}
 			$userObj->setContact($orderObj['delivery']['contact'],$defaultContact);
-			
+
 			//CREATE ORDER FROM CART & REMOVE CART
 			$order = Orders::create($orderObj);
 
@@ -3356,8 +3358,7 @@ class CartController extends Controller
 		return response(["message"=>'Something went wrong'],400);	
 	}
 
-	public function deviceOrder(Request $request, $deviceConfigurationId){
-
+	public function deviceOrder(Request $request, $deviceConfigurationId=null){
 		// get data sent by device
 		$deviceId = $request->get('did');
 		$deviceType = $request->get('deviceType');
@@ -3439,6 +3440,20 @@ class CartController extends Controller
 				}
 
 				// DEVICE BUTTON WORK
+				if($cartArr['payment']['method']=="COD"){
+					$responseObj = $this->confirmorder($request,$cartArr['_id'],true,(string)$cartArr['user']);
+					$response = $responseObj->getOriginalContent();
+					
+					if($response['success']){
+						return redirect('/device/orderplaced/'.$response['order']);
+					}else{
+						return response(["message"=>'Order failed!'],400);
+					}
+				}elseif($cartArr['payment']['method']=="CARD") {
+					// return device payment url so user can done payment using this URL
+					return response(["url"=>url("device/payment/".$deviceConfig->_id)],200);
+				}
+				
 				return response(["message"=>'Invalid payment option!'],400);
 
 			}catch(\Exception $e){
@@ -3459,62 +3474,62 @@ class CartController extends Controller
 	 * @return \Illuminate\Http\Response
 	*/
 	public function getConfiguredCard($id){
-		// $user = Auth::user('user');
-
 		if(MongoId::isValid($id)){
 			$deviceConfiguration = DeviceConfigurations::where("_id","=",new MongoId($id))->first();
-		}else{
-			return response(['success'=>false,"message"=>"Bad Request"],400);
-		}
-		// echo "<pre>"; print_r($deviceConfiguration); echo "</pre>"; exit;
+			// echo "<pre>"; print_r($deviceConfiguration); echo "</pre>"; exit;
+			if(!empty($deviceConfiguration)){
+				// get cart from deviceConfigurationId
+				$cartObj = Cart::where("deviceConfiguration","=",new MongoId($deviceConfiguration->_id))->first();
+				if(!empty($cartObj)){
+					$cartPament = !empty($cartObj->payment['paymentres'])?$cartObj->payment['paymentres']:'';
+					$deviceConfigurationArr = $deviceConfiguration->toArray();
+					// echo "<pre>"; print_r($deviceConfigurationArr); echo "</pre>"; exit;
+					$cardTokenId = isset($deviceConfigurationArr['payment']['creditCard']['token_id'])?$deviceConfigurationArr['payment']['creditCard']['token_id']:"";
+					$cardType = isset($deviceConfigurationArr['payment']['creditCard']['type'])?$deviceConfigurationArr['payment']['creditCard']['type']:"";
+					// echo $cardTokenId."<br>".$cardType; exit;
+					if(!empty($cardTokenId) && !empty($cardType)){
+						// check that configured card available in user saved cards.
+						$userId = $deviceConfigurationArr['user'];
 
-		// $deviceConfiguration = $deviceConfiguration->where("user",'=',new MongoId($user->_id))->first();
+						$where = ['_id'=>new MongoId($userId), 'savedCards.token_id'=>$cardTokenId, 'savedCards.type'=>$cardType];
+						$userCard = User::where($where)->first();
+						// echo "<pre>"; print_r($userCard); echo "</pre>"; exit;
 
-		if(!empty($deviceConfiguration)){
+						if(!empty($userCard)){
+							$savedCardArray = array(
+								"token_id"=>$cardTokenId,
+								"type"=>$cardType
+							);
 
-			// get cart from deviceConfigurationId
-			$cartObj = Cart::where("deviceConfiguration","=",new MongoId($deviceConfiguration->_id))->first();
-			$cartPament = !empty($cartObj->payment['paymentres'])?$cartObj->payment['paymentres']:'';
+							return response(['success'=>true, "card_found"=>1, "cards"=>$savedCardArray, "cart"=>$cartPament, "user"=>$userId],200);
+						}else{
+							// get all saved card of the User
+							$where = ['_id'=>new MongoId($userId)];
+							$savedUserCards = User::where($where)->select('savedCards')->first();
+							$savedCardArray = array();
+							foreach($savedUserCards['savedCards'] as $key=>$value){
+								$savedCardArray[] = array(
+									"token_id"=>$value['token_id'],
+									"type"=>$value['type']
+								);
+							}
 
-			$deviceConfigurationArr = $deviceConfiguration->toArray();
-			// echo "<pre>"; print_r($deviceConfigurationArr); echo "</pre>"; exit;
-			$cardTokenId = isset($deviceConfigurationArr['payment']['creditCard']['token_id'])?$deviceConfigurationArr['payment']['creditCard']['token_id']:"";
-			$cardType = isset($deviceConfigurationArr['payment']['creditCard']['type'])?$deviceConfigurationArr['payment']['creditCard']['type']:"";
-
-			if(!empty($cardTokenId) && !empty($cardType)){
-				// check that configured card available in user saved cards.
-				$userId = $deviceConfigurationArr['user'];
-
-				$where = ['_id'=>new MongoId($userId), 'savedCards.token_id'=>$cardTokenId, 'savedCards.type'=>$cardType];
-				$userCard = User::where($where)->first();
-				// echo "<pre>"; print_r($userCard); echo "</pre>"; exit;
-
-				if(!empty($userCard)){
-					$savedCardArray = array(
-						"token_id"=>$cardTokenId,
-						"type"=>$cardType
-					);
-
-					return response(['success'=>true, "cards"=>$savedCardArray, "cart"=>$cartPament, "user"=>$userId],200);
-				}else{
-					// get all saved card of the User
-					$where = ['_id'=>new MongoId($userId)];
-					$savedUserCards = User::where($where)->select('savedCards')->first();
-					$savedCardArray = array();
-					foreach($savedUserCards['savedCards'] as $key=>$value){
-						$savedCardArray[] = array(
-							"token_id"=>$value['token_id'],
-							"type"=>$value['type']
-						);
+							return response(['success'=>true, "card_found"=>0, "cards"=>$savedCardArray, "cart"=>$cartPament, "user"=>$userId],200);
+						}
+					}else{
+						$response['message'] = "Data not found";
+						return response($response,400);
 					}
-
-					return response(['success'=>false, "cards"=>$savedCardArray, "cart"=>$cartPament, "user"=>$userId],200);
+				}else{
+					return response(["message"=>"There is no cart linked with URL!"],400);
 				}
 			}else{
-				return response(['success'=>false,"message"=>"Data not found"],400);
+				$response['message'] = "Data not found";
+				return response($response,400);
 			}
 		}else{
-			return response(['success'=>false,"message"=>"Data not found"],400);
+			$response['message'] = "Bad Request";
+			return response($response,504);
 		}
 	}
 

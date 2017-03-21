@@ -33,6 +33,16 @@ MobileApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', f
 				location.href = "/"
 			}
 		})
+		.state('mainLayout.error',{
+			url: "/device/payment/error/",
+			templateUrl: '/templates/devicePaymentError.html',
+			controller : function ($stateParams,$scope) {
+				$scope.info = $stateParams.info;
+			},
+			params: {
+				info: null
+			}
+		})
 		.state('mainLayout.devicepayment', {
 			url: "/device/payment/{deviceconfigid}",
 			views: {
@@ -103,6 +113,7 @@ MobileApp.controller('MobileAppController', [
 	'$scope','$rootScope','$http','$state','$stateParams','$payments','$sce','UserService','sweetAlert', '$timeout', '$routeParams',
 	function($scope,$rootScope,$http,$state,$stateParams,$payments,$sce,UserService,sweetAlert, $timeout,$routeParams){		
 
+		$scope.isError = true;
 		$scope.adminmode = true; // To remove card delete option
 		$scope.savecardfuture = true; // To remove card delete option
     	$scope.userdata = {savedCards:[]};
@@ -120,21 +131,25 @@ MobileApp.controller('MobileAppController', [
 				// get cart payment detail
 				$scope.payment.paymentres = data.cart;
 
-				if(data.success==false){
-					$scope.isConfiguredCardFound = false;
-					$scope.userdata.user = data.user;
-					$scope.userdata.savedCards = data.cards;
-				}else{
-					$scope.isConfiguredCardFound = true;
-					$scope.payment.creditCard = data.cards;
-					$scope.payment.card = data.cards.token_id;
+				if(data.success==true){
+					$scope.isError = false;
+					if(data.card_found==0){
+						$scope.isConfiguredCardFound = false;
+						$scope.userdata.user = data.user;
+						$scope.userdata.savedCards = data.cards;
+					}else if(data.card_found==1){
+						$scope.isConfiguredCardFound = true;
+						$scope.payment.creditCard = data.cards;
+						$scope.payment.card = data.cards.token_id;
+					}
 				}
 			})
 			.error(function(errors){
-				sweetAlert.swal({
+				/*sweetAlert.swal({
 					type:'error',
 					text:errors.message,
-				});
+				});*/
+				$state.go('mainLayout.error',{info:errors.message});
 			});
 		}
 
@@ -185,10 +200,11 @@ MobileApp.controller('MobileAppController', [
 					})/*.done()*/;
 				})
 				.error(function(errors){
-					sweetAlert.swal({
+					/*sweetAlert.swal({
 						type:'error',
 						text:errors.message,
-					});
+					});*/
+					$state.go('mainLayout.error',{info:errors.message});
 				});
 			}
 
@@ -226,10 +242,11 @@ MobileApp.controller('MobileAppController', [
 						})/*.done()*/;
 					})
 					.error(function(errors){
-						sweetAlert.swal({
+						/*sweetAlert.swal({
 							type:'error',
 							text:errors.message,
-						});
+						});*/
+						$state.go('mainLayout.error',{info:errors.message});
 					});
 				}else{
 					$scope.payment.card = '';
@@ -245,7 +262,7 @@ MobileApp.controller('MobileAppController', [
 			});
 		}
 
-		$scope.removeCard = function(card){
+		/*$scope.removeCard = function(card){
 			sweetAlert.swal({
 			  title: 'Are you sure?',
 			  text: "You won't be able to revert this!",
@@ -265,7 +282,7 @@ MobileApp.controller('MobileAppController', [
 					});
 				});
 			});
-		}
+		}*/
 
 		$scope.changeCard = function(card){
 			$scope.payment.creditCard = card;
