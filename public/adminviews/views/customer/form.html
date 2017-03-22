@@ -18,76 +18,38 @@
 						<tab-heading>General</tab-heading> -->
 
 						<div class="form-horizontal">
+
 							<div class="form-group" ng:class="{'has-error':errors['name'][0]}">
-								<label class="col-md-2 control-label">Name: <span class="required">
-								* </span>
-								</label>
+								<label class="col-md-2 control-label">Name: <span class="required">* </span></label>
 								<div class="col-md-10">
 									<input type="text" class="form-control" ng-model="customer.name" placeholder="">
 									<span class="help-block" ng-bind="errors['name'][0]"></span>
 								</div>
-
 							</div>
-							<!-- <div class="form-group" ng:class="{'has-error':errors.description[0]}">
-								<label class="col-md-2 control-label">Description: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<textarea class="form-control" ng-model="dealer.description"></textarea>
-									<span class="help-block" ng-bind="errors.description[0]"></span>
-								</div>
-							</div> -->
 
 							<div class="form-group" ng:class="{'has-error':errors['email'][0]}">
-								<label class="col-md-2 control-label">Email: <span class="required">
-								* </span>
-								</label>
+								<label class="col-md-2 control-label">Email: <span class="required">* </span></label>
 								<div class="col-md-10">
 									<input type="text" class="form-control" ng-model="customer.email" placeholder="">
 									<span class="help-block" ng-bind="errors['email'][0]"></span>
 								</div>
-
 							</div>
 
 							<div class="form-group" ng:class="{'has-error':errors['mobile_number'][0]}">
-								<label class="col-md-2 control-label">Mobile number: <span class="required">
-								* </span>
-								</label>
+								<label class="col-md-2 control-label">Mobile number: <span class="required">* </span></label>
 								<div class="col-md-10">
-									<input type="text" class="form-control" ng-model="customer.mobile_number" placeholder="">
+									
+									<div class="input-group">
+										<div class="mobileinput input-group-addon">+<input type="text" ng-model="customer.country_code" class="transparent" maxlength="3"></div>
+										<input type="text" placeholder="mobile number" ng-model="customer.mobile_number" class="alcohalrestertextbox form-control" maxlength="10">
+									</div>
+									
 									<span class="help-block" ng-bind="errors['mobile_number'][0]"></span>
 								</div>
-
-							</div>
-							
-							<!-- 
-							<div class="form-group" ng-hide="hideBasicInfo" ng:class="{'has-error':errors['password'][0]}">
-								<label class="col-md-2 control-label">Password: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<input type="password" class="form-control" ng-model="customer.password" placeholder="">
-									<span class="help-block" ng-bind="errors['password'][0]"></span>
-								</div>
-
 							</div>
 
-							<div class="form-group" ng-hide="hideBasicInfo" ng:class="{'has-error':errors['password_confirmation'][0]}">
-								<label class="col-md-2 control-label">Confirm password: <span class="required">
-								* </span>
-								</label>
-								<div class="col-md-10">
-									<input type="password" class="form-control" ng-model="customer.password_confirmation" placeholder="">
-									<span class="help-block" ng-bind="errors['password_confirmation'][0]"></span>
-								</div>
-
-							</div> -->
-							
-							
 							<div class="form-group" ng:class="{'has-error':errors['status'][0]}">
-								<label class="col-md-2 control-label">Status: <span class="required">
-								* </span>
-								</label>
+								<label class="col-md-2 control-label">Status: <span class="required">* </span></label>
 								<div class="col-md-10">
 									<select class="form-control" ng-model="customer.status">
 										<option value="1">Active</option>

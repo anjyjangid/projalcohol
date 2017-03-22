@@ -116,8 +116,8 @@ class UserController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Request $request)
-	{
+	public function update(Request $request){
+
 		$inputs = $request->all();
 		$user = Auth::user('user');
 
@@ -128,10 +128,14 @@ class UserController extends Controller
 			'name' => 'required',
 			'email' => 'required|email|max:255|unique:user,email,'.$user->_id.",_id",
 			'mobile_number'=> 'required|numeric|digits:8',
+			'country_code'=> 'required|numeric|digits_between:1,3'
 		],[
 		   'mobile_number.required' => 'Mobile number is required',
 		   'mobile_number.numeric' => 'please enter valid mobile number',
-		   'mobile_number.digits_between' => 'please enter valid mobile number'
+		   'mobile_number.digits_between' => 'please enter valid mobile number',
+		   'country_code.required' => 'Country code is required',
+		   'country_code.numeric' => 'please enter valid country code',
+		   'country_code.digits_between' => 'please enter valid country code'
 		]);
 		
 		$return = array("success"=>false,"message"=>"","data"=>"");
@@ -149,8 +153,9 @@ class UserController extends Controller
 		$curruser->name = $inputs['name'];
 		$curruser->email = strtolower($inputs['email']);
 		$curruser->mobile_number = $inputs['mobile_number'];
+		$curruser->country_code = $inputs['country_code'];		
 
-		try {
+		try{
 
 			$curruser->save();
 
@@ -280,6 +285,7 @@ class UserController extends Controller
 													'address' => 1,
 													'name' => 1,
 													'password' => 1,
+													'country_code' => 1,
 													'mobile_number' => 1,
 													'loyaltyPoints' => '$loyalty.total',
 													'credits' => '$credits.total',
@@ -289,7 +295,7 @@ class UserController extends Controller
 								]
 							]);
 
-						if(isset($output['result'][0])){
+						if(isset($output['result'][0])){							
 							return $output['result'][0];
 						}
 

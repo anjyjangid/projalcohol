@@ -697,7 +697,6 @@ AlcoholDelivery.controller('ProfileController',['$scope','$rootScope','$state','
 	function initController() {
 
 		$http.get('/loggedUser').success(function(response){
-
 			$scope.user = response;
 		}).error(function(data, status, headers){
 
@@ -1511,6 +1510,10 @@ AlcoholDelivery.controller('CartAddressController',[
 
 	$scope.delivery = alcoholCart.$cart.delivery;
 	
+	if(!angular.isDefined($scope.delivery.country_code)){
+		$scope.delivery.country_code = 65;
+	}
+
 	$scope.user = UserService.getIfUser();
 	
 
@@ -1568,7 +1571,9 @@ AlcoholDelivery.controller('CartAddressController',[
 		}
 
 		var deliveryContactErrors = $scope.cartFrm.deliveryContact;
-		if(deliveryContactErrors.$invalid){
+		var countryCodeErrors = $scope.cartFrm.countryCode;
+		
+		if(deliveryContactErrors.$invalid || countryCodeErrors.$invalid){
 
 			if(deliveryContactErrors.$error.required){
 				$scope.errors.contact = "Please enter contact person number";
@@ -1576,6 +1581,14 @@ AlcoholDelivery.controller('CartAddressController',[
 
 			if(deliveryContactErrors.$error.minlength){
 				$scope.errors.contact = "Contact number should be 8 digit long";
+			}
+
+			if(countryCodeErrors.$error.required){
+				$scope.errors.contact = "Please enter country code";
+			}
+
+			if(countryCodeErrors.$error.minlength){
+				$scope.errors.contact = "Country code should be 1 digit long";
 			}
 
 			var ele = $("#deliveryContact");

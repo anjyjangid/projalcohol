@@ -163,13 +163,15 @@ class PackageController extends Controller
 										}
 									}
 									$sprice = $this->calculatePrice($value['price'],$tier);
-
+									
 									$pkgpro[$prokey] = [
 										'_id' => $provalue['_id'],
 										'cprice' => $provalue['cprice'],
 										'name' => $value['name'],
 										'sprice' => $sprice,
-										'imageFiles' => $value['imageFiles']
+										'imageFiles' => $value['imageFiles'],
+										'default' => isset($provalue['default'])?$provalue['default']:false,
+										'defaultQty' => isset($provalue['defaultQty'])?$provalue['defaultQty']:0,
 									];
 							}
 							$packageupdate[$pkgkey]['products'] = $pkgpro;              
@@ -212,8 +214,10 @@ class PackageController extends Controller
 									$inputs['packageItems'][$dKey]['products'][$prokey] = [
 										'_id' => $provalue['_id'],
 										'cprice' => (float)$provalue['cprice'],
+										'default' => (isset($provalue['default']) && $provalue['default']==true)?true:false,
+										'defaultQty' => (isset($provalue['default']) && $provalue['default']==true && $provalue['defaultQty']>0)?(int)$provalue['defaultQty']:0,
 									];
-								}                
+								}
 
 						}
 				}        
