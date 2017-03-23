@@ -8634,7 +8634,7 @@ ui-sref {
 	color: #7c7b7d;
 	font-weight: 400;
 	min-width: 118px;
-	height: 15px;
+	height: 16px;
 	line-height: 15px;
 	text-align: center;
 	border-radius: 2px;
@@ -9328,6 +9328,8 @@ ui-sref {
 	border: solid 1px #959595;
 	border-radius: 4px;
 	cursor: pointer;
+	position: relative;
+	z-index: 4;
 }
 .prodchilled-btn span, .prodnonchilled-btn span {
 	display: inline-block;
@@ -13257,7 +13259,7 @@ button:hover{
 }
 
 
-.purple-button {
+.purple-button, .purple-button:focus {
     background: #aa00ff none repeat scroll 0 0;
     border: medium none;
     border-radius: 5px;
@@ -13508,6 +13510,71 @@ md-toast.notify.bottom{
 	box-shadow: none;
 }
 
+.cmspage-cover{
+	width: 100%;
+	float: left;
+	background-color: #ffffff;
+	border: solid 1px #dee2e3;
+	border-radius: 4px;
+	padding: 0 15px 44px 28px;
+}
+.cms-rightpanel{
+	text-align: center;
+}
+.cms-rightpanel img{
+	display: inline-block;
+}
+.cms-rightpanelMobile{
+	display: none;
+	text-align: center;
+	padding-top: 20px;
+	padding-bottom: 30px;
+}
+.cms-rightpanelMobile img{
+	display: inline-block;
+}
+.cmspage-cover h3.ng-binding{
+	margin-bottom: 20px;
+	font-size: 28px;
+	font-weight: 400;
+	color: #333333;
+}
+.cmspage-cover p{
+	line-height: 22px;
+	font-size: 14px;
+	font-weight: 400;
+	color: #333333;
+}
+.cmspage-formcrv{
+	width: 100%;
+	float: left;
+	margin-top: 27px;
+}
+.cmspage-formcrv label.control-label{
+	margin-bottom: 13px;
+	font-weight: 400;
+	color: #000000;
+	font-size: 14px;
+}
+.cmspage-formcrv .form-group{
+	margin-bottom: 20px;
+}
+.cmspage-formcrv .form-control{
+	height: 44px;
+}
+.cmspage-formcrv .purple-button{
+	display: inline-block;
+	height: 40px;
+	width: 130px;
+	margin-top: 20px;
+}
+.cartstepone-cover .owl-carousel .owl-wrapper-outer{
+	padding-left: 4px;
+	padding-right: 4px;
+}
+.cartstepone-cover .owl-carousel .owl-item{
+	width: 174px !important;
+}
 .registeremailcvr md-checkbox{
 	margin-bottom: 0px;
 }
@@ -18005,6 +18072,21 @@ md-toast.notify div.md-toast-content{
 .res-show{
 	display: block;
 }
+
+.productbeerfiltertopcover .row div{
+	margin-bottom: 0;
+}
+
+.cmspage-cover{
+	padding: 0 15px 44px 15px;
+}
+.cms-rightpanelMobile{
+	display: block;
+}
+.cms-rightpanel{
+	display: none;
+}
+
 }
 
 @media only screen and (width : 640px) {
@@ -18997,6 +19079,7 @@ top: -1px;
 .additempopuppinkboxrightinner a,.additempopuppinkboxrightinner a:hover,.additempopuppinkboxrightinner a:focus{
 	padding:0px !important;
 }
+
 }
 
 

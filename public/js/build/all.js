@@ -9380,7 +9380,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	//'angularFblogin',
 	'ngPayments',
 	'infinite-scroll',
-	'satellizer'
+	'satellizer',	
 	//'ngTouch'
 ]).config(['$locationProvider','$mdThemingProvider','$authProvider',
 	function($location,$mdThemingProvider,$authProvider) {
@@ -10829,7 +10829,7 @@ AlcoholDelivery.run([
 						templateUrl: '/templates/toast-tpl/cart-update.html',
 						parent : $document[0].querySelector('#cart-summary-icon'),
 						position: 'top center',
-						hideDelay:3000
+						hideDelay:0
 					});
 
 	});
@@ -11521,17 +11521,18 @@ AlcoholDelivery.controller('AppController', [
 
 		
 
-	$scope.onSwipeLeft = function(ev) {
-		ev.stopPropagation();
+	$scope.onSwipeLeft = function() {
+		
 		angular.element('#wrapper').removeClass('toggled');
 		angular.element('body').removeClass(' hidden-scroll');
     };
 
-    $scope.onSwipeRight = function(ev) {
-    	ev.stopPropagation();
+    $scope.onSwipeRight = function() {    	
 		angular.element('#wrapper').addClass('toggled');
 		angular.element('body').addClass(' hidden-scroll');
-    };	    
+    };	        
+
+    //window.location = "js-call:testObjectiveCFunction";
 
 }]);
 
@@ -13882,7 +13883,8 @@ AlcoholDelivery.controller('CmsController',[
 				$scope.cmsData.formType == 'contact-us' ||
 				$scope.cmsData.formType == 'event-planner' ||
 				$scope.cmsData.formType == 'book-a-bartender' ||
-				$scope.cmsData.formType == 'become-a-partner' ||
+				$scope.cmsData.formType == 'bulkcorporate-discounts' ||
+				$scope.cmsData.formType == 'suggest-a-product' ||
 				$scope.cmsData.formType == 'sell-on-alcoholdelivery'
 			);
 		}
@@ -13913,8 +13915,16 @@ AlcoholDelivery.controller('CmsController',[
 	}
 
 	$scope.trustedHtml = function (plainText) {
-		  return $sce.trustAsHtml(plainText);
+		return $sce.trustAsHtml(plainText);
 	}
+
+	$scope.formElements = [
+		{label:'Subject',modelname:'subject',required:true},
+		{label:'Name',modelname:'name',required:true},
+		{label:'Email',modelname:'email',required:true},
+		{label:'Feedback',modelname:'feedback',required:true},
+		{label:'Additional Comment (optional)',modelname:'additionalComment',required:false},
+	];
 
 }]);
 

@@ -1,120 +1,176 @@
 <h1 class="hide">{{cmsData.title}}</h1>
-<div class="panel-body" >	
-	<h3>{{cmsData.title}}</h3>				
-	<div class="row">
-		<div class="{{(cmsData.hasForm)?'col-md-6':'col-md-12'}}">	
-			<div ng-bind-html="trustedHtml(cmsData.content)"></div>
-		</div>
-		<div class="col-md-6" ng-if="cmsData.hasForm">
-			<form ng-submit="submitQuery();" ng-hide="querySent">
-				<div class="order-fetching" ng-show="querySubmit"></div>
-				<div ng-if="cmsData.formType == 'contact-us'">				
-					<div class="form-group" ng:class="{'has-error':errors.subject[0]}">				
-						<label class="control-label">Subject</label>	
-						<input ng-model="query.subject" type="text" class="form-control" placeholder="Subject">		
-						<span class="help-block" ng-bind="errors.subject[0]"></span>
-					</div>
-					<div class="form-group" ng:class="{'has-error':errors.name[0]}">					
-						<label class="control-label">Name</label>
-						<input ng-model="query.name" type="text" class="form-control" placeholder="Name">			
-						<span class="help-block" ng-bind="errors.name[0]"></span>	
-					</div>
-					<div class="form-group" ng:class="{'has-error':errors.email[0]}">			
-						<label class="control-label">Email</label>		
-						<input ng-model="query.email" type="text" class="form-control" placeholder="Email">			
-						<span class="help-block" ng-bind="errors.email[0]"></span>		
-					</div>
-					<div class="form-group" ng:class="{'has-error':errors.feedback[0]}">			
-						<label class="control-label">Feedback</label>		
-						<textarea ng-model="query.feedback" class="form-control" rows="5" placeholder="Feedback"></textarea>
-						<span class="help-block" ng-bind="errors.feedback[0]"></span>					
+<div class="panel-body">
+	<div class="cmspage-cover">
+		<h3>{{cmsData.title}}</h3>
+		<div class="row">
+			<!-- <div class="{{(cmsData.hasImage)?'col-md-7':'col-md-12'}}"> -->
+			<div class="col-md-5 cms-rightpanelMobile"><img class="img-responsive" src="images/cms-dummy.jpg"></div>
+			<div class="col-md-7">	
+				<div ng-bind-html="trustedHtml(cmsData.content)"></div>
+				<div class="cmspage-formcrv" ng-if="cmsData.hasForm">
+					<form ng-submit="submitQuery();" ng-hide="querySent">
+						<div class="order-fetching" ng-show="querySubmit"></div>
+						<div ng-if="cmsData.formType == 'contact-us'">				
+							<div class="form-group" ng:class="{'has-error':errors.subject[0]}">				
+								<label class="control-label">Subject</label>	
+								<input ng-model="query.subject" type="text" class="form-control" placeholder="Subject">		
+								<span class="help-block" ng-bind="errors.subject[0]"></span>
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.name[0]}">					
+								<label class="control-label">Name</label>
+								<input ng-model="query.name" type="text" class="form-control" placeholder="Name">			
+								<span class="help-block" ng-bind="errors.name[0]"></span>	
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.email[0]}">			
+								<label class="control-label">Email</label>		
+								<input ng-model="query.email" type="text" class="form-control" placeholder="Email">			
+								<span class="help-block" ng-bind="errors.email[0]"></span>		
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.feedback[0]}">			
+								<label class="control-label">Feedback</label>		
+								<textarea ng-model="query.feedback" class="form-control" rows="5" placeholder="Feedback"></textarea>
+								<span class="help-block" ng-bind="errors.feedback[0]"></span>					
+							</div>
+						</div>
+						<div ng-if="cmsData.formType == 'event-planner' || cmsData.formType == 'book-a-bartender' || cmsData.formType == 'become-a-partner' || cmsData.formType == 'sell-on-alcoholdelivery'">				
+							<div class="form-group" ng:class="{'has-error':errors.companyName[0]}">				
+								<label class="control-label">Company Name <span ng-if="cmsData.formType == 'event-planner' || cmsData.formType == 'book-a-bartender'">(optional)</span></label>	
+								<input ng-model="query.companyName" type="text" class="form-control" placeholder="Company Name">
+								<span class="help-block" ng-bind="errors.companyName[0]"></span>
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.companyType[0]}" ng-if="cmsData.formType == 'become-a-partner'">					
+								<label class="control-label">Company Type</label>
+								<input ng-model="query.companyType" type="text" class="form-control" placeholder="Company Type">
+								<span class="help-block" ng-bind="errors.companyType[0]"></span>
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.contactName[0]}">					
+								<label class="control-label">Contact Name</label>
+								<input ng-model="query.contactName" type="text" class="form-control" placeholder="Contact Name">
+								<span class="help-block" ng-bind="errors.contactName[0]"></span>
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.phoneNumber[0]}">			
+								<label class="control-label">Phone Number</label>		
+								<input ng-model="query.phoneNumber" type="text" class="form-control" placeholder="Phone Number">
+								<span class="help-block" ng-bind="errors.phoneNumber[0]"></span>					
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.emailAddress[0]}">			
+								<label class="control-label">Email Address</label>		
+								<input ng-model="query.emailAddress" type="text" class="form-control" placeholder="Email Address">
+								<span class="help-block" ng-bind="errors.emailAddress[0]"></span>					
+							</div>
+							<div ng-if="cmsData.formType == 'sell-on-alcoholdelivery'">
+								<div class="form-group" ng:class="{'has-error':errors.websiteUrl[0]}">			
+									<label class="control-label">Website URL</label>		
+									<input ng-model="query.websiteUrl" type="text" class="form-control" placeholder="http://www.example.com">
+									<span class="help-block" ng-bind="errors.websiteUrl[0]"></span>
+								</div>
+								<div class="form-group" ng:class="{'has-error':errors.noOfProducts[0]}">			
+									<label class="control-label">Number of Products </label>		
+									<input ng-model="query.noOfProducts" type="text" class="form-control" placeholder="Number of Products">
+									<span class="help-text">number of different unique products / SKUs you actually want to sell with us (exclude quantity of items per product)</span>
+									<span class="help-block" ng-bind="errors.noOfProducts[0]"></span>
+								</div>
+								<div class="form-group" ng:class="{'has-error':errors.brandsToSell[0]}">			
+									<label class="control-label">Brand(s) you want to sell</label>		
+									<textarea ng-model="query.brandsToSell" type="text" class="form-control" placeholder="Brands"></textarea>
+									<span class="help-block" ng-bind="errors.brandsToSell[0]"></span>
+								</div>
+							</div>
+							<div class="form-group" ng-if="cmsData.formType == 'event-planner' || cmsData.formType == 'book-a-bartender'" ng:class="{'has-error':errors.dateOfEvent[0]}">			
+								<label class="control-label">Date of Event</label>		
+								<input ng-model="query.dateOfEvent" type="text" class="form-control" placeholder="DD/MM/YYYY">
+								<span class="help-block" ng-bind="errors.dateOfEvent[0]"></span>
+							</div>
+							<div ng-if="cmsData.formType == 'event-planner'">
+								<div class="form-group" ng:class="{'has-error':errors.typeOfEvent[0]}">			
+									<label class="control-label">Type of Event</label>		
+									<input ng-model="query.typeOfEvent" type="text" class="form-control" placeholder="Birthday/Corporate/Anniversary">
+									<span class="help-block" ng-bind="errors.typeOfEvent[0]"></span>
+								</div>
+								<div class="form-group" ng:class="{'has-error':errors.noOfPax[0]}">			
+									<label class="control-label">No. of pax</label>		
+									<input ng-model="query.noOfPax" type="text" class="form-control" placeholder="No. of pax">
+									<span class="help-block" ng-bind="errors.noOfPax[0]"></span>
+								</div>
+							</div>
+							<div ng-if="cmsData.formType == 'book-a-bartender'">
+								<div class="form-group" ng:class="{'has-error':errors.noOfBartender[0]}">			
+									<label class="control-label">No. of Bartender</label>		
+									<input ng-model="query.noOfBartender" type="text" class="form-control" placeholder="No. of Bartender">
+									<span class="help-block" ng-bind="errors.noOfBartender[0]"></span>
+								</div>
+								<div class="form-group" ng:class="{'has-error':errors.hoursRequired[0]}">			
+									<label class="control-label">Hours Required</label>		
+									<input ng-model="query.hoursRequired" type="text" class="form-control" placeholder="Hours Required">
+									<span class="help-block" ng-bind="errors.hoursRequired[0]"></span>
+								</div>
+							</div>					
+						</div>	
+						<div ng-if="cmsData.formType == 'suggest-a-product'">
+							<div class="form-group" ng:class="{'has-error':errors.productname[0]}">			
+								<label class="control-label">Product Name</label>		
+								<input type="text" ng-model="query.productname" class="form-control" placeholder="Product Name">
+								<span class="help-block" ng-bind="errors.productname[0]"></span>					
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.brandname[0]}">			
+								<label class="control-label">Brand Name</label>		
+								<input type="text" ng-model="query.brandname" class="form-control" placeholder="Brand Name">
+								<span class="help-block" ng-bind="errors.brandname[0]"></span>					
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.category[0]}">			
+								<label class="control-label">Category</label>		
+								<select ng-model="query.category" ng-options="c.cat_title as c.cat_title for c in parentCategories" class="form-control">
+									<option value="">Select</option>
+								</select>
+								<span class="help-block" ng-bind="errors.category[0]"></span>
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.email[0]}">			
+								<label class="control-label">Email</label>		
+								<input ng-model="query.email" type="text" class="form-control" placeholder="Email">			
+								<span class="help-block" ng-bind="errors.email[0]"></span>		
+							</div>
+						</div>
+						<div ng-if="cmsData.formType == 'bulkcorporate-discounts'">
+							<div class="form-group" ng:class="{'has-error':errors.name[0]}">				
+								<label class="control-label">Your Name</label>	
+								<input ng-model="query.name" type="text" class="form-control" placeholder="Your Name">
+								<span class="help-block" ng-bind="errors.name[0]"></span>
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.companyName[0]}">				
+								<label class="control-label">Your company name (If any)</label>	
+								<input ng-model="query.companyName" type="text" class="form-control" placeholder="Company Name">
+								<span class="help-block" ng-bind="errors.companyName[0]"></span>
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.businessNature[0]}">					
+								<label class="control-label">Your Nature of Business </label>
+								<input ng-model="query.businessNature" type="text" class="form-control" placeholder="(Bar, Club, Restaurant, Retail or Individual Consumption)">
+								<span class="help-block" ng-bind="errors.businessNature[0]"></span>
+							</div>					
+							<div class="form-group" ng:class="{'has-error':errors.phoneNumber[0]}">			
+								<label class="control-label">Your Phone</label>		
+								<input ng-model="query.phoneNumber" type="text" class="form-control" placeholder="Your Phone">
+								<span class="help-block" ng-bind="errors.phoneNumber[0]"></span>					
+							</div>
+							<div class="form-group" ng:class="{'has-error':errors.emailAddress[0]}">			
+								<label class="control-label">Email Address</label>		
+								<input ng-model="query.emailAddress" type="text" class="form-control" placeholder="Email Address">
+								<span class="help-block" ng-bind="errors.emailAddress[0]"></span>					
+							</div>
+						</div>			
+						<div class="form-group" ng-if="cmsData.formType != 'contact-us'" ng:class="{'has-error':errors.additionalComment[0]}">			
+							<label class="control-label">Additional Comment (optional)</label>		
+							<textarea ng-model="query.additionalComment" class="form-control" rows="5" placeholder="Additional Comment (optional)"></textarea>
+							<span class="help-block" ng-bind="errors.additionalComment[0]"></span>					
+						</div>
+						<button type="submit" class="btn green purple-button">Submit</button>
+					</form>
+					<div ng-show="querySent">
+						<h1 align="center"><span class="glyphicon glyphicon-ok"></span></h1>
+						<div align="center"><h3>Your query has been sent successfully!<br/>We'll respond you soon.</h3></div>	
 					</div>
 				</div>
-				<div ng-if="cmsData.formType == 'event-planner' || cmsData.formType == 'book-a-bartender' || cmsData.formType == 'become-a-partner' || cmsData.formType == 'sell-on-alcoholdelivery'">				
-					<div class="form-group" ng:class="{'has-error':errors.companyName[0]}">				
-						<label class="control-label">Company Name <span ng-if="cmsData.formType == 'event-planner' || cmsData.formType == 'book-a-bartender'">(optional)</span></label>	
-						<input ng-model="query.companyName" type="text" class="form-control" placeholder="Company Name">
-						<span class="help-block" ng-bind="errors.companyName[0]"></span>
-					</div>
-					<div class="form-group" ng:class="{'has-error':errors.companyType[0]}" ng-if="cmsData.formType == 'become-a-partner'">					
-						<label class="control-label">Company Type</label>
-						<input ng-model="query.companyType" type="text" class="form-control" placeholder="Company Type">
-						<span class="help-block" ng-bind="errors.companyType[0]"></span>
-					</div>
-					<div class="form-group" ng:class="{'has-error':errors.contactName[0]}">					
-						<label class="control-label">Contact Name</label>
-						<input ng-model="query.contactName" type="text" class="form-control" placeholder="Contact Name">
-						<span class="help-block" ng-bind="errors.contactName[0]"></span>
-					</div>
-					<div class="form-group" ng:class="{'has-error':errors.phoneNumber[0]}">			
-						<label class="control-label">Phone Number</label>		
-						<input ng-model="query.phoneNumber" type="text" class="form-control" placeholder="Phone Number">
-						<span class="help-block" ng-bind="errors.phoneNumber[0]"></span>					
-					</div>
-					<div class="form-group" ng:class="{'has-error':errors.emailAddress[0]}">			
-						<label class="control-label">Email Address</label>		
-						<input ng-model="query.emailAddress" type="text" class="form-control" placeholder="Email Address">
-						<span class="help-block" ng-bind="errors.emailAddress[0]"></span>					
-					</div>
-					<div ng-if="cmsData.formType == 'sell-on-alcoholdelivery'">
-						<div class="form-group" ng:class="{'has-error':errors.websiteUrl[0]}">			
-							<label class="control-label">Website URL</label>		
-							<input ng-model="query.websiteUrl" type="text" class="form-control" placeholder="http://www.example.com">
-							<span class="help-block" ng-bind="errors.websiteUrl[0]"></span>
-						</div>
-						<div class="form-group" ng:class="{'has-error':errors.noOfProducts[0]}">			
-							<label class="control-label">Number of Products </label>		
-							<input ng-model="query.noOfProducts" type="text" class="form-control" placeholder="Number of Products">
-							<span class="help-text">number of different unique products / SKUs you actually want to sell with us (exclude quantity of items per product)</span>
-							<span class="help-block" ng-bind="errors.noOfProducts[0]"></span>
-						</div>
-						<div class="form-group" ng:class="{'has-error':errors.brandsToSell[0]}">			
-							<label class="control-label">Brand(s) you want to sell</label>		
-							<textarea ng-model="query.brandsToSell" type="text" class="form-control" placeholder="Brands"></textarea>
-							<span class="help-block" ng-bind="errors.brandsToSell[0]"></span>
-						</div>
-					</div>
-					<div class="form-group" ng-if="cmsData.formType == 'event-planner' || cmsData.formType == 'book-a-bartender'" ng:class="{'has-error':errors.dateOfEvent[0]}">			
-						<label class="control-label">Date of Event</label>		
-						<input ng-model="query.dateOfEvent" type="text" class="form-control" placeholder="DD/MM/YYYY">
-						<span class="help-block" ng-bind="errors.dateOfEvent[0]"></span>
-					</div>
-					<div ng-if="cmsData.formType == 'event-planner'">
-						<div class="form-group" ng:class="{'has-error':errors.typeOfEvent[0]}">			
-							<label class="control-label">Type of Event</label>		
-							<input ng-model="query.typeOfEvent" type="text" class="form-control" placeholder="Birthday/Corporate/Anniversary">
-							<span class="help-block" ng-bind="errors.typeOfEvent[0]"></span>
-						</div>
-						<div class="form-group" ng:class="{'has-error':errors.noOfPax[0]}">			
-							<label class="control-label">No. of pax</label>		
-							<input ng-model="query.noOfPax" type="text" class="form-control" placeholder="No. of pax">
-							<span class="help-block" ng-bind="errors.noOfPax[0]"></span>
-						</div>
-					</div>
-					<div ng-if="cmsData.formType == 'book-a-bartender'">
-						<div class="form-group" ng:class="{'has-error':errors.noOfBartender[0]}">			
-							<label class="control-label">No. of Bartender</label>		
-							<input ng-model="query.noOfBartender" type="text" class="form-control" placeholder="No. of Bartender">
-							<span class="help-block" ng-bind="errors.noOfBartender[0]"></span>
-						</div>
-						<div class="form-group" ng:class="{'has-error':errors.hoursRequired[0]}">			
-							<label class="control-label">Hours Required</label>		
-							<input ng-model="query.hoursRequired" type="text" class="form-control" placeholder="Hours Required">
-							<span class="help-block" ng-bind="errors.hoursRequired[0]"></span>
-						</div>
-					</div>					
-				</div>				
-				<div class="form-group" ng-if="cmsData.formType != 'contact-us'" ng:class="{'has-error':errors.additionalComment[0]}">			
-					<label class="control-label">Additional Comment (optional)</label>		
-					<textarea ng-model="query.additionalComment" class="form-control" rows="5" placeholder="Additional Comment (optional)"></textarea>
-					<span class="help-block" ng-bind="errors.additionalComment[0]"></span>					
-				</div>
-				<button type="submit" class="btn green purple-button">Submit</button>
-			</form>
-			<div ng-show="querySent">
-				<h1 align="center"><span class="glyphicon glyphicon-ok"></span></h1>
-				<div align="center"><h3>Your query has been sent successfully!<br/>We'll respond you soon.</h3></div>	
 			</div>
+			<div class="col-md-5 cms-rightpanel hidden-xs"><img class="img-responsive" src="images/cms-dummy.jpg"></div>
 		</div>
 	</div>
 </div>

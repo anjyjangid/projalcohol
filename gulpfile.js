@@ -62,7 +62,7 @@ elixir(function(mix) {
 	    'cartFactories.js',
 	    'alcoholWishlist.js',
 	    'alcoholCartDirective.js',
-	    'directive.js',
+	    'directive.js',	    
 	    '../bower_components/v-accordion/dist/v-accordion.js'
     ],'public/js/build/all.js','public/js');
 });

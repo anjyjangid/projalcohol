@@ -1,9 +1,9 @@
 {
-  "name": "Alcoholdelivery",
+  "name": "alcoholdelivery",
   "version": "0.0.0",
-  "homepage": "https://github.com/amitavroy/learningl5",
+  "homepage": "https://www.alcoholdelivery.com.sg",
   "authors": [
-    "CGT <cgt.co.in>"
+    "CGTAbhay <abhay@cgt.co.in>"
   ],
   "description": "Alcoholdelivery(Laravel + Angular + Mongodb)",
   "license": "MIT",
@@ -15,30 +15,26 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "~1.4.6",
-    "angular-route": "~1.4.6",
-    "bootstrap": "~3.3.5",
-    "angular-cookies": "~1.4.6",
-    "angular-bootstrap-lightbox": "~0.10.0",
-    "angular-loading-bar": "~0.8.0",
-    "angular-ui-router": "^0.2.18",
-    "angular-validation-match": "^1.7.1",
+    "angular-bootstrap": "1.3.3",
+    "bootstrap": "3.3.7",
+    "satellizer":"0.15.5",
+    "angular-touch": "1.4.6",
+    "ngInfiniteScroll": "1.3.0",
+    "angular-route": "1.4.14",
+    "angular-cookies": "1.4.14",
+    "angular-ui-router": "0.2.18",
     "ngSweetAlert2": "angular-sweetalert-2#^2.1.1",
-    "owl.carousel": "^2.0.0-beta.3",
-    "angular-animate": "1.5.3",
+    "es6-promise": "4.0.5",
     "angular-material": "1.1.0",
-    "ng-scrollbars": "^0.0.10",
-    "angular-ui-calendar": "^1.0.1",
-    "ngInfiniteScroll": "^1.2.2",
-    "v-accordion": "^1.6.0",
-    "sweetalert2": "^4.0.8",
-    "angular-bootstrap": "^1.3.3",
-    "es6-promise": "^4.0.5",
-    "angular-touch": "1.4.6"
+    "angular-animate": "1.5.3",
+    "angular-aria": "1.6.2",
+    "angular-messages": "1.6.2",
+    "ng-scrollbars": "0.0.10",
+    "angular-ui-calendar": "1.0.2",    
+    "v-accordion": "1.6.0"
   },
   "resolutions": {
-    "angular": "~1.4.0",
-    "angular-bootstrap": "^1.3.3",
-    "fullcalendar": "~2.7.1"
+    "angular": "1.4.14",
+    "fullcalendar": "2.7.3"
   }
 }
