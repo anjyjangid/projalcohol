@@ -37,6 +37,8 @@ class Products extends Eloquent
         'loyalty',
         'loyaltyType',
 		'status',
+
+		'newTagDuration',
 		
 		'sku',
 		
@@ -346,6 +348,8 @@ class Products extends Eloquent
 			
 		}
 
+		// get current date
+		$currentDate = strtotime(date("d.m.Y H:i:s"));
 
 		if(isset($params['filter'])){
 
@@ -355,9 +359,11 @@ class Products extends Eloquent
 
 			if($params['filter']=="new"){
 				
-				$onemonthOld = strtotime('-1 months');
+				/*$onemonthOld = strtotime('-1 months');
 
-				$match['$match']['created_at'] = ['$gt'=> new \MongoDate($onemonthOld)];
+				$match['$match']['created_at'] = ['$gt'=> new \MongoDate($onemonthOld)];*/
+
+				$match['$match']['newTillDate'] = ['$gt'=> new \MongoDate($currentDate)];
 			}
 
 			if($params['filter']=="in-stock"){
@@ -576,7 +582,9 @@ class Products extends Eloquent
 							'metaTitle'=>1,
 							'metaDescription'=>1,
 							'metaKeywords'=>1,
-							'bulkDisable'=>1
+							'bulkDisable'=>1,
+							'newTillDate'=>1,
+							'isNew'=>['$cond'=> [ [ '$gt'=> ['$newTillDate', new \MongoDate($currentDate) ] ] , 1, 0 ]]
 						]
 		];
 
@@ -715,9 +723,7 @@ class Products extends Eloquent
 			//NEW SALE FILTER
 			if(isset($params['filter']) && $params['filter']=="on-sale"){
 				$query[]['$match'] = ['proSales' => ['$exists'=>true,'$not' => ['$size'=>0]]];
-			}
-
-			//dd($query);
+			}			
 
 			$products = Products::raw()->aggregate($query);
 

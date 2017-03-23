@@ -18,6 +18,7 @@ use AlcoholDelivery\User;
 use AlcoholDelivery\Dealer;
 use AlcoholDelivery\Store;
 use MongoId;
+use MongoDate;
 use Input;
 use DB;
 use AlcoholDelivery\Setting;
@@ -68,16 +69,21 @@ class ProductController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 	public function store(ProductRequest $request)
-	{    
-			
+	{		
 		$inputs = $request->all();
-		
+
 		$this->castVariables($inputs);
 
-		$product = Products::create($inputs);            
+		$product = Products::create($inputs);
 
 		if($product){
-			
+
+			// Add New Tag Duration to created_date
+			$newTagDuration = $product['newTagDuration'];
+			$curr = new MongoDate();
+			$sec = $curr->sec + ($newTagDuration * 24 * 60 * 60);
+			$product['newTillDate'] = new MongoDate($sec); // show product in new section till this date
+
 			//UPDATE STOCKS FOR THE LOGGEDIN STORE
 			$product->updateStocks($inputs,$product->_id);
 
@@ -153,7 +159,12 @@ class ProductController extends Controller
 
 		$product = Products::find($id);
 		
-		if($product){          
+		if($product){
+
+			// Add New Tag Duration to created_date
+			$newTagDuration = $product['newTagDuration'];
+			$sec = strtotime($product->created_at. "+$newTagDuration days");
+			$product->newTillDate = new MongoDate($sec); // show product in new section till this date
 
 			//UPDATE STOCKS FOR THE LOGGEDIN STORE
 			$product->updateStocks($inputs,$product->_id);
