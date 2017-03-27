@@ -9,8 +9,10 @@ use AlcoholDelivery\Http\Requests\QueryRequest;
 use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Products;
 use AlcoholDelivery\User;
+use AlcoholDelivery\Email;
 use DateTime;
 use Mail;
+
 class SiteController extends Controller
 {
     /**
@@ -394,34 +396,21 @@ class SiteController extends Controller
 
     public function postQuery(QueryRequest $request){
 
-        $postData = $request->all();
-
-        $content = '<div style="font-size: 14px; padding: 10px 15px; background-image: initial; background-attachment: initial;background-color: #1CAF9A; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">
-        <div style="width:63%;display:inline-block;font-size: 19px;color: #FFF;">Hello Admin</div>
-        </div>
-        <div style="font-size: 14px; padding: 15px 10px; line-height: 20px; color: rgb(66, 65, 67); background-image: initial; background-attachment: initial; background-color: rgb(255, 255, 255); background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">';
+        $postData = $request->all();        
 
         switch ($postData['type']) {
             case 'contact-us':
-                $subject = 'Query from '.$postData['name'].':'.$postData['subject'];
-                $content .= '<p>Below is a query from '.$postData['name'].'</p>';
+                $subject = 'Query from '.$postData['name'].':'.$postData['subject'];                
                 break;
-            case 'sell-on-alcoholdelivery':
-                $subject = 'Sell on website request from '.$postData['contactName'];
-                $content .= '<p>Below is a request from '.$postData['contactName'].'</p>';
+            case 'bulkcorporate-discounts':
+                $subject = 'Bulk / Corporate request from '.$postData['name'];                
                 break;
             case 'event-planner':
-                $subject = 'Event planing request from '.$postData['contactName'];
-                $content .= '<p>Below is a request from '.$postData['contactName'].'</p>';
+                $subject = 'Event & services request from '.$postData['name'];                
                 break;
-            case 'book-a-bartender':
-                $subject = 'Book a bartender request from '.$postData['contactName'];
-                $content .= '<p>Below is a request from '.$postData['contactName'].'</p>';
-                break;
-            case 'become-a-partner':
-                $subject = 'Become a partner request from '.$postData['contactName'];
-                $content .= '<p>Below is a request from '.$postData['contactName'].'</p>';
-                break;                        
+            case 'suggest-a-product':
+                $subject = 'Product suggestion query received';                
+                break;            
             default:
                 $subject = 'No subject';
                 break;
@@ -431,7 +420,7 @@ class SiteController extends Controller
 
         unset($req['type']);
 
-        $content .= '<p></p>';
+        $content = '<div><p></p>';
 
         foreach ($req as $fieldLabel => $fieldValue) {
             $fieldLabel = preg_replace(array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/'), ' $0', $fieldLabel);
@@ -443,10 +432,21 @@ class SiteController extends Controller
 
         $content .= '</div>';       
 
-        Mail::send('emails.mail', ['content'=>$content], function ($message) use ($subject) {
-            $message->setTo(['sales@alcoholdelivery.com.sg'=>'Sales Query']);
-            $message->setSubject($subject);
-        });
+        $mail = new Email('customtemplate');
+
+        $mdata = [
+            'email' => 'abhay@cgt.co.in',//'sales@alcoholdelivery.com.sg',
+            'name' => 'Admin',
+            'message' => $content,
+            'subject' => $subject
+        ];
+
+        $mailsent = $mail->sendEmail($mdata);
+
+        if(!is_array($mailsent))
+            return response(['mailsent' => 1],200);
+        else
+            return response($mailsent,422);
 
     }
 

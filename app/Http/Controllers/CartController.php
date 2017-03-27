@@ -1910,7 +1910,7 @@ class CartController extends Controller
 			if(!isset($orderObj['delivery']['newDefault']) || $orderObj['delivery']['newDefault']!==true){
 				$defaultContact = false;
 			}
-			$userObj->setContact($orderObj['delivery']['contact'],$defaultContact);
+			$userObj->setContact($orderObj['delivery']['contact'],$orderObj['delivery']['country_code'],$defaultContact);
 			
 			//CREATE ORDER FROM CART & REMOVE CART
 			$order = Orders::create($orderObj);

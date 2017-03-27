@@ -33,14 +33,24 @@ class Email extends Moloquent
 		$this->type = $type;
 
 		$mailSubject = '';
-		$mailContent = '<div style=\'font-size: 14px; padding: 10px 15px; background-image: initial; background-attachment: initial;background-color: #1CAF9A; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;\'>
+		/*$mailContent = '<div style=\'font-size: 14px; padding: 10px 15px; background-image: initial; background-attachment: initial;background-color: #1CAF9A; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;\'>
 		<div style=\'width:63%;display:inline-block;font-size: 19px;color: #FFF;\'>Dear {user_name}</div>
 		</div>
 
 		<div style=\'font-size: 14px; padding: 15px 10px; line-height: 20px; color: rgb(66, 65, 67); background-image: initial; background-attachment: initial; background-color: rgb(255, 255, 255); background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;\'>
 		<p>{message}</p>
 		<p>&nbsp;</p>
-		</div>';
+		</div>';*/
+
+		$mailContent = '<table>
+							<tbody>
+								<tr style="	float: left; width: 100%; background: #ffffff; margin-bottom:15px;">
+									<td style="float: left; width: 96%; padding-left:20px; text-align: left; font-size: 26px; color: #343538; margin: 40px 0px 20px 0px;">Hi, <span style="font-weight: bold;">{user_name}</span></td>
+									<td style="float: left; width: 96%; padding-left:20px; text-align: left; font-size: 16px; color: #474747; line-height: 22px; margin-bottom: 20px;">{subject}</td>
+									<td style="float: left; width: 96%; padding-left:20px; text-align: left; font-size: 16px; color: #474747; line-height: 22px; margin-bottom: 40px;">{message}</td>
+								</tr>										
+							</tbody>
+						</table>';
 		
 		if($type != 'customtemplate'){
 			$this->template = EmailTemplate::find($type);
@@ -281,6 +291,7 @@ class Email extends Moloquent
 				$this->recipient_info['receiver']['email'] = $data['email'];
 				$this->recipient_info['replace']['{user_name}'] = isset($data['name'])?$data['name']:$data['email'];
 				$this->recipient_info['replace']['{message}'] = $data['message'];
+				$this->recipient_info['replace']['{subject}'] = $data['subject'];
 				$this->recipient_info['message'] = str_ireplace(array_keys($this->recipient_info['replace']),array_values($this->recipient_info['replace']),$this->recipient_info['message']);
 				$this->recipient_info['subject'] = $data['subject'];
 			break ;

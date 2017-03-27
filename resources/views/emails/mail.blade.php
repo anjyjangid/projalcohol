@@ -1,11 +1,10 @@
 <!doctype html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Email Template</title>
-   <style type="text/css">
+    <style type="text/css">
         table td {
             border-collapse: collapse !important;
         }
@@ -23,9 +22,9 @@
     </style>
 </head>
 <body style="margin: 0; padding: 0; background-color: #ebeef0;">
-@extends('emails.maillayout')
-@section('content')
-<?php echo htmlspecialchars_decode($content); ?>
-@endsection
+    @extends('emails.maillayout')
+    @section('content')
+    <?php echo htmlspecialchars_decode($content); ?>
+    @endsection
 </body>
 </html>
