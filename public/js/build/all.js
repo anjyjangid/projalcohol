@@ -11258,8 +11258,8 @@ AlcoholDelivery.filter('dateSuffix', ['$filter',function ($filter) {
 }]);
 
 AlcoholDelivery.controller('AppController', [
-	'$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 'alcoholCart','$cookies','$location',
-	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter, ProductService, alcoholCart,$cookies,$location) {
+	'$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 'alcoholCart','$cookies','$location','UserService',
+	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter, ProductService, alcoholCart,$cookies,$location,UserService) {
 
 	$scope.ageVerification = function() {
 		// Appending dialog to document.body to cover sidenav in docs app
@@ -11376,13 +11376,39 @@ AlcoholDelivery.controller('AppController', [
 	$scope.AppController.subCategory = "";
 
 	$http.get("/super/settings/").success(function(response){
+
+		if(window.innerWidth<'768'){
+			response.bgImage = "url(../homebanner/i/"+response.homeBanner.bannerImageMobile+") no-repeat center top";
+		}else{
+			response.bgImage = "url(../homebanner/i/"+response.homeBanner.bannerImage+") no-repeat center top";
+		}
+		
 		$rootScope.settings = response;
+
 		//LIVE 
 		$rootScope.settings.fbid = '1269828463077215';
 		//LOCAL
 		//$rootScope.settings.fbid = '273669936304095';		
 	});
 
+	// get promotional banners
+	$scope.getPromotionalBanners = function(){
+		$http.get("/super/promotionalbanners/").success(function(response){
+			$scope.promotionalbanners = response;
+		});
+	}
+
+	// recall promotional banner function after login and logout
+	$scope.$watch('user',function(newValue, oldValue){
+		if(UserService.currentUser!=null && UserService.currentUser.auth===false){
+			return false;
+		}
+		// call promotional banner function
+		$scope.getPromotionalBanners();
+	},true);
+	
+	// call promotional banner function on page load
+	$scope.getPromotionalBanners();
 
 	categoriesFac.getCategories().then(
 

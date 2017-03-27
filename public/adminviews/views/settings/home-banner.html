@@ -1,0 +1,109 @@
+<!-- BEGIN MAIN CONTENT --> 
+<div class="row">
+    <div class="col-md-12">     
+        <!-- Begin: life time stats -->
+        <div class="portlet light">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="icon-bell"></i>{{$state.$current.data.pageTitle}}
+                </div>
+            </div>
+            <form ng-submit="update()" ng-controller="SettingHomeBannerController">
+                <div class="form-horizontal" id="info-message">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Status</label>
+                        <div class="col-md-10 radio-list">
+                            <label class="radio-inline">
+                                <input plugin-uniform type="radio" class="form-control" ng-model="bannerSettings.status" ng-value="1" name="status">
+                                Enable
+                            </label>
+                            <label class="radio-inline">
+                                <input plugin-uniform type="radio" class="form-control" ng-model="bannerSettings.status" ng-value="0" name="status">
+                                Disable
+                            </label>
+                            <span class="help-block" ng-bind="errors['status'][0]"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng:class="{'has-error':errors['title'][0]}">
+                        <label class="col-md-2 control-label">Title: <span class="required">*</span></label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" ng-model="bannerSettings.title" placeholder="">
+                            <span class="help-block" ng-bind="errors['title'][0]"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng:class="{'has-error':errors['subtitle'][0]}">
+                        <label class="col-md-2 control-label">Sub Title: <span class="required">*</span></label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" ng-model="bannerSettings.subtitle" placeholder="">
+                            <span class="help-block" ng-bind="errors['subtitle'][0]"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng:class="{'has-error':errors['description'][0]}">
+                        <label class="col-md-2 control-label">Description: <span class="required">*</span></label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" ng-model="bannerSettings.description" placeholder="">
+                            <span class="help-block" ng-bind="errors['description'][0]"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng:class="{'has-error':errors['bannerImage'][0]}">
+                        <label class="col-md-2 control-label">Banner Image:<span class="required">
+                        * </span>
+                        </label>
+                        <div class="col-md-10">
+                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                <div class="fileinput-new thumbnail" style="max-width: 150px; max-height: 150px;">
+                                    <img src="asset/i/defaultImage.png" ng-src="homebanner/i/{{bannerSettings.bannerImage}}" err-src="asset/i/defaultImage.png" alt=""/>
+                                </div>
+                                <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 100px; max-height: 100px;">
+                                </div>
+                                <div>
+                                    <span class="btn default btn-file">
+                                        <span class="fileinput-new">{{ bannerSettings.bannerImage?'Change':'Select' }}</span>
+                                        <span class="fileinput-exists">Change</span>
+                                        <input type="file" placeholder="thumbnail" class="form-control" file-model="bannerSettings.bannerImage"/>
+                                    </span> 
+                                </div>
+                            </div>
+                            <span class="help-block" ng-bind="errors['bannerImage'][0]"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng:class="{'has-error':errors['bannerImageMobile'][0]}">
+                        <label class="col-md-2 control-label">Banner Image (Mobile):<span class="required"> * </span></label>
+                        <div class="col-md-10">
+                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                <div class="fileinput-new thumbnail" style="max-width: 150px; max-height: 150px;">
+                                    <img src="asset/i/defaultImage.png" ng-src="homebanner/i/{{bannerSettings.bannerImageMobile}}" err-src="asset/i/defaultImage.png" alt=""/>
+                                </div>
+                                <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 100px; max-height: 100px;">
+                                </div>
+                                <div>
+                                    <span class="btn default btn-file">
+                                        <span class="fileinput-new">{{ bannerSettings.bannerImageMobile?'Change':'Select' }}</span>
+                                        <span class="fileinput-exists">Change</span>
+                                        <input type="file" placeholder="thumbnail" class="form-control" file-model="bannerSettings.bannerImageMobile"/>
+                                    </span> 
+                                </div>
+                            </div>
+                            <span class="help-block" ng-bind="errors['bannerImageMobile'][0]"></span>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="margiv-top-10 pull-right">
+                                <button type="submit" ng-disabled="loading" class="btn green-haze" ><i class="fa fa-check"></i> Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
