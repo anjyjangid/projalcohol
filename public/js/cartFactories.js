@@ -1723,6 +1723,7 @@ angular.module('AlcoholCartFactories', [])
 		this.shortDescription = p.shortDescription;
 		this.sku = p.sku;
 		this.slug = p.slug;
+		this.isNew = p.isNew;
 
 		this.isLoyalty = p.isLoyalty;
 		this.loyaltyValueType = p.loyaltyValueType;
@@ -1734,8 +1735,6 @@ angular.module('AlcoholCartFactories', [])
 		this.metaTitle = p.metaTitle;
 		this.metaDescription = p.metaDescription;
 		this.metaKeywords = p.metaKeywords;
-		
-
 	}
 
 	product.prototype.addToCart = function() {

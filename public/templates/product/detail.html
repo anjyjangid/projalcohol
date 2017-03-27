@@ -33,7 +33,7 @@
 		<div class="prddetailnormaltext wraptxt desktop-show-product-des">{{product.description}}</div>           
 	</div>
 	<div class="col-xs-12 col-sm-6 col-md-6 product-detail-right-set" ng:class="{'has-sale-div':product.sale || product.nameDetailSale}">
-		<div class="prddetailtitle">{{product.name}} </div>
+		<div class="prddetailtitle">{{product.name}} <span class="correct-time" ng-if="product.isNew">New</span></div>
 			<div class="tag-purple-new-pos">
 				<not-available ng-if="product" product="product" tagsize="1"></not-available>
 				<div class="fullwidth"></div>

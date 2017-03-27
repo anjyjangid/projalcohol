@@ -11392,23 +11392,14 @@ AlcoholDelivery.controller('AppController', [
 	});
 
 	// get promotional banners
-	$scope.getPromotionalBanners = function(){
+	$rootScope.getPromotionalBanners = function(){
 		$http.get("/super/promotionalbanners/").success(function(response){
 			$scope.promotionalbanners = response;
 		});
 	}
 
-	// recall promotional banner function after login and logout
-	$scope.$watch('user',function(newValue, oldValue){
-		if(UserService.currentUser!=null && UserService.currentUser.auth===false){
-			return false;
-		}
-		// call promotional banner function
-		$scope.getPromotionalBanners();
-	},true);
-	
 	// call promotional banner function on page load
-	$scope.getPromotionalBanners();
+	$rootScope.getPromotionalBanners();
 
 	categoriesFac.getCategories().then(
 
@@ -21193,6 +21184,7 @@ angular.module('AlcoholCartFactories', [])
 		this.shortDescription = p.shortDescription;
 		this.sku = p.sku;
 		this.slug = p.slug;
+		this.isNew = p.isNew;
 
 		this.isLoyalty = p.isLoyalty;
 		this.loyaltyValueType = p.loyaltyValueType;
@@ -21204,8 +21196,6 @@ angular.module('AlcoholCartFactories', [])
 		this.metaTitle = p.metaTitle;
 		this.metaDescription = p.metaDescription;
 		this.metaKeywords = p.metaKeywords;
-		
-
 	}
 
 	product.prototype.addToCart = function() {
@@ -22270,6 +22260,8 @@ AlcoholDelivery.directive('sideBar', function() {
 			                // Destroy Cart Params start
 			                delete $rootScope.deliverykey;
 			                localStorage.removeItem("deliverykey");
+			                // call promotional banner function on logout
+							$rootScope.getPromotionalBanners();
 			                $state.go("mainLayout.index", {}, {reload: true});
 			                
 			            }).error(function(data, status, headers) {
@@ -22416,6 +22408,8 @@ AlcoholDelivery.directive('sideBar', function() {
 				    	$scope.login = {};		  
 				        $mdDialog.hide();
 				        $scope.errors = {};
+				        // call promotional banner function on login
+						$rootScope.getPromotionalBanners();
 				       	$state.go($state.current, {}, {reload: true});
 				        /*store.init().then(
 				        	function(successRes){		        

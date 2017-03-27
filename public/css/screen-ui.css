@@ -50,7 +50,7 @@ ui-sref {
 	top: 1px;
 }
 .header {
-	background: url(../images/desktopbg.jpg) no-repeat center top;
+	/*background: url(../images/desktopbg.jpg) no-repeat center top;*/
 	min-height: 690px;
 	background-size: 100%;
 	/*background-size: auto 690px;*/

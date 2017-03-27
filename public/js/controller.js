@@ -133,23 +133,14 @@ AlcoholDelivery.controller('AppController', [
 	});
 
 	// get promotional banners
-	$scope.getPromotionalBanners = function(){
+	$rootScope.getPromotionalBanners = function(){
 		$http.get("/super/promotionalbanners/").success(function(response){
 			$scope.promotionalbanners = response;
 		});
 	}
 
-	// recall promotional banner function after login and logout
-	$scope.$watch('user',function(newValue, oldValue){
-		if(UserService.currentUser!=null && UserService.currentUser.auth===false){
-			return false;
-		}
-		// call promotional banner function
-		$scope.getPromotionalBanners();
-	},true);
-	
 	// call promotional banner function on page load
-	$scope.getPromotionalBanners();
+	$rootScope.getPromotionalBanners();
 
 	categoriesFac.getCategories().then(
 
