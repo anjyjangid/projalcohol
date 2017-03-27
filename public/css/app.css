@@ -924,7 +924,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
     /*font-weight: normal;*/
     color: #fff;
     font-size: 14px;    
-    padding: 5px 5px 5px 35px;
+    padding: 5px 5px 4px 35px;
     /*background: #aa00ff;*/
     height: auto;
     z-index: 2;
@@ -1772,4 +1772,14 @@ body {
     bottom: 20px;
     color: #ada6a6;
     font-style: italic;
+}
+
+input[type='text'].transparent{
+	border: 0px;
+    width: 100%;
+    background: transparent;
+    padding: 0 2px;
+}
+.mobileinput{
+	width: 60px;
 }

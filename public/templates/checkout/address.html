@@ -10,15 +10,16 @@
 					<label>Contact Number<span>*</span></label>
 					
 					<div class="input-group">
-						<div class="mobileinput input-group-addon">+65</div>
+
+						<div class="mobileinput input-group-addon">+<input type="text" name="countryCode" ng-model="delivery.country_code" class="transparent" maxlength="3" ng-minlength="1" ng-maxlength="3" required></div>
 						<input type="text" class="form-control alcohalpopuptext2" name="deliveryContact" id="deliveryContact" required ng-model="delivery.contact" ng-minlength="8" ng-maxlength="8" maxlength="8">
+
 					</div>
 
 					<div ng-if="cartFrm.deliveryContact.$touched">
-						<span class="help-block" ng-if="cartFrm.deliveryContact.$error.required">Please enter contact person number</span>
-						<span class="help-block" ng-if="cartFrm.deliveryContact.$error.minlength">Contact number should be 8 digit long</span>
+						<span class="help-block" ng-if="cartFrm.deliveryContact.$error.required || cartFrm.countryCode.$error.required" ng-bind="errors.contact"></span>
+						<span class="help-block" ng-if="cartFrm.deliveryContact.$error.minlength || cartFrm.countryCode.$error.minlength" ng-bind="errors.contact"></span>
 					</div>
-
 
 				</div>
 				<div class="alcohlchekboxdiv12" ng-if="newNumber">

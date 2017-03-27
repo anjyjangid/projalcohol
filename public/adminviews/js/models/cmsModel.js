@@ -49,9 +49,10 @@ MetronicApp.factory('cmsModel', ['$http', '$cookies','$location', function($http
         updatePage: function(fields,pageId){
 	       	
 	       	//put is used to updated data, Laravel router automatically redirect to update function 
-
-	        return $http.put("/adminapi/cms/"+pageId, fields, {
-	            
+	       	var fd = objectToFormData(fields);
+	        return $http.post("/adminapi/cms/update/"+pageId, fd, {
+	            transformRequest: angular.identity,	            	            
+	            headers: {'Content-Type': undefined}
 	        }).error(function(data, status, headers) {            
 	            Metronic.alert({
 	                type: 'danger',

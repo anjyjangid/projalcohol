@@ -14,7 +14,7 @@ MetronicApp.controller('CmsController',['$rootScope', '$scope', '$timeout','$htt
     $scope.pagesection = [
     	{name:'Customer Service',value:'services'},
     	{name:'About AlcoholDelivery',value:'about'},
-    	{name:'Corporate',value:'corporate'}    	
+    	/*{name:'Corporate',value:'corporate'}    	*/
     ];
     
 }]); 
@@ -84,6 +84,14 @@ MetronicApp.controller('CmsUpdateController',['$rootScope', '$scope','$http','$t
 			$scope.errors = data;
 
 		});
+	}
+
+	$scope.hasFile = function(){
+
+		if($scope.page.coverImage != '' && typeof $scope.page.coverImage === 'string'){
+			return true;
+		}
+		return false;
 	}
    
 }]);

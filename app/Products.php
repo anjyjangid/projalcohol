@@ -70,6 +70,7 @@ class Products extends Eloquent
 		'suggestedId',
 		'suggestedObjectId',
 		'groupId'
+
 	];
 
 
@@ -408,7 +409,7 @@ class Products extends Eloquent
 				'$sort' => []
 			];
 
-			$sortArr = explode("_", $params['sort']);                    
+			$sortArr = explode("_", $params['sort']);
 			$sortDir = array_pop($sortArr);
 			$sortDir = $sortDir=='asc'?1:-1;
 			$sortby = array_pop($sortArr);
@@ -416,15 +417,18 @@ class Products extends Eloquent
 			if($sortby == 'new'){
 				$sortby = 'created_at';
 				if(isset($params['filter']) && $params['filter']=="featured"){
-					$sortby = 'updated_at';	
-					$sortDir = -1;	
+					$sortby = 'updated_at';
+					$sortDir = -1;
 				}
-			}			
+			}
+
+			if($sortby=='created'){
+				$sortby = 'created_at';
+			}
 
 			$sortParam['$sort'][$sortby] = (int)$sortDir;
-			
-		}
 
+		}
 
 		if(isset($params['limit']) && !empty($params['limit'])){
 

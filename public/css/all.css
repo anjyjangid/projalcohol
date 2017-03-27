@@ -6782,6 +6782,7 @@ ui-sref {
 	padding: 5px 0px;
 	color: #363535;
 	font-size: 12px;
+	font-weight: 600;
 }
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
 	background-color: transparent;
@@ -6804,7 +6805,7 @@ ui-sref {
 	background-size: auto 200px;
 	min-width: 520px;
 	min-height: 0/*372px*/;
-	min-height: 100%
+	min-height: 280px
 }
 .navbar-default {
 	background-color: transparent;
@@ -7338,7 +7339,7 @@ ui-sref {
 	text-align: left;
 	line-height: 18px;
 	margin-bottom: 20px;
-	height: 34px;
+	min-height: 38px;
 	overflow: hidden;
 }
 .prod_price {
@@ -12446,6 +12447,8 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
 	background-color: #aa00ff !important;
 	border-color: #d7d7d7;
 	font-size: 15px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	color: #fff !important;
 	border: 1px solid transparent !important;
 }
@@ -12674,12 +12677,21 @@ md-checkbox.md-default-theme.md-checked .md-icon::after, md-checkbox.md-checked 
 	display: none;
 	height: 30px;
 	margin-bottom: 0;
-	padding-top: 3px;
+	padding-top: 0px;
 	position: relative;
 	text-align: center;
 	top: 0;
 	width: 30px;
 	z-index: 2;
+}
+.add-wishlist-icondiv img{
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	margin:auto;
+
 }
 .bulk-dis-icon {
 	background: rgba(255, 202, 41, 0.95) none repeat scroll 0 0;
@@ -13181,6 +13193,8 @@ a.core-block{
 .yellow-tag {
     bottom: 52px;
     left: 0;
+    min-height: 20px;
+    float: left;
     margin-right:5px;
 }
 
@@ -13577,6 +13591,68 @@ md-toast.notify.bottom{
 }
 .registeremailcvr md-checkbox{
 	margin-bottom: 0px;
+}
+md-content.globalsearch md-autocomplete{
+	width: 95% !important;
+}
+md-checkbox.md-checked.md-focused .md-container::before{
+	background: none !important
+}
+
+.productbeer-headtitleouter {
+    float: left;
+    width: 100%;
+}
+
+.productbeer-headtitleouter .productbeerfiltertoptitle{
+	width: 50%;
+}
+
+.productbeer-headtitleouter .productbeerfiltertoptitle.productbeer-point-rw{
+	float: right;
+	width: auto;
+}
+
+
+
+.announcement-enable-wrapper {
+	padding-top: 60px;
+}
+.announcement-enable-wrapper .announcement-bar {
+	width: 100%;
+	color: #ffffff;
+	float: left;
+	background-color: rgb(156,39,176);
+	position: fixed;
+	padding: 5px 0;
+	z-index: 99;
+	top: 0;
+	text-align: center;
+}
+.announcement-enable-wrapper .announcement-enable {
+	top: 60px;
+}
+
+.announcement-enable-wrapper .announcement-bar a {
+	display: inline-block;
+}
+
+.announcement-container img {
+    max-height: 50px;
+}
+
+.correct-time{
+	background-color: #f0ad4e;
+	padding: 2px 4px;
+	border-radius: 2px;
+	color: #fff;
+	text-transform: capitalize;
+	font-size: 11px;
+	font-weight: 600;
+	margin-right: 4px;
+}
+.tgcontain{
+	display: inline;
 }
 /*party-package-page*/
 .partypackegescover {
@@ -14284,7 +14360,7 @@ md-toast.notify.bottom{
 .cocktaildetail-coverdiv {
 	float: left;
 	margin-bottom: 13px;
-	margin-top: 30px;
+	margin-top: 10px;
 	width: 100%;
 }
 .cocktaildetail-coverdiv span {
@@ -14327,9 +14403,9 @@ md-toast.notify.bottom{
 	text-align: center;
 }
 .detail-productdiv > img {
-	/*height: 100%;*/
+	max-height: 100%;
 	margin: 0;
-	/*width: 100%;*/
+	max-width: 100%;
 	display: inline-block;
 	max-width:100%;
 }
@@ -15007,6 +15083,10 @@ body.menu-slider.in {
 .res-show{
 	display: none;
 }
+.package-detail-new-box{
+	float: left;
+}
+
 @media (min-width : 1024px) and (max-width : 1200px) {
   .christmas-mainouter.col-md-8 {
 	  padding-left: 0;
@@ -15415,6 +15495,9 @@ body.menu-slider.in {
 }
 .combo_sliderProduct .md-dynamic-height{
 	overflow: hidden;
+}
+.prod_chilled{
+	min-width: 90px;
 }
 }
 
@@ -16436,6 +16519,15 @@ md-toast.notify div.md-toast-content{
 .productcomboul{
 	border-bottom: none !important;
 }
+.prod_chilled{
+	min-width: 90px;
+}
+
+
+.modify .dropdown-menu{
+	min-height: auto;
+}
+
 }
 
 @media only screen and (max-width : 767px) {
@@ -17435,7 +17527,7 @@ md-toast.notify div.md-toast-content{
 	margin-bottom: 30px;
 }
 .productinner_rightslide{
-	height:120px;
+	height:140px;
 	position:relative;
 	padding-left: 15px;
 	padding-right: 15px;
@@ -18086,6 +18178,68 @@ md-toast.notify div.md-toast-content{
 .cms-rightpanel{
 	display: none;
 }
+.checkoutmiddletable .wislistborbtm td,.checkoutmiddletable .wislistborbtm td:not([class="childtd"]){
+	float: left;
+	padding: 20px 5px !important;
+	white-space: normal !important;
+}
+.wislistborbtm td:nth-child(1){
+	width: 100%;
+}
+.wislistborbtm td:nth-child(3){
+	width: 73%;
+}
+.wishlist-tbledatecover{
+	padding: 0px !important;
+	float: left;
+}
+.package-detail-new-box .grey-txt{
+	width: 100%;
+	float: left;
+}
+.package-detail-new-box .checkoutmiddlevlauediv{
+	width: 70px !important;
+}
+
+
+
+.modify .dropdown-menu{
+	min-height: auto;
+}
+
+.announcement-enable-wrapper .announcement-bar a{
+	height: auto;
+}
+
+.announcement-container{
+	position: static;
+	top: 0;
+	height: auto;
+}
+
+.announcement-enable-wrapper .announcement-bar a {
+    display: table-cell;
+    text-align: center;
+    width: 100%;
+    float: none;
+    height: 60px;
+    vertical-align: middle;
+}
+
+.outer{
+	display: inline-block;
+}
+
+.announcement-container img {
+    max-height: 40px;
+}
+
+.announcement-enable-wrapper .announcement-bar{
+	padding: 0;
+}
+
+
+
 
 }
 
@@ -18116,7 +18270,9 @@ md-tooltip{
 	font-size: 14px !important;
 	width: 400px;
 }
-
+md-content.globalsearch md-autocomplete {
+    width: 90% !important;
+}
 }
 
 @media only screen and (max-width : 479px) {
@@ -19035,8 +19191,9 @@ md-tooltip{
 md-tooltip{
 	white-space: normal;
 	font-size: 14px !important;
-	width: 300px;
+	width: auto;
 }
+
 .ro_desc{
 	width: 70%;
 }
@@ -19052,6 +19209,15 @@ md-tooltip{
 }
 md-tabs.md-dynamic-height md-tabs-content-wrapper{
 top: -1px;
+}
+.wislistborbtm td:nth-child(3) {
+    width: 58%;
+}
+.wislistborbtm td:nth-child(2) {
+    width: 33%;
+}
+.wislistborbtm td:nth-child(4) {
+    width: 9%;
 }
 }
 
@@ -19079,9 +19245,54 @@ top: -1px;
 .additempopuppinkboxrightinner a,.additempopuppinkboxrightinner a:hover,.additempopuppinkboxrightinner a:focus{
 	padding:0px !important;
 }
+.announcement-container span{
+	font-size: 12px;
+	max-width: 75%;
+	display: inline-block;
+	vertical-align: middle;
+}
+md-content.globalsearch md-autocomplete {
+    width: 85% !important;
+}
+.package-detail-new-box .grey-txt{
+	width: 100%;
+	float: left;
+}
+.package-detail-new-box .checkoutmiddlevlauediv{
+	width: 70px !important;
+}
+
+
+
+.productbeer-headtitleouter .productbeerfiltertoptitle{
+	width: 100%;
+	margin-bottom:10px; 
+}
+
+.productbeer-headtitleouter .productbeerfiltertoptitle.productbeer-point-rw{
+	float: left;
+}
+
+.innerpagemargintop p{
+	text-align: center;
+}
+
+
+
+.announcement-container img {
+    max-height: 37px;
+}
 
 }
 
+
+@media only screen and (max-width : 340px) {
+
+.announcement-container img {
+    max-height: 30px;
+}
+
+}
 
 #icon {
   width: 171px;
@@ -20008,7 +20219,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
     /*font-weight: normal;*/
     color: #fff;
     font-size: 14px;    
-    padding: 5px 5px 5px 35px;
+    padding: 5px 5px 4px 35px;
     /*background: #aa00ff;*/
     height: auto;
     z-index: 2;
@@ -20856,6 +21067,16 @@ body {
     bottom: 20px;
     color: #ada6a6;
     font-style: italic;
+}
+
+input[type='text'].transparent{
+	border: 0px;
+    width: 100%;
+    background: transparent;
+    padding: 0 2px;
+}
+.mobileinput{
+	width: 60px;
 }
 /**
  * vAccordion - AngularJS multi-level accordion component

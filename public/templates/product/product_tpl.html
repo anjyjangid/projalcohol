@@ -46,9 +46,9 @@
 	<a ui-sref="mainLayout.product({product:productInfo.slug})" class="core-block">
 
 		<div class="prod_desc">		
-			{{productInfo.name}}		
+			{{productInfo.name}}				
+			<not-available product="productInfo"></not-available>
 		</div>
-		<not-available product="productInfo"></not-available>
 
 		<div ng-if="!productInfo.promo">
 			<div class="prod_price">

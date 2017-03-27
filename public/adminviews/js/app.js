@@ -2869,13 +2869,15 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 			templateUrl:'adminviews/views/auth.html',
             controller: "CmsController",
             resolve: {
-                authenticate: authenticate,
+                authenticate: authenticate,                
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         name: 'MetronicApp',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
                         files: [
                             'assets/global/plugins/ckeditor/ckeditor.js',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
                             'adminviews/js/models/cmsModel.js',
                             'adminviews/js/controllers/CmsController.js'
                         ]

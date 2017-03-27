@@ -18,8 +18,9 @@ MetronicApp.controller('CustomerAddController',['$scope', '$http','customerModel
 	
 	$scope.errors = {};
 
-	$scope.customer = {		
-		status:"1"
+	$scope.customer = {
+		status:"1",
+		country_code : '65'
 	};	
 	
 	$scope.store = function(){
@@ -42,6 +43,10 @@ MetronicApp.controller('CustomerAddController',['$scope', '$http','customerModel
 MetronicApp.controller('CustomerUpdateController',['$rootScope', '$scope', '$timeout','$http','$stateParams','customerModel', function($rootScope, $scope, $timeout,$http,$stateParams,customerModel) {
 
 	customerModel.getCustomer($stateParams.customerid).success(function(data){
+
+		if(!angular.isDefined(data.country_code)){
+			data.country_code = '65';
+		}
 		$scope.customer = data;
 		$scope.hideBasicInfo = true; 
 	});

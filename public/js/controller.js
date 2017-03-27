@@ -266,7 +266,7 @@ AlcoholDelivery.controller('AppController', [
 	$scope.sortOptions = [
 		//{value:'',label:'Popularity'},
 		{value:'name_asc',label:'Alphabetical A-Z'},
-		{value:'created_asc',label:'Recently Added'},
+		{value:'created_desc',label:'Recently Added'},
 		{value:'price_asc',label:'Price - Low to High'},
 		{value:'price_desc',label:'Price - High to Low'},		
 	];
@@ -724,7 +724,6 @@ AlcoholDelivery.controller('ProfileController',['$scope','$rootScope','$state','
 	function initController() {
 
 		$http.get('/loggedUser').success(function(response){
-
 			$scope.user = response;
 		}).error(function(data, status, headers){
 
@@ -1538,6 +1537,10 @@ AlcoholDelivery.controller('CartAddressController',[
 
 	$scope.delivery = alcoholCart.$cart.delivery;
 	
+	if(!angular.isDefined($scope.delivery.country_code)){
+		$scope.delivery.country_code = 65;
+	}
+
 	$scope.user = UserService.getIfUser();
 	
 
@@ -1595,7 +1598,9 @@ AlcoholDelivery.controller('CartAddressController',[
 		}
 
 		var deliveryContactErrors = $scope.cartFrm.deliveryContact;
-		if(deliveryContactErrors.$invalid){
+		var countryCodeErrors = $scope.cartFrm.countryCode;
+		
+		if(deliveryContactErrors.$invalid || countryCodeErrors.$invalid){
 
 			if(deliveryContactErrors.$error.required){
 				$scope.errors.contact = "Please enter contact person number";
@@ -1603,6 +1608,14 @@ AlcoholDelivery.controller('CartAddressController',[
 
 			if(deliveryContactErrors.$error.minlength){
 				$scope.errors.contact = "Contact number should be 8 digit long";
+			}
+
+			if(countryCodeErrors.$error.required){
+				$scope.errors.contact = "Please enter country code";
+			}
+
+			if(countryCodeErrors.$error.minlength){
+				$scope.errors.contact = "Country code should be 1 digit long";
 			}
 
 			var ele = $("#deliveryContact");
@@ -2621,8 +2634,8 @@ AlcoholDelivery.controller('ShopFromPreviousController',[
 }]);
 
 AlcoholDelivery.controller('CmsController',[
-			'$scope','$http','$stateParams','$rootScope','$state','$sce',
-	function($scope,$http,$stateParams,$rootScope,$state,$sce){
+			'$scope','$http','$stateParams','$rootScope','$state','$sce','$timeout','$anchorScroll',
+	function($scope,$http,$stateParams,$rootScope,$state,$sce,$timeout,$anchorScroll){
 	$scope.querySent = false;
 	$http.get("/super/cmsdata/"+$stateParams.slug).success(function(response){
 
@@ -2662,9 +2675,16 @@ AlcoholDelivery.controller('CmsController',[
 		$scope.querySubmit = true;
 		$http.post('/site/query',$scope.query).success(function(res){
 			$scope.querySent = true;
+			$scope.querySubmit = false;
+			$timeout(function() {
+				$anchorScroll();		    	
+			});
 		}).error(function(data, status, headers){
 			$scope.errors = data;
 			$scope.querySubmit = false;
+			$timeout(function() {
+				$anchorScroll();		    	
+			});
 		});
 	}
 

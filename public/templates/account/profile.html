@@ -37,13 +37,14 @@
         <span class="help-block" ng-show="profileFrm.name.$error.email">Not valid email!</span>
 
       </div>
-      <div class="registeremailcvr form-group" ng:class="{'has-error':errors.mobile_number[0]}">
+      <div class="registeremailcvr form-group" ng:class="{'has-error':errors.mobile_number[0] || errors.country_code[0]}">
         <label>Mobile Phone Number <span class="required-astrik">*</span></label>
         <div class="input-group">
-          <div class="mobileinput input-group-addon">+65</div>
-          <input type="text" placeholder="mobile number" ng-model="user.mobile_number" class="alcohalrestertextbox form-control">
+          
+          <div class="mobileinput input-group-addon">+<input type="text" ng-model="user.country_code" class="transparent" maxlength="3"></div>
+          <input type="text" placeholder="mobile number" ng-model="user.mobile_number" class="alcohalrestertextbox form-control" maxlength="10">
         </div>
-        <span class="help-block" ng-bind="errors.mobile_number[0]"></span>
+        <span class="help-block" ng-bind="errors.country_code[0]"></span><span class="help-block" ng-bind="errors.mobile_number[0]"></span>
       </div>
       <div class="fullwidth">
         <button class="alcohalfootersign" type="submit"  ng-disabled="!profileFrm.$valid || loading">Save Changes</button>

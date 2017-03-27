@@ -2,7 +2,15 @@
 <div class="combo_slider combo_sliderProduct" ng-init="productView='alcohol'">
 
 	<div class="productbeerfiltertopcover">
-		<div class="productbeerfiltertoptitle text-capitalize">Loyalty Store <span ng-if="availableLoyaltyPoints">{{availableLoyaltyPoints}}</span></div>
+		<div class="productbeer-headtitleouter">
+		<div class="productbeerfiltertoptitle text-capitalize">Loyalty Store
+			<span ng-if="availableLoyaltyPoints">{{availableLoyaltyPoints}}</span>
+		</div>
+		<div class="productbeerfiltertoptitle text-capitalize productbeer-point-rw">Loyalty Points 
+			<span ng-if="availableLoyaltyPoints">{{availableLoyaltyPoints}}</span>
+			<span>LP</span>
+		</div>
+		</div>
 			<div class="row">
 				<div class="col-xs-12 col-sm-3 col-md-3 text-capitalize"> 
 					<a ui-sref="mainLayout.loyaltystore({keyword:keyword,parent:''})" ng-class="{active:parent==null}">All Types</a> 

@@ -44,6 +44,7 @@ class User extends Eloquent implements AuthenticatableContract,
 		'gplusid',
 		'twitterid',
 		'instagramid',
+		'country_code',
 		'mobile_number',
 		'alternate_number',
 		'email_key',
@@ -53,6 +54,7 @@ class User extends Eloquent implements AuthenticatableContract,
 		'savedCards',
 		'reffered',
 		'socialData'
+
 	];
 
 	public function getFields(){
@@ -151,11 +153,12 @@ class User extends Eloquent implements AuthenticatableContract,
 		return $response;    
 	 }
 
-	public function setContact ($number,$isDefault=false) {
+	public function setContact ($number,$code=65,$isDefault=false) {
 
 		if($isDefault){
 
 			$this->__set('mobile_number',$number);
+			$this->__set('country_code',$code);
 
 		}else{
 
@@ -163,7 +166,7 @@ class User extends Eloquent implements AuthenticatableContract,
 
 			if(!in_array($number,$alternateNum)){
 
-				$this->__set('alternate_number',array_merge($alternateNum, [$number]));
+				$this->__set('alternate_number',array_merge($alternateNum, [$code.$number]));
 
 			}
 
