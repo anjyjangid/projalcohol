@@ -195,6 +195,7 @@ class CustomerController extends Controller
 			$user = User::create([
 
 				'name' => $inputs['name'],
+				'country_code' => (int)$inputs['country_code'],
 				'mobile_number' => $inputs['mobile_number'],
 				'email' => $inputs['email'],
 				'password' => bcrypt($inputs['password']),
@@ -256,7 +257,8 @@ class CustomerController extends Controller
 		//$customer->password = bcrypt($inputs['password']);
 		$customer->status = (int)$inputs['status'];    
 		$customer->mobile_number = $inputs['mobile_number'];
-		
+		$customer->country_code = (int)$inputs['country_code'];
+
 		if($customer->save()){
 			return response(array("success"=>true,"message"=>"Customer updated successfully"));
 		}

@@ -58,8 +58,9 @@ MetronicApp.controller('PackageFormController',['$scope', '$location','$statePar
 		}
 		
 		$scope.defaultError = [];
+		if($scope.package.type==1){
+			angular.forEach($scope.package.packageItems,function(packageItem,packageItemIndex){
 
-		angular.forEach($scope.package.packageItems,function(packageItem,packageItemIndex){
 			var totalDefault = 0;
 
 			angular.forEach(packageItem.products,function(product){
@@ -74,7 +75,28 @@ MetronicApp.controller('PackageFormController',['$scope', '$location','$statePar
 			}
 
 		})
-		
+		}else{
+
+			angular.forEach($scope.package.packageItems,function(packageItem,packageItemIndex){
+
+				var defaultIndex = packageItem.defaultIndex;				
+
+				angular.forEach(packageItem.products,function(product,index){
+
+					product.defaultQty = 0;
+					product.default = false;
+					
+					if(defaultIndex===index){
+						product.defaultQty = 1;
+						product.default = true;
+					}
+
+				})
+				
+			})
+
+		}
+
 		if($scope.defaultError.length!==0){
 
 			sweetAlert.swal({
@@ -86,7 +108,7 @@ MetronicApp.controller('PackageFormController',['$scope', '$location','$statePar
 		}
 
 		//POST DATA WITH FILES
-		packageModel.storePackage($scope.package,url).success(function(response){						
+		packageModel.storePackage($scope.package,url).success(function(response){
 			
 			var redirect = ($state.$current.data.type==1)?'packages/party':'packages/cocktail';
 			$location.path(redirect);

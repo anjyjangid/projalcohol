@@ -20857,6 +20857,16 @@ body {
     color: #ada6a6;
     font-style: italic;
 }
+
+input[type='text'].transparent{
+	border: 0px;
+    width: 100%;
+    background: transparent;
+    padding: 0 2px;
+}
+.mobileinput{
+	width: 60px;
+}
 /**
  * vAccordion - AngularJS multi-level accordion component
  * @version v1.6.0
