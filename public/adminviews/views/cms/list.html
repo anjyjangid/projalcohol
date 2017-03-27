@@ -79,7 +79,7 @@
                     {
                         mData: null,
                         mRender: function(data, type, full) {                           
-                            return '<a title="Edit" ui-sref=userLayout.cms.edit({pageid:"'+data._id.$id+'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a><a title="View" href="/site/'+data.slug+'"; class="btn btn-xs default" target="_blank"><i class="fa fa-eye"></i></a>';                          
+                            return '<a title="Edit" ui-sref=userLayout.cms.edit({pageid:"'+data._id.$id+'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a><a title="View" href="/pages/'+data.slug+'"; class="btn btn-xs default" target="_blank"><i class="fa fa-eye"></i></a>';                          
                         },
                         orderable:false
                     }

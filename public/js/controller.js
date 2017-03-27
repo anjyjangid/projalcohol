@@ -2595,8 +2595,8 @@ AlcoholDelivery.controller('ShopFromPreviousController',[
 }]);
 
 AlcoholDelivery.controller('CmsController',[
-			'$scope','$http','$stateParams','$rootScope','$state','$sce',
-	function($scope,$http,$stateParams,$rootScope,$state,$sce){
+			'$scope','$http','$stateParams','$rootScope','$state','$sce','$timeout','$anchorScroll',
+	function($scope,$http,$stateParams,$rootScope,$state,$sce,$timeout,$anchorScroll){
 	$scope.querySent = false;
 	$http.get("/super/cmsdata/"+$stateParams.slug).success(function(response){
 
@@ -2636,9 +2636,16 @@ AlcoholDelivery.controller('CmsController',[
 		$scope.querySubmit = true;
 		$http.post('/site/query',$scope.query).success(function(res){
 			$scope.querySent = true;
+			$scope.querySubmit = false;
+			$timeout(function() {
+				$anchorScroll();		    	
+			});
 		}).error(function(data, status, headers){
 			$scope.errors = data;
 			$scope.querySubmit = false;
+			$timeout(function() {
+				$anchorScroll();		    	
+			});
 		});
 	}
 

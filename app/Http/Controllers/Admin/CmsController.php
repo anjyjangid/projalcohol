@@ -13,6 +13,7 @@ use Storage;
 use Validator;
 
 use AlcoholDelivery\Cms as Cms;
+use File;
 
 class CmsController extends Controller
 {
@@ -89,7 +90,7 @@ class CmsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(CmsRequest $request, $id)
+    public function postUpdate(CmsRequest $request, $id)
     {
         $inputs = $request->all();
         
@@ -106,8 +107,16 @@ class CmsController extends Controller
         $page->metaKeywords = @$inputs['metaKeywords'];
         $page->metaDescription = @$inputs['metaDescription'];    
         
+
         
         if($page->save()){
+
+            if($request->file('coverImage')){
+                $this->saveImage($page,$inputs['coverImage']);            
+            }else if(isset($inputs['coverImage']) && $inputs['coverImage']==''){
+                $page->unset('coverImage');
+            }
+
             return response(array("success"=>true,"message"=>"Cms ".ucfirst($page->title)." page updated successfully"));
         }
         
@@ -189,5 +198,17 @@ class CmsController extends Controller
         
     }
     
-    
+    public function saveImage($page,$file){        
+        if(isset($file)){
+            $image = @$file;
+            $destinationPath = storage_path('cmspages');
+            if (!File::exists($destinationPath)){
+                File::MakeDirectory($destinationPath,0777, true);
+            }
+            $filename = $page->_id.'.'.$image->getClientOriginalExtension();
+            $upload_success = $image->move($destinationPath, $filename);
+            $page->coverImage = $filename;
+            $page->save();
+        }
+    }
 }

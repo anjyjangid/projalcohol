@@ -3,6 +3,7 @@
 namespace AlcoholDelivery\Http\Requests;
 
 use AlcoholDelivery\Http\Requests\Request;
+use Input;
 
 class CmsRequest extends Request
 {    
@@ -34,8 +35,12 @@ class CmsRequest extends Request
             'metaTitle' => 'max:100',
             'metaKeywords' => 'max:150',
             'metaDescription' => 'max:150',            
-            'status'=> 'integer|in:0,1',
+            'status'=> 'integer|in:0,1'            
         ];
+
+        if($this->file('coverImage')){
+            $rules['coverImage'] = 'image|max:5102';
+        }
                 
         return $rules;
     }
@@ -44,9 +49,8 @@ class CmsRequest extends Request
     {
 
         $messages = [
-
-                'required' => 'This field is required',
-
+            'required' => 'This field is required',
+            'coverImage.image' => 'Please select an image file.'
         ];
             
         return $messages;

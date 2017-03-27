@@ -34,6 +34,7 @@
 		<meta name="google_id" content="{{ config('app.google_id') }}">
 		<meta name="instagram_id" content="{{ config('app.instagram_id') }}">		
 		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+		<meta name="theme-color" content="#FFC412">
 		<title ng-bind="meta.title"></title>
 
 		<!-- Bootstrap -->
@@ -156,7 +157,7 @@
 										<!-- <a target="_blank" href="@{{settings.social.googleplus}}"><img class="img-responsive" src="images/footergoogle.png" /></a> -->
 									</div>
 								</div>
-								<div class="col-xs-12 col-md-2">
+								<div class="col-xs-12 col-md-3">
 									<div class="footer1_title">Customer Service</div>
 									<div class="footer1_subtitle">
 										<ul>
@@ -166,7 +167,7 @@
 										</ul>
 									</div>
 								</div>
-								<div class="col-xs-12 col-md-2 ">
+								<div class="col-xs-12 col-md-3 ">
 									<div class="footer1_title">About AlcoholDelivery</div>
 									<div class="footer1_subtitle">
 										<ul>
@@ -176,7 +177,7 @@
 										</ul>
 									</div>
 								</div>
-								<div class="col-xs-12 col-md-2 ">
+								<!-- <div class="col-xs-12 col-md-2 ">
 									<div class="footer1_title">Corporate</div>
 									<div class="footer1_subtitle">
 										<ul>										
@@ -185,15 +186,14 @@
 											</li>
 										</ul>
 									</div>
-								</div>
-								
-
+								</div> -->
 								<div class="col-xs-12 col-md-2 ">
 									<div class="footer1_title">Connect with us</div>
 									<div class="footer1_subtitle">
 										<ul>										
-											<li><a>Facebook</a></li>
-											<li><a>Mobile Apps</a></li>
+											<li><a href="https://www.facebook.com/alcoholdelivery.com.sg/" target="_blank">Facebook</a></li>
+											<li><a href="https://twitter.com/9chilled" target="_blank">Twitter</a></li>											
+											<li><a>Mobile Apps <br>(Coming soon)</a></li>
 										</ul>
 									</div>
 								</div>							

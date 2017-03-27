@@ -24,6 +24,38 @@ class QueryRequest extends Request
     public function rules()
     {
 
+        if($this->type == 'bulkcorporate-discounts'){                
+            $rules = [
+                'name' => 'required|max:50',
+                'companyName' => 'max:100',                
+                'businessNature' => 'max:100',
+                'phoneNumber' => 'numeric|digits_between:8,10',
+                //'contactName' => 'required|max:50',
+                'email' => 'required|email',
+            ];
+        }
+
+        if($this->type == 'suggest-a-product') {            
+            $rules = [
+                'productname' => 'required|max:100',
+                'brandname' => 'required|max:100',
+                'category' => 'required',                
+                'email' => 'required|email'                
+            ];
+        }
+
+        if($this->type == 'event-planner') {            
+            $rules = [
+                'name' => 'required|max:50',
+                'companyName' => 'max:100',
+                'email' => 'required|email',
+                'phoneNumber' => 'numeric|digits_between:8,10',
+                'dateOfEvent' => 'date_format:d/m/Y|after:now',
+                'locationOfEvent' => 'max:100',
+                'noOfPax' => 'numeric'
+            ];
+        }
+
         if($this->type == 'contact-us') {            
             $rules = [
                 'subject' => 'required|max:50',
@@ -31,37 +63,9 @@ class QueryRequest extends Request
                 'email' => 'required|email',
                 'feedback' => 'required'
             ];
-        }else{
-            $rules = [
-                'companyName' => 'max:100',                
-                'contactName' => 'required|max:50',
-                'phoneNumber' => 'required|numeric',
-                'emailAddress' => 'required|email',
-            ];
+        }
 
-            if($this->type == 'sell-on-alcoholdelivery'){
-                $rules['companyName'] = 'required|max:100';
-                $rules['websiteUrl'] = 'required|url';
-                $rules['noOfProducts'] = 'required|numeric';
-                $rules['brandsToSell'] = 'required';
-            }else{
-                if($this->type == 'event-planner'){
-                    $rules['dateOfEvent'] = 'required|date_format:d/m/Y|after:now';
-                    $rules['typeOfEvent'] = 'required|max:100';
-                    $rules['noOfPax'] = 'required|numeric';
-                }
-                if($this->type == 'book-a-bartender'){
-                    $rules['dateOfEvent'] = 'required|date_format:d/m/Y|after:now';
-                    $rules['noOfBartender'] = 'required|numeric';
-                    $rules['hoursRequired'] = 'required|numeric';
-                }
-                if($this->type == 'become-a-partner'){
-                   $rules['companyName'] = 'required|max:100'; 
-                   $rules['companyType'] = 'required|max:100'; 
-                }
-            }
-
-        }             
+        $rules['additionalComment'] = 'max:200';
 
         return $rules;
     }
