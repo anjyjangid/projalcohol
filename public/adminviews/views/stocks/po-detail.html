@@ -31,7 +31,7 @@
                     <tbody>
                         <tr ng-repeat="p in products" ng-init="p.add = p.order">
                             <td>{{p.name}}</td>
-                            <td>{{p.order + (p.received || 0)}} <span ng-if="p.tradeData">({{p.tradeData.tradeQuantity*((p.order + (p.received || 0))/(p.tradeData.tradeQuantity + p.tradeData.tradeValue))}} + {{p.tradeData.tradeValue*((p.order + (p.received || 0))/(p.tradeData.tradeQuantity + p.tradeData.tradeValue))}})</td>
+                            <td>{{p.order + (p.received || 0)}} <span ng-if="p.tradeData.tradeQuantity">({{p.tradeData.tradeQuantity*((p.order + (p.received || 0))/(p.tradeData.tradeQuantity + p.tradeData.tradeValue))}} + {{p.tradeData.tradeValue*((p.order + (p.received || 0))/(p.tradeData.tradeQuantity + p.tradeData.tradeValue))}})</td>
                             <td>{{p.received || 0}}<span></td>
                             <td ng-show="status<=1"><input type="number" min="0" ng-model="p.add" class="form-control input-sm"></td>
                         </tr>
