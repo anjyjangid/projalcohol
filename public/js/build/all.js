@@ -11153,8 +11153,8 @@ AlcoholDelivery.filter('dateSuffix', ['$filter',function ($filter) {
 }]);
 
 AlcoholDelivery.controller('AppController', [
-	'$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 'alcoholCart','$cookies','$location',
-	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter, ProductService, alcoholCart,$cookies,$location) {
+	'$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 'alcoholCart','$cookies','$location','UserService',
+	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter, ProductService, alcoholCart,$cookies,$location,UserService) {
 
 	$scope.ageVerification = function() {
 		// Appending dialog to document.body to cover sidenav in docs app
@@ -11271,13 +11271,30 @@ AlcoholDelivery.controller('AppController', [
 	$scope.AppController.subCategory = "";
 
 	$http.get("/super/settings/").success(function(response){
+
+		if(window.innerWidth<'768'){
+			response.bgImage = "url(../homebanner/i/"+response.homeBanner.bannerImageMobile+") no-repeat center top";
+		}else{
+			response.bgImage = "url(../homebanner/i/"+response.homeBanner.bannerImage+") no-repeat center top";
+		}
+		
 		$rootScope.settings = response;
+
 		//LIVE 
 		$rootScope.settings.fbid = '1269828463077215';
 		//LOCAL
 		//$rootScope.settings.fbid = '273669936304095';		
 	});
 
+	// get promotional banners
+	$rootScope.getPromotionalBanners = function(){
+		$http.get("/super/promotionalbanners/").success(function(response){
+			$scope.promotionalbanners = response;
+		});
+	}
+
+	// call promotional banner function on page load
+	$rootScope.getPromotionalBanners();
 
 	categoriesFac.getCategories().then(
 
@@ -21062,6 +21079,7 @@ angular.module('AlcoholCartFactories', [])
 		this.shortDescription = p.shortDescription;
 		this.sku = p.sku;
 		this.slug = p.slug;
+		this.isNew = p.isNew;
 
 		this.isLoyalty = p.isLoyalty;
 		this.loyaltyValueType = p.loyaltyValueType;
@@ -21073,8 +21091,6 @@ angular.module('AlcoholCartFactories', [])
 		this.metaTitle = p.metaTitle;
 		this.metaDescription = p.metaDescription;
 		this.metaKeywords = p.metaKeywords;
-		
-
 	}
 
 	product.prototype.addToCart = function() {
@@ -22139,6 +22155,8 @@ AlcoholDelivery.directive('sideBar', function() {
 			                // Destroy Cart Params start
 			                delete $rootScope.deliverykey;
 			                localStorage.removeItem("deliverykey");
+			                // call promotional banner function on logout
+							$rootScope.getPromotionalBanners();
 			                $state.go("mainLayout.index", {}, {reload: true});
 			                
 			            }).error(function(data, status, headers) {
@@ -22285,6 +22303,8 @@ AlcoholDelivery.directive('sideBar', function() {
 				    	$scope.login = {};		  
 				        $mdDialog.hide();
 				        $scope.errors = {};
+				        // call promotional banner function on login
+						$rootScope.getPromotionalBanners();
 				       	$state.go($state.current, {}, {reload: true});
 				        /*store.init().then(
 				        	function(successRes){		        

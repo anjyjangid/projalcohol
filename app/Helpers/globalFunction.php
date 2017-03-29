@@ -64,7 +64,7 @@
 
 	function isLocal () {
 
-		if($_SERVER['REMOTE_ADDR']==='192.168.1.222'){
+		if($_SERVER['REMOTE_ADDR']==='192.168.1.222'||$_SERVER['REMOTE_ADDR']==='192.168.1.103'){
 			return true;
 		}
 		return false;

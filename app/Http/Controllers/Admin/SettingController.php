@@ -233,4 +233,62 @@ class SettingController extends Controller
 
 		return response(array("success"=>false,"message"=>"Something went wrong"));
 	}
+
+	public function postHomeBanner(Request $request){
+		$rules = [
+			'status' => 'Required|Boolean',
+			'title' => 'Required',
+			'subtitle' => 'Required',
+			'description' => 'Required',
+		];
+
+		if($request->hasFile('bannerImage')){
+			$rules['bannerImage'] = 'Required|image|mimes:jpeg,jpg';
+		}
+
+		if($request->hasFile('bannerImageMobile')){
+			$rules['bannerImageMobile'] = 'Required|image|mimes:jpeg,jpg';
+		}
+
+		$this->validate($request,$rules);
+
+		$inputs = $request->all();
+
+		$setting = Setting::find('homeBanner');
+		// echo "<pre>"; print_r($inputs); echo "</pre>"; exit;
+
+		$setting->__set("settings",$inputs);
+		// $setting->settings = $inputs;
+
+		if($request->hasFile('bannerImage')){
+		    $image = $inputs['bannerImage'];    
+		    $filename = $setting->_id.'_bannerImage'.'.'.$image->getClientOriginalExtension();
+		    $destinationPath = storage_path('homebanner');
+		    if (!File::exists($destinationPath)){
+		        File::MakeDirectory($destinationPath,0777, true);
+		    }            
+		    $upload_success = $image->move($destinationPath, $filename);
+		    $inputs['bannerImage'] = $filename;
+		}
+
+		if($request->hasFile('bannerImageMobile')){
+		    $image = $inputs['bannerImageMobile'];    
+		    $filename = $setting->_id.'_bannerImageMobile'.'.'.$image->getClientOriginalExtension();
+		    $destinationPath = storage_path('homebanner');
+		    if (!File::exists($destinationPath)){
+		        File::MakeDirectory($destinationPath,0777, true);
+		    }            
+		    $upload_success = $image->move($destinationPath, $filename);
+		    $inputs['bannerImageMobile'] = $filename;
+		}
+
+		$setting->settings = $inputs;
+		// prd($setting);
+		if($setting->save()){
+			return response(array("success"=>true,"message"=>"Settings updated successfully"));
+		}
+
+		return response(array("success"=>false,"message"=>"Something went wrong"));
+	}
+
 }

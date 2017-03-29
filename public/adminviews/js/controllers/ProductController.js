@@ -30,7 +30,8 @@ MetronicApp.controller('ProductController',['$rootScope', '$scope', '$timeout','
 			suggestions : [],
 			dealerData:[{}],
 			store:{},
-			group:null
+			group:null,
+			newTagDuration:null
 		};
 		
 

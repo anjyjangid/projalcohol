@@ -52,6 +52,7 @@ class ProductRequest extends Request
             'loyaltyValuePoint' => 'required_with:loyaltyValueType|numeric|max:100000|min:1',
             'loyaltyValuePrice' => 'required_if:loyaltyValueType,1|numeric|lt:price',
             
+            'newTagDuration' => 'required|numeric',
 
             'store.threshold' => 'required|numeric|lt:store.maxQuantity',
             //'store.maxQuantity' => 'required|numeric|gte:store.quantity',
