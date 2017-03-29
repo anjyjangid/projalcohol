@@ -1,12 +1,19 @@
-<div>
-	<span ng-if="!tagsize" class="yellow-tag">		
+<div class="tgcontain">
+	<span class="correct-time" ng-if="product.isNew && !tagsize">New</span>
+	<span ng-if="!tagsize && product.quantity<1 && product.outOfStockType==2" class="correct-time">		
+		{{ availDate | date:'EEE ha' }}
+		<md-tooltip class="blktool" md-direction="top" >
+			Available after  {{availDate | date:'ha, EEEE, d MMM'}}
+	  	</md-tooltip>
+	</span>
+	<!-- <span ng-if="!tagsize" class="yellow-tag">
 		<span class="label label-warning" ng-if="product.quantity<1 && product.outOfStockType==2"> 	
 			{{ availDate | date:'EEE ha' }}
 			<md-tooltip class="blktool" md-direction="top" >
 				Available after  {{availDate | date:'ha, EEEE, d MMM'}}
 		  	</md-tooltip>
 		</span>
-	</span>
+	</span> -->
 	<div class="tag-lightyellow-new" ng-if="tagsize && product.quantity<1 && product.outOfStockType==2">	
 		<div class="skew"></div>
 		<div class="skew2"></div>

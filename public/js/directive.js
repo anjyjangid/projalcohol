@@ -186,6 +186,8 @@ AlcoholDelivery.directive('sideBar', function() {
 			                // Destroy Cart Params start
 			                delete $rootScope.deliverykey;
 			                localStorage.removeItem("deliverykey");
+			                // call promotional banner function on logout
+							$rootScope.getPromotionalBanners();
 			                $state.go("mainLayout.index", {}, {reload: true});
 			                
 			            }).error(function(data, status, headers) {
@@ -332,6 +334,8 @@ AlcoholDelivery.directive('sideBar', function() {
 				    	$scope.login = {};		  
 				        $mdDialog.hide();
 				        $scope.errors = {};
+				        // call promotional banner function on login
+						$rootScope.getPromotionalBanners();
 				       	$state.go($state.current, {}, {reload: true});
 				        /*store.init().then(
 				        	function(successRes){		        

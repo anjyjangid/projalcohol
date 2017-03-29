@@ -6,7 +6,7 @@
 					<i class="icon-globe theme-font hide"></i>
 					<span class="caption-subject font-blue-madison bold uppercase">Edit Page</span>
 				</div>				
-			</div>
+			</div>			
 			<div class="portlet-body">
 					<!-- <pre>{{page|json}}</pre> -->
 					<div class="form-group" ng:class="{'has-error':errors.section[0]}">
@@ -46,6 +46,34 @@
 						
 						<span class="help-block" ng-bind="errors.content[0]"></span>
 						<span ng-show="page.content.$touched && page.content.$invalid">Content is required.</span>
+					</div>
+
+					<div class="form-group" ng:class="{'has-error':errors.coverImage[0]}">
+						<label class="control-label">Image</label>
+						<div>
+							<div class="fileinput fileinput-new" data-provides="fileinput">
+								<div class="fileinput-new thumbnail" style="max-width: 200px; max-height: 150px;">
+									<img err-src="asset/i/defaultImage.png" 
+										ng-src="cmspages/i/{{page.coverImage}}" src="asset/i/defaultImage.png" alt=""/>
+
+								</div>
+								<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
+								</div>
+								<div>
+									<span class="btn default btn-file">
+										<span class="fileinput-new">{{ page.coverImage ? 'Change':'Select' }}</span>
+										<span class="fileinput-exists">Change</span>
+
+										<input type="file" placeholder="thumbnail" class="form-control" file-model="page.coverImage"/>
+									</span>	
+									<span class="btn default" ng-if="hasFile()">
+										<span ng-click="page.coverImage = ''">Remove</span>
+									</span>									
+								</div>
+							</div>
+							
+							<span class="help-block" ng-bind="errors.coverImage[0]"></span>
+						</div>
 					</div>
 
 					<div class="form-group" ng:class="{'has-error':errors.metaTitle[0]}">

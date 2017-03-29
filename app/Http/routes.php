@@ -10,7 +10,30 @@
 |
 */
 
-/*TO VIEW MAIL TEMPLATE*/
+Route::get('/mail', function(){
+	
+	$settings = \DB::collection('settings')->whereIn('_id',['general','social','email'])->get();
+	$config = array();
+
+	foreach($settings as $setting){
+		$config[$setting['_id']] = $setting['settings'];
+	}
+
+	$siteUrl = url();
+
+	$replace = [
+		'{website_link}' => $siteUrl,				
+		'{site_title}' => $config['general']['site_title']['value'],
+		'{link_login}' => $siteUrl.'/login',
+		'{link_privacy}' => $siteUrl.'/privacy-policy',				
+		'{link_contact}' => $siteUrl.'/contact-us',
+		'{social_facebook}' => $config['social']['facebook']['value'],
+		'{social_twitter}' => $config['social']['twitter']['value'],
+		'{copyright_year}' => date('Y')
+	];
+
+	return view('emails.mail',['content'=>'','replace'=>$replace]);
+});
 
 Route::get('/printjob/{reference}', 'OrderController@getOrderdetail');
 
@@ -111,6 +134,9 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 
 	Route::resource('category', 'Admin\CategoryController',['only'=>['store','update']]);
 	Route::controller('category', 'Admin\CategoryController');
+
+	Route::resource('promotionalbanners', 'Admin\PromotionalBannersController',['only'=>['store','update']]);
+	Route::controller('promotionalbanners', 'Admin\PromotionalBannersController');
 
 	Route::resource('setting', 'Admin\SettingController',['only'=>'update']);
 	Route::controller('setting', 'Admin\SettingController');

@@ -1,9 +1,9 @@
 <h1 class="hide">Served Chilled</h1>
 <h2 class="hide">ONE HOUR Alcohol Delivery!</h2>
 <h3 class="hide">Whether you need to place an advance order for your upcoming party, or you are running out of alcohol in the middle of a party, we've got you covered!</h3>
-<div class="occassion_sale">Served Chilled</div>
-<div class="occassion_date">ONE HOUR Alcohol Delivery!</div>
-<div class="occassion_descrip">Whether you need to place an advance order for your upcoming party, or you are running out of alcohol in the middle of a party, we've got you covered!</div>
+<div class="occassion_sale">{{settings.homeBanner.title}}</div>
+<div class="occassion_date">{{settings.homeBanner.subtitle}}</div>
+<div class="occassion_descrip">{{settings.homeBanner.description}}</div>
 <div class="registernowbtn">
 	<a class="pointer" ng-hide="user.email" ng-click="showSignup();">
 		register now
@@ -11,7 +11,8 @@
 </div>
 
 <div class="responsive-blokimg">
-	<img class="img-responsive" style="margin:10px auto;" src="asset/i/mobilebanner.png">
+	<!-- <img class="img-responsive" style="margin:10px auto;" src="asset/i/mobilebanner.png"> -->
+	<img ng-repeat="promotionalbanner in promotionalbanners" class="img-responsive" style="margin:10px auto;" src="promotionalbanner/i/{{promotionalbanner.promotionalImageMobile}}">
 </div>
 
 <div class="combo_slider combo_sliderProduct" ng-cloak>
