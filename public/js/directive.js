@@ -487,14 +487,13 @@ AlcoholDelivery.directive('sideBar', function() {
 .directive('tscroll', ['$window',function ($window) {
     return function(scope, element, attrs) {
 
-		var svgMorpheus = new SVGMorpheus('#icon',{rotation:'none'});
+		// var svgMorpheus = new SVGMorpheus('#icon',{rotation:'none'});
 		var icons = ['question', 'answer'];
 		var prev=1;	
 
-		/*var json = {"images":[{"points":[{"x":31,"y":27},{"x":112,"y":-5},{"x":171,"y":76},{"x":120,"y":14},{"x":70,"y":5},{"x":31,"y":76},{"x":0,"y":39},{"x":0,"y":76},{"x":171,"y":51}],"src":"../images/ad_logo.png","x":0,"y":0},{"points":[{"x":1,"y":17},{"x":52,"y":0},{"x":15,"y":34},{"x":51,"y":11},{"x":27,"y":0},{"x":5,"y":43},{"x":-7,"y":17},{"x":-8,"y":42},{"x":-16,"y":53}],"src":"../images/logo-small.png","x":60,"y":23}],"triangles":[[1,3,4],[0,3,4],[0,3,6],[6,3,7],[5,3,7],[2,5,8],[3,5,8]]};
+		var json = {"images":[{"points":[{"x":0,"y":37},{"x":112,"y":-5},{"x":171,"y":76},{"x":120,"y":14},{"x":70,"y":5},{"x":31,"y":76},{"x":0,"y":39},{"x":0,"y":76},{"x":171,"y":51}],"src":"images/l2.png","x":0,"y":0},{"points":[{"x":1,"y":17},{"x":52,"y":0},{"x":15,"y":34},{"x":51,"y":11},{"x":27,"y":0},{"x":5,"y":43},{"x":-7,"y":17},{"x":-8,"y":42},{"x":-16,"y":53}],"src":"images/logo-small.png","x":60,"y":23}],"triangles":[[1,3,4],[0,3,4],[0,3,6],[6,3,7],[5,3,7],[2,5,8],[3,5,8]]};
 		var morpher = new Morpher(json);
-		morpher.set([1, 0]);
-		angular.element('#icon').append(morpher.canvas);*/
+		angular.element('#logosvg').append(morpher.canvas);
 
 		angular.element($window).bind("scroll", function(e) {
 
@@ -504,22 +503,25 @@ AlcoholDelivery.directive('sideBar', function() {
 
 				if (this.pageYOffset >= 1) {
 					element.addClass('navbar-shrink');
-					//morpher.animate([0, 1], 100);
 					
 					if(prev!==0){
-						svgMorpheus.to(icons[0]);
+						// svgMorpheus.to(icons[0]);
+
+						morpher.set([1, 0]);
+						morpher.animate([0, 1], 300);
+
 						prev = 0;
 					}
 
-					
-					
-
 				} else if(this.pageYOffset == 0) {
 					element.removeClass('navbar-shrink');
-					//morpher.animate([1, 0], 100);
 
 					if(prev!==1){
-						svgMorpheus.to(icons[1]);
+						// svgMorpheus.to(icons[1]);
+						
+						morpher.set([0, 1]);
+						morpher.animate([1, 0], 300);
+
 						prev = 1;	
 					}				
 				} 
