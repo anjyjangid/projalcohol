@@ -29,7 +29,9 @@ MetronicApp.controller('OrderUpdateController',['$rootScope', '$scope', '$timeou
 	$scope.contactRemove = function(i){
 		$scope.order.contacts.splice(i, 1);
 	}
+
 	$scope.update = function(){
+
 		var data = $scope.order;
 		//POST DATA WITH FILES
 		orderModel.updateOrder(data,$stateParams.orderid).success(function(response){

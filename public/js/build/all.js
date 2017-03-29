@@ -10590,12 +10590,12 @@ function appLoad($q, $rootScope, $state, $timeout, $location, store, alcoholWish
 		}
 
 	);
-	
 
 	return defer.promise;
 };
 
-AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$location', '$window','$cookies', function ($q, $rootScope, $log, $location, $window, $cookies) {
+AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$location', '$window','$cookies',	
+	function ($q, $rootScope, $log, $location, $window, $cookies){
     'use strict';
 
     var xhrCreations = 0;
@@ -10633,6 +10633,7 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
             xhrResolutions++;
 			updateStatus();
 			return response;
+			
         },
         responseError: function (rejection) {
 
@@ -10644,9 +10645,8 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 			};
 
 			if(rejection.status == 401){
-
+				console.log(UserService.getIfUser());
 				$location.url('/').replace();
-
 				$rootScope.$broadcast('showLogin');
 
 			};
@@ -10815,7 +10815,7 @@ AlcoholDelivery.run([
 						
 													$scope.quantity = params.quantity;
 													$scope.message = params.msg;
-						
+
 													$scope.freeRequired = alcoholCart.getRemainToFreeDelivery();
 													$scope.requiredPer = alcoholCart.getRemainToFreeDelivery('percentage')+'%';
 						
@@ -10824,12 +10824,12 @@ AlcoholDelivery.run([
 													}else{
 														$scope.isFreeDelivery = true;
 													}
-													
+
 												}],
 						templateUrl: '/templates/toast-tpl/cart-update.html',
 						parent : $document[0].querySelector('#cart-summary-icon'),
 						position: 'top center',
-						hideDelay:0
+						hideDelay:3000
 					});
 
 	});
@@ -11499,7 +11499,7 @@ AlcoholDelivery.controller('AppController', [
 	$scope.sortOptions = [
 		//{value:'',label:'Popularity'},
 		{value:'name_asc',label:'Alphabetical A-Z'},
-		{value:'created_asc',label:'Recently Added'},
+		{value:'created_desc',label:'Recently Added'},
 		{value:'price_asc',label:'Price - Low to High'},
 		{value:'price_desc',label:'Price - High to Low'},		
 	];
@@ -22070,7 +22070,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			}
 
 			$scope.hideMenu = function(){
-				$('.dropdown-menu').toggleClass('animate');
+				//$('.dropdown-menu').toggleClass('animate');
 			}
 		}]
 	};
@@ -22769,7 +22769,7 @@ AlcoholDelivery.directive('sideBar', function() {
 				}
 				oldval = scope.val;
 				var value = parseFloat(parseFloat(Number(scope.val)) + parseFloat(scope.step)).toFixed(scope.decimals);
-				console.log('scope.max',scope.max);
+			
 				if (parseFloat(value) > parseFloat(scope.max)) return;
 
 				scope.val = value;

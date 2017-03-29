@@ -591,6 +591,8 @@ class OrderController extends Controller
         	$order = Orders::find($data['id']);
         	$inventorylog = [];
         	//ORDER STATUS IS UPDATED
+        	
+
         	if($order['doStatus'] != $data['doStatus']){				
 
 				$error = true;

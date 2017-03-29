@@ -40,10 +40,11 @@
 			                </v-pane-header>
 			                <v-pane-content id="{{$index}}-content" aria-labelledby="{{ ::subpane.id }}-content">
 			                  	<div class="alert alert-danger" ng-show="errors[$index]" ng-bind="errors[$index]"></div>
-			                  	<div class="row">													
-									<div ng-repeat-start="pcprod in packageItem.products" ng:class="{'row':($index!=0 && $index%3==0)}"></div>
-									<div class="col-md-4 party-detail-btm-width"> 							
-										<div class="thumbnail thumbnailheightset" ng:class="{'selectedproductcart':pcprod.customizequantity > 0}">						
+			                  	<!-- <div class="col-sm-12"> -->
+			                  	<div class="row">
+									<div ng-repeat-start="pcprod in packageItem.products" ng:class="{'row':($index!=0 && $index%4==0)}"></div>
+									<div class="col-md-3 party-detail-btm-width">
+										<div class="thumbnail thumbnailheightset" ng:class="{'selectedproductcart':pcprod.customizequantity > 0}">
 											<div class="caption party-detail-caption">
 												<h5 class="item-btmtitle">{{ pcprod.name }}</h5>
 												<!-- <p>{{pcprod.cprice}} - {{pcprod.sprice}}</p> -->
@@ -55,8 +56,9 @@
 											</div>
 										</div>
 									</div>
-									<div ng-repeat-end></div>													
+									<div ng-repeat-end></div>
 								</div>
+								<!-- </div> -->
 			                </v-pane-content>
 				        </v-pane>
 			      </v-accordion>		
