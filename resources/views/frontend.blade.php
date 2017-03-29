@@ -34,7 +34,6 @@
 		<meta name="google_id" content="{{ config('app.google_id') }}">
 		<meta name="instagram_id" content="{{ config('app.instagram_id') }}">		
 		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-		<meta name="theme-color" content="#FFC412">
 		<title ng-bind="meta.title"></title>
 
 		<!-- Bootstrap -->
@@ -78,35 +77,31 @@
 		</script>
 		<script async type="text/javascript" src="//www.googleadservices.com/pagead/conversion_async.js" charset="utf-8"></script>		
 		<!-- Google analytics -->
-		<style type="text/css">
-			.announcement-enable-wrapper {
-			    padding-top: 60px;
-			}
-			.announcement-enable-wrapper .announcement-bar {
-			    width: 100%;
-			    height: 60px;
-			    color: white;
-			    float: left;
-			    background-color: rgb(156,39,176);
-			    position: fixed;
-			    z-index: 999999;
-			    top: 0;
-			    text-align: center;
-			}
-			.announcement-enable-wrapper .announcement-enable {
-				top: 60px;
-			}
-			.announcement-container {
-				display: inline-block;
-			    height: 50px;
-			    position: relative;
-			    top: 5px;
-			}
-			.announcement-enable-wrapper .announcement-bar a {
-			    display: inline-block;
-			    height: 60px;
-			}
-		</style>
+		
+		<link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,700,800,500' rel='stylesheet' type='text/css'>
+			<link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
+		
+		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/angular-material/angular-material.min.css') }}"/>
+
+	    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	    <link rel="stylesheet" type="text/css" href="css/owl.carousel.css">
+	    <link rel="stylesheet" type="text/css" href="css/owl.theme.css">
+	    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
+
+	    <link rel="stylesheet" type="text/css" href="{{ asset('bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.min.css')}}">
+
+	    <link rel="stylesheet" type="text/css" href="css/jquery.bootstrap-touchspin.css">
+	    <!-- SWEET ALERT STYLE -->
+	    <link rel="stylesheet" type="text/css" href="{{ asset('bower_components/sweetalert2/dist/sweetalert2.css') }}"/>
+
+	    <link rel="stylesheet" type="text/css" href="css/common.css">
+	    <link rel="stylesheet" type="text/css" href="css/screen-ui.css">
+	    <link rel="stylesheet" type="text/css" href="css/ui_responsive.css">       
+	    
+	    <link rel="stylesheet" type="text/css" href="css/app.css">
+	    <link rel="stylesheet" type="text/css" href="{{ asset('bower_components/v-accordion/dist/v-accordion.css') }}">
+	    
+	    <link rel="stylesheet" type="text/css" href="css/simple-sidebar.css">
 	</head>
 
 	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}" ng-cloak>		    	    	
@@ -157,7 +152,7 @@
 										<!-- <a target="_blank" href="@{{settings.social.googleplus}}"><img class="img-responsive" src="images/footergoogle.png" /></a> -->
 									</div>
 								</div>
-								<div class="col-xs-12 col-md-3">
+								<div class="col-xs-12 col-md-2">
 									<div class="footer1_title">Customer Service</div>
 									<div class="footer1_subtitle">
 										<ul>
@@ -167,7 +162,7 @@
 										</ul>
 									</div>
 								</div>
-								<div class="col-xs-12 col-md-3 ">
+								<div class="col-xs-12 col-md-2 ">
 									<div class="footer1_title">About AlcoholDelivery</div>
 									<div class="footer1_subtitle">
 										<ul>
@@ -177,7 +172,7 @@
 										</ul>
 									</div>
 								</div>
-								<!-- <div class="col-xs-12 col-md-2 ">
+								<div class="col-xs-12 col-md-2 ">
 									<div class="footer1_title">Corporate</div>
 									<div class="footer1_subtitle">
 										<ul>										
@@ -186,14 +181,15 @@
 											</li>
 										</ul>
 									</div>
-								</div> -->
+								</div>
+								
+
 								<div class="col-xs-12 col-md-2 ">
 									<div class="footer1_title">Connect with us</div>
 									<div class="footer1_subtitle">
 										<ul>										
-											<li><a href="https://www.facebook.com/alcoholdelivery.com.sg/" target="_blank">Facebook</a></li>
-											<li><a href="https://twitter.com/9chilled" target="_blank">Twitter</a></li>											
-											<li><a>Mobile Apps <br>(Coming soon)</a></li>
+											<li><a>Facebook</a></li>
+											<li><a>Mobile Apps</a></li>
 										</ul>
 									</div>
 								</div>							
@@ -220,7 +216,7 @@
 			<link rel="stylesheet" href="css/all.css">			
 	    </noscript>
 		<script>
-	      var loadDeferredStyles = function() {
+	      /*var loadDeferredStyles = function() {
 	        var addStylesNode = document.getElementById("deferred");
 	        var replacement = document.createElement("div");
 	        replacement.innerHTML = addStylesNode.textContent;
@@ -230,7 +226,7 @@
 	      var raf = requestAnimationFrame || mozRequestAnimationFrame ||
 	          webkitRequestAnimationFrame || msRequestAnimationFrame;
 	      if (raf) raf(function() { window.setTimeout(loadDeferredStyles, 0); });
-	      else window.addEventListener('load', loadDeferredStyles);
+	      else window.addEventListener('load', loadDeferredStyles);*/
 	    </script>
 	</body>
 
