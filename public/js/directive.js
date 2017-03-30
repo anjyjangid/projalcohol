@@ -487,13 +487,24 @@ AlcoholDelivery.directive('sideBar', function() {
 .directive('tscroll', ['$window',function ($window) {
     return function(scope, element, attrs) {
 
+    	// FIRST METHOD: Morpher
 		// var svgMorpheus = new SVGMorpheus('#icon',{rotation:'none'});
 		var icons = ['question', 'answer'];
 		var prev=1;	
 
-		var json = {"images":[{"points":[{"x":0,"y":37},{"x":112,"y":-5},{"x":171,"y":76},{"x":120,"y":14},{"x":70,"y":5},{"x":31,"y":76},{"x":0,"y":39},{"x":0,"y":76},{"x":171,"y":51}],"src":"images/l2.png","x":0,"y":0},{"points":[{"x":1,"y":17},{"x":52,"y":0},{"x":15,"y":34},{"x":51,"y":11},{"x":27,"y":0},{"x":5,"y":43},{"x":-7,"y":17},{"x":-8,"y":42},{"x":-16,"y":53}],"src":"images/logo-small.png","x":60,"y":23}],"triangles":[[1,3,4],[0,3,4],[0,3,6],[6,3,7],[5,3,7],[2,5,8],[3,5,8]]};
+		// SECOND METHOD: Morpher
+		/*var json = {"images":[{"points":[{"x":0,"y":37},{"x":112,"y":-5},{"x":171,"y":76},{"x":120,"y":14},{"x":70,"y":5},{"x":31,"y":76},{"x":0,"y":39},{"x":0,"y":76},{"x":171,"y":51}],"src":"images/l2.png","x":0,"y":0},{"points":[{"x":1,"y":17},{"x":52,"y":0},{"x":15,"y":34},{"x":51,"y":11},{"x":27,"y":0},{"x":5,"y":43},{"x":-7,"y":17},{"x":-8,"y":42},{"x":-16,"y":53}],"src":"images/logo-small.png","x":60,"y":23}],"triangles":[[1,3,4],[0,3,4],[0,3,6],[6,3,7],[5,3,7],[2,5,8],[3,5,8]]};
 		var morpher = new Morpher(json);
-		angular.element('#logosvg').append(morpher.canvas);
+		angular.element('#logosvg').append(morpher.canvas);*/
+
+		// THIRD METHOD: Morpher
+		var tl = new TimelineMax({
+			paused: true
+		});
+
+		tl.staggerTo("#large", 0.5, {morphSVG:"#small"}, 0.06)
+		  .to("#small", 0.5, {morphSVG:"#large"}, '-='+tl.duration());
+
 
 		angular.element($window).bind("scroll", function(e) {
 
@@ -505,10 +516,15 @@ AlcoholDelivery.directive('sideBar', function() {
 					element.addClass('navbar-shrink');
 					
 					if(prev!==0){
+						// FIRST METHOD: Morpher
 						// svgMorpheus.to(icons[0]);
 
-						morpher.set([1, 0]);
-						morpher.animate([0, 1], 300);
+						// SECOND METHOD: Morpher
+						/*morpher.set([1, 0]);
+						morpher.animate([0, 1], 300);*/
+
+						// THIRD METHOD: Morpher
+						tl.play(0);
 
 						prev = 0;
 					}
@@ -517,10 +533,15 @@ AlcoholDelivery.directive('sideBar', function() {
 					element.removeClass('navbar-shrink');
 
 					if(prev!==1){
+						// FIRST METHOD: Morpher
 						// svgMorpheus.to(icons[1]);
 						
-						morpher.set([0, 1]);
-						morpher.animate([1, 0], 300);
+						// SECOND METHOD: Morpher
+						/*morpher.set([0, 1]);
+						morpher.animate([1, 0], 300);*/
+
+						// THIRD METHOD: Morpher
+						tl.reverse();
 
 						prev = 1;	
 					}				
