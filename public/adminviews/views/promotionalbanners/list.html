@@ -105,8 +105,10 @@
                             orderable:true
                         },{
                             mData: null,
-                            mRender: function(data, type, full) {                           
-                                return '<a title="Edit" ui-sref=userLayout.promotionalbanners.edit({promotionalbannerid:"'+data._id.$id+'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';                          
+                            mRender: function(data, type, full) {
+                                var action = '<a title="Edit" ui-sref=userLayout.promotionalbanners.edit({promotionalbannerid:"'+data._id.$id+'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
+                                action += '<a title="Delete" ng-click="removePromotionalBanner(\'promotionalbanners\',\''+data._id.$id+'\')" class="btn btn-xs default"><i class="fa fa-trash"></i></a>';
+                                return action;
                             },
                             orderable:false
                         }

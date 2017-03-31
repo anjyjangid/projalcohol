@@ -135,7 +135,7 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::resource('category', 'Admin\CategoryController',['only'=>['store','update']]);
 	Route::controller('category', 'Admin\CategoryController');
 
-	Route::resource('promotionalbanners', 'Admin\PromotionalBannersController',['only'=>['store','update']]);
+	Route::resource('promotionalbanners', 'Admin\PromotionalBannersController',['only'=>['store','update','destroy']]);
 	Route::controller('promotionalbanners', 'Admin\PromotionalBannersController');
 
 	Route::resource('setting', 'Admin\SettingController',['only'=>'update']);

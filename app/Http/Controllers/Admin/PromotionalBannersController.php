@@ -260,4 +260,20 @@ class PromotionalBannersController extends Controller
         
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id){
+        try{
+    		$result = PromotionalBanners::where('_id', $id)->delete();
+        	return response(array("success"=>true,"message"=>"Record(s) Removed Successfully"));
+    	}catch(\Illuminate\Database\QueryException $e){
+    		return response(array($e,"success"=>false,"message"=>"There is some issue with deletion process"));
+    	}
+
+    	return response(array($e,"success"=>false,"message"=>"Please try again later!"));
+    }
 }

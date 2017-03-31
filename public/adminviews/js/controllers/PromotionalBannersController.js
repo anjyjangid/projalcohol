@@ -1,8 +1,8 @@
 'use strict';
 
 MetronicApp.controller('PromotionalBannersController',
-	['$rootScope', '$scope', '$timeout','$http',
-	function($rootScope, $scope, $timeout,$http){
+	['$rootScope', '$scope', '$timeout', '$http', 'sweetAlert',
+	function($rootScope, $scope, $timeout,$http, sweetAlert){
 
 	    $scope.$on('$viewContentLoaded', function(){
 	        Metronic.initAjax(); // initialize core components
@@ -12,6 +12,40 @@ MetronicApp.controller('PromotionalBannersController',
 	    // set sidebar closed and body solid layout mode
 	    $rootScope.settings.layout.pageBodySolid = false;
 	    $rootScope.settings.layout.pageSidebarClosed = false;
+
+	    $scope.removePromotionalBanner = function(tab,checkedKeys){
+	    	sweetAlert.swal({
+				title: "Are you sure?",
+				text: "Your will not be able to recover them!",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Yes, remove !",
+				closeOnConfirm: false,
+				closeOnCancel: false
+
+			}).then(
+				function(isConfirm){
+					console.log(isConfirm);
+					if(isConfirm){
+						$http.delete("/adminapi/"+tab+"/"+checkedKeys)
+						.success(function(response){
+							if(response.success){
+								sweetAlert.swal("Deleted!", response.message, "success");
+								grid.getDataTable().ajax.reload();//var grid = new Datatable(); Datatable should be init like this with global scope
+							}else{
+								sweetAlert.swal("Cancelled!", response.message, "error");
+							}
+						})
+						.error(function(data, status, headers) {
+							sweetAlert.swal("Cancelled", data.message, "error");
+						})
+					}else{
+						sweetAlert.swal("Cancelled", "Record(s) safe :)", "error");
+					}
+				}
+			);
+	    }
 }]);
 
 MetronicApp.controller('PromotionalBannersAddController',
