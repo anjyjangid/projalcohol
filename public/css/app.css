@@ -1783,3 +1783,10 @@ input[type='text'].transparent{
 .mobileinput{
 	width: 60px;
 }
+/*md-checkbox.md-focused .md-container:before{
+	background-color:transparent !important;
+}*/
+
+/*.col-md-3.party-detail-btm-width {
+    padding: 0 0 0 2%;
+}*/

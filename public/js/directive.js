@@ -19,7 +19,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			}
 
 			$scope.hideMenu = function(){
-				$('.dropdown-menu').toggleClass('animate');
+				//$('.dropdown-menu').toggleClass('animate');
 			}
 		}]
 	};
@@ -745,7 +745,7 @@ AlcoholDelivery.directive('sideBar', function() {
 				}
 				oldval = scope.val;
 				var value = parseFloat(parseFloat(Number(scope.val)) + parseFloat(scope.step)).toFixed(scope.decimals);
-				console.log('scope.max',scope.max);
+			
 				if (parseFloat(value) > parseFloat(scope.max)) return;
 
 				scope.val = value;
