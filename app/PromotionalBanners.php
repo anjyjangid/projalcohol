@@ -23,8 +23,9 @@ class PromotionalBanners extends Moloquent
      */
     protected $fillable = [
         'status',
-        'image',
-        'imagemobile',
+        'promotionalImage',
+        'promotionalImageMobile',
+        'displayorder'
     ];
     
     public function get($params = array()){

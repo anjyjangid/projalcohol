@@ -11,6 +11,8 @@
 					<a ui-sref="userLayout.promotionalbanners.add" class="btn default yellow-stripe">
     					<i class="fa fa-plus"></i><span class="hidden-480">Add Promotional Banner</span>
 					</a>
+
+                    <button class="btn green-haze" ng-click="updateDisplayOrder()"><i class="fa fa-check"></i>Update Order</button>
 					
                     <!-- <a class="btn default" ng-click="globalRemove('category','#categorieslisttab')">
                     <i class="fa fa-trash"></i>
@@ -25,7 +27,6 @@
 					<table class="table table-striped table-bordered table-hover" id="promotionalbannerslisttab">
 						<thead>
 							<tr role="row" class="heading">
-								
 								<th width="5%">									
 									Sr.
 								</th>
@@ -41,13 +42,17 @@
 								<th width="10%">
 									Promotional Image (Mobile)
 								</th>
+                                <th width="10%">
+                                    Display Order
+                                </th>
 								<th width="10%">
 									Actions
 								</th>
 							</tr>
 						</thead>
-						<tbody id="tBody">
-						</tbody>
+                        <form id="frmDisplayOrder">
+    						<tbody id="tBody"></tbody>
+                        </form>
 					</table>
 				</div>
 			</div>
@@ -95,19 +100,25 @@
                                 var style = "max-width: 80px; max-height: 80px;";
                                 return '<img src="asset/i/defaultImage.png" ng-src="promotionalbanner/i/'+data.promotionalImage+'" err-src="asset/i/defaultImage.png" alt="" style="'+style+'" />';
                             },
-                            orderable:true
+                            orderable:false
                         },{  
                             mData: null,
                             mRender: function(data, type, full) {                           
                                 var style = "max-width: 80px; max-height: 80px;";
                                 return '<img src="asset/i/defaultImage.png" ng-src="promotionalbanner/i/'+data.promotionalImageMobile+'" err-src="asset/i/defaultImage.png" alt="" style="'+style+'" />';
                             },
-                            orderable:true
+                            orderable:false
+                        },{
+                            mData: null,                   
+                            mRender: function(data, type, full, meta){
+                                return '<input type="text" ng-model="promotionalbanner[\''+data._id.$id+'\']" ng-init="promotionalbanner[\''+data._id.$id+'\']='+data.displayorder+'" />';
+                            },
+                            orderable:false                     
                         },{
                             mData: null,
                             mRender: function(data, type, full) {
                                 var action = '<a title="Edit" ui-sref=userLayout.promotionalbanners.edit({promotionalbannerid:"'+data._id.$id+'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
-                                action += '<a title="Delete" ng-click="removePromotionalBanner(\'promotionalbanners\',\''+data._id.$id+'\')" class="btn btn-xs default"><i class="fa fa-trash"></i></a>';
+                                action += '<a title="Delete" ng-click="remove(\'promotionalbanners\',\''+data._id.$id+'\')" class="btn btn-xs default"><i class="fa fa-trash"></i></a>';
                                 return action;
                             },
                             orderable:false
@@ -118,8 +129,9 @@
                         "type": "POST"
                     },
                     "order": [], // set first column as a default sort by asc
-                    "fnDrawCallback": function (oSettings) {
-    				    var content = $('#tBody');
+                    "paging": false,
+                    "fnDrawCallback": function(oSettings){
+                        var content = $('#tBody');
     				    angular.element(document).injector().invoke(function($compile) {
     				        var scope = angular.element(content).scope();
     				        $compile(content)(scope);

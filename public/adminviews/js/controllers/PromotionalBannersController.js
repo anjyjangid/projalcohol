@@ -1,8 +1,10 @@
 'use strict';
 
 MetronicApp.controller('PromotionalBannersController',
-	['$rootScope', '$scope', '$timeout', '$http', 'sweetAlert',
-	function($rootScope, $scope, $timeout,$http, sweetAlert){
+	['$rootScope', '$scope', '$timeout', '$http', 'sweetAlert','promotionalBannersModel',
+	function($rootScope, $scope, $timeout,$http, sweetAlert, promotionalBannersModel){
+
+		$scope.promotionalbanner = {};
 
 	    $scope.$on('$viewContentLoaded', function(){
 	        Metronic.initAjax(); // initialize core components
@@ -13,39 +15,20 @@ MetronicApp.controller('PromotionalBannersController',
 	    $rootScope.settings.layout.pageBodySolid = false;
 	    $rootScope.settings.layout.pageSidebarClosed = false;
 
-	    $scope.removePromotionalBanner = function(tab,checkedKeys){
-	    	sweetAlert.swal({
-				title: "Are you sure?",
-				text: "Your will not be able to recover them!",
-				type: "warning",
-				showCancelButton: true,
-				confirmButtonColor: "#DD6B55",
-				confirmButtonText: "Yes, remove !",
-				closeOnConfirm: false,
-				closeOnCancel: false
+	    $scope.remove = function(tab,promotionalbannerId){
+			//POST IDs
+			promotionalBannersModel.removePromotionalBanner(promotionalbannerId);
+		}
 
-			}).then(
-				function(isConfirm){
-					console.log(isConfirm);
-					if(isConfirm){
-						$http.delete("/adminapi/"+tab+"/"+checkedKeys)
-						.success(function(response){
-							if(response.success){
-								sweetAlert.swal("Deleted!", response.message, "success");
-								grid.getDataTable().ajax.reload();//var grid = new Datatable(); Datatable should be init like this with global scope
-							}else{
-								sweetAlert.swal("Cancelled!", response.message, "error");
-							}
-						})
-						.error(function(data, status, headers) {
-							sweetAlert.swal("Cancelled", data.message, "error");
-						})
-					}else{
-						sweetAlert.swal("Cancelled", "Record(s) safe :)", "error");
-					}
-				}
-			);
-	    }
+		$scope.updateDisplayOrder = function(){
+			var data = $scope.promotionalbanner;
+			//POST FORM DATA
+			promotionalBannersModel.updateDisplayOrder(data).success(function(response){
+
+			}).error(function(data, status, headers){
+				$scope.errors = data;
+			});
+		}
 }]);
 
 MetronicApp.controller('PromotionalBannersAddController',
