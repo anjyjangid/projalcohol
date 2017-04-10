@@ -377,11 +377,14 @@ class Orders extends Moloquent
 		}
 
 		//PACKAGES
+
 		if(isset($order['packages']) && !empty($order['packages'])){
 
 			foreach ($order['packages'] as $key => $value) {
 				$packageProduct = [];
+
 				foreach ($value['products'] as $pkey => $pvalue) {
+
 					$productId = (string)$pvalue['_id'];
 					$product = $productInfo[$productId];						
 					$packageProduct[] = [
@@ -397,6 +400,29 @@ class Orders extends Moloquent
 						'category' => 'packageproduct'
 					];
 				}
+
+				// attach product detail with package group detail which is used to show on order detail page
+				foreach ($value['packageItems'] as &$packGroup) {
+
+					foreach ($packGroup['products'] as $pkey => &$pvalue) {
+
+						$productId = (string)$pvalue['_id'];
+						$product = $productInfo[$productId];
+						$pvalue['detail'] = [
+							'_id' => $pvalue['_id'],
+							'name' => $product['name'],
+							'slug' => $product['slug'],
+							'coverImage' => @$product['coverImage'],
+							'description' => $product['description'],
+							'shortDescription' => $product['shortDescription'],
+							'sku' => $product['sku'],
+							'chilled' => $product['chilled'],
+							'quantity' => $pvalue['quantity'],
+							'category' => 'packageproduct'
+						];
+					}
+				}
+
 				$particulars[] = [
 					'_id' => $value['_id'],
 					'name' => $value['title'],
@@ -410,6 +436,7 @@ class Orders extends Moloquent
 					'unitPrice' => $value['packagePrice'],
 					'total' => $value['price'],
 					'products' => $packageProduct,
+					'packageItems' => $value['packageItems'],
 					'category' => 'packageproduct'
 				];
 			}

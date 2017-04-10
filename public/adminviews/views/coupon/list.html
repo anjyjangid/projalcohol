@@ -134,7 +134,7 @@
 					},{
 						mData: null,
 						mRender: function(data, type, full) {
-							return '<a title="Edit" ui-sref=userLayout.coupon.edit({couponId:"'+data._id.$id+'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a>';
+							return '<a title="Edit" ui-sref=userLayout.coupon.edit({couponId:"'+data._id.$id+'"}) class="btn btn-xs default"><i class="fa fa-edit"></i></a> <a title="Edit" ui-sref=userLayout.coupon.view({couponId:"'+data._id.$id+'"}) class="btn btn-xs default"><i class="fa fa-eye"></i></a>';
 						},
 						orderable:false
 					}

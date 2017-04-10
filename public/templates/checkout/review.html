@@ -271,9 +271,11 @@
 									
 									<div ng-repeat="(key, packageItem) in package.original.packageItems" ng-if="package.original.type==1">
 										<span class="orhistry2_td2proctext2" >{{packageItem.title}} - </span> 
-										<span class="orhistry2_td2proctext2" ng-if="packageproduct.cartquantity" ng-repeat="packageproduct in packageItem.products">
-											{{packageproduct.cartquantity}}x {{packageproduct.name}}
-										</span>
+										<div class="package-group-products dis-inline">
+											<span class="orhistry2_td2proctext2" ng-if="packageproduct.cartquantity" ng-repeat="packageproduct in packageItem.products">
+												{{packageproduct.cartquantity}}x {{packageproduct.name}}
+											</span>
+										</div>
 									</div>
 
 									<div ng-repeat="(key, packageItem) in package.original.packageItems" ng-if="package.original.type==2">

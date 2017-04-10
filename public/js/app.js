@@ -1281,9 +1281,11 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 			};
 
 			if(rejection.status == 401){
-				console.log(UserService.getIfUser());
-				$location.url('/').replace();
-				$rootScope.$broadcast('showLogin');
+								
+				$location.path('/');
+    			$window.location.reload();
+
+				//$rootScope.$broadcast('showLogin');
 
 			};
 
