@@ -121,7 +121,7 @@ class StocksController extends Controller
                                 '$elemMatch' => [
                                     'dealerId' => (string) $stock['supplier']['_id'],
                                     'tradeValue' => [
-                                        '$gte' => 1
+                                        '$gte' => 0
                                     ]
                                 ]
                             ]
@@ -163,7 +163,7 @@ class StocksController extends Controller
                     ],
                     'update' => [
                         '$set' => [
-                            'products.$.order' => ceiling($stock['totalQty'], $tradeOffer),
+                            'products.$.order' => flooring($stock['totalQty'], $tradeOffer),
                             'updateTime' => new MongoDate()
                         ]
                     ]
@@ -179,7 +179,7 @@ class StocksController extends Controller
                         '$push' => [
                             'products' => [
                                 '_id' => $stock['_id'],
-                                'order' => ceiling($stock['totalQty'], $tradeOffer),
+                                'order' => flooring($stock['totalQty'], $tradeOffer),
                                 'tradeData' => $tradeArray
                             ]
                         ],

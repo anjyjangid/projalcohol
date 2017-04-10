@@ -76,6 +76,10 @@
         return ( is_numeric($number) && is_numeric($significance) ) ? (ceil($number/$significance)*$significance) : false;
     }
 
+    function flooring($number, $significance = 1) {
+        return ( is_numeric($number) && is_numeric($significance) ) ? (floor($number/$significance)*$significance) : false;
+    }
+
     if (!function_exists('formatPrice')) {
 
 	    /**

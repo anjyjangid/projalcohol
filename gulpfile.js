@@ -1,5 +1,5 @@
 var elixir = require('laravel-elixir');
-//elixir.config.production = true;
+elixir.config.production = true;
 
 const gulp = require('gulp');
 const image = require('gulp-image');
@@ -40,8 +40,11 @@ elixir(function(mix) {
 	    '../bower_components/angular-cookies/angular-cookies.min.js',    
 	    '../bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
 	    '../bower_components/angular-ui-router/release/angular-ui-router.min.js',
-	    'svg-morpheus.js',    
-	    //'morpher.js',    
+	    // 'svg-morpheus.js',    
+	    // 'morpher.js',
+	    'TweenMax.min.js',
+	    'svgMorphing.min.js',
+	    'findShapeIndex.js',
 	    'ng-map.js',
 	    /*SWEET ALERT STYLE*/
 	    '../bower_components/sweetalert2/dist/sweetalert2.min.js',
