@@ -9,8 +9,12 @@ use AlcoholDelivery\Categories;
 use AlcoholDelivery\Email;
 use AlcoholDelivery\User;
 use AlcoholDelivery\Orders;
-
+use AlcoholDelivery\Credits;
 use AlcoholDelivery\CreditTransactions;
+use AlcoholDelivery\LoyaltyTransactions;
+
+use AlcoholDelivery\Http\Requests\LoyaltyToCreditsRequest;
+
 use AlcoholDelivery\ErrorLog;
 
 use mongoId;
@@ -403,7 +407,7 @@ class UserController extends Controller
 		if(empty($userLogged)){
 			
 			$return['message'] = 'login required';
-			
+
 			return response($return,401);
 		}
 
@@ -623,6 +627,67 @@ class UserController extends Controller
 		);
 
 		return view('emails.mail',['content' => '','replace' => $replace['replace']]);		
+
+	}
+
+	public function putCreditCertificate(LoyaltyToCreditsRequest $request) {
+
+		$user = Auth::user('user');
+
+		if(empty($user)){
+			return response(['code'=>401],400);
+		}
+
+		$inputs = $request->all();
+
+		$value = $inputs['id'];
+
+		$creditsObj = new Credits;
+		$result = $creditsObj->getCredit($value);
+
+		if($result->success === false){
+			return response(["message"=>"Card not found"],400);
+		}
+
+		$card = $result->card;
+
+		try{
+
+			$reference = 'Ex-'.getServerTime();
+
+			$creditsFromLoyalty = $card['value'] * $inputs['quantity'];
+			$loyaltyPointsUsed = $card['loyalty'] * $inputs['quantity'];
+
+			$creditObj = [
+							"credit"=>$creditsFromLoyalty,
+							"method"=>"exchange",
+							"reference" => $reference,
+							"user" => new mongoId($user->_id),
+							"comment"=> "You have earned this credits in exchange of loyalty points"
+						];
+
+			CreditTransactions::transaction('credit',$creditObj,$user->_id);
+
+			$loyaltyObj = [
+							"points"=>$loyaltyPointsUsed,
+							"method"=>"exchange",
+							"reference" => $reference							
+						];
+
+			LoyaltyTransactions::transaction('debit',$loyaltyObj,$user->_id);
+
+			return response(["message"=>"Credit added successfully"],200);
+
+		}catch(\Exception $e){
+
+			ErrorLog::create('emergency',[
+					'error'=>$e,
+					'message'=> 'Exchange loyalty'
+				]);
+			
+			return response(["message"=>"Something went wrong"],400);			
+
+		}	
 
 	}
 }

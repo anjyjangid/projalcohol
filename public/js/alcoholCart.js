@@ -280,7 +280,7 @@ AlcoholDelivery.service('alcoholCart', [
 					_self.removeLoyaltyProductById(id);
 
 				}else{
-					
+
 					inCart.setRQuantity(resProduct.chilled.quantity,resProduct.nonchilled.quantity);
 					inCart.setTQuantity(resProduct.quantity);
 					inCart.setPrice(resProduct.product);
@@ -331,13 +331,13 @@ AlcoholDelivery.service('alcoholCart', [
 	this.addCreditCertificate = function(id, quantity){
 
 		var defer = $q.defer();
-		var _self = this;		
-		
+		var _self = this;
+
 		var deliveryKey = _self.getCartKey();
 
 		$http.put("/cart/loyalty/credit/"+deliveryKey, {
 				"id":parseInt(id),
-				"quantity":parseInt(quantity),				
+				"quantity":parseInt(quantity)
 		}).then(
 
 			function(response){
@@ -1794,7 +1794,7 @@ AlcoholDelivery.service('alcoholCart', [
 			showNotification = false;
 
 			if(showNotification){
-				$rootScope.$broadcast('alcoholCart:updated',{msg:"Loyalty product removed from cart"});
+				//$rootScope.$broadcast('alcoholCart:updated',{msg:"Loyalty product removed from cart"});
 			}
 			
 		};
@@ -2787,7 +2787,7 @@ AlcoholDelivery.service('alcoholCart', [
 			angular.copy(storedCart.giftCards,giftCards);
 			angular.copy(storedCart.gifts,gifts);
 			angular.copy(storedCart.loyalty,loyalty);
-			angular.copy(storedCart.loyaltyCards,loyaltyCards);
+			// angular.copy(storedCart.loyaltyCards,loyaltyCards);
 			angular.copy(storedCart.sales,sales);
 
 			storedCart.products = {};
@@ -2864,16 +2864,16 @@ AlcoholDelivery.service('alcoholCart', [
 				
 			});			
 
-			angular.forEach(loyaltyCards, function (cc,key) {
+			// angular.forEach(loyaltyCards, function (cc,key) {
 
-				if(typeof cc !== 'object'){
-					return false;
-				}
+			// 	if(typeof cc !== 'object'){
+			// 		return false;
+			// 	}
 				
-				var newItem = new alcoholCartCreditCard(key,cc);
-				_self.$cart.loyaltyCards[key] = newItem;
+			// 	var newItem = new alcoholCartCreditCard(key,cc);
+			// 	_self.$cart.loyaltyCards[key] = newItem;
 				
-			});
+			// });
 
 			angular.forEach(packages, function (package,key) {
 
@@ -3817,7 +3817,5 @@ AlcoholDelivery.service('cartValidation',[
 		return true;
 
 	}
-
-	
 
 }]);

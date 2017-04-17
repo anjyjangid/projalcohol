@@ -115,13 +115,17 @@ class CreditTransactions extends Moloquent
 
 				switch ($creditObj['method']) {
 					case 'order':
+						$creditObj['shortComment'] = 'Earned from an order';
+						$creditObj['comment'] = 'You have earned this credits xxx';
+					break;
+					case 'exchange':
 						$creditObj['shortComment'] = 'Earned In loyalty Exchange';
 						$creditObj['comment'] = 'You have earned this credits in exchange of loyalty points';
-						break;
+					break;
 					case 'giftcard':
 						$creditObj['shortComment'] = 'Earned As Gift';
 						$creditObj['comment'] = 'You have earned this credits as gift';
-						break;
+					break;
 					
 					default:
 						# code...

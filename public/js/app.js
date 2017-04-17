@@ -1226,12 +1226,12 @@ function appLoad($q, $rootScope, $state, $timeout, $location, store, alcoholWish
 		}
 
 	);
-	
 
 	return defer.promise;
 };
 
-AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$location', '$window','$cookies', function ($q, $rootScope, $log, $location, $window, $cookies) {
+AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$location', '$window','$cookies',	
+	function ($q, $rootScope, $log, $location, $window, $cookies){
     'use strict';
 
     var xhrCreations = 0;
@@ -1269,6 +1269,7 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
             xhrResolutions++;
 			updateStatus();
 			return response;
+			
         },
         responseError: function (rejection) {
 
@@ -1280,10 +1281,11 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 			};
 
 			if(rejection.status == 401){
+								
+				$location.path('/');
+    			$window.location.reload();
 
-				$location.url('/').replace();
-
-				$rootScope.$broadcast('showLogin');
+				//$rootScope.$broadcast('showLogin');
 
 			};
 
@@ -1451,7 +1453,7 @@ AlcoholDelivery.run([
 						
 													$scope.quantity = params.quantity;
 													$scope.message = params.msg;
-						
+
 													$scope.freeRequired = alcoholCart.getRemainToFreeDelivery();
 													$scope.requiredPer = alcoholCart.getRemainToFreeDelivery('percentage')+'%';
 						
@@ -1460,7 +1462,7 @@ AlcoholDelivery.run([
 													}else{
 														$scope.isFreeDelivery = true;
 													}
-													
+
 												}],
 						templateUrl: '/templates/toast-tpl/cart-update.html',
 						parent : $document[0].querySelector('#cart-summary-icon'),

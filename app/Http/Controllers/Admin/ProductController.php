@@ -12,15 +12,11 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
 
-use AlcoholDelivery\Categories as Categories;
+use AlcoholDelivery\Categories;
 use AlcoholDelivery\Products;
 use AlcoholDelivery\User;
 use AlcoholDelivery\Dealer;
 use AlcoholDelivery\Store;
-use MongoId;
-use MongoDate;
-use Input;
-use DB;
 use AlcoholDelivery\Setting;
 use AlcoholDelivery\Email;
 use AlcoholDelivery\Inventory;
@@ -29,6 +25,10 @@ use AlcoholDelivery\Sale;
 use AlcoholDelivery\Orders;
 use Illuminate\Support\Facades\Auth;
 
+use MongoId;
+use MongoDate;
+use Input;
+use DB;
 use Faker;
 
 class ProductController extends Controller
@@ -148,7 +148,7 @@ class ProductController extends Controller
 	 * Update the specified resource in storage.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
-	 * @param  int  $id
+	 * @param  int $id
 	 * @return \Illuminate\Http\Response
 	 */
 	public function postUpdate(ProductRequest $request, $id)
@@ -744,6 +744,8 @@ class ProductController extends Controller
 
 		$inputs['price'] = (float)$inputs['price'];        
 		$inputs['chilled'] = (int)$inputs['chilled'];
+		$inputs['name'] = ucfirst($inputs['name']);
+
 		$inputs['status'] = (int)$inputs['status'];
 		$inputs['isFeatured'] = (int)$inputs['isFeatured'];
 		$inputs['deliveryType'] = (int)$inputs['deliveryType'];

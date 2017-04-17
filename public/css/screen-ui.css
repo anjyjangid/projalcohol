@@ -6713,7 +6713,7 @@ button:hover{
 	width: 57%;
 	position: relative;
 	z-index: 4px;
-
+	word-break: break-word;
 }
 
 .transparent-bg{
@@ -6967,12 +6967,16 @@ md-checkbox.md-checked.md-focused .md-container::before{
 	font-size: 11px;
 	font-weight: 600;
 	margin-right: 3px;
+	white-space: nowrap;
 }
+
 .tgcontain{
 	display: inline;
 }
-
-
+.cock-party-content .cocktail-leftimgdiv{
+	padding-right:0;
+	position: relative;
+}
 
 .add-wishlist-icondiv svg {
     position: absolute;

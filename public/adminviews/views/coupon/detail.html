@@ -1,0 +1,170 @@
+<div class="row">
+	<div class="col-md-12">
+		<!-- Begin: life time stats -->
+		<div class="portlet">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-shopping-cart"></i>coupons <span class="hidden-480"> | {{coupon.code}} </span>
+				</div>
+				
+				<div class="actions">
+					<a ui-sref='userLayout.coupon.edit({couponId:coupon._id.$id})' class="btn default yellow-stripe">
+						<i class="fa fa-cog"></i>
+						<span class="hidden-480">Edit </span>
+					</a>
+				</div>
+				<div class="actions">
+					<a ui-sref="userLayout.coupon.list" class="btn default yellow-stripe">
+					<i class="fa fa-angle-left"></i>
+					<span class="hidden-480">
+					Back </span>
+					</a>					
+				</div>				
+			</div>
+			<div class="portlet-body">
+				<div class="tabbable">
+					
+					<div class="tab-content">
+						<div class="tab-pane active" id="tab_1">
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="portlet yellow-crusta box">
+										<div class="portlet-title">
+											<div class="caption">
+												<i class="fa fa-cogs"></i>Coupon Details
+											</div>											
+										</div>
+										<!-- <pre>{{coupon | json}}</pre> -->
+										<div class="portlet-body">
+											<div class="row static-info">
+												<div class="col-md-5 name">
+													 Coupon Code: 
+												</div>
+												<div class="col-md-7 value">
+													 {{coupon.code}}
+												</div>
+											</div>
+											<div class="row static-info">
+												<div class="col-md-5 name">
+													 Title
+												</div>
+												<div class="col-md-7 value">
+													 {{coupon.name}}
+												</div>
+											</div>
+											<div class="row static-info">
+												<div class="col-md-5 name">
+													 Type
+												</div>
+												<div class="col-md-7 value">
+													<span ng-if="coupon.type==1">Fixed</span>
+													<span ng-if="coupon.type!=1">Percentage of total</span>
+												</div>
+											</div>
+
+											<div class="row static-info">
+												<div class="col-md-5 name">
+													 Discount
+												</div>
+												<div class="col-md-7 value">
+													<span ng-if="coupon.type==1">{{coupon.discount | pricingTxt}}</span>
+													<span ng-if="coupon.type!=1">{{coupon.discount}} %</span>
+												</div>
+											</div>
+											
+											<div class="row static-info">
+												<div class="col-md-5 name">
+													 Cart total required to redeem coupon : 
+												</div>
+												<div class="col-md-7 value">
+													 {{coupon.total}}
+												</div>
+											</div>
+
+											<div class="row static-info">
+												<div class="col-md-5 name">
+													 Uses Per Coupon: 
+												</div>
+												<div class="col-md-7 value">
+													 {{coupon.coupon_uses}}
+												</div>
+											</div>
+
+											<div class="row static-info">
+												<div class="col-md-5 name">
+													 Uses Per Customer: 
+												</div>
+												<div class="col-md-7 value">
+													 {{coupon.customer_uses}}
+												</div>
+											</div>
+
+											<div class="row static-info">
+												<div class="col-md-5 name">
+													 Apply Discount On: 
+												</div>
+												<div class="col-md-7 value">
+													 <span ng-if="coupon.discount_status==1">Sale Price</span>
+													<span ng-if="coupon.discount_status!=1">Original Price</span>
+												</div>
+											</div>
+
+											<div class="row static-info">
+												<div class="col-md-5 name">
+													 Validity
+												</div>
+												<div class="col-md-7 value">
+													 {{coupon.start_date}} - {{coupon.end_date}}
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div>								
+							</div>
+							
+							<div class="row" ng-if="coupon.orders.length">
+								<div class="col-md-12 col-sm-12">
+									<div class="portlet grey-cascade box">
+										<div class="portlet-title">
+											<div class="caption">
+												<i class="fa fa-cogs"></i>Coupon Used Log
+											</div>
+											
+										</div>
+										<div class="portlet-body">
+											<div class="table-responsive">
+												<table class="table table-hover table-bordered">
+												<thead>
+												<tr>
+													<th>Order Reference</th>
+													<th style="text-align: right;">Total discount</th>
+												</tr>
+												</thead>
+												<tbody ng-init="coupon.totalDis = 0">
+													<tr ng-repeat="order in coupon.orders">
+														<td><a ui-sref="userLayout.orders.show({order:order._id.$id})">{{order.reference}}</a></td>
+														<td ng-init="coupon.totalDis=coupon.totalDis+order.totalDiscount[0]">{{order.totalDiscount[0]}}</td>
+													</tr>
+													<tr>
+														<td></td><td></td>
+													</tr>
+													<tr>
+														<td>Total</td><td>{{coupon.totalDis}}</td>
+													</tr>
+												</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>							
+						</div>						
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End: life time stats -->
+	</div>
+</div>
+<div order-status></div>

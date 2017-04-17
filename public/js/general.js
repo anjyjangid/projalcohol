@@ -114,3 +114,7 @@ Date.prototype.shiftDays = function(days){
   this.setDate(this.getDate() + days);
   return this;
 }
+
+function cLog(param){
+	console.log(param);
+}

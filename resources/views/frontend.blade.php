@@ -102,6 +102,7 @@
 	    <link rel="stylesheet" type="text/css" href="{{ asset('bower_components/v-accordion/dist/v-accordion.css') }}">
 	    
 	    <link rel="stylesheet" type="text/css" href="css/simple-sidebar.css"> -->
+
 	</head>
 
 	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}" ng-cloak>		    	    	

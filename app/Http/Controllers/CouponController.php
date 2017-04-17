@@ -145,6 +145,8 @@ class CouponController extends Controller
 							$productList[] = $getObj['$id'];
 						}
 						$couponData->products = $productList;
+					}else{
+						$couponData->products = [];
 					}
 
 					if(!empty($couponData->categories)){
@@ -153,6 +155,8 @@ class CouponController extends Controller
 							$catList[] = $getObj['$id'];
 						}
 						$couponData->categories = $catList;
+					}else{
+						$couponData->categories = [];
 					}
 
 					$coupon = $couponData;

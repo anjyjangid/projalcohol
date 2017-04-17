@@ -185,6 +185,39 @@ class CouponController extends Controller
 						]
 					]
 				]
+			],
+			[
+				'$lookup' => [
+					'from' => "orders",
+					'localField' => 'code',
+					'foreignField' => 'coupon.code',
+					'as' => 'orders'
+				]
+			],
+			[
+				'$project' => [
+					'_id' => 1,
+					'code' => 1,
+					'name' => 1,
+					'type' => 1,
+					'discount' => 1,
+					'discount_status' => 1,
+					'total' => 1,
+					'coupon_uses' => 1,
+					'customer_uses' => 1,
+					'start_date' => 1,
+					'end_date' => 1,
+					'status' => 1,
+					'csvImport' => 1,
+					'saleProductDetail' => 1,
+					'saleCategoryDetail' => 1,
+					'orders' => [
+						'_id'=> 1,
+						'reference'=> 1,
+						'totalDiscount' => '$orders.coupon.totalDiscount',
+						'date' => '$created_at'
+					]
+				]
 			]
 		]);
 

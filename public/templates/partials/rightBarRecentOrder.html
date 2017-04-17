@@ -8,12 +8,12 @@
 		
 		<div class="order-fetching" ng-if="fetching || processAdding"></div>		
 
-		<md-checkbox ng-model="allSelected" ng-init="allSelected=true" class="full" ng-change="selectAll(allSelected)"> Select all</md-checkbox>
+		<md-checkbox md-no-ink ng-model="allSelected" ng-init="allSelected=true" class="full" ng-change="selectAll(allSelected)"> Select all</md-checkbox>
 
 		<div class="ro_items" ng-class="{'itemselect':product.selected}" ng-repeat="product in lastorder.products" title="{{product.shortDescription}}">
 
 			<div class="chk_unchk">
-				<md-checkbox ng-model="product.selected" ng-change = "selectPro()" aria-label="{{product.name}}"></md-checkbox>
+				<md-checkbox md-no-ink ng-model="product.selected" ng-change = "selectPro()" aria-label="{{product.name}}"></md-checkbox>
 			</div>
 			<div class="ro_pic">				
 				<img ng-src="products/i/200/{{product.imageFiles | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />

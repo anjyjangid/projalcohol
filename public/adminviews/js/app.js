@@ -2772,6 +2772,21 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                 authenticate: authenticate
             }
         })
+        .state("userLayout.coupon.view",{
+            url: "/coupon/detail/{couponId}",
+            templateUrl: "adminviews/views/coupon/detail.html",
+            data:{
+				pageTitle:'Edit coupons',
+				breadCrumb:[
+					{title:'Coupons','uisref':'userLayout.coupon.list'},
+					{title:'Detail','uisref':'#'}
+				]
+			},
+            controller:"CouponDetailController",
+            resolve: {
+                authenticate: authenticate
+            }
+        })
 
         .state('userLayout.dontmiss', {
         	url: "/dontmiss",

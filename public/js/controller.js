@@ -3175,13 +3175,18 @@ AlcoholDelivery.controller('LoyaltyStoreController', [
 			function(response){
 
 				$scope.credits = response;
-
+				
 			},
 			function(errorRes){
 
 			}
 
 		);
+
+		$scope.addCredit = function (key) {
+			
+			console.log(key,$scope.credits[key]);
+		}
 }]);
 
 AlcoholDelivery.controller('InviteController', ['$scope', '$rootScope','$state','$http','$stateParams','$timeout','$anchorScroll','sweetAlert', function($scope, $rootScope,$state,$http,$stateParams,$timeout,$anchorScroll,sweetAlert){

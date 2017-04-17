@@ -27,7 +27,7 @@ class Cart extends Moloquent
 	protected $primaryKey = "_id";
 	protected $collection = 'cart';
 	public static $key;
-	
+
 	/**
 	 * Indicates if the model should be timestamped.
 	 *
