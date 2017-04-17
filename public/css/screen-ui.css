@@ -6971,3 +6971,7 @@ md-checkbox.md-checked.md-focused .md-container::before{
 .tgcontain{
 	display: inline;
 }
+.cock-party-content .cocktail-leftimgdiv{
+	padding-right:0;
+	position: relative;
+}

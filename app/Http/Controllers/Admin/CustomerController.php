@@ -353,5 +353,7 @@ class CustomerController extends Controller
 
 	}
 	
-
+	public function postImport(Request $request){
+		return response('Under development',422);
+	}
 }

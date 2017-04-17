@@ -1216,14 +1216,14 @@ body.menu-slider.in {
 	overflow: hidden;
 	opacity: 0
 }
-.left-party-content:hover .party-hover-effect {
+.left-party-content:hover .party-hover-effect, .cock-party-content:hover .party-hover-effect {
 	background-color: rgba(0,0,0,.3);
 	display: block;
 	cursor: pointer;
 	opacity: 1;
 	top: 0
 }
-.left-party-content:hover {
+.left-party-content:hover, .cock-party-content:hover {
 	-webkit-box-shadow: 0px 3px 10px 6px #b2bfc9;
 	-moz-box-shadow: 0px 3px 10px 6px #b2bfc9;
 	box-shadow: 0px 3px 10px 6px #b2bfc9;
