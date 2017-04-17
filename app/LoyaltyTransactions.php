@@ -134,7 +134,12 @@ class LoyaltyTransactions extends Moloquent
 					case 'order':
 						$loyaltyObj['shortComment'] = 'Used in order';
 						$loyaltyObj['comment'] = 'You have used this points in an order';
-						break;
+					break;
+
+					case 'exchange':
+						$loyaltyObj['shortComment'] = 'Exchange loyalty';
+						$loyaltyObj['comment'] = 'You have used this points in exchange of credits';
+					break;
 					
 					default:
 						# code...

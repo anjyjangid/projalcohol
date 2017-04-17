@@ -3,11 +3,9 @@
 
 	<div class="productbeerfiltertopcover">
 		<div class="productbeer-headtitleouter">
-		<div class="productbeerfiltertoptitle text-capitalize">Loyalty Store
-			<span ng-if="availableLoyaltyPoints">{{availableLoyaltyPoints}}</span>
-		</div>
-		<div class="productbeerfiltertoptitle text-capitalize productbeer-point-rw">Loyalty Points 
-			<span ng-if="availableLoyaltyPoints">{{availableLoyaltyPoints}}</span>
+		<div class="productbeerfiltertoptitle text-capitalize">Loyalty Store</div>
+		<div ng-if="availableLoyaltyPoints" class="productbeerfiltertoptitle text-capitalize productbeer-point-rw">Loyalty Points 
+			<span>{{availableLoyaltyPoints}}</span>
 			<span>LP</span>
 		</div>
 		</div>
@@ -56,17 +54,21 @@
 		<div id="loyalty-credits" ng-show="productView=='credits'">
 
 			<div class="col-xs-12 col-sm-3 comboproductitems" ng-repeat="credit in credits">
-				
+
 				<div class="prod_pic">
 					<div class="credit_cash_pic"> {{credit.value}} </div>
 				</div>
+
 				<div class="prod_desc"> 
 					convert {{credit.loyalty}} loyalty to {{credit.value | pricingTxt}} credit
 				</div>
-								
+
 				<div class="prod_addtocart">
 
-					<add-to-cart-btn ng-class="{'disabled': credit.notSufficient}" product="credit"></add-to-cart-btn>
+					<div class="cartbtn" ng-class="{'disabled': credit.notSufficient}">
+						<div ng-click="credit.exchange()" class="addcart" role="button" tabindex="0"><span></span>Exchange</div>
+					</div>
+					<!-- <add-to-cart-btn ng-class="{'disabled': credit.notSufficient}" product="credit"></add-to-cart-btn> -->
 
 				</div>
 

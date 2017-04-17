@@ -11,10 +11,20 @@
 <div class="partypackegescover ng-scope"><img class="img-responsive" src="images/cocktail-banner.png"></div>
 <div style="clear: both;"></div>
 <div class="cocktail-packagecover">
-	<div class="media media-bodyheader" ng-repeat="package in packages">
-		<div class="media-left  cocktail-leftimgdiv">
+	<div class="media media-bodyheader cock-party-content" ng-repeat="package in packages">
+		<div class="media-left cocktail-leftimgdiv">
 			<a ui-sref="mainLayout.packagedetail({type:'cocktail',id:package._id})">
 			  <img err-src="asset/i/defaultImage.png" ng-src="packages/i/{{package.coverImage.source}}" src="asset/i/defaultImage.png" alt=""/>
+		  	<div class="party-hover-effect">
+                <div class="customizebtn">
+                    <div class="customize-inner">
+                        <a class="btn btn-default" ui-sref="mainLayout.packagedetail({type:'cocktail',id:package._id})" role="button">
+                        	<img src="images/customize-icon.png" ><span>CLICK HERE TO CUSTOMIZE!</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
 			</a>
 		</div>
 		<div class="media-body cockatil-bodycover">

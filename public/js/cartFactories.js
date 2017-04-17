@@ -1953,51 +1953,25 @@ angular.module('AlcoholCartFactories', [])
 		return lv.toFixed(2);
 	};
 
-
-
 	return product;
 
 }])
 
 .factory('CreditCertificate',[
-			'alcoholCart','$q', '$timeout', 'UserService',
-	function(alcoholCart, $q, $timeout, UserService){
+			'alcoholCart','$q', '$timeout', 'UserService','$mdDialog',
+	function(alcoholCart, $q, $timeout, UserService,$mdDialog){
 
 	var certificate = function(data){
 
-		this.setQuantity(data);
+		// this.setQuantity(data);
 		this.setLoyalty(data.loyalty);
 		this.setValue(data.value);
-		this.setCommonSetings();
+		// this.setCommonSetings();
 		this.setAddBtnState();
 
 	}
 
-	certificate.prototype.setQuantity = function(credit){
-
-		isInCart = alcoholCart.getLoyaltyCardByValue(credit.value);
-
-		if(isInCart===false){
-			this.qNChilled = 0;
-		}else{
-			this.qNChilled = isInCart.quantity;
-		}
-
-	};
-
-	certificate.prototype.getQuantity = function(){
-
-		return parseInt(this.qNChilled);
-
-	}
-
-	certificate.prototype.setCommonSetings = function(){
-
-		this.servechilled = false;
-		this.isLoyaltyStoreProduct = true;
-
-	}
-
+	
 	certificate.prototype.setLoyalty = function(loyalty){
 
 		if (loyalty)  this.loyalty = parseInt(loyalty);
@@ -2016,89 +1990,172 @@ angular.module('AlcoholCartFactories', [])
 
 	};
 
-	certificate.prototype.addToCart = function(){
-
-		var defer = $q.defer();
-
+	certificate.prototype.exchange = function(){
+		
 		var _certificate = this;
 
 
-		if(typeof _certificate.updateTimeOut!=="undefined"){
+		if(_certificate.notSufficient){				
+			sweetAlert.swal({
+				type:'error',
+				title: "Sorry !",
+				text : "Not sufficient loyalty points",
+				showConfirmButton:true
+			});
 
-			$timeout.cancel(_certificate.updateTimeOut);
-
+			return false;
 		}
 
-		_certificate.updateTimeOut = $timeout(function(){
+		$mdDialog.show({
 
-			if(_certificate.notSufficient){
+			controller: ['$scope', '$rootScope', '$document', '$http', 'sweetAlert', 'alcoholCart'
+				,function($scope, $rootScope, $document, $http, sweetAlert, alcoholCart) {
 
-				defer.reject({'notSufficient':true});
+					$scope.reset = function(){
+						$scope.value = _certificate.value;
+						$scope.loyalty = _certificate.loyalty;
+						$scope.exchangeQty = 1;
+					}
 
-			}
+					$scope.reset();
 
-			alcoholCart.addCreditCertificate(_certificate.value,_certificate.qNChilled).then(
+					$scope.hide = function() {
+						$mdDialog.hide();
+					};
+					$scope.cancel = function() {
+						$mdDialog.cancel();
+					};
 
-				function(successRes){
+					$scope.exchange = function(){
 
-					switch(successRes.code){
-							case 100:
+						$http.put("user/credit-certificate", {
+							"id":parseInt($scope.value),
+							"quantity":parseInt($scope.exchangeQty)
+						}).then(
+							function (response) {
+								
+								UserService.getIfUser(true);
 
-								$timeout(function(){
-									$mdToast.show({
-										controller:['$scope',function($scope){										
-											$scope.qChilled = 0;
-											$scope.qNchilled = 0;
+								$scope.hide();
+								sweetAlert.swal({
+									type:'success',
+									title: 'Loyalty converted to credits',
+									timer: 4000,
+									showConfirmButton: true
+								}).done()
 
-											$scope.closeToast = function(){
-												$mdToast.hide();
-											}
-										}],
-										templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
-										parent : $element,
-										position: 'top center',
-										hideDelay:10000
+
+
+							},
+							function(errorRes){
+
+								errorRes= errorRes.data
+
+								if(errorRes.code){
+
+									var code = parseInt(errorRes.code);
+
+									switch(code){
+
+										case 401:{
+
+											$rootScope.$broadcast('showLogin');
+
+										}
+										break;
+
+									}
+
+								}else{
+									
+									$scope.reset();
+									sweetAlert.swal({
+										type:'error',
+										title: "Sorry !",
+										text : "Something wrong; going to reset",
+										showConfirmButton:true										
 									});
-								},1000);
 
-							break;
-							case 101:
+								}											
 
-								$timeout(function(){
+							}
+						)
+							
+					}								
+				
+			}],
+			templateUrl: '/templates/exchangeLoyaltyCard.html',
+			parent: angular.element(document.body),
+			clickOutsideToClose:false,
+			fullscreen:true
+		})
+		.then(function(answer) {
 
-									$mdToast.show({
-										controller:['$scope',function($scope){										
-											$scope.qChilled = 0;
-											$scope.qNchilled = 0;
+		}, function() {
 
-											$scope.closeToast = function(){
-												$mdToast.hide();
-											}
-										}],
-										templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
-										parent : $element,
-										position: 'top center',
-										hideDelay:10000
-									});
+		});
 
-								},1000);
 
-							break;
+			// alcoholCart.addCreditCertificate(_certificate.value,_certificate.qNChilled).then(
 
-						}
+			// 	function(successRes){
 
-					_certificate.qNChilled = successRes.data.card.quantity || 0;
+			// 		switch(successRes.code){
+			// 				case 100:
 
-				},
-				function(errorRes){
+			// 					$timeout(function(){
+			// 						$mdToast.show({
+			// 							controller:['$scope',function($scope){										
+			// 								$scope.qChilled = 0;
+			// 								$scope.qNchilled = 0;
 
-					_certificate.qNChilled = errorRes.quantity || 0;
-				}
+			// 								$scope.closeToast = function(){
+			// 									$mdToast.hide();
+			// 								}
+			// 							}],
+			// 							templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+			// 							parent : $element,
+			// 							position: 'top center',
+			// 							hideDelay:10000
+			// 						});
+			// 					},1000);
 
-			);
-		},500)
+			// 				break;
+			// 				case 101:
 
-		return defer.promise;
+			// 					$timeout(function(){
+
+			// 						$mdToast.show({
+			// 							controller:['$scope',function($scope){										
+			// 								$scope.qChilled = 0;
+			// 								$scope.qNchilled = 0;
+
+			// 								$scope.closeToast = function(){
+			// 									$mdToast.hide();
+			// 								}
+			// 							}],
+			// 							templateUrl: '/templates/toast-tpl/notify-quantity-na.html',
+			// 							parent : $element,
+			// 							position: 'top center',
+			// 							hideDelay:10000
+			// 						});
+
+			// 					},1000);
+
+			// 				break;
+
+			// 			}
+
+			// 		_certificate.qNChilled = successRes.data.card.quantity || 0;
+
+			// 	},
+			// 	function(errorRes){
+
+			// 		_certificate.qNChilled = errorRes.quantity || 0;
+			// 	}
+
+			// );
+		
 	};
 
 	certificate.prototype.setAddBtnState = function(p){
@@ -2107,7 +2164,7 @@ angular.module('AlcoholCartFactories', [])
 			var p = this;
 		}
 
-		var productAvailQty = p.getQuantity();
+		var productAvailQty = 0;
 
 		this.addBtnAllowed = true;
 
