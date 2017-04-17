@@ -29,7 +29,9 @@ MetronicApp.controller('OrderUpdateController',['$rootScope', '$scope', '$timeou
 	$scope.contactRemove = function(i){
 		$scope.order.contacts.splice(i, 1);
 	}
+
 	$scope.update = function(){
+
 		var data = $scope.order;
 		//POST DATA WITH FILES
 		orderModel.updateOrder(data,$stateParams.orderid).success(function(response){
@@ -217,6 +219,7 @@ MetronicApp.controller('OrderCreateController',[
 			}
 		})
 		.result.then(function (address) {
+			console.log($scope.cart);
 			$scope.cart.addresses.push(address);
 
 			var api;
@@ -536,7 +539,7 @@ MetronicApp.controller('OrderCreateController',[
 		$scope.savingData = true;
 		$scope.errors = [];
 		var api;
-		console.log($scope.address);
+		
 		if(detail.type=='business')
 			api = '/adminapi/business/address/'+detail.user._id;
 		else
@@ -1451,6 +1454,7 @@ MetronicApp.controller('OrderCreateController',[
 				for(var skey in timeslots[key].slots){
 					if(skey==slotKey){
 						$scope.timeslot.slotslug = $scope.timerange[timeslots[key].slots[skey].from]+" - "+$scope.timerange[timeslots[key].slots[skey].to];
+						$scope.timeslot.slotTime = timeslots[key].slots[skey].from;
 					}
 				}
 			}

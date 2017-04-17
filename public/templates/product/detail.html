@@ -10,7 +10,15 @@
 		<div class="add-bulk-iner-widthset detailwish">
 			<div class="add-icon-main" ng-click="isInwishList?myWish():addToWishlist(0); $event.stopPropagation();">
 
-				<div class="add-wishlist-icondiv"><img src="images/add-wish-icon.png" /></div>
+				<div class="add-wishlist-icondiv">
+					<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="18px" height="16.998px" viewBox="6 6.501 18 16.998" enable-background="new 6 6.501 18 16.998" xml:space="preserve">
+								<path fill="#FFFFFF" d="M10.724,6.501c1.256,0,2.282,0.434,3.071,1.182c0.506,0.479,0.91,1.083,1.205,1.786
+									c0.295-0.703,0.699-1.307,1.199-1.786c0.787-0.748,1.82-1.182,3.076-1.182c1.309,0,2.486,0.545,3.34,1.418
+									C23.475,8.799,24,10.007,24,11.34c0,2.292-2.449,4.977-4.188,6.875c-0.313,0.342-0.603,0.657-0.864,0.959l-3.609,4.17
+									c-0.167,0.189-0.449,0.209-0.635,0.039c-0.019-0.014-0.032-0.025-0.044-0.039l-3.609-4.17c-0.237-0.27-0.544-0.604-0.878-0.972
+									C8.436,16.305,6,13.639,6,11.34c0-1.333,0.532-2.541,1.384-3.421C8.243,7.046,9.423,6.501,10.724,6.501L10.724,6.501z"/>
+					</svg>
+				</div>
 
 				<div class="wishlist_discount">
 					<div class="wishlist" ng-bind="isInwishList?'Added to Wishlist':'Add to Wishlist'"></div>
@@ -33,7 +41,7 @@
 		<div class="prddetailnormaltext wraptxt desktop-show-product-des">{{product.description}}</div>           
 	</div>
 	<div class="col-xs-12 col-sm-6 col-md-6 product-detail-right-set" ng:class="{'has-sale-div':product.sale || product.nameDetailSale}">
-		<div class="prddetailtitle">{{product.name}} </div>
+		<div class="prddetailtitle">{{product.name}} <span class="correct-time" ng-if="product.isNew">New</span></div>
 			<div class="tag-purple-new-pos">
 				<not-available ng-if="product" product="product" tagsize="1"></not-available>
 				<div class="fullwidth"></div>

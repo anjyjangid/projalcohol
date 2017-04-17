@@ -1,0 +1,45 @@
+<md-dialog id="exchange-loyalty-popup" aria-label="exchange-loyalty-popup">
+	<md-toolbar>
+		<div class="md-toolbar-tools alcohal_addadress_header">
+			<div class="alcohal_addadress_headercurmain">          
+				<div class="pro_unavailable_header">Exchange your loyalty points</div>
+			</div>
+			<span class="glyphicon glyphicon-chevron-left dontmissbut" ng-if="products.length>dontMissCarousel.visibleItems" ng-click="loadMore(1);"></span>
+			<span class="glyphicon glyphicon-chevron-right dontmissbut" ng-if="products.length>dontMissCarousel.visibleItems" ng-click="loadMore(0);"></span>
+			
+			<span flex></span>  <md-button class="md-icon-button" ng-click="hide()"> &times; </md-button>
+		</div>
+	</md-toolbar>
+
+	<md-dialog-content layout="row" class="" flex="100%">
+
+		<div class="col-sm-4">
+			<div class="row">				
+				<div class="-popup-blocks"> {{loyalty}} </div>
+			</div>
+		</div>
+		<div class="col-sm-1 text-center"><span class="fa fa-times"></span></div>
+		<div class="col-sm-2">
+			<div class="row">
+				<div class="-popup-blocks">
+					<input type="number" ng-model="exchangeQty" class="full-width text-center" min="1">
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-1 text-center"><span class="fa fa-angle-double-right"></span></div>
+		<div class="col-sm-4">
+			<div class="row">
+				<div class="-popup-blocks"> {{value * exchangeQty}} </div>
+			</div>
+		</div>
+
+	</md-dialog-content>
+
+	<md-dialog-actions layout="row">
+		<div class="modal-footer pro-notavail-footer">
+			<div class="alcohalosavebntcvr">
+				<button class="adresssvaebtn" ng-click="exchange()" type="button">Exchange<span><i class="fa fa-thumbs-o-up"></i></span></button>
+			</div>
+		</div>
+	</md-dialog-actions>
+</md-dialog>

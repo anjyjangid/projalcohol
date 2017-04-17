@@ -64,7 +64,7 @@
 
 	function isLocal () {
 
-		if($_SERVER['REMOTE_ADDR']==='192.168.1.222'){
+		if($_SERVER['REMOTE_ADDR']==='192.168.1.222'||$_SERVER['REMOTE_ADDR']==='192.168.1.103'){
 			return true;
 		}
 		return false;
@@ -74,6 +74,10 @@
 	// used initially for applying tread offer based smart quantity in purchase order
     function ceiling($number, $significance = 1) {
         return ( is_numeric($number) && is_numeric($significance) ) ? (ceil($number/$significance)*$significance) : false;
+    }
+
+    function flooring($number, $significance = 1) {
+        return ( is_numeric($number) && is_numeric($significance) ) ? (floor($number/$significance)*$significance) : false;
     }
 
     if (!function_exists('formatPrice')) {

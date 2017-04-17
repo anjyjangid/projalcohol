@@ -12,6 +12,7 @@ use AlcoholDelivery\Brand;
 use AlcoholDelivery\Cms;
 use AlcoholDelivery\Promotion;
 use AlcoholDelivery\Setting;
+use AlcoholDelivery\PromotionalBanners;
 
 class SuperController extends Controller
 {    
@@ -129,6 +130,22 @@ class SuperController extends Controller
 		return response($brands);
 	}
 
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function getPromotionalbanners(Request $request)
+	{
+		$params = $request->all();
+
+		$user = Auth::user('user');
+		$status = $user?2:1;
+		$promotionalbanners = PromotionalBanners::where('status', '!=', $status)->get();
+		
+		return response($promotionalbanners);
+	}
+
 
 	
 	/**
@@ -138,11 +155,17 @@ class SuperController extends Controller
 	 */
 	public function getSettings(Request $request)
 	{        
-		$settings = DB::collection('settings')->whereIn("_id",['general','social','loyalty','announcementBar'])->get();
+		$settings = DB::collection('settings')->whereIn("_id",['general','social','loyalty','announcementBar','homeBanner'])->get();
 		
 		$settingsData = array();
 		
-		foreach($settings as $setting){
+		foreach($settings as $key=>$setting){
+
+			if($setting['_id']=="homeBanner" && $setting['settings']['status']!=1){
+				unset($settings[$key]);
+				continue;
+			}
+
 			foreach($setting['settings'] as $subKey=>$subSetting){
 				if(isset($subSetting['value'])){
 					$settingsData[$setting['_id']][$subKey] = $subSetting['value'];

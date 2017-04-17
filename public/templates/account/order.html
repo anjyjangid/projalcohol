@@ -36,14 +36,14 @@
 										</a>
 									</span>
 									<div class="checkouter-td-right-text">
-										<div class="orhistry2_td2proctext1">{{cartproduct.detailTitle}}</div>
+										<div class="orhistry2_td2proctext1">{{cartproduct.name}}</div>
 										<div class="orhistry2_td2proctext2">{{cartproduct.shortDescription}}</div>
 										<div class="orhistry2_td2proctext1">{{cartproduct.unitPrice | pricingTxt}}</div>
 										<div class="orhistry2_td2proctext2" ng-if="cartproduct.products.length == 0">unit Price</div>
 									</div>
 								</div>
 
-								<div ng-if="cartproduct.category != 'saleproduct' && cartproduct.products.length">
+								<!-- <div ng-if="cartproduct.category != 'saleproduct' && cartproduct.products.length">							
 									<div class="col-md-3 listimgborder" ng-repeat="packageproducts in cartproduct.products">
 										<span class="cursor-pointer">
 											<a ui-sref="mainLayout.product({product:packageproducts.slug})" title="View Product">
@@ -51,7 +51,25 @@
 											</a>
 										</span>
 									</div>	
+								</div> -->
+
+								<div ng-if="cartproduct.category != 'saleproduct' && cartproduct.products.length">
+
+									<div class="row" ng-repeat="packageGroup in cartproduct.packageItems">
+									<div class="col-sm-12">
+										<div class="a-block m-top-15 m-bottom-15">{{packageGroup.title}}</div>
+										<div class="package-pro-order-show" ng-repeat="packPro in packageGroup.products">
+											<span class="-detail">{{packPro.detail.quantity}} X </span>
+											<span class="-img">
+												<a ui-sref="mainLayout.product({product:packPro.detail.slug})" title="View Product">
+													<img alt="{{packPro.detail.name}}" err-pro-src="" ng-src="products/i/200/{{packPro.detail.coverImage}}" class="img-responsive img-responsive-h new-img"/>
+												</a>
+											</span>
+										</div>	
+										</div>
+									</div>
 								</div>
+
 							</td>
 							<td>
 								<div class="prod_chilled" ng-class="{ notchilled:!cartproduct.chilled }">

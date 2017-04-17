@@ -216,7 +216,8 @@ class ProductController extends Controller
 		$cart = Cart::findUpdated($cartKey);
 
 		$productWithCount = $cart->getProductIncartCount();
-		$proInCartIds = array_keys($productWithCount);
+
+		$proInCartIds = array_keys($productWithCount);		
 
 		foreach ($proInCartIds as $key => &$value) {
 			$value = new mongoId($value);
@@ -299,13 +300,12 @@ class ProductController extends Controller
 		// 	return response($response,200);
 		// }
 
-
 		// further process if required quantity is not fullfilled
 
 		array_push($proInCartIds, new mongoId($product->_id));
 		$proInCartIds = array_merge($proInCartIds,$suggestionProsIds);
 
-		$requiredLimit = 6 - $suggestionsLength;
+		$requiredLimit = 5 - $suggestionsLength;
 
 		$products = DB::collection('orders')->raw(function($collection) use($product,$proInCartIds,$requiredLimit){
 
@@ -317,7 +317,8 @@ class ProductController extends Controller
 				],
 				[
 					'$project' => [
-						'productsLog._id' => 1
+						'productsLog._id' => 1,
+						'productsLog.quantity' => 1
 					]
 				],
 				[
@@ -331,10 +332,23 @@ class ProductController extends Controller
 					]
 				],
 				[
-					'$sample' => [
-						'size' => 5
+					'$group' => [
+						'_id'=>'$productsLog._id',
+						'quantity' => [
+							'$sum'=>'$productsLog.quantity'
+						]
 					]
 				],
+				[
+					'$sort' => [
+						'quantity'=>-1
+					]
+				],
+					// [
+					// 	'$sample' => [
+					// 		'size' => 5
+					// 	]
+					// ],
 				[
 					'$limit' => abs($requiredLimit)
 				],
@@ -342,29 +356,31 @@ class ProductController extends Controller
 					'$lookup' => [
 
 						'from'=>'products',
-						'localField'=>'productsLog._id',
+						'localField'=>'_id',
 						'foreignField'=>'_id',
 						'as'=>'product'
-
 					]
-				],				
+				],
 				[
 					'$project' => [
-						"product" => [ 
-							'$arrayElemAt' => [ '$product', 0 ] 
+						'_id'=>0,
+						'key' => [
+							'$literal' => 1
+						],
+						'product' => [
+							'$arrayElemAt' => [ '$product', 0 ]
 						]
 					]
 				],
-				
 				[
 					'$group' => [
-						'_id' => '$_id',
+						'_id'=>'$_key',
 						'products' => [
-							'$push' => '$product'
+							'$push'=>'$product'
 						]
 					]
 				],
-				
+
 			));
 		});
 
@@ -374,7 +390,6 @@ class ProductController extends Controller
 			$suggestionPros = array_merge($suggestionPros,$products);
 
 		}
-		
 
 		$response['products'] = $suggestionPros;
 		return response($response,200);

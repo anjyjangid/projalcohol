@@ -766,6 +766,18 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', '$http', '$root
 					uisref:'userLayout.settings.announcementBar',
 					icon:'icon-bell',
 					links:['userLayout.settings.announcementBar']
+				},
+				{
+					label:'Home Banner',
+					uisref:'userLayout.settings.homeBanner',
+					icon:'icon-home',
+					links:['userLayout.settings.homeBanner']
+				},
+				{
+					label:'Promotional Banner',
+					uisref:'userLayout.promotionalbanners.list',
+					icon:'icon-home',
+					links:['userLayout.promotionalbanners.list']
 				}
 
 			]
@@ -2527,6 +2539,100 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
             }
         })
 
+        .state("userLayout.settings.homeBanner", {
+            url: "/settings/home-banner",
+            templateUrl: "adminviews/views/settings/home-banner.html",
+            data:{
+				pageTitle:'Home Banner',
+				key:"homeBanner",
+				breadCrumb:[
+					{title:'Home Banner','uisref':'#'}
+				]
+			},
+			resolve: {
+                authenticate: authenticate,
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
+/*Promotional banner start*/
+		.state("userLayout.promotionalbanners",{
+			abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+			controller:"PromotionalBannersController",
+			resolve: {
+                authenticate: authenticate,
+				deps: ['$ocLazyLoad',function($ocLazyLoad){
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: "#ng_load_plugins_before",
+						files: [
+							'adminviews/js/models/promotionalBannersModel.js',
+							'adminviews/js/controllers/PromotionalBannersController.js',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+						]
+					});
+				}]
+			}
+		})
+
+		.state("userLayout.promotionalbanners.list",{
+			url: "/promotionalbanners/list",
+			templateUrl: "adminviews/views/promotionalbanners/list.html",
+			data:{
+				pageTitle:'Promotional Banners List',
+				breadCrumb:[
+					{title:'Promotional Banners','uisref':'#'}
+				]
+			},
+			resolve: {
+                authenticate: authenticate
+            }
+		})
+
+		.state("userLayout.promotionalbanners.add",{
+            url: "/promotionalbanners/add",
+            templateUrl: "adminviews/views/promotionalbanners/add_edit.html",
+            data:{
+				pageTitle:'Add New Promotional Banner',
+				breadCrumb:[
+					{title:'Promotional Banners','uisref':'userLayout.promotionalbanners.list'},
+					{title:'Add','uisref':'#'}
+				]
+			},
+            controller:"PromotionalBannersAddController",
+            resolve: {
+                authenticate: authenticate
+            }
+        })
+
+        .state("userLayout.promotionalbanners.edit",{
+            url: "/promotionalbanners/edit/{promotionalbannerid}",
+            templateUrl: "adminviews/views/promotionalbanners/add_edit.html",
+            data:{
+				pageTitle:'Edit Promotional Banner',
+				breadCrumb:[
+					{title:'Promotional Banners','uisref':'userLayout.promotionalbanners.list'},
+					{title:'Edit','uisref':'#'}
+				]
+			},
+            controller:"PromotionalBannersUpdateController",
+            resolve: {
+                authenticate: authenticate
+            }
+        })
+/*Promotional banner end*/
+
         .state('userLayout.promotion', {
             abstract:true,
 			templateUrl:'adminviews/views/auth.html',
@@ -2662,6 +2768,21 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
             controller:"CouponAddController",
+            resolve: {
+                authenticate: authenticate
+            }
+        })
+        .state("userLayout.coupon.view",{
+            url: "/coupon/detail/{couponId}",
+            templateUrl: "adminviews/views/coupon/detail.html",
+            data:{
+				pageTitle:'Edit coupons',
+				breadCrumb:[
+					{title:'Coupons','uisref':'userLayout.coupon.list'},
+					{title:'Detail','uisref':'#'}
+				]
+			},
+            controller:"CouponDetailController",
             resolve: {
                 authenticate: authenticate
             }

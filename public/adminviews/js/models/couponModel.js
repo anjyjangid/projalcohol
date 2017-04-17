@@ -4,7 +4,7 @@ MetronicApp.factory('couponModel', ['$http', '$cookies','$location', function($h
         
         getCoupon: function(id){
             return $http.get("/adminapi/coupon/detail/"+id);
-        },       
+        },
 
         storeCoupon: function(fields){
         	   	      

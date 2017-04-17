@@ -50,7 +50,7 @@ ui-sref {
 	top: 1px;
 }
 .header {
-	background: url(../images/desktopbg.jpg) no-repeat center top;
+	/*background: url(../images/desktopbg.jpg) no-repeat center top;*/
 	min-height: 690px;
 	background-size: 100%;
 	/*background-size: auto 690px;*/
@@ -553,14 +553,14 @@ ui-sref {
 	display: inline-block;
 	float: none;
 	vertical-align: middle;
-	background: url(../images/sprite.png) no-repeat -444px 0px;
+	background: url(../images/chilled.svg) no-repeat;
 	min-width: 24px;
 	min-height: 24px;
-	margin-right: 6px;
+	margin-right: 3px;
 	margin-top: -2px;
 }
 .prod_chilled.notchilled .prod_chilled_icon {
-	background: url(../images/sprite.png) no-repeat -410px 0px;
+	background: url(../images/non-chilled.svg) no-repeat;
 	min-width: 24px;
 	min-height: 24px;
 	margin-right: 0;
@@ -1828,7 +1828,7 @@ ui-sref {
 	background: #aa00ff;
 }
 .addcart span {
-	background: url(../images/add-cart-img.png) no-repeat 0px 2px;
+	background: url(../images/add-cart-new.svg) no-repeat 0px 2px;
 	width: 19px;
 	height: 20px;
 	display: inline-block;
@@ -2004,7 +2004,7 @@ ui-sref {
 	max-width: 160px;*/
 }
 .productslide_addbutton .addcart span {
-	margin: 5px 5px 0 10px;
+	margin: 4px 5px 0 10px;
 }
 .product_addcart, .product_addcart:hover {
 	height: 40px;
@@ -2659,7 +2659,7 @@ ui-sref {
 	margin-top: 2px;
 }
 .prodchilled-btn .-icon, .prodnonchilled-btn .-icon {
-	background: url(../images/sprite.png) no-repeat scroll -410px 0;
+	background: url(../images/non-chilled.svg) no-repeat;
 	float: right;
 	margin-right: 6px;
 	margin-top: -2px;
@@ -2667,7 +2667,7 @@ ui-sref {
 	min-width: 24px;
 }
 .prodchilled-btn.active .-icon, .prodnonchilled-btn.active .-icon {
-	background: url(../images/sprite.png) no-repeat -444px 0px;
+	background: url(../images/chilled.svg) no-repeat;
 }
 .prodchilled-btn.active, .prodnonchilled-btn.active {
 	border: solid 1px #aa00ff;
@@ -6713,7 +6713,7 @@ button:hover{
 	width: 57%;
 	position: relative;
 	z-index: 4px;
-
+	word-break: break-word;
 }
 
 .transparent-bg{
@@ -6966,12 +6966,35 @@ md-checkbox.md-checked.md-focused .md-container::before{
 	text-transform: capitalize;
 	font-size: 11px;
 	font-weight: 600;
-	margin-right: 4px;
+	margin-right: 3px;
+	white-space: nowrap;
 }
+
 .tgcontain{
 	display: inline;
 }
 .cock-party-content .cocktail-leftimgdiv{
 	padding-right:0;
 	position: relative;
+}
+
+.add-wishlist-icondiv svg {
+    position: absolute;
+    vertical-align: middle;
+    top: 0;
+    text-align: center;
+    margin: auto;
+    display: inline-block;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+.bulk-dis-icon svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
 }

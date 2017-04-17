@@ -40,9 +40,8 @@
 					<td width="131px">
 
 						<div class="prod_chilled" ng-class="{
-						notchilled:!cartproduct[type+'Status'] || cart.nonchilled,
-						invisible:!cartproduct.product.chilled ,
-
+							notchilled:!cartproduct[type+'Status'] || 
+							cart.nonchilled,invisible:!cartproduct.product.chilled
 						}"
 						ng-click="alcoholCart.updateChilledStatus(cartproduct._id,type)">
 						<span>Chilled</span>
@@ -129,10 +128,14 @@
 
 						
 						<div ng-repeat="(key, packageItem) in package.original.packageItems" ng-if="package.original.type==1">
-							<span class="orhistry2_td2proctext2" >{{packageItem.title}} - </span> 
-							<span class="orhistry2_td2proctext2" ng-if="packageproduct.cartquantity" ng-repeat="packageproduct in packageItem.products">
-								{{packageproduct.cartquantity}}x {{packageproduct.name}}
-							</span>
+							
+							<span class="orhistry2_td2proctext2" >{{packageItem.title}} - </span>
+							<div class="package-group-products dis-inline">
+								<span class="orhistry2_td2proctext2" ng-if="packageproduct.cartquantity" ng-repeat="packageproduct in packageItem.products">
+									{{packageproduct.cartquantity}}x {{packageproduct.name}}
+								</span>
+							</div>
+
 						</div>
 
 						<div ng-repeat="(key, packageItem) in package.original.packageItems" ng-if="package.original.type==2">
@@ -489,8 +492,8 @@
 		</span>
 
 	</div>
-<!--  ng-if="false"  -->
-	<div class="checkouterexprienceouter pos-realtive" ng-show="cart.delivery.type==0" ng-class="{'disabled':alcoholCart.expressDisable}">
+
+	<div ng-if="true" class="checkouterexprienceouter pos-realtive" ng-show="cart.delivery.type==0" ng-class="{'disabled':alcoholCart.expressDisable}">
 		<span id="express-disable-note">Express delivery is not available if cart contain any gift packaging product</span>
 
 		<div class="checkouterexpressdivleft checkbox-gray-top-first">

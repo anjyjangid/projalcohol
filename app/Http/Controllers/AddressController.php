@@ -66,8 +66,9 @@ class AddressController extends Controller
 		}
 
 		$admin = Auth::user('admin');
+
 		if(!empty($admin) && !empty($id)) {
-			$user = User::find($id);
+			$user = User::find($id);			
 		}
 		else {
 			$loggeduser = Auth::user('user');

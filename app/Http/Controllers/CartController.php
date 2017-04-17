@@ -744,83 +744,82 @@ class CartController extends Controller
 
 	}
 
+	// public function putCreditCertificate(Request $request, $cartKey) {
 
-	public function putCreditCertificate(Request $request, $cartKey) {
+	// 	$user = Auth::user('user');
 
-		$user = Auth::user('user');
+	// 	$inputs = $request->all();
+	// 	$value = $inputs['id'];
+	// 	$cart = Cart::find($cartKey);
+
+	// 	$CreditsObj = new Credits;
+	// 	$result = $CreditsObj->getCredit($value);
+
+	// 	if($result->success === false){
+	// 		return response(["message"=>"Card not found"],400);
+	// 	}
+
+	// 	$card = $result->card;
+
+	// 	$loyaltyAvailable = $this->getLoyaltyAvailable($cart); // LOYALTY POINTS AVAILABLE BEFORE ADD NEW PRODUCT
+
+	// 	if($loyaltyAvailable===false || $loyaltyAvailable<0){
+
+	// 		$cart->removeAllLoyaltyProduct();			
+	// 		$cart->save();
+	// 		return response(["message"=>"There is some thing wrong with loyalty products, Resetting loyalty products in cart","action"=>'refresh'],400);
+
+	// 	}
+
+	// 	$loyaltyCards = $cart->getLoyaltyCards();
+
+	// 	$change = $inputs['quantity'];
+	// 	$alreadyInCartQty = 0;
+	// 	if(isset($loyaltyCards[$value])){
+
+	// 		$alreadyInCartQty = $loyaltyCards[$value]['quantity'];
+	// 		$change = $inputs['quantity'] - $alreadyInCartQty;
+	// 	}
 		
-		$inputs = $request->all();
-		$value = $inputs['id'];
-		$cart = Cart::find($cartKey);
+	// 	if($change>0){
 
-		$CreditsObj = new Credits;
-		$result = $CreditsObj->getCredit($value);
-
-		if($result->success === false){
-			return response(["message"=>"Card not found"],400);
-		}
-
-		$card = $result->card;
-
-		$loyaltyAvailable = $this->getLoyaltyAvailable($cart); // LOYALTY POINTS AVAILABLE BEFORE ADD NEW PRODUCT
-
-		if($loyaltyAvailable===false || $loyaltyAvailable<0){
-
-			$cart->removeAllLoyaltyProduct();			
-			$cart->save();
-			return response(["message"=>"There is some thing wrong with loyalty products, Resetting loyalty products in cart","action"=>'refresh'],400);
-
-		}
-
-		$loyaltyCards = $cart->getLoyaltyCards();
-
-		$change = $inputs['quantity'];
-		$alreadyInCartQty = 0;
-		if(isset($loyaltyCards[$value])){
-
-			$alreadyInCartQty = $loyaltyCards[$value]['quantity'];
-			$change = $inputs['quantity'] - $alreadyInCartQty;
-		}
-		
-		if($change>0){
-
-			$ableToadd = floor($loyaltyAvailable/$card['loyalty']);
+	// 		$ableToadd = floor($loyaltyAvailable/$card['loyalty']);
 			
-			if($ableToadd < $change){
-				$change = $ableToadd;
-			}
+	// 		if($ableToadd < $change){
+	// 			$change = $ableToadd;
+	// 		}
 
-			if($change == 0){
+	// 		if($change == 0){
 
-				return response(["message"=>"In sufficient points",'quantity'=>$alreadyInCartQty],400);
+	// 			return response(["message"=>"In sufficient points",'quantity'=>$alreadyInCartQty],400);
 
-			}
+	// 		}
 
-			$inputs['quantity'] = $change + $alreadyInCartQty;
-		}
+	// 		$inputs['quantity'] = $change + $alreadyInCartQty;
+	// 	}
 
-		$loyaltyCards[$value] = [
-			'quantity'=>$inputs['quantity'],
-			'points'=> $card['loyalty']
-		];
+	// 	$loyaltyCards[$value] = [
+	// 		'quantity'=>$inputs['quantity'],
+	// 		'points'=> $card['loyalty']
+	// 	];
 
-		try{
+	// 	try{
 
 
-			$cart->__set("loyaltyCards",$loyaltyCards);
+	// 		$cart->__set("loyaltyCards",$loyaltyCards);
 
-			$cart->save();			
+	// 		$cart->save();			
 
-			return response(["message"=>"Credit added successfully",'change'=>$change,'card'=>$loyaltyCards[$value]],200);
+	// 		return response(["message"=>"Credit added successfully",'change'=>$change,'card'=>$loyaltyCards[$value]],200);
 
-		}catch(\Exception $e){
+	// 	}catch(\Exception $e){
 
-			Log::warning($e->getMessage());
-			return response(["message"=>"Something went wrong"],400);			
+	// 		Log::warning($e->getMessage());
+	// 		return response(["message"=>"Something went wrong"],400);			
 
-		}	
+	// 	}	
 
-	}
+	// }
 
 	private function getLoyaltyAvailable($cart){
 
@@ -1881,6 +1880,7 @@ class CartController extends Controller
 
 			//CHECK FOR PAYMENT RESULT
 			if($request->isMethod('get') && $cartArr['payment']['method'] == 'CARD'){
+
 				$rdata = $request->all();
 				//VALIDATE RESPONSE SO IT IS VALID OR NOT
 				$payment = new Payment();				
@@ -1904,14 +1904,16 @@ class CartController extends Controller
 				}
 			}
 
-			
-
 			$defaultContact = true;
 			if(!isset($orderObj['delivery']['newDefault']) || $orderObj['delivery']['newDefault']!==true){
 				$defaultContact = false;
 			}
-			$userObj->setContact($orderObj['delivery']['contact'],$orderObj['delivery']['country_code'],$defaultContact);
 			
+			if(isset($orderObj['delivery']['contact'])){
+				$orderObj['delivery']['country_code'] = isset($orderObj['delivery']['country_code'])?$orderObj['delivery']['country_code']:65;
+				$userObj->setContact($orderObj['delivery']['contact'],$orderObj['delivery']['country_code'],$defaultContact);
+			}
+
 			//CREATE ORDER FROM CART & REMOVE CART
 			$order = Orders::create($orderObj);
 
@@ -2867,21 +2869,21 @@ class CartController extends Controller
 
 			}
 
-			if(isset($order->creditsFromLoyalty) && $order->creditsFromLoyalty>0){
+			// if(isset($order->creditsFromLoyalty) && $order->creditsFromLoyalty>0){
 
-				$creditsFromLoyalty = $order['creditsFromLoyalty'];
+			// 	$creditsFromLoyalty = $order['creditsFromLoyalty'];
 				
-				$creditObj = [
-								"credit"=>$creditsFromLoyalty,
-								"method"=>"order",
-								"reference" => $reference,
-								"user" => new mongoId($user->_id),
-								"comment"=> "You have earned this credits in exchange of loyalty points"
-							];
+			// 	$creditObj = [
+			// 					"credit"=>$creditsFromLoyalty,
+			// 					"method"=>"order",
+			// 					"reference" => $reference,
+			// 					"user" => new mongoId($user->_id),
+			// 					"comment"=> "You have earned this credits in exchange of loyalty points"
+			// 				];
 				
-				CreditTransactions::transaction('credit',$creditObj,$userObj);
+			// 	CreditTransactions::transaction('credit',$creditObj,$userObj);
 
-			}
+			// }
 
 			if($order['loyaltyPointUsed']>0){
 

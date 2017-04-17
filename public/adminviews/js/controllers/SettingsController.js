@@ -120,3 +120,26 @@ MetronicApp.controller('SettingPrinterController',['$rootScope', '$scope', '$tim
 	}
 
 }]);
+
+MetronicApp.controller('SettingHomeBannerController',
+	['$rootScope', '$scope', '$timeout','$http','$state','settingsModel', 
+	function($rootScope, $scope, $timeout,$http,$state,settingsModel){
+
+		// get saved data
+		settingsModel.getSettings($state.$current.data.key).success(function(response){
+			$scope.bannerSettings = response.settings;
+		});
+
+		$scope.update = function(){
+			var data = $scope.bannerSettings;
+			$scope.errors = {};
+
+			//POST DATA WITH FILES
+			settingsModel.updateHomeBanner($state.$current.data.key,data).success(function(response){
+				$scope.errors = {};
+			}).error(function(data, status, headers){
+				$scope.errors = data;
+			});
+		}
+
+}]);

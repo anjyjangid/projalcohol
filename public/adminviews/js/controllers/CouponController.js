@@ -226,3 +226,42 @@ MetronicApp.controller('CouponAddController',['$rootScope','$scope','$http','$st
 	}
 
 }]);
+
+MetronicApp.controller('CouponDetailController',['$scope','$stateParams','couponModel', function($scope,$stateParams,couponModel) {
+	
+	couponModel.getCoupon($stateParams.couponId).then(
+			function (response) {
+
+				var couponData = response.data;
+
+				// if(couponData.saleProductDetail){
+				// 	couponData.saleProductId = couponData.saleProductDetail.map(function(prod){
+				// 		return prod._id.$id;
+				// 	})
+				// }
+
+				// if(couponData.saleCategoryDetail){
+				// 	couponData.saleCategoryId = couponData.saleCategoryDetail.map(function(cat){
+				// 		return cat._id.$id;
+				// 	})
+				// }
+
+				$scope.coupon = couponData;
+				console.log($scope.coupon);
+
+			},
+			function (errRes) {
+
+				Metronic.alert({
+					type: 'danger',
+					icon: 'warning',
+					message: 'Coupon not found',
+					container: '#main-container.portlet-body',
+					place: 'prepend',
+					closeInSeconds: 3
+				});	
+
+			}
+		);
+
+}]);

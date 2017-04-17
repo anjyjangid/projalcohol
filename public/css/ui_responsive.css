@@ -2872,6 +2872,47 @@ md-toast.notify div.md-toast-content{
 	min-height: auto;
 }
 
+
+
+
+.announcement-container span {
+    max-width: 78%;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: left;
+    padding: 0 10px;
+}
+
+.announcement-container img {
+    max-height: 42px;
+}
+
+.announcement-container {
+    position: static;
+    top: 0;
+    height: auto;
+}
+
+
+.announcement-enable-wrapper .announcement-bar a {
+    display: table-cell;
+    text-align: center;
+    width: 100%;
+    float: none;
+    height: 60px;
+    vertical-align: middle;
+}
+
+
+.outer {
+    display: inline-block;
+}
+
+.announcement-enable-wrapper .announcement-bar{
+	padding: 0;
+}
+
+
 }
 
 @media only screen and (max-width : 767px) {
@@ -4585,12 +4626,53 @@ md-toast.notify div.md-toast-content{
 
 
 
+.announcement-container span {
+    max-width: 78%;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: left;
+    padding: 0 4px;
+    font-style: 13px;
+}
+
+.announcement-container img {
+    max-height: 42px;
+}
+
+.announcement-container {
+    position: static;
+    top: 0;
+    height: auto;
+}
+
+
+.announcement-enable-wrapper .announcement-bar a {
+    display: table-cell;
+    text-align: center;
+    width: 100%;
+    float: none;
+    height: 60px;
+    vertical-align: middle;
+}
+
+
+.outer {
+    display: inline-block;
+}
+
+.announcement-enable-wrapper .announcement-bar{
+	padding: 0;
+}
+
+
+
 }
 
 @media only screen and (width : 640px) {
   .alcohal_addadress_headertitle {
 	  font-size: 23px
   }
+
 }
 
 @media only screen and (max-width : 639px){
@@ -4617,6 +4699,7 @@ md-tooltip{
 md-content.globalsearch md-autocomplete {
     width: 90% !important;
 }
+
 }
 
 @media only screen and (max-width : 479px) {
@@ -5563,6 +5646,7 @@ top: -1px;
 .wislistborbtm td:nth-child(4) {
     width: 9%;
 }
+
 }
 
 @media only screen and (max-width : 479px) {
