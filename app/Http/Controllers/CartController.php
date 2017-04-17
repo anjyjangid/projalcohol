@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 use AlcoholDelivery\Http\Controllers\Controller;
 use AlcoholDelivery\Cart;
+use AlcoholDelivery\DeviceConfigurations;
 use Illuminate\Support\Facades\Auth;
 use AlcoholDelivery\Products;
 use AlcoholDelivery\Packages;
@@ -1830,18 +1831,31 @@ class CartController extends Controller
 		return response(["success"=>false,"message"=>"Something went wrong"],400);
 	}
 
-	public function confirmorder(Request $request,$cartKey = null){
-		
+	public function confirmorder(Request $request,$cartKey=null,$isDeviceCODOrder=false,$userId=null){
+
 		$user = Auth::user('user');
-		
-		$userObj = User::find($user->_id);
+
+		// if its device order
+		if($request->isMethod('get') && empty($user) && !empty($request->get('merchant_data3'))){
+			$user = new stdClass;
+			$user->_id = $user_id = $request->get('merchant_data2');
+			// $this->logtofile($request->all());
+		}else if(empty($user) && $isDeviceCODOrder && $userId!=null){
+			$user = new stdClass;
+			$user->_id = $user_id = $userId;
+		}else{
+			$user_id = "";
+		}
+
+		$userObj = User::find($user->_id); // get user object
+		$user->email = strtolower($userObj->email);
 
 		//$cart = Cart::where("_id","=",$cartKey)->where("freeze",true)->first();
 
 		if($cartKey == null)
 			$cartKey = $request->get('merchant_data1');
-		
-		$cart = Cart::findUpdated($cartKey);
+
+		$cart = Cart::findUpdated($cartKey,'',$user_id);
 
 		$isValidate = $cart->validate();
 
@@ -1856,20 +1870,27 @@ class CartController extends Controller
 		}
 
 		if(empty($cart)){
-			if($request->isMethod('get'))
-				return redirect('/');	
-			else	
+			if($request->isMethod('get')){
+				if(!empty($request->get('merchant_data3'))) {
+					return response(["success"=>false,"message"=>"cart not found"],405); //405 => method not allowed
+				}else{
+					return redirect('/');	
+				}				
+			}
+			else{
 				return response(["success"=>false,"message"=>"cart not found"],405); //405 => method not allowed
+			}
 		}
 
 		$cartArr = $cart->toArray();
 
 		$cartArr['user'] = new MongoId($user->_id);		
 
-		try {	
-
+		try {
+			// $interface (wi=>1,eci=>2,bi=>3,device=>4,mobile=>5,pos=>6) // define order placed from which interface
+			$interface = (!empty($request->get('merchant_data3')) || $isDeviceCODOrder)?4:1;
 			//FORMAT CART TO ORDER
-			$orderObj = $cart->cartToOrder($cartKey);		
+			$orderObj = $cart->cartToOrder($cartKey,$interface);
 			$cartArr['payment']['total'] = $orderObj['payment']['total'];
 			//PREPARE PAYMENT FORM DATA
 			if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){
@@ -1900,7 +1921,12 @@ class CartController extends Controller
 				$this->logtofile($rdata);
 
 				if($failed){
-					return redirect('/cart/payment');
+					// if order from device
+					if($request->isMethod('get') && !empty($request->get('merchant_data3'))){
+						return redirect('/device/payment/'.(string)$cartArr['deviceConfiguration']);
+					}else{
+						return redirect('/cart/payment');
+					}
 				}
 			}
 
@@ -1908,7 +1934,7 @@ class CartController extends Controller
 			if(!isset($orderObj['delivery']['newDefault']) || $orderObj['delivery']['newDefault']!==true){
 				$defaultContact = false;
 			}
-			
+
 			if(isset($orderObj['delivery']['contact'])){
 				$orderObj['delivery']['country_code'] = isset($orderObj['delivery']['country_code'])?$orderObj['delivery']['country_code']:65;
 				$userObj->setContact($orderObj['delivery']['contact'],$orderObj['delivery']['country_code'],$defaultContact);
@@ -2021,7 +2047,11 @@ class CartController extends Controller
             $order->placed();
 
 			if($request->isMethod('get')){
-				return redirect('/orderplaced/'.$order['_id']);
+				if($order->interface==4){ // Order by Device
+					return redirect('/device/orderplaced/'.$order['_id']);
+				}else{
+					return redirect('/orderplaced/'.$order['_id']);
+				}
 			}
 
 			return response(array("success"=>true,"message"=>"Order Placed Successfully","order"=>$order['_id']));
@@ -2436,13 +2466,34 @@ class CartController extends Controller
 		
 		$userLogged = Auth::user('user');		
 
-		$params = Orders::where("user",new mongoId($userLogged->_id))->whereNotNull("products")->orderBy("created_at","desc")->first(["products._id","products.quantity.chilled","products.quantity.nonChilled"]);
+		$orderId = $request->get('orderId');
+		if(!empty($orderId)){
+			$params = Orders::where("_id",new mongoId($orderId))->whereNotNull("products")->first(["products._id","products.quantity.chilled","products.quantity.nonChilled"]);
+		}else{
+			$params = Orders::where("user",new mongoId($userLogged->_id))->whereNotNull("products")->orderBy("created_at","desc")->first(["products._id","products.quantity.chilled","products.quantity.nonChilled"]);
+		}
+
+		if(empty($params)){
+			return response(['refresh' => true],412);
+		}
 
 		$cartKey = $request->get('cartKey');
-		
-		$cart = Cart::find($cartKey);
 
-		$cartProducts = $cart->products;
+		if(!empty($orderId)){
+			$cart = Cart::destroy($cartKey);
+			$cart = new Cart;
+			$cart = $cart->generate();
+			if($cart->success){
+				$cartKey = $cart->cart['_id'];
+				$request->session()->put('deliverykey', $cartKey);
+			}else{
+				return response(['refresh' => true],412);
+			}
+		}else{
+			$cart = Cart::find($cartKey);
+		}
+
+		$cartProducts = isset($cart->products)?$cart->products:"";
 
 		if(isset($params['products']) && is_array($params['products'])){
 			
@@ -3244,6 +3295,246 @@ class CartController extends Controller
         return $img;
     }
 
+    // SAVE DEVICE CONFIGURATION
+    public function deviceConfiguration(Request $request){
 
+		$user = Auth::user('user');
+		$userObj = User::find($user->_id);
+
+		$deviceId = $request->get('deviceId');
+		$cartKey = $request->get('cartKey');
+		$cart = Cart::findUpdated($cartKey);
+		if(empty($cart)){
+			return response(["success"=>false,"message"=>"cart not found"],405); //405 => method not allowed
+		}
+
+		$isValidate = $cart->validate();
+		if($isValidate['valid']===false){
+			return response($isValidate,400);
+		}
+
+		// Add device id
+		$cart->device = ['id'=>$deviceId];
+
+		$cartArr = $cart->toArray();
+
+		try {
+
+			$defaultContact = true;
+			if(!isset($cartArr['delivery']['newDefault']) || $cartArr['delivery']['newDefault']!==true){
+				$defaultContact = false;
+			}
+			$userObj->setContact($cartArr['delivery']['contact'],$defaultContact);
+
+			$isDeviceConfigExist = DeviceConfigurations::where('user',new MongoId($user->_id))->where('device.id',$deviceId)->first();
+			if(!empty($isDeviceConfigExist)){
+				// If device config exist for device and user then delete that and create new
+				$isDeviceConfigExist->delete();
+			}
+
+			// SAVE DEVICE CONFIGURATION DETAILS IN TABLE
+			$deviceConfigure = DeviceConfigurations::create($cartArr);
+			// Update user id
+			$deviceConfigure->user = new MongoId($user->_id);
+			$deviceConfigure->save();
+
+			// CLEAR CART
+			$cart->delete();
+
+			$request->session()->forget('deliverykey');
+			
+			//SAVE CARD IF USER CHECKED SAVE CARD FOR FUTURE PAYMENTS
+			if($cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['card'] == 'newcard' && $cartArr['payment']['savecard']){
+				$cardInfo = $cartArr['payment']['creditCard'];
+		        $userObj->push('savedCards',$cardInfo,true);
+			}
+
+			return response(array("success"=>true,"message"=>"Device Configured Successfully","deviceConfigure"=>$deviceConfigure['_id']));
+
+		} catch(\Exception $e){
+
+				ErrorLog::create('emergency',[
+					'error'=>$e,
+					'message'=> 'device configure error'
+				]);
+		}
+
+		return response(["message"=>'Something went wrong'],400);	
+	}
+
+	public function deviceOrder(Request $request, $deviceConfigurationId=null){
+		// get data sent by device
+		$deviceId = $request->get('did');
+		$deviceType = $request->get('deviceType');
+		$deviceMacAddress = $request->get('dmac'); // Device physical address(Hexadecimal BCD)
+		$userId = $request->get('userMarking');
+		// $orderId = $request->get('orderMarking');
+		$orderButtonType = $request->get('orderButton'); // 0:not choose 1：single press(place order) 2：long press
+		$callButtonType = $request->get('callButton'); // 0:not choose 1：single press(call customer service) 2：Long press(cancel order)
+
+		// 1：single press(place order)
+		if(!empty($deviceConfigurationId) || ($orderButtonType==1 && !empty($deviceId) && !empty($userId))){
+			// check that request from device or payment request
+			if(!empty($deviceConfigurationId)){
+				$deviceConfig = DeviceConfigurations::where('_id',new MongoId($deviceConfigurationId))->first();
+				$userObj = User::find($deviceConfig->user);
+			}else{
+				$userObj = User::find($userId);
+				$deviceConfig = DeviceConfigurations::where('user',new MongoId($userId))->where('device.id',$deviceId)->first();
+			}
+
+			if(empty($deviceConfig)){
+				return response(["success"=>false,"message"=>"Data not found"],405); //405 => method not allowed
+			}
+
+			$userId = $userObj->_id; // get user id
+
+			$deviceConfigArr = $deviceConfig->toArray();
+
+			// CHECK IF CART IS ALREADY CREATED FROM THIS DEVICE CONFIGURATION THEN REMOVE OLD CART
+			// get cart from deviceConfigurationId
+			$cartObj = Cart::where("deviceConfiguration","=",new MongoId($deviceConfigArr['_id']))->first();
+			if(!empty($cartObj)){
+				// Remove Old Cart Created From This Device Configuration
+				$cartObj->delete();
+			}
+
+			// SAVE DEVICE CONFIGURATION TO CART
+			$cart = Cart::create($deviceConfigArr);
+			$cartKey = $cart->_id;
+			$cart->user = new MongoId($userId);
+			$cart->deviceConfiguration = new MongoId($deviceConfigArr['_id']);
+
+			// if payment using new card
+			$card = $request->get('card');
+			$saveCard = $request->get('savecard');
+			$creditCard = $request->get('creditCard');
+			$cardTokenId = $creditCard['token_id'];
+			$cardType = $creditCard['type'];
+			$cardCvc = $creditCard['cvc'];
+
+			if(!empty($deviceConfigurationId) && !empty($cardTokenId)){
+				$cart->__set('payment.card',$card);
+				$cart->__set('payment.savecard',$saveCard);
+				$cart->__set('payment.creditCard.token_id',$cardTokenId);
+				$cart->__set('payment.creditCard.type',$cardType);
+				$cart->__set('payment.creditCard.cvc',$cardCvc);
+			}
+
+			//SET CART REFERENCE FOR ORDER ID
+			$cart->setReference();
+			
+			// save config data in cart
+			$cart->save();
+
+			$isValidate = $cart->validate();
+			if($isValidate['valid']===false){
+				return response($isValidate,400);
+			}
+
+			$cartArr = $cart->toArray();
+			$cartArr['user'] = new MongoId($cartArr['user']);
+
+			try {
+				//PREPARE PAYMENT FORM DATA
+				if(!empty($deviceConfigurationId) && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){
+					$payment = new Payment();
+					$paymentres = $payment->prepareform($cartArr,$userObj,'',true);
+					return response($paymentres,200);
+				}
+
+				// DEVICE BUTTON WORK
+				if($cartArr['payment']['method']=="COD"){
+					$responseObj = $this->confirmorder($request,$cartArr['_id'],true,(string)$cartArr['user']);
+					$response = $responseObj->getOriginalContent();
+					
+					if($response['success']){
+						return redirect('/device/orderplaced/'.$response['order']);
+					}else{
+						return response(["message"=>'Order failed!'],400);
+					}
+				}elseif($cartArr['payment']['method']=="CARD") {
+					// return device payment url so user can done payment using this URL
+					return response(["url"=>url("device/payment/".$deviceConfig->_id)],200);
+				}
+				
+				return response(["message"=>'Invalid payment option!'],400);
+
+			}catch(\Exception $e){
+				ErrorLog::create('emergency',[
+					'error'=>$e,
+					'message'=> 'Device Order'
+				]);
+			}
+
+			return response(["message"=>'Something went wrong'],400);
+		}
+	}
+
+	/**
+	 * Do The Payment When User Order Using Device And Make A Payment By Credit Card
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	*/
+	public function getConfiguredCard($id){
+		if(MongoId::isValid($id)){
+			$deviceConfiguration = DeviceConfigurations::where("_id","=",new MongoId($id))->first();
+			// echo "<pre>"; print_r($deviceConfiguration); echo "</pre>"; exit;
+			if(!empty($deviceConfiguration)){
+				// get cart from deviceConfigurationId
+				$cartObj = Cart::where("deviceConfiguration","=",new MongoId($deviceConfiguration->_id))->first();
+				if(!empty($cartObj)){
+					$cartPament = !empty($cartObj->payment['paymentres'])?$cartObj->payment['paymentres']:'';
+					$deviceConfigurationArr = $deviceConfiguration->toArray();
+					// echo "<pre>"; print_r($deviceConfigurationArr); echo "</pre>"; exit;
+					$cardTokenId = isset($deviceConfigurationArr['payment']['creditCard']['token_id'])?$deviceConfigurationArr['payment']['creditCard']['token_id']:"";
+					$cardType = isset($deviceConfigurationArr['payment']['creditCard']['type'])?$deviceConfigurationArr['payment']['creditCard']['type']:"";
+					// echo $cardTokenId."<br>".$cardType; exit;
+					if(!empty($cardTokenId) && !empty($cardType)){
+						// check that configured card available in user saved cards.
+						$userId = $deviceConfigurationArr['user'];
+
+						$where = ['_id'=>new MongoId($userId), 'savedCards.token_id'=>$cardTokenId, 'savedCards.type'=>$cardType];
+						$userCard = User::where($where)->first();
+						// echo "<pre>"; print_r($userCard); echo "</pre>"; exit;
+
+						if(!empty($userCard)){
+							$savedCardArray = array(
+								"token_id"=>$cardTokenId,
+								"type"=>$cardType
+							);
+
+							return response(['success'=>true, "card_found"=>1, "cards"=>$savedCardArray, "cart"=>$cartPament, "user"=>$userId],200);
+						}else{
+							// get all saved card of the User
+							$where = ['_id'=>new MongoId($userId)];
+							$savedUserCards = User::where($where)->select('savedCards')->first();
+							$savedCardArray = array();
+							foreach($savedUserCards['savedCards'] as $key=>$value){
+								$savedCardArray[] = array(
+									"token_id"=>$value['token_id'],
+									"type"=>$value['type']
+								);
+							}
+
+							return response(['success'=>true, "card_found"=>0, "cards"=>$savedCardArray, "cart"=>$cartPament, "user"=>$userId],200);
+						}
+					}else{
+						$response['message'] = "Data not found";
+						return response($response,400);
+					}
+				}else{
+					return response(["message"=>"There is no cart linked with URL!"],400);
+				}
+			}else{
+				$response['message'] = "Data not found";
+				return response($response,400);
+			}
+		}else{
+			$response['message'] = "Bad Request";
+			return response($response,504);
+		}
+	}
 
 }

@@ -1,0 +1,22 @@
+<span>ENTER CCV/CVV CODE:</span>
+<table class="table wislistborbtm">
+    <tbody>
+        <tr class="ng-scope">
+            <td>
+                <div class="md-label">
+                    <div class="orhistry2_td2procdtcvr">
+                        <span ng:class="payment.creditCard.type" class="newcardicons"></span>
+                        <div class="checkouter-td-right-text">
+                            <div class="orhistry2_td2proctext1">{{payment.creditCard.token_id | creditcard}}</div>
+                            <div class="orhistry2_td2proctext2">{{payment.creditCard.type | creditcardname}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 10px;" aria-hidden="false" class="ng-show">
+                    CCV/CVV : 
+                    <input focus-me="paymentmode &amp;&amp; payment.creditCard" type="password" autocomplete="false" ng-model="payment.creditCard.cvc" size="4" class="ng-pristine ng-untouched ng-valid ng-empty" aria-invalid="false"> <img style="width:50px;" src="asset/i/security.png">
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>

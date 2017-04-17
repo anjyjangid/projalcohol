@@ -99,6 +99,16 @@ class AuthController extends Controller
 	public function postRegisterfb(Request $request)
 	{
 		$data = $request->all();
+
+		$validator = Validator::make($data, [
+			'email' => 'required|email',
+			'id' => 'required',
+		]);	
+
+		//IF data is not valid
+		if($validator->fails()){
+			return response($validator->errors(), 422);
+		}
 		
 		$name = $data['first_name'].' '.$data['last_name'];
 
