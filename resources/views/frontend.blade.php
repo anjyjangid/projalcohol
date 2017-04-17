@@ -78,7 +78,7 @@
 		<script async type="text/javascript" src="//www.googleadservices.com/pagead/conversion_async.js" charset="utf-8"></script>		
 		<!-- Google analytics -->
 		
-		<link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,700,800,500' rel='stylesheet' type='text/css'>
+		<!-- <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,700,800,500' rel='stylesheet' type='text/css'>
 			<link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
 		
 		<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/angular-material/angular-material.min.css') }}"/>
@@ -91,7 +91,7 @@
 	    <link rel="stylesheet" type="text/css" href="{{ asset('bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.min.css')}}">
 
 	    <link rel="stylesheet" type="text/css" href="css/jquery.bootstrap-touchspin.css">
-	    <!-- SWEET ALERT STYLE -->
+	    	    
 	    <link rel="stylesheet" type="text/css" href="{{ asset('bower_components/sweetalert2/dist/sweetalert2.css') }}"/>
 
 	    <link rel="stylesheet" type="text/css" href="css/common.css">
@@ -101,7 +101,7 @@
 	    <link rel="stylesheet" type="text/css" href="css/app.css">
 	    <link rel="stylesheet" type="text/css" href="{{ asset('bower_components/v-accordion/dist/v-accordion.css') }}">
 	    
-	    <link rel="stylesheet" type="text/css" href="css/simple-sidebar.css">
+	    <link rel="stylesheet" type="text/css" href="css/simple-sidebar.css"> -->
 	</head>
 
 	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}" ng-cloak>		    	    	
@@ -216,7 +216,7 @@
 			<link rel="stylesheet" href="css/all.css">			
 	    </noscript>
 		<script>
-	      /*var loadDeferredStyles = function() {
+	      var loadDeferredStyles = function() {
 	        var addStylesNode = document.getElementById("deferred");
 	        var replacement = document.createElement("div");
 	        replacement.innerHTML = addStylesNode.textContent;
@@ -226,7 +226,7 @@
 	      var raf = requestAnimationFrame || mozRequestAnimationFrame ||
 	          webkitRequestAnimationFrame || msRequestAnimationFrame;
 	      if (raf) raf(function() { window.setTimeout(loadDeferredStyles, 0); });
-	      else window.addEventListener('load', loadDeferredStyles);*/
+	      else window.addEventListener('load', loadDeferredStyles);
 	    </script>
 	</body>
 
