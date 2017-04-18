@@ -1,6 +1,12 @@
 <style type="text/css">
 	.header{
-		background: {{settings.bgImage}}
+		background: {{settings.homeBannerImage}}
+	}
+
+	@media(max-width:767px){
+		.header{
+			background: {{settings.homeBannerImageMobile}}
+		}
 	}
 </style>
 

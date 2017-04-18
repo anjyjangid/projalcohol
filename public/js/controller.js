@@ -118,11 +118,8 @@ AlcoholDelivery.controller('AppController', [
 
 	$http.get("/super/settings/").success(function(response){
 
-		if(window.innerWidth<'768'){
-			response.bgImage = "url(../homebanner/i/"+response.homeBanner.bannerImageMobile+") no-repeat center top";
-		}else{
-			response.bgImage = "url(../homebanner/i/"+response.homeBanner.bannerImage+") no-repeat center top";
-		}
+		response.homeBannerImage = "url(../homebanner/i/"+response.homeBanner.bannerImage+") no-repeat center top";
+		response.homeBannerImageMobile = "url(../homebanner/i/"+response.homeBanner.bannerImageMobile+") no-repeat center top";
 		
 		$rootScope.settings = response;
 
