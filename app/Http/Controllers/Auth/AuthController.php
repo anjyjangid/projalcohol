@@ -188,7 +188,7 @@ class AuthController extends Controller
 		$email = new Email('welcome');
 		$email->sendEmail($data);
 		
-		return response(array("success"=>true,"message"=>"Account created successfully"));
+		return array("success"=>true,"message"=>"Account created successfully");
 	}
 
 

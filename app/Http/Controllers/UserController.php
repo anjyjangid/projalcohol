@@ -185,9 +185,12 @@ class UserController extends Controller
 	{
 		$inputs = $request->all();
 		$user = Auth::user('user');
+		if(!$user){
+			$response['message'] = "Login Required";
+			return response($response,401);
+		}
 		// validation rules
 		$curruser = User::find($user->_id);
-		 
 
 		$inputs['old'] = '';
 
@@ -216,40 +219,34 @@ class UserController extends Controller
 		// if fb login then do not check current password //
 		if($curruser->password=="")
 		{
-			if ($validatorForFbLogin->fails()) {
-
+			if($validatorForFbLogin->fails()){
 				$return['message'] = "Please check form again";
 				$return['data'] = $validator->errors();
-
 				return response($return, 400);
 			}
 		}
 		else
 		{
-			if ($validator->fails()) {
-
+			if($validator->fails()){
 				$return['message'] = "Please check form again";
 				$return['data'] = $validator->errors();
-
 				return response($return, 400);
 			}
 		} 
 
 		$curruser->password = \Hash::make($request->input('new'));
 				
-		try {
-
+		try{
 			$curruser->save();
 
 			$return['success'] = true;
 			$return['message'] = "Your password has been updated successfully.";
-						
+
 		} catch(\Exception $e){
 			$return['message'] = "Something wrong";//$e->getMessage();            
 		}
 
 		return response($return);
-		
 	}
 	
 	/**
@@ -364,16 +361,21 @@ class UserController extends Controller
 			else
 				return response(['emails'=>'One or more of the email addresses are not valid.'],422);
 		}else{            
-			
+
 			$userLogged = Auth::user('user');
+			if(!$userLogged){
+				$response['message'] = "Login Required";
+				return response($response,401);
+			}
+
 			$username = (isset($userLogged->name))?$userLogged->name:$userLogged->email;
-			foreach ($emailsaddresses as $key => $emailaddress) {
-				if($emailaddress!=$userLogged->email){                
+			foreach ($emailsaddresses as $key => $emailaddress){
+				if($emailaddress!=$userLogged->email){
 					$data = [
 						'email' => strtolower($emailaddress),
 						'sender_name' => $username,
 						'sender_email' => $userLogged->email,
-						'id' => $userLogged->_id                 
+						'id' => $userLogged->_id
 					];
 					$email = new Email('invite');
 					$email->sendEmail($data);
@@ -399,15 +401,12 @@ class UserController extends Controller
 	}
 
 	public function getLastorder($reference=false){
-		
+
 		$return = ["message"=>"","auth"=>false];
 
 		$userLogged = Auth::user('user');
-
 		if(empty($userLogged)){
-			
 			$return['message'] = 'login required';
-
 			return response($return,401);
 		}
 
@@ -422,36 +421,30 @@ class UserController extends Controller
 							->whereNotNull("products");
 
 			if($reference){
-
 				$order = $order->where("reference",$reference);
 			}
-							
+
 			$order = $order->orderBy("created_at","desc")
 							->first(["products","updated_at","reference"]);
 
 			if(empty($order)){
-				return response(["message"=>"Order not found"],200);
+				return response(["success"=>false,"message"=>"Order not found","order"=>array()],200);
 			}
 
 			$order = $order->toArray();
-			
 
 			$products = $ordersModel->getProducts([$order],false);
 			$order = $ordersModel->mergeProducts([$order],$products);
-			
 			$order = $order[0];
 
 		} catch(\Exception $e){
 
 			$return['message'] = "Something wrong";//$e->getMessage();            
 			return response($order,400);
-
 		}
 
 		$return['order'] = $order;
-
 		return response($return,200);
-
 	}
 
 	/**
