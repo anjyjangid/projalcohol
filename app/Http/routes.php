@@ -375,6 +375,9 @@ Route::group(['prefix' => 'api'], function () {
 	Route::resource('gift', 'GiftController',['only'=>['show']]);
 	Route::controller('payment', 'PaymentController');
 
+	/*SOCIAL LOGINS APP API*/
+	Route::post('/signupfb', 'Auth\AuthController@signupfb');
+
 	
 
 });
