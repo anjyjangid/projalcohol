@@ -1848,3 +1848,20 @@ md-checkbox.md-focused .md-container:before{
     vertical-align: middle;
     padding: 3px;
 }
+
+.product-list-thumb {
+    position: relative;
+    padding-left: 80px;
+}
+
+.product-list-thumb img {
+    max-width: 70px;
+    max-height: 70px;
+    position: absolute;
+    left: 0;
+}
+
+.product-wishlist {
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+}

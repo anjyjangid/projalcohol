@@ -47,8 +47,8 @@ class UserController extends Controller
 		$rememberMe = $isMobileApi==1?true:false;
 
 		// if the credentials are wrong
-		if (!Auth::attempt('user',$credentials,$rememberMe)) {
-			$invalidcredentials = 'Username password does not match';            
+		if(!Auth::attempt('user',$credentials,$rememberMe)){
+			$invalidcredentials = 'Username password does not match';
 		}
 
 		$user = Auth::user('user');
@@ -56,7 +56,7 @@ class UserController extends Controller
 		//ACCOUNT SUSPENDED BY ADMIN
 		if($user && ($user->status!=1 && $user->verified==1)){
 			$suspended = 'Your account has been suspended by the site administrator.';			
-			Auth::logout();			
+			Auth::logout();
 			return response(['suspended' => $suspended], 422);
 		}
 
@@ -404,16 +404,41 @@ class UserController extends Controller
 
 	}
 
-	public function getLastorder($reference=false){
 
+	public function getLastorder($reference=false,$admin=false){
+		
 		$return = ["message"=>"","auth"=>false];
 
-		$userLogged = Auth::user('user');
-		if(empty($userLogged)){
-			$return['message'] = 'login required';
-			return response($return,401);
-		}
+		// if detail is not required by admin user
+		if(!$admin){
 
+			$userLogged = Auth::user('user');
+
+			if(empty($userLogged)){
+				
+				$return['message'] = 'login required';
+
+				return response($return,401);
+			}
+
+		}else{
+
+			$adminLogged = Auth::user('admin');
+
+			if(empty($adminLogged)){
+
+				$return['message'] = 'login required';
+
+				return response($return,401);
+
+			}else{
+
+				$userLogged = (object)['_id'=>$reference];
+				$reference = false;
+			}
+
+		}
+		
 		$return['auth'] = true;
 
 		try{
