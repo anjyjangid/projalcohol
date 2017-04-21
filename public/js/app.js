@@ -152,7 +152,6 @@ AlcoholDelivery.filter('pricingTxt', ['currencyFilter','$rootScope',function(cur
 }]);
 
 
-
 AlcoholDelivery.filter('truncate', function (){
   return function (text, length, end){
     if (text !== undefined){
@@ -617,7 +616,6 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 
 						// }
 				})
-
 				.state('mainLayout.index', {
 						url: "/",
 						"views" : {
@@ -632,7 +630,6 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 										$rootScope.$broadcast('showSignup');
 									};
 								}],
-
 							},
 							"testimonials" : {
 								templateUrl: "/templates/partials/testimonials.html",
@@ -935,13 +932,14 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				.state('orderplaced', {
 					url: "/orderplaced/{order}",
 					templateUrl: "/templates/orderconfirmation.html",
-					controller:"OrderplacedController",
+					controller:"OrderplacedController",					
 					resolve: {
 						loggedIn: [
 						'UserService',
 						function(UserService) {
 							return UserService.getIfUser(true, true);
 						}]
+
 					}
 
 				})
@@ -1131,7 +1129,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 								templateUrl : "/templates/partials/rightBarRecentOrder.html",
 								controller : "RepeatOrderController",
 
-							},							
+							},
 							// 'left' : {
 							// 	templateUrl : 'app/public/left.html',
 							// 	controller : 'DashboardController'

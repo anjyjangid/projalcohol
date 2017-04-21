@@ -386,8 +386,8 @@ class OrderController extends Controller
 
 	}
 
-	public function postOrders(Request $request, $filter = ''){
-		
+	public function postOrders(Request $request, $filter = ''){		
+
 		$params = $request->all();
 
 		extract($params);
@@ -441,7 +441,7 @@ class OrderController extends Controller
 			'localField'=>'user',
 			'foreignField'=>'_id',
 			'as'=>'consumer'
-		];
+		];		
 
 		$query[]['$unwind'] = [
 			'path' => '$consumer',
@@ -507,8 +507,6 @@ class OrderController extends Controller
 
 		$query[]['$sort'] = $sort;
 
-		//return response($query);
-
 		$model = Orders::raw()->aggregate($query);
 
 		$iTotalRecords = count($model['result']);
@@ -526,7 +524,7 @@ class OrderController extends Controller
 			'draw' => $draw,
 			'data' => $model['result'],
 			'filter' => $filter
-		];
+		];		
 
 		return response($response,200);		
 	}

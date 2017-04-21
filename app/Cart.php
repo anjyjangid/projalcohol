@@ -247,6 +247,7 @@ class Cart extends Moloquent
 
 				if(!empty($cart)){
 
+
 					if(empty($cart->user)){
 
 						$cart->user = new mongoId($user->_id);
@@ -290,13 +291,8 @@ class Cart extends Moloquent
 					"slug"=>"",
 					"slotslug"=>""
 				];
-
 			}
-
-
-		}
-
-		
+		}		
 
 		$services = Setting::where("_id","=","pricing")->get(['settings.express_delivery.value','settings.express_delivery.applicablePostalCodes','settings.cigratte_services.value','settings.non_chilled_delivery.value','settings.minimum_cart_value.value','settings.non_free_delivery.value','settings.tempsurcharge'])->first();
 
@@ -333,7 +329,8 @@ class Cart extends Moloquent
 		$cart->__set('discount', $cartDiscount);
 
 		try{
-			$cart->save();
+			
+			//$cart->save();
 			$cart->setWorkingHrs();
 			return $cart;
 

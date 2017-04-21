@@ -1055,3 +1055,13 @@ MetronicApp.directive('verifyUser', function(){
 		}
 	}
 });
+
+MetronicApp.directive('recentOrder',function(){
+	return {
+
+		restrict : 'A',
+		templateUrl : "/templates/partials/rightBarRecentOrder.html",
+		controller: "RepeatOrderController"
+
+	}
+});
