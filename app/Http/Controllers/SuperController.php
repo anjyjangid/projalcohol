@@ -141,7 +141,7 @@ class SuperController extends Controller
 
 		$user = Auth::user('user');
 		$status = $user?2:1;
-		$promotionalbanners = PromotionalBanners::where('status', '!=', $status)->get();
+		$promotionalbanners = PromotionalBanners::where('status', '!=', $status)->orderBy('displayorder', 'asc')->get();
 		
 		return response($promotionalbanners);
 	}

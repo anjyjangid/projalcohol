@@ -12,7 +12,23 @@
 
 <div class="responsive-blokimg">
 	<!-- <img class="img-responsive" style="margin:10px auto;" src="asset/i/mobilebanner.png"> -->
-	<img ng-repeat="promotionalbanner in promotionalbanners" class="img-responsive" style="margin:10px auto;" src="promotionalbanner/i/{{promotionalbanner.promotionalImageMobile}}">
+	<!-- <img ng-repeat="promotionalbanner in promotionalbanners" class="img-responsive" style="margin:10px auto;" src="promotionalbanner/i/{{promotionalbanner.promotionalImageMobile}}"> -->
+
+	<div ng-if="promotionalbanners.length">
+		<data-owl-carousel class="owl-carousel owl-theme" data-options="{
+			navigation : false,
+			pagination : true,
+			items : 1,
+			loop : false,
+			autoPlay : true,
+			autoPlayTimeout : 500,
+			autoPlayHoverPause : true	
+			}">
+			<div owl-carousel-item="" ng-repeat="promotionalbanner in promotionalbanners" class="item">
+				<img class="img-responsive" style="margin:10px auto;" src="promotionalbanner/i/{{promotionalbanner.promotionalImageMobile}}">
+			</div>
+		</data-owl-carousel>
+	</div>
 </div>
 
 <div class="combo_slider combo_sliderProduct" ng-cloak>

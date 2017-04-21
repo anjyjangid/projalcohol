@@ -2,8 +2,7 @@
     <div class="">        
         <md-radio-group ng-model="payment.card" ng:class="{'hideselector':!paymentmode}">
         <table class="table wislistborbtm" id="cardtable">
-            <tbody>
-                
+            <tbody>                
                 <tr ng-repeat="card in userdata.savedCards">
                     <td>
                         <md-radio-button value="{{card.token_id}}" ng-click="changeCard(card)" class="paymentselector">
@@ -105,8 +104,9 @@
                                         <button class="btn" type="submit"> Add </button> 
                                         <button class="btn" type="button" ng-click="payment.card = ''" > Cancel </button> 
                                     </div>
-                                    <div ng-show="paymentmode && !adminmode" class="col-md-12">
-                                        <md-checkbox ng-model="payment.savecard" aria-label="leaveatdoor-checkbox">
+
+                                    <div ng-show="paymentmode && (!adminmode || savecardfuture)" class="col-md-12">
+                                        <md-checkbox md-no-ink ng-model="payment.savecard" aria-label="leaveatdoor-checkbox">
                                             Save for future payments
                                         </md-checkbox>
                                     </div>
@@ -120,4 +120,4 @@
         </table>
         </md-radio-group>
     </div>
-</div>        
+</div>

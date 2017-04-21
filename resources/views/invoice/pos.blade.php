@@ -114,10 +114,10 @@
                       <td colspan="2">
                         <table width="100%" border="0" cellspacing="2" cellpadding="0">
                           <tr class="">
-                            <td align="left">QTY</td>
-                            <td>PRODUCT</td>
-                            <td align="right">UNIT</td>
-                            <td align="right">TOTAL</td>
+                            <td align="left" nowrap="nowrap">QTY</td>
+                            <td nowrap="nowrap">PRODUCT</td>
+                            <td align="right" nowrap="nowrap">UNIT</td>
+                            <td align="right" nowrap="nowrap">TOTAL</td>
                           </tr>
                           <tr valign="top">
                             <td></td>
@@ -132,7 +132,7 @@
 
                             ?>                             
                             <tr valign="top">
-                              <td align="left">
+                              <td align="left" nowrap="nowrap">
                                 <?php echo (!$isPackage)?$value['quantity']:'';?>
                               </td>
                               <td class="{{ $isPackage }}">
@@ -141,8 +141,8 @@
                                     <img src="{{ asset('img/snowflake.png') }}" width="16px">
                                   <?php }?>
                               </td>
-                              <td align="right"><?php echo (!$isPackage)?$value['unitPrice']:'';?></td>
-                              <td align="right"><?php echo formatPrice($value['total']);?></td>
+                              <td align="right" nowrap="nowrap"><?php echo (!$isPackage)?$value['unitPrice']:'';?></td>
+                              <td align="right" nowrap="nowrap"><?php echo formatPrice($value['total']);?></td>
                             </tr>
                             <?php if($isPackage){?>
                               <tr valign="top">
@@ -151,7 +151,7 @@
                                   <table cellpadding="0" cellspacing="0" border="0">
                                     <?php foreach($value['products'] as $packageProduct){?>
                                     <tr>
-                                      <td valign="top"><?php echo $packageProduct['quantity'];?></td>      
+                                      <td valign="top" nowrap="nowrap"><?php echo $packageProduct['quantity'];?></td>      
                                       <td valign="top"><?php echo $packageProduct['name'];?></td>
                                     </tr>
                                     <?php }?>                                    
@@ -165,12 +165,12 @@
                           </tr>
                           <tr>
                             <td align="left" colspan="3"><strong>Subtotal</strong></td>    
-                            <td align="right"><strong>{{ formatPrice($order['payment']['subtotal']) }}</strong></td>
+                            <td align="right" nowrap="nowrap"><strong>{{ formatPrice($order['payment']['subtotal']) }}</strong></td>
                           </tr>
                           <?php if(!$order['service']['delivery']['free']){?>
                           <tr>
                             <td align="left" colspan="3"><strong>Delivery Charge</strong></td>    
-                            <td align="right"><strong> {{ formatPrice($order['service']['delivery']['charges']) }} </strong></td>
+                            <td align="right" nowrap="nowrap"><strong> {{ formatPrice($order['service']['delivery']['charges']) }} </strong></td>
                           </tr>   
                           <?php } ?>                       
                           <?php if($order['service']['express']['status'] || $order['service']['smoke']['status']){
@@ -186,7 +186,7 @@
                             ?>
                             <tr>
                               <td align="left" colspan="3"><strong>Service Charge</strong></td>    
-                              <td align="right"><strong>{{ formatPrice($serviceChrg) }}</strong></td>
+                              <td align="right" nowrap="nowrap"><strong>{{ formatPrice($serviceChrg) }}</strong></td>
                             </tr>                          
                             <tr>
                               <td></td>
@@ -204,13 +204,13 @@
                           <?php if($order['discount']['nonchilled']['status']){?>
                           <tr>
                             <td align="left" colspan="3"><strong>Discount (Non-Chilled)</strong></td>    
-                            <td align="right"><strong>-{{ formatPrice($order['discount']['nonchilled']['exemption']) }}</strong></td>
+                            <td align="right" nowrap="nowrap"><strong>-{{ formatPrice($order['discount']['nonchilled']['exemption']) }}</strong></td>
                           </tr>                          
                           <?php }?>
                           <?php if(isset($order['payment']['totalValue']) && isset($order['discount']['coupon']) && $order['discount']['coupon']>0){?>
                           <tr>
                             <td align="left" colspan="3"><strong>Coupon Discount</strong></td>    
-                            <td align="right">
+                            <td align="right" nowrap="nowrap">
                               <?php if($order['payment']['totalValue'] < $order['discount']['coupon']){?>
                               <strong>-{{ formatPrice($order['payment']['totalValue'],0) }}</strong>
                               <?php }else{?>
@@ -225,7 +225,7 @@
                               <td align="left" colspan="3">
                                 <strong>10% PH Surcharge<!-- {{ $value['label'] }} --></strong>
                               </td>
-                              <td align="right">                                
+                              <td align="right" nowrap="nowrap">                                
                                 {{ formatPrice($value['value'],0) }}
                               </td>
                             </tr>                         
@@ -233,16 +233,16 @@
                           <?php }?>
                           <tr class="topborder">
                             <td align="left" valign="center" colspan="3"><strong>Total</strong></td>    
-                            <td align="right" valign="center"><h5 class="nomargin">{{ formatPrice($order['payment']['total'],0) }}</h5></td>
+                            <td align="right" valign="center" nowrap="nowrap"><h5 class="nomargin">{{ formatPrice($order['payment']['total'],0) }}</h5></td>
                           </tr>
                           
                           <tr class="bottomborder">
                             <td align="left" valign="center" colspan="3"><strong>Payment mode : {{ $paymode }}</strong></td>    
-                            <td align="right" valign="center"><h5 class="nomargin">{{ formatPrice($order['payment']['total'],0) }}</h5></td>
+                            <td align="right" valign="center" nowrap="nowrap"><h5 class="nomargin">{{ formatPrice($order['payment']['total'],0) }}</h5></td>
                           </tr>
                           <tr class="bottomborder">
                             <td align="left" valign="center" colspan="3"><strong>To Pay</strong></td>    
-                            <td align="right" valign="center">
+                            <td align="right" valign="center" nowrap="nowrap">
                               <h5 class="nomargin">
                                 <strong>${{ formatPrice($topay,0) }}</strong>
                               </h5>

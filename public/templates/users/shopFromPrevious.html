@@ -47,7 +47,7 @@
 		<div class="alcohal_orderhistory2bodytext2"> Delivered on: {{order.reference}} </div>
 		<div class="alcohal_ordehisty2selctboxcvr">
 			<!-- <input type="checkbox" class="orderhistysect_check" name="cc" id="b1"> -->
-			<md-checkbox ng-model="allSelected" ng-change="selectAll(allSelected)"> Select all</md-checkbox>
+			<md-checkbox md-no-ink ng-model="allSelected" ng-change="selectAll(allSelected)"> Select all</md-checkbox>
 		</div>
 		<div class="alcohal_ordehisty2selctblcvr">
         <div class="table-responsive">
@@ -70,7 +70,7 @@
 
 						<td>
 							<div class="cheklble">
-								<md-checkbox ng-model="product[type+'Selected']" ng-change="product[type+'Selected']?0:$parent.allSelected=false" aria-label="select product"></md-checkbox>			
+								<md-checkbox md-no-ink ng-model="product[type+'Selected']" ng-change="product[type+'Selected']?0:$parent.allSelected=false" aria-label="select product"></md-checkbox>			
 							</div>
 							
 						</td>

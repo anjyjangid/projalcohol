@@ -44,9 +44,9 @@ class AuthController extends Controller
 	 */
 	public function __construct()
 	{
-		
 		$this->user = "user";
-		$this->middleware('guest', ['except' => 'getLogout']);
+		// 'signupfb','postSocialverification' are used for mobile app api
+		$this->middleware('guest', ['except' => array('getLogout','signupfb','postSocialverification')]);
 	}
 
 	/**
@@ -99,6 +99,16 @@ class AuthController extends Controller
 	public function postRegisterfb(Request $request)
 	{
 		$data = $request->all();
+
+		$validator = Validator::make($data, [
+			'email' => 'required|email',
+			'id' => 'required',
+		]);	
+
+		//IF data is not valid
+		if($validator->fails()){
+			return response($validator->errors(), 422);
+		}
 		
 		$name = $data['first_name'].' '.$data['last_name'];
 
@@ -133,6 +143,15 @@ class AuthController extends Controller
 			Auth::login($user);
 		}
 		return response(Auth::user('user'),200);		
+	}
+
+	/**
+	 * Login & Signup with Facebook From API
+	 */
+	public function signupfb(Request $request){
+		$data = $request->all();
+		$data['providername'] = 'facebook';
+		return $this->socialLogin($data);
 	}
 
 	/**
@@ -178,7 +197,7 @@ class AuthController extends Controller
 		$email = new Email('welcome');
 		$email->sendEmail($data);
 		
-		return response(array("success"=>true,"message"=>"Account created successfully"));
+		return array("success"=>true,"message"=>"Account created successfully");
 	}
 
 
@@ -219,39 +238,39 @@ class AuthController extends Controller
 
 	}
 
-	protected function socialLogin($data){			
-		
+	protected function socialLogin($data){
+
 		if(!empty($data) && isset($data['id'])){
 			$data['id'] = (string)$data['id'];
-			$providerData = $this->providers($data['providername']);		    
+			$providerData = $this->providers($data['providername']);
 			$field = $providerData['field'];
 			$providername = $providerData['name'];
 
 			$id = $data['id'];
 			$email = (isset($data['email']) && $data['email']!='')?$data['email']:'';
 
-			$user = User::where($field, '=', $id)->orWhere('email',$email)->first();            
+			$user = User::where($field, '=', $id)->orWhere('email',$email)->first();
 
 			if($user){
 				if($user->status!=1){
-					$suspended = 'Your account has been suspended by the site administrator.';          
+					$suspended = 'Your account has been suspended by the site administrator.';
 					return response(['suspended' => $suspended],422);
 				}
 				$user->$field = $data['id'];
-				
+
 				if(!isset($user->name))
-					$user->name = $data['name'];   
-				
-				$user->verified = 1;   
-				$user->save();                
+					$user->name = $data['name'];
+
+				$user->verified = 1;
+				$user->save();
 			}elseif($email!=''){
 				$user = User::create([
-					'email' => $email,                    
+					'email' => $email,
 					'name' => $data['name'],
 					$field => $data['id'],
 					'status' => 1,
 					'verified' => 1
-				]);                
+				]);
 			}else{
 				Session::put('socialData',$data);
 				return response(['emailnotfound' => 'Hello '.$data['name'].', we could not find your email address from '.$providername.', please enter your email below to complete the registration process.'],422);
@@ -261,8 +280,7 @@ class AuthController extends Controller
 			return response(Auth::user('user'),200);
 		}else{
 			return response(['couldnotconnect' => 'We could not connect to '.$providername.', please try again.'],422);
-		}        			
-
+		}
 	}
 
 	/**

@@ -62,9 +62,9 @@ class PromotionalBannersController extends Controller
 
         extract($params);
 
-        $columns = ['_id','status','promotionalImage','promotionalImageMobile'];
+        $columns = ['_id','status','promotionalImage','promotionalImageMobile','displayorder'];
 
-        $project = ['status'=>1,'promotionalImage'=>1,'promotionalImageMobile'=>1];
+        $project = ['status'=>1,'promotionalImage'=>1,'promotionalImageMobile'=>1,'displayorder'=>1];
 
         $query = [];
 
@@ -145,6 +145,7 @@ class PromotionalBannersController extends Controller
 		
 		$promotionalBanners = new promotionalBanners;
 		$promotionalBanners->__set("status",(int)$inputs['status']);
+		$promotionalBanners->__set("displayorder",0);
 		$promotionalBanners->save();
 
 		if($request->hasFile('promotionalImage')){
@@ -258,6 +259,55 @@ class PromotionalBannersController extends Controller
 
 		return response(array("success"=>false,"message"=>"Something went wrong"));
         
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id){
+        try{
+    		$result = PromotionalBanners::where('_id', $id)->delete();
+        	return response(array("success"=>true,"message"=>"Record(s) Removed Successfully"));
+    	}catch(\Illuminate\Database\QueryException $e){
+    		return response(array($e,"success"=>false,"message"=>"There is some issue with deletion process"));
+    	}
+
+    	return response(array($e,"success"=>false,"message"=>"Please try again later!"));
+    }
+
+    /**
+     * Update the display order.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+    **/
+    public function postUpdatedisplayorder(Request $request){
+
+        $inputs = $request->all();
+
+		/*$promotionalBanners = new promotionalBanners;
+		$idArr = array();
+		$dataArr = array();*/
+
+		foreach($inputs as $key=>$value){
+			$promotionalBanners = PromotionalBanners::find($key);
+			$promotionalBanners->__set("displayorder",(int)$value);
+			$promotionalBanners->save();
+
+			/*$idArr[] = array("_id"=>new MongoId($key));
+			$dataArr[] = array('$set' => array("displayorder"=>(int)$value));*/
+		}
+
+		/*$options = array("multiple"=>true);
+		if($promotionalBanners->update($idArr,$dataArr,$options)){
+			return response(array("success"=>true,"message"=>"Display order updated successfully."));
+		}*/
+
+		return response(array("success"=>true,"message"=>"Display order updated successfully."));
     }
 
 }

@@ -64,7 +64,7 @@
               <input type="password" ng-model="signup.password_confirmation" class="alcohalrestertextbox form-control" placeholder="Confirm Password">
               <span class="help-block" ng-bind="signup.errors.password_confirmation[0]"></span> </div>
             <div class="registeremailcvr" ng-class="{'has-error':signup.errors.terms[0]}">
-              <md-checkbox ng-model="signup.terms" aria-label="leaveatdoor-checkbox" name="regis" id="regis" class="md-warn md-align-top-left">
+              <md-checkbox md-no-ink ng-model="signup.terms" aria-label="leaveatdoor-checkbox" name="regis" id="regis" class="md-warn md-align-top-left">
               <div class="register_checktext"> By submitting this form, I confirm that I have read and agree to Alcohol Delivery’s 
               <a ng-click="$event.stopPropagation();" ui-sref="cmsLayout.pages({slug:'terms-conditions'})" target="_blank">Terms of Use</a> and 
               <a ng-click="$event.stopPropagation();" target="_blank" ui-sref="cmsLayout.pages({slug:'privacy-policy'})">Privacy Policy</a> <span class="help-block" ng-bind="signup.errors.terms[0]"></span></div>

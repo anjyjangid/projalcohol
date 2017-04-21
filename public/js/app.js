@@ -16,7 +16,7 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	//'angularFblogin',
 	'ngPayments',
 	'infinite-scroll',
-	'satellizer',	
+	'satellizer',
 	//'ngTouch'
 ]).config(['$locationProvider','$mdThemingProvider','$authProvider',
 	function($location,$mdThemingProvider,$authProvider) {
@@ -99,56 +99,52 @@ AlcoholDelivery.filter("ucwords", function () {
 });
 
 AlcoholDelivery.filter('isActive', function() {
-		return function(obj, field, check) {
-
-			if(typeof check !== 'undefined'){
-				return obj[field]===check;
-			}
-
-			return true;
+	return function(obj, field, check){
+		if(typeof check !== 'undefined'){
+			return obj[field]===check;
 		}
+		return true;
+	}
 });
 
 
 AlcoholDelivery.filter('getProductThumb', function() {
-		return function(input) {
-
-			if(angular.isString(input)){
-				return input;
-			}
-
-			for(i=0;i<=input.length;i++){
-				if(input[i].coverimage==1){
-					return input[i].source;
-				}
-			}
-			return "product-default.jpg";
+	return function(input){
+		if(angular.isString(input)){
+			return input;
 		}
+
+		for(i=0;i<=input.length;i++){
+			if(input[i].coverimage==1){
+				return input[i].source;
+			}
+		}
+		return "product-default.jpg";
+	}
 });
 
 AlcoholDelivery.filter('freeTxt', function() {
-		return function(input) {
-			input = parseFloat(input);
-			return input>0?input:'FREE';
-		}
+	return function(input) {
+		input = parseFloat(input);
+		return input>0?input:'FREE';
+	}
 });
 
 AlcoholDelivery.filter('pricingTxt', ['currencyFilter','$rootScope',function(currencyFilter,$rootScope) {
 
-		return function(price,freeTxt) {
-
-			if(price === null || isNaN(price)){
-				price = 0;
-			}
-
-			price = parseFloat(price);
-
-			if(typeof freeTxt==='undefined'){
-				freeTxt = false;
-			}
-
-			return (price || freeTxt!==true)?currencyFilter(price,$rootScope.settings.general.currency,2):'FREE';
+	return function(price,freeTxt){
+		if(price === null || isNaN(price)){
+			price = 0;
 		}
+
+		price = parseFloat(price);
+
+		if(typeof freeTxt==='undefined'){
+			freeTxt = false;
+		}
+
+		return (price || freeTxt!==true)?currencyFilter(price,$rootScope.settings.general.currency,2):'FREE';
+	}
 }]);
 
 
@@ -289,19 +285,15 @@ AlcoholDelivery.service('appConfig', ['$interval','$http','$q',function($interva
     this.serverTime = "";
 
 	this.setServerTime = function(serverTimeInSec){
-
 		this.serverTime = serverTimeInSec;
 		var _self = this;
 		$interval(function(){			
 			_self.serverTime+= 10;
-		},10000);
-		
+		},10000);	
 	}
 
 	this.getServerTime = function(){
-
     	return this.serverTime;
-
     }
 
     this.setWorkingTime = function(fromT,toT) {
@@ -334,8 +326,6 @@ AlcoholDelivery.service('appConfig', ['$interval','$http','$q',function($interva
 				}
 			)
     	})
-		
-
     }
 
     this.getWorkingTime = function() {
@@ -345,7 +335,6 @@ AlcoholDelivery.service('appConfig', ['$interval','$http','$q',function($interva
     this.getWorkingTimeString = function() {
     	return this.workingTimeString;
     }
-
 
     this.isServerUnderWorkingTime = function(fromServer) {
     	
@@ -397,7 +386,6 @@ AlcoholDelivery.factory('catPricing', ["$q", "$timeout", "$rootScope", "$http", 
 
 		GetCategoryPricing: GetCategoryPricing,
 		categoryPricing : null
-
 	};
 
 }]);
@@ -417,14 +405,12 @@ AlcoholDelivery.factory('categoriesFac', ["$q", "$http", function($q, $http){
 		});
 
 		return d.promise;
-
 	};
 
 	return {
 
 		getCategories: getCategories,
 		categories : null
-
 	};
 
 }]);

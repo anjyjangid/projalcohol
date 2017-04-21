@@ -1,8 +1,10 @@
 'use strict';
 
 MetronicApp.controller('PromotionalBannersController',
-	['$rootScope', '$scope', '$timeout','$http',
-	function($rootScope, $scope, $timeout,$http){
+	['$rootScope', '$scope', '$timeout', '$http', 'sweetAlert','promotionalBannersModel',
+	function($rootScope, $scope, $timeout,$http, sweetAlert, promotionalBannersModel){
+
+		$scope.promotionalbanner = {};
 
 	    $scope.$on('$viewContentLoaded', function(){
 	        Metronic.initAjax(); // initialize core components
@@ -12,6 +14,21 @@ MetronicApp.controller('PromotionalBannersController',
 	    // set sidebar closed and body solid layout mode
 	    $rootScope.settings.layout.pageBodySolid = false;
 	    $rootScope.settings.layout.pageSidebarClosed = false;
+
+	    $scope.remove = function(tab,promotionalbannerId){
+			//POST IDs
+			promotionalBannersModel.removePromotionalBanner(promotionalbannerId);
+		}
+
+		$scope.updateDisplayOrder = function(){
+			var data = $scope.promotionalbanner;
+			//POST FORM DATA
+			promotionalBannersModel.updateDisplayOrder(data).success(function(response){
+
+			}).error(function(data, status, headers){
+				$scope.errors = data;
+			});
+		}
 }]);
 
 MetronicApp.controller('PromotionalBannersAddController',

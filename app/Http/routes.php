@@ -135,7 +135,7 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::resource('category', 'Admin\CategoryController',['only'=>['store','update']]);
 	Route::controller('category', 'Admin\CategoryController');
 
-	Route::resource('promotionalbanners', 'Admin\PromotionalBannersController',['only'=>['store','update']]);
+	Route::resource('promotionalbanners', 'Admin\PromotionalBannersController',['only'=>['store','update','destroy']]);
 	Route::controller('promotionalbanners', 'Admin\PromotionalBannersController');
 
 	Route::resource('setting', 'Admin\SettingController',['only'=>'update']);
@@ -223,6 +223,9 @@ Route::group(['prefix' => 'api'], function () {
 	Route::post('/auth/google', 'Auth\AuthController@google');
 
 
+	// Order Using Device
+	Route::post('deviceorder','CartController@deviceOrder');
+
 	Route::controller('/auth', 'Auth\AuthController');
 
 	Route::controller('/super', 'SuperController');
@@ -262,6 +265,8 @@ Route::group(['prefix' => 'api'], function () {
 		Route::controller('coupon', 'CouponController');
 		
 		Route::put('confirmorder/{cartKey}','CartController@confirmorder');
+
+		Route::post('deviceconfiguration','CartController@deviceConfiguration');
 		
 		Route::post('checkCoupon','CouponController@checkCoupon');
 
@@ -281,7 +286,9 @@ Route::group(['prefix' => 'api'], function () {
 		
 		Route::get('timeslots/{date}','CartController@getTimeslots');
 
-		Route::post('repeatlast','CartController@postRepeatlast');
+		Route::group(['middleware' => 'auth'], function () {
+			Route::post('repeatlast','CartController@postRepeatlast');
+		});
 
 		Route::put('bulk','CartController@putBulk');
 		
@@ -367,6 +374,9 @@ Route::group(['prefix' => 'api'], function () {
 	Route::resource('giftcategory', 'GiftCategoryController',['only'=>['index','show']]);
 	Route::resource('gift', 'GiftController',['only'=>['show']]);
 	Route::controller('payment', 'PaymentController');
+
+	/*SOCIAL LOGINS APP API*/
+	Route::post('/signupfb', 'Auth\AuthController@signupfb');
 
 	
 
@@ -803,6 +813,23 @@ Route::get('sitemap.xml', function(){
     // this will generate file mysitemap.xml to your public folder
 
 });
+
+//ROUTE FOR DEVICE PAYMENT MOBILEAPPEND
+Route::group(['prefix' => 'device'], function () {
+
+	Route::get('/order/summary/{id}','OrderController@getDeviceOrderSummary');
+
+	Route::any('{catchall}', function ( $page ) {
+	    return view('mobileappend');    
+	} )->where('catchall', '(.*)');
+
+	Route::get('/', function () {
+	    return view('mobileappend');
+	});
+});
+
+Route::get('cart/configuredCard/{deviceconfigid}','CartController@getConfiguredCard');
+Route::post('cart/deviceOrder/{deviceconfigid}','CartController@deviceOrder');
 
 //FINAL ROUTE FOR FRONTEND
 Route::any('{catchall}', function ( $page ) {

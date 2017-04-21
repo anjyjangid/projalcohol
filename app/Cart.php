@@ -231,11 +231,16 @@ class Cart extends Moloquent
 
 	}
 
-	public static function findUpdated($id,$admin = false){
-		
+	public static function findUpdated($id,$admin=false,$user_id=false){
+
 		if(!$admin){
 
 			$user = Auth::user('user');
+
+			if(empty($user) && $user_id){
+				$user = new stdClass;
+				$user->_id = $user_id;
+			}
 
 			$userId = isset($user->_id)?$user->_id:(string)new mongoId();
 
