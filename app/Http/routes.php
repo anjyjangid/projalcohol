@@ -376,10 +376,7 @@ Route::group(['prefix' => 'api'], function () {
 	Route::controller('payment', 'PaymentController');
 
 	/*SOCIAL LOGINS APP API*/
-	Route::post('/signupfb', 'Auth\AuthController@signupfb');
-
-	
-
+	Route::post('/signupsocial', 'Auth\AuthController@signupsocial');
 });
 
 

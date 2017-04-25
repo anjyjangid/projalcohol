@@ -45,8 +45,8 @@ class AuthController extends Controller
 	public function __construct()
 	{
 		$this->user = "user";
-		// 'signupfb','postSocialverification' are used for mobile app api
-		$this->middleware('guest', ['except' => array('getLogout','signupfb','postSocialverification')]);
+		// 'signupsocial','postSocialverification' are used for mobile app api
+		$this->middleware('guest', ['except' => array('getLogout','signupsocial','postSocialverification')]);
 	}
 
 	/**
@@ -146,11 +146,10 @@ class AuthController extends Controller
 	}
 
 	/**
-	 * Login & Signup with Facebook From API
+	 * Social Login & Signup From API
 	 */
-	public function signupfb(Request $request){
+	public function signupsocial(Request $request){
 		$data = $request->all();
-		$data['providername'] = 'facebook';
 		return $this->socialLogin($data);
 	}
 
@@ -162,28 +161,23 @@ class AuthController extends Controller
 	 */
 	protected function create(array $data)
 	{
-
 		$data['email_key'] = new MongoId();
 		$data['email'] = strtolower($data['email']);
 		
 		try {
 
 			$userData = [
-
 				'email' => $data['email'],
 				'password' => bcrypt($data['password']),
 				'email_key' => (string)$data['email_key'],
 				'status' => 1,
 				'verified' => 0,
-
 			];
 
 			if(isset($data['refferedBy']) && MongoId::isValid($data['refferedBy'])){
-				
 				$user = user::find($data['refferedBy']);
 				if(!empty($user))
 				$userData['reffered'] = new MongoId($data['refferedBy']);
-
 			}
 
 			$user = User::create($userData);
@@ -191,8 +185,7 @@ class AuthController extends Controller
 		} catch(\Exception $e){
 
 			return response(array("success"=>false,"message"=>$e->getMessage()));
-				
-		}	
+		}
 
 		$email = new Email('welcome');
 		$email->sendEmail($data);
@@ -204,7 +197,6 @@ class AuthController extends Controller
 	public function verifyemail($key){
 
 		$user = User::where("email_key","=",$key)->first();
-
 
 		if(empty($user->_id)){
 			return redirect('/mailverified/0');
@@ -220,8 +212,6 @@ class AuthController extends Controller
 		return redirect('/mailverified/1');
 	}
 
-	
-
 
 	/*********************SOCIAL LOGIN*************************/
 
@@ -235,7 +225,6 @@ class AuthController extends Controller
 		];
 
 		return $providerList[$providername];
-
 	}
 
 	protected function socialLogin($data){
