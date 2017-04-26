@@ -10,6 +10,16 @@
 |
 */
 
+// Download Export Csv file from admin customer list
+Route::get('/all-customers-csv', function(){
+	$filename = $_GET['file'];
+	$filepath = storage_path()."/download/".$filename;
+    $headers = array(
+        'Content-Type' => 'text/csv',
+    );
+    return Response::download($filepath, "customers.csv", $headers)->deleteFileAfterSend(true);
+});
+
 Route::get('/mail', function(){
 	
 	$settings = \DB::collection('settings')->whereIn('_id',['general','social','email'])->get();
