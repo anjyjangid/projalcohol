@@ -41,6 +41,10 @@ Route::get('/morphing', function(){
 	return view('invoice.morph');
 });
 
+Route::get('/cmail', function(){
+	return view('emails.crowder');
+});
+
 Route::get('/useraddress/{blankhouse}', function($blankhouse){
 	$query = [];
 	$query[]['$match'] = [

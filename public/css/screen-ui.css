@@ -6687,6 +6687,7 @@ button:hover{
 	right: -5px;
 	width: 195px;
 	word-wrap: break-word;
+	overflow: hidden;
 }
 
 .tag-yellow-new{
