@@ -204,7 +204,7 @@ AlcoholDelivery.directive('sideBar', function() {
 					$scope.socialError = '';
 					//FACEBOOK LOGIN
 		
-					$scope.socialLogin = function(){
+					/*$scope.socialLogin = function(){
 						
 						FB.login(function(response) {
 						    if (response.authResponse) {				     
@@ -230,7 +230,7 @@ AlcoholDelivery.directive('sideBar', function() {
 						    }
 						});					
 						
-					}
+					}*/
 		
 					$scope.loginToggle = function() {
 		
@@ -1354,6 +1354,7 @@ AlcoholDelivery.directive('sideBar', function() {
         return {
             link: function(scope, element, attr) {
                 setTimeout(function() {
+                        console.log('twttr');
                         twttr.widgets.createHashtagButton(
                             attr.url,
                             element[0],
@@ -1367,6 +1368,7 @@ AlcoholDelivery.directive('sideBar', function() {
                         );
 
 						twttr.events.bind('tweet',function (event) {
+							console.log(event);
 							SocialSharingService.shareTwitter({
 
 								key:'ADSG37171O1022',

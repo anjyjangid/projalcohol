@@ -38,17 +38,24 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 	    var fb_id = angular.element('meta[name="facebook_id"]').attr('content');
 	    var google_id = angular.element('meta[name="google_id"]').attr('content');
 	    var instagram_id = angular.element('meta[name="instagram_id"]').attr('content');
+	    var linkedin_id = angular.element('meta[name="linkedin_id"]').attr('content');
 	    
 	    $authProvider.facebook({
-	      clientId: fb_id
+	      clientId: fb_id,
+	      scope:['email','user_posts']
 	    });
 
 	    $authProvider.google({
-	      clientId: google_id
+	      clientId: google_id	      
 	    });	    
 
 	    $authProvider.instagram({
 	      clientId: instagram_id
+	    });
+
+	    $authProvider.linkedin({
+	      clientId: linkedin_id,
+	      scope: ['r_emailaddress','w_share'],
 	    });
     
 }]);
@@ -823,27 +830,35 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						}]
 				})
 
+				.state('mainLayout.socialshare', {
+					url: "/ordershare/{order}",
+					//templateUrl: "/templates/index/home.html",
+					controller:['$location','$stateParams','$rootScope',function($location,$stateParams,$rootScope){						
+						$location.url('/').replace();
+					}]
+				})
+
 				.state('mainLayout.expiredlink', {
 
 						url: "/resetexpired",
 						//templateUrl: "/templates/index/home.html",
 						controller:['sweetAlert','$location','$stateParams',function(sweetAlert,$location,$stateParams){
 						
-										var title = '';
-										var type = 'error';
-										var msg = 'Invalid or expired reset password link.';
-										
-										sweetAlert.swal({
-											type:type,
-											title: title,
-											text : msg,
-											timer: 0,
-											closeOnConfirm: true
-										});
-			
-										$location.url('/').replace();
-			
-									}]
+							var title = '';
+							var type = 'error';
+							var msg = 'Invalid or expired reset password link.';
+							
+							sweetAlert.swal({
+								type:type,
+								title: title,
+								text : msg,
+								timer: 0,
+								closeOnConfirm: true
+							});
+
+							$location.url('/').replace();
+
+						}]
 				})
 
 				.state('cmsLayout.reset', {
@@ -853,43 +868,43 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 							'$rootScope','$stateParams','$scope','$http','$timeout','$mdDialog','sweetAlert','$location',
 							function($rootScope,$stateParams,$scope,$http,$timeout,$mdDialog,sweetAlert,$location){
 						
-													$rootScope.token = $stateParams.token;
-						
-													$scope.resetSubmit = function() {
-														$scope.reset.errors = {};
-														$scope.reset.token = $rootScope.token;
-														$http.post('/password/reset',$scope.reset).success(function(response){
-											                $scope.reset = {};
-											                $scope.reset.errors = {};
-											                $timeout(function(){
-																$location.url('/').replace();
-															});
-											                sweetAlert.swal({
-																type:'success',
-																title: "Congratulation!",
-																text : response.message,
-																timer: 4000,
-																closeOnConfirm: false
-															});														                
-											            }).error(function(data, status, headers) {
-											            	if(typeof data.token !== "undefined" && data.token===false){
-											            		$timeout(function(){
-																	$location.url('/').replace();
-																});
-											            		sweetAlert.swal({
-																	type:'warning',
-																	title: "Expired or used reset link!",
-																	timer: 0,
-																	showConfirmButton:true,
-																	closeOnConfirm: true
-																});
-						
-											            	}
-											                $scope.reset.errors = data;
-											            });
-													};							
-						
-												}]
+								$rootScope.token = $stateParams.token;
+	
+								$scope.resetSubmit = function() {
+									$scope.reset.errors = {};
+									$scope.reset.token = $rootScope.token;
+									$http.post('/password/reset',$scope.reset).success(function(response){
+						                $scope.reset = {};
+						                $scope.reset.errors = {};
+						                $timeout(function(){
+											$location.url('/').replace();
+										});
+						                sweetAlert.swal({
+											type:'success',
+											title: "Congratulation!",
+											text : response.message,
+											timer: 4000,
+											closeOnConfirm: false
+										});														                
+						            }).error(function(data, status, headers) {
+						            	if(typeof data.token !== "undefined" && data.token===false){
+						            		$timeout(function(){
+												$location.url('/').replace();
+											});
+						            		sweetAlert.swal({
+												type:'warning',
+												title: "Expired or used reset link!",
+												timer: 0,
+												showConfirmButton:true,
+												closeOnConfirm: true
+											});
+	
+						            	}
+						                $scope.reset.errors = data;
+						            });
+								};							
+	
+							}]
 				})
 
 				.state('mainLayout.invite', {
@@ -898,9 +913,9 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 						controller:[
 							'$rootScope','$stateParams','$state',
 							function($rootScope,$stateParams,$state){
-													$rootScope.refferal = $stateParams.reffererid;
-													$state.go('mainLayout.index');
-												}]
+							$rootScope.refferal = $stateParams.reffererid;
+							$state.go('mainLayout.index');
+						}]
 				})
 				// CMS Page YKB //
 
@@ -1364,6 +1379,10 @@ AlcoholDelivery.run([
 			description:$rootScope.settings.general.meta_desc,
 			keyword:$rootScope.settings.general.meta_keyword
 		};
+
+		if(from.name == 'mainLayout.socialshare'){
+			mdata.title = 'Just made a purchase from Alcohol Delivery';
+		}
 		
 		$rootScope.setMeta(mdata);
 
@@ -1497,7 +1516,22 @@ AlcoholDelivery.run([
 			hideDelay:def
 		});
 
-	});		
+	});	
+
+
+	$rootScope.$on('app:notify', function(data,params){
+		$mdToast.show({
+			controller:['$scope',function($scope){
+				$scope.status = params;
+				$scope.closeToast = function(){
+					$mdToast.hide();
+				}
+			}],
+			templateUrl: '/templates/toast-tpl/app-notify.html',			
+			position: 'bottom right',
+			hideDelay:0
+		});		
+	});	
 	
 	//FB SCRIPT 
 	var appId = angular.element('meta[name="facebook_id"]').attr('content');
@@ -1509,7 +1543,7 @@ AlcoholDelivery.run([
 	      cookie: true, 
 	      xfbml: true,
 	      version: 'v2.4'
-	    }); 	    
+	    }); 	
 	};
 
 	(function(d, s, id) {
@@ -1519,6 +1553,9 @@ AlcoholDelivery.run([
 	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&version=v2.8&appId="+appId;
 	  fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));	
+
+
+
 
 }]);
 

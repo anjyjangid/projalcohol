@@ -1,0 +1,8 @@
+<md-toast class="notify bottom">		
+	<h4 ng-click="closeToast()">&times;</h4>
+	<div class="congratulationpopupimg" ng:class="{'tdown':status.error}"><img src="images/thumbimg.png"></div>
+	<div class="congratulationpopuptext">
+		<div class="congratulationpopuptext-title">{{status.title}}</div>
+		<div class="congratulationpopuptext-text">{{status.description}}</div>
+	</div>	
+</md-toast>

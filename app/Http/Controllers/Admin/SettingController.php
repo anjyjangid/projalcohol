@@ -54,6 +54,12 @@ class SettingController extends Controller
 		$inputs = $request->all();
 
 		$setting = Setting::find($id);
+
+		if(isset($inputs['site_sharing']) || $inputs['order_sharing']){
+			$inputs['site_sharing']['status'] = (int)$inputs['site_sharing']['status'];
+			$inputs['order_sharing']['status'] = (int)$inputs['order_sharing']['status'];
+		}
+
 		$setting->settings = $inputs;
 		if($setting->save()){
 			return response(array("success"=>true,"message"=>"Settings updated successfully"));

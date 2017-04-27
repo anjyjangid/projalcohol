@@ -2056,8 +2056,8 @@ AlcoholDelivery.controller('CartReviewController',[
 }]);
 
 AlcoholDelivery.controller('OrderplacedController',[
-	'$scope','$http','$stateParams','$filter','sweetAlert','SocialSharingService','$window',
-	function($scope,$http,$stateParams,$filter,sweetAlert,SocialSharingService,$window){
+	'$scope','$http','$stateParams','$filter','sweetAlert','SocialSharingService','$window', '$sce', '$auth', '$rootScope',
+	function($scope,$http,$stateParams,$filter,sweetAlert,SocialSharingService,$window,$sce,$auth,$rootScope){
 
 	$scope.order = $stateParams.order;
 
@@ -2119,82 +2119,40 @@ AlcoholDelivery.controller('OrderplacedController',[
 		$scope.minute = $scope.dopDate.getMinutes();
 		$scope.aMpM = $scope.dopDate.getHours() > 12 ? 'PM' : 'AM';*/
 
+		FB.XFBML.parse();
+
+		FB.Event.subscribe('edge.create', function (response) {
+	        SocialSharingService.creditLoyalty({
+	        	type:'fbLike',
+				key:$scope.orderNumber,
+				provider:'facebook'
+	        }).then(function(res){
+	        	$scope.notifySuccess(res);
+	        },function(errResponse){
+
+	        });
+	        //alert('Called from payment');
+	    });
 
 	});
 
 	angular.SocialSharing = SocialSharingService;
 
-	$scope.fbShare = function(){
-
-		SocialSharingService.shareFb({
-
+	$scope.fbShare = function(){	
+		SocialSharingService.shareFacebook({
 			key:$scope.orderNumber,
-			type:'order',
-
+			type:'orderShare',
+			provider:'facebook'
 		}).then(
-
 			function(resolveRes){
-
-				sweetAlert.swal({
-
-					title: "Awesome!",
-					text: "Share successfully! Loyalty points are credit to your account",
-					imageUrl: 'http://54.169.107.156/images/thumbimg.png'
-
-				});
-
+				$scope.notifySuccess(resolveRes);
 			},
-			function(rejectRes){
-
-				sweetAlert.swal({
-
-					type:'error',
-					title: 'Oops...',
-					text:rejectRes.message,
-					timer: 2000
-
-			});
-
+			function(rejectRes){	
+				//console.log(rejectRes);			
+				//$scope.notifySuccess(rejectRes);
 			}
-		)
-
-	}
-
-	$scope.googleShare = function(){
-
-		SocialSharingService.shareGoogle({
-
-			key:$scope.orderNumber,
-			type:'order',
-
-		}).then(
-
-			function(resolveRes){
-
-				sweetAlert.swal({
-
-					title: "Awesome!",
-					text: "Share successfully! Loyalty points are credit to your account",
-					imageUrl: 'http://54.169.107.156/images/thumbimg.png'
-
-				});
-
-			},
-			function(rejectRes){
-
-				sweetAlert.swal({
-
-					type:'error',
-					title: 'Oops...',
-					text:rejectRes.message,
-					timer: 2000
-
-				});
-
-			}
-		)
-
-	}
+		);
+	}	
 
 	//GOOGLE CONVERSION SCRIPT
 	$scope.fireConversion = function() {		
@@ -2210,6 +2168,34 @@ AlcoholDelivery.controller('OrderplacedController',[
 		});
 	}
 	//GOOGLE CONVERSION SCRIPT
+
+	$scope.getScript = function(){
+		if(angular.isDefined($scope.order.payment))		
+			return $sce.trustAsHtml('<script type="text/javascript" src="https://track.omguk.com/1048087/transaction.asp?APPID='+$scope.orderNumber+'&MID=1048087&PID=30108&status='+$scope.order.payment.total+'"></script>');		
+	}
+
+
+	$scope.sharepurchase = function(provider) {
+
+		$auth.authenticate(provider,{
+				type:'orderShare',
+				key:$scope.orderNumber,
+				provider:provider
+			}).then(
+			function(response) {
+				$scope.notifySuccess(response.data);				
+			},
+			function(errResponse){			
+				$scope.notifySuccess(errResponse.data);
+			}
+		);
+
+	}	
+
+	$scope.notifySuccess = function(result){    	
+    	$rootScope.$broadcast('alcoholWishlist:change', {hideDelay:0,message:result.message});    	
+    }
+
 }]);
 
 AlcoholDelivery.controller('RepeatOrderController',[

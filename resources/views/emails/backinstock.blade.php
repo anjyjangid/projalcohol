@@ -9,10 +9,20 @@
 		</div>
 		<span style="color: #343538;float: left;font-size: 14px;font-weight: bold;margin-top: 5px;padding-left: 20px;width: 75%;">
 			{{$products['name']}}
-		</sapn>		
+		</span>		
 		@if(isset($products['proSales']) && !empty($products['proSales']))
-		<span style="float: left;color: #000000;text-align: center;width: 100%;">
-			<a href="#" style="background: #ffc412;color: #000000;text-align: center;padding: 3px 6px;border-radius: 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px;text-decoration: none;float: left;margin-top: 10px;">
+		<span style="
+		float: left;		
+		text-align: center;
+		margin-left: 20px;
+		background: #ffc412;
+		padding: 3px 6px;
+		border-radius: 4px;
+		-webkit-border-radius: 4px;
+		-moz-border-radius: 4px;		
+		margin-top: 10px;
+		">
+			<a href="#" style="text-decoration: none;color: #000;">
 				{{ $products['proSales']['listingTitle'] }}
 			</a>
 		</span>
@@ -29,8 +39,19 @@
 				{{ currency($products['finalPrice']) }}
 			@endif	
 		</span>
-		<span style="float: right;color: #000000;text-align: center;width: 100%;">
-			<a href="{{url('/product/'.$products['slug'])}}" style="background: #aa00ff;color: #FFFFFF;text-align: center;padding: 3px 6px;border-radius: 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px;text-decoration: none;float: right;margin-top: 10px;">
+		<span style="float: right;		
+		text-align: center;		
+		background: #ffc412;		
+		text-align: center;
+		padding: 3px 6px;
+		border-radius: 4px;
+		-webkit-border-radius: 4px;
+		-moz-border-radius: 4px;
+		text-decoration: none;		
+		margin-top: 10px;
+		clear: both;
+		">
+			<a href="{{url('/product/'.$products['slug'])}}" style="text-decoration: none;color: #000;">
 				BUY
 			</a>
 		</span>

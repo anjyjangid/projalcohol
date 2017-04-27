@@ -354,12 +354,12 @@ li.subactive a, li.subactive a span {
 	float: right;
   }
 
-  md-toast.notify div.congratulationpopupimg{
+  /*md-toast.notify div.congratulationpopupimg{
 	padding-right: 10px;
-  }
+  }*/
 
   md-toast.notify div.congratulationpopuptext{
-	width: 65%
+	width: 64%
   }
 
   md-tooltip.blktool, md-tooltip.blktool div{
@@ -1847,4 +1847,18 @@ md-checkbox.md-focused .md-container:before{
     height: 100%;
     vertical-align: middle;
     padding: 3px;
+}
+
+.social-nolabel{
+	height: 32px;
+}
+
+.social-nolabel>:first-child{
+	border-right: 0 none;
+	width: 100%;
+}
+
+.tdown {
+	transform: rotate(180deg);
+	
 }

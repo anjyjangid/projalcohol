@@ -2,17 +2,19 @@ AlcoholDelivery.service('SocialSharingService', ['$rootScope', '$window', '$http
 
 	this.shareFb = function(shareData){
 
+		var site_url = angular.element('meta[name="site_url"]').attr('content');
+
 		var _self = this;
 		var defer = $q.defer();
 
 		var shareParams = {
-
-			method: 'feed',
-			picture : "http://54.169.107.156/images/ad_logo.png",
-			href: "http://54.169.107.156",
-			name:"Alcoholdelivery Fb Order Sharing",
-			caption : "Alcoholdelivery",
-			description:"Hello Friends i have made a purchase on alcoholdelivery",
+			method: 'share',
+			//picture : "http://54.169.107.156/images/ad_logo.png",
+			href: site_url,
+			display:'popup'
+			//name:"Alcoholdelivery Fb Order Sharing",
+			//caption : "Alcoholdelivery",
+			//description:"Hello Friends i have made a purchase on alcoholdelivery",
 			// message: 'Message you want to show',
 			// link: 'http://link-you-want-to-show',
 
@@ -145,8 +147,63 @@ AlcoholDelivery.service('SocialSharingService', ['$rootScope', '$window', '$http
 
 		return defer.promise;
 
+	};
+
+	this.shareFacebook = function(shareData){
+
+		var site_url = angular.element('meta[name="site_url"]').attr('content');
+
+		var _self = this;
+		var defer = $q.defer();
+
+		var shareParams = {
+			method: 'share',
+			href: site_url,
+			display:'popup'
+		};		
+
+		var retStatus = {			
+			message:'Something went wrong'
+		};
+
+		FB.ui(shareParams, function(response){
+			if (response && !response.error_message) {
+				_self.creditLoyalty(shareData).then(
+					function(retStatus){						
+						defer.resolve(retStatus);
+					},
+					function(errStatus){
+						defer.reject(errStatus);
+					}
+				);
+			} else {
+				defer.reject(retStatus);
+			}
+		});
+
+		return defer.promise;
 	}
 
+	this.creditLoyalty = function(data){
+
+		var defer = $q.defer();		
+
+		$http.post("auth/creditloyalty",data).then(
+
+			function(response){
+
+				defer.resolve(response.data);
+
+			},
+			function(errorRes){
+				defer.reject(errorRes.data);
+			}
+
+		);
+
+		return defer.promise;
+
+	};
 
 }]);
 

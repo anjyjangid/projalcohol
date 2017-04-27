@@ -21,6 +21,9 @@ use GuzzleHttp\Subscriber\Oauth\Oauth1 as Oauth1;
 use Hash;
 use Config;
 use Session;
+use AlcoholDelivery\Setting;
+use AlcoholDelivery\Orders;
+use AlcoholDelivery\LoyaltyTransactions;
 
 class AuthController extends Controller
 {
@@ -305,14 +308,29 @@ class AuthController extends Controller
 			'query' => $params
 		]);
 		$accessToken = json_decode($accessTokenResponse->getBody(), true);
-		// Step 2. Retrieve profile information about the current user.
-		$fields = 'id,email,first_name,last_name,link,name';
-		$profileResponse = $client->request('GET', 'https://graph.facebook.com/v2.5/me', [
-			'query' => [
-				'access_token' => $accessToken['access_token'],
-				'fields' => $fields
-			]
-		]);
+		// Step 2. Retrieve profile information about the current user.	
+
+		$data = $request->all();
+		
+		if(isset($data['type']) && $data['type'] == 'sharing'){
+			//SHARING API
+			$profileResponse = $client->request('POST', 'https://graph.facebook.com/me/feed', [
+				'query' => [
+					'access_token' => $accessToken['access_token'],
+					'message' => 'Hello this is sharing from FB API'
+				]
+			]);			
+		}else{
+			//LOGIN API
+			$fields = 'id,email,first_name,last_name,link,name';
+			$profileResponse = $client->request('GET', 'https://graph.facebook.com/v2.5/me', [
+				'query' => [
+					'access_token' => $accessToken['access_token'],
+					'fields' => $fields
+				]
+			]);
+		}
+
 		$profile = json_decode($profileResponse->getBody(), true);        
 
 		$profile['providername'] = 'facebook';
@@ -330,7 +348,7 @@ class AuthController extends Controller
 			'client_id' => $request->input('clientId'),
 			'client_secret' => Config::get('app.google_secret'),
 			'redirect_uri' => $request->input('redirectUri'),
-			'grant_type' => 'authorization_code',
+			'grant_type' => 'authorization_code',			
 		];
 		// Step 1. Exchange authorization code for access token.
 		$accessTokenResponse = $client->request('POST', 'https://accounts.google.com/o/oauth2/token', [
@@ -338,6 +356,19 @@ class AuthController extends Controller
 		]);
 		$accessToken = json_decode($accessTokenResponse->getBody(), true);
 		// Step 2. Retrieve profile information about the current user.
+		
+		$data = $request->all();
+
+		if(isset($data['type']) && $data['type'] == 'sharing'){				
+			$profileResponse = $client->request('POST', 'https://www.googleapis.com/plusDomains/v1/people/me/activities', [
+				'query' => ['status' => 'https://www.alcoholdelivery.com.sg'],
+				'auth' => 'oauth'
+			]);
+			$profile = json_decode($profileResponse->getBody(), true);				
+			return response($profile);
+		}
+
+
 		$profileResponse = $client->request('GET', 'https://www.googleapis.com/plus/v1/people/me', [
 			'headers' => array('Authorization' => 'Bearer ' . $accessToken['access_token'])
 		]);
@@ -412,15 +443,39 @@ class AuthController extends Controller
 			$profileOauth = new Oauth1([
 				'consumer_key' => Config::get('app.twitter_key'),
 				'consumer_secret' => Config::get('app.twitter_secret'),
-				'oauth_token' => $accessToken['oauth_token'],
-				'token_secret' => ''
+				/*'oauth_token' => $accessToken['oauth_token'],
+				'token_secret' => ''*/
+				'token' => $accessToken['oauth_token'],
+				'token_secret' => $accessToken['oauth_token_secret'],
 			]);
 			$stack->push($profileOauth);
 			$client = new GuzzleHttp\Client([
 				'handler' => $stack
 			]);
+			$data = $request->all();
+
+			if(isset($data['type']) && $data['type'] == 'orderShare'){						
+
+				try{
+					$profileResponse = $client->request('POST', 'https://api.twitter.com/1.1/statuses/update.json', [
+						'query' => ['status' => 'https://www.alcoholdelivery.com.sg'],
+						'auth' => 'oauth'
+					]);
+					$profile = json_decode($profileResponse->getBody(), true);
+					$profile['provider'] = 'twitter';
+					return $this->creditloyalty($request,$profile);
+				}catch(\GuzzleHttp\Exception\ClientException $e){
+					$message = json_decode($e->getResponse()->getBody(), true);
+					$resmessage = 'Something went wrong';
+					if(isset($message['errors'][0]['code']) && $message['errors'][0]['code']==187){
+						$resmessage = 'You have already shared this purchase.';
+					}
+					return response(['message' => $resmessage,'e' => $message],422);
+				}							
+				
+			}
 			// Step 4. Retrieve profile information about the current user.
-			$profileResponse = $client->request('GET', 'https://api.twitter.com/1.1/users/show.json?screen_name=' . $accessToken['screen_name'], [
+			$profileResponse = $client->request('GET', 'https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true', [
 				'auth' => 'oauth'
 			]);
 			$profile = json_decode($profileResponse->getBody(), true);
@@ -464,6 +519,73 @@ class AuthController extends Controller
 		return $this->socialLogin($profile);        
 		
 	}
+
+	/**
+     * Login with LinkedIn.
+     */
+    public function linkedin(Request $request)
+    {
+        $client = new GuzzleHttp\Client();
+        $params = [
+            'code' => $request->input('code'),
+            'client_id' => $request->input('clientId'),
+            'client_secret' => Config::get('app.linkedin_secret'),
+            'redirect_uri' => $request->input('redirectUri'),
+            'grant_type' => 'authorization_code',
+        ];
+        // Step 1. Exchange authorization code for access token.
+        $accessTokenResponse = $client->request('POST', 'https://www.linkedin.com/uas/oauth2/accessToken', [
+            'form_params' => $params
+        ]);
+        $accessToken = json_decode($accessTokenResponse->getBody(), true);
+        
+        $data = $request->all();
+
+		if(isset($data['type']) && $data['type'] == 'orderShare'){				
+			$payload = [
+				'content' => [
+            		'title' => 'Just made a purchase from https://www.alcoholdelivery.com.sg',            		
+            		'submitted-url' => 'https://www.alcoholdelivery.com.sg'
+            	],
+            	'visibility' => ['code' => 'anyone']
+			];
+			try{				
+				$profileResponse = $client->request('POST', 'https://api.linkedin.com/v1/people/~/shares', [
+					'query' => [
+		                'format' => 'json',
+		                'oauth2_access_token' => $accessToken['access_token'],
+		            ],
+	                'headers' => [
+	                	'Content-Type' => 'application/json',
+	                	'x-li-format' => 'json'
+	                ],
+	                'body' => json_encode($payload)
+				]);
+
+				$profile = json_decode($profileResponse->getBody(), true);				
+
+				return $this->creditloyalty($request,$profile);
+
+			}catch(\GuzzleHttp\Exception\ClientException $e){
+				$message = json_decode($e->getResponse()->getBody(), true);
+				$resmessage = 'Something went wrong';				
+				return response(['message' => $resmessage,'e' => $message],422);
+			}
+		}
+
+
+        // Step 2. Retrieve profile information about the current user.
+        $profileResponse = $client->request('GET', 'https://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address)', [
+            'query' => [
+                'oauth2_access_token' => $accessToken['access_token'],
+                'format' => 'json'
+            ]
+        ]);
+        $profile = json_decode($profileResponse->getBody(), true);
+        
+        return response($profile);
+
+    }
 
 	public function postSocialverification(Request $request){
 
@@ -554,6 +676,70 @@ class AuthController extends Controller
 		Auth::login($user);
 
 		return redirect('/socialmailverified/'.$socialData['providername']);
+	}
+
+	public function creditloyalty(Request $request,$profile = []){
+
+		$data = $request->all();
+
+		$settings = Setting::where('_id','loyalty')->first();
+
+		$user = Auth::user('user');
+
+		//SHARING PURCHASE
+		if(isset($data['type']) && $data['type'] == 'orderShare'){
+			$message = 'Loyalty points for sharing purchase has been credited to your account.';
+			//CHECK IF POINTS FOR SHARING HAS GIVEN TO USER
+			$checkOrder = Orders::where('reference',$data['key'])->where('sharing','exists',false)->first();
+
+			if($checkOrder){
+				$checkOrder['sharing'] = [$data['provider'] => $data];
+
+				if($checkOrder->save()){
+					$loyaltyObj = [
+						'points'=>$settings['settings']['order_sharing']['value'],
+						'method'=>'orderShare',
+						'reference' => $data['key'],
+						'user' => new mongoId((string)$user->_id),
+						'comment'=> 'You have earned this points by sharing your purchase on '.$data['provider']
+					];
+					LoyaltyTransactions::transaction('credit',$loyaltyObj,$user);
+				}
+				//$checkOrder->push('sharing.'.$data['provider'],$data);				
+			}else{ //POINTS FOR SHARING HAS ALREADY GIVEN
+				$message = 'Loyalty points for sharing this purchase has already been credited to your account.';
+			}
+		}//LIKE FB PAGE
+		else{
+			
+			if(!isset($user['fblike'])){
+				
+				$user->fblike = 1;
+
+				if($user->save()){
+
+					$message = 'Loyalty points for page like has been credited to your account.';
+					
+					$loyaltyObj = [
+							'points'=>$settings['settings']['site_sharing']['value'],
+							'method'=>'pageLike',
+							'reference' => $data['key'],
+							'user' => new mongoId((string)$user->_id),
+							'comment'=> 'You have earned this points by facebook page like'
+					];
+			
+					LoyaltyTransactions::transaction('credit',$loyaltyObj,$user);
+
+				}
+
+			}else{
+				$message = 'Loyalty points for page like has already been credited to your account.';
+			}
+			
+		}
+
+		return response(['message' => $message]);
+
 	}
 }
 	

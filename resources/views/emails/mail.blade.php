@@ -2,8 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Email Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
     <style type="text/css">
         table td {
             border-collapse: collapse !important;

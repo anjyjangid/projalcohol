@@ -3122,9 +3122,9 @@ ui-sref {
 	float: left;
 	overflow: hidden;
 }
-.congratulationpopupimg img {
+/*.congratulationpopupimg img {
 	margin-left: -6px;
-}
+}*/
 .congratulationpopuptext {
 	float: right;
 	text-align: left;

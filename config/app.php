@@ -219,5 +219,7 @@ return [
     'instagram_id' => env('INSTAGRAM_ID','5e4558d80fdd4fe2958d69b4336fb352'),
     'instagram_secret' => env('INSTAGRAM_SECRET','d38d55f9f76f41f484f734e811cd2e47'),
     'twitter_key' => env('TWITTER_SECRET','KDU8eRxjDevmDg5dLTZz9ypdT'),
-    'twitter_secret' => env('TWITTER_KEY','BPPkqeKE9rCwlEvJmeqaR5FCJyQBM8w8VMiopidDHceXpv9vHg'),
+    'twitter_secret' => env('TWITTER_KEY','BPPkqeKE9rCwlEvJmeqaR5FCJyQBM8w8VMiopidDHceXpv9vHg'),    
+    'linkedin_id' => env('LINKEDIN_ID','81pcvwxkpomwe0'),
+    'linkedin_secret' => env('LINKEDIN_SECRET','cP7LBedGC3bs5L9X'),
 ];

@@ -312,8 +312,7 @@ class Email extends Moloquent
 									
 		}
 
-		try {			
-				
+		try {	
 				/*LAYOUT BASED MAIL*/
 
 				$data = ['content' => $this->recipient_info['message'],'replace'=>$this->recipient_info['replace']];
@@ -321,8 +320,7 @@ class Email extends Moloquent
 				Mail::queue('emails.mail', $data, function ($message) {
 					$message->setTo(array($this->recipient_info['receiver']['email']=>$this->recipient_info['receiver']['name']));
 					$message->setSubject($this->recipient_info['subject']);
-				});
-			
+				});		
 			
 		} catch(\Exception $e){
 

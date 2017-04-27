@@ -31,7 +31,7 @@ class SuperController extends Controller
 			$categories = $categories->where('slug', "=", $params['category']);
 		}
 
-		$categories = $categories->where('cat_status',1);
+		$categories = $categories->where('cat_status',1);		
 
 		$categories = $categories->get();
 
@@ -41,7 +41,7 @@ class SuperController extends Controller
 
 		if(isset($params['withChild']) && $params['withChild']){
 
-			foreach($categories as &$category){
+			foreach($categories as &$category){				
 				$category['children'] = array();
 				$category['children'] = Categories::where('cat_status',1)->where('ancestors.0._id','=',$category['_id'])->get(array('_id','slug','cat_title','metaTitle','metaDescription','metaKeywords'));
 			}
@@ -171,6 +171,10 @@ class SuperController extends Controller
 					$settingsData[$setting['_id']][$subKey] = $subSetting['value'];
 				}else{
 					$settingsData[$setting['_id']][$subKey] = $subSetting;
+				}
+
+				if(isset($subSetting['status'])){
+					$settingsData[$setting['_id']][$subKey.'_status'] = $subSetting['status'];
 				}
 			}
 		}

@@ -10,6 +10,9 @@
 |
 */
 
+Route::post('/sharingpurchase', function(){
+	return response(['error' => 0]);
+});
 Route::get('/mail', function(){
 	
 	$settings = \DB::collection('settings')->whereIn('_id',['general','social','email'])->get();
@@ -221,6 +224,8 @@ Route::group(['prefix' => 'api'], function () {
 	Route::post('/auth/twitter', 'Auth\AuthController@twitter');
 	Route::post('/auth/instagram', 'Auth\AuthController@instagram');
 	Route::post('/auth/google', 'Auth\AuthController@google');
+	Route::post('/auth/linkedin', 'Auth\AuthController@linkedin');
+	Route::post('/auth/creditloyalty', 'Auth\AuthController@creditloyalty');
 
 
 	// Order Using Device
