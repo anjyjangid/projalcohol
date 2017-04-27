@@ -100,7 +100,7 @@ class Email extends Moloquent
 	 *  Author CGT
 	 */
 	 public function sendEmail($data = false){
-			
+
 		switch($this->type){
 			
 			case 'welcome':/* begin : Registration Email { */
@@ -144,10 +144,18 @@ class Email extends Moloquent
 				$this->recipient_info['receiver']['email'] = $data['email'];
 				$this->recipient_info['receiver']['name'] = $data['email'];
 
-				if(isset($data['isAdmin'])){
-					$this->recipient_info['replace']['{reset_link}'] =url().'/admin#/resetpassword/'.$data['email_key'];
+				if(!empty($data['isMobileApi']) && !empty($data['resetCode'])){
+					$this->recipient_info['replace']['{reset_code}'] = $data['resetCode'];
+					$this->recipient_info['replace']['{reset_text}'] = "Alternatively, you can enter the following password reset code:";
 				}else{
-					$this->recipient_info['replace']['{reset_link}'] =url().'/api/reset/'.$data['email_key'];	
+					$this->recipient_info['replace']['{reset_code}'] = "";
+					$this->recipient_info['replace']['{reset_text}'] = "";
+				}
+
+				if(isset($data['isAdmin'])){
+					$this->recipient_info['replace']['{reset_link}'] = url().'/admin#/resetpassword/'.$data['email_key'];
+				}else{
+					$this->recipient_info['replace']['{reset_link}'] = url().'/api/reset/'.$data['email_key'];	
 				}
 
 				$this->recipient_info['replace']['{user_name}'] = $data['email'];
@@ -313,16 +321,14 @@ class Email extends Moloquent
 		}
 
 		try {			
-				
 				/*LAYOUT BASED MAIL*/
 
 				$data = ['content' => $this->recipient_info['message'],'replace'=>$this->recipient_info['replace']];
-				
+
 				Mail::queue('emails.mail', $data, function ($message) {
 					$message->setTo(array($this->recipient_info['receiver']['email']=>$this->recipient_info['receiver']['name']));
 					$message->setSubject($this->recipient_info['subject']);
-				});
-			
+				});			
 			
 		} catch(\Exception $e){
 

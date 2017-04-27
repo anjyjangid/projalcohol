@@ -24,16 +24,13 @@ class WishlistController extends Controller
 	 */
 	public function index()
 	{
-
 		$response = ['success'=>false,"message"=>"","auth"=>false];
 
 		$loggeduser = Auth::user('user');
 
 		if(!$loggeduser){
-
-			$response['message'] = "Login Required";			
+			$response['message'] = "Login Required";
 			return response($response,200);
-
 		}
 
 		$user = User::find($loggeduser->_id);
@@ -41,22 +38,18 @@ class WishlistController extends Controller
 		$response['auth'] = true;
 
 		if(empty($user->wishlist)){
-			
 			$user->wishlist = [];
-
-		}	
+		}
 
 		$productObj = new Products;
-
 
 		$productIds = [];
 		$wishData = [];
 
-		foreach ($user->wishlist as $key => $value) {
+		foreach ($user->wishlist as $key => $value){
 			$productIds[(string)$value["_id"]] = $value['added_at'];
 			$wishData[(string)$value["_id"]] = $value;
 		}
-		
 
 		$products = $productObj->getProducts(
 									array(
@@ -65,16 +58,15 @@ class WishlistController extends Controller
 											"discounts"
 										)
 									)
-								);	
+								);
 
 		if(empty($products)){
-
-			$response['message'] = "Product not found";
-			return response($response,400);
-
+			$response['message'] = "Your Wishlist Is Empty";
+			$response['list'] = array();
+			return response($response,200);
 		}
 
-		foreach ($products as $key => &$value) {
+		foreach ($products as $key => &$value){
 			$value['wishlist'] = [
 				'_id'=>$value['_id'],
 				'added_at'=>$productIds[$value['_id']],
@@ -86,7 +78,6 @@ class WishlistController extends Controller
 		$response['success'] = true;
 		$response['message'] = "success";
 		$response['list'] = $products;
-
 		return response($response,200);
 	}
 

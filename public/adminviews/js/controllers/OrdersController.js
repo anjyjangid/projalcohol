@@ -1510,7 +1510,209 @@ MetronicApp.controller('OrderCreateController',[
 
 
 }])
+.controller('RepeatOrderController',[
+			'$scope','$rootScope','$http','$mdDialog','alcoholCart','sweetAlert','AlcoholProduct'
+		,function($scope,$rootScope,$http,$mdDialog,alcoholCart,sweetAlert,AlcoholProduct){
 
+	$scope.lastorder = {};
+	$scope.error = true;
+
+	$scope.$watch('alcoholCart.$cart.consumer',
+
+		function(newValue, oldValue) {
+
+			if(angular.isUndefined(alcoholCart.$cart.consumer)){
+				return false;
+			}
+
+			$scope.fetching = true;
+
+			$scope.repeatOrderInit();
+
+		},true
+	);
+
+	$scope.repeatOrderInit = function(){		
+
+		$http.get("api/user/lastorder/"+alcoholCart.$cart.consumer._id+"/"+1).then(
+
+				function(response){
+
+					if(response.data.order){
+
+						var products = [];
+						angular.forEach(response.data.order.products,function(oPro){
+							var product = new AlcoholProduct(oPro);
+							products.push(product);
+						});
+
+						angular.forEach(products,function(product){
+
+							angular.forEach(response.data.order.products,function(oPro){
+								
+								if(product._id===oPro._id.$id){
+
+									product.qChilled = oPro.orderQty.chilled;
+									product.qNChilled = oPro.orderQty.nonChilled;
+									product.selected = true;
+
+								}
+							});
+
+						})
+
+						response.data.order.products = products;
+
+						$scope.lastorder = response.data.order;
+						
+						$scope.fetching = false;
+						$scope.error = false;
+					}
+
+				},
+				function(errorRes){
+
+				}
+			)
+
+	}
+
+	$scope.selectAll = function(selected) {
+		$scope.lastorder.products.forEach(function(product){			
+			product.selected = selected;
+		})
+	}
+
+	$scope.repeatOrder = function(ev) {
+
+		$mdDialog.show({
+
+			controller: "ShopFromPreviousController",
+			templateUrl: '/templates/users/repeat-order.html',
+			parent: angular.element(document.body),
+			targetEvent: ev,
+			clickOutsideToClose:false,
+			fullscreen:true
+		})
+		.then(function(answer) {
+
+		}, function() {
+
+		});
+
+	};
+
+	$scope.shopFromPrevious = function(ev){
+
+		$mdDialog.show({
+
+			controller: "ShopFromPreviousController",
+			templateUrl: '/templates/users/shopFromPrevious.html',
+			parent: angular.element(document.body),
+			targetEvent: ev,
+			clickOutsideToClose:false,
+			fullscreen:true
+
+		})
+		.then(function(answer) {
+
+		}, function() {
+
+		});
+
+	}
+
+	$scope.$watch('lastorder.products', function() {
+		var count = 0;
+		angular.forEach($scope.lastorder.products, function(product) {
+			if(product.selected)
+				count++;
+		});
+		$scope.selectedCount = count;
+	}, true);
+
+	$scope.selectPro = function () {
+
+		var isAllSelected = true;
+		angular.forEach($scope.lastorder.products, function(product) {
+
+			if(!product.selected){
+				isAllSelected = false;
+			}
+
+		})
+
+		$scope.allSelected = isAllSelected;
+
+	}
+
+	$scope.addSelected = function(){
+
+		var selected = {
+			products : []
+		};
+
+		angular.forEach($scope.lastorder.products, function(product) {
+
+			var selPro = {
+							id : product._id,
+							quantity : {
+								chilled : product.qChilled,
+								nonChilled : product.qNChilled
+							}
+							
+						};			
+
+			if((selPro.quantity.chilled+selPro.quantity.nonChilled)>0){
+				selected.products.push(selPro);
+			}
+
+		})
+
+		if(selected.products.length){
+
+			$scope.processAdding = true;
+
+			alcoholCart.addBulk(selected).then(
+
+				function(response){
+					$rootScope.$broadcast('alcoholCart:updated',{msg:"Previous order products added to cart"});
+				},
+				function(errorRes){
+
+					sweetAlert.swal({
+						type:'error',
+						title: 'Oops...',
+						text:'Something went wrong',
+						timer: 2000
+					});
+
+				}
+
+			).finally(function(){
+
+				angular.forEach($scope.lastorder.products, function(product) {
+					product.selected = false;
+				});
+
+				$scope.allSelected = false;
+				$scope.processAdding = false;
+
+			});
+
+		}else{
+
+			sweetAlert.swal({
+				type:'error',
+				title: 'Oops...',
+				text:'Please select a product to add',
+				timer: 2000
+			});
+
+		}
+
+	}
+}])
 .directive('userCards', function(){
 
 	return {
