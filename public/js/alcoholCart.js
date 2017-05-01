@@ -3170,7 +3170,7 @@ AlcoholDelivery.service('alcoholCart', [
 			cartSubTotal = angular.isDefined(cartSubTotal)?cartSubTotal:this.getSubTotal();
 			var discountTotal = 0;
 			var discountMessage = '';
-			this.$cart.couponMessage = '';
+			var couponMessage = '';
 
 			if(!cTotal || (cTotal && cTotal <= cartSubTotal) ){
 
@@ -3189,9 +3189,9 @@ AlcoholDelivery.service('alcoholCart', [
 								discountMessage = discountAmt.couponMessage;
 
 						});
-						console.log("setCouponPrice Called");
+						
 						if(!discountTotal && discountMessage)
-							this.$cart.couponMessage = discountMessage;
+							couponMessage = discountMessage;
 
 					}else{
 
@@ -3221,10 +3221,14 @@ AlcoholDelivery.service('alcoholCart', [
 				}
 
 			}else{
-				this.$cart.couponMessage = 'Minimum amount should be '+cTotal+' to use this coupon.';
+				couponMessage = 'Minimum amount should be '+cTotal+' to use this coupon.';
 			}
 
-			this.setCouponMessage(this.$cart.couponMessage, 1);
+
+			_self.$cart.couponData = coupon;
+
+
+			this.setCouponMessage(couponMessage, 1);
 
 			this.$cart.couponDiscount = discountTotal;
 		}
@@ -3245,15 +3249,10 @@ AlcoholDelivery.service('alcoholCart', [
 
 			$http.post("checkCoupon", {params: {cart: _self.getCartKey(), removeCoupon: 1}})
 				.success(function(result){
-					/*angular.forEach(productsList, function (item) {
-						item.setPrice(item);
-					});*/
-				
-				delete _self.$cart.couponData;
+					delete _self.$cart.couponData;
+				}).error(function(){
 
-			}).error(function(){
-
-			});
+				});
 	
 		}
 
@@ -3274,9 +3273,10 @@ AlcoholDelivery.service('alcoholCart', [
 					_self.$coupon.message = result.msg;
 
 				}else{
+					
 					_self.$coupon.invalidCodeMsg = true;
-					_self.$cart.couponData = result.coupon;
 					_self.setCouponPrice(result.coupon);
+
 				}
 
 			}).error(function(){
