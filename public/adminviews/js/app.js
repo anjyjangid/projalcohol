@@ -79,75 +79,75 @@ MetronicApp.config(['$controllerProvider', function($controllerProvider) {
 
 /* Setup global settings */
 MetronicApp.factory('settings', ['$rootScope', function($rootScope) {
-    // supported languages
+	// supported languages
 
-    var settings = {
-        layout: {
-            pageSidebarClosed: false, // sidebar menu state
-            pageBodySolid: false, // solid body color state
-            pageAutoScrollOnLoad: 1000 // auto scroll to top on page load
-        },
-        layoutImgPath: Metronic.getAssetsPath() + 'admin/layout/img/',
-        layoutCssPath: Metronic.getAssetsPath() + 'admin/layout/css/',
-        general : {
-        	currency : '$'
-        }
-    };
+	var settings = {
+		layout: {
+			pageSidebarClosed: false, // sidebar menu state
+			pageBodySolid: false, // solid body color state
+			pageAutoScrollOnLoad: 1000 // auto scroll to top on page load
+		},
+		layoutImgPath: Metronic.getAssetsPath() + 'admin/layout/img/',
+		layoutCssPath: Metronic.getAssetsPath() + 'admin/layout/css/',
+		general : {
+			currency : '$'
+		}
+	};
 
-    $rootScope.settings = settings;
+	$rootScope.settings = settings;
 
-    $rootScope.timerange = [
-        {opVal:0,opTag:'12:00 am'},
-        {opVal:30,opTag:'12:30 am'},
-        {opVal:60,opTag:'01:00 am'},
-        {opVal:90,opTag:'01:30 am'},
-        {opVal:120,opTag:'02:00 am'},
-        {opVal:150,opTag:'02:30 am'},
-        {opVal:180,opTag:'03:00 am'},
-        {opVal:210,opTag:'03:30 am'},
-        {opVal:240,opTag:'04:00 am'},
-        {opVal:270,opTag:'04:30 am'},
-        {opVal:300,opTag:'05:00 am'},
-        {opVal:330,opTag:'05:30 am'},
-        {opVal:360,opTag:'06:00 am'},
-        {opVal:390,opTag:'06:30 am'},
-        {opVal:420,opTag:'07:00 am'},
-        {opVal:450,opTag:'07:30 am'},
-        {opVal:480,opTag:'08:00 am'},
-        {opVal:510,opTag:'08:30 am'},
-        {opVal:540,opTag:'09:00 am'},
-        {opVal:570,opTag:'09:30 am'},
-        {opVal:600,opTag:'10:00 am'},
-        {opVal:630,opTag:'10:30 am'},
-        {opVal:660,opTag:'11:00 am'},
-        {opVal:690,opTag:'11:30 am'},
-        {opVal:720,opTag:'12:00 pm'},
-        {opVal:750,opTag:'12:30 pm'},
-        {opVal:780,opTag:'01:00 pm'},
-        {opVal:810,opTag:'01:30 pm'},
-        {opVal:840,opTag:'02:00 pm'},
-        {opVal:870,opTag:'02:30 pm'},
-        {opVal:900,opTag:'03:00 pm'},
-        {opVal:930,opTag:'03:30 pm'},
-        {opVal:960,opTag:'04:00 pm'},
-        {opVal:990,opTag:'04:30 pm'},
-        {opVal:1020,opTag:'05:00 pm'},
-        {opVal:1050,opTag:'05:30 pm'},
-        {opVal:1080,opTag:'06:00 pm'},
-        {opVal:1110,opTag:'06:30 pm'},
-        {opVal:1140,opTag:'07:00 pm'},
-        {opVal:1170,opTag:'07:30 pm'},
-        {opVal:1200,opTag:'08:00 pm'},
-        {opVal:1230,opTag:'08:30 pm'},
-        {opVal:1260,opTag:'09:00 pm'},
-        {opVal:1290,opTag:'09:30 pm'},
-        {opVal:1320,opTag:'10:00 pm'},
-        {opVal:1350,opTag:'10:30 pm'},
-        {opVal:1380,opTag:'11:00 pm'},
-        {opVal:1410,opTag:'11:30 pm'},
-    ];
+	$rootScope.timerange = [
+		{opVal:0,opTag:'12:00 am'},
+		{opVal:30,opTag:'12:30 am'},
+		{opVal:60,opTag:'01:00 am'},
+		{opVal:90,opTag:'01:30 am'},
+		{opVal:120,opTag:'02:00 am'},
+		{opVal:150,opTag:'02:30 am'},
+		{opVal:180,opTag:'03:00 am'},
+		{opVal:210,opTag:'03:30 am'},
+		{opVal:240,opTag:'04:00 am'},
+		{opVal:270,opTag:'04:30 am'},
+		{opVal:300,opTag:'05:00 am'},
+		{opVal:330,opTag:'05:30 am'},
+		{opVal:360,opTag:'06:00 am'},
+		{opVal:390,opTag:'06:30 am'},
+		{opVal:420,opTag:'07:00 am'},
+		{opVal:450,opTag:'07:30 am'},
+		{opVal:480,opTag:'08:00 am'},
+		{opVal:510,opTag:'08:30 am'},
+		{opVal:540,opTag:'09:00 am'},
+		{opVal:570,opTag:'09:30 am'},
+		{opVal:600,opTag:'10:00 am'},
+		{opVal:630,opTag:'10:30 am'},
+		{opVal:660,opTag:'11:00 am'},
+		{opVal:690,opTag:'11:30 am'},
+		{opVal:720,opTag:'12:00 pm'},
+		{opVal:750,opTag:'12:30 pm'},
+		{opVal:780,opTag:'01:00 pm'},
+		{opVal:810,opTag:'01:30 pm'},
+		{opVal:840,opTag:'02:00 pm'},
+		{opVal:870,opTag:'02:30 pm'},
+		{opVal:900,opTag:'03:00 pm'},
+		{opVal:930,opTag:'03:30 pm'},
+		{opVal:960,opTag:'04:00 pm'},
+		{opVal:990,opTag:'04:30 pm'},
+		{opVal:1020,opTag:'05:00 pm'},
+		{opVal:1050,opTag:'05:30 pm'},
+		{opVal:1080,opTag:'06:00 pm'},
+		{opVal:1110,opTag:'06:30 pm'},
+		{opVal:1140,opTag:'07:00 pm'},
+		{opVal:1170,opTag:'07:30 pm'},
+		{opVal:1200,opTag:'08:00 pm'},
+		{opVal:1230,opTag:'08:30 pm'},
+		{opVal:1260,opTag:'09:00 pm'},
+		{opVal:1290,opTag:'09:30 pm'},
+		{opVal:1320,opTag:'10:00 pm'},
+		{opVal:1350,opTag:'10:30 pm'},
+		{opVal:1380,opTag:'11:00 pm'},
+		{opVal:1410,opTag:'11:30 pm'},
+	];
 
-    return settings;
+	return settings;
 
 }]);
 
@@ -343,118 +343,118 @@ MetronicApp.controller('AppController', [
 	}
 
 	$scope.notifyUser = function(id,mnum){
-        $scope.notify = {
-            time:30,
-            sms:1,
-            mail:1,
-            numDisable:false,
-            loading:false,
-            oid:id
-        };
+		$scope.notify = {
+			time:30,
+			sms:1,
+			mail:1,
+			numDisable:false,
+			loading:false,
+			oid:id
+		};
 
-        $scope.notify.oid = id;
+		$scope.notify.oid = id;
 
-        if(mnum == 0){
-            $scope.notify.sms = 0;
-            $scope.notify.numDisable = true;
-        }
+		if(mnum == 0){
+			$scope.notify.sms = 0;
+			$scope.notify.numDisable = true;
+		}
 
-        $('#notify').find('.alert').remove();
+		$('#notify').find('.alert').remove();
 
-        $('#notify').modal('show');
-    };
+		$('#notify').modal('show');
+	};
 
-    $scope.sendNotification = function(){
-        $scope.notify.loading = true;
-        $http.post('/adminapi/admin/notify',$scope.notify).then(function(res){
-            $scope.notify.loading = false;
+	$scope.sendNotification = function(){
+		$scope.notify.loading = true;
+		$http.post('/adminapi/admin/notify',$scope.notify).then(function(res){
+			$scope.notify.loading = false;
 
-            var st = '';
+			var st = '';
 
-            if($scope.notify.mail){
-                if(!res.data.mailsent){
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'Could not send mail, please try again.',
-                        container: '#notify .portlet-body',
-                        place: 'prepend',
-                        reset: false,
-                        closeInSeconds:5
-                    });
-                }else{
-                    Metronic.alert({
-                        type: 'success',
-                        icon: 'check',
-                        message: 'Mail has been sent successfully.',
-                        container: '#notify .portlet-body',
-                        place: 'prepend',
-                        reset: false,
-                        closeInSeconds:5
-                    });
-                }
-            }
+			if($scope.notify.mail){
+				if(!res.data.mailsent){
+					Metronic.alert({
+						type: 'danger',
+						icon: 'warning',
+						message: 'Could not send mail, please try again.',
+						container: '#notify .portlet-body',
+						place: 'prepend',
+						reset: false,
+						closeInSeconds:5
+					});
+				}else{
+					Metronic.alert({
+						type: 'success',
+						icon: 'check',
+						message: 'Mail has been sent successfully.',
+						container: '#notify .portlet-body',
+						place: 'prepend',
+						reset: false,
+						closeInSeconds:5
+					});
+				}
+			}
 
-            if($scope.notify.sms){
-                if(!res.data.smssent){
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'Could not send SMS, please try again.',
-                        container: '#notify .portlet-body',
-                        place: 'prepend',
-                        reset: false,
-                        closeInSeconds:5
-                    });
-                }else{
-                    Metronic.alert({
-                        type: 'success',
-                        icon: 'check',
-                        message: 'SMS has been sent successfully.',
-                        container: '#notify .portlet-body',
-                        place: 'prepend',
-                        reset: false,
-                        closeInSeconds:5
-                    });
-                }
-            }
-        },function(erres){
-            $scope.notify.loading = false;
-            Metronic.alert({
-                type: 'danger',
-                icon: 'warning',
-                message: erres.data.message,
-                container: '#notify .portlet-body',
-                place: 'prepend'
-            });
-        });
-    };
+			if($scope.notify.sms){
+				if(!res.data.smssent){
+					Metronic.alert({
+						type: 'danger',
+						icon: 'warning',
+						message: 'Could not send SMS, please try again.',
+						container: '#notify .portlet-body',
+						place: 'prepend',
+						reset: false,
+						closeInSeconds:5
+					});
+				}else{
+					Metronic.alert({
+						type: 'success',
+						icon: 'check',
+						message: 'SMS has been sent successfully.',
+						container: '#notify .portlet-body',
+						place: 'prepend',
+						reset: false,
+						closeInSeconds:5
+					});
+				}
+			}
+		},function(erres){
+			$scope.notify.loading = false;
+			Metronic.alert({
+				type: 'danger',
+				icon: 'warning',
+				message: erres.data.message,
+				container: '#notify .portlet-body',
+				place: 'prepend'
+			});
+		});
+	};
 
-    $scope.orderstatus = [
-    	{value:0,label:'Under Process',class:'warning',update:false},
-    	{value:1,label:'Ready',class:'info',update:false},
-    	{value:2,label:'Delivered',class:'success',update:true},
-    	{value:3,label:'Cancelled',class:'danger',update:true},
-    ];    
+	$scope.orderstatus = [
+		{value:0,label:'Under Process',class:'warning',update:false},
+		{value:1,label:'Ready',class:'info',update:false},
+		{value:2,label:'Delivered',class:'success',update:true},
+		{value:3,label:'Cancelled',class:'danger',update:true},
+	];    
 
-    $scope.showStatus = function(s){
-    	if(typeof s == 'undefined') return '';
-    	var search = $filter('filter')($scope.orderstatus,{value:s})[0];    	
-    	return '<span class="label label-sm label-'+search.class+'" >'+search.label+'</span>';;
-    };
+	$scope.showStatus = function(s){
+		if(typeof s == 'undefined') return '';
+		var search = $filter('filter')($scope.orderstatus,{value:s})[0];    	
+		return '<span class="label label-sm label-'+search.class+'" >'+search.label+'</span>';;
+	};
 
-    $scope.statusForm = function(order){    	
-    	$scope.orderform = order;
-    	$scope.orderform.notify = 0;
-    	$scope.orderform.notifytime = 30;
-    	$scope.orderform.notifysms = 0;
-    	$scope.orderform.notifymail = 0;
-    	$scope.orderform.errors = {};
-    	
-    	$scope.orderform.message = '';
+	$scope.statusForm = function(order){    	
+		$scope.orderform = order;
+		$scope.orderform.notify = 0;
+		$scope.orderform.notifytime = 30;
+		$scope.orderform.notifysms = 0;
+		$scope.orderform.notifymail = 0;
+		$scope.orderform.errors = {};
+		
+		$scope.orderform.message = '';
 		$scope.regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]{5,})$/;    
 		$scope.$watch('orderform.message', function(){
-		    $scope.regex.test($scope.orderform.message);
+			$scope.regex.test($scope.orderform.message);
 		});			
 
 		$scope.$watch('orderform.doStatus',function(newValue,oldValue){
@@ -465,36 +465,36 @@ MetronicApp.controller('AppController', [
 			$scope.updateMsg();
 		});
 
-    	$('#statusupdate').find('.alert').remove();
-        $('#statusupdate').modal('show');
-    }
+		$('#statusupdate').find('.alert').remove();
+		$('#statusupdate').modal('show');
+	}
 
-    $scope.messagelist = [
+	$scope.messagelist = [
 		{value:0,message:''},
 		{value:1,message:'Your designated {site_title} dispatch personnel will be delivering order #{order_number} within {time_of_delivery} minutes! Need help? Call us @ 9-2445533 (9-CHILLED). Thank you!'},
 		{value:2,message:'Your designated {site_title} order #{order_number} has been delivered to you! Need help? Call us @ 9-2445533 (9-CHILLED). Thank you!'},
 		{value:3,message:'Your designated {site_title} order #{order_number} has been cancelled! Need help? Call us @ 9-2445533 (9-CHILLED). Thank you!'},
 	];
 
-    $scope.updateMsg = function(){
-    	var message = $filter('filter')($scope.messagelist,{value:$scope.orderform.doStatus});
+	$scope.updateMsg = function(){
+		var message = $filter('filter')($scope.messagelist,{value:$scope.orderform.doStatus});
 		if(message[0]){				
 			var msg = message[0].message;
 			msg = msg.replace('{site_title}','Alcohol Delivery').replace('{order_number}',$scope.orderform.reference).replace('{time_of_delivery}',$scope.orderform.notifytime);
 
 			$scope.orderform.message = msg;
 		}
-    };
+	};
 
-    $scope.selectedUser = {};
+	$scope.selectedUser = {};
 
-    $scope.verifyUser = function(user){
+	$scope.verifyUser = function(user){
 		$scope.selectedUser = user;
 		$scope.selectedUser.vlink = $location.host()+'/verifyemail/'+user.email_key    	
 		$scope.selectedUser.success = false;
 		$scope.selectedUser.error = false;		
-        $('#verificationupdate').modal('show');
-    }
+		$('#verificationupdate').modal('show');
+	}
 
 }]);
 
@@ -1128,7 +1128,7 @@ MetronicApp.controller('LoginController', ['$scope','AdminUserService', '$rootSc
 		$scope.showlogin = $rootScope.flash.showlogin;
 		$scope.linkerror = 1;
 		$scope.linkerrormsg = $rootScope.flash.message;
-	    delete $rootScope.flash;
+		delete $rootScope.flash;
 	}else{
 		$scope.linkerror = 0;
 		$scope.showlogin = true;
@@ -1160,13 +1160,13 @@ MetronicApp.controller('LoginController', ['$scope','AdminUserService', '$rootSc
 		$http.post('/adminapi/password/email',$scope.reset).success(function(res){
 			$scope.loginForm(true);
 			Metronic.alert({
-		        type: 'success',
-		        icon: 'success',
-		        message: res.status,
-		        container: '.content',
-		        place: 'prepend'
-		    });
-		    $scope.reset = {};
+				type: 'success',
+				icon: 'success',
+				message: res.status,
+				container: '.content',
+				place: 'prepend'
+			});
+			$scope.reset = {};
 
 		}).error(function(data, status, headers) {
 			$scope.reseterrors = data;
@@ -1205,341 +1205,357 @@ MetronicApp.controller('ResetpasswordController', ['$rootScope','$scope','$http'
 }]);
 /* Setup Rounting For All Pages */
 MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
-    // Redirect any unmatched url
-    $urlRouterProvider.otherwise("/");
+	// Redirect any unmatched url
+	$urlRouterProvider.otherwise("/");
 
-    $stateProvider
+	$stateProvider
 
-        /*REDIRECT USER AS PER CONDITION*/
-        .state('blank',{
-        	url: "/",
-        	resolve: {
-            	authenticate: authenticate
-            },
-        	controller:function(AdminUserService, $state, $timeout) {
-	      		if (AdminUserService.isLogged()) {
-	      			$s = 'userLayout.dashboard'
-	      		}else{
-	      			$s = 'login'
-	      		}
-	      		$timeout(function(){
-	      			$state.go($s);
-	      		});
-        	}
-        })
+		/*REDIRECT USER AS PER CONDITION*/
+		.state('blank',{
+			url: "/",
+			resolve: {
+				authenticate: authenticate
+			},
+			controller:function(AdminUserService, $state, $timeout) {
+				if (AdminUserService.isLogged()) {
+					$s = 'userLayout.dashboard'
+				}else{
+					$s = 'login'
+				}
+				$timeout(function(){
+					$state.go($s);
+				});
+			}
+		})
 
-        .state('userLayout',{
+		.state('userLayout',{
 
-        	views:{
-        		"":{
-        			"templateUrl":"adminviews/views/userLayout.html",
-        		},
-        		"headerPanel@userLayout" : {
-        	        "templateUrl":"adminviews/tpl/header.html",
-        	        "controller":"HeaderController"
-        	    },
-        	    "sidebarPanel@userLayout":{
-        	        "templateUrl":"adminviews/tpl/sidebar.html",
-        	        "controller":"SidebarController"
-        	    },
-        	    "footerPanel@userLayout":{
-        	    	"templateUrl":"adminviews/tpl/footer.html",
-        	        "controller":"FooterController"
-        	    }
-        	}
-        })
+			views:{
+				"":{
+					"templateUrl":"adminviews/views/userLayout.html",
+				},
+				"headerPanel@userLayout" : {
+					"templateUrl":"adminviews/tpl/header.html",
+					"controller":"HeaderController"
+				},
+				"sidebarPanel@userLayout":{
+					"templateUrl":"adminviews/tpl/sidebar.html",
+					"controller":"SidebarController"
+				},
+				"footerPanel@userLayout":{
+					"templateUrl":"adminviews/tpl/footer.html",
+					"controller":"FooterController"
+				}
+			}
+		})
 
-        .state('userLayout.dashboard', {
-            url: "/dashboard",
-            templateUrl: "adminviews/views/dashboard.html",
-            data: {pageTitle: 'Dashboard'},
-            controller: "DashboardController",
-            resolve: {
-            	authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
-                        files: [
-                            'adminviews/js/controllers/DashboardController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+		.state('userLayout.dashboard', {
+			url: "/dashboard",
+			templateUrl: "adminviews/views/dashboard.html",
+			data: {pageTitle: 'Dashboard'},
+			controller: "DashboardController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+						files: [
+							'adminviews/js/controllers/DashboardController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state("userLayout.account", {
-            url: "/account",
-            templateUrl: "adminviews/views/profile/account.html",
-            data: {pageTitle: 'User Account'},
-            controller: "UserProfileController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+		.state("userLayout.account", {
+			url: "/account",
+			templateUrl: "adminviews/views/profile/account.html",
+			data: {pageTitle: 'User Account'},
+			controller: "UserProfileController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
 
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'adminviews/js/models/userModel.js',
-                            'adminviews/js/controllers/UserProfileController.js'
-                        ]
-                    });
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'adminviews/js/models/userModel.js',
+							'adminviews/js/controllers/UserProfileController.js'
+						]
+					});
 
-                }]
-            }
-        })
+				}]
+			}
+		})
 
-        .state('userLayout.customer', {
-            abstract:true,
-            templateUrl:'adminviews/views/auth.html',
-            controller: "CustomerController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'adminviews/js/models/customerModel.js',
-                            'adminviews/js/controllers/CustomerController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+		.state('userLayout.customer', {
+			abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+			controller: "CustomerController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'adminviews/js/models/customerModel.js',
+							'adminviews/js/controllers/CustomerController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state("userLayout.customer.list", {
-            url: "/customer/list",
-            templateUrl: "adminviews/views/customer/list.html",
-            data:{
+		.state("userLayout.customer.list", {
+			url: "/customer/list",
+			templateUrl: "adminviews/views/customer/list.html",
+			data:{
 				pageTitle:'Customers',
 				breadCrumb:[
 					{title:'Customers','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.customer.add", {
-            url: "/customer/add",
-            templateUrl: "adminviews/views/customer/form.html",
-            data:{
+		.state("userLayout.customer.import", {
+			url: "/customer/import/{import}",
+			templateUrl: "adminviews/views/customer/import.html",
+			data:{
+				pageTitle:'Customers',
+				breadCrumb:[
+					{title:'Customers','uisref':'userLayout.customer.list'},
+					{title:'Import','uisref':'#'}
+				]
+			},
+			controller:"CustomerImportController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
+
+		.state("userLayout.customer.add", {
+			url: "/customer/add",
+			templateUrl: "adminviews/views/customer/form.html",
+			data:{
 				pageTitle:'Add New Customer',
 				breadCrumb:[
 					{title:'Customers','uisref':'userLayout.customer.list'},
 					{title:'Add','uisref':'#'}
 				]
 			},
-            controller:"CustomerAddController",
+			controller:"CustomerAddController",
 			resolve: {
-                authenticate: authenticate
-            }
+				authenticate: authenticate
+			}
 
-        })
+		})
 
-        .state("userLayout.customer.edit",{
-            url: "/customer/edit/{customerid}",
-            templateUrl: "adminviews/views/customer/form.html",
-            data:{
+		.state("userLayout.customer.edit",{
+			url: "/customer/edit/{customerid}",
+			templateUrl: "adminviews/views/customer/form.html",
+			data:{
 				pageTitle:'Edit Customer',
 				breadCrumb:[
 					{title:'Customers','uisref':'userLayout.customer.list'},
 					{title:'Edit','uisref':'#'}
 				]
 			},
-            controller:"CustomerUpdateController",
+			controller:"CustomerUpdateController",
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.business', {
-            abstract:true,
-            templateUrl:'adminviews/views/auth.html',
-            controller: "BusinessController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'adminviews/js/models/businessModel.js',
-                            'adminviews/js/controllers/BusinessController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+		.state('userLayout.business', {
+			abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+			controller: "BusinessController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'adminviews/js/models/businessModel.js',
+							'adminviews/js/controllers/BusinessController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state("userLayout.business.list", {
-            url: "/business/list",
-            templateUrl: "adminviews/views/business/list.html",
-            data:{
+		.state("userLayout.business.list", {
+			url: "/business/list",
+			templateUrl: "adminviews/views/business/list.html",
+			data:{
 				pageTitle:'Businesses',
 				breadCrumb:[
 					{title:'Businesses','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.business.add", {
-            url: "/business/add",
-            templateUrl: "adminviews/views/business/form.html",
-            data:{
+		.state("userLayout.business.add", {
+			url: "/business/add",
+			templateUrl: "adminviews/views/business/form.html",
+			data:{
 				pageTitle:'Add New Business',
 				breadCrumb:[
 					{title:'Businesses','uisref':'userLayout.business.list'},
 					{title:'Add','uisref':'#'}
 				]
 			},
-            // controller:"BusinessAddController",
-            controller:"BusinessUpdateController",
+			// controller:"BusinessAddController",
+			controller:"BusinessUpdateController",
 			resolve: {
-                authenticate: authenticate
-            }
+				authenticate: authenticate
+			}
 
-        })
+		})
 
-        .state("userLayout.business.edit",{
-            url: "/business/edit/{businessid}",
-            templateUrl: "adminviews/views/business/form.html",
-            data:{
+		.state("userLayout.business.edit",{
+			url: "/business/edit/{businessid}",
+			templateUrl: "adminviews/views/business/form.html",
+			data:{
 				pageTitle:'Edit Business',
 				breadCrumb:[
 					{title:'Businesses','uisref':'userLayout.business.list'},
 					{title:'Edit','uisref':'#'}
 				]
 			},
-            controller:"BusinessUpdateController",
+			controller:"BusinessUpdateController",
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.dealers', {
-            abstract:true,
-            templateUrl:'adminviews/views/auth.html',
-            controller: "DealersController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'adminviews/js/models/dealerModel.js',
-                            'adminviews/js/controllers/DealersController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+		.state('userLayout.dealers', {
+			abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+			controller: "DealersController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'adminviews/js/models/dealerModel.js',
+							'adminviews/js/controllers/DealersController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state("userLayout.dealers.list", {
-            url: "/dealers/list",
-            templateUrl: "adminviews/views/dealers/list.html",
-            data:{
+		.state("userLayout.dealers.list", {
+			url: "/dealers/list",
+			templateUrl: "adminviews/views/dealers/list.html",
+			data:{
 				pageTitle:'Dealers',
 				breadCrumb:[
 					{title:'Dealers','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.dealers.add", {
-            url: "/dealers/add",
-            templateUrl: "adminviews/views/dealers/add.html",
-            data:{
+		.state("userLayout.dealers.add", {
+			url: "/dealers/add",
+			templateUrl: "adminviews/views/dealers/add.html",
+			data:{
 				pageTitle:'Add New Dealer',
 				breadCrumb:[
 					{title:'Dealers','uisref':'userLayout.dealers.list'},
 					{title:'Add','uisref':'#'}
 				]
 			},
-            controller:"DealerAddController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller:"DealerAddController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.dealers.show", {
-            url: "/dealers/show/{dealerid}",
-            templateUrl: "adminviews/views/dealers/show.html",
-            resolve: {
-                authenticate: authenticate
-            },
-            data:{
+		.state("userLayout.dealers.show", {
+			url: "/dealers/show/{dealerid}",
+			templateUrl: "adminviews/views/dealers/show.html",
+			resolve: {
+				authenticate: authenticate
+			},
+			data:{
 				pageTitle:'View Dealer',
 				breadCrumb:[
 					{title:'Dealers','uisref':'userLayout.dealers.list'},
 					{title:'View','uisref':'#'}
 				]
 			},
-            controller: "DealerShowController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller: "DealerShowController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.dealers.edit",{
-            url: "/dealers/edit/{dealerid}",
-            templateUrl: "adminviews/views/dealers/edit.html",
-            data:{
+		.state("userLayout.dealers.edit",{
+			url: "/dealers/edit/{dealerid}",
+			templateUrl: "adminviews/views/dealers/edit.html",
+			data:{
 				pageTitle:'Edit Dealer',
 				breadCrumb:[
 					{title:'Dealers','uisref':'userLayout.dealers.list'},
 					{title:'Edit','uisref':'#'}
 				]
 			},
-            controller:"DealerUpdateController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller:"DealerUpdateController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
 		.state("userLayout.dealers.orders",{
 
-            url: "/dealers/orders/{dealerid}",
-            templateUrl: "adminviews/views/dealers/orders.html",
-            data:{
+			url: "/dealers/orders/{dealerid}",
+			templateUrl: "adminviews/views/dealers/orders.html",
+			data:{
 				pageTitle:'Dealer orders',
 				breadCrumb:[
 					{title:'Dealers','uisref':'userLayout.dealers.list'},
 					{title:'Orders','uisref':'#'}
 				]
 			},
-            controller:"DealerOrderController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller:"DealerOrderController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.subadmin', {
+		.state('userLayout.subadmin', {
 			abstract:true,
 			templateUrl:'adminviews/views/auth.html',
 			controller:'SubadminController',
 			resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before',
-                        files: [
-                            'adminviews/js/controllers/SubadminController.js'
-                        ]
-                    });
-                }]
-            }
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before',
+						files: [
+							'adminviews/js/controllers/SubadminController.js'
+						]
+					});
+				}]
+			}
 		})
 
 		.state('userLayout.subadmin.list', {
@@ -1552,8 +1568,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
+				authenticate: authenticate
+			}
 		})
 
 		.state('userLayout.subadmin.add', {
@@ -1567,8 +1583,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
+				authenticate: authenticate
+			}
 		})
 
 		.state('userLayout.subadmin.edit', {
@@ -1582,16 +1598,16 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
+				authenticate: authenticate
+			}
 		})
 
-        .state("userLayout.orders",{
+		.state("userLayout.orders",{
 			abstract:true,
 			templateUrl:'adminviews/views/auth.html',
 			controller:"OrdersController",
 			resolve: {
-                authenticate: authenticate,
+				authenticate: authenticate,
 				deps: ['$ocLazyLoad',function($ocLazyLoad){
 					return $ocLazyLoad.load({
 						name: 'MetronicApp',
@@ -1615,8 +1631,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
+				authenticate: authenticate
+			}
 		})
 
 		.state("userLayout.orders.show",{
@@ -1631,8 +1647,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
+				authenticate: authenticate
+			}
 		})
 
 		.state("userLayout.orders.consumer",{
@@ -1674,52 +1690,52 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 
 					return alcoholStore.init();
 
-			    }
+				}
 
 			}
 		})
 
-        .state('userLayout.categories', {
-            abstract:true,
-            templateUrl:'adminviews/views/auth.html',
-            controller: "CategoryController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                            'js/angular-slugify.js',
-                            'adminviews/js/models/categoryModel.js',
-                            'adminviews/js/models/settingsModel.js',
-                            'adminviews/js/controllers/CategoryController.js'
-                        ]
-                    });
-                }],
-            }
-        })
+		.state('userLayout.categories', {
+			abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+			controller: "CategoryController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+							'js/angular-slugify.js',
+							'adminviews/js/models/categoryModel.js',
+							'adminviews/js/models/settingsModel.js',
+							'adminviews/js/controllers/CategoryController.js'
+						]
+					});
+				}],
+			}
+		})
 
-        .state("userLayout.categories.list", {
-            url: "/categories/list",
-            templateUrl: "adminviews/views/categories/list.html",
-            data:{
+		.state("userLayout.categories.list", {
+			url: "/categories/list",
+			templateUrl: "adminviews/views/categories/list.html",
+			data:{
 				pageTitle:'Categories',
 				breadCrumb:[
 					{title:'Categories','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.categories.add", {
-            url: "/categories/add",
-            templateUrl: "adminviews/views/categories/add.html",
-            data:{
+		.state("userLayout.categories.add", {
+			url: "/categories/add",
+			templateUrl: "adminviews/views/categories/add.html",
+			data:{
 				pageTitle:'Add New Category',
 				breadCrumb:[
 					{title:'Categories','uisref':'userLayout.categories.list'},
@@ -1727,81 +1743,81 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.categories.show", {
-            url: "/categories/show/{categoryid}",
-            templateUrl: "adminviews/views/categories/show.html",
-            data:{
+		.state("userLayout.categories.show", {
+			url: "/categories/show/{categoryid}",
+			templateUrl: "adminviews/views/categories/show.html",
+			data:{
 				pageTitle:'View Category',
 				breadCrumb:[
 					{title:'Categories','uisref':'userLayout.categories.list'},
 					{title:'View','uisref':'#'}
 				]
 			},
-            controller: "CategoryShowController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller: "CategoryShowController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.categories.edit",{
-            url: "/categories/edit/{categoryid}",
-            templateUrl: "adminviews/views/categories/add.html",
-            data:{
+		.state("userLayout.categories.edit",{
+			url: "/categories/edit/{categoryid}",
+			templateUrl: "adminviews/views/categories/add.html",
+			data:{
 				pageTitle:'Edit Category',
 				breadCrumb:[
 					{title:'Categories','uisref':'userLayout.categories.list'},
 					{title:'Edit','uisref':'#'}
 				]
 			},
-            controller:"CategoryUpdateController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller:"CategoryUpdateController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.products', {
-            abstract:true,
-            templateUrl:'adminviews/views/auth.html',
-            controller: "ProductController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                            'adminviews/js/models/productModel.js',
-                            'adminviews/js/controllers/ProductController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+		.state('userLayout.products', {
+			abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+			controller: "ProductController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+							'adminviews/js/models/productModel.js',
+							'adminviews/js/controllers/ProductController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state("userLayout.products.list", {
-            url: "/products/list",
-            templateUrl: "adminviews/views/products/list.html",
-            data:{
+		.state("userLayout.products.list", {
+			url: "/products/list",
+			templateUrl: "adminviews/views/products/list.html",
+			data:{
 				pageTitle:'Products',
 				breadCrumb:[
 					{title:'Products','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.products.add", {
-            url: "/products/add",
-            templateUrl: "adminviews/views/products/form.html",
-            data:{
+		.state("userLayout.products.add", {
+			url: "/products/add",
+			templateUrl: "adminviews/views/products/form.html",
+			data:{
 				pageTitle:'Add New Product',
 				breadCrumb:[
 					{title:'Products','uisref':'userLayout.products.list'},
@@ -1809,14 +1825,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.products.edit", {
-            url: "/products/edit/{productid}",
-            templateUrl: "adminviews/views/products/form.html",
-            data:{
+		.state("userLayout.products.edit", {
+			url: "/products/edit/{productid}",
+			templateUrl: "adminviews/views/products/form.html",
+			data:{
 				pageTitle:'Edit Product',
 				breadCrumb:[
 					{title:'Products','uisref':'userLayout.products.list'},
@@ -1824,47 +1840,47 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.productgroups', {
-            abstract:true,
-            templateUrl:'adminviews/views/auth.html',
-            controller: "ProductGroupController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [                            
-                            'adminviews/js/models/productgroupModel.js',
-                            'adminviews/js/controllers/ProductGroupController.js'
-                        ]
-                    });
-                }]
-            }
-        })
-        
-        .state("userLayout.productgroups.list", {
-            url: "/productgroup/list",
-            templateUrl: "adminviews/views/products/grouplist.html",
-            data:{
+		.state('userLayout.productgroups', {
+			abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+			controller: "ProductGroupController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [                            
+							'adminviews/js/models/productgroupModel.js',
+							'adminviews/js/controllers/ProductGroupController.js'
+						]
+					});
+				}]
+			}
+		})
+		
+		.state("userLayout.productgroups.list", {
+			url: "/productgroup/list",
+			templateUrl: "adminviews/views/products/grouplist.html",
+			data:{
 				pageTitle:'Product Groups',
 				breadCrumb:[
 					{title:'Product Groups','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.productgroups.add", {
-            url: "/products/groupadd",
-            templateUrl: "adminviews/views/products/groupform.html",
-            data:{
+		.state("userLayout.productgroups.add", {
+			url: "/products/groupadd",
+			templateUrl: "adminviews/views/products/groupform.html",
+			data:{
 				pageTitle:'Add Product Group',
 				breadCrumb:[
 					{title:'Product Groups','uisref':'userLayout.productgroups.list'},
@@ -1872,14 +1888,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.productgroups.edit", {
-            url: "/products/groupedit/{productgroupid}",
-            templateUrl: "adminviews/views/products/groupform.html",
-            data:{
+		.state("userLayout.productgroups.edit", {
+			url: "/products/groupedit/{productgroupid}",
+			templateUrl: "adminviews/views/products/groupform.html",
+			data:{
 				pageTitle:'Edit Product Group',
 				breadCrumb:[
 					{title:'Product Groups','uisref':'userLayout.productgroups.list'},
@@ -1887,86 +1903,86 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.products.shared", {
-            url: "/products/sharedinventory",
-            templateUrl: "adminviews/views/products/shared.html",
-            controller: "SharedInventoryController",
-            data:{
+		.state("userLayout.products.shared", {
+			url: "/products/sharedinventory",
+			templateUrl: "adminviews/views/products/shared.html",
+			controller: "SharedInventoryController",
+			data:{
 				pageTitle:'Shared Inventory',
 				breadCrumb:[
 					{title:'Shared Inventory','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.stocks', {
-            abstract:true,
-            templateUrl:'adminviews/views/auth.html',
-            resolve: {
-                authenticate: authenticate,
-            }
-        })
+		.state('userLayout.stocks', {
+			abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+			resolve: {
+				authenticate: authenticate,
+			}
+		})
 
-        .state("userLayout.stocks.list", {
-            url: "/products/stocks",
-            templateUrl: "adminviews/views/stocks/list.html",
-            controller: "StocksController",
-            data:{
+		.state("userLayout.stocks.list", {
+			url: "/products/stocks",
+			templateUrl: "adminviews/views/stocks/list.html",
+			controller: "StocksController",
+			data:{
 				pageTitle:'Stock Order List',
 				breadCrumb:[
 					{title:'Stock Order List','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'adminviews/js/controllers/StocksController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'adminviews/js/controllers/StocksController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state("userLayout.stocks.po", {
-            url: "/products/purchase-orders",
-            templateUrl: "adminviews/views/stocks/po.html",
-            controller: "PurchaseOrderController",
-            data:{
+		.state("userLayout.stocks.po", {
+			url: "/products/purchase-orders",
+			templateUrl: "adminviews/views/stocks/po.html",
+			controller: "PurchaseOrderController",
+			data:{
 				pageTitle:'Purchase Orders',
 				breadCrumb:[
 					{title:'Purchase Orders','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'adminviews/js/controllers/PurchaseOrderController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'adminviews/js/controllers/PurchaseOrderController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state("userLayout.stocks.poDetail", {
-            url: "/products/po/:id",
-            templateUrl: "adminviews/views/stocks/po-detail.html",
-            controller: "PurchaseOrderController",
-            data:{
+		.state("userLayout.stocks.poDetail", {
+			url: "/products/po/:id",
+			templateUrl: "adminviews/views/stocks/po-detail.html",
+			controller: "PurchaseOrderController",
+			data:{
 				pageTitle:'Purchase Order Detail',
 				breadCrumb:[
 					{title:'Purchase Orders','uisref':'userLayout.stocks.po'},
@@ -1974,44 +1990,44 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'adminviews/js/controllers/PurchaseOrderController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'adminviews/js/controllers/PurchaseOrderController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state('userLayout.packages', {
-            abstract:true,
-            templateUrl:'adminviews/views/auth.html',
-            controller: "PackageController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                            'adminviews/js/models/packageModel.js',
-                            'adminviews/js/controllers/PackageController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+		.state('userLayout.packages', {
+			abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+			controller: "PackageController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+							'adminviews/js/models/packageModel.js',
+							'adminviews/js/controllers/PackageController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state("userLayout.packages.party", {
-            url: "/packages/party",
-            templateUrl: "adminviews/views/packages/list.html",
-            data:{
+		.state("userLayout.packages.party", {
+			url: "/packages/party",
+			templateUrl: "adminviews/views/packages/list.html",
+			data:{
 				pageTitle:'Party Packages',
 				type:1,
 				breadCrumb:[
@@ -2019,14 +2035,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.packages.cocktail", {
-            url: "/packages/cocktail",
-            templateUrl: "adminviews/views/packages/list.html",
-            data:{
+		.state("userLayout.packages.cocktail", {
+			url: "/packages/cocktail",
+			templateUrl: "adminviews/views/packages/list.html",
+			data:{
 				pageTitle:'Cocktail Packages',
 				type:2,
 				breadCrumb:[
@@ -2034,14 +2050,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.packages.addparty", {
-            url: "/packages/addparty",
-            templateUrl: "adminviews/views/packages/form.html",
-            data:{
+		.state("userLayout.packages.addparty", {
+			url: "/packages/addparty",
+			templateUrl: "adminviews/views/packages/form.html",
+			data:{
 				pageTitle:'Add Party Package',
 				type:1,
 				breadCrumb:[
@@ -2050,14 +2066,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.packages.editparty", {
-            url: "/packages/editparty/:packageid",
-            templateUrl: "adminviews/views/packages/form.html",
-            data:{
+		.state("userLayout.packages.editparty", {
+			url: "/packages/editparty/:packageid",
+			templateUrl: "adminviews/views/packages/form.html",
+			data:{
 				pageTitle:'Edit Party Package',
 				type:1,
 				breadCrumb:[
@@ -2066,14 +2082,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.packages.addcocktail", {
-            url: "/packages/addcocktail",
-            templateUrl: "adminviews/views/packages/form.html",
-            data:{
+		.state("userLayout.packages.addcocktail", {
+			url: "/packages/addcocktail",
+			templateUrl: "adminviews/views/packages/form.html",
+			data:{
 				pageTitle:'Add Cocktail Package',
 				type:2,
 				breadCrumb:[
@@ -2082,14 +2098,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.packages.editcocktail", {
-            url: "/packages/editcocktail/:packageid",
-            templateUrl: "adminviews/views/packages/form.html",
-            data:{
+		.state("userLayout.packages.editcocktail", {
+			url: "/packages/editcocktail/:packageid",
+			templateUrl: "adminviews/views/packages/form.html",
+			data:{
 				pageTitle:'Edit Cocktail Package',
 				type:2,
 				breadCrumb:[
@@ -2098,52 +2114,52 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.gifts', {
-            abstract:true,
+		.state('userLayout.gifts', {
+			abstract:true,
 			controller:"GiftController",
-            templateUrl:'adminviews/views/auth.html',
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                            'js/angular-slugify.js',
+			templateUrl:'adminviews/views/auth.html',
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+							'js/angular-slugify.js',
 							'adminviews/js/models/giftModel.js',
-                            'adminviews/js/controllers/GiftController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+							'adminviews/js/controllers/GiftController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state('userLayout.gifts.list', {
-            url: "/gifts/list",
-            templateUrl: "adminviews/views/gifts/list.html",
-            controller:"GiftFormController",
-            data:{
+		.state('userLayout.gifts.list', {
+			url: "/gifts/list",
+			templateUrl: "adminviews/views/gifts/list.html",
+			controller:"GiftFormController",
+			data:{
 				pageTitle:'Gifts Items',
 				breadCrumb:[
 					{title:'Gifts Items','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.gifts.add', {
-            url: "/gifts/add",
-            templateUrl: "adminviews/views/gifts/form.html",
-            controller:"GiftFormController",
-            data:{
+		.state('userLayout.gifts.add', {
+			url: "/gifts/add",
+			templateUrl: "adminviews/views/gifts/form.html",
+			controller:"GiftFormController",
+			data:{
 				pageTitle:'Add Gift',
 				breadCrumb:[
 					{title:'Gifts Items','uisref':'userLayout.gifts.list'},
@@ -2151,15 +2167,15 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.gifts.edit', {
-            url: "/gifts/edit/{giftid}",
-            templateUrl: "adminviews/views/gifts/form.html",
-            controller:"GiftFormController",
-            data:{
+		.state('userLayout.gifts.edit', {
+			url: "/gifts/edit/{giftid}",
+			templateUrl: "adminviews/views/gifts/form.html",
+			controller:"GiftFormController",
+			data:{
 				pageTitle:'Edit Gift',
 				breadCrumb:[
 					{title:'Gifts Items','uisref':'userLayout.gifts.list'},
@@ -2167,30 +2183,30 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.gifts.categorylist', {
-            url: "/gifts/categorylist",
-            templateUrl: "adminviews/views/gifts/categorylist.html",
-            controller:"GiftCategoryFormController",
-            data:{
+		.state('userLayout.gifts.categorylist', {
+			url: "/gifts/categorylist",
+			templateUrl: "adminviews/views/gifts/categorylist.html",
+			controller:"GiftCategoryFormController",
+			data:{
 				pageTitle:'Gift Categories',
 				breadCrumb:[
 					{title:'Gift Categories','uisref':'#'},
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.gifts.categoryadd', {
-            url: "/gifts/categoryadd",
-            templateUrl: "adminviews/views/gifts/categoryform.html",
-            controller:"GiftCategoryFormController",
-            data:{
+		.state('userLayout.gifts.categoryadd', {
+			url: "/gifts/categoryadd",
+			templateUrl: "adminviews/views/gifts/categoryform.html",
+			controller:"GiftCategoryFormController",
+			data:{
 				pageTitle:'Gift Category Add',
 				breadCrumb:[
 					{title:'Gift Categories','uisref':'userLayout.gifts.categorylist'},
@@ -2198,15 +2214,15 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.gifts.categoryedit', {
-            url: "/gifts/categoryedit/{categoryid}",
-            templateUrl: "adminviews/views/gifts/categoryform.html",
-            controller:"GiftCategoryFormController",
-            data:{
+		.state('userLayout.gifts.categoryedit', {
+			url: "/gifts/categoryedit/{categoryid}",
+			templateUrl: "adminviews/views/gifts/categoryform.html",
+			controller:"GiftCategoryFormController",
+			data:{
 				pageTitle:'Gift Category Edit',
 				breadCrumb:[
 					{title:'Gift Categories','uisref':'userLayout.gifts.categorylist'},
@@ -2214,121 +2230,121 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.gifts.cards', {
-            url: "/gifts/giftcards",
-            templateUrl: "adminviews/views/gifts/giftcards.html",
-            controller:"GiftCardController",
-            data:{
+		.state('userLayout.gifts.cards', {
+			url: "/gifts/giftcards",
+			templateUrl: "adminviews/views/gifts/giftcards.html",
+			controller:"GiftCardController",
+			data:{
 				pageTitle:'Gift Certificates',
 				breadCrumb:[
 					{title:'Gift Certificates','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.timeslots', {
-            abstract:true,
+		.state('userLayout.timeslots', {
+			abstract:true,
 			controller:"TimeslotController",
-            templateUrl:'adminviews/views/auth.html',
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'adminviews/js/controllers/TimeslotController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+			templateUrl:'adminviews/views/auth.html',
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'adminviews/js/controllers/TimeslotController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state('userLayout.timeslots.list', {
-            url: "/timeslots/list",
-            templateUrl: "adminviews/views/timeslots/timeslots.html",
-            data:{
+		.state('userLayout.timeslots.list', {
+			url: "/timeslots/list",
+			templateUrl: "adminviews/views/timeslots/timeslots.html",
+			data:{
 				pageTitle:'Time Slots',
 				breadCrumb:[
 					{title:'Time Slots','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.publicholidays', {
-            url: "/publicholidays",
-            templateUrl: "adminviews/views/publicholidays.html",
-            controller:"PublicholidaysController",
-            data:{
+		.state('userLayout.publicholidays', {
+			url: "/publicholidays",
+			templateUrl: "adminviews/views/publicholidays.html",
+			controller:"PublicholidaysController",
+			data:{
 				pageTitle:'Public Holidays',
 				breadCrumb:[
 					{title:'Public Holidays','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                        	'adminviews/js/controllers/PublicholidaysController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'adminviews/js/controllers/PublicholidaysController.js'
+						]
+					});
+				}]
+			}
+		})
 
 
-        .state('userLayout.stores', {
-            abstract:true,
+		.state('userLayout.stores', {
+			abstract:true,
 			templateUrl:'adminviews/views/auth.html',
-            controller: "StoresController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                            'adminviews/js/models/storeModel.js',
-                            'adminviews/js/controllers/StoresController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+			controller: "StoresController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+							'adminviews/js/models/storeModel.js',
+							'adminviews/js/controllers/StoresController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state("userLayout.stores.list", {
-            url: "/store/list",
-            templateUrl: "adminviews/views/stores/list.html",
-            data:{
+		.state("userLayout.stores.list", {
+			url: "/store/list",
+			templateUrl: "adminviews/views/stores/list.html",
+			data:{
 				pageTitle:'Stores',
 				breadCrumb:[
 					{title:'Stores','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.stores.add", {
-            url: "/store/add",
-            templateUrl: "adminviews/views/stores/form.html",
-            data:{
+		.state("userLayout.stores.add", {
+			url: "/store/add",
+			templateUrl: "adminviews/views/stores/form.html",
+			data:{
 				pageTitle:'Add Store',
 				breadCrumb:[
 					{title:'Stores','uisref':'userLayout.stores.list'},
@@ -2336,15 +2352,15 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            },
-            controller: "StoreFormController",
-        })
+				authenticate: authenticate
+			},
+			controller: "StoreFormController",
+		})
 
-        .state("userLayout.stores.edit", {
-            url: "/store/edit/{storeId}",
-            templateUrl: "adminviews/views/stores/form.html",
-            data:{
+		.state("userLayout.stores.edit", {
+			url: "/store/edit/{storeId}",
+			templateUrl: "adminviews/views/stores/form.html",
+			data:{
 				pageTitle:'Edit Store',
 				breadCrumb:[
 					{title:'Stores','uisref':'userLayout.stores.list'},
@@ -2352,87 +2368,87 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            },
-            controller: "StoreFormController",
-        })
+				authenticate: authenticate
+			},
+			controller: "StoreFormController",
+		})
 
-        .state('userLayout.company', {
-            abstract:true,
+		.state('userLayout.company', {
+			abstract:true,
 			templateUrl:'adminviews/views/auth.html',
-            controller: "CompanyController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'assets/global/plugins/ckeditor/ckeditor.js',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                            'adminviews/js/controllers/CompanyController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+			controller: "CompanyController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'assets/global/plugins/ckeditor/ckeditor.js',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+							'adminviews/js/controllers/CompanyController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state('userLayout.company.list', {
-            url:'/company/list',
+		.state('userLayout.company.list', {
+			url:'/company/list',
 			templateUrl:'adminviews/views/company/list.html',
-            data:{
+			data:{
 				pageTitle:'Company Information',
 				breadCrumb:[
 					{title:'Company List','uisref':'#'}
 				]
 			},
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.company.edit', {
-            url:'/company/edit/{companyId}',
+		.state('userLayout.company.edit', {
+			url:'/company/edit/{companyId}',
 			templateUrl:'adminviews/views/company/form.html',
-            controller:'CompanyFormController',
-            data:{
+			controller:'CompanyFormController',
+			data:{
 				pageTitle:'Company Edit',
 				breadCrumb:[
 					{title:'Company List','uisref':'userLayout.company.list'},
 					{title:'Edit','uisref':'#'}
 				]
 			},
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.settings', {
-            abstract:true,
+		.state('userLayout.settings', {
+			abstract:true,
 			templateUrl:'adminviews/views/auth.html',
-            controller: "SettingsController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'adminviews/js/models/settingsModel.js',
-                            'adminviews/js/controllers/SettingsController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+			controller: "SettingsController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'adminviews/js/models/settingsModel.js',
+							'adminviews/js/controllers/SettingsController.js'
+						]
+					});
+				}]
+			}
+		})
 
 
 
-        .state("userLayout.settings.general", {
-            url: "/settings/general",
-            templateUrl: "adminviews/views/settings/general.html",
-            data:{
+		.state("userLayout.settings.general", {
+			url: "/settings/general",
+			templateUrl: "adminviews/views/settings/general.html",
+			data:{
 				pageTitle:'General Settings',
 				key:"general",
 				breadCrumb:[
@@ -2440,14 +2456,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.settings.social", {
-            url: "/settings/social",
-            templateUrl: "adminviews/views/settings/social.html",
-            data:{
+		.state("userLayout.settings.social", {
+			url: "/settings/social",
+			templateUrl: "adminviews/views/settings/social.html",
+			data:{
 				pageTitle:'Social Settings',
 				key:"social",
 				breadCrumb:[
@@ -2455,14 +2471,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.settings.pricing", {
-            url: "/pricing",
-            templateUrl: "adminviews/views/settings/pricing.html",
-            data:{
+		.state("userLayout.settings.pricing", {
+			url: "/pricing",
+			templateUrl: "adminviews/views/settings/pricing.html",
+			data:{
 				pageTitle:'Pricing Settings',
 				key:"pricing",
 				breadCrumb:[
@@ -2470,24 +2486,24 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-            		return $ocLazyLoad.load({
-            		    name: 'ui.select',
-            		    insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-            		    files: [
-            		        'assets/global/plugins/angularjs/plugins/ui-select/select.min.css',
-            		        'assets/global/plugins/angularjs/plugins/ui-select/select.min.js'
-            		    ]
-            		});
-                }],
-            }
-        })
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'ui.select',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'assets/global/plugins/angularjs/plugins/ui-select/select.min.css',
+							'assets/global/plugins/angularjs/plugins/ui-select/select.min.js'
+						]
+					});
+				}],
+			}
+		})
 
-        .state("userLayout.settings.loyalty", {
-            url: "/loyalty",
-            templateUrl: "adminviews/views/settings/loyalty.html",
-            data:{
+		.state("userLayout.settings.loyalty", {
+			url: "/loyalty",
+			templateUrl: "adminviews/views/settings/loyalty.html",
+			data:{
 				pageTitle:'Loyalty Settings',
 				key:"loyalty",
 				breadCrumb:[
@@ -2495,14 +2511,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-	    .state("userLayout.settings.cloudprinters", {
-	        url: "/cloudprinters",
-	        templateUrl: "adminviews/views/settings/cloudprinters.html",
-	        data:{
+		.state("userLayout.settings.cloudprinters", {
+			url: "/cloudprinters",
+			templateUrl: "adminviews/views/settings/cloudprinters.html",
+			data:{
 				pageTitle:'Cloud Printers',
 				key:"cloudprinters",
 				breadCrumb:[
@@ -2510,14 +2526,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-	            authenticate: authenticate
-	        },
-	        controller:'SettingPrinterController'
-	    })
-    	.state("userLayout.settings.announcementBar", {
-            url: "/settings/announcement-bar",
-            templateUrl: "adminviews/views/settings/announcement-bar.html",
-            data:{
+				authenticate: authenticate
+			},
+			controller:'SettingPrinterController'
+		})
+		.state("userLayout.settings.announcementBar", {
+			url: "/settings/announcement-bar",
+			templateUrl: "adminviews/views/settings/announcement-bar.html",
+			data:{
 				pageTitle:'Announcement Bar',
 				key:"announcementBar",
 				breadCrumb:[
@@ -2525,24 +2541,24 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                        ]
-                    });
-                }]
-            }
-        })
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+						]
+					});
+				}]
+			}
+		})
 
-        .state("userLayout.settings.homeBanner", {
-            url: "/settings/home-banner",
-            templateUrl: "adminviews/views/settings/home-banner.html",
-            data:{
+		.state("userLayout.settings.homeBanner", {
+			url: "/settings/home-banner",
+			templateUrl: "adminviews/views/settings/home-banner.html",
+			data:{
 				pageTitle:'Home Banner',
 				key:"homeBanner",
 				breadCrumb:[
@@ -2550,19 +2566,19 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                        ]
-                    });
-                }]
-            }
-        })
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+						]
+					});
+				}]
+			}
+		})
 
 /*Promotional banner start*/
 		.state("userLayout.promotionalbanners",{
@@ -2570,7 +2586,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 			templateUrl:'adminviews/views/auth.html',
 			controller:"PromotionalBannersController",
 			resolve: {
-                authenticate: authenticate,
+				authenticate: authenticate,
 				deps: ['$ocLazyLoad',function($ocLazyLoad){
 					return $ocLazyLoad.load({
 						name: 'MetronicApp',
@@ -2579,7 +2595,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 							'adminviews/js/models/promotionalBannersModel.js',
 							'adminviews/js/controllers/PromotionalBannersController.js',
 							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
 						]
 					});
 				}]
@@ -2596,607 +2612,607 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
+				authenticate: authenticate
+			}
 		})
 
 		.state("userLayout.promotionalbanners.add",{
-            url: "/promotionalbanners/add",
-            templateUrl: "adminviews/views/promotionalbanners/add_edit.html",
-            data:{
+			url: "/promotionalbanners/add",
+			templateUrl: "adminviews/views/promotionalbanners/add_edit.html",
+			data:{
 				pageTitle:'Add New Promotional Banner',
 				breadCrumb:[
 					{title:'Promotional Banners','uisref':'userLayout.promotionalbanners.list'},
 					{title:'Add','uisref':'#'}
 				]
 			},
-            controller:"PromotionalBannersAddController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller:"PromotionalBannersAddController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.promotionalbanners.edit",{
-            url: "/promotionalbanners/edit/{promotionalbannerid}",
-            templateUrl: "adminviews/views/promotionalbanners/add_edit.html",
-            data:{
+		.state("userLayout.promotionalbanners.edit",{
+			url: "/promotionalbanners/edit/{promotionalbannerid}",
+			templateUrl: "adminviews/views/promotionalbanners/add_edit.html",
+			data:{
 				pageTitle:'Edit Promotional Banner',
 				breadCrumb:[
 					{title:'Promotional Banners','uisref':'userLayout.promotionalbanners.list'},
 					{title:'Edit','uisref':'#'}
 				]
 			},
-            controller:"PromotionalBannersUpdateController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller:"PromotionalBannersUpdateController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 /*Promotional banner end*/
 
-        .state('userLayout.promotion', {
-            abstract:true,
+		.state('userLayout.promotion', {
+			abstract:true,
 			templateUrl:'adminviews/views/auth.html',
-            controller: "PromotionController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
+			controller: "PromotionController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
 
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
 
-                            'adminviews/js/models/promotionModel.js',
-                            'adminviews/js/models/packageModel.js',
-                            'adminviews/js/controllers/PromotionController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+							'adminviews/js/models/promotionModel.js',
+							'adminviews/js/models/packageModel.js',
+							'adminviews/js/controllers/PromotionController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state("userLayout.promotion.list", {
-            url: "/promotion/list",
-            templateUrl: "adminviews/views/promotion/list.html",
-            data:{
+		.state("userLayout.promotion.list", {
+			url: "/promotion/list",
+			templateUrl: "adminviews/views/promotion/list.html",
+			data:{
 				pageTitle:'Promotions Listing',
 				breadCrumb:[
 					{title:'Promotions','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.promotion.add", {
-            url: "/promotion/add",
-            templateUrl: "adminviews/views/promotion/add.html",
-            data:{
+		.state("userLayout.promotion.add", {
+			url: "/promotion/add",
+			templateUrl: "adminviews/views/promotion/add.html",
+			data:{
 				pageTitle:'Add Promotions',
 				breadCrumb:[
 					{title:'Promotions','uisref':'userLayout.promotion.list'},
 					{title:'Add','uisref':'#'}
 				]
 			},
-            controller: "PromotionAddController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller: "PromotionAddController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.promotion.edit",{
-            url: "/promotion/edit/{promotionId}",
-            templateUrl: "adminviews/views/promotion/add.html",
-            data:{
+		.state("userLayout.promotion.edit",{
+			url: "/promotion/edit/{promotionId}",
+			templateUrl: "adminviews/views/promotion/add.html",
+			data:{
 				pageTitle:'Edit Promotions',
 				breadCrumb:[
 					{title:'Promotions','uisref':'userLayout.promotion.list'},
 					{title:'Edit','uisref':'#'}
 				]
 			},
-            controller:"PromotionAddController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller:"PromotionAddController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.coupon', {
-            abstract:true,
+		.state('userLayout.coupon', {
+			abstract:true,
 			templateUrl:'adminviews/views/auth.html',
-            controller: "CouponController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
+			controller: "CouponController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
 
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
 
-                            'adminviews/js/models/couponModel.js',
-                            'adminviews/js/models/packageModel.js',
-                            'adminviews/js/controllers/CouponController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+							'adminviews/js/models/couponModel.js',
+							'adminviews/js/models/packageModel.js',
+							'adminviews/js/controllers/CouponController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state("userLayout.coupon.list", {
-            url: "/coupon/list",
-            templateUrl: "adminviews/views/coupon/list.html",
-            data:{
+		.state("userLayout.coupon.list", {
+			url: "/coupon/list",
+			templateUrl: "adminviews/views/coupon/list.html",
+			data:{
 				pageTitle:'Coupons Listing',
 				breadCrumb:[
 					{title:'Coupons','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.coupon.add", {
-            url: "/coupon/add",
-            templateUrl: "adminviews/views/coupon/add.html",
-            data:{
+		.state("userLayout.coupon.add", {
+			url: "/coupon/add",
+			templateUrl: "adminviews/views/coupon/add.html",
+			data:{
 				pageTitle:'Add coupons',
 				breadCrumb:[
 					{title:'Coupons','uisref':'userLayout.coupon.list'},
 					{title:'Add','uisref':'#'}
 				]
 			},
-            controller: "CouponAddController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller: "CouponAddController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.coupon.edit",{
-            url: "/coupon/edit/{couponId}",
-            templateUrl: "adminviews/views/coupon/add.html",
-            data:{
+		.state("userLayout.coupon.edit",{
+			url: "/coupon/edit/{couponId}",
+			templateUrl: "adminviews/views/coupon/add.html",
+			data:{
 				pageTitle:'Edit coupons',
 				breadCrumb:[
 					{title:'Coupons','uisref':'userLayout.coupon.list'},
 					{title:'Edit','uisref':'#'}
 				]
 			},
-            controller:"CouponAddController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
-        .state("userLayout.coupon.view",{
-            url: "/coupon/detail/{couponId}",
-            templateUrl: "adminviews/views/coupon/detail.html",
-            data:{
+			controller:"CouponAddController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
+		.state("userLayout.coupon.view",{
+			url: "/coupon/detail/{couponId}",
+			templateUrl: "adminviews/views/coupon/detail.html",
+			data:{
 				pageTitle:'Edit coupons',
 				breadCrumb:[
 					{title:'Coupons','uisref':'userLayout.coupon.list'},
 					{title:'Detail','uisref':'#'}
 				]
 			},
-            controller:"CouponDetailController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller:"CouponDetailController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.dontmiss', {
-        	url: "/dontmiss",
+		.state('userLayout.dontmiss', {
+			url: "/dontmiss",
 			templateUrl:'adminviews/views/dontmiss/index.html',
-            controller: "DontMissSuggestionController",
-            data:{
+			controller: "DontMissSuggestionController",
+			data:{
 				pageTitle:"Don't miss suggestions",
 				breadCrumb:[
 					{title:"Don't miss suggestions",'uisref':'#'}
 				]
 			},
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'adminviews/js/models/dontmissModel.js',
-                            'adminviews/js/controllers/DontMissSuggestionController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'adminviews/js/models/dontmissModel.js',
+							'adminviews/js/controllers/DontMissSuggestionController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state('userLayout.emailtemplates', {
-            abstract:true,
+		.state('userLayout.emailtemplates', {
+			abstract:true,
 			templateUrl:'adminviews/views/auth.html',
-            controller: "EmailTemplateController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'assets/global/plugins/ckeditor/ckeditor.js',
-                            'adminviews/js/models/emailTemplateModel.js',
-                            'adminviews/js/controllers/EmailTemplateController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+			controller: "EmailTemplateController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'assets/global/plugins/ckeditor/ckeditor.js',
+							'adminviews/js/models/emailTemplateModel.js',
+							'adminviews/js/controllers/EmailTemplateController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state("userLayout.emailtemplates.list", {
-            url: "/emailtemplates/list",
-            templateUrl: "adminviews/views/emailtemplates/list.html",
-            data:{
+		.state("userLayout.emailtemplates.list", {
+			url: "/emailtemplates/list",
+			templateUrl: "adminviews/views/emailtemplates/list.html",
+			data:{
 				pageTitle:'Email Templates',
 				breadCrumb:[
 					{title:'Email Templates','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.emailtemplates.edit",{
-            url: "/emailtemplates/edit/{templateid}",
-            templateUrl: "adminviews/views/emailtemplates/edit.html",
-            data:{
+		.state("userLayout.emailtemplates.edit",{
+			url: "/emailtemplates/edit/{templateid}",
+			templateUrl: "adminviews/views/emailtemplates/edit.html",
+			data:{
 				pageTitle:'Edit Email Templates',
 				breadCrumb:[
 					{title:'Email Templates','uisref':'userLayout.emailtemplates.list'},
 					{title:'Edit','uisref':'#'}
 				]
 			},
-            controller:"EmailTemplateUpdateController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller:"EmailTemplateUpdateController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.emailtemplates.show", {
-            url: "/emailtemplates/view/{templateid}",
-            templateUrl: "adminviews/views/emailtemplates/show.html",
-            data:{
+		.state("userLayout.emailtemplates.show", {
+			url: "/emailtemplates/view/{templateid}",
+			templateUrl: "adminviews/views/emailtemplates/show.html",
+			data:{
 				pageTitle:'Email Templates Preview',
 				breadCrumb:[
 					{title:'Email Templates','uisref':'userLayout.emailtemplates.list'},
 					{title:'View','uisref':'#'}
 				]
 			},
-            controller: "EmailTemplateShowController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller: "EmailTemplateShowController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.cms', {
-            abstract:true,
+		.state('userLayout.cms', {
+			abstract:true,
 			templateUrl:'adminviews/views/auth.html',
-            controller: "CmsController",
-            resolve: {
-                authenticate: authenticate,                
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'assets/global/plugins/ckeditor/ckeditor.js',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                            'adminviews/js/models/cmsModel.js',
-                            'adminviews/js/controllers/CmsController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+			controller: "CmsController",
+			resolve: {
+				authenticate: authenticate,                
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'assets/global/plugins/ckeditor/ckeditor.js',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+							'adminviews/js/models/cmsModel.js',
+							'adminviews/js/controllers/CmsController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state("userLayout.cms.list", {
-            url: "/cms/list",
-            templateUrl: "adminviews/views/cms/list.html",
-            data:{
+		.state("userLayout.cms.list", {
+			url: "/cms/list",
+			templateUrl: "adminviews/views/cms/list.html",
+			data:{
 				pageTitle:'CMS Pages',
 				breadCrumb:[
 					{title:'CMS Pages','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.cms.edit",{
-            url: "/cms/edit/{pageid}",
-            templateUrl: "adminviews/views/cms/edit.html",
-            data:{
+		.state("userLayout.cms.edit",{
+			url: "/cms/edit/{pageid}",
+			templateUrl: "adminviews/views/cms/edit.html",
+			data:{
 				pageTitle:'Edit CMS Pages',
 				breadCrumb:[
 					{title:'CMS Pages','uisref':'userLayout.cms.list'},
 					{title:'Edit','uisref':'#'}
 				]
 			},
-            controller:"CmsUpdateController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller:"CmsUpdateController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.cms.show", {
-            url: "/cms/show/{pageid}",
-            templateUrl: "adminviews/views/cms/show.html",
-            data:{
+		.state("userLayout.cms.show", {
+			url: "/cms/show/{pageid}",
+			templateUrl: "adminviews/views/cms/show.html",
+			data:{
 				pageTitle:'Preview CMS Pages',
 				breadCrumb:[
 					{title:'CMS Pages','uisref':'userLayout.cms.list'},
 					{title:'Show','uisref':'#'}
 				]
 			},
-            controller: "CmsPageShowController",
-            resolve: {
-                authenticate: authenticate
-            }
-    	})
+			controller: "CmsPageShowController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.testimonial', {
-            abstract:true,
+		.state('userLayout.testimonial', {
+			abstract:true,
 			templateUrl:'adminviews/views/auth.html',
-            controller: "TestimonialController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                            'assets/global/plugins/ckeditor/ckeditor.js',
-                            'adminviews/js/models/testimonialModel.js',
-                            'adminviews/js/controllers/TestimonialController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+			controller: "TestimonialController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+							'assets/global/plugins/ckeditor/ckeditor.js',
+							'adminviews/js/models/testimonialModel.js',
+							'adminviews/js/controllers/TestimonialController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state("userLayout.testimonial.list", {
-            url: "/testimonial/list",
-            templateUrl: "adminviews/views/testimonial/list.html",
-            data:{
+		.state("userLayout.testimonial.list", {
+			url: "/testimonial/list",
+			templateUrl: "adminviews/views/testimonial/list.html",
+			data:{
 				pageTitle:'Testimonials',
 				breadCrumb:[
 					{title:'Testimonials','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.testimonial.add", {
-            url: "/testimonial/add",
-            templateUrl: "adminviews/views/testimonial/add.html",
-            data:{
+		.state("userLayout.testimonial.add", {
+			url: "/testimonial/add",
+			templateUrl: "adminviews/views/testimonial/add.html",
+			data:{
 				pageTitle:'Add Testimonial',
 				breadCrumb:[
 					{title:'Testimonials','uisref':'userLayout.testimonial.list'},
 					{title:'Add','uisref':'#'}
 				]
 			},
-            controller: "TestimonialAddController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller: "TestimonialAddController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.testimonial.edit",{
-            url: "/testimonial/edit/{testimonialid}",
-            templateUrl: "adminviews/views/testimonial/add.html",
-            data:{
+		.state("userLayout.testimonial.edit",{
+			url: "/testimonial/edit/{testimonialid}",
+			templateUrl: "adminviews/views/testimonial/add.html",
+			data:{
 				pageTitle:'Edit Testimonial',
 				breadCrumb:[
 					{title:'Testimonials','uisref':'userLayout.testimonial.list'},
 					{title:'Edit','uisref':'#'}
 				]
 			},
-            controller:"TestimonialUpdateController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller:"TestimonialUpdateController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state('userLayout.brand', {
-            abstract:true,
+		.state('userLayout.brand', {
+			abstract:true,
 			templateUrl:'adminviews/views/auth.html',
-            controller: "BrandController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                            'adminviews/js/models/brandModel.js',
-                            'adminviews/js/controllers/BrandController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+			controller: "BrandController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+							'adminviews/js/models/brandModel.js',
+							'adminviews/js/controllers/BrandController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state("userLayout.brand.list", {
-            url: "/brands/list",
-            templateUrl: "adminviews/views/brand/list.html",
-            data:{
+		.state("userLayout.brand.list", {
+			url: "/brands/list",
+			templateUrl: "adminviews/views/brand/list.html",
+			data:{
 				pageTitle:'Brands',
 				breadCrumb:[
 					{title:'Brands','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.brand.add", {
-            url: "/brands/add",
-            templateUrl: "adminviews/views/brand/add.html",
-            data:{
+		.state("userLayout.brand.add", {
+			url: "/brands/add",
+			templateUrl: "adminviews/views/brand/add.html",
+			data:{
 				pageTitle:'Add Brand',
 				breadCrumb:[
 					{title:'Brands','uisref':'userLayout.brand.list'},
 					{title:'Add','uisref':'#'}
 				]
 			},
-            controller: "BrandAddController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller: "BrandAddController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.brand.edit",{
-            url: "/brands/edit/{brandid}",
-            templateUrl: "adminviews/views/brand/add.html",
-            data:{
+		.state("userLayout.brand.edit",{
+			url: "/brands/edit/{brandid}",
+			templateUrl: "adminviews/views/brand/add.html",
+			data:{
 				pageTitle:'Edit Brands',
 				breadCrumb:[
 					{title:'Brands','uisref':'userLayout.brand.list'},
 					{title:'Edit','uisref':'#'}
 				]
 			},
-            controller:"BrandUpdateController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller:"BrandUpdateController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        //SALE FEATURE
+		//SALE FEATURE
 
-        .state('userLayout.sale', {
-            abstract:true,
+		.state('userLayout.sale', {
+			abstract:true,
 			templateUrl:'adminviews/views/auth.html',
-            controller: "SaleController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                            'adminviews/js/models/saleModel.js',
-                            'adminviews/js/controllers/SaleController.js'
-                        ]
-                    });
-                }]
-            }
-        })
+			controller: "SaleController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+							'adminviews/js/models/saleModel.js',
+							'adminviews/js/controllers/SaleController.js'
+						]
+					});
+				}]
+			}
+		})
 
-        .state("userLayout.sale.list", {
-            url: "/sale/list",
-            templateUrl: "adminviews/views/sale/list.html",
-            data:{
+		.state("userLayout.sale.list", {
+			url: "/sale/list",
+			templateUrl: "adminviews/views/sale/list.html",
+			data:{
 				pageTitle:'Sale & tags',
 				breadCrumb:[
 					{title:'Sale & tags','uisref':'#'}
 				]
 			},
 			resolve: {
-                authenticate: authenticate
-            }
-        })
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.sale.add", {
-            url: "/sale/add",
-            templateUrl: "adminviews/views/sale/add.html",
-            data:{
+		.state("userLayout.sale.add", {
+			url: "/sale/add",
+			templateUrl: "adminviews/views/sale/add.html",
+			data:{
 				pageTitle:'Add sale & tags',
 				breadCrumb:[
 					{title:'Sale & tags','uisref':'userLayout.sale.list'},
 					{title:'Add','uisref':'#'}
 				]
 			},
-            controller: "SaleFormController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller: "SaleFormController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.sale.edit",{
-            url: "/sale/edit/{saleId}",
-            templateUrl: "adminviews/views/sale/add.html",
-            data:{
+		.state("userLayout.sale.edit",{
+			url: "/sale/edit/{saleId}",
+			templateUrl: "adminviews/views/sale/add.html",
+			data:{
 				pageTitle:'Edit sale & tags',
 				breadCrumb:[
 					{title:'Sale & tags','uisref':'userLayout.sale.list'},
 					{title:'Edit','uisref':'#'}
 				]
 			},
-            controller:"SaleFormController",
-            resolve: {
-                authenticate: authenticate
-            }
-        })
+			controller:"SaleFormController",
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        //SALE FEATURE
+		//SALE FEATURE
 
-        .state("login", {
-            url: "/login",
-            templateUrl: "adminviews/views/login.html",
-            data: {pageTitle: 'Administrator Login'},
-            controller: "LoginController",
-            resolve: {
-                checkStatus: checkStatus
-            }
-        })
+		.state("login", {
+			url: "/login",
+			templateUrl: "adminviews/views/login.html",
+			data: {pageTitle: 'Administrator Login'},
+			controller: "LoginController",
+			resolve: {
+				checkStatus: checkStatus
+			}
+		})
 
-        .state("logout", {
-            url: "/logout",
-            //templateUrl: "adminviews/views/login.html",
-            //data: {pageTitle: 'Administrator Login'},
-            controller: function($http,AdminUserService, $state){
-            	$http.get('/adminapi/auth/logout').success(function(res){
+		.state("logout", {
+			url: "/logout",
+			//templateUrl: "adminviews/views/login.html",
+			//data: {pageTitle: 'Administrator Login'},
+			controller: function($http,AdminUserService, $state){
+				$http.get('/adminapi/auth/logout').success(function(res){
 					AdminUserService.removeUser().then(function(){
 						$state.go('login',{},{reload:true});
 					});
 				}).error(function(data, status, headers) {
 
 				});
-            }
-        })
+			}
+		})
 
-        .state("resetpassword", {
-            url: "/resetpassword/{key}",
-            templateUrl: "adminviews/views/resetpassword.html",
-            data: {pageTitle: 'Reset password'},
-            controller: "ResetpasswordController",
-            resolve: {
-                checkStatus: function($location,AdminUserService,$state,$q,$timeout,$rootScope){
-                	if (AdminUserService.isLogged()) {
-				        // Resolve the promise successfully
-				        $timeout(function() {
-				          // This code runs after the authentication promise has been rejected.
-				          // Go to the log-in page
-				          $state.go('userLayout.dashboard');
-				        })
+		.state("resetpassword", {
+			url: "/resetpassword/{key}",
+			templateUrl: "adminviews/views/resetpassword.html",
+			data: {pageTitle: 'Reset password'},
+			controller: "ResetpasswordController",
+			resolve: {
+				checkStatus: function($location,AdminUserService,$state,$q,$timeout,$rootScope){
+					if (AdminUserService.isLogged()) {
+						// Resolve the promise successfully
+						$timeout(function() {
+						  // This code runs after the authentication promise has been rejected.
+						  // Go to the log-in page
+						  $state.go('userLayout.dashboard');
+						})
 
-				        // Reject the authentication promise to prevent the state from loading
-				        return $q.reject();
-				    } else {
-                		var token = $location.path().replace('/resetpassword/','');
+						// Reject the authentication promise to prevent the state from loading
+						return $q.reject();
+					} else {
+						var token = $location.path().replace('/resetpassword/','');
 						AdminUserService.checkToken(token).then(function(){
 
 						},function(err){
@@ -3207,137 +3223,137 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 							$state.go('login',{},{reload:true});
 						});
 					}
-                }
-            }
-        })
+				}
+			}
+		})
 
-        .state('userLayout.usergroups', {
-            abstract:true,
-            templateUrl:'adminviews/views/auth.html',
-            controller: "UsergroupsController",
-            resolve: {
-                authenticate: authenticate,
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name: 'MetronicApp',
-                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
-                        files: [
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
-                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
-                            'adminviews/js/controllers/UsergroupsController.js'
-                        ]
-                    });
-                }]
-            }
-        })
-        .state("userLayout.usergroups.list", {
-        	url: "/usergroups/list",
-        	templateUrl: "adminviews/views/usergroups/list.html",
-        	data:{
-        		pageTitle:'User Groups',
-        		breadCrumb:[
-        		{title:'User Groups','uisref':'#'}
-        		]
-        	},
-        	resolve: {
-        		authenticate: authenticate,
-        	}
-        })
-        .state("userLayout.usergroups.add", {
-        	url: "/usergroups/add",
-        	templateUrl: "adminviews/views/usergroups/add.html",
-        	data:{
-        		pageTitle:'User Groups',
-        		breadCrumb:[
-        		{title:'User Groups','uisref':'userLayout.usergroups.list'},
-        		{title:'Add','uisref':'#'}
-        		]
-        	},
-        	resolve: {
-        		authenticate: authenticate,
-        	}
-        })
+		.state('userLayout.usergroups', {
+			abstract:true,
+			templateUrl:'adminviews/views/auth.html',
+			controller: "UsergroupsController",
+			resolve: {
+				authenticate: authenticate,
+				deps: ['$ocLazyLoad', function($ocLazyLoad) {
+					return $ocLazyLoad.load({
+						name: 'MetronicApp',
+						insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+						files: [
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+							'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+							'adminviews/js/controllers/UsergroupsController.js'
+						]
+					});
+				}]
+			}
+		})
+		.state("userLayout.usergroups.list", {
+			url: "/usergroups/list",
+			templateUrl: "adminviews/views/usergroups/list.html",
+			data:{
+				pageTitle:'User Groups',
+				breadCrumb:[
+				{title:'User Groups','uisref':'#'}
+				]
+			},
+			resolve: {
+				authenticate: authenticate,
+			}
+		})
+		.state("userLayout.usergroups.add", {
+			url: "/usergroups/add",
+			templateUrl: "adminviews/views/usergroups/add.html",
+			data:{
+				pageTitle:'User Groups',
+				breadCrumb:[
+				{title:'User Groups','uisref':'userLayout.usergroups.list'},
+				{title:'Add','uisref':'#'}
+				]
+			},
+			resolve: {
+				authenticate: authenticate,
+			}
+		})
 
-        .state('userLayout.usergroups.edit', {
-        	url: '/usergroups/edit/{id}',
-        	templateUrl:'adminviews/views/usergroups/add.html',
-        	data:{
-        		pageTitle:'Edit User Groups',
-        		breadCrumb:[
-        		{title:'User Groups','uisref':'userLayout.usergroups.list'},
-        		{title:'Edit','uisref':'#'}
-        		]
-        	},
-        	resolve: {
-        		authenticate: authenticate
-        	}
-        })
+		.state('userLayout.usergroups.edit', {
+			url: '/usergroups/edit/{id}',
+			templateUrl:'adminviews/views/usergroups/add.html',
+			data:{
+				pageTitle:'Edit User Groups',
+				breadCrumb:[
+				{title:'User Groups','uisref':'userLayout.usergroups.list'},
+				{title:'Edit','uisref':'#'}
+				]
+			},
+			resolve: {
+				authenticate: authenticate
+			}
+		})
 
-        .state("userLayout.usergroups.pagelist", {
-        	url: "/usergroups/page_list",
-        	templateUrl: "adminviews/views/usergroups/page_list.html",
-        	data:{
-        		pageTitle:'Pages List',
-        		breadCrumb:[
-        		{title:'User Groups','uisref':'userLayout.usergroups.list'}
-        		]
-        	},
-        	resolve: {
-        		authenticate: authenticate,
-        	}
-        })
-        .state("userLayout.usergroups.permissiondenied", {
-        	url: "/usergroups/permission_denied",
-        	templateUrl: "adminviews/views/usergroups/permission_denied.html",
-        	data:{
-        		pageTitle:'Permission Denied',
-        		breadCrumb:[
-        		//{title:'User Groups','uisref':'userLayout.usergroups.list'}
-        		]
-        	},
-        	resolve: {
-        		authenticate: authenticate,
-        	}
-        })
-        ;
+		.state("userLayout.usergroups.pagelist", {
+			url: "/usergroups/page_list",
+			templateUrl: "adminviews/views/usergroups/page_list.html",
+			data:{
+				pageTitle:'Pages List',
+				breadCrumb:[
+				{title:'User Groups','uisref':'userLayout.usergroups.list'}
+				]
+			},
+			resolve: {
+				authenticate: authenticate,
+			}
+		})
+		.state("userLayout.usergroups.permissiondenied", {
+			url: "/usergroups/permission_denied",
+			templateUrl: "adminviews/views/usergroups/permission_denied.html",
+			data:{
+				pageTitle:'Permission Denied',
+				breadCrumb:[
+				//{title:'User Groups','uisref':'userLayout.usergroups.list'}
+				]
+			},
+			resolve: {
+				authenticate: authenticate,
+			}
+		})
+		;
 
-        function authenticate($q, AdminUserService, $state, $timeout, $location) {
+		function authenticate($q, AdminUserService, $state, $timeout, $location) {
 
-	      if (AdminUserService.isLogged()) {
-	        // Resolve the promise successfully
+		  if (AdminUserService.isLogged()) {
+			// Resolve the promise successfully
 
-	        return $q.when()
-	      } else {
-	        // The next bit of code is asynchronously tricky.
+			return $q.when()
+		  } else {
+			// The next bit of code is asynchronously tricky.
 
-	        $timeout(function() {
-	          // This code runs after the authentication promise has been rejected.
-	          // Go to the log-in page
-	          $state.go('login',{},{reload:true})
-	        })
+			$timeout(function() {
+			  // This code runs after the authentication promise has been rejected.
+			  // Go to the log-in page
+			  $state.go('login',{},{reload:true})
+			})
 
-	        // Reject the authentication promise to prevent the state from loading
-	        return $q.reject()
-	      }
-	    }
+			// Reject the authentication promise to prevent the state from loading
+			return $q.reject()
+		  }
+		}
 
-	    function checkStatus($q, AdminUserService, $state, $timeout, $location) {
+		function checkStatus($q, AdminUserService, $state, $timeout, $location) {
 
-	      if (AdminUserService.isLogged()) {
-	        // Resolve the promise successfully
-	        $timeout(function() {
-	          // This code runs after the authentication promise has been rejected.
-	          // Go to the log-in page
-	          $state.go('userLayout.dashboard');
-	        })
+		  if (AdminUserService.isLogged()) {
+			// Resolve the promise successfully
+			$timeout(function() {
+			  // This code runs after the authentication promise has been rejected.
+			  // Go to the log-in page
+			  $state.go('userLayout.dashboard');
+			})
 
-	        // Reject the authentication promise to prevent the state from loading
-	        return $q.reject();
+			// Reject the authentication promise to prevent the state from loading
+			return $q.reject();
 
-	      } else {
-	        return $q.when();
-	      }
-	    }
+		  } else {
+			return $q.when();
+		  }
+		}
 
 }]);
 
@@ -3354,21 +3370,21 @@ MetronicApp.filter("ucwords", function () {
 
 MetronicApp.filter('truncate', function (){
   return function (text, length, end){
-    if (text !== undefined){
-      if (isNaN(length)){
-        length = 10;
-      }
+	if (text !== undefined){
+	  if (isNaN(length)){
+		length = 10;
+	  }
 
-      if (end === undefined){
-        end = "...";
-      }
+	  if (end === undefined){
+		end = "...";
+	  }
 
-      if (text.length <= length || text.length - end.length <= length){
-        return text;
-      }else{
-        return String(text).substring(0, length - end.length) + end;
-      }
-    }
+	  if (text.length <= length || text.length - end.length <= length){
+		return text;
+	  }else{
+		return String(text).substring(0, length - end.length) + end;
+	  }
+	}
   };
 });
 
@@ -3384,8 +3400,8 @@ MetronicApp.filter('accessValidate', ['$filter','AdminUserService',function($fil
 
 	return function(listArr) {
 
-  		var listArrCopy = angular.copy(listArr);
-  		var splicedCount = 0;
+		var listArrCopy = angular.copy(listArr);
+		var splicedCount = 0;
 
 		angular.forEach(listArrCopy, function(value, key) {
 
@@ -3492,26 +3508,26 @@ MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "st
 
 				if(userType){
 					/*var hashIndex = current.indexOf('#');
-		    	var oldRoute = current.substr(hashIndex + 2);*/
+				var oldRoute = current.substr(hashIndex + 2);*/
 
-		    	if($state.current.name!='userLayout.dashboard'){
+				if($state.current.name!='userLayout.dashboard'){
 
-		    		if( typeof($rootScope.userAccessStates) !== "undefined" && $rootScope.userAccessStates){
+					if( typeof($rootScope.userAccessStates) !== "undefined" && $rootScope.userAccessStates){
 
-		    			//if($state.current.name && typeof($rootScope.oldRoute) !== "undefined" && $rootScope.oldRoute)
-		    			if($state.current.name)
-		    			{
-		    				var mId = $filter('filter')($rootScope.userAccessStates, $state.current.name);
+						//if($state.current.name && typeof($rootScope.oldRoute) !== "undefined" && $rootScope.oldRoute)
+						if($state.current.name)
+						{
+							var mId = $filter('filter')($rootScope.userAccessStates, $state.current.name);
 
-		    				if(typeof(mId[0]) === "undefined" || !mId[0]){
-		    					/*if($rootScope.oldRoute)
-		    						$location.path($rootScope.oldRoute);
-		    					else
-		    						$location.path("/dashboard");*/
-		    						$location.path("/usergroups/permission_denied");
-		    				}
-		    			}
-		    		}
+							if(typeof(mId[0]) === "undefined" || !mId[0]){
+								/*if($rootScope.oldRoute)
+									$location.path($rootScope.oldRoute);
+								else
+									$location.path("/dashboard");*/
+									$location.path("/usergroups/permission_denied");
+							}
+						}
+					}
 					}
 
 					//$rootScope.oldRoute = oldRoute;
@@ -3523,7 +3539,7 @@ MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "st
 				$location.path('/login');
 			}
 		});
-    });
+	});
 
 	$rootScope.$state = $state; // state to be accessed from view
 
@@ -3536,27 +3552,27 @@ MetronicApp.service('myRequestInterceptor', ['$q', '$rootScope', '$log', '$injec
 	'use strict';
 
 	var xhrCreations = 0;
-    var xhrResolutions = 0;
+	var xhrResolutions = 0;
 
-    //var AdminUserService = $injector.get('AdminUserService');
+	//var AdminUserService = $injector.get('AdminUserService');
 
-    function isLoading() {
-        return xhrResolutions < xhrCreations;
-    }
+	function isLoading() {
+		return xhrResolutions < xhrCreations;
+	}
 
-    function updateStatus() {
-        $rootScope.loading = isLoading();
-    }
+	function updateStatus() {
+		$rootScope.loading = isLoading();
+	}
 
 	return {
 		request: function (config) {
 			xhrCreations++;
-            updateStatus();
+			updateStatus();
 			return config;
 		},
 		requestError: function (rejection) {
 			xhrResolutions++;
-            updateStatus();
+			updateStatus();
 			return $q.reject(rejection);
 		},
 		response: function (response) {
@@ -3566,7 +3582,7 @@ MetronicApp.service('myRequestInterceptor', ['$q', '$rootScope', '$log', '$injec
 		},
 		responseError: function (rejection) {
 			xhrResolutions++;
-            updateStatus();
+			updateStatus();
 			if(rejection.status == 401){
 				$injector.get('AdminUserService').removeUser().then(function(){
 					$location.path('/login');

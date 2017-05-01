@@ -12,18 +12,21 @@ MetronicApp.controller('CustomerController',[
 		$rootScope.settings.layout.pageBodySolid = false;
 		$rootScope.settings.layout.pageSidebarClosed = false;  
 		
-	});
+	});	
+
+}]);
+
+MetronicApp.controller("CustomerImportController",['$scope','$stateParams','$q','$http','sweetAlert',function ($scope,$stateParams,$q,$http,sweetAlert){	
 
 	$scope.importCSV = function() {
 		sweetAlert.swal({
 			title: "Import CSV",
-			text: "Select the input file<br><a href=\"/adminviews/user.csv\">Click here to Download the format</a>",
+			text: "Select the csv file",
 			input: "file",
 			inputAttributes: {
 				accept: ".csv"
 			},
 			showCancelButton: true,
-			closeOnCancel: false,
 			showLoaderOnConfirm: true,
 			allowOutsideClick: false,	
 			preConfirm: function(file) {
@@ -35,7 +38,7 @@ MetronicApp.controller('CustomerController',[
 				var fd = new FormData();
 				fd.append('csv', file);
 
-				return $http.post('/adminapi/customer/import', fd, {
+				return $http.post('/adminapi/customer', fd, {
 					transformRequest: angular.identity,
 					headers: {'Content-Type': undefined}
 				})
@@ -53,6 +56,11 @@ MetronicApp.controller('CustomerController',[
 				grid.getDataTable().ajax.reload();
 			}
 		})
+	}
+
+
+	if($stateParams.import==='true'){
+		$scope.importCSV();
 	}
 
 }]);

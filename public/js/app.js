@@ -31,26 +31,26 @@ var AlcoholDelivery = angular.module('AlcoholDelivery', [
 		//$location.hashPrefix('!');
 		//$mdThemingProvider.disableTheming();
 		$mdThemingProvider.theme('default').primaryPalette('purple').accentPalette('purple');
-	    //.accentPalette('orange');    
+		//.accentPalette('orange');    
 
-	    // Optional: For client-side use (Implicit Grant), set responseType to 'token' (default: 'code')	    
+		// Optional: For client-side use (Implicit Grant), set responseType to 'token' (default: 'code')	    
 
-	    var fb_id = angular.element('meta[name="facebook_id"]').attr('content');
-	    var google_id = angular.element('meta[name="google_id"]').attr('content');
-	    var instagram_id = angular.element('meta[name="instagram_id"]').attr('content');
-	    
-	    $authProvider.facebook({
-	      clientId: fb_id
-	    });
+		var fb_id = angular.element('meta[name="facebook_id"]').attr('content');
+		var google_id = angular.element('meta[name="google_id"]').attr('content');
+		var instagram_id = angular.element('meta[name="instagram_id"]').attr('content');
+		
+		$authProvider.facebook({
+		  clientId: fb_id
+		});
 
-	    $authProvider.google({
-	      clientId: google_id
-	    });	    
+		$authProvider.google({
+		  clientId: google_id
+		});	    
 
-	    $authProvider.instagram({
-	      clientId: instagram_id
-	    });
-    
+		$authProvider.instagram({
+		  clientId: instagram_id
+		});
+	
 }]);
 
 
@@ -150,21 +150,21 @@ AlcoholDelivery.filter('pricingTxt', ['currencyFilter','$rootScope',function(cur
 
 AlcoholDelivery.filter('truncate', function (){
   return function (text, length, end){
-    if (text !== undefined){
-      if (isNaN(length)){
-        length = 10;
-      }
+	if (text !== undefined){
+	  if (isNaN(length)){
+		length = 10;
+	  }
 
-      if (end === undefined){
-        end = "...";
-      }
+	  if (end === undefined){
+		end = "...";
+	  }
 
-      if (text.length <= length || text.length - end.length <= length){
-        return text;
-      }else{
-        return String(text).substring(0, length - end.length) + end;
-      }
-    }
+	  if (text.length <= length || text.length - end.length <= length){
+		return text;
+	  }else{
+		return String(text).substring(0, length - end.length) + end;
+	  }
+	}
   };
 });
 
@@ -211,78 +211,78 @@ AlcoholDelivery.filter('deliveryDateSlug',function(){
 /* Setup global settings */
 AlcoholDelivery.factory('appSettings', ['$rootScope', function($rootScope) {
 
-    var appSettings = {
-        layout: {
-            pageRightbarExist: true, // sidebar menu state
-            cartSummaryEnable:true // show cart summary on mouse hover
-        },
-        messages : {
-        	hideDelay : 4000
-        },
+	var appSettings = {
+		layout: {
+			pageRightbarExist: true, // sidebar menu state
+			cartSummaryEnable:true // show cart summary on mouse hover
+		},
+		messages : {
+			hideDelay : 4000
+		},
 
-    };
+	};
 
-    $rootScope.appSettings = appSettings;
+	$rootScope.appSettings = appSettings;
 
-    $rootScope.timerange = [
-        {opVal:0,opTag:'12:00 am'},
-        {opVal:30,opTag:'12:30 am'},
-        {opVal:60,opTag:'01:00 am'},
-        {opVal:90,opTag:'01:30 am'},
-        {opVal:120,opTag:'02:00 am'},
-        {opVal:150,opTag:'02:30 am'},
-        {opVal:180,opTag:'03:00 am'},
-        {opVal:210,opTag:'03:30 am'},
-        {opVal:240,opTag:'04:00 am'},
-        {opVal:270,opTag:'04:30 am'},
-        {opVal:300,opTag:'05:00 am'},
-        {opVal:330,opTag:'05:30 am'},
-        {opVal:360,opTag:'06:00 am'},
-        {opVal:390,opTag:'06:30 am'},
-        {opVal:420,opTag:'07:00 am'},
-        {opVal:450,opTag:'07:30 am'},
-        {opVal:480,opTag:'08:00 am'},
-        {opVal:510,opTag:'08:30 am'},
-        {opVal:540,opTag:'09:00 am'},
-        {opVal:570,opTag:'09:30 am'},
-        {opVal:600,opTag:'10:00 am'},
-        {opVal:630,opTag:'10:30 am'},
-        {opVal:660,opTag:'11:00 am'},
-        {opVal:690,opTag:'11:30 am'},
-        {opVal:720,opTag:'12:00 pm'},
-        {opVal:750,opTag:'12:30 pm'},
-        {opVal:780,opTag:'01:00 pm'},
-        {opVal:810,opTag:'01:30 pm'},
-        {opVal:840,opTag:'02:00 pm'},
-        {opVal:870,opTag:'02:30 pm'},
-        {opVal:900,opTag:'03:00 pm'},
-        {opVal:930,opTag:'03:30 pm'},
-        {opVal:960,opTag:'04:00 pm'},
-        {opVal:990,opTag:'04:30 pm'},
-        {opVal:1020,opTag:'05:00 pm'},
-        {opVal:1050,opTag:'05:30 pm'},
-        {opVal:1080,opTag:'06:00 pm'},
-        {opVal:1110,opTag:'06:30 pm'},
-        {opVal:1140,opTag:'07:00 pm'},
-        {opVal:1170,opTag:'07:30 pm'},
-        {opVal:1200,opTag:'08:00 pm'},
-        {opVal:1230,opTag:'08:30 pm'},
-        {opVal:1260,opTag:'09:00 pm'},
-        {opVal:1290,opTag:'09:30 pm'},
-        {opVal:1320,opTag:'10:00 pm'},
-        {opVal:1350,opTag:'10:30 pm'},
-        {opVal:1380,opTag:'11:00 pm'},
-        {opVal:1410,opTag:'11:30 pm'},
-    ];
+	$rootScope.timerange = [
+		{opVal:0,opTag:'12:00 am'},
+		{opVal:30,opTag:'12:30 am'},
+		{opVal:60,opTag:'01:00 am'},
+		{opVal:90,opTag:'01:30 am'},
+		{opVal:120,opTag:'02:00 am'},
+		{opVal:150,opTag:'02:30 am'},
+		{opVal:180,opTag:'03:00 am'},
+		{opVal:210,opTag:'03:30 am'},
+		{opVal:240,opTag:'04:00 am'},
+		{opVal:270,opTag:'04:30 am'},
+		{opVal:300,opTag:'05:00 am'},
+		{opVal:330,opTag:'05:30 am'},
+		{opVal:360,opTag:'06:00 am'},
+		{opVal:390,opTag:'06:30 am'},
+		{opVal:420,opTag:'07:00 am'},
+		{opVal:450,opTag:'07:30 am'},
+		{opVal:480,opTag:'08:00 am'},
+		{opVal:510,opTag:'08:30 am'},
+		{opVal:540,opTag:'09:00 am'},
+		{opVal:570,opTag:'09:30 am'},
+		{opVal:600,opTag:'10:00 am'},
+		{opVal:630,opTag:'10:30 am'},
+		{opVal:660,opTag:'11:00 am'},
+		{opVal:690,opTag:'11:30 am'},
+		{opVal:720,opTag:'12:00 pm'},
+		{opVal:750,opTag:'12:30 pm'},
+		{opVal:780,opTag:'01:00 pm'},
+		{opVal:810,opTag:'01:30 pm'},
+		{opVal:840,opTag:'02:00 pm'},
+		{opVal:870,opTag:'02:30 pm'},
+		{opVal:900,opTag:'03:00 pm'},
+		{opVal:930,opTag:'03:30 pm'},
+		{opVal:960,opTag:'04:00 pm'},
+		{opVal:990,opTag:'04:30 pm'},
+		{opVal:1020,opTag:'05:00 pm'},
+		{opVal:1050,opTag:'05:30 pm'},
+		{opVal:1080,opTag:'06:00 pm'},
+		{opVal:1110,opTag:'06:30 pm'},
+		{opVal:1140,opTag:'07:00 pm'},
+		{opVal:1170,opTag:'07:30 pm'},
+		{opVal:1200,opTag:'08:00 pm'},
+		{opVal:1230,opTag:'08:30 pm'},
+		{opVal:1260,opTag:'09:00 pm'},
+		{opVal:1290,opTag:'09:30 pm'},
+		{opVal:1320,opTag:'10:00 pm'},
+		{opVal:1350,opTag:'10:30 pm'},
+		{opVal:1380,opTag:'11:00 pm'},
+		{opVal:1410,opTag:'11:30 pm'},
+	];
 
-    return appSettings;
+	return appSettings;
 
 }]);
 
 AlcoholDelivery.service('appConfig', ['$interval','$http','$q',function($interval, $http, $q) {    
-    
-    this.workingTime = {};
-    this.serverTime = "";
+	
+	this.workingTime = {};
+	this.serverTime = "";
 
 	this.setServerTime = function(serverTimeInSec){
 		this.serverTime = serverTimeInSec;
@@ -293,29 +293,29 @@ AlcoholDelivery.service('appConfig', ['$interval','$http','$q',function($interva
 	}
 
 	this.getServerTime = function(){
-    	return this.serverTime;
-    }
+		return this.serverTime;
+	}
 
-    this.setWorkingTime = function(fromT,toT) {
+	this.setWorkingTime = function(fromT,toT) {
 
-    	this.workingTime = {
-    		from : fromT,
-    		to : toT
-    	};
-    }
+		this.workingTime = {
+			from : fromT,
+			to : toT
+		};
+	}
 
-    this.setWorkingTimeString = function(fromT,toT) {
+	this.setWorkingTimeString = function(fromT,toT) {
 
-    	this.workingTimeString = {
-    		from : fromT,
-    		to : toT
-    	};
-    }
+		this.workingTimeString = {
+			from : fromT,
+			to : toT
+		};
+	}
 
-    this.updateWorkingHrs = function(){
-    	var _self = this;
-    	return $q(function(resolve,reject){
-    		$http.get("super/server-time").then(
+	this.updateWorkingHrs = function(){
+		var _self = this;
+		return $q(function(resolve,reject){
+			$http.get("super/server-time").then(
 				function(res){
 					
 					_self.serverTime = res.data.currentTime;
@@ -325,48 +325,48 @@ AlcoholDelivery.service('appConfig', ['$interval','$http','$q',function($interva
 					resolve();
 				}
 			)
-    	})
-    }
+		})
+	}
 
-    this.getWorkingTime = function() {
-    	return this.workingTime;
-    }
+	this.getWorkingTime = function() {
+		return this.workingTime;
+	}
 
-    this.getWorkingTimeString = function() {
-    	return this.workingTimeString;
-    }
+	this.getWorkingTimeString = function() {
+		return this.workingTimeString;
+	}
 
-    this.isServerUnderWorkingTime = function(fromServer) {
-    	
-    	var _self = this;
-    	if(angular.isDefined(fromServer) && fromServer){
+	this.isServerUnderWorkingTime = function(fromServer) {
+		
+		var _self = this;
+		if(angular.isDefined(fromServer) && fromServer){
 
-    		return $q(function(resolve,reject){
-    			resolve();
-    			_self.updateWorkingHrs().then(
-    				function(){
+			return $q(function(resolve,reject){
+				resolve();
+				_self.updateWorkingHrs().then(
+					function(){
 
-    					var workingTime = _self.getWorkingTime();
-    					var serverTime = _self.getServerTime();
+						var workingTime = _self.getWorkingTime();
+						var serverTime = _self.getServerTime();
 
-    					var isWorking = ((workingTime.from < serverTime) && (serverTime < workingTime.to));
-    					  						
-    					if(isWorking){
-    						//resolve();
-    					}    					
-    					//reject();
-    				}
-    			);
-    		})
+						var isWorking = ((workingTime.from < serverTime) && (serverTime < workingTime.to));
+												
+						if(isWorking){
+							//resolve();
+						}    					
+						//reject();
+					}
+				);
+			})
 
-    	}else{
+		}else{
 
-    		var workingTime = this.getWorkingTime();
+			var workingTime = this.getWorkingTime();
 			var serverTime = this.getServerTime();
 			return true;			
-    		return ((workingTime.from < serverTime) && (serverTime < workingTime.to));
-    	}
-    }
+			return ((workingTime.from < serverTime) && (serverTime < workingTime.to));
+		}
+	}
 
 }]);
 
@@ -489,25 +489,25 @@ AlcoholDelivery.factory("UserService", ["$q", "$timeout", "$http", "$state", fun
 
 AlcoholDelivery.factory('ScrollPaging', ['$http',function($http) {
   var ScrollPaging = function(args,url) {
-    this.items = [];
-    this.busy = false;
-    this.limitreached = false;
-    // this.totalResult = 0;
-    this.url = url;
-    this.params = args;
-    this.params.skip = 0;
-    this.data = {};
-    //SET DEFAULT LIMIT IF NOT SPECIFIED
-    if(!this.params.take)
-    	this.params.take = 10;
+	this.items = [];
+	this.busy = false;
+	this.limitreached = false;
+	// this.totalResult = 0;
+	this.url = url;
+	this.params = args;
+	this.params.skip = 0;
+	this.data = {};
+	//SET DEFAULT LIMIT IF NOT SPECIFIED
+	if(!this.params.take)
+		this.params.take = 10;
   };
 
   ScrollPaging.prototype.nextPage = function() {
-    if (this.busy || this.limitreached) return;
-    this.busy = true;
-    $http.get(this.url,{
-    	params : this.params
-    }).then(function(result){
+	if (this.busy || this.limitreached) return;
+	this.busy = true;
+	$http.get(this.url,{
+		params : this.params
+	}).then(function(result){
 		this.data = result.data;
 		var items = result.data.items;
 		this.totalResult = result.data.total;
@@ -531,25 +531,25 @@ AlcoholDelivery.factory('ScrollPaging', ['$http',function($http) {
 AlcoholDelivery.factory('ScrollPagination', ['$http','ProductService',function($http,ProductService) {
 
   var Search = function(keyword,filter,sortby,type,parent) {
-    this.items = [];
-    this.busy = false;
-    this.skip = 0;
-    this.keyword = keyword;
-    this.take = 10;
-    this.limitreached = false;
-    this.totalResult = 0;
-    this.filter = filter;
-    this.sortby = sortby;
-    this.type = type || 1;
-    this.parent = parent || '';
+	this.items = [];
+	this.busy = false;
+	this.skip = 0;
+	this.keyword = keyword;
+	this.take = 10;
+	this.limitreached = false;
+	this.totalResult = 0;
+	this.filter = filter;
+	this.sortby = sortby;
+	this.type = type || 1;
+	this.parent = parent || '';
   };
 
   Search.prototype.nextPage = function() {
-    if (this.busy || this.limitreached) return;
-    this.busy = true;
-    var _self = this;
+	if (this.busy || this.limitreached) return;
+	this.busy = true;
+	var _self = this;
 
-    ProductService.getProducts({
+	ProductService.getProducts({
 
 		type : this.type, // [1 for loyalty store]
 		skip:this.skip,
@@ -856,24 +856,24 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 														$scope.reset.errors = {};
 														$scope.reset.token = $rootScope.token;
 														$http.post('/password/reset',$scope.reset).success(function(response){
-											                $scope.reset = {};
-											                $scope.reset.errors = {};
-											                $timeout(function(){
+															$scope.reset = {};
+															$scope.reset.errors = {};
+															$timeout(function(){
 																$location.url('/').replace();
 															});
-											                sweetAlert.swal({
+															sweetAlert.swal({
 																type:'success',
 																title: "Congratulation!",
 																text : response.message,
 																timer: 4000,
 																closeOnConfirm: false
 															});														                
-											            }).error(function(data, status, headers) {
-											            	if(typeof data.token !== "undefined" && data.token===false){
-											            		$timeout(function(){
+														}).error(function(data, status, headers) {
+															if(typeof data.token !== "undefined" && data.token===false){
+																$timeout(function(){
 																	$location.url('/').replace();
 																});
-											            		sweetAlert.swal({
+																sweetAlert.swal({
 																	type:'warning',
 																	title: "Expired or used reset link!",
 																	timer: 0,
@@ -881,9 +881,9 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 																	closeOnConfirm: true
 																});
 						
-											            	}
-											                $scope.reset.errors = data;
-											            });
+															}
+															$scope.reset.errors = data;
+														});
 													};							
 						
 												}]
@@ -1100,7 +1100,7 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 																	
 																	$scope.filterList = function(rstate,obj){
 																		$state.go(rstate,obj,
-															            {reload: false, location: 'replace'});
+																		{reload: false, location: 'replace'});
 																		
 																		$scope.currentSort = $filter('filter')($scope.sortOptions,{value:obj.sort})[0];
 																	}
@@ -1146,9 +1146,9 @@ AlcoholDelivery.config(['$stateProvider', '$urlRouterProvider', '$locationProvid
 				.state('mainLayout.category.subCatProducts', {
 						url: "/{categorySlug}/{subcategorySlug}?{toggle:string}&{sort:string}",
 						/*params: {
-					    	toggle: 'all',
-					    	sort: 'latest'
-					  	},*/
+							toggle: 'all',
+							sort: 'latest'
+						},*/
 						views : {
 
 							'content' : {
@@ -1216,58 +1216,58 @@ function appLoad($q, $rootScope, $state, $timeout, $location, store, alcoholWish
 
 AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$location', '$window','$cookies',	
 	function ($q, $rootScope, $log, $location, $window, $cookies){
-    'use strict';
+	'use strict';
 
-    var xhrCreations = 0;
-    var xhrResolutions = 0;
+	var xhrCreations = 0;
+	var xhrResolutions = 0;
 
-    function isLoading() {
-        return xhrResolutions < xhrCreations;
-    }
+	function isLoading() {
+		return xhrResolutions < xhrCreations;
+	}
 
-    function updateStatus() {
-        $rootScope.loading = isLoading();        
-    }
+	function updateStatus() {
+		$rootScope.loading = isLoading();        
+	}
 
-    return {
-        request: function (config) {
-            xhrCreations++;
-            updateStatus();
-            var urlStr = config.url;
-            if(urlStr.indexOf('templates') == -1 && urlStr.indexOf('template') == -1){
-	            if(urlStr.charAt(0) == '/') urlStr = urlStr.substr(1);
-	            	config.url = 'api/'+urlStr;
-	        }else{
-	        	if(urlStr.indexOf('templates') > 0)
-	        		config.url += '?ver=1.11';
-	        }	        	
-            return config;
-        },
-        requestError: function (rejection) {
-            xhrResolutions++;
-            updateStatus();
-            // $log.error('Request error:', rejection);
-            return $q.reject(rejection);
-        },
-        response: function (response) {
-            xhrResolutions++;
+	return {
+		request: function (config) {
+			xhrCreations++;
+			updateStatus();
+			var urlStr = config.url;
+			if(urlStr.indexOf('templates') == -1 && urlStr.indexOf('template') == -1){
+				if(urlStr.charAt(0) == '/') urlStr = urlStr.substr(1);
+					config.url = 'api/'+urlStr;
+			}else{
+				if(urlStr.indexOf('templates') > 0)
+					config.url += '?ver=1.11';
+			}	        	
+			return config;
+		},
+		requestError: function (rejection) {
+			xhrResolutions++;
+			updateStatus();
+			// $log.error('Request error:', rejection);
+			return $q.reject(rejection);
+		},
+		response: function (response) {
+			xhrResolutions++;
 			updateStatus();
 			return response;
 			
-        },
-        responseError: function (rejection) {
+		},
+		responseError: function (rejection) {
 
-            xhrResolutions++;
-            updateStatus();
+			xhrResolutions++;
+			updateStatus();
 
-            if(rejection.status == 404){
+			if(rejection.status == 404){
 				$location.url('/404').replace();
 			};
 
 			if(rejection.status == 401){
 								
 				$location.path('/');
-    			$window.location.reload();
+				$window.location.reload();
 
 				//$rootScope.$broadcast('showLogin');
 
@@ -1295,11 +1295,13 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 				$window.location.reload();
 			};
 
-            return $q.reject(rejection);
-        }
-    };
+			return $q.reject(rejection);
+		}
+	};
 }]).config(['$httpProvider', function($httpProvider) {
-    $httpProvider.interceptors.push('LoadingInterceptor');
+
+	$httpProvider.interceptors.push('LoadingInterceptor');
+
 }]);
 
 /* Init global settings and run the app */
@@ -1353,8 +1355,8 @@ AlcoholDelivery.run([
 
 	$rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
 
-	   $state.previous = {state:from, param:fromParams}
-	   $rootScope.appSettings.layout.pageRightbarExist = true;
+		$state.previous = {state:from, param:fromParams}
+		$rootScope.appSettings.layout.pageRightbarExist = true;
 
 		//SETTING HOME META DATA FOR EVERY ROUTE
 		var mdata = {
@@ -1396,9 +1398,9 @@ AlcoholDelivery.run([
  //      fjs.parentNode.insertBefore(js, fjs);
  //    }(document, 'script', 'facebook-jssdk'));
 
-    /*$rootScope.$on('fb.load', function() {
-      $window.dispatchEvent(new Event('fb.load'));
-    });*/
+	/*$rootScope.$on('fb.load', function() {
+	  $window.dispatchEvent(new Event('fb.load'));
+	});*/
 
 
 	$rootScope.$on('alcoholCart:notify', function(data,msg,hideDelay){
@@ -1499,15 +1501,15 @@ AlcoholDelivery.run([
 	
 	//FB SCRIPT 
 	var appId = angular.element('meta[name="facebook_id"]').attr('content');
-    
+	
 	$window.fbAsyncInit = function() {
-	    FB.init({
-	      appId: appId,
-	      status: true, 
-	      cookie: true, 
-	      xfbml: true,
-	      version: 'v2.4'
-	    }); 	    
+		FB.init({
+		  appId: appId,
+		  status: true, 
+		  cookie: true, 
+		  xfbml: true,
+		  version: 'v2.4'
+		}); 	    
 	};
 
 	(function(d, s, id) {
@@ -1531,292 +1533,292 @@ defaultFormat = /(\d{1,4})/g;
 return {
 
   verified: function() {
-    return verCC && verCVC && verEXP && verName;
+	return verCC && verCVC && verEXP && verName;
   },
 
   cards: [
-    {
-      type: 'maestro',
-      pattern: /^(5018|5020|5038|6304|6759|676[1-3])/,
-      format: defaultFormat,
-      length: [12, 13, 14, 15, 16, 17, 18, 19],
-      cvcLength: [3],
-      luhn: true
-    }, {
-      type: 'dinersclub',
-      pattern: /^(36|38|30[0-5])/,
-      format: defaultFormat,
-      length: [14],
-      cvcLength: [3],
-      luhn: true
-    }, {
-      type: 'laser',
-      pattern: /^(6706|6771|6709)/,
-      format: defaultFormat,
-      length: [16, 17, 18, 19],
-      cvcLength: [3],
-      luhn: true
-    }, {
-      type: 'jcb',
-      pattern: /^35/,
-      format: defaultFormat,
-      length: [16],
-      cvcLength: [3],
-      luhn: true
-    }, {
-      type: 'unionpay',
-      pattern: /^62/,
-      format: defaultFormat,
-      length: [16, 17, 18, 19],
-      cvcLength: [3],
-      luhn: false
-    }, {
-      type: 'discover',
-      pattern: /^(6011|65|64[4-9]|622)/,
-      format: defaultFormat,
-      length: [16],
-      cvcLength: [3],
-      luhn: true
-    }, {
-      type: 'mastercard',
-      pattern: /^5[1-5]/,
-      format: defaultFormat,
-      length: [16],
-      cvcLength: [3],
-      luhn: true
-    }, {
-      type: 'amex',
-      pattern: /^3[47]/,
-      //format: /(\d{1,4})(\d{1,6})?(\d{1,5})?/,
-      format: defaultFormat,
-      length: [15],
-      cvcLength: [3, 4],
-      luhn: true
-    }, {
-      type: 'visa',
-      pattern: /^4/,
-      format: defaultFormat,
-      length: [13, 14, 15, 16],
-      cvcLength: [3],
-      luhn: true
-    }
+	{
+		type: 'maestro',
+		pattern: /^(5018|5020|5038|6304|6759|676[1-3])/,
+		format: defaultFormat,
+		length: [12, 13, 14, 15, 16, 17, 18, 19],
+		cvcLength: [3],
+		luhn: true
+	}, {
+		type: 'dinersclub',
+		pattern: /^(36|38|30[0-5])/,
+		format: defaultFormat,
+		length: [14],
+		cvcLength: [3],
+		luhn: true
+	}, {
+		type: 'laser',
+		pattern: /^(6706|6771|6709)/,
+		format: defaultFormat,
+		length: [16, 17, 18, 19],
+		cvcLength: [3],
+		luhn: true
+	}, {
+		type: 'jcb',
+		pattern: /^35/,
+		format: defaultFormat,
+		length: [16],
+		cvcLength: [3],
+		luhn: true
+	}, {
+		type: 'unionpay',
+		pattern: /^62/,
+		format: defaultFormat,
+		length: [16, 17, 18, 19],
+		cvcLength: [3],
+		luhn: false
+	}, {
+		type: 'discover',
+		pattern: /^(6011|65|64[4-9]|622)/,
+		format: defaultFormat,
+		length: [16],
+		cvcLength: [3],
+		luhn: true
+	}, {
+		type: 'mastercard',
+		pattern: /^5[1-5]/,
+		format: defaultFormat,
+		length: [16],
+		cvcLength: [3],
+		luhn: true
+	}, {
+		type: 'amex',
+		pattern: /^3[47]/,
+		//format: /(\d{1,4})(\d{1,6})?(\d{1,5})?/,
+		format: defaultFormat,
+		length: [15],
+		cvcLength: [3, 4],
+		luhn: true
+	}, {
+		type: 'visa',
+		pattern: /^4/,
+		format: defaultFormat,
+		length: [13, 14, 15, 16],
+		cvcLength: [3],
+		luhn: true
+	}
   ],
 
   reFormatCardNumber: function(num) {
-    var card, groups, upperLength, _ref;
-    card = this.cardFromNumber(num);
-    if (!card) {
-      return num;
-    }
-    upperLength = card.length[card.length.length - 1];
-    num = num.replace(/\D/g, '');
-    num = num.slice(0, +upperLength + 1 || 9e9);
-    if (card.format.global) {
-      return (_ref = num.match(card.format)) != null ? _ref.join(' ') : void 0;
-    } else {
-      groups = card.format.exec(num);
-      if (groups != null) {
-        groups.shift();
-      }
-      return groups != null ? groups.join(' ') : void 0;
-    }
+	var card, groups, upperLength, _ref;
+	card = this.cardFromNumber(num);
+	if (!card) {
+	  return num;
+	}
+	upperLength = card.length[card.length.length - 1];
+	num = num.replace(/\D/g, '');
+	num = num.slice(0, +upperLength + 1 || 9e9);
+	if (card.format.global) {
+	  return (_ref = num.match(card.format)) != null ? _ref.join(' ') : void 0;
+	} else {
+	  groups = card.format.exec(num);
+	  if (groups != null) {
+		groups.shift();
+	  }
+	  return groups != null ? groups.join(' ') : void 0;
+	}
   }, //reFormatCardNumber
 
   cardFromNumber: function(num) {
-    var card, _i, _len;
-    num = (num + '').replace(/\D/g, '');
-    for (_i = 0, _len = this.cards.length; _i < _len; _i++) {
-      card = this.cards[_i];
-      if (card.pattern.test(num)) {
-        return card;
-      }
-    }
+	var card, _i, _len;
+	num = (num + '').replace(/\D/g, '');
+	for (_i = 0, _len = this.cards.length; _i < _len; _i++) {
+	  card = this.cards[_i];
+	  if (card.pattern.test(num)) {
+		return card;
+	  }
+	}
   }, //cardFromNumber
 
   luhnCheck: function(num) {
-    var digit, digits, odd, sum, _i, _len, card, length;
-    odd = true;
-    sum = 0;
-    card = this.cardFromNumber(num);
-    if(!card) { return false; }
-    length = card.length[card.length.length - 1];
-    digits = (num + '').split('').reverse();
-    for (_i = 0, _len = digits.length; _i < _len; _i++) {
-      digit = digits[_i];
-      digit = parseInt(digit, 10);
-      if ((odd = !odd)) {
-        digit *= 2;
-      }
-      if (digit > 9) {
-        digit -= 9;
-      }
-      sum += digit;
-    }
-    return verCC = sum % 10 === 0;
+	var digit, digits, odd, sum, _i, _len, card, length;
+	odd = true;
+	sum = 0;
+	card = this.cardFromNumber(num);
+	if(!card) { return false; }
+	length = card.length[card.length.length - 1];
+	digits = (num + '').split('').reverse();
+	for (_i = 0, _len = digits.length; _i < _len; _i++) {
+	  digit = digits[_i];
+	  digit = parseInt(digit, 10);
+	  if ((odd = !odd)) {
+		digit *= 2;
+	  }
+	  if (digit > 9) {
+		digit -= 9;
+	  }
+	  sum += digit;
+	}
+	return verCC = sum % 10 === 0;
   }, //luhnCheck
 
   validateCardExpiry: function(month, year) {
-    var currentTime, expiry, prefix, _ref;
-    if (typeof month === 'object' && 'month' in month) {
-      _ref = month, month = _ref.month, year = _ref.year;
-    }
-    if (!(month && year)) {
-      return verEXP = false;
-    }
-    if (!/^\d+$/.test(month)) {
-      return verEXP = false;
-    }
-    if (!/^\d+$/.test(year)) {
-      return verEXP = false;
-    }
-    if (!(parseInt(month, 10) <= 12)) {
-      return verEXP = false;
-    }
-    if (year.length === 2) {
-      prefix = (new Date).getFullYear();
-      prefix = prefix.toString().slice(0, 2);
-      year = prefix + year;
-    }
-    expiry = new Date(year, month);
-    currentTime = new Date;
-    expiry.setMonth(expiry.getMonth() - 1);
-    expiry.setMonth(expiry.getMonth() + 1, 1);
-    return verEXP = expiry > currentTime;
+	var currentTime, expiry, prefix, _ref;
+	if (typeof month === 'object' && 'month' in month) {
+	  _ref = month, month = _ref.month, year = _ref.year;
+	}
+	if (!(month && year)) {
+	  return verEXP = false;
+	}
+	if (!/^\d+$/.test(month)) {
+	  return verEXP = false;
+	}
+	if (!/^\d+$/.test(year)) {
+	  return verEXP = false;
+	}
+	if (!(parseInt(month, 10) <= 12)) {
+	  return verEXP = false;
+	}
+	if (year.length === 2) {
+	  prefix = (new Date).getFullYear();
+	  prefix = prefix.toString().slice(0, 2);
+	  year = prefix + year;
+	}
+	expiry = new Date(year, month);
+	currentTime = new Date;
+	expiry.setMonth(expiry.getMonth() - 1);
+	expiry.setMonth(expiry.getMonth() + 1, 1);
+	return verEXP = expiry > currentTime;
   }, //validateCardExpiry
 
   validateCVC: function(a, b) {
-    return verCVC = a.indexOf(b)>-1;
+	return verCVC = a.indexOf(b)>-1;
   },
 
   validateName: function(n) {
-  	return verName = (n != "" && n != null);
+	return verName = (n != "" && n != null);
   }
 }
 })
 .directive('validateCard', ['$payments', function($payments) {
   return {
-    require: 'ngModel',
-    scope: {
-      ngModel: '='
-    },
-    link: function(scope, elem, attrs) {
+	require: 'ngModel',
+	scope: {
+	  ngModel: '='
+	},
+	link: function(scope, elem, attrs) {
 
-      var expm, expy, card, length, upperLength, cvvLength, ccVerified, cname;
+	  var expm, expy, card, length, upperLength, cvvLength, ccVerified, cname;
 
-      upperLength = 16;
-      ccVerified = false;
+	  upperLength = 16;
+	  ccVerified = false;
 
-      scope.$watch('ngModel.number', function(newValue, oldValue) {
-        if(newValue) {
-          card = $payments.cardFromNumber(newValue);
-          if(card && card.type) { scope.ngModel.type = card.type; }
-          if (card) {
-            upperLength = card.length[card.length.length - 1];
-          }
-          length = newValue.replace(/\D/g, '').length;
-          if(length == upperLength) {
-            ccVerified = scope.ngModel.valid = $payments.luhnCheck(newValue.replace(/\D/g, ''));
-          }
-          if(ccVerified && length != upperLength) {
-            ccVerified = scope.ngModel.valid = false;
-          }
-          /*if(card && scope.ngModel.cvc){
-          	var cl = scope.ngModel.cvc.length;
-          	scope.ngModel.cvcValid = $payments.validateCVC(card.cvcLength, cl);
-          }*/
-        }
-      }, true);
+	  scope.$watch('ngModel.number', function(newValue, oldValue) {
+		if(newValue) {
+		  card = $payments.cardFromNumber(newValue);
+		  if(card && card.type) { scope.ngModel.type = card.type; }
+		  if (card) {
+			upperLength = card.length[card.length.length - 1];
+		  }
+		  length = newValue.replace(/\D/g, '').length;
+		  if(length == upperLength) {
+			ccVerified = scope.ngModel.valid = $payments.luhnCheck(newValue.replace(/\D/g, ''));
+		  }
+		  if(ccVerified && length != upperLength) {
+			ccVerified = scope.ngModel.valid = false;
+		  }
+		  /*if(card && scope.ngModel.cvc){
+			var cl = scope.ngModel.cvc.length;
+			scope.ngModel.cvcValid = $payments.validateCVC(card.cvcLength, cl);
+		  }*/
+		}
+	  }, true);
 
-      scope.$watch('ngModel.month', function(newValue, oldValue) {
+	  scope.$watch('ngModel.month', function(newValue, oldValue) {
 
 			expm = newValue;
 			scope.expiry = $payments.validateCardExpiry(expm, expy);
 
-      }, true);
+	  }, true);
 
-      scope.$watch('ngModel.year', function(newValue, oldValue) {
+	  scope.$watch('ngModel.year', function(newValue, oldValue) {
 
 			expy = newValue;
 			scope.expiry = $payments.validateCardExpiry(expm, expy);
 
-      }, true);
+	  }, true);
 
-      scope.$watch('ngModel.cvc', function(newValue, oldValue) {
-        	if(newValue && card){
-        		scope.ngModel.cvcValid = $payments.validateCVC(card.cvcLength, newValue.length);
-            }
-      }, true);
+	  scope.$watch('ngModel.cvc', function(newValue, oldValue) {
+			if(newValue && card){
+				scope.ngModel.cvcValid = $payments.validateCVC(card.cvcLength, newValue.length);
+			}
+	  }, true);
 
-      scope.$watch('ngModel.name', function(newValue, oldValue) {
+	  scope.$watch('ngModel.name', function(newValue, oldValue) {
 			cname = newValue;
 			scope.nameValid = $payments.validateName(cname);
-      }, true);
+	  }, true);
 
-    }
+	}
   }
 }])
 .directive('formatCard', ['$payments','$timeout', function($payments, $timeout) {
 return {
-    scope: false,
-    link: function(scope, elem, attrs, validateCtrl) {
+	scope: false,
+	link: function(scope, elem, attrs, validateCtrl) {
 
-      //Format and determine card as typing it in
-      elem.on('keypress', function(e) {
-        var digit, re, card, value, length;
-        if(e.which === 8 || e.metaKey || (!e.which && e.keyCode)) {
-            return;
-        }
+	  //Format and determine card as typing it in
+	  elem.on('keypress', function(e) {
+		var digit, re, card, value, length;
+		if(e.which === 8 || e.metaKey || (!e.which && e.keyCode)) {
+			return;
+		}
 
-        digit = String.fromCharCode(e.which);
-        if (!/^\d+$/.test(digit)) {
-          e.preventDefault();
-          return;
-        }
-        value = elem.val();
+		digit = String.fromCharCode(e.which);
+		if (!/^\d+$/.test(digit)) {
+		  e.preventDefault();
+		  return;
+		}
+		value = elem.val();
 
-        card = $payments.cardFromNumber(value + digit);
+		card = $payments.cardFromNumber(value + digit);
 
-        length = (value.replace(/\D/g, '') + digit).length;
-        upperLength = 16;
+		length = (value.replace(/\D/g, '') + digit).length;
+		upperLength = 16;
 
-        if (card) {
-          upperLength = card.length[card.length.length - 1];
-        }
+		if (card) {
+		  upperLength = card.length[card.length.length - 1];
+		}
 
-        if (length > upperLength) {
-          e.preventDefault();
-          return;
-        }
+		if (length > upperLength) {
+		  e.preventDefault();
+		  return;
+		}
 
-        if (!this.isIE && (e.currentTarget.selectionStart != null) && (e.currentTarget.selectionStart !== value.length)) {
-          return;
-        }
+		if (!this.isIE && (e.currentTarget.selectionStart != null) && (e.currentTarget.selectionStart !== value.length)) {
+		  return;
+		}
 
-        if (card && card.type === 'amex') {
-          re = /^(\d{4}|\d{4}\s\d{6})$/;
-        } else {
-          re = /(?:^|\s)(\d{4})$/;
-        }
+		if (card && card.type === 'amex') {
+		  re = /^(\d{4}|\d{4}\s\d{6})$/;
+		} else {
+		  re = /(?:^|\s)(\d{4})$/;
+		}
 
-        if (re.test(value)) {
-          e.preventDefault();
-          elem.val(value + ' ' + digit);
-        } else if (re.test(value + digit) && length < upperLength) {
-          e.preventDefault();
-          elem.val(value + digit + ' ');
-        }
-      });
+		if (re.test(value)) {
+		  e.preventDefault();
+		  elem.val(value + ' ' + digit);
+		} else if (re.test(value + digit) && length < upperLength) {
+		  e.preventDefault();
+		  elem.val(value + digit + ' ');
+		}
+	  });
 
-      //Format the card if they paste it in and check it
-      elem.on('paste', function(e) {
-        $timeout(function() {
-          var formatted, value;
-          value = elem.val();
-          var formatted = $payments.reFormatCardNumber(value);
-          elem.val(formatted);
-        });
-      });
-    }
+	  //Format the card if they paste it in and check it
+	  elem.on('paste', function(e) {
+		$timeout(function() {
+		  var formatted, value;
+		  value = elem.val();
+		  var formatted = $payments.reFormatCardNumber(value);
+		  elem.val(formatted);
+		});
+	  });
+	}
 }
 }]);
 
@@ -1864,17 +1866,17 @@ AlcoholDelivery.filter('filterParentCat', function(){
 });
 
 AlcoholDelivery.filter('dateSuffix', ['$filter',function ($filter) {
-    var suffixes = ["th", "st", "nd", "rd"];
-    return function (input) {
-        var dtfilter = $filter('date')(input, 'dd');
-        var day = parseInt(dtfilter, 10);
-        var relevantDigits = (day < 30) ? day % 20 : day % 30;
-        var suffix = (relevantDigits <= 3) ? suffixes[relevantDigits] : suffixes[0];
-        
-        var weekDay = $filter('date')(input, 'EEEE');
-        var monthYear = $filter('date')(input, 'MMMM')+', '+$filter('date')(input, 'yyyy');
+	var suffixes = ["th", "st", "nd", "rd"];
+	return function (input) {
+		var dtfilter = $filter('date')(input, 'dd');
+		var day = parseInt(dtfilter, 10);
+		var relevantDigits = (day < 30) ? day % 20 : day % 30;
+		var suffix = (relevantDigits <= 3) ? suffixes[relevantDigits] : suffixes[0];
+		
+		var weekDay = $filter('date')(input, 'EEEE');
+		var monthYear = $filter('date')(input, 'MMMM')+', '+$filter('date')(input, 'yyyy');
 
-        //Thursday, 13 October, 2016
-        return weekDay+', '+day+suffix+' '+monthYear;
-    };
+		//Thursday, 13 October, 2016
+		return weekDay+', '+day+suffix+' '+monthYear;
+	};
 }]);

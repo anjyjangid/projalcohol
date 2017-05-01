@@ -1865,3 +1865,7 @@ md-checkbox.md-focused .md-container:before{
     padding: 10px 0;
     border-top: 1px solid #ddd;
 }
+
+button.processing{
+	background: rgb(128, 128, 128) !important;
+}

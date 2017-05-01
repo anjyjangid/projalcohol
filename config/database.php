@@ -65,10 +65,10 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'host' => env('SQLDB_HOST', 'localhost'),
+            'host' => env('SQLDB_HOST', '192.168.1.174'),
             'database' => env('SQLDB_DATABASE', 'alcoholdelivery'),
-            'username' => env('SQLDB_USERNAME', 'root'),
-            'password' => env('SQLDB_PASSWORD', ''),
+            'username' => env('SQLDB_USERNAME', 'techno'),
+            'password' => env('SQLDB_PASSWORD', 'techno'),
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
