@@ -42,8 +42,12 @@ class UserController extends Controller
 		$reverification = 0;
 		$suspended = false;
 
+		// Always set remember me for mobile app login
+		$isMobileApi = $request->input('mobileapi');
+		$rememberMe = $isMobileApi==1?true:false;
+
 		// if the credentials are wrong
-		if (!Auth::attempt('user',$credentials)) {
+		if(!Auth::attempt('user',$credentials,$rememberMe)){
 			$invalidcredentials = 'Username password does not match';
 		}
 

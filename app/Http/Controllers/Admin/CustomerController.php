@@ -340,20 +340,41 @@ class CustomerController extends Controller
 
 		$query[]['$skip'] = (int)$start;
 
-		if($length > 0){
-			$query[]['$limit'] = (int)$length;
-			$model = User::raw()->aggregate($query);
-		}            
 
-		$response = [
-			'recordsTotal' => $iTotalRecords,
-			'recordsFiltered' => $iTotalRecords,
-			'draw' => $draw,
-			'data' => $model['result']            
-		];
 
-		return response($response,200);
+        if($length > 0){
+            $query[]['$limit'] = (int)$length;
+            $model = User::raw()->aggregate($query);
+        }          
 
+        $response = [
+            'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+            'data' => $model['result']
+        ];
+
+        if(!empty($isExportData)){
+        	// Export data as CSV
+            $filename = "customers_".mt_rand().time().".csv";
+            $filepath = storage_path()."/download/".$filename;
+            $handle = fopen($filepath, 'w+');
+		    fputcsv($handle, array('Sr.','Name','Email','Contact','Status','Verification'));
+		    $i = 1;
+		    foreach($model['result'] as $row){
+		    	$name = !empty($row['name'])?$row['name']:"Not Set";
+		    	$email = !empty($row['email'])?$row['email']:"";
+		    	$contact = !empty($row['mobile_number'])?$row['mobile_number']:"";
+		    	$status = isset($row['status']) && $row['status']==1?"Active":"In Active";
+		    	$verification = isset($row['verified']) && $row['verified']==1?"Verified":"Not verified";
+		        fputcsv($handle, array($i, $name, $email, $contact, $status, $verification));
+		        $i++;
+		    }
+		    fclose($handle);
+			$response = array("file"=>$filename);
+        }
+
+        return response($response,200);
 	}
 
 	public function postImportList(Request $request)

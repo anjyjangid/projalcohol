@@ -10,6 +10,16 @@
 |
 */
 
+// Download Export Csv file from admin customer list
+Route::get('/all-customers-csv', function(){
+	$filename = $_GET['file'];
+	$filepath = storage_path()."/download/".$filename;
+    $headers = array(
+        'Content-Type' => 'text/csv',
+    );
+    return Response::download($filepath, "customers.csv", $headers)->deleteFileAfterSend(true);
+});
+
 Route::get('/mail', function(){
 	
 	$settings = \DB::collection('settings')->whereIn('_id',['general','social','email'])->get();
@@ -39,6 +49,10 @@ Route::get('/printjob/{reference}', 'OrderController@getOrderdetail');
 
 Route::get('/morphing', function(){
 	return view('invoice.morph');
+});
+
+Route::get('/cmail', function(){
+	return view('emails.crowder');
 });
 
 Route::get('/useraddress/{blankhouse}', function($blankhouse){
@@ -376,10 +390,7 @@ Route::group(['prefix' => 'api'], function () {
 	Route::controller('payment', 'PaymentController');
 
 	/*SOCIAL LOGINS APP API*/
-	Route::post('/signupfb', 'Auth\AuthController@signupfb');
-
-	
-
+	Route::post('/signupsocial', 'Auth\AuthController@signupsocial');
 });
 
 

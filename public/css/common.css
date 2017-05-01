@@ -33,3 +33,24 @@
 .fbloginDiv {
   float: left;
 }*/
+
+.clistitemul{
+  list-style-type:none;
+  white-space:nowrap;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding: 0;
+  margin: 0 0 5px 0;
+  clear: both;
+}
+
+.clistitemul li{
+  display:inline-block;
+  list-style: none;
+  border: 1px solid #d6dce0;
+  padding: 8px;
+  margin: 5px;
+  border-radius: 2px;
+  line-height: 25px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
