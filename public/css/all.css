@@ -6681,6 +6681,27 @@ td.visible-print, th.visible-print {
 .fbloginDiv {
   float: left;
 }*/
+
+.clistitemul{
+  list-style-type:none;
+  white-space:nowrap;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding: 0;
+  margin: 0 0 5px 0;
+  clear: both;
+}
+
+.clistitemul li{
+  display:inline-block;
+  list-style: none;
+  border: 1px solid #d6dce0;
+  padding: 8px;
+  margin: 5px;
+  border-radius: 2px;
+  line-height: 25px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 @font-face {
 	font-family: 'sugarbushregular';
 	src: url('../fonts/sugarbush-regular-webfont.eot');
@@ -11640,7 +11661,7 @@ ui-sref {
 .currentorderpopupul li {
 	list-style: none;
 	border-bottom: 1px solid #e5e5e5;
-	padding: 7px 0 10px 20px;
+	padding: 10px;
 	font-size: 12px;
 	color: #37474f;
 	font-family: 'Work Sans', sans-serif;
@@ -11655,16 +11676,19 @@ ui-sref {
 	border-radius: 0 0 4px 4px;
 }
 .currentorderpopupulleft {
-	width: 150px;
+	/*width: 150px;*/
+	width: 62.22%;
 	float: left;
 }
 .currentorderpopupulcenter {
-	width: 40px;
+	/*width: 40px;*/
+	width: 14.81%;
 	text-align: right;
 	float: left;
 }
 .currentorderpopupulright {
-	width: 62px;
+	/*width: 62px;*/
+	width: 22.96%;
 	text-align: right;
 	float: left;
 }
@@ -13370,6 +13394,7 @@ button:hover{
 	right: -5px;
 	width: 195px;
 	word-wrap: break-word;
+	overflow: hidden;
 }
 
 .tag-yellow-new{
@@ -17942,11 +17967,11 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 
 
 
-#icon {
+/*#icon {
     height: 65px !important;
     margin: auto !important;
     width: auto !important;
-}
+}*/
 
 
 
@@ -19339,12 +19364,12 @@ top: -1px;
 .dropdown.productdropdownbtn.open {
     left: 0;
     right: 0;
-    width: 145px;
+    width: 180px;
 }
 .dropdown.productdropdownbtn {
     left: 0;
     right: 0;
-    width: 145px;
+    width: 180px;
 }
 
 .party-detail-heading{
@@ -19406,8 +19431,9 @@ md-content.globalsearch md-autocomplete {
 }
 #icon {
   width: 171px;
-  height: 76px;
+  /*height: 76px;*/
   margin: auto;
+  vertical-align: middle;
 }
 
 .m-top-30{
@@ -21265,8 +21291,71 @@ md-checkbox.md-focused .md-container:before{
 }
 
 .tdown {
-	transform: rotate(180deg);
-	
+	transform: rotate(180deg);	
+}
+
+.product-list-thumb {
+    position: relative;
+    padding-left: 80px;
+}
+
+.product-list-thumb img {
+    max-width: 70px;
+    max-height: 70px;
+    position: absolute;
+    left: 0;
+}
+
+.product-wishlist {
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+}
+
+.addshadow{	
+    box-shadow: 0 1px 2px #bbb;
+    -webkit-box-shadow: 0 1px 2px #bbb;
+    -moz-box-shadow: 0 1px 2px #bbb;
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+}
+
+.navbar-shrink #icon {
+	margin-top: -9px;
+	transition: inherit;
+}
+
+.popupcart{
+	position: relative;
+	left: 7px;
+}
+
+.popupcart:before{
+	left: -6px;	
+}
+
+.currentorderpopupulleft img{
+	float: left;
+	width: 50px;
+	margin-right:8px;
+}
+
+.itemhelperdiv{
+	width: 50px;
+	margin-right: 8px;
+	float: left;
+	text-align: center;	
+}
+
+.giftitemlist{
+	margin-left: 53px;
+	width: 78%;
+	float: left;
+}
+
+.giftitemlist img {
+	width: 30px;
+	border: 1px solid #ccc;
+	margin: 5px;
 }
 /**
  * vAccordion - AngularJS multi-level accordion component

@@ -76,7 +76,6 @@ class SettingController extends Controller
 						"multiple"=>false
 					));
 		return response($result, 201);
-
 	}
 	
 	/**
@@ -94,6 +93,11 @@ class SettingController extends Controller
 		$authConfig['redirect_uri'] = url('adminapi/setting/authorize-google-account');
 		$refreshTokenConfig = GoogleCloudPrint::$refreshTokenConfig;
 
+		$redirectConfig['client_id'] = env('GOOGLE_ID','229065817262-nu2vmndbtlqaovj89r0r5m0hrg3fti61.apps.googleusercontent.com');
+		$authConfig['client_id'] = env('GOOGLE_ID','229065817262-nu2vmndbtlqaovj89r0r5m0hrg3fti61.apps.googleusercontent.com');
+		$authConfig['client_secret'] = env('GOOGLE_SECRET','ByY9s-NiiU_pqB_luqoAYI0q');
+		$refreshTokenConfig['client_id'] = env('GOOGLE_ID','229065817262-nu2vmndbtlqaovj89r0r5m0hrg3fti61.apps.googleusercontent.com');
+		$refreshTokenConfig['client_secret'] = env('GOOGLE_SECRET','ByY9s-NiiU_pqB_luqoAYI0q');
 		if(isset($_GET['code']) && !empty($_GET['code'])) {
 			
 			$code = $_GET['code'];
@@ -101,6 +105,8 @@ class SettingController extends Controller
 			
 			// Create object
 			$responseObj = $gcp->getAccessToken($urlconfig['accesstoken_url'],$authConfig);           
+
+			//return response($responseObj);
 
 			// We requested offline access
 			if (isset($responseObj->refresh_token)) {
@@ -116,7 +122,6 @@ class SettingController extends Controller
 					'status' => 1,
 					'setDefault' => 0
 				];
-
 
 				DB::collection('printers')->raw()->remove([]);
 

@@ -56,6 +56,8 @@ class PasswordController extends Controller
 			return response($validator->errors(), 422);
 		}
 
+		$isMobileApi = isset($data['mobileapi'])?$data['mobileapi']:0;
+
 		$user = User::where('email','=',$data['email'])->first();
 
 		//RETURN ERROR IN CASE USER IS NOT VERIFIED
@@ -66,12 +68,22 @@ class PasswordController extends Controller
 		$user->email_key = $tokens->create($user);
 		
 		$user->save();
+		$userArr = $user->toArray();
+
+		if($isMobileApi==1){
+			$resetCode = mt_rand(100000, 999999);
+			$userArr["isMobileApi"] = $isMobileApi;
+			$userArr["resetCode"] = $resetCode;
+		}
 
 		$email = new Email('forgot');
-		$email->sendEmail($user->toArray());
+		$email->sendEmail($userArr);
 
-		return response(array("success"=>true,"message"=>"Reset link sent successfully"));
-
+		if($isMobileApi==1){
+			return response(array("success"=>true, "code"=>$resetCode, "token"=>$userArr["email_key"], "message"=>"Reset code sent successfully"));
+		}else{
+			return response(array("success"=>true, "message"=>"Reset link sent successfully"));
+		}
 	}
 
 	/**

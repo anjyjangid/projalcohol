@@ -386,9 +386,8 @@ class OrderController extends Controller
 
 	}
 
-	public function postOrders(Request $request, $filter = ''){
-		
-		$stime = date('Y-m-d H:i:s');
+
+	public function postOrders(Request $request, $filter = ''){		
 
 		$params = $request->all();
 
@@ -443,7 +442,7 @@ class OrderController extends Controller
 			'localField'=>'user',
 			'foreignField'=>'_id',
 			'as'=>'consumer'
-		];
+		];		
 
 		$query[]['$unwind'] = [
 			'path' => '$consumer',
@@ -509,18 +508,15 @@ class OrderController extends Controller
 
 		$query[]['$sort'] = $sort;
 
-		//return response($query);
-		$stime .= ' - BEFORE aggregate - '.date('Y-m-d H:i:s');
 		$model = Orders::raw()->aggregate($query);
-		$stime .= ' - AFTER aggregate - '.date('Y-m-d H:i:s');
+		
 		$iTotalRecords = count($model['result']);
 
 		$query[]['$skip'] = (int)$start;
         	
     	if($length > 0){
     		$query[]['$limit'] = (int)$length;    		
-			$model = Orders::raw()->aggregate($query);
-			$stime .= ' - AFTER result - '.date('Y-m-d H:i:s');
+			$model = Orders::raw()->aggregate($query);			
 		}
 
 		$response = [
@@ -528,9 +524,8 @@ class OrderController extends Controller
 			'recordsFiltered' => $iTotalRecords,
 			'draw' => $draw,
 			'data' => $model['result'],
-			'filter' => $filter,
-			'stime' => $stime
-		];
+			'filter' => $filter
+		];		
 
 		return response($response,200);		
 	}

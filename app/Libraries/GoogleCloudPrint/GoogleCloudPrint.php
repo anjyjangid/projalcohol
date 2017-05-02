@@ -33,8 +33,7 @@ use AlcoholDelivery\Libraries\GoogleCloudPrint\HttpRequest;
 class GoogleCloudPrint {
 
 	public static $redirectConfig = array(
-	    //'client_id' 	=> '560402887297-6mkdppgijfmi5gv6fvlfe41hn2dubkpk.apps.googleusercontent.com',
-	    'client_id' 	=> '229065817262-nu2vmndbtlqaovj89r0r5m0hrg3fti61.apps.googleusercontent.com',	    
+	    //'client_id' 	=> env('GOOGLE_ID','229065817262-nu2vmndbtlqaovj89r0r5m0hrg3fti61.apps.googleusercontent.com'),
 	    'redirect_uri' 	=> 'http://localhost/sites/cloudprint/oAuthRedirect.php',
 	    'response_type' => 'code',
 	    'scope'         => 'https://www.googleapis.com/auth/cloudprint',
@@ -42,10 +41,8 @@ class GoogleCloudPrint {
 	
 	public static $authConfig = array(
 	    'code' => '',
-	    /*'client_id' 	=> '560402887297-6mkdppgijfmi5gv6fvlfe41hn2dubkpk.apps.googleusercontent.com',
-	    'client_secret' => 'JFxHeUKmsu9kv4Syr4XyTs_d',*/
-	    'client_id' 	=> '229065817262-nu2vmndbtlqaovj89r0r5m0hrg3fti61.apps.googleusercontent.com',
-	    'client_secret' => 'ByY9s-NiiU_pqB_luqoAYI0q',
+	    //'client_id' 	=> env('GOOGLE_ID','229065817262-nu2vmndbtlqaovj89r0r5m0hrg3fti61.apps.googleusercontent.com'),
+	    //'client_secret' => env('GOOGLE_SECRET','ByY9s-NiiU_pqB_luqoAYI0q'),
 	    'redirect_uri' 	=> 'http://localhost/sites/cloudprint/oAuthRedirect.php',
 	    "grant_type"    => "authorization_code"
 	);
@@ -55,11 +52,8 @@ class GoogleCloudPrint {
 	);
 	
 	public static $refreshTokenConfig = array(
-	    
-	    /*'client_id' 	=> '560402887297-6mkdppgijfmi5gv6fvlfe41hn2dubkpk.apps.googleusercontent.com',
-	    'client_secret' => 'JFxHeUKmsu9kv4Syr4XyTs_d',*/
-	    'client_id' 	=> '229065817262-nu2vmndbtlqaovj89r0r5m0hrg3fti61.apps.googleusercontent.com',
-	    'client_secret' => 'ByY9s-NiiU_pqB_luqoAYI0q',
+	    //'client_id' 	=> env('GOOGLE_ID','229065817262-nu2vmndbtlqaovj89r0r5m0hrg3fti61.apps.googleusercontent.com'),
+	    //'client_secret' => env('GOOGLE_SECRET','ByY9s-NiiU_pqB_luqoAYI0q'),
 	    'refresh_token' => "1/KvzDzQy0n9GYSTdGaYYPJfDnpvVdgSi7ZP1NdBUekH6j0TpBnIAjcGD-QugLxcGK",
 	    'grant_type' => "refresh_token" 
 	);
@@ -86,6 +80,7 @@ class GoogleCloudPrint {
 		
 		$this->authtoken = "";
 		$this->httpRequest = new HttpRequest();
+		
 	}
 	
 	/**

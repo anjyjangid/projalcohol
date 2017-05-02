@@ -1,7 +1,8 @@
 #icon {
   width: 171px;
-  height: 76px;
+  /*height: 76px;*/
   margin: auto;
+  vertical-align: middle;
 }
 
 .m-top-30{
@@ -1859,6 +1860,69 @@ md-checkbox.md-focused .md-container:before{
 }
 
 .tdown {
-	transform: rotate(180deg);
-	
+	transform: rotate(180deg);	
+}
+
+.product-list-thumb {
+    position: relative;
+    padding-left: 80px;
+}
+
+.product-list-thumb img {
+    max-width: 70px;
+    max-height: 70px;
+    position: absolute;
+    left: 0;
+}
+
+.product-wishlist {
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+}
+
+.addshadow{	
+    box-shadow: 0 1px 2px #bbb;
+    -webkit-box-shadow: 0 1px 2px #bbb;
+    -moz-box-shadow: 0 1px 2px #bbb;
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+}
+
+.navbar-shrink #icon {
+	margin-top: -9px;
+	transition: inherit;
+}
+
+.popupcart{
+	position: relative;
+	left: 7px;
+}
+
+.popupcart:before{
+	left: -6px;	
+}
+
+.currentorderpopupulleft img{
+	float: left;
+	width: 50px;
+	margin-right:8px;
+}
+
+.itemhelperdiv{
+	width: 50px;
+	margin-right: 8px;
+	float: left;
+	text-align: center;	
+}
+
+.giftitemlist{
+	margin-left: 53px;
+	width: 78%;
+	float: left;
+}
+
+.giftitemlist img {
+	width: 30px;
+	border: 1px solid #ccc;
+	margin: 5px;
 }

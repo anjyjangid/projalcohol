@@ -19,7 +19,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			}
 
 			$scope.hideMenu = function(){
-				//$('.dropdown-menu').toggleClass('animate');
+				$('.dropdown-menu').removeClass('animate');
 			}
 		}]
 	};
@@ -831,7 +831,7 @@ AlcoholDelivery.directive('sideBar', function() {
 		'  </span>' +
 		'  <span class="input-group-addon bootstrap-touchspin-prefix" ng-show="prefix" ng-bind="prefix"></span>' +
 		'  <span class="addmore-count" ng-bind="remainQty || val"></span>'+
-		// '  <input only-digits type="text" class="addmore-count" ng-model="val">'+
+		// '  <input only-digits type="text" ng-if="!verticalButtons" class="addmore-count" ng-model="val">'+
 		// '  <input type="text" ng-model="val" class="form-control addmore-count" ng-blur="checkValue()" disabled>' +
 		'  <span class="input-group-addon" ng-show="postfix" ng-bind="postfix"></span>' +
 		'  <span class="input-group-btn" ng-if="verticalButtons">' +

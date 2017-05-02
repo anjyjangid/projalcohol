@@ -1087,6 +1087,7 @@ class CartController extends Controller
 
 			$userCart = Cart::where("user","=",new MongoId($user->_id))
 							->where("_id","!=",new MongoId($cartKey))
+							->orderBy("created_at",'desc')
 							->whereNull("generatedBy")->first();
 
 			$sessionCart = Cart::find($cartKey);
@@ -1115,6 +1116,8 @@ class CartController extends Controller
 				}
 
 			}
+
+			$sessionCart->delete();
 
 			$userCart->setWorkingHrs();
 			$userCart->setAllDependencies();

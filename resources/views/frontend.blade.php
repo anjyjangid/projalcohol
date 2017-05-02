@@ -60,9 +60,9 @@
 		fbq('init', '761659053968120'); // Insert your pixel ID here.
 		fbq('track', 'PageView');
 		</script>
-		<noscript><img height="1" width="1" style="display:none"
-		src="https://www.facebook.com/tr?id=761659053968120&ev=PageView&noscript=1"
-		/></noscript>
+		<noscript>
+			<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=761659053968120&ev=PageView&noscript=1" />
+		</noscript>
 		<!-- DO NOT MODIFY -->
 		<!-- End Facebook Pixel Code -->
 
@@ -108,6 +108,7 @@
 	</head>
 
 	<body ng-controller="AppController" ng:class="{'loadingpayment':loadingmsg}" ng-cloak>		    	    	
+
     	<div ng-spinner-bar class="page-spinner-bar">
 			<div class="bounce1"></div>
 			<div class="bounce2"></div>
@@ -127,7 +128,7 @@
 				<div id="sectionarea" style="display: none;">
 					<section class="fullwidth social_block" style="padding: 10px 0px;">
 						<div class="container">
-							<div align="center">
+							<div align="center" style="max-width: 100%;overflow: auto;">
 								<div class="occassion_sale ng-scope" style="font-size: 40px;line-height: 34px; padding: 0px; color: #fff;">
 									Your friends like us too.. 
 								</div>						
@@ -231,12 +232,10 @@
 	      if (raf) raf(function() { window.setTimeout(loadDeferredStyles, 0); });
 	      else window.addEventListener('load', loadDeferredStyles);
 	    </script>
-	</body>
+	</body>   
 
-    
-
-	<script async type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAO1xAu1wBu7NZOqNBn9aoYg-RVstm60jc&libraries=places"></script>		
+	<script async type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAO1xAu1wBu7NZOqNBn9aoYg-RVstm60jc&libraries=places"></script>
+	
 	<script type="text/javascript" src="js/build/all.js"></script>
-
 	
 </html>

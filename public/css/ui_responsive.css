@@ -4259,11 +4259,11 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 
 
 
-#icon {
+/*#icon {
     height: 65px !important;
     margin: auto !important;
     width: auto !important;
-}
+}*/
 
 
 
@@ -5656,12 +5656,12 @@ top: -1px;
 .dropdown.productdropdownbtn.open {
     left: 0;
     right: 0;
-    width: 145px;
+    width: 180px;
 }
 .dropdown.productdropdownbtn {
     left: 0;
     right: 0;
-    width: 145px;
+    width: 180px;
 }
 
 .party-detail-heading{

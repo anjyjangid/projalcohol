@@ -2,6 +2,7 @@ AlcoholDelivery.controller('AppController', [
 	'$scope', '$rootScope','$http', "$mdToast", "categoriesFac", "$mdDialog", "$filter",'ProductService', 'alcoholCart','$cookies','$location','UserService',
 	function($scope, $rootScope,$http,$mdToast,categoriesFac, $mdDialog, $filter, ProductService, alcoholCart,$cookies,$location,UserService) {
 
+		
 	$scope.ageVerification = function() {
 		// Appending dialog to document.body to cover sidenav in docs app
 		

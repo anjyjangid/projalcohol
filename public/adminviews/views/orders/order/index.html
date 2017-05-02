@@ -2,7 +2,7 @@
   Card is rejected by the bank. Please check with your bank or re-enter card details
 </div>
 <!-- <pre>{{cart|json}}</pre> -->
-<div class="row" ng-form="cartFrm">
+<div class="row pos-relative" ng-form="cartFrm">
 	<div class="col-md-12">
 		<div class="portlet box blue">
 			<div class="portlet-title">
@@ -11,27 +11,10 @@
 					<a href="javascript:;" class="collapse"></a>
 				</div> -->
 			</div>
-			<div class="portlet-body form">
+			<div class="portlet-body form row">
 				<div class="form-body">
-					<!-- <div class="form-group">
-						<label class="control-label">Order Type: </label>
-						<div class="btn-group">
-							<label
-								class="btn btn-info"
-								ng-model="cart.orderType"
-								btn-radio="'consumer'">
-								<span ng-class="{'fa fa-check':cart.orderType=='consumer'}"></span>
-								Consumer
-							</label>
-							<label
-								class="btn btn-info"
-								ng-model="cart.orderType"
-								btn-radio="'business'">
-								<span ng-class="{'fa fa-check':cart.orderType=='business'}"></span>
-								Business
-							</label>
-						</div>
-					</div> -->
+
+					<div class="hide" recent-order></div>
 					<tabset active="cart.orderType">
 						<tab select="cart.orderType='consumer'" heading="Consumer">
 							<div class="row">
@@ -318,6 +301,7 @@
 						</div>
 					</div>
 				</div>
+				
 			</div>
 		</div>
 		<div class="portlet box blue">

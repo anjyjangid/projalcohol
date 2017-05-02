@@ -55,6 +55,19 @@ MetronicApp.controller('CustomerController',[
 		})
 	}
 
+	$scope.exportCSV = function(){
+		var paramsData = grid.getDataTable().ajax.params();
+    	paramsData.length = -1;
+    	paramsData.isExportData = 1;
+
+		$http.post("../adminapi/customer/list", paramsData)
+		.then(function(res){
+			document.location.href = "all-customers-csv/?file="+res.data.file;
+		})
+		.catch(function(err){
+		});
+	}
+
 }]);
 
 MetronicApp.controller('CustomerAddController',['$scope', '$http','customerModel', function($scope,$http,customerModel) {

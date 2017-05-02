@@ -47,9 +47,9 @@ class AuthController extends Controller
 	 */
 	public function __construct()
 	{
-		
 		$this->user = "user";
-		$this->middleware('guest', ['except' => 'getLogout']);
+		// 'signupsocial','postSocialverification' are used for mobile app api
+		$this->middleware('guest', ['except' => array('getLogout','signupsocial','postSocialverification')]);
 	}
 
 	/**
@@ -149,6 +149,14 @@ class AuthController extends Controller
 	}
 
 	/**
+	 * Social Login & Signup From API
+	 */
+	public function signupsocial(Request $request){
+		$data = $request->all();
+		return $this->socialLogin($data);
+	}
+
+	/**
 	 * Create a new user instance after a valid registration.
 	 *
 	 * @param  array  $data
@@ -156,28 +164,23 @@ class AuthController extends Controller
 	 */
 	protected function create(array $data)
 	{
-
 		$data['email_key'] = new MongoId();
 		$data['email'] = strtolower($data['email']);
 		
 		try {
 
 			$userData = [
-
 				'email' => $data['email'],
 				'password' => bcrypt($data['password']),
 				'email_key' => (string)$data['email_key'],
 				'status' => 1,
 				'verified' => 0,
-
 			];
 
 			if(isset($data['refferedBy']) && MongoId::isValid($data['refferedBy'])){
-				
 				$user = user::find($data['refferedBy']);
 				if(!empty($user))
 				$userData['reffered'] = new MongoId($data['refferedBy']);
-
 			}
 
 			$user = User::create($userData);
@@ -185,20 +188,18 @@ class AuthController extends Controller
 		} catch(\Exception $e){
 
 			return response(array("success"=>false,"message"=>$e->getMessage()));
-				
-		}	
+		}
 
 		$email = new Email('welcome');
 		$email->sendEmail($data);
 		
-		return response(array("success"=>true,"message"=>"Account created successfully"));
+		return array("success"=>true,"message"=>"Account created successfully");
 	}
 
 
 	public function verifyemail($key){
 
 		$user = User::where("email_key","=",$key)->first();
-
 
 		if(empty($user->_id)){
 			return redirect('/mailverified/0');
@@ -214,8 +215,6 @@ class AuthController extends Controller
 		return redirect('/mailverified/1');
 	}
 
-	
-
 
 	/*********************SOCIAL LOGIN*************************/
 
@@ -229,42 +228,41 @@ class AuthController extends Controller
 		];
 
 		return $providerList[$providername];
-
 	}
 
-	protected function socialLogin($data){			
-		
+	protected function socialLogin($data){
+
 		if(!empty($data) && isset($data['id'])){
 			$data['id'] = (string)$data['id'];
-			$providerData = $this->providers($data['providername']);		    
+			$providerData = $this->providers($data['providername']);
 			$field = $providerData['field'];
 			$providername = $providerData['name'];
 
 			$id = $data['id'];
 			$email = (isset($data['email']) && $data['email']!='')?$data['email']:'';
 
-			$user = User::where($field, '=', $id)->orWhere('email',$email)->first();            
+			$user = User::where($field, '=', $id)->orWhere('email',$email)->first();
 
 			if($user){
 				if($user->status!=1){
-					$suspended = 'Your account has been suspended by the site administrator.';          
+					$suspended = 'Your account has been suspended by the site administrator.';
 					return response(['suspended' => $suspended],422);
 				}
 				$user->$field = $data['id'];
-				
+
 				if(!isset($user->name))
-					$user->name = $data['name'];   
-				
-				$user->verified = 1;   
-				$user->save();                
+					$user->name = $data['name'];
+
+				$user->verified = 1;
+				$user->save();
 			}elseif($email!=''){
 				$user = User::create([
-					'email' => $email,                    
+					'email' => $email,
 					'name' => $data['name'],
 					$field => $data['id'],
 					'status' => 1,
 					'verified' => 1
-				]);                
+				]);
 			}else{
 				Session::put('socialData',$data);
 				return response(['emailnotfound' => 'Hello '.$data['name'].', we could not find your email address from '.$providername.', please enter your email below to complete the registration process.'],422);
@@ -274,8 +272,7 @@ class AuthController extends Controller
 			return response(Auth::user('user'),200);
 		}else{
 			return response(['couldnotconnect' => 'We could not connect to '.$providername.', please try again.'],422);
-		}        			
-
+		}
 	}
 
 	/**

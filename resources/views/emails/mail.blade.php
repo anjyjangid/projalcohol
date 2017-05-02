@@ -20,7 +20,7 @@
         }
     </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #ebeef0;">
+<body style="margin: 0; padding: 0; background-color: #ebeef0;">    
     @extends('emails.maillayout')
     @section('content')
     <?php echo htmlspecialchars_decode($content); ?>

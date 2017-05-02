@@ -10,9 +10,16 @@
 |
 */
 
-Route::post('/sharingpurchase', function(){
-	return response(['error' => 0]);
+// Download Export Csv file from admin customer list
+Route::get('/all-customers-csv', function(){
+	$filename = $_GET['file'];
+	$filepath = storage_path()."/download/".$filename;
+    $headers = array(
+        'Content-Type' => 'text/csv',
+    );
+    return Response::download($filepath, "customers.csv", $headers)->deleteFileAfterSend(true);
 });
+
 Route::get('/mail', function(){
 	
 	$settings = \DB::collection('settings')->whereIn('_id',['general','social','email'])->get();
@@ -42,6 +49,10 @@ Route::get('/printjob/{reference}', 'OrderController@getOrderdetail');
 
 Route::get('/morphing', function(){
 	return view('invoice.morph');
+});
+
+Route::get('/cmail', function(){
+	return view('emails.crowder');
 });
 
 Route::get('/useraddress/{blankhouse}', function($blankhouse){
@@ -380,8 +391,8 @@ Route::group(['prefix' => 'api'], function () {
 	Route::resource('gift', 'GiftController',['only'=>['show']]);
 	Route::controller('payment', 'PaymentController');
 
-	
-
+	/*SOCIAL LOGINS APP API*/
+	Route::post('/signupsocial', 'Auth\AuthController@signupsocial');
 });
 
 
@@ -416,7 +427,7 @@ Route::get('{storageFolder}/i/{filename}', function ($storageFolder,$filename){
 	* company
 	*
 	*/	
-	if(!file_exists(storage_path($storageFolder) . '/' . $filename)){
+	if(!file_exists(storage_path($storageFolder) . '/' . $filename) && $storageFolder!='homebanner'){
 		return Image::make(public_path('images').'/product-default.jpg')->response();		
 	}
 	

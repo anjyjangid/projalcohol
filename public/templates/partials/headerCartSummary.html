@@ -14,18 +14,27 @@
 			<ul  class="currentorderpopupul" ng-scrollbars ng-scrollbars-config="scrollconfig" ng-scrollbars-update="updateScrollbar">			
 				<li ng-init="total = 0; salePrice.price = sale.price" ng-repeat="(id,sale) in alcoholCart.getSales()">					
 					<div ng-repeat="(id,productInSale) in sale.products">						
-						<div class="currentorderpopupulleft">{{productInSale.product.name}}</div>
+						<div class="currentorderpopupulleft">
+							<img ng-src="products/i/200/{{productInSale.product.image | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
+							{{productInSale.product.name}}							
+						</div>
 						<div class="currentorderpopupulcenter" ng-init="$parent.total = $parent.total + productInSale.quantity">{{productInSale.quantity}}</div>						
 						<div class="currentorderpopupulright" ng:class="{'strike-txt':!sale.action}">{{(productInSale.product.price*productInSale.quantity) | pricingTxt}}</div>
 					</div>
 					<div ng-repeat="(id,productInAction) in sale.action">
 						{{salePrice.price = productInAction.product.price*productInAction.quantity;''}}
-						<div class="currentorderpopupulleft">{{productInAction.product.name}}</div>
+						<div class="currentorderpopupulleft">														
+							<div class="itemhelperdiv">&nbsp;</div>
+							{{productInAction.product.name}}							
+						</div>
 						<div class="currentorderpopupulcenter" ng-init="$parent.total = $parent.total + productInAction.quantity">{{productInAction.quantity}}</div>						
 						<div class="currentorderpopupulright strike-txt">{{(productInAction.product.price*productInAction.quantity) | pricingTxt}}</div>
 					</div>																				
 					<div>
-						<div class="currentorderpopupulleft"><span class="saletag">{{sale.title.small}}</span></div>
+						<div class="currentorderpopupulleft">							
+							<div class="itemhelperdiv">&nbsp;</div>
+							<span class="saletag popupcart">{{sale.title.small}}</span>
+						</div>
 						<div class="currentorderpopupulcenter">&nbsp;<!-- {{total}} --></div>
 						<div ng-if="sale.action" class="currentorderpopupulright">{{(salePrice.price - sale.totalDiscount) | pricingTxt:true}}</div>
 						<div ng-if="!sale.action" class="currentorderpopupulright">{{sale.price | pricingTxt:true}}</div>					
@@ -35,8 +44,9 @@
 				<li ng-hide="product.remainingQty == 0" ng-repeat="(id,product) in alcoholCart.getProducts()">
 
 					<div class="currentorderpopupulleft">
+						<img ng-src="products/i/200/{{product.icon | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
 						{{product.product.name}}
-						<span class="saletag" ng-if="product.isSingleSale">{{product.sale.detailTitle}}</span>
+						<span class="saletag popupcart" ng-if="product.isSingleSale">{{product.sale.detailTitle}}</span>
 						
 					</div>
 					<div class="currentorderpopupulcenter">{{product.remainingQty}}</div>
@@ -51,7 +61,10 @@
 				</li>
 
 				<li ng-repeat="(id,product) in alcoholCart.getLoyaltyProducts()">
-					<div class="currentorderpopupulleft">{{product.product.name}}</div>
+					<div class="currentorderpopupulleft">
+						<img ng-src="products/i/200/{{product.icon | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
+						{{product.product.name}}
+					</div>
 					<div class="currentorderpopupulcenter">{{product.quantity}}</div>
 					<div class="currentorderpopupulright">
 						<i>LP {{product.loyaltyValue.point}}</i>
@@ -68,31 +81,43 @@
 				</li>
 
 				<li ng-repeat="(key,package) in alcoholCart.getPackages()">
-					<div class="currentorderpopupulleft">{{package._name}}</div>
+					<div class="currentorderpopupulleft">
+						<img ng-src="packages/i/{{package.original.coverImage.source}}" alt="" class="img-responsive img-responsive-h" />
+						{{package._name}}
+					</div>
 					<div class="currentorderpopupulcenter">{{package._quantity}}</div>
 					<div class="currentorderpopupulright">{{package._price | pricingTxt}}</div>
 				</li>
 
 				<li ng-repeat="(key,promotion) in alcoholCart.getPromotions()">
-					<div class="currentorderpopupulleft">{{promotion.product._title}}</div>
+					<div class="currentorderpopupulleft">
+						<img ng-src="products/i/200/{{promotion.product._image}}" alt="" class="img-responsive img-responsive-h" />
+						{{promotion.product._title}}
+					</div>
 					<div class="currentorderpopupulcenter">promo</div>
 					<div class="currentorderpopupulright">{{package._price | freeTxt}}</div>
 				</li>
 
 				<li ng-repeat="(key,giftCard) in alcoholCart.getGiftCards()">
-					<div class="currentorderpopupulleft">Gift Card ({{giftCard.recipient.price | pricingTxt}})</div>
+					<div class="currentorderpopupulleft">
+						<div class="itemhelperdiv"><h2 class="nomargin">$</h2></div>
+						Gift Card ({{giftCard.recipient.price | pricingTxt}})
+					</div>
 					<div class="currentorderpopupulcenter">{{giftCard.recipient.quantity}}</div>
 					<div class="currentorderpopupulright">{{giftCard.getPrice() | pricingTxt}}</div>
 				</li>
 
 				<li ng-repeat="(key,gift) in alcoholCart.getGifts()">
 					<div class="currentorderpopupulleft">
+						<img ng-src="{{gift.imageLink}}" alt="" class="img-responsive img-responsive-h" />
 						Gift : {{gift.gsTitle()}} 
-						<span ng-if="gift.products"> <br />product: {{gift.getProductAttachedCount()}}/{{gift.gsLimit()}}</span>
+						<!-- <span ng-if="gift.products"> <br />product: {{gift.getProductAttachedCount()}}/{{gift.gsLimit()}}</span> -->
 					</div>
 					<div class="currentorderpopupulcenter">1</div>
 					<div class="currentorderpopupulright">{{gift.gsPrice() | pricingTxt}}</div>
-
+					<div class="giftitemlist">
+						<img ng-repeat="(pkey,pitem) in gift.products" ng-src="products/i/200/{{pitem.product.icon}}" alt="{{pitem.product.name}}" class="img-responsive img-responsive-h">
+					</div>
 				</li>
 
 			</ul>

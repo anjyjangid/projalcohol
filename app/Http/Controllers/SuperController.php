@@ -33,6 +33,10 @@ class SuperController extends Controller
 
 		$categories = $categories->where('cat_status',1);		
 
+		if(isset($params['onlyParent']) && $params['onlyParent']){
+			$categories = $categories->where('ancestors','exists',false);
+		}
+
 		$categories = $categories->get();
 
 		if(empty($categories) || !is_object($categories) || empty($categories->toArray())){
