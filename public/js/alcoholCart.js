@@ -3282,7 +3282,7 @@ AlcoholDelivery.service('alcoholCart', [
 					// $rootScope.invalidCodeMsg = false;
 					// $rootScope.invalidCodeMsgTxt = result.msg;
 					_self.$coupon.invalidCodeMsg = false;
-					_self.$coupon.message = result.msg;
+					_self.$coupon.invalidCodeMsgTxt = result.msg;
 
 				}else{
 
