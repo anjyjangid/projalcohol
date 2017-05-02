@@ -30,7 +30,7 @@ elixir(function(mix) {
     mix.scripts([
     	'general.js',
     	'jquery-1.11.3.min.js',
-    	'http://platform.twitter.com/widgets.js',
+    	//'http://platform.twitter.com/widgets.js',
 	    '../bower_components/bootstrap/dist/js/bootstrap.min.js',
 	    '../bower_components/angular/angular.min.js',
 	    '../bower_components/satellizer/dist/satellizer.js',	    
