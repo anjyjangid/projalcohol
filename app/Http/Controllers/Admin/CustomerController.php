@@ -11,9 +11,12 @@ use AlcoholDelivery\Http\Controllers\Controller;
 
 use Storage;
 use Validator;
+use MongoDate;
+use AlcoholDelivery\User;
+use AlcoholDelivery\UserImport;
+use AlcoholDelivery\Email;
+use AlcoholDelivery\oldResultantUsers;
 
-use AlcoholDelivery\User as User;
-use AlcoholDelivery\Email as Email;
 
 class CustomerController extends Controller
 {
@@ -121,9 +124,9 @@ class CustomerController extends Controller
 
 		if(empty($customer)) {
 			if(empty($inputs['password'])){
-	            $chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-	            $inputs['password'] = substr( str_shuffle( $chars ), 0, 6 );
-	        }
+				$chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+				$inputs['password'] = substr( str_shuffle( $chars ), 0, 6 );
+			}
 
 			try {
 
@@ -186,9 +189,9 @@ class CustomerController extends Controller
 		$inputs = $request->all();
 
 		if(empty($inputs['password'])){
-            $chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-            $inputs['password'] = substr( str_shuffle( $chars ), 0, 6 );
-        }
+			$chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+			$inputs['password'] = substr( str_shuffle( $chars ), 0, 6 );
+		}
 
 		try {
 
@@ -285,57 +288,59 @@ class CustomerController extends Controller
 	{
 		$params = $request->all();
 
-        extract($params);
+		extract($params);
 
-        $columns = ['_id','smallTitle','email','status','verified'];
+		$columns = ['_id','smallTitle','email','status','verified'];
 
-        $project = ['title'=>1,'status'=>1,'email'=>1,'name'=>1,'mobile_number'=>1,'verified'=>1,'email_key'=>1];
+		$project = ['title'=>1,'status'=>1,'email'=>1,'name'=>1,'mobile_number'=>1,'verified'=>1,'email_key'=>1];
 
-        $query = [];        
-        
-        $project['smallTitle'] = ['$toLower' => '$name'];
-        
-        $query[]['$project'] = $project;
+		$query = [];        
+		
+		$project['smallTitle'] = ['$toLower' => '$name'];
+		
+		$query[]['$project'] = $project;
 
-        if(isset($name) && trim($name)!=''){
-            $s = "/".$name."/i";
-            $query[]['$match']['name'] = ['$regex'=>new \MongoRegex($s)];
-        }
+		if(isset($name) && trim($name)!=''){
+			$s = "/".$name."/i";
+			$query[]['$match']['name'] = ['$regex'=>new \MongoRegex($s)];
+		}
 
-        if(isset($email) && trim($email)!=''){
-            $s = "/".$email."/i";
-            $query[]['$match']['email'] = ['$regex'=>new \MongoRegex($s)];
-        }
+		if(isset($email) && trim($email)!=''){
+			$s = "/".$email."/i";
+			$query[]['$match']['email'] = ['$regex'=>new \MongoRegex($s)];
+		}
 
-        if(isset($status) && trim($status)!=''){            
-            $query[]['$match']['status'] = (int)$status;
-        }
+		if(isset($status) && trim($status)!=''){            
+			$query[]['$match']['status'] = (int)$status;
+		}
 
-        if(isset($verified) && trim($verified)!=''){            
-            $query[]['$match']['verified'] = (int)$verified;
-        }
+		if(isset($verified) && trim($verified)!=''){            
+			$query[]['$match']['verified'] = (int)$verified;
+		}
 
-        if(isset($mobile_number) && trim($mobile_number)!=''){            
-            $s = "/".$mobile_number."/i";
-            $query[]['$match']['mobile_number'] = ['$regex'=>new \MongoRegex($s)];
-        }
+		if(isset($mobile_number) && trim($mobile_number)!=''){            
+			$s = "/".$mobile_number."/i";
+			$query[]['$match']['mobile_number'] = ['$regex'=>new \MongoRegex($s)];
+		}
 
-        $sort = ['updated_at'=>-1];
+		$sort = ['updated_at'=>-1];
 
-        if(isset($params['order']) && !empty($params['order'])){
-            
-            $field = $columns[$params['order'][0]['column']];
-            $direction = ($params['order'][0]['dir']=='asc')?1:-1;
-            $sort = [$field=>$direction];            
-        }
+		if(isset($params['order']) && !empty($params['order'])){
+			
+			$field = $columns[$params['order'][0]['column']];
+			$direction = ($params['order'][0]['dir']=='asc')?1:-1;
+			$sort = [$field=>$direction];            
+		}
 
-        $query[]['$sort'] = $sort;
+		$query[]['$sort'] = $sort;
 
-        $model = User::raw()->aggregate($query);
+		$model = User::raw()->aggregate($query);
 
-        $iTotalRecords = count($model['result']);
+		$iTotalRecords = count($model['result']);
 
-        $query[]['$skip'] = (int)$start;
+		$query[]['$skip'] = (int)$start;
+
+
 
         if($length > 0){
             $query[]['$limit'] = (int)$length;
@@ -371,8 +376,139 @@ class CustomerController extends Controller
 
         return response($response,200);
 	}
-	
-	public function postImport(Request $request){
-		return response('Under development',422);
+
+	public function postImportList(Request $request)
+	{
+		$params = $request->all();
+
+		extract($params);
+
+		$columns = ['_id','smallTitle','email','status','verified'];
+
+		$project = ['title'=>1,'status'=>1,'email'=>1,'name'=>1,'mobile_number'=>1,'verified'=>1,'email_key'=>1];
+
+		$query = [];
+		
+		$project['smallTitle'] = ['$toLower' => '$name'];
+		
+		$query[]['$project'] = $project;
+
+		if(isset($name) && trim($name)!=''){
+			$s = "/".$name."/i";
+			$query[]['$match']['name'] = ['$regex'=>new \MongoRegex($s)];
+		}
+
+		if(isset($email) && trim($email)!=''){
+			$s = "/".$email."/i";
+			$query[]['$match']['email'] = ['$regex'=>new \MongoRegex($s)];
+		}
+
+		if(isset($status) && trim($status)!=''){            
+			$query[]['$match']['status'] = (int)$status;
+		}
+
+		if(isset($verified) && trim($verified)!=''){            
+			$query[]['$match']['verified'] = (int)$verified;
+		}
+
+		if(isset($mobile_number) && trim($mobile_number)!=''){            
+			$s = "/".$mobile_number."/i";
+			$query[]['$match']['mobile_number'] = ['$regex'=>new \MongoRegex($s)];
+		}
+
+		$sort = ['updated_at'=>-1];
+
+		if(isset($params['order']) && !empty($params['order'])){
+			
+			$field = $columns[$params['order'][0]['column']];
+			$direction = ($params['order'][0]['dir']=='asc')?1:-1;
+			$sort = [$field=>$direction];            
+		}
+
+		$query[]['$sort'] = $sort;
+
+		$model = User::raw()->aggregate($query);
+
+		$iTotalRecords = count($model['result']);
+
+		$query[]['$skip'] = (int)$start;
+
+		if($length > 0){
+			$query[]['$limit'] = (int)$length;
+			$model = User::raw()->aggregate($query);
+		}
+
+		$response = [
+			'recordsTotal' => $iTotalRecords,
+			'recordsFiltered' => $iTotalRecords,
+			'draw' => $draw,
+			'data' => $model['result']            
+		];
+
+		return response($response,200);
+
+	}
+
+	public function getImport(){
+
+		$count = oldResultantUsers::whereNull("address")->count();
+		pr($count);
+		$i = 1;
+		while($resultantUser = oldResultantUsers::whereNull("address")->first()){
+
+			$resultantUser->password = "";
+			$resultantUser->email_key = "";
+			$resultantUser->status = 1;
+			$resultantUser->verified = 0;
+			$resultantUser->updated_at = new MongoDate();
+			$resultantUser->created_at = new MongoDate();
+			$resultantUser->existing = count($resultantUser->existing)>0?true:false;
+
+			$searchVal = $resultantUser->postalCode;
+
+			$json = json_decode(file_get_contents('https://developers.onemap.sg/commonapi/search?searchVal='.$searchVal.'&returnGeom=Y&getAddrDetails=Y&pageNum=1'), true);
+
+			if(!empty($json) && isset($json['results']) && !empty($json['results'])){
+
+				$address = $json['results'][0];
+
+				$addressObj = [
+					"SEARCHVAL" => $address['SEARCHVAL'],
+					"ADDRESS" => $address['ADDRESS'],
+					"house" => $address['BLK_NO'],
+					"HBRN" => $address['ROAD_NAME'],
+					"default" => "true",
+					"BLDG_NAME" => $address['BUILDING'],
+					"PostalCode" => $address['POSTAL'],
+					"X" => $address['X'],
+					"Y" => $address['Y'],
+					"LAT" => $address['LATITUDE'],
+					"LNG" => $address['LONGITUDE'],
+					"SEARCHTEXT" => "",
+					"FLOOR" => "",
+					"UNIT" => "",
+					"firstname" => $resultantUser->name,
+					"lastname" => "",
+					"company" => "",
+					"location" => [
+						$address['LATITUDE'],
+						$address['LONGITUDE']
+					],
+					"CATEGORY" => "Building"
+				];
+				
+				$resultantUser->address = [$addressObj];
+
+			}else{
+				$resultantUser->address = [];
+			}
+
+			prd("done");
+			$resultantUser->save();
+
+		}
+
+		prd("loop out");
+
 	}
 }

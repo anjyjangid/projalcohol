@@ -378,14 +378,14 @@
 <div class="checkboxtotaldiv">
 	<div class="checkboxtotaldiv-top">
 		<div class="col-md-6">
-			<div class="input-group" ng-show="alcoholCart.$coupon.couponInput">
+			<div class="input-group" ng-show="!alcoholCart.$coupon.applied">
 			   <input type="text" class="form-control" name="discountCode" ng-model="discountCode" value="{{alcoholCart.getCouponCode()}}" placeholder="Coupon Code" ng-focus="hideCouponMsg()" >
 			   <span class="input-group-btn">
-			        <button ng-click="checkCoupon(discountCode)" class="btn btn-success">Apply</button>
+			        <button ng-click="checkCoupon(discountCode)" class="btn btn-success" ng-class='{processing:alcoholCart.$coupon.requested}'>Apply</button>
 			   </span>
 			</div>
 			
-			<div class="input-group" ng-show="alcoholCart.$coupon.couponOutput">
+			<div class="input-group" ng-show="alcoholCart.$coupon.applied">
 			<span>"{{discountCode}}" Coupon Applied </span>  <button ng-click="removeCoupon()" class="btn btn-success">Remove</button>
 			</div>
 			<div class="error" ng-hide="alcoholCart.$coupon.invalidCodeMsg">{{alcoholCart.$coupon.invalidCodeMsgTxt}}</div>
@@ -463,7 +463,7 @@
 					</span>
 				</div>
 
-				<div class="checkboxtotaldiv-text" ng-class="">{{(alcoholCart.$cart.payment.totalWithoutSur * 10/100) | pricingTxt}}</div>
+				<div class="checkboxtotaldiv-text">{{(alcoholCart.$cart.payment.totalWithoutSur * 10/100) | pricingTxt}}</div>
 			
 			</div>
 			

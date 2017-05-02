@@ -88,7 +88,7 @@ class CouponController extends Controller
 			];
 
 			$couponData = Coupon::raw()->aggregate($query);
-			
+
 			if(count($couponData['result'])>0){
 				$couponData = (object)$couponData['result'][0];
 			}
@@ -119,10 +119,11 @@ class CouponController extends Controller
 				
 				$userCouponCnt = count($couponData->used_list);
 
-				if((isset($couponData->used_count) && $couponData->coupon_uses && $couponData->coupon_uses <= $couponData->used_count) || ( $userCouponCnt && $couponData->customer_uses <= $userCouponCnt) ){
+				if((isset($couponData->used_count) && $couponData->coupon_uses && $couponData->coupon_uses <= $couponData->used_count) || ( $userCouponCnt && $couponData->customer_uses <= $userCouponCnt)){
 					$errorCode = 2;
 					$msg = 'Coupon Code Expired';
 				}else{
+					
 					if(isset($params['cart'])){
 						$cart = Cart::find($params['cart']);
 						$cart->coupon = new MongoId($couponData->_id);
@@ -160,6 +161,7 @@ class CouponController extends Controller
 					}
 
 					$coupon = $couponData;
+
 				}                
 			}else{
 				$errorCode = 2;

@@ -352,13 +352,12 @@ angular.module('AlcoholCartFactories', [])
 
 		if(hasProduct || hasCategory){
 
-			if(cDiscountStatus==1){
-				pAmount = this.unitPrice*quantity;
-			}else{
-				pAmount = this.discountedUnitPrice*quantity;
-			}
+			pAmount = cDiscountStatus==1?this.unitPrice:this.discountedUnitPrice;
+
+			pAmount = pAmount*quantity;
 
 			// Calculate coupon discount
+
 			if(cType==1){			
 				couponDisAmt = cDiscount*quantity ;
 			}else{
@@ -374,10 +373,10 @@ angular.module('AlcoholCartFactories', [])
 
 			if(cDiscountStatus==1){ // 1 is set to check discount from other sources like single sale NOTE single sale :)
 
-				var proAmtAfterOtherDiscount =  this.discountedUnitPrice*quantity;
+				var proAmtAfterOtherDiscount = this.discountedUnitPrice*quantity;
 
 				if(amtAfterCouponDis > proAmtAfterOtherDiscount){
-					
+
 					couponDisAmt = 0; // if discount from other sources is more than coupon don't apply coupon discount
 
 				}else{
@@ -390,6 +389,7 @@ angular.module('AlcoholCartFactories', [])
 
 				}
 			}
+console.log("after",couponDisAmt);
 
 			this.couponDiscount = couponDisAmt.toFixed(2);
 			this.couponMessage = couponMessage;

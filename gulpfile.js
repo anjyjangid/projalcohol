@@ -1,5 +1,6 @@
 var elixir = require('laravel-elixir');
-elixir.config.production = false;
+
+elixir.config.production = true;
 
 const gulp = require('gulp');
 const image = require('gulp-image');
