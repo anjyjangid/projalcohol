@@ -3323,7 +3323,7 @@ AlcoholDelivery.service('alcoholCart', [
 				if(msg){
 					this.$coupon.invalidCodeMsg = false;
 					this.$coupon.invalidCodeMsgTxt = msg;
-					//this.removeCoupon(1);
+					this.removeCoupon(1);
 				}else{
 					this.$coupon.invalidCodeMsg = true;
 					this.$coupon.invalidCodeMsgTxt = '';

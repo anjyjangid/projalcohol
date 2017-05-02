@@ -1930,3 +1930,7 @@ md-checkbox.md-focused .md-container:before{
 button.processing{
 	background: rgb(128, 128, 128) !important;
 }
+
+.md-toolbar-tools{
+	max-height: 50px;
+}
