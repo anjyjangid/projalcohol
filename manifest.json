@@ -1,0 +1,25 @@
+{
+	"short_name": "AlcoholDelivery",
+	"name": "Alcohol Delivery",
+	"icons": [{
+		"src": "/asset/i/48px.png",
+		"type": "image/png",
+		"sizes": "48x48"
+	}, {
+		"src": "/asset/i/96px.png",
+		"type": "image/png",
+		"sizes": "96x96"
+	}, {
+		"src": "/asset/i/144px.png",
+		"type": "image/png",
+		"sizes": "144x144"
+	}, {
+		"src": "/asset/i/192px.png",
+		"type": "image/png",
+		"sizes": "192x192"
+	}],
+	"start_url": "/",
+	"theme_color": "#ffc412",
+	"background_color": "#ffc412",
+	"display": "standalone"
+}

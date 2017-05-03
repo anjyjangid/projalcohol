@@ -8,8 +8,7 @@
 		<meta name="title" content="@{{meta.title}}">
 		<meta name="description" content="@{{meta.description}}">
 		<meta name="image" content="{{url()}}@{{meta.img}}">
-		<meta name="keywords" content="@{{meta.keyword}}">
-
+		<meta name="keywords" content="@{{meta.keyword}}">		
 		<!--TWITTER META-->
 		<meta name="twitter:card" content="summary">
 		<meta name="twitter:site" content="@{{meta.site_name}}">
@@ -49,7 +48,7 @@
 		<![endif]-->
 
 		<link rel="shortcut icon" href="images/favicon.ico"/>	
-		
+		<link rel="manifest" href="manifest.json">
 		<!-- Facebook Pixel Code -->
 		<script>
 		!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
