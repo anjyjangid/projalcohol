@@ -3269,32 +3269,23 @@ AlcoholDelivery.service('alcoholCart', [
 		}
 
 		this.checkCoupon = function(discountCode, cartKey){
+
 			var _self = this;
 			var cartKey = cartKey;
 			var couponCode = discountCode;
 			if(!UserService.getIfUser())
 				return $rootScope.$broadcast('showLogin');
 
-			$http.post("checkCoupon", {params: {cart: cartKey, coupon: couponCode}}).success(function(result){
-				
-				if(result.errorCode==1 || result.errorCode==2){
-					//_self.removeCoupon();
-					// $rootScope.invalidCodeMsg = false;
-					// $rootScope.invalidCodeMsgTxt = result.msg;
-					_self.$coupon.invalidCodeMsg = false;
-					_self.$coupon.invalidCodeMsgTxt = result.msg;
+			$http.post("checkCoupon", {params: {cart: cartKey, coupon: couponCode}})
+				.success(function(result){
+					if(result.errorCode==1 || result.errorCode==2){
+						_self.$coupon.invalidCodeMsg = false;
+						_self.$coupon.invalidCodeMsgTxt = result.msg;
+					}else{					
+						_self.setCouponPrice(result.coupon);
+					}
+				}).error(function(){});
 
-				}else{
-
-					//_self.$coupon.invalidCodeMsg = true;
-					// _self.$coupon.coupon = result.coupon;
-					_self.setCouponPrice(result.coupon);
-
-				}
-
-			}).error(function(){
-
-			});
 		}
 
 		this.getCouponDiscount = function(){
