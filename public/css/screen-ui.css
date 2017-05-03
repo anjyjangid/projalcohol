@@ -3122,9 +3122,9 @@ ui-sref {
 	float: left;
 	overflow: hidden;
 }
-.congratulationpopupimg img {
+/*.congratulationpopupimg img {
 	margin-left: -6px;
-}
+}*/
 .congratulationpopuptext {
 	float: right;
 	text-align: left;
@@ -4957,7 +4957,7 @@ ui-sref {
 .currentorderpopupul li {
 	list-style: none;
 	border-bottom: 1px solid #e5e5e5;
-	padding: 7px 0 10px 20px;
+	padding: 10px;
 	font-size: 12px;
 	color: #37474f;
 	font-family: 'Work Sans', sans-serif;
@@ -4972,16 +4972,19 @@ ui-sref {
 	border-radius: 0 0 4px 4px;
 }
 .currentorderpopupulleft {
-	width: 150px;
+	/*width: 150px;*/
+	width: 62.22%;
 	float: left;
 }
 .currentorderpopupulcenter {
-	width: 40px;
+	/*width: 40px;*/
+	width: 14.81%;
 	text-align: right;
 	float: left;
 }
 .currentorderpopupulright {
-	width: 62px;
+	/*width: 62px;*/
+	width: 22.96%;
 	text-align: right;
 	float: left;
 }

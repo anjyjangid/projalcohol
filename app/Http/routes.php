@@ -235,6 +235,8 @@ Route::group(['prefix' => 'api'], function () {
 	Route::post('/auth/twitter', 'Auth\AuthController@twitter');
 	Route::post('/auth/instagram', 'Auth\AuthController@instagram');
 	Route::post('/auth/google', 'Auth\AuthController@google');
+	Route::post('/auth/linkedin', 'Auth\AuthController@linkedin');
+	Route::post('/auth/creditloyalty', 'Auth\AuthController@creditloyalty');
 
 
 	// Order Using Device
@@ -425,7 +427,7 @@ Route::get('{storageFolder}/i/{filename}', function ($storageFolder,$filename){
 	* company
 	*
 	*/	
-	if(!file_exists(storage_path($storageFolder) . '/' . $filename)){
+	if(!file_exists(storage_path($storageFolder) . '/' . $filename) && $storageFolder!='homebanner'){
 		return Image::make(public_path('images').'/product-default.jpg')->response();		
 	}
 	

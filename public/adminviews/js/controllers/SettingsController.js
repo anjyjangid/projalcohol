@@ -78,7 +78,13 @@ MetronicApp.controller('SettingFormController',['$rootScope', '$scope', '$timeou
 
 	settingsModel.getSettings($state.$current.data.key).success(function(response){
 		$scope.settings = response.settings;
-		
+		if($state.$current.data.key == 'loyalty'){
+			if(!angular.isDefined($scope.settings.site_sharing.status))
+				$scope.settings.site_sharing.status = 1;
+
+			if(!angular.isDefined($scope.settings.order_sharing.status))
+				$scope.settings.order_sharing.status = 1;
+		}
 		if($state.$current.data.key == 'pricing'){
 			if(typeof $scope.settings.surcharge_taxes == 'undefined')
 				$scope.settings.surcharge_taxes = {label:'Services & taxes',types:[],category:'surcharge_taxes'};

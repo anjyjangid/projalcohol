@@ -4223,7 +4223,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 
 
 .mob-popup-footer{
-	position: absolute;
+	position: relative;
 	bottom: 0;
 }
 
@@ -4232,7 +4232,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 .modal-uifooter{
 	width: 100%;
 	padding: 0px;
-	position: absolute;
+	position: relative;
 	bottom: 0;
 	left: 0;
 }
@@ -4259,11 +4259,11 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 
 
 
-#icon {
+/*#icon {
     height: 65px !important;
     margin: auto !important;
     width: auto !important;
-}
+}*/
 
 
 

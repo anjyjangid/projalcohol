@@ -60,7 +60,10 @@ class PrintJob extends Command
 
             $gcp = new GoogleCloudPrint();
             $urlconfig = GoogleCloudPrint::$urlconfig;            
-            $refreshTokenConfig = GoogleCloudPrint::$refreshTokenConfig;
+            $refreshTokenConfig = GoogleCloudPrint::$refreshTokenConfig;        
+        
+            $refreshTokenConfig['client_id'] = env('GOOGLE_ID','229065817262-nu2vmndbtlqaovj89r0r5m0hrg3fti61.apps.googleusercontent.com');
+            $refreshTokenConfig['client_secret'] = env('GOOGLE_SECRET','ByY9s-NiiU_pqB_luqoAYI0q');
 
             $refreshTokenConfig['refresh_token'] = $printers['refresh_token'];
 

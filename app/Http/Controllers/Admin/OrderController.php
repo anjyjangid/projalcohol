@@ -386,6 +386,7 @@ class OrderController extends Controller
 
 	}
 
+
 	public function postOrders(Request $request, $filter = ''){		
 
 		$params = $request->all();
@@ -508,14 +509,14 @@ class OrderController extends Controller
 		$query[]['$sort'] = $sort;
 
 		$model = Orders::raw()->aggregate($query);
-
+		
 		$iTotalRecords = count($model['result']);
 
 		$query[]['$skip'] = (int)$start;
         	
     	if($length > 0){
-    		$query[]['$limit'] = (int)$length;
-			$model = Orders::raw()->aggregate($query);
+    		$query[]['$limit'] = (int)$length;    		
+			$model = Orders::raw()->aggregate($query);			
 		}
 
 		$response = [
@@ -588,14 +589,13 @@ class OrderController extends Controller
 
         	$order = Orders::find($data['id']);
         	$inventorylog = [];
-        	//ORDER STATUS IS UPDATED
-        	
 
+        	//ORDER STATUS IS UPDATED
         	if($order['doStatus'] != $data['doStatus']){				
 
 				$error = true;
-				//IF CHANGE FROM READY OR UNDER PROCESS
-				if($order['doStatus'] == 0 || $order['doStatus'] == 1){
+				//IF CHANGE FROM READY OR UNDER PROCESS OR DELIVERED(for cancelling delivered order)
+				if($order['doStatus'] == 0 || $order['doStatus'] == 1 || $order['doStatus'] == 2){
 					//DELIVERED
 					if($data['doStatus'] == 2 && $order['doStatus'] == 1){
 						$order->delivered_at = new MongoDate();
@@ -607,8 +607,8 @@ class OrderController extends Controller
 					//CANCELLED
 					if($data['doStatus'] == 3){
 
-						//IF ORDER IS READY STATE & CANCELLED THEN ROLLBACK INVENTORY
-						if($order['doStatus'] == 1){
+						//IF ORDER IS READY/DELIVERED STATE & CHANGED TO CANCELLED THEN ROLLBACK INVENTORY
+						if($order['doStatus'] == 1 || $order['doStatus'] == 2){
 
 							//ROLL BACK THE INVENTORY INTO STOCK AND PRODUCT
 							$inventorylog = DB::collection('inventoryLog')->where([

@@ -55,7 +55,8 @@ class Orders extends Moloquent
 							'delivered_at',
 							'cancelled_at',
 							'generatedBy',
-							'printed'
+							'printed',
+							'sharing'
 						];
 
 	public function getOrders($where = [], $extra = []){

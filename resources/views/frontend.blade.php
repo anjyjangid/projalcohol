@@ -32,7 +32,9 @@
 
 		<meta name="facebook_id" content="{{ config('app.facebook_id') }}">
 		<meta name="google_id" content="{{ config('app.google_id') }}">
-		<meta name="instagram_id" content="{{ config('app.instagram_id') }}">		
+		<meta name="instagram_id" content="{{ config('app.instagram_id') }}">
+		<meta name="linkedin_id" content="{{ config('app.linkedin_id') }}">
+		<meta name="site_url" content="{{ config('app.url') }}">
 		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 		<title ng-bind="meta.title"></title>
 
@@ -76,7 +78,7 @@
 		 
 		</script>
 		<script async type="text/javascript" src="//www.googleadservices.com/pagead/conversion_async.js" charset="utf-8"></script>		
-		<!-- Google analytics -->
+		<!-- Google analytics -->	
 		
 		<!-- <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,700,800,500' rel='stylesheet' type='text/css'>
 			<link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
@@ -230,13 +232,10 @@
 	      if (raf) raf(function() { window.setTimeout(loadDeferredStyles, 0); });
 	      else window.addEventListener('load', loadDeferredStyles);
 	    </script>
-	</body>
-
-    
+	</body>   
 
 	<script async type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAO1xAu1wBu7NZOqNBn9aoYg-RVstm60jc&libraries=places"></script>
 	
 	<script type="text/javascript" src="js/build/all.js"></script>
-
 	
 </html>

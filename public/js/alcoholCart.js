@@ -3247,7 +3247,7 @@ AlcoholDelivery.service('alcoholCart', [
 		this.removeCoupon = function(res){
 			
 			var _self = this;
-			var productsList = this.getProducts();
+			//var productsList = this.getProducts();
 
 			this.$coupon.applied = false;
 			this.$coupon.couponInput = true;

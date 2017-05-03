@@ -328,6 +328,7 @@ class Email extends Moloquent
 				Mail::queue('emails.mail', $data, function ($message) {
 					$message->setTo(array($this->recipient_info['receiver']['email']=>$this->recipient_info['receiver']['name']));
 					$message->setSubject($this->recipient_info['subject']);
+
 				});			
 			
 		} catch(\Exception $e){

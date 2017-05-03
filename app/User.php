@@ -53,8 +53,8 @@ class User extends Eloquent implements AuthenticatableContract,
 		'productAddedNotification',
 		'savedCards',
 		'reffered',
-		'socialData'
-
+		'socialData',
+		'fblike'
 	];
 
 	public function getFields(){

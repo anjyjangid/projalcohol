@@ -159,7 +159,7 @@ class UserController extends Controller
 		$curruser = User::find($user->_id);
 
 		$curruser->name = $inputs['name'];
-		$curruser->email = strtolower($inputs['email']);
+		//$curruser->email = strtolower($inputs['email']);
 		$curruser->mobile_number = $inputs['mobile_number'];
 		$curruser->country_code = $inputs['country_code'];		
 

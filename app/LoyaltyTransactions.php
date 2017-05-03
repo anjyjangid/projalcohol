@@ -112,7 +112,7 @@ class LoyaltyTransactions extends Moloquent
 					case 'order':
 						$loyaltyObj['shortComment'] = 'Earned from purchase';
 						$loyaltyObj['comment'] = 'You have earned this points by making a purchase';
-						break;
+						break;					
 					default:
 						# code...
 						break;
@@ -165,7 +165,8 @@ class LoyaltyTransactions extends Moloquent
 		}
 		
 		//jprd($user);
-//prd($loyaltyObj);
+		//prd($loyaltyObj);
+		
 		try{
 
 			$user->save();

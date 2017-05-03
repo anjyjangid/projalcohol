@@ -1,120 +1,151 @@
 <div class="fullwidth innerpagemargintop">
 	<div class="container">
-	  <div class="row">
-		<div class="visible-sm visible-xs side-menu-responsive">
-			<nav class="navbar navbar-default">				
-				<div class="collapse navbar-collapse nopadd" id="bs-example-navbar-collapse-1">
-					<side-bar noInit="true"></side-bar>
-				</div>				
-			</nav>
-		</div>
-		<div class="col-md-12">
-		<div class="chckoutstep6main-cover1">
-		<div class="chckoutstep6main-cover">
-		<div class="checkout-step6-innercover">
-		<div class="smile-signcover">
-		<img src="images/smile-icon.png">
-		</div>
-		<div class="uralsetcover">
-		<div class="uralset-textdiv">You’re all set!<span>Thank you for being awesome!<br>
-We have received your order and shall be delivered as per schedule.</span></div>
-		
-		</div>
-		<div class="ordrnumber-cover">
-		<div class="ordernno-divcenterset">
-		<div class="order-numberinnercover">Order No. {{orderNumber}}</div></div>
-		</div>
-		<div class="payment-descriptioncover">
-		<div class="paymentdetail-fixwidth">
-		<div class="paymentamnt-coverdiv">
-		<div class="lefttext-paymnt">Payment Amount</div>
-		<div class="right-resultamounttxt"> {{order.payment.total | currency:settings.general.currency:2}}</div>
-		
-		</div>
-		<div class="paymentamnt-coverdiv">
-		<div class="lefttext-paymnt">Date of Purchase</div>
-		<div class="right-resultamounttxt">{{dopSlug}}</div>
-		
-		</div>
-		<div class="paymentamnt-coverdiv">
-		<div class="lefttext-paymnt">Payment Method</div>
-		<div class="right-resultamounttxt" >{{paymode}}</div>
-		
-		</div>
-		<div class="paymentamnt-coverdiv">
-			
-			<div class="lefttext-paymnt">Delivery Time</div>
-			<div class="right-resultamounttxt">{{deliveryDateTime}}</div>
-			<!-- <div class="right-resultamounttxt" ng-if="order.delivery.type">{{daySlug}}, <br> {{slotslug}}</div>
-			<div class="right-resultamounttxt" ng-if="order.delivery.type==0 && !order.service.express.status">		{{dopSlug}}, {{hour}}:{{minute}} {{aMpM}} +1 Hour
+		<div class="row">
+		  	<div class="visible-sm visible-xs side-menu-responsive">
+				<nav class="navbar navbar-default">				
+					<div class="collapse navbar-collapse nopadd" id="bs-example-navbar-collapse-1">
+						<side-bar noInit="true"></side-bar>
+					</div>				
+				</nav>
 			</div>
-			<div class="right-resultamounttxt" ng-if="order.delivery.type==0 && order.service.express.status">{{dopSlug}}, {{hour}}:{{minute}} {{aMpM}} +30 Minutes
-			</div> -->
-
-		</div>
-		
-	
-		</div>
-
-
-
-		</div>
-
-		<div class="sharepurchasecover">Share your purchase with your friends to earn Loyalty Points</div>
-		<div class="ahare-purchase-btmtxt">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,</div>
-			<div class="share-divcover">
-
-				<img src="images/social-icon.png">
-				<div twitter-share-btn ng-click="twitterShare()" data-text="Your text: hello" data-url="http://192.168.1.222:8000/orderplaced/58e5d1448a976f7b0c8b456e"></div>
-
-
-				<div ng-click="fbShare()">Facebook</div>
-				<div ng-click="googleShare()">
-					<div class="g-plus" data-action="share" data-annotation="none" data-href="http://54.169.107.156" data-onendinteraction="share_endinteraction"></div>
+			<div class="col-md-12">
+				<div class="chckoutstep6main-cover1">
+					<div class="chckoutstep6main-cover">
+						<div class="checkout-step6-innercover">
+							<div class="smile-signcover">
+								<img src="images/smile-icon.png">
+							</div>
+							<div class="uralsetcover">								
+								<div class="uralset-textdiv">
+									You’re all set!<span>Thank you for being awesome!<br>We have received your order and shall be delivered as per schedule.</span>
+								</div>	
+							</div>
+							<div class="ordrnumber-cover">
+								<div class="ordernno-divcenterset">
+									<div class="order-numberinnercover">Order No. {{orderNumber}}</div>
+								</div>
+							</div>
+							<div class="payment-descriptioncover">
+								<div class="paymentdetail-fixwidth">
+									<div class="paymentamnt-coverdiv">
+										<div class="lefttext-paymnt">Payment Amount</div>
+										<div class="right-resultamounttxt"> {{order.payment.total | currency:settings.general.currency:2}}</div>		
+									</div>
+									<div class="paymentamnt-coverdiv">
+										<div class="lefttext-paymnt">Date of Purchase</div>
+										<div class="right-resultamounttxt">{{dopSlug}}</div>		
+									</div>
+									<div class="paymentamnt-coverdiv">
+										<div class="lefttext-paymnt">Payment Method</div>
+										<div class="right-resultamounttxt" >{{paymode}}</div>		
+									</div>
+									<div class="paymentamnt-coverdiv">			
+										<div class="lefttext-paymnt">Delivery Time</div>
+										<div class="right-resultamounttxt">{{deliveryDateTime}}</div>
+										<!-- <div class="right-resultamounttxt" ng-if="order.delivery.type">{{daySlug}}, <br> {{slotslug}}</div>
+										<div class="right-resultamounttxt" ng-if="order.delivery.type==0 && !order.service.express.status">		{{dopSlug}}, {{hour}}:{{minute}} {{aMpM}} +1 Hour
+										</div>
+										<div class="right-resultamounttxt" ng-if="order.delivery.type==0 && order.service.express.status">{{dopSlug}}, {{hour}}:{{minute}} {{aMpM}} +30 Minutes
+										</div> -->
+									</div>
+								</div>
+							</div>
+							<div ng-if="settings.loyalty.order_sharing_status">
+								<div class="sharepurchasecover">Share your purchase with your friends to earn Loyalty Points</div>
+								<div class="ahare-purchase-btmtxt">
+									Simply click on the share buttons and share it on any of the social platforms, and instantly receive {{settings.loyalty.order_sharing}} loyalty points!
+								</div>
+								<div class="share-divcover">					
+					              <div class="col-md-12">
+					                <div class="row">
+					                  <div class="col-md-4 col-sm-4 col-xs-4">				                    
+					                    <button type="button" class="btn btn-block btn-twitter btn-social" ng-click="sharepurchase('twitter')">
+					                      <i class="fa fa-twitter"></i>Share
+					                    </button>
+					                  </div>
+					                  <div class="col-md-4 col-sm-4 col-xs-4">
+					                    <button type="button" class="btn btn-block btn-facebook btn-social" ng-click="fbShare()">
+					                      <i class="fa fa-facebook"></i>Share
+					                    </button>
+					                  </div>
+					                <!-- </div>
+					                <div class="row">
+					                  <div class="col-md-4 col-sm-4">
+					                    <div class="g-plus" data-callback="gres" data-action="share" data-annotation="inline" data-height="24" data-href="https://www.alcoholdelivery.com.sg" data-onendinteraction="endinteraction"></div>
+					                    <button type="button" class="btn btn-block btn-google-plus btn-social" ng-click="sharepurchase('google')">
+					                      <i class="fa fa-google-plus"></i>Share on google+
+					                    </button>
+					                  </div> -->
+					                  <div class="col-md-4 col-sm-4 col-xs-4">  
+					                    <button type="button" class="btn btn-block btn-linkedin btn-social" ng-click="sharepurchase('linkedin')">
+					                      <i class="fa fa-linkedin"></i>Share
+					                    </button>
+					                  </div>
+					                </div>  
+					              </div>				            
+								</div>
+							</div>
+							<div ng-if="settings.loyalty.site_sharing_status">
+								<div class="ahare-purchase-btmtxt">
+									Get an additional {{settings.loyalty.site_sharing}} loyalty points when you like us on Facebook!								
+								</div>							
+								<div class="share-divcover" align="center">
+									<div style="display: inline-block;" class="fb-like" data-href="https://www.facebook.com/alcoholdelivery.com.sg/" data-layout="button" data-action="like" data-size="large" data-show-faces="true" data-share="false"></div>
+								</div>	
+							</div>							
+							<div class="kepshopingcoverdiv">
+								<div class="keepshoping-textcover">Keep Shopping, keep smiling!</div>
+								<button type="submit" class="btn btn-default" ui-sref="mainLayout.index">Back to shopping</button>
+							</div>
+						</div>
+					</div>
 				</div>
-
-			</div>		
-		<div class="kepshopingcoverdiv">
-		<div class="keepshoping-textcover">Keep Shopping, keep smiling!</div>
-		 <button type="submit" class="btn btn-default" ui-sref="mainLayout.index">Back to shopping</button>
+			</div>
 		</div>
-		</div>
-		</div>
-		
-		</div>
-		
-	  </div>
 	</div>
-  </div>
-	 <img src="https://marktamerica.go2cloud.org/aff_l?offer_id=2940&adv_sub={{orderNumber}}&amount={{order.payment.total}}" scrolling="no" frameborder="0" width="1" height="1" />	
-  <!-- Place this tag in your head or just before your close body tag. -->
+</div>
+<!-- <img src="https://marktamerica.go2cloud.org/aff_l?offer_id=2940&adv_sub={{orderNumber}}&amount={{order.payment.total}}" scrolling="no" frameborder="0" width="1" height="1" /> -->
+<!-- Place this tag in your head or just before your close body tag. -->
 <script src="https://apis.google.com/js/platform.js" async defer>
   {parsetags: 'explicit'}
 </script>
 <!-- Place this render call where appropriate. -->
-<img src="https://www.tagserve.sg/saleServlet?MID=176&PID=212&CRID={{order.user}}&ORDERID={{orderNumber}}&ORDERAMNT={{order.payment.total}}&NUMOFITEMS={{order.productsLog.length}}&CUR=SGD&SUBID=&VC=&PT=&CT=" border="0" width="1" height="1"> 
-
+<img src="https://www.tagserve.sg/saleServlet?MID=176&PID=212&CRID={{order.user}}&ORDERID={{orderNumber}}&ORDERAMNT={{order.payment.total}}&NUMOFITEMS={{order.productsLog.length}}&CUR=SGD&SUBID=&VC=&PT=&CT=" border="0" width="1" height="1">
 <script type="text/javascript">
-window.___gcfg = {
-        lang: 'en-US',
-        parsetags: 'onload'
-      };
+	window.___gcfg = {
+		lang: 'en-US',
+		parsetags: 'onload'
+	};
 
 
-$(document).ready(function(){
-	setTimeout(function() {
-	gapi.plus.go();
-}, 3000);
-})
-function share_endinteraction(jsonParam) {
+	$(document).ready(function(){
+		setTimeout(function() {
+			gapi.plus.go();
+		}, 3000);
 
-        alert("share_endinteraction " + jsonParam.type);
-    }
+		/*FB.XFBML.parse();
 
+		FB.Event.subscribe('edge.create', function (response) {
+	        // console.log(response);
+	        alert('Called from payment');
+	    });*/
+	});
 
+	function share_endinteraction(jsonParam) {
+	    alert("share_endinteraction " + jsonParam.type);
+	}
+
+	function endinteraction(json) {
+		console.log(json);
+	}	
 </script>
 <noscript>
-<div style="display:inline;">
-<img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/1005306689/?value=1.00&amp;currency_code=SGD&amp;label=nlRtCNf-5RUQwYav3wM&amp;guid=ON&amp;script=0"/>
-</div>
+	<div style="display:inline;">
+		<img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/1005306689/?value=1.00&currency_code=SGD&label=nlRtCNf-5RUQwYav3wM&guid=ON&script=0"/>
+	</div>
+</noscript>
+<!-- <script type="text/javascript" src="https://track.omguk.com/1048087/transaction.asp?APPID={{orderNumber}}&MID=1048087&PID=30108&status={{order.payment.total}}"></script> -->
+<div ng-bind-html="getScript()"></div>
+<noscript>
+	<img src="https://track.omguk.com/apptag.asp?APPID={{orderNumber}}&MID=1048087&PID=30108&status={{order.payment.total}}" border="0" height="1" width="1">
 </noscript>
