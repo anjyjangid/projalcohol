@@ -224,7 +224,7 @@ class CartController extends Controller
 		}
 
 		$isMerged = $this->mergecarts($cart['_id']);
-
+		
 		if($isMerged->success){
 
 			$cart = $isMerged->cart;

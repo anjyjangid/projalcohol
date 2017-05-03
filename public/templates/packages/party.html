@@ -37,7 +37,7 @@
 							<div class="package-amtcover">
 								<p class="packtiti-rightset packag-amnt-divcolr">Package Amount</p>
 								<h3 class="amntrupee-clsdetail">{{package.packagePrice | pricingTxt}}</h3>
-								<span class="strike-txt-only grey-txt">{{(package.packagePrice + package.packageSavings) | pricingTxt}}</span>
+								<span class="strike-txt-only grey-txt">{{((package.packagePrice*1) + (package.packageSavings*1)) | pricingTxt}}</span>
 							</div>            
 							<div class="saving-amount-cover">
 								<p class="packtiti-rightset">Savings</p>
