@@ -850,19 +850,19 @@ Route::any('manifest.json', function () {
 			"short_name" => "AlcoholDelivery",
 			"name" => "Alcohol Delivery",
 			"icons" => [[
-				"src" => "/asset/i/48px.png",
+				"src" => "/asset/i/48x.png",
 				"type" => "image/png",
 				"sizes" => "48x48"
 			], [
-				"src" => "/asset/i/96px.png",
+				"src" => "/asset/i/96x.png",
 				"type" => "image/png",
 				"sizes" => "96x96"
 			], [
-				"src" => "/asset/i/144px.png",
+				"src" => "/asset/i/144x.png",
 				"type" => "image/png",
 				"sizes" => "144x144"
 			], [
-				"src" => "/asset/i/192px.png",
+				"src" => "/asset/i/192x.png",
 				"type" => "image/png",
 				"sizes" => "192x192"
 			]],
