@@ -402,7 +402,7 @@ Route::get('products/i/{folder}/{filename}', function ($folder,$filename){
 		return Image::make(public_path('images').'/product-default.jpg')->response();
 		//$filename = "product-default.jpg";
 	}
-    
+	
     return Image::make(storage_path('products/') .$folder. '/' . $filename)->response();
 
 });
