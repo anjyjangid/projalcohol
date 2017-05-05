@@ -365,7 +365,7 @@ li.subactive a, li.subactive a span {
 
   md-tooltip.blktool, md-tooltip.blktool div{
 	font-size: 11px; 
-	background-color: rgb(0,0,0,1);    
+	background-color: #d7d7d7;    
   }
 
   .md-fixed{
@@ -489,7 +489,7 @@ md-toast.promo-notqualified-toast:before {
 
 .cart-alert md-tooltip.cart-alert-tooltip, .cart-alert md-tooltip.cart-alert-tooltip div{
 	font-size: 11px; 
-	background-color: rgb(0,0,0,1);    
+	background-color: #d7d7d7;    
   }
 
   .cart-alert-tooltip .md-content.md-show{
@@ -1487,7 +1487,7 @@ button.ageverify:disabled{
 }
 
 md-tooltip.ad-tooltip .md-content {
-	background: #ccc;
+	background: #d7d7d7;
 }
 .cur-help{
 	cursor: help;
@@ -1941,6 +1941,15 @@ md-tooltip .md-content{
 	height: auto;
 	line-height: normal;
 	font-size: 12px;
-	color: #333;
+	color: #222122;
 	background: #ccc;
 }
+
+.prod_desc p {
+    margin: 0;    
+}
+
+/*.prod_desc.tgcontain {
+    display: block;
+    min-height: 20px;
+}*/

@@ -77,8 +77,8 @@
 
 	<a ui-sref="mainLayout.product({product:productInfo.slug})" class="core-block">
 
-		<div class="prod_desc">		
-			{{productInfo.name}}				
+		<div class="prod_desc">					
+			<span read-more limit="60" more-text="..." less-text="" expand="false" content="{{productInfo.name}}"></span>
 			<not-available product="productInfo"></not-available>
 		</div>
 
@@ -90,10 +90,8 @@
 			</div>
 			<div class="prod_discout_price" ng-if="!loyalty">{{productInfo.price | pricingTxt}}</div>
 			<div class="prod_discout_price" ng-if="loyalty">
-
 				<span ng-if="productInfo.loyaltyValue.type==0">LP {{productInfo.loyaltyValue.point}}</span>
 				<span ng-if="productInfo.loyaltyValue.type==1">LP {{productInfo.loyaltyValue.point}} + {{productInfo.loyaltyValue.price | pricingTxt}}</span>
-
 			</div>
 		</div>
 

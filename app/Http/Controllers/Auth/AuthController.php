@@ -265,7 +265,7 @@ class AuthController extends Controller
 				]);
 			}else{
 				Session::put('socialData',$data);
-				return response(['emailnotfound' => 'Hello '.$data['name'].', we could not find your email address from '.$providername.', please enter your email below to complete the registration process.'],422);
+				return response(['emailnotfound' => 'Hello '.$data['name'].', we could not find your email address from '.$providername.', please enter your email below to complete the registration process.','d' => $data],422);
 			}
 
 			Auth::login($user);
