@@ -16,7 +16,8 @@ use AlcoholDelivery\User;
 use AlcoholDelivery\UserImport;
 use AlcoholDelivery\Email;
 use AlcoholDelivery\oldResultantUsers;
-
+use AlcoholDelivery\zipCodeAddress;
+use DB;
 
 class CustomerController extends Controller
 {
@@ -451,9 +452,80 @@ class CustomerController extends Controller
 
 	public function getImport(){
 
-		$count = oldResultantUsers::whereNull("address")->count();
-		pr($count);
-		$i = 1;
+		// $count = oldResultantUsers::whereNull("address")->count();
+		
+		$postalCodes = DB::collection("oldResultantUsers")->raw()->aggregate(
+							[
+								'$group' => [
+									'_id' => '$postalCode',
+									'address' => ['$first'=>'$address'],
+									'postalCode' => ['$first'=>'$postalCode'],
+								]
+							],
+							[
+								'$match' => [
+									'address' => [
+										'$exists' => false
+									]
+								]
+							]
+							
+					   );
+
+		prd($postalCodes);
+		foreach ($postalCodes['result'] as $key => $value) {
+
+			$json = json_decode(file_get_contents('https://developers.onemap.sg/commonapi/search?searchVal='.$value['_id'].'&returnGeom=Y&getAddrDetails=Y&pageNum=1'), true);
+
+			$addressObj = [];
+
+			if(!empty($json) && isset($json['results']) && !empty($json['results'])){
+
+				$address = $json['results'][0];
+
+				$addressObj = [
+					"SEARCHVAL" => $address['SEARCHVAL'],
+					"ADDRESS" => $address['ADDRESS'],
+					"house" => $address['BLK_NO'],
+					"HBRN" => $address['ROAD_NAME'],
+					"default" => "true",
+					"BLDG_NAME" => $address['BUILDING'],
+					"PostalCode" => $address['POSTAL'],
+					"X" => $address['X'],
+					"Y" => $address['Y'],
+					"LAT" => $address['LATITUDE'],
+					"LNG" => $address['LONGITUDE'],
+					"SEARCHTEXT" => "",
+					"FLOOR" => "",
+					"UNIT" => "",
+					//"firstname" => $resultantUser->name,
+					//"lastname" => "",
+					//"company" => "",
+					"location" => [
+						$address['LATITUDE'],
+						$address['LONGITUDE']
+					],
+					"CATEGORY" => "Building"
+				];				
+
+			}
+			try{
+
+				$zipCodeAddress = new zipCodeAddress;
+				$zipCodeAddress->postalCode = $value['_id'];
+				$zipCodeAddress->address = $addressObj;
+
+				$zipCodeAddress->save();
+				
+
+			}catch(\Exception $e){
+				prd($e->getMessage());
+			}
+
+		}
+
+		prd("end");
+		
 		while($resultantUser = oldResultantUsers::whereNull("address")->first()){
 
 			$resultantUser->password = "";

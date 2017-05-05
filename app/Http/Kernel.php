@@ -18,6 +18,8 @@ class Kernel extends HttpKernel
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
         \AlcoholDelivery\Http\Middleware\VerifyCsrfToken::class,
+        \AlcoholDelivery\Http\Middleware\ResetPasswordRequired::class,
+
     ];
 
     /**
