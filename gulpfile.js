@@ -13,6 +13,11 @@ gulp.task('optimg', function () {
   gulp.src('public/img/*')
     .pipe(image())
     .pipe(gulp.dest('public/img'));  
+
+  gulp.src('storage/**')
+    .pipe(image())
+    .pipe(gulp.dest('storage/**'));    
+
 });
 
 /*

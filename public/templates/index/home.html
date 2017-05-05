@@ -1,6 +1,6 @@
-<h1 class="hide">Served Chilled</h1>
-<h2 class="hide">ONE HOUR Alcohol Delivery!</h2>
-<h3 class="hide">Whether you need to place an advance order for your upcoming party, or you are running out of alcohol in the middle of a party, we've got you covered!</h3>
+<h1 class="hide">{{settings.homeBanner.title}}</h1>
+<h2 class="hide">{{settings.homeBanner.subtitle}}</h2>
+<h3 class="hide">{{settings.homeBanner.description}}</h3>
 <div class="occassion_sale">{{settings.homeBanner.title}}</div>
 <div class="occassion_date">{{settings.homeBanner.subtitle}}</div>
 <div class="occassion_descrip">{{settings.homeBanner.description}}</div>
@@ -10,7 +10,6 @@
 <div class="responsive-blokimg">
 	<!-- <img class="img-responsive" style="margin:10px auto;" src="asset/i/mobilebanner.png"> -->
 	<!-- <img ng-repeat="promotionalbanner in promotionalbanners" class="img-responsive" style="margin:10px auto;" src="promotionalbanner/i/{{promotionalbanner.promotionalImageMobile}}"> -->
-
 	<div ng-if="promotionalbanners.length">
 		<data-owl-carousel class="owl-carousel owl-theme" data-options="{
 			navigation : false,
@@ -31,21 +30,19 @@
 <div class="combo_slider combo_sliderProduct" ng-cloak>
 	<!-- <div class="tabtitle">Featured Items</div>	 -->
 	<md-content class="maintab" data-ng-init="featuredProducts()">
-	<md-tabs md-selected="0" md-dynamic-height>    
-	  <md-tab ng-repeat="cat in parentCategories | filterParentCat">
-	  	<md-tab-label>{{cat.cat_title}}</md-tab-label>	  	
-	  	<md-tab-body> 
-	  		<div class="product-listcover2">
-	    		<div al-tpl-product classes="col-xs-12 col-sm-3 col-md-3 comboproductitems" ng-repeat="fproduct in cat['featured']" info="fproduct"></div>
-	    	</div>
-	  	</md-tab-body>
-	  </md-tab>	      
-	</md-tabs>
-	</md-content>  
-	
-  <div ui-view='giftClaim'></div>
+		<md-tabs md-selected="0" md-dynamic-height>    
+		  <md-tab ng-repeat="cat in parentCategories | filterParentCat">
+		  	<md-tab-label>{{cat.cat_title}}</md-tab-label>	  	
+		  	<md-tab-body> 
+		  		<div class="product-listcover2">
+		    		<div al-tpl-product classes="col-xs-12 col-sm-3 col-md-3 comboproductitems" ng-repeat="fproduct in cat['featured']" info="fproduct"></div>
+		    	</div>
+		  	</md-tab-body>
+		  </md-tab>	      
+		</md-tabs>
+	</md-content>
+  	<div ui-view='giftClaim'></div>
 </div>
-
 <!-- <div class="combo_slider main" data-ng-init="featuredProducts()">
 	<div class="tabbable">		
 		<div class="fullwidth top-tabmainouter">

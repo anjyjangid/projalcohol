@@ -5636,7 +5636,7 @@ md-tooltip{
 	border-right: none !important;
 }
 md-tabs.md-dynamic-height md-tabs-content-wrapper{
-top: -1px;
+top: 1px;
 }
 .wislistborbtm td:nth-child(3) {
     width: 58%;
