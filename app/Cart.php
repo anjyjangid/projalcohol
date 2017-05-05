@@ -334,10 +334,6 @@ class Cart extends Moloquent
 		$cart->__set('discount', $cartDiscount);
 
 		try{
-<<<<<<< HEAD
-			
-=======
->>>>>>> fb4a23aaee64dd4e6f4a2ce725c3cad25db03212
 			$cart->save();
 			$cart->setWorkingHrs();
 			return $cart;

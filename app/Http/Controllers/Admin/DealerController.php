@@ -159,7 +159,7 @@ class DealerController extends Controller
 
         $columns = ['_id','smallTitle','status'];
 
-        $project = ['title'=>1,'status'=>1,'contacts'=>1];
+        $project = ['title'=>1,'status'=>1,'contacts'=>1,'updated_at'=>1];
 
         $project['smallTitle'] = ['$toLower' => '$title'];
 

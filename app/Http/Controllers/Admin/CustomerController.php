@@ -293,7 +293,7 @@ class CustomerController extends Controller
 
 		$columns = ['_id','smallTitle','email','status','verified'];
 
-		$project = ['title'=>1,'status'=>1,'email'=>1,'name'=>1,'mobile_number'=>1,'verified'=>1,'email_key'=>1];
+		$project = ['title'=>1,'status'=>1,'email'=>1,'name'=>1,'mobile_number'=>1,'verified'=>1,'email_key'=>1,'updated_at' => 1];
 
 		$query = [];        
 		
@@ -340,13 +340,11 @@ class CustomerController extends Controller
 		$iTotalRecords = count($model['result']);
 
 		$query[]['$skip'] = (int)$start;
-
-
-
         if($length > 0){
             $query[]['$limit'] = (int)$length;
             $model = User::raw()->aggregate($query);
         }          
+		//return response($query);
 
         $response = [
             'recordsTotal' => $iTotalRecords,
