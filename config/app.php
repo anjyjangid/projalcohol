@@ -26,7 +26,7 @@ return [
     |
      */
 
-    'url' => 'https://www.alcoholdelivery.com.sg',
+    'url' => env('APP_URL','https://www.alcoholdelivery.com.sg'),
 
     /*
     |--------------------------------------------------------------------------
@@ -209,9 +209,8 @@ return [
         'Form' => 'Collective\Html\FormFacade',
         'Html' => 'Collective\Html\HtmlFacade',
     ],
-    'appName' => 'Alcohol Delivery',
+    'appName' => env('APP_NAME','Alcohol Delivery'),
     'appContact' => '92445533',
-
     'facebook_id' => env('FACEBOOK_ID','273669936304095'),
     'facebook_secret' => env('FACEBOOK_SECRET','2963cf60b9ee599cb61650da81b2989e'),
     'google_id' => env('GOOGLE_ID','560402887297-6mkdppgijfmi5gv6fvlfe41hn2dubkpk.apps.googleusercontent.com'),
