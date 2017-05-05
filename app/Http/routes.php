@@ -850,6 +850,36 @@ Route::group(['prefix' => 'device'], function () {
 Route::get('cart/configuredCard/{deviceconfigid}','CartController@getConfiguredCard');
 Route::post('cart/deviceOrder/{deviceconfigid}','CartController@deviceOrder');
 
+Route::any('manifest.json', function () {
+    return response()->json(
+    	[
+			"short_name" => "AlcoholDelivery",
+			"name" => "Alcohol Delivery",
+			"icons" => [[
+				"src" => "/asset/i/48x.png",
+				"type" => "image/png",
+				"sizes" => "48x48"
+			], [
+				"src" => "/asset/i/96x.png",
+				"type" => "image/png",
+				"sizes" => "96x96"
+			], [
+				"src" => "/asset/i/144x.png",
+				"type" => "image/png",
+				"sizes" => "144x144"
+			], [
+				"src" => "/asset/i/192x.png",
+				"type" => "image/png",
+				"sizes" => "192x192"
+			]],
+			"start_url" => "/",
+			"theme_color" => "#ffc412",
+			"background_color" => "#ffc412",
+			"display" => "standalone"
+		]
+    );
+} )->where('catchall', '(.*)');
+
 //FINAL ROUTE FOR FRONTEND
 Route::any('{catchall}', function ( $page ) {
     return view('frontend');

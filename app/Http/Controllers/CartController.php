@@ -224,7 +224,7 @@ prd($isCreated);
 		}
 
 		$isMerged = $this->mergecarts($cart['_id']);
-
+		
 		if($isMerged->success){
 
 			$cart = $isMerged->cart;

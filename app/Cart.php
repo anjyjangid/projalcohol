@@ -69,6 +69,7 @@ class Cart extends Moloquent
 		$services = $services['settings'];
 
 		$cart["service"]["express"]["charges"] = $services['express_delivery']['value'];
+
 		$cart["service"]["smoke"]["charges"] = $services['cigratte_services']['value'];
 
 		$cart["service"]["delivery"] = [
@@ -308,7 +309,6 @@ class Cart extends Moloquent
 		$cartServices["express"]["charges"] = $services['express_delivery']['value'];
 
 		$cartServices["smoke"]["charges"] = $services['cigratte_services']['value'];
-		
 		$cartServices["delivery"] = [
 								"free" => false,
 								"charges" => $services['non_free_delivery']['value'],
@@ -334,7 +334,10 @@ class Cart extends Moloquent
 		$cart->__set('discount', $cartDiscount);
 
 		try{
+<<<<<<< HEAD
 			
+=======
+>>>>>>> fb4a23aaee64dd4e6f4a2ce725c3cad25db03212
 			$cart->save();
 			$cart->setWorkingHrs();
 			return $cart;

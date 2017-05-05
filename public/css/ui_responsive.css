@@ -3912,7 +3912,7 @@ md-toast.notify div.md-toast-content{
 	margin-bottom: 30px;
 }
 .productinner_rightslide{
-	height:140px;
+	height:240px;
 	position:relative;
 	padding-left: 15px;
 	padding-right: 15px;
@@ -5185,7 +5185,8 @@ md-content.globalsearch md-autocomplete {
 	  width: 69%
   }
   .single-slot {
-	  font-size: 8px
+	  font-size: 12px;
+	  white-space: normal;
   }
   .slots-bunch-title .week-stamp {
 	  font-size: 1em

@@ -3132,7 +3132,10 @@ AlcoholDelivery.controller('LoyaltyStoreController', [
 	function($q, $http, $scope, ScrollPagination,userService,$stateParams,alcoholCart,ProductService,$timeout){
 
 		var user = userService.currentUser;
-		$scope.AppController.category = "loyalty-store";
+		$scope.AppController.category = "loyalty-store";		
+		$scope.AppController.subCategory = "";
+		$scope.AppController.showpackage = false;
+		
 		$scope.keyword = $stateParams.keyword;
 		$scope.filter = $stateParams.filter;
 		$scope.sortby = $stateParams.sort;

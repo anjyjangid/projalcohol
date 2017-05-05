@@ -1,6 +1,6 @@
 <div>
 <!-- <img class="img-responsive desktop-showblock" style="margin:10px auto;" src="asset/i/new.png"> -->
-<img ng-repeat="promotionalbanner in promotionalbanners" class="img-responsive desktop-showblock" style="margin:10px auto;" src="promotionalbanner/i/{{promotionalbanner.promotionalImage}}">
+<img ng-repeat="promotionalbanner in promotionalbanners" class="img-responsive desktop-showblock" style="margin-bottom:10px;" src="promotionalbanner/i/{{promotionalbanner.promotionalImage}}">
 <div class="recentorder" ng-show="user.email && !error">
 	<div class="recentorder_title">Recent Order</div>
 	<div class="fullwidth modifyscroll" ng-scrollbars >
@@ -34,10 +34,10 @@
 				Add
 			</button>
 		</div>
-		<div class="repeatbtn" data-toggle="modal" ng-click="repeatOrder($event)">
-			<!-- <img src="images/repeat.png" class="img-responsive" /> -->
+		<!-- <img src="images/repeat.png" class="img-responsive" /> -->
+		<!-- <div class="repeatbtn" data-toggle="modal" ng-click="repeatOrder($event)">
 			<button type="button" class="alcohalfooter_repeatorderbtn-rep">Repeat</button>
-		</div>
+		</div> -->
 	</div>
 	<div class="recentorder_title">Order History</div>
 	<div class="orderhistorytext">Shopping from a past order provides a convenient way to quickly shop for the same products again.</div>
