@@ -28,14 +28,13 @@ class UserController extends Controller
 	{
 		$validator = Validator::make($request->all(), [
 			'email' => 'required|email',
-			'password' => 'required',            
+			'password' => 'required',
 		]);
 
-		
 		// setting the credentials array
 		$credentials = [
 			'email' => strtolower($request->input('email')),
-			'password' => $request->input('password'),			
+			'password' => $request->input('password'),
 		];
 
 		$invalidcredentials = false;
@@ -46,6 +45,24 @@ class UserController extends Controller
 		$isMobileApi = $request->input('mobileapi');
 		$rememberMe = $isMobileApi==1?true:false;
 
+		$isExist = User::where('email',$request->input('email'))->first();
+
+		if($isExist){
+
+			$isExist = $isExist->toArray();
+
+			if(isset($isExist['existing'])){
+				$retArr = [
+					'resetRequired' =>true,
+					'guest'=>!$isExist['existing']
+				];
+
+				return response($retArr, 422);
+
+			}
+
+		}
+
 		// if the credentials are wrong
 		if(!Auth::attempt('user',$credentials,$rememberMe)){
 			$invalidcredentials = 'Username password does not match';
@@ -55,7 +72,7 @@ class UserController extends Controller
 
 		//ACCOUNT SUSPENDED BY ADMIN
 		if($user && ($user->status!=1 && $user->verified==1)){
-			$suspended = 'Your account has been suspended by the site administrator.';			
+			$suspended = 'Your account has been suspended by the site administrator.';
 			Auth::logout();
 			return response(['suspended' => $suspended], 422);
 		}
@@ -66,7 +83,6 @@ class UserController extends Controller
 			Auth::logout();
 		}
 
-		
 		if ($validator->fails() || $invalidcredentials){
 			
 			if($invalidcredentials){

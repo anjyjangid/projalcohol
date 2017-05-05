@@ -86,6 +86,52 @@ class PasswordController extends Controller
 		}
 	}
 
+
+	public function postResetRequiredEmail(Request $request, TokenRepositoryInterface $tokens)
+	{
+		$data = $request->all();
+		
+		if(isset($data['email']))
+			$data['email'] = strtolower($data['email']);
+		
+		$validator = Validator::make($data, [            
+						'email' => 'required|email|exists:user',            
+					],[           
+					   'email.required' => 'Please provide your email to reset password.',
+					   'email.exists' => 'Seems this email is not registered with us.'
+					]);
+
+
+		if ($validator->fails()) {
+			return response($validator->errors(), 422);
+		}
+
+		$isMobileApi = isset($data['mobileapi'])?$data['mobileapi']:0;
+
+		$user = User::where('email','=',$data['email'])->first();
+
+		$user->email_key = $tokens->create($user);
+		
+		$user->save();
+
+		$userArr = $user->toArray();
+
+		if($isMobileApi==1){
+			$resetCode = mt_rand(100000, 999999);
+			$userArr["isMobileApi"] = $isMobileApi;
+			$userArr["resetCode"] = $resetCode;
+		}
+		
+		$email = new Email('resetPasswordRequired');
+		$email->sendEmail($userArr);
+
+		if($isMobileApi==1){
+			return response(array("success"=>true, "code"=>$resetCode, "token"=>$userArr["email_key"], "message"=>"Reset code sent successfully"));
+		}else{
+			return response(array("success"=>true, "message"=>"Reset link sent successfully"));
+		}
+	}
+
 	/**
      * Display the password reset view for the given token.
      *

@@ -164,6 +164,32 @@ class Email extends Moloquent
 				
 			break; /* } end : Reset Password Email */
 			
+			case 'resetPasswordRequired' :  /* begin  : Reset Password Email { */
+
+				$this->recipient_info['receiver']['email'] = $data['email'];
+				$this->recipient_info['receiver']['name'] = $data['email'];
+
+				if(!empty($data['isMobileApi']) && !empty($data['resetCode'])){
+					$this->recipient_info['replace']['{reset_code}'] = $data['resetCode'];
+					$this->recipient_info['replace']['{reset_text}'] = "Alternatively, you can enter the following password reset code:";
+				}else{
+					$this->recipient_info['replace']['{reset_code}'] = "";
+					$this->recipient_info['replace']['{reset_text}'] = "";
+				}
+
+				if(isset($data['isAdmin'])){
+					$this->recipient_info['replace']['{reset_link}'] = url().'/admin#/resetpassword/'.$data['email_key'];
+				}else{
+					$this->recipient_info['replace']['{reset_link}'] = url().'/api/reset/'.$data['email_key'];	
+				}
+
+				$this->recipient_info['replace']['{user_name}'] = $data['email'];
+
+				$this->recipient_info['message'] = str_ireplace(array_keys($this->recipient_info['replace']),array_values($this->recipient_info['replace']),$this->recipient_info['message']);
+				
+			break; /* } end : Reset Password Email */
+
+			
 			case 'email_verification': /* begin :  Email Verification { */
 				
 			break ;/* }  end : Email Verification*/

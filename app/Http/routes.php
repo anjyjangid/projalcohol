@@ -381,7 +381,13 @@ Route::group(['prefix' => 'api'], function () {
 	Route::resource('loyaltystore', 'LoyaltyStoreController',['only'=>['index']]);
 	Route::controller('loyaltystore', 'LoyaltyStoreController');
 	Route::get('/check', 'UserController@check');
+
+	// Route::group(['middleware' => 'ResetPasswordRequired'], function () {
+	// 	Route::post('/auth', 'UserController@checkAuth');
+	// });
+
 	Route::post('/auth', 'UserController@checkAuth');
+
 	Route::get('/loggedUser', 'UserController@loggedUser');
 	Route::put('/profile', 'UserController@update');
 	Route::put('/password', 'UserController@updatepassword');

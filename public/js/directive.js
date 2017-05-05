@@ -318,16 +318,50 @@ AlcoholDelivery.directive('sideBar', function() {
 		
 					}
 		
-					$scope.loginSubmit = function(){
+					$scope.loginSubmit = function(ev){
 						$scope.login.errors = {};
 						$http.post('/auth',$scope.login).success(function(response){
 							$scope.loginSuccess(response);
 						}).error(function(data, status, headers) {
+
+							if(angular.isDefined(data.resetRequired)){
+
+								$mdDialog.show({
+									scope: $scope.$new(),
+									controller: function($scope){
+										$scope.guest = data.guest;
+									},
+									templateUrl: '/templates/partials/resetPasswordRequired.html',
+									parent: angular.element(document.body),
+									targetEvent: ev,
+									clickOutsideToClose:true,
+									fullscreen:true
+								});
+
+							}
+
 							$scope.login.errors = data;
 							$scope.resendemail = angular.copy($scope.login.email);
 				        });
 					};
-		
+			
+					$scope.resetPasswordRequiredSubmit = function() {
+
+						$http.post('/password/reset-required-email',{email:$scope.login.email}).success(function(response){
+
+			                sweetAlert.swal({
+								title: "Reset link sent",
+								text : "Please check your inbox to reset your account password",
+								imageUrl:'/images/send.gif',
+								confirmButtonColor: "#aa00ff", 
+							});
+			                $mdDialog.hide();
+
+			            }).error(function(data, status, headers) {
+
+			            });
+					};
+
 					//INTIALIZE AFTER USER LOGIN(FB & NORMAL)
 				    $scope.loginSuccess = function(response){
 				    	UserService.currentUser = response;
