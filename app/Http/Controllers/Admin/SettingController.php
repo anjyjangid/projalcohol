@@ -55,7 +55,7 @@ class SettingController extends Controller
 
 		$setting = Setting::find($id);
 
-		if(isset($inputs['site_sharing']) || $inputs['order_sharing']){
+		if(isset($inputs['site_sharing']) || isset($inputs['order_sharing'])){
 			$inputs['site_sharing']['status'] = (int)$inputs['site_sharing']['status'];
 			$inputs['order_sharing']['status'] = (int)$inputs['order_sharing']['status'];
 		}

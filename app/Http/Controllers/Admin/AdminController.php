@@ -254,7 +254,7 @@ class AdminController extends Controller
 
         $columns = ['_id','smallTitle','email','status'];
 
-        $project = ['title'=>1,'status'=>1,'email'=>1,'first_name'=>1,'last_name'=>1];
+        $project = ['title'=>1,'status'=>1,'email'=>1,'first_name'=>1,'last_name'=>1,'updated_at'=>1];
 
         $project['fullname'] = ['$concat'=>['$first_name',' ','$last_name']];
 

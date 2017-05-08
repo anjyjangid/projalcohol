@@ -457,6 +457,8 @@ class UserController extends Controller
 		
 		$return['auth'] = true;
 
+		$order = [];
+
 		try{
 
 			$ordersModel = new Orders;
@@ -483,9 +485,8 @@ class UserController extends Controller
 			$order = $order[0];
 
 		} catch(\Exception $e){
-
 			$return['message'] = "Something wrong";//$e->getMessage();            
-			return response($order,400);
+			return response($return,400);
 		}
 
 		$return['order'] = $order;
