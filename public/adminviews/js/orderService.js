@@ -1684,7 +1684,7 @@ MetronicApp
 					if(typeof value.ancestors!=='undefined'){
 
 						var parId = value.ancestors[0]._id["$id"];
-
+						console.log(parentCategories[parId]);
 						if(!value.express_delivery_bulk){
 							value.express_delivery_bulk = parentCategories[parId].express_delivery_bulk;
 						}
