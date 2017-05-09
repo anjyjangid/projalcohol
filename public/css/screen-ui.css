@@ -2555,8 +2555,9 @@ ui-sref {
 	border: none;
 }
 .checkoutrighbuttonadd {
-	width: 65px;
-	float: right;
+	width: 100%;
+	/*float: right;*/
+	float: none;
 	background: #ffc412;
 	padding: 7px 0px;
 	text-align: center;
@@ -5301,7 +5302,7 @@ md-switch {
 	position: absolute;
 }
 .innerpagemargintop .nav.navbar-nav > li {
-	position: inherit;
+	position: relative;
 }
 .innerpagemargintop .nav.navbar-nav .dropdown-menu {
 	animation-duration: 0s;

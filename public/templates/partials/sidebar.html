@@ -40,11 +40,11 @@
 			{{childCategories = childOf(categories,c._id)}}
 			{{isChildExist = childCategories.length > 0}}		
 		</div>
-		<a ng:class="{'notlinkmenu':isChildExist}" ui-sref="mainLayout.category.products({categorySlug:c.slug})" class="dropdown-toggle" type="button" data-toggle="dropdown">
+		<a ng:class="{'notlinkmenu':isChildExist}" ui-sref="mainLayout.category.products({categorySlug:c.slug})" class="dropdown-toggle" type="button" data-toggle="dropdown" data-target="{{c.slug}}">
 				{{c.cat_title}} <span class="caret" ng-show='isChildExist'></span>
 		</a>
 
-		<ul  class="dropdown-menu" ng-class="{'animate':showPersonSubMenu}" ng-style="{'background-image':'url(/assets/resources/category/thumb/400/{{c.cat_thumb}})'}" ng-if='isChildExist'>
+		<ul id="{{c.slug}}" class="dropdown-menu" ng-class="{'animate':showPersonSubMenu}" ng-style="{'background-image':'url(/assets/resources/category/thumb/400/{{c.cat_thumb}})'}" ng-if='isChildExist'>
 			<li class="dm_title">{{c.cat_title}}</li>			
 			<li class="mobilemenu hide">
 				<a ui-sref="mainLayout.category.products({categorySlug:c.slug})">All<span>{{c.productCount}}</span></a>
@@ -63,7 +63,7 @@
 				<a ui-sref="mainLayout.packages({type:'party'})">Party Packages</a>
 			</li>
 			<li ng-class="{'active':AppController.subCategory=='cocktail'}" class="dropdown">
-			<a ui-sref="mainLayout.packages({type:'cocktail'})">Cocktail Packages</a>
+				<a ui-sref="mainLayout.packages({type:'cocktail'})">Cocktail Packages</a>
 			</li>
 		</ul>
 
