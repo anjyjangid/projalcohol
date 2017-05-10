@@ -155,7 +155,12 @@ class PromotionalBannersController extends Controller
 		    if (!File::exists($destinationPath)){
 		        File::MakeDirectory($destinationPath,0777, true);
 		    }            
-		    $upload_success = $image->move($destinationPath, $filename);
+
+		    $upload_success = Image::make($image)->resize(160, null, function ($constraint) {
+											$constraint->aspectRatio();
+									})->save($destinationPath.'/'.$filename,80);
+
+		    // $upload_success = $image->move($destinationPath, $filename);
 		    $inputs['promotionalImage'] = $filename;
 		}
 
@@ -165,8 +170,13 @@ class PromotionalBannersController extends Controller
 		    $destinationPath = storage_path('promotionalbanner');
 		    if (!File::exists($destinationPath)){
 		        File::MakeDirectory($destinationPath,0777, true);
-		    }            
-		    $upload_success = $image->move($destinationPath, $filename);
+		    }
+
+		    $upload_success = Image::make($image)->resize(300, null, function ($constraint) {
+											$constraint->aspectRatio();
+									})->save($destinationPath.'/'.$filename);
+
+		    
 		    $inputs['promotionalImageMobile'] = $filename;
 		}
 
@@ -229,7 +239,11 @@ class PromotionalBannersController extends Controller
 		    	File::delete($destinationPath."/".$promotionalBanners->promotionalImage);
 		    }
 		    // upload new image
-		    $upload_success = $image->move($destinationPath, $filename);
+		    
+			$upload_success = Image::make($image)->resize(160, null, function ($constraint) {
+											$constraint->aspectRatio();
+									})->save($destinationPath.'/'.$filename,80);
+
 		    $inputs['promotionalImage'] = $filename;
 		}
 
@@ -246,7 +260,10 @@ class PromotionalBannersController extends Controller
 		    	File::delete($destinationPath."/".$promotionalBanners->promotionalImageMobile);
 		    }
 		    // upload new image
-		    $upload_success = $image->move($destinationPath, $filename);
+		    $upload_success = Image::make($image)->resize(300, null, function ($constraint) {
+											$constraint->aspectRatio();
+									})->save($destinationPath.'/'.$filename,80);
+		    
 		    $inputs['promotionalImageMobile'] = $filename;
 		}
 
