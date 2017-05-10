@@ -13666,8 +13666,8 @@ md-checkbox.md-checked.md-focused .md-container::before{
 	position: fixed;
 	padding: 5px 0;
 	z-index: 99;
-	top: 0;
-	text-align: center;
+	top: 1px;
+	text-align: center;	
 }
 .announcement-enable-wrapper .announcement-enable {
 	top: 60px;
@@ -21007,6 +21007,11 @@ span.help-block a {
 
 .pro-pricing .-dis-price + .-unit-price{
 	text-decoration: line-through;
+}
+
+.pro-pricing .-dis-price:not + .-unit-price{
+	font-weight: 500;
+	font-size: 2em;
 }
 
 a.read-more, a.read-less {

@@ -28,7 +28,8 @@
 				<div class="pro-pricing m-top-30">
 					<div class="grey-txt">Unit Price</div>
 					<span ng-if="product.unitPrice!=product.price" class="-dis-price">{{product.price | pricingTxt}}</span>
-					<span class="-unit-price">{{product.unitPrice | pricingTxt}}</span>
+					<span ng-if="product.unitPrice==product.price" class="-dis-price">{{product.unitPrice | pricingTxt}}</span>
+					<span ng-if="product.unitPrice!=product.price" class="-unit-price">{{product.unitPrice | pricingTxt}}</span>
 				</div>
 				<!-- <div class="productslide_discountprice strike-txt-only" ng-if="product.unitPrice!=product.price">
 					<div>Unit Price</div>

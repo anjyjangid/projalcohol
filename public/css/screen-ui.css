@@ -6949,8 +6949,8 @@ md-checkbox.md-checked.md-focused .md-container::before{
 	position: fixed;
 	padding: 5px 0;
 	z-index: 99;
-	top: 0;
-	text-align: center;
+	top: 1px;
+	text-align: center;	
 }
 .announcement-enable-wrapper .announcement-enable {
 	top: 60px;
