@@ -104,7 +104,8 @@
                                         <button class="btn" type="submit"> Add </button> 
                                         <button class="btn" type="button" ng-click="payment.card = ''" > Cancel </button> 
                                     </div>
-
+<!-- paymentmode && (!adminmode || savecardfuture) -->
+ 
                                     <div ng-show="paymentmode && (!adminmode || savecardfuture)" class="col-md-12">
                                         <md-checkbox md-no-ink ng-model="payment.savecard" aria-label="leaveatdoor-checkbox">
                                             Save for future payments

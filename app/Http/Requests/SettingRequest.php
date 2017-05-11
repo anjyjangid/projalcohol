@@ -73,7 +73,7 @@ class SettingRequest extends Request
 					'non_chilled_delivery.type' => 'required|numeric',
 					'non_chilled_delivery.value' => 'required|numeric',
 
-				];               
+				];
 
 				break;
 

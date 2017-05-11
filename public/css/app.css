@@ -1958,3 +1958,10 @@ md-tooltip .md-content{
     display: block;
     min-height: 20px;
 }*/
+
+.announcement-container{
+	min-height: 50px;
+}
+.announcement-container span{
+	padding: 17px 0;
+}

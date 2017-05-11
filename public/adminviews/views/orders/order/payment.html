@@ -19,5 +19,5 @@
 <!-- <pre>{{paymentError|json}}</pre> -->
 <!-- <pre>{{cart.payment|json}}</pre> -->
 <div class="availablecards">
-	<div paymentmode="true" errors="paymentError" adminmode="true" payment="cart.payment" userdata="(cart.orderType=='consumer')?cart.consumer:cart.business" ng-show="cart.payment.method=='CARD'" user-cards></div>
+	<div paymentmode="true" errors="paymentError" adminmode="false" payment="cart.payment" userdata="(cart.orderType=='consumer')?cart.consumer:cart.business" ng-show="cart.payment.method=='CARD'" user-cards></div>
 </div>

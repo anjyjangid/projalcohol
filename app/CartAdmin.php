@@ -61,12 +61,12 @@ class CartAdmin extends Moloquent
 
 			if($cart->orderType==='consumer'){
 				$cart->consumer = [
-
 					"_id"=> $userId,
 					"name"=> $user->name,
 					"mobile_number"=> $user->mobile_number,
 					"email"=> $user->email,
-					"savedCards"=> $user->savedCards
+					"savedCards"=> $user->savedCards,
+					"specialNote" => $user->specialNote
 				];
 				$cart->addresses = $user->address;
 			}

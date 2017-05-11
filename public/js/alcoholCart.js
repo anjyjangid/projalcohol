@@ -13,7 +13,7 @@ AlcoholDelivery.service('alcoholCart', [
 			alcoholCartSale, alcoholCartCreditCard, UserService) {
 
 	var _self = this;
-	
+
 	this.expressDisable = false;
 	this.deliveryApplicable = true;
 	this.productsStats = {};
@@ -1638,6 +1638,12 @@ AlcoholDelivery.service('alcoholCart', [
 
 		}
 
+		this.isDeliveryExpress = function () {
+
+			return this.$cart.service.express.status!==false;
+
+		}
+
 		this.getRemainToFreeDelivery = function(type){
 
 			var delivery = this.getDelivery();
@@ -3081,14 +3087,14 @@ AlcoholDelivery.service('alcoholCart', [
 
 			if(isSmokeRequired){
 
-				var isDeliveryAdvance = this.isDeliveryAdvance();
+				var isDeliveryExpress = this.isDeliveryExpress();
 
-				if(!isDeliveryAdvance){
+				if(isDeliveryExpress){
 
 					sweetAlert.swal({
 								type:'info',
 								title: "Sorry !",
-								text : "Smoke is only deliver in Scheduled delivery, Remove it or change delivery type",
+								text : "Cigarettes service is only applicable for advance orders",
 								timer: 4000,
 								showConfirmButton:false								
 							});

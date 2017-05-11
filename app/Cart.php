@@ -334,6 +334,7 @@ class Cart extends Moloquent
 		$cart->__set('discount', $cartDiscount);
 
 		try{
+
 			$cart->save();
 			$cart->setWorkingHrs();
 			return $cart;
@@ -1434,6 +1435,7 @@ class Cart extends Moloquent
 
 		$products = $this->getProductsWithoutAnySale();
 		$loyaltyPoints = 0;
+
 		foreach($this->productsLog as $proInCart){
 
 			$id = (string)$proInCart['_id'];
@@ -1446,7 +1448,7 @@ class Cart extends Moloquent
 
 				if(!isset($proInCart['loyalty'])){$proInCart['loyalty']=0;}
 
-				$point+= $qty * ($proInCart['costPrice'] * $proInCart['loyalty']/100);
+				$point+= $qty * ($proInCart['finalUnitPrice'] * $proInCart['loyalty']/100);
 
 			}else{
 
@@ -1679,7 +1681,7 @@ class Cart extends Moloquent
 			}
 
 			$product['unitprice'] = round($product['unitprice'], 2);			
-				
+
 			$proDetails[(string)$product['_id']] = $product;
 
 			if(isset($product['proSales'])){
@@ -1716,21 +1718,19 @@ class Cart extends Moloquent
 
 		// product log start //
 
-			$order['productsLog'] = [];
+		$order['productsLog'] = [];
 
-			foreach($productsInCartCount as $proKey=>$quantity){
+		foreach($productsInCartCount as $proKey=>$quantity){
 
-				$oPro = [
-					"_id" => new mongoId($proKey),
-					"quantity" => (int)$quantity,
-					"costPrice" => $proDetails[$proKey]['price']
-				];
+			$oPro = [
+				"_id" => new mongoId($proKey),
+				"quantity" => (int)$quantity,
+				"costPrice" => $proDetails[$proKey]['price']
+			];
 
-				$oPro = array_merge($oPro,$proDetails[$proKey]['common']);
-				array_push($order['productsLog'], $oPro);
-			}
-
-			$this->__set('productsLog',$order['productsLog']);
+			$oPro = array_merge($oPro,$proDetails[$proKey]['common']);
+			array_push($order['productsLog'], $oPro);
+		}
 
 		// product log ends //
 		unset($productsInCart);
@@ -1959,7 +1959,7 @@ class Cart extends Moloquent
 		// Set loyalty products start //
 
 		if(isset($this->loyalty)){
-			 
+			
 			foreach($this->loyalty as $key=>$product){
 
 				$detail = $proDetails[(string)$product['_id']];
@@ -2235,12 +2235,25 @@ class Cart extends Moloquent
 				}
 
 				$subtotal+=$price;
+
+				foreach($order['productsLog'] as &$pro){
+
+					if((string)$pro['_id'] === (string)$oProduct['_id']){
+						$pro['finalUnitPrice'] = $oProduct['unitprice'];
+					}
+					
+				}
+
 				$order['products'][] = $oProduct;
 
 			}
 
-		}		
+		}
+
 		// Set Products ends //
+
+
+		$this->__set('productsLog',$order['productsLog']);
 
 		//SET COUPON IF COUPON CODE IS APPLIED
 
@@ -2421,7 +2434,9 @@ class Cart extends Moloquent
 
 		$order['delivery']['deliveryKey'] = strtotime($order['delivery']['deliveryDateTime']);
 
+
 		$lpEarned = $this->setLoyaltyPointEarned();
+		
 		$order['loyaltyPointEarned'] = $lpEarned;
 
 		$lpUsed = $this->setLoyaltyPointUsed();

@@ -462,15 +462,29 @@ class CustomerController extends Controller
 							],
 							[
 								'$match' => [
-									'address' => [
+									'address.SEARCHVAL' => [
+										'$exists' => false
+									]
+								]
+							],
+							[
+								'$lookup' => [
+									'from' => 'zipCodeAddress',
+									'localField' => 'postalCode',
+									'foreignField' => 'postalCode',
+									'as' => 'zipcode'
+								]
+							],
+							[
+								'$match' => [
+									'zipcode.0' => [
 										'$exists' => false
 									]
 								]
 							]
-							
 					   );
 
-		prd($postalCodes);
+		
 		foreach ($postalCodes['result'] as $key => $value) {
 
 			$json = json_decode(file_get_contents('https://developers.onemap.sg/commonapi/search?searchVal='.$value['_id'].'&returnGeom=Y&getAddrDetails=Y&pageNum=1'), true);

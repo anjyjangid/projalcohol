@@ -44,7 +44,7 @@ MetronicApp.factory('settingsModel', ['$http', '$cookies','$location', function(
 
         var fd = objectToFormData(postedData);
 
-        $http.post("/adminapi/setting/announcement", fd, {            
+        return $http.post("/adminapi/setting/announcement", fd, {            
             transformRequest: angular.identity,
             headers: {'Content-Type': undefined}
         }).error(function(data, status, headers) {

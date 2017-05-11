@@ -1597,15 +1597,18 @@ AlcoholDelivery.directive('sideBar', function() {
 		controller: [
 		'$scope','$rootScope','$http','$state','$payments','UserService','$mdDialog','NgMap','sweetAlert','$anchorScroll',
 		function($scope,$rootScope,$http,$state,$payments,UserService,$mdDialog,NgMap,sweetAlert,$anchorScroll){
-		
+			
+					var isDefaultSet = false;
+
 					$scope.listUserAddress = function(flag){
 						$http.get("address").success(function(response){
-
-							var isDefaultSet = false;
 
 							if(response.length>0){
 
 								angular.forEach(response,function (currAdd,key) {
+
+									currAdd.isAlreadyDefault = currAdd.default;
+
 									if(currAdd.default==true){
 										isDefaultSet = key;
 									}
@@ -1613,7 +1616,8 @@ AlcoholDelivery.directive('sideBar', function() {
 
 								if(!isDefaultSet){
 									response[0].default=true;
-								}								
+									isDefaultSet = 0;
+								}
 								
 							}
 
@@ -1784,18 +1788,25 @@ AlcoholDelivery.directive('sideBar', function() {
 		
 									$scope.errors = {};
 									$scope.address.manualForm = 1;
-		
-		
 									if($scope.update){
+
 										$http.put("address/"+$scope.currentKey, $scope.address, {
 		
 								        }).success(function(response) {
 								        	$scope.errors = {};
 								        	$scope.hide();
-								        	$scope.listUserAddress(false);
+
+								        	if($scope.address.isAlreadyDefault === false && $scope.address.default === true){
+
+								        		$scope.setSelectedAddress($scope.currentKey);
+								        		$scope.listUserAddress(false)
+
+								        	}
+
 								        }).error(function(data, status, headers) {
 								        	$scope.errors = data;
 								        });
+
 							    	}else{
 										$http.post("address", $scope.address, {
 		
