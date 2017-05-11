@@ -11,6 +11,7 @@ use AlcoholDelivery\Http\Controllers\Controller;
 
 use Storage;
 use Validator;
+use Intervention\Image\Facades\Image;
 
 use AlcoholDelivery\Setting as Setting;
 
@@ -197,8 +198,10 @@ class SettingController extends Controller
 		$rules = [
 			'enable' => 'Required|Boolean',
 			'text' => 'Required',
-			'link' => 'Required|URL',
+			'link' => 'URL',
 		];
+		
+		
 
 		if($request->hasFile('rightImage')){
 			$rules['rightImage'] = 'image|max:5102';
@@ -210,10 +213,19 @@ class SettingController extends Controller
 
 		$this->validate($request,$rules);
 
-		$inputs = $request->all();
+		$inputs = $request->all();		
+		
+		if($inputs['rightImage']=='undefined'){
+			$inputs['rightImage'] = NULL;
+		}
+
+		if($inputs['leftImage']=='undefined'){
+			$inputs['leftImage'] = NULL;
+		}
+
 		$setting = Setting::find('announcementBar');
 
-		$setting->settings = $inputs;
+		// $setting->settings = $inputs;
 
 		if($request->hasFile('rightImage')){
 		    $image = $inputs['rightImage'];    
@@ -222,23 +234,33 @@ class SettingController extends Controller
 		    if (!File::exists($destinationPath)){
 		        File::MakeDirectory($destinationPath,0777, true);
 		    }            
-		    $upload_success = $image->move($destinationPath, $filename);
-		    $inputs['rightImage'] = $filename;
+
+		    $upload_success = Image::make($image)->resize(50, null, function ($constraint) {
+											$constraint->aspectRatio();
+									})->save($destinationPath.'/'.$filename,80);
+
+			$inputs['rightImage'] = $filename;
 		}
 
 		if($request->hasFile('leftImage')){
+		    
 		    $image = $inputs['leftImage'];
 		    $filename = $setting->_id.'_leftImage'.'.'.$image->getClientOriginalExtension();
 		    $destinationPath = storage_path('announcement');
-		    if (!File::exists($destinationPath)){
-		        File::MakeDirectory($destinationPath,0777, true);
-		    }            
-		    $upload_success = $image->move($destinationPath, $filename);
+
+			if (!File::exists($destinationPath)){
+				File::MakeDirectory($destinationPath,0777, true);
+			}		    
+
+		    $upload_success = Image::make($image)->resize(50, null, function ($constraint) {
+											$constraint->aspectRatio();
+									})->save($destinationPath.'/'.$filename,80);
+
 		    $inputs['leftImage'] = $filename;
 		}
 
 		$setting->settings = $inputs;
-		// prd($setting);
+		
 		if($setting->save()){
 			return response(array("success"=>true,"message"=>"Settings updated successfully"));
 		}
