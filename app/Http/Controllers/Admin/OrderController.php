@@ -325,8 +325,17 @@ class OrderController extends Controller
 		if(empty($cart)){
 			return response(array("success"=>false,"message"=>"something went wrong with cart"));
 		}
-
 		$params = $request->all();
+
+		if(isset($params['consumer']['specialNote'])){
+			
+			$user = User::find($params['consumer']['_id']);
+			$user->specialNote = $params['consumer']['specialNote'];
+			$user->save();
+
+		}
+
+
 
 		if(isset($params['nonchilled'])){
 			$cart->nonchilled = $params['nonchilled'];

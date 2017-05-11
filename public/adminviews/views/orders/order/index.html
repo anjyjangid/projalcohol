@@ -182,7 +182,7 @@
 										<i ng-if="cart.delivery.address.key==$index" style="position: absolute;right: 25px;top: 10px;" class="fa fa-lg fa-check"></i>
 										<div class="caption">
 											<h4>{{address.firstname+' '+address.lastname}}</h4>
-
+											
 											<div ng-if="address.HBRN" class="gry_text_div">
 												<span ng-bind="address.house"></span> {{address.HBRN}}
 											</div>
@@ -296,8 +296,20 @@
 
 								</div>
 							</div>
+						</div>
+						<div class="col-sm-6" ng-if="cart.consumer">
+							<div class="form-group row m">
+								<label class="control-label col-md-12"><h2>Additional points to NOTE:</h2></label>
+								<div class="col-md-12">
 
-							
+									<textarea class="full-width" 
+										placeholder="Additional points to NOTE" 
+										ng-model="cart.consumer.specialNote" 
+										style="height: 176px;padding: 10px">
+									</textarea>
+
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
