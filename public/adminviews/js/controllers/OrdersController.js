@@ -125,19 +125,33 @@ MetronicApp.controller('OrderCreateController',[
 		else
 			api = '/adminapi/customer/detail/'+$scope.cart.user;
 
-		
-
 		$http.get(api)
 		.then(function(res){
 
 			$scope.cart.addresses = res.data.address || [];
 
+			$scope.cart.consumer.specialNote = res.data.specialNote;
+
 			if($scope.cart.addresses.length){
-				$scope.alcoholCart.$cart.selectedAddress = 0;
-				$scope.setSelectedAddress(0);
+
+				var defaultAddKey = 0;
+
+				angular.forEach($scope.cart.addresses,function (currAdd,key) {					
+
+					if(currAdd.default==true){
+						defaultAddKey = key;
+					}
+
+				})
+
+				$scope.alcoholCart.$cart.selectedAddress = defaultAddKey;
+				$scope.setSelectedAddress(defaultAddKey);
+
 			}else{
+
 				delete $scope.alcoholCart.$cart.delivery.address;
 				delete $scope.alcoholCart.$cart.selectedAddress;
+
 			}
 			//$scope.cart.[$scope.cart.orderType].savedCards = res.data.savedCards || [];
 			$scope.alternateNumbers = res.data.alternate_number || [];
@@ -277,8 +291,8 @@ MetronicApp.controller('OrderCreateController',[
 
 	$scope.orderprocessing = false;
 
-	$scope.orderConfirm = function(){				
-		
+	$scope.orderConfirm = function(){
+
 		$scope.orderprocessing = true;
 
 		alcoholCart.checkoutValidate().then(

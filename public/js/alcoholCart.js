@@ -13,7 +13,7 @@ AlcoholDelivery.service('alcoholCart', [
 			alcoholCartSale, alcoholCartCreditCard, UserService) {
 
 	var _self = this;
-	
+
 	this.expressDisable = false;
 	this.deliveryApplicable = true;
 	this.productsStats = {};
