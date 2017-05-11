@@ -19,6 +19,7 @@ use AlcoholDelivery\Libraries\GoogleCloudPrint\GoogleCloudPrint;
 
 use DB;
 use File;
+use Image;
 
 class SettingController extends Controller
 {
@@ -294,24 +295,26 @@ class SettingController extends Controller
 		// $setting->settings = $inputs;
 
 		if($request->hasFile('bannerImage')){
-		    $image = $inputs['bannerImage'];    
+		    $image = $inputs['bannerImage'];
 		    $filename = $setting->_id.'_bannerImage'.'.'.$image->getClientOriginalExtension();
 		    $destinationPath = storage_path('homebanner');
 		    if (!File::exists($destinationPath)){
 		        File::MakeDirectory($destinationPath,0777, true);
-		    }            
-		    $upload_success = $image->move($destinationPath, $filename);
-		    $inputs['bannerImage'] = $filename;
+		    }
+		    // $upload_success = $image->move($destinationPath, $filename);
+			$upload_success = Image::make($image)->save($destinationPath.'/'.$filename,60);
+			$inputs['bannerImage'] = $filename;
 		}
 
 		if($request->hasFile('bannerImageMobile')){
-		    $image = $inputs['bannerImageMobile'];    
+		    $image = $inputs['bannerImageMobile'];
 		    $filename = $setting->_id.'_bannerImageMobile'.'.'.$image->getClientOriginalExtension();
 		    $destinationPath = storage_path('homebanner');
 		    if (!File::exists($destinationPath)){
 		        File::MakeDirectory($destinationPath,0777, true);
-		    }            
-		    $upload_success = $image->move($destinationPath, $filename);
+		    }
+		    // $upload_success = $image->move($destinationPath, $filename);
+		    $upload_success = Image::make($image)->save($destinationPath.'/'.$filename,60);
 		    $inputs['bannerImageMobile'] = $filename;
 		}
 
