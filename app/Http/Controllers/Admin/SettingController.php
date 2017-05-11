@@ -11,7 +11,6 @@ use AlcoholDelivery\Http\Controllers\Controller;
 
 use Storage;
 use Validator;
-use Intervention\Image\Facades\Image;
 
 use AlcoholDelivery\Setting as Setting;
 
