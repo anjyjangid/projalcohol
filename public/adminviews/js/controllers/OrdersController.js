@@ -157,14 +157,18 @@ MetronicApp.controller('OrderCreateController',[
 			$scope.alternateNumbers = res.data.alternate_number || [];
 
 			if(!angular.isDefined(res.data.mobile_number) || res.data.mobile_number==""){
+
 				if($scope.alternateNumbers.length>0){
 					$scope.cart.delivery.contact = $scope.alternateNumbers[$scope.alternateNumbers.length-1];
 				}else{
 					$scope.alcoholCart.$cart.delivery.contact = null;
 				}
+
 			}else{
 				$scope.cart.delivery.contact = res.data.mobile_number;
 			}
+
+			$scope.cart.delivery.country_code = res.data.country_code;
 
 			alcoholCart.deployCart();
 

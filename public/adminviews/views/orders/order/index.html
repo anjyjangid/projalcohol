@@ -262,7 +262,9 @@
 								<div class="col-md-12">
 
 									<div class="input-group">
-										<div class="mobileinput input-group-addon">+65</div>
+
+										<div class="mobileinput input-group-addon">+<input type="text" name="countryCode" ng-model="cart.delivery.country_code" class="transparent" maxlength="3" ng-minlength="1" ng-maxlength="3" required></div>
+
 										<input type="text" class="form-control alcohalpopuptext2" name="deliveryContact" id="deliveryContact" required ng-model="cart.delivery.contact" ng-minlength="8" ng-maxlength="8" maxlength="8">
 									</div>
 

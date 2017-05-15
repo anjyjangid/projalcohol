@@ -882,7 +882,11 @@ class OrderController extends Controller
 				$defaultContact = false;
 			}
 			
-			$userObj->setContact($orderObj['delivery']['contact']);
+			if(isset($orderObj['delivery']['contact'])){
+				$orderObj['delivery']['country_code'] = isset($orderObj['delivery']['country_code'])?$orderObj['delivery']['country_code']:65;
+				$userObj->setContact($orderObj['delivery']['contact'],$orderObj['delivery']['country_code'],$defaultContact);
+			}
+			
 			$order = Orders::create($orderObj);
 				
 
