@@ -563,6 +563,12 @@ MetronicApp.controller('OrderCreateController',[
 		else
 			api = '/adminapi/address/'+detail.user._id;
 
+		delete $scope.address.manualForm;
+
+		if($scope.type == 3){
+			$scope.address.manualForm = 1;
+		}
+
 		$http.post(api, $scope.address)
 		.then(function(res){
 			$modalInstance.close($scope.address);

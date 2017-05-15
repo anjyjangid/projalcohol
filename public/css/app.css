@@ -1562,6 +1562,11 @@ span.help-block a {
 	text-decoration: line-through;
 }
 
+.pro-pricing .-dis-price:not + .-unit-price{
+	font-weight: 500;
+	font-size: 2em;
+}
+
 a.read-more, a.read-less {
 	cursor: pointer;
 	color: #8d00d4;
@@ -1788,7 +1793,7 @@ body {
 }
 
 .add-default-check{
-	color: #d7d7d7;
+	color: #222;
 	font-weight: normal;
 }
 

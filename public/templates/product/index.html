@@ -31,23 +31,29 @@
 
 	</div>
 	<div class="row hidden-xs">
-		  <div class="col-xs-3 col-sm-3 col-md-3" ng-if="categoriesList[0].children.length>0"> 
-		  	<a ui-sref="mainLayout.category.products({categorySlug:categoriesList[0].slug})" ng-class="{'active':AppController.subCategory==''}">All Types</a>
-		  </div>
-		  <div class="col-xs-3 col-sm-3 col-md-3 text-capitalize" ng-repeat="childCat in categoriesList[0].children"> 
-		  	<a ui-sref="mainLayout.category.subCatProducts({categorySlug:categoriesList[0].slug,subcategorySlug:childCat.slug})" ng-class="{'active':AppController.subCategory==childCat.slug}">{{childCat.cat_title}}</a> 
-		  </div>	
-		</div>
-		<div class="row visible-xs">
-			<ul class="clistitemul">
-				<li class="text-capitalize">
-					<a ui-sref="mainLayout.category.products({categorySlug:categoriesList[0].slug})" ng-class="{'active':AppController.subCategory==''}">All Types</a>
-				</li>
-				<li class="text-capitalize" ng-repeat="childCat in categoriesList[0].children">
-					<a ui-sref="mainLayout.category.subCatProducts({categorySlug:categoriesList[0].slug,subcategorySlug:childCat.slug})" ng-class="{'active':AppController.subCategory==childCat.slug}">{{childCat.cat_title}}</a> 
-				</li>
-			</ul>		
-		</div>
+	  <div class="col-xs-3 col-sm-3 col-md-3" ng-if="categoriesList[0].children.length>0"> 
+	  	<a ui-sref="mainLayout.category.products({categorySlug:categoriesList[0].slug})" ng-class="{'active':AppController.subCategory==''}">All Types</a>
+	  </div>
+	  <div class="col-xs-3 col-sm-3 col-md-3 text-capitalize" ng-repeat="childCat in categoriesList[0].children"> 
+	  	<a ui-sref="mainLayout.category.subCatProducts({categorySlug:categoriesList[0].slug,subcategorySlug:childCat.slug})" ng-class="{'active':AppController.subCategory==childCat.slug}">{{childCat.cat_title}}</a> 
+	  </div>	
+	</div>
+	<div class="row visible-xs">
+		<ul class="clistitemul">
+			<li class="text-capitalize">
+				<md-list-item md-ink-ripple="#9C27B0" class="md-clickable" ng-class="{'active':AppController.subCategory==''}" ui-sref="mainLayout.category.products({categorySlug:categoriesList[0].slug})">
+				    All Types
+				</md-list-item>
+				<!-- <a md-ink-ripple ui-sref="mainLayout.category.products({categorySlug:categoriesList[0].slug})" ng-class="{'active':AppController.subCategory==''}" class="md-clickable">All Types</a> -->
+			</li>
+			<li class="text-capitalize" ng-repeat="childCat in categoriesList[0].children">
+				<md-list-item md-ink-ripple="#9C27B0" class="md-clickable" ui-sref="mainLayout.category.subCatProducts({categorySlug:categoriesList[0].slug,subcategorySlug:childCat.slug})" ng-class="{'active':AppController.subCategory==childCat.slug}">
+				    {{childCat.cat_title}}
+				</md-list-item>
+				<!-- <a ui-sref="mainLayout.category.subCatProducts({categorySlug:categoriesList[0].slug,subcategorySlug:childCat.slug})" ng-class="{'active':AppController.subCategory==childCat.slug}" >{{childCat.cat_title}}</a>  -->
+			</li>
+		</ul>		
+	</div>
   </div>
   
   <div class="tabbable"> <!-- Only required for left/right tabs -->

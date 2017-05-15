@@ -2555,8 +2555,9 @@ ui-sref {
 	border: none;
 }
 .checkoutrighbuttonadd {
-	width: 65px;
-	float: right;
+	width: 100%;
+	/*float: right;*/
+	float: none;
 	background: #ffc412;
 	padding: 7px 0px;
 	text-align: center;
@@ -5301,7 +5302,7 @@ md-switch {
 	position: absolute;
 }
 .innerpagemargintop .nav.navbar-nav > li {
-	position: inherit;
+	position: relative;
 }
 .innerpagemargintop .nav.navbar-nav .dropdown-menu {
 	animation-duration: 0s;
@@ -6948,8 +6949,8 @@ md-checkbox.md-checked.md-focused .md-container::before{
 	position: fixed;
 	padding: 5px 0;
 	z-index: 99;
-	top: 0;
-	text-align: center;
+	top: 1px;
+	text-align: center;	
 }
 .announcement-enable-wrapper .announcement-enable {
 	top: 60px;
