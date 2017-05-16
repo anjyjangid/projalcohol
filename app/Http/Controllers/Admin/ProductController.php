@@ -154,9 +154,8 @@ class ProductController extends Controller
 	public function postUpdate(ProductRequest $request, $id)
 	{
 		$inputs = $request->all();				
-		
 		$this->castVariables($inputs);
-
+		
 		$product = Products::find($id);
 		
 		if($product){
@@ -792,7 +791,7 @@ class ProductController extends Controller
 
 		$inputs['bulkDisable'] = (int)($inputs['bulkDisable']);
 
-		$inputs['loyalty'] = (int)($inputs['loyalty']);		
+		$inputs['loyalty'] = (float)($inputs['loyalty']);		
 
 		if (isset($inputs['regular_express_delivery']['value']) && !empty($inputs['regular_express_delivery']['value'])){
 			$inputs['regular_express_delivery']['value'] = (float)$inputs['regular_express_delivery']['value'];

@@ -54,7 +54,7 @@
 					<div class="form-group row" ng:class="{'has-error':errors.total[0]}">
 						<label class="col-md-2 control-label">Cart Total:</label>
 						<div class="col-md-10">
-							<input type="number" class="form-control" ng-model="coupon.total">
+							<input step=".1" type="number" class="form-control" ng-model="coupon.total">
 							<span class="help-block" ng-bind="errors.total[0]"></span>
 						</div>
 					</div>

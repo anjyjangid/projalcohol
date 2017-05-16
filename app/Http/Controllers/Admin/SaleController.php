@@ -334,7 +334,7 @@ class SaleController extends Controller
             $inputs['giftQuantity'] = (int)$inputs['giftQuantity'];
 
         if(isset($inputs['discountValue']) && !empty($inputs['discountValue']))
-            $inputs['discountValue'] = (int)$inputs['discountValue'];
+            $inputs['discountValue'] = (float)$inputs['discountValue'];
 
         if(isset($inputs['discountType']) && !empty($inputs['discountType']))
             $inputs['discountType'] = (int)$inputs['discountType'];
