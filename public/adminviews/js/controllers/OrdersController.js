@@ -67,16 +67,12 @@ MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout'
 MetronicApp.controller('OrderCreateController',[
 	'$scope', '$state', '$http', '$timeout', 'alcoholCart', '$modal', '$filter', '$rootScope', 'sweetAlert','$sce'
 , function($scope, $state, $http, $timeout, alcoholCart, $modal, $filter, $rootScope, sweetAlert,$sce){
-	angular.alcoholCart = alcoholCart;
 
+	// angular.alcoholCart = alcoholCart;
 	$scope.alcoholCart = alcoholCart;
 	$scope.cart = alcoholCart.getCart();
 
-	$scope.paymentError = [];
-
-	// $scope.cart.orderType = "consumer";
-
-	// $scope.cart.addresses = [];
+	$scope.paymentError = [];	
 
 	$scope.autoComplete = function(term, field, api){
 		if(!api)
@@ -95,8 +91,31 @@ MetronicApp.controller('OrderCreateController',[
 		})
 	}
 
+	// $scope.$watch('cart.delivery.contact',
+	// 		function(newValue, oldValue) {
+
+	// 			if(newValue!=null && $scope.cartFrm.deliveryContact.$valid && $scope.cart.consumer.mobile_number!==newValue){
+	// 				$scope.newNumber = true;
+	// 			}else{
+	// 				$scope.newNumber = false;
+	// 			}
+	// 		}
+	// 	);
+
+	if(!angular.isDefined($scope.cart.delivery.country_code)){
+		$scope.cart.delivery.country_code = 65;
+	}
+
+
+	$scope.mobile_number = {
+		'min' : 6,
+		'max' : 15
+	}	
+
 	$scope.$watch('cart.delivery.contact',
 			function(newValue, oldValue) {
+
+				setMobileNumberMinMax();
 
 				if(newValue!=null && $scope.cartFrm.deliveryContact.$valid && $scope.cart.consumer.mobile_number!==newValue){
 					$scope.newNumber = true;
@@ -105,6 +124,33 @@ MetronicApp.controller('OrderCreateController',[
 				}
 			}
 		);
+
+	$scope.$watch('cart.delivery.country_code',
+			function(newValue, oldValue) {
+
+				if($scope.cart.delivery.contact!=null && $scope.cart.delivery.contact.length>8){
+					$scope.cart.delivery.contact = '';
+					return true;
+				}
+
+				setMobileNumberMinMax();
+			});
+	
+	function setMobileNumberMinMax () {
+
+		if($scope.cart.delivery.country_code=='65'){
+
+			$scope.mobile_number.min = 8;
+			$scope.mobile_number.max = 8;
+		}else{
+			$scope.mobile_number.min = 6;
+			$scope.mobile_number.max = 15;
+		}
+
+
+
+	}
+
 
 	$scope.customerSelect = function(customer) {
 

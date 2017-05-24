@@ -117,14 +117,19 @@ AlcoholDelivery.filter('isActive', function() {
 
 AlcoholDelivery.filter('getProductThumb', function() {
 	return function(input){
-		if(angular.isString(input)){
-			return input;
-		}
 
-		for(i=0;i<=input.length;i++){
-			if(input[i].coverimage==1){
-				return input[i].source;
+		if(!angular.isUndefined(input)){
+
+			if(angular.isString(input)){
+				return input;
 			}
+
+			for(i=0;i<=input.length;i++){
+				if(input[i].coverimage==1){
+					return input[i].source;
+				}
+			}
+
 		}
 		return "product-default.jpg";
 	}

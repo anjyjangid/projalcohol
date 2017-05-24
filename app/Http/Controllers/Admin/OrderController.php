@@ -99,6 +99,10 @@ class OrderController extends Controller
 
 				}
 
+				if(!isset($cart['delivery']['country_code'])){
+					$cart['delivery']['country_code'] = 65;
+				}
+
 				$response['cart'] = $cart;
 
 				$request->session()->put('deliverykeyAdmin', $cart['_id']);
@@ -170,6 +174,7 @@ class OrderController extends Controller
 			}
 
 			$result = $cartObj->generate($userId);
+
 			$response['cart'] = $result->cart;
 
 			$request->session()->put('deliverykeyAdmin', $result->cart['_id']);

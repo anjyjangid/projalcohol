@@ -204,7 +204,7 @@ MetronicApp.controller('ProductAddController',[
 		productModel.getProduct($stateParams.productid).success(function(data){
 			
 			angular.extend($scope.product,data);
-
+			
 			var unique = $scope.product.categories.join('|');
 			
 			var k = $scope.getKey($scope.cd,unique);			

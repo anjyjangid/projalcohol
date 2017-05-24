@@ -69,7 +69,9 @@ class Products extends Eloquent
 		'suggestionObjectId',
 		'suggestedId',
 		'suggestedObjectId',
-		'groupId'
+		'groupId',
+		'newTillDate',
+		'newTagDurationReset'
 
 	];
 
@@ -769,8 +771,6 @@ class Products extends Eloquent
 			$match = [ '$in' => $params['id'] ];
 		}
 
-
-
 		try {
 
 			$query = [
@@ -1365,6 +1365,7 @@ class Products extends Eloquent
 
 					];
 			
+
 			$product = Dontmiss::raw()->aggregate($query);
 
 			if(isset($product['result'][0])){

@@ -26,7 +26,7 @@ AlcoholDelivery.controller('AppController', [
 			
 							$scope.verifyage = function(){		
 			
-								$cookies.remove('ageverfication');					
+								$cookies.remove('ageverfication');
 			    				
 			    				if($scope.verification.rememberme){
 			    					// this will set the expiration to 12 months
@@ -39,7 +39,7 @@ AlcoholDelivery.controller('AppController', [
 			    				}else{
 									$cookies.putObject('ageverfication', 
 										{month:$scope.verification.userMonth,day:$scope.verification.userDay,year:$scope.verification.userYear}							
-									);    					
+									);
 			    				}
 			
 								$mdDialog.hide();
@@ -1541,6 +1541,11 @@ AlcoholDelivery.controller('CartAddressController',[
 		}
 	}
 
+	$scope.mobile_number = {
+		'min' : 6,
+		'max' : 15
+	}
+
 	/*$scope.setSelectedAddress = function(key){
 		console.log(key);
 		$scope.delivery.address = {};
@@ -1551,6 +1556,8 @@ AlcoholDelivery.controller('CartAddressController',[
 
 	$scope.$watch('delivery.contact',
 			function(newValue, oldValue) {
+				
+				setMobileNumberMinMax();
 
 				if($scope.cartFrm.deliveryContact.$valid && $scope.user.mobile_number!==newValue){
 					$scope.newNumber = true;
@@ -1559,6 +1566,23 @@ AlcoholDelivery.controller('CartAddressController',[
 				}
 			}
 		);
+
+	$scope.$watch('delivery.country_code',
+			function(newValue, oldValue) {
+				setMobileNumberMinMax();
+			});
+	
+	function setMobileNumberMinMax () {
+
+		if($scope.delivery.country_code=='65'){
+			$scope.mobile_number.min = 8;
+			$scope.mobile_number.max = 8;
+		}else{
+			$scope.mobile_number.min = 6;
+			$scope.mobile_number.max = 15;
+		}
+
+	}
 
 	$scope.addressCheckout = function(){
 
@@ -1596,7 +1620,11 @@ AlcoholDelivery.controller('CartAddressController',[
 			}
 
 			if(deliveryContactErrors.$error.minlength){
-				$scope.errors.contact = "Contact number should be 8 digit long";
+				$scope.errors.contact = "Please enter a valid number";
+			}
+
+			if(deliveryContactErrors.$error.maxlength){
+				$scope.errors.contact = "Please enter a valid number";
 			}
 
 			if(countryCodeErrors.$error.required){

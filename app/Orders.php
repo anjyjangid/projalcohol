@@ -4,9 +4,10 @@ namespace AlcoholDelivery;
 
 use Moloquent;
 use MongoId;
-use AlcoholDelivery\Products as Products;
+use AlcoholDelivery\Products;
+use AlcoholDelivery\Packages;
 use AlcoholDelivery\User as Users;
-use AlcoholDelivery\Email as Email;
+use AlcoholDelivery\Email;
 use View;
 
 class Orders extends Moloquent
@@ -114,25 +115,16 @@ class Orders extends Moloquent
 
 			foreach($order['products'] as $product){
 				array_push($productKeys, (string)$product['_id']);
-			}		
+			}
 
 		}
 
 		$productsModel = new Products;
 		$productKeys = array_unique($productKeys);
-		
 		$products = $productsModel->fetchProduct(["id"=>$productKeys]);
 
-		// $products = $productsModel->getProducts(
-		// 									array(
-		// 										"id"=>$productKeys,
-		// 										"with"=>array(
-		// 											"discounts"
-		// 										)
-		// 									)
-		// 								);
-
 		if($products['success'] && !empty($products['product'])){
+
 			$products = $products['product'];
 
 			foreach($products as $key=>$product){
@@ -656,6 +648,70 @@ class Orders extends Moloquent
 		];
 
 		$emailSent = $email->sendEmail($data);
+
+	}
+
+
+	// Function to set all products Detail in requested order
+
+	public function setItemsCurrentState () {
+
+		$order = [
+			'products' => [],
+			'packages' => [],
+			'gifts' => [],
+			'giftCards' => [],
+			'sales' => []
+		];
+
+		if(isset($this->productsLog) && count($this->productsLog)>0){
+
+			$alcoholProducts = [];
+			foreach ($this->productsLog as $key => $value) {
+				
+				array_push($alcoholProducts, (string)$value['_id']);
+			}
+
+			$productsModel = new Products;
+			$products = $productsModel->fetchProduct(["id"=>$alcoholProducts]);
+
+			if($products['success']!==true){
+				
+				//Catch if issue in product fetch
+			}
+
+			$products = $products['product'];
+			foreach($products as $key=>$product){
+
+				$order['products'][(string)$product['_id']] = $product;
+
+			}
+
+			unset($products);			
+
+		}
+
+		if(isset($this->packages) && count($this->packages)>0){
+			
+			$packages = [];
+			foreach ($this->packages as $key => $value) {
+				array_push($packages, (string)$value['_id']);
+			}
+
+			$packages = Packages::whereIn("_id",$packages)->get();
+			$order['packages'] = $packages;
+				unset($packages);
+
+		}
+
+
+
+jprd($order);
+		prd($alcoholProducts);
+
+		
+		
+		
 
 	}
 	
