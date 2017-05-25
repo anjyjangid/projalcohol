@@ -177,12 +177,24 @@
 						<div class="col-sm-6">
 							<h2>Delivery Address</h2>
 							<div class="row">
-								<div class="col-lg-6" ng-repeat-start="address in cart.addresses | limitTo:(showall?cart.addresses.length:3)">
-									<a class="thumbnail" ng-class="{'active':cart.delivery.address.key==$index}" ng-click="cart.selectedAddress=$index;setSelectedAddress($index)">
-										<i ng-if="cart.delivery.address.key==$index" style="position: absolute;right: 25px;top: 10px;" class="fa fa-lg fa-check"></i>
+
+								<div class="col-lg-6 addressbok-travis" ng-repeat-start="address in cart.addresses | limitTo:(showall?cart.addresses.length:3)">
+									<div class="thumbnail pos-relative" ng-class="{'active':cart.delivery.address.key==$index}" ng-click="cart.selectedAddress=$index;setSelectedAddress($index)">
+
+										<!-- <i ng-if="cart.delivery.address.key==$index" style="position: absolute;left: 10px;top: 5px;" class="fa fa-lg fa-check"></i> -->
 										<div class="caption">
+
 											<h4>{{address.firstname+' '+address.lastname}}</h4>
-											
+
+											<div class="addresseditdltpic">
+												<a ng-click="updateAddress($index); $event.stopPropagation();">
+													<i class="glyphicon glyphicon-pencil"></i>
+												</a>
+												<a ng-click="removeAddress(key); $event.stopPropagation();">
+													<i class="glyphicon glyphicon-trash"></i>
+												</a>
+											</div>
+
 											<div ng-if="address.HBRN" class="gry_text_div">
 												<span ng-bind="address.house"></span> {{address.HBRN}}
 											</div>
@@ -191,8 +203,9 @@
 											</div>
 											<div ng-if="address.PostalCode" class="gry_text_div">Singapore - {{address.PostalCode}}</div>
 											<div ng-if="address.phone" class="gry_text_div">Phone - {{address.phone}}</div>
+
 										</div>
-									</a>
+									</div>
 								</div>
 								<div ng-repeat-end class="clearfix visible-lg-block" ng-if="$index%2==1"></div>
 
@@ -384,8 +397,10 @@
 </div>
 
 <script type="text/ng-template" id="newAddress.html">
+
 	<div class="modal-header">
-		<h3 class="modal-title">New Delivery Address</h3>
+		<h3 class="modal-title" ng-if="!updateAddres">New Delivery Address</h3>
+		<h3 class="modal-title" ng-if="updateAddres">Update Delivery Address</h3>
 	</div>
 
 	<div class="modal-body">
@@ -502,6 +517,13 @@
 				<label>Address Specific Instructions (optional)</label>
 				<textarea type="text" class="form-control" ng-model="address.instruction"></textarea>
 			</div>
+
+			<div class="form-group">
+				<label class="pull-right add-default-check">
+					<md-checkbox md-no-ink ng-model="address.default" aria-label="default-address-checkbox">Make this as default address</md-checkbox>
+				</label>
+			</div>
+
 		</div>
 	</div>
 	<div class="modal-footer">

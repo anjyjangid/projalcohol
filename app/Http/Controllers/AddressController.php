@@ -159,7 +159,7 @@ class AddressController extends Controller
 	{
 		$inputs = $request->all();
 
-
+prd($inputs);
 		$loggeduser = Auth::user('user');
 
 		$user = User::find($loggeduser->_id);
@@ -189,6 +189,57 @@ class AddressController extends Controller
 		}
 
 		$address[$id] = $inputs;
+
+		$user->__set("address",$address);
+
+		$return = array("success"=>false,"message"=>"","data"=>""); 
+
+		try {
+
+			$user->save();
+
+			$return['success'] = true;
+			$return['message'] = "Address updated successfully";
+						
+		} catch(\Exception $e){
+			$return['message'] = $e->getMessage();//$e->getMessage();
+		}
+
+		return response($return);
+	}
+
+
+	public function updateUserAddress(UserAddressRequest $request, $userId, $addressId)
+	{
+		$inputs = $request->all();		
+
+		$user = User::find($userId);
+
+		$address = $user->__get("address");
+
+		$inputs['updated_at'] = new DateTime();
+
+		if(isset($inputs['place'])){
+			
+			unset($inputs['place']);
+
+		}
+
+		if(isset($inputs['default']) && $inputs['default']==true){
+			
+			foreach ($address as &$value) {
+				$value['default'] = false;
+			}
+
+			$inputs['default'] = true;
+
+		}else{
+
+			$inputs['default'] = false;
+
+		}
+
+		$address[$addressId] = $inputs;
 
 		$user->__set("address",$address);
 

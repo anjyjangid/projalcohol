@@ -265,6 +265,7 @@ MetronicApp.controller('OrderCreateController',[
 	}
 
 	$scope.newAddress = function(address){
+
 		if(!$scope.cart[$scope.cart.orderType]._id) return;
 
 		$modal.open({
@@ -278,6 +279,41 @@ MetronicApp.controller('OrderCreateController',[
 						user: $scope.cart[$scope.cart.orderType],
 						type: $scope.cart.orderType,
 						addrType: address
+					}
+				}
+			}
+		})
+		.result.then(function (address) {
+			console.log($scope.cart);
+			$scope.cart.addresses.push(address);
+
+			var api;
+			if($scope.cart.orderType=='business')
+				api = '/adminapi/business/addresses/'+$scope.cart[$scope.cart.orderType]._id;
+			else
+				api = '/adminapi/customer/addresses/'+$scope.cart[$scope.cart.orderType]._id;
+
+			$http.get(api)
+			.then(function(res){
+				$scope.cart.addresses = res.data.address;
+			});
+		});
+	}
+
+	$scope.updateAddress = function(addressKey){
+
+		$modal.open({
+			templateUrl: 'newAddress.html',
+			controller: 'UpdateAddressModel',
+			backdrop: false,
+			size:'lg',
+			resolve: {
+				detail: function(){
+					return {
+						user: $scope.cart[$scope.cart.orderType],
+						address: $scope.cart.addresses[addressKey],
+						key:addressKey
+
 					}
 				}
 			}
@@ -627,6 +663,62 @@ MetronicApp.controller('OrderCreateController',[
 		})
 	}
 }])
+
+.controller('UpdateAddressModel',[ '$scope', '$modalInstance', 'NgMap', '$http', 'detail'
+, function($scope, $modalInstance, NgMap, $http, detail) {
+
+	$scope.cancel = $modalInstance.dismiss;
+
+	$scope.type = 3;
+
+	$scope.address = detail.address;
+
+	$scope.updateAddres = true;
+
+	$scope.currentKey = detail.key;
+
+	// Google map auto complete code start //
+	NgMap.getMap().then(function(map) {
+		$scope.map = map;
+		angular.map = $scope.map;
+		setTimeout(function() {
+			var point = new google.maps.LatLng($scope.address.LAT,$scope.address.LNG);
+			$scope.map.setCenter(point);
+			$scope.map.setZoom(12);
+			$scope.map.setOptions({draggable:false});
+		}, 500);
+	});
+
+	$scope.searchLocation = function(q){
+		return $http.get('api/site/search-location', {params: {q}})
+		.then(function(res){
+			return res.data;
+		});
+	}		
+
+	$scope.save = function(){
+
+		$scope.errors = {};
+		$scope.address.manualForm = 1;
+
+		var api = '/adminapi/address/'+detail.user._id+'/'+$scope.currentKey;		
+
+		$http.post(api, $scope.address)
+		.then(function(res){
+			$modalInstance.close($scope.address);
+		})
+		.catch(function(err){
+			$scope.errors = err.data;
+		})
+		.finally(function(){
+			$scope.savingData = false;
+		})
+
+    	
+	}
+
+}])
+
 
 .controller('OrderProductsController',[
 				'$scope', '$http', '$timeout', '$mdDialog', 'alcoholCart', 

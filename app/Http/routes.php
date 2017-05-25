@@ -202,6 +202,7 @@ Route::group(['prefix' => 'adminapi','middleware' => 'admin'], function () {
 	Route::controller('purchaseorder', 'Admin\PurchaseOrderController');
 
 	Route::post('address/{id}','AddressController@store');
+	Route::post('address/{userId}/{addressId}','AddressController@updateUserAddress');
 	// Route::controller('address', 'AddressController');
 
 	Route::post('checkCoupon/{id}','CouponController@checkCoupon');
