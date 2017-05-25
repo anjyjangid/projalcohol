@@ -80,7 +80,6 @@ AlcoholDelivery.service('alcoholCart', [
 		this.$validations = {
 
 			"cart": {
-
 				'workingHrs':{
 					status:false,
 					message:"1 Hr delivery is not allowed"
@@ -99,6 +98,10 @@ AlcoholDelivery.service('alcoholCart', [
 		};
 
 	};
+
+	this.setWorkingHrsValidationStatus = function(status) {
+		this.$validations.cart.workingHrs.status = status;
+	}
 
 	this.addItem = function (id, quantity, serveAs) {
 

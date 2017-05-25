@@ -1,11 +1,11 @@
 <style type="text/css">
 	.header{
-		background: {{settings.homeBannerImage}}
+		background: {{angular.isDefined(settings.homeBannerImage)?settings.homeBannerImage:'';}}
 	}
 
 	@media(max-width:767px){
 		.header{
-			background: {{settings.homeBannerImageMobile}}
+			background: {{angular.isDefined(settings.homeBannerImageMobile)?settings.homeBannerImageMobile:'';}}
 		}
 	}
 </style>

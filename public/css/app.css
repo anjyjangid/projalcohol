@@ -1536,6 +1536,10 @@ span.help-block a {
 	margin-top: 15px;
 	margin-bottom: 0px;
 }
+
+.recentorder  md-checkbox.full .md-icon:after{
+	left : 4.76667px;
+}
 .recentorder md-checkbox.full .md-container{
 	margin-left: 21px;
 }
@@ -1967,3 +1971,22 @@ md-tooltip .md-content{
 	padding: 17px 0;
 }*/
 
+#announcement-bar-close-btn{
+	position: absolute;
+    right: 12px;
+    cursor: pointer;    
+}
+
+#announcement-bar-close-btn:hover{
+	box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.24)
+}
+
+.recentorder{
+	margin-bottom: 25px;
+}
+
+#wrapper{
+	transition: all 0.3s ease 0s;
+	-moz-transition: all 0.3s ease 0s;
+	-web-transition: all 0.3s ease 0s;
+}

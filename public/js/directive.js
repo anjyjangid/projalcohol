@@ -119,9 +119,23 @@ AlcoholDelivery.directive('sideBar', function() {
 		restrict: 'E',
 		templateUrl: '/templates/partials/topmenu.html',
 		controller: [
-		'$scope','$rootScope','$http','$state','$mdDialog','$timeout','$window','appSettings','sweetAlert','UserService','store','alcoholWishlist','ClaimGiftCard','$auth',
-		function($scope,$rootScope,$http,$state,$mdDialog,$timeout,$window,appSettings,sweetAlert,UserService,store,alcoholWishlist,ClaimGiftCard,$auth){
+		'$scope','$rootScope','$http','$state','$mdDialog','$timeout','$window','appSettings','sweetAlert',
+		'UserService','store','alcoholWishlist','ClaimGiftCard','$auth','$cookies',
+		function($scope,$rootScope,$http,$state,$mdDialog,$timeout,$window,appSettings,sweetAlert,
+			UserService,store,alcoholWishlist,ClaimGiftCard,$auth,$cookies){
+
+					if(angular.isUndefined($cookies.get('announcementDisable'))){
+						$scope.announcementDisable = false;
+					}else{
+						$scope.announcementDisable = true;
+					}
+										
+					$scope.disableAnnouncement = function () {
+						$cookies.put('announcementDisable', true);
+						$scope.announcementDisable = true;
+					}
 					
+
 					$scope.list = [];
 		
 					$scope.menu = {openSearch:true};
@@ -919,6 +933,10 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.alcoholCart = alcoholCart;
 
 			$scope._sPromotion = promotionsService;
+			
+console.log("-----------------------");
+console.log(angular.copy($scope.productInfo));
+console.log("-----------------------");
 
 			if($scope.loyalty){
 				$scope.productInfo.loyaltyStoreProduct = true;

@@ -148,19 +148,32 @@ class UserController extends Controller
 		if(isset($inputs['email']))
 			$inputs['email'] = strtolower($inputs['email']);
 		// validation rules
-		$validator = Validator::make($inputs, [
+		
+		$rules = [
 			'name' => 'required',
 			'email' => 'required|email|max:255|unique:user,email,'.$user->_id.",_id",
-			'mobile_number'=> 'required|numeric|digits:8',
-			'country_code'=> 'required|numeric|digits_between:1,3'
-		],[
+			'country_code'=> 'required|numeric|digits_between:1,3',
+			'mobile_number'=> 'required|numeric|digits_between:6,15'
+			
+		];
+		$messages = [
 		   'mobile_number.required' => 'Mobile number is required',
 		   'mobile_number.numeric' => 'please enter valid mobile number',
 		   'mobile_number.digits_between' => 'please enter valid mobile number',
 		   'country_code.required' => 'Country code is required',
 		   'country_code.numeric' => 'please enter valid country code',
 		   'country_code.digits_between' => 'please enter valid country code'
-		]);
+		];
+
+		if($inputs['country_code']==65){
+			
+			
+			$rules['mobile_number'].="|digits:8";
+			$messages['mobile_number.digits'] = 'please enter valid 8 digit number';
+
+		}
+
+		$validator = Validator::make($inputs, $rules, $messages);
 		
 		$return = array("success"=>false,"message"=>"","data"=>"");
 
@@ -171,7 +184,7 @@ class UserController extends Controller
 
 			return response($return, 400);
 		}
-				
+				prd("every thing is ok");
 		$curruser = User::find($user->_id);
 
 		$curruser->name = $inputs['name'];
@@ -316,7 +329,9 @@ class UserController extends Controller
 								]
 							]);
 
+
 						if(isset($output['result'][0])){							
+							if(!isset($output['result'][0]['country_code'])){$output['result'][0]['country_code']='65';}
 							return $output['result'][0];
 						}
 
@@ -486,6 +501,82 @@ class UserController extends Controller
 
 		} catch(\Exception $e){
 			$return['message'] = "Something wrong";//$e->getMessage();            
+			return response($return,400);
+		}
+
+		$return['order'] = $order;
+		return response($return,200);
+	}
+
+	public function getLastOrderNew($reference=false,$admin=false){
+		
+		$return = ["message"=>"","auth"=>false];
+
+		// if detail is not required by admin user
+		if(!$admin){
+
+			$userLogged = Auth::user('user');
+
+			if(empty($userLogged)){
+				
+				$return['message'] = 'login required';
+
+				return response($return,401);
+			}
+
+		}else{
+
+			$adminLogged = Auth::user('admin');
+
+			if(empty($adminLogged)){
+
+				$return['message'] = 'login required';
+
+				return response($return,401);
+
+			}else{
+
+				$userLogged = (object)['_id'=>$reference];
+				$reference = false;
+			}
+
+		}
+		
+		$return['auth'] = true;
+
+		$order = [];
+
+		try{
+
+			$ordersModel = new Orders;
+
+			$order = $ordersModel
+						->where("user",new mongoId($userLogged->_id))
+						->whereNotNull("products");
+
+			if($reference){
+				$order = $order->where("reference",$reference);
+			}
+
+			$order = $order->orderBy("created_at","desc")
+						->first(['productsLog','products','sales','packages','gift','giftCards']);
+
+			prd($order->setItemsCurrentState());
+
+			if(empty($order)){
+				return response(["success"=>false,"message"=>"Order not found","order"=>array()],200);
+			}
+
+			$order = $order->toArray();
+
+			$products = $ordersModel->getProducts([$order],false);
+			jprd($products);
+			$order = $ordersModel->mergeProducts([$order],$products);
+			$order = $order[0];
+
+		} catch(\Exception $e){
+			prd($e->getMessage());
+			$return['message'] = "Something wrong";//$e->getMessage();
 			return response($return,400);
 		}
 

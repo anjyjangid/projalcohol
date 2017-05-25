@@ -79,7 +79,7 @@ class CartController extends Controller
 
 			$cart = new Cart;
 			$isCreated = $cart->generate();
-			// prd($isCreated);
+
 			if($isCreated->success){
 
 				$request->session()->put('deliverykey', $isCreated->cart['_id']);

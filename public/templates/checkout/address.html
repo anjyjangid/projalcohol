@@ -11,14 +11,14 @@
 					
 					<div class="input-group">
 
-						<div class="mobileinput input-group-addon">+<input type="text" name="countryCode" ng-model="delivery.country_code" class="transparent" maxlength="3" ng-minlength="1" ng-maxlength="3" required></div>
-						<input type="text" class="form-control alcohalpopuptext2" name="deliveryContact" id="deliveryContact" required ng-model="delivery.contact" ng-minlength="8" ng-maxlength="8" maxlength="8">
+					<div class="mobileinput input-group-addon">+<input type="text" name="countryCode" ng-model="delivery.country_code" class="transparent" maxlength="3" ng-minlength="1" ng-maxlength="3" required></div>
+						<input only-digits type="text" class="form-control alcohalpopuptext2" name="deliveryContact" id="deliveryContact" required ng-model="delivery.contact" ng-minlength="{{mobile_number.min}}" ng-maxlength="{{mobile_number.max}}" maxlength="{{mobile_number.max}}">
 
 					</div>
-
+					
 					<div ng-if="cartFrm.deliveryContact.$touched">
 						<span class="help-block" ng-if="cartFrm.deliveryContact.$error.required || cartFrm.countryCode.$error.required" ng-bind="errors.contact"></span>
-						<span class="help-block" ng-if="cartFrm.deliveryContact.$error.minlength || cartFrm.countryCode.$error.minlength" ng-bind="errors.contact"></span>
+						<span class="help-block" ng-if="cartFrm.deliveryContact.$error.minlength || cartFrm.deliveryContact.$error.maxlength || cartFrm.countryCode.$error.minlength || cartFrm.countryCode.$error.maxlength" ng-bind="errors.contact"></span>
 					</div>
 
 				</div>

@@ -35,7 +35,9 @@
 		</div>
 		
 		<div class="product-listcover2" infinite-scroll='products.nextPage()' infinite-scroll-disabled='products.busy' infinite-scroll-distance='1'>
-		    <div al-tpl-product classes="col-xs-12 col-sm-3 col-md-3 comboproductitems" info="product" ng-repeat="product in products.items"></div>
+		    
+		    <div ng-cloak al-tpl-product classes="col-xs-12 col-sm-3 col-md-3 comboproductitems" info="product" ng-repeat="product in products.items"></div>
+
 		    <h4 class="no-pro-found-table" align="center" ng-if="products.items.length == 0 && !products.busy">
 				<div class="no-pro-found-cell">No product(s) found</div>
 			</h4>

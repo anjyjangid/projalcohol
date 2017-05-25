@@ -1,5 +1,4 @@
-
-<div class="announcement-bar" ng-if="settings.announcementBar.enable=='1'">
+<div class="announcement-bar" ng-if="settings.announcementBar.enable=='1' && !announcementDisable">
 	<div class="outer" style="float: left;width: 90%;">
 		<a ng-href="{{settings.announcementBar.link}}">
 			<div class="announcement-container">
@@ -16,11 +15,10 @@
 		</a>
 	</div>
 	<div style="float: left;text-align: right;width: 10%;">
-		<span ng-click="settings.announcementBar.enable = 0" style="font-size: 36px;margin-right: 10px;">&times;</span>
+		<span ng-click="disableAnnouncement()" style="font-size: 36px;margin-right: 10px;">&times;</span>
 	</div>	
 </div>
-
-<nav tscroll class="navbar navbar-default navbar-fixed-top {{settings.announcementBar.enable=='1' ? 'announcement-enable' : '' }}">
+<nav tscroll class="navbar navbar-default navbar-fixed-top {{(settings.announcementBar.enable=='1' && !announcementDisable) ? 'announcement-enable' : '' }}">
 	<div class="main-header-botm-cover">
 		<div class="container">
 

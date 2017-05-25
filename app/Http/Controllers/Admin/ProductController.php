@@ -74,15 +74,34 @@ class ProductController extends Controller
 
 		$this->castVariables($inputs);
 
-		$product = Products::create($inputs);
+		if(isset($inputs['newTagDurationReset']) && $inputs['newTagDurationReset']==1){
+				
+			$newTagDuration = $inputs['newTagDuration'];
 
-		if($product){
-
-			// Add New Tag Duration to created_date
-			$newTagDuration = $product['newTagDuration'];
 			$curr = new MongoDate();
 			$sec = $curr->sec + ($newTagDuration * 24 * 60 * 60);
-			$product['newTillDate'] = new MongoDate($sec); // show product in new section till this date
+			$inputs['newTillDate'] = new MongoDate($sec); // show product in new section till this date			
+
+		}else{
+
+						
+			$curr = new MongoDate();
+
+			$inputs['newTillDate'] = new MongoDate($curr->sec); // show product in new section till this date
+			$inputs['newTagDuration'] = 0;
+
+		}
+
+		$inputs['newTagDurationReset'] = 0;
+
+		$product = Products::create($inputs);
+
+		if($product){		
+
+			// $newTagDuration = $product['newTagDuration'];
+			// $curr = new MongoDate();
+			// $sec = $curr->sec + ($newTagDuration * 24 * 60 * 60);
+			// $product['newTillDate'] = new MongoDate($sec); // show product in new section till this date
 
 			//UPDATE STOCKS FOR THE LOGGEDIN STORE
 			$product->updateStocks($inputs,$product->_id);
@@ -140,7 +159,7 @@ class ProductController extends Controller
 
 	public function getDetail($id)
 	{				
-		$model = Products::where('_id',$id)->with('store')->with('suggestions')->first();			
+		$model = Products::where('_id',$id)->with('store')->with('suggestions')->first();
 		return response($model,200);
 	}
 
@@ -154,17 +173,28 @@ class ProductController extends Controller
 	public function postUpdate(ProductRequest $request, $id)
 	{
 		$inputs = $request->all();				
-		
 		$this->castVariables($inputs);
-
+		
 		$product = Products::find($id);
 		
 		if($product){
 
 			// Add New Tag Duration to created_date
-			$newTagDuration = $product['newTagDuration'];
-			$sec = strtotime($product->created_at. "+$newTagDuration days");
-			$product->newTillDate = new MongoDate($sec); // show product in new section till this date
+
+			if(isset($inputs['newTagDurationReset']) && $inputs['newTagDurationReset']==1){
+				
+				$newTagDuration = $inputs['newTagDuration'];
+
+				$curr = new MongoDate();
+				$sec = $curr->sec + ($newTagDuration * 24 * 60 * 60);
+				$inputs['newTillDate'] = new MongoDate($sec); // show product in new section till this date				
+
+			}else{
+				unset($inputs['newTagDuration']);
+			}
+
+			$inputs['newTagDurationReset'] = 0;
+
 
 			//UPDATE STOCKS FOR THE LOGGEDIN STORE
 			$product->updateStocks($inputs,$product->_id);
@@ -216,6 +246,7 @@ class ProductController extends Controller
 			$this->saveImages($product,$files);
 
 			//UPDATE PRODUCT
+
 			$product->update($inputs);
 
 			return response($product,201);
@@ -748,7 +779,12 @@ class ProductController extends Controller
 		$inputs['status'] = (int)$inputs['status'];
 		$inputs['isFeatured'] = (int)$inputs['isFeatured'];
 		$inputs['deliveryType'] = (int)$inputs['deliveryType'];
-		$inputs['isLoyalty'] = (int)$inputs['isLoyalty'];		
+		$inputs['isLoyalty'] = (int)$inputs['isLoyalty'];
+	
+		if(isset($inputs['newTagDuration'])){		
+			$inputs['newTagDuration'] = (int)$inputs['newTagDuration'];
+		}
+		
 
 		if(isset($inputs['loyaltyValueType'])){
 			$inputs['loyaltyValueType'] = (int)$inputs['loyaltyValueType'];
@@ -791,7 +827,7 @@ class ProductController extends Controller
 
 		$inputs['bulkDisable'] = (int)($inputs['bulkDisable']);
 
-		$inputs['loyalty'] = (int)($inputs['loyalty']);		
+		$inputs['loyalty'] = (float)($inputs['loyalty']);		
 
 		if (isset($inputs['regular_express_delivery']['value']) && !empty($inputs['regular_express_delivery']['value'])){
 			$inputs['regular_express_delivery']['value'] = (float)$inputs['regular_express_delivery']['value'];

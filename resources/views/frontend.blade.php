@@ -116,7 +116,7 @@
     	<div class="loader"></div>
     	<div ng-bind="loadingmsg" ng-show="loadingmsg" class="ldmsg" align="center"></div>
 
-    	<div id="wrapper" ng:class="{'announcement-enable-wrapper':settings['announcementBar']['enable']=='1'}">
+    	<div id="wrapper" ng:class="{'announcement-enable-wrapper':(settings['announcementBar']['enable']=='1' && !announcementDisable)}">
 
 	        <div id="page-content-wrapper">    		    
 

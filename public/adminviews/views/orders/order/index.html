@@ -262,8 +262,11 @@
 								<div class="col-md-12">
 
 									<div class="input-group">
-										<div class="mobileinput input-group-addon">+65</div>
-										<input type="text" class="form-control alcohalpopuptext2" name="deliveryContact" id="deliveryContact" required ng-model="cart.delivery.contact" ng-minlength="8" ng-maxlength="8" maxlength="8">
+
+										<div class="mobileinput input-group-addon">+<input type="text" name="countryCode" ng-model="cart.delivery.country_code" class="transparent" maxlength="3" ng-minlength="1" ng-maxlength="3" required></div>
+
+										<input only-digits type="text" class="form-control alcohalpopuptext2" name="deliveryContact" id="deliveryContact" required ng-model="cart.delivery.contact" ng-minlength="{{mobile_number.min}}" ng-maxlength="{{mobile_number.max}}" maxlength="{{mobile_number.max}}">
+
 									</div>
 
 									<div ng-if="cartFrm.deliveryContact.$touched">

@@ -117,14 +117,19 @@ AlcoholDelivery.filter('isActive', function() {
 
 AlcoholDelivery.filter('getProductThumb', function() {
 	return function(input){
-		if(angular.isString(input)){
-			return input;
-		}
 
-		for(i=0;i<=input.length;i++){
-			if(input[i].coverimage==1){
-				return input[i].source;
+		if(!angular.isUndefined(input)){
+
+			if(angular.isString(input)){
+				return input;
 			}
+
+			for(i=0;i<=input.length;i++){
+				if(input[i].coverimage==1){
+					return input[i].source;
+				}
+			}
+
 		}
 		return "product-default.jpg";
 	}
@@ -349,7 +354,6 @@ AlcoholDelivery.service('appConfig', ['$interval','$http','$q',function($interva
 		if(angular.isDefined(fromServer) && fromServer){
 
 			return $q(function(resolve,reject){
-				// resolve();
 				_self.updateWorkingHrs().then(
 					function(){
 
@@ -367,10 +371,8 @@ AlcoholDelivery.service('appConfig', ['$interval','$http','$q',function($interva
 			})
 
 		}else{
-
-			var workingTime = this.getWorkingTime();
-			var serverTime = this.getServerTime();
-			// return true;			
+			var workingTime = _self.getWorkingTime();
+			var serverTime = _self.getServerTime();
 			return ((workingTime.from < serverTime) && (serverTime < workingTime.to));
 		}
 	}

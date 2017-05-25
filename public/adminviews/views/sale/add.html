@@ -193,7 +193,7 @@
 											<label class="col-md-3 control-label">Set Discount: <span class="required"> * </span>
 											</label>
 											<div class="col-md-4" ng:class="{'has-error':errors.discountValue[0]}">
-												<input type="number" step="1" min="1" class="form-control" ng-model="sale.discountValue">
+												<input type="number" step=".1" min="1" class="form-control" ng-model="sale.discountValue">
 												<span class="help-block">Value</span>
 												<span class="help-block" ng-bind="errors.discountValue[0]"></span>
 											</div>
