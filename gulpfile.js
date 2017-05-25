@@ -13,11 +13,48 @@ gulp.task('optimg', function () {
   gulp.src('public/img/*')
     .pipe(image())
     .pipe(gulp.dest('public/img'));  
-
-  gulp.src('storage/**')
+  /*gulp.src('storage/**')
     .pipe(image())
-    .pipe(gulp.dest('storage/**'));    
+    .pipe(gulp.dest('storage/**'));*/   
+});
 
+const arg = (argList => {
+
+  let arg = {}, a, opt, thisOpt, curOpt;
+  for (a = 0; a < argList.length; a++) {
+
+    thisOpt = argList[a].trim();
+    opt = thisOpt.replace(/^\-+/, '');
+
+    if (opt === thisOpt) {
+
+      // argument value
+      if (curOpt) arg[curOpt] = opt;
+      curOpt = null;
+
+    }
+    else {
+
+      // argument name
+      curOpt = opt;
+      arg[curOpt] = true;
+
+    }
+
+  }
+
+  return arg;
+
+})(process.argv);
+
+gulp.task('imgopt', function() {
+    if(arg.folder && arg.file){
+    	gulp.src(arg.folder+'/'+arg.file)
+	    .pipe(image())
+	    .pipe(gulp.dest(arg.folder));
+    }else{
+    	console.log('No folder selected');
+    }
 });
 
 /*

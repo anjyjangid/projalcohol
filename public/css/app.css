@@ -1966,9 +1966,10 @@ md-tooltip .md-content{
 .announcement-container{
 	min-height: 50px;
 }
-.announcement-container span{
+
+/*.announcement-container span{
 	padding: 17px 0;
-}
+}*/
 
 #announcement-bar-close-btn{
 	position: absolute;
@@ -1982,4 +1983,10 @@ md-tooltip .md-content{
 
 .recentorder{
 	margin-bottom: 25px;
+}
+
+#wrapper{
+	transition: all 0.3s ease 0s;
+	-moz-transition: all 0.3s ease 0s;
+	-web-transition: all 0.3s ease 0s;
 }

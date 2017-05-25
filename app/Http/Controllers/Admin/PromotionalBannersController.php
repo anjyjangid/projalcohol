@@ -158,9 +158,14 @@ class PromotionalBannersController extends Controller
 
 		    $upload_success = Image::make($image)->resize(160, null, function ($constraint) {
 											$constraint->aspectRatio();
-									})->save($destinationPath.'/'.$filename,80);
+									})->save($destinationPath.'/'.$filename);
 
-		    // $upload_success = $image->move($destinationPath, $filename);
+		    //$upload_success = $image->move($destinationPath, $filename);
+
+		    //GULP OPTIMIZATION
+		    if($upload_success)
+		    	optimizeImage('storage/promotionalbanner',$filename);
+
 		    $inputs['promotionalImage'] = $filename;
 		}
 
@@ -176,7 +181,10 @@ class PromotionalBannersController extends Controller
 											$constraint->aspectRatio();
 									})->save($destinationPath.'/'.$filename);
 
-		    
+		    //GULP OPTIMIZATION
+		    if($upload_success)
+		    	optimizeImage('storage/promotionalbanner',$filename);
+
 		    $inputs['promotionalImageMobile'] = $filename;
 		}
 
@@ -242,7 +250,10 @@ class PromotionalBannersController extends Controller
 		    
 			$upload_success = Image::make($image)->resize(160, null, function ($constraint) {
 											$constraint->aspectRatio();
-									})->save($destinationPath.'/'.$filename,80);
+									})->save($destinationPath.'/'.$filename);
+
+			if($upload_success)
+		    	optimizeImage('storage/promotionalbanner',$filename);
 
 		    $inputs['promotionalImage'] = $filename;
 		}
@@ -262,7 +273,10 @@ class PromotionalBannersController extends Controller
 		    // upload new image
 		    $upload_success = Image::make($image)->resize(300, null, function ($constraint) {
 											$constraint->aspectRatio();
-									})->save($destinationPath.'/'.$filename,80);
+									})->save($destinationPath.'/'.$filename);
+
+		    if($upload_success)
+		    	optimizeImage('storage/promotionalbanner',$filename);
 		    
 		    $inputs['promotionalImageMobile'] = $filename;
 		}

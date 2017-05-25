@@ -140,10 +140,10 @@ class Notification extends Command
                                 <div align="center" style="min-height:153px;">
                                     <img style="max-width:100%;max-height:153px;" alt="'.$pvalue['name'].'" border="0" src="'.url().'/products/i/200/'.$pvalue['pImg'].'">
                                 </div>
-                                <div style="float:left;width:100%;margin-bottom:5px;">
-                                    <div style="background:#b119ff;color:#FFF;font-size:0.9em;border-radius:2px;padding:1px 6px;float:left;">'.$pvalue['saleDetail']['listingTitle'].'</div>
+                                <div style="width:100%;margin-bottom:5px;text-align:center;">
+                                    <div style="background:#b119ff;color:#FFF;font-size:13px;border-radius:2px;padding:1px 6px;display:inline-block;margin:0 auto;">'.$pvalue['saleDetail']['listingTitle'].'</div>
                                 </div>
-                                <div>'.$pvalue['name'].'</div>
+                                <div style="text-align:center;">'.$pvalue['name'].'</div>
                             </a>
                         </td>';
                     

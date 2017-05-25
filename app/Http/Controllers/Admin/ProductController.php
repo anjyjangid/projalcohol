@@ -676,7 +676,6 @@ class ProductController extends Controller
 
 	public function getTest(Request $request){		
 		
-		
 		$products = DB::collection('products')->raw(function($collection){
 
 			return $collection->aggregate(array(

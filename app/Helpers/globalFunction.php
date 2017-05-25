@@ -1,4 +1,7 @@
 <?php
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+
 		
 	function prd($arr){
 
@@ -126,6 +129,17 @@
 
 	function getTodayDayNumber() {
 		return date('N', getServerTime());
+	}
+
+
+	function optimizeImage($folder,$file){
+		$process = new Process('gulp imgopt --folder '.$folder.' --file '.$file);
+		$process->run();
+		// executes after the command finishes
+		/*if (!$process->isSuccessful()) {
+		    throw new ProcessFailedException($process);
+		}
+		return $process->getOutput();*/
 	}
 
 ?>

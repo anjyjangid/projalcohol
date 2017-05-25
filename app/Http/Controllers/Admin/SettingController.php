@@ -236,7 +236,11 @@ class SettingController extends Controller
 
 		    $upload_success = Image::make($image)->resize(50, null, function ($constraint) {
 											$constraint->aspectRatio();
-									})->save($destinationPath.'/'.$filename,80);
+									})->save($destinationPath.'/'.$filename);
+
+		    //GULP OPTIMIZATION
+		    if($upload_success)	
+		    	optimizeImage('storage/announcement',$filename);
 
 			$inputs['rightImage'] = $filename;
 		}
@@ -253,7 +257,11 @@ class SettingController extends Controller
 
 		    $upload_success = Image::make($image)->resize(50, null, function ($constraint) {
 											$constraint->aspectRatio();
-									})->save($destinationPath.'/'.$filename,80);
+									})->save($destinationPath.'/'.$filename);
+
+		    //GULP OPTIMIZATION
+		    if($upload_success)
+		    	optimizeImage('storage/announcement',$filename);
 
 		    $inputs['leftImage'] = $filename;
 		}
@@ -300,8 +308,13 @@ class SettingController extends Controller
 		    if (!File::exists($destinationPath)){
 		        File::MakeDirectory($destinationPath,0777, true);
 		    }
-		    // $upload_success = $image->move($destinationPath, $filename);
-			$upload_success = Image::make($image)->save($destinationPath.'/'.$filename,60);
+		    $upload_success = $image->move($destinationPath, $filename);
+			//$upload_success = Image::make($image)->save($destinationPath.'/'.$filename);
+			
+			//GULP OPTIMIZATION
+			if($upload_success)
+		    	optimizeImage('storage/homebanner',$filename);
+
 			$inputs['bannerImage'] = $filename;
 		}
 
@@ -312,8 +325,13 @@ class SettingController extends Controller
 		    if (!File::exists($destinationPath)){
 		        File::MakeDirectory($destinationPath,0777, true);
 		    }
-		    // $upload_success = $image->move($destinationPath, $filename);
-		    $upload_success = Image::make($image)->save($destinationPath.'/'.$filename,60);
+		    $upload_success = $image->move($destinationPath, $filename);
+		    //$upload_success = Image::make($image)->save($destinationPath.'/'.$filename,60);
+		    
+		    //GULP OPTIMIZATION
+		    if($upload_success)
+		    	optimizeImage('storage/homebanner',$filename);
+
 		    $inputs['bannerImageMobile'] = $filename;
 		}
 
