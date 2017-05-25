@@ -132,14 +132,12 @@ class CustomerController extends Controller
 			try {
 
 				$user = User::create([
-
 					'name' => $inputs['name'],
 					'mobile_number' => $inputs['mobile_number'],
 					'email' => $inputs['email'],
 					'password' => bcrypt($inputs['password']),
 					'status' => 1,
 					'verified' => 1,
-
 				]);
 			
 			} catch(\Exception $e){

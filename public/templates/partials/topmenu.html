@@ -1,21 +1,23 @@
 
 <div class="announcement-bar" ng-if="settings.announcementBar.enable=='1'">
+	<div class="outer" style="float: left;width: 90%;">
+		<a ng-href="{{settings.announcementBar.link}}">
+			<div class="announcement-container">
+				<img
+					ng-if="settings.announcementBar.leftImage!=null" 
+					err-src="asset/i/defaultImage.png" 
+					src="announcement/i/{{settings.announcementBar.leftImage}}" 
+					> 
 
-<div class="outer">
-	<a ng-href="{{settings.announcementBar.link}}">
-		<div class="announcement-container">
-			<img
-				ng-if="settings.announcementBar.leftImage!=null" 
-				err-src="asset/i/defaultImage.png" 
-				src="announcement/i/{{settings.announcementBar.leftImage}}" 
-				> 
+				<span>{{settings.announcementBar.text}}</span>
 
-			<span>{{settings.announcementBar.text}}</span>
-
-			<img err-src="" ng-src="announcement/i/{{settings.announcementBar.rightImage}}"  ng-if="settings.announcementBar.rightImage"> 
-		</div>
-	</a>
+				<img err-src="" ng-src="announcement/i/{{settings.announcementBar.rightImage}}"  ng-if="settings.announcementBar.rightImage"> 
+			</div>
+		</a>
 	</div>
+	<div style="float: left;text-align: right;width: 10%;">
+		<span ng-click="settings.announcementBar.enable = 0" style="font-size: 36px;margin-right: 10px;">&times;</span>
+	</div>	
 </div>
 
 <nav tscroll class="navbar navbar-default navbar-fixed-top {{settings.announcementBar.enable=='1' ? 'announcement-enable' : '' }}">

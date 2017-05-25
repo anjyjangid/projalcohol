@@ -2217,7 +2217,7 @@ ui-sref {
 	box-shadow: none;
 }
 .checkoutmiddleouter {
-	padding: 0px 14px;
+	padding: 0px 10px;
 	width: 100%;
 	float: left;
 	transition: all 0.5s ease 0s;
@@ -6906,11 +6906,15 @@ md-toast.notify.bottom{
 	margin-top: 20px;
 }
 .cartstepone-cover .owl-carousel .owl-wrapper-outer{
-	padding-left: 4px;
-	padding-right: 4px;
+	padding-left: 0px;
+    padding-right: 0px;
+}
+.cartstepone-cover .owl-carousel .owl-item {
+    float: left;   
+    padding: 0 10px; 
 }
 .cartstepone-cover .owl-carousel .owl-item{
-	width: 174px !important;
+	width: 179px !important;
 }
 .registeremailcvr md-checkbox{
 	margin-bottom: 0px;
@@ -6949,8 +6953,11 @@ md-checkbox.md-checked.md-focused .md-container::before{
 	position: fixed;
 	padding: 5px 0;
 	z-index: 99;
-	top: 1px;
+	top: 0px;
 	text-align: center;	
+	transition: all 0.3s ease 0s;
+	-moz-transition: all 0.3s ease 0s;
+	-web-transition: all 0.3s ease 0s;
 }
 .announcement-enable-wrapper .announcement-enable {
 	top: 60px;
