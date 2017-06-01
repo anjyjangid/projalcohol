@@ -114,7 +114,7 @@ elixir(function(mix) {
 	    'alcoholWishlist.js',
 	    'alcoholCartDirective.js',
 	    'directive.js',	    
-	    '../bower_components/v-accordion/dist/v-accordion.js'
+	    '../bower_components/v-accordion/dist/v-accordion.js'	    
     ],'public/js/build/all.js','public/js');
 });
 
