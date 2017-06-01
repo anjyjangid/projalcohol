@@ -48,8 +48,12 @@ const arg = (argList => {
 })(process.argv);
 
 gulp.task('imgopt', function() {
-    if(arg.folder && arg.file){
-    	gulp.src(arg.folder+'/'+arg.file)
+	let file = arg.file;
+    if(arg.file == 'all')
+    	file = '*';
+    
+    if(arg.folder && file){
+    	gulp.src(arg.folder+'/'+file)
 	    .pipe(image())
 	    .pipe(gulp.dest(arg.folder));
     }else{
