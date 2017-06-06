@@ -9,9 +9,7 @@ MetronicApp.controller('OrdersController',['$rootScope', '$scope', '$timeout','$
     $rootScope.settings.layout.pageBodySolid = false;
     $rootScope.settings.layout.pageSidebarClosed = false;
 
-    $scope.updateStatus = function(status){
-
-    	
+    $scope.updateStatus = function(status){    	
 
     }
 
@@ -180,18 +178,7 @@ MetronicApp.controller('OrderCreateController',[
 
 			if($scope.cart.addresses.length){
 
-				var defaultAddKey = 0;
-
-				angular.forEach($scope.cart.addresses,function (currAdd,key) {					
-
-					if(currAdd.default==true){
-						defaultAddKey = key;
-					}
-
-				})
-
-				$scope.alcoholCart.$cart.selectedAddress = defaultAddKey;
-				$scope.setSelectedAddress(defaultAddKey);
+				$scope.listUserAddress($scope.cart.addresses);
 
 			}else{
 
@@ -264,6 +251,24 @@ MetronicApp.controller('OrderCreateController',[
 			return true;
 	}
 
+	$scope.listUserAddress = function(addresses){
+
+		var defaultAddKey = 0;
+
+		angular.forEach(addresses,function (currAdd,key) {
+
+			if(currAdd.default==true){
+				defaultAddKey = key;
+			}
+
+		});
+
+		$scope.cart.addresses = addresses;
+		$scope.alcoholCart.$cart.selectedAddress = defaultAddKey;
+		$scope.setSelectedAddress(defaultAddKey);
+
+	}
+
 	$scope.newAddress = function(address){
 
 		if(!$scope.cart[$scope.cart.orderType]._id) return;
@@ -283,9 +288,7 @@ MetronicApp.controller('OrderCreateController',[
 				}
 			}
 		})
-		.result.then(function (address) {
-			
-			// $scope.cart.addresses.push(address);
+		.result.then(function (address) {			
 
 			var api;
 			if($scope.cart.orderType=='business')
@@ -295,7 +298,7 @@ MetronicApp.controller('OrderCreateController',[
 
 			$http.get(api)
 			.then(function(res){
-				$scope.cart.addresses = res.data.address;
+				$scope.listUserAddress(res.data.address)
 			});
 		});
 	}
@@ -330,7 +333,7 @@ MetronicApp.controller('OrderCreateController',[
 
 			$http.get(api)
 			.then(function(res){
-				$scope.cart.addresses = res.data.address;
+				$scope.listUserAddress(res.data.address);
 			});
 		});
 	}
@@ -354,12 +357,14 @@ MetronicApp.controller('OrderCreateController',[
 
                             if(response.success){
                             	
-                            	$scope.cart.addresses = response.address;
+                            	$scope.unsetSelectedAddress();
+
+                            	$scope.listUserAddress(response.address);
+
 								sweetAlert.swal({
                                 	title: response.message,
 					                type: "success",
 					                timer: 2000,
-
                                 });
 
                             }else{
@@ -416,7 +421,18 @@ MetronicApp.controller('OrderCreateController',[
 		$scope.alcoholCart.$cart.delivery.address = {};
 		$scope.alcoholCart.$cart.delivery.address.key = key;
 		$scope.alcoholCart.$cart.delivery.address.detail = $scope.cart.addresses[key];
+
+		$scope.cart.delivery.address.key = key;
 	}
+
+	$scope.unsetSelectedAddress = function(){
+
+		$scope.cart.delivery.address.key = null;
+		$scope.alcoholCart.$cart.delivery.address = {};
+
+	}
+
+
 
 	$scope.orderprocessing = false;
 

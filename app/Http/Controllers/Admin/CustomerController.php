@@ -46,7 +46,7 @@ class CustomerController extends Controller
 		
 		$addressToPull = (array)$address[$id];
 
-		//$user->pull("address",$addressToPull);		
+		$user->pull("address",$addressToPull);		
 
 		$return = array("success"=>false,"message"=>"","data"=>""); 
 
