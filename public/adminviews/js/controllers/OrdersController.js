@@ -284,8 +284,8 @@ MetronicApp.controller('OrderCreateController',[
 			}
 		})
 		.result.then(function (address) {
-			console.log($scope.cart);
-			$scope.cart.addresses.push(address);
+			
+			// $scope.cart.addresses.push(address);
 
 			var api;
 			if($scope.cart.orderType=='business')
@@ -319,7 +319,7 @@ MetronicApp.controller('OrderCreateController',[
 			}
 		})
 		.result.then(function (address) {
-			console.log($scope.cart);
+			
 			$scope.cart.addresses.push(address);
 
 			var api;
@@ -334,6 +334,49 @@ MetronicApp.controller('OrderCreateController',[
 			});
 		});
 	}
+
+	$scope.removeAddress = function(key) {
+
+		sweetAlert.swal({
+                title: "Are you sure?",
+                //text: "You will not be able to recover this address!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes",
+                // closeOnConfirm: false,
+                // closeOnCancel: false
+        }).then(function(isConfirm) {
+                if (isConfirm) {
+
+                    $http.delete('/adminapi/customer/address/'+$scope.cart[$scope.cart.orderType]._id+'/'+key)
+                        .success(function(response) {
+
+                            if(response.success){
+                            	
+                            	$scope.cart.addresses = response.address;
+								sweetAlert.swal({
+                                	title: response.message,
+					                type: "success",
+					                timer: 2000,
+
+                                });
+
+                            }else{
+                                sweetAlert.swal("Cancelled!", response.message, "error");
+                            }
+
+                        })
+                        .error(function(data, status, headers) {
+                            sweetAlert.swal("Cancelled", data.message, "error");
+                        })
+
+                } else {
+                    sweetAlert.swal("Cancelled", "Address safe :)", "error");
+                }
+            },function(cancel){}
+       	);
+	};
 
 	$scope.clearProp = function(ob, prop) {
 		if(!ob) return;

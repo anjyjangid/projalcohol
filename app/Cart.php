@@ -1790,7 +1790,7 @@ class Cart extends Moloquent
 
 					$qty = $currSale['giftQuantity'];
 					$currPrice = $price - $actionProPrice;
-					$currPrice = $currPrice * $qty;
+					// $currPrice = $currPrice * $qty;
 
 				}else{
 
@@ -1828,6 +1828,7 @@ class Cart extends Moloquent
 				$subtotal+= $sObj['price']['sale'];
 
 				$order['sales'][] = $sObj;
+
 
 			}			
 			

@@ -468,6 +468,7 @@ class OrderController extends Controller
 
 			$query[]['$match'] = ['$or' => [
 				['consumer.name' => ['$regex'=>new \MongoRegex($s)]],
+				['consumer.email' => ['$regex'=>new \MongoRegex($s)]],
 				['consumer.mobile_number' => ['$regex'=>new \MongoRegex($s)]],
 				['consumer.alternate_number' => ['$regex'=>new \MongoRegex($s)]]		
 			]];
