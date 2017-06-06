@@ -1,27 +1,24 @@
-<div class="announcement-bar" ng-if="settings.announcementBar.enable=='1' && !announcementDisable">
-	<div class="outer" style="float: left;width: 90%;">
-		<a ng-href="{{settings.announcementBar.link}}">
-			<div class="announcement-container">
-				<img
-					ng-if="settings.announcementBar.leftImage!=null" 
-					err-src="asset/i/defaultImage.png" 
-					src="announcement/i/{{settings.announcementBar.leftImage}}" 
-					> 
-
-				<span>{{settings.announcementBar.text}}</span>
-
-				<img err-src="" ng-src="announcement/i/{{settings.announcementBar.rightImage}}"  ng-if="settings.announcementBar.rightImage"> 
-			</div>
-		</a>
-	</div>
-	<div style="float: left;text-align: right;width: 10%;">
-		<span ng-click="disableAnnouncement()" style="font-size: 36px;margin-right: 10px;">&times;</span>
-	</div>	
-</div>
 <nav tscroll class="navbar navbar-default navbar-fixed-top {{(settings.announcementBar.enable=='1' && !announcementDisable) ? 'announcement-enable' : '' }}">
-	<div class="main-header-botm-cover">
+	<div class="announcement-bar" ng-show="settings.announcementBar.enable=='1' && !announcementDisable">
+		<div class="outer">
+			<a ng-href="{{settings.announcementBar.link}}">
+				<div class="announcement-container">
+					<img
+						ng-if="settings.announcementBar.leftImage!=null" 
+						err-src="asset/i/defaultImage.png" 
+						ng-src="announcement/i/{{settings.announcementBar.leftImage}}" 
+						> 
+					<span>{{settings.announcementBar.text}}</span>
+					<img err-src="" ng-src="announcement/i/{{settings.announcementBar.rightImage}}"  ng-if="settings.announcementBar.rightImage"> 
+				</div>
+			</a>
+		</div>
+		<div class="crossbtn">
+			<div ng-click="disableAnnouncement()">&times;</div>
+		</div>
+	</div>
+	<div class="main-header-botm-cover" style="clear: both;">
 		<div class="container">
-
 			<div class="btm10" id="headcontainer" ng-controller="SearchController as ctrl" >
 				<div class="searchtop again21">
 					<a class="search_icon"></a>
@@ -99,7 +96,7 @@
 					<a ui-sref="mainLayout.index">
 						<div id="logosvg" class="logo-top-img-main">
 
-							<svg id="icon" version="1.1" id="Layer_1" xmlns="https://www.w3.org/2000/svg" xmlns:xlink="https://www.w3.org/1999/xlink" x="0px" y="0px" enable-background="new 0 0 144 74" xml:space="preserve" viewBox="0 0 144 74">
+							<svg id="icon" version="1.1" id="Layer_1" xmlns="https://www.w3.org/2000/svg" xmlns:xlink="https://www.w3.org/1999/xlink" x="0px" y="0px" enable-background="new 0 0 144 74" xml:space="preserve" viewBox="0 0 144 74" style="width:171px;">
 								<style type="text/css">
 											.st0{fill:#FFC412;stroke:#FFF;stroke-miterlimit:10;}
 											.st1{fill:#FFFFFF;}

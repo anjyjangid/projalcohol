@@ -6951,17 +6951,18 @@ md-checkbox.md-checked.md-focused .md-container::before{
 	color: #ffffff;
 	float: left;
 	background-color: rgb(156,39,176);
-	position: fixed;
-	padding: 5px 0;
+	/*position: fixed;*/
+	/*padding: 5px 0;*/
 	z-index: 99;
 	top: 0px;
 	text-align: center;	
 	transition: all 0.3s ease 0s;
 	-moz-transition: all 0.3s ease 0s;
 	-web-transition: all 0.3s ease 0s;
+	position: relative;
 }
 .announcement-enable-wrapper .announcement-enable {
-	top: 60px;
+	/*top: 60px;*/
 }
 
 .announcement-enable-wrapper .announcement-bar a {
@@ -6969,7 +6970,7 @@ md-checkbox.md-checked.md-focused .md-container::before{
 }
 
 .announcement-container img {
-    max-height: 50px;
+    max-height: 40px;
 }
 
 .correct-time{
@@ -7011,4 +7012,22 @@ md-checkbox.md-checked.md-focused .md-container::before{
     bottom: 0;
     right: 0;
     margin: auto;
+}
+
+.outer{
+	display: inline-block;
+	line-height: normal;
+	vertical-align: middle;
+}
+
+.outer .announcement-container{
+	display: inline-block;
+	padding: 6px 0px;
+}
+
+.crossbtn{
+	position: absolute;
+	top: 0;
+	right: 10px;
+	font-size: 37px;
 }
