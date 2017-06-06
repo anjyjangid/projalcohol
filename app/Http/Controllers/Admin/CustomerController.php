@@ -30,6 +30,42 @@ class CustomerController extends Controller
 	{
 		
 	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function deleteAddress($userId,$id)
+	{
+
+		$user = User::find($userId);
+
+		$address = $user->__get("address");
+		
+		$addressToPull = (array)$address[$id];
+
+		$user->pull("address",$addressToPull);		
+
+		$return = array("success"=>false,"message"=>"","data"=>""); 
+
+		try {						
+		
+			unset($address[$id]);
+
+			$return['address'] = array_values($address);
+			$return['success'] = true;
+			$return['message'] = "Address successfully removed";
+						
+		} catch(\Exception $e){
+			$return['message'] = $e->getMessage();//$e->getMessage();
+		}
+
+		return response($return);
+
+	}
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -72,6 +108,8 @@ class CustomerController extends Controller
 
 		return response($user);
 	}
+
+		
 
 	public function getAutocomplete($col, Request $request)
 	{

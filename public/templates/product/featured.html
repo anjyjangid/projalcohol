@@ -18,6 +18,7 @@
 				<ul class="list-inline saletags-list pos-relative ">
 					<li ng-if="product.nameSale">{{product.nameSale}}</li>
 					<li ng-if="product.sale">{{product.sale.title}}</li>
+					<li class="correct-time" ng-if="product.isNew">New</li>
 				</ul>
 
 				<div class="productslide_heading">{{product.name}}</div>

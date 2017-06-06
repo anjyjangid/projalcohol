@@ -1894,6 +1894,7 @@ class CartController extends Controller
 			$interface = (!empty($request->get('merchant_data3')) || $isDeviceCODOrder)?4:1;
 			//FORMAT CART TO ORDER
 			$orderObj = $cart->cartToOrder($cartKey,$interface);
+			
 			$cartArr['payment']['total'] = $orderObj['payment']['total'];
 			//PREPARE PAYMENT FORM DATA
 			if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){

@@ -9,9 +9,7 @@ MetronicApp.controller('OrdersController',['$rootScope', '$scope', '$timeout','$
     $rootScope.settings.layout.pageBodySolid = false;
     $rootScope.settings.layout.pageSidebarClosed = false;
 
-    $scope.updateStatus = function(status){
-
-    	
+    $scope.updateStatus = function(status){    	
 
     }
 
@@ -180,18 +178,7 @@ MetronicApp.controller('OrderCreateController',[
 
 			if($scope.cart.addresses.length){
 
-				var defaultAddKey = 0;
-
-				angular.forEach($scope.cart.addresses,function (currAdd,key) {					
-
-					if(currAdd.default==true){
-						defaultAddKey = key;
-					}
-
-				})
-
-				$scope.alcoholCart.$cart.selectedAddress = defaultAddKey;
-				$scope.setSelectedAddress(defaultAddKey);
+				$scope.listUserAddress($scope.cart.addresses);
 
 			}else{
 
@@ -264,6 +251,24 @@ MetronicApp.controller('OrderCreateController',[
 			return true;
 	}
 
+	$scope.listUserAddress = function(addresses){
+
+		var defaultAddKey = 0;
+
+		angular.forEach(addresses,function (currAdd,key) {
+
+			if(currAdd.default==true){
+				defaultAddKey = key;
+			}
+
+		});
+
+		$scope.cart.addresses = addresses;
+		$scope.alcoholCart.$cart.selectedAddress = defaultAddKey;
+		$scope.setSelectedAddress(defaultAddKey);
+
+	}
+
 	$scope.newAddress = function(address){
 
 		if(!$scope.cart[$scope.cart.orderType]._id) return;
@@ -283,9 +288,7 @@ MetronicApp.controller('OrderCreateController',[
 				}
 			}
 		})
-		.result.then(function (address) {
-			console.log($scope.cart);
-			$scope.cart.addresses.push(address);
+		.result.then(function (address) {			
 
 			var api;
 			if($scope.cart.orderType=='business')
@@ -295,7 +298,7 @@ MetronicApp.controller('OrderCreateController',[
 
 			$http.get(api)
 			.then(function(res){
-				$scope.cart.addresses = res.data.address;
+				$scope.listUserAddress(res.data.address)
 			});
 		});
 	}
@@ -319,7 +322,7 @@ MetronicApp.controller('OrderCreateController',[
 			}
 		})
 		.result.then(function (address) {
-			console.log($scope.cart);
+			
 			$scope.cart.addresses.push(address);
 
 			var api;
@@ -330,10 +333,55 @@ MetronicApp.controller('OrderCreateController',[
 
 			$http.get(api)
 			.then(function(res){
-				$scope.cart.addresses = res.data.address;
+				$scope.listUserAddress(res.data.address);
 			});
 		});
 	}
+
+	$scope.removeAddress = function(key) {
+
+		sweetAlert.swal({
+                title: "Are you sure?",
+                //text: "You will not be able to recover this address!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes",
+                // closeOnConfirm: false,
+                // closeOnCancel: false
+        }).then(function(isConfirm) {
+                if (isConfirm) {
+
+                    $http.delete('/adminapi/customer/address/'+$scope.cart[$scope.cart.orderType]._id+'/'+key)
+                        .success(function(response) {
+
+                            if(response.success){
+                            	
+                            	$scope.unsetSelectedAddress();
+
+                            	$scope.listUserAddress(response.address);
+
+								sweetAlert.swal({
+                                	title: response.message,
+					                type: "success",
+					                timer: 2000,
+                                });
+
+                            }else{
+                                sweetAlert.swal("Cancelled!", response.message, "error");
+                            }
+
+                        })
+                        .error(function(data, status, headers) {
+                            sweetAlert.swal("Cancelled", data.message, "error");
+                        })
+
+                } else {
+                    sweetAlert.swal("Cancelled", "Address safe :)", "error");
+                }
+            },function(cancel){}
+       	);
+	};
 
 	$scope.clearProp = function(ob, prop) {
 		if(!ob) return;
@@ -373,7 +421,18 @@ MetronicApp.controller('OrderCreateController',[
 		$scope.alcoholCart.$cart.delivery.address = {};
 		$scope.alcoholCart.$cart.delivery.address.key = key;
 		$scope.alcoholCart.$cart.delivery.address.detail = $scope.cart.addresses[key];
+
+		$scope.cart.delivery.address.key = key;
 	}
+
+	$scope.unsetSelectedAddress = function(){
+
+		$scope.cart.delivery.address.key = null;
+		$scope.alcoholCart.$cart.delivery.address = {};
+
+	}
+
+
 
 	$scope.orderprocessing = false;
 

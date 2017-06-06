@@ -6913,6 +6913,7 @@ md-toast.notify.bottom{
     float: left;   
     padding: 0 10px; 
 }
+
 .cartstepone-cover .owl-carousel .owl-item{
 	width: 179px !important;
 }
@@ -6973,7 +6974,7 @@ md-checkbox.md-checked.md-focused .md-container::before{
 }
 
 .correct-time{
-	background-color: #f0ad4e;
+	background-color: #f0ad4e !important;
 	padding: 2px 4px;
 	border-radius: 2px;
 	color: #fff;

@@ -933,10 +933,6 @@ AlcoholDelivery.directive('sideBar', function() {
 			$scope.alcoholCart = alcoholCart;
 
 			$scope._sPromotion = promotionsService;
-			
-console.log("-----------------------");
-console.log(angular.copy($scope.productInfo));
-console.log("-----------------------");
 
 			if($scope.loyalty){
 				$scope.productInfo.loyaltyStoreProduct = true;
@@ -1227,7 +1223,7 @@ console.log("-----------------------");
     return {
         link: function( scope, element, attributes ){
             // var scopeExpression = $attributes.apFocusOut,
-            console.log("asdasd");
+            
             //     onDocumentClick = function(event){
             //         var isChild = $element.find(event.target).length > 0;
 
@@ -1407,7 +1403,7 @@ console.log("-----------------------");
         return {
             link: function(scope, element, attr) {
                 setTimeout(function() {
-                        console.log('twttr');
+
                         twttr.widgets.createHashtagButton(
                             attr.url,
                             element[0],
@@ -1421,7 +1417,7 @@ console.log("-----------------------");
                         );
 
 						twttr.events.bind('tweet',function (event) {
-							console.log(event);
+							
 							SocialSharingService.shareTwitter({
 
 								key:'ADSG37171O1022',
