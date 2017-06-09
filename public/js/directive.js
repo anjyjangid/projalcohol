@@ -224,7 +224,7 @@ AlcoholDelivery.directive('sideBar', function() {
 						FB.login(function(response) {
 						    if (response.authResponse) {				     
 						     FB.api('/me', {fields: 'first_name,last_name,locale,email,birthday'},function(result) {
-						       	//console.log(result);				       	
+						       	
 								$http.post('/auth/registerfb',result)
 								.success(function(res){
 									$mdDialog.hide();
@@ -666,7 +666,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 					var newVal = ctrl.$modelValue || 0;
 					newVal = newVal.toString();
-					//console.log("newVal",newVal);
+					
 					ctrl.$setViewValue(newVal);
               		ctrl.$render();
               		return parseInt(newVal,10);
@@ -1368,7 +1368,7 @@ AlcoholDelivery.directive('sideBar', function() {
 								init = init + 1;
 		
 						}
-						//console.log('DAYS TO ADD : '+daystoadd);
+						
 						var curDate = new Date();
 						curDate.setTime($rootScope.settings.today);
 						curDate.setHours(0,0,0,0);
@@ -1941,7 +1941,7 @@ AlcoholDelivery.directive('sideBar', function() {
         link: function (scope, element, attrs) {
             var model = $parse(attrs.focusMe);
             scope.$watch(model, function (value) {
-                //console.log('value=', value);
+                
                 if (value === true) {
                     $timeout(function () {
                         element[0].focus();
@@ -1951,7 +1951,7 @@ AlcoholDelivery.directive('sideBar', function() {
             // to address @blesh's comment, set attribute value to 'false'
             // on blur event:
             element.bind('blur', function () {
-                //console.log('blur');
+                
                 //scope.$apply(model.assign(scope, false));
             });
         }

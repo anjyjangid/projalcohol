@@ -4,9 +4,7 @@ AlcoholDelivery.controller('ProductsController', ['$scope', '$rootScope','$http'
 
 	$scope.ProductsController = {};
 	
-	$category = $stateParams.categorySlug;
-
-	console.log($stateParams.subcategorySlug);
+	$category = $stateParams.categorySlug;	
 
     $http({
 	    url: "/search", 
@@ -29,8 +27,6 @@ AlcoholDelivery.controller('ProductDetailController', ['$scope', '$rootScope','$
 	$scope.ProductDetailController = {};
 	
 	$category = $stateParams.categorySlug;
-
-	console.log($stateParams.subcategorySlug);
 
     $http({
 	    url: "/search", 

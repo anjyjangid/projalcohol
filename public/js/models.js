@@ -9,7 +9,7 @@ myApp.factory('userModel', ['$http', '$cookies', function($http, $cookies) {
      * @return {promise}
      */
     userModel.doLogin = function(loginData) {
-        console.log(loginData);
+        
         return $http({
             headers: {
                 'Content-Type': 'application/json'
@@ -21,10 +21,10 @@ myApp.factory('userModel', ['$http', '$cookies', function($http, $cookies) {
                 password: loginData.password
             }
         }).success(function(response) {
-            console.log(response);
+            
             $cookies.put('auth', JSON.stringify(response));
         }).error(function(data, status, headers) {
-            console.log(data, status, headers);
+            
             alert(data);
         });
     };

@@ -69,4 +69,15 @@ class QueryRequest extends Request
 
         return $rules;
     }
+
+    public function messages() {
+
+        $messages = [
+
+                'phoneNumber.digits_between' => 'Number must be between 8 to 10 digits'
+        ];   
+
+        return $messages;
+    }
+
 }

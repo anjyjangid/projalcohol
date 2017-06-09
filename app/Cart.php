@@ -1969,17 +1969,17 @@ class Cart extends Moloquent
 				$qtyNonChilled = 0;
 
 				if($product['chilled']['status']==='chilled'){
-					$qtyChilled = $product['chilled']['quantity'];
+					$qtyChilled+= $product['chilled']['quantity'];
 				}
 				if($product['nonchilled']['status']==='chilled'){
-					$qtyChilled = $product['nonchilled']['quantity'];
+					$qtyChilled+= $product['nonchilled']['quantity'];
 				}
 
 				if($product['chilled']['status']==='nonchilled'){
-					$qtyNonChilled = $product['chilled']['quantity'];
+					$qtyNonChilled+= $product['chilled']['quantity'];
 				}
 				if($product['nonchilled']['status']==='nonchilled'){
-					$qtyNonChilled = $product['nonchilled']['quantity'];
+					$qtyNonChilled+= $product['nonchilled']['quantity'];
 				}
 
 				$qtyTotal = $qtyChilled + $qtyNonChilled;
@@ -2123,17 +2123,17 @@ class Cart extends Moloquent
 					$qtyNonChilled = $product['chilled']['quantity']+$product['nonchilled']['quantity'];
 				}else{
 					if($product['chilled']['status']==='chilled'){
-						$qtyChilled = $product['chilled']['quantity'];
+						$qtyChilled+= $product['chilled']['quantity'];
 					}
 					if($product['nonchilled']['status']==='chilled'){
-						$qtyChilled = $product['nonchilled']['quantity'];
+						$qtyChilled+= $product['nonchilled']['quantity'];
 					}
 
 					if($product['chilled']['status']==='nonchilled'){
-						$qtyNonChilled = $product['chilled']['quantity'];
+						$qtyNonChilled+= $product['chilled']['quantity'];
 					}
 					if($product['nonchilled']['status']==='nonchilled'){
-						$qtyNonChilled = $product['nonchilled']['quantity'];
+						$qtyNonChilled+= $product['nonchilled']['quantity'];
 					}
 				}
 				$qtyTotal = $qtyChilled + $qtyNonChilled;

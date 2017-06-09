@@ -522,12 +522,24 @@ AlcoholDelivery.service('alcoholCart', [
 		angular.forEach(detail.packageItems,function(item,key){
 
 			angular.forEach(item.products,function(product,key){
-
+				
 				if(product.cartquantity > 0){
+
+					var proDetails = {};
+					angular.forEach(detail.productlist,function (p) {
+
+						if(product._id == p._id)
+						proDetails = p
+
+					})
 
 					var tempPro = {
 						_id:product._id,
-						quantity : product.cartquantity
+						quantity : product.cartquantity,
+						description : proDetails.description,
+						imageFiles : product.imageFiles,
+						shortDescription : proDetails.shortDescription,
+						slug : proDetails.slug,
 					};
 
 					products.push(tempPro);
@@ -591,9 +603,21 @@ AlcoholDelivery.service('alcoholCart', [
 
 				if(product.cartquantity > 0){
 
+					var proDetails = {};
+					angular.forEach(detail.productlist,function (p) {
+
+						if(product._id == p._id)
+						proDetails = p
+
+					})
+
 					var tempPro = {
 						_id:product._id,
-						quantity : product.cartquantity
+						quantity : product.cartquantity,
+						description : proDetails.description,
+						imageFiles : product.imageFiles,
+						shortDescription : proDetails.shortDescription,
+						slug : proDetails.slug,
 					};
 
 					products.push(tempPro);
@@ -653,9 +677,9 @@ AlcoholDelivery.service('alcoholCart', [
 				proInCart.setQuantity(data.quantity);
 
 				if(detail){
-					console.log(data);
+					
 					proInCart.setProducts(data.products);
-					proInCart.setSaving(data.saving);
+					proInCart.setSaving(data.savings);
 					proInCart.setPrice(data.price);
 					proInCart.setOriginal(detail);
 					proInCart.setPackageItems();

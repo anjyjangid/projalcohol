@@ -156,8 +156,7 @@ angular.module('AlcoholCartFactories', [])
 			this.setIcon();
 		}
 		catch(err){
-			
-			console.log(err);
+						
 			this.error = true;
 		}
 
@@ -389,7 +388,6 @@ angular.module('AlcoholCartFactories', [])
 
 				}
 			}
-console.log("after",couponDisAmt);
 
 			this.couponDiscount = couponDisAmt.toFixed(2);
 			this.couponMessage = couponMessage;
