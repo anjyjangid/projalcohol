@@ -584,8 +584,7 @@ angular.module('ngMap', []);
   };
 
   var linkFunc = function(orgHtml, varsToWatch) {
-    //console.log('orgHtml', orgHtml, 'varsToWatch', varsToWatch);
-
+    
     return function(scope, element, attrs, mapController) {
       mapController = mapController[0]||mapController[1];
       var orgAttrs = parser.orgAttributes(element);

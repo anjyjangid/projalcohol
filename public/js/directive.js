@@ -155,16 +155,37 @@ AlcoholDelivery.directive('sideBar', function() {
 						}
 		
 						$http.post('/auth/register',$scope.signup).success(function(response){
-			                $scope.user = response;
-							$scope.user.name = response.email;	                
-			                sweetAlert.swal({
+
+							$scope.user = response;
+							$scope.user.name = response.email;
+							sweetAlert.swal({
 								title: "Verification email sent",
 								text : "Please check your inbox to activate your account and start shopping with us!",
 								imageUrl:'/images/send.gif',
-								confirmButtonColor: "#aa00ff", 
+								confirmButtonColor: "#aa00ff",
 							});
 			                $mdDialog.hide();
+
 			            }).error(function(data, status, headers) {
+
+			            	angular.isDefined(data.addedViaEci);
+
+			            		$mdDialog.hide();
+			            		sweetAlert.swal({
+
+									title: "Account already exist ",
+									text : "An account have already been created for you automatically when you placed your order over the phone on your previous order. Please click here to receive the link in your email to reset your password to gain access to your account!",
+									confirmButtonColor: "#aa00ff"	
+
+								}).then(function() {
+
+									$scope.forgot.email = $scope.signup.email;
+									$scope.forgotSubmit();
+
+								});
+
+			            		return true;
+
 			                $scope.signup.errors = data;
 			            });
 					};
@@ -224,7 +245,7 @@ AlcoholDelivery.directive('sideBar', function() {
 						FB.login(function(response) {
 						    if (response.authResponse) {				     
 						     FB.api('/me', {fields: 'first_name,last_name,locale,email,birthday'},function(result) {
-						       	//console.log(result);				       	
+						       	
 								$http.post('/auth/registerfb',result)
 								.success(function(res){
 									$mdDialog.hide();
@@ -666,7 +687,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 					var newVal = ctrl.$modelValue || 0;
 					newVal = newVal.toString();
-					//console.log("newVal",newVal);
+					
 					ctrl.$setViewValue(newVal);
               		ctrl.$render();
               		return parseInt(newVal,10);
@@ -1368,7 +1389,7 @@ AlcoholDelivery.directive('sideBar', function() {
 								init = init + 1;
 		
 						}
-						//console.log('DAYS TO ADD : '+daystoadd);
+						
 						var curDate = new Date();
 						curDate.setTime($rootScope.settings.today);
 						curDate.setHours(0,0,0,0);
@@ -1941,7 +1962,7 @@ AlcoholDelivery.directive('sideBar', function() {
         link: function (scope, element, attrs) {
             var model = $parse(attrs.focusMe);
             scope.$watch(model, function (value) {
-                //console.log('value=', value);
+                
                 if (value === true) {
                     $timeout(function () {
                         element[0].focus();
@@ -1951,7 +1972,7 @@ AlcoholDelivery.directive('sideBar', function() {
             // to address @blesh's comment, set attribute value to 'false'
             // on blur event:
             element.bind('blur', function () {
-                //console.log('blur');
+                
                 //scope.$apply(model.assign(scope, false));
             });
         }

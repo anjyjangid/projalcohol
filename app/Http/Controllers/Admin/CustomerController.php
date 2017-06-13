@@ -176,6 +176,7 @@ class CustomerController extends Controller
 					'password' => bcrypt($inputs['password']),
 					'status' => 1,
 					'verified' => 1,
+					'createdVia' => 'E'
 				]);
 			
 			} catch(\Exception $e){
