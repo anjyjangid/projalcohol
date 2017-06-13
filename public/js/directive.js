@@ -155,16 +155,37 @@ AlcoholDelivery.directive('sideBar', function() {
 						}
 		
 						$http.post('/auth/register',$scope.signup).success(function(response){
-			                $scope.user = response;
-							$scope.user.name = response.email;	                
-			                sweetAlert.swal({
+
+							$scope.user = response;
+							$scope.user.name = response.email;
+							sweetAlert.swal({
 								title: "Verification email sent",
 								text : "Please check your inbox to activate your account and start shopping with us!",
 								imageUrl:'/images/send.gif',
-								confirmButtonColor: "#aa00ff", 
+								confirmButtonColor: "#aa00ff",
 							});
 			                $mdDialog.hide();
+
 			            }).error(function(data, status, headers) {
+
+			            	angular.isDefined(data.addedViaEci);
+
+			            		$mdDialog.hide();
+			            		sweetAlert.swal({
+
+									title: "Account already exist ",
+									text : "An account have already been created for you automatically when you placed your order over the phone on your previous order. Please click here to receive the link in your email to reset your password to gain access to your account!",
+									confirmButtonColor: "#aa00ff"	
+
+								}).then(function() {
+
+									$scope.forgot.email = $scope.signup.email;
+									$scope.forgotSubmit();
+
+								});
+
+			            		return true;
+
 			                $scope.signup.errors = data;
 			            });
 					};

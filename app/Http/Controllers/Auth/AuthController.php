@@ -62,34 +62,46 @@ class AuthController extends Controller
 	{
 		if(isset($data['email']))
 			$data['email'] = strtolower($data['email']);
-		
+
 		return Validator::make($data, [
 			//'name' => 'required|max:255',
 			'email' => 'required|email|max:255|unique:user',
 			'password' => 'required|confirmed|between:8,12',
 			'password_confirmation' => 'required',
 			'terms' => 'required|accepted'
-		],[           
-		   'terms.required' => 'Please agree terms.',
-		   'terms.accepted' => 'Please agree terms.'		   
+		],[
+			'terms.required' => 'Please agree terms.',
+			'terms.accepted' => 'Please agree terms.'
 		]);
 	}
 
 
-	/**
-	 * Handle a registration request for the application.
+	/****************************************************
 	 *
-	 * @param  \Illuminate\Http\Request  $request
+	 * Handle a registration request for the application.
+	 * @param  \Illuminate\Http\Request $request
 	 * @return \Illuminate\Http\Response
-	 */
+	 *
+	*****************************************************/
 	public function postRegister(Request $request)
 	{
 
-		$validator = $this->validator($request->all());
+		$validator = $this->validator($request->all());		
 
 		if ($validator->fails()) {
 
-			return response($validator->errors(), 422);
+			$email = $request->input('email');
+
+			$user = user::raw()->findOne(['email'=>$email]);
+			
+			$errors = $validator->errors();
+
+			if(!empty($user) && isset($user['createdVia']) && $user['createdVia']==='E' ){
+				
+				$errors->add("addedViaEci",true);
+			}
+
+			return response($errors, 422);
 		}
 
 		$isCreated = $this->create($request->all());

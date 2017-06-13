@@ -182,6 +182,7 @@ class PasswordController extends Controller
 		}
 
 		$user->password = bcrypt($request->input('password'));
+		$user->createdVia = 'R'; //R means its reset
 
 		$user->save();
 
