@@ -464,7 +464,11 @@ md-toast.promo-notqualified-toast:before {
 }
 
 
-.cart-table td{position: relative;}
+.cart-table td{
+	position: relative;
+	
+}
+
 .cart-alert{
   content: "!";
 	position: absolute;
@@ -950,7 +954,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	/*font-weight: normal;*/
 	color: #fff;
 	font-size: 14px;    
-	padding: 5px 5px 4px 35px;
+	padding: 5px 5px 5px 52px;
 	/*background: #aa00ff;*/
 	height: auto;
 	z-index: 2;
@@ -981,8 +985,8 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 .salediscount:after{
 	content: "";
 	position: absolute;
-	left: 20px;
-	top: 45%;
+	left: 10%;
+	top: 48%;
 	padding: 3px;
 	-webkit-border-radius: 4px;
 	border-radius: 4px;
@@ -995,7 +999,7 @@ md-checkbox.salecheck .md-label, md-checkbox.salelist .md-label{
 	position: relative;
 	text-transform: uppercase;    
 	color: #564111;
-	padding:5px 5px 5px 35px;
+	padding:5px 5px 5px 52px;
 	background: #ffc412;    
 	z-index: 2;    
 	border-radius: 0 2px 2px 0;

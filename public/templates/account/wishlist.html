@@ -14,7 +14,7 @@
 
 
 <div class="row product-wishlist" ng-repeat="(key, product) in alcoholWishlist.getList(page,10)" ng-init="product.cart = alcoholCart.getProductById(product._id)" >
-	<div class="col-xs-8 col-sm-12 col-md-6">
+	<div class="col-xs-8 col-sm-6 col-md-6">
 		<div class="product-list-thumb">
 			<img err-pro-src="" ng-src="products/i/200/{{product.imageFiles | getProductThumb}}" src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Image" alt="" class="img-responsive img-responsive-h" />
 			<div class="orhistry2_td2proctext1" ng-click="product.hrefDetail()">{{product._name}}</div>
@@ -25,13 +25,13 @@
 			</div>
 		</div>  
 	</div>
-	<div class="col-xs-4 col-sm-12 col-md-2">
+	<div class="col-xs-4 col-sm-2 col-md-2">
 		<div class="prod_chilled us-txt" ng-class="{notchilled:!product.servechilled,invisible:{{!product.chilled}}}"  ng-click="product.servechilled=!product.servechilled"> 
 			<span>Chilled</span>
 			<div class="prod_chilled_icon"></div>
 		</div>
 	</div>
-	<div class="col-xs-10 col-sm-12 col-md-3">
+	<div class="col-xs-10 col-sm-3 col-md-3">
 		<div class="wishlist-tbledatecover">
 			<div class="wishlist-tbledate">Added {{product._addedSlug}}</div>
 			
@@ -47,7 +47,7 @@
 
 		</div>	
 	</div>
-	<div class="col-xs-2 col-sm-12 col-md-1">
+	<div class="col-xs-2 col-sm-1 col-md-1">
 		<a ng-click="alcoholWishlist.removeById(product._id)" class="checkoutmiddletabledeleteimg" href="javascript:void(0)"><i class="glyphicon glyphicon-trash"></i></a>
 	</div>
 </div>

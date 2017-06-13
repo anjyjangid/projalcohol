@@ -4669,7 +4669,6 @@ md-toast.notify div.md-toast-content{
 }
 
 
-
 }
 
 @media only screen and (width : 640px) {
@@ -5715,7 +5714,54 @@ md-content.globalsearch md-autocomplete {
 .announcement-container img {
     max-height: 37px;
 }
+.cart-table td{
+	float: left;
+	border: none !important;
+}
+.cart-table tr{
+	border-bottom: 1px solid #ddd;
+}
+.cart-table td:first-child{
+	width: 100%;
+}
+.checkoutmiddletabledeleteimg, .checkoutmiddletabledeleteimg:hover, .checkoutmiddletabledeleteimg:focus{
+	margin-top: 5px;
+}
+.cart-table td:nth-child(3){
+	margin-top: -10px;
+}
+.cart-table td:nth-child(2){
+	min-height: 68px;
+    text-align: left;
+    width: 50%;
+}
+.cart-table td:nth-child(2) .prod_chilled{
+	text-align: left;
+}
+.cart-table td:nth-child(3){
+	float: right;
+    width: 50%;
+}
+.cart-table td:nth-child(3) .checkoutmiddlevlauediv{
+	float: right;
+}
+.cart-table td:nth-child(4){
+	text-align: left;
+    width: 50%;
+}
+.cart-table td:nth-child(4) .orderhistry2price{
+	float: left;
 
+}
+.cart-table td:nth-child(5) {
+    float: right;
+    text-align: right;
+    width: 25%;
+}
+
+.cart-table td:nth-child(5) .glyphicon {
+	font-size: 20px;
+}
 }
 
 

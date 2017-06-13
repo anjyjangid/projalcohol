@@ -133,7 +133,7 @@
                             ?>                             
                             <tr valign="top">
                               <td align="left" nowrap="nowrap">
-                                <?php echo (!$isPackage)?$value['quantity']:'';?>
+                                <?php echo $value['quantity'];//(!$isPackage)?$value['quantity']:'';?>
                               </td>
                               <td class="{{ $isPackage }}">
                                 <?php echo $value['name'];?> 
