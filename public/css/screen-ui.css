@@ -5455,7 +5455,7 @@ ul.menuulpadding li ul li:hover{
 	padding: 0;
 }
 .navbar-fixed-top.navbar-shrink .logos-inner-cover {
-	max-width: 51px
+	max-width: 170px;
 }
 .main-header-botm-cover {
 	vertical-align: middle;
@@ -6656,23 +6656,28 @@ button:hover{
 
 .skew2 {
     background: #ffffff none repeat scroll 0 0;
-    bottom: 0;
-    height: 50%;
-    left: -25px;
+    bottom: -1px;
     position: absolute;
     transform: skewX(45deg);
-    width: 40px;
     z-index: 3;
+
+    background: #fff none repeat scroll 0 0;
+    height: 67%;
+    left: -35%;
+    position: absolute;
+    width: 87px;
 }
 .skew {
     background: #ffffff none repeat scroll 0 0;
-    height: 50%;
-    left: -25px;
     position: absolute;
     top: 0;
     transform: skewX(-45deg);
-    width: 40px;
     z-index: 3;
+    background: #fff none repeat scroll 0 0;
+    height: 67%;
+    left: -35%;
+    position: absolute;
+    width: 87px;
 }
 
 

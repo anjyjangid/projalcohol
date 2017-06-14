@@ -102,6 +102,7 @@
 	    <link rel="stylesheet" type="text/css" href="css/app.css">
 	    <link rel="stylesheet" type="text/css" href="{{ asset('bower_components/v-accordion/dist/v-accordion.css') }}">	    
 	    <link rel="stylesheet" type="text/css" href="css/simple-sidebar.css"> -->
+	    
 	    <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,700,800,500' rel='stylesheet' type='text/css'>
 		<link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>		
 		<link rel="stylesheet" href="css/all.css" type="text/css">
