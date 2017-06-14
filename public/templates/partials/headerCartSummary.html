@@ -12,7 +12,7 @@
 
 		<div>
 			<ul  class="currentorderpopupul" ng-scrollbars ng-scrollbars-config="scrollconfig" ng-scrollbars-update="updateScrollbar">			
-				<li ng-init="total = 0; salePrice.price = sale.price" ng-repeat="(id,sale) in alcoholCart.getSales()">					
+				<li ng-init="total = 0; salePrice.price = sale.price" ng-repeat="(id,sale) in alcoholCart.getSales()">
 					<div ng-repeat="(id,productInSale) in sale.products">						
 						<div class="currentorderpopupulleft">
 							<img ng-src="products/i/200/{{productInSale.product.image | getProductThumb}}" alt="" class="img-responsive img-responsive-h" />
@@ -55,6 +55,7 @@
 						<strike-txt ng-if="product.isSingleSale" class="strike-txt">
 							{{product.unitPrice * product.quantity | pricingTxt}}
 						</strike-txt>
+						
 						{{product.getPrice() | pricingTxt}}
 					</div>
 

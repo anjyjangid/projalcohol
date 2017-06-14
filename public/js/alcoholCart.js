@@ -2147,18 +2147,18 @@ AlcoholDelivery.service('alcoholCart', [
 				if(isEligible===false){
 
 					_self.removePromotion(promotion._id).then(
-						
-						// function(successRes){							
+
+						// function(successRes){
 						// 	promotions.splice(key, 1)[0] || {};
 						// },
 						// function(errorRes){
 						// 	console.log("okok");
 						// }
 
-					);					
+					);
 
 				}
-				
+
 			});
 
 		}

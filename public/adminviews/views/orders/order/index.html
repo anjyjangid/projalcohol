@@ -472,7 +472,7 @@
 				<div class="col-md-6" ng-show="type>2">
 					<div class="form-group">
 						<label>Building Name (optional)</label>
-						<input type="text" class="form-control" ng-model="address.BLDG_NAME">
+						<input type="text" class="form-control" ng-model="address.BLDG_NAME"> <!-- BLDG_NAME -->
 					</div>
 				</div>
 			</div>
@@ -527,7 +527,7 @@
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button ng-disabled="savingData" class="btn btn-default" ng-click="type=3" ng-show="type==1">Enter address manually</button>
+		<button ng-disabled="savingData" class="btn btn-default" ng-click="type=3;selectedAddr='';address={}" ng-show="type==1">Enter address manually</button>
 		<button ng-disabled="savingData || !address" class="btn btn-primary" ng-click="type=2" ng-show="type==1">Next</button>
 		<button ng-disabled="savingData" class="btn btn-primary" ng-click="save()" ng-show="type>1">Save</button>
 		<button ng-disabled="savingData" class="btn btn-warning" ng-click="cancel()">Cancel</button>

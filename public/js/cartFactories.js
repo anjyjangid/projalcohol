@@ -402,11 +402,11 @@ angular.module('AlcoholCartFactories', [])
 		returnVal.couponMessage = this.couponMessage;
 		returnVal.couponAmount = couponDisAmt.toFixed(2);
 
-		return returnVal;		
+		return returnVal;
 	}
 
 	item.prototype.getPrice = function(){
-		return parseFloat(this.price);
+		return parseFloat(this.price).toFixed(2);
 	};
 
 	item.prototype.setRQuantity = function(cQuantity,ncQuantity){
