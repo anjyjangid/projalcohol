@@ -168,7 +168,7 @@ AlcoholDelivery.directive('sideBar', function() {
 
 			            }).error(function(data, status, headers) {
 
-			            	angular.isDefined(data.addedViaEci);
+			            	if(angular.isDefined(data.addedViaEci)){
 
 			            		$mdDialog.hide();
 			            		sweetAlert.swal({
@@ -184,7 +184,10 @@ AlcoholDelivery.directive('sideBar', function() {
 
 								});
 
-			            		return true;
+								return true;
+								
+							}
+			            		
 
 			                $scope.signup.errors = data;
 			            });

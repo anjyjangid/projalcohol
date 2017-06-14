@@ -159,7 +159,6 @@ class AddressController extends Controller
 	{
 		$inputs = $request->all();
 
-prd($inputs);
 		$loggeduser = Auth::user('user');
 
 		$user = User::find($loggeduser->_id);
