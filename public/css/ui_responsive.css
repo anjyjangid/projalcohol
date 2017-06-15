@@ -907,7 +907,7 @@
 .party-topimgdiv {
 	width: 100%;
 	float: left;
-	height: 100%;
+	height: 200px;
 	overflow: hidden;
 	position: relative;
 	border-radius: 4px 4px 0 0;/*position: relative;*//*	transition:all ease .5s ;
@@ -4668,7 +4668,31 @@ md-toast.notify div.md-toast-content{
 	padding: 0;
 }
 
-
+.tag-purple-new-pos{
+	position: static;
+	margin-top: 10px;
+}
+.tag-lightyellow-new, .tag-yellow-new,.tag-purple-new{
+	width: 100%;
+	max-width: 100%;
+}
+.skew, .skew2{
+	left: -77px;
+}
+.tag-purple-new-pos{
+	width: 100%;
+}
+.nametag::after{
+	top: 45% !important;
+	left: 16px !important;
+}
+.salediscount::after{
+	top: 45% !important;
+	left: 16px !important;
+}
+.nametag,.salediscount{
+	padding: 5px 5px 5px 35px !important;
+}
 }
 
 @media only screen and (width : 640px) {
