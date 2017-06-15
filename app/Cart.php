@@ -2463,7 +2463,7 @@ class Cart extends Moloquent
 			$serviceCharges+=$order['service']['delivery']['charges'];
 		}
 
-		if($order['discount']['nonchilled']['status']){
+		if($order['nonchilled']==true && $order['discount']['nonchilled']['status']){
 			$discountExemption+=$order['discount']['nonchilled']['exemption'];
 		}
 

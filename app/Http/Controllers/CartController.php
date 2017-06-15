@@ -2242,6 +2242,10 @@ class CartController extends Controller
 		//$isValid = $this->validateCart($cartArr);
 		$isValid['valid'] = true;
 
+		if(empty($cart)){
+			return response(['reset'=>'cart',"message"=>"cart not found"],412);
+		}
+
 		if($cart->delivery['type'] ==0 && !$cart->isUnderWorkingHrs()){
 			$isValid['valid'] = false;
 		}
