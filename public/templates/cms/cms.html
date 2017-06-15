@@ -45,7 +45,8 @@
 								<textarea ng-model="query.feedback" class="form-control" rows="5" placeholder="Feedback"></textarea>
 								<span class="help-block" ng-bind="errors.feedback[0]"></span>					
 							</div>
-						</div>						
+						</div>				
+
 						<div ng-if="cmsData.formType == 'suggest-a-product'">
 							<div class="form-group" ng:class="{'has-error':errors.productname[0]}">			
 								<label class="control-label">Product Name</label>		
@@ -70,6 +71,7 @@
 								<span class="help-block" ng-bind="errors.email[0]"></span>		
 							</div>
 						</div>
+
 						<div ng-if="cmsData.formType == 'bulkcorporate-discounts'">
 							<div class="form-group" ng:class="{'has-error':errors.name[0]}">				
 								<label class="control-label">Your Name</label>	
@@ -96,7 +98,8 @@
 								<input ng-model="query.email" type="text" class="form-control" placeholder="Email Address">
 								<span class="help-block" ng-bind="errors.email[0]"></span>					
 							</div>
-						</div>			
+						</div>
+
 						<div ng-if="cmsData.formType == 'event-planner'">
 							<div class="form-group" ng:class="{'has-error':errors.name[0]}">				
 								<label class="control-label">Your Name </label>	
@@ -134,6 +137,59 @@
 								<span class="help-block" ng-bind="errors.noOfPax[0]"></span>
 							</div>														
 						</div>
+
+						<div ng-if="cmsData.formType == 'careers'">
+
+							<div class="form-group" ng:class="{'has-error':errors.fname[0]}">
+								<label class="control-label">First Name </label>
+								<input ng-model="query.fname" type="text" class="form-control" placeholder="First Name">
+								<span class="help-block" ng-bind="errors.fname[0]"></span>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.lname[0]}">
+								<label class="control-label">Last Name </label>
+								<input ng-model="query.lname" type="text" class="form-control" placeholder="Last Name">
+								<span class="help-block" ng-bind="errors.lname[0]"></span>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.email[0]}">
+								<label class="control-label">Email </label>
+								<input ng-model="query.email" type="text" class="form-control" placeholder="Email">
+								<span class="help-block" ng-bind="errors.email[0]"></span>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.phone[0]}">
+								<label class="control-label" for="phone">Phone </label>
+								<input ng-model="query.phone" type="text" class="form-control" placeholder="Phone" id="phone">
+								<span class="help-block" ng-bind="errors.phone[0]"></span>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.resume[0]}">
+								<label class="control-label" for="resume">Resume <span class="required">* </span></label>
+								<input type="file" placeholder="resume" class="form-control" name="resume" id="resume" file-model="query.resume"/>
+								<span class="help-block" ng-bind="errors.resume[0]"></span>
+							</div>
+							
+							<div class="form-group" ng:class="{'has-error':errors.github_profile[0]}">
+								<label class="control-label">Github Profile </label>
+								<input ng-model="query.github_profile" type="text" class="form-control" placeholder="Github Profile">
+								<span class="help-block" ng-bind="errors.github_profile[0]"></span>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.linkedin_profile[0]}">
+								<label class="control-label">LinkedIn Profile </label>
+								<input ng-model="query.linkedin_profile" type="text" class="form-control" placeholder="LinkedIn Profile">
+								<span class="help-block" ng-bind="errors.linkedin_profile[0]"></span>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.website[0]}">
+								<label class="control-label">website </label>
+								<input ng-model="query.website" type="text" class="form-control" placeholder="Website / Blog / Portfolio">
+								<span class="help-block" ng-bind="errors.website[0]"></span>
+							</div>
+
+						</div>
+
 						<div class="form-group" ng-if="cmsData.formType != 'contact-us'" ng:class="{'has-error':errors.additionalComment[0]}">			
 							<label class="control-label">Additional Comment (optional)</label>		
 							<textarea ng-model="query.additionalComment" class="form-control" rows="5" placeholder="Additional Comment (optional)"></textarea>

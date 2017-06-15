@@ -328,6 +328,7 @@ class Email extends Moloquent
 				$this->recipient_info['replace']['{subject}'] = $data['subject'];
 				$this->recipient_info['message'] = str_ireplace(array_keys($this->recipient_info['replace']),array_values($this->recipient_info['replace']),$this->recipient_info['message']);
 				$this->recipient_info['subject'] = $data['subject'];
+
 			break ;
 
 			case 'verifyemail':/* begin : Registration Email { */
@@ -348,15 +349,16 @@ class Email extends Moloquent
 
 		try {			
 				/*LAYOUT BASED MAIL*/
-
 				$data = ['content' => $this->recipient_info['message'],'replace'=>$this->recipient_info['replace']];
 
 				Mail::queue('emails.mail', $data, function ($message) {
 					$message->setTo(array($this->recipient_info['receiver']['email']=>$this->recipient_info['receiver']['name']));
 					$message->setSubject($this->recipient_info['subject']);
+					if(isset($data['attachment'])){
+						$message->attach($data['attachment']->pathName);
+					}
+				});
 
-				});			
-			
 		} catch(\Exception $e){
 
             return response(array('success'=>false,'message'=>$e->getMessage()),422);

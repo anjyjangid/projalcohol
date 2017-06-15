@@ -6,7 +6,7 @@
 				<td align="left" class="additempopuppinkboxright text-center">
 					<h4 ng-if="hideDelay == 0" class="pull-right closePopup" ng-click="hidePopup()">&times;</h4>
 
-					{{message}}					
+					<p ng-bind-html='message'></p>
 				</td>
 			</tr>
 		</table>					

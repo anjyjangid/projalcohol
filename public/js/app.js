@@ -1495,6 +1495,7 @@ AlcoholDelivery.run([
 	});
 
 	$rootScope.$on('alcoholWishlist:change', function(object,params){
+
 		var def = 5000;
 		var targId = 'usermenuli';
 		if(angular.isDefined(params.hideDelay))
@@ -1512,7 +1513,7 @@ AlcoholDelivery.run([
 								$mdToast.hide();	
 							}
 						}],
-			templateUrl: '/templates/toast-tpl/wishlist-notify.html',
+			templateUrl: '/templates/toast-tpl/wishlist-notify.html'+def,
 			parent : $document[0].querySelector('#'+targId),
 			position: 'top center',
 			hideDelay:def

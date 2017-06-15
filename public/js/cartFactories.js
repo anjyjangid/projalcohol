@@ -225,6 +225,8 @@ angular.module('AlcoholCartFactories', [])
 			price = price - sale.discountValue;
 		}
 
+		price = parseFloat(price).toFixed(2);
+
 		this.discountedUnitPrice = price;
 
 		price = price * quantity;
@@ -309,7 +311,7 @@ angular.module('AlcoholCartFactories', [])
 
 		}
 
-		return this.price = parseFloat(price * quantity);
+		return this.price = parseFloat(price * quantity).toFixed(2);
 
 	};
 
@@ -1638,7 +1640,7 @@ angular.module('AlcoholCartFactories', [])
 
 					this.discountedUnitPrice = price/quantity;
 
-					this.price = price;
+					this.price = price.toFixed(2);
 					
 					this.bulkApplicable = false;					
 

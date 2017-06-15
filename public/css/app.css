@@ -1994,3 +1994,11 @@ md-tooltip .md-content{
 	-moz-transition: all 0.3s ease 0s;
 	-web-transition: all 0.3s ease 0s;
 }
+
+.wishlistpopuppinkbox .additempopuppinkboxright a,.wishlistpopuppinkbox .additempopuppinkboxright a:focus {
+    margin: 0;
+    padding: 0;
+    color: inherit;
+    vertical-align: top;
+    text-decoration: underline;
+}

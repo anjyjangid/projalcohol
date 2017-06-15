@@ -174,8 +174,9 @@ AlcoholDelivery.directive('sideBar', function() {
 			            		sweetAlert.swal({
 
 									title: "Account already exist ",
-									text : "An account have already been created for you automatically when you placed your order over the phone on your previous order. Please click here to receive the link in your email to reset your password to gain access to your account!",
-									confirmButtonColor: "#aa00ff"	
+									text : "An account have already been created for you automatically when you placed your order over the phone on your previous order, or you may just forgotten your password. We will be sending a reset password email so you can gain access to your account",
+									confirmButtonColor: "#aa00ff",
+									// confirmButtonText: 'Send '
 
 								}).then(function() {
 
@@ -185,7 +186,7 @@ AlcoholDelivery.directive('sideBar', function() {
 								});
 
 								return true;
-								
+
 							}
 			            		
 
@@ -1980,4 +1981,21 @@ AlcoholDelivery.directive('sideBar', function() {
             });
         }
     };
+}])
+.directive('fileModel', ['$parse', function ($parse) {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			var model = $parse(attrs.fileModel);
+			var modelSetter = model.assign;
+			
+			element.bind('change', function(e){
+				scope.$apply(function(){
+					modelSetter(scope, element[0].files[0]);
+					if(attrs.fileSelected)
+						scope.$eval(attrs.fileSelected, {$file: element[0].files[0]});
+				});
+			});            
+		}
+	};
 }]);
