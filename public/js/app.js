@@ -360,7 +360,7 @@ AlcoholDelivery.service('appConfig', ['$interval','$http','$q',function($interva
 						var workingTime = _self.getWorkingTime();
 						var serverTime = _self.getServerTime();
 
-						var isWorking = ((workingTime.from < serverTime) && (serverTime < workingTime.to));
+						var isWorking = true; //((workingTime.from < serverTime) && (serverTime < workingTime.to));
 												
 						if(isWorking){
 							resolve();
@@ -373,7 +373,7 @@ AlcoholDelivery.service('appConfig', ['$interval','$http','$q',function($interva
 		}else{
 			var workingTime = _self.getWorkingTime();
 			var serverTime = _self.getServerTime();
-			return ((workingTime.from < serverTime) && (serverTime < workingTime.to));
+			return true; //((workingTime.from < serverTime) && (serverTime < workingTime.to));
 		}
 	}
 

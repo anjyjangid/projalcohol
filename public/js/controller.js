@@ -2679,7 +2679,7 @@ AlcoholDelivery.controller('CmsController',[
 	$scope.submitQuery = function(){
 
 		$scope.querySubmit = true;
-console.log("$scope.query",$scope.query);
+
 		var fd = objectToFormData($scope.query);
 
 		$http.post('/site/query', fd, {

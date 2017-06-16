@@ -440,7 +440,8 @@ class SiteController extends Controller
 		$mail = new Email('customtemplate');
 
 		$mdata = [
-			'email' => 'sales@alcoholdelivery.com.sg',            
+			// 'email' => 'anuragcgt@gmail.com',
+			'email' => 'sales@alcoholdelivery.com.sg',
 			'name' => 'Admin',
 			'message' => $content,
 			'subject' => $subject
@@ -452,7 +453,7 @@ class SiteController extends Controller
 
 
 		$mailsent = $mail->sendEmail($mdata);
-prd($mailsent);
+
 		if(!is_array($mailsent))
 			return response(['mailsent' => 1],200);
 		else

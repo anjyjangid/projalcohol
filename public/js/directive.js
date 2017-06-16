@@ -174,7 +174,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			            		sweetAlert.swal({
 
 									title: "Account already exist ",
-									text : "An account have already been created for you automatically when you placed your order over the phone on your previous order, or you may just forgotten your password. We will be sending a reset password email so you can gain access to your account",
+									text : "An account have already been created for you automatically when you placed your order over the phone on your previous order. We will be sending a reset password email so you can gain access to your account!",
 									confirmButtonColor: "#aa00ff",
 									// confirmButtonText: 'Send '
 
