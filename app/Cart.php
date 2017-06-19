@@ -2410,6 +2410,10 @@ class Cart extends Moloquent
 		$order['discount'] = $this->discount;
 		$order['loyaltyPointEarned'] = 0;
 
+		if($order['nonchilled']!=true){
+			$order['discount']['nonchilled']['status'] = false;
+		}
+
 		$order['doStatus'] = 1;
 		if($order['delivery']['type']==1){
 
@@ -2463,7 +2467,7 @@ class Cart extends Moloquent
 			$serviceCharges+=$order['service']['delivery']['charges'];
 		}
 
-		if($order['nonchilled']==true && $order['discount']['nonchilled']['status']){
+		if($order['discount']['nonchilled']['status']){
 			$discountExemption+=$order['discount']['nonchilled']['exemption'];
 		}
 
