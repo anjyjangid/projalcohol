@@ -1546,13 +1546,13 @@ AlcoholDelivery.controller('CartAddressController',[
 		'max' : 15
 	}
 
-	/*$scope.setSelectedAddress = function(key){
+	$scope.setSelectedAddress = function(key){
 		
 		$scope.delivery.address = {};
 		$scope.delivery.address.key = key;
 		$scope.delivery.address.detail = $scope.addresses[key];
 
-	}*/
+	}
 
 	$scope.$watch('delivery.contact',
 			function(newValue, oldValue) {
@@ -2657,7 +2657,8 @@ AlcoholDelivery.controller('CmsController',[
 				$scope.cmsData.formType == 'bulkcorporate-discounts' ||
 				$scope.cmsData.formType == 'suggest-a-product' ||
 				$scope.cmsData.formType == 'sell-on-alcoholdelivery' || 
-				$scope.cmsData.formType == 'careers'
+				$scope.cmsData.formType == 'careers' || 
+				$scope.cmsData.formType == 'press-media'
 			);
 		}
 
@@ -2692,7 +2693,9 @@ AlcoholDelivery.controller('CmsController',[
 			delete $scope.errors;
 			$scope.querySent = true;
 			$scope.querySubmit = false;
-			$scope.query = {};
+			$scope.query = {type:$scope.cmsData.formType};
+
+			angular.element( document.querySelector( '#resume' ) ).val(null);
 
 			$timeout(function() {
 				$anchorScroll();		    	
@@ -2711,6 +2714,7 @@ AlcoholDelivery.controller('CmsController',[
 		}).error(function(data, status, headers){
 			$scope.errors = data;
 			$scope.querySubmit = false;
+
 			$timeout(function() {
 				$anchorScroll();		    	
 			});

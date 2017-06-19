@@ -2246,9 +2246,10 @@ class CartController extends Controller
 			return response(['reset'=>'cart',"message"=>"cart not found"],412);
 		}
 
-		if($cart->delivery['type'] ==0 && !$cart->isUnderWorkingHrs()){
-			$isValid['valid'] = false;
-		}
+		// under working hours condition
+		// if($cart->delivery['type'] ==0 && !$cart->isUnderWorkingHrs()){
+		// 	$isValid['valid'] = false;
+		// }
 
 		if($isValid['valid']==false){
 

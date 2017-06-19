@@ -1838,8 +1838,8 @@ AlcoholDelivery.directive('sideBar', function() {
 
 								        	if($scope.address.isAlreadyDefault === false && $scope.address.default === true){
 
+								        		$scope.listUserAddress(false);
 								        		$scope.setSelectedAddress($scope.currentKey);
-								        		$scope.listUserAddress(false)
 
 								        	}
 
@@ -1913,9 +1913,13 @@ AlcoholDelivery.directive('sideBar', function() {
 					};
 		
 					$scope.setSelectedAddress = function(key){
-						$scope.delivery.address = {};
-						$scope.delivery.address.key = key;
-						$scope.delivery.address.detail = $scope.addresses[key];
+
+						if(angular.isDefined($scope.delivery)){
+							$scope.delivery.address = {};
+							$scope.delivery.address.key = key;
+							$scope.delivery.address.detail = $scope.addresses[key];
+						}
+						
 					}
 				}]
 	};
