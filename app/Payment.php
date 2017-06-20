@@ -10,7 +10,7 @@ use DB;
 
 class Payment extends Model
 {
- 	public $apiLive = true;
+ 	public $apiLive = false;
  	public $tokenUrl;
  	public $paymentUrl;
 	public $secretKey;

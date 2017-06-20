@@ -950,6 +950,7 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 
 		start : 0,
 		limit : 10,
+		count : 0
 
 	}
 
@@ -958,13 +959,16 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 		if($scope.pagination.start==0){
 			return;
 		}
-		$scope.pagination.start-=$scope.pagination.limit;
-	}
+		$scope.pagination.start--;
 
+	}
 	$scope.next = function(){
 
-		if($scope.loyaltyMore)
-			$scope.pagination.start+=$scope.pagination.limit;
+		if($scope.pagination.count<=(($scope.pagination.start+1) * $scope.pagination.limit)){
+			return false;
+		}
+
+		$scope.pagination.start++;
 
 	}
 
@@ -975,8 +979,12 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 			fetching:true
 		};
 
+		var reqParams = {
+			start : $scope.pagination.start,
+			limit : $scope.pagination.limit
+		}
 
-		$http.get("loyalty/transactions",{params: $scope.pagination}).then(
+		$http.get("loyalty/transactions",{params: reqParams}).then(
 
 			function(response){
 
@@ -985,6 +993,12 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 				$scope.loyalty = response.data.transactions;
 
 				$scope.statics = response.data.statics;
+
+				if($scope.pagination.count<=(($scope.pagination.start+1) * $scope.pagination.limit)){
+					$scope.pagination.next = false;
+				}else{
+					$scope.pagination.next = true;
+				}
 
 			},function(errRes){
 
@@ -1005,12 +1019,12 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 
 	}
 
-	$scope.$watch('pagination',
+	$scope.$watch('pagination.start',
 		function(newValue, oldValue) {
 
 			$scope.getLoyalty();
 
-		},true
+		}
 	);
 
 }]);

@@ -280,6 +280,23 @@ class Cart extends Moloquent
 			return false;
 		}
 
+		
+		if(isset($cart['coupon']) && $cart['coupon']){
+
+			$couponData = Coupon::where(['_id' => $cart['coupon'], 'status'=>1])->first();
+			
+			if(isset($couponData->_id) && $couponData->_id){
+
+				$isExpired = $couponData->isExpired();
+
+				if($isExpired){					
+					$cart->__unset('coupon');
+				}				
+				
+			}
+
+		}
+
 		$currentTimeStr = getServerTime();
 		$todayStartTimeStr = strtotime(date("Y-m-d",$currentTimeStr));
 

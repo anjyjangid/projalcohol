@@ -100,8 +100,10 @@ MetronicApp.controller('OrderCreateController',[
 	// 		}
 	// 	);
 
-	if(!angular.isDefined($scope.cart.delivery.country_code)){
-		$scope.cart.delivery.country_code = 65;
+	if(!angular.isDefined($scope.cart.delivery.country_code) || $scope.cart.delivery.country_code==''){
+
+		$scope.cart.delivery.country_code = 65;	
+		
 	}
 
 

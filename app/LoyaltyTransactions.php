@@ -45,9 +45,9 @@ class LoyaltyTransactions extends Moloquent
     
     public function getLoyalty($userId,$params = []){
 
-		$offset = (int)$params['start'];
-
 		$limit = isset($params['limit'])?(int)$params['limit']:10;
+
+		$offset = (int)$params['start'] * $limit;
 
 		try{
 

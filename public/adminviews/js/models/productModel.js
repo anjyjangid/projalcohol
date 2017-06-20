@@ -38,10 +38,10 @@ MetronicApp.factory('productModel', ['$http', '$cookies','$location', function($
 
 		updateProduct: function(fields,id){
 
-			var fd = objectToFormData(fields);            
+			var fd = objectToFormData(fields);
 
 			return $http.post("/adminapi/product/update/"+id, fd, {
-				transformRequest: angular.identity,                             
+				transformRequest: angular.identity,
 				headers: {'Content-Type': undefined}
 			}).error(function(data, status, headers) {            
 				Metronic.alert({

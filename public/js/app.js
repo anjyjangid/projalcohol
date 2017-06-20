@@ -1513,7 +1513,7 @@ AlcoholDelivery.run([
 								$mdToast.hide();	
 							}
 						}],
-			templateUrl: '/templates/toast-tpl/wishlist-notify.html'+def,
+			templateUrl: '/templates/toast-tpl/wishlist-notify.html',
 			parent : $document[0].querySelector('#'+targId),
 			position: 'top center',
 			hideDelay:def
