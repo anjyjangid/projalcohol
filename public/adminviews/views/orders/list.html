@@ -179,7 +179,12 @@
                 // execute some code on network or other general error  
             },
             loadingMessage: 'Loading...',
-            dataTable: {                                 
+            dataTable: {
+                "lengthMenu": [
+
+                    [5, 10, 20, 50, 100, 150],
+                    [5, 10, 20, 50, 100, 150] // change per page values here
+                ],
                 "columns": [                                       
                     {    
                         mData: null,
@@ -201,8 +206,8 @@
                                 return consumer.email;
                             }
                             
-                        },                  
-                        orderable:true
+                        },
+                        orderable:false
                     },
                     {
                         mData: null,

@@ -38,9 +38,9 @@ MetronicApp.controller('OrderUpdateController',['$rootScope', '$scope', '$timeou
 		});
 	}
 
-}]);
+}])
 
-MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout','$http','$stateParams','orderModel', function($rootScope, $scope, $timeout,$http,$stateParams,orderModel) {
+.controller('OrderShowController',['$rootScope', '$scope', '$timeout','$http','$stateParams','orderModel', function($rootScope, $scope, $timeout,$http,$stateParams,orderModel) {
     $scope.order = [];
     angular.orderModel = orderModel;
     orderModel.getOrder($stateParams.order).success(function(response){
@@ -60,9 +60,9 @@ MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout'
 		orderModel.setStatus($scope.order._id,status);
 	}
 
-}]);
+}])
 
-MetronicApp.controller('OrderCreateController',[
+.controller('OrderCreateController',[
 	'$scope', '$state', '$http', '$timeout', 'alcoholCart', '$modal', '$filter', '$rootScope', 'sweetAlert','$sce'
 , function($scope, $state, $http, $timeout, alcoholCart, $modal, $filter, $rootScope, sweetAlert,$sce){
 

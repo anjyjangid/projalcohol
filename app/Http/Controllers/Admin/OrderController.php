@@ -401,7 +401,7 @@ class OrderController extends Controller
 	}
 
 
-	public function postOrders(Request $request, $filter = ''){		
+	public function postOrderss(Request $request, $filter = ''){
 
 		$params = $request->all();
 
@@ -411,6 +411,34 @@ class OrderController extends Controller
 		
 		//DEFAULT SORTING
 		$sort = ['created_at' => -1]; 
+
+		if(isset($consumerName) && trim($consumerName)!=''){
+
+
+			$s = "/".$consumerName."/i";
+
+			$consumerQuery[]['$match'] = ['$or' => [
+				['name' => ['$regex'=>new \MongoRegex($s)]],
+				['email' => ['$regex'=>new \MongoRegex($s)]],
+				['mobile_number' => ['$regex'=>new \MongoRegex($s)]],
+				['alternate_number' => ['$regex'=>new \MongoRegex($s)]]		
+			]];
+
+			$consumerQuery[]['$project'] = [
+				'_id' => 1
+			];
+			
+			$users = User::raw()->aggregate($consumerQuery);
+
+			foreach($users['result'] as &$user){
+				$user = $user['_id'];
+			}
+
+			$query[]['$match']['user'] = [
+				'$in' => $users['result']
+			];
+
+		}
 
 		if($filter != ''){
 			if($filter == 'todaysorders'){
@@ -456,7 +484,7 @@ class OrderController extends Controller
 			'localField'=>'user',
 			'foreignField'=>'_id',
 			'as'=>'consumer'
-		];		
+		];
 
 		$query[]['$unwind'] = [
 			'path' => '$consumer',
@@ -533,6 +561,189 @@ class OrderController extends Controller
     		$query[]['$limit'] = (int)$length;    		
 			$model = Orders::raw()->aggregate($query);			
 		}
+
+		$response = [
+			'recordsTotal' => $iTotalRecords,
+			'recordsFiltered' => $iTotalRecords,
+			'draw' => $draw,
+			'data' => $model['result'],
+			'filter' => $filter
+		];		
+
+		return response($response,200);		
+	}
+
+	public function postOrders(Request $request, $filter = ''){
+
+		$params = $request->all();
+
+		extract($params);
+
+		$query = [];
+		
+		//DEFAULT SORTING
+		$sort = ['created_at' => -1];
+
+		if($filter != ''){
+			if($filter == 'todaysorders'){
+				$query[]['$match']['delivery.deliveryDate'] = date('Y-m-d');			
+				$sort = ['delivery.deliveryKey' => 1]; 				
+			}
+
+			if($filter == 'criticalorders'){				
+				$s = strtotime(date('Y-m-d'));
+				$e = strtotime(date('Y-m-d',strtotime('+5 days')));
+				$query[]['$match']['doStatus'] = 0;
+				$query[]['$match']['delivery.deliveryKey'] = ['$gte'=>$s,'$lte' => $e];			
+				//$sort = ['delivery.deliveryKey' => 1]; 				
+				$query[]['$lookup'] = [
+					'from' => 'purchase_order',
+					'localField'=>'_id',
+					'foreignField'=>'advanceOrderId',
+					'as'=>'po'
+				];
+			}
+		}
+
+		if(isset($reference) && trim($reference)!=''){			
+			$s = "/".$reference."/i";
+			$query[]['$match']['reference'] = ['$regex'=>new \MongoRegex($s)];
+		}	
+
+		if(isset($deliveryType) && trim($deliveryType)!=''){						
+			if($deliveryType == 2){
+				$query[]['$match']['delivery.type'] = 0;
+				$query[]['$match']['service.express.status'] = true;
+			}else{
+				$query[]['$match']['delivery.type'] = (int)$deliveryType;
+			}
+		}
+
+		if(isset($doStatus) && trim($doStatus)!=''){						
+			$query[]['$match']['doStatus'] = (int)$doStatus;
+		}
+
+
+		if(isset($consumerName) && trim($consumerName)!=''){
+
+
+			$s = "/".$consumerName."/i";
+
+			$consumerQuery[]['$match'] = ['$or' => [
+				['name' => ['$regex'=>new \MongoRegex($s)]],
+				['email' => ['$regex'=>new \MongoRegex($s)]],
+				['mobile_number' => ['$regex'=>new \MongoRegex($s)]],
+				['alternate_number' => ['$regex'=>new \MongoRegex($s)]]		
+			]];
+
+			$consumerQuery[]['$project'] = [
+				'_id' => 1
+			];
+			
+			$users = User::raw()->aggregate($consumerQuery);
+
+			foreach($users['result'] as &$user){
+				$user = $user['_id'];
+			}
+
+			$query[]['$match']['user'] = [
+				'$in' => $users['result']
+			];
+
+		}
+
+		$project = [
+			'reference'=>1,
+			'delivery'=>1,
+			'status'=>1,
+			'_id'=>1,
+			'created_at'=>1,
+			'payment'=>1,
+			'service'=>1,
+			'reference'=> 1,
+			'doStatus'=>1,
+			'rate'=>1,
+			'po' => 1,
+			'user' =>1
+		];
+
+		$project['orderDate'] = ['$dateToString'=>['format' => '%Y-%m-%d','date'=>'$created_at']];
+
+		$query[]['$project'] = $project;
+
+		$columns = ['reference','payment.total','created_at','delivery.type','doStatus','rate','user'];
+
+		if($filter != ''){
+			if($filter == 'todaysorders'){
+				$columns = ['reference','delivery.deliveryKey','delivery.type','doStatus','rate','user'];
+			}
+		}
+
+		if(isset($params['order']) && !empty($params['order'])){
+			$field = $columns[$params['order'][0]['column']];			
+			$sortBy = ($params['order'][0]['dir'] == 'desc')?-1:1;
+			$sort = [$field=>$sortBy];
+		}
+
+		if(isset($created_at) && trim($created_at)!=''){						
+			$query[]['$match']['orderDate'] = $created_at;
+		}
+
+		$query[]['$sort'] = $sort;
+
+		
+		$countQuery = $query;
+		$countQuery[]['$group'] = [
+			'_id'=> null,
+			'count' => [
+				'$sum' => 1
+			]
+		];
+
+		$model = Orders::raw()->aggregate($countQuery);
+		
+		$iTotalRecords = $model['result'][0]['count'];
+
+    	if($length > 0){
+    		$query[]['$skip'] = (int)$start;
+    		$query[]['$limit'] = (int)$length;
+		}
+
+		$query[]['$lookup'] = [
+			'from' => 'user',
+			'localField'=>'user',
+			'foreignField'=>'_id',
+			'as'=>'consumer'
+		];
+		
+
+		$query[]['$unwind'] = [
+			'path' => '$consumer',
+			'preserveNullAndEmptyArrays' => true,
+		];
+
+		$project = [
+			'reference'=>1,
+			'delivery'=>1,
+			'status'=>1,
+			'_id'=>1,
+			'created_at'=>1,
+			'payment'=>1,
+			'service'=>1,
+			'reference'=> 1,
+			'doStatus'=>1,
+			'rate'=>1,
+			'po' => 1,			
+			'orderDate' =>1,
+			'consumer.name' => [
+				'$ifNull' => ['$consumer.name','$consumer.email']
+			]
+
+		];
+
+		$query[]['$project'] = $project;
+
+		$model = Orders::raw()->aggregate($query);
 
 		$response = [
 			'recordsTotal' => $iTotalRecords,
