@@ -184,7 +184,6 @@ class UserController extends Controller
 
 			return response($return, 400);
 		}
-		//prd("every thing is ok");
 		$curruser = User::find($user->_id);
 
 		$curruser->name = $inputs['name'];

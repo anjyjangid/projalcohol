@@ -69,10 +69,9 @@ class CartAdmin extends Moloquent
 					"specialNote" => $user->specialNote
 				];
 				$cart->addresses = $user->address;
-			}
-			
+			}			
+
 		}
-		
 
 		return $cart;
 
@@ -200,7 +199,7 @@ class CartAdmin extends Moloquent
 		$cartServices["delivery"] = [
 								"free" => false,
 								"charges" => $services['non_free_delivery']['value'],
-								"mincart" => $services['minimum_cart_value']['value'],
+								"mincart" => $services['minimum_cart_value']['value']
 							];
 
 		//ADD TEMPSURCHARGE FLAG
@@ -219,6 +218,7 @@ class CartAdmin extends Moloquent
 		$cartDiscount = $cart->discount;							
 		$cartDiscount['nonchilled']['exemption'] = $services['non_chilled_delivery']['value'];
 		$cart->discount = $cartDiscount;
+
 
 		try{
 

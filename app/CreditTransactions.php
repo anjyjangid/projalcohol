@@ -45,9 +45,9 @@ class CreditTransactions extends Moloquent
     
     public function getCredits($userId,$params = []){
 
-		$offset = (int)$params['start'];
-
 		$limit = isset($params['limit'])?(int)$params['limit']:10;
+
+		$offset = (int)$params['start'] * $limit;
 
 		try{
 

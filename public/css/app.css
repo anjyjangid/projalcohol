@@ -2013,6 +2013,11 @@ md-tooltip .md-content{
 	margin: 0 auto;
 }
 
-.md-dialog-focus-trap{
-    border: 1px solid;
-  }
+.ap-required-label:after{
+	content: ' *';
+    color: red;
+}
+
+.cmspage-formcrv textarea.form-control{
+	height: 100px;
+}

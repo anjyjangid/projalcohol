@@ -360,8 +360,8 @@ AlcoholDelivery.service('appConfig', ['$interval','$http','$q',function($interva
 						var workingTime = _self.getWorkingTime();
 						var serverTime = _self.getServerTime();
 
-						var isWorking = ((workingTime.from < serverTime) && (serverTime < workingTime.to));
-						isWorking = true;						
+						var isWorking = true; //((workingTime.from < serverTime) && (serverTime < workingTime.to));
+												
 						if(isWorking){
 							resolve();
 						}    					

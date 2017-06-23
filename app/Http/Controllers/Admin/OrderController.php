@@ -401,7 +401,7 @@ class OrderController extends Controller
     }
 
 
-    public function postOrders(Request $request, $filter = ''){     
+    public function postOrderss(Request $request, $filter = ''){
 
         $params = $request->all();
 
@@ -411,6 +411,34 @@ class OrderController extends Controller
         
         //DEFAULT SORTING
         $sort = ['created_at' => -1]; 
+
+        if(isset($consumerName) && trim($consumerName)!=''){
+
+
+            $s = "/".$consumerName."/i";
+
+            $consumerQuery[]['$match'] = ['$or' => [
+                ['name' => ['$regex'=>new \MongoRegex($s)]],
+                ['email' => ['$regex'=>new \MongoRegex($s)]],
+                ['mobile_number' => ['$regex'=>new \MongoRegex($s)]],
+                ['alternate_number' => ['$regex'=>new \MongoRegex($s)]]     
+            ]];
+
+            $consumerQuery[]['$project'] = [
+                '_id' => 1
+            ];
+            
+            $users = User::raw()->aggregate($consumerQuery);
+
+            foreach($users['result'] as &$user){
+                $user = $user['_id'];
+            }
+
+            $query[]['$match']['user'] = [
+                '$in' => $users['result']
+            ];
+
+        }
 
         if($filter != ''){
             if($filter == 'todaysorders'){
@@ -451,17 +479,12 @@ class OrderController extends Controller
             $query[]['$match']['doStatus'] = (int)$doStatus;
         }
 
-        /*if($filter == ''){
-            $query[]['$sort'] = $sort;
-            $query[]['$limit'] = 2000;
-        }*/
-
         $query[]['$lookup'] = [
             'from' => 'user',
             'localField'=>'user',
             'foreignField'=>'_id',
             'as'=>'consumer'
-        ];      
+        ];
 
         $query[]['$unwind'] = [
             'path' => '$consumer',
@@ -527,7 +550,7 @@ class OrderController extends Controller
         }
 
         $query[]['$sort'] = $sort;
-        //echo '<pre>'; print_r($query); exit;
+
         $model = Orders::raw()->aggregate($query);
         
         $iTotalRecords = count($model['result']);
@@ -536,7 +559,7 @@ class OrderController extends Controller
             
         if($length > 0){
             $query[]['$limit'] = (int)$length;          
-            $model = Orders::raw()->aggregate($query);                      
+            $model = Orders::raw()->aggregate($query);          
         }
 
         $response = [
@@ -550,40 +573,222 @@ class OrderController extends Controller
         return response($response,200);     
     }
 
+	public function postOrders(Request $request, $filter = ''){
 
-    public function putStatus($orderId,$status){
+        $params = $request->all();
 
-        $result = [];
+        extract($params);
 
-        $orderModel = new Orders;
+        $query = [];
+        
+        //DEFAULT SORTING
+        $sort = ['created_at' => -1];
 
-        switch($status){
+        if($filter != ''){
+            if($filter == 'todaysorders'){
+                $query[]['$match']['delivery.deliveryDate'] = date('Y-m-d');            
+                $sort = ['delivery.deliveryKey' => 1];              
+            }
 
-            case 'success':
+            if($filter == 'criticalorders'){                
+                $s = strtotime(date('Y-m-d'));
+                $e = strtotime(date('Y-m-d',strtotime('+5 days')));
+                $query[]['$match']['doStatus'] = 0;
+                $query[]['$match']['delivery.deliveryKey'] = ['$gte'=>$s,'$lte' => $e];         
+                //$sort = ['delivery.deliveryKey' => 1];                
+                $query[]['$lookup'] = [
+                    'from' => 'purchase_order',
+                    'localField'=>'_id',
+                    'foreignField'=>'advanceOrderId',
+                    'as'=>'po'
+                ];
+            }
+        }
 
-                $result = $orderModel->completed($orderId);
+        if(isset($reference) && trim($reference)!=''){          
+            $s = "/".$reference."/i";
+            $query[]['$match']['reference'] = ['$regex'=>new \MongoRegex($s)];
+        }   
+
+        if(isset($deliveryType) && trim($deliveryType)!=''){                        
+            if($deliveryType == 2){
+                $query[]['$match']['delivery.type'] = 0;
+                $query[]['$match']['service.express.status'] = true;
+            }else{
+                $query[]['$match']['delivery.type'] = (int)$deliveryType;
+            }
+        }
+
+        if(isset($doStatus) && trim($doStatus)!=''){                        
+            $query[]['$match']['doStatus'] = (int)$doStatus;
+        }
+
+
+        if(isset($consumerName) && trim($consumerName)!=''){
+
+
+            $s = "/".$consumerName."/i";
+
+            $consumerQuery[]['$match'] = ['$or' => [
+                ['name' => ['$regex'=>new \MongoRegex($s)]],
+                ['email' => ['$regex'=>new \MongoRegex($s)]],
+                ['mobile_number' => ['$regex'=>new \MongoRegex($s)]],
+                ['alternate_number' => ['$regex'=>new \MongoRegex($s)]]     
+            ]];
+
+            $consumerQuery[]['$project'] = [
+                '_id' => 1
+            ];
             
-            break;
+            $users = User::raw()->aggregate($consumerQuery);
+
+            foreach($users['result'] as &$user){
+                $user = $user['_id'];
+            }
+
+            $query[]['$match']['user'] = [
+                '$in' => $users['result']
+            ];
 
         }
 
-        if($result['success']){
-            return response($result,200);
+        $project = [
+            'reference'=>1,
+            'delivery'=>1,
+            'status'=>1,
+            '_id'=>1,
+            'created_at'=>1,
+            'payment'=>1,
+            'service'=>1,
+            'reference'=> 1,
+            'doStatus'=>1,
+            'rate'=>1,
+            'po' => 1,
+            'user' =>1
+        ];
+
+        $project['orderDate'] = ['$dateToString'=>['format' => '%Y-%m-%d','date'=>'$created_at']];
+
+        $query[]['$project'] = $project;
+
+        $columns = ['reference','payment.total','created_at','delivery.type','doStatus','rate','user'];
+
+        if($filter != ''){
+            if($filter == 'todaysorders'){
+                $columns = ['reference','delivery.deliveryKey','delivery.type','doStatus','rate','user'];
+            }
         }
+
+        if(isset($params['order']) && !empty($params['order'])){
+            $field = $columns[$params['order'][0]['column']];           
+            $sortBy = ($params['order'][0]['dir'] == 'desc')?-1:1;
+            $sort = [$field=>$sortBy];
+        }
+
+        if(isset($created_at) && trim($created_at)!=''){                        
+            $query[]['$match']['orderDate'] = $created_at;
+        }
+
+        $query[]['$sort'] = $sort;
+
         
-        return response($result,400);
+        $countQuery = $query;
+        $countQuery[]['$group'] = [
+            '_id'=> null,
+            'count' => [
+                '$sum' => 1
+            ]
+        ];
+
+        $model = Orders::raw()->aggregate($countQuery);
         
+        $iTotalRecords = empty($model['result'])?0:$model['result'][0]['count'];
+
+        if($length > 0){
+            $query[]['$skip'] = (int)$start;
+            $query[]['$limit'] = (int)$length;
+        }
+
+        $query[]['$lookup'] = [
+            'from' => 'user',
+            'localField'=>'user',
+            'foreignField'=>'_id',
+            'as'=>'consumer'
+        ];
+        
+
+        $query[]['$unwind'] = [
+            'path' => '$consumer',
+            'preserveNullAndEmptyArrays' => true,
+        ];
+
+        $project = [
+            'reference'=>1,
+            'delivery'=>1,
+            'status'=>1,
+            '_id'=>1,
+            'created_at'=>1,
+            'payment'=>1,
+            'service'=>1,
+            'reference'=> 1,
+            'doStatus'=>1,
+            'rate'=>1,
+            'po' => 1,          
+            'orderDate' =>1,
+            'consumer.name' => [
+                '$ifNull' => ['$consumer.name','$consumer.email']
+            ]
+
+        ];
+
+        $query[]['$project'] = $project;
+
+        $model = Orders::raw()->aggregate($query);
+
+        $response = [
+            'recordsTotal' => $iTotalRecords,
+            'recordsFiltered' => $iTotalRecords,
+            'draw' => $draw,
+            'data' => $model['result'],
+            'filter' => $filter
+        ];      
+
+        return response($response,200);     
     }
 
-    public function missingMethod($parameters = array())
-    {
-        prd('Method Missing');
-    }
 
-    public function postUpdatestatus(Request $request){
-        
-        $data = $request->all();
+	public function putStatus($orderId,$status){
 
+		$result = [];
+
+		$orderModel = new Orders;
+
+		switch($status){
+
+			case 'success':
+
+				$result = $orderModel->completed($orderId);
+			
+			break;
+
+		}
+
+		if($result['success']){
+			return response($result,200);
+		}
+		
+		return response($result,400);
+		
+	}
+
+	public function missingMethod($parameters = array())
+	{
+	    prd('Method Missing');
+	}
+
+	public function postUpdatestatus(Request $request){
+		
+		$data = $request->all();
         $valid = [];
         $valid['doStatus'] = 'required';    
 

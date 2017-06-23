@@ -174,7 +174,7 @@ AlcoholDelivery.directive('sideBar', function() {
 			            		sweetAlert.swal({
 
 									title: "Account already exist ",
-									text : "An account have already been created for you automatically when you placed your order over the phone on your previous order, or you may just forgotten your password. We will be sending a reset password email so you can gain access to your account",
+									text : "An account have already been created for you automatically when you placed your order over the phone on your previous order. We will be sending a reset password email so you can gain access to your account!",
 									confirmButtonColor: "#aa00ff",
 									// confirmButtonText: 'Send '
 
@@ -1838,8 +1838,8 @@ AlcoholDelivery.directive('sideBar', function() {
 
 								        	if($scope.address.isAlreadyDefault === false && $scope.address.default === true){
 
+								        		$scope.listUserAddress(false);
 								        		$scope.setSelectedAddress($scope.currentKey);
-								        		$scope.listUserAddress(false)
 
 								        	}
 
@@ -1913,9 +1913,13 @@ AlcoholDelivery.directive('sideBar', function() {
 					};
 		
 					$scope.setSelectedAddress = function(key){
-						$scope.delivery.address = {};
-						$scope.delivery.address.key = key;
-						$scope.delivery.address.detail = $scope.addresses[key];
+
+						if(angular.isDefined($scope.delivery)){
+							$scope.delivery.address = {};
+							$scope.delivery.address.key = key;
+							$scope.delivery.address.detail = $scope.addresses[key];
+						}
+						
 					}
 				}]
 	};

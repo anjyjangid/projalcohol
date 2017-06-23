@@ -236,9 +236,11 @@ class CartController extends Controller
 		}
 
 		if(isset($cart['coupon']) && $cart['coupon']){
+
 			$couponData = Coupon::where(['_id' => $cart['coupon'], 'status'=>1])->first();
 
 			if(isset($couponData->_id) && $couponData->_id){
+				
 				if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date. ' + 1 days')>= time()){
 
 					unset($couponData->start_date);
@@ -2246,9 +2248,10 @@ class CartController extends Controller
 			return response(['reset'=>'cart',"message"=>"cart not found"],412);
 		}
 
-		if($cart->delivery['type'] ==0 && !$cart->isUnderWorkingHrs()){
-			$isValid['valid'] = false;
-		}
+		// under working hours condition
+		// if($cart->delivery['type'] ==0 && !$cart->isUnderWorkingHrs()){
+		// 	$isValid['valid'] = false;
+		// }
 
 		if($isValid['valid']==false){
 
