@@ -191,8 +191,8 @@ class PackageController extends Controller
 
 			}
 			
-			$package->packageSavings = number_format(($productOrgPrice - $packagePrice),2);
-			$package->packagePrice = number_format($packagePrice,2);
+			$package->packageSavings = number_format(($productOrgPrice - $packagePrice),2,'.','');
+			$package->packagePrice = number_format($packagePrice,2,'.','');
 			$package->packageQuantity = 1;
 			$package->packageItems = $packageupdate;
 			
@@ -303,8 +303,8 @@ class PackageController extends Controller
 
 			}
 			
-			$package->packageSavings = number_format(($productOrgPrice - $packagePrice),2);
-			$package->packagePrice = number_format($packagePrice,2);
+			$package->packageSavings = number_format(($productOrgPrice - $packagePrice),2,'.','');
+			$package->packagePrice = number_format($packagePrice,2,'.','');
 			$package->packageQuantity = 1;
 			$package->packageItems = $packageupdate;
 			

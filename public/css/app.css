@@ -1995,7 +1995,7 @@ md-tooltip .md-content{
 	-web-transition: all 0.3s ease 0s;
 }
 
-<<<<<<< HEAD
+
 .wishlistpopuppinkbox .additempopuppinkboxright a,.wishlistpopuppinkbox .additempopuppinkboxright a:focus {
     margin: 0;
     padding: 0;
@@ -2003,13 +2003,16 @@ md-tooltip .md-content{
     vertical-align: top;
     text-decoration: underline;
 }
-=======
+
 .checkouter-td-right-text div {
     white-space: normal;
 }
 
 .img-responsive-h-package{
-	max-height: 200px;
+	max-height: 100%;
 	margin: 0 auto;
 }
->>>>>>> dd8757907984bc709bb2f9d195e4b40f5bb8376a
+
+.md-dialog-focus-trap{
+    border: 1px solid;
+  }

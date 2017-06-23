@@ -154,7 +154,9 @@ class User extends Eloquent implements AuthenticatableContract,
 		return $response;    
 	 }
 
-	public function setContact ($number,$code=65,$isDefault=false) {
+	public function setContact($number,$code=65,$isDefault=false) {
+
+		$number = (string)$number;
 
 		$mobileNumber = $this->__get('mobile_number');
 
