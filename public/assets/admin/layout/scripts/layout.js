@@ -375,7 +375,7 @@ var Layout = function () {
     };
 
     // Hanles sidebar toggler
-    var handleSidebarToggler = function () {
+    var handleSidebarToggler = function () {        
         var body = $('body');
         if ($.cookie && $.cookie('sidebar_closed') === '1' && Metronic.getViewPort().width >= resBreakpointMd) {
             $('body').addClass('page-sidebar-closed');
@@ -558,7 +558,7 @@ var Layout = function () {
             handleSidebarMenuActiveLink(mode, el);
         },
 
-        initSidebar: function() {            
+        initSidebar: function() {                        
             //layout handlers
             handleFixedSidebar(); // handles fixed sidebar menu
             handleSidebarMenu(); // handles main menu

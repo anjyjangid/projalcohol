@@ -577,11 +577,11 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', '$http', '$root
 	,function($scope,$filter, $http, $rootScope, AdminUserService, $timeout) {
 
 	$scope.$on('$includeContentLoaded', function() {
-		Layout.initSidebar(); // init sidebar
+		//Layout.initSidebar(); // init sidebar
 	});
 
 	$scope.isLoaded = false;
-	var menuOptions = [
+var menuOptions = [
 		{
 			label:'Dashboard',
 			uisref:'userLayout.dashboard',
@@ -1046,6 +1046,7 @@ if(userType){
 
 
 $scope.isLoaded = true;
+//Layout.init();
 Layout.initSidebar();
 
 
