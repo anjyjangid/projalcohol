@@ -1,20 +1,32 @@
+<div class="checkbox-gray-out">
 <div class="checkbox-gray-top">
 	<div class="checkbox-gray-top-first">
 		<md-switch aria-label="cart.nonchilled" ng-model="cart.nonchilled" ng-change="alcoholCart.setCartChilled(cart.nonchilled)"></md-switch>
 	</div>
 	<div class="checkbox-gray-toptext">SAVE {{cart.discount.nonchilled.exemption | pricingTxt}} by choosing to have your drinks delivered Non-Chilled.</div>
 </div>
-
+</div>
 <div class="checkoutmiddletable" ng-class="{cartNonChilledActive: cart.nonchilled}">
-	<div class="table-responsive">
+	
 		<table class="table cart-table">
 			<tbody>				
 
 				<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getProducts()" ng-init="cartproduct.setStateRemainQty()"></tr>
 				<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0 && cartproduct['remain'+type]>0">
-
+                    <td class="responsive-show res-deleteicon-cart">
+                    	<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="remove(key,type)"><i class="glyphicon glyphicon-trash"></i></a>
+                    </td>
 					<td width="52%">
-
+						<div class="respoonsive-show-chilled">
+							<div class="prod_chilled" ng-class="{
+								notchilled:!cartproduct[type+'Status'] || 
+								cart.nonchilled,invisible:!cartproduct.product.chilled
+							}"
+							ng-click="alcoholCart.updateChilledStatus(cartproduct._id,type)">
+							<span>Chilled</span>
+							<div class="prod_chilled_icon"></div>
+							</div>
+						</div>
 						<span ng-if="cartproduct.isAvail()" class="cart-alert">!
 							<md-tooltip class="cart-alert-tooltip" md-direction="top">Sorry! This item is either out of stock, or unavailable for the quantity or delivery time selected.</md-tooltip>
 						</span>
@@ -37,7 +49,7 @@
 						<div class="sale-tag-txt -cart" ng-if="cartproduct.isSingleSale">{{::cartproduct.sale.detailTitle}}</div>
 
 					</td>
-					<td width="131px">
+					<td width="131px" class="desk-show">
 
 						<div class="prod_chilled" ng-class="{
 							notchilled:!cartproduct[type+'Status'] || 
@@ -64,14 +76,23 @@
 						</div>
 
 					</td>
-					<td> 
+					<td class="desk-show"> 
 						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="remove(key,type)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>
 				<tr ng-repeat-end></tr>
 
 				<tr ng-repeat="sale in alcoholCart.getSales()">
+					<td class="responsive-show res-deleteicon-cart">
+                    	<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="removeSale(sale)"><i class="glyphicon glyphicon-trash"></i></a>
+                    </td>
 					<td width="52%">
+						<div class="respoonsive-show-chilled">
+							<div class="prod_chilled" ng-class="{notchilled:!sale.chilled || cart.nonchilled}" ng-click="alcoholCart.saleChilled(sale)">
+							<span>Chilled</span>
+							<div class="prod_chilled_icon"></div>
+							</div>
+						</div>
 						<ul class="orhistry2_td2procdtcvr list-inline sale-pro-list">
 							<div ng-repeat-start="sPro in sale.products" ng-hide="true"></div>
 								<li class="cursor-pointer" ng-repeat="a in sPro.productQtyArr">
@@ -93,23 +114,25 @@
 						</ul>
 						<div class="sale-tag-txt -cart">{{sale.title.long}}</div><span class="strike-txt">{{sale.strikePrice | pricingTxt}}</span>
 					</td>
-					<td width="131px">
+					<td width="131px" class="desk-show">
 						<div class="prod_chilled" ng-class="{notchilled:!sale.chilled || cart.nonchilled}" ng-click="alcoholCart.saleChilled(sale)">
 						<span>Chilled</span>
 						<div class="prod_chilled_icon"></div>
 						</div>
 					</td>
-					<td></td>
+					<td class="desk-show"></td>
 					<td>
 						<div class="orderhistry2price"><span class="strike-txt-only">{{sale.strikePrice | pricingTxt}}</span><br>{{sale.price | pricingTxt}}</div>
 					</td>
-					<td> 
+					<td class="desk-show"> 
 						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="removeSale(sale)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>
 
 				<tr ng-repeat="(key, package) in alcoholCart.getPackages()">
-
+					<td class="responsive-show res-deleteicon-cart">
+                    	<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removePackage(package._uniqueId,true)"><i class="glyphicon glyphicon-trash"></i></a>
+                    </td>
 					<td width="52%">
 						<div class="orhistry2_td2procdtcvr">
 							<span>
@@ -146,7 +169,7 @@
 						</div>
 						
 					</td>
-					<td></td>
+					<td class="desk-show"></td>
 					<td>
 
 						<div class="checkoutmiddlevlauediv">
@@ -158,13 +181,15 @@
 					<td>						
 						<div class="orderhistry2price">{{package._price | pricingTxt}}</div>
 					</td>
-					<td> 
+					<td class="desk-show"> 
 						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removePackage(package._uniqueId,true)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>
 				
 				<tr ng-repeat="(key, giftCard) in alcoholCart.getGiftCards()">
-
+					<td class="responsive-show res-deleteicon-cart">
+                    	<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removeCard(giftCard.getUniqueId(),true)"><i class="glyphicon glyphicon-trash"></i></a>
+                    </td>
 					<td width="52%">
 
 						<div class="orhistry2_td2procdtcvr">
@@ -194,7 +219,7 @@
 					<td>
 						<div class="orderhistry2price">{{giftCard.getPrice() | pricingTxt}}</div>
 					</td>
-					<td> 
+					<td class="desk-show"> 
 						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removeCard(giftCard.getUniqueId(),true)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>				
@@ -202,9 +227,21 @@
 				<!-- Show loyalty products here Starts -->
 				<tr ng-repeat-start="(key, cartproduct) in alcoholCart.getLoyaltyProducts()"></tr>
 				<tr ng-repeat="type in ['qChilled','qNChilled']" ng-if="cartproduct[type]>0">
-
+					<td class="responsive-show res-deleteicon-cart">
+                    	<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="removeLoyaltyProduct(key,type)"><i class="glyphicon glyphicon-trash"></i></a>
+                    </td>
 					<td width="52%">
+						<div class="respoonsive-show-chilled">
+							<div class="prod_chilled" ng-class="{
+							notchilled:!cartproduct[type+'Status'] || cart.nonchilled,
+							invisible:!cartproduct.product.chilled
 
+							}"
+							ng-click="alcoholCart.loyaltyChilledStatus(cartproduct._id,type)">
+							<span>Chilled</span>
+							<div class="prod_chilled_icon"></div>
+							</div>
+						</div>
 						<span ng-if="cartproduct.isAvail()" class="cart-alert">!
 							<md-tooltip class="cart-alert-tooltip" md-direction="top">Sorry! This item is either out of stock, or unavailable for the quantity or delivery time selected.</md-tooltip>
 						</span>
@@ -229,7 +266,7 @@
 						</div>
 
 					</td>
-					<td width="131px">
+					<td width="131px" class="desk-show">
 
 						<div class="prod_chilled" ng-class="{
 						notchilled:!cartproduct[type+'Status'] || cart.nonchilled,
@@ -256,7 +293,7 @@
 							
 						</div>
 					</td>
-					<td> 
+					<td class="desk-show"> 
 						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="removeLoyaltyProduct(key,type)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>
@@ -264,7 +301,9 @@
 				<!-- Show loyalty products here Ends -->
 				
 				<tr ng-repeat="(key,product) in alcoholCart.getLoyaltyCards()" ng-if="product.quantity">
-
+					<td class="responsive-show res-deleteicon-cart">
+                    	<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removeLoyaltyCard(key)"><i class="glyphicon glyphicon-trash"></i></a>
+                    </td>
 					<td>{{product.value | pricingTxt}} Credit Certificate</td>
 
 					<td></td>
@@ -279,15 +318,18 @@
 					<td>
 						<div class="orderhistry2price">LP {{product.points * product.quantity}}</div>
 					</td>
-					<td> 
+					<td class="desk-show"> 
 						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removeLoyaltyCard(key)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>
 
 				<tr ng-repeat-start="(key, gift) in alcoholCart.getGifts()"></tr>
 				<tr>
+					<td class="responsive-show res-deleteicon-cart">
+                    	<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removeGift(gift.getUniqueId(),true)"><i class="glyphicon glyphicon-trash"></i></a>
+                    </td>
 					<td width="52%">
-
+						
 						<div class="orhistry2_td2procdtcvr">
 
 							<span>
@@ -312,15 +354,15 @@
 							</li>
 						</ul>
 					</td>
-					<td></td>
-					<td>						
+					<td class="desk-show"></td>
+					<td class="desk-show">						
 						
 					</td>
 					<td>
 						<div class="orderhistry2price">{{gift.gsPrice() | pricingTxt}}</div>
 
 					</td>
-					<td> 
+					<td class="desk-show"> 
 						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removeGift(gift.getUniqueId(),true)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>			
@@ -328,8 +370,21 @@
 
 				<!-- Show added Promotions here -->
 				<tr ng-repeat="(key, promotion) in alcoholCart.getPromotions()" id="promo-{{promotion._price}}">
-
+					<td class="responsive-show res-deleteicon-cart">
+                    	<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removePromotion(promotion._id)"><i class="glyphicon glyphicon-trash"></i></a>
+                    </td>
 					<td width="52%">
+						<div class="respoonsive-show-chilled">
+							<div class="prod_chilled" ng-class="{
+							notchilled:!promotion.chilled || cart.nonchilled,
+							invisible:!promotion.product._isChilledAllowed
+
+							}"
+							ng-click="alcoholCart.promoChilledStatus(promotion._id)">
+							<span>Chilled</span>
+							<div class="prod_chilled_icon"></div>
+							</div>
+						</div>
 						<div class="orhistry2_td2procdtcvr">
 							<span>
 								<a ui-sref="mainLayout.product({product:promotion.product.slug})">
@@ -344,7 +399,7 @@
 							</div> 
 						</div>
 					</td>
-					<td width="131px">
+					<td width="131px" class="desk-show">
 
 						<div class="prod_chilled" ng-class="{
 						notchilled:!promotion.chilled || cart.nonchilled,
@@ -365,14 +420,14 @@
 						</div>
 
 					</td>
-					<td> 
+					<td class="desk-show"> 
 						<a href="javascript:void(0)" class="checkoutmiddletabledeleteimg" ng-click="alcoholCart.removePromotion(promotion._id)"><i class="glyphicon glyphicon-trash"></i></a>
 					</td>
 				</tr>
 
 			</tbody>
 		</table>
-	</div>
+	
 </div>
 
 <div class="checkboxtotaldiv">
@@ -481,7 +536,7 @@
 <div ui-view="promotions"></div>
 <!-- Promotion view Ends-->
 
-<div class="checkouterwantbuttonouter" ng-if="alcoholCart.deliveryApplicable">
+<div class="checkouterwantbuttonouter res-pad-in" ng-if="alcoholCart.deliveryApplicable">
 	<div class="checkouterwantfirst">
 
 		<button class="checkouterwantbutton" id="checkout-cart-standard-btn" ng-class="{selected:cart.delivery.type==0}" ng-click="alcoholCart.setDeliveryType(0)">I want this order Now!</button>

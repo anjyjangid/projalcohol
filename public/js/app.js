@@ -373,7 +373,7 @@ AlcoholDelivery.service('appConfig', ['$interval','$http','$q',function($interva
 		}else{
 			var workingTime = _self.getWorkingTime();
 			var serverTime = _self.getServerTime();
-			return true; //((workingTime.from < serverTime) && (serverTime < workingTime.to));
+			return true;//((workingTime.from < serverTime) && (serverTime < workingTime.to));
 		}
 	}
 
@@ -1256,7 +1256,7 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 					config.url = 'api/'+urlStr;
 			}else{
 				if(urlStr.indexOf('templates') > 0)
-					config.url += '?ver=1.11';
+					config.url += '?ver=1.16';
 			}	        	
 			return config;
 		},

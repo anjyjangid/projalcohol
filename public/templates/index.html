@@ -1,15 +1,17 @@
 <style type="text/css">
 	.header{
-		background: {{angular.isDefined(settings.homeBannerImage)?settings.homeBannerImage:'';}}
+		background: {{(settings.homeBannerImage)?settings.homeBannerImage:'none';}}
 	}
 
 	@media(max-width:767px){
 		.header{
-			background: {{angular.isDefined(settings.homeBannerImageMobile)?settings.homeBannerImageMobile:'';}}
+			background: {{(settings.homeBannerImageMobile)?settings.homeBannerImageMobile:'none';}}
 		}
 	}
 </style>
-
+<!-- <pre>
+	{{settings | json}}
+</pre> -->
 <section class="fullwidth" ng:class="{'header':$state.current.name=='mainLayout.index' || $state.current.name=='mainLayout.login'}">	
 	<div class="fullwidth innerpagemargintop">
 		<div class="container">			

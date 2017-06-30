@@ -446,8 +446,8 @@ class SiteController extends Controller
 		$mail = new Email('customtemplate');
 
 		$mdata = [
-			'email' => 'anuragcgt@gmail.com',
-			// 'email' => 'sales@alcoholdelivery.com.sg',
+			//'email' => 'anuragcgt@gmail.com',
+			'email' => 'sales@alcoholdelivery.com.sg',
 			'name' => 'Admin',
 			'message' => $content,
 			'subject' => $subject

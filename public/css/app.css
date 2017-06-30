@@ -2009,7 +2009,7 @@ md-tooltip .md-content{
 }
 
 .img-responsive-h-package{
-	max-height: 200px;
+	max-height: 100%;
 	margin: 0 auto;
 }
 
