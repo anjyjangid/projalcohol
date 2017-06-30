@@ -585,7 +585,7 @@ var Layout = function () {
 
         init: function () {            
             this.initHeader();
-            this.initSidebar();
+            //this.initSidebar();
             this.initContent();
             this.initFooter();
         },

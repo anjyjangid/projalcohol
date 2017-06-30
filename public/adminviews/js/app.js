@@ -1046,6 +1046,7 @@ if(userType){
 
 
 $scope.isLoaded = true;
+Layout.initSidebar();
 
 
 	//$scope.menuOptions = menuOptions;
