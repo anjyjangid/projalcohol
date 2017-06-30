@@ -21,7 +21,6 @@ class AdminAuthenticate
                 return response('Unauthorized.', 401);
             } else {
                 return response('Unauthorized.', 401);
-                //return redirect()->guest('admin/login');
             }
         }
         

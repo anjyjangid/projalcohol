@@ -1326,11 +1326,10 @@ AlcoholDelivery.run([
 		"$rootScope", "appSettings", "alcoholCart", "$state", "$http", "$window","$mdToast","$document","$anchorScroll"
 		, "$timeout","cartValidation","cartValidate","$templateCache","$cookies"
 , function($rootScope, settings, alcoholCart, $state, $http, $window, $mdToast,$document,$anchorScroll
-		,$timeout,cartValidation,cartValidate,$templateCache,$cookies) {
+		,$timeout,cartValidation,cartValidate,$templateCache,$cookies) {	
 
 	$rootScope.$state = $state; // state to be accessed from view
 	angular.alcoholCart = alcoholCart;
-	angular.cartValidate = cartValidate;	
 
 	$rootScope.isAppInitialized = false;
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){

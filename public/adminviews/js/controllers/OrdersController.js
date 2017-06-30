@@ -146,9 +146,6 @@ MetronicApp.controller('OrderUpdateController',['$rootScope', '$scope', '$timeou
 			$scope.mobile_number.min = 6;
 			$scope.mobile_number.max = 15;
 		}
-
-
-
 	}
 
 
@@ -158,8 +155,9 @@ MetronicApp.controller('OrderUpdateController',['$rootScope', '$scope', '$timeou
 		delete $scope.cart['business'];
 		$scope.cart.user = null;
 
+		customer._id = mongoIdToStr(customer._id);
 		$scope.cart[$scope.cart.orderType] = customer;
-		$scope.cart.user = mongoIdToStr(customer._id);
+		$scope.cart.user = customer._id;
 
 		delete $scope.cart.payment.creditCard;
 		delete $scope.cart.payment.card;
@@ -702,9 +700,11 @@ MetronicApp.controller('OrderUpdateController',['$rootScope', '$scope', '$timeou
 		var api;
 		
 		if(detail.type=='business')
-			api = '/adminapi/business/address/'+detail.user._id;
+			api = '/adminapi/business/address/';
 		else
-			api = '/adminapi/address/'+detail.user._id;
+			api = '/adminapi/address/';
+
+		api+=detail.user._id;
 
 		delete $scope.address.manualForm;
 

@@ -1111,11 +1111,36 @@ AlcoholDelivery.controller('CreditsController',['$scope','$http','sweetAlert','$
 
 AlcoholDelivery.controller('CartController',[
 			'$scope','$rootScope','$state','$stateParams', '$location','$anchorScroll','$http','$q', '$mdDialog', '$mdMedia','$timeout',
-			'UserService','sweetAlert','alcoholCart','alcoholGifting','store', 'cartValidation', 'cartValidate', 'ProductService'
+			'UserService','sweetAlert','alcoholCart','alcoholGifting','store', 'cartValidation', 'cartValidate', 'ProductService','$location'
 	,function($scope, $rootScope, $state, $stateParams, $location, $anchorScroll, $http, $q, $mdDialog, $mdMedia, $timeout, 
-			UserService, sweetAlert, alcoholCart, alcoholGifting, store, cartValidation, cartValidate, ProductService){
+			UserService, sweetAlert, alcoholCart, alcoholGifting, store, cartValidation, cartValidate, ProductService,$location){
 	
-	
+
+	if(angular.isDefined($location.search().error)){
+
+		$timeout(function(){
+
+			sweetAlert.swal({
+				type:'error',
+				title: 'Order cannot be completed',
+				text:$location.search().error,
+
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Contact site administrator",
+				cancelButtonText: "Close"
+				// timer: 8000
+			}).then(function(){
+				$location.path('pages/contact-us');
+			},function(){
+
+			});
+
+			$location.url($location.path());
+
+		},0000)
+	}
+
 	$scope.$watch(function () {
 
 		try {

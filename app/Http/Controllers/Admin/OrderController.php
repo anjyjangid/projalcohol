@@ -702,7 +702,7 @@ class OrderController extends Controller
 
 		$model = Orders::raw()->aggregate($countQuery);
 		
-		$iTotalRecords = $model['result'][0]['count'];
+		$iTotalRecords = empty($model['result'])?0:$model['result'][0]['count'];
 
     	if($length > 0){
     		$query[]['$skip'] = (int)$start;

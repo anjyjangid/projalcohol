@@ -135,7 +135,7 @@ class CustomerController extends Controller
 			$query[]['$project'] = $project;
 
 			$s = "/".$params['q']."/i";
-			$query[]['$match'] = ['$or' => [					
+			$query[]['$match'] = ['$or' => [
 						['mobile_number' => ['$regex'=>new \MongoRegex($s)]],
 						['alternate_number' => ['$regex'=>new \MongoRegex($s)]]		
 				]];
@@ -146,8 +146,6 @@ class CustomerController extends Controller
 		}
 
 		$columns = ['name','email','mobile_number','savedCards'];
-
-		
 
 		$users = $users->where($col,'regexp', "/.*".$params['q']."/i");
 		return response($users->get($columns));

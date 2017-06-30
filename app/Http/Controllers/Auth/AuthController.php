@@ -157,7 +157,7 @@ class AuthController extends Controller
 			]);
 			Auth::login($user);
 		}
-		return response(Auth::user('user'),200);		
+		return response(Auth::user('user'),200);
 	}
 
 	/**
