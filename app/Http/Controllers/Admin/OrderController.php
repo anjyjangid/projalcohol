@@ -685,9 +685,24 @@ class OrderController extends Controller
             $sort = [$field=>$sortBy];
         }
 
+
+		
+		$countQuery = $query;
+		$countQuery[]['$group'] = [
+			'_id'=> null,
+			'count' => [
+				'$sum' => 1
+			]
+		];
+
+		$model = Orders::raw()->aggregate($countQuery);
+		
+		$iTotalRecords = empty($model['result'])?0:$model['result'][0]['count'];
+
         if(isset($created_at) && trim($created_at)!=''){                        
             $query[]['$match']['orderDate'] = $created_at;
         }
+
 
         $query[]['$sort'] = $sort;
 

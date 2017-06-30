@@ -151,6 +151,54 @@ MetronicApp.factory('settings', ['$rootScope', function($rootScope) {
 
 }]);
 
+MetronicApp.service('userStore',['$q','$http',function($q,$http){
+
+	var user = {};
+
+	this.set = function (varName,varValue) {
+
+		user[varName] = varValue;
+
+	}
+
+	this.get = function (varName) {
+
+		return angular.isDefined(user[varName])?user[varName]:false;
+
+	}
+
+	this.remove = function (varName) {
+
+		delete user[varName];
+
+	}
+
+	this.init = function () {
+
+		var defer = $q.defer();
+		var that = this;
+		if(this.get("AdminUserData")!==false){
+			defer.resolve(this.get("AdminUserData"));
+		}
+
+		$http.get("/adminapi/auth/logged-user").then(
+				function (successRes) {
+
+					if(angular.isDefined(successRes.data) && successRes.data!==""){
+						that.set('AdminUserData',successRes.data);						
+						defer.resolve(successRes.data);
+					}
+					defer.resolve(false);
+				},
+				function (errorRes) {
+					defer.resolve(false);
+				}
+			);
+
+		return defer.promise;
+	}
+
+}])
 
 MetronicApp.service('fileUpload', ['$http','$location','$q', function ($http,$location,$q) {
 
@@ -337,8 +385,8 @@ MetronicApp.controller('AppController', [
 	}
 
 	$scope.isActivelink = function(arr,val){
-
-		return (arr.indexOf(val) != -1);
+		status = (arr.indexOf(val) != -1);
+		return status;
 
 	}
 
@@ -525,12 +573,14 @@ MetronicApp.controller('HeaderController', ['$scope','$http', '$rootScope','Admi
 }]);
 
 /* Setup Layout Part - Sidebar */
-MetronicApp.controller('SidebarController', ['$scope','$filter', '$http', '$rootScope', 'AdminUserService', function($scope,$filter, $http, $rootScope, AdminUserService) {
+MetronicApp.controller('SidebarController', ['$scope','$filter', '$http', '$rootScope', 'AdminUserService', '$timeout'
+	,function($scope,$filter, $http, $rootScope, AdminUserService, $timeout) {
 
 	$scope.$on('$includeContentLoaded', function() {
 		Layout.initSidebar(); // init sidebar
 	});
 
+	$scope.isLoaded = false;
 	var menuOptions = [
 		{
 			label:'Dashboard',
@@ -848,7 +898,7 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', '$http', '$root
 
 var userType = AdminUserService.getUserType();
 
-var user_group_id = userType; //"582ef6d094a9b7a2318b4570"; //Sub admin
+var user_group_id = userType; 
 
 if(userType){
 
@@ -994,6 +1044,10 @@ if(userType){
 	$scope.menuOptions = menuOptions;
 }
 
+
+$scope.isLoaded = true;
+
+
 	//$scope.menuOptions = menuOptions;
 	//$scope.menuOptions = $filter('accessValidate')(menuOptions);
 
@@ -1022,7 +1076,7 @@ MetronicApp.controller('FooterController', ['$scope', function($scope) {
 	});
 }]);
 
-MetronicApp.factory('AuthServices', ['$rootScope','$http', 'store', function($rootScope,$http,store) {
+MetronicApp.factory('AuthServices', ['$rootScope','$http', 'userStore', function($rootScope,$http,userStore) {
 	var service = {};
 
 	service.Login = function (username, password, callback) {
@@ -1032,13 +1086,13 @@ MetronicApp.factory('AuthServices', ['$rootScope','$http', 'store', function($ro
 
 }]);
 
-MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", "$rootScope", function($q, $timeout, $http, store, $rootScope) {
+MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "userStore", "$rootScope", function($q, $timeout, $http, userStore, $rootScope) {
 
 	var currentUser = false;
 
 	this.getUser = function(){
 		if (!currentUser) {
-			currentUser = store.get('AdminUserData');
+			currentUser = userStore.get('AdminUserData');
 		}
 		return currentUser;
 	};
@@ -1053,6 +1107,7 @@ MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", "$r
 	this.getUserType = function(){
 
 		var currentUser = this.getUser();
+
 		if(typeof(currentUser.user_type) !== "undefined" && currentUser.user_type){
 			return currentUser.user_type;
 		}else{
@@ -1065,7 +1120,7 @@ MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", "$r
 	this.storeUser = function(data){
 		this.removeUser();
 		var deferred = $q.defer();
-		store.set('AdminUserData',data);
+		userStore.set('AdminUserData',data);
 		currentUser = data;
 		$rootScope.user = data;
 		$rootScope.user.name = data.first_name+' '+data.last_name;
@@ -1075,19 +1130,21 @@ MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", "$r
 
 	this.removeUser = function(){
 		var deferred = $q.defer();
-		store.remove('AdminUserData');
+		userStore.remove('AdminUserData');
 		deferred.resolve();
 		return deferred.promise;
 	};
 
 	this.isLogged = function(){
-		return store.get('AdminUserData');
+		
+		return userStore.get('AdminUserData');
+
 	};
 
 	this.chkUser = function(){
 		var deferred = $q.defer();
-		if(store.get('AdminUserData')){
-			var data = store.get('AdminUserData');
+		if(userStore.get('AdminUserData')){
+			var data = userStore.get('AdminUserData');
 			$rootScope.user = data;
 			$rootScope.user.name = data.first_name+' '+data.last_name;
 			deferred.resolve(data);
@@ -1117,6 +1174,9 @@ MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", "$r
 
 }]);
 
+
+
+
 MetronicApp.controller('LoginController', ['$scope','AdminUserService', '$rootScope', '$http', '$state', '$location', function($scope, AdminUserService, $rootScope, $http, $state, $location) {
 
 	$scope.credentials = {remember:0};
@@ -1140,17 +1200,22 @@ MetronicApp.controller('LoginController', ['$scope','AdminUserService', '$rootSc
 			if(res.email){
 				AdminUserService.storeUser(res).then(function(res){
 
-					var userType = AdminUserService.getUserType(); //582ef6d094a9b7a2318b4570
+					var userType = AdminUserService.getUserType();
 
 					if(userType)
 						AdminUserService.checkUserAccess(userType);
 
 					$state.go('userLayout.dashboard',{},{reload:true});
+
 				});
 			}else{
+
 				$scope.errors = {email:['Error in login']};
 			}
 		}).error(function(data, status, headers) {
+			if(status===401){
+				$state.go('userLayout.dashboard',{},{reload:true});
+			}
 			$scope.errors = data;
 		});
 	};
@@ -1204,7 +1269,8 @@ MetronicApp.controller('ResetpasswordController', ['$rootScope','$scope','$http'
 
 }]);
 /* Setup Rounting For All Pages */
-MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
+MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider'
+	, function($stateProvider, $urlRouterProvider, $locationProvider ) {
 	// Redirect any unmatched url
 	$urlRouterProvider.otherwise("/");
 
@@ -1217,6 +1283,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				authenticate: authenticate
 			},
 			controller:function(AdminUserService, $state, $timeout) {
+
 				if (AdminUserService.isLogged()) {
 					$s = 'userLayout.dashboard'
 				}else{
@@ -1246,7 +1313,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 					"templateUrl":"adminviews/tpl/footer.html",
 					"controller":"FooterController"
 				}
+			},
+			resolve : {
+				userStoreInit : function(userStore){
+						return userStore.init();
+					}
 			}
+
 		})
 
 		.state('userLayout.dashboard', {
@@ -3174,7 +3247,10 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 			templateUrl: "adminviews/views/login.html",
 			data: {pageTitle: 'Administrator Login'},
 			controller: "LoginController",
-			resolve: {
+			resolve: {				
+				userStoreInit : function(userStore){					
+						return userStore.init();
+					},
 				checkStatus: checkStatus
 			}
 		})
@@ -3184,9 +3260,10 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 			//templateUrl: "adminviews/views/login.html",
 			//data: {pageTitle: 'Administrator Login'},
 			controller: function($http,AdminUserService, $state){
+				
 				$http.get('/adminapi/auth/logout').success(function(res){
 					AdminUserService.removeUser().then(function(){
-						$state.go('login',{},{reload:true});
+						$state.go('login',{},{reload:false});
 					});
 				}).error(function(data, status, headers) {
 
@@ -3314,30 +3391,32 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 			resolve: {
 				authenticate: authenticate,
 			}
-		})
-		;
+		});
 
-		function authenticate($q, AdminUserService, $state, $timeout, $location) {
+		
 
-		  if (AdminUserService.isLogged()) {
+		function authenticate($q, AdminUserService, $state, $timeout, $location, userStoreInit) {
+
+			if (AdminUserService.isLogged()) {
 			// Resolve the promise successfully
 
-			return $q.when()
-		  } else {
+				return $q.when()
+
+			} else {
 			// The next bit of code is asynchronously tricky.
 
-			$timeout(function() {
-			  // This code runs after the authentication promise has been rejected.
-			  // Go to the log-in page
-			  $state.go('login',{},{reload:true})
-			})
+				$timeout(function() {
+					// This code runs after the authentication promise has been rejected.
+					// Go to the log-in page
+					$state.go('login',{},{reload:true})
+				})
 
-			// Reject the authentication promise to prevent the state from loading
-			return $q.reject()
-		  }
+				// Reject the authentication promise to prevent the state from loading
+				return $q.reject()
+			}
 		}
 
-		function checkStatus($q, AdminUserService, $state, $timeout, $location) {
+		function checkStatus($q, AdminUserService, userStore, $state, $timeout, $location, userStoreInit) {
 
 		  if (AdminUserService.isLogged()) {
 			// Resolve the promise successfully
@@ -3498,55 +3577,69 @@ MetronicApp.filter('creditcardname', function() {
 });
 
 /* Init global settings and run the app */
-MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "store", "$location", "AdminUserService", "$timeout", "$stateParams", "$http", "$filter", function($rootScope, settings, $state, $cookieStore, $log, store, $location, AdminUserService, $timeout, $stateParams, $http, $filter) {
+MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "userStore", "$location", "AdminUserService", "$timeout", "$stateParams", "$http", "$filter", function($rootScope, settings, $state, $cookieStore, $log, userStore, $location, AdminUserService, $timeout, $stateParams, $http, $filter) {
 
-	$rootScope.$on('$locationChangeStart', function (event, next, current) {
-		AdminUserService.chkUser().then(function(userdata){
-			//USER IS LOOGED IN
+	userStore.init().then(function(){
+		
+		AdminUserService.chkUser().then(function(){
 
-				var userType = AdminUserService.getUserType(); //"582ef6d094a9b7a2318b4570"
-
-				if(userType){
-					/*var hashIndex = current.indexOf('#');
-				var oldRoute = current.substr(hashIndex + 2);*/
-
-				if($state.current.name!='userLayout.dashboard'){
-
-					if( typeof($rootScope.userAccessStates) !== "undefined" && $rootScope.userAccessStates){
-
-						//if($state.current.name && typeof($rootScope.oldRoute) !== "undefined" && $rootScope.oldRoute)
-						if($state.current.name)
-						{
-							var mId = $filter('filter')($rootScope.userAccessStates, $state.current.name);
-
-							if(typeof(mId[0]) === "undefined" || !mId[0]){
-								/*if($rootScope.oldRoute)
-									$location.path($rootScope.oldRoute);
-								else
-									$location.path("/dashboard");*/
-									$location.path("/usergroups/permission_denied");
-							}
-						}
-					}
-					}
-
-					//$rootScope.oldRoute = oldRoute;
+			$timeout(function(){
+				if($state.current.name.indexOf("userLayout")!==0){
+					$location.path('/dashboard');
 				}
+			},1500)
 			
-		},function(){
-			//THROW USER TO LOGIN IN CASE OF SESSION TIMEOUT OR NOT LOGIN AND ALLOW RESETPASSWORD
+
+		},function(){		
 			if($location.path().indexOf('resetpassword') <= 0){
 				$location.path('/login');
 			}
+		})
+		$rootScope.$on('$locationChangeStart', function (event, next, current) {
+
+			AdminUserService.chkUser().then(
+
+				function(userdata){
+				//USER IS LOOGED IN
+	
+					var userType = AdminUserService.getUserType(); //"582ef6d094a9b7a2318b4570"
+
+					if(userType){
+
+						if($state.current.name!='userLayout.dashboard'){
+
+							if( typeof($rootScope.userAccessStates) !== "undefined" && $rootScope.userAccessStates){
+
+								if($state.current.name){
+
+									var mId = $filter('filter')($rootScope.userAccessStates, $state.current.name);
+
+									if(typeof(mId[0]) === "undefined" || !mId[0]){
+										$location.path("/usergroups/permission_denied");
+									}
+								}
+							}
+						}
+						
+					}
+				
+				},
+				function(){
+					//THROW USER TO LOGIN IN CASE OF SESSION TIMEOUT OR NOT LOGIN AND ALLOW RESETPASSWORD		
+					if($location.path().indexOf('resetpassword') <= 0){
+						$location.path('/login');
+					}
+				}
+			);
 		});
-	});
+			
+	
+	})
+	
 
 	$rootScope.$state = $state; // state to be accessed from view
 
 }]);
-
-
-
 
 MetronicApp.service('myRequestInterceptor', ['$q', '$rootScope', '$log', '$injector', '$location', function ($q, $rootScope, $log, $injector, $location) {
 	'use strict';
