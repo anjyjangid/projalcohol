@@ -2937,6 +2937,10 @@ md-toast.notify div.md-toast-content{
 .cartstepone-cover .owl-carousel .owl-item{
 	width: 175px !important
 }
+.newfeature-text{
+	background: #fff;
+	padding-top: 10px;
+}
 }
 
 @media only screen and (max-width : 767px) {
@@ -4722,6 +4726,12 @@ md-toast.notify div.md-toast-content{
 }
 .nametag,.salediscount{
 	padding: 5px 5px 5px 35px !important;
+}
+.newfeature-text{
+	background: #fff;
+	padding-top: 10px;
+	text-align: left;
+	font-size: 20px;
 }
 }
 
