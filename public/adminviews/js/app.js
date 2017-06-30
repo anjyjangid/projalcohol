@@ -935,7 +935,7 @@ if(userType){
 	var prId 			= [];
 	var menuObj 	= [];
 	var finalMenu = [];
-
+	//console.log($rootScope.userAccessStates);
 	if( typeof($rootScope.userAccessStates) !== "undefined" && $rootScope.userAccessStates){
 		angular.forEach(menuArr, function(value, key){
 			var mId = $filter('filter')($rootScope.userAccessStates, value);
@@ -1039,8 +1039,9 @@ if(userType){
 
 		$scope.menuOptions = finalMenu;
 	});*/
-
+	console.log($scope.menuOptions);
 }else{
+	console.log('ascascac');
 	$scope.menuOptions = menuOptions;
 }
 
