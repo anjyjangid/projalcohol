@@ -3610,7 +3610,7 @@ MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "us
 					//console.log(userType);
 					if(userType){					
 						if($state.current.name!='userLayout.dashboard' && $state.current.name!='userLayout.account' && $state.current.name!='logout'){
-							console.log($state.current.name);
+							//console.log($state.current.name);
 							if( typeof($rootScope.userAccessStates) !== "undefined" && $rootScope.userAccessStates){
 
 								if($state.current.name){
