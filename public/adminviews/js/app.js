@@ -1077,6 +1077,9 @@ MetronicApp.controller('FooterController', ['$scope', function($scope) {
 	$scope.$on('$includeContentLoaded', function() {
 		Layout.initFooter(); // init footer
 	});
+
+	
+	$scope.year = new Date().getFullYear();
 }]);
 
 MetronicApp.factory('AuthServices', ['$rootScope','$http', 'userStore', function($rootScope,$http,userStore) {
