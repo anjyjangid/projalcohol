@@ -185,7 +185,7 @@ MetronicApp.service('userStore',['$q','$http',function($q,$http){
 				function (successRes) {
 
 					if(angular.isDefined(successRes.data) && successRes.data!==""){
-						that.set('AdminUserData',successRes.data);						
+						that.set('AdminUserData',successRes.data);
 						defer.resolve(successRes.data);
 					}
 					defer.resolve(false);
@@ -3265,11 +3265,15 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider'
 			url: "/logout",
 			//templateUrl: "adminviews/views/login.html",
 			//data: {pageTitle: 'Administrator Login'},
-			controller: function($http,AdminUserService, $state){
+			controller: function($http,AdminUserService, $state, $timeout){
 				
 				$http.get('/adminapi/auth/logout').success(function(res){
 					AdminUserService.removeUser().then(function(){
-						$state.go('login',{},{reload:false});
+
+						$timeout(function(){
+							$state.go('login',{},{reload:false});
+						},1000)
+
 					});
 				}).error(function(data, status, headers) {
 

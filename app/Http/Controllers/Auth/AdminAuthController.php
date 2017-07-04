@@ -70,7 +70,7 @@ class AdminAuthController extends Controller
 
 	public function getLoggedUser () {
 
-		return response(Auth::user('admin'),200);
+		return response(Auth::user('admin'), 200);
 		
 	}
 
