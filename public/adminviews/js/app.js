@@ -581,7 +581,7 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', '$http', '$root
 	});
 
 	$scope.isLoaded = false;
-var menuOptions = [
+	var menuOptions = [
 		{
 			label:'Dashboard',
 			uisref:'userLayout.dashboard',
@@ -896,159 +896,159 @@ var menuOptions = [
 
 	];
 
-var userType = AdminUserService.getUserType();
+	var userType = AdminUserService.getUserType();
 
-var user_group_id = userType; 
+	var user_group_id = userType; 
 
-if(userType){
+	if(userType){
 
-	var menuArr = [];
-	var menuVal = [];
-	var parentMenu = [];
-	var parentIdArr = [];
+		var menuArr = [];
+		var menuVal = [];
+		var parentMenu = [];
+		var parentIdArr = [];
 
-	angular.forEach(menuOptions, function(value, key){
-		parentIdArr.push(value.id);
+		angular.forEach(menuOptions, function(value, key){
+			parentIdArr.push(value.id);
 
-		if(typeof(menuOptions[key].uisref) !== "undefined"){
-			menuArr.push(value.uisref);
-			value.parentId = 0;
-			menuVal[value.uisref] = value;
-		}else{
-			var parentLabel = {};
-			parentLabel.label = value.label;
-			parentLabel.icon = value.icon;
-			parentLabel.id = value.id;
-			parentMenu[value.id] = parentLabel;
+			if(typeof(menuOptions[key].uisref) !== "undefined"){
+				menuArr.push(value.uisref);
+				value.parentId = 0;
+				menuVal[value.uisref] = value;
+			}else{
+				var parentLabel = {};
+				parentLabel.label = value.label;
+				parentLabel.icon = value.icon;
+				parentLabel.id = value.id;
+				parentMenu[value.id] = parentLabel;
 
-			var subMenu = menuOptions[key].subItems;
+				var subMenu = menuOptions[key].subItems;
 
-			angular.forEach(subMenu, function(value1, key1){
-				menuArr.push(value1.uisref);
-				value1.parentId = value.id;
-				menuVal[value1.uisref] = value1;
-			});
-		}
-	});
-
-	var newMenu 	= [];
-	var prId 			= [];
-	var menuObj 	= [];
-	var finalMenu = [];
-	//console.log($rootScope.userAccessStates);
-	if( typeof($rootScope.userAccessStates) !== "undefined" && $rootScope.userAccessStates){
-		angular.forEach(menuArr, function(value, key){
-			var mId = $filter('filter')($rootScope.userAccessStates, value);
-
-			if(typeof(mId[0]) !== "undefined" && mId[0]){
-
-				var url_state = menuVal[mId[0]].parentId;
-				var mainParentId = url_state;
-
-				if(!url_state)
-					mainParentId = menuVal[mId[0]].id
-
-				if(typeof(menuObj[mainParentId]) !== "undefined")
-					menuObj[mainParentId] = menuObj[mainParentId] +', '+mId[0];
-				else
-					menuObj[mainParentId] = mId[0];
+				angular.forEach(subMenu, function(value1, key1){
+					menuArr.push(value1.uisref);
+					value1.parentId = value.id;
+					menuVal[value1.uisref] = value1;
+				});
 			}
 		});
-		
-		angular.forEach(parentIdArr, function(value, key){
 
-			if(typeof(menuObj[value]) !== "undefined"){
-				var stateArr = menuObj[value].split(', ');
+		var newMenu 	= [];
+		var prId 			= [];
+		var menuObj 	= [];
+		var finalMenu = [];
+		//console.log($rootScope.userAccessStates);
+		/*if( typeof($rootScope.userAccessStates) !== "undefined" && $rootScope.userAccessStates){
+			angular.forEach(menuArr, function(value, key){
+				var mId = $filter('filter')($rootScope.userAccessStates, value);
 
-				if(typeof(parentMenu[value]) !== "undefined"){
+				if(typeof(mId[0]) !== "undefined" && mId[0]){
 
-					var menuN = {};
-					var subd 	= [];
-					
-					menuN.label = parentMenu[value].label;
-					menuN.id = parentMenu[value].id;
-					menuN.icon = parentMenu[value].icon;
-					
-					angular.forEach(stateArr, function(value1, key1){
-						if(typeof(menuVal[value1]) !== "undefined"){
-							subd.push(menuVal[value1]);
-							menuN.subItems = subd;
-						}
-					});
+					var url_state = menuVal[mId[0]].parentId;
+					var mainParentId = url_state;
 
-					finalMenu.push(menuN);
+					if(!url_state)
+						mainParentId = menuVal[mId[0]].id
 
-				}else{
-					finalMenu.push(menuVal[menuObj[value]]);
+					if(typeof(menuObj[mainParentId]) !== "undefined")
+						menuObj[mainParentId] = menuObj[mainParentId] +', '+mId[0];
+					else
+						menuObj[mainParentId] = mId[0];
 				}
-			}
-		});
+			});
+			
+			angular.forEach(parentIdArr, function(value, key){
 
-		$scope.menuOptions = finalMenu;
+				if(typeof(menuObj[value]) !== "undefined"){
+					var stateArr = menuObj[value].split(', ');
+
+					if(typeof(parentMenu[value]) !== "undefined"){
+
+						var menuN = {};
+						var subd 	= [];
+						
+						menuN.label = parentMenu[value].label;
+						menuN.id = parentMenu[value].id;
+						menuN.icon = parentMenu[value].icon;
+						
+						angular.forEach(stateArr, function(value1, key1){
+							if(typeof(menuVal[value1]) !== "undefined"){
+								subd.push(menuVal[value1]);
+								menuN.subItems = subd;
+							}
+						});
+
+						finalMenu.push(menuN);
+
+					}else{
+						finalMenu.push(menuVal[menuObj[value]]);
+					}
+				}
+			});
+
+			$scope.menuOptions = finalMenu;
+		}*/
+
+		$http.get("/adminapi/usergroup/usergroupid/"+ user_group_id).success(function(response){
+			var user_states = response.access_list.concat(response.modify_list);
+
+			angular.forEach(menuArr, function(value, key){
+				var mId = $filter('filter')(user_states, value);
+
+				if(typeof(mId[0]) !== "undefined" && mId[0]){
+
+					var url_state = menuVal[mId[0]].parentId;
+					var mainParentId = url_state;
+
+					if(!url_state)
+						mainParentId = menuVal[mId[0]].id
+
+					if(typeof(menuObj[mainParentId]) !== "undefined")
+						menuObj[mainParentId] = menuObj[mainParentId] +', '+mId[0];
+					else
+						menuObj[mainParentId] = mId[0];
+				}
+			});
+			
+			angular.forEach(parentIdArr, function(value, key){
+
+				if(typeof(menuObj[value]) !== "undefined"){
+					var stateArr = menuObj[value].split(', ');
+
+					if(typeof(parentMenu[value]) !== "undefined"){
+
+						var menuN = {};
+						var subd 	= [];
+						
+						menuN.label = parentMenu[value].label;
+						menuN.id = parentMenu[value].id;
+						menuN.icon = parentMenu[value].icon;
+						
+						angular.forEach(stateArr, function(value1, key1){
+							if(typeof(menuVal[value1]) !== "undefined"){
+								subd.push(menuVal[value1]);
+								menuN.subItems = subd;
+							}
+						});
+
+						finalMenu.push(menuN);
+
+					}else{
+						finalMenu.push(menuVal[menuObj[value]]);
+					}
+				}
+			});
+
+			$scope.menuOptions = finalMenu;
+		});
+		//console.log($scope.menuOptions);
+	}else{
+		//console.log('ascascac');
+		$scope.menuOptions = menuOptions;
 	}
 
-	/*$http.get("/adminapi/usergroup/usergroupid/"+ user_group_id).success(function(response){
-		var user_states = response.access_list.concat(response.modify_list);
 
-		angular.forEach(menuArr, function(value, key){
-			var mId = $filter('filter')(user_states, value);
-
-			if(typeof(mId[0]) !== "undefined" && mId[0]){
-
-				var url_state = menuVal[mId[0]].parentId;
-				var mainParentId = url_state;
-
-				if(!url_state)
-					mainParentId = menuVal[mId[0]].id
-
-				if(typeof(menuObj[mainParentId]) !== "undefined")
-					menuObj[mainParentId] = menuObj[mainParentId] +', '+mId[0];
-				else
-					menuObj[mainParentId] = mId[0];
-			}
-		});
-		
-		angular.forEach(parentIdArr, function(value, key){
-
-			if(typeof(menuObj[value]) !== "undefined"){
-				var stateArr = menuObj[value].split(', ');
-
-				if(typeof(parentMenu[value]) !== "undefined"){
-
-					var menuN = {};
-					var subd 	= [];
-					
-					menuN.label = parentMenu[value].label;
-					menuN.id = parentMenu[value].id;
-					menuN.icon = parentMenu[value].icon;
-					
-					angular.forEach(stateArr, function(value1, key1){
-						if(typeof(menuVal[value1]) !== "undefined"){
-							subd.push(menuVal[value1]);
-							menuN.subItems = subd;
-						}
-					});
-
-					finalMenu.push(menuN);
-
-				}else{
-					finalMenu.push(menuVal[menuObj[value]]);
-				}
-			}
-		});
-
-		$scope.menuOptions = finalMenu;
-	});*/
-	console.log($scope.menuOptions);
-}else{
-	console.log('ascascac');
-	$scope.menuOptions = menuOptions;
-}
-
-
-$scope.isLoaded = true;
-//Layout.init();
-Layout.initSidebar();
+	$scope.isLoaded = true;
+	//Layout.init();
+	Layout.initSidebar();
 
 
 	//$scope.menuOptions = menuOptions;
@@ -3606,17 +3606,15 @@ MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "us
 				//USER IS LOOGED IN
 	
 					var userType = AdminUserService.getUserType(); //"582ef6d094a9b7a2318b4570"
-
-					if(userType){
-
-						if($state.current.name!='userLayout.dashboard'){
-
+					//console.log(userType);
+					if(userType){					
+						if($state.current.name!='userLayout.dashboard' && $state.current.name!='userLayout.account' && $state.current.name!='logout'){
+							console.log($state.current.name);
 							if( typeof($rootScope.userAccessStates) !== "undefined" && $rootScope.userAccessStates){
 
 								if($state.current.name){
-
 									var mId = $filter('filter')($rootScope.userAccessStates, $state.current.name);
-
+									//console.log(mId);
 									if(typeof(mId[0]) === "undefined" || !mId[0]){
 										$location.path("/usergroups/permission_denied");
 									}
