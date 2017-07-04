@@ -3262,18 +3262,12 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider'
 		})
 
 		.state("logout", {
-			url: "/logout",
-			//templateUrl: "adminviews/views/login.html",
-			//data: {pageTitle: 'Administrator Login'},
+			url: "/logout",			
 			controller: function($http,AdminUserService, $state, $timeout){
 				
 				$http.get('/adminapi/auth/logout').success(function(res){
 					AdminUserService.removeUser().then(function(){
-
-						$timeout(function(){
-							$state.go('login',{},{reload:false});
-						},1000)
-
+						$state.go('login');
 					});
 				}).error(function(data, status, headers) {
 
