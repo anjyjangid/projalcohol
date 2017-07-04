@@ -151,7 +151,7 @@ MetronicApp.factory('settings', ['$rootScope', function($rootScope) {
 
 }]);
 
-MetronicApp.service('userStore',['$q','$http',function($q,$http){
+MetronicApp.service('userStore',['$q','$http','$timeout',function($q,$http,$timeout){
 
 	var user = {};
 
@@ -181,7 +181,9 @@ MetronicApp.service('userStore',['$q','$http',function($q,$http){
 			defer.resolve(this.get("AdminUserData"));
 		}
 
-		$http.get("/adminapi/auth/logged-user").then(
+		$timeout(function(){
+
+			$http.get("/adminapi/auth/logged-user").then(
 				function (successRes) {
 
 					if(angular.isDefined(successRes.data) && successRes.data!==""){
@@ -194,6 +196,8 @@ MetronicApp.service('userStore',['$q','$http',function($q,$http){
 					defer.resolve(false);
 				}
 			);
+
+		},1000);
 
 		return defer.promise;
 	}
