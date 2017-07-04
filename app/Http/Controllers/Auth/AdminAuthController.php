@@ -64,9 +64,8 @@ class AdminAuthController extends Controller
 
 	public function getLogout()
 	{
-		if(Auth::logout($this->user())){
-			return response(Auth::user('admin'), 200);
-		}
+		Auth::logout($this->user());
+		return response([Auth::user('admin')], 200);		
 	}
 
 	public function getLoggedUser () {
