@@ -3,14 +3,14 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 		
-	function prd($arr){
+	/*function prd($arr){
 
 		if(isLocal()){
 			pr($arr);
 			die;
 		}
 
-	}
+	}*/
 
 	function jprd($arr){
 

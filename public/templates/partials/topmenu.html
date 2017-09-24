@@ -1,5 +1,5 @@
 <nav tscroll class="navbar navbar-default navbar-fixed-top {{(settings.announcementBar.enable=='1' && !announcementDisable) ? 'announcement-enable' : '' }}">
-	<div class="announcement-bar" ng-show="settings.announcementBar.enable=='1' && !announcementDisable">
+	<div class="announcement-bar" ng-if="settings.announcementBar.enable=='1' && !announcementDisable">
 		<div class="outer">
 			<a ng-href="{{settings.announcementBar.link}}">
 				<div class="announcement-container">

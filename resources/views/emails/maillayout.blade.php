@@ -18,7 +18,7 @@
                                     <tbody>
                                         <tr>
                                             <td align="center" style="padding-top: 4px;font-size: 11px; color: #000;">
-                                                <a href="{{url('/')}}" style="text-decoration: none;font-size: 11px; color: #000;">{{url('/')}}</a>
+                                                <a href="{{url('/')}}" style="text-decoration: none;font-size: 11px; color: #000;">{{str_replace(['http://www.','https://www.'],"",url('/'))}}</a>
                                             </td>
                                         </tr>
                                     </tbody>

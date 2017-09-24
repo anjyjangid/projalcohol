@@ -236,7 +236,8 @@ class OrderController extends Controller
 			$order['user'] = user::where('_id',"=",$order['user'])->first(['name','email','mobile_number','status','created_at','address']);
 			$order['user'] = $order['user']->toArray();
 
-			$order['dateslug'] = date("F d, Y H:ia",strtotime('+8 hours',strtotime($order['created_at'])));
+			//$order['dateslug'] = date("F d, Y H:ia",strtotime('+8 hours',strtotime($order['created_at'])));
+			$order['dateslug'] = date("F d, Y H:ia",strtotime($order['created_at']));
 			$order['status'] = 0;
 			$order['timeslot']['dateslug'] = date("F d, Y",$order['timeslot']['datekey']);
 
@@ -450,6 +451,11 @@ class OrderController extends Controller
 		if(isset($doStatus) && trim($doStatus)!=''){						
 			$query[]['$match']['doStatus'] = (int)$doStatus;
 		}
+
+		if($filter == ''){
+            		$query[]['$sort'] = $sort;
+            		$query[]['$limit'] = 4000;
+        	}
 
 		$query[]['$lookup'] = [
 			'from' => 'user',
