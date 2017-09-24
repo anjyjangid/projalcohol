@@ -152,4 +152,14 @@ class Coupon extends Moloquent
 
 	}
 
+	public function isExpired(){
+
+		$currServerTime = getServerTime();
+		$startTime = strtotime($this->start_date);
+		$endTime = strtotime($this->end_date. ' + 1 days'); //Till mid of night means as next day start thats why 1 day is added
+		
+		return !($startTime<= $currServerTime && $endTime>= $currServerTime);
+
+	}
+
 }

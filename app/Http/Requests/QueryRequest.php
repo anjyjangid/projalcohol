@@ -78,6 +78,19 @@ class QueryRequest extends Request
 			];
 		}
 
+		if($this->type == 'press-media') {
+			$rules = [				
+				'fname' => 'required|max:50',
+				'lname' => 'max:50',
+				'organisation' => 'required|max:150',
+				'jobtitle' => 'required',
+				'email' => 'required|email',
+				'phone' => 'required|numeric|digits_between:6,15',
+				'type_of_enquiry' => "required",
+				'message' => 'required|max:300'
+			];
+		}
+
 		$rules['additionalComment'] = 'max:200';
 
 		return $rules;
@@ -90,18 +103,43 @@ class QueryRequest extends Request
 				'phoneNumber.digits_between' => 'Number must be between 8 to 10 digits'
 		];
 
-		if($this->type == 'careers') {
+		$extraMessags = [];
 
-			$careerMessags = [
-				'github_profile.url' => 'The github account url format is invalid.',
-				'linkedin_profile.url' => 'The linkedin account url format is invalid.',
-				'github_profile.regex' => 'The github account url format is invalid.',
-				'linkedin_profile.regex' => 'The linkedin account url format is invalid.',
-				'website.url' => 'The url format is invalid.'
-			];
+		switch($this->type) {
 
-			$messages = array_merge($messages,$careerMessags);
+			case 'careers' :
+				
+				$extraMessags = [
+					'github_profile.url' => 'The github account url format is invalid.',
+					'linkedin_profile.url' => 'The linkedin account url format is invalid.',
+					'github_profile.regex' => 'The github account url format is invalid.',
+					'linkedin_profile.regex' => 'The linkedin account url format is invalid.',
+					'website.url' => 'The url format is invalid.'
+				];
+
+			break;
+
+			case 'press-media':
+
+				$extraMessags = [
+					'fname.required' => 'The first name is required',					
+					'organisation.required' => 'The Organisation / Business Name or URL is required',
+					
+					'phone.required' => 'The contact number is required',
+					'phone.numeric' => 'The contact number should be numeric',
+					'phone.digits_between' => 'The contact number should be between 8 to 15',
+
+					'type_of_enquiry.required' => 'The Type of enquiry is required',
+
+					'message.max' => 'Max 300 character is allowed'
+					
+				];
+
+			break;
+
 		}
+
+		$messages = array_merge($messages,$extraMessags);
 
 		return $messages;
 	}

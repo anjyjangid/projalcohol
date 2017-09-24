@@ -950,6 +950,7 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 
 		start : 0,
 		limit : 10,
+		count : 0
 
 	}
 
@@ -958,13 +959,16 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 		if($scope.pagination.start==0){
 			return;
 		}
-		$scope.pagination.start-=$scope.pagination.limit;
-	}
+		$scope.pagination.start--;
 
+	}
 	$scope.next = function(){
 
-		if($scope.loyaltyMore)
-			$scope.pagination.start+=$scope.pagination.limit;
+		if($scope.pagination.count<=(($scope.pagination.start+1) * $scope.pagination.limit)){
+			return false;
+		}
+
+		$scope.pagination.start++;
 
 	}
 
@@ -975,8 +979,12 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 			fetching:true
 		};
 
+		var reqParams = {
+			start : $scope.pagination.start,
+			limit : $scope.pagination.limit
+		}
 
-		$http.get("loyalty/transactions",{params: $scope.pagination}).then(
+		$http.get("loyalty/transactions",{params: reqParams}).then(
 
 			function(response){
 
@@ -985,6 +993,12 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 				$scope.loyalty = response.data.transactions;
 
 				$scope.statics = response.data.statics;
+
+				if($scope.pagination.count<=(($scope.pagination.start+1) * $scope.pagination.limit)){
+					$scope.pagination.next = false;
+				}else{
+					$scope.pagination.next = true;
+				}
 
 			},function(errRes){
 
@@ -1005,12 +1019,12 @@ AlcoholDelivery.controller('LoyaltyController',['$scope','$http','sweetAlert','$
 
 	}
 
-	$scope.$watch('pagination',
+	$scope.$watch('pagination.start',
 		function(newValue, oldValue) {
 
 			$scope.getLoyalty();
 
-		},true
+		}
 	);
 
 }]);
@@ -1097,11 +1111,36 @@ AlcoholDelivery.controller('CreditsController',['$scope','$http','sweetAlert','$
 
 AlcoholDelivery.controller('CartController',[
 			'$scope','$rootScope','$state','$stateParams', '$location','$anchorScroll','$http','$q', '$mdDialog', '$mdMedia','$timeout',
-			'UserService','sweetAlert','alcoholCart','alcoholGifting','store', 'cartValidation', 'cartValidate', 'ProductService'
+			'UserService','sweetAlert','alcoholCart','alcoholGifting','store', 'cartValidation', 'cartValidate', 'ProductService','$location'
 	,function($scope, $rootScope, $state, $stateParams, $location, $anchorScroll, $http, $q, $mdDialog, $mdMedia, $timeout, 
-			UserService, sweetAlert, alcoholCart, alcoholGifting, store, cartValidation, cartValidate, ProductService){
+			UserService, sweetAlert, alcoholCart, alcoholGifting, store, cartValidation, cartValidate, ProductService,$location){
 	
-	
+
+	if(angular.isDefined($location.search().error)){
+
+		$timeout(function(){
+
+			sweetAlert.swal({
+				type:'error',
+				title: 'Order cannot be completed',
+				text:$location.search().error,
+
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Contact site administrator",
+				cancelButtonText: "Close"
+				// timer: 8000
+			}).then(function(){
+				$location.path('pages/contact-us');
+			},function(){
+
+			});
+
+			$location.url($location.path());
+
+		},0000)
+	}
+
 	$scope.$watch(function () {
 
 		try {
@@ -1546,13 +1585,13 @@ AlcoholDelivery.controller('CartAddressController',[
 		'max' : 15
 	}
 
-	/*$scope.setSelectedAddress = function(key){
+	$scope.setSelectedAddress = function(key){
 		
 		$scope.delivery.address = {};
 		$scope.delivery.address.key = key;
 		$scope.delivery.address.detail = $scope.addresses[key];
 
-	}*/
+	}
 
 	$scope.$watch('delivery.contact',
 			function(newValue, oldValue) {
@@ -2657,7 +2696,8 @@ AlcoholDelivery.controller('CmsController',[
 				$scope.cmsData.formType == 'bulkcorporate-discounts' ||
 				$scope.cmsData.formType == 'suggest-a-product' ||
 				$scope.cmsData.formType == 'sell-on-alcoholdelivery' || 
-				$scope.cmsData.formType == 'careers'
+				$scope.cmsData.formType == 'careers' || 
+				$scope.cmsData.formType == 'press-media'
 			);
 		}
 
@@ -2692,7 +2732,9 @@ AlcoholDelivery.controller('CmsController',[
 			delete $scope.errors;
 			$scope.querySent = true;
 			$scope.querySubmit = false;
-			$scope.query = {};
+			$scope.query = {type:$scope.cmsData.formType};
+
+			angular.element( document.querySelector( '#resume' ) ).val(null);
 
 			$timeout(function() {
 				$anchorScroll();		    	
@@ -2711,6 +2753,7 @@ AlcoholDelivery.controller('CmsController',[
 		}).error(function(data, status, headers){
 			$scope.errors = data;
 			$scope.querySubmit = false;
+
 			$timeout(function() {
 				$anchorScroll();		    	
 			});

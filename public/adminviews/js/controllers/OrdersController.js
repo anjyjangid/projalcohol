@@ -38,9 +38,9 @@ MetronicApp.controller('OrderUpdateController',['$rootScope', '$scope', '$timeou
 		});
 	}
 
-}]);
+}])
 
-MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout','$http','$stateParams','orderModel', function($rootScope, $scope, $timeout,$http,$stateParams,orderModel) {
+.controller('OrderShowController',['$rootScope', '$scope', '$timeout','$http','$stateParams','orderModel', function($rootScope, $scope, $timeout,$http,$stateParams,orderModel) {
     $scope.order = [];
     angular.orderModel = orderModel;
     orderModel.getOrder($stateParams.order).success(function(response){
@@ -60,9 +60,9 @@ MetronicApp.controller('OrderShowController',['$rootScope', '$scope', '$timeout'
 		orderModel.setStatus($scope.order._id,status);
 	}
 
-}]);
+}])
 
-MetronicApp.controller('OrderCreateController',[
+.controller('OrderCreateController',[
 	'$scope', '$state', '$http', '$timeout', 'alcoholCart', '$modal', '$filter', '$rootScope', 'sweetAlert','$sce'
 , function($scope, $state, $http, $timeout, alcoholCart, $modal, $filter, $rootScope, sweetAlert,$sce){
 
@@ -100,8 +100,10 @@ MetronicApp.controller('OrderCreateController',[
 	// 		}
 	// 	);
 
-	if(!angular.isDefined($scope.cart.delivery.country_code)){
-		$scope.cart.delivery.country_code = 65;
+	if(!angular.isDefined($scope.cart.delivery.country_code) || $scope.cart.delivery.country_code==''){
+
+		$scope.cart.delivery.country_code = 65;	
+		
 	}
 
 
@@ -144,9 +146,6 @@ MetronicApp.controller('OrderCreateController',[
 			$scope.mobile_number.min = 6;
 			$scope.mobile_number.max = 15;
 		}
-
-
-
 	}
 
 
@@ -156,8 +155,9 @@ MetronicApp.controller('OrderCreateController',[
 		delete $scope.cart['business'];
 		$scope.cart.user = null;
 
+		customer._id = mongoIdToStr(customer._id);
 		$scope.cart[$scope.cart.orderType] = customer;
-		$scope.cart.user = mongoIdToStr(customer._id);
+		$scope.cart.user = customer._id;
 
 		delete $scope.cart.payment.creditCard;
 		delete $scope.cart.payment.card;
@@ -700,9 +700,11 @@ MetronicApp.controller('OrderCreateController',[
 		var api;
 		
 		if(detail.type=='business')
-			api = '/adminapi/business/address/'+detail.user._id;
+			api = '/adminapi/business/address/';
 		else
-			api = '/adminapi/address/'+detail.user._id;
+			api = '/adminapi/address/';
+
+		api+=detail.user._id;
 
 		delete $scope.address.manualForm;
 

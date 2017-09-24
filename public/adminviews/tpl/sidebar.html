@@ -10,7 +10,7 @@
 
 		<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
 		
-		<li ng-repeat="item in menuOptions">
+		<li ng-if='isLoaded' ng-repeat="item in menuOptions">
 
 			<a ng-if="item.uisref" ui-sref="{{item.uisref}}" id="{{item.id}}">
 				<i class="{{item.icon}}"></i>
@@ -23,7 +23,8 @@
 				<span class="arrow" ng-if="item.subItems"></span>
 			</a>
 			<ul class="sub-menu" ng-if="item.subItems">
-				<li ng-repeat="subItem in item.subItems" ng-class="{'active':isActivelink(subItem.links,$state.$current.name)}" class="ms-hover">
+			<!-- ng-class="{'active':isActivelink(subItem.links,$state.$current.name)}" -->
+				<li ng-repeat="subItem in item.subItems"  class="ms-hover">
 					<a ui-sref="{{subItem.uisref}}">
 						<i class="{{subItem.icon}}"></i>			
 						<span ng-bind="subItem.label"></span>

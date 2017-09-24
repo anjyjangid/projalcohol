@@ -411,6 +411,12 @@ class SiteController extends Controller
 			case 'suggest-a-product':
 				$subject = 'Product suggestion query received';                
 				break;            
+			case 'career':
+				$subject = 'Career request';
+				break;
+			case 'press-media':
+				$subject = 'Press media';
+				break;
 			default:
 				$subject = 'No subject';
 				break;
@@ -440,7 +446,7 @@ class SiteController extends Controller
 		$mail = new Email('customtemplate');
 
 		$mdata = [
-			// 'email' => 'anuragcgt@gmail.com',
+			//'email' => 'anuragcgt@gmail.com',
 			'email' => 'sales@alcoholdelivery.com.sg',
 			'name' => 'Admin',
 			'message' => $content,

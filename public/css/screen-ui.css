@@ -459,6 +459,17 @@ ui-sref {
 	text-transform: capitalize;
 	color: #010101;
 }
+.newfeature-text {
+	color: #656565;
+    font-size: 28px;
+    font-weight: 500;
+    padding-left: 24px;
+    padding-right: 10px;
+    padding-top: 0;
+    text-align: center;
+    text-transform: capitalize;
+    width: 100%;
+}
 .tabsright {
 	width: 70%;
 	margin-right: 35px;

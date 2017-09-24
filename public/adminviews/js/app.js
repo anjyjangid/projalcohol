@@ -151,6 +151,58 @@ MetronicApp.factory('settings', ['$rootScope', function($rootScope) {
 
 }]);
 
+MetronicApp.service('userStore',['$q','$http','$timeout',function($q,$http,$timeout){
+
+	var user = {};
+
+	this.set = function (varName,varValue) {
+
+		user[varName] = varValue;
+
+	}
+
+	this.get = function (varName) {
+
+		return angular.isDefined(user[varName])?user[varName]:false;
+
+	}
+
+	this.remove = function (varName) {
+
+		delete user[varName];
+
+	}
+
+	this.init = function () {
+
+		var defer = $q.defer();
+		var that = this;
+		if(this.get("AdminUserData")!==false){
+			defer.resolve(this.get("AdminUserData"));
+		}
+
+		$timeout(function(){
+
+			$http.get("/adminapi/auth/logged-user").then(
+				function (successRes) {
+
+					if(angular.isDefined(successRes.data) && successRes.data!==""){
+						that.set('AdminUserData',successRes.data);
+						defer.resolve(successRes.data);
+					}
+					defer.resolve(false);
+				},
+				function (errorRes) {
+					defer.resolve(false);
+				}
+			);
+
+		},1000);
+
+		return defer.promise;
+	}
+
+}])
 
 MetronicApp.service('fileUpload', ['$http','$location','$q', function ($http,$location,$q) {
 
@@ -337,8 +389,8 @@ MetronicApp.controller('AppController', [
 	}
 
 	$scope.isActivelink = function(arr,val){
-
-		return (arr.indexOf(val) != -1);
+		status = (arr.indexOf(val) != -1);
+		return status;
 
 	}
 
@@ -525,12 +577,14 @@ MetronicApp.controller('HeaderController', ['$scope','$http', '$rootScope','Admi
 }]);
 
 /* Setup Layout Part - Sidebar */
-MetronicApp.controller('SidebarController', ['$scope','$filter', '$http', '$rootScope', 'AdminUserService', function($scope,$filter, $http, $rootScope, AdminUserService) {
+MetronicApp.controller('SidebarController', ['$scope','$filter', '$http', '$rootScope', 'AdminUserService', '$timeout'
+	,function($scope,$filter, $http, $rootScope, AdminUserService, $timeout) {
 
 	$scope.$on('$includeContentLoaded', function() {
-		Layout.initSidebar(); // init sidebar
+		//Layout.initSidebar(); // init sidebar
 	});
 
+	$scope.isLoaded = false;
 	var menuOptions = [
 		{
 			label:'Dashboard',
@@ -846,153 +900,160 @@ MetronicApp.controller('SidebarController', ['$scope','$filter', '$http', '$root
 
 	];
 
-var userType = AdminUserService.getUserType();
+	var userType = AdminUserService.getUserType();
 
-var user_group_id = userType; //"582ef6d094a9b7a2318b4570"; //Sub admin
+	var user_group_id = userType; 
 
-if(userType){
+	if(userType){
 
-	var menuArr = [];
-	var menuVal = [];
-	var parentMenu = [];
-	var parentIdArr = [];
+		var menuArr = [];
+		var menuVal = [];
+		var parentMenu = [];
+		var parentIdArr = [];
 
-	angular.forEach(menuOptions, function(value, key){
-		parentIdArr.push(value.id);
+		angular.forEach(menuOptions, function(value, key){
+			parentIdArr.push(value.id);
 
-		if(typeof(menuOptions[key].uisref) !== "undefined"){
-			menuArr.push(value.uisref);
-			value.parentId = 0;
-			menuVal[value.uisref] = value;
-		}else{
-			var parentLabel = {};
-			parentLabel.label = value.label;
-			parentLabel.icon = value.icon;
-			parentLabel.id = value.id;
-			parentMenu[value.id] = parentLabel;
+			if(typeof(menuOptions[key].uisref) !== "undefined"){
+				menuArr.push(value.uisref);
+				value.parentId = 0;
+				menuVal[value.uisref] = value;
+			}else{
+				var parentLabel = {};
+				parentLabel.label = value.label;
+				parentLabel.icon = value.icon;
+				parentLabel.id = value.id;
+				parentMenu[value.id] = parentLabel;
 
-			var subMenu = menuOptions[key].subItems;
+				var subMenu = menuOptions[key].subItems;
 
-			angular.forEach(subMenu, function(value1, key1){
-				menuArr.push(value1.uisref);
-				value1.parentId = value.id;
-				menuVal[value1.uisref] = value1;
-			});
-		}
-	});
-
-	var newMenu 	= [];
-	var prId 			= [];
-	var menuObj 	= [];
-	var finalMenu = [];
-
-	if( typeof($rootScope.userAccessStates) !== "undefined" && $rootScope.userAccessStates){
-		angular.forEach(menuArr, function(value, key){
-			var mId = $filter('filter')($rootScope.userAccessStates, value);
-
-			if(typeof(mId[0]) !== "undefined" && mId[0]){
-
-				var url_state = menuVal[mId[0]].parentId;
-				var mainParentId = url_state;
-
-				if(!url_state)
-					mainParentId = menuVal[mId[0]].id
-
-				if(typeof(menuObj[mainParentId]) !== "undefined")
-					menuObj[mainParentId] = menuObj[mainParentId] +', '+mId[0];
-				else
-					menuObj[mainParentId] = mId[0];
+				angular.forEach(subMenu, function(value1, key1){
+					menuArr.push(value1.uisref);
+					value1.parentId = value.id;
+					menuVal[value1.uisref] = value1;
+				});
 			}
 		});
-		
-		angular.forEach(parentIdArr, function(value, key){
 
-			if(typeof(menuObj[value]) !== "undefined"){
-				var stateArr = menuObj[value].split(', ');
+		var newMenu 	= [];
+		var prId 			= [];
+		var menuObj 	= [];
+		var finalMenu = [];
+		//console.log($rootScope.userAccessStates);
+		/*if( typeof($rootScope.userAccessStates) !== "undefined" && $rootScope.userAccessStates){
+			angular.forEach(menuArr, function(value, key){
+				var mId = $filter('filter')($rootScope.userAccessStates, value);
 
-				if(typeof(parentMenu[value]) !== "undefined"){
+				if(typeof(mId[0]) !== "undefined" && mId[0]){
 
-					var menuN = {};
-					var subd 	= [];
-					
-					menuN.label = parentMenu[value].label;
-					menuN.id = parentMenu[value].id;
-					menuN.icon = parentMenu[value].icon;
-					
-					angular.forEach(stateArr, function(value1, key1){
-						if(typeof(menuVal[value1]) !== "undefined"){
-							subd.push(menuVal[value1]);
-							menuN.subItems = subd;
-						}
-					});
+					var url_state = menuVal[mId[0]].parentId;
+					var mainParentId = url_state;
 
-					finalMenu.push(menuN);
+					if(!url_state)
+						mainParentId = menuVal[mId[0]].id
 
-				}else{
-					finalMenu.push(menuVal[menuObj[value]]);
+					if(typeof(menuObj[mainParentId]) !== "undefined")
+						menuObj[mainParentId] = menuObj[mainParentId] +', '+mId[0];
+					else
+						menuObj[mainParentId] = mId[0];
 				}
-			}
-		});
+			});
+			
+			angular.forEach(parentIdArr, function(value, key){
 
-		$scope.menuOptions = finalMenu;
+				if(typeof(menuObj[value]) !== "undefined"){
+					var stateArr = menuObj[value].split(', ');
+
+					if(typeof(parentMenu[value]) !== "undefined"){
+
+						var menuN = {};
+						var subd 	= [];
+						
+						menuN.label = parentMenu[value].label;
+						menuN.id = parentMenu[value].id;
+						menuN.icon = parentMenu[value].icon;
+						
+						angular.forEach(stateArr, function(value1, key1){
+							if(typeof(menuVal[value1]) !== "undefined"){
+								subd.push(menuVal[value1]);
+								menuN.subItems = subd;
+							}
+						});
+
+						finalMenu.push(menuN);
+
+					}else{
+						finalMenu.push(menuVal[menuObj[value]]);
+					}
+				}
+			});
+
+			$scope.menuOptions = finalMenu;
+		}*/
+
+		$http.get("/adminapi/usergroup/usergroupid/"+ user_group_id).success(function(response){
+			var user_states = response.access_list.concat(response.modify_list);
+
+			angular.forEach(menuArr, function(value, key){
+				var mId = $filter('filter')(user_states, value);
+
+				if(typeof(mId[0]) !== "undefined" && mId[0]){
+
+					var url_state = menuVal[mId[0]].parentId;
+					var mainParentId = url_state;
+
+					if(!url_state)
+						mainParentId = menuVal[mId[0]].id
+
+					if(typeof(menuObj[mainParentId]) !== "undefined")
+						menuObj[mainParentId] = menuObj[mainParentId] +', '+mId[0];
+					else
+						menuObj[mainParentId] = mId[0];
+				}
+			});
+			
+			angular.forEach(parentIdArr, function(value, key){
+
+				if(typeof(menuObj[value]) !== "undefined"){
+					var stateArr = menuObj[value].split(', ');
+
+					if(typeof(parentMenu[value]) !== "undefined"){
+
+						var menuN = {};
+						var subd 	= [];
+						
+						menuN.label = parentMenu[value].label;
+						menuN.id = parentMenu[value].id;
+						menuN.icon = parentMenu[value].icon;
+						
+						angular.forEach(stateArr, function(value1, key1){
+							if(typeof(menuVal[value1]) !== "undefined"){
+								subd.push(menuVal[value1]);
+								menuN.subItems = subd;
+							}
+						});
+
+						finalMenu.push(menuN);
+
+					}else{
+						finalMenu.push(menuVal[menuObj[value]]);
+					}
+				}
+			});
+
+			$scope.menuOptions = finalMenu;
+		});
+		//console.log($scope.menuOptions);
+	}else{
+		//console.log('ascascac');
+		$scope.menuOptions = menuOptions;
 	}
 
-	/*$http.get("/adminapi/usergroup/usergroupid/"+ user_group_id).success(function(response){
-		var user_states = response.access_list.concat(response.modify_list);
 
-		angular.forEach(menuArr, function(value, key){
-			var mId = $filter('filter')(user_states, value);
+	$scope.isLoaded = true;
+	//Layout.init();
+	Layout.initSidebar();
 
-			if(typeof(mId[0]) !== "undefined" && mId[0]){
-
-				var url_state = menuVal[mId[0]].parentId;
-				var mainParentId = url_state;
-
-				if(!url_state)
-					mainParentId = menuVal[mId[0]].id
-
-				if(typeof(menuObj[mainParentId]) !== "undefined")
-					menuObj[mainParentId] = menuObj[mainParentId] +', '+mId[0];
-				else
-					menuObj[mainParentId] = mId[0];
-			}
-		});
-		
-		angular.forEach(parentIdArr, function(value, key){
-
-			if(typeof(menuObj[value]) !== "undefined"){
-				var stateArr = menuObj[value].split(', ');
-
-				if(typeof(parentMenu[value]) !== "undefined"){
-
-					var menuN = {};
-					var subd 	= [];
-					
-					menuN.label = parentMenu[value].label;
-					menuN.id = parentMenu[value].id;
-					menuN.icon = parentMenu[value].icon;
-					
-					angular.forEach(stateArr, function(value1, key1){
-						if(typeof(menuVal[value1]) !== "undefined"){
-							subd.push(menuVal[value1]);
-							menuN.subItems = subd;
-						}
-					});
-
-					finalMenu.push(menuN);
-
-				}else{
-					finalMenu.push(menuVal[menuObj[value]]);
-				}
-			}
-		});
-
-		$scope.menuOptions = finalMenu;
-	});*/
-
-}else{
-	$scope.menuOptions = menuOptions;
-}
 
 	//$scope.menuOptions = menuOptions;
 	//$scope.menuOptions = $filter('accessValidate')(menuOptions);
@@ -1020,9 +1081,12 @@ MetronicApp.controller('FooterController', ['$scope', function($scope) {
 	$scope.$on('$includeContentLoaded', function() {
 		Layout.initFooter(); // init footer
 	});
+
+	
+	$scope.year = new Date().getFullYear();
 }]);
 
-MetronicApp.factory('AuthServices', ['$rootScope','$http', 'store', function($rootScope,$http,store) {
+MetronicApp.factory('AuthServices', ['$rootScope','$http', 'userStore', function($rootScope,$http,userStore) {
 	var service = {};
 
 	service.Login = function (username, password, callback) {
@@ -1032,13 +1096,13 @@ MetronicApp.factory('AuthServices', ['$rootScope','$http', 'store', function($ro
 
 }]);
 
-MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", "$rootScope", function($q, $timeout, $http, store, $rootScope) {
+MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "userStore", "$rootScope", function($q, $timeout, $http, userStore, $rootScope) {
 
 	var currentUser = false;
 
 	this.getUser = function(){
 		if (!currentUser) {
-			currentUser = store.get('AdminUserData');
+			currentUser = userStore.get('AdminUserData');
 		}
 		return currentUser;
 	};
@@ -1053,6 +1117,7 @@ MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", "$r
 	this.getUserType = function(){
 
 		var currentUser = this.getUser();
+
 		if(typeof(currentUser.user_type) !== "undefined" && currentUser.user_type){
 			return currentUser.user_type;
 		}else{
@@ -1065,7 +1130,7 @@ MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", "$r
 	this.storeUser = function(data){
 		this.removeUser();
 		var deferred = $q.defer();
-		store.set('AdminUserData',data);
+		userStore.set('AdminUserData',data);
 		currentUser = data;
 		$rootScope.user = data;
 		$rootScope.user.name = data.first_name+' '+data.last_name;
@@ -1075,19 +1140,21 @@ MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", "$r
 
 	this.removeUser = function(){
 		var deferred = $q.defer();
-		store.remove('AdminUserData');
+		userStore.remove('AdminUserData');
 		deferred.resolve();
 		return deferred.promise;
 	};
 
 	this.isLogged = function(){
-		return store.get('AdminUserData');
+		
+		return userStore.get('AdminUserData');
+
 	};
 
 	this.chkUser = function(){
 		var deferred = $q.defer();
-		if(store.get('AdminUserData')){
-			var data = store.get('AdminUserData');
+		if(userStore.get('AdminUserData')){
+			var data = userStore.get('AdminUserData');
 			$rootScope.user = data;
 			$rootScope.user.name = data.first_name+' '+data.last_name;
 			deferred.resolve(data);
@@ -1117,6 +1184,9 @@ MetronicApp.service("AdminUserService", ["$q", "$timeout", "$http", "store", "$r
 
 }]);
 
+
+
+
 MetronicApp.controller('LoginController', ['$scope','AdminUserService', '$rootScope', '$http', '$state', '$location', function($scope, AdminUserService, $rootScope, $http, $state, $location) {
 
 	$scope.credentials = {remember:0};
@@ -1140,17 +1210,22 @@ MetronicApp.controller('LoginController', ['$scope','AdminUserService', '$rootSc
 			if(res.email){
 				AdminUserService.storeUser(res).then(function(res){
 
-					var userType = AdminUserService.getUserType(); //582ef6d094a9b7a2318b4570
+					var userType = AdminUserService.getUserType();
 
 					if(userType)
 						AdminUserService.checkUserAccess(userType);
 
 					$state.go('userLayout.dashboard',{},{reload:true});
+
 				});
 			}else{
+
 				$scope.errors = {email:['Error in login']};
 			}
 		}).error(function(data, status, headers) {
+			if(status===401){
+				$state.go('userLayout.dashboard',{},{reload:true});
+			}
 			$scope.errors = data;
 		});
 	};
@@ -1204,7 +1279,8 @@ MetronicApp.controller('ResetpasswordController', ['$rootScope','$scope','$http'
 
 }]);
 /* Setup Rounting For All Pages */
-MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
+MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider'
+	, function($stateProvider, $urlRouterProvider, $locationProvider ) {
 	// Redirect any unmatched url
 	$urlRouterProvider.otherwise("/");
 
@@ -1217,6 +1293,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 				authenticate: authenticate
 			},
 			controller:function(AdminUserService, $state, $timeout) {
+
 				if (AdminUserService.isLogged()) {
 					$s = 'userLayout.dashboard'
 				}else{
@@ -1246,7 +1323,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 					"templateUrl":"adminviews/tpl/footer.html",
 					"controller":"FooterController"
 				}
+			},
+			resolve : {
+				userStoreInit : function(userStore){
+						return userStore.init();
+					}
 			}
+
 		})
 
 		.state('userLayout.dashboard', {
@@ -3174,19 +3257,21 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 			templateUrl: "adminviews/views/login.html",
 			data: {pageTitle: 'Administrator Login'},
 			controller: "LoginController",
-			resolve: {
+			resolve: {				
+				userStoreInit : function(userStore){					
+						return userStore.init();
+					},
 				checkStatus: checkStatus
 			}
 		})
 
 		.state("logout", {
-			url: "/logout",
-			//templateUrl: "adminviews/views/login.html",
-			//data: {pageTitle: 'Administrator Login'},
-			controller: function($http,AdminUserService, $state){
+			url: "/logout",			
+			controller: function($http,AdminUserService, $state, $timeout){
+				
 				$http.get('/adminapi/auth/logout').success(function(res){
 					AdminUserService.removeUser().then(function(){
-						$state.go('login',{},{reload:true});
+						$state.go('login');
 					});
 				}).error(function(data, status, headers) {
 
@@ -3314,30 +3399,32 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
 			resolve: {
 				authenticate: authenticate,
 			}
-		})
-		;
+		});
 
-		function authenticate($q, AdminUserService, $state, $timeout, $location) {
+		
 
-		  if (AdminUserService.isLogged()) {
+		function authenticate($q, AdminUserService, $state, $timeout, $location, userStoreInit) {
+
+			if (AdminUserService.isLogged()) {
 			// Resolve the promise successfully
 
-			return $q.when()
-		  } else {
+				return $q.when()
+
+			} else {
 			// The next bit of code is asynchronously tricky.
 
-			$timeout(function() {
-			  // This code runs after the authentication promise has been rejected.
-			  // Go to the log-in page
-			  $state.go('login',{},{reload:true})
-			})
+				$timeout(function() {
+					// This code runs after the authentication promise has been rejected.
+					// Go to the log-in page
+					$state.go('login',{},{reload:true})
+				})
 
-			// Reject the authentication promise to prevent the state from loading
-			return $q.reject()
-		  }
+				// Reject the authentication promise to prevent the state from loading
+				return $q.reject()
+			}
 		}
 
-		function checkStatus($q, AdminUserService, $state, $timeout, $location) {
+		function checkStatus($q, AdminUserService, userStore, $state, $timeout, $location, userStoreInit) {
 
 		  if (AdminUserService.isLogged()) {
 			// Resolve the promise successfully
@@ -3498,55 +3585,67 @@ MetronicApp.filter('creditcardname', function() {
 });
 
 /* Init global settings and run the app */
-MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "store", "$location", "AdminUserService", "$timeout", "$stateParams", "$http", "$filter", function($rootScope, settings, $state, $cookieStore, $log, store, $location, AdminUserService, $timeout, $stateParams, $http, $filter) {
+MetronicApp.run(["$rootScope", "settings", "$state", "$cookieStore", "$log", "userStore", "$location", "AdminUserService", "$timeout", "$stateParams", "$http", "$filter", function($rootScope, settings, $state, $cookieStore, $log, userStore, $location, AdminUserService, $timeout, $stateParams, $http, $filter) {
 
-	$rootScope.$on('$locationChangeStart', function (event, next, current) {
-		AdminUserService.chkUser().then(function(userdata){
-			//USER IS LOOGED IN
+	userStore.init().then(function(){
+		
+		AdminUserService.chkUser().then(function(){
 
-				var userType = AdminUserService.getUserType(); //"582ef6d094a9b7a2318b4570"
-
-				if(userType){
-					/*var hashIndex = current.indexOf('#');
-				var oldRoute = current.substr(hashIndex + 2);*/
-
-				if($state.current.name!='userLayout.dashboard'){
-
-					if( typeof($rootScope.userAccessStates) !== "undefined" && $rootScope.userAccessStates){
-
-						//if($state.current.name && typeof($rootScope.oldRoute) !== "undefined" && $rootScope.oldRoute)
-						if($state.current.name)
-						{
-							var mId = $filter('filter')($rootScope.userAccessStates, $state.current.name);
-
-							if(typeof(mId[0]) === "undefined" || !mId[0]){
-								/*if($rootScope.oldRoute)
-									$location.path($rootScope.oldRoute);
-								else
-									$location.path("/dashboard");*/
-									$location.path("/usergroups/permission_denied");
-							}
-						}
-					}
-					}
-
-					//$rootScope.oldRoute = oldRoute;
+			$timeout(function(){
+				if($state.current.name.indexOf("userLayout")!==0){
+					$location.path('/dashboard');
 				}
+			},1500)
 			
-		},function(){
-			//THROW USER TO LOGIN IN CASE OF SESSION TIMEOUT OR NOT LOGIN AND ALLOW RESETPASSWORD
+
+		},function(){		
 			if($location.path().indexOf('resetpassword') <= 0){
 				$location.path('/login');
 			}
+		})
+		$rootScope.$on('$locationChangeStart', function (event, next, current) {
+
+			AdminUserService.chkUser().then(
+
+				function(userdata){
+				//USER IS LOOGED IN
+	
+					var userType = AdminUserService.getUserType(); //"582ef6d094a9b7a2318b4570"
+					//console.log(userType);
+					if(userType){					
+						if($state.current.name!='userLayout.dashboard' && $state.current.name!='userLayout.account' && $state.current.name!='logout'){
+							//console.log($state.current.name);
+							if( typeof($rootScope.userAccessStates) !== "undefined" && $rootScope.userAccessStates){
+
+								if($state.current.name){
+									var mId = $filter('filter')($rootScope.userAccessStates, $state.current.name);
+									//console.log(mId);
+									if(typeof(mId[0]) === "undefined" || !mId[0]){
+										$location.path("/usergroups/permission_denied");
+									}
+								}
+							}
+						}
+						
+					}
+				
+				},
+				function(){
+					//THROW USER TO LOGIN IN CASE OF SESSION TIMEOUT OR NOT LOGIN AND ALLOW RESETPASSWORD		
+					if($location.path().indexOf('resetpassword') <= 0){
+						$location.path('/login');
+					}
+				}
+			);
 		});
-	});
+			
+	
+	})
+	
 
 	$rootScope.$state = $state; // state to be accessed from view
 
 }]);
-
-
-
 
 MetronicApp.service('myRequestInterceptor', ['$q', '$rootScope', '$log', '$injector', '$location', function ($q, $rootScope, $log, $injector, $location) {
 	'use strict';

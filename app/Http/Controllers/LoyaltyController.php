@@ -52,6 +52,7 @@ class LoyaltyController extends Controller
 		
 		$params = $request->all();
 		$loyaltyTransactions = new LoyaltyTransactions;
+		
 		$loyalty = $loyaltyTransactions->getLoyalty($this->user->_id,$params);
 
 		if($loyalty['success']){

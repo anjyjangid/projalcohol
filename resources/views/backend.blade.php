@@ -192,7 +192,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		});
 
 		window.onload = function(){
-			Layout.init();
+			//Layout.init();
 		}
 
 		

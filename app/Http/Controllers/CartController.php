@@ -236,9 +236,11 @@ class CartController extends Controller
 		}
 
 		if(isset($cart['coupon']) && $cart['coupon']){
+
 			$couponData = Coupon::where(['_id' => $cart['coupon'], 'status'=>1])->first();
 
 			if(isset($couponData->_id) && $couponData->_id){
+				
 				if(strtotime($couponData->start_date)<= time() && strtotime($couponData->end_date. ' + 1 days')>= time()){
 
 					unset($couponData->start_date);
@@ -1877,7 +1879,7 @@ class CartController extends Controller
 				if(!empty($request->get('merchant_data3'))) {
 					return response(["success"=>false,"message"=>"cart not found"],405); //405 => method not allowed
 				}else{
-					return redirect('/');	
+					return redirect('/');
 				}				
 			}
 			else{
@@ -1898,9 +1900,11 @@ class CartController extends Controller
 			$cartArr['payment']['total'] = $orderObj['payment']['total'];
 			//PREPARE PAYMENT FORM DATA
 			if(!$request->isMethod('get') && $cartArr['payment']['method'] == 'CARD' && $cartArr['payment']['total']>0){
+
 				$payment = new Payment();
 				$paymentres = $payment->prepareform($cartArr,$user);
 				return response($paymentres,200);
+
 			}
 
 			//CHECK FOR PAYMENT RESULT
@@ -1910,11 +1914,20 @@ class CartController extends Controller
 				//VALIDATE RESPONSE SO IT IS VALID OR NOT
 				$payment = new Payment();				
 				$failed = false;
+				$failedReason = "";
+
 				if(!$payment->validateresponse($rdata) || ($rdata['result']!='Paid')){					
 					$failed = true;										
 				}
 
-				unset($rdata['signature']);					
+				if(isset($rdata['authorized_amount']) && $cartArr['payment']['total'] != $rdata['authorized_amount']){
+					$failed = true;
+					$failedReason = 'missMatch';
+				}
+
+				$rdata['failedReason'] = $failedReason;
+
+				unset($rdata['signature']);
 
 				$paymentres = ['paymentres' => $rdata];
 
@@ -1925,12 +1938,21 @@ class CartController extends Controller
 				$this->logtofile($rdata);
 
 				if($failed){
-					// if order from device
-					if($request->isMethod('get') && !empty($request->get('merchant_data3'))){
-						return redirect('/device/payment/'.(string)$cartArr['deviceConfiguration']);
-					}else{
-						return redirect('/cart/payment');
+
+					switch($failedReason){
+
+						case 'missMatch':
+							return redirect("/cart?error=Price mismatched, please <a href='pages/contact-us'>contact</a> site administrator");
+						break;
+						default:
+							// if order from device
+							if($request->isMethod('get') && !empty($request->get('merchant_data3'))){
+								return redirect('/device/payment/'.(string)$cartArr['deviceConfiguration']);
+							}else{
+								return redirect('/cart/payment');
+							}
 					}
+					
 				}
 			}
 
@@ -2246,9 +2268,10 @@ class CartController extends Controller
 			return response(['reset'=>'cart',"message"=>"cart not found"],412);
 		}
 
-		//if($cart->delivery['type'] ==0 && !$cart->isUnderWorkingHrs()){
-		//	$isValid['valid'] = false;
-		//}
+		// under working hours condition
+		// if($cart->delivery['type'] ==0 && !$cart->isUnderWorkingHrs()){
+		// 	$isValid['valid'] = false;
+		// }
 
 		if($isValid['valid']==false){
 

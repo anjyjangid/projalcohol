@@ -20,7 +20,7 @@
 				<div class="row">
 				<div class="{{(!cmsData.coverImage)?'col-md-7':'col-md-12'}}">
 				<div class="cmspage-formcrv" ng-if="cmsData.hasForm">
-					<form ng-submit="submitQuery();">
+					<form ng-submit="submitQuery();" id='submitQueryFrm'>
 						<div class="order-fetching" ng-show="querySubmit"></div>
 						
 						<div class="alert alert-danger" ng-show="errors">Please enter all the required fields</div>
@@ -186,6 +186,60 @@
 								<label class="control-label">website </label>
 								<input ng-model="query.website" type="text" class="form-control" placeholder="Website / Blog / Portfolio">
 								<span class="help-block" ng-bind="errors.website[0]"></span>
+							</div>
+
+						</div>
+
+						<div ng-if="cmsData.formType == 'press-media'">
+
+							<div class="form-group" ng:class="{'has-error':errors.fname[0]}">
+								<label class="control-label ap-required-label">First Name </label>
+								<input ng-model="query.fname" type="text" class="form-control" placeholder="First Name">
+								<span class="help-block" ng-bind="errors.fname[0]"></span>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.lname[0]}">
+								<label class="control-label">Last Name </label>
+								<input ng-model="query.lname" type="text" class="form-control" placeholder="Last Name">
+								<span class="help-block" ng-bind="errors.lname[0]"></span>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.organisation[0]}">
+								<label class="control-label ap-required-label">Organisation / Business Name or URL</label>
+								<input ng-model="query.organisation" type="text" class="form-control" placeholder="Organisation / Business Name or URL">
+								<span class="help-block" ng-bind="errors.organisation[0]"></span>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.jobtitle[0]}">
+								<label class="control-label ap-required-label">Your Job Title</label>
+								<input ng-model="query.jobtitle" type="text" class="form-control" placeholder="Your Job Title">
+								<span class="help-block" ng-bind="errors.jobtitle[0]"></span>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.email[0]}">
+								<label class="control-label ap-required-label">Email </label>
+								<input ng-model="query.email" type="text" class="form-control" placeholder="Email">
+								<span class="help-block" ng-bind="errors.email[0]"></span>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.phone[0]}">
+								<label class="control-label ap-required-label" for="phone">Contact Number </label>
+								<input ng-model="query.phone" type="text" class="form-control" placeholder="Contact Number" id="phone">
+								<span class="help-block" ng-bind="errors.phone[0]"></span>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.type_of_enquiry[0]}">
+								<label class="control-label ap-required-label" for="phone">Type of Enquiry</label>
+								<select class="form-control" ng-init="query.type_of_enquiry='Cross-Marketing'" ng-options="enquiry for enquiry in ['Cross-Marketing','Value-In-Kind Sponsorship','Cash Sponsorship','Media Enquiries','Business Collaboration','Bulk Coupon Code Purchase','Corporate Employee Discount','Corporate Social Responsibility','Charity or Fundraising Related','Ad Sales','Others']" 
+												ng-model="query.type_of_enquiry"></select>
+
+								<span class="help-block" ng-bind="errors.type_of_enquiry[0]"></span>
+							</div>
+
+							<div class="form-group" ng:class="{'has-error':errors.message[0]}">
+								<label class="control-label ap-required-label">Message</label>
+								<textarea ng-model="query.message" type="text" class="form-control" placeholder="Message"></textarea>
+								<span class="help-block" ng-bind="errors.message[0]"></span>
 							</div>
 
 						</div>

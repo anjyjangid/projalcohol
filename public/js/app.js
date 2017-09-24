@@ -373,7 +373,7 @@ AlcoholDelivery.service('appConfig', ['$interval','$http','$q',function($interva
 		}else{
 			var workingTime = _self.getWorkingTime();
 			var serverTime = _self.getServerTime();
-			return true; //((workingTime.from < serverTime) && (serverTime < workingTime.to));
+			return true;//((workingTime.from < serverTime) && (serverTime < workingTime.to));
 		}
 	}
 
@@ -1256,7 +1256,7 @@ AlcoholDelivery.service('LoadingInterceptor', ['$q', '$rootScope', '$log', '$loc
 					config.url = 'api/'+urlStr;
 			}else{
 				if(urlStr.indexOf('templates') > 0)
-					config.url += '?ver=1.11';
+					config.url += '?ver=1.16';
 			}	        	
 			return config;
 		},
@@ -1326,11 +1326,10 @@ AlcoholDelivery.run([
 		"$rootScope", "appSettings", "alcoholCart", "$state", "$http", "$window","$mdToast","$document","$anchorScroll"
 		, "$timeout","cartValidation","cartValidate","$templateCache","$cookies"
 , function($rootScope, settings, alcoholCart, $state, $http, $window, $mdToast,$document,$anchorScroll
-		,$timeout,cartValidation,cartValidate,$templateCache,$cookies) {
+		,$timeout,cartValidation,cartValidate,$templateCache,$cookies) {	
 
 	$rootScope.$state = $state; // state to be accessed from view
 	angular.alcoholCart = alcoholCart;
-	angular.cartValidate = cartValidate;	
 
 	$rootScope.isAppInitialized = false;
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
@@ -1513,7 +1512,7 @@ AlcoholDelivery.run([
 								$mdToast.hide();	
 							}
 						}],
-			templateUrl: '/templates/toast-tpl/wishlist-notify.html'+def,
+			templateUrl: '/templates/toast-tpl/wishlist-notify.html',
 			parent : $document[0].querySelector('#'+targId),
 			position: 'top center',
 			hideDelay:def

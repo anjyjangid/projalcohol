@@ -12,61 +12,66 @@ use Illuminate\Support\Facades\Auth;
  
 class AdminAuthController extends Controller
 {
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
+	use AuthenticatesAndRegistersUsers, ThrottlesLogins;
  
-    /**
-     * Create a new authentication controller instance.
-     *
-     * @return void
-     */
+	/**
+	 * Create a new authentication controller instance.
+	 *
+	 * @return void
+	 */
 
-    public $redirectAfterLogout = '/admin';
+	public $redirectAfterLogout = '/admin';
 
-    public function __construct()
-    {
-        $this->user = "admin";
-        $this->middleware('admin.guest', ['except' => 'getLogout']);
-    }
+	public function __construct()
+	{
+		$this->user = "admin";
+		$this->middleware('admin.guest', ['except' => ['getLogout','getLoggedUser']]);
+	}
 
-    public function postLogin(Request $request)
-    {        
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required',            
-        ]);
+	public function postLogin(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			'email' => 'required|email',
+			'password' => 'required',
+		]);
 
-        
-        // setting the credentials array
-        $credentials = [
-            'email' => strtolower($request->input('email')),
-            'password' => $request->input('password'),
-        ];
+		// setting the credentials array
+		$credentials = [
+			'email' => strtolower($request->input('email')),
+			'password' => $request->input('password'),
+		];
 
-        $invalidcredentials = false;
+		$invalidcredentials = false;
 
-        // if the credentials are wrong
-        if (!Auth::attempt('admin',$credentials, $request->input('remember'))) {
-            $invalidcredentials = 'Username password does not match';            
-        }
-        
-        if ($validator->fails() || $invalidcredentials){
-            
-            if($invalidcredentials){
-                $validator->errors()->add('email',$invalidcredentials);
-                $validator->errors()->add('password',' ');
-            }
+		// if the credentials are wrong
+		if (!Auth::attempt('admin',$credentials, $request->input('remember'))) {
+			$invalidcredentials = 'Username password does not match';            
+		}
+		
+		if ($validator->fails() || $invalidcredentials){
+			
+			if($invalidcredentials){
+				$validator->errors()->add('email',$invalidcredentials);
+				$validator->errors()->add('password',' ');
+			}
 
-            return response($validator->errors(), 422);
-        }
+			return response($validator->errors(), 422);
+		}
 
-        return response(Auth::user('admin'), 200);
-    }
+		// return response(Auth::user('admin'), 422);
+		return response(Auth::user('admin'), 200);
+	}
 
-    public function getLogout()
-    {
-        if(Auth::logout($this->user())){
-            return response(Auth::user('admin'), 200);
-        }
-    }
+	public function getLogout()
+	{
+		Auth::logout($this->user());
+		return response(['isStillThere'=>Auth::user('admin')], 200);
+	}
+
+	public function getLoggedUser () {
+
+		return response(Auth::user('admin'),200);
+		
+	}
 
 }

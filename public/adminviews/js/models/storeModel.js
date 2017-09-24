@@ -66,7 +66,6 @@ MetronicApp.factory('storeModel', ['$http', '$cookies','$location', function($ht
 		            });
 		            $location.path("store/list");
 	            
-
 	        });
 	        
 

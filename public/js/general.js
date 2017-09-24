@@ -116,9 +116,8 @@ Date.prototype.shiftDays = function(days){
 }
 
 function cLog(param){
-	console.log(param);
+	console.log("%c" + param, "color: purple; font-size: 110%; font-weight: bold;");
 }
-
 
 function objectToFormData(obj, form, namespace) {
 
